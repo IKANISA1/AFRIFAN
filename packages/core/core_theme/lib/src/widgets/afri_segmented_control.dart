@@ -3,10 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../extensions.dart';
+import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/motion_tokens.dart';
+import '../tokens/shadow_tokens.dart';
+import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
+import 'afri_press_feedback.dart';
 
 /// A single segment in [AfriSegmentedControl].
 class AfriSegment {
@@ -38,14 +45,18 @@ class AfriSegmentedControl extends StatelessWidget {
     required this.items,
     required this.selectedIndex,
     required this.onChanged,
+    this.disabledIndices = const <int>{},
   });
 
   final List<AfriSegment> items;
   final int selectedIndex;
   final ValueChanged<int> onChanged;
+  final Set<int> disabledIndices;
 
   @override
   Widget build(BuildContext context) {
+    final textScale = MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
+    final maxLabelLines = textScale >= 1.5 ? 2 : 1;
     final children = items
         .asMap()
         .entries
@@ -54,9 +65,12 @@ class AfriSegmentedControl extends StatelessWidget {
           final item = entry.value;
           final isSelected = index == selectedIndex;
           return _buildSegment(
+            context: context,
             item: item,
             index: index,
             isSelected: isSelected,
+            enabled: !disabledIndices.contains(index),
+            maxLabelLines: maxLabelLines,
           );
         })
         .toList(growable: false);
@@ -67,10 +81,17 @@ class AfriSegmentedControl extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: children
+                  .asMap()
+                  .entries
                   .map(
-                    (child) => Padding(
-                      padding: const EdgeInsets.only(right: 3),
-                      child: SizedBox(width: 116, child: child),
+                    (entry) => Padding(
+                      padding: const EdgeInsets.only(
+                        right: AfriComponentSizes.segmentedInset,
+                      ),
+                      child: SizedBox(
+                        width: _scrollItemWidth(context, items[entry.key]),
+                        child: entry.value,
+                      ),
                     ),
                   )
                   .toList(growable: false),
@@ -81,34 +102,60 @@ class AfriSegmentedControl extends StatelessWidget {
           );
 
     return Container(
-      padding: const EdgeInsets.all(3),
+      padding: const EdgeInsets.all(AfriComponentSizes.segmentedInset),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
       ),
       child: segmentedContent,
     );
   }
 
+  double _scrollItemWidth(BuildContext context, AfriSegment item) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: item.label, style: TypographyTokens.labelMedium()),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 1,
+    )..layout();
+    final iconWidth = item.icon == null
+        ? 0
+        : SizeTokens.iconXs + SpacingTokens.spacing1;
+    final desiredWidth =
+        textPainter.width + iconWidth + (SpacingTokens.spacing2 * 2);
+    final viewportBound = MediaQuery.sizeOf(context).width * 0.85;
+    final maxWidth = viewportBound < AfriComponentSizes.segmentedScrollItemWidth
+        ? AfriComponentSizes.segmentedScrollItemWidth
+        : viewportBound;
+    return desiredWidth.clamp(
+      AfriComponentSizes.segmentedScrollItemWidth,
+      maxWidth,
+    );
+  }
+
   Widget _buildSegment({
+    required BuildContext context,
     required AfriSegment item,
     required int index,
     required bool isSelected,
+    required bool enabled,
+    required int maxLabelLines,
   }) {
-    return GestureDetector(
+    return AfriPressFeedback(
+      enabled: enabled,
       onTap: () {
         if (!isSelected) {
           unawaited(HapticFeedback.selectionClick());
           onChanged(index);
         }
       },
-      behavior: HitTestBehavior.opaque,
-      child: Semantics(
-        button: true,
-        selected: isSelected,
-        label: item.label,
+      selected: isSelected,
+      semanticsLabel: item.label,
+      excludeChildSemantics: true,
+      builder: (context, state) => Opacity(
+        opacity: enabled ? 1 : 0.48,
         child: AnimatedContainer(
-          duration: AfriMotion.quick,
+          duration: AfriMotion.resolve(context, AfriMotion.quick),
           curve: AfriMotion.enterCurve,
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.spacing2,
@@ -118,17 +165,14 @@ class AfriSegmentedControl extends StatelessWidget {
             color: isSelected
                 ? ColorTokens.surfaceContainerLowest
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(11),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: ColorTokens.ambientShadow.withValues(alpha: 0.12),
-                      blurRadius: 8,
-                      spreadRadius: -4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
+            borderRadius: ShapeTokens.segmentedInnerRadius,
+            border: state.isFocused
+                ? BorderTokens.focusAll(
+                    color: ColorTokens.primaryContainer,
+                    width: context.afriDesignTokens.focusRingWidth,
+                  )
                 : null,
+            boxShadow: isSelected ? AfriShadows.selectedControl() : null,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -137,7 +181,7 @@ class AfriSegmentedControl extends StatelessWidget {
               if (item.icon != null) ...[
                 Icon(
                   item.icon,
-                  size: 14,
+                  size: SizeTokens.iconXs,
                   color: isSelected
                       ? ColorTokens.primaryContainer
                       : ColorTokens.onSurfaceVariant,
@@ -147,7 +191,7 @@ class AfriSegmentedControl extends StatelessWidget {
               Flexible(
                 child: Text(
                   item.label,
-                  maxLines: 1,
+                  maxLines: maxLabelLines,
                   overflow: TextOverflow.ellipsis,
                   style: TypographyTokens.labelMedium(
                     isSelected

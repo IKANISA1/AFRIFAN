@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Children,
   cloneElement,
@@ -5,12 +7,19 @@ import {
   type ReactNode,
   type ReactElement,
   type HTMLAttributes,
+  type KeyboardEvent,
   type TdHTMLAttributes,
 } from "react";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { AdminSortDirection } from "@/lib/admin-collection";
 
 type TableCellProps = TdHTMLAttributes<HTMLTableCellElement> & {
   "data-column-label"?: string;
+};
+
+type TableRowProps = HTMLAttributes<HTMLTableRowElement> & {
+  "data-row-id"?: string;
 };
 
 interface AdminDataGridProps {
@@ -18,10 +27,17 @@ interface AdminDataGridProps {
     key: string;
     label: string;
     className?: string;
+    priority?: "primary" | "secondary" | "tertiary";
+    sortable?: boolean;
+    sortDirection?: AdminSortDirection | "none";
+    onSort?: () => void;
   }[];
   children: ReactNode;
   className?: string;
   tableClassName?: string;
+  caption?: string;
+  busy?: boolean;
+  onRowActivate?: (rowId: string) => void;
 }
 
 export function AdminDataGrid({
@@ -29,9 +45,12 @@ export function AdminDataGrid({
   children,
   className,
   tableClassName,
+  caption,
+  busy = false,
+  onRowActivate,
 }: AdminDataGridProps) {
   const decoratedRows = Children.map(children, (row) => {
-    if (!isValidElement<HTMLAttributes<HTMLTableRowElement>>(row) || row.type !== "tr") {
+    if (!isValidElement<TableRowProps>(row) || row.type !== "tr") {
       return row;
     }
 
@@ -56,22 +75,78 @@ export function AdminDataGrid({
       });
     });
 
-    return cloneElement(row as ReactElement<HTMLAttributes<HTMLTableRowElement>>, {
+    const rowId = row.props["data-row-id"];
+    const isInteractive = onRowActivate != null && typeof rowId === "string";
+    const originalKeyDown = row.props.onKeyDown;
+    const handleKeyDown = isInteractive
+      ? (event: KeyboardEvent<HTMLTableRowElement>) => {
+          originalKeyDown?.(event);
+          if (
+            !event.defaultPrevented &&
+            event.target === event.currentTarget &&
+            (event.key === "Enter" || event.key === " ")
+          ) {
+            event.preventDefault();
+            onRowActivate(rowId);
+          }
+        }
+      : originalKeyDown;
+
+    return cloneElement(row as ReactElement<TableRowProps>, {
       className: cn(row.props.className, "admin-table-row"),
       children: decoratedCells,
+      tabIndex: isInteractive ? (row.props.tabIndex ?? 0) : row.props.tabIndex,
+      onKeyDown: handleKeyDown,
     });
   });
 
   return (
     <div className={cn("admin-table-shell", className)}>
-      <table className={cn("admin-table", tableClassName)}>
+      <table
+        className={cn("admin-table", tableClassName)}
+        aria-busy={busy ? "true" : undefined}
+      >
+        {caption ? <caption className="sr-only">{caption}</caption> : null}
         <thead>
           <tr>
-            {columns.map((column) => (
-              <th key={column.key} className={column.className}>
-                {column.label}
+            {columns.map((column) => {
+              const sortDirection = column.sortDirection ?? "none";
+              const SortIcon =
+                sortDirection === "ascending"
+                  ? ArrowUp
+                  : sortDirection === "descending"
+                    ? ArrowDown
+                    : ArrowUpDown;
+              return (
+              <th
+                key={column.key}
+                className={column.className}
+                scope="col"
+                data-column-priority={column.priority ?? "secondary"}
+                aria-sort={column.sortable ? sortDirection : undefined}
+              >
+                {column.sortable && column.onSort ? (
+                  <button
+                    type="button"
+                    className="admin-sort-button"
+                    onClick={column.onSort}
+                    aria-label={`Sort by ${column.label}${
+                      sortDirection === "ascending"
+                        ? ", currently ascending"
+                        : sortDirection === "descending"
+                          ? ", currently descending"
+                          : ""
+                    }`}
+                  >
+                    <span>{column.label}</span>
+                    <SortIcon size={15} aria-hidden="true" />
+                  </button>
+                ) : (
+                  column.label
+                )}
               </th>
-            ))}
+              );
+            })}
           </tr>
         </thead>
         <tbody>{decoratedRows}</tbody>

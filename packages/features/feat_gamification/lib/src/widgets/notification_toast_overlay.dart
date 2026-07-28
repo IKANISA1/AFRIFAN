@@ -47,6 +47,7 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
   String _type = 'system';
   Timer? _dismissTimer;
   bool _isVisible = false;
+  bool _reduceMotion = false;
 
   @override
   void initState() {
@@ -66,6 +67,18 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _reduceMotion = AfriMotion.reduceMotion(context);
+    _animationController.duration = _reduceMotion
+        ? Duration.zero
+        : AfriMotion.emphasized;
+    if (_reduceMotion) {
+      _animationController.value = _isVisible ? 1 : 0;
+    }
   }
 
   @override
@@ -90,12 +103,23 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
       _isVisible = true;
     });
 
-    unawaited(_animationController.forward());
+    if (_reduceMotion) {
+      _animationController.value = 1;
+    } else {
+      unawaited(_animationController.forward());
+    }
 
     _dismissTimer = Timer(autoDismissDuration, _dismiss);
   }
 
   void _dismiss() {
+    if (_reduceMotion) {
+      _animationController.value = 0;
+      if (mounted) {
+        setState(() => _isVisible = false);
+      }
+      return;
+    }
     unawaited(
       _animationController.reverse().then((_) {
         if (mounted) {

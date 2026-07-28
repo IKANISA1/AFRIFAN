@@ -20,6 +20,7 @@ type GameAction =
   | "submit_answer"
   | "create_session"
   | "pair_tv_device"
+  | "revoke_tv_device"
   | "review_question_draft"
   | "list_question_drafts"
   | "publish_question_pack"
@@ -371,6 +372,20 @@ export function createGameSessionActionHandler(
             pattern: /^[a-z0-9_-]+$/i,
           }),
           p_session_id: optionalUuid(body.session_id, "session_id"),
+        });
+        return jsonOk({ success: true, data: result });
+      }
+
+      if (action === "revoke_tv_device") {
+        const clubId = requireClubId(body.club_id);
+        await deps.requireClubAdminCaller(request, clubId);
+        const adminClient = deps.createAdminClient();
+        const result = await callGameRpc<unknown>(adminClient, "admin_revoke_tv_device", {
+          p_club_id: clubId,
+          p_device_id: requireUuid(body.tv_device_id, "tv_device_id"),
+          p_reason: body.reason == null
+            ? null
+            : requireText(body.reason, "reason", { maxLength: 240 }),
         });
         return jsonOk({ success: true, data: result });
       }

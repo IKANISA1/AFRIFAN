@@ -5,6 +5,7 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
+import 'auth_action_failure.dart';
 import 'auth_providers.dart';
 import 'auth_repository.dart';
 import 'auth_state.dart';
@@ -185,16 +186,40 @@ class AuthNotifier extends Notifier<AuthState> {
     required String phone,
     supabase.OtpChannel channel = supabase.OtpChannel.whatsapp,
   }) async {
+    final failure = await requestPhoneSignInOtpResult(
+      phone: phone,
+      channel: channel,
+    );
+    return failure?.message;
+  }
+
+  /// Send a one-time code with a stable failure category for stateful UI.
+  Future<AuthActionFailure?> requestPhoneSignInOtpResult({
+    required String phone,
+    supabase.OtpChannel channel = supabase.OtpChannel.whatsapp,
+  }) async {
     try {
       await _repository.requestPhoneSignInOtp(phone: phone, channel: channel);
       return null;
     } catch (e) {
-      return _describeError(e, 'Could not send the verification code.');
+      return AuthActionFailure.fromRequestError(e);
     }
   }
 
   /// Confirm a supporter phone sign-in code and complete session hydration.
   Future<String?> verifyPhoneSignInOtp({
+    required String phone,
+    required String token,
+  }) async {
+    final failure = await verifyPhoneSignInOtpResult(
+      phone: phone,
+      token: token,
+    );
+    return failure?.message;
+  }
+
+  /// Confirm a phone code with a stable failure category for stateful UI.
+  Future<AuthActionFailure?> verifyPhoneSignInOtpResult({
     required String phone,
     required String token,
   }) async {
@@ -213,7 +238,7 @@ class AuthNotifier extends Notifier<AuthState> {
       return null;
     } catch (e) {
       state = _recoverState(previous);
-      return _describeError(e, 'Could not verify the code.');
+      return AuthActionFailure.fromVerificationError(e);
     }
   }
 
@@ -284,6 +309,29 @@ class AuthNotifier extends Notifier<AuthState> {
         workspace: current.workspace,
       );
       return _describeError(e, 'Profile update failed.');
+    }
+  }
+
+  /// Refresh the current profile without discarding an authenticated session.
+  Future<String?> refreshProfile() async {
+    final current = state;
+    if (current is! AuthAuthenticated) {
+      return 'You must be signed in to refresh your profile.';
+    }
+
+    try {
+      final refreshed = await _repository.restoreCurrentUser();
+      if (refreshed == null || refreshed.id != current.profile.id) {
+        return 'The latest profile could not be loaded.';
+      }
+      state = AuthAuthenticated(
+        profile: refreshed,
+        workspace: current.workspace,
+      );
+      return null;
+    } catch (error) {
+      state = current;
+      return _describeError(error, 'The latest profile could not be loaded.');
     }
   }
 

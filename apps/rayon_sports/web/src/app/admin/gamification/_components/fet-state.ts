@@ -10,6 +10,7 @@ export const scopeColors: Record<AdminFanEngagementTemplateScope, string> = {
 
 export type FetForm = {
   id: string;
+  expectedUpdatedAt: string;
   code: string;
   templateScope: AdminFanEngagementTemplateScope;
   category: string;
@@ -26,6 +27,7 @@ export type FetForm = {
 
 export const emptyFetForm: FetForm = {
   id: "",
+  expectedUpdatedAt: "",
   code: "",
   templateScope: "generic",
   category: "",
@@ -43,6 +45,7 @@ export const emptyFetForm: FetForm = {
 export function tokenToForm(token: AdminFanEngagementToken): FetForm {
   return {
     id: token.id,
+    expectedUpdatedAt: token.updatedAt,
     code: token.code,
     templateScope: token.templateScope,
     category: token.category,

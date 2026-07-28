@@ -1,8 +1,13 @@
-import { Power, Trash2 } from "lucide-react";
+"use client";
+
+import { Power, Search, Trash2 } from "lucide-react";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { Skeleton } from "@/components/skeleton";
 import { cn } from "@/lib/utils";
 import type { AdminFanEngagementToken } from "@/lib/types";
 import { scopeColors } from "./fet-state";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 interface FetListProps {
   tokens: AdminFanEngagementToken[];
@@ -19,11 +24,32 @@ export function FetList({
   onDelete,
   onToggleActive,
 }: FetListProps) {
+  const tokenCollection = useAdminCollection({
+    records: tokens,
+    getId: (token) => token.id,
+    getSearchValues: (token) => [token.code, token.itemName, token.description, token.templateScope, token.category, token.triggerCondition, token.activationTiming, token.isActive ? "active" : "inactive"],
+    getSortValue: (token, key: "name" | "code" | "scope" | "category" | "value" | "status") => {
+      switch (key) {
+        case "name": return token.itemName;
+        case "code": return token.code;
+        case "scope": return token.templateScope;
+        case "category": return token.category;
+        case "value": return token.fetValue;
+        case "status": return token.isActive;
+      }
+    },
+    initialSortKey: "name" as const,
+    pageSize: 20,
+  });
+
   return (
     <section className="glass-panel rounded-[32px] p-6">
       <p className="font-display text-3xl font-bold uppercase leading-none">
         FET catalog
       </p>
+      <AdminFilterBar className="mt-5" actions={<div className="flex flex-wrap gap-2">{(["name", "code", "scope", "category", "value", "status"] as const).map((key) => <button key={key} type="button" data-active={tokenCollection.sortKey === key} onClick={() => tokenCollection.toggleSort(key)} className="dashboard-chip">Sort {key}</button>)}</div>}>
+        <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search FET catalogue</span><input type="search" value={tokenCollection.query} onChange={(event) => tokenCollection.setQuery(event.target.value)} placeholder="Search item, code, scope, category, or trigger" /></label>
+      </AdminFilterBar>
       <div className="mt-5 space-y-3">
         {loading
           ? Array.from({ length: 4 }).map((_, index) => (
@@ -37,13 +63,13 @@ export function FetList({
               </div>
             ))
           : null}
-        {!loading && tokens.length === 0 ? (
+        {!loading && tokenCollection.pageResult.items.length === 0 ? (
           <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-            No FET items configured yet.
+            {tokenCollection.query ? "No FET items match the current search." : "No FET items configured yet."}
           </p>
         ) : null}
         {!loading &&
-          tokens.map((token) => (
+          tokenCollection.pageResult.items.map((token) => (
             <article
               key={token.id}
               className={cn(
@@ -159,6 +185,7 @@ export function FetList({
             </article>
           ))}
       </div>
+      <AdminPagination page={tokenCollection.pageResult} onPageChange={tokenCollection.setPage} label="FET catalogue" />
     </section>
   );
 }

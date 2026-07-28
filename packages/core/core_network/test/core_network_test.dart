@@ -53,6 +53,19 @@ void main() {
     });
   });
 
+  group('ClubScopeResolver tenant selection', () {
+    test('uses the first valid positive club id candidate', () {
+      expect(
+        ClubScopeResolver.firstValidClubId([null, '', 'invalid', '24', '99']),
+        24,
+      );
+    });
+
+    test('rejects zero and negative club scopes', () {
+      expect(ClubScopeResolver.firstValidClubId(['0', '-1', null]), isNull);
+    });
+  });
+
   group('SupabaseClientFactory', () {
     test('isInitialized is false before init', () {
       expect(SupabaseClientFactory.isInitialized, isFalse);

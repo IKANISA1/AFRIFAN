@@ -9,8 +9,6 @@ import { cn } from "@/lib/utils";
 import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
-import { ui } from "@/ui-kit";
-
 import type { ReactNode } from "react";
 
 import type { PlatformFeature, SiteNavigationItem } from "@/lib/feature-config";
@@ -25,7 +23,7 @@ interface GlobalNavProps {
 
 export function GlobalNav({
   club,
-  copy,
+  copy: _copy,
   features = [],
   navigationItems = [],
   ribbon,

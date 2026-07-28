@@ -132,208 +132,201 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              // ── Header ──
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    SpacingTokens.spacing4,
-                    SpacingTokens.spacing4,
-                    SpacingTokens.spacing6,
-                    SpacingTokens.spacing4,
-                  ),
-                  child: Row(
-                    children: [
-                      AfriIconButton(
-                        icon: AfriIcons.back,
-                        onTap: () => context.pop(),
-                        tooltip: 'Back',
-                      ),
-                      const SizedBox(width: SpacingTokens.spacing2),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'SETTINGS',
-                            style:
-                                TypographyTokens.metricLabel(
-                                  ColorTokens.onSurfaceVariant,
-                                ).copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 1.6,
-                                ),
-                          ),
-                          Text(
-                            'PRIVACY',
-                            style: TypographyTokens.headlineSmall().copyWith(
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 1.6,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: false,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // ── Header ──
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SpacingTokens.spacing4,
+                  SpacingTokens.spacing4,
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing4,
                 ),
-              ),
-
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
-                ),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    // ══════════ Core Guarantees ══════════
-                    Text(
-                      'CORE GUARANTEES',
-                      style:
-                          TypographyTokens.metricLabel(
-                            ColorTokens.onSurfaceVariant,
-                          ).copyWith(
+                child: Row(
+                  children: [
+                    AfriIconButton(
+                      icon: AfriIcons.back,
+                      onTap: () => context.pop(),
+                      tooltip: 'Back',
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'SETTINGS',
+                          style:
+                              TypographyTokens.metricLabel(
+                                ColorTokens.onSurfaceVariant,
+                              ).copyWith(
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 1.6,
+                              ),
+                        ),
+                        Text(
+                          'PRIVACY',
+                          style: TypographyTokens.headlineSmall().copyWith(
                             fontWeight: FontWeight.w700,
                             letterSpacing: 1.6,
                           ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    AfriSurfaceCard(
-                          child: Column(
-                            children: [
-                              const _GuaranteeRow(
-                                icon: AfriIcons.phone,
-                                iconColor: ExternalBrandColors.whatsAppGreen,
-                                title: 'Phone Number Hidden',
-                                description:
-                                    'Your WhatsApp/Phone number is encrypted and stored '
-                                    'server-side only. It is never exposed to other users, '
-                                    'club admins, or in public leaderboards.',
-                              ),
-                              const AfriDivider(),
-                              _GuaranteeRow(
-                                icon: AfriIcons.privacy,
-                                iconColor: ColorTokens.clubAccent,
-                                title: 'Anonymous Contributions',
-                                description:
-                                    'MoMo contributions to fan clubs are logged using your '
-                                    'Fan ID and amount bracket only. Exact amounts and '
-                                    'phone numbers are not recorded.',
-                              ),
-                            ],
-                          ),
-                        )
-                        .animate()
-                        .fadeIn(duration: 300.ms)
-                        .slideY(begin: 0.03, end: 0, duration: 300.ms),
-
-                    const SizedBox(height: SpacingTokens.spacing6),
-
-                    // ══════════ Visibility Controls ══════════
-                    Text(
-                      'VISIBILITY CONTROLS',
-                      style:
-                          TypographyTokens.metricLabel(
-                            ColorTokens.onSurfaceVariant,
-                          ).copyWith(
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.6,
-                          ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    AfriSurfaceCard(
-                          child: Column(
-                            children: [
-                              _VisibilityToggle(
-                                icon: _showRealName
-                                    ? AfriIcons.visibility
-                                    : AfriIcons.visibilityOff,
-                                title: 'Show Real Name',
-                                description:
-                                    'If OFF, your Fan ID is displayed on leaderboards '
-                                    'instead of your real name.',
-                                value: _showRealName,
-                                onChanged: _setShowRealName,
-                              ),
-                              const AfriDivider(),
-                              _VisibilityToggle(
-                                icon: AfriIcons.search,
-                                title: 'Findable by Phone',
-                                description:
-                                    'Allows friends to find you by phone number. '
-                                    'Your number stays private.',
-                                value: _findableByPhone,
-                                onChanged: _setFindableByPhone,
-                              ),
-                            ],
-                          ),
-                        )
-                        .animate(delay: 100.ms)
-                        .fadeIn(duration: 300.ms)
-                        .slideY(begin: 0.03, end: 0, duration: 300.ms),
-
-                    const SizedBox(height: SpacingTokens.spacing6),
-
-                    // ══════════ Privacy Badge ══════════
-                    Container(
-                      padding: const EdgeInsets.all(SpacingTokens.spacing5),
-                      decoration: BoxDecoration(
-                        color: ColorTokens.surfaceContainerLow,
-                        borderRadius: ShapeTokens.cardRadius,
-                        border: BorderTokens.ghost(),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: SpacingTokens.spacing12,
-                            height: SpacingTokens.spacing12,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: ColorTokens.success.withValues(
-                                alpha: 0.12,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: const Icon(
-                              AfriIcons.lock,
-                              color: ColorTokens.success,
-                              size: SpacingTokens.spacing6,
-                            ),
-                          ),
-                          const SizedBox(width: SpacingTokens.spacing3),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Privacy First',
-                                  style: TypographyTokens.titleSmall(),
-                                ),
-                                const SizedBox(
-                                  height: SpacingTokens.spacing1 / 2,
-                                ),
-                                Text(
-                                  '${RuntimeBranding.displayAppName} does not sell, share, or expose '
-                                  'your personal data. All identifiers '
-                                  'on the platform are anonymised.',
-                                  style: TypographyTokens.bodySmall(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ).animate(delay: 200.ms).fadeIn(duration: 300.ms),
-
-                    const SizedBox(height: SpacingTokens.spacing20),
-                  ]),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing6,
+              ),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // ══════════ Core Guarantees ══════════
+                  Text(
+                    'CORE GUARANTEES',
+                    style: TypographyTokens.metricLabel(
+                      ColorTokens.onSurfaceVariant,
+                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  AfriSurfaceCard(
+                        child: Column(
+                          children: [
+                            const _GuaranteeRow(
+                              icon: AfriIcons.phone,
+                              iconColor: ExternalBrandColors.whatsAppGreen,
+                              title: 'Phone Number Hidden',
+                              description:
+                                  'Your WhatsApp/Phone number is encrypted and stored '
+                                  'server-side only. It is never exposed to other users, '
+                                  'club admins, or in public leaderboards.',
+                            ),
+                            const AfriDivider(),
+                            _GuaranteeRow(
+                              icon: AfriIcons.privacy,
+                              iconColor: ColorTokens.clubAccent,
+                              title: 'Anonymous Contributions',
+                              description:
+                                  'MoMo contributions to fan clubs are logged using your '
+                                  'Fan ID and amount bracket only. Exact amounts and '
+                                  'phone numbers are not recorded.',
+                            ),
+                          ],
+                        ),
+                      )
+                      .afriAnimate(context)
+                      .fadeIn(duration: 300.ms)
+                      .slideY(begin: 0.03, end: 0, duration: 300.ms),
+
+                  const SizedBox(height: SpacingTokens.spacing6),
+
+                  // ══════════ Visibility Controls ══════════
+                  Text(
+                    'VISIBILITY CONTROLS',
+                    style: TypographyTokens.metricLabel(
+                      ColorTokens.onSurfaceVariant,
+                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  AfriSurfaceCard(
+                        child: Column(
+                          children: [
+                            _VisibilityToggle(
+                              icon: _showRealName
+                                  ? AfriIcons.visibility
+                                  : AfriIcons.visibilityOff,
+                              title: 'Show Real Name',
+                              description:
+                                  'If OFF, your Fan ID is displayed on leaderboards '
+                                  'instead of your real name.',
+                              value: _showRealName,
+                              onChanged: _setShowRealName,
+                            ),
+                            const AfriDivider(),
+                            _VisibilityToggle(
+                              icon: AfriIcons.search,
+                              title: 'Findable by Phone',
+                              description:
+                                  'Allows friends to find you by phone number. '
+                                  'Your number stays private.',
+                              value: _findableByPhone,
+                              onChanged: _setFindableByPhone,
+                            ),
+                          ],
+                        ),
+                      )
+                      .afriAnimate(context, delay: 100.ms)
+                      .fadeIn(duration: 300.ms)
+                      .slideY(begin: 0.03, end: 0, duration: 300.ms),
+
+                  const SizedBox(height: SpacingTokens.spacing6),
+
+                  // ══════════ Privacy Badge ══════════
+                  Container(
+                    padding: const EdgeInsets.all(SpacingTokens.spacing5),
+                    decoration: BoxDecoration(
+                      color: ColorTokens.surfaceContainerLow,
+                      borderRadius: ShapeTokens.cardRadius,
+                      border: BorderTokens.ghost(),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: SpacingTokens.spacing12,
+                          height: SpacingTokens.spacing12,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: ColorTokens.success.withValues(alpha: 0.12),
+                          ),
+                          alignment: Alignment.center,
+                          child: Icon(
+                            AfriIcons.lock,
+                            color: ColorTokens.success,
+                            size: SpacingTokens.spacing6,
+                          ),
+                        ),
+                        const SizedBox(width: SpacingTokens.spacing3),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Privacy First',
+                                style: TypographyTokens.titleSmall(),
+                              ),
+                              const SizedBox(
+                                height: SpacingTokens.spacing1 / 2,
+                              ),
+                              Text(
+                                '${RuntimeBranding.displayAppName} does not sell, share, or expose '
+                                'your personal data. All identifiers '
+                                'on the platform are anonymised.',
+                                style: TypographyTokens.bodySmall(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ).afriAnimate(context, delay: 200.ms).fadeIn(duration: 300.ms),
+
+                  const SizedBox(height: SpacingTokens.spacing20),
+                ]),
+              ),
+            ),
+          ],
         ),
       ),
     );

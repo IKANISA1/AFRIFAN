@@ -91,6 +91,27 @@ void main() {
         subtitle: 'Supporter identity',
         sortOrder: 20,
       ),
+      HomeQuickAction(
+        actionKey: 'fan_zone',
+        title: 'Fan Zone',
+        route: '/fan-clubs',
+        iconKey: 'members',
+        sortOrder: 30,
+      ),
+      HomeQuickAction(
+        actionKey: 'shop',
+        title: 'Shop',
+        route: '/shop',
+        iconKey: 'shop',
+        sortOrder: 40,
+      ),
+      HomeQuickAction(
+        actionKey: 'matchday',
+        title: 'Matchday',
+        route: '/fanzone/fixtures',
+        iconKey: 'league',
+        sortOrder: 0,
+      ),
     ];
 
     Widget buildTestApp() {
@@ -148,13 +169,115 @@ void main() {
       );
     }
 
-    testWidgets('renders all quick action labels', (tester) async {
+    testWidgets('caps the primary shortcut group at four actions', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
 
       expect(find.text('Tickets'), findsOneWidget);
       expect(find.text('Membership'), findsOneWidget);
+      expect(find.text('Fan Zone'), findsOneWidget);
+      expect(find.text('Shop'), findsOneWidget);
+      expect(find.text('Matchday'), findsNothing);
+      expect(find.byType(AfriQuickAction), findsNWidgets(4));
+      expect(
+        find.byKey(const ValueKey<String>('home-primary-actions-4col')),
+        findsOneWidget,
+      );
     });
+
+    testWidgets('reveals secondary actions in a separate lower layer', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildTestApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.byKey(const ValueKey<String>('home-secondary-actions-toggle')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('More shortcuts'), findsOneWidget);
+      expect(find.text('Matchday'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey<String>('home-secondary-actions-2col')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Less'));
+      await tester.pumpAndSettle();
+      expect(find.text('Matchday'), findsNothing);
+    });
+
+    testWidgets('uses two primary columns at 200 percent text', (tester) async {
+      tester.view.physicalSize = const Size(320, 720);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+      await tester.pumpWidget(buildTestApp());
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(
+        find.byKey(const ValueKey<String>('home-primary-actions-2col')),
+        findsOneWidget,
+      );
+      expect(find.byType(AfriQuickAction), findsNWidgets(4));
+
+      await tester.tap(
+        find.byKey(const ValueKey<String>('home-secondary-actions-toggle')),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(
+        find.byKey(const ValueKey<String>('home-secondary-actions-1col')),
+        findsOneWidget,
+      );
+    });
+  });
+
+  test('prioritizes core fan jobs ahead of configured secondary actions', () {
+    final prioritized = prioritizeHomeQuickActions(const <HomeQuickAction>[
+      HomeQuickAction(
+        actionKey: 'rewards',
+        title: 'Rewards',
+        route: '/fanzone/rewards',
+        iconKey: 'rewards',
+        sortOrder: 1,
+      ),
+      HomeQuickAction(
+        actionKey: 'shop',
+        title: 'Shop',
+        route: '/shop',
+        iconKey: 'shop',
+        sortOrder: 99,
+      ),
+      HomeQuickAction(
+        actionKey: 'tickets',
+        title: 'Tickets',
+        route: '/tickets',
+        iconKey: 'tickets',
+        sortOrder: 99,
+      ),
+      HomeQuickAction(
+        actionKey: 'membership',
+        title: 'Membership',
+        route: '/membership',
+        iconKey: 'membership',
+        sortOrder: 99,
+      ),
+    ]);
+
+    expect(prioritized.map((action) => action.actionKey), <String>[
+      'tickets',
+      'membership',
+      'shop',
+      'rewards',
+    ]);
   });
 }
 

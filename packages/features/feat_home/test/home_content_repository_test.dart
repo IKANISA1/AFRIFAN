@@ -26,26 +26,18 @@ void main() {
       expect(snapshot.showFixturePlaceholder, isTrue);
       expect(
         snapshot.quickActions.map((action) => action.title),
-        containsAll(<String>[
+        orderedEquals(<String>[
           'Tickets',
           'Join Gikundiro',
-          'Fanclubs',
+          'Fan Zone',
           'Shop',
-          'Matchday',
-          'Support',
         ]),
       );
       expect(
         snapshot.quickActions
-            .firstWhere((action) => action.actionKey == 'fanclubs')
+            .firstWhere((action) => action.actionKey == 'fan_zone')
             .route,
         '/fanzone?section=supporters',
-      );
-      expect(
-        snapshot.quickActions
-            .firstWhere((action) => action.actionKey == 'matchday')
-            .route,
-        '/fanzone?section=league',
       );
     });
   });

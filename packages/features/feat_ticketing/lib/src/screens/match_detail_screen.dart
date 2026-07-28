@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -33,10 +34,42 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
   PartnerPaymentRoute? _paymentRoute;
   String? _paymentRouteMessage;
   String? _paymentRouteLookupKey;
+  late bool _wasOnline;
   CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
         currencyCode: context.afriCurrencyCode,
         currencySymbol: context.afriCurrencySymbol,
       );
+
+  @override
+  void initState() {
+    super.initState();
+    _wasOnline = ConnectivityService.isOnline;
+    ConnectivityService.onlineNotifier.addListener(_handleConnectivityChange);
+  }
+
+  @override
+  void dispose() {
+    ConnectivityService.onlineNotifier.removeListener(
+      _handleConnectivityChange,
+    );
+    super.dispose();
+  }
+
+  void _handleConnectivityChange() {
+    final isOnline = ConnectivityService.isOnline;
+    final restored = !_wasOnline && isOnline;
+    _wasOnline = isOnline;
+    if (!mounted) return;
+
+    if (!isOnline) {
+      setState(() {
+        _paymentRouteMessage =
+            'Connect to verify current ticket payment availability.';
+      });
+    } else if (restored) {
+      unawaited(_refreshPaymentRouteState(ref.read(currentUserProvider)));
+    }
+  }
 
   void _ensurePaymentRouteState(UserProfile? user) {
     final lookupKey = user == null ? 'guest' : '${user.id}:${user.clubId}';
@@ -60,6 +93,14 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       });
       return;
     }
+    if (!ConnectivityService.isOnline) {
+      if (!mounted || lookupKey != _paymentRouteLookupKey) return;
+      setState(() {
+        _paymentRouteMessage =
+            'Connect to verify current ticket payment availability.';
+      });
+      return;
+    }
 
     final route = await ref
         .read(clubRepositoryProvider)
@@ -75,6 +116,15 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
   }
 
   Future<void> _handlePurchase(ClubMatch match) async {
+    if (_submitting) return;
+    if (!ConnectivityService.isOnline) {
+      AfriToast.error(
+        context,
+        'Connect before purchasing. Your seat and quantity are still selected.',
+      );
+      return;
+    }
+
     final user = ref.read(currentUserProvider);
     if (user == null) {
       AfriToast.info(context, 'Sign in first to buy tickets.');
@@ -151,6 +201,12 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
             ? 'Ticket request submitted — pending payment verification.'
             : '${tickets.length} ticket requests submitted — pending verification.',
       );
+      unawaited(
+        FirebaseAnalyticsService.logTicketCompletion(
+          ticketType: _selectedSeatType.value,
+          paymentChannel: 'momo',
+        ),
+      );
 
       if (tickets.length == 1 &&
           tickets.first.status == TicketStatus.active &&
@@ -175,7 +231,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     _ensurePaymentRouteState(user);
     final matchAsync = ref.watch(ticketMatchProvider(widget.matchId));
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -186,6 +242,12 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           onTap: () {
             if (_step == _CheckoutWizardStep.checkout) {
+              unawaited(
+                FirebaseAnalyticsService.logTaskAbandonment(
+                  task: 'ticket_checkout',
+                  stage: 'checkout_review',
+                ),
+              );
               setState(() => _step = _CheckoutWizardStep.configure);
             } else {
               context.pop();
@@ -194,7 +256,8 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         ),
         title: Text('MATCH DAY', style: TypographyTokens.headlineLarge()),
       ),
-      body: matchAsync.when(
+      scrollable: false,
+      child: matchAsync.when(
         loading: () => const Padding(
           padding: EdgeInsets.all(SpacingTokens.spacing4),
           child: AfriSkeletonList(),

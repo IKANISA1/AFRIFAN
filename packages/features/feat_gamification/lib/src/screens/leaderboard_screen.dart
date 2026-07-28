@@ -66,7 +66,7 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -77,7 +77,9 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
           tooltip: 'Back',
         ),
       ),
-      body: SafeArea(
+      scrollable: false,
+      constrainContent: false,
+      child: SafeArea(
         child: Column(
           children: [
             Padding(
@@ -261,7 +263,7 @@ class FetLeaderboardContent extends StatelessWidget {
                   Expanded(child: FetPodiumCard(entry: podium[2])),
                 ],
               )
-              .animate()
+              .afriAnimate(context)
               .fadeIn(duration: 400.ms)
               .slideY(begin: 0.04, end: 0, duration: 400.ms),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -279,7 +281,7 @@ class FetLeaderboardContent extends StatelessWidget {
                       snapshot.rows[i].userId == currentUserId,
                 ),
               )
-              .animate(delay: (i * 40).ms)
+              .afriAnimate(context, delay: (i * 40).ms)
               .fadeIn(duration: 200.ms)
               .slideY(begin: 0.03, end: 0, duration: 200.ms),
       ],
@@ -329,7 +331,7 @@ class SupporterLeaderboardContent extends StatelessWidget {
                   Expanded(child: SupporterPodiumCard(entry: podium[2])),
                 ],
               )
-              .animate()
+              .afriAnimate(context)
               .fadeIn(duration: 400.ms)
               .slideY(begin: 0.04, end: 0, duration: 400.ms),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -344,7 +346,7 @@ class SupporterLeaderboardContent extends StatelessWidget {
                   isMe: snapshot.rows[i].isCurrentUser,
                 ),
               )
-              .animate(delay: (i * 40).ms)
+              .afriAnimate(context, delay: (i * 40).ms)
               .fadeIn(duration: 200.ms)
               .slideY(begin: 0.03, end: 0, duration: 200.ms),
       ],

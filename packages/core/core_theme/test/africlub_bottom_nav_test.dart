@@ -72,4 +72,32 @@ void main() {
     expect(find.bySemanticsLabel('SETTINGS'), findsOneWidget);
     semantics.dispose();
   });
+
+  testWidgets('reports a content inset that clears the floating bar', (
+    tester,
+  ) async {
+    double? inset;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MediaQuery(
+          data: const MediaQueryData(padding: EdgeInsets.only(bottom: 24)),
+          child: Builder(
+            builder: (context) {
+              inset = AfriClubBottomNav.contentBottomInset(context);
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      inset,
+      24 +
+          AfriClubBottomNav.bottomMargin +
+          AfriClubBottomNav.regularHeight +
+          AfriClubBottomNav.contentClearance,
+    );
+  });
 }

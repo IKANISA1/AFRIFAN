@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 interface CountUpProps {
   value: number;
@@ -22,17 +23,14 @@ export function CountUp({
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState("0");
   const [started, setStarted] = useState(false);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const frame = window.requestAnimationFrame(() => {
-        setDisplay(formatter ? formatter(value) : String(value));
-        setStarted(true);
-      });
-      return () => window.cancelAnimationFrame(frame);
+    if (reducedMotion) {
+      return;
     }
 
     const observer = new IntersectionObserver(
@@ -47,10 +45,10 @@ export function CountUp({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [value, formatter]);
+  }, [value, formatter, reducedMotion]);
 
   useEffect(() => {
-    if (!started) return;
+    if (!started || reducedMotion) return;
 
     const start = performance.now();
     let frame: number;
@@ -70,17 +68,20 @@ export function CountUp({
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [started, value, duration, formatter]);
+  }, [started, value, duration, formatter, reducedMotion]);
 
   return (
     <span
       ref={ref}
       className={className}
       style={{
-        animation: started ? "count-in 500ms var(--ease-out-expo) both" : undefined,
+        animation:
+          started && !reducedMotion
+            ? "count-in 500ms var(--ease-out-expo) both"
+            : undefined,
       }}
     >
-      {display}
+      {reducedMotion ? (formatter ? formatter(value) : String(value)) : display}
     </span>
   );
 }

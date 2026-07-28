@@ -4,7 +4,7 @@ import { getClubProfile, getContributionGroups, getFanClubs } from "@/lib/data/p
 import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
-import { formatCompactNumber, formatCurrency } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 
 export async function generateMetadata() {
   const club = await getClubProfile();

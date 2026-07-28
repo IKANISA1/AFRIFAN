@@ -1,9 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
+import 'afri_press_feedback.dart';
 
 /// Unified section wrapper — title + optional trailing action + child.
 ///
@@ -47,9 +50,9 @@ class AfriSection extends StatelessWidget {
     if (trailingWidget == null &&
         trailingLabel != null &&
         onTrailingTap != null) {
-      trailingWidget = GestureDetector(
+      trailingWidget = AfriPressFeedback(
         onTap: onTrailingTap,
-        behavior: HitTestBehavior.opaque,
+        semanticsLabel: trailingLabel,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: SpacingTokens.spacing1,
@@ -108,9 +111,9 @@ class AfriSectionCard extends StatelessWidget {
     if (trailingWidget == null &&
         trailingLabel != null &&
         onTrailingTap != null) {
-      trailingWidget = GestureDetector(
+      trailingWidget = AfriPressFeedback(
         onTap: onTrailingTap,
-        behavior: HitTestBehavior.opaque,
+        semanticsLabel: trailingLabel,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: SpacingTokens.spacing1,
@@ -122,7 +125,7 @@ class AfriSectionCard extends StatelessWidget {
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: ShapeTokens.inputRadius,
       child: BackdropFilter(
         filter: ImageFilter.blur(
           sigmaX: ColorTokens.glassBlurSigma / 2,
@@ -132,8 +135,8 @@ class AfriSectionCard extends StatelessWidget {
           padding: const EdgeInsets.all(SpacingTokens.cardPadding),
           decoration: BoxDecoration(
             color: ColorTokens.surfaceContainerHigh.withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: ColorTokens.ghostBorder, width: 1.0),
+            borderRadius: ShapeTokens.inputRadius,
+            border: BorderTokens.ghost(width: BorderTokens.standard),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

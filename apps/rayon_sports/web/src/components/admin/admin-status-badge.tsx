@@ -17,6 +17,15 @@ const toneClassName: Record<AdminStatusTone, string> = {
   danger: "admin-status-danger",
 };
 
+const toneLabel: Record<AdminStatusTone, string> = {
+  neutral: "Status",
+  accent: "Highlighted",
+  info: "Information",
+  success: "Success",
+  warning: "Warning",
+  danger: "Danger",
+};
+
 interface AdminStatusBadgeProps {
   label: string;
   tone?: AdminStatusTone;
@@ -31,7 +40,11 @@ export function AdminStatusBadge({
   className,
 }: AdminStatusBadgeProps) {
   return (
-    <span className={cn("admin-status-badge", toneClassName[tone], className)}>
+    <span
+      aria-label={`${toneLabel[tone]} status: ${label}`}
+      className={cn("admin-status-badge", toneClassName[tone], className)}
+      data-status-tone={tone}
+    >
       {pulse ? <span className="admin-status-dot" aria-hidden="true" /> : null}
       {label}
     </span>

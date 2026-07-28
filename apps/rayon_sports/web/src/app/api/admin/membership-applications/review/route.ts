@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
         unknown
       >;
       const applicationId = String(body.applicationId ?? "").trim();
+      const expectedUpdatedAt = String(body.expectedUpdatedAt ?? "").trim();
       const decision =
         body.decision === "approved" || body.decision === "rejected"
           ? body.decision
@@ -22,14 +23,17 @@ export async function POST(request: NextRequest) {
           ? body.notes.trim()
           : undefined;
 
-      if (!applicationId || decision == null) {
-        throw new Error("A valid applicationId and decision are required.");
+      if (!applicationId || !expectedUpdatedAt || decision == null) {
+        throw new Error(
+          "A valid applicationId, expectedUpdatedAt, and decision are required.",
+        );
       }
 
       await reviewMembershipApplication(
         client,
         access,
         applicationId,
+        expectedUpdatedAt,
         decision,
         notes,
       );

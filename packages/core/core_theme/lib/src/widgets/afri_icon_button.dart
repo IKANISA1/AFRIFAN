@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../extensions.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/motion_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import 'afri_loading_indicator.dart';
 import 'afri_press_feedback.dart';
 
 /// Shared compact icon button for app bars, cards, and toolbars.
@@ -12,6 +16,7 @@ class AfriIconButton extends StatelessWidget {
   final VoidCallback? onTap;
   final String? tooltip;
   final bool filled;
+  final bool isLoading;
 
   const AfriIconButton({
     super.key,
@@ -19,17 +24,18 @@ class AfriIconButton extends StatelessWidget {
     this.onTap,
     this.tooltip,
     this.filled = true,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return AfriPressFeedback(
-      onTap: onTap,
+      onTap: isLoading ? null : onTap,
       tooltip: tooltip,
       builder: (context, state) => AnimatedContainer(
-        duration: const Duration(milliseconds: 140),
-        width: 40,
-        height: 40,
+        duration: AfriMotion.surfaceResponse,
+        width: SizeTokens.touchTargetMin,
+        height: SizeTokens.touchTargetMin,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: filled ? ColorTokens.surfaceContainerLow : Colors.transparent,
@@ -38,18 +44,21 @@ class AfriIconButton extends StatelessWidget {
               ? BorderTokens.focusAll(
                   color: ColorTokens.primaryContainer,
                   opacity: 0.9,
+                  width: context.afriDesignTokens.focusRingWidth,
                 )
               : BorderTokens.ghost(width: BorderTokens.standard),
         ),
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing2),
-          child: Icon(
-            icon,
-            size: 20,
-            color: onTap == null
-                ? ColorTokens.onSurfaceVariant
-                : ColorTokens.onSurface,
-          ),
+          child: isLoading
+              ? const AfriLoadingIndicator(size: SizeTokens.iconMd)
+              : Icon(
+                  icon,
+                  size: SizeTokens.iconMd,
+                  color: onTap == null
+                      ? ColorTokens.onSurfaceVariant
+                      : ColorTokens.onSurface,
+                ),
         ),
       ),
     );

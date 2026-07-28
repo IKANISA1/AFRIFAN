@@ -185,4 +185,84 @@ begin
   end if;
 end $$;
 
+do $$
+begin
+  if to_regprocedure('public.exchange_tv_pairing_code(text,bigint)') is null then
+    raise exception 'missing one-time TV pairing exchange';
+  end if;
+  if to_regprocedure('public.get_tv_display_state_with_credential(text)') is null then
+    raise exception 'missing credential-scoped TV display RPC';
+  end if;
+  if to_regprocedure('africlub_game.admin_revoke_tv_device(bigint,uuid,text)') is null then
+    raise exception 'missing audited TV credential revocation RPC';
+  end if;
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'africlub_game' and table_name = 'tv_devices'
+      and column_name = 'credential_token_hash'
+  ) then
+    raise exception 'missing hashed TV device credential storage';
+  end if;
+  if has_function_privilege('anon', 'public.get_tv_display_state(uuid,text,bigint)', 'EXECUTE') then
+    raise exception 'legacy TV state RPC remains executable by anon';
+  end if;
+end $$;
+
+do $$
+declare
+  v_club_id bigint;
+  v_device_id uuid;
+  v_exchange jsonb;
+  v_token text;
+  v_state jsonb;
+begin
+  insert into public.african_football_clubs (club_name, country_name, club_slug)
+  values ('TV Credential Contract Club', 'Rwanda', 'tv-credential-contract-club')
+  returning id into v_club_id;
+
+  insert into africlub_game.tv_devices (
+    club_id, device_label, pairing_code, status, metadata
+  ) values (
+    v_club_id, 'Contract TV', 'SCREEN24', 'paired',
+    jsonb_build_object('venue_name', 'Contract Venue', 'session_code', 'JOIN24')
+  ) returning id into v_device_id;
+
+  if exists (
+    select 1 from africlub_game.tv_devices
+    where id = v_device_id and pairing_code = 'SCREEN24'
+  ) then
+    raise exception 'raw TV pairing code was persisted';
+  end if;
+
+  v_exchange := public.exchange_tv_pairing_code('SCREEN24', v_club_id);
+  v_token := v_exchange ->> 'device_token';
+  if v_exchange ->> 'code' <> 'paired' or length(v_token) <> 64 then
+    raise exception 'TV pairing exchange failed: %', v_exchange;
+  end if;
+  if exists (
+    select 1 from africlub_game.tv_devices
+    where id = v_device_id and credential_token_hash = v_token
+  ) then
+    raise exception 'raw TV credential token was persisted';
+  end if;
+
+  v_exchange := public.exchange_tv_pairing_code('SCREEN24', v_club_id);
+  if v_exchange ->> 'code' <> 'pairing_code_invalid_or_expired' then
+    raise exception 'TV pairing code was reusable: %', v_exchange;
+  end if;
+
+  v_state := public.get_tv_display_state_with_credential(v_token);
+  if v_state ->> 'status' <> 'ready' or v_state ->> 'credential_status' <> 'valid' then
+    raise exception 'credential-scoped TV state failed: %', v_state;
+  end if;
+
+  update africlub_game.tv_devices
+  set status = 'disabled', credential_revoked_at = timezone('utc', now())
+  where id = v_device_id;
+  v_state := public.get_tv_display_state_with_credential(v_token);
+  if v_state ->> 'code' <> 'credential_revoked_or_invalid' then
+    raise exception 'revoked TV credential remained usable: %', v_state;
+  end if;
+end $$;
+
 rollback;

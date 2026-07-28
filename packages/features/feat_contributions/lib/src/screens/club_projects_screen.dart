@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -89,7 +90,7 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -106,7 +107,8 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
@@ -197,11 +199,14 @@ class _ProjectCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing1),
           Text('$memberCount supporters', style: TypographyTokens.bodySmall()),
           const SizedBox(height: SpacingTokens.spacing4),
-          AfriButton(
-            label: 'Contribute',
-            fullWidth: true,
-            onTap: () =>
-                unawaited(showMomoAmountEntrySheet(context, title: title)),
+          ConnectivityBuilder(
+            builder: (context, isOnline) => AfriButton(
+              label: isOnline ? 'Contribute' : 'Connection required',
+              fullWidth: true,
+              onTap: () =>
+                  unawaited(showMomoAmountEntrySheet(context, title: title)),
+              enabled: isOnline,
+            ),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -71,13 +72,13 @@ class AuthGateSheet extends StatelessWidget {
                   ),
                 ),
                 alignment: Alignment.center,
-                child: const Icon(
+                child: Icon(
                   AfriIcons.privacy,
                   size: SpacingTokens.spacing9,
                   color: ColorTokens.warning,
                 ),
               )
-              .animate()
+              .afriAnimate(context)
               .scale(
                 begin: const Offset(0.8, 0.8),
                 end: const Offset(1, 1),
@@ -100,7 +101,7 @@ class AuthGateSheet extends StatelessWidget {
 
           // Message
           Text(
-            'Verify your Fan ID to make picks and earn points.',
+            context.afriL10n.fanIdVerifyPrompt,
             textAlign: TextAlign.center,
             style: TypographyTokens.bodyMedium(),
           ),
@@ -136,7 +137,7 @@ class AuthGateSheet extends StatelessWidget {
                   onVerify?.call();
                 },
               )
-              .animate(delay: 200.ms)
+              .afriAnimate(context, delay: 200.ms)
               .fadeIn(duration: 300.ms)
               .slideY(begin: 0.06, end: 0, duration: 300.ms),
 
@@ -155,7 +156,7 @@ class AuthGateSheet extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing4),
 
           Text(
-            'VERIFICATION IS ANONYMOUS — NO PERSONAL DATA IS SHARED.',
+            context.afriL10n.fanIdPrivacyTrust,
             textAlign: TextAlign.center,
             style: TypographyTokens.labelSmall(
               ColorTokens.onSurfaceVariant,

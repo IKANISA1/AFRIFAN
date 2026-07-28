@@ -10,7 +10,12 @@ import type {
 } from "@/lib/types";
 import { safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
-import { requireAdminClubId, resolveClubFootballPartnerId } from "./helpers";
+import {
+  AdminMutationConflictError,
+  requireAdminClubId,
+  requireExpectedUpdatedAt,
+  resolveClubFootballPartnerId,
+} from "./helpers";
 
 type SupporterRegistryRow = {
   id: unknown;
@@ -36,6 +41,7 @@ type MembershipApplicationRow = {
   review_date: string | null;
   reviewer_id: string | null;
   notes: string | null;
+  updated_at: string | null;
   metadata?:
     | {
         chapter?: string | null;
@@ -220,6 +226,7 @@ export async function getAdminMembershipApplications(
         profile?.phone,
         safeString(user?.phone, metadataPhone || "—"),
       ),
+      updatedAt: safeString(row.updated_at),
     };
   });
 }
@@ -228,77 +235,41 @@ export async function reviewMembershipApplication(
   client: SupabaseClient,
   access: AdminAccess,
   applicationId: string,
+  expectedUpdatedAt: string,
   decision: "approved" | "rejected",
   notes?: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi("membership-applications/review", {
       method: "POST",
-      body: { applicationId, decision, notes },
+      body: { applicationId, expectedUpdatedAt, decision, notes },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "review application");
+  const loadedVersion = requireExpectedUpdatedAt(expectedUpdatedAt);
+  const partnerId = await resolveClubFootballPartnerId(client, clubId);
+  const { error } = await client.rpc(
+    "admin_review_membership_application_if_unchanged",
+    {
+      p_application_id: applicationId,
+      p_expected_updated_at: loadedVersion,
+      p_decision: decision,
+      p_notes: notes ?? null,
+      p_club_id: clubId,
+      p_partner_id: partnerId,
+      p_actor_id: access.userId ?? null,
+    },
+  );
 
-  const { data: app, error: fetchError } = await client
-    .from("membership_applications")
-    .select("*")
-    .eq("id", applicationId)
-    .single();
-
-  if (fetchError) throw new Error(fetchError.message);
-
-  const { error: updateError } = await client
-    .from("membership_applications")
-    .update({
-      status: decision,
-      notes,
-      review_date: new Date().toISOString(),
-      reviewer_id: access.userId ?? null,
-    })
-    .eq("id", applicationId);
-
-  if (updateError) throw new Error(updateError.message);
-
-  const application = app as MembershipApplicationRow;
-
-  if (decision === "approved") {
-    const applicationUserId = safeString(application.user_id, "");
-    if (!applicationUserId) {
-      throw new Error("Membership application is missing a user id.");
+  if (error) {
+    const message = error.message.toLowerCase();
+    if (
+      message.includes("changed after it was loaded") ||
+      message.includes("no longer pending")
+    ) {
+      throw new AdminMutationConflictError(error.message);
     }
-    if (safeString(application.payment_status, "unpaid") !== "paid") {
-      throw new Error("Only paid membership applications can be approved.");
-    }
-    const partnerId = await resolveClubFootballPartnerId(client, clubId);
-    const { data: seededMembership, error: seedError } = await client.rpc(
-      "apply_membership_points",
-      {
-        p_user_id: applicationUserId,
-        p_partner_id: partnerId,
-        p_points: 0,
-        p_chapter: application.metadata?.chapter || "Central",
-      },
-    );
-
-    if (seedError) throw new Error(seedError.message);
-
-    const { data: updatedMembership, error: membershipUpdateError } = await client
-      .from("fan_memberships")
-      .update({
-        tier: application.tier,
-        status: "active",
-        club_id: clubId,
-        chapter: application.metadata?.chapter || "Central",
-      })
-      .eq("user_id", applicationUserId)
-      .eq("partner_id", partnerId)
-      .select("id")
-      .maybeSingle();
-
-    if (membershipUpdateError) throw new Error(membershipUpdateError.message);
-    if (!safeString(updatedMembership?.id) && !safeString(seededMembership?.id)) {
-      throw new Error("Membership approval did not materialize a supporter membership row.");
-    }
+    throw new Error(error.message);
   }
 }

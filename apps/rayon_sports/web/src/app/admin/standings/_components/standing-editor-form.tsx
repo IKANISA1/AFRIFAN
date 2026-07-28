@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { saveAdminStandingRow } from "@/lib/data/admin/standings";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import type { AdminAccess } from "@/lib/types";
 import { emptyForm, type StandingForm } from "./standing-state";
 
@@ -11,6 +12,7 @@ interface StandingEditorFormProps {
   client: SupabaseClient | null;
   access: AdminAccess;
   onSaved: () => Promise<void>;
+  onConflict: () => Promise<void>;
 }
 
 export function StandingEditorForm({
@@ -19,6 +21,7 @@ export function StandingEditorForm({
   client,
   access,
   onSaved,
+  onConflict,
 }: StandingEditorFormProps) {
   async function submitForm(formData: FormData) {
     if (client == null) return;
@@ -27,6 +30,7 @@ export function StandingEditorForm({
     try {
       await saveAdminStandingRow(client, access, {
         id: form.id || null,
+        expectedUpdatedAt: form.expectedUpdatedAt || null,
         position: Number(formData.get("position") ?? 0),
         club: String(formData.get("club") ?? ""),
         clubSlug: String(formData.get("clubSlug") ?? "").trim() || null,
@@ -43,6 +47,9 @@ export function StandingEditorForm({
       await onSaved();
       showAdminToast("Standing row saved.", "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await onConflict();
+      }
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not save standing.",
         "error",

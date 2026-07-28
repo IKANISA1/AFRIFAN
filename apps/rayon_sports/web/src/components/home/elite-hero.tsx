@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Calendar, MapPin, Ticket } from "lucide-react";
 import { resolveFanAppHref } from "@/lib/config";
-import { cn, formatDateTime } from "@/lib/utils";
+import { formatDateTime } from "@/lib/utils";
 import type { ClubProfile, MatchItem } from "@/lib/types";
 
 interface EliteHeroProps {

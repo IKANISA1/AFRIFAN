@@ -11,6 +11,7 @@ export const tierColors: Record<AdminMembershipPackage["tier"], string> = {
 
 export type MembershipForm = {
   id: string;
+  expectedUpdatedAt: string;
   tier: AdminMembershipPackage["tier"];
   title: string;
   description: string;
@@ -22,6 +23,7 @@ export type MembershipForm = {
 
 export const emptyForm: MembershipForm = {
   id: "",
+  expectedUpdatedAt: "",
   tier: "imena",
   title: "",
   description: "",

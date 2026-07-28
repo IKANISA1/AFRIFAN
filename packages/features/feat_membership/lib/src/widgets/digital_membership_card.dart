@@ -148,7 +148,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
                             fontWeight: FontWeight.w900,
                           ),
                         )
-                        .animate()
+                        .afriAnimate(context)
                         .fadeIn(duration: 400.ms)
                         .slideX(begin: -0.03, end: 0, duration: 400.ms),
 

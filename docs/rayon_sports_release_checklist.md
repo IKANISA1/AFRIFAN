@@ -2,6 +2,14 @@
 
 This is the canonical release checklist for the `rayon_sports` product suite.
 
+Companion evidence and operating controls:
+
+- `docs/release/rayon_fullstack_uat_matrix.md`
+- `docs/release/three_surface_release_signoff.md`
+- `docs/venue_operations_runbook.md`
+- `docs/venue_staff_privacy_notice.md`
+- `docs/tv_fleet_release_and_operations_runbook.md`
+
 It assumes the product UI is already approved and frozen for release. This checklist covers engineering, platform, security, compliance, and store operations only.
 
 ## 1. Automated repo gates
@@ -78,20 +86,38 @@ Fastlane upload prerequisite:
 
 ## 5. iOS release steps
 
-1. Run unsigned dry run on macOS:
+Supported deployment floor: **iOS 15.5**. Firebase Apple SDK 12 requires iOS
+15 or later, and the additional minor-version floor keeps the Runner, Flutter
+framework, CocoaPods fallback, and generated Flutter Swift package aligned.
+
+1. Regenerate the Flutter iOS configuration from the app directory before an
+   Xcode-only build:
+   `cd apps/rayon_sports && flutter build ios --config-only`
+2. Validate the deployment floor and SwiftPM prepare hook:
+   `bash tools/scripts/validate_ios_release_contract.sh rayon_sports`
+3. Run unsigned dry run on macOS:
    `bash tools/scripts/dry_run_ios_release.sh rayon_sports`
-2. In Xcode or the release runner, archive a signed production build.
-3. Confirm:
+4. In Xcode or the release runner, archive a signed production build.
+5. Confirm:
    - bundle id is `rw.ikanisa.rayonSports`
+   - the Runner, Flutter framework, Pods fallback, and
+     `FlutterGeneratedPluginSwiftPackage` all target iOS 15.5 or later
    - push capability is enabled in the provisioning profile
    - App Attest entitlement is present
-4. Upload archive to App Store Connect / TestFlight.
-5. Verify on physical devices:
+6. Upload archive to App Store Connect / TestFlight.
+7. Verify on physical devices:
    - first launch
    - auth restore
    - contributions launch
    - push token registration
    - push delivery
+
+Platform references:
+
+- Flutter Swift Package Manager guidance:
+  `https://docs.flutter.dev/packages-and-plugins/swift-package-manager/for-app-developers`
+- Firebase Apple SDK release notes:
+  `https://firebase.google.com/support/release-notes/ios`
 
 ## 6. Store and compliance checks
 

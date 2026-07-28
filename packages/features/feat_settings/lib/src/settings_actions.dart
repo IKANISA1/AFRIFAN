@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -104,10 +105,7 @@ Future<bool> launchWhatsApp(
 }) async {
   if (!AppLinks.hasSupportWhatsApp) {
     if (context.mounted) {
-      AfriToast.error(
-        context,
-        'WhatsApp support is not configured for this build.',
-      );
+      AfriToast.error(context, context.afriL10n.supportUnavailable);
     }
     return false;
   }

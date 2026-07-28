@@ -2,8 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../extensions.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 import 'afri_material_buttons.dart';
 
 /// Widget-level error boundary that catches synchronous build errors
@@ -111,15 +114,15 @@ class _BrandedErrorFallback extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: AfriComponentSizes.errorGraphic,
+              height: AfriComponentSizes.errorGraphic,
               decoration: BoxDecoration(
                 color: colors.danger.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 AfriIcons.statusWarning,
-                size: 40,
+                size: SizeTokens.iconHero,
                 color: colors.danger,
               ),
             ),
@@ -137,14 +140,14 @@ class _BrandedErrorFallback extends StatelessWidget {
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: colors.secondaryText,
-                height: 1.5,
+                height: TypographyTokens.lineHeightRelaxed,
               ),
             ),
             if (onRetry != null) ...[
               const SizedBox(height: SpacingTokens.spacing6),
               AfriTextIconButton(
                 onPressed: onRetry,
-                icon: const Icon(AfriIcons.refresh, size: 18),
+                icon: const Icon(AfriIcons.refresh, size: SizeTokens.iconSm),
                 label: Text(
                   'Retry',
                   style: theme.textTheme.labelLarge?.copyWith(

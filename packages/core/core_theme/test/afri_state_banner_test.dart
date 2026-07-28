@@ -40,7 +40,7 @@ void main() {
 
     expect(
       find.bySemanticsLabel(
-        'Live updates paused. Showing the latest cached data.',
+        'Warning status: Live updates paused. Showing the latest cached data.',
       ),
       findsOneWidget,
     );

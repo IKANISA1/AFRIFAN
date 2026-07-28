@@ -4,11 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'models/user_notification_settings.dart';
 import 'models/user_privacy_settings.dart';
+import 'notification_permission_gateway.dart';
 import 'settings_repository.dart';
 
 final settingsRepositoryProvider = Provider<SettingsRepository>(
   (ref) => SettingsRepository(client: ref.watch(supabaseClientProvider)),
 );
+
+final notificationPermissionGatewayProvider =
+    Provider<NotificationPermissionGateway>(
+      (ref) => const FirebaseNotificationPermissionGateway(),
+    );
 
 final privacySettingsProvider = FutureProvider<UserPrivacySettings?>((
   ref,

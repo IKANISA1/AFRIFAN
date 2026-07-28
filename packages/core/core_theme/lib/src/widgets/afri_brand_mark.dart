@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../runtime_branding.dart';
 import '../tokens/border_tokens.dart';
+import '../tokens/chrome_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
@@ -11,7 +13,7 @@ class AfriBrandMark extends StatelessWidget {
   const AfriBrandMark({
     super.key,
     this.label,
-    this.size = 58,
+    this.size = AfriChromeTokens.commandControlSize,
     this.borderRadius,
     this.semanticLabel,
     this.showBorder = true,
@@ -53,13 +55,7 @@ class AfriBrandMark extends StatelessWidget {
             border: showBorder
                 ? BorderTokens.all(color: ColorTokens.chromeBorder)
                 : null,
-            boxShadow: [
-              BoxShadow(
-                color: ColorTokens.ambientShadow.withValues(alpha: 0.24),
-                blurRadius: size * 0.32,
-                offset: Offset(0, size * 0.14),
-              ),
-            ],
+            boxShadow: AfriShadows.brandMark(size),
           ),
           child: Text(
             resolvedLabel,

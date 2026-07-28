@@ -1,10 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { ShoppingBag, Trash2 } from "lucide-react";
+import { Pencil, Search, ShoppingBag, Trash2 } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminImageField } from "@/components/admin/admin-image-field";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -18,9 +20,12 @@ import {
 } from "@/lib/data/admin/shop";
 import type { AdminShopProduct } from "@/lib/types";
 import { useHydrated } from "@/lib/use-hydrated";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 const emptyForm = {
   id: "",
+  expectedUpdatedAt: "",
   name: "",
   subtitle: "",
   description: "",
@@ -67,6 +72,7 @@ export default function AdminShopPage() {
   function beginEdit(product: AdminShopProduct) {
     setForm({
       id: product.id,
+      expectedUpdatedAt: product.updatedAt,
       name: product.name,
       subtitle: product.subtitle,
       description: product.description,
@@ -87,6 +93,7 @@ export default function AdminShopPage() {
     try {
       await saveAdminProduct(client, access, {
         id: form.id || null,
+        expectedUpdatedAt: form.expectedUpdatedAt || null,
         name: String(formData.get("name") ?? ""),
         subtitle: String(formData.get("subtitle") ?? ""),
         description: String(formData.get("description") ?? ""),
@@ -102,6 +109,9 @@ export default function AdminShopPage() {
       await load();
       showAdminToast("Product saved.", "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await load();
+      }
       showAdminToast(caught instanceof Error ? caught.message : "Could not save product.", "error");
     }
   }
@@ -116,23 +126,50 @@ export default function AdminShopPage() {
     if (client == null) return;
     if (
       !confirmAdminDestructiveAction({
+        action: "Remove",
         subject: product.name,
-        detail: "The product will be removed from the club catalogue.",
+        scope: `Active club ${access.clubId ?? "not selected"}`,
+        impact: "The product will be removed from the club catalogue.",
+        undo: "not_available",
       })
     ) {
       return;
     }
     try {
-      await deleteAdminProduct(client, access, product.id);
+      await deleteAdminProduct(
+        client,
+        access,
+        product.id,
+        product.updatedAt,
+      );
       await load();
       showAdminToast(`${product.name} removed.`, "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await load();
+      }
       showAdminToast(caught instanceof Error ? caught.message : "Could not remove product.", "error");
     }
   }
 
   const categories = Array.from(new Set(products.map((p) => p.category)));
   const filtered = products.filter((p) => filter === "ALL" || p.category === filter);
+  const productCollection = useAdminCollection({
+    records: filtered,
+    getId: (product) => product.id,
+    getSearchValues: (product) => [product.name, product.subtitle, product.description, product.category, product.collection, product.sizes.join(" "), product.isActive ? "active" : "inactive"],
+    getSortValue: (product, key: "name" | "category" | "price" | "status" | "order") => {
+      switch (key) {
+        case "name": return product.name;
+        case "category": return product.category;
+        case "price": return product.price;
+        case "status": return product.isActive;
+        case "order": return product.sortOrder;
+      }
+    },
+    initialSortKey: "order" as const,
+    pageSize: 20,
+  });
 
   return (
     <div className="section-grid">
@@ -189,6 +226,9 @@ export default function AdminShopPage() {
               {["ALL", ...categories].map((item) => <button key={item} type="button" data-active={filter === item} onClick={() => setFilter(item)} className="dashboard-chip">{item}</button>)}
             </div>
           </div>
+          <AdminFilterBar className="mt-5" actions={<div className="flex flex-wrap gap-2">{(["order", "name", "category", "price", "status"] as const).map((key) => <button key={key} type="button" data-active={productCollection.sortKey === key} onClick={() => productCollection.toggleSort(key)} className="dashboard-chip">Sort {key}</button>)}</div>}>
+            <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search shop catalogue</span><input type="search" value={productCollection.query} onChange={(event) => productCollection.setQuery(event.target.value)} placeholder="Search product, category, collection, size, or state" /></label>
+          </AdminFilterBar>
           <div className="mt-5 space-y-3">
             {loading ? Array.from({ length: 3 }).map((_, i) => <div key={i} className="rounded-[26px] border border-border-soft bg-white/5 p-5"><Skeleton className="skeleton-text h-5 w-2/5" /><Skeleton className="skeleton-text mt-2 h-3 w-full" /></div>) : null}
             {!loading && loadError ? (
@@ -200,8 +240,8 @@ export default function AdminShopPage() {
                 }}
               />
             ) : null}
-            {!loading && !loadError && filtered.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">No products found.</p> : null}
-            {!loading && !loadError && filtered.map((product) => (
+            {!loading && !loadError && productCollection.pageResult.items.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">{productCollection.query ? "No products match the current search and category." : "No products found."}</p> : null}
+            {!loading && !loadError && productCollection.pageResult.items.map((product) => (
               <article key={product.id} className={cn("card-interactive flex items-start gap-4 rounded-[26px] border border-border-soft p-5 transition", product.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
                 {product.imageUrl ? (
                   <div className="hidden sm:block h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-border-soft">
@@ -219,12 +259,13 @@ export default function AdminShopPage() {
                   </div>
                 </div>
                 <div className="flex flex-shrink-0 gap-2">
-                  <button type="button" onClick={() => beginEdit(product)} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-white/8" title="Edit"><span className="text-xs">✏️</span></button>
-                  <button type="button" onClick={() => { removeProduct(product).catch(() => {}); }} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300" title="Remove"><Trash2 size={14} /></button>
+                  <button type="button" onClick={() => beginEdit(product)} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-white/8" aria-label={`Edit ${product.name}`}><Pencil size={14} aria-hidden="true" /></button>
+                  <button type="button" onClick={() => { removeProduct(product).catch(() => {}); }} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300" aria-label={`Remove ${product.name}`}><Trash2 size={14} aria-hidden="true" /></button>
                 </div>
               </article>
             ))}
           </div>
+          <AdminPagination page={productCollection.pageResult} onPageChange={productCollection.setPage} label="Shop catalogue" />
         </section>
       </div>
     </div>

@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../extensions.dart';
+import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 import 'afri_button.dart';
 import 'afri_icon_button.dart';
 
@@ -48,7 +52,7 @@ class KillSwitchGate extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.appBackground,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
         leading: AfriIconButton(
           icon: AfriIcons.back,
@@ -65,15 +69,15 @@ class KillSwitchGate extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 80,
-                height: 80,
+                width: AfriComponentSizes.stateGraphicLarge,
+                height: AfriComponentSizes.stateGraphicLarge,
                 decoration: BoxDecoration(
                   color: colors.operationalSurface,
                   borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                 ),
                 child: Icon(
                   AfriIcons.maintenance,
-                  size: 40,
+                  size: SizeTokens.iconHero,
                   color: colors.tertiaryText,
                 ),
               ),
@@ -91,7 +95,7 @@ class KillSwitchGate extends StatelessWidget {
                 msg,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: colors.tertiaryText,
-                  height: 1.5,
+                  height: TypographyTokens.lineHeightRelaxed,
                 ),
                 textAlign: TextAlign.center,
               ),

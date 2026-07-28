@@ -4,7 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../extensions.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/icon_tokens.dart';
+import '../tokens/motion_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 import 'afri_button.dart';
 
 /// Standardized empty-state view for screens and lists with no data.
@@ -70,10 +72,10 @@ class AfriEmptyView extends StatelessWidget {
           .animate()
           .scale(
             begin: const Offset(0.8, 0.8),
-            duration: 600.ms,
+            duration: AfriMotion.atmospheric,
             curve: Curves.elasticOut,
           )
-          .fadeIn(duration: 400.ms);
+          .fadeIn(duration: AfriMotion.contentReveal);
     }
 
     Widget? titleWidget;
@@ -88,7 +90,10 @@ class AfriEmptyView extends StatelessWidget {
       if (!reduceMotion) {
         titleWidget = titleWidget
             .animate()
-            .fadeIn(delay: 100.ms, duration: 400.ms)
+            .fadeIn(
+              delay: AfriMotion.staggerCompact,
+              duration: AfriMotion.contentReveal,
+            )
             .slideY(begin: 0.2, end: 0);
       }
     }
@@ -101,13 +106,16 @@ class AfriEmptyView extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
           color: colors.tertiaryText,
           fontWeight: FontWeight.w500,
-          height: 1.6,
+          height: TypographyTokens.lineHeightSpacious,
         ),
       );
       if (!reduceMotion) {
         messageWidget = messageWidget
             .animate()
-            .fadeIn(delay: 200.ms, duration: 400.ms)
+            .fadeIn(
+              delay: AfriMotion.staggerStandard,
+              duration: AfriMotion.contentReveal,
+            )
             .slideY(begin: 0.1, end: 0);
       }
     }
@@ -127,7 +135,10 @@ class AfriEmptyView extends StatelessWidget {
       if (!reduceMotion) {
         actionWidget = actionWidget
             .animate()
-            .fadeIn(delay: 350.ms, duration: 400.ms)
+            .fadeIn(
+              delay: AfriMotion.emphasized,
+              duration: AfriMotion.contentReveal,
+            )
             .scale(begin: const Offset(0.9, 0.9));
       }
     }

@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../extensions.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/motion_tokens.dart';
 import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
@@ -87,8 +89,13 @@ class GlassCard extends StatelessWidget {
 
     return card
         .animate()
-        .fadeIn(duration: 220.ms, curve: Curves.easeOut)
-        .slideY(begin: 0.02, end: 0, duration: 220.ms, curve: Curves.easeOut);
+        .fadeIn(duration: AfriMotion.surfaceEntrance, curve: Curves.easeOut)
+        .slideY(
+          begin: 0.02,
+          end: 0,
+          duration: AfriMotion.surfaceEntrance,
+          curve: Curves.easeOut,
+        );
   }
 }
 
@@ -124,7 +131,7 @@ class _GlassSurface extends StatelessWidget {
           sigmaY: ColorTokens.glassBlurSigma,
         ),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
+          duration: AfriMotion.resolve(context, AfriMotion.surfaceResponse),
           curve: Curves.easeOutCubic,
           width: width,
           height: height,
@@ -136,6 +143,7 @@ class _GlassSurface extends StatelessWidget {
                 ? BorderTokens.focusAll(
                     color: ColorTokens.primaryContainer,
                     opacity: 0.9,
+                    width: context.afriDesignTokens.focusRingWidth,
                   )
                 : BorderTokens.all(
                     color: effectiveBorderColor,
@@ -144,12 +152,7 @@ class _GlassSurface extends StatelessWidget {
             boxShadow: [
               ...AfriShadows.glass(strength: isPressed ? 0.65 : 1.0),
               if (isFocused)
-                BoxShadow(
-                  color: ColorTokens.primaryContainer.withValues(alpha: 0.18),
-                  blurRadius: 18,
-                  spreadRadius: -8,
-                  offset: const Offset(0, 8),
-                ),
+                AfriShadows.focusGlow(ColorTokens.primaryContainer),
             ],
           ),
           child: child,

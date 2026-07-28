@@ -1,5 +1,6 @@
 export type CommunityForm = {
   id: string;
+  expectedUpdatedAt: string;
   name: string;
   region: string;
   description: string;
@@ -12,6 +13,7 @@ export type CommunityForm = {
 
 export const emptyForm: CommunityForm = {
   id: "",
+  expectedUpdatedAt: "",
   name: "",
   region: "",
   description: "",

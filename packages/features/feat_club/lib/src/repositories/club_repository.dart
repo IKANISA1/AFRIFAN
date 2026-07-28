@@ -4,6 +4,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/club_models.dart';
 
+class OrderConflictException implements Exception {
+  const OrderConflictException();
+
+  @override
+  String toString() =>
+      'Order changed after it was loaded. Refresh order history, review the latest status, and try again.';
+}
+
 /// Universal club repository — white-label, multi-tenant.
 ///
 /// All operations are scoped to the active club tenant.
@@ -387,12 +395,33 @@ class ClubRepository {
     return rows.map((r) => ClubShopOrder.fromJson(r)).toList();
   }
 
-  Future<void> cancelOrder(String orderId) async {
-    await _client
-        .from('shop_orders')
-        .update({'status': 'cancelled'})
-        .eq('id', orderId)
-        .eq('user_id', _userId!);
+  Future<ClubShopOrder> cancelOrder(ClubShopOrder order) async {
+    final expectedUpdatedAt = order.updatedAt;
+    if (expectedUpdatedAt == null) {
+      throw const OrderConflictException();
+    }
+
+    final dynamic result;
+    try {
+      result = await _client.rpc(
+        'cancel_shop_order_if_unchanged',
+        params: <String, dynamic>{
+          'p_order_id': order.id,
+          'p_expected_updated_at': expectedUpdatedAt.toUtc().toIso8601String(),
+        },
+      );
+    } on PostgrestException catch (error) {
+      final message = error.message.toLowerCase();
+      if (message.contains('changed after it was loaded') ||
+          message.contains('can no longer be cancelled')) {
+        throw const OrderConflictException();
+      }
+      rethrow;
+    }
+    if (result is! Map) {
+      throw const OrderConflictException();
+    }
+    return ClubShopOrder.fromJson(Map<String, dynamic>.from(result));
   }
 
   // ═══════════════════════════════════════════════════════════

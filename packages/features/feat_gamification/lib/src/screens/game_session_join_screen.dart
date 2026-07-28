@@ -34,7 +34,7 @@ class _GameSessionJoinScreenState extends ConsumerState<GameSessionJoinScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         title: Text(
@@ -49,7 +49,9 @@ class _GameSessionJoinScreenState extends ConsumerState<GameSessionJoinScreen> {
           tooltip: 'Back',
         ),
       ),
-      body: SafeArea(
+      scrollable: false,
+      constrainContent: true,
+      child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(SpacingTokens.screenPadding),
           children: [

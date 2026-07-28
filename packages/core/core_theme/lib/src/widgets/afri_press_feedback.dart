@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../tokens/motion_tokens.dart';
+import '../tokens/size_tokens.dart';
 
 class AfriPressState {
   const AfriPressState({
@@ -36,10 +37,12 @@ class AfriPressFeedback extends StatefulWidget {
     this.button = true,
     this.selected = false,
     this.autofocus = false,
+    this.focusNode,
     this.tooltip,
     this.semanticsLabel,
     this.semanticsHint,
     this.excludeChildSemantics = false,
+    this.minimumTargetSize = SizeTokens.touchTargetMin,
     super.key,
   }) : assert(
          (child != null) != (builder != null),
@@ -56,10 +59,12 @@ class AfriPressFeedback extends StatefulWidget {
   final bool button;
   final bool selected;
   final bool autofocus;
+  final FocusNode? focusNode;
   final String? tooltip;
   final String? semanticsLabel;
   final String? semanticsHint;
   final bool excludeChildSemantics;
+  final double minimumTargetSize;
 
   @override
   State<AfriPressFeedback> createState() => _AfriPressFeedbackState();
@@ -70,7 +75,10 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
   static const Map<ShortcutActivator, Intent> _shortcuts =
       <ShortcutActivator, Intent>{
         SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+        SingleActivator(LogicalKeyboardKey.numpadEnter): ActivateIntent(),
         SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        SingleActivator(LogicalKeyboardKey.select): ActivateIntent(),
+        SingleActivator(LogicalKeyboardKey.gameButtonA): ActivateIntent(),
       };
 
   late final AnimationController _controller;
@@ -92,6 +100,15 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
     _opacity = Tween<double>(begin: 1.0, end: widget.opacityEnd).animate(
       CurvedAnimation(parent: _controller, curve: AfriMotion.pressCurve),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _controller.duration = AfriMotion.resolve(context, AfriMotion.press);
+    if (AfriMotion.reduceMotion(context) && _controller.isAnimating) {
+      _controller.value = _isPressed ? 1 : 0;
+    }
   }
 
   @override
@@ -132,6 +149,11 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
     widget.onTap!.call();
   }
 
+  void _setHovered(bool value) {
+    if (!_isInteractive || _isHovered == value) return;
+    setState(() => _isHovered = value);
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = AfriPressState(
@@ -149,10 +171,24 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
       opacity: _opacity,
       child: ScaleTransition(scale: _scale, child: content),
     );
+    content = AnimatedScale(
+      scale: (_isHovered || _isFocused) && !_isPressed ? 1.01 : 1,
+      duration: AfriMotion.resolve(context, AfriMotion.quick),
+      curve: AfriMotion.enterCurve,
+      child: content,
+    );
+    content = ConstrainedBox(
+      constraints: BoxConstraints(
+        minWidth: widget.minimumTargetSize,
+        minHeight: widget.minimumTargetSize,
+      ),
+      child: content,
+    );
 
     content = FocusableActionDetector(
       enabled: _isInteractive,
       autofocus: widget.autofocus,
+      focusNode: widget.focusNode,
       mouseCursor: _isInteractive
           ? SystemMouseCursors.click
           : MouseCursor.defer,
@@ -170,8 +206,7 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
         setState(() => _isFocused = value);
       },
       onShowHoverHighlight: (value) {
-        if (_isHovered == value) return;
-        setState(() => _isHovered = value);
+        _setHovered(value);
       },
       child: GestureDetector(
         onTapDown: _handleTapDown,
@@ -181,6 +216,12 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
         behavior: HitTestBehavior.opaque,
         child: content,
       ),
+    );
+    content = MouseRegion(
+      cursor: _isInteractive ? SystemMouseCursors.click : MouseCursor.defer,
+      onEnter: (_) => _setHovered(true),
+      onExit: (_) => _setHovered(false),
+      child: content,
     );
 
     if (widget.tooltip != null && widget.tooltip!.trim().isNotEmpty) {

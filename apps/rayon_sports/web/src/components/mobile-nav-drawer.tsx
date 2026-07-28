@@ -10,6 +10,7 @@ import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteNavigationItem } from "@/lib/feature-config";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 interface MobileNavDrawerProps {
   isOpen: boolean;
@@ -35,9 +36,13 @@ export function MobileNavDrawer({
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(false);
+  const reducedMotion = useReducedMotion();
 
   // Drive the transition: visible controls CSS classes
   useEffect(() => {
+    if (reducedMotion) {
+      return;
+    }
     let frameId = 0;
     if (isOpen) {
       // Mount visible on next frame so the transition triggers
@@ -46,7 +51,9 @@ export function MobileNavDrawer({
       frameId = requestAnimationFrame(() => setVisible(false));
     }
     return () => cancelAnimationFrame(frameId);
-  }, [isOpen]);
+  }, [isOpen, reducedMotion]);
+
+  const presented = reducedMotion ? isOpen : visible;
 
   // Close on route change
   useEffect(() => {
@@ -120,8 +127,8 @@ export function MobileNavDrawer({
       {/* Scrim Overlay — always in DOM, opacity-controlled */}
       <div
         className={cn(
-          `fixed inset-0 z-50 transition-opacity duration-300 ${ui.drawerScrim}`,
-          visible ? "opacity-100" : "pointer-events-none opacity-0",
+          `fixed inset-0 z-50 transition-opacity duration-300 motion-reduce:transition-none ${ui.drawerScrim}`,
+          presented ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={onClose}
         aria-hidden="true"
@@ -137,8 +144,8 @@ export function MobileNavDrawer({
         inert={!isOpen ? true : undefined}
         className={cn(
           `fixed top-0 right-0 bottom-0 z-50 flex w-[85vw] max-w-[400px] flex-col ${ui.drawerShell}`,
-          "transition-transform duration-300 ease-out",
-          visible ? "translate-x-0" : "translate-x-full",
+          "transition-transform duration-300 ease-out motion-reduce:transition-none",
+          presented ? "translate-x-0" : "translate-x-full",
         )}
       >
         {/* Header section */}

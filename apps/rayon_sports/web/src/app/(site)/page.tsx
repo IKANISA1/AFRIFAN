@@ -9,10 +9,10 @@ import { ShopAndIdentityBlock } from "./_sections/shop-identity-block";
 import { StoriesBlock } from "./_sections/stories-block";
 import {
   getPlatformConfig,
-  getContentBlocks,
   type ContentBlock,
   type PlatformConfigSnapshot,
 } from "@/lib/feature-config";
+import { selectHomeBlocks } from "@/lib/home-block-selection";
 import { FeatureGate } from "@/components/feature-gate";
 
 export async function generateMetadata() {
@@ -25,10 +25,7 @@ export async function generateMetadata() {
 
 export default async function HomePage() {
   const config = await getPlatformConfig();
-  
-  // Render all blocks in the standard home placements in order
-  const placements = ["home_hero", "home_top", "home_mid", "home_bottom", "home_footer"];
-  const allBlocks = placements.flatMap(p => getContentBlocks(config, p));
+  const allBlocks = selectHomeBlocks(config);
 
   return (
     <div className="flex flex-col gap-24 pb-32 pt-0 lg:gap-48">
@@ -39,9 +36,15 @@ export default async function HomePage() {
   );
 }
 
-function BlockRenderer({ block, config }: { block: ContentBlock; config: PlatformConfigSnapshot }) {
+function BlockRenderer({
+  block,
+  config,
+}: {
+  block: ContentBlock;
+  config: PlatformConfigSnapshot;
+}) {
   const content = _renderBlockContent(block);
-  
+
   if (block.feature_key) {
     return (
       <FeatureGate config={config} featureKey={block.feature_key}>
@@ -81,8 +84,17 @@ function _renderBlockContent(block: ContentBlock) {
     case "html":
       return (
         <section className="page-shell">
-          {block.title && <h2 className="text-3xl font-bold mb-8 uppercase tracking-tighter text-white">{block.title}</h2>}
-          <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: String(block.content.html || "") }} />
+          {block.title && (
+            <h2 className="text-3xl font-bold mb-8 uppercase tracking-tighter text-white">
+              {block.title}
+            </h2>
+          )}
+          <div
+            className="prose prose-invert max-w-none"
+            dangerouslySetInnerHTML={{
+              __html: String(block.content.html || ""),
+            }}
+          />
         </section>
       );
     default:

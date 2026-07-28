@@ -16,6 +16,10 @@ function renderSubject() {
       pairingCode: "SCREEN24",
       sessionId: "session-1",
     }),
+    revokeTvDevice: vi.fn().mockResolvedValue({
+      tvDeviceId: "tv-1",
+      status: "disabled",
+    }),
     reviewQuestionDraft: vi.fn().mockResolvedValue({
       draftId: "draft-1",
       decision: "approved",
@@ -137,6 +141,26 @@ describe("GamesControlClient", () => {
     expect(screen.getByLabelText(/tv device id/i)).toHaveValue("tv-1");
     expect(screen.getByRole("status")).toHaveTextContent(
       "TV display paired with code SCREEN24.",
+    );
+  });
+
+  it("revokes a TV credential through the authenticated admin action", async () => {
+    vi.spyOn(window, "confirm").mockReturnValueOnce(true);
+    const actionClient = renderSubject();
+    fireEvent.change(screen.getByLabelText(/tv device id/i), {
+      target: { value: "00000000-0000-4000-8000-000000000099" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /revoke tv credential/i }));
+
+    await waitFor(() => {
+      expect(actionClient.revokeTvDevice).toHaveBeenCalledWith({
+        clubId: 24,
+        tvDeviceId: "00000000-0000-4000-8000-000000000099",
+        reason: "Revoked from game operations console",
+      });
+    });
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "TV credential revoked",
     );
   });
 
@@ -366,6 +390,10 @@ describe("GamesControlClient", () => {
         tvDeviceId: "tv-1",
         pairingCode: "SCREEN24",
         sessionId: null,
+      }),
+      revokeTvDevice: vi.fn().mockResolvedValue({
+        tvDeviceId: "tv-1",
+        status: "disabled",
       }),
       reviewQuestionDraft: vi.fn().mockResolvedValue({
         draftId: "draft-1",

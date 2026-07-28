@@ -62,13 +62,7 @@ export interface SearchIndexItem {
   title: string;
   description: string;
   href: string;
-  category:
-    | "Page"
-    | "Match"
-    | "News"
-    | "Shop"
-    | "Community"
-    | "Membership";
+  category: "Page" | "Match" | "News" | "Shop" | "Community" | "Membership";
   meta?: string;
 }
 
@@ -97,12 +91,7 @@ export interface ShopProduct {
 }
 
 export type MembershipTierSlug =
-  | "ingenzi-imanzi"
-  | "inyamibwa"
-  | "imena"
-  | "bronze"
-  | "silver"
-  | "gold";
+  "ingenzi-imanzi" | "inyamibwa" | "imena" | "bronze" | "silver" | "gold";
 
 export interface MembershipPackage {
   id: string;
@@ -197,6 +186,7 @@ export interface HomeBanner {
   sortOrder: number;
   isActive: boolean;
   distribution: "web" | "app" | "both";
+  updatedAt?: string;
 }
 
 export interface CmsContent {
@@ -212,6 +202,7 @@ export interface CmsContent {
   sortOrder: number;
   isActive: boolean;
   distribution: "web" | "app" | "both";
+  updatedAt?: string;
 }
 
 export interface CmsContentType {
@@ -224,8 +215,10 @@ export interface CmsContentType {
 }
 
 export interface AppConfigEntry {
+  id?: string;
   key: string;
   value: string;
   description: string;
   country: string;
+  updatedAt?: string;
 }

@@ -37,9 +37,9 @@ class _PredictionNotificationsScreenState
     });
 
     try {
-      final notifications = await ref
-          .read(predictionRepositoryProvider)
-          .loadNotifications();
+      final notifications = await ref.read(
+        predictionNotificationsLoaderProvider,
+      )();
       if (!mounted) {
         return;
       }
@@ -79,7 +79,7 @@ class _PredictionNotificationsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -96,7 +96,8 @@ class _PredictionNotificationsScreenState
           tooltip: 'Back',
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

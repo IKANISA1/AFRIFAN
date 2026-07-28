@@ -1,17 +1,21 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Server, Settings2, ShieldCheck, Zap } from "lucide-react";
+import { Search, Server, Settings2, ShieldCheck, Zap } from "lucide-react";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { getAdminFeatures, updateAdminFeature } from "@/lib/data/admin/features";
 import type { PlatformFeature } from "@/lib/types";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 function toDateTimeLocalValue(value: string | null | undefined) {
   if (!value) {
@@ -80,6 +84,32 @@ export default function AdminFeaturesPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [draftFeature, setDraftFeature] = useState<PlatformFeature | null>(null);
   const [saving, setSaving] = useState(false);
+  const featureCollection = useAdminCollection({
+    records: features,
+    getId: (feature) => feature.id,
+    getSearchValues: (feature) => [
+      feature.displayName,
+      feature.description,
+      feature.featureKey,
+      feature.scope,
+      feature.category,
+      feature.visibilityState,
+      feature.isEnabled ? "active enabled" : "disabled",
+    ],
+    getSortValue: (
+      feature,
+      key: "feature" | "scope" | "category" | "status",
+    ) => {
+      switch (key) {
+        case "feature": return feature.displayName;
+        case "scope": return feature.scope;
+        case "category": return feature.category;
+        case "status": return feature.isEnabled ? feature.visibilityState : "disabled";
+      }
+    },
+    initialSortKey: "feature" as const,
+    pageSize: 25,
+  });
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -105,7 +135,7 @@ export default function AdminFeaturesPage() {
   async function toggleFeatureEnabled(feature: PlatformFeature) {
     if (!client) return;
     try {
-      await updateAdminFeature(client, access, feature.id, {
+      await updateAdminFeature(client, access, feature.id, feature.updatedAt, {
         isEnabled: !feature.isEnabled,
       });
       showAdminToast(
@@ -113,8 +143,14 @@ export default function AdminFeaturesPage() {
         "success",
       );
       await load();
-    } catch {
-      showAdminToast("Failed to toggle feature.", "error");
+    } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await load();
+      }
+      showAdminToast(
+        caught instanceof Error ? caught.message : "Failed to toggle feature.",
+        "error",
+      );
     }
   }
 
@@ -130,40 +166,49 @@ export default function AdminFeaturesPage() {
 
     setSaving(true);
     try {
-      await updateAdminFeature(client, access, draftFeature.id, {
-        displayName: draftFeature.displayName,
-        description: draftFeature.description,
-        category: draftFeature.category,
-        isEnabled: draftFeature.isEnabled,
-        visibilityState: draftFeature.visibilityState,
-        channels: draftFeature.channels.map((channel) => ({
-          channel: channel.channel,
-          isEnabled: channel.isEnabled,
-          isVisible: channel.isVisible,
-          showInNavigation: channel.showInNavigation,
-          showOnHome: channel.showOnHome,
-          sortOrder: channel.sortOrder,
-          routeKey: channel.routeKey,
-          placementKey: channel.placementKey,
-        })),
-        rules: draftFeature.rules == null
-          ? undefined
-          : {
-              authRequired: draftFeature.rules.authRequired,
-              roleRestrictions: draftFeature.rules.roleRestrictions,
-              dependencyRules: draftFeature.rules.dependencyRules,
-              rolloutRules: draftFeature.rules.rolloutRules,
-              metadata: draftFeature.rules.metadata,
-              scheduleStartAt: draftFeature.rules.scheduleStartAt,
-              scheduleEndAt: draftFeature.rules.scheduleEndAt,
-            },
-      });
+      await updateAdminFeature(
+        client,
+        access,
+        draftFeature.id,
+        draftFeature.updatedAt,
+        {
+          displayName: draftFeature.displayName,
+          description: draftFeature.description,
+          category: draftFeature.category,
+          isEnabled: draftFeature.isEnabled,
+          visibilityState: draftFeature.visibilityState,
+          channels: draftFeature.channels.map((channel) => ({
+            channel: channel.channel,
+            isEnabled: channel.isEnabled,
+            isVisible: channel.isVisible,
+            showInNavigation: channel.showInNavigation,
+            showOnHome: channel.showOnHome,
+            sortOrder: channel.sortOrder,
+            routeKey: channel.routeKey,
+            placementKey: channel.placementKey,
+          })),
+          rules: draftFeature.rules == null
+            ? undefined
+            : {
+                authRequired: draftFeature.rules.authRequired,
+                roleRestrictions: draftFeature.rules.roleRestrictions,
+                dependencyRules: draftFeature.rules.dependencyRules,
+                rolloutRules: draftFeature.rules.rolloutRules,
+                metadata: draftFeature.rules.metadata,
+                scheduleStartAt: draftFeature.rules.scheduleStartAt,
+                scheduleEndAt: draftFeature.rules.scheduleEndAt,
+              },
+        },
+      );
 
       showAdminToast("Feature settings saved.", "success");
       setDrawerOpen(false);
       setDraftFeature(null);
       await load();
     } catch (error) {
+      if (isAdminMutationConflict(error)) {
+        await load();
+      }
       showAdminToast(
         error instanceof Error ? error.message : "Could not save feature.",
         "error",
@@ -231,18 +276,33 @@ export default function AdminFeaturesPage() {
         />
       ) : (
         <div className="admin-surface">
+          <AdminFilterBar>
+            <label className="admin-search-field">
+              <Search size={16} aria-hidden="true" />
+              <span className="sr-only">Search platform features</span>
+              <input type="search" value={featureCollection.query} onChange={(event) => featureCollection.setQuery(event.target.value)} placeholder="Search feature, scope, category, or state" />
+            </label>
+          </AdminFilterBar>
           <AdminDataGrid
+            caption="Platform feature controls"
+            busy={loading}
+            onRowActivate={(rowId) => {
+              const feature = features.find((item) => item.id === rowId);
+              if (feature) beginEdit(feature);
+            }}
             columns={[
-              { key: "feature", label: "Feature Module" },
-              { key: "scope", label: "Scope" },
-              { key: "category", label: "Category" },
-              { key: "status", label: "Global State" },
-              { key: "mobile", label: "Mobile", className: "text-center" },
-              { key: "web", label: "Website", className: "text-center" },
-              { key: "actions", label: "", className: "text-right" },
+              { key: "feature", label: "Feature Module", priority: "primary", sortable: true, sortDirection: featureCollection.sortDirectionFor("feature"), onSort: () => featureCollection.toggleSort("feature") },
+              { key: "scope", label: "Scope", priority: "secondary", sortable: true, sortDirection: featureCollection.sortDirectionFor("scope"), onSort: () => featureCollection.toggleSort("scope") },
+              { key: "category", label: "Category", priority: "secondary", sortable: true, sortDirection: featureCollection.sortDirectionFor("category"), onSort: () => featureCollection.toggleSort("category") },
+              { key: "status", label: "Global State", priority: "primary", sortable: true, sortDirection: featureCollection.sortDirectionFor("status"), onSort: () => featureCollection.toggleSort("status") },
+              { key: "mobile", label: "Mobile", priority: "tertiary", className: "text-center" },
+              { key: "web", label: "Website", priority: "tertiary", className: "text-center" },
+              { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
             ]}
           >
-            {features.map((feature) => {
+            {featureCollection.pageResult.items.length === 0 ? (
+              <tr><td colSpan={7} className="py-8 text-center text-sm text-slate-400">{featureCollection.query ? "No features match the current search." : "No platform features found."}</td></tr>
+            ) : featureCollection.pageResult.items.map((feature) => {
               const mobileChannel = feature.channels.find(
                 (channel) => channel.channel === "mobile",
               );
@@ -251,7 +311,7 @@ export default function AdminFeaturesPage() {
               );
 
               return (
-                <tr key={feature.id}>
+                <tr key={feature.id} data-row-id={feature.id}>
                   <td>
                     <p className="admin-row-title">{feature.displayName}</p>
                     <p className="admin-row-meta">{feature.description || feature.featureKey}</p>
@@ -323,6 +383,7 @@ export default function AdminFeaturesPage() {
               );
             })}
           </AdminDataGrid>
+          <AdminPagination page={featureCollection.pageResult} onPageChange={featureCollection.setPage} label="Platform features" />
         </div>
       )}
 

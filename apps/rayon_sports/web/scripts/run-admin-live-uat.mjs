@@ -578,7 +578,7 @@ async function setFeatureState(
 }
 
 async function restoreFeatureStates() {
-  for (const [featureKey, snapshot] of featureStateRestores.entries()) {
+  for (const [_featureKey, snapshot] of featureStateRestores.entries()) {
     const featureUpdate = await admin
       .from("platform_features")
       .update({ is_enabled: snapshot.featureEnabled })

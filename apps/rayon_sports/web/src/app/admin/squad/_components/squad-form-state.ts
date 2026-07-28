@@ -1,5 +1,6 @@
 export type SquadForm = {
   id: string;
+  expectedUpdatedAt: string;
   name: string;
   role: string;
   number: string;
@@ -11,6 +12,7 @@ export type SquadForm = {
 
 export const emptySquadForm: SquadForm = {
   id: "",
+  expectedUpdatedAt: "",
   name: "",
   role: "Midfielder",
   number: "",

@@ -19,6 +19,7 @@ describe("getAdminMembershipApplications", () => {
         status: "pending",
         payment_status: "paid",
         application_date: "2026-04-16T22:00:00.000Z",
+        updated_at: "2026-07-24T20:00:00.000Z",
         review_date: null,
         reviewer_id: null,
         notes: null,
@@ -117,6 +118,7 @@ describe("getAdminMembershipApplications", () => {
         notes: null,
         userName: "UAT Admin",
         userPhone: "+250788123456",
+        updatedAt: "2026-07-24T20:00:00.000Z",
       },
     ]);
   });
@@ -131,6 +133,7 @@ describe("getAdminMembershipApplications", () => {
         status: "pending",
         payment_status: "paid",
         application_date: "2026-04-16T23:00:00.000Z",
+        updated_at: "2026-07-24T20:05:00.000Z",
         review_date: null,
         reviewer_id: null,
         notes: null,
@@ -229,13 +232,14 @@ describe("getAdminMembershipApplications", () => {
         notes: null,
         userName: "Fallback User",
         userPhone: "+250788654321",
+        updatedAt: "2026-07-24T20:05:00.000Z",
       },
     ]);
   });
 });
 
 describe("reviewMembershipApplication", () => {
-  it("resolves the club partner before seeding and updating the supporter membership", async () => {
+  it("resolves the club partner before calling the atomic review RPC", async () => {
     const client = {
       from(table: string) {
         if (table === "membership_applications") {
@@ -375,15 +379,20 @@ describe("reviewMembershipApplication", () => {
         throw new Error(`Unexpected table lookup: ${table}`);
       },
       rpc(fn: string, payload: Record<string, unknown>) {
-        expect(fn).toBe("apply_membership_points");
+        expect(fn).toBe(
+          "admin_review_membership_application_if_unchanged",
+        );
         expect(payload).toEqual({
-          p_user_id: "user-1",
+          p_application_id: "application-1",
+          p_expected_updated_at: "2026-07-24T20:00:00.000Z",
+          p_decision: "approved",
+          p_notes: "Looks good",
+          p_club_id: 24,
           p_partner_id: "partner-1",
-          p_points: 0,
-          p_chapter: "Central",
+          p_actor_id: "admin-1",
         });
         return Promise.resolve({
-          data: { id: "membership-1" },
+          data: { id: "application-1" },
           error: null,
         });
       },
@@ -397,6 +406,7 @@ describe("reviewMembershipApplication", () => {
           userId: "admin-1",
         } as unknown as AdminAccess,
         "application-1",
+        "2026-07-24T20:00:00.000Z",
         "approved",
         "Looks good",
       ),

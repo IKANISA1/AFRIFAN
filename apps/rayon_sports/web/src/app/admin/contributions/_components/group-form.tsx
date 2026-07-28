@@ -4,6 +4,7 @@ import type { Dispatch, FormEvent, SetStateAction } from "react";
 import type { GroupForm } from "./group-form-state";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { saveAdminContributionGroup } from "@/lib/data/admin/contributions";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import type { AdminAccess, AdminContributionGroup } from "@/lib/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -15,6 +16,7 @@ interface GroupFormProps {
   client: SupabaseClient | null;
   access: AdminAccess;
   onSaved: () => Promise<void>;
+  onConflict: () => Promise<void>;
 }
 
 export function ContributionGroupForm({
@@ -25,6 +27,7 @@ export function ContributionGroupForm({
   client,
   access,
   onSaved,
+  onConflict,
 }: GroupFormProps) {
   async function submitForm(formData: FormData) {
     if (client == null) {
@@ -38,6 +41,7 @@ export function ContributionGroupForm({
     try {
       await saveAdminContributionGroup(client, access, {
         id: form.id || null,
+        expectedUpdatedAt: form.expectedUpdatedAt || null,
         name: String(formData.get("name") ?? ""),
         description: String(formData.get("description") ?? ""),
         groupType: String(formData.get("groupType") ?? "project") as AdminContributionGroup["groupType"],
@@ -53,6 +57,9 @@ export function ContributionGroupForm({
       await onSaved();
       showAdminToast("Public initiative saved.", "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await onConflict();
+      }
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not save initiative.",
         "error",

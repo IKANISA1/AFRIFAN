@@ -10,6 +10,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 /// matching the web reference's `triggerConfetti()` without a
 /// dedicated confetti package.
 void showConfettiOverlay(BuildContext context) {
+  if (AfriMotion.reduceMotion(context)) {
+    return;
+  }
   final overlay = Overlay.of(context);
   late final OverlayEntry entry;
 
@@ -102,7 +105,7 @@ class _ConfettiBurstState extends State<_ConfettiBurst> {
                                     ),
                             ),
                           )
-                          .animate(delay: delay)
+                          .afriAnimate(context, delay: delay)
                           .move(
                             begin: Offset.zero,
                             end: Offset(p.dx, p.dy),

@@ -40,16 +40,20 @@ void main() {
     testWidgets('renders the home shell with bottom navigation', (
       tester,
     ) async {
+      _setMobileSurface(tester);
       await tester.pumpWidget(_buildApp(router));
       await tester.pumpAndSettle();
 
       expect(find.text('Home Screen'), findsOneWidget);
+      expect(find.byType(AfriClubBottomNav), findsOneWidget);
+      expect(find.byType(NavigationRail), findsNothing);
       expect(find.text('Home'), findsOneWidget);
       expect(find.text('Fan Zone'), findsOneWidget);
       expect(find.text('Settings'), findsOneWidget);
     });
 
     testWidgets('navigates between fan zone and settings tabs', (tester) async {
+      _setMobileSurface(tester);
       await tester.pumpWidget(_buildApp(router));
       await tester.pumpAndSettle();
 
@@ -105,7 +109,39 @@ void main() {
 
       expect(find.byType(AppShell), findsOneWidget);
     });
+
+    for (final profile in <String, Size>{
+      'standard landscape': const Size(852, 393),
+      'compact-height landscape': const Size(720, 320),
+    }.entries) {
+      testWidgets('${profile.key} keeps all shell destinations operable', (
+        tester,
+      ) async {
+        tester.view.physicalSize = profile.value;
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(_buildApp(router));
+        await tester.pumpAndSettle();
+        expect(find.byType(NavigationRail), findsOneWidget);
+        await _selectRailDestination(tester, 1);
+        expect(find.text('Fan Zone Screen'), findsOneWidget);
+        await _selectRailDestination(tester, 2);
+        expect(find.text('Settings Screen'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
   });
+}
+
+Future<void> _selectRailDestination(
+  WidgetTester tester,
+  int destinationIndex,
+) async {
+  final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
+  rail.onDestinationSelected!(destinationIndex);
+  await tester.pumpAndSettle();
 }
 
 Widget _buildApp(AppRouter router) {

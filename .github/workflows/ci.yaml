@@ -24,7 +24,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.38.9'
+          flutter-version: '3.44.3'
           channel: stable
           cache: true
 
@@ -33,6 +33,52 @@ jobs:
 
       - name: Bootstrap workspace
         run: melos bootstrap
+
+      - name: Generate route inventory and validate design source compliance
+        env:
+          SOURCE_DESIGN: ${{ github.workspace }}/DESIGN.md
+          EXCEPTIONS_REGISTER: ${{ github.workspace }}/docs/governance/design-exceptions.json
+          ROUTE_INVENTORY_JSON: ${{ runner.temp }}/africlub-route-inventory/route-inventory.json
+          ROUTE_STATE_CLOSURE_JSON: ${{ runner.temp }}/africlub-route-inventory/route-state-closure.json
+          SCREEN_ARCHETYPE_COVERAGE_JSON: ${{ runner.temp }}/africlub-route-inventory/screen-archetype-coverage.json
+          COMPONENT_INVENTORY_JSON: ${{ runner.temp }}/africlub-component-inventory/universal-component-inventory.json
+          OUT_DIR: ${{ runner.temp }}/africlub-route-inventory
+        run: |
+          bash tools/scripts/generate_route_inventory.sh
+          OUT_DIR="${{ runner.temp }}/africlub-component-inventory" \
+            bash tools/scripts/generate_component_inventory.sh
+          dart run tools/scripts/generate_status_accessibility_inventory.dart \
+            "${{ runner.temp }}/africlub-status-accessibility"
+          jq -e '
+            .summary.contract_complete == true and
+            .summary.review_required == 0 and
+            .summary.semantic_color_occurrences > 0 and
+            .summary.status_component_occurrences > 0 and
+            (.color_vision_simulations | length) == 8
+          ' "${{ runner.temp }}/africlub-status-accessibility/status-inventory.json"
+          OUT_DIR="${{ runner.temp }}/africlub-design-compliance" \
+            bash tools/scripts/design_compliance_report.sh
+          jq -e '
+            .status == "pass" and
+            .design_complete == false and
+            .route_evidence_complete == false and
+            .route_inventory_status == "pass" and
+            .route_state_closure_status == "pass" and
+            .screen_archetype_coverage_status == "pass" and
+            .component_inventory_status == "pass" and
+            .design_exceptions_schema_status == "pass"
+          ' "${{ runner.temp }}/africlub-design-compliance/VALIDATION.json"
+
+      - name: Upload design governance evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-governance-evidence
+          path: |
+            ${{ runner.temp }}/africlub-route-inventory
+            ${{ runner.temp }}/africlub-component-inventory
+            ${{ runner.temp }}/africlub-status-accessibility
+            ${{ runner.temp }}/africlub-design-compliance
+          retention-days: 30
 
       - name: Validate Rayon release contract
         env:
@@ -61,6 +107,24 @@ jobs:
       - name: Run unit & widget tests with coverage
         run: melos exec --dir-exists="test" -- flutter test --coverage
 
+      - name: Validate governed golden baselines
+        run: bash tools/scripts/validate_golden_contract.sh
+
+      - name: Scan governed evidence for private or secret material
+        run: bash tools/scripts/validate_evidence_privacy.sh
+
+      - name: Upload golden baselines and failure diffs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-golden-evidence
+          path: |
+            packages/features/feat_settings/test/goldens
+            packages/features/feat_settings/test/failures
+            docs/governance/golden-baselines.json
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Run white-label app shell smoke tests
         run: |
           smoke_tests=$(find apps -path '*/test/app_shell_smoke_test.dart' ! -path 'apps/rayon_sports/*' | sort)
@@ -68,8 +132,16 @@ jobs:
             echo "❌ No white-label app shell smoke tests found."
             exit 1
           fi
-          echo "$smoke_tests"
-          flutter test $smoke_tests
+          while IFS= read -r smoke_test; do
+            app_dir="${smoke_test%/test/app_shell_smoke_test.dart}"
+            flavor_file="$app_dir/assets/flavors/production.json"
+            if [ ! -f "$flavor_file" ]; then
+              echo "❌ Missing flavor contract: $flavor_file"
+              exit 1
+            fi
+            echo "Testing $smoke_test with $flavor_file"
+            flutter test "$smoke_test" --dart-define-from-file="$flavor_file"
+          done <<< "$smoke_tests"
 
       - name: Run Rayon integration smoke tests
         run: flutter test apps/rayon_sports/integration_test
@@ -146,6 +218,9 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Venue authorization and operations coverage
+        run: npm run test:venue-coverage
+
       - name: TypeScript check
         run: npm run typecheck
 
@@ -181,6 +256,8 @@ jobs:
         run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Build
+        env:
+          AFRICLUB_ALLOW_HTTP_PREVIEW: "1"
         run: npm run build
 
       - name: Run E2E
@@ -333,6 +410,11 @@ jobs:
             --arg supabase_anon_key "$SUPABASE_ANON_KEY" \
             '.SUPABASE_URL = $supabase_url | .SUPABASE_ANON_KEY = $supabase_anon_key' \
             assets/flavors/production.json > assets/flavors/production.local.json
+
+      - name: Generate and validate iOS build configuration
+        run: |
+          flutter build ios --config-only --release --no-codesign --dart-define-from-file=assets/flavors/production.local.json
+          dart run tool/validate_ios_dart_defines.dart ios/Flutter/Generated.xcconfig assets/flavors/production.local.json
 
       - name: Build iOS Framework
         run: flutter build ios --release --no-codesign --dart-define-from-file=assets/flavors/production.local.json

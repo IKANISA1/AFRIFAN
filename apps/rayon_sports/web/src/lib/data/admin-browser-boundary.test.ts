@@ -13,6 +13,7 @@ import {
   getAdminProducts,
   getAdminSmsSnapshot,
   getAdminTicketOrders,
+  bulkUpdateTicketStatus,
   reviewMembershipApplication,
   saveAdminFanClub,
   saveAdminClubProfile,
@@ -98,6 +99,28 @@ describe("admin browser API boundary", () => {
     await expect(requestAdminApi("dashboard")).rejects.toThrow(
       "Admin access denied.",
     );
+  });
+
+  it("retains the stale-record status and code from the admin API", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          code: "STALE_RECORD",
+          error: "Refresh and review the latest record.",
+        }),
+        {
+          status: 409,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      ) as Response,
+    );
+
+    await expect(requestAdminApi("contributions")).rejects.toMatchObject({
+      status: 409,
+      code: "STALE_RECORD",
+    });
   });
 
   it("loads products through the scoped admin API in the browser", async () => {
@@ -214,11 +237,16 @@ describe("admin browser API boundary", () => {
       .mockResolvedValue(jsonResponse({ success: true }) as Response);
 
     await expect(
-      deleteAdminStandingRow(client, access, "standing-1"),
+      deleteAdminStandingRow(
+        client,
+        access,
+        "standing-1",
+        "2026-07-24T18:00:00Z",
+      ),
     ).resolves.toBeUndefined();
     expectFetchCall(
       fetchMock,
-      `${origin}/api/admin/standings?id=standing-1`,
+      `${origin}/api/admin/standings?id=standing-1&expected_updated_at=2026-07-24T18%3A00%3A00Z`,
       "DELETE",
     );
   });
@@ -324,11 +352,16 @@ it("deletes CMS content blocks through the scoped admin API in the browser", asy
     .mockResolvedValue(jsonResponse({ success: true }) as Response);
 
   await expect(
-    deleteAdminContentBlock(client, access, "cms-1"),
+    deleteAdminContentBlock(
+      client,
+      access,
+      "cms-1",
+      "2026-07-24T20:00:00.000Z",
+    ),
   ).resolves.toBeUndefined();
   expectFetchCall(
     fetchMock,
-    `${origin}/api/admin/cms-content?id=cms-1`,
+    `${origin}/api/admin/cms-content?id=cms-1&expected_updated_at=2026-07-24T20%3A00%3A00.000Z`,
     "DELETE",
   );
 });
@@ -391,6 +424,27 @@ it("updates ticket status through the scoped admin API in the browser", async ()
   );
 });
 
+it("updates a reviewed ticket selection through the scoped bulk API", async () => {
+  const origin = window.location.origin;
+  const payload = {
+    ticketIds: ["ticket-1", "ticket-2"],
+    status: "valid" as const,
+  };
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse({ success: true, updatedCount: 2 }) as Response);
+
+  await expect(
+    bulkUpdateTicketStatus(client, access, payload.ticketIds, payload.status),
+  ).resolves.toBeUndefined();
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/tickets/bulk-status`,
+    "POST",
+    JSON.stringify(payload),
+  );
+});
+
 it("loads supporter registry through the scoped admin API in the browser", async () => {
   const origin = window.location.origin;
   const expected = [{ id: "supporter-1", displayName: "Alpha Fan" }];
@@ -429,6 +483,7 @@ it("reviews membership applications through the scoped admin API in the browser"
   const origin = window.location.origin;
   const payload = {
     applicationId: "application-1",
+    expectedUpdatedAt: "2026-07-24T20:00:00.000Z",
     decision: "approved" as const,
     notes: "Approved after payment confirmation.",
   };
@@ -441,6 +496,7 @@ it("reviews membership applications through the scoped admin API in the browser"
       client,
       access,
       payload.applicationId,
+      payload.expectedUpdatedAt,
       payload.decision,
       payload.notes,
     ),

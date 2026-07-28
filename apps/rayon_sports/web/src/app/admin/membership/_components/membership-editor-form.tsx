@@ -1,7 +1,8 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { saveAdminMembershipPackage } from "@/lib/data/admin/membership";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import type { AdminAccess, AdminMembershipPackage } from "@/lib/types";
 import { emptyForm, type MembershipForm } from "./membership-state";
 
@@ -12,6 +13,7 @@ interface MembershipEditorFormProps {
   client: SupabaseClient | null;
   access: AdminAccess;
   onSaved: () => Promise<void>;
+  onConflict: () => Promise<void>;
 }
 
 export function MembershipEditorForm({
@@ -21,14 +23,30 @@ export function MembershipEditorForm({
   client,
   access,
   onSaved,
+  onConflict,
 }: MembershipEditorFormProps) {
-  async function submitForm(formData: FormData) {
-    if (client == null) return;
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const errorRef = useRef<HTMLDivElement>(null);
+  const submittingRef = useRef(false);
 
+  useEffect(() => {
+    if (errorMessage != null) {
+      errorRef.current?.focus();
+    }
+  }, [errorMessage]);
+
+  async function submitForm(formData: FormData) {
+    if (client == null || submittingRef.current) return;
+
+    submittingRef.current = true;
+    setSubmitting(true);
+    setErrorMessage(null);
     showAdminToast(form.id ? "Saving tier..." : "Creating tier...", "info");
     try {
       await saveAdminMembershipPackage(client, access, {
         id: form.id || null,
+        expectedUpdatedAt: form.expectedUpdatedAt || null,
         tier: String(
           formData.get("tier") ?? "imena",
         ) as AdminMembershipPackage["tier"],
@@ -46,29 +64,51 @@ export function MembershipEditorForm({
       await onSaved();
       showAdminToast("Membership tier saved.", "success");
     } catch (caught) {
-      showAdminToast(
-        caught instanceof Error ? caught.message : "Could not save tier.",
-        "error",
-      );
+      if (isAdminMutationConflict(caught)) {
+        await onConflict();
+      }
+      const message = caught instanceof Error
+        ? caught.message
+        : "Could not save tier.";
+      setErrorMessage(message);
+      showAdminToast(message, "error");
+    } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
     }
   }
 
   return (
-    <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
-      <div className="flex items-center justify-between gap-3">
-        <p className="font-display text-3xl font-bold uppercase leading-none">
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        void submitForm(new FormData(event.currentTarget));
+      }}
+      aria-labelledby="membership-form-title"
+      aria-describedby={errorMessage ? "membership-form-error" : undefined}
+      data-keyboard-safe-form="true"
+      className="glass-panel grid gap-4 rounded-[32px] p-6 max-sm:max-h-[calc(100dvh-8rem)] max-sm:overflow-y-auto max-sm:overscroll-contain max-sm:scroll-pb-24"
+    >
+      <div className="flex items-center gap-3">
+        <p
+          id="membership-form-title"
+          className="font-display text-3xl font-bold uppercase leading-none"
+        >
           {form.id ? "Edit tier" : "New tier"}
         </p>
-        {form.id ? (
-          <button
-            type="button"
-            onClick={() => setForm(emptyForm)}
-            className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
-          >
-            Clear
-          </button>
-        ) : null}
       </div>
+
+      {errorMessage ? (
+        <div
+          ref={errorRef}
+          id="membership-form-error"
+          role="alert"
+          tabIndex={-1}
+          className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200 outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+        >
+          {errorMessage}
+        </div>
+      ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-2 text-sm">
@@ -82,7 +122,7 @@ export function MembershipEditorForm({
                 tier: event.target.value as AdminMembershipPackage["tier"],
               }))
             }
-            className="dashboard-input"
+            className="dashboard-input scroll-mb-24"
           >
             <option value="ingenzi-imanzi">Ingenzi / Imanzi</option>
             <option value="inyamibwa">Inyamibwa</option>
@@ -104,7 +144,7 @@ export function MembershipEditorForm({
                 title: event.target.value,
               }))
             }
-            className="dashboard-input"
+            className="dashboard-input scroll-mb-24"
           />
         </label>
       </div>
@@ -121,7 +161,7 @@ export function MembershipEditorForm({
               description: event.target.value,
             }))
           }
-          className="dashboard-input min-h-20 resize-y"
+          className="dashboard-input min-h-20 resize-y scroll-mb-24"
         />
       </label>
 
@@ -138,7 +178,7 @@ export function MembershipEditorForm({
                 annualPrice: event.target.value,
               }))
             }
-            className="dashboard-input"
+            className="dashboard-input scroll-mb-24"
           />
         </label>
         <label className="grid gap-2 text-sm">
@@ -153,7 +193,7 @@ export function MembershipEditorForm({
                 sortOrder: event.target.value,
               }))
             }
-            className="dashboard-input"
+            className="dashboard-input scroll-mb-24"
           />
         </label>
       </div>
@@ -175,7 +215,7 @@ export function MembershipEditorForm({
               perks: event.target.value,
             }))
           }
-          className="dashboard-input min-h-28 resize-y"
+          className="dashboard-input min-h-28 resize-y scroll-mb-24"
         />
       </label>
 
@@ -194,12 +234,35 @@ export function MembershipEditorForm({
         Active and visible
       </label>
 
-      <button
-        type="submit"
-        className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+      <div
+        data-keyboard-safe-actions="true"
+        className="grid gap-3 max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-2 max-sm:grid-cols-2 max-sm:rounded-2xl max-sm:border max-sm:border-border-soft max-sm:bg-slate-950/95 max-sm:p-2 max-sm:backdrop-blur"
       >
-        {form.id ? "Save tier" : "Create tier"}
-      </button>
+        {form.id ? (
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={() => setForm(emptyForm)}
+            className="rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Clear
+          </button>
+        ) : null}
+        <button
+          type="submit"
+          disabled={submitting || client == null}
+          aria-busy={submitting}
+          className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {submitting
+            ? form.id
+              ? "Saving tier..."
+              : "Creating tier..."
+            : form.id
+              ? "Save tier"
+              : "Create tier"}
+        </button>
+      </div>
     </form>
   );
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
+import '../tokens/spacing_tokens.dart';
 
 /// Shared universal pull-to-refresh chrome.
 class AfriRefreshIndicator extends StatelessWidget {
@@ -10,8 +12,8 @@ class AfriRefreshIndicator extends StatelessWidget {
     required this.child,
     this.color,
     this.backgroundColor,
-    this.displacement = 40,
-    this.edgeOffset = 0,
+    this.displacement = AfriComponentSizes.refreshDisplacement,
+    this.edgeOffset = SpacingTokens.spacing0,
     this.strokeWidth = RefreshProgressIndicator.defaultStrokeWidth,
     this.notificationPredicate = defaultScrollNotificationPredicate,
     this.semanticsLabel,

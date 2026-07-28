@@ -5,6 +5,11 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
+import {
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
+  requireAdminClubId,
+} from "./helpers";
 
 export interface AdminSyncLog {
   id: string;
@@ -49,6 +54,7 @@ export interface AdminLiveScoreCompetitionSource {
 
 export interface AdminLiveScoreCompetitionSourceInput {
   id?: string | null;
+  expectedUpdatedAt?: string | null;
   clubId?: number | null;
   sourceKey: string;
   displayName: string;
@@ -95,7 +101,9 @@ function mapSyncLog(row: Record<string, unknown>): AdminSyncLog {
   };
 }
 
-function mapLiveScoreSource(row: Record<string, unknown>): AdminLiveScoreCompetitionSource {
+function mapLiveScoreSource(
+  row: Record<string, unknown>,
+): AdminLiveScoreCompetitionSource {
   return {
     id: toIdString(row.id, crypto.randomUUID()),
     clubId: row.club_id == null ? null : safeNumber(row.club_id, 0),
@@ -117,7 +125,9 @@ export async function getAdminLiveScoreCompetitionSources(
 ): Promise<AdminLiveScoreCompetitionSource[]> {
   void _access;
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminLiveScoreCompetitionSource[]>("livescore-sources");
+    return requestAdminApi<AdminLiveScoreCompetitionSource[]>(
+      "livescore-sources",
+    );
   }
 
   const { data, error } = await client
@@ -166,7 +176,9 @@ export async function getAdminSyncOverview(
 
   const today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
   const [sourcesRes, fixturesRes, teamsRes, logsRes] = await Promise.all([
-    client.from("livescore_competition_sources").select("is_active", { count: "exact" }),
+    client
+      .from("livescore_competition_sources")
+      .select("is_active", { count: "exact" }),
     client
       .schema("football")
       .from("fixtures")
@@ -193,26 +205,40 @@ export async function getAdminSyncOverview(
   const sources = sourcesRes.data ?? [];
   const fixtures = fixturesRes.data ?? [];
   const logs = logsRes.data ?? [];
-  const fixtureStatuses = fixtures.reduce<Record<string, number>>((acc, fixture) => {
-    const status = safeString((fixture as Record<string, unknown>).status, "unknown");
-    acc[status] = (acc[status] ?? 0) + 1;
-    return acc;
-  }, {});
+  const fixtureStatuses = fixtures.reduce<Record<string, number>>(
+    (acc, fixture) => {
+      const status = safeString(
+        (fixture as Record<string, unknown>).status,
+        "unknown",
+      );
+      acc[status] = (acc[status] ?? 0) + 1;
+      return acc;
+    },
+    {},
+  );
 
   return {
     totalSources: sources.length,
-    activeSources: sources.filter((source) => (source as Record<string, unknown>).is_active !== false).length,
+    activeSources: sources.filter(
+      (source) => (source as Record<string, unknown>).is_active !== false,
+    ).length,
     totalFixtures: fixtures.length,
     scheduledFixtures: fixtureStatuses.scheduled ?? 0,
     liveFixtures: fixtureStatuses.live ?? 0,
     finishedFixtures: fixtureStatuses.finished ?? 0,
     totalTeams: teamsRes.count ?? 0,
-    lastSyncAt: logs.length > 0 ? safeString((logs[0] as Record<string, unknown>).started_at) : null,
+    lastSyncAt:
+      logs.length > 0
+        ? safeString((logs[0] as Record<string, unknown>).started_at)
+        : null,
     webRequestsToday: logs.reduce(
-      (sum, log) => sum + safeNumber((log as Record<string, unknown>).api_requests_used, 0),
+      (sum, log) =>
+        sum + safeNumber((log as Record<string, unknown>).api_requests_used, 0),
       0,
     ),
-    errorsToday: logs.filter((log) => safeString((log as Record<string, unknown>).error_message)).length,
+    errorsToday: logs.filter((log) =>
+      safeString((log as Record<string, unknown>).error_message),
+    ).length,
   };
 }
 
@@ -222,11 +248,18 @@ export async function saveAdminLiveScoreCompetitionSource(
   input: AdminLiveScoreCompetitionSourceInput,
 ): Promise<string> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<string>("livescore-sources", { method: "POST", body: input });
+    return requestAdminApi<string>("livescore-sources", {
+      method: "POST",
+      body: input,
+    });
   }
 
-  const requestedClubId = access.isSuperAdmin ? (input.clubId ?? null) : Number(access.clubId);
-  const clubId = Number.isFinite(requestedClubId as number) ? requestedClubId : null;
+  const requestedClubId = access.isSuperAdmin
+    ? (input.clubId ?? null)
+    : Number(access.clubId);
+  const clubId = Number.isFinite(requestedClubId as number)
+    ? requestedClubId
+    : null;
   const payload = {
     club_id: clubId,
     source_provider: "livescore",
@@ -235,8 +268,12 @@ export async function saveAdminLiveScoreCompetitionSource(
       input.displayName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
     ),
     display_name: input.displayName.trim(),
-    match_aliases: input.matchAliases.map((entry) => entry.trim()).filter(Boolean),
-    country_aliases: (input.countryAliases ?? []).map((entry) => entry.trim()).filter(Boolean),
+    match_aliases: input.matchAliases
+      .map((entry) => entry.trim())
+      .filter(Boolean),
+    country_aliases: (input.countryAliases ?? [])
+      .map((entry) => entry.trim())
+      .filter(Boolean),
     external_competition_ids: (input.externalCompetitionIds ?? [])
       .map((entry) => entry.trim())
       .filter(Boolean),
@@ -245,17 +282,24 @@ export async function saveAdminLiveScoreCompetitionSource(
     is_active: input.isActive,
   };
 
-  if (!payload.display_name || payload.match_aliases.length === 0 || payload.source_urls.length === 0) {
-    throw new Error("Display name, match aliases, and source URLs are required.");
+  if (
+    !payload.display_name ||
+    payload.match_aliases.length === 0 ||
+    payload.source_urls.length === 0
+  ) {
+    throw new Error(
+      "Display name, match aliases, and source URLs are required.",
+    );
   }
 
   if (input.id) {
-    const { error } = await client
-      .from("livescore_competition_sources")
-      .update(payload)
-      .eq("id", input.id);
-    if (error) throw new Error(error.message);
-    return input.id;
+    return mutateRecordWithVariantsIfUnchanged(
+      client,
+      "livescore_competition_sources",
+      input.id,
+      input.expectedUpdatedAt,
+      [payload],
+    );
   }
 
   const { data, error } = await client
@@ -269,17 +313,32 @@ export async function saveAdminLiveScoreCompetitionSource(
 
 export async function deleteAdminLiveScoreCompetitionSource(
   client: SupabaseClient,
-  _access: AdminAccess,
+  access: AdminAccess,
   id: string,
+  expectedUpdatedAt: string,
 ): Promise<void> {
-  void _access;
   if (typeof window !== "undefined") {
-    await requestAdminApi<{ success: boolean }>(`livescore-sources?id=${encodeURIComponent(id)}`, {
+    await requestAdminApi<{ success: boolean }>("livescore-sources", {
       method: "DELETE",
+      query: { id, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
 
-  const { error } = await client.from("livescore_competition_sources").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  const clubId = access.isSuperAdmin
+    ? null
+    : requireAdminClubId(access, "delete LiveScore sources");
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    "livescore_competition_sources",
+    id,
+    expectedUpdatedAt,
+    clubId == null ? {} : { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_livescore_source",
+      source: "admin_football_sync",
+    },
+  );
 }

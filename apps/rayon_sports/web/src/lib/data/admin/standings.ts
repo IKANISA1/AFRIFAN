@@ -6,8 +6,8 @@ import type { AdminAccess, AdminStandingRow } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
-  deleteRecordWithMatchers,
-  mutateRecordWithVariants,
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
   requireAdminClubId,
   resolveExistingColumn,
   resolveStandingsTable,
@@ -24,6 +24,7 @@ function mapAdminStandingRow(row: Record<string, unknown>, index: number): Admin
     points: safeNumber(row.points, safeNumber(row.pts, 0)),
     form: Array.isArray(row.form) ? row.form.map((entry) => safeString(entry)).filter(Boolean).slice(0, 5) : [],
     clubSlug: safeString(row.club_slug) || null,
+    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
   };
 }
 
@@ -48,7 +49,7 @@ export async function getAdminStandings(
 
 export async function saveAdminStandingRow(
   client: SupabaseClient, access: AdminAccess,
-  input: { id?: string | null; position: number; club: string; played: number; goalDifference: number; points: number; form: string[]; clubSlug?: string | null },
+  input: { id?: string | null; expectedUpdatedAt?: string | null; position: number; club: string; played: number; goalDifference: number; points: number; form: string[]; clubSlug?: string | null },
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<string>("standings", {
@@ -75,7 +76,7 @@ export async function saveAdminStandingRow(
   if (formColumn === "form") payload.form = input.form.slice(0, 5);
   if (slugColumn === "club_slug") payload.club_slug = safeString(input.clubSlug) || null;
 
-  return mutateRecordWithVariants(client, table, input.id, [payload], {
+  return mutateRecordWithVariantsIfUnchanged(client, table, input.id, input.expectedUpdatedAt, [payload], {
     club_id: clubId,
   });
 }
@@ -84,15 +85,28 @@ export async function deleteAdminStandingRow(
   client: SupabaseClient,
   access: AdminAccess,
   rowId: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("standings", {
       method: "DELETE",
-      query: { id: rowId },
+      query: { id: rowId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "delete standings rows");
   const table = await resolveStandingsTable(client);
-  await deleteRecordWithMatchers(client, table, rowId, { club_id: clubId });
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    table,
+    rowId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_standings_row",
+      source: "admin_standings",
+    },
+  );
 }

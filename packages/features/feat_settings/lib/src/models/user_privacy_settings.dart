@@ -7,6 +7,7 @@ class UserPrivacySettings {
     required this.momoSmsAutoreadEnabled,
     required this.biometricLoginEnabled,
     required this.showActivityStatus,
+    this.updatedAt,
   });
 
   final String userId;
@@ -16,6 +17,7 @@ class UserPrivacySettings {
   final bool momoSmsAutoreadEnabled;
   final bool biometricLoginEnabled;
   final bool showActivityStatus;
+  final String? updatedAt;
 
   static const List<String> visibilityOptions = <String>[
     'public',
@@ -31,10 +33,11 @@ class UserPrivacySettings {
       userId: userId,
       clubId: clubId,
       groupVisibility: 'members',
-      analyticsEnabled: true,
+      analyticsEnabled: false,
       momoSmsAutoreadEnabled: false,
       biometricLoginEnabled: true,
       showActivityStatus: true,
+      updatedAt: null,
     );
   }
 
@@ -43,7 +46,7 @@ class UserPrivacySettings {
       userId: _asString(json['user_id']),
       clubId: _asString(json['club_id']),
       groupVisibility: _normalizeVisibility(json['group_visibility']),
-      analyticsEnabled: _asBool(json['analytics_enabled'], fallback: true),
+      analyticsEnabled: _asBool(json['analytics_enabled'], fallback: false),
       momoSmsAutoreadEnabled: _asBool(
         json['momo_sms_autoread_enabled'],
         fallback: false,
@@ -53,6 +56,7 @@ class UserPrivacySettings {
         fallback: true,
       ),
       showActivityStatus: _asBool(json['show_activity_status'], fallback: true),
+      updatedAt: _asNullableString(json['updated_at']),
     );
   }
 
@@ -77,6 +81,7 @@ class UserPrivacySettings {
     bool? momoSmsAutoreadEnabled,
     bool? biometricLoginEnabled,
     bool? showActivityStatus,
+    String? updatedAt,
   }) {
     return UserPrivacySettings(
       userId: userId ?? this.userId,
@@ -90,6 +95,7 @@ class UserPrivacySettings {
       biometricLoginEnabled:
           biometricLoginEnabled ?? this.biometricLoginEnabled,
       showActivityStatus: showActivityStatus ?? this.showActivityStatus,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -105,6 +111,11 @@ String _asString(dynamic value, {String fallback = ''}) {
   if (value == null) return fallback;
   final text = value.toString().trim();
   return text.isEmpty ? fallback : text;
+}
+
+String? _asNullableString(dynamic value) {
+  final text = value?.toString().trim();
+  return text == null || text.isEmpty ? null : text;
 }
 
 bool _asBool(dynamic value, {bool fallback = false}) {

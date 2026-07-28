@@ -3,12 +3,9 @@ import { EliteHero } from "@/components/home/elite-hero";
 import { resolveFanAppHref } from "@/lib/config";
 import {
   getClubProfile,
-  getContributionGroups,
-  getFanClubs,
   getCmsContentBlock,
   getHomeBanners,
   getMatches,
-  getMembershipPackages,
 } from "@/lib/data/public";
 
 const fallbackQuickLinks = [

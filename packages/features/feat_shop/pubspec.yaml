@@ -34,4 +34,6 @@ resolution: workspace
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test_support:
+    path: ../test_support
   mocktail: ^1.0.3

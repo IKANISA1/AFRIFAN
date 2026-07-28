@@ -129,7 +129,7 @@ create table if not exists public.runtime_copy (
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
   constraint runtime_copy_key_check
-    check (copy_key ~ '^[a-z0-9][a-z0-9_:-]*$'),
+    check (copy_key ~ '^[a-z0-9][a-z0-9_.:-]*$'),
   constraint runtime_copy_surface_check
     check (surface in ('mobile', 'web', 'tv', 'venue', 'admin', 'both')),
   constraint runtime_copy_locale_check
@@ -812,6 +812,13 @@ declare
   v_metadata_reward text;
   v_session_reward text;
 begin
+  select null::uuid as id, null::text as display_name, null::text as city,
+         null::text as status
+    into v_venue;
+  select null::uuid as id, null::text as campaign_name,
+         null::integer as fet_award_per_checkin, null::timestamptz as ends_at
+    into v_campaign;
+
   if p_device_id is not null then
     select *
       into v_device

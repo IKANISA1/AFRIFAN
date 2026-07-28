@@ -63,7 +63,7 @@ class AfriDropdownField<T> extends StatelessWidget {
         focusedBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
           color: colors.accent,
-          width: BorderTokens.focus,
+          width: context.afriDesignTokens.focusRingWidth,
         ),
       ),
     );

@@ -33,6 +33,7 @@ class _AnimatedFetCounterState extends State<AnimatedFetCounter>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late Animation<int> _animation;
+  bool _reduceMotion = false;
 
   @override
   void initState() {
@@ -42,7 +43,19 @@ class _AnimatedFetCounterState extends State<AnimatedFetCounter>
       begin: 0,
       end: widget.value,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
-    unawaited(_controller.forward());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _reduceMotion = AfriMotion.reduceMotion(context);
+    _controller.duration = _reduceMotion ? Duration.zero : widget.duration;
+    if (_reduceMotion) {
+      _controller.stop();
+      _controller.value = 1;
+    } else if (_controller.value == 0 && !_controller.isAnimating) {
+      unawaited(_controller.forward());
+    }
   }
 
   @override
@@ -53,7 +66,11 @@ class _AnimatedFetCounterState extends State<AnimatedFetCounter>
         CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
       );
       _controller.reset();
-      unawaited(_controller.forward());
+      if (_reduceMotion) {
+        _controller.value = 1;
+      } else {
+        unawaited(_controller.forward());
+      }
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:core_theme/core_theme.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// UI token assertions for root DESIGN.md compliance.
@@ -197,6 +198,85 @@ void main() {
       );
     });
 
+    test('ClubTheme provides distinct light and dark semantic palettes', () {
+      final config = ClubConfig.fallback();
+      final light = ClubTheme.from(config, brightness: Brightness.light);
+      final dark = ClubTheme.from(config, brightness: Brightness.dark);
+
+      expect(light.brightness, Brightness.light);
+      expect(dark.brightness, Brightness.dark);
+      expect(light.colorScheme.surface, isNot(dark.colorScheme.surface));
+      expect(
+        light.extension<AfriSemanticColors>()?.appBackground,
+        isNot(dark.extension<AfriSemanticColors>()?.appBackground),
+      );
+      expect(
+        light.extension<AfriSemanticColors>()?.primaryText.computeLuminance(),
+        lessThan(
+          dark.extension<AfriSemanticColors>()!.primaryText.computeLuminance(),
+        ),
+      );
+    });
+
+    test('route gradients remain theme-aware and readable in light mode', () {
+      ColorTokens.setBrightness(Brightness.dark);
+      final dark = ColorTokens.screenGradientForPath('/home').colors;
+      ColorTokens.setBrightness(Brightness.light);
+      addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
+      final lightPaths = <String>[
+        '/home',
+        '/settings',
+        '/membership',
+        '/fanzone',
+        '/shop',
+      ];
+
+      for (final path in lightPaths) {
+        final colors = ColorTokens.screenGradientForPath(path).colors;
+        expect(colors, isNot(equals(dark)));
+        expect(
+          colors.every((color) => color.computeLuminance() > 0.62),
+          isTrue,
+          reason: '$path must keep dark light-mode text readable',
+        );
+      }
+    });
+
+    test('ClubTheme provides a structural high-contrast variant', () {
+      final config = ClubConfig.fallback();
+      for (final brightness in Brightness.values) {
+        final standard = ClubTheme.from(config, brightness: brightness);
+        final highContrast = ClubTheme.from(
+          config,
+          brightness: brightness,
+          highContrast: true,
+        );
+        final standardColors = standard.extension<AfriSemanticColors>()!;
+        final highContrastColors = highContrast
+            .extension<AfriSemanticColors>()!;
+
+        expect(
+          highContrast.extension<AfriDesignTokens>()!.focusRingWidth,
+          greaterThan(standard.extension<AfriDesignTokens>()!.focusRingWidth),
+        );
+        expect(
+          highContrast.inputDecorationTheme.focusedBorder!.borderSide.width,
+          equals(AfriDesignTokens.highContrast().focusRingWidth),
+        );
+        expect(highContrast.cardTheme.shape, isA<RoundedRectangleBorder>());
+        expect(
+          (highContrast.cardTheme.shape! as RoundedRectangleBorder).side.width,
+          equals(BorderTokens.strong),
+        );
+        expect(
+          highContrastColors.secondaryText,
+          highContrastColors.primaryText,
+        );
+        expect(highContrastColors.tertiaryText, highContrastColors.primaryText);
+        expect(highContrastColors.border, isNot(standardColors.border));
+      }
+    });
+
     test('responsive bands match DESIGN.md breakpoints', () {
       expect(
         tokens.viewportBandForWidth(320),
@@ -234,6 +314,29 @@ void main() {
         tokens.motionFor(reducedMotionEnabled: true, role: AfriMotionRole.slow),
         equals(tokens.reducedMotion),
       );
+    });
+
+    test('shared command and navigation chrome use one semantic contract', () {
+      expect(AfriChromeTokens.maxTopCommandActions, 2);
+      expect(AfriChromeTokens.commandControlSize, greaterThanOrEqualTo(48));
+      expect(
+        AfriChromeTokens.navigationCompactHeight,
+        greaterThanOrEqualTo(SizeTokens.touchTargetMin),
+      );
+      expect(
+        AfriChromeTokens.navigationRegularHeight,
+        greaterThan(AfriChromeTokens.navigationCompactHeight),
+      );
+      expect(
+        AfriClubBottomNav.compactHeight,
+        AfriChromeTokens.navigationCompactHeight,
+      );
+      expect(
+        AfriClubBottomNav.regularHeight,
+        AfriChromeTokens.navigationRegularHeight,
+      );
+      expect(AfriMotion.navigation, const Duration(milliseconds: 180));
+      expect(BorderTokens.chromeFocus, greaterThan(BorderTokens.chrome));
     });
 
     test('focus, admin, and TV contracts are concrete', () {

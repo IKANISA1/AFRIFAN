@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +20,9 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late final TextEditingController _nicknameController;
+  late final FocusNode _nicknameFocusNode;
   bool _isBusy = false;
+  String? _nicknameError;
 
   @override
   void initState() {
@@ -26,11 +31,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _nicknameController = TextEditingController(
       text: profile?.displayName ?? '',
     );
+    _nicknameFocusNode = FocusNode(debugLabel: 'Nickname');
   }
 
   @override
   void dispose() {
     _nicknameController.dispose();
+    _nicknameFocusNode.dispose();
     super.dispose();
   }
 
@@ -38,7 +45,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final profile = ref.read(currentUserProvider);
     if (profile == null || _isBusy) return;
 
-    setState(() => _isBusy = true);
+    setState(() {
+      _isBusy = true;
+      _nicknameError = null;
+    });
 
     final error = await ref
         .read(authStateProvider.notifier)
@@ -47,9 +57,34 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         );
 
     if (!mounted) return;
-    setState(() => _isBusy = false);
+    setState(() {
+      _isBusy = false;
+      _nicknameError = error;
+    });
 
     if (error != null) {
+      if (error.contains('changed on another device')) {
+        final refreshError = await ref
+            .read(authStateProvider.notifier)
+            .refreshProfile();
+        if (!mounted) return;
+        final refreshed = ref.read(currentUserProvider);
+        if (refreshError == null && refreshed != null) {
+          _nicknameController.text = refreshed.displayName ?? '';
+          setState(() => _nicknameError = null);
+          unawaited(
+            FirebaseAnalyticsService.logErrorRecovery(
+              surface: 'profile_settings',
+              outcome: 'conflict_refresh',
+            ),
+          );
+          _showMessage(
+            'Profile changed elsewhere. The latest nickname is loaded; review it before saving again.',
+          );
+          return;
+        }
+      }
+      _nicknameFocusNode.requestFocus();
       _showMessage(error);
       return;
     }
@@ -66,13 +101,39 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final profile = ref.watch(currentUserProvider);
+    if (profile == null) {
+      return SettingsBackGuard(
+        child: AfriScreenScaffold(
+          backgroundColor: ColorTokens.background,
+          appBar: AfriAppBar(
+            title: Text('Profile', style: TypographyTokens.headlineSmall()),
+            leading: AfriIconButton(
+              icon: AfriIcons.back,
+              onTap: () => closeSettingsChild(context),
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+            ),
+          ),
+          scrollable: false,
+          constrainContent: true,
+          child: AfriErrorView(
+            key: const ValueKey('profile-unavailable'),
+            message:
+                'Your profile is unavailable. Sign in again to recover your account.',
+            actionLabel: 'Sign in again',
+            onRetry: () => context.go(
+              '/auth/phone?from=${Uri.encodeComponent('/settings/edit-profile')}',
+            ),
+          ),
+        ),
+      );
+    }
     final alias = AliasGenerator.format(
-      profile?.publicUserId ?? AliasGenerator.generate(),
+      profile.publicUserId ?? AliasGenerator.generate(),
     );
-    final languageLabel = _languageLabel(profile?.languageCode);
+    final languageLabel = _languageLabel(profile.languageCode);
 
     return SettingsBackGuard(
-      child: Scaffold(
+      child: AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
           title: Text('Profile', style: TypographyTokens.headlineSmall()),
@@ -82,111 +143,113 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           ),
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-          child: Column(
-            children: [
-              GlassCard(
-                animate: false,
+        padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+        scrollable: true,
+        constrainContent: true,
+        child: Column(
+          children: [
+            GlassCard(
+              animate: false,
+              child: Row(
+                children: [
+                  AfriAvatar(
+                    semanticLabel: alias,
+                    initials: 'Supporter',
+                    size: SizeTokens.avatarLg,
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing4),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '#$alias',
+                          style: TypographyTokens.headlineSmall(),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing1),
+                        Text(
+                          languageLabel,
+                          style: TypographyTokens.bodySmall(
+                            ColorTokens.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            AfriInputField(
+              label: 'Nickname',
+              hint: 'Optional supporter nickname',
+              controller: _nicknameController,
+              focusNode: _nicknameFocusNode,
+              maxLength: 50,
+              errorText: _nicknameError,
+              autofillHints: const <String>[AutofillHints.nickname],
+              onChanged: (_) {
+                if (_nicknameError != null) {
+                  setState(() => _nicknameError = null);
+                }
+              },
+            ),
+            const SizedBox(height: SpacingTokens.spacing6),
+            AfriButton(
+              label: _isBusy ? 'Saving…' : 'Save changes',
+              onTap: _saveProfile,
+              isLoading: _isBusy,
+              enabled: !_isBusy,
+            ),
+            const SizedBox(height: SpacingTokens.spacing8),
+            GlassCard(
+              animate: false,
+              child: AfriPressFeedback(
+                onTap: _isBusy
+                    ? null
+                    : () async {
+                        final confirmed = await showDeleteAccountConfirmDialog(
+                          context,
+                        );
+                        if (!context.mounted) return;
+                        if (!confirmed) return;
+                        setState(() => _isBusy = true);
+                        final error = await ref
+                            .read(authStateProvider.notifier)
+                            .deleteAccount();
+                        if (!context.mounted) return;
+                        setState(() => _isBusy = false);
+                        if (error != null) {
+                          _showMessage(error);
+                          return;
+                        }
+                        context.go('/onboarding');
+                      },
+                enabled: !_isBusy,
+                tooltip: 'Delete account',
+                semanticsLabel: 'Delete account',
+                semanticsHint: 'Permanently delete this supporter account',
                 child: Row(
                   children: [
-                    Container(
-                      width: SizeTokens.avatarLg,
-                      height: SizeTokens.avatarLg,
-                      decoration: BoxDecoration(
-                        color: ColorTokens.clubAccent.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(
-                          ShapeTokens.radiusMd,
-                        ),
-                      ),
-                      child: const Icon(
-                        AfriIcons.profile,
-                        size: SizeTokens.iconLg,
-                      ),
+                    Icon(
+                      AfriIcons.delete,
+                      color: ColorTokens.error,
+                      size: SizeTokens.iconMd,
                     ),
-                    const SizedBox(width: SpacingTokens.spacing4),
+                    const SizedBox(width: SpacingTokens.spacing3),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '#$alias',
-                            style: TypographyTokens.headlineSmall(),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing1),
-                          Text(
-                            languageLabel,
-                            style: TypographyTokens.bodySmall(
-                              ColorTokens.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              AfriInputField(
-                label: 'Nickname',
-                hint: 'Optional supporter nickname',
-                controller: _nicknameController,
-                maxLength: 50,
-              ),
-              const SizedBox(height: SpacingTokens.spacing6),
-              AfriButton(
-                label: _isBusy ? 'Saving…' : 'Save changes',
-                onTap: _saveProfile,
-                isLoading: _isBusy,
-                enabled: !_isBusy,
-              ),
-              const SizedBox(height: SpacingTokens.spacing8),
-              GlassCard(
-                animate: false,
-                child: AfriPressFeedback(
-                  onTap: _isBusy
-                      ? null
-                      : () async {
-                          final confirmed =
-                              await showDeleteAccountConfirmDialog(context);
-                          if (!context.mounted) return;
-                          if (!confirmed) return;
-                          setState(() => _isBusy = true);
-                          final error = await ref
-                              .read(authStateProvider.notifier)
-                              .deleteAccount();
-                          if (!context.mounted) return;
-                          setState(() => _isBusy = false);
-                          if (error != null) {
-                            _showMessage(error);
-                            return;
-                          }
-                          context.go('/onboarding');
-                        },
-                  enabled: !_isBusy,
-                  tooltip: 'Delete account',
-                  semanticsLabel: 'Delete account',
-                  semanticsHint: 'Permanently delete this supporter account',
-                  child: Row(
-                    children: [
-                      const Icon(
-                        AfriIcons.delete,
-                        color: ColorTokens.error,
-                        size: SizeTokens.iconMd,
-                      ),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      Text(
+                      child: Text(
                         'Delete account',
                         style: TypographyTokens.bodyMedium().copyWith(
                           color: ColorTokens.error,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

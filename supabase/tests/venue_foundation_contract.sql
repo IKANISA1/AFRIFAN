@@ -21,6 +21,7 @@ begin
     'venue_drink_orders',
     'venue_drink_order_items',
     'venue_order_events',
+    'venue_staff_audit_events',
     'venue_promotion_events',
     'venue_fet_wallets',
     'fet_ledger_reservations'
@@ -57,6 +58,12 @@ begin
   end if;
   if to_regprocedure('public.venue_order_update_status(bigint,uuid,text,text)') is null then
     raise exception 'missing venue_order_update_status RPC';
+  end if;
+  if to_regprocedure('public.venue_menu_upsert(uuid,uuid,text,text,integer,text,boolean,boolean,integer)') is null then
+    raise exception 'missing venue_menu_upsert RPC';
+  end if;
+  if to_regprocedure('public.venue_promotion_launch(uuid,uuid,text)') is null then
+    raise exception 'missing venue_promotion_launch RPC';
   end if;
 end $$;
 
@@ -130,8 +137,11 @@ declare
   v_second_user_id uuid := '00000000-0000-4000-8000-000000000002';
   v_staff_user_id uuid := '00000000-0000-4000-8000-000000000003';
   v_other_user_id uuid := '00000000-0000-4000-8000-000000000004';
+  v_manager_user_id uuid := '00000000-0000-4000-8000-000000000005';
   v_venue_id uuid;
+  v_other_venue_id uuid;
   v_campaign_id uuid;
+  v_launch_campaign_id uuid;
   v_drink_id uuid;
   v_alcohol_drink_id uuid;
   v_order_id uuid;
@@ -159,6 +169,10 @@ begin
     'Contract-only venue'
   )
   returning id into v_venue_id;
+
+  insert into public.venues (club_id, slug, display_name, status)
+  values (v_club_id, 'other-contract-venue', 'Other Contract Venue', 'approved')
+  returning id into v_other_venue_id;
 
   insert into public.venue_checkin_campaigns (
     club_id,
@@ -334,6 +348,8 @@ begin
 
   insert into public.venue_staff_memberships (club_id, venue_id, user_id, role)
   values (v_club_id, v_venue_id, v_staff_user_id, 'staff');
+  insert into public.venue_staff_memberships (club_id, venue_id, user_id, role)
+  values (v_club_id, v_venue_id, v_manager_user_id, 'manager');
 
   perform set_config('request.jwt.claim.sub', v_other_user_id::text, true);
   v_result := public.venue_order_update_status(v_club_id, v_order_id, 'accepted', null);
@@ -356,6 +372,50 @@ begin
       and to_status = 'accepted'
   ) then
     raise exception 'order status update did not write audit event';
+  end if;
+
+  perform set_config('request.jwt.claim.sub', v_manager_user_id::text, true);
+  v_result := public.venue_menu_upsert(
+    v_venue_id, null, 'Inactive Contract Drink', 'Scoped menu mutation',
+    1500, 'RWF', false, false, 50
+  );
+  if v_result ->> 'code' <> 'ok' then
+    raise exception 'manager menu upsert contract failed: %', v_result;
+  end if;
+  if not exists (
+    select 1 from public.venue_staff_audit_events
+    where venue_id = v_venue_id and event_type = 'menu_item_created'
+  ) then
+    raise exception 'menu mutation did not write staff audit event';
+  end if;
+
+  v_result := public.venue_menu_upsert(
+    v_other_venue_id, null, 'Cross Venue Drink', '', 1500, 'RWF', false, false, 51
+  );
+  if v_result ->> 'code' <> 'permission_denied' then
+    raise exception 'cross-venue menu mutation was not denied: %', v_result;
+  end if;
+
+  insert into public.venue_checkin_campaigns (
+    club_id, venue_id, campaign_name, status, starts_at, ends_at,
+    fet_award_per_checkin, fet_budget, max_checkins_per_user
+  ) values (
+    v_club_id, v_venue_id, 'Launch Contract Campaign', 'approved',
+    timezone('utc', now()) - interval '1 hour',
+    timezone('utc', now()) + interval '1 hour', 1, 100, 1
+  ) returning id into v_launch_campaign_id;
+
+  v_result := public.venue_promotion_launch(v_venue_id, v_launch_campaign_id, 'launch-contract-key');
+  if v_result ->> 'code' <> 'ok' then
+    raise exception 'promotion launch contract failed: %', v_result;
+  end if;
+  v_result := public.venue_promotion_launch(v_venue_id, v_launch_campaign_id, 'launch-contract-key');
+  if v_result ->> 'code' <> 'idempotent_replay' then
+    raise exception 'promotion launch idempotency failed: %', v_result;
+  end if;
+  if (select count(*) from public.venue_staff_audit_events
+      where entity_id = v_launch_campaign_id::text and event_type = 'promotion_launched') <> 1 then
+    raise exception 'promotion idempotency wrote duplicate staff audit events';
   end if;
 end $$;
 

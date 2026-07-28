@@ -162,6 +162,7 @@ void main() {
     test('/admin keeps the operations routes for explicit internal builds', () {
       final internalModules = AppModuleRegistry.build(
         const _AllFeaturesConfig(mobileAdmin: true),
+        allowInternalMobileAdmin: true,
       );
       final admin = internalModules.firstWhere((m) => m.featureKey == 'admin');
       final root = admin.routes.whereType<GoRoute>().firstWhere(
@@ -308,6 +309,7 @@ void main() {
           '/auth/phone',
           '/auth/otp',
           '/home',
+          '/search',
           '/fanzone',
           '/fanzone/venue',
           '/fanzone/venue/order',

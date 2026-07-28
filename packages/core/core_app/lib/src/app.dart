@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -86,6 +87,7 @@ class _AfriClubAppState extends State<AfriClubApp> {
         deepLinkParser: widget.deepLinkParser,
         deepLinkService: widget.deepLinkService,
         frameworkLocaleForLanguageCode: _frameworkLocaleForLanguageCode,
+        appLocaleForLanguageCode: _appLocaleForLanguageCode,
       ),
     );
   }
@@ -96,8 +98,11 @@ class _AfriClubAppState extends State<AfriClubApp> {
 
     for (final language in languages) {
       final code = language.trim().toLowerCase();
-      if (code.isEmpty || !seen.add(code)) continue;
-      locales.add(_frameworkLocaleForLanguageCode(code));
+      if (code.isEmpty) continue;
+      final locale = _frameworkLocaleForLanguageCode(code);
+      if (seen.add(locale.languageCode)) {
+        locales.add(locale);
+      }
     }
 
     if (locales.isEmpty) {
@@ -118,6 +123,15 @@ class _AfriClubAppState extends State<AfriClubApp> {
       _ => Locale(code),
     };
   }
+
+  Locale _appLocaleForLanguageCode(String? languageCode) {
+    final code = (languageCode ?? widget.config.language).trim().toLowerCase();
+    return switch (code) {
+      'rw' => const Locale('rw'),
+      'fr' => const Locale('fr'),
+      _ => const Locale('en'),
+    };
+  }
 }
 
 class _AfriClubMaterialApp extends ConsumerStatefulWidget {
@@ -126,6 +140,7 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
     required this.modules,
     required this.supportedLocales,
     required this.frameworkLocaleForLanguageCode,
+    required this.appLocaleForLanguageCode,
     this.platformConfigSnapshot,
     this.initialLocation,
     this.deepLinkParser,
@@ -140,6 +155,7 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
   final DeepLinkParser? deepLinkParser;
   final DeepLinkService? deepLinkService;
   final Locale Function(String? languageCode) frameworkLocaleForLanguageCode;
+  final Locale Function(String? languageCode) appLocaleForLanguageCode;
 
   @override
   ConsumerState<_AfriClubMaterialApp> createState() =>
@@ -237,6 +253,13 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
     }
   }
 
+  @override
+  void didChangePlatformBrightness() {
+    if (mounted && ref.read(themeModeProvider) == ThemeMode.system) {
+      setState(() {});
+    }
+  }
+
   void _scheduleFeatureConfigRefresh() {
     final clubId = _normalizedClubId;
     if (clubId == null || !SupabaseClientFactory.isInitialized) {
@@ -298,16 +321,19 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
     }
 
     final internalUri = parser.toInternalUri(incomingUri);
-    if (internalUri == null) {
+    final safeInternalUri = internalUri == null
+        ? null
+        : InternalRouteUriPolicy.validate(internalUri);
+    if (safeInternalUri == null) {
       return;
     }
 
-    final match = _appRouter.router.configuration.findMatch(internalUri);
+    final match = _appRouter.router.configuration.findMatch(safeInternalUri);
     if (match.isError) {
       return;
     }
 
-    final target = internalUri.toString();
+    final target = safeInternalUri.toString();
     final current = _appRouter.router.routeInformationProvider.value.uri
         .toString();
     if (target == current) {
@@ -386,34 +412,52 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
       return null;
     }
 
-    final uri = Uri.tryParse(raw);
-    final path = uri?.path;
-    if (path == null || !path.startsWith('/') || _isPublicPath(path)) {
+    final safeUri = InternalRouteUriPolicy.parse(raw);
+    final path = safeUri?.path;
+    if (safeUri == null ||
+        path == null ||
+        !path.startsWith('/') ||
+        _isPublicPath(path)) {
       return null;
     }
 
-    final match = _appRouter.router.configuration.findMatch(uri!);
+    final match = _appRouter.router.configuration.findMatch(safeUri);
     if (match.isError) {
       return null;
     }
 
-    return uri.toString();
+    return safeUri.toString();
   }
 
   @override
   Widget build(BuildContext context) {
     final languageCode =
         ref.watch(currentUserProvider)?.languageCode ?? widget.config.language;
-    final appTheme = ClubTheme.from(widget.config);
+    final appLocale = widget.appLocaleForLanguageCode(languageCode);
+    final themeMode = ref.watch(themeModeProvider);
+    final systemBrightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    final activeBrightness = switch (themeMode) {
+      ThemeMode.light => Brightness.light,
+      ThemeMode.dark => Brightness.dark,
+      ThemeMode.system => systemBrightness,
+    };
+    ColorTokens.setBrightness(activeBrightness);
+    final lightTheme = ClubTheme.from(
+      widget.config,
+      brightness: Brightness.light,
+    );
+    final darkTheme = ClubTheme.from(
+      widget.config,
+      brightness: Brightness.dark,
+    );
 
-    // The app is intentionally single-theme: always render with the original
-    // dark UI token implementation regardless of device appearance settings.
     return MaterialApp.router(
       title: widget.config.appName,
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
-      theme: appTheme,
-      darkTheme: appTheme,
+      themeMode: themeMode,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       routerConfig: _appRouter.router,
       builder: (context, child) {
         final appChild = child ?? const SizedBox.shrink();
@@ -431,14 +475,31 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
                 child: appChild,
               )
             : appChild;
-        return ClubConfigScope(
+        final scopedChild = ClubConfigScope(
           config: widget.config,
           child: OfflineBanner(child: protectedChild),
+        );
+        final localizedChild = AfriLocalizationsScope(
+          locale: appLocale,
+          child: scopedChild,
+        );
+        final highContrast = MediaQuery.maybeOf(context)?.highContrast ?? false;
+        if (!highContrast) {
+          return localizedChild;
+        }
+        return Theme(
+          data: ClubTheme.from(
+            widget.config,
+            brightness: Theme.of(context).brightness,
+            highContrast: true,
+          ),
+          child: localizedChild,
         );
       },
       locale: widget.frameworkLocaleForLanguageCode(languageCode),
       supportedLocales: widget.supportedLocales,
       localizationsDelegates: const [
+        AfriLocalizations.delegate,
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

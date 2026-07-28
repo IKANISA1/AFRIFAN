@@ -46,5 +46,62 @@ void main() {
 
       expect(route, isNull);
     });
+
+    test('rejects encoded separator paths', () {
+      final parser = DeepLinkParser(
+        websiteUri: Uri.parse('https://gikundiro.com'),
+        customScheme: 'gikundiro',
+      );
+
+      expect(
+        parser.toInternalUri(Uri.parse('gikundiro://settings/%5Cadmin')),
+        isNull,
+      );
+      expect(
+        parser.toInternalUri(Uri.parse('gikundiro://settings%2Fprivacy')),
+        isNull,
+      );
+    });
+  });
+
+  group('InternalRouteUriPolicy', () {
+    test('accepts local canonical paths with query and fragment', () {
+      final route = InternalRouteUriPolicy.validate(
+        Uri.parse('/fanzone/match/123?tab=stats#summary'),
+      );
+
+      expect(route?.toString(), '/fanzone/match/123?tab=stats#summary');
+    });
+
+    test(
+      'rejects external, authority, encoded separator, and control targets',
+      () {
+        for (final raw in <String>[
+          'https://attacker.example/settings',
+          '//attacker.example/settings',
+          '/settings/%2Fprivacy',
+          '/settings/%5Cprivacy',
+          '/settings/%0Aprivacy',
+          'settings/privacy',
+        ]) {
+          expect(
+            InternalRouteUriPolicy.validate(Uri.parse(raw)),
+            isNull,
+            reason: raw,
+          );
+        }
+      },
+    );
+
+    test('raw parsing rejects traversal before URI normalization', () {
+      for (final raw in <String>[
+        '/settings/../admin',
+        '/settings/%2E%2E/admin',
+        '/settings/./privacy',
+        '/settings/%2e/privacy',
+      ]) {
+        expect(InternalRouteUriPolicy.parse(raw), isNull, reason: raw);
+      }
+    });
   });
 }

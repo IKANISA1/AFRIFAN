@@ -41,6 +41,75 @@ void main() {
     expect(find.text('Detail'), findsOneWidget);
   });
 
+  testWidgets(
+    'route and routed-sheet builders remove motion for accessible navigation',
+    (tester) async {
+      late CustomTransitionPage<void> routePage;
+      late CustomTransitionPage<void> sheetPage;
+      late Widget routeTransition;
+      late Widget sheetTransition;
+
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(path: '/', builder: (_, __) => const Text('Home')),
+          GoRoute(
+            path: '/route',
+            pageBuilder: (context, state) {
+              routePage =
+                  afriRoutePage<void>(state, const Text('Reduced route'))
+                      as CustomTransitionPage<void>;
+              return routePage;
+            },
+          ),
+          GoRoute(
+            path: '/sheet',
+            pageBuilder: (context, state) {
+              sheetPage =
+                  afriSheetPage<void>(state, const Text('Reduced sheet'))
+                      as CustomTransitionPage<void>;
+              return sheetPage;
+            },
+          ),
+        ],
+      );
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      router.go('/route');
+      await tester.pumpAndSettle();
+      router.go('/sheet');
+      await tester.pumpAndSettle();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: const MediaQueryData(accessibleNavigation: true),
+            child: Builder(
+              builder: (context) {
+                routeTransition = routePage.transitionsBuilder(
+                  context,
+                  kAlwaysCompleteAnimation,
+                  kAlwaysDismissedAnimation,
+                  routePage.child,
+                );
+                sheetTransition = sheetPage.transitionsBuilder(
+                  context,
+                  kAlwaysCompleteAnimation,
+                  kAlwaysDismissedAnimation,
+                  sheetPage.child,
+                );
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ),
+      );
+
+      expect(routeTransition, isA<Text>());
+      expect(sheetTransition, isNot(isA<FadeTransition>()));
+      expect(sheetTransition, isNot(isA<SlideTransition>()));
+    },
+  );
+
   testWidgets('AfriDeferredRouteLoader shows loading then loaded content', (
     tester,
   ) async {
@@ -68,6 +137,30 @@ void main() {
     expect(find.text('Loaded route'), findsOneWidget);
   });
 
+  testWidgets('AfriDeferredRouteLoader disables transition motion on request', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MediaQuery(
+        data: MediaQueryData(accessibleNavigation: true),
+        child: MaterialApp(
+          home: AfriDeferredRouteLoader(
+            loadLibrary: _completeDeferredRoute,
+            builder: _buildLoadedRoute,
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+
+    final switcher = tester.widget<AnimatedSwitcher>(
+      find.byType(AnimatedSwitcher),
+    );
+    expect(switcher.duration, Duration.zero);
+    expect(find.text('Loaded route'), findsOneWidget);
+  });
+
   testWidgets('AfriDeferredRouteLoader renders a tokenized error state', (
     tester,
   ) async {
@@ -86,3 +179,7 @@ void main() {
     expect(find.textContaining('broken route'), findsOneWidget);
   });
 }
+
+Future<void> _completeDeferredRoute() async {}
+
+Widget _buildLoadedRoute(BuildContext context) => const Text('Loaded route');

@@ -104,10 +104,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     );
 
     if (!reduceMotion) {
-      brandMark = brandMark.animate().scale(
-        duration: 500.ms,
-        curve: Curves.easeOutBack,
-      );
+      brandMark = brandMark
+          .afriAnimate(context)
+          .scale(duration: 500.ms, curve: Curves.easeOutBack);
     }
 
     Widget progress = AfriLoadingIndicator(
@@ -116,12 +115,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     );
 
     if (!reduceMotion) {
-      progress = progress.animate(delay: 800.ms).fadeIn(duration: 400.ms);
+      progress = progress
+          .afriAnimate(context, delay: 800.ms)
+          .fadeIn(duration: 400.ms);
     }
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.clubPrimary,
-      body: Center(
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [brandMark, const SizedBox(height: 32), progress],

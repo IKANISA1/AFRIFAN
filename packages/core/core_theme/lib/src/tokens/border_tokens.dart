@@ -13,7 +13,11 @@ class BorderTokens {
   static const double hairline = 0.6;
   static const double standard = 1.0;
   static const double focus = 1.2;
+  static const double chrome = 1.15;
+  static const double chromeFocus = 1.4;
   static const double strong = 1.5;
+  static const double emphasis = 2.0;
+  static const double tabIndicator = 2.5;
 
   static Color _resolveColor(Color? color, double opacity) {
     final base = color ?? ColorTokens.ghostBorder;

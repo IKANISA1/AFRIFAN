@@ -1,9 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Search } from "lucide-react";
+import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
+import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
@@ -20,6 +26,7 @@ import type {
   AdminSmsManualReview,
   AdminSmsSnapshot,
 } from "@/lib/types";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 const emptySnapshot: AdminSmsSnapshot = {
   metrics: {},
@@ -33,14 +40,6 @@ const pipelineSteps = [
   { step: "4", title: "Ledger", body: "Wallet and contribution records reconcile.", color: "border-violet-500/30 bg-violet-500/5" },
 ];
 
-const runStatusColors: Record<string, string> = {
-  success: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  completed: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  running: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  failed: "bg-rose-500/15 text-rose-300 border-rose-500/30",
-  unknown: "bg-white/8 text-slate-300 border-border-soft",
-};
-
 export default function AdminSmsMonitorPage() {
   const { access, client } = useAdminPortal();
   const [snapshot, setSnapshot] = useState(emptySnapshot);
@@ -50,6 +49,72 @@ export default function AdminSmsMonitorPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busyReviewId, setBusyReviewId] = useState<string | null>(null);
+  const [detailReview, setDetailReview] =
+    useState<AdminSmsManualReview | null>(null);
+
+  const runCollection = useAdminCollection({
+    records: snapshot.syncRuns,
+    getId: (run) => run.id,
+    getSearchValues: (run) => [
+      run.status,
+      run.trigger,
+      run.scannedMessages,
+      run.uploadedMessages,
+    ],
+    getSortValue: (
+      run,
+      key: "status" | "trigger" | "scanned" | "uploaded" | "startedAt",
+    ) => {
+      switch (key) {
+        case "status":
+          return run.status;
+        case "trigger":
+          return run.trigger;
+        case "scanned":
+          return run.scannedMessages;
+        case "uploaded":
+          return run.uploadedMessages;
+        case "startedAt":
+          return run.startedAt ? new Date(run.startedAt) : null;
+      }
+    },
+    initialSortKey: "startedAt" as const,
+    initialSortDirection: "descending",
+    pageSize: 15,
+  });
+
+  const reviewCollection = useAdminCollection({
+    records: manualReviews,
+    getId: (review) => review.reviewId,
+    getSearchValues: (review) => [
+      review.reviewKind,
+      review.reason,
+      review.momoTxId,
+      review.payerName,
+      review.sender,
+      review.payeeName,
+      review.payeeNumberOrCode,
+      review.smsPreview,
+    ],
+    getSortValue: (
+      review,
+      key: "kind" | "amount" | "reason" | "updatedAt",
+    ) => {
+      switch (key) {
+        case "kind":
+          return review.reviewKind;
+        case "amount":
+          return review.amount;
+        case "reason":
+          return review.reason;
+        case "updatedAt":
+          return review.updatedAt ? new Date(review.updatedAt) : null;
+      }
+    },
+    initialSortKey: "updatedAt" as const,
+    initialSortDirection: "descending",
+    pageSize: 20,
+  });
 
   const loadSnapshot = useCallback(async () => {
     if (client == null) {
@@ -129,6 +194,7 @@ export default function AdminSmsMonitorPage() {
         intentId,
       });
       await loadSnapshot();
+      setDetailReview(null);
       showAdminToast("Manual review allocated.", "success");
     } catch (caught) {
       showAdminToast(
@@ -150,7 +216,9 @@ export default function AdminSmsMonitorPage() {
       !confirmAdminDestructiveAction({
         action: "Reject",
         subject: review.momoTxId ?? review.reviewId,
-        detail: "This marks the SMS review as not app-linked and leaves the ledger draft in place.",
+        scope: `Active club ${access.clubId ?? "not selected"}; one manual review`,
+        impact: "This marks the SMS review as not app-linked and leaves the ledger draft in place.",
+        undo: "manual_recovery",
       })
     ) {
       return;
@@ -162,6 +230,7 @@ export default function AdminSmsMonitorPage() {
         reviewId: review.reviewId,
       });
       await loadSnapshot();
+      setDetailReview(null);
       showAdminToast("Manual review rejected.", "success");
     } catch (caught) {
       showAdminToast(
@@ -275,64 +344,48 @@ export default function AdminSmsMonitorPage() {
             </button>
           </div>
           <div className="mt-5 space-y-3">
-            {loading ? (
-              <div className="space-y-3">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4">
-                    <Skeleton className="skeleton-text h-6 w-24" />
-                    <Skeleton className="skeleton-text mt-3 h-3 w-full" />
-                    <Skeleton className="skeleton-text mt-3 h-2 w-20" />
-                  </div>
-                ))}
-              </div>
-            ) : null}
-            {!loading && snapshot.syncRuns.length === 0 ? (
-              <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-                No sync runs have been recorded yet.
-              </p>
-            ) : null}
-            {!loading && snapshot.syncRuns.map((run) => {
-              const statusClass = runStatusColors[run.status] ?? runStatusColors.unknown;
-
-              return (
-                <article
-                  key={run.id}
-                  className="card-interactive rounded-[24px] border border-border-soft bg-white/5 px-4 py-4"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em]", statusClass)}>
-                        {run.status === "running" ? <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" /> : null}
-                        {run.status}
-                      </span>
-                    </div>
-                    <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-slate-300">
-                      {run.trigger}
-                    </span>
-                  </div>
-                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-[18px] border border-border-soft bg-black/10 px-3 py-2">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-club-accent">Scanned</p>
-                      <p className="mt-1 font-display text-lg font-bold">{run.scannedMessages}</p>
-                    </div>
-                    <div className="rounded-[18px] border border-border-soft bg-black/10 px-3 py-2">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-club-accent">Uploaded</p>
-                      <p className="mt-1 font-display text-lg font-bold">{run.uploadedMessages}</p>
-                    </div>
-                  </div>
-                  <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.24em] text-slate-400">
-                    {run.startedAt
-                      ? new Date(run.startedAt).toLocaleString("en-RW", {
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
-                      : "Awaiting run timestamp"}
-                  </p>
-                </article>
-              );
-            })}
+            <AdminFilterBar>
+              <label className="admin-search-field">
+                <Search size={16} aria-hidden="true" />
+                <span className="sr-only">Search SMS synchronization runs</span>
+                <input
+                  type="search"
+                  value={runCollection.query}
+                  onChange={(event) => runCollection.setQuery(event.target.value)}
+                  placeholder="Search status, trigger, or counts"
+                />
+              </label>
+            </AdminFilterBar>
+            <AdminDataGrid
+              caption="SMS synchronization runs"
+              busy={loading}
+              columns={[
+                { key: "status", label: "Status", priority: "primary", sortable: true, sortDirection: runCollection.sortDirectionFor("status"), onSort: () => runCollection.toggleSort("status") },
+                { key: "trigger", label: "Trigger", priority: "primary", sortable: true, sortDirection: runCollection.sortDirectionFor("trigger"), onSort: () => runCollection.toggleSort("trigger") },
+                { key: "scanned", label: "Scanned", priority: "secondary", sortable: true, sortDirection: runCollection.sortDirectionFor("scanned"), onSort: () => runCollection.toggleSort("scanned") },
+                { key: "uploaded", label: "Uploaded", priority: "secondary", sortable: true, sortDirection: runCollection.sortDirectionFor("uploaded"), onSort: () => runCollection.toggleSort("uploaded") },
+                { key: "started", label: "Started", priority: "primary", sortable: true, sortDirection: runCollection.sortDirectionFor("startedAt"), onSort: () => runCollection.toggleSort("startedAt") },
+              ]}
+            >
+              {loading ? (
+                Array.from({ length: 3 }).map((_, index) => (
+                  <tr key={index}><td colSpan={5}><Skeleton className="skeleton-text h-6 w-full" /></td></tr>
+                ))
+              ) : runCollection.pageResult.items.length === 0 ? (
+                <tr><td colSpan={5} className="py-8 text-center text-sm text-slate-400">{runCollection.query ? "No sync runs match the current search." : "No sync runs have been recorded yet."}</td></tr>
+              ) : (
+                runCollection.pageResult.items.map((run) => (
+                  <tr key={run.id}>
+                    <td><AdminStatusBadge label={run.status} tone={run.status === "failed" ? "danger" : run.status === "running" ? "warning" : "success"} /></td>
+                    <td>{run.trigger}</td>
+                    <td>{run.scannedMessages}</td>
+                    <td>{run.uploadedMessages}</td>
+                    <td>{run.startedAt ? new Date(run.startedAt).toLocaleString("en-RW") : "Awaiting timestamp"}</td>
+                  </tr>
+                ))
+              )}
+            </AdminDataGrid>
+            <AdminPagination page={runCollection.pageResult} onPageChange={runCollection.setPage} label="SMS synchronization runs" />
           </div>
         </article>
       </section>
@@ -358,123 +411,68 @@ export default function AdminSmsMonitorPage() {
           </div>
 
           <div className="mt-6 space-y-4">
-            {loading ? (
-              Array.from({ length: 3 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4"
-                >
-                  <Skeleton className="skeleton-text h-5 w-40" />
-                  <Skeleton className="skeleton-text mt-3 h-3 w-full" />
-                  <Skeleton className="skeleton-text mt-3 h-3 w-2/3" />
-                </div>
-              ))
-            ) : null}
-            {!loading && manualReviews.length === 0 ? (
-              <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-                No manual SMS reviews are waiting for action.
-              </p>
-            ) : null}
-            {!loading &&
-              manualReviews.map((review) => {
-                const intents = matchingIntents(review);
-                const busy = busyReviewId === review.reviewId;
-                return (
-                  <article
-                    key={review.reviewId}
-                    className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4"
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full border border-amber-400/30 bg-amber-500/12 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-200">
-                            {review.reviewKind.replaceAll("_", " ")}
-                          </span>
-                          <span className="rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-300">
-                            {review.amount.toLocaleString()} {review.currency}
-                          </span>
-                          {review.momoTxId ? (
-                            <span className="rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-300">
-                              {review.momoTxId}
-                            </span>
-                          ) : null}
-                        </div>
-                        <p className="mt-3 text-sm font-semibold text-white">
-                          {review.payerName ?? review.sender} → {review.payeeName ?? review.payeeNumberOrCode ?? "receiver"}
-                        </p>
-                        <p className="mt-2 text-sm leading-6 text-slate-300">
-                          {review.smsPreview}
-                        </p>
-                      </div>
-                      <div className="rounded-[20px] border border-white/8 bg-black/10 px-3 py-2 text-right text-xs text-slate-400">
-                        <p>{review.reason.replaceAll("_", " ")}</p>
-                        <p className="mt-1">
-                          {review.updatedAt
-                            ? new Date(review.updatedAt).toLocaleString("en-RW", {
-                                month: "short",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                            : "Awaiting timestamp"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_auto]">
-                      <label className="grid gap-2 text-sm text-slate-300">
-                        Matching pending intent
-                        <select
-                          value={intentSelections[review.reviewId] ?? ""}
-                          onChange={(event) =>
-                            setIntentSelections((current) => ({
-                              ...current,
-                              [review.reviewId]: event.target.value,
-                            }))
-                          }
-                          className="admin-input"
-                          disabled={busy}
-                        >
-                          <option value="">Choose a payment intent</option>
-                          {intents.map((intent) => (
-                            <option key={intent.id} value={intent.id}>
-                              {intent.userName} • {intent.expectedAmount.toLocaleString()} {intent.currency} • {intent.summaryLabel}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-
-                      <div className="flex flex-wrap items-end gap-3">
-                        <button
-                          type="button"
-                          onClick={() => handleAllocate(review).catch(() => {})}
-                          disabled={busy || intents.length === 0 || !intentSelections[review.reviewId]}
-                          className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light disabled:opacity-60"
-                        >
-                          {busy ? "Working…" : "Allocate"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleReject(review).catch(() => {})}
-                          disabled={busy}
-                          className="rounded-full border border-rose-400/30 bg-rose-500/10 px-5 py-3 text-sm font-semibold text-rose-100 transition hover:bg-rose-500/15 disabled:opacity-60"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    </div>
-
-                    {review.notes ? (
-                      <p className="mt-3 rounded-[18px] border border-white/8 bg-black/10 px-3 py-2 text-sm leading-6 text-slate-300">
-                        {review.notes}
-                      </p>
-                    ) : null}
-                  </article>
-                );
-              })}
+            <AdminFilterBar>
+              <label className="admin-search-field">
+                <Search size={16} aria-hidden="true" />
+                <span className="sr-only">Search manual SMS reviews</span>
+                <input type="search" value={reviewCollection.query} onChange={(event) => reviewCollection.setQuery(event.target.value)} placeholder="Search payer, receiver, reason, or transaction" />
+              </label>
+            </AdminFilterBar>
+            <AdminDataGrid
+              caption="Pending manual SMS allocation reviews"
+              busy={loading}
+              onRowActivate={(rowId) => setDetailReview(manualReviews.find((review) => review.reviewId === rowId) ?? null)}
+              columns={[
+                { key: "kind", label: "Review", priority: "primary", sortable: true, sortDirection: reviewCollection.sortDirectionFor("kind"), onSort: () => reviewCollection.toggleSort("kind") },
+                { key: "parties", label: "Payer to receiver", priority: "primary" },
+                { key: "amount", label: "Amount", priority: "primary", sortable: true, sortDirection: reviewCollection.sortDirectionFor("amount"), onSort: () => reviewCollection.toggleSort("amount") },
+                { key: "reason", label: "Reason", priority: "secondary", sortable: true, sortDirection: reviewCollection.sortDirectionFor("reason"), onSort: () => reviewCollection.toggleSort("reason") },
+                { key: "updated", label: "Updated", priority: "secondary", sortable: true, sortDirection: reviewCollection.sortDirectionFor("updatedAt"), onSort: () => reviewCollection.toggleSort("updatedAt") },
+              ]}
+            >
+              {loading ? (
+                Array.from({ length: 3 }).map((_, index) => <tr key={index}><td colSpan={5}><Skeleton className="skeleton-text h-6 w-full" /></td></tr>)
+              ) : reviewCollection.pageResult.items.length === 0 ? (
+                <tr><td colSpan={5} className="py-8 text-center text-sm text-slate-400">{reviewCollection.query ? "No manual reviews match the current search." : "No manual SMS reviews are waiting for action."}</td></tr>
+              ) : (
+                reviewCollection.pageResult.items.map((review) => (
+                  <tr key={review.reviewId} data-row-id={review.reviewId}>
+                    <td>{review.reviewKind.replaceAll("_", " ")}<span className="block max-w-48 truncate text-xs text-slate-500">{review.momoTxId ?? review.reviewId}</span></td>
+                    <td>{review.payerName ?? review.sender} → {review.payeeName ?? review.payeeNumberOrCode ?? "receiver"}</td>
+                    <td>{review.amount.toLocaleString()} {review.currency}</td>
+                    <td>{review.reason.replaceAll("_", " ")}</td>
+                    <td>{review.updatedAt ? new Date(review.updatedAt).toLocaleString("en-RW") : "Awaiting timestamp"}</td>
+                  </tr>
+                ))
+              )}
+            </AdminDataGrid>
+            <AdminPagination page={reviewCollection.pageResult} onPageChange={reviewCollection.setPage} label="Manual SMS reviews" />
           </div>
         </section>
       ) : null}
+      <AdminActionDrawer open={detailReview != null} onClose={() => setDetailReview(null)} title="Manual SMS review">
+        {detailReview ? (
+          <div className="grid gap-5 text-sm">
+            <dl className="grid gap-3">
+              <div><dt className="text-slate-500">Review type</dt><dd className="mt-1 text-slate-100">{detailReview.reviewKind.replaceAll("_", " ")}</dd></div>
+              <div><dt className="text-slate-500">Amount</dt><dd className="mt-1 text-slate-100">{detailReview.amount.toLocaleString()} {detailReview.currency}</dd></div>
+              <div><dt className="text-slate-500">Message preview</dt><dd className="mt-1 break-words text-slate-100">{detailReview.smsPreview}</dd></div>
+              <div><dt className="text-slate-500">Reason</dt><dd className="mt-1 text-slate-100">{detailReview.reason.replaceAll("_", " ")}</dd></div>
+            </dl>
+            <label className="grid gap-2 text-slate-300">
+              Matching pending intent
+              <select value={intentSelections[detailReview.reviewId] ?? ""} onChange={(event) => setIntentSelections((current) => ({ ...current, [detailReview.reviewId]: event.target.value }))} className="admin-input" disabled={busyReviewId === detailReview.reviewId}>
+                <option value="">Choose a payment intent</option>
+                {matchingIntents(detailReview).map((intent) => <option key={intent.id} value={intent.id}>{intent.userName} • {intent.expectedAmount.toLocaleString()} {intent.currency} • {intent.summaryLabel}</option>)}
+              </select>
+            </label>
+            <div className="flex flex-wrap gap-3">
+              <button type="button" onClick={() => handleAllocate(detailReview).catch(() => {})} disabled={busyReviewId === detailReview.reviewId || matchingIntents(detailReview).length === 0 || !intentSelections[detailReview.reviewId]} className="admin-button admin-button-primary disabled:opacity-60">{busyReviewId === detailReview.reviewId ? "Working…" : "Allocate"}</button>
+              <button type="button" onClick={() => handleReject(detailReview).catch(() => {})} disabled={busyReviewId === detailReview.reviewId} className="admin-button admin-button-secondary !text-rose-200 disabled:opacity-60">Reject</button>
+            </div>
+          </div>
+        ) : null}
+      </AdminActionDrawer>
     </div>
   );
 }

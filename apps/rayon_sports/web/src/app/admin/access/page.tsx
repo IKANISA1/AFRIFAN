@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Plus, Search, Trash2, KeyRound, ShieldCheck, UserPlus, Users } from "lucide-react";
+import { Search, Trash2, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
@@ -26,6 +27,7 @@ import type {
   AdminUserCandidate,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 const roleOptions: Array<{
   value: AdminAssignableRole;
@@ -60,6 +62,40 @@ export default function AdminAccessPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<"lookup" | "assign" | "revoke" | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [detailAssignment, setDetailAssignment] =
+    useState<AdminRoleAssignment | null>(null);
+
+  const assignmentCollection = useAdminCollection({
+    records: assignments,
+    getId: (assignment) => assignment.id,
+    getSearchValues: (assignment) => [
+      assignment.userName,
+      assignment.userPhone,
+      assignment.userEmail,
+      assignment.role,
+      assignment.clubName,
+      assignment.publicUserId,
+      assignment.grantedByName,
+    ],
+    getSortValue: (
+      assignment,
+      key: "user" | "role" | "scope" | "grantedAt",
+    ) => {
+      switch (key) {
+        case "user":
+          return assignment.userName;
+        case "role":
+          return assignment.role;
+        case "scope":
+          return assignment.clubName ?? "Platform scope";
+        case "grantedAt":
+          return new Date(assignment.grantedAt);
+      }
+    },
+    initialSortKey: "grantedAt" as const,
+    initialSortDirection: "descending",
+    pageSize: 25,
+  });
 
   const selectedRole = roleOptions.find((entry) => entry.value === role) ?? roleOptions[0];
 
@@ -147,7 +183,11 @@ export default function AdminAccessPage() {
     if (!confirmAdminDestructiveAction({
       action: "Revoke",
       subject: `${assignment.userName} (${formatAdminRoleLabel(assignment.role)})`,
-      detail: "This admin assignment will be disabled immediately.",
+      scope: assignment.clubName == null
+        ? "Platform administration"
+        : `Club ${assignment.clubName}`,
+      impact: "This admin assignment will be disabled immediately.",
+      undo: "manual_recovery",
     })) return;
 
     setBusyAction("revoke");
@@ -218,10 +258,11 @@ export default function AdminAccessPage() {
             </label>
           }
         >
-          <div className="flex items-center gap-2 rounded-lg border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] px-3 py-1.5 text-sm text-[var(--admin-zinc-400)]">
-            <Search size={14} />
-            <span className="text-[11px] uppercase tracking-wider">Administrator list</span>
-          </div>
+          <label className="admin-search-field">
+            <Search size={14} aria-hidden="true" />
+            <span className="sr-only">Search administrator assignments</span>
+            <input type="search" value={assignmentCollection.query} onChange={(event) => assignmentCollection.setQuery(event.target.value)} placeholder="Search administrator, role, or scope" />
+          </label>
         </AdminFilterBar>
 
         {loadError && !loading ? (
@@ -231,12 +272,15 @@ export default function AdminAccessPage() {
         ) : null}
 
         <AdminDataGrid
+          caption="Administrator role assignments"
+          busy={loading}
+          onRowActivate={(rowId) => setDetailAssignment(assignments.find((assignment) => assignment.id === rowId) ?? null)}
           columns={[
-            { key: "user", label: "User / Administrator" },
-            { key: "role", label: "Permission Role" },
-            { key: "scope", label: "Operational Scope" },
-            { key: "granted", label: "Authorized On" },
-            { key: "actions", label: "", className: "w-24" },
+            { key: "user", label: "User / Administrator", priority: "primary", sortable: true, sortDirection: assignmentCollection.sortDirectionFor("user"), onSort: () => assignmentCollection.toggleSort("user") },
+            { key: "role", label: "Permission Role", priority: "primary", sortable: true, sortDirection: assignmentCollection.sortDirectionFor("role"), onSort: () => assignmentCollection.toggleSort("role") },
+            { key: "scope", label: "Operational Scope", priority: "secondary", sortable: true, sortDirection: assignmentCollection.sortDirectionFor("scope"), onSort: () => assignmentCollection.toggleSort("scope") },
+            { key: "granted", label: "Authorized On", priority: "secondary", sortable: true, sortDirection: assignmentCollection.sortDirectionFor("grantedAt"), onSort: () => assignmentCollection.toggleSort("grantedAt") },
+            { key: "actions", label: "Actions", priority: "primary", className: "w-24" },
           ]}
         >
           {loading ? (
@@ -247,15 +291,15 @@ export default function AdminAccessPage() {
                 </td>
               </tr>
             ))
-          ) : assignments.length === 0 ? (
+          ) : assignmentCollection.pageResult.items.length === 0 ? (
             <tr>
               <td colSpan={5} className="p-12 text-center text-sm text-[var(--admin-zinc-500)]">
-                No admin assignments found.
+                {assignmentCollection.query ? "No assignments match the current search." : "No admin assignments found."}
               </td>
             </tr>
           ) : (
-            assignments.map((assignment) => (
-              <tr key={assignment.id} className={cn(!assignment.isActive && "opacity-60 grayscale-[0.5]")}>
+            assignmentCollection.pageResult.items.map((assignment) => (
+              <tr key={assignment.id} data-row-id={assignment.id} className={cn(!assignment.isActive && "opacity-60 grayscale-[0.5]")}>
                 <td>
                   <div className="space-y-0.5">
                     <p className="admin-row-title">{assignment.userName}</p>
@@ -303,6 +347,7 @@ export default function AdminAccessPage() {
             ))
           )}
         </AdminDataGrid>
+        <AdminPagination page={assignmentCollection.pageResult} onPageChange={assignmentCollection.setPage} label="Administrator assignments" />
       </div>
 
       <AdminActionDrawer
@@ -404,6 +449,18 @@ export default function AdminAccessPage() {
             </label>
           </div>
         </div>
+      </AdminActionDrawer>
+      <AdminActionDrawer open={detailAssignment != null} onClose={() => setDetailAssignment(null)} title="Administrator assignment details">
+        {detailAssignment ? (
+          <dl className="grid gap-4 text-sm">
+            <div><dt className="text-slate-500">Administrator</dt><dd className="mt-1 text-slate-100">{detailAssignment.userName}</dd></div>
+            <div><dt className="text-slate-500">Contact</dt><dd className="mt-1 text-slate-100">{detailAssignment.userPhone ?? detailAssignment.userEmail ?? "No contact verified"}</dd></div>
+            <div><dt className="text-slate-500">Role</dt><dd className="mt-1 text-slate-100">{formatAdminRoleLabel(detailAssignment.role)}</dd></div>
+            <div><dt className="text-slate-500">Scope</dt><dd className="mt-1 text-slate-100">{detailAssignment.clubName ?? "Platform scope"}</dd></div>
+            <div><dt className="text-slate-500">Authorized</dt><dd className="mt-1 text-slate-100">{new Date(detailAssignment.grantedAt).toLocaleString("en-RW")} by {detailAssignment.grantedByName ?? "system"}</dd></div>
+            <div><dt className="text-slate-500">Status</dt><dd className="mt-1 text-slate-100">{detailAssignment.isActive ? "Active" : "Revoked"}</dd></div>
+          </dl>
+        ) : null}
       </AdminActionDrawer>
     </div>
   );

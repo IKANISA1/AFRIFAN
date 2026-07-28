@@ -217,7 +217,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
     if (!_isActiveClubTeam) {
       _showMessage(
         _clubSupportMessage ??
-            'Contributions are only available for the active club in this app.',
+            'Contributions are available only for the active club.',
       );
       return;
     }
@@ -320,7 +320,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
   Widget build(BuildContext context) {
     final team = _team;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -337,7 +337,9 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
           tooltip: 'Back',
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: true,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

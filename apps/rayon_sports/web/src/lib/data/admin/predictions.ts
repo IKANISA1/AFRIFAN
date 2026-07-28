@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
+import { mutateRecordWithVariantsIfUnchanged } from "./helpers";
 
 /* ---------- Types ---------- */
 
@@ -23,6 +24,7 @@ export interface AdminPredictionMarket {
   leagueAvailability: string[];
   sortOrder: number;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface AdminCompetition {
@@ -36,6 +38,7 @@ export interface AdminCompetition {
   countryName: string;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface AdminSeason {
@@ -51,6 +54,7 @@ export interface AdminSeason {
   status: string;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface AdminFixture {
@@ -67,6 +71,7 @@ export interface AdminFixture {
   homeScore: number | null;
   awayScore: number | null;
   status: string;
+  updatedAt: string;
 }
 
 /* ---------- Mappers ---------- */
@@ -84,9 +89,12 @@ function mapMarket(row: Record<string, unknown>): AdminPredictionMarket {
     defaultFetValue: safeNumber(row.default_fet_value, 0),
     description: safeString(row.description),
     isActive: row.is_active !== false,
-    leagueAvailability: Array.isArray(row.league_availability) ? row.league_availability.map(String) : [],
+    leagueAvailability: Array.isArray(row.league_availability)
+      ? row.league_availability.map(String)
+      : [],
     sortOrder: safeNumber(row.sort_order, 0),
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at),
   };
 }
 
@@ -102,6 +110,7 @@ function mapCompetition(row: Record<string, unknown>): AdminCompetition {
     countryName: safeString(row.country_name),
     isActive: row.is_active !== false,
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at),
   };
 }
 
@@ -119,6 +128,7 @@ function mapSeason(row: Record<string, unknown>): AdminSeason {
     status: safeString(row.status, "active"),
     isActive: row.is_active !== false,
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at),
   };
 }
 
@@ -137,6 +147,7 @@ function mapFixture(row: Record<string, unknown>): AdminFixture {
     homeScore: row.home_score == null ? null : safeNumber(row.home_score, 0),
     awayScore: row.away_score == null ? null : safeNumber(row.away_score, 0),
     status: safeString(row.status, "scheduled"),
+    updatedAt: safeString(row.updated_at),
   };
 }
 
@@ -156,7 +167,9 @@ export async function getAdminPredictionMarkets(
     .order("sort_order", { ascending: true });
 
   if (error) throw new Error(error.message);
-  return Array.isArray(data) ? data.map((r) => mapMarket(r as Record<string, unknown>)) : [];
+  return Array.isArray(data)
+    ? data.map((r) => mapMarket(r as Record<string, unknown>))
+    : [];
 }
 
 export async function saveAdminPredictionMarket(
@@ -164,6 +177,7 @@ export async function saveAdminPredictionMarket(
   _access: AdminAccess,
   input: {
     id?: string | null;
+    expectedUpdatedAt?: string | null;
     name: string;
     shortName?: string;
     slug?: string;
@@ -178,13 +192,19 @@ export async function saveAdminPredictionMarket(
   },
 ): Promise<string> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<string>("predictions-markets", { method: "POST", body: input });
+    return requestAdminApi<string>("predictions-markets", {
+      method: "POST",
+      body: input,
+    });
   }
 
   const payload = {
     name: input.name.trim(),
     short_name: safeString(input.shortName, input.name.trim()),
-    slug: safeString(input.slug, input.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")),
+    slug: safeString(
+      input.slug,
+      input.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    ),
     market_group: safeString(input.marketGroup, "custom"),
     market_category: safeString(input.marketCategory, "Custom"),
     bet_type: safeString(input.betType, "Outright"),
@@ -196,12 +216,20 @@ export async function saveAdminPredictionMarket(
   };
 
   if (input.id) {
-    const { error } = await client.from("prediction_markets_catalog").update(payload).eq("id", input.id);
-    if (error) throw new Error(error.message);
-    return input.id;
+    return mutateRecordWithVariantsIfUnchanged(
+      client,
+      "prediction_markets_catalog",
+      input.id,
+      input.expectedUpdatedAt,
+      [payload],
+    );
   }
 
-  const { data, error } = await client.from("prediction_markets_catalog").insert(payload).select("id").single();
+  const { data, error } = await client
+    .from("prediction_markets_catalog")
+    .insert(payload)
+    .select("id")
+    .single();
   if (error) throw new Error(error.message);
   return toIdString(data?.id, crypto.randomUUID());
 }
@@ -222,7 +250,9 @@ export async function getAdminCompetitions(
     .order("name", { ascending: true });
 
   if (error) throw new Error(error.message);
-  return Array.isArray(data) ? data.map((r) => mapCompetition(r as Record<string, unknown>)) : [];
+  return Array.isArray(data)
+    ? data.map((r) => mapCompetition(r as Record<string, unknown>))
+    : [];
 }
 
 export async function saveAdminCompetition(
@@ -230,6 +260,7 @@ export async function saveAdminCompetition(
   _access: AdminAccess,
   input: {
     id?: string | null;
+    expectedUpdatedAt?: string | null;
     name: string;
     shortName?: string;
     slug?: string;
@@ -241,13 +272,19 @@ export async function saveAdminCompetition(
   },
 ): Promise<string> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<string>("predictions-competitions", { method: "POST", body: input });
+    return requestAdminApi<string>("predictions-competitions", {
+      method: "POST",
+      body: input,
+    });
   }
 
   const payload = {
     name: input.name.trim(),
     short_name: safeString(input.shortName, input.name.trim()),
-    slug: safeString(input.slug, input.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")),
+    slug: safeString(
+      input.slug,
+      input.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    ),
     competition_kind: safeString(input.competitionKind, "league"),
     region: safeString(input.region, "africa"),
     country_code: safeString(input.countryCode),
@@ -256,12 +293,20 @@ export async function saveAdminCompetition(
   };
 
   if (input.id) {
-    const { error } = await client.from("football_competitions_catalog").update(payload).eq("id", input.id);
-    if (error) throw new Error(error.message);
-    return input.id;
+    return mutateRecordWithVariantsIfUnchanged(
+      client,
+      "football_competitions_catalog",
+      input.id,
+      input.expectedUpdatedAt,
+      [payload],
+    );
   }
 
-  const { data, error } = await client.from("football_competitions_catalog").insert(payload).select("id").single();
+  const { data, error } = await client
+    .from("football_competitions_catalog")
+    .insert(payload)
+    .select("id")
+    .single();
   if (error) throw new Error(error.message);
   return toIdString(data?.id, crypto.randomUUID());
 }
@@ -282,7 +327,9 @@ export async function getAdminSeasons(
     .order("year_start", { ascending: false });
 
   if (error) throw new Error(error.message);
-  return Array.isArray(data) ? data.map((r) => mapSeason(r as Record<string, unknown>)) : [];
+  return Array.isArray(data)
+    ? data.map((r) => mapSeason(r as Record<string, unknown>))
+    : [];
 }
 
 export async function saveAdminSeason(
@@ -290,6 +337,7 @@ export async function saveAdminSeason(
   _access: AdminAccess,
   input: {
     id?: string | null;
+    expectedUpdatedAt?: string | null;
     competitionId: string;
     competitionName?: string;
     slug?: string;
@@ -303,7 +351,10 @@ export async function saveAdminSeason(
   },
 ): Promise<string> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<string>("predictions-seasons", { method: "POST", body: input });
+    return requestAdminApi<string>("predictions-seasons", {
+      method: "POST",
+      body: input,
+    });
   }
 
   const payload = {
@@ -320,12 +371,20 @@ export async function saveAdminSeason(
   };
 
   if (input.id) {
-    const { error } = await client.from("football_seasons_catalog").update(payload).eq("id", input.id);
-    if (error) throw new Error(error.message);
-    return input.id;
+    return mutateRecordWithVariantsIfUnchanged(
+      client,
+      "football_seasons_catalog",
+      input.id,
+      input.expectedUpdatedAt,
+      [payload],
+    );
   }
 
-  const { data, error } = await client.from("football_seasons_catalog").insert(payload).select("id").single();
+  const { data, error } = await client
+    .from("football_seasons_catalog")
+    .insert(payload)
+    .select("id")
+    .single();
   if (error) throw new Error(error.message);
   return toIdString(data?.id, crypto.randomUUID());
 }
@@ -347,7 +406,9 @@ export async function getAdminFixtures(
     .limit(200);
 
   if (error) throw new Error(error.message);
-  return Array.isArray(data) ? data.map((r) => mapFixture(r as Record<string, unknown>)) : [];
+  return Array.isArray(data)
+    ? data.map((r) => mapFixture(r as Record<string, unknown>))
+    : [];
 }
 
 export async function saveAdminFixture(
@@ -355,13 +416,17 @@ export async function saveAdminFixture(
   _access: AdminAccess,
   input: {
     id: string;
+    expectedUpdatedAt?: string | null;
     homeScore?: number | null;
     awayScore?: number | null;
     status?: string;
   },
 ): Promise<string> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<string>("predictions-fixtures", { method: "POST", body: input });
+    return requestAdminApi<string>("predictions-fixtures", {
+      method: "POST",
+      body: input,
+    });
   }
 
   const payload: Record<string, unknown> = {};
@@ -369,10 +434,11 @@ export async function saveAdminFixture(
   if (input.awayScore !== undefined) payload.away_score = input.awayScore;
   if (input.status) payload.status = input.status;
 
-  const { error } = await client
-    .from("football_fixtures_catalog")
-    .update(payload)
-    .eq("id", input.id);
-  if (error) throw new Error(error.message);
-  return input.id;
+  return mutateRecordWithVariantsIfUnchanged(
+    client,
+    "football_fixtures_catalog",
+    input.id,
+    input.expectedUpdatedAt,
+    [payload],
+  );
 }

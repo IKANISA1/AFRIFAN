@@ -1,13 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { NewsCard } from "@/components/news-card";
-import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getNewsArticles } from "@/lib/data/public";
 import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
-import { formatDate, getReadingTime } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 
 export async function generateMetadata() {
   const club = await getClubProfile();

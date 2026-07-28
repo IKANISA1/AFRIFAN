@@ -126,7 +126,7 @@ class TeamContributionRouteBanner extends StatelessWidget {
             ],
           ),
         )
-        .animate()
+        .afriAnimate(context)
         .fadeIn(duration: 400.ms)
         .slideY(begin: 0.04, end: 0, duration: 400.ms);
   }
@@ -555,7 +555,7 @@ class TeamContributeTab extends StatelessWidget {
               isLoading: isDialing,
               enabled: !isDialing,
             )
-            .animate()
+            .afriAnimate(context)
             .fadeIn(duration: 400.ms, delay: 200.ms)
             .slideY(begin: 0.06, end: 0, duration: 400.ms),
       ],

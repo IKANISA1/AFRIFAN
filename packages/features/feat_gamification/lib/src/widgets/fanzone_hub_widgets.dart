@@ -280,6 +280,8 @@ class HubPartnerPoolRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewerEntry = pool.viewerEntry;
+    final usesAccessibleTextLayout =
+        MediaQuery.textScalerOf(context).scale(14) > 18;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -317,20 +319,30 @@ class HubPartnerPoolRow extends StatelessWidget {
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '${pool.partnerStakeFet}',
-                  style: TypographyTokens.titleMedium(
-                    ColorTokens.clubAccent,
-                  ).copyWith(fontWeight: FontWeight.w800),
-                ),
-                Text('points round', style: TypographyTokens.labelSmall()),
-              ],
-            ),
+            if (!usesAccessibleTextLayout)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${pool.partnerStakeFet}',
+                    style: TypographyTokens.titleMedium(
+                      ColorTokens.clubAccent,
+                    ).copyWith(fontWeight: FontWeight.w800),
+                  ),
+                  Text('points round', style: TypographyTokens.labelSmall()),
+                ],
+              ),
           ],
         ),
+        if (usesAccessibleTextLayout) ...[
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            '${pool.partnerStakeFet} points round',
+            style: TypographyTokens.titleMedium(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w800),
+          ),
+        ],
         const SizedBox(height: SpacingTokens.spacing3),
         Wrap(
           spacing: SpacingTokens.spacing2,

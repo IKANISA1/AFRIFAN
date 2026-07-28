@@ -1,3 +1,4 @@
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -86,7 +87,7 @@ class TicketCheckoutStep extends StatelessWidget {
             AfriSurfaceCard(
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     AfriIcons.verified,
                     color: ColorTokens.success,
                   ),
@@ -102,22 +103,27 @@ class TicketCheckoutStep extends StatelessWidget {
             ),
           ],
           const SizedBox(height: SpacingTokens.spacing6),
-          AfriButton(
-            label: match.isSoldOut
-                ? 'Sold out'
-                : paymentRouteMessage != null
-                    ? 'Payment route not ready'
-                    : submitting
-                        ? 'Processing'
-                        : 'Pay via MOMO',
-            icon: AfriIcons.phone,
-            fullWidth: true,
-            isLoading: submitting,
-            onTap: onPurchaseRequest,
-            enabled: !match.isSoldOut &&
-                match.isOnSale &&
-                !submitting &&
-                paymentRouteMessage == null,
+          ConnectivityBuilder(
+            builder: (context, isOnline) => AfriButton(
+              label: !isOnline
+                  ? 'Connection required'
+                  : match.isSoldOut
+                      ? 'Sold out'
+                      : paymentRouteMessage != null
+                          ? 'Payment route not ready'
+                          : submitting
+                              ? 'Processing'
+                              : 'Pay via MOMO',
+              icon: AfriIcons.phone,
+              fullWidth: true,
+              isLoading: submitting,
+              onTap: onPurchaseRequest,
+              enabled: isOnline &&
+                  !match.isSoldOut &&
+                  match.isOnSale &&
+                  !submitting &&
+                  paymentRouteMessage == null,
+            ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Text(

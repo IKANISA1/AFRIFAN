@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/touch_target_audit.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,7 @@ void main() {
     expect(find.text('Edit profile'), findsOneWidget);
     expect(find.text('Notifications'), findsOneWidget);
     expect(find.text('Privacy'), findsOneWidget);
+    expectTapTargetsMeetMinimum(tester);
 
     // Scroll to reveal Support section
     await tester.scrollUntilVisible(find.text('Help & support'), 200);
@@ -28,10 +30,12 @@ void main() {
     // Support section
     expect(find.text('Help & support'), findsOneWidget);
     expect(find.text('Privacy policy'), findsNothing);
+    expectTapTargetsMeetMinimum(tester);
 
     await tester.scrollUntilVisible(find.text('Sign out'), 200);
     await tester.pumpAndSettle();
     expect(find.text('Sign out'), findsOneWidget);
+    expectTapTargetsMeetMinimum(tester);
   });
 
   testWidgets('settings does not show removed items', (tester) async {
@@ -83,6 +87,82 @@ void main() {
 
     expect(find.byType(SettingsScreen), findsOneWidget);
   });
+
+  testWidgets(
+    'reserves floating navigation clearance in landscape without keyboard double padding',
+    (tester) async {
+      tester.view.physicalSize = const Size(852, 393);
+      tester.view.devicePixelRatio = 1.0;
+      tester.view.viewPadding = const FakeViewPadding(bottom: 18);
+      tester.view.viewInsets = const FakeViewPadding(bottom: 220);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetViewPadding);
+      addTearDown(tester.view.resetViewInsets);
+
+      await tester.pumpWidget(_buildSettingsApp());
+      await tester.pumpAndSettle();
+
+      final inset = tester.widget<Padding>(
+        find.byKey(const ValueKey('afri-screen-bottom-inset')),
+      );
+      final bottom = inset.padding.resolve(TextDirection.ltr).bottom;
+      expect(
+        bottom,
+        AfriClubBottomNav.regularHeight +
+            AfriClubBottomNav.bottomMargin +
+            AfriClubBottomNav.contentClearance,
+      );
+      // SafeArea consumes the 18 px system inset before the ListView resolves
+      // its own floating-navigation clearance.
+      expect(find.byType(SafeArea), findsWidgets);
+      expect(bottom, lessThan(220));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'compact-height landscape keeps Settings navigation and actions usable',
+    (tester) async {
+      tester.view.physicalSize = const Size(720, 320);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(_buildSettingsApp());
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(find.text('Edit profile'), 120);
+      await tester.pumpAndSettle();
+      expect(find.text('Edit profile'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Help & support'), 120);
+      await tester.pumpAndSettle();
+      expect(find.text('Help & support'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('uses compact navigation clearance at 200 percent text', (
+    tester,
+  ) async {
+    _setMobileSurface(tester);
+    tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+    await tester.pumpWidget(_buildSettingsApp());
+    await tester.pumpAndSettle();
+
+    final inset = tester.widget<Padding>(
+      find.byKey(const ValueKey('afri-screen-bottom-inset')),
+    );
+    expect(
+      inset.padding.resolve(TextDirection.ltr).bottom,
+      AfriClubBottomNav.compactHeight +
+          AfriClubBottomNav.bottomMargin +
+          AfriClubBottomNav.contentClearance,
+    );
+    expect(tester.takeException(), isNull);
+  });
 }
 
 Widget _buildSettingsApp({_FakeClubConfig? config}) {
@@ -98,7 +178,10 @@ Widget _buildSettingsApp({_FakeClubConfig? config}) {
   );
 
   return ProviderScope(
-    overrides: [currentUserProvider.overrideWith((ref) => null)],
+    overrides: [
+      currentUserProvider.overrideWith((ref) => null),
+      supportWhatsAppProvider.overrideWith((ref) async => '250000000000'),
+    ],
     child: ClubConfigScope(
       config: effectiveConfig,
       child: MaterialApp.router(

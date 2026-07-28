@@ -1,0 +1,2093 @@
+{
+  "schema_version": "1.0",
+  "cells": {
+    "inputs|number|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light form catalogs render the numeric input with populated default content."
+    },
+    "inputs|money|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light form catalogs render the currency-aware default state."
+    },
+    "inputs|phone|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light form catalogs render the populated phone-input default state."
+    },
+    "inputs|email|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light form catalogs render the populated email-input default state."
+    },
+    "inputs|password|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light form catalogs render the masked password default state and its explicit reveal control."
+    },
+    "inputs|date|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light form catalogs render the populated date-input default state."
+    },
+    "inputs|time|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light form catalogs render the populated time-input default state."
+    },
+    "inputs|otp|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light form catalogs render a bounded populated OTP default state."
+    },
+    "inputs|file_media_picker|selected": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render a selected file, filename, and provenance source."
+    },
+    "inputs|file_media_picker|warning": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render the picker warning state with non-color status icon and text."
+    },
+    "selection|checkbox|selected": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render the checked selection state."
+    },
+    "selection|checkbox|disabled": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The checked catalog checkbox has no change callback and visibly renders the disabled state."
+    },
+    "selection|radio|selected": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render the selected mutually-exclusive option."
+    },
+    "selection|radio|disabled": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The selected catalog radio has no change callback and visibly renders the disabled state."
+    },
+    "data_display|table_row|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render a complete three-cell responsive table row."
+    },
+    "data_display|avatar|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render the initials fallback with deterministic geometry."
+    },
+    "data_display|badge|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render verification and achievement badge variants."
+    },
+    "data_display|timeline|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render a populated semantic timeline."
+    },
+    "data_display|receipt|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render labelled receipt lines and total."
+    },
+    "app_shell|large_screen_side_rail|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed navigation catalogs render the extended large-screen rail with two destinations."
+    },
+    "navigation|large_screen_breadcrumb|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed navigation catalogs render the complete three-level breadcrumb hierarchy."
+    },
+    "media|video_thumbnail|error": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs deliberately deny unapproved media and render the privacy-safe unavailable fallback."
+    },
+    "media|document_preview|offline": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render the document offline state with explicit text and icon."
+    },
+    "media|qr_barcode_surface|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render an enabled synthetic ticket-code surface and privacy helper text."
+    },
+    "security_privacy|session_timeout|warning": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render a two-minute timeout warning and reauthentication action."
+    },
+    "security_privacy|permission_prompt|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render the caller-owned permission education state and continue action."
+    },
+    "security_privacy|consent_review|default": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render required and optional consent rows plus explicit confirmation."
+    },
+    "security_privacy|consent_review|selected": {
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed catalogs render the required consent item selected and the optional item unselected."
+    }
+  },
+  "groups": [
+    {
+      "id": "interactive-state-catalog",
+      "cells": [
+        "buttons|primary|default",
+        "buttons|secondary|default",
+        "buttons|tertiary|default",
+        "buttons|destructive|default",
+        "buttons|icon_only|default",
+        "buttons|icon_only|disabled",
+        "buttons|loading|loading",
+        "buttons|disabled|disabled",
+        "inputs|file_media_picker|default",
+        "inputs|file_media_picker|disabled",
+        "inputs|file_media_picker|empty",
+        "selection|checkbox|default",
+        "selection|radio|default",
+        "selection|switch|default",
+        "selection|switch|selected",
+        "selection|switch|disabled",
+        "selection|segmented_control|default",
+        "selection|segmented_control|selected",
+        "selection|segmented_control|disabled",
+        "selection|chips|default",
+        "selection|chips|selected",
+        "selection|chips|disabled",
+        "feedback|banner|default",
+        "feedback|banner|loading",
+        "feedback|banner|success",
+        "feedback|banner|warning",
+        "feedback|banner|error",
+        "feedback|banner|offline",
+        "data_display|list_row|default",
+        "data_display|list_row|disabled",
+        "data_display|card|default",
+        "data_display|card|disabled",
+        "data_display|activity_item|default",
+        "data_display|activity_item|disabled",
+        "data_display|metric|default",
+        "data_display|timeline|empty",
+        "navigation|list_item|default",
+        "navigation|list_item|disabled",
+        "navigation|back_button|default",
+        "navigation|back_button|disabled"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_interactive_state_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_interactive_state_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light interactive catalogs render this exact component-owned state with deterministic synthetic content."
+    },
+    {
+      "id": "async-state-catalog",
+      "cells": [
+        "inputs|file_media_picker|loading",
+        "inputs|file_media_picker|success",
+        "inputs|file_media_picker|error",
+        "inputs|file_media_picker|offline",
+        "inputs|file_media_picker|permission_denied",
+        "feedback|progress_indicator|loading",
+        "feedback|skeleton|skeleton",
+        "feedback|empty_state|empty",
+        "feedback|error_state|error",
+        "feedback|error_state|offline",
+        "security_privacy|session_timeout|offline",
+        "security_privacy|permission_prompt|permission_denied"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_async_state_catalog_900x1600.png",
+        "packages/core/core_theme/test/goldens/universal_async_state_catalog_900x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light async catalogs render this exact recovery or trust state with deterministic synthetic content."
+    },
+    {
+      "id": "input-state-catalog",
+      "cells": [
+        "inputs|text|default",
+        "inputs|text|disabled",
+        "inputs|text|error",
+        "inputs|text|empty",
+        "inputs|number|disabled",
+        "inputs|number|error",
+        "inputs|number|empty",
+        "inputs|money|disabled",
+        "inputs|money|error",
+        "inputs|money|empty",
+        "inputs|phone|disabled",
+        "inputs|phone|error",
+        "inputs|phone|empty",
+        "inputs|email|disabled",
+        "inputs|email|error",
+        "inputs|email|empty",
+        "inputs|password|disabled",
+        "inputs|password|error",
+        "inputs|password|empty",
+        "inputs|date|disabled",
+        "inputs|date|error",
+        "inputs|date|empty",
+        "inputs|time|disabled",
+        "inputs|time|error",
+        "inputs|time|empty",
+        "inputs|multiline|default",
+        "inputs|multiline|disabled",
+        "inputs|multiline|error",
+        "inputs|multiline|empty",
+        "inputs|otp|disabled",
+        "inputs|otp|error",
+        "inputs|otp|empty"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_input_state_catalog_1400x1600.png",
+        "packages/core/core_theme/test/goldens/universal_input_state_catalog_1400x1600_light.png"
+      ],
+      "disposition_note": "The governed 1400 by 1600 dark and light input catalogs render this exact populated, disabled, error, or empty state without clipping."
+    },
+    {
+      "id": "media-state-catalog",
+      "cells": [
+        "media|image|default",
+        "media|image|loading",
+        "media|image|error",
+        "media|image|empty",
+        "media|image|offline",
+        "media|image|permission_denied",
+        "media|image|skeleton",
+        "media|video_thumbnail|default",
+        "media|video_thumbnail|loading",
+        "media|video_thumbnail|empty",
+        "media|video_thumbnail|offline",
+        "media|video_thumbnail|permission_denied",
+        "media|video_thumbnail|skeleton",
+        "media|document_preview|default",
+        "media|document_preview|loading",
+        "media|document_preview|error",
+        "media|document_preview|empty",
+        "media|document_preview|permission_denied",
+        "media|document_preview|skeleton",
+        "media|qr_barcode_surface|disabled",
+        "media|qr_barcode_surface|error",
+        "media|qr_barcode_surface|empty"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart",
+        "packages/core/core_theme/test/afri_governed_image_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_media_state_catalog_1400x1600.png",
+        "packages/core/core_theme/test/goldens/universal_media_state_catalog_1400x1600_light.png"
+      ],
+      "disposition_note": "The governed dark and light media catalogs render the explicit ready, loading, error, empty, offline, permission, skeleton, or disabled production state with stable geometry and privacy-safe semantics."
+    },
+    {
+      "id": "security-state-catalog",
+      "cells": [
+        "security_privacy|masked_value|default",
+        "security_privacy|masked_value|selected",
+        "security_privacy|masked_value|disabled",
+        "security_privacy|reveal_control|default",
+        "security_privacy|reveal_control|selected",
+        "security_privacy|reveal_control|disabled",
+        "security_privacy|session_timeout|default",
+        "security_privacy|session_timeout|error",
+        "security_privacy|permission_prompt|disabled",
+        "security_privacy|permission_prompt|warning",
+        "security_privacy|permission_prompt|error",
+        "security_privacy|consent_review|disabled",
+        "security_privacy|consent_review|success",
+        "security_privacy|consent_review|warning",
+        "security_privacy|consent_review|error",
+        "security_privacy|consent_review|empty"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart",
+        "packages/core/core_theme/test/afri_masked_value_test.dart",
+        "packages/core/core_theme/test/universal_component_primitives_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_security_state_catalog_1400x2200.png",
+        "packages/core/core_theme/test/goldens/universal_security_state_catalog_1400x2200_light.png"
+      ],
+      "disposition_note": "The governed dark and light security catalogs render the exact hidden, revealed, disabled, timeout, permission, consent success, warning, error, or empty state with caller-owned actions."
+    },
+    {
+      "id": "button-state-catalog",
+      "cells": [
+        "buttons|primary|loading",
+        "buttons|primary|disabled",
+        "buttons|secondary|loading",
+        "buttons|secondary|disabled",
+        "buttons|tertiary|loading",
+        "buttons|tertiary|disabled",
+        "buttons|destructive|loading",
+        "buttons|destructive|disabled",
+        "buttons|icon_only|loading",
+        "buttons|split|default",
+        "buttons|split|loading",
+        "buttons|split|disabled"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart",
+        "packages/core/core_theme/test/afri_split_button_test.dart",
+        "packages/core/core_theme/test/touch_target_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_button_state_catalog_1000x1200.png",
+        "packages/core/core_theme/test/goldens/universal_button_state_catalog_1000x1200_light.png"
+      ],
+      "disposition_note": "The governed dark and light button catalogs render the exact default, loading, or disabled variant; focused behavior tests confirm loading blocks both icon and split actions."
+    },
+    {
+      "id": "shell-overlay-menu-state-catalog",
+      "cells": [
+        "app_shell|top_bar|default",
+        "app_shell|bottom_nav|default",
+        "app_shell|bottom_nav|selected",
+        "app_shell|bottom_nav|disabled",
+        "app_shell|large_screen_side_rail|selected",
+        "app_shell|large_screen_side_rail|disabled",
+        "app_shell|safe_area_wrapper|default",
+        "app_shell|keyboard_aware_scaffold|default",
+        "inputs|search|default",
+        "inputs|search|disabled",
+        "inputs|search|error",
+        "inputs|search|empty",
+        "selection|tabs|default",
+        "selection|tabs|selected",
+        "selection|tabs|disabled",
+        "selection|menus|default",
+        "selection|menus|disabled",
+        "navigation|large_screen_breadcrumb|disabled",
+        "feedback|inline_validation|default",
+        "feedback|inline_validation|success",
+        "feedback|inline_validation|warning",
+        "feedback|inline_validation|error",
+        "overlays|dialog|default",
+        "overlays|bottom_sheet|default",
+        "overlays|action_sheet|default",
+        "overlays|popover|default",
+        "overlays|command_menu|default",
+        "overlays|command_menu|selected",
+        "overlays|command_menu|disabled",
+        "overlays|command_menu|loading",
+        "overlays|command_menu|error",
+        "overlays|command_menu|empty",
+        "media|document_preview|disabled",
+        "media|avatar|default",
+        "media|icon|default",
+        "semantic_icons|stable_role_catalog|default"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart",
+        "packages/core/core_theme/test/component_state_contract_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_shell_overlay_menu_catalog_1400x2400.png",
+        "packages/core/core_theme/test/goldens/universal_shell_overlay_menu_catalog_1400x2400_light.png"
+      ],
+      "disposition_note": "The governed dark and light shell catalog renders exact adaptive shell, search, selection, overlay, command, media fallback, and stable semantic-icon states; behavior tests prove disabled navigation, tabs, menus, and action-sheet rows cannot activate."
+    },
+    {
+      "id": "transient-feedback-state-catalog",
+      "cells": [
+        "feedback|snackbar|default",
+        "feedback|snackbar|success",
+        "feedback|snackbar|warning",
+        "feedback|snackbar|error",
+        "feedback|toast|default",
+        "feedback|toast|success",
+        "feedback|toast|warning",
+        "feedback|toast|error"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart",
+        "packages/core/core_theme/test/component_state_contract_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_transient_feedback_catalog_1400x900.png",
+        "packages/core/core_theme/test/goldens/universal_transient_feedback_catalog_1400x900_light.png"
+      ],
+      "disposition_note": "The governed dark and light transient-feedback catalogs render all snackbar and toast tones through the production presentation APIs with non-color icons, readable foregrounds, and deterministic synthetic messages."
+    },
+    {
+      "id": "open-selection-menu-state-catalog",
+      "cells": [
+        "selection|menus|selected"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_open_selection_menu_800x600.png",
+        "packages/core/core_theme/test/goldens/universal_open_selection_menu_800x600_light.png"
+      ],
+      "disposition_note": "The governed dark and light popup-menu captures render the production checked item and adjacent disabled item inside the actual overlay route."
+    },
+    {
+      "id": "deep-link-recovery-state-catalog",
+      "cells": [
+        "navigation|deep_link_recovery|default",
+        "navigation|deep_link_recovery|error",
+        "navigation|deep_link_recovery|offline"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_component_catalog_golden_test.dart",
+        "packages/core/core_app/test/app_routing_guard_test.dart",
+        "packages/core/core_app/test/app_deep_link_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/universal_deep_link_recovery_catalog_1000x700.png",
+        "packages/core/core_theme/test/goldens/universal_deep_link_recovery_catalog_1000x700_light.png"
+      ],
+      "disposition_note": "The governed dark and light recovery catalogs render the production unavailable, malformed-route, and offline link states; router tests prove the surface is wired into real feature-gate and error routes."
+    },
+    {
+      "id": "route-transition-state-catalog",
+      "cells": [
+        "navigation|route_transition|default"
+      ],
+      "test_evidence": [
+        "packages/core/core_router/test/route_transitions_test.dart",
+        "packages/core/core_router/test/route_transitions_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_router/test/goldens/route_transition_midpoint_800x600.png",
+        "packages/core/core_router/test/goldens/route_transition_midpoint_800x600_light.png"
+      ],
+      "disposition_note": "The governed dark and light midpoint captures exercise the production GoRouter page transition at half of its 220 ms fade-and-slide duration; focused tests verify the transition contract and animation completion."
+    },
+    {
+      "id": "dynamic-interaction-app-shell-bottom-nav-hover",
+      "cells": [
+        "app_shell|bottom_nav|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/app_shell_bottom_nav_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/app_shell_bottom_nav_hover_light.png"
+      ],
+      "disposition_note": "Production app_shell/bottom_nav hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-app-shell-bottom-nav-focused",
+      "cells": [
+        "app_shell|bottom_nav|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/app_shell_bottom_nav_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/app_shell_bottom_nav_focused_light.png"
+      ],
+      "disposition_note": "Production app_shell/bottom_nav focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-app-shell-bottom-nav-pressed",
+      "cells": [
+        "app_shell|bottom_nav|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/app_shell_bottom_nav_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/app_shell_bottom_nav_pressed_light.png"
+      ],
+      "disposition_note": "Production app_shell/bottom_nav pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-app-shell-large-screen-side-rail-hover",
+      "cells": [
+        "app_shell|large_screen_side_rail|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_hover_light.png"
+      ],
+      "disposition_note": "Production app_shell/large_screen_side_rail hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-app-shell-large-screen-side-rail-focused",
+      "cells": [
+        "app_shell|large_screen_side_rail|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_focused_light.png"
+      ],
+      "disposition_note": "Production app_shell/large_screen_side_rail focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-app-shell-large-screen-side-rail-pressed",
+      "cells": [
+        "app_shell|large_screen_side_rail|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_pressed_light.png"
+      ],
+      "disposition_note": "Production app_shell/large_screen_side_rail pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-primary-hover",
+      "cells": [
+        "buttons|primary|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_primary_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_primary_hover_light.png"
+      ],
+      "disposition_note": "Production buttons/primary hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-primary-focused",
+      "cells": [
+        "buttons|primary|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_primary_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_primary_focused_light.png"
+      ],
+      "disposition_note": "Production buttons/primary focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-primary-pressed",
+      "cells": [
+        "buttons|primary|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_primary_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_primary_pressed_light.png"
+      ],
+      "disposition_note": "Production buttons/primary pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-secondary-hover",
+      "cells": [
+        "buttons|secondary|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_secondary_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_secondary_hover_light.png"
+      ],
+      "disposition_note": "Production buttons/secondary hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-secondary-focused",
+      "cells": [
+        "buttons|secondary|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_secondary_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_secondary_focused_light.png"
+      ],
+      "disposition_note": "Production buttons/secondary focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-secondary-pressed",
+      "cells": [
+        "buttons|secondary|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_secondary_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_secondary_pressed_light.png"
+      ],
+      "disposition_note": "Production buttons/secondary pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-tertiary-hover",
+      "cells": [
+        "buttons|tertiary|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_tertiary_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_tertiary_hover_light.png"
+      ],
+      "disposition_note": "Production buttons/tertiary hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-tertiary-focused",
+      "cells": [
+        "buttons|tertiary|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_tertiary_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_tertiary_focused_light.png"
+      ],
+      "disposition_note": "Production buttons/tertiary focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-tertiary-pressed",
+      "cells": [
+        "buttons|tertiary|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_tertiary_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_tertiary_pressed_light.png"
+      ],
+      "disposition_note": "Production buttons/tertiary pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-destructive-hover",
+      "cells": [
+        "buttons|destructive|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_destructive_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_destructive_hover_light.png"
+      ],
+      "disposition_note": "Production buttons/destructive hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-destructive-focused",
+      "cells": [
+        "buttons|destructive|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_destructive_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_destructive_focused_light.png"
+      ],
+      "disposition_note": "Production buttons/destructive focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-destructive-pressed",
+      "cells": [
+        "buttons|destructive|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_destructive_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_destructive_pressed_light.png"
+      ],
+      "disposition_note": "Production buttons/destructive pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-icon-only-hover",
+      "cells": [
+        "buttons|icon_only|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_icon_only_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_icon_only_hover_light.png"
+      ],
+      "disposition_note": "Production buttons/icon_only hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-icon-only-focused",
+      "cells": [
+        "buttons|icon_only|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_icon_only_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_icon_only_focused_light.png"
+      ],
+      "disposition_note": "Production buttons/icon_only focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-icon-only-pressed",
+      "cells": [
+        "buttons|icon_only|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_icon_only_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_icon_only_pressed_light.png"
+      ],
+      "disposition_note": "Production buttons/icon_only pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-split-hover",
+      "cells": [
+        "buttons|split|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_split_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_split_hover_light.png"
+      ],
+      "disposition_note": "Production buttons/split hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-split-focused",
+      "cells": [
+        "buttons|split|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_split_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_split_focused_light.png"
+      ],
+      "disposition_note": "Production buttons/split focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-buttons-split-pressed",
+      "cells": [
+        "buttons|split|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/buttons_split_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/buttons_split_pressed_light.png"
+      ],
+      "disposition_note": "Production buttons/split pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-text-hover",
+      "cells": [
+        "inputs|text|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_text_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_text_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/text hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-text-focused",
+      "cells": [
+        "inputs|text|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_text_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_text_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/text focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-number-hover",
+      "cells": [
+        "inputs|number|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_number_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_number_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/number hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-number-focused",
+      "cells": [
+        "inputs|number|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_number_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_number_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/number focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-money-hover",
+      "cells": [
+        "inputs|money|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_money_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_money_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/money hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-money-focused",
+      "cells": [
+        "inputs|money|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_money_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_money_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/money focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-phone-hover",
+      "cells": [
+        "inputs|phone|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_phone_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_phone_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/phone hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-phone-focused",
+      "cells": [
+        "inputs|phone|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_phone_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_phone_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/phone focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-email-hover",
+      "cells": [
+        "inputs|email|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_email_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_email_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/email hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-email-focused",
+      "cells": [
+        "inputs|email|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_email_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_email_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/email focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-password-hover",
+      "cells": [
+        "inputs|password|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_password_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_password_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/password hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-password-focused",
+      "cells": [
+        "inputs|password|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_password_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_password_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/password focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-date-hover",
+      "cells": [
+        "inputs|date|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_date_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_date_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/date hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-date-focused",
+      "cells": [
+        "inputs|date|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_date_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_date_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/date focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-date-pressed",
+      "cells": [
+        "inputs|date|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_date_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_date_pressed_light.png"
+      ],
+      "disposition_note": "Production inputs/date pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-time-hover",
+      "cells": [
+        "inputs|time|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_time_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_time_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/time hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-time-focused",
+      "cells": [
+        "inputs|time|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_time_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_time_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/time focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-time-pressed",
+      "cells": [
+        "inputs|time|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_time_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_time_pressed_light.png"
+      ],
+      "disposition_note": "Production inputs/time pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-search-hover",
+      "cells": [
+        "inputs|search|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_search_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_search_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/search hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-search-focused",
+      "cells": [
+        "inputs|search|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_search_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_search_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/search focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-multiline-hover",
+      "cells": [
+        "inputs|multiline|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_multiline_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_multiline_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/multiline hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-multiline-focused",
+      "cells": [
+        "inputs|multiline|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_multiline_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_multiline_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/multiline focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-otp-hover",
+      "cells": [
+        "inputs|otp|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_otp_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_otp_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/otp hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-otp-focused",
+      "cells": [
+        "inputs|otp|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_otp_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_otp_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/otp focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-file-media-picker-hover",
+      "cells": [
+        "inputs|file_media_picker|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_file_media_picker_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_file_media_picker_hover_light.png"
+      ],
+      "disposition_note": "Production inputs/file_media_picker hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-file-media-picker-focused",
+      "cells": [
+        "inputs|file_media_picker|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_file_media_picker_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_file_media_picker_focused_light.png"
+      ],
+      "disposition_note": "Production inputs/file_media_picker focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-inputs-file-media-picker-pressed",
+      "cells": [
+        "inputs|file_media_picker|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/inputs_file_media_picker_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/inputs_file_media_picker_pressed_light.png"
+      ],
+      "disposition_note": "Production inputs/file_media_picker pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-checkbox-hover",
+      "cells": [
+        "selection|checkbox|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_checkbox_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_checkbox_hover_light.png"
+      ],
+      "disposition_note": "Production selection/checkbox hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-checkbox-focused",
+      "cells": [
+        "selection|checkbox|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_checkbox_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_checkbox_focused_light.png"
+      ],
+      "disposition_note": "Production selection/checkbox focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-checkbox-pressed",
+      "cells": [
+        "selection|checkbox|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_checkbox_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_checkbox_pressed_light.png"
+      ],
+      "disposition_note": "Production selection/checkbox pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-radio-hover",
+      "cells": [
+        "selection|radio|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_radio_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_radio_hover_light.png"
+      ],
+      "disposition_note": "Production selection/radio hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-radio-focused",
+      "cells": [
+        "selection|radio|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_radio_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_radio_focused_light.png"
+      ],
+      "disposition_note": "Production selection/radio focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-radio-pressed",
+      "cells": [
+        "selection|radio|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_radio_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_radio_pressed_light.png"
+      ],
+      "disposition_note": "Production selection/radio pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-switch-hover",
+      "cells": [
+        "selection|switch|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_switch_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_switch_hover_light.png"
+      ],
+      "disposition_note": "Production selection/switch hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-switch-focused",
+      "cells": [
+        "selection|switch|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_switch_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_switch_focused_light.png"
+      ],
+      "disposition_note": "Production selection/switch focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-switch-pressed",
+      "cells": [
+        "selection|switch|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_switch_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_switch_pressed_light.png"
+      ],
+      "disposition_note": "Production selection/switch pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-segmented-control-hover",
+      "cells": [
+        "selection|segmented_control|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_segmented_control_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_segmented_control_hover_light.png"
+      ],
+      "disposition_note": "Production selection/segmented_control hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-segmented-control-focused",
+      "cells": [
+        "selection|segmented_control|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_segmented_control_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_segmented_control_focused_light.png"
+      ],
+      "disposition_note": "Production selection/segmented_control focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-segmented-control-pressed",
+      "cells": [
+        "selection|segmented_control|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_segmented_control_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_segmented_control_pressed_light.png"
+      ],
+      "disposition_note": "Production selection/segmented_control pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-chips-hover",
+      "cells": [
+        "selection|chips|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_chips_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_chips_hover_light.png"
+      ],
+      "disposition_note": "Production selection/chips hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-chips-focused",
+      "cells": [
+        "selection|chips|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_chips_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_chips_focused_light.png"
+      ],
+      "disposition_note": "Production selection/chips focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-chips-pressed",
+      "cells": [
+        "selection|chips|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_chips_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_chips_pressed_light.png"
+      ],
+      "disposition_note": "Production selection/chips pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-tabs-hover",
+      "cells": [
+        "selection|tabs|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_tabs_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_tabs_hover_light.png"
+      ],
+      "disposition_note": "Production selection/tabs hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-tabs-focused",
+      "cells": [
+        "selection|tabs|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_tabs_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_tabs_focused_light.png"
+      ],
+      "disposition_note": "Production selection/tabs focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-tabs-pressed",
+      "cells": [
+        "selection|tabs|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_tabs_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_tabs_pressed_light.png"
+      ],
+      "disposition_note": "Production selection/tabs pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-menus-hover",
+      "cells": [
+        "selection|menus|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_menus_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_menus_hover_light.png"
+      ],
+      "disposition_note": "Production selection/menus hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-menus-focused",
+      "cells": [
+        "selection|menus|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_menus_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_menus_focused_light.png"
+      ],
+      "disposition_note": "Production selection/menus focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-selection-menus-pressed",
+      "cells": [
+        "selection|menus|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/selection_menus_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/selection_menus_pressed_light.png"
+      ],
+      "disposition_note": "Production selection/menus pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-data-display-list-row-hover",
+      "cells": [
+        "data_display|list_row|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/data_display_list_row_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/data_display_list_row_hover_light.png"
+      ],
+      "disposition_note": "Production data_display/list_row hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-data-display-list-row-focused",
+      "cells": [
+        "data_display|list_row|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/data_display_list_row_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/data_display_list_row_focused_light.png"
+      ],
+      "disposition_note": "Production data_display/list_row focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-data-display-list-row-pressed",
+      "cells": [
+        "data_display|list_row|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/data_display_list_row_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/data_display_list_row_pressed_light.png"
+      ],
+      "disposition_note": "Production data_display/list_row pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-data-display-card-hover",
+      "cells": [
+        "data_display|card|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/data_display_card_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/data_display_card_hover_light.png"
+      ],
+      "disposition_note": "Production data_display/card hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-data-display-card-focused",
+      "cells": [
+        "data_display|card|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/data_display_card_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/data_display_card_focused_light.png"
+      ],
+      "disposition_note": "Production data_display/card focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-data-display-card-pressed",
+      "cells": [
+        "data_display|card|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/data_display_card_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/data_display_card_pressed_light.png"
+      ],
+      "disposition_note": "Production data_display/card pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-data-display-activity-item-hover",
+      "cells": [
+        "data_display|activity_item|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/data_display_activity_item_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/data_display_activity_item_hover_light.png"
+      ],
+      "disposition_note": "Production data_display/activity_item hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-data-display-activity-item-focused",
+      "cells": [
+        "data_display|activity_item|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/data_display_activity_item_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/data_display_activity_item_focused_light.png"
+      ],
+      "disposition_note": "Production data_display/activity_item focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-data-display-activity-item-pressed",
+      "cells": [
+        "data_display|activity_item|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/data_display_activity_item_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/data_display_activity_item_pressed_light.png"
+      ],
+      "disposition_note": "Production data_display/activity_item pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-navigation-list-item-hover",
+      "cells": [
+        "navigation|list_item|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/navigation_list_item_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/navigation_list_item_hover_light.png"
+      ],
+      "disposition_note": "Production navigation/list_item hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-navigation-list-item-focused",
+      "cells": [
+        "navigation|list_item|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/navigation_list_item_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/navigation_list_item_focused_light.png"
+      ],
+      "disposition_note": "Production navigation/list_item focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-navigation-list-item-pressed",
+      "cells": [
+        "navigation|list_item|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/navigation_list_item_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/navigation_list_item_pressed_light.png"
+      ],
+      "disposition_note": "Production navigation/list_item pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-navigation-large-screen-breadcrumb-hover",
+      "cells": [
+        "navigation|large_screen_breadcrumb|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_hover_light.png"
+      ],
+      "disposition_note": "Production navigation/large_screen_breadcrumb hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-navigation-large-screen-breadcrumb-focused",
+      "cells": [
+        "navigation|large_screen_breadcrumb|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_focused_light.png"
+      ],
+      "disposition_note": "Production navigation/large_screen_breadcrumb focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-navigation-large-screen-breadcrumb-pressed",
+      "cells": [
+        "navigation|large_screen_breadcrumb|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_pressed_light.png"
+      ],
+      "disposition_note": "Production navigation/large_screen_breadcrumb pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-navigation-back-button-hover",
+      "cells": [
+        "navigation|back_button|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/navigation_back_button_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/navigation_back_button_hover_light.png"
+      ],
+      "disposition_note": "Production navigation/back_button hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-navigation-back-button-focused",
+      "cells": [
+        "navigation|back_button|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/navigation_back_button_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/navigation_back_button_focused_light.png"
+      ],
+      "disposition_note": "Production navigation/back_button focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-navigation-back-button-pressed",
+      "cells": [
+        "navigation|back_button|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/navigation_back_button_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/navigation_back_button_pressed_light.png"
+      ],
+      "disposition_note": "Production navigation/back_button pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-overlays-command-menu-hover",
+      "cells": [
+        "overlays|command_menu|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/overlays_command_menu_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/overlays_command_menu_hover_light.png"
+      ],
+      "disposition_note": "Production overlays/command_menu hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-overlays-command-menu-focused",
+      "cells": [
+        "overlays|command_menu|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/overlays_command_menu_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/overlays_command_menu_focused_light.png"
+      ],
+      "disposition_note": "Production overlays/command_menu focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-overlays-command-menu-pressed",
+      "cells": [
+        "overlays|command_menu|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/overlays_command_menu_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/overlays_command_menu_pressed_light.png"
+      ],
+      "disposition_note": "Production overlays/command_menu pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-media-document-preview-hover",
+      "cells": [
+        "media|document_preview|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/media_document_preview_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/media_document_preview_hover_light.png"
+      ],
+      "disposition_note": "Production media/document_preview hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-media-document-preview-focused",
+      "cells": [
+        "media|document_preview|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/media_document_preview_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/media_document_preview_focused_light.png"
+      ],
+      "disposition_note": "Production media/document_preview focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-media-document-preview-pressed",
+      "cells": [
+        "media|document_preview|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/media_document_preview_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/media_document_preview_pressed_light.png"
+      ],
+      "disposition_note": "Production media/document_preview pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-security-privacy-masked-value-hover",
+      "cells": [
+        "security_privacy|masked_value|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_masked_value_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_masked_value_hover_light.png"
+      ],
+      "disposition_note": "Production security_privacy/masked_value hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-security-privacy-masked-value-focused",
+      "cells": [
+        "security_privacy|masked_value|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_masked_value_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_masked_value_focused_light.png"
+      ],
+      "disposition_note": "Production security_privacy/masked_value focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-security-privacy-masked-value-pressed",
+      "cells": [
+        "security_privacy|masked_value|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_masked_value_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_masked_value_pressed_light.png"
+      ],
+      "disposition_note": "Production security_privacy/masked_value pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-security-privacy-reveal-control-hover",
+      "cells": [
+        "security_privacy|reveal_control|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_reveal_control_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_reveal_control_hover_light.png"
+      ],
+      "disposition_note": "Production security_privacy/reveal_control hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-security-privacy-reveal-control-focused",
+      "cells": [
+        "security_privacy|reveal_control|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_reveal_control_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_reveal_control_focused_light.png"
+      ],
+      "disposition_note": "Production security_privacy/reveal_control focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-security-privacy-reveal-control-pressed",
+      "cells": [
+        "security_privacy|reveal_control|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_reveal_control_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_reveal_control_pressed_light.png"
+      ],
+      "disposition_note": "Production security_privacy/reveal_control pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-security-privacy-consent-review-hover",
+      "cells": [
+        "security_privacy|consent_review|hover"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_consent_review_hover_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_consent_review_hover_light.png"
+      ],
+      "disposition_note": "Production security_privacy/consent_review hover interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-security-privacy-consent-review-focused",
+      "cells": [
+        "security_privacy|consent_review|focused"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_consent_review_focused_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_consent_review_focused_light.png"
+      ],
+      "disposition_note": "Production security_privacy/consent_review focused interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    },
+    {
+      "id": "dynamic-interaction-security-privacy-consent-review-pressed",
+      "cells": [
+        "security_privacy|consent_review|pressed"
+      ],
+      "test_evidence": [
+        "packages/core/core_theme/test/universal_interaction_state_golden_test.dart"
+      ],
+      "screenshot_evidence": [
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_consent_review_pressed_dark.png",
+        "packages/core/core_theme/test/goldens/interactions/security_privacy_consent_review_pressed_light.png"
+      ],
+      "disposition_note": "Production security_privacy/consent_review pressed interaction is driven by a real pointer or keyboard event, is pixel-distinct from default, and is captured in governed dark and light exact-pixel baselines."
+    }
+  ]
+}

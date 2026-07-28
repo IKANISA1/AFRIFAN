@@ -4,15 +4,26 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
-import type { HomeBanner, CmsContent, AppConfigEntry, CmsContentType } from "@/lib/types";
+import type {
+  HomeBanner,
+  CmsContent,
+  AppConfigEntry,
+  CmsContentType,
+} from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
-import { requireAdminClubId } from "./helpers";
+import {
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
+  requireAdminClubId,
+} from "./helpers";
 
 type ContentDistribution = HomeBanner["distribution"];
 
 function mapDistribution(value: unknown): ContentDistribution {
-  return value === "web" || value === "app" || value === "both" ? value : "both";
+  return value === "web" || value === "app" || value === "both"
+    ? value
+    : "both";
 }
 
 // ─── Home Banners ────────────────────────────────────────
@@ -29,10 +40,14 @@ function mapBanner(row: Record<string, unknown>): HomeBanner {
     sortOrder: Number(row.sort_order ?? 0),
     isActive: row.is_active !== false,
     distribution: mapDistribution(row.distribution),
+    updatedAt: safeString(row.updated_at),
   };
 }
 
-export async function getAdminBanners(client: SupabaseClient, _access: AdminAccess) {
+export async function getAdminBanners(
+  client: SupabaseClient,
+  _access: AdminAccess,
+) {
   const clubId = requireAdminClubId(_access, "load home banners");
   const { data, error } = await client
     .from("home_banners")
@@ -49,6 +64,7 @@ export async function saveAdminBanner(
   _access: AdminAccess,
   input: {
     id?: string | null;
+    expectedUpdatedAt?: string | null;
     title: string;
     subtitle?: string;
     badgeLabel?: string;
@@ -58,10 +74,10 @@ export async function saveAdminBanner(
     sortOrder?: number;
     isActive?: boolean;
     distribution?: "web" | "app" | "both";
-    },
-    ) {
-    const clubId = requireAdminClubId(_access, "save home banners");
-    const payload: Record<string, unknown> = {
+  },
+) {
+  const clubId = requireAdminClubId(_access, "save home banners");
+  const payload: Record<string, unknown> = {
     club_id: clubId,
     title: input.title.trim(),
     subtitle: safeString(input.subtitle) || null,
@@ -72,31 +88,48 @@ export async function saveAdminBanner(
     sort_order: safeNumber(input.sortOrder, 0),
     is_active: input.isActive !== false,
     distribution: input.distribution || "both",
-    };
+  };
 
   if (input.id) {
-    const { error } = await client
-      .from("home_banners")
-      .update(payload)
-      .eq("id", input.id)
-      .eq("club_id", clubId);
-    if (error) throw new Error(error.message);
-    return input.id;
+    return mutateRecordWithVariantsIfUnchanged(
+      client,
+      "home_banners",
+      input.id,
+      input.expectedUpdatedAt,
+      [payload],
+      { club_id: clubId },
+    );
   }
 
-  const { data, error } = await client.from("home_banners").insert(payload).select("id").single();
+  const { data, error } = await client
+    .from("home_banners")
+    .insert(payload)
+    .select("id")
+    .single();
   if (error) throw new Error(error.message);
   return toIdString(data?.id, crypto.randomUUID());
 }
 
-export async function deleteAdminBanner(client: SupabaseClient, _access: AdminAccess, bannerId: string) {
+export async function deleteAdminBanner(
+  client: SupabaseClient,
+  _access: AdminAccess,
+  bannerId: string,
+  expectedUpdatedAt: string,
+) {
   const clubId = requireAdminClubId(_access, "delete home banners");
-  const { error } = await client
-    .from("home_banners")
-    .delete()
-    .eq("id", bannerId)
-    .eq("club_id", clubId);
-  if (error) throw new Error(error.message);
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    "home_banners",
+    bannerId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: _access.userId,
+      clubId,
+      action: "delete_home_banner",
+      source: "admin_cms_banners",
+    },
+  );
 }
 
 // ─── AI Content Blocks ───────────────────────────────────
@@ -115,6 +148,7 @@ function mapContent(row: Record<string, unknown>): CmsContent {
     sortOrder: Number(row.sort_order ?? 0),
     isActive: row.is_active !== false,
     distribution: mapDistribution(row.distribution),
+    updatedAt: safeString(row.updated_at),
   };
 }
 
@@ -149,7 +183,10 @@ export async function getAdminContentTypes(
   );
 }
 
-export async function getAdminContentBlocks(client: SupabaseClient, _access: AdminAccess) {
+export async function getAdminContentBlocks(
+  client: SupabaseClient,
+  _access: AdminAccess,
+) {
   if (typeof window !== "undefined") {
     return requestAdminApi<CmsContent[]>("cms-content");
   }
@@ -171,6 +208,7 @@ export async function saveAdminContentBlock(
   _access: AdminAccess,
   input: {
     id?: string | null;
+    expectedUpdatedAt?: string | null;
     contentType: string;
     title: string;
     subtitle?: string;
@@ -209,50 +247,72 @@ export async function saveAdminContentBlock(
   };
 
   if (input.id) {
-    const { error } = await client
-      .from("ai_content")
-      .update(payload)
-      .eq("id", input.id)
-      .eq("club_id", clubId);
-    if (error) throw new Error(error.message);
-    return input.id;
+    return mutateRecordWithVariantsIfUnchanged(
+      client,
+      "ai_content",
+      input.id,
+      input.expectedUpdatedAt,
+      [payload],
+      { club_id: clubId },
+    );
   }
 
-  const { data, error } = await client.from("ai_content").insert(payload).select("id").single();
+  const { data, error } = await client
+    .from("ai_content")
+    .insert(payload)
+    .select("id")
+    .single();
   if (error) throw new Error(error.message);
   return toIdString(data?.id, crypto.randomUUID());
 }
 
-export async function deleteAdminContentBlock(client: SupabaseClient, _access: AdminAccess, blockId: string) {
+export async function deleteAdminContentBlock(
+  client: SupabaseClient,
+  _access: AdminAccess,
+  blockId: string,
+  expectedUpdatedAt: string,
+) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("cms-content", {
       method: "DELETE",
-      query: { id: blockId },
+      query: { id: blockId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
 
   const clubId = requireAdminClubId(_access, "delete CMS content blocks");
-  const { error } = await client
-    .from("ai_content")
-    .delete()
-    .eq("id", blockId)
-    .eq("club_id", clubId);
-  if (error) throw new Error(error.message);
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    "ai_content",
+    blockId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: _access.userId,
+      clubId,
+      action: "delete_cms_content",
+      source: "admin_cms_content",
+    },
+  );
 }
 
 // ─── App Config ──────────────────────────────────────────
 
 function mapConfig(row: Record<string, unknown>): AppConfigEntry {
   return {
+    id: toIdString(row.id, ""),
     key: safeString(row.key, ""),
     value: safeString(row.value, ""),
     description: safeString(row.description, ""),
     country: safeString(row.country, ""),
+    updatedAt: safeString(row.updated_at),
   };
 }
 
-export async function getAdminAppConfig(client: SupabaseClient, _access: AdminAccess) {
+export async function getAdminAppConfig(
+  client: SupabaseClient,
+  _access: AdminAccess,
+) {
   if (typeof window !== "undefined") {
     return requestAdminApi<AppConfigEntry[]>("cms-config");
   }
@@ -271,7 +331,14 @@ export async function getAdminAppConfig(client: SupabaseClient, _access: AdminAc
 export async function saveAdminConfigEntry(
   client: SupabaseClient,
   _access: AdminAccess,
-  input: { key: string; value: string; description?: string; country?: string },
+  input: {
+    id?: string | null;
+    expectedUpdatedAt?: string | null;
+    key: string;
+    value: string;
+    description?: string;
+    country?: string;
+  },
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<string>("cms-config", {
@@ -290,27 +357,42 @@ export async function saveAdminConfigEntry(
     country: safeString(input.country) || null,
   };
 
-  const { error } = await client
-    .from("club_app_config")
-    .upsert(payload, { onConflict: "club_id,key" });
-
-  if (error) throw new Error(error.message);
+  await mutateRecordWithVariantsIfUnchanged(
+    client,
+    "club_app_config",
+    input.id,
+    input.expectedUpdatedAt,
+    [payload],
+    { club_id: clubId },
+  );
 }
 
-export async function deleteAdminConfigEntry(client: SupabaseClient, _access: AdminAccess, key: string) {
+export async function deleteAdminConfigEntry(
+  client: SupabaseClient,
+  _access: AdminAccess,
+  id: string,
+  expectedUpdatedAt: string,
+) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("cms-config", {
       method: "DELETE",
-      query: { id: key },
+      query: { id, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
 
   const clubId = requireAdminClubId(_access, "delete app configuration");
-  const { error } = await client
-    .from("club_app_config")
-    .delete()
-    .eq("club_id", clubId)
-    .eq("key", key);
-  if (error) throw new Error(error.message);
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    "club_app_config",
+    id,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: _access.userId,
+      clubId,
+      action: "delete_app_config",
+      source: "admin_cms_config",
+    },
+  );
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -10,53 +11,123 @@ import 'package:go_router/go_router.dart';
 import '../repositories/home_content_repository.dart';
 
 /// Compact home shortcuts — icon-led action grid without verbose copy.
-class QuickActionsGrid extends ConsumerWidget {
+class QuickActionsGrid extends ConsumerStatefulWidget {
   const QuickActionsGrid({super.key, required this.actions});
+
+  static const int maxPrimaryActions = 4;
 
   final List<HomeQuickAction> actions;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<QuickActionsGrid> createState() => _QuickActionsGridState();
+}
+
+@visibleForTesting
+List<HomeQuickAction> prioritizeHomeQuickActions(
+  Iterable<HomeQuickAction> actions,
+) {
+  final prioritized = actions.toList(growable: false);
+  return prioritized.toList()..sort((left, right) {
+    final rankComparison = _homeActionRank(
+      left,
+    ).compareTo(_homeActionRank(right));
+    if (rankComparison != 0) return rankComparison;
+    final configuredOrder = left.sortOrder.compareTo(right.sortOrder);
+    if (configuredOrder != 0) return configuredOrder;
+    return left.title.toLowerCase().compareTo(right.title.toLowerCase());
+  });
+}
+
+int _homeActionRank(HomeQuickAction action) {
+  final key = action.actionKey.trim().toLowerCase();
+  final route = action.route.trim().toLowerCase();
+  if (key.contains('ticket') || route.startsWith('/tickets')) return 10;
+  if (key.contains('membership') || route.startsWith('/membership')) return 20;
+  if (key == 'fan_zone' ||
+      key.contains('supporter') ||
+      route == '/fanzone' ||
+      route.startsWith('/fanzone?')) {
+    return 30;
+  }
+  if (key.contains('shop') || route.startsWith('/shop')) return 40;
+  return 100;
+}
+
+class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
+  bool _showSecondaryActions = false;
+
+  @override
+  Widget build(BuildContext context) {
     final featureService = ref.watch(featureConfigServiceProvider);
 
-    final filteredActions = actions.where((action) {
-      return featureService.isRouteAvailable(action.route);
-    }).toList();
+    final visibleActions = prioritizeHomeQuickActions(
+      widget.actions.where((action) {
+        if (!action.isActive ||
+            action.title.trim().isEmpty ||
+            action.route.trim().isEmpty) {
+          return false;
+        }
+        final featureKey = featureService.getFeatureKeyForPath(action.route);
+        return featureKey == null ||
+            featureService.getFeatureAccess(featureKey).isVisible;
+      }),
+    );
+    final primaryActions = visibleActions
+        .take(QuickActionsGrid.maxPrimaryActions)
+        .toList(growable: false);
+    final secondaryActions = visibleActions
+        .skip(QuickActionsGrid.maxPrimaryActions)
+        .toList(growable: false);
 
-    if (filteredActions.isEmpty) {
+    if (primaryActions.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const AfriSectionHeader(title: 'Shortcuts', padding: EdgeInsets.zero),
-        const SizedBox(height: SpacingTokens.spacing4),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            const spacing = SpacingTokens.listItemGap;
-            final columns = filteredActions.length <= 4 ? 2 : 3;
-            final tileWidth =
-                (constraints.maxWidth - (spacing * (columns - 1))) / columns;
-
-            return Wrap(
-              spacing: spacing,
-              runSpacing: spacing,
-              children: filteredActions
-                  .map(
-                    (action) => SizedBox(
-                      width: tileWidth,
-                      child: AfriActionRow(
-                        icon: _resolveActionIcon(action),
-                        label: action.title,
-                        onTap: () => _openAction(context, action.route),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            );
-          },
+        AfriSectionHeader(
+          title: 'Shortcuts',
+          padding: EdgeInsets.zero,
+          trailing: secondaryActions.isEmpty
+              ? null
+              : AfriButton(
+                  key: const ValueKey<String>('home-secondary-actions-toggle'),
+                  label: _showSecondaryActions ? 'Less' : 'More',
+                  semanticsLabel: _showSecondaryActions
+                      ? 'Hide more shortcuts'
+                      : 'Show more shortcuts',
+                  onTap: () {
+                    setState(() {
+                      _showSecondaryActions = !_showSecondaryActions;
+                    });
+                  },
+                  variant: AfriButtonVariant.ghost,
+                  fullWidth: false,
+                ),
         ),
+        const SizedBox(height: SpacingTokens.spacing4),
+        _PrimaryActionGrid(
+          actions: primaryActions,
+          resolveIcon: _resolveActionIcon,
+          isAvailable: (action) =>
+              featureService.isRouteAvailable(action.route),
+          onTap: (action) => _openAction(context, action, layer: 'primary'),
+        ),
+        if (_showSecondaryActions && secondaryActions.isNotEmpty) ...[
+          const SizedBox(height: SpacingTokens.spacing6),
+          const AfriDivider(),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Text('More shortcuts', style: TypographyTokens.titleSmall()),
+          const SizedBox(height: SpacingTokens.spacing3),
+          _SecondaryActionGrid(
+            actions: secondaryActions,
+            resolveIcon: _resolveActionIcon,
+            isAvailable: (action) =>
+                featureService.isRouteAvailable(action.route),
+            onTap: (action) => _openAction(context, action, layer: 'secondary'),
+          ),
+        ],
       ],
     );
   }
@@ -97,12 +168,22 @@ class QuickActionsGrid extends ConsumerWidget {
     return AfriIcons.chevronRight;
   }
 
-  void _openAction(BuildContext context, String route) {
-    if (_isPrimaryTabRoute(route)) {
-      context.go(route);
+  void _openAction(
+    BuildContext context,
+    HomeQuickAction action, {
+    required String layer,
+  }) {
+    unawaited(
+      FirebaseAnalyticsService.logHomeActionSelected(
+        action: action.actionKey,
+        layer: layer,
+      ),
+    );
+    if (_isPrimaryTabRoute(action.route)) {
+      context.go(action.route);
       return;
     }
-    unawaited(context.push(route));
+    unawaited(context.push(action.route));
   }
 
   bool _isPrimaryTabRoute(String route) {
@@ -110,5 +191,116 @@ class QuickActionsGrid extends ConsumerWidget {
     return primaryBottomTabFeatureOrder.any((featureKey) {
       return normalized == '/$featureKey';
     });
+  }
+}
+
+class _PrimaryActionGrid extends StatelessWidget {
+  const _PrimaryActionGrid({
+    required this.actions,
+    required this.resolveIcon,
+    required this.isAvailable,
+    required this.onTap,
+  });
+
+  final List<HomeQuickAction> actions;
+  final IconData Function(HomeQuickAction action) resolveIcon;
+  final bool Function(HomeQuickAction action) isAvailable;
+  final ValueChanged<HomeQuickAction> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const spacing = SpacingTokens.spacing3;
+        final useTwoColumns =
+            constraints.maxWidth < 340 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        final columns = useTwoColumns
+            ? 2
+            : actions.length.clamp(1, QuickActionsGrid.maxPrimaryActions);
+        final tileWidth =
+            (constraints.maxWidth - (spacing * (columns - 1))) / columns;
+
+        return Wrap(
+          key: ValueKey<String>('home-primary-actions-${columns}col'),
+          spacing: spacing,
+          runSpacing: SpacingTokens.spacing4,
+          children: actions
+              .map((action) {
+                final available = isAvailable(action);
+                return SizedBox(
+                  key: ValueKey<String>(
+                    'home-primary-action-${action.actionKey}',
+                  ),
+                  width: tileWidth,
+                  child: AfriQuickAction(
+                    icon: resolveIcon(action),
+                    label: available
+                        ? action.title
+                        : '${action.title}\nUnavailable',
+                    enabled: available,
+                    semanticsHint: available
+                        ? 'Opens ${action.title}'
+                        : '${action.title} is unavailable',
+                    onTap: () => onTap(action),
+                  ),
+                );
+              })
+              .toList(growable: false),
+        );
+      },
+    );
+  }
+}
+
+class _SecondaryActionGrid extends StatelessWidget {
+  const _SecondaryActionGrid({
+    required this.actions,
+    required this.resolveIcon,
+    required this.isAvailable,
+    required this.onTap,
+  });
+
+  final List<HomeQuickAction> actions;
+  final IconData Function(HomeQuickAction action) resolveIcon;
+  final bool Function(HomeQuickAction action) isAvailable;
+  final ValueChanged<HomeQuickAction> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const spacing = SpacingTokens.listItemGap;
+        final columns =
+            constraints.maxWidth < 360 ||
+                MediaQuery.textScalerOf(context).scale(1) > 1.3
+            ? 1
+            : 2;
+        final tileWidth =
+            (constraints.maxWidth - (spacing * (columns - 1))) / columns;
+
+        return Wrap(
+          key: ValueKey<String>('home-secondary-actions-${columns}col'),
+          spacing: spacing,
+          runSpacing: spacing,
+          children: actions
+              .map((action) {
+                final available = isAvailable(action);
+                return SizedBox(
+                  width: tileWidth,
+                  child: AfriActionRow(
+                    icon: resolveIcon(action),
+                    label: available
+                        ? action.title
+                        : '${action.title} · Unavailable',
+                    enabled: available,
+                    onTap: () => onTap(action),
+                  ),
+                );
+              })
+              .toList(growable: false),
+        );
+      },
+    );
   }
 }

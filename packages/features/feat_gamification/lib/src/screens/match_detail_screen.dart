@@ -177,7 +177,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(
+      return AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
           backgroundColor: ColorTokens.transparent,
@@ -187,7 +187,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
             tooltip: 'Back',
           ),
         ),
-        body: const Padding(
+        scrollable: false,
+        constrainContent: true,
+        child: const Padding(
           padding: EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriSkeletonList(),
         ),
@@ -195,7 +197,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
     }
 
     if (_fixture == null) {
-      return Scaffold(
+      return AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
           backgroundColor: ColorTokens.transparent,
@@ -212,7 +214,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
             ),
           ),
         ),
-        body: Center(
+        scrollable: false,
+        constrainContent: true,
+        child: Center(
           child: Padding(
             padding: const EdgeInsets.all(SpacingTokens.spacing6),
             child: AfriErrorView(
@@ -227,7 +231,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
 
     final fixture = _fixture!;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -257,7 +261,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
               .toList(growable: false),
         ),
       ),
-      body: Column(
+      scrollable: false,
+      constrainContent: false,
+      child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
@@ -455,10 +461,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
               await _loadData();
 
               if (!mounted) return;
-              AfriToast.success(
-                context,
-                '${selectedOutcome.label} joined.',
-              );
+              AfriToast.success(context, '${selectedOutcome.label} joined.');
             }
 
             return Column(
@@ -533,7 +536,7 @@ class _MatchPartnerPoolsTabBody extends StatelessWidget {
                   message:
                       'Football predictions open only when a partner creates a fixed-entry WDW pool for this fixture.',
                   icon: AfriIcons.predict,
-                  actionLabel: 'View Fanzone',
+                  actionLabel: 'View Fan Zone',
                   onAction: () => context.go('/fanzone'),
                 )
               : Column(

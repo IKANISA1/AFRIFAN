@@ -1,3 +1,4 @@
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -24,11 +25,15 @@ class TeamBadge extends StatelessWidget {
     super.key,
     required this.label,
     this.logoUrl,
+    this.provenanceId,
+    this.rightsApproved = false,
     this.size = 64,
   });
 
   final String label;
   final String? logoUrl;
+  final String? provenanceId;
+  final bool rightsApproved;
   final double size;
 
   @override
@@ -50,24 +55,26 @@ class TeamBadge extends StatelessWidget {
         child: hasLogo
             ? Padding(
                 padding: EdgeInsets.all(size * 0.12),
-                child: Image.network(
-                  logoUrl!,
-                  fit: BoxFit.contain,
+                child: AfriGovernedCachedImage(
+                  imageUrl: logoUrl!,
+                  width: size * 0.76,
+                  height: size * 0.76,
                   semanticLabel: '$label team logo',
-                  errorBuilder: (_, __, ___) =>
-                      _AbbreviationFallback(label: label, size: size),
-                  loadingBuilder: (_, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return AfriLoadingIndicator(
-                      size: size * 0.3,
-                      strokeWidth: 1.5,
-                      color: ColorTokens.onDarkSoft,
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                          : null,
-                    );
-                  },
+                  provenanceId: provenanceId?.trim().isNotEmpty == true
+                      ? provenanceId!.trim()
+                      : 'team-logo:$label:unapproved',
+                  rightsApproved: rightsApproved,
+                  fit: BoxFit.contain,
+                  borderRadius: 0,
+                  placeholder: AfriLoadingIndicator(
+                    size: size * 0.3,
+                    strokeWidth: 1.5,
+                    color: ColorTokens.onDarkSoft,
+                  ),
+                  errorFallback: _AbbreviationFallback(
+                    label: label,
+                    size: size,
+                  ),
                 ),
               )
             : _AbbreviationFallback(label: label, size: size),
@@ -104,11 +111,15 @@ class TeamLogoInline extends StatelessWidget {
     super.key,
     this.logoUrl,
     this.fallbackLabel,
+    this.provenanceId,
+    this.rightsApproved = false,
     this.size = 20,
   });
 
   final String? logoUrl;
   final String? fallbackLabel;
+  final String? provenanceId;
+  final bool rightsApproved;
   final double size;
 
   @override
@@ -116,19 +127,18 @@ class TeamLogoInline extends StatelessWidget {
     final semanticLabel = '${fallbackLabel ?? 'Team'} logo';
 
     if (logoUrl != null && logoUrl!.isNotEmpty) {
-      return Semantics(
-        label: semanticLabel,
-        image: true,
-        child: SizedBox(
-          width: size,
-          height: size,
-          child: Image.network(
-            logoUrl!,
-            fit: BoxFit.contain,
-            semanticLabel: semanticLabel,
-            errorBuilder: (_, __, ___) => _fallback(),
-          ),
-        ),
+      return AfriGovernedCachedImage(
+        imageUrl: logoUrl!,
+        width: size,
+        height: size,
+        semanticLabel: semanticLabel,
+        provenanceId: provenanceId?.trim().isNotEmpty == true
+            ? provenanceId!.trim()
+            : 'team-logo:${fallbackLabel ?? 'team'}:unapproved',
+        rightsApproved: rightsApproved,
+        fit: BoxFit.contain,
+        borderRadius: size * 0.25,
+        errorFallback: _fallback(),
       );
     }
     return Semantics(label: semanticLabel, image: true, child: _fallback());
@@ -187,22 +197,22 @@ class MatchEventIcon extends StatelessWidget {
 
   _MatchEventVisual _iconForType(String type) {
     return switch (type.toLowerCase()) {
-      'goal' => const _MatchEventVisual(
+      'goal' => _MatchEventVisual(
         icon: AfriIcons.fanzone,
         color: ColorTokens.success,
         label: 'goal',
       ),
-      'card' => const _MatchEventVisual(
+      'card' => _MatchEventVisual(
         icon: AfriIcons.warning,
         color: ColorTokens.error,
         label: 'card',
       ),
-      'substitution' || 'subst' => const _MatchEventVisual(
+      'substitution' || 'subst' => _MatchEventVisual(
         icon: AfriIcons.versus,
         color: ColorTokens.info,
         label: 'substitution',
       ),
-      'var' => const _MatchEventVisual(
+      'var' => _MatchEventVisual(
         icon: AfriIcons.visibility,
         color: ColorTokens.warning,
         label: 'VAR review',

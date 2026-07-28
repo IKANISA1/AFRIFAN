@@ -5,6 +5,8 @@ const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : null;
 const analyticsUrl = process.env.NEXT_PUBLIC_VITALS_ENDPOINT?.trim();
 const analyticsOrigin = analyticsUrl ? new URL(analyticsUrl).origin : null;
 const isDevelopment = process.env.NODE_ENV === "development";
+const enforceSecureTransport =
+  process.env.AFRICLUB_ALLOW_HTTP_PREVIEW !== "1";
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -49,10 +51,14 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*)",
         headers: [
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=63072000; includeSubDomains; preload",
-          },
+          ...(enforceSecureTransport
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=63072000; includeSubDomains; preload",
+                },
+              ]
+            : []),
           {
             key: "X-Content-Type-Options",
             value: "nosniff",
@@ -90,7 +96,9 @@ const nextConfig: NextConfig = {
               "worker-src 'self' blob:",
               "media-src 'self' blob: https://*.supabase.co",
               "object-src 'none'",
-              "upgrade-insecure-requests",
+              ...(enforceSecureTransport
+                ? ["upgrade-insecure-requests"]
+                : []),
             ].join("; "),
           },
         ],

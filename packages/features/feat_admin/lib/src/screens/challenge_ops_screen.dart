@@ -82,7 +82,7 @@ class _ChallengeOpsScreenState extends ConsumerState<ChallengeOpsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -99,7 +99,9 @@ class _ChallengeOpsScreenState extends ConsumerState<ChallengeOpsScreen> {
           tooltip: 'Back',
         ),
       ),
-      body: _loading
+      scrollable: false,
+      constrainContent: true,
+      child: _loading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

@@ -140,7 +140,7 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
     // ── Text hierarchy ──
     primaryText: ColorTokens.onSurface,
     secondaryText: ColorTokens.onSurfaceVariant,
-    tertiaryText: ColorTokens.onSurfaceVariant.withValues(alpha: 0.65),
+    tertiaryText: ColorTokens.onSurfaceVariant.withValues(alpha: 0.72),
     // ── Borders ──
     border: ColorTokens.ghostBorder,
     borderStrong: ColorTokens.primaryContainer.withValues(alpha: 0.28),
@@ -148,7 +148,9 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
     accent: ColorTokens.primaryContainer,
     accentSoft: ColorTokens.primaryContainer.withValues(alpha: 0.18),
     buttonPrimaryBackground: ColorTokens.primaryContainer,
-    buttonPrimaryForeground: const Color(0xFFFFFFFF),
+    buttonPrimaryForeground: ColorTokens.contrastForeground(
+      ColorTokens.primaryContainer,
+    ),
     // ── Semantic status ──
     danger: ColorTokens.error,
     warning: ColorTokens.warning,
@@ -187,13 +189,15 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
     inputSurface: Colors.white,
     primaryText: ColorTokens.onSurface,
     secondaryText: ColorTokens.onSurfaceVariant,
-    tertiaryText: ColorTokens.onSurfaceVariant.withValues(alpha: 0.7),
+    tertiaryText: ColorTokens.onSurfaceVariant.withValues(alpha: 0.94),
     border: ColorTokens.ghostBorder,
     borderStrong: ColorTokens.outlineVariant.withValues(alpha: 0.6),
     accent: ColorTokens.primary,
     accentSoft: ColorTokens.primary.withValues(alpha: 0.12),
     buttonPrimaryBackground: ColorTokens.primary,
-    buttonPrimaryForeground: const Color(0xFFFFFFFF),
+    buttonPrimaryForeground: ColorTokens.contrastForeground(
+      ColorTokens.primary,
+    ),
     danger: ColorTokens.error,
     warning: ColorTokens.warning,
     info: ColorTokens.info,

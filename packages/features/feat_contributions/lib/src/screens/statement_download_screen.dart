@@ -231,7 +231,7 @@ class _StatementDownloadScreenState
     final currency = _currencyFormatter;
     final previewEntries = _sortedEntries.take(5).toList(growable: false);
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -248,7 +248,8 @@ class _StatementDownloadScreenState
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

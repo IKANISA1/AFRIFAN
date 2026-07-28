@@ -4,6 +4,7 @@ import { showAdminToast } from "@/components/admin/admin-toast";
 import { saveAdminFanEngagementToken } from "@/lib/data/admin/gamification";
 import type { AdminAccess } from "@/lib/types";
 import { emptyFetForm, type FetForm } from "./fet-state";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 
 interface FetEditorFormProps {
   form: FetForm;
@@ -11,6 +12,7 @@ interface FetEditorFormProps {
   client: SupabaseClient | null;
   access: AdminAccess;
   onSaved: () => Promise<void>;
+  onConflict: () => Promise<void>;
 }
 
 export function FetEditorForm({
@@ -19,6 +21,7 @@ export function FetEditorForm({
   client,
   access,
   onSaved,
+  onConflict,
 }: FetEditorFormProps) {
   async function submitForm(formData: FormData) {
     if (client == null) return;
@@ -27,6 +30,7 @@ export function FetEditorForm({
     try {
       await saveAdminFanEngagementToken(client, access, {
         id: form.id || null,
+        expectedUpdatedAt: form.expectedUpdatedAt || null,
         code: String(formData.get("code") ?? ""),
         templateScope:
           String(formData.get("templateScope") ?? "generic") === "club_specific"
@@ -47,6 +51,9 @@ export function FetEditorForm({
       await onSaved();
       showAdminToast("FET catalog entry saved.", "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await onConflict();
+      }
       showAdminToast(
         caught instanceof Error
           ? caught.message

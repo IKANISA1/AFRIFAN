@@ -173,7 +173,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
 
   List<String> get _identityRules {
     return <String>[
-      'Your Fan ID is assigned from your profile and stays stable across the app.',
+      'Your Fan ID comes from your profile and remains the same when you return.',
       if (_showRealName && (_displayName?.isNotEmpty ?? false))
         'Your display name "$_displayName" can appear on leaderboards until you turn that off.'
       else
@@ -197,7 +197,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -214,226 +214,223 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
           tooltip: 'Back',
         ),
       ),
-      body: GradientBackground(
-        child: _isLoading
-            ? const Padding(
-                padding: EdgeInsets.all(SpacingTokens.spacing6),
-                child: AfriSkeletonList(),
-              )
-            : ListView(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  AfriSurfaceCard(
-                        padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                        child: Column(
-                          children: [
-                            Container(
-                                  width:
-                                      SpacingTokens.spacing20 +
-                                      SpacingTokens.spacing2,
-                                  height:
-                                      SpacingTokens.spacing20 +
-                                      SpacingTokens.spacing2,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: ColorTokens.universalGradient(
-                                      colors: [
-                                        ColorTokens.clubAccent,
-                                        ColorTokens.clubAccent.withValues(
-                                          alpha: 0.5,
-                                        ),
-                                      ],
-                                    ),
+      scrollable: false,
+      constrainContent: true,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: _isLoading
+          ? const Padding(
+              padding: EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriSkeletonList(),
+            )
+          : ListView(
+              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              physics: const BouncingScrollPhysics(),
+              children: [
+                AfriSurfaceCard(
+                      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                      child: Column(
+                        children: [
+                          Container(
+                                width:
+                                    SpacingTokens.spacing20 +
+                                    SpacingTokens.spacing2,
+                                height:
+                                    SpacingTokens.spacing20 +
+                                    SpacingTokens.spacing2,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: ColorTokens.universalGradient(
+                                    colors: [
+                                      ColorTokens.clubAccent,
+                                      ColorTokens.clubAccent.withValues(
+                                        alpha: 0.5,
+                                      ),
+                                    ],
                                   ),
-                                  child: Center(
-                                    child: Icon(
-                                      AfriIcons.fanzone,
-                                      size: SpacingTokens.spacing10,
-                                      color: ColorTokens.background,
-                                    ),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    AfriIcons.fanzone,
+                                    size: SpacingTokens.spacing10,
+                                    color: ColorTokens.background,
                                   ),
-                                )
-                                .animate()
-                                .scale(
-                                  begin: const Offset(0.8, 0.8),
-                                  end: const Offset(1, 1),
-                                  duration: 600.ms,
-                                  curve: Curves.easeOutBack,
-                                )
-                                .fadeIn(duration: 400.ms),
-                            const SizedBox(height: SpacingTokens.spacing4),
-                            Text(
-                              'YOUR FAN ID',
-                              style:
-                                  TypographyTokens.metricLabel(
-                                    ColorTokens.onSurfaceVariant,
-                                  ).copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 2,
-                                  ),
+                                ),
+                              )
+                              .afriAnimate(context)
+                              .scale(
+                                begin: const Offset(0.8, 0.8),
+                                end: const Offset(1, 1),
+                                duration: 600.ms,
+                                curve: Curves.easeOutBack,
+                              )
+                              .fadeIn(duration: 400.ms),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          Text(
+                            'YOUR FAN ID',
+                            style:
+                                TypographyTokens.metricLabel(
+                                  ColorTokens.onSurfaceVariant,
+                                ).copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 2,
+                                ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing2),
+                          Text(
+                            _fanId,
+                            style: TypographyTokens.displaySmall().copyWith(
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 4,
                             ),
-                            const SizedBox(height: SpacingTokens.spacing2),
-                            Text(
-                              _fanId,
-                              style: TypographyTokens.displaySmall().copyWith(
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 4,
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing2),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: SpacingTokens.spacing3,
+                              vertical: SpacingTokens.spacing1,
+                            ),
+                            decoration: BoxDecoration(
+                              color: ColorTokens.clubAccent.withValues(
+                                alpha: 0.14,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                ShapeTokens.radiusFull,
                               ),
                             ),
-                            const SizedBox(height: SpacingTokens.spacing2),
-                            Container(
+                            child: Text(
+                              _tier.toUpperCase(),
+                              style: TypographyTokens.labelSmall(
+                                ColorTokens.clubAccent,
+                              ),
+                            ),
+                          ),
+                          if (_displayName?.isNotEmpty ?? false) ...[
+                            const SizedBox(height: SpacingTokens.spacing3),
+                            Text(
+                              _showRealName
+                                  ? _displayName!
+                                  : 'Alias-only profile',
+                              style: TypographyTokens.bodyMedium(),
+                            ),
+                          ],
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          AfriPressFeedback(
+                            onTap: () {
+                              unawaited(
+                                Clipboard.setData(ClipboardData(text: _fanId)),
+                              );
+                              unawaited(HapticFeedback.mediumImpact());
+                              AfriToast.success(
+                                context,
+                                'Fan ID copied to clipboard.',
+                              );
+                            },
+                            builder: (context, state) => Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: SpacingTokens.spacing3,
-                                vertical: SpacingTokens.spacing1,
+                                horizontal: SpacingTokens.spacing4,
+                                vertical: SpacingTokens.spacing3,
                               ),
                               decoration: BoxDecoration(
-                                color: ColorTokens.clubAccent.withValues(
-                                  alpha: 0.14,
-                                ),
+                                color: ColorTokens.surfaceContainerHigh,
                                 borderRadius: BorderRadius.circular(
-                                  ShapeTokens.radiusFull,
+                                  ShapeTokens.radiusMd,
                                 ),
                               ),
-                              child: Text(
-                                _tier.toUpperCase(),
-                                style: TypographyTokens.labelSmall(
-                                  ColorTokens.clubAccent,
-                                ),
-                              ),
-                            ),
-                            if (_displayName?.isNotEmpty ?? false) ...[
-                              const SizedBox(height: SpacingTokens.spacing3),
-                              Text(
-                                _showRealName
-                                    ? _displayName!
-                                    : 'Alias-only profile',
-                                style: TypographyTokens.bodyMedium(),
-                              ),
-                            ],
-                            const SizedBox(height: SpacingTokens.spacing4),
-                            AfriPressFeedback(
-                              onTap: () {
-                                unawaited(
-                                  Clipboard.setData(
-                                    ClipboardData(text: _fanId),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    AfriIcons.copy,
+                                    size: SpacingTokens.spacing4,
+                                    color: ColorTokens.clubAccent,
                                   ),
-                                );
-                                unawaited(HapticFeedback.mediumImpact());
-                                AfriToast.success(
-                                  context,
-                                  'Fan ID copied to clipboard.',
-                                );
-                              },
-                              builder: (context, state) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: SpacingTokens.spacing4,
-                                  vertical: SpacingTokens.spacing3,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: ColorTokens.surfaceContainerHigh,
-                                  borderRadius: BorderRadius.circular(
-                                    ShapeTokens.radiusMd,
+                                  const SizedBox(width: SpacingTokens.spacing2),
+                                  Text(
+                                    'Copy to clipboard',
+                                    style: TypographyTokens.labelSmall(
+                                      ColorTokens.clubAccent,
+                                    ),
                                   ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      AfriIcons.copy,
-                                      size: SpacingTokens.spacing4,
-                                      color: ColorTokens.clubAccent,
-                                    ),
-                                    const SizedBox(
-                                      width: SpacingTokens.spacing2,
-                                    ),
-                                    Text(
-                                      'Copy to clipboard',
-                                      style: TypographyTokens.labelSmall(
-                                        ColorTokens.clubAccent,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      )
-                      .animate()
-                      .fadeIn(duration: 400.ms)
-                      .slideY(begin: 0.04, end: 0, duration: 400.ms),
-                  const SizedBox(height: SpacingTokens.spacing6),
-                  AfriSurfaceCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'PRIVACY BADGES',
-                              style: TypographyTokens.titleMedium().copyWith(
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 1.2,
+                          ),
+                        ],
+                      ),
+                    )
+                    .afriAnimate(context)
+                    .fadeIn(duration: 400.ms)
+                    .slideY(begin: 0.04, end: 0, duration: 400.ms),
+                const SizedBox(height: SpacingTokens.spacing6),
+                AfriSurfaceCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'PRIVACY BADGES',
+                            style: TypographyTokens.titleMedium().copyWith(
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          Wrap(
+                            spacing: SpacingTokens.spacing2,
+                            runSpacing: SpacingTokens.spacing2,
+                            children: _privacyBadges
+                                .map(
+                                  (badge) => _PrivacyBadge(
+                                    icon: badge.icon,
+                                    label: badge.label,
+                                    description: badge.description,
+                                  ),
+                                )
+                                .toList(growable: false),
+                          ),
+                        ],
+                      ),
+                    )
+                    .afriAnimate(context, delay: 100.ms)
+                    .fadeIn(duration: 400.ms)
+                    .slideY(begin: 0.04, end: 0, duration: 400.ms),
+                const SizedBox(height: SpacingTokens.spacing6),
+                AfriSurfaceCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'IDENTITY RULES',
+                            style: TypographyTokens.titleMedium().copyWith(
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing2),
+                          Text(
+                            'How your Fan ID works based on your current profile settings.',
+                            style: TypographyTokens.bodySmall(),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          ..._identityRules.asMap().entries.map(
+                            (entry) => Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: SpacingTokens.spacing3,
+                              ),
+                              child: _IdentityRuleRow(
+                                index: entry.key + 1,
+                                rule: entry.value,
                               ),
                             ),
-                            const SizedBox(height: SpacingTokens.spacing4),
-                            Wrap(
-                              spacing: SpacingTokens.spacing2,
-                              runSpacing: SpacingTokens.spacing2,
-                              children: _privacyBadges
-                                  .map(
-                                    (badge) => _PrivacyBadge(
-                                      icon: badge.icon,
-                                      label: badge.label,
-                                      description: badge.description,
-                                    ),
-                                  )
-                                  .toList(growable: false),
-                            ),
-                          ],
-                        ),
-                      )
-                      .animate(delay: 100.ms)
-                      .fadeIn(duration: 400.ms)
-                      .slideY(begin: 0.04, end: 0, duration: 400.ms),
-                  const SizedBox(height: SpacingTokens.spacing6),
-                  AfriSurfaceCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'IDENTITY RULES',
-                              style: TypographyTokens.titleMedium().copyWith(
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing2),
-                            Text(
-                              'How your Fan ID works based on your current profile settings.',
-                              style: TypographyTokens.bodySmall(),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing4),
-                            ..._identityRules.asMap().entries.map(
-                              (entry) => Padding(
-                                padding: const EdgeInsets.only(
-                                  bottom: SpacingTokens.spacing3,
-                                ),
-                                child: _IdentityRuleRow(
-                                  index: entry.key + 1,
-                                  rule: entry.value,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                      .animate(delay: 200.ms)
-                      .fadeIn(duration: 400.ms)
-                      .slideY(begin: 0.04, end: 0, duration: 400.ms),
-                  const SizedBox(height: SpacingTokens.spacing12),
-                ],
-              ),
-      ),
+                          ),
+                        ],
+                      ),
+                    )
+                    .afriAnimate(context, delay: 200.ms)
+                    .fadeIn(duration: 400.ms)
+                    .slideY(begin: 0.04, end: 0, duration: 400.ms),
+                const SizedBox(height: SpacingTokens.spacing12),
+              ],
+            ),
     );
   }
 }

@@ -282,9 +282,13 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(
+      return AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
-        body: const SafeArea(
+        showAppBar: false,
+        showBackButton: false,
+        scrollable: false,
+        constrainContent: true,
+        child: const SafeArea(
           child: Padding(
             padding: EdgeInsets.all(SpacingTokens.spacing6),
             child: AfriSkeletonList(),
@@ -294,9 +298,13 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     }
 
     if (_match == null) {
-      return Scaffold(
+      return AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
-        body: SafeArea(
+        showAppBar: false,
+        showBackButton: false,
+        scrollable: false,
+        constrainContent: true,
+        child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(SpacingTokens.spacing6),
             child: Column(
@@ -345,8 +353,18 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     final events = _eventsFor(match);
     final homeLogoUrl = match['home_team_logo']?.toString();
     final awayLogoUrl = match['away_team_logo']?.toString();
+    final homeLogoProvenance =
+        match['home_team_logo_provenance_id']?.toString().trim() ?? '';
+    final awayLogoProvenance =
+        match['away_team_logo_provenance_id']?.toString().trim() ?? '';
+    final homeLogoRightsApproved =
+        match['home_team_logo_rights_approved'] == true &&
+        homeLogoProvenance.isNotEmpty;
+    final awayLogoRightsApproved =
+        match['away_team_logo_rights_approved'] == true &&
+        awayLogoProvenance.isNotEmpty;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -364,7 +382,9 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
           ),
         ],
       ),
-      body: AfriRefreshIndicator(
+      scrollable: false,
+      constrainContent: false,
+      child: AfriRefreshIndicator(
         onRefresh: _loadMatch,
         color: ColorTokens.clubAccent,
         child: CustomScrollView(
@@ -404,14 +424,24 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildTeamBox(homeTeam, logoUrl: homeLogoUrl),
+                          _buildTeamBox(
+                            homeTeam,
+                            logoUrl: homeLogoUrl,
+                            provenanceId: homeLogoProvenance,
+                            rightsApproved: homeLogoRightsApproved,
+                          ),
                           const SizedBox(width: SpacingTokens.spacing6),
                           Text(
                             '$homeScore - $awayScore',
                             style: TypographyTokens.displayMedium(),
                           ),
                           const SizedBox(width: SpacingTokens.spacing6),
-                          _buildTeamBox(awayTeam, logoUrl: awayLogoUrl),
+                          _buildTeamBox(
+                            awayTeam,
+                            logoUrl: awayLogoUrl,
+                            provenanceId: awayLogoProvenance,
+                            rightsApproved: awayLogoRightsApproved,
+                          ),
                         ],
                       ),
                       const SizedBox(height: SpacingTokens.spacing6),
@@ -526,10 +556,20 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     );
   }
 
-  Widget _buildTeamBox(String team, {String? logoUrl}) {
+  Widget _buildTeamBox(
+    String team, {
+    String? logoUrl,
+    String? provenanceId,
+    bool rightsApproved = false,
+  }) {
     return Column(
       children: [
-        TeamBadge(label: _abbreviate(team), logoUrl: logoUrl),
+        TeamBadge(
+          label: _abbreviate(team),
+          logoUrl: logoUrl,
+          provenanceId: provenanceId,
+          rightsApproved: rightsApproved,
+        ),
         const SizedBox(height: SpacingTokens.spacing2),
         SizedBox(
           width: 80,

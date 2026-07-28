@@ -8,8 +8,8 @@ import type { AdminAccess, AdminNewsArticle } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
-  deleteRecordWithMatchers,
-  mutateRecordWithVariants,
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
   requireAdminClubId,
   resolveNewsTable,
 } from "./helpers";
@@ -34,6 +34,7 @@ function mapNewsArticle(row: Record<string, unknown>): AdminNewsArticle {
     sortOrder: safeNumber(row.sort_order, 0),
     publishedAt: safeString(row.published_at) || null,
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
   };
 }
 
@@ -66,6 +67,7 @@ export async function saveAdminArticle(
   access: AdminAccess,
   input: {
     id?: string | null;
+    expectedUpdatedAt?: string | null;
     title: string;
     subtitle?: string;
     excerpt?: string;
@@ -101,7 +103,7 @@ export async function saveAdminArticle(
   };
 
   if (input.id) {
-    return mutateRecordWithVariants(client, table, input.id, [payload], {
+    return mutateRecordWithVariantsIfUnchanged(client, table, input.id, input.expectedUpdatedAt, [payload], {
       club_id: clubId,
     });
   }
@@ -123,15 +125,28 @@ export async function deleteAdminArticle(
   client: SupabaseClient,
   access: AdminAccess,
   articleId: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("cms", {
       method: "DELETE",
-      query: { id: articleId },
+      query: { id: articleId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "delete articles");
   const table = await resolveNewsTable(client);
-  await deleteRecordWithMatchers(client, table, articleId, { club_id: clubId });
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    table,
+    articleId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_article",
+      source: "admin_cms",
+    },
+  );
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../extensions.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/motion_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_press_feedback.dart';
@@ -38,13 +40,15 @@ class AfriPanelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.afriSemanticColors;
+    final highContrast = MediaQuery.highContrastOf(context);
     return Padding(
       padding: margin ?? EdgeInsets.zero,
       child: AfriPressFeedback(
         onTap: onTap,
         semanticsLabel: semanticsLabel,
         builder: (context, state) => AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
+          duration: AfriMotion.surfaceResponse,
           width: width,
           height: height,
           padding: padding ?? const EdgeInsets.all(SpacingTokens.spacing5),
@@ -53,9 +57,12 @@ class AfriPanelCard extends StatelessWidget {
             borderRadius: ShapeTokens.cardRadius,
             border: BorderTokens.all(
               color: state.isFocused
-                  ? ColorTokens.clubAccent
-                  : (borderColor ?? ColorTokens.ghostBorder),
-              width: BorderTokens.standard,
+                  ? (highContrast ? colors.primaryText : ColorTokens.clubAccent)
+                  : (borderColor ??
+                        (highContrast
+                            ? colors.border
+                            : ColorTokens.ghostBorder)),
+              width: highContrast ? BorderTokens.strong : BorderTokens.standard,
             ),
           ),
           child: builder != null ? builder!(context, state) : child!,

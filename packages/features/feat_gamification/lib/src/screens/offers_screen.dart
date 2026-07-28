@@ -131,7 +131,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
         .where((offer) => !offer.isFeatured && !offer.isMatchDay)
         .toList(growable: false);
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -142,7 +142,9 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
           tooltip: 'Back',
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: false,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

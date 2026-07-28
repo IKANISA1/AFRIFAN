@@ -146,7 +146,7 @@ void main() {
     });
 
     test(
-      'default supporter app keeps the approved 14 full-screen surfaces',
+      'default supporter app keeps the approved 15 full-screen surfaces',
       () {
         final decisions = modules
             .expand((module) => module.routePresentationDecisions)
@@ -166,6 +166,7 @@ void main() {
             '/auth/phone',
             '/auth/otp',
             '/home',
+            '/search',
             '/fanzone',
             '/fanzone/venue',
             '/fanzone/venue/order',
@@ -219,6 +220,28 @@ void main() {
       );
     });
 
+    test('remote config cannot enable admin in a consumer build', () {
+      final modules = AppModuleRegistry.build(
+        const _FakeClubConfig(hasMobileAdmin: true),
+        configSnapshot: <String, dynamic>{
+          'features': <Map<String, dynamic>>[
+            <String, dynamic>{
+              'feature_key': 'admin',
+              'is_enabled': true,
+              'visibility_state': 'visible',
+              'channel': <String, dynamic>{'is_enabled': true},
+              'rules': <String, dynamic>{'is_within_schedule': true},
+            },
+          ],
+        },
+      );
+
+      expect(
+        modules.map((module) => module.featureKey),
+        isNot(contains('admin')),
+      );
+    });
+
     test(
       '/admin retains core operations routes for explicit internal builds',
       () {
@@ -229,6 +252,7 @@ void main() {
             hasTicketing: false,
             hasMobileAdmin: true,
           ),
+          allowInternalMobileAdmin: true,
         );
         final admin = modules.firstWhere((m) => m.featureKey == 'admin');
         final adminRoute = admin.routes.whereType<GoRoute>().firstWhere(

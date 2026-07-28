@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -59,7 +60,7 @@ class LineupsTabBody extends StatelessWidget {
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                'Starting lineups will be available closer to kickoff.',
+                context.afriL10n.fanZoneLineupsEmpty,
                 textAlign: TextAlign.center,
                 style: TypographyTokens.bodySmall(),
               ),
@@ -85,7 +86,7 @@ class LineupsTabBody extends StatelessWidget {
               if (awayFormation != null)
                 _FormationChip(team: awayTeamShort, formation: awayFormation!),
             ],
-          ).animate().fadeIn(duration: 300.ms),
+          ).afriAnimate(context).fadeIn(duration: 300.ms),
 
         if (homeFormation != null || awayFormation != null)
           const SizedBox(height: SpacingTokens.spacing5),
@@ -254,7 +255,7 @@ class _PlayerRow extends StatelessWidget {
             ],
           ),
         )
-        .animate(delay: delay.ms)
+        .afriAnimate(context, delay: delay.ms)
         .fadeIn(duration: 200.ms)
         .slideX(begin: 0.03, end: 0, duration: 200.ms);
   }

@@ -6,6 +6,7 @@ import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { saveAdminSquadPlayer } from "@/lib/data/admin/squad";
 import { emptySquadForm, type SquadForm } from "./squad-form-state";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 
 interface SquadFormProps {
   form: SquadForm;
@@ -13,9 +14,10 @@ interface SquadFormProps {
   client: ReturnType<typeof useAdminPortal>["client"];
   access: ReturnType<typeof useAdminPortal>["access"];
   onSaved: () => Promise<void>;
+  onConflict: () => Promise<void>;
 }
 
-export function SquadEditorForm({ form, setForm, client, access, onSaved }: SquadFormProps) {
+export function SquadEditorForm({ form, setForm, client, access, onSaved, onConflict }: SquadFormProps) {
   async function submitForm(formData: FormData) {
     if (client == null) {
       return;
@@ -26,6 +28,7 @@ export function SquadEditorForm({ form, setForm, client, access, onSaved }: Squa
     try {
       await saveAdminSquadPlayer(client, access, {
         id: form.id || null,
+        expectedUpdatedAt: form.expectedUpdatedAt || null,
         name: String(formData.get("name") ?? ""),
         role: String(formData.get("role") ?? "Midfielder"),
         number: Number(formData.get("number") ?? 0),
@@ -38,6 +41,9 @@ export function SquadEditorForm({ form, setForm, client, access, onSaved }: Squa
       await onSaved();
       showAdminToast("Player saved.", "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await onConflict();
+      }
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not save player.",
         "error",

@@ -184,18 +184,17 @@ class _FeatureUnavailableScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: Center(
+      showAppBar: false,
+      scrollable: false,
+      constrainContent: true,
+      child: Center(
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
-          child: AfriStateView.empty(
-            title: 'This feature is currently unavailable.',
-            message: 'The club has hidden or disabled this section for now.',
-            icon: AfriIcons.statusBlocked,
-            actionLabel: 'Go back',
+          child: AfriDeepLinkRecovery(
+            state: AfriDeepLinkRecoveryState.unavailable,
             onAction: () => context.go(fallbackLocation),
-            compact: true,
           ),
         ),
       ),
@@ -214,17 +213,28 @@ class _RouterErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final errorMessage =
+        error?.toString() ?? 'The requested route is unavailable.';
+    final normalizedError = errorMessage.toLowerCase();
+    final isOffline =
+        normalizedError.contains('offline') ||
+        normalizedError.contains('network') ||
+        normalizedError.contains('socket');
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: Center(
+      showAppBar: false,
+      scrollable: false,
+      constrainContent: true,
+      child: Center(
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
-          child: AfriStateView.error(
-            title: 'We could not open that page.',
-            message: error?.toString() ?? 'The requested route is unavailable.',
+          child: AfriDeepLinkRecovery(
+            state: isOffline
+                ? AfriDeepLinkRecoveryState.offline
+                : AfriDeepLinkRecoveryState.error,
+            message: errorMessage,
             actionLabel: 'Go home',
             onAction: () => context.go(fallbackLocation),
-            compact: true,
           ),
         ),
       ),

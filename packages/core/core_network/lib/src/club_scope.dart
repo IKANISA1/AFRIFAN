@@ -15,6 +15,8 @@ class ClubScopeResolver {
 
   final SupabaseClient _client;
 
+  static const _configuredClubId = String.fromEnvironment('CLUB_ID');
+
   int? get currentClubId {
     final user = _client.auth.currentUser;
     final candidates = <Object?>[
@@ -22,11 +24,16 @@ class ClubScopeResolver {
       user?.userMetadata?['club_id'],
       user?.appMetadata['clubId'],
       user?.userMetadata?['clubId'],
+      _configuredClubId,
     ];
 
+    return firstValidClubId(candidates);
+  }
+
+  static int? firstValidClubId(Iterable<Object?> candidates) {
     for (final candidate in candidates) {
       final parsed = int.tryParse(candidate?.toString().trim() ?? '');
-      if (parsed != null) {
+      if (parsed != null && parsed > 0) {
         return parsed;
       }
     }

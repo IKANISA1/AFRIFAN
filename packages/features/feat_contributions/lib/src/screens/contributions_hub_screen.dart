@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -22,16 +23,65 @@ class _ContributionsHubScreenState
     extends ConsumerState<ContributionsHubScreen> {
   List<Map<String, dynamic>> _groups = const <Map<String, dynamic>>[];
   bool _isLoading = true;
+  bool _isRefreshing = false;
+  bool _isStale = false;
   bool _isUpdatingSmsSync = false;
   String? _error;
+  late bool _wasOnline;
 
   @override
   void initState() {
     super.initState();
+    _wasOnline = ConnectivityService.isOnline;
+    ConnectivityService.onlineNotifier.addListener(_handleConnectivityChange);
     unawaited(_loadGroups());
   }
 
+  @override
+  void dispose() {
+    ConnectivityService.onlineNotifier.removeListener(
+      _handleConnectivityChange,
+    );
+    super.dispose();
+  }
+
+  void _handleConnectivityChange() {
+    final isOnline = ConnectivityService.isOnline;
+    final restored = !_wasOnline && isOnline;
+    _wasOnline = isOnline;
+
+    if (!mounted) return;
+    if (!isOnline && _groups.isNotEmpty) {
+      setState(() => _isStale = true);
+    } else if (restored) {
+      unawaited(_loadGroups());
+    }
+  }
+
   Future<void> _loadGroups() async {
+    if (!ConnectivityService.isOnline) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _isRefreshing = false;
+        _isStale = _groups.isNotEmpty;
+        _error = _groups.isEmpty
+            ? 'Connect to load contribution initiatives.'
+            : null;
+      });
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _isRefreshing = _groups.isNotEmpty;
+        if (_groups.isEmpty) {
+          _isLoading = true;
+        }
+        _error = null;
+      });
+    }
+
     try {
       final groups = await ref
           .read(clubRepositoryProvider)
@@ -68,6 +118,8 @@ class _ContributionsHubScreenState
       setState(() {
         _groups = rows.take(8).toList(growable: false);
         _isLoading = false;
+        _isRefreshing = false;
+        _isStale = false;
         _error = null;
       });
     } catch (error, stackTrace) {
@@ -80,7 +132,11 @@ class _ContributionsHubScreenState
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Contribution initiatives are temporarily unavailable.';
+        _isRefreshing = false;
+        _isStale = _groups.isNotEmpty;
+        _error = _groups.isEmpty
+            ? 'Contribution initiatives are temporarily unavailable.'
+            : null;
       });
     }
   }
@@ -132,6 +188,11 @@ class _ContributionsHubScreenState
   }
 
   Future<void> _runManualSmsSync() async {
+    if (!ConnectivityService.isOnline) {
+      AfriToast.error(context, 'Connect before syncing MoMo messages.');
+      return;
+    }
+
     setState(() => _isUpdatingSmsSync = true);
     try {
       final result = await ref
@@ -174,177 +235,213 @@ class _ContributionsHubScreenState
     );
     final hasGroups = !_isLoading && _error == null && _groups.isNotEmpty;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(SpacingTokens.spacing6),
-            children: [
-              // ── Header: back + title ──
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  AfriIconButton(
-                    icon: AfriIcons.back,
-                    tooltip: 'Back',
-                    onTap: () {
-                      if (context.canPop()) {
-                        context.pop();
-                      } else {
-                        context.go('/home');
-                      }
-                    },
-                  ),
-                  const SizedBox(width: SpacingTokens.spacing3),
-                  Expanded(
-                    child: Text(
-                      'CONTRIBUTE',
-                      style: TypographyTokens.headlineSmall().copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.4,
-                      ),
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          children: [
+            // ── Header: back + title ──
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                AfriIconButton(
+                  icon: AfriIcons.back,
+                  tooltip: 'Back',
+                  onTap: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go('/home');
+                    }
+                  },
+                ),
+                const SizedBox(width: SpacingTokens.spacing3),
+                Expanded(
+                  child: Text(
+                    'CONTRIBUTE',
+                    style: TypographyTokens.headlineSmall().copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.4,
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: SpacingTokens.spacing6),
-              if (hasGroups) ...[
-                _HubCard(
-                  title: 'TEAM PROJECTS',
-                  subtitle:
-                      '${currency.format(totalRaised)} of ${currency.format(totalTarget)} raised.',
-                  accent: ColorTokens.clubPrimary,
-                  metricLabel: '${_groups.length} OPEN',
-                  onTap: () => context.push('/contribute/projects'),
                 ),
-                const SizedBox(height: SpacingTokens.spacing3),
-                _HubCard(
-                  title: 'COMMUNITIES',
-                  subtitle: '$_groupsCountLabel active.',
-                  accent: ColorTokens.success,
-                  metricLabel: '${_groups.length} LIVE',
-                  onTap: () => context.push('/contribute/groups'),
-                ),
-                const SizedBox(height: SpacingTokens.spacing3),
-                _HubCard(
-                  title: 'COMMUNITY',
-                  subtitle: 'Fan clubs & local chapters.',
-                  accent: ColorTokens.info,
-                  metricLabel: 'LIVE',
-                  onTap: () => context.push('/fan-clubs'),
-                ),
-                const SizedBox(height: SpacingTokens.spacing4),
               ],
-              AfriSectionCard(
-                title: 'MoMo SMS sync',
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (!smsSyncAvailable)
-                      Text(
-                        'Unavailable in this build.',
-                        style: TypographyTokens.bodySmall(
-                          ColorTokens.onSurfaceVariant,
-                        ),
-                      )
-                    else if (smsSyncEnabled) ...[
-                      const AfriInfoChip(
-                        label: 'ACTIVE',
-                        color: ColorTokens.success,
+            ),
+            const SizedBox(height: SpacingTokens.spacing6),
+            if (_isStale || _isRefreshing) ...[
+              AfriStateBanner(
+                icon: _isRefreshing
+                    ? AfriIcons.refresh
+                    : AfriIcons.statusWarning,
+                title: _isRefreshing
+                    ? 'Refreshing contributions'
+                    : 'Saved contribution data',
+                subtitle: _isRefreshing
+                    ? 'Current totals and initiatives are being checked.'
+                    : 'Totals may be out of date. Reconnect before making or syncing a contribution.',
+                tone: _isRefreshing
+                    ? AfriStateBannerTone.info
+                    : AfriStateBannerTone.warning,
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+            ],
+            if (hasGroups) ...[
+              _HubCard(
+                title: 'TEAM PROJECTS',
+                subtitle:
+                    '${currency.format(totalRaised)} of ${currency.format(totalTarget)} raised.',
+                accent: ColorTokens.clubPrimary,
+                metricLabel: '${_groups.length} OPEN',
+                onTap: () => context.push('/contribute/projects'),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              _HubCard(
+                title: 'COMMUNITIES',
+                subtitle: '$_groupsCountLabel active.',
+                accent: ColorTokens.success,
+                metricLabel: '${_groups.length} LIVE',
+                onTap: () => context.push('/contribute/groups'),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              _HubCard(
+                title: 'COMMUNITY',
+                subtitle: 'Fan clubs & local chapters.',
+                accent: ColorTokens.info,
+                metricLabel: 'LIVE',
+                onTap: () => context.push('/fan-clubs'),
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+            ],
+            AfriSectionCard(
+              title: 'MoMo SMS sync',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!smsSyncAvailable)
+                    Text(
+                      'Unavailable in this build.',
+                      style: TypographyTokens.bodySmall(
+                        ColorTokens.onSurfaceVariant,
                       ),
-                      const SizedBox(height: SpacingTokens.spacing4),
-                      AfriButton(
-                        label: _isUpdatingSmsSync ? 'Syncing…' : 'Sync now',
+                    )
+                  else if (smsSyncEnabled) ...[
+                    AfriInfoChip(label: 'ACTIVE', color: ColorTokens.success),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    ConnectivityBuilder(
+                      builder: (context, isOnline) => AfriButton(
+                        label: !isOnline
+                            ? 'Connection required'
+                            : _isUpdatingSmsSync
+                            ? 'Syncing…'
+                            : 'Sync now',
                         onTap: _runManualSmsSync,
                         isLoading: _isUpdatingSmsSync,
-                        enabled: !_isUpdatingSmsSync,
+                        enabled: isOnline && !_isUpdatingSmsSync,
                       ),
-                      const SizedBox(height: SpacingTokens.listItemGap),
-                      AfriButton(
-                        label: 'Disable',
-                        variant: AfriButtonVariant.outline,
-                        onTap: _disableSmsSync,
-                        enabled: !_isUpdatingSmsSync,
-                      ),
-                    ] else
-                      AfriButton(
-                        label: _isUpdatingSmsSync
-                            ? 'Enabling…'
-                            : 'Enable SMS sync',
-                        variant: AfriButtonVariant.outline,
-                        onTap: _enableSmsSync,
-                        isLoading: _isUpdatingSmsSync,
-                        enabled: !_isUpdatingSmsSync,
+                    ),
+                    const SizedBox(height: SpacingTokens.listItemGap),
+                    AfriButton(
+                      label: 'Disable',
+                      variant: AfriButtonVariant.outline,
+                      onTap: _disableSmsSync,
+                      enabled: !_isUpdatingSmsSync,
+                    ),
+                  ] else
+                    AfriButton(
+                      label: _isUpdatingSmsSync
+                          ? 'Enabling…'
+                          : 'Enable SMS sync',
+                      variant: AfriButtonVariant.outline,
+                      onTap: _enableSmsSync,
+                      isLoading: _isUpdatingSmsSync,
+                      enabled: !_isUpdatingSmsSync,
+                    ),
+                ],
+              ),
+            ),
+            if (_isLoading || _error != null || hasGroups) ...[
+              const SizedBox(height: SpacingTokens.spacing4),
+              AfriSectionCard(
+                title: 'Live campaigns',
+                child: Column(
+                  children: [
+                    if (_isLoading)
+                      const AfriSkeletonList()
+                    else if (_error != null)
+                      ConnectivityBuilder(
+                        builder: (context, isOnline) => Column(
+                          children: [
+                            AfriStateView.offline(
+                              title: 'Groups unavailable',
+                              message: _error!,
+                              actionLabel: isOnline ? 'Retry' : null,
+                              onAction: isOnline ? _loadGroups : null,
+                              compact: true,
+                            ),
+                            if (!isOnline) ...[
+                              const SizedBox(height: SpacingTokens.listItemGap),
+                              AfriButton(
+                                label: 'Connection required',
+                                onTap: () {},
+                                enabled: false,
+                              ),
+                            ],
+                          ],
+                        ),
+                      )
+                    else
+                      ..._groups.take(3).map((group) {
+                        final groupId = group['id']?.toString() ?? '';
+                        final name = group['name']?.toString() ?? 'Group';
+                        final currentTotal =
+                            (group['current_total'] as num?)?.toInt() ?? 0;
+                        final targetAmount =
+                            (group['target_amount'] as num?)?.toInt() ?? 0;
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: SpacingTokens.listItemGap,
+                          ),
+                          child: AfriListRow(
+                            icon: AfriIcons.contribute,
+                            title: name,
+                            subtitle:
+                                '${currency.format(currentTotal)} of ${currency.format(targetAmount)}',
+                            onTap: () =>
+                                context.push('/contribute/group/$groupId'),
+                          ),
+                        );
+                      }),
+                    if (_groups.length > 3)
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: AfriPressFeedback(
+                          onTap: () => context.push('/contribute/groups'),
+                          tooltip: 'See all contribution groups',
+                          semanticsLabel:
+                              'See all ${_groups.length} contribution groups',
+                          semanticsHint: 'Open contribution groups',
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: SpacingTokens.spacing2,
+                              horizontal: SpacingTokens.spacing2,
+                            ),
+                            child: Text(
+                              'See all ${_groups.length}',
+                              style: TypographyTokens.inlineAction(),
+                            ),
+                          ),
+                        ),
                       ),
                   ],
                 ),
               ),
-              if (_isLoading || _error != null || hasGroups) ...[
-                const SizedBox(height: SpacingTokens.spacing4),
-                AfriSectionCard(
-                  title: 'Live campaigns',
-                  child: Column(
-                    children: [
-                      if (_isLoading)
-                        const AfriSkeletonList()
-                      else if (_error != null)
-                        AfriStateView.offline(
-                          title: 'Groups unavailable',
-                          message: _error!,
-                          actionLabel: 'Retry',
-                          onAction: _loadGroups,
-                          compact: true,
-                        )
-                      else
-                        ..._groups.take(3).map((group) {
-                          final groupId = group['id']?.toString() ?? '';
-                          final name = group['name']?.toString() ?? 'Group';
-                          final currentTotal =
-                              (group['current_total'] as num?)?.toInt() ?? 0;
-                          final targetAmount =
-                              (group['target_amount'] as num?)?.toInt() ?? 0;
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: SpacingTokens.listItemGap,
-                            ),
-                            child: AfriListRow(
-                              icon: AfriIcons.contribute,
-                              title: name,
-                              subtitle:
-                                  '${currency.format(currentTotal)} of ${currency.format(targetAmount)}',
-                              onTap: () =>
-                                  context.push('/contribute/group/$groupId'),
-                            ),
-                          );
-                        }),
-                      if (_groups.length > 3)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: AfriPressFeedback(
-                            onTap: () => context.push('/contribute/groups'),
-                            tooltip: 'See all contribution groups',
-                            semanticsLabel:
-                                'See all ${_groups.length} contribution groups',
-                            semanticsHint: 'Open contribution groups',
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: SpacingTokens.spacing2,
-                                horizontal: SpacingTokens.spacing2,
-                              ),
-                              child: Text(
-                                'See all ${_groups.length}',
-                                style: TypographyTokens.inlineAction(),
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
             ],
-          ),
+          ],
         ),
       ),
     );

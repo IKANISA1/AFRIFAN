@@ -89,7 +89,7 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
         ),
         const SizedBox(height: SpacingTokens.spacing4),
         Text(
-          'Only confirm below if you completed the MoMo payment on your phone.',
+          'Confirm only after completing the MoMo payment on your phone.',
           style: TypographyTokens.bodySmall(),
         ),
         const SizedBox(height: SpacingTokens.spacing5),

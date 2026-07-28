@@ -73,7 +73,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
       0,
       (sum, group) => sum + ((group['current_total'] as num?)?.toInt() ?? 0),
     );
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -90,7 +90,8 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
           },
         ),
       ),
-      body: SafeArea(
+      scrollable: false,
+      child: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),

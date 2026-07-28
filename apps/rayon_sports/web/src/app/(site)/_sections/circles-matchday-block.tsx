@@ -1,40 +1,19 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ProgressBar } from "@/components/progress-bar";
-import { SectionHeading } from "@/components/section-heading";
 import {
-  getClubProfile,
   getContributionGroups,
   getFanClubs,
-  getMatches,
   getMembershipPackages,
-  getNewsArticles,
 } from "@/lib/data/public";
 import { formatCompactNumber, formatCurrency } from "@/lib/utils";
 
 export async function GroupsAndMatchdayBlock() {
-  const [
-    club,
-    matches,
-    contributionGroups,
-    fanClubs,
-    membershipPackages,
-    news,
-  ] = await Promise.all([
-    getClubProfile(),
-    getMatches(),
+  const [contributionGroups, fanClubs, membershipPackages] = await Promise.all([
     getContributionGroups(),
     getFanClubs(),
     getMembershipPackages(),
-    getNewsArticles(),
   ]);
-
-  const featuredMatch =
-    matches.find((m) => m.matchStatus === "live") ??
-    matches.find((m) => m.isFeatured) ??
-    matches.find((m) => m.matchStatus !== "fulltime") ??
-    matches[0] ??
-    null;
 
   return (
     <section className="page-shell">

@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "design_authority": {
+    "path": "/Volumes/PRO-G40/DESIGN/DESIGN.md",
+    "sha256": "d5347c722734fe1e844e08fc63e411a0e42b38af91baefad9c2d90659408e321"
+  },
+  "updated_at": "2026-07-24T09:38:00Z",
+  "exceptions": [
+    {
+      "id": "DEX-TV-001",
+      "status": "proposed_pending_approval",
+      "surface": "native_tv",
+      "exact_route_or_component": "apps/rayon_sports_tv / pairing and active session display",
+      "varied_rule": "Full TV home, detail, search, and content archetypes are not implemented.",
+      "reason": "The current native TV product is a venue display companion whose controlled purpose is pairing and showing an active session; content browsing would materially expand permissions, remote navigation, moderation, and distribution scope.",
+      "approved_alternative": "Time-bound display-only TV scope with pairing, active session, expiry, revocation, error, loading, focus, and recovery states.",
+      "risk": "Stakeholders may expect an independent consumer TV app; display-only scope can be misunderstood without store copy, operations controls, and accountable approval.",
+      "evidence": [
+        "apps/rayon_sports_tv/lib/main.dart",
+        "apps/rayon_sports_tv/test/tv_app_test.dart",
+        "docs/tv_fleet_release_and_operations_runbook.md",
+        "output/implementation_goal_20260724/route_inventory_current/route-inventory.json"
+      ],
+      "owner": "TV product owner",
+      "approval": {
+        "status": "pending",
+        "approved_by": null,
+        "approved_at": null
+      },
+      "expiry_or_review_date": "2026-08-31"
+    }
+  ],
+  "resolved_decisions": [
+    {
+      "id": "DEC-THEME-001",
+      "topic": "Light-mode parity",
+      "outcome": "implemented_no_exception",
+      "evidence": [
+        "packages/core/core_theme/lib/src/club_theme.dart",
+        "packages/core/core_theme/lib/src/theme_mode_notifier.dart",
+        "packages/core/core_app/lib/src/app.dart",
+        "packages/features/feat_settings/lib/src/screens/settings_screen.dart",
+        "packages/core/core_theme/test/theme_mode_notifier_test.dart",
+        "packages/core/core_theme/test/ui_tokens_test.dart"
+      ]
+    },
+    {
+      "id": "DEC-PLATFORM-001",
+      "topic": "Platform-specific component differences",
+      "outcome": "no_unapproved_differences_recorded",
+      "evidence": [
+        "packages/core/core_theme/test/ui_source_guardrails_test.dart",
+        "output/implementation_goal_20260724/design_compliance_current/VALIDATION.json"
+      ]
+    }
+  ],
+  "pending_decisions": [
+    {
+      "id": "DEC-TV-APPROVAL-001",
+      "topic": "Approve or reject DEX-TV-001 display-only TV scope",
+      "owner": "TV product owner",
+      "due_date": null,
+      "status": "owner_and_due_date_required"
+    },
+    {
+      "id": "DEC-ADMIN-001",
+      "topic": "Approve Next/PWA as canonical admin and classify Flutter feat_admin as internal-only or removable",
+      "owner": "Product architecture and security owner",
+      "due_date": null,
+      "status": "owner_and_due_date_required"
+    },
+    {
+      "id": "DEC-ARCHETYPE-NA-001",
+      "topic": "Approve route-specific not-applicable state and archetype entries after route evidence population",
+      "owner": "Product design lead",
+      "due_date": null,
+      "status": "route_evidence_dependency_open"
+    }
+  ]
+}

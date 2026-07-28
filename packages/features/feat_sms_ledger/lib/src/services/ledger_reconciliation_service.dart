@@ -152,7 +152,10 @@ class LedgerReconciliationService {
   Future<_PendingContributionState> _loadPendingContributions() async {
     final pending = await _client
         .from('group_contributions')
-        .select('id, user_id, amount, created_at, group_id, momo_reference')
+        .select(
+          'id, user_id, amount, created_at, updated_at, '
+          'group_id, momo_reference',
+        )
         .eq('status', 'pending')
         .order('created_at', ascending: true)
         .limit(100);
@@ -171,7 +174,11 @@ class LedgerReconciliationService {
   }) async {
     switch (schema) {
       case _ContributionSchema.groupContributions:
-        await _client
+        final expectedUpdatedAt = contribution['updated_at']?.toString();
+        if (expectedUpdatedAt == null || expectedUpdatedAt.isEmpty) {
+          throw const ContributionConflictException();
+        }
+        final updated = await _client
             .from('group_contributions')
             .update({
               'status': 'confirmed',
@@ -179,7 +186,13 @@ class LedgerReconciliationService {
               'confirmed_at': DateTime.now().toUtc().toIso8601String(),
             })
             .eq('id', contribution['id'])
-            .eq('status', 'pending');
+            .eq('status', 'pending')
+            .eq('updated_at', expectedUpdatedAt)
+            .select('id')
+            .maybeSingle();
+        if (updated == null) {
+          throw const ContributionConflictException();
+        }
     }
   }
 
@@ -190,6 +203,14 @@ class LedgerReconciliationService {
     final ratio = diff / expectedAmount;
     return (1.0 - ratio).clamp(0.0, 1.0);
   }
+}
+
+class ContributionConflictException implements Exception {
+  const ContributionConflictException();
+
+  @override
+  String toString() =>
+      'Contribution changed during reconciliation. Refresh the queue and review the latest status.';
 }
 
 enum _ContributionSchema { groupContributions }

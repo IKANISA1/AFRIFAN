@@ -14,12 +14,15 @@ import {
   Trash2,
 } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { Skeleton } from "@/components/skeleton";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   deleteAdminPlatformOptionSet,
   deleteAdminPlatformOptionValue,
@@ -49,6 +52,8 @@ import type {
   AdminVenueGovernanceControl,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 type RuntimeResourceKey =
   | "routes"
@@ -83,6 +88,7 @@ type RuntimeResourceDefinition = {
     client: Parameters<typeof saveAdminPlatformRoute>[0],
     access: AdminAccess,
     id: string,
+    expectedUpdatedAt: string,
   ) => Promise<unknown>;
 };
 
@@ -231,8 +237,11 @@ const runtimeResources: RuntimeResourceDefinition[] = [
 ];
 
 function cleanRecord(record: EditableRuntimeRecord | Record<string, unknown>) {
-  const { createdAt, updatedAt, ...editable } = record as Record<string, unknown>;
-  return editable;
+  const { createdAt: _createdAt, updatedAt, ...editable } = record as Record<string, unknown>;
+  return {
+    ...editable,
+    expectedUpdatedAt: updatedAt,
+  };
 }
 
 function recordTitle(record: EditableRuntimeRecord) {
@@ -280,6 +289,30 @@ export default function AdminRuntimeSettingsPage() {
     () => (snapshot == null ? [] : activeResource.rows(snapshot)),
     [activeResource, snapshot],
   );
+  const rowCollection = useAdminCollection({
+    records: activeRows,
+    getId: (record) => record.id,
+    getSearchValues: (record) => [
+      recordTitle(record),
+      recordSubtitle(record),
+      "scope" in record ? record.scope : null,
+      record.isActive ? "active" : "inactive",
+      JSON.stringify(record.metadata ?? {}),
+    ],
+    getSortValue: (
+      record,
+      key: "title" | "subtitle" | "scope" | "status",
+    ) => {
+      switch (key) {
+        case "title": return recordTitle(record);
+        case "subtitle": return recordSubtitle(record);
+        case "scope": return "scope" in record ? record.scope : "";
+        case "status": return record.isActive;
+      }
+    },
+    initialSortKey: "title" as const,
+    pageSize: 25,
+  });
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -289,6 +322,9 @@ export default function AdminRuntimeSettingsPage() {
       setSnapshot(nextSnapshot);
       setLoadError(null);
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await load();
+      }
       const message =
         caught instanceof Error ? caught.message : "Could not load runtime registries.";
       setLoadError(message);
@@ -329,18 +365,41 @@ export default function AdminRuntimeSettingsPage() {
 
   async function deleteEditorRecord() {
     if (client == null || saving) return;
-    setSaving(true);
     try {
       const parsed = parseEditorJson(editorValue);
       const id = typeof parsed.id === "string" ? parsed.id.trim() : "";
+      const expectedUpdatedAt =
+        typeof parsed.expectedUpdatedAt === "string"
+          ? parsed.expectedUpdatedAt.trim()
+          : "";
       if (!id) {
         throw new Error("Record id is required for delete.");
       }
-      await activeResource.delete(client, access, id);
+      if (!confirmAdminDestructiveAction({
+        action: "Delete",
+        subject: `${activeResource.label} record ${id}`,
+        scope: access.isSuperAdmin
+          ? "Selected platform or club runtime scope"
+          : `Active club ${access.clubId ?? "not selected"}`,
+        impact: "The runtime registry record will stop governing the connected app surfaces.",
+        undo: "not_available",
+      })) {
+        return;
+      }
+      setSaving(true);
+      await activeResource.delete(
+        client,
+        access,
+        id,
+        expectedUpdatedAt,
+      );
       showAdminToast(`${activeResource.label} record deleted.`, "success");
       setEditorValue(JSON.stringify(activeResource.emptyDraft(access), null, 2));
       await load();
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await load();
+      }
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not delete runtime record.",
         "error",
@@ -447,6 +506,10 @@ export default function AdminRuntimeSettingsPage() {
                 New
               </button>
             </div>
+            <AdminFilterBar>
+              <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search {activeResource.label}</span><input type="search" value={rowCollection.query} onChange={(event) => rowCollection.setQuery(event.target.value)} placeholder={`Search ${activeResource.label.toLowerCase()}, scope, or state`} /></label>
+              {(["title", "subtitle", "scope", "status"] as const).map((key) => <button key={key} type="button" data-active={rowCollection.sortKey === key} onClick={() => rowCollection.toggleSort(key)} className="dashboard-chip">Sort {key}</button>)}
+            </AdminFilterBar>
 
             {loading ? (
               <div className="space-y-3">
@@ -461,10 +524,10 @@ export default function AdminRuntimeSettingsPage() {
               </div>
             ) : (
               <div className="divide-y divide-border-soft overflow-hidden rounded-[22px] border border-border-soft">
-                {activeRows.length === 0 ? (
-                  <div className="p-5 text-sm text-slate-300">No records.</div>
+                {rowCollection.pageResult.items.length === 0 ? (
+                  <div className="p-5 text-sm text-slate-300">{rowCollection.query ? "No records match the current search." : "No records."}</div>
                 ) : (
-                  activeRows.map((record) => (
+                  rowCollection.pageResult.items.map((record) => (
                     <button
                       key={record.id}
                       type="button"
@@ -494,6 +557,7 @@ export default function AdminRuntimeSettingsPage() {
                 )}
               </div>
             )}
+            <AdminPagination page={rowCollection.pageResult} onPageChange={rowCollection.setPage} label={activeResource.label} />
           </section>
 
           <section className="admin-surface">

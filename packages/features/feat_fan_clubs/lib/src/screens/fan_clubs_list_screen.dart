@@ -164,127 +164,130 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
     final featuredClub = _clubs.isEmpty ? null : _clubs.first;
     final filters = _buildFilters(_clubs);
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: AfriRefreshIndicator(
-            onRefresh: _loadClubs,
-            color: primary,
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics(),
-              ),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      SpacingTokens.spacing6,
-                      SpacingTokens.spacing4,
-                      SpacingTokens.spacing6,
-                      SpacingTokens.spacing0,
-                    ),
-                    child: Row(
-                      children: [
-                        AfriIconButton(
-                          icon: AfriIcons.back,
-                          onTap: () => context.pop(),
-                          tooltip: 'Back',
-                        ),
-                        const SizedBox(width: SpacingTokens.spacing2),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'THE COMMUNITY',
-                                style: TypographyTokens.labelLarge(
-                                  ColorTokens.onSurfaceVariant,
-                                ).copyWith(fontWeight: FontWeight.w700),
-                              ),
-                              Text(
-                                'FAN CLUBS',
-                                style: TypographyTokens.displaySmall(primary),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-                    child: AfriInputField(
-                      controller: _searchController,
-                      hint: 'Search clubs or locations',
-                      prefixIcon: AfriIcons.search,
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                ),
-                if (featuredClub != null)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
-                      ),
-                      child: FanClubFeaturedCard(
-                        club: featuredClub,
-                        onTap: () => unawaited(
-                          context.push('/fan-clubs/${featuredClub['id']}'),
-                        ),
-                      ),
-                    ),
-                  ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      SpacingTokens.spacing6,
-                      SpacingTokens.spacing5,
-                      SpacingTokens.spacing6,
-                      0,
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: filters
-                            .map((filter) {
-                              final selected = filter == _activeFilter;
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                  right: SpacingTokens.spacing2,
-                                ),
-                                child: AfriChoiceChip(
-                                  selected: selected,
-                                  label: Text(filter),
-                                  onSelected: (_) =>
-                                      setState(() => _activeFilter = filter),
-                                ),
-                              );
-                            })
-                            .toList(growable: false),
-                      ),
-                    ),
-                  ),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: SpacingTokens.spacing4),
-                ),
-                FanClubsResultsSliver(
-                  isLoading: _isLoading,
-                  error: _error,
-                  visibleClubs: _visibleClubs,
-                  joinedClubIds: _joinedClubIds,
-                  pendingClubIds: _pendingClubIds,
-                  onRetry: () => unawaited(_loadClubs()),
-                  onOpenClub: (clubId) =>
-                      unawaited(context.push('/fan-clubs/$clubId')),
-                  onJoinToggled: _toggleJoin,
-                ),
-              ],
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: false,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: SafeArea(
+        child: AfriRefreshIndicator(
+          onRefresh: _loadClubs,
+          color: primary,
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
             ),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    SpacingTokens.spacing6,
+                    SpacingTokens.spacing4,
+                    SpacingTokens.spacing6,
+                    SpacingTokens.spacing0,
+                  ),
+                  child: Row(
+                    children: [
+                      AfriIconButton(
+                        icon: AfriIcons.back,
+                        onTap: () => context.pop(),
+                        tooltip: 'Back',
+                      ),
+                      const SizedBox(width: SpacingTokens.spacing2),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'THE COMMUNITY',
+                              style: TypographyTokens.labelLarge(
+                                ColorTokens.onSurfaceVariant,
+                              ).copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            Text(
+                              'FAN CLUBS',
+                              style: TypographyTokens.displaySmall(primary),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                  child: AfriInputField(
+                    controller: _searchController,
+                    hint: 'Search clubs or locations',
+                    prefixIcon: AfriIcons.search,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                ),
+              ),
+              if (featuredClub != null)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing6,
+                    ),
+                    child: FanClubFeaturedCard(
+                      club: featuredClub,
+                      onTap: () => unawaited(
+                        context.push('/fan-clubs/${featuredClub['id']}'),
+                      ),
+                    ),
+                  ),
+                ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    SpacingTokens.spacing6,
+                    SpacingTokens.spacing5,
+                    SpacingTokens.spacing6,
+                    0,
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: filters
+                          .map((filter) {
+                            final selected = filter == _activeFilter;
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                right: SpacingTokens.spacing2,
+                              ),
+                              child: AfriChoiceChip(
+                                selected: selected,
+                                label: Text(filter),
+                                onSelected: (_) =>
+                                    setState(() => _activeFilter = filter),
+                              ),
+                            );
+                          })
+                          .toList(growable: false),
+                    ),
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: SpacingTokens.spacing4),
+              ),
+              FanClubsResultsSliver(
+                isLoading: _isLoading,
+                error: _error,
+                visibleClubs: _visibleClubs,
+                joinedClubIds: _joinedClubIds,
+                pendingClubIds: _pendingClubIds,
+                onRetry: () => unawaited(_loadClubs()),
+                onOpenClub: (clubId) =>
+                    unawaited(context.push('/fan-clubs/$clubId')),
+                onJoinToggled: _toggleJoin,
+              ),
+            ],
           ),
         ),
       ),

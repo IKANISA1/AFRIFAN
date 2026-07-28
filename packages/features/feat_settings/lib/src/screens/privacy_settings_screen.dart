@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_sms_ledger/feat_sms_ledger.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import '../models/user_privacy_settings.dart';
 import '../settings_actions.dart';
 import '../settings_providers.dart';
+import '../settings_repository.dart';
 import '../widgets/settings_navigation_scope.dart';
 import '../widgets/settings_overlays.dart';
 
@@ -23,20 +27,66 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
   UserPrivacySettings? _draft;
   String? _draftUserId;
   bool _isSaving = false;
+  bool _draftEdited = false;
+  late bool _wasOnline;
+
+  @override
+  void initState() {
+    super.initState();
+    _wasOnline = ConnectivityService.isOnline;
+    ConnectivityService.onlineNotifier.addListener(_handleConnectivityChange);
+  }
+
+  @override
+  void dispose() {
+    ConnectivityService.onlineNotifier.removeListener(
+      _handleConnectivityChange,
+    );
+    super.dispose();
+  }
+
+  void _handleConnectivityChange() {
+    final isOnline = ConnectivityService.isOnline;
+    final restored = !_wasOnline && isOnline;
+    _wasOnline = isOnline;
+    if (!mounted || !restored) return;
+
+    if (_draftEdited) {
+      _showMessage('Connection restored. Review your kept changes, then save.');
+      return;
+    }
+
+    setState(() {
+      _draft = null;
+      _draftUserId = null;
+    });
+    ref.invalidate(privacySettingsProvider);
+  }
 
   void _syncDraft(UserPrivacySettings settings) {
     if (_draftUserId == settings.userId) return;
 
+    unawaited(
+      FirebaseAnalyticsService.configureConsent(
+        enabled: settings.analyticsEnabled,
+      ),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       setState(() {
         _draft = settings;
         _draftUserId = settings.userId;
+        _draftEdited = false;
       });
     });
   }
 
   Future<void> _saveSettings(UserPrivacySettings settings) async {
+    if (!ConnectivityService.isOnline) {
+      _showMessage('Your changes are kept. Connect before saving.');
+      return;
+    }
+
     setState(() => _isSaving = true);
 
     try {
@@ -44,10 +94,30 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
           .read(settingsRepositoryProvider)
           .updatePrivacySettings(settings);
       await _synchronizeSmsAutoreadConsent(saved);
+      await FirebaseAnalyticsService.configureConsent(
+        enabled: saved.analyticsEnabled,
+      );
       ref.invalidate(privacySettingsProvider);
       if (!mounted) return;
       setState(() => _draft = saved);
+      _draftEdited = false;
       _showMessage('Privacy settings saved.');
+    } on SettingsConflictException {
+      ref.invalidate(privacySettingsProvider);
+      if (!mounted) return;
+      setState(() {
+        _draft = null;
+        _draftUserId = null;
+      });
+      unawaited(
+        FirebaseAnalyticsService.logErrorRecovery(
+          surface: 'privacy_settings',
+          outcome: 'conflict_refresh',
+        ),
+      );
+      _showMessage(
+        'Privacy settings changed elsewhere. The latest version is loading; review it before saving again.',
+      );
     } catch (error) {
       _showMessage(error.toString());
     } finally {
@@ -58,6 +128,11 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
   }
 
   Future<void> _signOutOtherDevices() async {
+    if (!ConnectivityService.isOnline) {
+      _showMessage('Connect before signing out other devices.');
+      return;
+    }
+
     final confirmed = await showSignOutOtherDevicesSheet(context);
     if (!confirmed || !mounted) return;
 
@@ -111,7 +186,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
         return AfriAlertDialog(
           title: const Text('Enable MoMo SMS sync'),
           content: const Text(
-            'The app can read only approved Mobile Money verification SMS on this device to match your contribution payments automatically. This does not enable general message access in the app UI.',
+            'The app reads only approved Mobile Money verification SMS on this device to match contribution payments. It cannot access other messages.',
           ),
           actions: [
             AfriTextButton(
@@ -144,7 +219,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     final settings = _draft ?? loadedSettings;
 
     return SettingsBackGuard(
-      child: Scaffold(
+      child: AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
           title: Text(
@@ -159,7 +234,10 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           ),
         ),
-        body: settings == null
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        scrollable: settings != null,
+        constrainContent: true,
+        child: settings == null
             ? asyncSettings.hasError
                   ? Center(
                       child: Padding(
@@ -173,22 +251,47 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: SpacingTokens.spacing4),
-                            AfriButton(
-                              label: 'Retry',
-                              onTap: () =>
-                                  ref.invalidate(privacySettingsProvider),
+                            ConnectivityBuilder(
+                              builder: (context, isOnline) => AfriButton(
+                                label: isOnline
+                                    ? 'Retry'
+                                    : 'Connection required',
+                                onTap: () {
+                                  unawaited(
+                                    FirebaseAnalyticsService.logErrorRecovery(
+                                      surface: 'privacy_settings',
+                                      outcome: 'retry_requested',
+                                    ),
+                                  );
+                                  ref.invalidate(privacySettingsProvider);
+                                },
+                                enabled: isOnline,
+                              ),
                             ),
                           ],
                         ),
                       ),
                     )
-                  : const Padding(
-                      padding: EdgeInsets.all(SpacingTokens.spacing6),
-                      child: AfriSkeletonList(),
-                    )
-            : ListView(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                  : const AfriSkeletonList()
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  ConnectivityBuilder(
+                    builder: (context, isOnline) => isOnline
+                        ? const SizedBox.shrink()
+                        : const Padding(
+                            padding: EdgeInsets.only(
+                              bottom: SpacingTokens.spacing4,
+                            ),
+                            child: AfriStateBanner(
+                              icon: AfriIcons.statusWarning,
+                              title: 'Saved privacy settings',
+                              subtitle:
+                                  'Values may be out of date. Reconnect before saving.',
+                              tone: AfriStateBannerTone.warning,
+                            ),
+                          ),
+                  ),
                   GlassCard(
                     animate: false,
                     child: Column(
@@ -209,19 +312,32 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                         if (EnvConfig.enableAndroidMomoSmsAutoread)
                           AfriSwitchListTile(
                             value: settings.momoSmsAutoreadEnabled,
-                            onChanged: (value) => setState(
-                              () => _draft = settings.copyWith(
+                            onChanged: (value) => setState(() {
+                              _draft = settings.copyWith(
                                 momoSmsAutoreadEnabled: value,
-                              ),
-                            ),
+                              );
+                              _draftEdited = true;
+                            }),
                             title: const Text('MoMo SMS sync'),
                             subtitle: const Text(
                               'Allow approved Mobile Money SMS to be matched automatically for faster contribution verification.',
                             ),
                           ),
                         const SizedBox(height: SpacingTokens.spacing2),
+                        AfriSwitchListTile(
+                          value: settings.analyticsEnabled,
+                          onChanged: (value) => setState(() {
+                            _draft = settings.copyWith(analyticsEnabled: value);
+                            _draftEdited = true;
+                          }),
+                          title: const Text('Share anonymous usage analytics'),
+                          subtitle: const Text(
+                            'Help improve search, tickets, contributions, Fan Zone, and recovery flows using coarse task events. Queries, contacts, account IDs, codes, messages, and exact payment values are never included.',
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          'Additional analytics, device security, and presence controls are managed by app policy and by your phone in this release.',
+                          'Analytics stays off unless you opt in here and the signed release has an approved analytics configuration. Device security controls are managed by app policy and your phone.',
                           style: TypographyTokens.bodySmall(
                             ColorTokens.onSurfaceVariant,
                           ),
@@ -309,33 +425,47 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          'Use the action below to revoke any other active sessions linked to your account.',
+                          'Revoke other active sessions linked to your account.',
                           style: TypographyTokens.bodyMedium(),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
-                  AfriButton(
-                    label: _isSaving ? 'Saving…' : 'Save privacy settings',
-                    fullWidth: true,
-                    isLoading: _isSaving,
-                    onTap: () => _saveSettings(settings),
-                    enabled: !_isSaving,
+                  ConnectivityBuilder(
+                    builder: (context, isOnline) => AfriButton(
+                      label: !isOnline
+                          ? 'Connection required'
+                          : _isSaving
+                          ? 'Saving…'
+                          : 'Save privacy settings',
+                      fullWidth: true,
+                      isLoading: _isSaving,
+                      onTap: () => _saveSettings(settings),
+                      enabled: isOnline && !_isSaving,
+                    ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  AfriOutlinedButton(
-                    onPressed: _isSaving ? null : _signOutOtherDevices,
-                    style: AfriOutlinedButton.styleFrom(
-                      minimumSize: const Size(
-                        double.infinity,
-                        SizeTokens.buttonMinHeight,
+                  ConnectivityBuilder(
+                    builder: (context, isOnline) => AfriOutlinedButton(
+                      onPressed: isOnline && !_isSaving
+                          ? _signOutOtherDevices
+                          : null,
+                      style: AfriOutlinedButton.styleFrom(
+                        minimumSize: const Size(
+                          double.infinity,
+                          SizeTokens.buttonMinHeight,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: ShapeTokens.buttonRadius,
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: ShapeTokens.buttonRadius,
+                      child: Text(
+                        isOnline
+                            ? 'SIGN OUT OTHER DEVICES'
+                            : 'CONNECTION REQUIRED',
                       ),
                     ),
-                    child: const Text('SIGN OUT OTHER DEVICES'),
                   ),
                 ],
               ),

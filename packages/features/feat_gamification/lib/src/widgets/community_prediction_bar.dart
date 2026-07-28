@@ -141,7 +141,7 @@ class _CommunityPickRow extends StatelessWidget {
                       ),
                     ),
                   )
-                  .animate(delay: (index * 100).ms)
+                  .afriAnimate(context, delay: (index * 100).ms)
                   .scaleX(
                     begin: 0,
                     end: 1,

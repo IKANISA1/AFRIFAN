@@ -2,8 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Coins, RefreshCcw, Search, Wallet } from "lucide-react";
+import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -17,6 +21,7 @@ import type {
   AdminFetWalletLedgerRow,
   AdminFetWalletSnapshot,
 } from "@/lib/types";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 const emptySnapshot: AdminFetWalletSnapshot = {
   overview: [],
@@ -132,6 +137,68 @@ export default function AdminGamificationWalletPage() {
   const [adjustmentAmount, setAdjustmentAmount] = useState("");
   const [adjustmentReason, setAdjustmentReason] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [detailLedgerRow, setDetailLedgerRow] =
+    useState<AdminFetWalletLedgerRow | null>(null);
+
+  const accountCollection = useAdminCollection({
+    records: snapshot.overview,
+    getId: (row) => row.userId,
+    getSearchValues: (row) => [
+      row.displayName,
+      row.publicUserId,
+      row.tier,
+      row.balance,
+    ],
+    getSortValue: (
+      row,
+      key: "supporter" | "tier" | "balance" | "activity",
+    ) => {
+      switch (key) {
+        case "supporter":
+          return row.displayName;
+        case "tier":
+          return row.tier;
+        case "balance":
+          return row.balance;
+        case "activity":
+          return row.lastTransactionAt ? new Date(row.lastTransactionAt) : null;
+      }
+    },
+    initialSortKey: "balance" as const,
+    initialSortDirection: "descending",
+    pageSize: 15,
+  });
+
+  const ledgerCollection = useAdminCollection({
+    records: snapshot.ledger,
+    getId: (row) => row.id,
+    getSearchValues: (row) => [
+      row.displayName,
+      row.publicUserId,
+      row.entryType,
+      row.direction,
+      row.note,
+      row.referenceId,
+    ],
+    getSortValue: (
+      row,
+      key: "supporter" | "type" | "amount" | "createdAt",
+    ) => {
+      switch (key) {
+        case "supporter":
+          return row.displayName;
+        case "type":
+          return row.entryType;
+        case "amount":
+          return row.amount;
+        case "createdAt":
+          return new Date(row.createdAt);
+      }
+    },
+    initialSortKey: "createdAt" as const,
+    initialSortDirection: "descending",
+    pageSize: 20,
+  });
 
   const loadSnapshot = useCallback(async () => {
     if (client == null) {
@@ -210,7 +277,9 @@ export default function AdminGamificationWalletPage() {
           selectedSupporter?.displayName ??
           selectedSupporter?.publicUserId ??
           "supporter points account",
-        detail: `This will remove ${formatFet(Math.abs(Math.trunc(amount)))} from the points account.`,
+        scope: `Active club ${access.clubId ?? "not selected"}; one supporter account`,
+        impact: `This will remove ${formatFet(Math.abs(Math.trunc(amount)))} from the points account.`,
+        undo: "manual_recovery",
       })
     ) {
       return;
@@ -428,50 +497,86 @@ export default function AdminGamificationWalletPage() {
                   </button>
                 ) : null}
               </div>
-              {snapshot.overview.length === 0 && !loading ? (
-                <div className="rounded-[24px] border border-dashed border-white/10 bg-white/5 p-5 text-sm text-slate-400">
-                  No supporter points accounts matched the current filter.
-                </div>
-              ) : null}
-              {snapshot.overview.map((row) => {
-                const isSelected = row.userId === selectedUserId;
-                return (
-                  <button
-                    key={row.userId}
-                    type="button"
-                    onClick={() => setSelectedUserId(row.userId)}
-                    className={`w-full rounded-[24px] border p-4 text-left transition ${isSelected
-                        ? "border-club-accent/40 bg-club-accent/10"
-                        : "border-white/10 bg-white/5 hover:bg-white/8"
-                      }`}
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="font-medium text-white">
-                          {row.displayName}
-                        </p>
-                        <p className="text-sm text-slate-400">
-                          #{row.publicUserId ?? "000000"} •{" "}
-                          {row.tier.toUpperCase()} • {row.transactionCount}{" "}
-                          entries
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-display text-xl font-bold uppercase text-club-accent">
-                          {formatFet(row.balance)}
-                        </p>
-                        <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
-                          {row.lastTransactionAt
-                            ? timeFormatter.format(
-                              new Date(row.lastTransactionAt),
-                            )
-                            : "No ledger yet"}
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
+              <AdminFilterBar>
+                <label className="admin-search-field">
+                  <Search size={16} aria-hidden="true" />
+                  <span className="sr-only">Filter loaded supporter accounts</span>
+                  <input
+                    type="search"
+                    value={accountCollection.query}
+                    onChange={(event) =>
+                      accountCollection.setQuery(event.target.value)
+                    }
+                    placeholder="Filter loaded accounts"
+                  />
+                </label>
+              </AdminFilterBar>
+              <AdminDataGrid
+                caption="Supporter points accounts"
+                onRowActivate={setSelectedUserId}
+                columns={[
+                  {
+                    key: "supporter",
+                    label: "Supporter",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection: accountCollection.sortDirectionFor("supporter"),
+                    onSort: () => accountCollection.toggleSort("supporter"),
+                  },
+                  {
+                    key: "tier",
+                    label: "Tier",
+                    priority: "secondary",
+                    sortable: true,
+                    sortDirection: accountCollection.sortDirectionFor("tier"),
+                    onSort: () => accountCollection.toggleSort("tier"),
+                  },
+                  {
+                    key: "balance",
+                    label: "Balance",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection: accountCollection.sortDirectionFor("balance"),
+                    onSort: () => accountCollection.toggleSort("balance"),
+                  },
+                  {
+                    key: "activity",
+                    label: "Last activity",
+                    priority: "secondary",
+                    sortable: true,
+                    sortDirection: accountCollection.sortDirectionFor("activity"),
+                    onSort: () => accountCollection.toggleSort("activity"),
+                  },
+                  { key: "action", label: "Action", priority: "primary" },
+                ]}
+              >
+                {accountCollection.pageResult.items.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-8 text-center text-sm text-slate-400">
+                      No supporter points accounts matched the current filter.
+                    </td>
+                  </tr>
+                ) : (
+                  accountCollection.pageResult.items.map((row) => (
+                    <tr
+                      key={row.userId}
+                      data-row-id={row.userId}
+                      aria-selected={row.userId === selectedUserId}
+                    >
+                      <td><span className="font-medium text-white">{row.displayName}</span><span className="block text-xs text-slate-500">#{row.publicUserId ?? "000000"}</span></td>
+                      <td>{row.tier.toUpperCase()}</td>
+                      <td className="font-semibold text-club-accent">{formatFet(row.balance)}</td>
+                      <td>{row.lastTransactionAt ? timeFormatter.format(new Date(row.lastTransactionAt)) : "No ledger yet"}</td>
+                      <td><button type="button" className="admin-action-button" onClick={() => setSelectedUserId(row.userId)}>{row.userId === selectedUserId ? "Selected" : "Select"}</button></td>
+                    </tr>
+                  ))
+                )}
+              </AdminDataGrid>
+              <AdminPagination
+                page={accountCollection.pageResult}
+                onPageChange={accountCollection.setPage}
+                label="Supporter points accounts"
+              />
             </div>
           </div>
         </section>
@@ -489,67 +594,105 @@ export default function AdminGamificationWalletPage() {
               </p>
             </div>
 
-            {snapshot.ledger.length === 0 && !loading ? (
-              <div className="rounded-[24px] border border-dashed border-white/10 bg-white/5 p-5 text-sm text-slate-400">
-                No points ledger entries matched the current filters.
-              </div>
-            ) : null}
-
-            <div className="space-y-3">
-              {snapshot.ledger.map((row) => (
-                <article
-                  key={row.id}
-                  className="rounded-[24px] border border-white/10 bg-white/5 p-4"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="space-y-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-medium text-white">
-                          {ledgerHeadline(row)}
-                        </span>
-                        <span
-                          className={`inline-flex rounded-full border px-2 py-1 text-[11px] uppercase tracking-[0.24em] ${ledgerTone(row)}`}
-                        >
-                          {row.direction === "credit" ? "+" : "-"}
-                          {formatFet(row.amount)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-slate-300">
-                        {row.displayName} • #{row.publicUserId ?? "000000"}
-                      </p>
-                      {row.counterpartyDisplayName ? (
-                        <p className="text-sm text-slate-400">
-                          Counterparty: {row.counterpartyDisplayName}
-                          {row.counterpartyPublicUserId
-                            ? ` • #${row.counterpartyPublicUserId}`
-                            : ""}
-                        </p>
-                      ) : null}
-                      {row.note ? (
-                        <p className="text-sm text-slate-400">{row.note}</p>
-                      ) : null}
-                    </div>
-
-                    <div className="text-right">
-                      <p className="font-display text-xl font-bold uppercase text-white">
-                        Bal. {formatFet(row.balanceAfter)}
-                      </p>
-                      <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
-                        {timeFormatter.format(new Date(row.createdAt))}
-                      </p>
-                      {row.referenceId ? (
-                        <p className="mt-2 text-xs uppercase tracking-[0.24em] text-slate-500">
-                          Ref {row.referenceId}
-                        </p>
-                      ) : null}
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <AdminFilterBar>
+              <label className="admin-search-field">
+                <Search size={16} aria-hidden="true" />
+                <span className="sr-only">Filter loaded points ledger</span>
+                <input
+                  type="search"
+                  value={ledgerCollection.query}
+                  onChange={(event) =>
+                    ledgerCollection.setQuery(event.target.value)
+                  }
+                  placeholder="Filter supporter, type, note, or reference"
+                />
+              </label>
+            </AdminFilterBar>
+            <AdminDataGrid
+              caption="Points ledger activity"
+              onRowActivate={(rowId) =>
+                setDetailLedgerRow(
+                  snapshot.ledger.find((row) => row.id === rowId) ?? null,
+                )
+              }
+              columns={[
+                {
+                  key: "type",
+                  label: "Entry",
+                  priority: "primary",
+                  sortable: true,
+                  sortDirection: ledgerCollection.sortDirectionFor("type"),
+                  onSort: () => ledgerCollection.toggleSort("type"),
+                },
+                {
+                  key: "supporter",
+                  label: "Supporter",
+                  priority: "primary",
+                  sortable: true,
+                  sortDirection: ledgerCollection.sortDirectionFor("supporter"),
+                  onSort: () => ledgerCollection.toggleSort("supporter"),
+                },
+                {
+                  key: "amount",
+                  label: "Amount",
+                  priority: "primary",
+                  sortable: true,
+                  sortDirection: ledgerCollection.sortDirectionFor("amount"),
+                  onSort: () => ledgerCollection.toggleSort("amount"),
+                },
+                { key: "balance", label: "Balance", priority: "secondary" },
+                {
+                  key: "created",
+                  label: "Created",
+                  priority: "secondary",
+                  sortable: true,
+                  sortDirection: ledgerCollection.sortDirectionFor("createdAt"),
+                  onSort: () => ledgerCollection.toggleSort("createdAt"),
+                },
+              ]}
+            >
+              {ledgerCollection.pageResult.items.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-8 text-center text-sm text-slate-400">
+                    No points ledger entries matched the current filters.
+                  </td>
+                </tr>
+              ) : (
+                ledgerCollection.pageResult.items.map((row) => (
+                  <tr key={row.id} data-row-id={row.id}>
+                    <td><span className="font-medium text-white">{ledgerHeadline(row)}</span><span className="block truncate text-xs text-slate-500">{row.note ?? "No note"}</span></td>
+                    <td>{row.displayName}<span className="block text-xs text-slate-500">#{row.publicUserId ?? "000000"}</span></td>
+                    <td><span className={`inline-flex rounded-full border px-2 py-1 text-[11px] uppercase tracking-[0.24em] ${ledgerTone(row)}`}>{row.direction === "credit" ? "+" : "-"}{formatFet(row.amount)}</span></td>
+                    <td>{formatFet(row.balanceAfter)}</td>
+                    <td>{timeFormatter.format(new Date(row.createdAt))}</td>
+                  </tr>
+                ))
+              )}
+            </AdminDataGrid>
+            <AdminPagination
+              page={ledgerCollection.pageResult}
+              onPageChange={ledgerCollection.setPage}
+              label="Points ledger"
+            />
           </div>
         </section>
       </div>
+      <AdminActionDrawer
+        open={detailLedgerRow != null}
+        onClose={() => setDetailLedgerRow(null)}
+        title="Points ledger details"
+      >
+        {detailLedgerRow ? (
+          <dl className="grid gap-4 text-sm">
+            <div><dt className="text-slate-500">Entry</dt><dd className="mt-1 text-slate-100">{ledgerHeadline(detailLedgerRow)}</dd></div>
+            <div><dt className="text-slate-500">Supporter</dt><dd className="mt-1 text-slate-100">{detailLedgerRow.displayName} · #{detailLedgerRow.publicUserId ?? "000000"}</dd></div>
+            <div><dt className="text-slate-500">Amount</dt><dd className="mt-1 text-slate-100">{detailLedgerRow.direction === "credit" ? "+" : "-"}{formatFet(detailLedgerRow.amount)}</dd></div>
+            <div><dt className="text-slate-500">Balance after</dt><dd className="mt-1 text-slate-100">{formatFet(detailLedgerRow.balanceAfter)}</dd></div>
+            <div><dt className="text-slate-500">Note</dt><dd className="mt-1 break-words text-slate-100">{detailLedgerRow.note ?? "No note recorded."}</dd></div>
+            <div><dt className="text-slate-500">Reference</dt><dd className="mt-1 break-all text-slate-100">{detailLedgerRow.referenceId ?? "No reference recorded."}</dd></div>
+          </dl>
+        ) : null}
+      </AdminActionDrawer>
     </div>
   );
 }

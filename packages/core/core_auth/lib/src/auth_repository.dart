@@ -16,6 +16,14 @@ class AuthRestoreFailure implements Exception {
   String toString() => message;
 }
 
+class ProfileConflictException implements Exception {
+  const ProfileConflictException();
+
+  @override
+  String toString() =>
+      'Profile changed on another device. Refresh the latest profile, review it, and save again.';
+}
+
 /// Handles Supabase authentication with numeric club_id injection and profile CRUD.
 ///
 /// Supports anonymous sign-in, profile restoration, update, and RBAC resolution.
@@ -180,13 +188,41 @@ class AuthRepository {
 
   /// Update the user profile in Supabase.
   Future<UserProfile> updateProfile(UserProfile profile) async {
-    await _runAction(
-      () => _client
-          .from('profiles')
-          .upsert(profile.toProfileRow(includeId: true), onConflict: 'id'),
-      description: 'updateProfile.upsertProfile',
-    );
-    await _upsertPrivateContact(profile);
+    final expectedUpdatedAt = profile.updatedAt;
+    if (expectedUpdatedAt == null) {
+      await _runAction(
+        () => _client
+            .from('profiles')
+            .upsert(profile.toProfileRow(includeId: true), onConflict: 'id'),
+        description: 'updateProfile.insertProfile',
+      );
+    } else {
+      final updateResult = await SafeRpc.query<dynamic>(
+        () => _client
+            .from('profiles')
+            .update(profile.toProfileRow(includeId: false))
+            .eq('id', profile.id)
+            .eq('updated_at', expectedUpdatedAt)
+            .select('id')
+            .maybeSingle(),
+        tag: _tag,
+        description: 'updateProfile.compareAndSetProfile',
+        maxAttempts: 1,
+      );
+      if (!updateResult.isSuccess) {
+        throw StateError(
+          updateResult.error ?? 'Profile update could not be completed.',
+        );
+      }
+      final updated = updateResult.data;
+      if (updated == null) {
+        AfriLogger.warn(
+          _tag,
+          'Profile update rejected because the server row changed.',
+        );
+        throw const ProfileConflictException();
+      }
+    }
 
     final refreshed = await _loadProfile(profile.id);
     if (refreshed == null) {

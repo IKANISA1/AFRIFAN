@@ -64,7 +64,12 @@ export {
 } from "./matches";
 
 export {
+  bulkUpdateTicketStatus,
+  canAdminTransitionTicketStatus,
+  getAdminTicketBulkEligibility,
   getAdminTicketOrders,
+  getAdminTicketTargetPermission,
+  isAdminTicketStatusAction,
   updateTicketStatus,
 } from "./tickets";
 

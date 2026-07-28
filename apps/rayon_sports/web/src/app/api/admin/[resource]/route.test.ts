@@ -420,7 +420,7 @@ describe("admin resource route", () => {
 
   it("uses the admin client for contribution group deletion", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/contributions?id=group-1",
+      "https://admin.gikundiro.com/api/admin/contributions?id=group-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
       {
         method: "DELETE",
         headers: {
@@ -437,13 +437,76 @@ describe("admin resource route", () => {
       adminClient,
       expect.objectContaining({ clubId: "24" }),
       "group-1",
+      "2026-07-24T18:00:00Z",
     );
     expect(response.status).toBe(200);
   });
 
+  it("denies destructive routes to club moderators before the service-role mutation", async () => {
+    resolveAdminAccessMock.mockResolvedValueOnce({
+      hasAccess: true,
+      isAuthenticated: true,
+      isSuperAdmin: false,
+      userId: "moderator-1",
+      role: "club_moderator",
+      clubId: "24",
+      availableClubIds: ["24"],
+      canSelectClub: false,
+      assignmentCount: 1,
+    });
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/contributions?id=group-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
+      {
+        method: "DELETE",
+        headers: { origin: "https://admin.gikundiro.com" },
+      },
+    );
+
+    const response = (await DELETE(request, {
+      params: Promise.resolve({ resource: "contributions" }),
+    })) as Response;
+
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({
+      error: "Club-admin access is required.",
+    });
+    expect(deleteAdminContributionGroupMock).not.toHaveBeenCalled();
+  });
+
+  it("denies a club admin whose active club scope is missing", async () => {
+    resolveAdminAccessMock.mockResolvedValueOnce({
+      hasAccess: true,
+      isAuthenticated: true,
+      isSuperAdmin: false,
+      userId: "club-admin-1",
+      role: "club_admin",
+      clubId: null,
+      availableClubIds: ["24"],
+      canSelectClub: false,
+      assignmentCount: 1,
+    });
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/contributions?id=group-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
+      {
+        method: "DELETE",
+        headers: { origin: "https://admin.gikundiro.com" },
+      },
+    );
+
+    const response = (await DELETE(request, {
+      params: Promise.resolve({ resource: "contributions" }),
+    })) as Response;
+
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({
+      error: "An active club scope is required.",
+    });
+    expect(deleteAdminContributionGroupMock).not.toHaveBeenCalled();
+  });
+
   it("uses the admin client for LiveScore source deletion", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/livescore-sources?id=source-1",
+      "https://admin.gikundiro.com/api/admin/livescore-sources?id=source-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
       {
         method: "DELETE",
         headers: {
@@ -460,13 +523,14 @@ describe("admin resource route", () => {
       adminClient,
       expect.objectContaining({ clubId: "24" }),
       "source-1",
+      "2026-07-24T18:00:00Z",
     );
     expect(response.status).toBe(200);
   });
 
   it("uses the admin client for runtime route deletion", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/runtime-routes?id=route-1",
+      "https://admin.gikundiro.com/api/admin/runtime-routes?id=route-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
       {
         method: "DELETE",
         headers: {
@@ -483,6 +547,7 @@ describe("admin resource route", () => {
       adminClient,
       expect.objectContaining({ clubId: "24" }),
       "route-1",
+      "2026-07-24T18:00:00Z",
     );
     expect(response.status).toBe(200);
   });

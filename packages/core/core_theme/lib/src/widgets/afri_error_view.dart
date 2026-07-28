@@ -3,7 +3,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../extensions.dart';
 import '../tokens/icon_tokens.dart';
+import '../tokens/motion_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 import 'afri_button.dart';
 
 /// Standardized error view with animated icon and retry action.
@@ -57,20 +59,26 @@ class AfriErrorView extends StatelessWidget {
     if (!reduceMotion) {
       iconWidget = iconWidget
           .animate()
-          .shake(duration: 500.ms, hz: 4)
-          .scale(begin: const Offset(0.8, 0.8), duration: 400.ms);
+          .shake(duration: AfriMotion.errorAttention, hz: 4)
+          .scale(
+            begin: const Offset(0.8, 0.8),
+            duration: AfriMotion.contentReveal,
+          );
     }
 
     Widget messageWidget = Text(
       _effectiveMessage,
       textAlign: TextAlign.center,
       style: (compact ? theme.textTheme.bodySmall : theme.textTheme.bodyMedium)
-          ?.copyWith(color: colors.secondaryText, height: 1.5),
+          ?.copyWith(
+            color: colors.secondaryText,
+            height: TypographyTokens.lineHeightRelaxed,
+          ),
     );
     if (!reduceMotion) {
       messageWidget = messageWidget.animate().fadeIn(
-        delay: 200.ms,
-        duration: 400.ms,
+        delay: AfriMotion.staggerStandard,
+        duration: AfriMotion.contentReveal,
       );
     }
 
@@ -85,7 +93,7 @@ class AfriErrorView extends StatelessWidget {
       if (!reduceMotion) {
         retryWidget = retryWidget
             .animate()
-            .fadeIn(delay: 400.ms)
+            .fadeIn(delay: AfriMotion.contentReveal)
             .scale(begin: const Offset(0.95, 0.95));
       }
     }

@@ -12,6 +12,7 @@ class AfriResponsive {
 
   // ── Breakpoints ──
   static const double compactMaxWidth = 600.0;
+  static const double sideRailMinWidth = 720.0;
   static const double mediumMaxWidth = 840.0;
   static const double expandedMaxWidth = 1200.0;
 
@@ -22,7 +23,9 @@ class AfriResponsive {
 
   /// Returns the max content width for the given screen width.
   static double maxContentWidthForWidth(double screenWidth) {
-    if (screenWidth <= compactMaxWidth) return screenWidth;
+    if (screenWidth <= compactMaxWidth) {
+      return screenWidth <= mobileContentMax ? screenWidth : mobileContentMax;
+    }
     if (screenWidth <= mediumMaxWidth) return tabletContentMax;
     return desktopContentMax;
   }

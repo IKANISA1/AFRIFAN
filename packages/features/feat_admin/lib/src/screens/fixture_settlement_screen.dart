@@ -144,7 +144,7 @@ class _FixtureSettlementScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -155,7 +155,9 @@ class _FixtureSettlementScreenState
           tooltip: 'Back',
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: true,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
@@ -312,7 +314,7 @@ class _FixtureSettlementScreenState
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
+                    Icon(
                       AfriIcons.statusSuccess,
                       size: 16,
                       color: ColorTokens.success,
@@ -373,11 +375,7 @@ class _FixtureSettlementScreenState
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              AfriIcons.statusError,
-              size: 48,
-              color: ColorTokens.error,
-            ),
+            Icon(AfriIcons.statusError, size: 48, color: ColorTokens.error),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               'Failed to load fixtures',

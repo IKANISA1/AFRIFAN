@@ -13,6 +13,37 @@ enum HomeFeedStatus { success, degraded, empty, error }
 const String homeFeedLocalFallbackMessage =
     'Live club data is temporarily unavailable. Try again shortly.';
 
+const List<HomeQuickAction> homeFeedLocalFallbackActions = <HomeQuickAction>[
+  HomeQuickAction(
+    actionKey: 'tickets',
+    title: 'Tickets',
+    route: '/tickets',
+    iconKey: 'tickets',
+    sortOrder: 10,
+  ),
+  HomeQuickAction(
+    actionKey: 'membership',
+    title: 'Join Gikundiro',
+    route: '/membership',
+    iconKey: 'membership',
+    sortOrder: 20,
+  ),
+  HomeQuickAction(
+    actionKey: 'fan_zone',
+    title: 'Fan Zone',
+    route: '/fanzone?section=supporters',
+    iconKey: 'members',
+    sortOrder: 30,
+  ),
+  HomeQuickAction(
+    actionKey: 'shop',
+    title: 'Shop',
+    route: '/shop',
+    iconKey: 'shop',
+    sortOrder: 40,
+  ),
+];
+
 class HomeQuickAction {
   const HomeQuickAction({
     required this.actionKey,
@@ -78,14 +109,38 @@ class HomeFeedSnapshot {
   bool get hasLeaderboard => leaderboard.isNotEmpty;
   bool get hasHeroSlides => heroSlides.isNotEmpty;
   bool get hasQuickActions => quickActions.isNotEmpty;
-  bool get hasAnyContent => hasHeroSlides || hasStats || hasLeaderboard;
+  bool get hasAnyContent =>
+      hasHeroSlides || hasStats || hasLeaderboard || hasQuickActions;
+
+  HomeFeedSnapshot copyWith({
+    List<MatchSlide>? heroSlides,
+    List<ContributorEntry>? leaderboard,
+    List<HomeQuickAction>? quickActions,
+    int? userFet,
+    int? fanRank,
+    HomeFeedStatus? status,
+    String? message,
+    bool? showFixturePlaceholder,
+  }) {
+    return HomeFeedSnapshot(
+      heroSlides: heroSlides ?? this.heroSlides,
+      leaderboard: leaderboard ?? this.leaderboard,
+      quickActions: quickActions ?? this.quickActions,
+      userFet: userFet ?? this.userFet,
+      fanRank: fanRank ?? this.fanRank,
+      status: status ?? this.status,
+      message: message ?? this.message,
+      showFixturePlaceholder:
+          showFixturePlaceholder ?? this.showFixturePlaceholder,
+    );
+  }
 }
 
-@visibleForTesting
 HomeFeedSnapshot localHomeFeedFallbackSnapshot() {
   return const HomeFeedSnapshot(
     status: HomeFeedStatus.degraded,
     message: homeFeedLocalFallbackMessage,
+    quickActions: homeFeedLocalFallbackActions,
     showFixturePlaceholder: true,
   );
 }
@@ -434,6 +489,11 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
           final matchDate = DateTime.tryParse(
             row['match_date']?.toString() ?? '',
           );
+          final imageProvenanceId =
+              row['image_provenance_id']?.toString().trim() ?? '';
+          final imageRightsApproved =
+              row['image_rights_approved'] == true &&
+              imageProvenanceId.isNotEmpty;
           final status = _resolveMatchStatus(
             row['match_status']?.toString(),
             matchDate,
@@ -441,7 +501,11 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
             row['is_on_sale'] == true,
           );
           return MatchSlide(
-            imageUrl: row['image_url']?.toString(),
+            imageUrl: imageRightsApproved ? row['image_url']?.toString() : null,
+            imageProvenanceId: imageProvenanceId.isEmpty
+                ? null
+                : imageProvenanceId,
+            imageRightsApproved: imageRightsApproved,
             homeTeam: _compactHeroTeamName(
               _resolveText(
                 row['home_team']?.toString(),

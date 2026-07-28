@@ -138,7 +138,8 @@ export function AdminDialogFrame({
     <div className={cn("fixed inset-0 z-50 flex", layoutShellClassName)}>
       <button
         type="button"
-        aria-label={closeLabel}
+        aria-hidden="true"
+        tabIndex={-1}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />

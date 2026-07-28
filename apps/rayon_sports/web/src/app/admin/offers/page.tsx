@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Gift, Trash2 } from "lucide-react";
+import { Gift, Pencil, Search, Trash2 } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -16,9 +18,12 @@ import {
   deleteAdminOffer,
 } from "@/lib/data/admin/offers";
 import type { AdminPartnerOffer } from "@/lib/data/admin/offers";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 const emptyForm = {
   id: "",
+  expectedUpdatedAt: "",
   title: "",
   description: "",
   partnerName: "",
@@ -39,6 +44,22 @@ export default function AdminOffersPage() {
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const offerCollection = useAdminCollection({
+    records: offers,
+    getId: (offer) => offer.id,
+    getSearchValues: (offer) => [offer.title, offer.description, offer.partnerName, offer.categoryTag, offer.originalValue, offer.isActive ? "active" : "inactive"],
+    getSortValue: (offer, key: "title" | "partner" | "cost" | "claimed" | "status") => {
+      switch (key) {
+        case "title": return offer.title;
+        case "partner": return offer.partnerName;
+        case "cost": return offer.fetCost;
+        case "claimed": return offer.claimedCount;
+        case "status": return offer.isActive;
+      }
+    },
+    initialSortKey: "title" as const,
+    pageSize: 20,
+  });
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -63,6 +84,7 @@ export default function AdminOffersPage() {
   function beginEdit(offer: AdminPartnerOffer) {
     setForm({
       id: offer.id,
+      expectedUpdatedAt: offer.updatedAt,
       title: offer.title,
       description: offer.description,
       partnerName: offer.partnerName,
@@ -86,6 +108,7 @@ export default function AdminOffersPage() {
       const stockValue = String(formData.get("totalStock") ?? "").trim();
       await saveAdminOffer(client, access, {
         id: form.id || null,
+        expectedUpdatedAt: form.expectedUpdatedAt || null,
         title: String(formData.get("title") ?? ""),
         description: String(formData.get("description") ?? ""),
         partnerName: String(formData.get("partnerName") ?? ""),
@@ -103,6 +126,9 @@ export default function AdminOffersPage() {
       await load();
       showAdminToast("Offer saved.", "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await load();
+      }
       showAdminToast(caught instanceof Error ? caught.message : "Could not save offer.", "error");
     }
   }
@@ -111,17 +137,28 @@ export default function AdminOffersPage() {
     if (client == null) return;
     if (
       !confirmAdminDestructiveAction({
+        action: "Delete",
         subject: offer.title,
-        detail: "The offer will be permanently removed.",
+        scope: "Platform partner-offer catalogue",
+        impact: "The offer will be permanently removed from supporter redemption surfaces.",
+        undo: "not_available",
       })
     ) {
       return;
     }
     try {
-      await deleteAdminOffer(client, access, offer.id);
+      await deleteAdminOffer(
+        client,
+        access,
+        offer.id,
+        offer.updatedAt,
+      );
       await load();
       showAdminToast(`${offer.title} removed.`, "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await load();
+      }
       showAdminToast(caught instanceof Error ? caught.message : "Could not remove offer.", "error");
     }
   }
@@ -169,13 +206,16 @@ export default function AdminOffersPage() {
         {/* List */}
         <section className="glass-panel rounded-[32px] p-6">
           <p className="font-display text-3xl font-bold uppercase leading-none">Catalogue</p>
+          <AdminFilterBar className="mt-5" actions={<div className="flex flex-wrap gap-2">{(["title", "partner", "cost", "claimed", "status"] as const).map((key) => <button key={key} type="button" data-active={offerCollection.sortKey === key} onClick={() => offerCollection.toggleSort(key)} className="dashboard-chip">Sort {key}</button>)}</div>}>
+            <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search partner offers</span><input type="search" value={offerCollection.query} onChange={(event) => offerCollection.setQuery(event.target.value)} placeholder="Search offer, partner, category, or state" /></label>
+          </AdminFilterBar>
           <div className="mt-5 space-y-3">
             {loading ? Array.from({ length: 3 }).map((_, i) => <div key={i} className="rounded-[26px] border border-border-soft bg-white/5 p-5"><Skeleton className="skeleton-text h-5 w-2/5" /><Skeleton className="skeleton-text mt-2 h-3 w-full" /></div>) : null}
             {!loading && loadError ? (
               <AdminErrorState title="Offers could not be loaded" description={loadError} onRetry={() => { load().catch(() => {}); }} />
             ) : null}
-            {!loading && !loadError && offers.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">No partner offers yet. Create one using the form.</p> : null}
-            {!loading && !loadError && offers.map((offer) => (
+            {!loading && !loadError && offerCollection.pageResult.items.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">{offerCollection.query ? "No partner offers match the current search." : "No partner offers yet. Create one using the form."}</p> : null}
+            {!loading && !loadError && offerCollection.pageResult.items.map((offer) => (
               <article key={offer.id} className={cn("card-interactive flex items-start gap-4 rounded-[26px] border border-border-soft p-5 transition", offer.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border-soft bg-white/5">
                   <Gift size={20} className="text-club-accent" />
@@ -190,12 +230,13 @@ export default function AdminOffersPage() {
                   </div>
                 </div>
                 <div className="flex flex-shrink-0 gap-2">
-                  <button type="button" onClick={() => beginEdit(offer)} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-white/8" title="Edit"><span className="text-xs">✏️</span></button>
-                  <button type="button" onClick={() => { removeOffer(offer).catch(() => {}); }} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300" title="Remove"><Trash2 size={14} /></button>
+                  <button type="button" onClick={() => beginEdit(offer)} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-white/8" aria-label={`Edit ${offer.title}`}><Pencil size={14} aria-hidden="true" /></button>
+                  <button type="button" onClick={() => { removeOffer(offer).catch(() => {}); }} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300" aria-label={`Remove ${offer.title}`}><Trash2 size={14} aria-hidden="true" /></button>
                 </div>
               </article>
             ))}
           </div>
+          <AdminPagination page={offerCollection.pageResult} onPageChange={offerCollection.setPage} label="Partner offers" />
         </section>
       </div>
     </div>

@@ -1,10 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Users, DollarSign, Plus, Download } from "lucide-react";
+import { Users, DollarSign, Plus, Download, Search } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -20,6 +22,7 @@ import {
   downloadContributionExcel,
   getAdminContributionSnapshot,
 } from "@/lib/data/admin/contributions";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import type { AdminFanClub, AdminContributionGroup, AdminContributionSnapshot } from "@/lib/types";
 import { emptyForm as emptyChapterForm, type CommunityForm } from "./_components/community-state";
 import { emptyGroupForm, groupToFormState } from "../contributions/_components/group-form-state";
@@ -27,6 +30,7 @@ import { CommunityContentEditor } from "./_components/community-content-editor";
 import { ContributionGroupForm } from "../contributions/_components/group-form";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useHydrated } from "@/lib/use-hydrated";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 type CommunityTab = "chapters" | "groups" | "contributions";
 
@@ -48,6 +52,62 @@ export default function AdminCommunityHubPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"chapter" | "circle">("chapter");
   const controlsDisabled = !hydrated || client == null || loading;
+  const [detailContributionId, setDetailContributionId] = useState<string | null>(null);
+
+  const chapterCollection = useAdminCollection({
+    records: clubs,
+    getId: (club) => club.id,
+    getSearchValues: (club) => [club.name, club.description, club.region, club.isActive ? "active" : "hidden"],
+    getSortValue: (club, key: "name" | "region" | "status" | "members" | "rating") => {
+      switch (key) {
+        case "name": return club.name;
+        case "region": return club.region;
+        case "status": return club.isActive;
+        case "members": return club.memberCount;
+        case "rating": return club.rating;
+      }
+    },
+    initialSortKey: "name" as const,
+    pageSize: 25,
+  });
+  const groupCollection = useAdminCollection({
+    records: contributionSnapshot.groups,
+    getId: (group) => group.id,
+    getSearchValues: (group) => [group.name, group.groupType, group.isClosed ? "closed" : "active", group.currency],
+    getSortValue: (group, key: "name" | "type" | "funding" | "members") => {
+      switch (key) {
+        case "name": return group.name;
+        case "type": return group.groupType;
+        case "funding": return group.targetAmount === 0 ? 0 : group.currentTotal / group.targetAmount;
+        case "members": return group.memberCount;
+      }
+    },
+    initialSortKey: "name" as const,
+    pageSize: 25,
+  });
+  const contributionCollection = useAdminCollection({
+    records: contributionSnapshot.contributions,
+    getId: (item) => item.id,
+    getSearchValues: (item) => [
+      item.userId,
+      item.status,
+      item.amount,
+      contributionSnapshot.groups.find((group) => group.id === item.groupId)?.name,
+    ],
+    getSortValue: (item, key: "supporter" | "amount" | "circle" | "status" | "date") => {
+      switch (key) {
+        case "supporter": return item.userId;
+        case "amount": return item.amount;
+        case "circle": return contributionSnapshot.groups.find((group) => group.id === item.groupId)?.name ?? "";
+        case "status": return item.status;
+        case "date": return new Date(item.createdAt);
+      }
+    },
+    initialSortKey: "date" as const,
+    initialSortDirection: "descending",
+    pageSize: 25,
+  });
+  const detailContribution = contributionSnapshot.contributions.find((item) => item.id === detailContributionId) ?? null;
 
   const loadChapters = useCallback(async () => {
     if (!client) return;
@@ -83,6 +143,7 @@ export default function AdminCommunityHubPage() {
   function beginChapterEdit(club: AdminFanClub) {
     setChapterForm({
       id: club.id,
+      expectedUpdatedAt: club.updatedAt,
       name: club.name,
       region: club.region,
       description: club.description,
@@ -104,17 +165,53 @@ export default function AdminCommunityHubPage() {
 
   async function removeChapter(club: AdminFanClub) {
     if (!client) return;
-    if (confirmAdminDestructiveAction({ subject: club.name })) {
-      await deleteAdminFanClub(client, access, club.id);
-      await loadChapters();
+    if (confirmAdminDestructiveAction({
+      action: "Remove",
+      subject: club.name,
+      scope: `Active club ${access.clubId ?? "not selected"}`,
+      impact: "The supporter chapter and its admin listing will be removed.",
+      undo: "not_available",
+    })) {
+      try {
+        await deleteAdminFanClub(
+          client,
+          access,
+          club.id,
+          club.updatedAt,
+        );
+        await loadChapters();
+      } catch (caught) {
+        if (isAdminMutationConflict(caught)) {
+          await loadChapters();
+        }
+        throw caught;
+      }
     }
   }
 
   async function removeCircle(group: AdminContributionGroup) {
     if (!client) return;
-    if (confirmAdminDestructiveAction({ subject: group.name })) {
-      await deleteAdminContributionGroup(client, access, group.id);
-      await loadCircles();
+    if (confirmAdminDestructiveAction({
+      action: "Remove",
+      subject: group.name,
+      scope: `Active club ${access.clubId ?? "not selected"}`,
+      impact: "The contribution group will no longer accept or display contributions.",
+      undo: "not_available",
+    })) {
+      try {
+        await deleteAdminContributionGroup(
+          client,
+          access,
+          group.id,
+          group.updatedAt,
+        );
+        await loadCircles();
+      } catch (caught) {
+        if (isAdminMutationConflict(caught)) {
+          await loadCircles();
+        }
+        throw caught;
+      }
     }
   }
 
@@ -186,18 +283,28 @@ export default function AdminCommunityHubPage() {
       </div>
 
       {activeTab === "chapters" && (
-        <AdminDataGrid
-          columns={[
-            { key: "chapter", label: "Chapter Name" },
-            { key: "region", label: "Region" },
-            { key: "status", label: "Status" },
-            { key: "members", label: "Members" },
-            { key: "rating", label: "Engagement" },
-            { key: "actions", label: "", className: "text-right" },
-          ]}
-        >
-          {clubs.map((club) => (
-            <tr key={club.id}>
+        <div className="admin-surface">
+          <AdminFilterBar><label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search community chapters</span><input type="search" value={chapterCollection.query} onChange={(event) => chapterCollection.setQuery(event.target.value)} placeholder="Search chapter, region, or state" /></label></AdminFilterBar>
+          <AdminDataGrid
+            caption="Community chapters"
+            busy={loading}
+            onRowActivate={(rowId) => {
+              const club = clubs.find((item) => item.id === rowId);
+              if (club) beginChapterEdit(club);
+            }}
+            columns={[
+              { key: "chapter", label: "Chapter Name", priority: "primary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("name"), onSort: () => chapterCollection.toggleSort("name") },
+              { key: "region", label: "Region", priority: "primary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("region"), onSort: () => chapterCollection.toggleSort("region") },
+              { key: "status", label: "Status", priority: "primary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("status"), onSort: () => chapterCollection.toggleSort("status") },
+              { key: "members", label: "Members", priority: "secondary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("members"), onSort: () => chapterCollection.toggleSort("members") },
+              { key: "rating", label: "Engagement", priority: "secondary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("rating"), onSort: () => chapterCollection.toggleSort("rating") },
+              { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
+            ]}
+          >
+          {chapterCollection.pageResult.items.length === 0 ? (
+            <tr><td colSpan={6} className="py-8 text-center text-sm text-slate-400">{chapterCollection.query ? "No chapters match the current search." : "No community chapters found."}</td></tr>
+          ) : chapterCollection.pageResult.items.map((club) => (
+            <tr key={club.id} data-row-id={club.id}>
               <td>
                 <p className="admin-row-title">{club.name}</p>
                 <p className="admin-row-meta line-clamp-1">{club.description}</p>
@@ -225,21 +332,33 @@ export default function AdminCommunityHubPage() {
               </td>
             </tr>
           ))}
-        </AdminDataGrid>
+          </AdminDataGrid>
+          <AdminPagination page={chapterCollection.pageResult} onPageChange={chapterCollection.setPage} label="Community chapters" />
+        </div>
       )}
 
       {activeTab === "groups" && (
-        <AdminDataGrid
-          columns={[
-            { key: "circle", label: "Public Group" },
-            { key: "type", label: "Type" },
-            { key: "funding", label: "Funding Status" },
-            { key: "members", label: "Members" },
-            { key: "actions", label: "", className: "text-right" },
-          ]}
-        >
-          {contributionSnapshot.groups.map((group) => (
-            <tr key={group.id}>
+        <div className="admin-surface">
+          <AdminFilterBar><label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search public groups</span><input type="search" value={groupCollection.query} onChange={(event) => groupCollection.setQuery(event.target.value)} placeholder="Search group, type, state, or currency" /></label></AdminFilterBar>
+          <AdminDataGrid
+            caption="Public contribution groups"
+            busy={loading}
+            onRowActivate={(rowId) => {
+              const group = contributionSnapshot.groups.find((item) => item.id === rowId);
+              if (group) beginCircleEdit(group);
+            }}
+            columns={[
+              { key: "circle", label: "Public Group", priority: "primary", sortable: true, sortDirection: groupCollection.sortDirectionFor("name"), onSort: () => groupCollection.toggleSort("name") },
+              { key: "type", label: "Type", priority: "secondary", sortable: true, sortDirection: groupCollection.sortDirectionFor("type"), onSort: () => groupCollection.toggleSort("type") },
+              { key: "funding", label: "Funding Status", priority: "primary", sortable: true, sortDirection: groupCollection.sortDirectionFor("funding"), onSort: () => groupCollection.toggleSort("funding") },
+              { key: "members", label: "Members", priority: "secondary", sortable: true, sortDirection: groupCollection.sortDirectionFor("members"), onSort: () => groupCollection.toggleSort("members") },
+              { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
+            ]}
+          >
+          {groupCollection.pageResult.items.length === 0 ? (
+            <tr><td colSpan={5} className="py-8 text-center text-sm text-slate-400">{groupCollection.query ? "No public groups match the current search." : "No public groups found."}</td></tr>
+          ) : groupCollection.pageResult.items.map((group) => (
+            <tr key={group.id} data-row-id={group.id}>
               <td>
                 <p className="admin-row-title">{group.name}</p>
                 <p className="admin-row-meta">{group.isClosed ? "Operational closed" : "Active fundraising"}</p>
@@ -269,30 +388,37 @@ export default function AdminCommunityHubPage() {
               </td>
             </tr>
           ))}
-        </AdminDataGrid>
+          </AdminDataGrid>
+          <AdminPagination page={groupCollection.pageResult} onPageChange={groupCollection.setPage} label="Public contribution groups" />
+        </div>
       )}
 
       {activeTab === "contributions" && (
         <div className="space-y-4">
+          <AdminFilterBar actions={<button onClick={() => downloadContributionExcel(contributionSnapshot)} className="admin-action-button"><Download size={14} /> Export Report</button>}>
+            <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search contribution activity</span><input type="search" value={contributionCollection.query} onChange={(event) => contributionCollection.setQuery(event.target.value)} placeholder="Search contributor, group, amount, or status" /></label>
+          </AdminFilterBar>
           <div className="flex justify-between items-center">
             <p className="text-xs font-bold uppercase tracking-widest text-[var(--admin-zinc-500)]">Recent funding activity</p>
-            <button onClick={() => downloadContributionExcel(contributionSnapshot)} className="admin-action-button">
-              <Download size={14} /> Export Report
-            </button>
           </div>
           <AdminDataGrid
+            caption="Contribution activity"
+            busy={loading}
+            onRowActivate={setDetailContributionId}
             columns={[
-              { key: "supporter", label: "Contributor" },
-              { key: "amount", label: "Amount" },
-              { key: "circle", label: "Target Circle" },
-              { key: "status", label: "Status" },
-              { key: "date", label: "Date" },
+              { key: "supporter", label: "Contributor", priority: "primary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("supporter"), onSort: () => contributionCollection.toggleSort("supporter") },
+              { key: "amount", label: "Amount", priority: "primary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("amount"), onSort: () => contributionCollection.toggleSort("amount") },
+              { key: "circle", label: "Target Circle", priority: "primary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("circle"), onSort: () => contributionCollection.toggleSort("circle") },
+              { key: "status", label: "Status", priority: "secondary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("status"), onSort: () => contributionCollection.toggleSort("status") },
+              { key: "date", label: "Date", priority: "secondary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("date"), onSort: () => contributionCollection.toggleSort("date") },
             ]}
           >
-            {contributionSnapshot.contributions.slice(0, 50).map((item) => {
+            {contributionCollection.pageResult.items.length === 0 ? (
+              <tr><td colSpan={5} className="py-8 text-center text-sm text-slate-400">{contributionCollection.query ? "No contributions match the current search." : "No contribution activity found."}</td></tr>
+            ) : contributionCollection.pageResult.items.map((item) => {
                const group = contributionSnapshot.groups.find(g => g.id === item.groupId);
                return (
-                <tr key={item.id}>
+                <tr key={item.id} data-row-id={item.id}>
                   <td>
                     <p className="text-sm font-medium text-white">{item.userId.slice(0, 8)}...</p>
                   </td>
@@ -312,6 +438,7 @@ export default function AdminCommunityHubPage() {
                );
             })}
           </AdminDataGrid>
+          <AdminPagination page={contributionCollection.pageResult} onPageChange={contributionCollection.setPage} label="Contribution activity" />
         </div>
       )}
 
@@ -327,6 +454,7 @@ export default function AdminCommunityHubPage() {
             onSubmit={async (formData) => {
                await saveAdminFanClub(client!, access, {
                  id: chapterForm.id || null,
+                 expectedUpdatedAt: chapterForm.expectedUpdatedAt || null,
                  name: String(formData.get("name")),
                  region: String(formData.get("region")),
                  description: String(formData.get("description")),
@@ -348,8 +476,26 @@ export default function AdminCommunityHubPage() {
             client={client}
             access={access}
             onSaved={async () => { setDrawerOpen(false); await loadCircles(); }}
+            onConflict={async () => {
+              await loadCircles();
+              showAdminToast(
+                "The latest group list is loaded. Your draft is retained; review it before restarting the edit.",
+                "info",
+              );
+            }}
           />
         )}
+      </AdminActionDrawer>
+      <AdminActionDrawer open={detailContribution != null} onClose={() => setDetailContributionId(null)} title="Contribution details">
+        {detailContribution ? (
+          <dl className="grid gap-4 text-sm">
+            <div><dt className="text-slate-500">Contributor</dt><dd className="mt-1 break-all text-slate-100">{detailContribution.userId}</dd></div>
+            <div><dt className="text-slate-500">Amount</dt><dd className="mt-1 text-slate-100">{formatCurrency(detailContribution.amount, contributionSnapshot.groups.find((group) => group.id === detailContribution.groupId)?.currency)}</dd></div>
+            <div><dt className="text-slate-500">Target group</dt><dd className="mt-1 text-slate-100">{contributionSnapshot.groups.find((group) => group.id === detailContribution.groupId)?.name ?? "Unknown group"}</dd></div>
+            <div><dt className="text-slate-500">Status</dt><dd className="mt-1 text-slate-100">{detailContribution.status}</dd></div>
+            <div><dt className="text-slate-500">Created</dt><dd className="mt-1 text-slate-100">{new Date(detailContribution.createdAt).toLocaleString()}</dd></div>
+          </dl>
+        ) : null}
       </AdminActionDrawer>
     </div>
   );

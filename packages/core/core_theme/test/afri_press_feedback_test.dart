@@ -24,7 +24,8 @@ void main() {
 
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.sendKeyEvent(LogicalKeyboardKey.select);
 
-    expect(taps, 1);
+    expect(taps, 2);
   });
 }

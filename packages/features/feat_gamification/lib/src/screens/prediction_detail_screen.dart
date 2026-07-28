@@ -106,327 +106,327 @@ class _PredictionDetailScreenState
       predictionDetailProvider(widget.predictionId),
     );
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: asyncDetail.when(
-            loading: () => const Padding(
-              padding: EdgeInsets.all(SpacingTokens.spacing6),
-              child: AfriSkeletonList(),
-            ),
-            error: (error, _) => Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      if (context.canPop())
-                        AfriIconButton(
-                          icon: AfriIcons.back,
-                          onTap: () => context.pop(),
-                          tooltip: 'Back',
-                        ),
-                    ],
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: true,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: SafeArea(
+        child: asyncDetail.when(
+          loading: () => const Padding(
+            padding: EdgeInsets.all(SpacingTokens.spacing6),
+            child: AfriSkeletonList(),
+          ),
+          error: (error, _) => Padding(
+            padding: const EdgeInsets.all(SpacingTokens.spacing6),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    if (context.canPop())
+                      AfriIconButton(
+                        icon: AfriIcons.back,
+                        onTap: () => context.pop(),
+                        tooltip: 'Back',
+                      ),
+                  ],
+                ),
+                Expanded(
+                  child: Center(
+                    child: AfriStateView.offline(
+                      title: 'Activity unavailable',
+                      message: 'Could not load activity detail right now.',
+                      actionLabel: 'Retry',
+                      onAction: () => ref
+                          .read(
+                            predictionDetailProvider(
+                              widget.predictionId,
+                            ).notifier,
+                          )
+                          .refresh(),
+                    ),
                   ),
-                  Expanded(
-                    child: Center(
-                      child: AfriStateView.offline(
-                        title: 'Activity unavailable',
-                        message: 'Could not load activity detail right now.',
-                        actionLabel: 'Retry',
-                        onAction: () => ref
-                            .read(
-                              predictionDetailProvider(
-                                widget.predictionId,
-                              ).notifier,
-                            )
-                            .refresh(),
+                ),
+              ],
+            ),
+          ),
+          data: (detail) {
+            if (detail == null) {
+              return Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: Center(
+                  child: AfriStateView.offline(
+                    title: 'Activity not found',
+                    message: 'This activity could not be located.',
+                    actionLabel: 'Go back',
+                    onAction: () => context.pop(),
+                  ),
+                ),
+              );
+            }
+            return AfriRefreshIndicator(
+              onRefresh: () => ref
+                  .read(predictionDetailProvider(widget.predictionId).notifier)
+                  .refresh(),
+              color: ColorTokens.clubAccent,
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        SpacingTokens.spacing4,
+                        SpacingTokens.spacing4,
+                        SpacingTokens.spacing6,
+                        0,
+                      ),
+                      child: Row(
+                        children: [
+                          if (context.canPop())
+                            AfriIconButton(
+                              icon: AfriIcons.back,
+                              onTap: () => context.pop(),
+                              tooltip: 'Back',
+                            ),
+                          const SizedBox(width: SpacingTokens.spacing2),
+                          Expanded(
+                            child: Text(
+                              'ACTIVITY DETAIL',
+                              style: TypographyTokens.headlineSmall().copyWith(
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 1.6,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                      child: AfriSurfaceCard(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    detail.competitionName.toUpperCase(),
+                                    style: TypographyTokens.labelMedium(
+                                      ColorTokens.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: SpacingTokens.spacing3,
+                                    vertical: SpacingTokens.spacing1,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _statusColor(
+                                      detail,
+                                    ).withValues(alpha: 0.14),
+                                    borderRadius: BorderRadius.circular(
+                                      ShapeTokens.radiusFull,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    _statusLabel(detail),
+                                    style: TypographyTokens.labelSmall(
+                                      _statusColor(detail),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing4),
+                            Text(
+                              '${detail.homeTeamShort.toUpperCase()}  •  ${detail.awayTeamShort.toUpperCase()}',
+                              textAlign: TextAlign.center,
+                              style: TypographyTokens.titleLarge().copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing3),
+                            Text(
+                              detail.hasScoreline
+                                  ? '${detail.homeScore} - ${detail.awayScore}'
+                                  : _formatDateTime(detail.kickoffAt),
+                              style: TypographyTokens.metricValue(
+                                detail.hasScoreline
+                                    ? ColorTokens.onSurface
+                                    : ColorTokens.clubAccent,
+                              ).copyWith(fontWeight: FontWeight.w900),
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing2),
+                            Text(
+                              detail.venueName?.trim().isNotEmpty == true
+                                  ? detail.venueName!.toUpperCase()
+                                  : 'VENUE TBC',
+                              style: TypographyTokens.bodySmall(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: SpacingTokens.spacing6,
+                      ),
+                      child: Row(
+                        children: [
+                          _DetailMetric(
+                            label: 'PICK TYPE',
+                            value:
+                                (detail.marketShortName.isEmpty
+                                        ? detail.marketName
+                                        : detail.marketShortName)
+                                    .toUpperCase(),
+                          ),
+                          const SizedBox(width: SpacingTokens.spacing3),
+                          _DetailMetric(
+                            label: 'SELECTION',
+                            value: detail.selectedOutcome.toUpperCase(),
+                            accent: true,
+                          ),
+                          const SizedBox(width: SpacingTokens.spacing3),
+                          _DetailMetric(
+                            label: detail.isWon ? 'EARNED' : 'POTENTIAL',
+                            value: detail.isWon
+                                ? '+${detail.fetEarned}'
+                                : '+${detail.fetPotential}',
+                            accent: true,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                      child: GlassCard(
+                        animate: false,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'SETTLEMENT',
+                              style: TypographyTokens.labelMedium(
+                                ColorTokens.onSurfaceVariant,
+                              ),
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing2),
+                            Text(
+                              _settlementMessage(detail),
+                              style: TypographyTokens.bodyMedium(),
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing4),
+                            _TimelineRow(
+                              label: 'Placed',
+                              value: _formatDateTime(detail.placedAt),
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing2),
+                            _TimelineRow(
+                              label: 'Kickoff',
+                              value: _formatDateTime(detail.kickoffAt),
+                            ),
+                            if (detail.settledAt != null) ...[
+                              const SizedBox(height: SpacingTokens.spacing2),
+                              _TimelineRow(
+                                label: 'Settled',
+                                value: _formatDateTime(detail.settledAt),
+                              ),
+                            ],
+                            if ((detail.correctOutcome ?? '')
+                                .trim()
+                                .isNotEmpty) ...[
+                              const SizedBox(height: SpacingTokens.spacing2),
+                              _TimelineRow(
+                                label: 'Official outcome',
+                                value: detail.correctOutcome!.toUpperCase(),
+                              ),
+                            ],
+                            if ((detail.slipId ?? '').isNotEmpty) ...[
+                              const SizedBox(height: SpacingTokens.spacing2),
+                              _TimelineRow(
+                                label: 'Round',
+                                value: detail.slipId!,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        SpacingTokens.spacing6,
+                        0,
+                        SpacingTokens.spacing6,
+                        SpacingTokens.spacing6,
+                      ),
+                      child: PredictionShareCard(
+                        data: PredictionShareData.fromDetail(detail),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        SpacingTokens.spacing6,
+                        0,
+                        SpacingTokens.spacing6,
+                        SpacingTokens.spacing20,
+                      ),
+                      child: Column(
+                        children: [
+                          if (detail.isPending)
+                            AfriButton(
+                              label: 'CANCEL PICK',
+                              variant: AfriButtonVariant.secondary,
+                              enabled: !_isCancelling,
+                              isLoading: _isCancelling,
+                              onTap: () => _cancelPrediction(detail),
+                            ),
+                          if (detail.isPending)
+                            const SizedBox(height: SpacingTokens.spacing3),
+                          AfriButton(
+                            label: detail.isSettled
+                                ? 'COPY RESULT'
+                                : 'COPY SUMMARY',
+                            variant: AfriButtonVariant.secondary,
+                            onTap: () => _copySummary(detail),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing3),
+                          AfriButton(
+                            label: 'SHARE CARD',
+                            variant: AfriButtonVariant.secondary,
+                            onTap: () => PredictionShareService.share(
+                              data: PredictionShareData.fromDetail(detail),
+                              context: context,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing3),
+                          AfriButton(
+                            label: 'BROWSE FIXTURES',
+                            onTap: () => context.go('/fanzone/fixtures'),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
-            data: (detail) {
-              if (detail == null) {
-                return Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                  child: Center(
-                    child: AfriStateView.offline(
-                      title: 'Activity not found',
-                      message: 'This activity could not be located.',
-                      actionLabel: 'Go back',
-                      onAction: () => context.pop(),
-                    ),
-                  ),
-                );
-              }
-              return AfriRefreshIndicator(
-                onRefresh: () => ref
-                    .read(
-                      predictionDetailProvider(widget.predictionId).notifier,
-                    )
-                    .refresh(),
-                color: ColorTokens.clubAccent,
-                child: CustomScrollView(
-                  physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics(),
-                  ),
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing4,
-                          SpacingTokens.spacing4,
-                          SpacingTokens.spacing6,
-                          0,
-                        ),
-                        child: Row(
-                          children: [
-                            if (context.canPop())
-                              AfriIconButton(
-                                icon: AfriIcons.back,
-                                onTap: () => context.pop(),
-                                tooltip: 'Back',
-                              ),
-                            const SizedBox(width: SpacingTokens.spacing2),
-                            Expanded(
-                              child: Text(
-                                'ACTIVITY DETAIL',
-                                style: TypographyTokens.headlineSmall()
-                                    .copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 1.6,
-                                    ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                        child: AfriSurfaceCard(
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      detail.competitionName.toUpperCase(),
-                                      style: TypographyTokens.labelMedium(
-                                        ColorTokens.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: SpacingTokens.spacing3,
-                                      vertical: SpacingTokens.spacing1,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _statusColor(
-                                        detail,
-                                      ).withValues(alpha: 0.14),
-                                      borderRadius: BorderRadius.circular(
-                                        ShapeTokens.radiusFull,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      _statusLabel(detail),
-                                      style: TypographyTokens.labelSmall(
-                                        _statusColor(detail),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing4),
-                              Text(
-                                '${detail.homeTeamShort.toUpperCase()}  •  ${detail.awayTeamShort.toUpperCase()}',
-                                textAlign: TextAlign.center,
-                                style: TypographyTokens.titleLarge().copyWith(
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing3),
-                              Text(
-                                detail.hasScoreline
-                                    ? '${detail.homeScore} - ${detail.awayScore}'
-                                    : _formatDateTime(detail.kickoffAt),
-                                style: TypographyTokens.metricValue(
-                                  detail.hasScoreline
-                                      ? ColorTokens.onSurface
-                                      : ColorTokens.clubAccent,
-                                ).copyWith(fontWeight: FontWeight.w900),
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                detail.venueName?.trim().isNotEmpty == true
-                                    ? detail.venueName!.toUpperCase()
-                                    : 'VENUE TBC',
-                                style: TypographyTokens.bodySmall(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: SpacingTokens.spacing6,
-                        ),
-                        child: Row(
-                          children: [
-                            _DetailMetric(
-                                label: 'PICK TYPE',
-                              value:
-                                  (detail.marketShortName.isEmpty
-                                          ? detail.marketName
-                                          : detail.marketShortName)
-                                      .toUpperCase(),
-                            ),
-                            const SizedBox(width: SpacingTokens.spacing3),
-                            _DetailMetric(
-                              label: 'SELECTION',
-                              value: detail.selectedOutcome.toUpperCase(),
-                              accent: true,
-                            ),
-                            const SizedBox(width: SpacingTokens.spacing3),
-                            _DetailMetric(
-                              label: detail.isWon ? 'EARNED' : 'POTENTIAL',
-                              value: detail.isWon
-                                  ? '+${detail.fetEarned}'
-                                  : '+${detail.fetPotential}',
-                              accent: true,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                        child: GlassCard(
-                          animate: false,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'SETTLEMENT',
-                                style: TypographyTokens.labelMedium(
-                                  ColorTokens.onSurfaceVariant,
-                                ),
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                _settlementMessage(detail),
-                                style: TypographyTokens.bodyMedium(),
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing4),
-                              _TimelineRow(
-                                label: 'Placed',
-                                value: _formatDateTime(detail.placedAt),
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              _TimelineRow(
-                                label: 'Kickoff',
-                                value: _formatDateTime(detail.kickoffAt),
-                              ),
-                              if (detail.settledAt != null) ...[
-                                const SizedBox(height: SpacingTokens.spacing2),
-                                _TimelineRow(
-                                  label: 'Settled',
-                                  value: _formatDateTime(detail.settledAt),
-                                ),
-                              ],
-                              if ((detail.correctOutcome ?? '')
-                                  .trim()
-                                  .isNotEmpty) ...[
-                                const SizedBox(height: SpacingTokens.spacing2),
-                                _TimelineRow(
-                                  label: 'Official outcome',
-                                  value: detail.correctOutcome!.toUpperCase(),
-                                ),
-                              ],
-                              if ((detail.slipId ?? '').isNotEmpty) ...[
-                                const SizedBox(height: SpacingTokens.spacing2),
-                                _TimelineRow(
-                                  label: 'Round',
-                                  value: detail.slipId!,
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
-                          0,
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
-                        ),
-                        child: PredictionShareCard(
-                          data: PredictionShareData.fromDetail(detail),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
-                          0,
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing20,
-                        ),
-                        child: Column(
-                          children: [
-                            if (detail.isPending)
-                              AfriButton(
-                                label: 'CANCEL PICK',
-                                variant: AfriButtonVariant.secondary,
-                                enabled: !_isCancelling,
-                                isLoading: _isCancelling,
-                                onTap: () => _cancelPrediction(detail),
-                              ),
-                            if (detail.isPending)
-                              const SizedBox(height: SpacingTokens.spacing3),
-                            AfriButton(
-                              label: detail.isSettled
-                                  ? 'COPY RESULT'
-                                  : 'COPY SUMMARY',
-                              variant: AfriButtonVariant.secondary,
-                              onTap: () => _copySummary(detail),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing3),
-                            AfriButton(
-                              label: 'SHARE CARD',
-                              variant: AfriButtonVariant.secondary,
-                              onTap: () => PredictionShareService.share(
-                                data: PredictionShareData.fromDetail(detail),
-                                context: context,
-                              ),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing3),
-                            AfriButton(
-                              label: 'BROWSE FIXTURES',
-                              onTap: () => context.go('/fanzone/fixtures'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+            );
+          },
         ),
       ),
     );

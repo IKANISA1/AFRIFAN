@@ -10,12 +10,15 @@ import {
   ShoppingBag,
   Crown,
   Settings,
+  Search,
   Users,
   HelpCircle,
   type LucideIcon,
 } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminSurface } from "@/components/admin/admin-surface";
 import { KPISummaryRibbon, KPITile } from "@/components/admin/kpi-summary-ribbon";
@@ -26,6 +29,7 @@ import { withAdminClubScope } from "@/lib/admin-club-scope";
 import { getAdminDashboardActions } from "@/lib/data/admin/dashboard-actions";
 import { getAdminDashboardSnapshot } from "@/lib/data/admin/dashboard";
 import type { AdminDashboardAction, AdminDashboardSnapshot } from "@/lib/types";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 const emptySnapshot: AdminDashboardSnapshot = {
   metrics: {
@@ -57,6 +61,16 @@ export default function AdminDashboardPage() {
   const [quickActions, setQuickActions] = useState<AdminDashboardAction[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const activityCollection = useAdminCollection({
+    records: snapshot.activity,
+    getId: (item) => item.id,
+    getSearchValues: (item) => [item.title, item.detail],
+    getSortValue: (item, key: "title" | "createdAt") =>
+      key === "title" ? item.title : new Date(item.createdAt),
+    initialSortKey: "createdAt" as const,
+    initialSortDirection: "descending",
+    pageSize: 10,
+  });
 
   const loadDashboard = useCallback(async () => {
     if (client == null) {
@@ -259,6 +273,10 @@ export default function AdminDashboardPage() {
         </div>
 
         <AdminSurface title="Recent activity" className="lg:sticky lg:top-24 lg:h-fit">
+          <AdminFilterBar>
+            <label className="admin-search-field"><Search size={14} aria-hidden="true" /><span className="sr-only">Search recent admin activity</span><input type="search" value={activityCollection.query} onChange={(event) => activityCollection.setQuery(event.target.value)} placeholder="Search activity" /></label>
+            {(["createdAt", "title"] as const).map((key) => <button key={key} type="button" data-active={activityCollection.sortKey === key} onClick={() => activityCollection.toggleSort(key)} className="dashboard-chip">Sort {key === "createdAt" ? "time" : key}</button>)}
+          </AdminFilterBar>
           <div className="divide-y divide-[var(--admin-border)]">
             {loading ? (
               <div className="p-4 space-y-4">
@@ -269,12 +287,12 @@ export default function AdminDashboardPage() {
                   </div>
                 ))}
               </div>
-            ) : snapshot.activity.length === 0 ? (
+            ) : activityCollection.pageResult.items.length === 0 ? (
               <div className="p-8 text-center text-sm text-[var(--admin-zinc-500)]">
-                No recent activity detected.
+                {activityCollection.query ? "No activity matches the current search." : "No recent activity detected."}
               </div>
             ) : (
-              snapshot.activity.map((item) => (
+              activityCollection.pageResult.items.map((item) => (
                 <div key={item.id} className="p-4 transition-colors hover:bg-[var(--admin-zinc-800)]">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -298,6 +316,7 @@ export default function AdminDashboardPage() {
               ))
             )}
           </div>
+          <AdminPagination page={activityCollection.pageResult} onPageChange={activityCollection.setPage} label="Recent admin activity" />
         </AdminSurface>
       </section>
     </div>

@@ -97,7 +97,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                   color: ColorTokens.clubAccent,
                 ),
               )
-              .animate()
+              .afriAnimate(context)
               .scale(
                 begin: const Offset(0.8, 0.8),
                 end: const Offset(1, 1),

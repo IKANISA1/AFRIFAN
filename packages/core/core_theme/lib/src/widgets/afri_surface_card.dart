@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../extensions.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/motion_tokens.dart';
 import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
@@ -23,6 +25,10 @@ class AfriSurfaceCard extends StatelessWidget {
     this.width,
     this.height,
     this.semanticsLabel,
+    this.semanticsHint,
+    this.enabled = true,
+    this.autofocus = false,
+    this.focusNode,
     super.key,
   });
 
@@ -35,6 +41,10 @@ class AfriSurfaceCard extends StatelessWidget {
   final double? width;
   final double? height;
   final String? semanticsLabel;
+  final String? semanticsHint;
+  final bool enabled;
+  final bool autofocus;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +53,16 @@ class AfriSurfaceCard extends StatelessWidget {
         ColorTokens.surfaceContainerLow.withValues(alpha: 0.78);
     final effectiveRadius = borderRadius ?? ShapeTokens.cardRadius;
 
-    final surface = _AfriSurface(
-      color: effectiveColor,
-      radius: effectiveRadius,
-      width: width,
-      height: height,
-      padding: padding,
-      child: child,
+    final surface = Opacity(
+      opacity: enabled ? 1 : 0.48,
+      child: _AfriSurface(
+        color: effectiveColor,
+        radius: effectiveRadius,
+        width: width,
+        height: height,
+        padding: padding,
+        child: child,
+      ),
     );
 
     Widget result = Padding(
@@ -57,25 +70,36 @@ class AfriSurfaceCard extends StatelessWidget {
       child: onTap == null
           ? surface
           : AfriPressFeedback(
+              enabled: enabled,
               onTap: onTap,
+              autofocus: autofocus,
+              focusNode: focusNode,
               semanticsLabel: semanticsLabel,
+              semanticsHint: semanticsHint,
               tooltip: semanticsLabel,
               excludeChildSemantics: semanticsLabel != null,
-              builder: (context, state) => _AfriSurface(
-                color: effectiveColor,
-                radius: effectiveRadius,
-                width: width,
-                height: height,
-                padding: padding,
-                isPressed: state.isPressed,
-                isFocused: state.isFocused,
-                child: child,
+              builder: (context, state) => Opacity(
+                opacity: enabled ? 1 : 0.48,
+                child: _AfriSurface(
+                  color: effectiveColor,
+                  radius: effectiveRadius,
+                  width: width,
+                  height: height,
+                  padding: padding,
+                  isPressed: state.isPressed,
+                  isFocused: state.isFocused,
+                  child: child,
+                ),
               ),
             ),
     );
 
     if (semanticsLabel != null && onTap == null) {
-      result = Semantics(label: semanticsLabel, child: result);
+      result = Semantics(
+        label: semanticsLabel,
+        enabled: enabled,
+        child: result,
+      );
     }
     return result;
   }
@@ -104,8 +128,10 @@ class _AfriSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.afriSemanticColors;
+    final highContrast = MediaQuery.highContrastOf(context);
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
+      duration: AfriMotion.quick,
       curve: Curves.easeOutCubic,
       width: width,
       height: height,
@@ -115,20 +141,18 @@ class _AfriSurface extends StatelessWidget {
         borderRadius: radius,
         border: isFocused
             ? BorderTokens.focusAll(
-                color: ColorTokens.primaryContainer,
-                opacity: 0.9,
+                color: highContrast
+                    ? colors.primaryText
+                    : ColorTokens.primaryContainer,
+                opacity: highContrast ? 1 : 0.9,
+                width: context.afriDesignTokens.focusRingWidth,
               )
+            : highContrast
+            ? BorderTokens.all(color: colors.border, width: BorderTokens.strong)
             : BorderTokens.ghost(width: BorderTokens.standard),
         boxShadow: [
           ...AfriShadows.floating(Brightness.dark, strength: 0.82),
-          if (isPressed)
-            BoxShadow(
-              color: ColorTokens.ambientShadow.withValues(alpha: 0.16),
-              blurRadius: 10,
-              spreadRadius: -8,
-              offset: const Offset(0, 4),
-              blurStyle: BlurStyle.inner,
-            ),
+          if (isPressed) AfriShadows.pressedInner(),
         ],
       ),
       child: child,

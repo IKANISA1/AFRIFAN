@@ -266,7 +266,7 @@ class FeatureConfigService {
   }
 
   String? getFeatureKeyForPath(String path) {
-    final normalizedPath = path.trim().toLowerCase();
+    final normalizedPath = _normalizeRoutePath(path);
     if (normalizedPath.isEmpty || normalizedPath == '/') {
       return null;
     }
@@ -311,7 +311,7 @@ class FeatureConfigService {
   bool isRouteAvailable(String path) {
     // M-8: Admin routes are always available — admin access is enforced by
     // the AdminRouteGuard (RBAC), not by public feature gating.
-    final normalizedPath = path.trim().toLowerCase();
+    final normalizedPath = _normalizeRoutePath(path);
     if (normalizedPath.startsWith('/admin')) {
       return true;
     }
@@ -323,7 +323,7 @@ class FeatureConfigService {
       return _canRenderRegisteredFeature(launchOptInFeatureKey);
     }
 
-    final featureKey = getFeatureKeyForPath(path);
+    final featureKey = getFeatureKeyForPath(normalizedPath);
     if (featureKey == null) {
       return true;
     }
@@ -347,6 +347,14 @@ class FeatureConfigService {
       return false;
     }
     return canRenderFeature(normalizedKey);
+  }
+
+  String _normalizeRoutePath(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return '';
+    final parsed = Uri.tryParse(trimmed);
+    final path = parsed?.path.trim();
+    return (path == null || path.isEmpty ? trimmed : path).toLowerCase();
   }
 
   static int _bySortOrder(PlatformFeature a, PlatformFeature b) {

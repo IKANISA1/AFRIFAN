@@ -63,7 +63,7 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         title: Text('SELECT SEAT', style: TypographyTokens.headlineLarge()),
@@ -74,49 +74,6 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
           onTap: () => context.pop(),
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: InteractiveViewer(
-              minScale: 0.5,
-              maxScale: 3.0,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing8),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final size =
-                          Size(constraints.maxWidth, constraints.maxHeight);
-                      return _TappableSeatMap(
-                        size: size,
-                        selectedSeat: _selectedSeat,
-                        onSeatTap: _onSeatTap,
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ),
-          _buildAccessibleStandPicker(),
-          // Legend
-          Container(
-            padding: const EdgeInsets.all(SpacingTokens.spacing4),
-            decoration: BoxDecoration(
-              color: ColorTokens.surface,
-              border: BorderTokens.top(),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildLegendItem(ColorTokens.clubAccent, 'VIP'),
-                _buildLegendItem(ColorTokens.clubPrimary, 'Tribune'),
-                _buildLegendItem(ColorTokens.outlineVariant, 'Standing'),
-              ],
-            ),
-          ),
-        ],
       ),
       bottomNavigationBar: _selectedSeat != null
           ? Container(
@@ -160,6 +117,50 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
               ),
             )
           : null,
+      scrollable: false,
+      child: Column(
+        children: [
+          Expanded(
+            child: InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 3.0,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(SpacingTokens.spacing8),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final size =
+                          Size(constraints.maxWidth, constraints.maxHeight);
+                      return _TappableSeatMap(
+                        size: size,
+                        selectedSeat: _selectedSeat,
+                        onSeatTap: _onSeatTap,
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+          _buildAccessibleStandPicker(),
+          // Legend
+          Container(
+            padding: const EdgeInsets.all(SpacingTokens.spacing4),
+            decoration: BoxDecoration(
+              color: ColorTokens.surface,
+              border: BorderTokens.top(),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildLegendItem(ColorTokens.clubAccent, 'VIP'),
+                _buildLegendItem(ColorTokens.clubPrimary, 'Tribune'),
+                _buildLegendItem(ColorTokens.outlineVariant, 'Standing'),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

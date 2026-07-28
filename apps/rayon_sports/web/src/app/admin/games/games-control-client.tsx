@@ -15,6 +15,7 @@ import {
   Square,
   StepForward,
 } from "lucide-react";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import { createGameRuntimeClient } from "@/lib/game-runtime";
 import type {
   GameAuditLogRow,
@@ -46,6 +47,11 @@ type GameControlActionClient = {
     pairingCode: string;
     sessionId: string | null;
   }>;
+  revokeTvDevice(input: {
+    clubId: number;
+    tvDeviceId: string;
+    reason?: string;
+  }): Promise<{ tvDeviceId: string; status: string }>;
   reviewQuestionDraft(input: {
     clubId: number;
     draftId: string;
@@ -181,6 +187,7 @@ export function GamesControlClient({
   const [pendingAction, setPendingAction] = useState<
     | "create"
     | "pair"
+    | "revoke-device"
     | "open"
     | "reveal"
     | "advance"
@@ -205,6 +212,8 @@ export function GamesControlClient({
     deviceLabel.trim().length > 0 &&
     pairingCode.trim().length > 0 &&
     pendingAction == null;
+  const canRevokeDevice =
+    hasValidClubId && tvDeviceId.trim().length > 0 && pendingAction == null;
   const canSubmitQuestionAction =
     Number.isFinite(parsedClubId) &&
     parsedClubId > 0 &&
@@ -298,6 +307,36 @@ export function GamesControlClient({
       setStatus(
         caught instanceof Error ? caught.message : "Could not pair TV display.",
       );
+    } finally {
+      setPendingAction(null);
+    }
+  }
+
+  async function revokeTvDevice() {
+    if (!canRevokeDevice) {
+      setStatus("Club id and TV device id are required.");
+      return;
+    }
+    if (!confirmAdminDestructiveAction({
+      action: "Revoke",
+      subject: `TV credential ${tvDeviceId.trim()}`,
+      scope: `Club ${parsedClubId}; one paired display`,
+      impact: "The display will be disconnected and must pair again before use.",
+      undo: "manual_recovery",
+    })) {
+      return;
+    }
+    setPendingAction("revoke-device");
+    setStatus("Revoking TV device credential...");
+    try {
+      await client.revokeTvDevice({
+        clubId: parsedClubId,
+        tvDeviceId: tvDeviceId.trim(),
+        reason: "Revoked from game operations console",
+      });
+      setStatus("TV credential revoked. The display must pair again before use.");
+    } catch (caught) {
+      setStatus(caught instanceof Error ? caught.message : "Could not revoke TV device.");
     } finally {
       setPendingAction(null);
     }
@@ -638,7 +677,7 @@ export function GamesControlClient({
             value={pairingCode}
             onChange={(event) => setPairingCode(event.target.value)}
             className="admin-input"
-            placeholder="Code shown on display"
+            placeholder="Create a one-time code for the display"
             aria-label="Pairing code"
           />
         </label>
@@ -665,6 +704,17 @@ export function GamesControlClient({
         >
           <Monitor className="h-4 w-4" aria-hidden="true" />
           {pendingAction === "pair" ? "Pairing..." : "Pair TV display"}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            revokeTvDevice().catch(() => {});
+          }}
+          disabled={!canRevokeDevice}
+          className="admin-button admin-button-secondary disabled:opacity-60"
+        >
+          <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+          {pendingAction === "revoke-device" ? "Revoking..." : "Revoke TV credential"}
         </button>
       </div>
 

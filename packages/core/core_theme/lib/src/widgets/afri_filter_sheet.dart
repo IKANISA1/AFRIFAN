@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../extensions.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/icon_tokens.dart';
+import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_bottom_sheet.dart';
@@ -93,11 +95,11 @@ Future<AfriFilterSortResult?> showAfriFilterSortSheet({
             children: [
               Center(
                 child: Container(
-                  width: 42,
-                  height: 4,
+                  width: SizeTokens.sheetHandleWidth,
+                  height: SizeTokens.sheetHandleHeight,
                   decoration: BoxDecoration(
                     color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.35),
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: ShapeTokens.buttonRadius,
                   ),
                 ),
               ),

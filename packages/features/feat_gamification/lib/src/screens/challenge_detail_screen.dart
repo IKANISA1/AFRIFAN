@@ -73,7 +73,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(challengeDetailProvider(widget.id));
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -96,7 +96,9 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
           },
         ),
       ),
-      body: state.when(
+      scrollable: false,
+      constrainContent: true,
+      child: state.when(
         loading: () => const Padding(
           padding: EdgeInsets.all(SpacingTokens.screenPadding),
           child: AfriSkeletonList(),

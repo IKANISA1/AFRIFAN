@@ -6,6 +6,7 @@
 
 export 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 
+export 'src/afri_governed_cached_image.dart';
 export 'src/afri_image_cache_manager.dart';
 export 'src/app_check_service.dart';
 export 'src/app_config_repository.dart';
@@ -20,7 +21,9 @@ export 'src/hive_cache_service.dart';
 export 'src/hive_encryption_service.dart';
 export 'src/offline_banner.dart';
 export 'src/offline_event_queue.dart';
+export 'src/offline_recovery_controller.dart';
 export 'src/operational_health_service.dart';
+export 'src/privacy_safe_analytics.dart';
 export 'src/push_notification_service.dart';
 export 'src/realtime_service.dart';
 export 'src/safe_rpc.dart';

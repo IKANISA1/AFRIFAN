@@ -2,12 +2,53 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../tokens/border_tokens.dart';
+import '../tokens/chrome_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/motion_tokens.dart';
+import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
+import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
+
+/// Announces whether the active application shell uses bottom navigation or
+/// a large-screen side rail.
+///
+/// Route bodies use this to reserve floating-navigation clearance only when
+/// the bottom bar is actually present. The default remains bottom navigation
+/// so isolated feature and widget tests retain their mobile behavior.
+class AfriShellNavigationScope extends InheritedWidget {
+  const AfriShellNavigationScope({
+    required this.usesBottomNavigation,
+    required super.child,
+    super.key,
+  });
+
+  final bool usesBottomNavigation;
+
+  static bool usesBottomNavigationOf(BuildContext context) {
+    return context
+            .dependOnInheritedWidgetOfExactType<AfriShellNavigationScope>()
+            ?.usesBottomNavigation ??
+        true;
+  }
+
+  @override
+  bool updateShouldNotify(AfriShellNavigationScope oldWidget) {
+    return usesBottomNavigation != oldWidget.usesBottomNavigation;
+  }
+}
 
 /// Shared bottom navigation bar with compact icon-first emphasis.
 class AfriClubBottomNav extends StatelessWidget {
+  static const double compactHeight = AfriChromeTokens.navigationCompactHeight;
+  static const double regularHeight = AfriChromeTokens.navigationRegularHeight;
+  static const double bottomMargin = AfriChromeTokens.navigationBottomMargin;
+  static const double contentClearance =
+      AfriChromeTokens.navigationContentClearance;
+
   final int currentIndex;
   final ValueChanged<int> onTap;
   final List<AfriClubNavItem> items;
@@ -19,42 +60,74 @@ class AfriClubBottomNav extends StatelessWidget {
     required this.items,
   });
 
+  /// Bottom space scrollable shell content needs in order to remain fully
+  /// visible above this floating navigation bar.
+  static double contentBottomInset(BuildContext context) {
+    if (!AfriShellNavigationScope.usesBottomNavigationOf(context)) {
+      return 0;
+    }
+    final mediaQuery = MediaQuery.of(context);
+    final isLargeText =
+        mediaQuery.textScaler.scale(1) >
+        AfriChromeTokens.navigationLargeTextThreshold;
+    return mediaQuery.padding.bottom +
+        bottomMargin +
+        (isLargeText ? compactHeight : regularHeight) +
+        contentClearance;
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final isLargeText =
+        MediaQuery.textScalerOf(context).scale(1) >
+        AfriChromeTokens.navigationLargeTextThreshold;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(18, 0, 18, bottomPadding + 12),
+      padding: EdgeInsets.fromLTRB(
+        AfriChromeTokens.navigationHorizontalMargin,
+        SpacingTokens.spacing0,
+        AfriChromeTokens.navigationHorizontalMargin,
+        bottomPadding + bottomMargin,
+      ),
       child: ClipRRect(
         borderRadius: ShapeTokens.chromeRadius,
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+          filter: ImageFilter.blur(
+            sigmaX: AfriChromeTokens.navigationBlurSigma,
+            sigmaY: AfriChromeTokens.navigationBlurSigma,
+          ),
           child: Container(
-            height: MediaQuery.textScalerOf(context).scale(1) > 1.45 ? 66 : 78,
+            height: isLargeText ? compactHeight : regularHeight,
             decoration: BoxDecoration(
               color: ColorTokens.chrome,
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.white.withValues(alpha: 0.08),
-                  ColorTokens.referencePaymentsPurple.withValues(alpha: 0.52),
-                  ColorTokens.referenceChromeBlack.withValues(alpha: 0.98),
+                  ColorTokens.onDark.withValues(
+                    alpha: AfriChromeTokens.navigationGradientHighlightOpacity,
+                  ),
+                  ColorTokens.referencePaymentsPurple.withValues(
+                    alpha: AfriChromeTokens.navigationGradientMidOpacity,
+                  ),
+                  ColorTokens.referenceChromeBlack.withValues(
+                    alpha: AfriChromeTokens.chromeGradientEndOpacity,
+                  ),
                 ],
               ),
               borderRadius: ShapeTokens.chromeRadius,
-              border: Border.all(color: ColorTokens.chromeBorder, width: 1.15),
-              boxShadow: [
-                BoxShadow(
-                  color: ColorTokens.ambientShadow.withValues(alpha: 0.36),
-                  blurRadius: 34,
-                  spreadRadius: -12,
-                  offset: const Offset(0, 18),
-                ),
-              ],
+              border: BorderTokens.all(
+                color: ColorTokens.chromeBorder,
+                width: BorderTokens.chrome,
+              ),
+              boxShadow: AfriShadows.navigationChrome(),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AfriChromeTokens.navigationItemHorizontalPadding,
+                vertical: AfriChromeTokens.navigationItemHorizontalPadding,
+              ),
               child: Row(
                 children: items.asMap().entries.map((entry) {
                   final index = entry.key;
@@ -63,19 +136,21 @@ class AfriClubBottomNav extends StatelessWidget {
 
                   return Expanded(
                     child: AfriPressFeedback(
+                      enabled: item.enabled,
                       onTap: () => onTap(index),
                       tooltip: item.label,
                       semanticsLabel: item.label,
                       semanticsHint: 'Open ${item.label}',
                       selected: isActive,
                       excludeChildSemantics: true,
-                      scaleEnd: 0.96,
+                      scaleEnd: AfriChromeTokens.navigationPressScale,
                       builder: (context, state) => _NavItem(
                         icon: item.icon,
                         activeIcon: item.activeIcon ?? item.icon,
                         label: item.label,
                         isActive: isActive,
                         isFocused: state.isFocused,
+                        isEnabled: item.enabled,
                       ),
                     ),
                   );
@@ -96,6 +171,7 @@ class _NavItem extends StatelessWidget {
     required this.label,
     required this.isActive,
     required this.isFocused,
+    required this.isEnabled,
   });
 
   final IconData icon;
@@ -103,56 +179,78 @@ class _NavItem extends StatelessWidget {
   final String label;
   final bool isActive;
   final bool isFocused;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
-    final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
+    final isLargeText =
+        MediaQuery.textScalerOf(context).scale(1) >
+        AfriChromeTokens.navigationLargeTextThreshold;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
-      curve: Curves.easeOutCubic,
-      height: double.infinity,
-      constraints: const BoxConstraints(minHeight: 48, minWidth: 64),
-      margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(
-        color: isActive
-            ? Colors.white.withValues(alpha: 0.18)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
-        border: isFocused
-            ? Border.all(color: ColorTokens.primaryContainer, width: 1.2)
-            : null,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            isActive ? activeIcon : icon,
-            size: isLargeText ? 24 : 22,
-            color: isActive
-                ? ColorTokens.chromeForeground
-                : ColorTokens.chromeForeground.withValues(alpha: 0.68),
-          ),
-          if (!isLargeText) ...[
-            const SizedBox(height: 2),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-                letterSpacing: 0,
-                color: isActive
-                    ? ColorTokens.chromeForeground
-                    : ColorTokens.chromeForeground.withValues(alpha: 0.68),
-              ),
+    return Opacity(
+      opacity: isEnabled ? 1 : 0.48,
+      child: AnimatedContainer(
+        duration: AfriMotion.navigation,
+        curve: Curves.easeOutCubic,
+        height: double.infinity,
+        constraints: const BoxConstraints(
+          minHeight: SizeTokens.touchTargetMin,
+          minWidth: AfriChromeTokens.navigationItemMinWidth,
+        ),
+        margin: const EdgeInsets.symmetric(
+          horizontal: AfriChromeTokens.navigationItemHorizontalMargin,
+          vertical: AfriChromeTokens.navigationItemVerticalMargin,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AfriChromeTokens.navigationItemHorizontalPadding,
+          vertical: AfriChromeTokens.navigationItemVerticalPadding,
+        ),
+        decoration: BoxDecoration(
+          color: isActive
+              ? ColorTokens.onDark.withValues(
+                  alpha: AfriChromeTokens.navigationActiveFillOpacity,
+                )
+              : ColorTokens.transparent,
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
+          border: isFocused
+              ? BorderTokens.focusAll(color: ColorTokens.primaryContainer)
+              : null,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isActive ? activeIcon : icon,
+              size: isLargeText
+                  ? AfriChromeTokens.navigationLargeTextIconSize
+                  : AfriChromeTokens.navigationIconSize,
+              color: isActive
+                  ? ColorTokens.chromeForeground
+                  : ColorTokens.chromeForeground.withValues(
+                      alpha: AfriChromeTokens.navigationInactiveContentOpacity,
+                    ),
             ),
+            if (!isLargeText) ...[
+              const SizedBox(height: AfriChromeTokens.navigationLabelGap),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: TypographyTokens.navigationLabel(
+                  selected: isActive,
+                  color: isActive
+                      ? ColorTokens.chromeForeground
+                      : ColorTokens.chromeForeground.withValues(
+                          alpha:
+                              AfriChromeTokens.navigationInactiveContentOpacity,
+                        ),
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -162,10 +260,12 @@ class AfriClubNavItem {
   final IconData icon;
   final IconData? activeIcon;
   final String label;
+  final bool enabled;
 
   const AfriClubNavItem({
     required this.icon,
     this.activeIcon,
     required this.label,
+    this.enabled = true,
   });
 }

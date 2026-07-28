@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../extensions.dart';
 import '../tokens/border_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 import 'afri_button.dart';
 
 /// Tone-based state indicator for inline feedback.
@@ -182,8 +185,18 @@ class AfriStateView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: compact ? 30 : 36, color: accentColor),
-          SizedBox(height: compact ? 10 : 12),
+          Icon(
+            icon,
+            size: compact
+                ? AfriComponentSizes.stateViewIconCompact
+                : AfriComponentSizes.stateViewIconRegular,
+            color: accentColor,
+          ),
+          SizedBox(
+            height: compact
+                ? AfriComponentSizes.stateViewGapCompact
+                : AfriComponentSizes.stateViewGapRegular,
+          ),
           Text(
             title,
             textAlign: TextAlign.center,
@@ -207,13 +220,19 @@ class AfriStateView extends StatelessWidget {
                     ?.copyWith(
                       fontWeight: FontWeight.w500,
                       color: colors.secondaryText,
-                      height: 1.45,
+                      height: TypographyTokens.lineHeightBody,
                     ),
           ),
           if (actionLabel != null && onAction != null) ...[
-            SizedBox(height: compact ? 14 : 16),
+            SizedBox(
+              height: compact
+                  ? AfriComponentSizes.stateViewActionGapCompact
+                  : AfriComponentSizes.stateViewActionGapRegular,
+            ),
             ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 48),
+              constraints: const BoxConstraints(
+                minHeight: SizeTokens.touchTargetMin,
+              ),
               child: AfriButton(
                 label: actionLabel!,
                 onTap: onAction!,

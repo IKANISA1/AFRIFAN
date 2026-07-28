@@ -2,6 +2,7 @@ import type { AdminContributionGroup } from "@/lib/types";
 
 export type GroupForm = {
   id: string;
+  expectedUpdatedAt: string;
   name: string;
   description: string;
   groupType: AdminContributionGroup["groupType"];
@@ -14,6 +15,7 @@ export type GroupForm = {
 
 export const emptyGroupForm: GroupForm = {
   id: "",
+  expectedUpdatedAt: "",
   name: "",
   description: "",
   groupType: "project",
@@ -27,6 +29,7 @@ export const emptyGroupForm: GroupForm = {
 export function groupToFormState(group: AdminContributionGroup): GroupForm {
   return {
     id: group.id,
+    expectedUpdatedAt: group.updatedAt,
     name: group.name,
     description: group.description,
     groupType: group.groupType,

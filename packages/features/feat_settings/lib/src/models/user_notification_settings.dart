@@ -10,6 +10,7 @@ class UserNotificationSettings {
     required this.teamNews,
     required this.challenges,
     required this.groupChat,
+    this.updatedAt,
   });
 
   final String userId;
@@ -22,6 +23,7 @@ class UserNotificationSettings {
   final bool teamNews;
   final bool challenges;
   final bool groupChat;
+  final String? updatedAt;
 
   factory UserNotificationSettings.defaults({
     required String userId,
@@ -38,6 +40,7 @@ class UserNotificationSettings {
       teamNews: false,
       challenges: true,
       groupChat: false,
+      updatedAt: null,
     );
   }
 
@@ -56,6 +59,7 @@ class UserNotificationSettings {
       teamNews: _asBool(json['team_news']),
       challenges: _asBool(json['challenges'], fallback: true),
       groupChat: _asBool(json['group_chat']),
+      updatedAt: _asNullableString(json['updated_at']),
     );
   }
 
@@ -86,6 +90,7 @@ class UserNotificationSettings {
     bool? teamNews,
     bool? challenges,
     bool? groupChat,
+    String? updatedAt,
   }) {
     return UserNotificationSettings(
       userId: userId ?? this.userId,
@@ -98,6 +103,7 @@ class UserNotificationSettings {
       teamNews: teamNews ?? this.teamNews,
       challenges: challenges ?? this.challenges,
       groupChat: groupChat ?? this.groupChat,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -106,6 +112,11 @@ String _asString(dynamic value, {String fallback = ''}) {
   if (value == null) return fallback;
   final text = value.toString().trim();
   return text.isEmpty ? fallback : text;
+}
+
+String? _asNullableString(dynamic value) {
+  final text = value?.toString().trim();
+  return text == null || text.isEmpty ? null : text;
 }
 
 bool _asBool(dynamic value, {bool fallback = false}) {

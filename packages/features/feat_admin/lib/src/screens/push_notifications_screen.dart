@@ -295,7 +295,7 @@ class _PushNotificationsScreenState
       _ => 'All supporters',
     };
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -306,7 +306,9 @@ class _PushNotificationsScreenState
           tooltip: 'Back',
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: true,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

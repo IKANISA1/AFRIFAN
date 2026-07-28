@@ -6,7 +6,11 @@ import { fallbackClubProfile } from "@/lib/content";
 import type { AdminAccess, AdminMatchItem } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
-import { hasMissingColumnError } from "./helpers";
+import {
+  deleteAdminRecordWithAuditIfUnchanged,
+  hasMissingColumnError,
+  mutateRecordWithVariantsIfUnchanged,
+} from "./helpers";
 
 function mapMatch(row: Record<string, unknown>): AdminMatchItem {
   const liveEvents = Array.isArray(row.live_events)
@@ -52,6 +56,7 @@ function mapMatch(row: Record<string, unknown>): AdminMatchItem {
         : {},
     liveEvents,
     isFeatured: row.is_featured === true,
+    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
   };
 }
 
@@ -98,6 +103,7 @@ export async function saveAdminMatch(
   access: AdminAccess,
   input: {
     id?: string | null;
+    expectedUpdatedAt?: string | null;
     partnerId?: string | null;
     homeTeam: string;
     awayTeam: string;
@@ -177,21 +183,14 @@ export async function saveAdminMatch(
   };
 
   if (input.id) {
-    const primary = await client.from("matches").update(payload).eq("id", input.id);
-    if (!primary.error) {
-      return input.id;
-    }
-    if (!hasMissingColumnError(primary.error, "match_status")) {
-      throw new Error(primary.error.message);
-    }
-    const fallback = await client
-      .from("matches")
-      .update(legacyPayload)
-      .eq("id", input.id);
-    if (fallback.error) {
-      throw new Error(fallback.error.message);
-    }
-    return input.id;
+    return mutateRecordWithVariantsIfUnchanged(
+      client,
+      "matches",
+      input.id,
+      input.expectedUpdatedAt,
+      [payload, legacyPayload],
+      { club_id: clubId },
+    );
   }
 
   const primary = await client
@@ -225,20 +224,28 @@ export async function deleteAdminMatch(
   client: SupabaseClient,
   access: AdminAccess,
   matchId: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("matches", {
       method: "DELETE",
-      query: { id: matchId },
+      query: { id: matchId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
-  let query = client.from("matches").delete().eq("id", matchId);
-  if (access.clubId != null) {
-    query = query.eq("club_id", Number(access.clubId));
-  }
-  const { error } = await query;
-  if (error) {
-    throw new Error(error.message);
-  }
+  const parsedClubId = safeNumber(access.clubId, Number.NaN);
+  const clubId = Number.isFinite(parsedClubId) ? parsedClubId : null;
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    "matches",
+    matchId,
+    expectedUpdatedAt,
+    clubId == null ? {} : { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_match",
+      source: "admin_matches",
+    },
+  );
 }

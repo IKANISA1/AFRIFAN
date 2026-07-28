@@ -40,6 +40,81 @@ class ColorTokens {
 
   static bool _isWhite(Color color) => color.computeLuminance() > 0.9;
 
+  static double _contrastRatio(Color first, Color second) {
+    final firstLuminance = first.computeLuminance();
+    final secondLuminance = second.computeLuminance();
+    final lighter = firstLuminance > secondLuminance
+        ? firstLuminance
+        : secondLuminance;
+    final darker = firstLuminance > secondLuminance
+        ? secondLuminance
+        : firstLuminance;
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+
+  static Color _ensureContrast(
+    Color candidate,
+    Color background, {
+    required double minimum,
+    required Color toward,
+  }) {
+    if (_contrastRatio(candidate, background) >= minimum) return candidate;
+    for (var step = 1; step <= 20; step += 1) {
+      final adjusted = Color.lerp(candidate, toward, step / 20)!;
+      if (_contrastRatio(adjusted, background) >= minimum) return adjusted;
+    }
+    return toward;
+  }
+
+  /// Resolves a metric/text accent that remains readable across the common
+  /// app, card, overlay, and analytics surfaces for the active brightness.
+  ///
+  /// Product/club accents are identity inputs, not pre-approved foreground
+  /// colors. Light mode in particular can make a gold or vivid accent
+  /// unreadable unless it is normalized toward ink.
+  static Color accessibleMetricColor(Color candidate) {
+    return _ensureContrastAcross(candidate, <Color>[
+      background,
+      surfaceContainerLow,
+      surfaceContainerHigh,
+      surfaceBright,
+    ], minimum: 4.5);
+  }
+
+  /// Resolves a non-text data-visualization stroke/marker to the 3:1
+  /// meaningful-control floor across the common active surfaces.
+  static Color accessibleChartColor(Color candidate) {
+    return _ensureContrastAcross(candidate, <Color>[
+      background,
+      surfaceContainerLow,
+      surfaceContainerHigh,
+      surfaceBright,
+    ], minimum: 3);
+  }
+
+  static Color _ensureContrastAcross(
+    Color candidate,
+    List<Color> backgrounds, {
+    required double minimum,
+  }) {
+    final toward = isDark ? Colors.white : _inkBase;
+    for (var step = 0; step <= 20; step += 1) {
+      final adjusted = Color.lerp(candidate, toward, step / 20)!;
+      final passes = backgrounds.every(
+        (background) => _contrastRatio(adjusted, background) >= minimum,
+      );
+      if (passes) return adjusted;
+    }
+    return toward;
+  }
+
+  /// Chooses the higher-contrast foreground for an opaque semantic surface.
+  static Color contrastForeground(Color background) {
+    final whiteRatio = _contrastRatio(Colors.white, background);
+    final inkRatio = _contrastRatio(_inkBase, background);
+    return whiteRatio >= inkRatio ? Colors.white : _inkBase;
+  }
+
   static Color _stackColor(
     Color base, {
     double primaryAlpha = 0.0,
@@ -114,8 +189,18 @@ class ColorTokens {
       primaryAlpha: 0.10,
       whiteAlpha: 0.04,
     );
-    _darkPrimary = Color.lerp(_primary, Colors.white, 0.10)!;
-    _darkPrimaryContainer = Color.lerp(_primary, Colors.white, 0.24)!;
+    _darkPrimary = _ensureContrast(
+      Color.lerp(_primary, Colors.white, 0.10)!,
+      _darkBackground,
+      minimum: 3,
+      toward: Colors.white,
+    );
+    _darkPrimaryContainer = _ensureContrast(
+      Color.lerp(_primary, Colors.white, 0.24)!,
+      _darkBackground,
+      minimum: 3,
+      toward: Colors.white,
+    );
     _darkSecondaryContainer = Color.alphaBlend(
       _accent.withValues(alpha: 0.12),
       _darkSurfaceContainerHigh,
@@ -134,8 +219,18 @@ class ColorTokens {
     _lightSurfaceContainerHigh = const Color(0xFFDEE8F3);
     _lightSurfaceContainerHighest = const Color(0xFFD5E0ED);
     _lightSurfaceBright = const Color(0xFFF9FBFE);
-    _lightPrimary = _primary;
-    _lightPrimaryContainer = Color.lerp(_primary, Colors.white, 0.22)!;
+    _lightPrimary = _ensureContrast(
+      _primary,
+      _lightBackground,
+      minimum: 3,
+      toward: _inkBase,
+    );
+    _lightPrimaryContainer = _ensureContrast(
+      Color.lerp(_primary, Colors.white, 0.22)!,
+      _lightBackground,
+      minimum: 3,
+      toward: _inkBase,
+    );
     _lightSecondaryContainer = Color.alphaBlend(
       _accent.withValues(alpha: 0.14),
       _lightSurfaceContainerHigh,
@@ -147,7 +242,20 @@ class ColorTokens {
 
   static bool get isInitialized => _initialized;
 
-  static const bool isDark = true;
+  static Brightness _brightness = Brightness.dark;
+
+  static Brightness get brightness => _brightness;
+
+  static bool get isDark => _brightness == Brightness.dark;
+
+  /// Selects the active palette for context-free legacy token reads.
+  ///
+  /// New widgets should prefer `Theme.of(context)` and
+  /// `context.afriSemanticColors`. This bridge keeps existing shared tokens
+  /// theme-aware while routes are migrated incrementally.
+  static void setBrightness(Brightness brightness) {
+    _brightness = brightness;
+  }
 
   static Color get clubPrimary => _primary;
   static Color get clubSecondary => _secondary;
@@ -241,10 +349,19 @@ class ColorTokens {
 
   static Color get scrim => background.withValues(alpha: 0.72);
 
-  static const Color success = Color(0xFF4AC789);
-  static const Color warning = Color(0xFFF0BF63);
-  static const Color error = Color(0xFFFF6B6B);
-  static const Color info = Color(0xFF69A8FF);
+  static const Color _darkSuccess = Color(0xFF4AC789);
+  static const Color _darkWarning = Color(0xFFF0BF63);
+  static const Color _darkError = Color(0xFFFF6B6B);
+  static const Color _darkInfo = Color(0xFF69A8FF);
+  static const Color _lightSuccess = Color(0xFF176B45);
+  static const Color _lightWarning = Color(0xFF7A4F00);
+  static const Color _lightError = Color(0xFFB42318);
+  static const Color _lightInfo = Color(0xFF0057B8);
+
+  static Color get success => isDark ? _darkSuccess : _lightSuccess;
+  static Color get warning => isDark ? _darkWarning : _lightWarning;
+  static Color get error => isDark ? _darkError : _lightError;
+  static Color get info => isDark ? _darkInfo : _lightInfo;
 
   static LinearGradient heroGradient({Color? from, Color? to}) {
     return LinearGradient(
@@ -253,6 +370,17 @@ class ColorTokens {
       colors: [from ?? primary, to ?? primaryContainer],
       stops: const [0.0, 1.0],
     );
+  }
+
+  /// Resolves an inactive-control foreground that stays visibly unavailable
+  /// without falling below the design contract's 3:1 disabled-state floor.
+  static Color accessibleDisabledColor(Color candidate) {
+    return _ensureContrastAcross(candidate, <Color>[
+      background,
+      surfaceContainerLow,
+      surfaceContainerHigh,
+      surfaceBright,
+    ], minimum: 3);
   }
 
   static LinearGradient universalGradient({
@@ -319,6 +447,32 @@ class ColorTokens {
 
   static LinearGradient screenGradientForPath([String? path]) {
     final normalized = (path ?? '').trim().toLowerCase();
+    if (!isDark) {
+      final tint =
+          normalized.contains('membership') ||
+              normalized.contains('wallet') ||
+              normalized.contains('contribute') ||
+              normalized.contains('payment')
+          ? primary
+          : normalized.contains('settings') ||
+                normalized.contains('profile') ||
+                normalized.contains('privacy')
+          ? referencePaymentsPurpleDeep
+          : normalized.contains('shop') ||
+                normalized.contains('tickets') ||
+                normalized.contains('rewards')
+          ? referenceRewardsViolet
+          : normalized.contains('live') ||
+                normalized.contains('fanzone') ||
+                normalized.contains('league')
+          ? referenceWealthTeal
+          : primary;
+      return _verticalGradient(
+        Color.alphaBlend(tint.withValues(alpha: 0.06), surfaceContainerHigh),
+        Color.alphaBlend(tint.withValues(alpha: 0.03), surfaceContainerLow),
+        background,
+      );
+    }
     if (normalized.contains('membership') ||
         normalized.contains('wallet') ||
         normalized.contains('contribute') ||

@@ -96,17 +96,17 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
           final key = _dateKey(date);
           final count = widget.dateSummary[key] ?? 0;
           final hasFixtures = count > 0;
-          const hasLive = false;
+          final fixtureSummary = '$count fixtures';
 
           return AfriPressFeedback(
             onTap: () => widget.onDateSelected(date),
             selected: isSelected,
             tooltip: isToday
-                ? 'Today, $count fixtures'
-                : '${date.day}, $count fixtures',
+                ? 'Today, $fixtureSummary'
+                : '${date.day}, $fixtureSummary',
             semanticsLabel: isToday
-                ? 'Today, $count fixtures'
-                : 'Date ${date.day}, $count fixtures',
+                ? 'Today, $fixtureSummary'
+                : 'Date ${date.day}, $fixtureSummary',
             semanticsHint: isSelected ? 'Selected date' : 'Select date',
             excludeChildSemantics: true,
             child: FixturesCalendarCell(
@@ -114,7 +114,6 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
               isSelected: isSelected,
               isToday: isToday,
               hasFixtures: hasFixtures,
-              hasLive: hasLive,
               fixtureCount: count,
             ),
           );
@@ -132,7 +131,6 @@ class FixturesCalendarCell extends StatelessWidget {
     required this.isSelected,
     required this.isToday,
     required this.hasFixtures,
-    required this.hasLive,
     required this.fixtureCount,
   });
 
@@ -140,7 +138,6 @@ class FixturesCalendarCell extends StatelessWidget {
   final bool isSelected;
   final bool isToday;
   final bool hasFixtures;
-  final bool hasLive;
   final int fixtureCount;
 
   static const _dayNames = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -204,9 +201,7 @@ class FixturesCalendarCell extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _FixtureDot(
-                  color: hasLive
-                      ? ColorTokens.success
-                      : isSelected
+                  color: isSelected
                       ? ColorTokens.clubAccent
                       : ColorTokens.onSurfaceVariant,
                 ),
@@ -389,7 +384,7 @@ class _LiveDot extends StatelessWidget {
       width: SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
       height: SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
       margin: margin,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: ColorTokens.success,
       ),
@@ -465,6 +460,16 @@ class FixtureBrowserCard extends StatelessWidget {
     };
   }
 
+  String _semanticStatusLabel() {
+    return switch (fixture.status) {
+      'live' => 'Live match',
+      'finished' => 'Finished match',
+      'postponed' => 'Postponed match',
+      'cancelled' => 'Cancelled match',
+      _ => 'Scheduled match',
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLive = fixture.isLive;
@@ -473,7 +478,9 @@ class FixtureBrowserCard extends StatelessWidget {
 
     return AfriPressFeedback(
       onTap: onOpen,
-      semanticsLabel: '${fixture.homeTeamName} vs ${fixture.awayTeamName}',
+      semanticsLabel:
+          '${fixture.homeTeamName} vs ${fixture.awayTeamName}. '
+          '${_semanticStatusLabel()}',
       semanticsHint: fixture.isPredictable
           ? 'Tap to make a prediction'
           : 'View match details',

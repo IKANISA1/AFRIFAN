@@ -90,8 +90,10 @@ html {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }
 
@@ -99,9 +101,9 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   background:
-    radial-gradient(Group at 18% 10%, rgba(169, 141, 255, 0.24), transparent 28%),
-    radial-gradient(Group at 82% 12%, rgba(123, 91, 255, 0.24), transparent 30%),
-    radial-gradient(Group at 50% 100%, rgba(248, 244, 255, 0.08), transparent 30%),
+    radial-gradient(circle at 18% 10%, rgba(169, 141, 255, 0.24), transparent 28%),
+    radial-gradient(circle at 82% 12%, rgba(123, 91, 255, 0.24), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(248, 244, 255, 0.08), transparent 30%),
     linear-gradient(180deg, var(--background) 0%, var(--surface-container-low) 42%, var(--void) 100%);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -171,7 +173,7 @@ a:not([class]) {
   border: var(--border-hairline) solid var(--border-hover);
   background:
     linear-gradient(135deg, rgba(58, 48, 123, 0.92), rgba(34, 25, 74, 0.9), rgba(18, 13, 48, 0.88)),
-    radial-gradient(Group at top left, rgba(169, 141, 255, 0.14), transparent 36%);
+    radial-gradient(circle at top left, rgba(169, 141, 255, 0.14), transparent 36%);
   box-shadow:
     var(--shadow-card-hover),
     inset 1px 1px 0 rgba(255, 255, 255, 0.14),
@@ -186,7 +188,7 @@ a:not([class]) {
   border: var(--border-hairline) solid rgba(169, 141, 255, 0.12);
   background:
     linear-gradient(145deg, rgba(13, 10, 39, 0.94), rgba(34, 25, 74, 0.8)),
-    radial-gradient(Group at top left, rgba(169, 141, 255, 0.08), transparent 40%);
+    radial-gradient(circle at top left, rgba(169, 141, 255, 0.08), transparent 40%);
   box-shadow: var(--shadow-sunken);
   backdrop-filter: blur(var(--blur-soft));
   -webkit-backdrop-filter: blur(var(--blur-soft));
@@ -220,7 +222,7 @@ a:not([class]) {
   border-color: var(--border-hover);
   background:
     linear-gradient(180deg, rgba(58, 48, 123, 0.88), rgba(24, 16, 47, 0.84)),
-    radial-gradient(Group at top left, rgba(169, 141, 255, 0.1), transparent 45%);
+    radial-gradient(circle at top left, rgba(169, 141, 255, 0.1), transparent 45%);
 }
 
 .ui-card-interactive:active,
@@ -355,7 +357,7 @@ a:not([class]) {
   border: var(--border-hairline) solid rgba(169, 141, 255, 0.12);
   background:
     linear-gradient(180deg, rgba(18, 12, 35, 0.86), rgba(31, 22, 60, 0.74)),
-    radial-gradient(Group at top left, rgba(181, 155, 255, 0.08), transparent 42%);
+    radial-gradient(circle at top left, rgba(181, 155, 255, 0.08), transparent 42%);
   padding: 1rem 1.1rem;
   box-shadow: var(--shadow-sunken);
   backdrop-filter: blur(var(--blur-soft));
@@ -397,7 +399,7 @@ a:not([class]) {
   border: var(--border-hairline) solid transparent;
   background:
     linear-gradient(180deg, rgba(10, 8, 20, 0.88), rgba(24, 18, 46, 0.72)),
-    radial-gradient(Group at top left, rgba(181, 155, 255, 0.06), transparent 42%);
+    radial-gradient(circle at top left, rgba(181, 155, 255, 0.06), transparent 42%);
   padding: 0.95rem 1.15rem;
   outline: none;
   box-shadow: var(--shadow-sunken);
@@ -418,6 +420,15 @@ a:not([class]) {
   box-shadow:
     var(--shadow-sunken),
     0 0 0 4px rgba(169, 141, 255, 0.18);
+}
+
+.admin-auth-phone-input {
+  height: 56px;
+  min-height: 56px;
+  padding-left: 100px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
 }
 
 .ui-brand-mark {
@@ -501,7 +512,7 @@ a:not([class]) {
   border: var(--border-hairline) solid var(--outline-ghost);
   background:
     linear-gradient(180deg, rgba(74, 63, 147, 0.24), rgba(18, 13, 48, 0.22)),
-    radial-gradient(Group at top left, rgba(169, 141, 255, 0.08), transparent 55%);
+    radial-gradient(circle at top left, rgba(169, 141, 255, 0.08), transparent 55%);
   box-shadow:
     0 16px 28px -24px rgba(5, 4, 16, 0.92),
     inset 1px 1px 0 rgba(255, 255, 255, 0.1);
@@ -514,7 +525,7 @@ a:not([class]) {
   transform: translateY(-2px);
   background:
     linear-gradient(180deg, rgba(74, 63, 147, 0.32), rgba(18, 13, 48, 0.26)),
-    radial-gradient(Group at top left, rgba(169, 141, 255, 0.1), transparent 55%);
+    radial-gradient(circle at top left, rgba(169, 141, 255, 0.1), transparent 55%);
 }
 
 .ui-drawer-link {
@@ -690,7 +701,7 @@ textarea:focus-visible,
   position: absolute;
   inset: -4px;
   border-radius: inherit;
-  background: radial-gradient(Group, rgba(111, 82, 255, 0.48), transparent 70%);
+  background: radial-gradient(circle, rgba(111, 82, 255, 0.48), transparent 70%);
   opacity: 0;
   filter: blur(18px);
   transition: opacity var(--duration-hover) ease;
@@ -703,11 +714,11 @@ textarea:focus-visible,
 }
 
 .cta-glow-accent::after {
-  background: radial-gradient(Group, rgba(239, 231, 255, 0.38), transparent 72%);
+  background: radial-gradient(circle, rgba(239, 231, 255, 0.38), transparent 72%);
 }
 
 .cta-glow-secondary::after {
-  background: radial-gradient(Group, rgba(181, 155, 255, 0.5), transparent 72%);
+  background: radial-gradient(circle, rgba(181, 155, 255, 0.5), transparent 72%);
 }
 
 .kit-stripe {
@@ -934,9 +945,9 @@ textarea:focus-visible,
 
 .club-site {
   background:
-    radial-gradient(Group at 14% 10%, var(--site-glow-primary), transparent 28%),
-    radial-gradient(Group at 86% 10%, var(--site-glow-secondary), transparent 30%),
-    radial-gradient(Group at 50% 100%, var(--site-glow-accent), transparent 28%),
+    radial-gradient(circle at 14% 10%, var(--site-glow-primary), transparent 28%),
+    radial-gradient(circle at 86% 10%, var(--site-glow-secondary), transparent 30%),
+    radial-gradient(circle at 50% 100%, var(--site-glow-accent), transparent 28%),
     linear-gradient(180deg, var(--site-bg-start) 0%, var(--site-bg-mid) 48%, var(--site-bg-end) 100%);
 }
 
@@ -946,9 +957,9 @@ textarea:focus-visible,
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(Group at 12% 14%, var(--site-glow-primary), transparent 26%),
-    radial-gradient(Group at 84% 12%, var(--site-glow-secondary), transparent 30%),
-    radial-gradient(Group at 50% 88%, var(--site-glow-accent), transparent 26%);
+    radial-gradient(circle at 12% 14%, var(--site-glow-primary), transparent 26%),
+    radial-gradient(circle at 84% 12%, var(--site-glow-secondary), transparent 30%),
+    radial-gradient(circle at 50% 88%, var(--site-glow-accent), transparent 26%);
   filter: blur(38px);
   opacity: 0.95;
 }
@@ -989,7 +1000,7 @@ textarea:focus-visible,
   border-color: color-mix(in srgb, var(--site-shell-border) 130%, white);
   background:
     linear-gradient(135deg, rgba(9, 15, 27, 0.94), rgba(7, 12, 22, 0.92), rgba(3, 7, 16, 0.94)),
-    radial-gradient(Group at top left, var(--site-glow-primary), transparent 34%);
+    radial-gradient(circle at top left, var(--site-glow-primary), transparent 34%);
   box-shadow:
     0 28px 64px -36px rgba(2, 4, 10, 0.98),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
@@ -1000,7 +1011,7 @@ textarea:focus-visible,
   border-color: rgba(255, 255, 255, 0.08);
   background:
     linear-gradient(145deg, rgba(3, 7, 16, 0.92), rgba(8, 12, 22, 0.84)),
-    radial-gradient(Group at top left, var(--site-glow-secondary), transparent 36%);
+    radial-gradient(circle at top left, var(--site-glow-secondary), transparent 36%);
   box-shadow:
     inset 10px 12px 18px rgba(2, 4, 10, 0.54),
     inset -1px -1px 0 rgba(255, 255, 255, 0.06);
@@ -1283,7 +1294,7 @@ textarea:focus-visible,
   border-color: var(--admin-border-strong);
   background:
     linear-gradient(180deg, rgba(42, 36, 89, 0.98), rgba(20, 17, 51, 1)),
-    radial-gradient(Group at top left, rgba(108, 99, 255, 0.12), transparent 38%);
+    radial-gradient(circle at top left, rgba(108, 99, 255, 0.12), transparent 38%);
   box-shadow:
     0 28px 52px -34px rgba(5, 4, 16, 0.98),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -1499,6 +1510,24 @@ textarea:focus-visible,
   white-space: nowrap;
 }
 
+.admin-sort-button {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 0.65rem;
+  margin: -0.55rem -0.65rem;
+  padding: 0.55rem 0.65rem;
+  color: inherit;
+  text-align: left;
+}
+
+.admin-sort-button:hover,
+.admin-sort-button:focus-visible {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--admin-text-strong);
+}
+
 .admin-table tbody td {
   padding: 1rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
@@ -1538,6 +1567,90 @@ textarea:focus-visible,
   color: var(--admin-text-muted);
   font-size: 0.75rem;
   line-height: 1.4;
+}
+
+.admin-table-row[tabindex="0"] {
+  outline: none;
+}
+
+.admin-table-row[tabindex="0"]:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--club-accent, #7b5bff);
+}
+
+.admin-table-row[aria-selected="true"] {
+  background: rgba(123, 91, 255, 0.1);
+}
+
+.admin-pagination {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--admin-border);
+  padding: 0.85rem 1rem;
+}
+
+.admin-pagination-summary,
+.admin-pagination-page {
+  color: var(--admin-text-muted);
+  font-size: 0.78rem;
+}
+
+.admin-pagination-actions,
+.admin-selection-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-pagination-button {
+  display: inline-flex;
+  min-width: 3rem;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--admin-text);
+}
+
+.admin-pagination-button:hover:not(:disabled),
+.admin-pagination-button:focus-visible {
+  border-color: var(--admin-border-strong);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--admin-text-strong);
+}
+
+.admin-pagination-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.admin-selection-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid rgba(123, 91, 255, 0.35);
+  border-radius: 1rem;
+  background: rgba(123, 91, 255, 0.11);
+  padding: 0.85rem 1rem;
+}
+
+.admin-selection-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--admin-text-strong);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.admin-selection-scope {
+  margin-top: 0.2rem;
+  color: var(--admin-text-muted);
+  font-size: 0.75rem;
 }
 
 .admin-status-badge {
@@ -1688,7 +1801,7 @@ textarea:focus-visible,
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  min-height: 2.4rem;
+  min-height: 3rem;
   border-radius: 999px;
   padding: 0.55rem 0.85rem;
   color: var(--admin-text);
@@ -1812,6 +1925,33 @@ textarea:focus-visible,
 
   .admin-page-title {
     font-size: 1.75rem;
+  }
+
+  .admin-pagination {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-pagination-page {
+    order: 2;
+  }
+
+  .admin-pagination-actions {
+    justify-content: space-between;
+  }
+
+  .admin-selection-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-selection-actions > * {
+    flex: 1;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .admin-table [data-column-priority="tertiary"] {
+    display: none;
   }
 }
 

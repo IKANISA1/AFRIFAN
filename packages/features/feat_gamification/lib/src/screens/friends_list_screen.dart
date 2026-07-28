@@ -187,7 +187,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
     final searchMode = _controller.text.trim().length >= 2;
     final visibleSupporters = searchMode ? _matches : _friends;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -204,7 +204,9 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
           tooltip: 'Back',
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: true,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

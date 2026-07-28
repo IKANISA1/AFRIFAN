@@ -83,7 +83,7 @@ class BadgeGrid extends StatelessWidget {
                 ),
               ],
             )
-            .animate(delay: (index * 60).ms)
+            .afriAnimate(context, delay: (index * 60).ms)
             .fadeIn(duration: 300.ms)
             .scale(begin: const Offset(0.8, 0.8), duration: 300.ms);
       },

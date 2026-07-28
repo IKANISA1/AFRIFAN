@@ -12,6 +12,7 @@ Future<void> loadAppFonts() async {
   }
 
   await _preloadMaterialIcons();
+  await _preloadGoldenRoboto();
   _appFontsLoaded = true;
 }
 
@@ -36,13 +37,37 @@ Future<ByteData> _loadMaterialIconsFont() async {
   }
 }
 
+Future<void> _preloadGoldenRoboto() async {
+  try {
+    final loader = FontLoader('GoldenRoboto');
+    loader.addFont(_loadFlutterArtifactFont('Roboto-Regular.ttf'));
+    await loader.load();
+  } on Object {
+    // Non-golden tests may run in device environments without host SDK files.
+  }
+}
+
+Future<ByteData> _loadFlutterArtifactFont(String fileName) async {
+  final assetPath = 'packages/flutter/fonts/$fileName';
+  try {
+    return await rootBundle.load(assetPath);
+  } catch (_) {
+    final bytes = await _resolveFlutterArtifactFontFile(fileName).readAsBytes();
+    return ByteData.sublistView(bytes);
+  }
+}
+
 File _resolveMaterialIconsFontFile() {
+  return _resolveFlutterArtifactFontFile('MaterialIcons-Regular.otf');
+}
+
+File _resolveFlutterArtifactFontFile(String fileName) {
   final candidates = <File>[
     File(
-      '/Volumes/PRO-G40/flutter_3_44/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
+      '/Volumes/PRO-G40/flutter_3_44/bin/cache/artifacts/material_fonts/$fileName',
     ),
     File(
-      '${Platform.environment['FLUTTER_ROOT'] ?? ''}/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
+      '${Platform.environment['FLUTTER_ROOT'] ?? ''}/bin/cache/artifacts/material_fonts/$fileName',
     ),
   ];
 
@@ -53,7 +78,7 @@ File _resolveMaterialIconsFontFile() {
   }
 
   throw FileSystemException(
-    'Unable to locate MaterialIcons-Regular.otf for widget tests',
+    'Unable to locate $fileName for widget tests',
     Directory.current.path,
   );
 }

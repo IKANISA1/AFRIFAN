@@ -227,7 +227,7 @@ const translations = {
         eyebrow: "Privacy",
         fallbackTitle: "Supporter data with clear boundaries.",
         fallbackBody:
-          "The club web experience stores only the minimum supporter data required to run website and fan app services such as membership, tickets, shop orders, and support Groups. Sensitive payment and private contact details remain segmented from public profile data.",
+          "The club website and fan app process the minimum account, membership, ticket, shop, contribution, prediction, check-in, and support-circle data needed to provide the features a supporter chooses to use. Private contacts, payment records, authentication data, and public profile data are separated and access-controlled.\n\nOptional notifications require permission. App attestation and security identifiers may be processed to prevent abuse. Analytics, crash, and performance collection remain disabled unless the release configuration and applicable consent allow them. We do not sell personal data. Service providers such as Supabase and configured Firebase services process data only to operate and protect the platform.\n\nSupporters can access or correct profile information and request account deletion in Settings. Transaction, fraud-prevention, security, and audit records may be retained where law or legitimate operational obligations require it, then access-restricted and deleted under the approved schedule. Questions or rights requests can be sent to support@ikanisa.com. Last updated 18 July 2026.",
       },
       results: {
         metaTitle: (club: ClubCopyContext) => `${club.shortName} results`,

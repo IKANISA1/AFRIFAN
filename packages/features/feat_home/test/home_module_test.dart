@@ -1,5 +1,6 @@
 import 'package:feat_home/feat_home.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   group('HomeModule', () {
@@ -27,8 +28,10 @@ void main() {
       expect(module.routes, isEmpty);
     });
 
-    test('standaloneRoutes is empty', () {
-      expect(module.standaloneRoutes, isEmpty);
+    test('registers the discovery search route', () {
+      final searchRoute = module.standaloneRoutes.single as GoRoute;
+      expect(searchRoute.path, '/search');
+      expect(searchRoute.name, 'discovery-search');
     });
   });
 }

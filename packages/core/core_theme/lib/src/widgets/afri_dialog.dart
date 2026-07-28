@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -15,7 +16,9 @@ class AfriDialog extends StatelessWidget {
       horizontal: SpacingTokens.spacing5,
       vertical: SpacingTokens.spacing5,
     ),
-    this.constraints = const BoxConstraints(maxWidth: 560),
+    this.constraints = const BoxConstraints(
+      maxWidth: AfriComponentSizes.dialogMaxWidth,
+    ),
     super.key,
   });
 

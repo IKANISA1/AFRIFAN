@@ -7,6 +7,7 @@ import { showAdminToast } from "@/components/admin/admin-toast";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { saveAdminMatch } from "@/lib/data/admin/matches";
 import type { AdminAccess } from "@/lib/types";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 
 interface MatchFormProps {
   form: MatchFormState;
@@ -15,6 +16,7 @@ interface MatchFormProps {
   client: SupabaseClient | null;
   access: AdminAccess;
   onSaved: () => Promise<void>;
+  onConflict: () => Promise<void>;
   onCancel?: () => void;
 }
 
@@ -25,6 +27,7 @@ export function MatchForm({
   client,
   access,
   onSaved,
+  onConflict,
   onCancel,
 }: MatchFormProps) {
   async function submitForm(formData: FormData) {
@@ -38,6 +41,7 @@ export function MatchForm({
     try {
       await saveAdminMatch(client, access, {
         id: form.id || null,
+        expectedUpdatedAt: form.expectedUpdatedAt || null,
         homeTeam: String(formData.get("homeTeam") ?? ""),
         awayTeam: String(formData.get("awayTeam") ?? ""),
         competition: String(formData.get("competition") ?? ""),
@@ -62,6 +66,9 @@ export function MatchForm({
       await onSaved();
       showAdminToast("Fixture saved.", "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await onConflict();
+      }
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not save match.",
         "error",

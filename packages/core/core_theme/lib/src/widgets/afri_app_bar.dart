@@ -45,6 +45,11 @@ class AfriAppBar extends StatelessWidget implements PreferredSizeWidget {
         ? ColorTokens.chrome.withValues(alpha: 0.82)
         : backgroundColor!.withValues(alpha: 0.88);
 
+    final effectiveTitle = switch (title) {
+      final Text text => _chromeTextTitle(context, text),
+      _ => title,
+    };
+
     return AppBar(
       automaticallyImplyLeading: automaticallyImplyLeading,
       backgroundColor: effectiveBackground,
@@ -55,11 +60,54 @@ class AfriAppBar extends StatelessWidget implements PreferredSizeWidget {
       iconTheme: IconThemeData(color: ColorTokens.chromeForeground),
       titleSpacing: leading == null ? SpacingTokens.spacing5 : 0,
       centerTitle: centerTitle ?? false,
-      title: title,
+      title: effectiveTitle,
       leading: leading,
       actions: actions,
       bottom: bottom,
       flexibleSpace: flexibleSpace,
+    );
+  }
+
+  Text _chromeTextTitle(BuildContext context, Text text) {
+    final style = (text.style ?? DefaultTextStyle.of(context).style).copyWith(
+      color: ColorTokens.chromeForeground,
+    );
+    final span = text.textSpan;
+    if (span != null) {
+      return Text.rich(
+        span,
+        key: text.key,
+        style: style,
+        strutStyle: text.strutStyle,
+        textAlign: text.textAlign,
+        textDirection: text.textDirection,
+        locale: text.locale,
+        softWrap: text.softWrap,
+        overflow: text.overflow,
+        textScaler: text.textScaler,
+        maxLines: text.maxLines,
+        semanticsLabel: text.semanticsLabel,
+        textWidthBasis: text.textWidthBasis,
+        textHeightBehavior: text.textHeightBehavior,
+        selectionColor: text.selectionColor,
+      );
+    }
+    return Text(
+      text.data ?? '',
+      key: text.key,
+      style: style,
+      strutStyle: text.strutStyle,
+      textAlign: text.textAlign,
+      textDirection: text.textDirection,
+      locale: text.locale,
+      softWrap: text.softWrap,
+      overflow: text.overflow,
+      textScaler: text.textScaler,
+      maxLines: text.maxLines,
+      semanticsLabel: text.semanticsLabel,
+      textWidthBasis: text.textWidthBasis,
+      textHeightBehavior: text.textHeightBehavior,
+      selectionColor: text.selectionColor,
     );
   }
 }

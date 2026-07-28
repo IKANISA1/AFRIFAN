@@ -6,7 +6,8 @@ import type { AdminAccess } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
-  deleteRecordWithMatchers,
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
   requireAdminClubId,
   resolveSquadTable,
 } from "./helpers";
@@ -22,6 +23,7 @@ export interface AdminSquadPlayer {
   imageUrl: string | null;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 function mapAdminSquadPlayer(row: Record<string, unknown>): AdminSquadPlayer {
@@ -40,6 +42,7 @@ function mapAdminSquadPlayer(row: Record<string, unknown>): AdminSquadPlayer {
     imageUrl: safeString(row.image_url) || safeString(row.photo_url) || null,
     isActive: row.is_active !== false,
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
   };
 }
 
@@ -65,7 +68,7 @@ export async function getAdminSquad(
 
 export async function saveAdminSquadPlayer(
   client: SupabaseClient, access: AdminAccess,
-  player: { id: string | null; name: string; role: string; number: number; nationality: string; bio: string; imageUrl: string; isActive: boolean },
+  player: { id: string | null; expectedUpdatedAt?: string | null; name: string; role: string; number: number; nationality: string; bio: string; imageUrl: string; isActive: boolean },
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("squad", {
@@ -83,12 +86,14 @@ export async function saveAdminSquadPlayer(
     image_url: player.imageUrl || null, is_active: player.isActive,
   };
   if (player.id) {
-    const { error } = await client
-      .from(table)
-      .update(payload)
-      .eq("club_id", clubId)
-      .eq("id", player.id);
-    if (error) throw new Error(error.message);
+    await mutateRecordWithVariantsIfUnchanged(
+      client,
+      table,
+      player.id,
+      player.expectedUpdatedAt,
+      [payload],
+      { club_id: clubId },
+    );
   } else {
     const { error } = await client.from(table).insert(payload);
     if (error) throw new Error(error.message);
@@ -99,15 +104,28 @@ export async function deleteAdminSquadPlayer(
   client: SupabaseClient,
   access: AdminAccess,
   playerId: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("squad", {
       method: "DELETE",
-      query: { id: playerId },
+      query: { id: playerId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "delete squad players");
   const table = await resolveSquadTable(client);
-  await deleteRecordWithMatchers(client, table, playerId, { club_id: clubId });
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    table,
+    playerId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_squad_player",
+      source: "admin_squad",
+    },
+  );
 }

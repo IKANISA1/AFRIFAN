@@ -66,7 +66,7 @@ class _ShareCardGeneratorScreenState
   Widget build(BuildContext context) {
     final selected = _selected;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -82,7 +82,9 @@ class _ShareCardGeneratorScreenState
           tooltip: 'Back',
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: true,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

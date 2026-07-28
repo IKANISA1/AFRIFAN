@@ -6,11 +6,15 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
 import '../tokens/motion_tokens.dart';
+import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
+import 'afri_motion_widget.dart';
 
 /// Scanner visual tone — drives ring color, glow, and status chip.
 enum AfriScannerTone { searching, ready, blocked, error }
@@ -61,6 +65,7 @@ class _AfriScannerShellState extends State<AfriScannerShell>
   late final AnimationController _pulseController;
   late final AnimationController _flashController;
   int _previousSampleCount = 0;
+  bool _reduceMotion = false;
 
   @override
   void initState() {
@@ -69,14 +74,24 @@ class _AfriScannerShellState extends State<AfriScannerShell>
 
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1600),
+      duration: AfriMotion.scannerPulse,
     );
-    unawaited(_pulseController.repeat(reverse: true));
 
     _flashController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AfriMotion.scannerFlash,
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _reduceMotion = AfriMotion.reduceMotion(context);
+    _syncPulseAnimation();
+    if (_reduceMotion) {
+      _flashController.stop();
+      _flashController.value = 0;
+    }
   }
 
   @override
@@ -86,18 +101,25 @@ class _AfriScannerShellState extends State<AfriScannerShell>
     if (widget.sampleCount > _previousSampleCount &&
         widget.sampleCount <= widget.totalSamples) {
       _previousSampleCount = widget.sampleCount;
-      unawaited(
-        _flashController.forward(from: 0).then((_) {
-          if (mounted) {
-            unawaited(_flashController.reverse());
-          }
-        }),
-      );
+      if (!_reduceMotion) {
+        unawaited(
+          _flashController.forward(from: 0).then((_) {
+            if (mounted) {
+              unawaited(_flashController.reverse());
+            }
+          }),
+        );
+      }
     }
 
+    _syncPulseAnimation();
+  }
+
+  void _syncPulseAnimation() {
     final shouldPulse =
-        widget.tone == AfriScannerTone.searching ||
-        widget.tone == AfriScannerTone.ready;
+        !_reduceMotion &&
+        (widget.tone == AfriScannerTone.searching ||
+            widget.tone == AfriScannerTone.ready);
     if (shouldPulse && !_pulseController.isAnimating) {
       unawaited(_pulseController.repeat(reverse: true));
     } else if (!shouldPulse && _pulseController.isAnimating) {
@@ -237,7 +259,7 @@ class _AfriScannerShellState extends State<AfriScannerShell>
                     style: TypographyTokens.bodySmall().copyWith(
                       color: ColorTokens.onSurface.withValues(alpha: 0.7),
                       fontWeight: FontWeight.w500,
-                      height: 1.5,
+                      height: TypographyTokens.lineHeightRelaxed,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -289,27 +311,19 @@ class _FloatingStatusChip extends StatelessWidget {
             width: BorderTokens.strong,
             opacity: 0.35,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: color.withValues(alpha: 0.15),
-              blurRadius: 20,
-              spreadRadius: 2,
-            ),
-          ],
+          boxShadow: AfriShadows.scannerStatus(color),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 8,
-              height: 8,
+              width: AfriComponentSizes.scannerStatusDot,
+              height: AfriComponentSizes.scannerStatusDot,
               decoration: BoxDecoration(
                 color: color,
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(color: color.withValues(alpha: 0.5), blurRadius: 6),
-                ],
+                boxShadow: AfriShadows.scannerDot(color),
               ),
             ),
             const SizedBox(width: SpacingTokens.spacing3),
@@ -319,7 +333,7 @@ class _FloatingStatusChip extends StatelessWidget {
                 style: TypographyTokens.labelLarge().copyWith(
                   color: ColorTokens.onSurface,
                   fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
+                  letterSpacing: TypographyTokens.trackingNone,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -355,7 +369,9 @@ class _SampleCaptureDots extends StatelessWidget {
         final isFilled = index < sampleCount;
         final isCurrent = index == sampleCount;
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AfriComponentSizes.scannerSampleGap,
+          ),
           child: _CapturedDot(
             key: ValueKey<int>(index),
             isFilled: isFilled,
@@ -385,8 +401,12 @@ class _CapturedDot extends StatelessWidget {
     return AnimatedContainer(
       duration: AfriMotion.quick,
       curve: Curves.easeOut,
-      width: isCurrent ? 28 : 22,
-      height: isCurrent ? 28 : 22,
+      width: isCurrent
+          ? AfriComponentSizes.scannerSampleCurrent
+          : AfriComponentSizes.scannerSampleDefault,
+      height: isCurrent
+          ? AfriComponentSizes.scannerSampleCurrent
+          : AfriComponentSizes.scannerSampleDefault,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: isFilled
@@ -400,32 +420,31 @@ class _CapturedDot extends StatelessWidget {
               : (isCurrent
                     ? color.withValues(alpha: 0.6)
                     : ColorTokens.ghostBorder),
-          width: isCurrent ? 2 : 1.5,
+          width: isCurrent ? BorderTokens.emphasis : BorderTokens.strong,
         ),
         boxShadow: isFilled
-            ? [
-                BoxShadow(
-                  color: ColorTokens.success.withValues(alpha: 0.3),
-                  blurRadius: 8,
-                ),
-              ]
+            ? AfriShadows.scannerCapture(ColorTokens.success)
             : null,
       ),
       child: isFilled
-          ? const Icon(AfriIcons.check, size: 14, color: ColorTokens.success)
-                .animate()
+          ? Icon(
+                  AfriIcons.check,
+                  size: SizeTokens.iconXs,
+                  color: ColorTokens.success,
+                )
+                .afriAnimate(context)
                 .scale(
                   begin: const Offset(0, 0),
                   end: const Offset(1, 1),
-                  duration: 300.ms,
+                  duration: AfriMotion.scannerFlash,
                   curve: Curves.elasticOut,
                 )
-                .fadeIn(duration: 150.ms)
+                .fadeIn(duration: AfriMotion.quick)
           : (isCurrent
                 ? Center(
                     child: Container(
-                      width: 6,
-                      height: 6,
+                      width: AfriComponentSizes.scannerSampleInner,
+                      height: AfriComponentSizes.scannerSampleInner,
                       decoration: BoxDecoration(
                         color: color.withValues(alpha: 0.5),
                         shape: BoxShape.circle,
@@ -461,16 +480,16 @@ class _PrivacyBadge extends StatelessWidget {
         children: [
           Icon(
             AfriIcons.lock,
-            size: 12,
+            size: SizeTokens.iconXxs,
             color: ColorTokens.onSurface.withValues(alpha: 0.45),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: AfriComponentSizes.scannerSampleGap),
           Text(
             'Photo library empty',
             style: TypographyTokens.labelSmall().copyWith(
               color: ColorTokens.onSurface.withValues(alpha: 0.45),
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.3,
+              letterSpacing: TypographyTokens.trackingCompact,
             ),
           ),
         ],
@@ -531,7 +550,10 @@ class _ScannerReticlePainter extends CustomPainter {
         height: rectHeight,
       );
       path.addRRect(
-        RRect.fromRectAndRadius(rectRect, const Radius.circular(24)),
+        RRect.fromRectAndRadius(
+          rectRect,
+          const Radius.circular(ShapeTokens.radiusXl),
+        ),
       );
     }
 
@@ -559,7 +581,10 @@ class _ScannerReticlePainter extends CustomPainter {
       canvas.drawOval(bounds, glowPaint);
     } else {
       canvas.drawRRect(
-        RRect.fromRectAndRadius(bounds, const Radius.circular(24)),
+        RRect.fromRectAndRadius(
+          bounds,
+          const Radius.circular(ShapeTokens.radiusXl),
+        ),
         glowPaint,
       );
     }

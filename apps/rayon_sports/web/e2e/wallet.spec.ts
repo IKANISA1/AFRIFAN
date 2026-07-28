@@ -53,6 +53,10 @@ test("admin wallet operations loads seeded supporters and applies an adjustment"
     browserName === "webkit",
     "WebKit remains flaky on the live admin auth bootstrap path.",
   );
+  test.skip(
+    process.env.ALLOW_LIVE_WALLET_E2E !== "1",
+    "Live wallet mutations require ALLOW_LIVE_WALLET_E2E=1.",
+  );
 
   const serviceClient = createAdminServiceClient();
   if (serviceClient == null) {
@@ -93,13 +97,15 @@ test("admin wallet operations loads seeded supporters and applies an adjustment"
     }
     userId = created.data.user.id;
 
-    const assignment = await serviceClient.from("admin_role_assignments").insert({
-      user_id: userId,
-      role: "club_admin",
-      is_active: true,
-      club_id: CLUB_ID,
-      notes: "temporary playwright wallet verification user",
-    });
+    const assignment = await serviceClient
+      .from("admin_role_assignments")
+      .insert({
+        user_id: userId,
+        role: "club_admin",
+        is_active: true,
+        club_id: CLUB_ID,
+        notes: "temporary playwright wallet verification user",
+      });
     if (assignment.error) {
       throw assignment.error;
     }
@@ -119,7 +125,7 @@ test("admin wallet operations loads seeded supporters and applies an adjustment"
     });
 
     await expect(
-      page.getByRole("heading", { name: /supporter wallet operations/i }),
+      page.getByRole("heading", { name: /supporter points operations/i }),
     ).toBeVisible({ timeout: 20_000 });
 
     const seededRow = page.getByRole("button", {
@@ -140,7 +146,10 @@ test("admin wallet operations loads seeded supporters and applies an adjustment"
     });
   } finally {
     if (userId) {
-      await serviceClient.from("admin_role_assignments").delete().eq("user_id", userId);
+      await serviceClient
+        .from("admin_role_assignments")
+        .delete()
+        .eq("user_id", userId);
       await serviceClient.auth.admin.deleteUser(userId);
     }
   }

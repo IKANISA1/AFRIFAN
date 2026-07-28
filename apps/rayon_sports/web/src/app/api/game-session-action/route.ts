@@ -20,6 +20,7 @@ const allowedActions = new Set([
   "submit_answer",
   "create_session",
   "pair_tv_device",
+  "revoke_tv_device",
   "review_question_draft",
   "list_question_drafts",
   "publish_question_pack",
@@ -117,6 +118,16 @@ function isValidBody(value: unknown): value is GameActionBody {
       typeof body.pairing_code === "string" &&
       body.pairing_code.trim().length > 0 &&
       (body.session_id == null || isUuid(body.session_id))
+    );
+  }
+
+  if (body.action === "revoke_tv_device") {
+    return (
+      typeof body.club_id === "number" &&
+      Number.isFinite(body.club_id) &&
+      isUuid(body.tv_device_id) &&
+      (body.reason == null ||
+        (typeof body.reason === "string" && body.reason.trim().length <= 240))
     );
   }
 

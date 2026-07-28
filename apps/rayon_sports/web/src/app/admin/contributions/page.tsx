@@ -13,6 +13,7 @@ import {
   downloadContributionExcel,
   getAdminContributionSnapshot,
 } from "@/lib/data/admin/contributions";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import { formatCurrency } from "@/lib/utils";
 import type { AdminContributionGroup, AdminContributionSnapshot } from "@/lib/types";
 import { emptyGroupForm, groupToFormState } from "./_components/group-form-state";
@@ -30,7 +31,6 @@ export default function AdminContributionsPage() {
   const [snapshot, setSnapshot] = useState(emptySnapshot);
   const [form, setForm] = useState(emptyGroupForm);
   const [filter, setFilter] = useState("ALL");
-  const [sortMode, setSortMode] = useState("RECENT");
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -76,19 +76,30 @@ export default function AdminContributionsPage() {
     }
     if (
       !confirmAdminDestructiveAction({
+        action: "Remove",
         subject: group.name,
-        detail:
+        scope: `Active club ${access.clubId ?? "not selected"}`,
+        impact:
           "The public initiative and its operational definition will be removed.",
+        undo: "not_available",
       })
     ) {
       return;
     }
 
     try {
-      await deleteAdminContributionGroup(client, access, group.id);
+      await deleteAdminContributionGroup(
+        client,
+        access,
+        group.id,
+        group.updatedAt,
+      );
       await loadMonitor();
       showAdminToast(`${group.name} removed.`, "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await loadMonitor();
+      }
       showAdminToast(
         caught instanceof Error
           ? caught.message
@@ -155,6 +166,13 @@ export default function AdminContributionsPage() {
           client={client}
           access={access}
           onSaved={loadMonitor}
+          onConflict={async () => {
+            await loadMonitor();
+            showAdminToast(
+              "The latest initiative list is loaded. Your draft is retained; review it against the current record before restarting the edit.",
+              "info",
+            );
+          }}
         />
         {loadError && !loading ? (
           <AdminErrorState
@@ -170,8 +188,6 @@ export default function AdminContributionsPage() {
             currencyCode={activeClub?.currencyCode ?? "USD"}
             filter={filter}
             setFilter={setFilter}
-            sortMode={sortMode}
-            setSortMode={setSortMode}
             loading={loading}
             onEdit={beginEdit}
             onDelete={(group) => {

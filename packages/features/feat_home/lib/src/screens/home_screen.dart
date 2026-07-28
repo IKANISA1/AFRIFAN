@@ -14,6 +14,51 @@ import '../widgets/match_strip.dart';
 import '../widgets/quick_actions_grid.dart';
 import '../widgets/stats_row.dart';
 
+const List<ContentBlock> _localHomeContentBlocks = <ContentBlock>[
+  ContentBlock(
+    blockKey: 'local_home_match_score',
+    blockType: 'widget',
+    placementKey: 'home_hero',
+    content: <String, dynamic>{'widget': 'match_score_card'},
+    sortOrder: 1,
+  ),
+  ContentBlock(
+    blockKey: 'local_home_primary_actions',
+    blockType: 'widget',
+    placementKey: 'home_top',
+    content: <String, dynamic>{'widget': 'primary_action_buttons'},
+    sortOrder: 2,
+  ),
+  ContentBlock(
+    blockKey: 'local_home_quick_actions',
+    blockType: 'widget',
+    placementKey: 'home_mid',
+    content: <String, dynamic>{'widget': 'quick_actions_grid'},
+    sortOrder: 3,
+  ),
+  ContentBlock(
+    blockKey: 'local_home_stats',
+    blockType: 'widget',
+    placementKey: 'home_mid',
+    content: <String, dynamic>{'widget': 'stats_row'},
+    sortOrder: 4,
+  ),
+  ContentBlock(
+    blockKey: 'local_home_leaderboard',
+    blockType: 'widget',
+    placementKey: 'home_bottom',
+    content: <String, dynamic>{'widget': 'contributor_leaderboard'},
+    sortOrder: 5,
+  ),
+  ContentBlock(
+    blockKey: 'local_home_latest_intel',
+    blockType: 'widget',
+    placementKey: 'home_bottom',
+    content: <String, dynamic>{'widget': 'latest_intel_section'},
+    sortOrder: 6,
+  ),
+];
+
 /// Home screen — live matches, quick actions, gamification, and club news.
 ///
 /// Uses [HomeFeedNotifier] via Riverpod for async state management instead
@@ -26,15 +71,19 @@ class HomeScreen extends ConsumerWidget {
     final asyncFeed = ref.watch(homeFeedProvider);
     final notifier = ref.read(homeFeedProvider.notifier);
 
-    return Scaffold(
-      body: GradientBackground(
+    return AfriScreenScaffold(
+      showAppBar: false,
+      scrollable: false,
+      constrainContent: false,
+      bottomNavigationAware: true,
+      child: GradientBackground(
         routePath: '/home',
         child: AfriRefreshIndicator(
           onRefresh: () => notifier.refresh(),
           color: ColorTokens.clubAccent,
           child: asyncFeed.when(
             loading: () => _buildLoadingView(context),
-            error: (error, _) => _buildErrorView(context, ref),
+            error: (error, _) => _buildErrorView(context, ref, error),
             data: (snapshot) =>
                 _buildContent(context, ref, snapshot, asyncFeed.isRefreshing),
           ),
@@ -49,7 +98,9 @@ class HomeScreen extends ConsumerWidget {
         parent: AlwaysScrollableScrollPhysics(),
       ),
       slivers: [
-        SliverToBoxAdapter(child: _HomeTopChrome()),
+        const SliverToBoxAdapter(
+          child: _HomeTopChrome(key: ValueKey<String>('home-top-chrome')),
+        ),
         SliverToBoxAdapter(child: _HomeHeroSkeleton()),
         const SliverToBoxAdapter(
           child: Padding(
@@ -60,31 +111,32 @@ class HomeScreen extends ConsumerWidget {
             child: AfriSkeletonList(itemCount: 2),
           ),
         ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: SpacingTokens.spacing20),
-        ),
       ],
     );
   }
 
-  Widget _buildErrorView(BuildContext context, WidgetRef ref) {
+  Widget _buildErrorView(BuildContext context, WidgetRef ref, Object error) {
+    final failureContent = _HomeFailureContent.fromError(error);
     return CustomScrollView(
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
       ),
       slivers: [
-        SliverToBoxAdapter(child: _HomeTopChrome()),
+        const SliverToBoxAdapter(
+          child: _HomeTopChrome(key: ValueKey<String>('home-top-chrome')),
+        ),
         SliverToBoxAdapter(
           child: _HomeHeroStateCard(
-            child: AfriErrorView(
+            child: AfriStateView.error(
               compact: true,
-              message: 'Live club data is temporarily unavailable.',
-              onRetry: () => ref.read(homeFeedProvider.notifier).refresh(),
+              title: failureContent.title,
+              message: failureContent.message,
+              actionLabel: failureContent.actionLabel,
+              onAction: failureContent.actionLabel == null
+                  ? null
+                  : () => ref.read(homeFeedProvider.notifier).refresh(),
             ),
           ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: SpacingTokens.spacing20),
         ),
       ],
     );
@@ -103,10 +155,28 @@ class HomeScreen extends ConsumerWidget {
     final hasStatusMessage = statusMessage != null && statusMessage.isNotEmpty;
 
     // ── Load all placements for home ──
-    final heroBlocks = ref.watch(contentBlocksProvider('home_hero'));
-    final topBlocks = ref.watch(contentBlocksProvider('home_top'));
-    final midBlocks = ref.watch(contentBlocksProvider('home_mid'));
-    final bottomBlocks = ref.watch(contentBlocksProvider('home_bottom'));
+    final featureConfig = ref.watch(featureConfigServiceProvider);
+    final useLocalComposition = !featureConfig.hasConfig;
+    final heroBlocks = _homeBlocksForPlacement(
+      'home_hero',
+      ref.watch(contentBlocksProvider('home_hero')),
+      useLocalComposition: useLocalComposition,
+    );
+    final topBlocks = _homeBlocksForPlacement(
+      'home_top',
+      ref.watch(contentBlocksProvider('home_top')),
+      useLocalComposition: useLocalComposition,
+    );
+    final midBlocks = _homeBlocksForPlacement(
+      'home_mid',
+      ref.watch(contentBlocksProvider('home_mid')),
+      useLocalComposition: useLocalComposition,
+    );
+    final bottomBlocks = _homeBlocksForPlacement(
+      'home_bottom',
+      ref.watch(contentBlocksProvider('home_bottom')),
+      useLocalComposition: useLocalComposition,
+    );
 
     final blocks = [...heroBlocks, ...topBlocks, ...midBlocks, ...bottomBlocks];
 
@@ -115,7 +185,28 @@ class HomeScreen extends ConsumerWidget {
         parent: AlwaysScrollableScrollPhysics(),
       ),
       slivers: [
-        SliverToBoxAdapter(child: _HomeTopChrome()),
+        const SliverToBoxAdapter(
+          child: _HomeTopChrome(key: ValueKey<String>('home-top-chrome')),
+        ),
+        if (isRefreshing)
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                SpacingTokens.screenPadding,
+                SpacingTokens.spacing4,
+                SpacingTokens.screenPadding,
+                0,
+              ),
+              child: AfriStateBanner(
+                icon: AfriIcons.refresh,
+                title: 'Refreshing Home',
+                subtitle:
+                    'Keeping the current matchday, points, and shortcuts visible while updates load.',
+                tone: AfriStateBannerTone.info,
+                compact: true,
+              ),
+            ),
+          ),
         // ── Degraded / partial error banner ──
         if (hasStatusMessage &&
             (snapshot.status == HomeFeedStatus.degraded ||
@@ -142,22 +233,6 @@ class HomeScreen extends ConsumerWidget {
           (block) =>
               _buildBlockRenderer(context, ref, block, snapshot, refreshKey),
         ),
-
-        // ── Refresh indicator skeleton ──
-        if (isRefreshing)
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: SpacingTokens.screenPadding,
-                vertical: SpacingTokens.sectionGap,
-              ),
-              child: AfriSkeletonList(itemCount: 2),
-            ),
-          ),
-
-        const SliverToBoxAdapter(
-          child: SizedBox(height: SpacingTokens.spacing20),
-        ),
       ],
     );
   }
@@ -177,6 +252,17 @@ class HomeScreen extends ConsumerWidget {
         content = _buildHeroSurface(context, ref, snapshot);
         break;
       case 'primary_action_buttons':
+        if (snapshot.heroSlides.isEmpty) {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
+        final fanZoneAccess = ref
+            .watch(featureConfigServiceProvider)
+            .getFeatureAccess('fanzone');
+        if (!fanZoneAccess.isVisible) {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
+        final heroRoute =
+            snapshot.heroSlides.first.route ?? '/fanzone?section=league';
         content = Padding(
           padding: const EdgeInsets.fromLTRB(
             SpacingTokens.screenPadding,
@@ -184,42 +270,16 @@ class HomeScreen extends ConsumerWidget {
             SpacingTokens.screenPadding,
             0,
           ),
-          child: Row(
-            children: [
-              FeatureGate(
-                featureKey: 'fanzone',
-                child: Expanded(
-                  child: AfriButton(
-                    label: 'Fans',
-                    semanticsLabel: 'Fan Zone',
-                    onTap: () => context.go('/fanzone'),
-                    variant: AfriButtonVariant.secondary,
-                  ),
-                ),
-              ),
-              const SizedBox(width: SpacingTokens.listItemGap),
-              FeatureGate(
-                featureKey: 'contributions',
-                child: Expanded(
-                  child: AfriButton(
-                    label: 'Support',
-                    onTap: () => context.go('/fanzone?section=supporters'),
-                    variant: AfriButtonVariant.primary,
-                  ),
-                ),
-              ),
-              const SizedBox(width: SpacingTokens.listItemGap),
-              FeatureGate(
-                featureKey: 'live',
-                child: Expanded(
-                  child: AfriButton(
-                    label: 'Live',
-                    onTap: () => context.push('/fanzone/match/live'),
-                    variant: AfriButtonVariant.secondary,
-                  ),
-                ),
-              ),
-            ],
+          child: AfriButton(
+            label: fanZoneAccess.isAvailable
+                ? 'Open matchday'
+                : 'Matchday unavailable',
+            semanticsLabel: fanZoneAccess.isAvailable
+                ? 'Open matchday in Fan Zone'
+                : 'Matchday in Fan Zone is unavailable',
+            enabled: fanZoneAccess.isAvailable,
+            onTap: () => context.push(heroRoute),
+            variant: AfriButtonVariant.primary,
           ),
         );
         break;
@@ -228,7 +288,11 @@ class HomeScreen extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.screenPadding,
           ),
-          child: QuickActionsGrid(actions: snapshot.quickActions),
+          child: QuickActionsGrid(
+            actions: snapshot.hasQuickActions
+                ? snapshot.quickActions
+                : homeFeedLocalFallbackActions,
+          ),
         );
         break;
       case 'stats_row':
@@ -316,7 +380,7 @@ class HomeScreen extends ConsumerWidget {
     }
 
     return child
-        .animate(delay: delayMs.ms)
+        .afriAnimate(context, delay: delayMs.ms)
         .fadeIn(duration: 400.ms)
         .slideY(begin: 0.04, end: 0, duration: 400.ms);
   }
@@ -343,7 +407,21 @@ class HomeScreen extends ConsumerWidget {
     final slides = snapshot.heroSlides;
 
     if (slides.isEmpty) {
-      return const SizedBox.shrink();
+      return _HomeHeroStateCard(
+        child: Padding(
+          padding: const EdgeInsets.all(SpacingTokens.spacing5),
+          child: AfriStateView.empty(
+            title: 'Matchday',
+            message: snapshot.showFixturePlaceholder
+                ? 'The next fixture will appear here when it is published.'
+                : 'Club fixtures are not available yet.',
+            icon: AfriIcons.league,
+            actionLabel: 'Open Fan Zone',
+            onAction: () => context.go('/fanzone'),
+            compact: true,
+          ),
+        ),
+      );
     }
 
     return Column(
@@ -361,9 +439,9 @@ class HomeScreen extends ConsumerWidget {
             ),
             child: RepaintBoundary(
               child: _animationsEnabled(context)
-                  ? MatchScoreCard(
-                      slides: slides,
-                    ).animate().fadeIn(duration: 500.ms, curve: Curves.easeOut)
+                  ? MatchScoreCard(slides: slides)
+                        .afriAnimate(context)
+                        .fadeIn(duration: 500.ms, curve: Curves.easeOut)
                   : MatchScoreCard(slides: slides),
             ),
           ),
@@ -383,7 +461,23 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
+List<ContentBlock> _homeBlocksForPlacement(
+  String placementKey,
+  List<ContentBlock> configuredBlocks, {
+  required bool useLocalComposition,
+}) {
+  if (!useLocalComposition || configuredBlocks.isNotEmpty) {
+    return configuredBlocks;
+  }
+
+  return _localHomeContentBlocks
+      .where((block) => block.placementKey == placementKey)
+      .toList(growable: false);
+}
+
 class _HomeTopChrome extends StatelessWidget {
+  const _HomeTopChrome({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -398,7 +492,7 @@ class _HomeTopChrome extends StatelessWidget {
         child: AfriTopCommandBar(
           searchHint: 'Find',
           searchSemanticsLabel: 'Search fans, fixtures, wallet',
-          onSearchTap: () => context.go('/fanzone'),
+          onSearchTap: () => context.push('/search'),
           onAvatarTap: () => context.go('/settings'),
           actions: [
             AfriTopCommandAction(
@@ -421,7 +515,7 @@ class _HomeTopChrome extends StatelessWidget {
 class _HomeHeroSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height * 0.333;
+    final height = homeHeroHeight(context);
     return Container(
       height: height,
       decoration: BoxDecoration(
@@ -490,9 +584,9 @@ class _HomeHeroStateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height * 0.333;
+    final height = homeHeroHeight(context);
     return Container(
-      height: height,
+      constraints: BoxConstraints(minHeight: height),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.vertical(
           bottom: Radius.circular(ShapeTokens.radiusXl),
@@ -501,5 +595,45 @@ class _HomeHeroStateCard extends StatelessWidget {
       ),
       child: SafeArea(bottom: false, child: child),
     );
+  }
+}
+
+class _HomeFailureContent {
+  const _HomeFailureContent({
+    required this.title,
+    required this.message,
+    required this.actionLabel,
+  });
+
+  final String title;
+  final String message;
+  final String? actionLabel;
+
+  factory _HomeFailureContent.fromError(Object error) {
+    final failure = HomeFeedFailure.fromError(error);
+    return switch (failure.kind) {
+      HomeFeedFailureKind.permissionDenied => const _HomeFailureContent(
+        title: 'Home access not available',
+        message:
+            'Your account cannot load Home right now. Contact support if this should be available.',
+        actionLabel: null,
+      ),
+      HomeFeedFailureKind.conflict => const _HomeFailureContent(
+        title: 'Home changed',
+        message:
+            'Home data changed while you were viewing it. Refresh to load the current version.',
+        actionLabel: 'Refresh',
+      ),
+      HomeFeedFailureKind.securityTimeout => const _HomeFailureContent(
+        title: 'Home security check timed out',
+        message: 'We could not confirm current Home access. Refresh to retry.',
+        actionLabel: 'Refresh',
+      ),
+      HomeFeedFailureKind.unknown => const _HomeFailureContent(
+        title: 'Home unavailable',
+        message: 'Live club data is temporarily unavailable.',
+        actionLabel: 'Try Again',
+      ),
+    };
   }
 }

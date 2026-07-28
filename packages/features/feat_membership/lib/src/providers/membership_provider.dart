@@ -1,9 +1,56 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
 
 import '../official_membership_tiers.dart';
 import '../widgets/contribution_history.dart';
+
+enum MembershipFailureKind {
+  permissionDenied,
+  conflict,
+  securityTimeout,
+  unknown,
+}
+
+class MembershipFailure implements Exception {
+  const MembershipFailure(this.kind);
+
+  final MembershipFailureKind kind;
+
+  static MembershipFailure fromError(Object error) {
+    if (error is MembershipFailure) {
+      return error;
+    }
+    if (error is TimeoutException) {
+      return const MembershipFailure(MembershipFailureKind.securityTimeout);
+    }
+
+    final normalized = error.toString().toLowerCase();
+    if (normalized.contains('permission') ||
+        normalized.contains('forbidden') ||
+        normalized.contains('unauthorized') ||
+        normalized.contains('row-level security') ||
+        normalized.contains('rls')) {
+      return const MembershipFailure(MembershipFailureKind.permissionDenied);
+    }
+    if (normalized.contains('conflict') ||
+        normalized.contains('changed') ||
+        normalized.contains('stale') ||
+        normalized.contains('revision')) {
+      return const MembershipFailure(MembershipFailureKind.conflict);
+    }
+    return const MembershipFailure(MembershipFailureKind.unknown);
+  }
+
+  @override
+  String toString() => 'MembershipFailure(${kind.name})';
+}
+
+final membershipLoadTimeoutProvider = Provider<Duration>(
+  (ref) => const Duration(seconds: 12),
+);
 
 /// M-3: Read-side snapshot for the MembershipScreen.
 ///
@@ -15,15 +62,24 @@ class MembershipSnapshot {
     required this.membership,
     required this.applications,
     required this.contributions,
+    this.isStale = false,
+    this.recoveryMessage,
   });
 
   final List<Map<String, dynamic>> packages;
   final Map<String, dynamic>? membership;
   final List<Map<String, dynamic>> applications;
   final List<ContributionRecord> contributions;
+  final bool isStale;
+  final String? recoveryMessage;
 
   bool get hasPackages => packages.isNotEmpty;
   bool get hasMembership => membership != null;
+  bool get hasAnyContent =>
+      packages.isNotEmpty ||
+      membership != null ||
+      applications.isNotEmpty ||
+      contributions.isNotEmpty;
 
   Map<String, dynamic>? get latestPendingApplication {
     for (final app in applications) {
@@ -32,11 +88,60 @@ class MembershipSnapshot {
     }
     return null;
   }
+
+  MembershipSnapshot copyWith({
+    List<Map<String, dynamic>>? packages,
+    Map<String, dynamic>? membership,
+    List<Map<String, dynamic>>? applications,
+    List<ContributionRecord>? contributions,
+    bool? isStale,
+    String? recoveryMessage,
+  }) {
+    return MembershipSnapshot(
+      packages: packages ?? this.packages,
+      membership: membership ?? this.membership,
+      applications: applications ?? this.applications,
+      contributions: contributions ?? this.contributions,
+      isStale: isStale ?? this.isStale,
+      recoveryMessage: recoveryMessage ?? this.recoveryMessage,
+    );
+  }
 }
 
 class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
+  MembershipNotifier({Future<MembershipSnapshot> Function()? loadOverride})
+    : _loadOverride = loadOverride;
+
+  final Future<MembershipSnapshot> Function()? _loadOverride;
+  bool _connectivityBound = false;
+  bool _refreshing = false;
+  late bool _wasOnline;
+
   @override
   Future<MembershipSnapshot> build() async {
+    _bindConnectivity();
+    return _load();
+  }
+
+  Future<MembershipSnapshot> _load() async {
+    if (!ConnectivityService.isOnline) {
+      throw StateError('Connect to load membership details.');
+    }
+    try {
+      return await _loadRemote().timeout(
+        ref.read(membershipLoadTimeoutProvider),
+      );
+    } catch (error) {
+      throw MembershipFailure.fromError(error);
+    }
+  }
+
+  Future<MembershipSnapshot> _loadRemote() async {
+    final loadOverride = _loadOverride;
+    if (loadOverride != null) {
+      return loadOverride();
+    }
+
     final client = ref.read(supabaseClientProvider);
     final resolver = ClubScopeResolver(client: client);
     final scope = await resolver.requireResolved();
@@ -95,8 +200,25 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
 
   /// Refresh after a write operation (join, activate, etc.).
   Future<void> refresh() async {
-    state = const AsyncLoading<MembershipSnapshot>();
-    state = await AsyncValue.guard(build);
+    if (_refreshing) return;
+    _refreshing = true;
+    final previous = state.valueOrNull;
+    state = const AsyncLoading<MembershipSnapshot>().copyWithPrevious(state);
+    try {
+      state = AsyncData(await _load());
+    } catch (error, stackTrace) {
+      state = previous != null && previous.hasAnyContent
+          ? AsyncData(
+              previous.copyWith(
+                isStale: true,
+                recoveryMessage:
+                    'Showing saved membership details. Reconnect and refresh before changing membership.',
+              ),
+            )
+          : AsyncError(error, stackTrace);
+    } finally {
+      _refreshing = false;
+    }
   }
 
   Future<List<Map<String, dynamic>>> _loadPackages({
@@ -190,6 +312,42 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
     if (lower == 'confirmed' || lower == 'completed') return 'confirmed';
     if (lower == 'failed' || lower == 'cancelled') return 'failed';
     return 'pending';
+  }
+
+  void _bindConnectivity() {
+    if (_connectivityBound) return;
+    _connectivityBound = true;
+    _wasOnline = ConnectivityService.isOnline;
+    ConnectivityService.onlineNotifier.addListener(_handleConnectivityChange);
+    ref.onDispose(() {
+      ConnectivityService.onlineNotifier.removeListener(
+        _handleConnectivityChange,
+      );
+    });
+  }
+
+  void _handleConnectivityChange() {
+    final isOnline = ConnectivityService.isOnline;
+    final restored = !_wasOnline && isOnline;
+    _wasOnline = isOnline;
+
+    if (!isOnline) {
+      final current = state.valueOrNull;
+      if (current != null && current.hasAnyContent) {
+        state = AsyncData(
+          current.copyWith(
+            isStale: true,
+            recoveryMessage:
+                'Showing saved membership details. Reconnect and refresh before changing membership.',
+          ),
+        );
+      }
+      return;
+    }
+
+    if (restored) {
+      unawaited(refresh());
+    }
   }
 }
 

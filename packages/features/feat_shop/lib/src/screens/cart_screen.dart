@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -11,8 +12,29 @@ import 'package:go_router/go_router.dart';
 import '../shop_cart_provider.dart';
 import '../widgets/cart_item_card.dart';
 
+typedef CartPaymentRouteLoader =
+    Future<PartnerPaymentRoute?> Function(String clubId);
+
+typedef CartOrderPlacer =
+    Future<String> Function({
+      required String userId,
+      required String partnerId,
+      required List<CartItem> items,
+      required String deliveryAddress,
+      required String paymentReference,
+    });
+
 class CartScreen extends ConsumerStatefulWidget {
-  const CartScreen({super.key});
+  const CartScreen({
+    super.key,
+    this.paymentRouteLoader,
+    this.orderPlacer,
+    this.checkoutTimeout = const Duration(seconds: 30),
+  });
+
+  final CartPaymentRouteLoader? paymentRouteLoader;
+  final CartOrderPlacer? orderPlacer;
+  final Duration checkoutTimeout;
 
   @override
   ConsumerState<CartScreen> createState() => _CartScreenState();
@@ -20,10 +42,16 @@ class CartScreen extends ConsumerStatefulWidget {
 
 class _CartScreenState extends ConsumerState<CartScreen> {
   late final TextEditingController _addressController;
+  late final FocusNode _addressFocusNode;
   bool _submitting = false;
+  String? _addressError;
   PartnerPaymentRoute? _paymentRoute;
   String? _paymentRouteMessage;
+  String? _paymentRouteError;
+  bool _paymentRouteLoading = false;
   String? _paymentRouteLookupKey;
+  _CartCheckoutFailure? _checkoutFailure;
+  late bool _wasOnline;
 
   CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
     currencyCode: context.afriCurrencyCode,
@@ -34,12 +62,37 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   void initState() {
     super.initState();
     _addressController = TextEditingController();
+    _addressFocusNode = FocusNode(debugLabel: 'Delivery address');
+    _wasOnline = ConnectivityService.isOnline;
+    ConnectivityService.onlineNotifier.addListener(_handleConnectivityChange);
   }
 
   @override
   void dispose() {
+    ConnectivityService.onlineNotifier.removeListener(
+      _handleConnectivityChange,
+    );
     _addressController.dispose();
+    _addressFocusNode.dispose();
     super.dispose();
+  }
+
+  void _handleConnectivityChange() {
+    final isOnline = ConnectivityService.isOnline;
+    final restored = !_wasOnline && isOnline;
+    _wasOnline = isOnline;
+    if (!mounted) return;
+
+    if (!isOnline) {
+      setState(() {
+        _paymentRouteLoading = false;
+        _paymentRouteError = null;
+        _paymentRouteMessage =
+            'Connect to verify current payment availability.';
+      });
+    } else if (restored) {
+      unawaited(_refreshPaymentRouteState(ref.read(currentUserProvider)));
+    }
   }
 
   void _ensurePaymentRouteState(UserProfile? user) {
@@ -60,25 +113,72 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       if (!mounted || lookupKey != _paymentRouteLookupKey) return;
       setState(() {
         _paymentRoute = null;
+        _paymentRouteLoading = false;
+        _paymentRouteError = null;
         _paymentRouteMessage = null;
       });
       return;
     }
+    if (!ConnectivityService.isOnline) {
+      if (!mounted || lookupKey != _paymentRouteLookupKey) return;
+      setState(() {
+        _paymentRouteLoading = false;
+        _paymentRouteError = null;
+        _paymentRouteMessage =
+            'Connect to verify current payment availability.';
+      });
+      return;
+    }
 
-    final route = await ref
-        .read(clubRepositoryProvider)
-        .findActivePaymentRoute(user.clubId);
-
-    if (!mounted || lookupKey != _paymentRouteLookupKey) return;
     setState(() {
-      _paymentRoute = route;
-      _paymentRouteMessage = route == null
-          ? 'Checkout payment setup is pending club activation.'
-          : null;
+      _paymentRouteLoading = true;
+      _paymentRouteError = null;
+      _paymentRouteMessage = null;
     });
+
+    try {
+      final loader =
+          widget.paymentRouteLoader ??
+          ref.read(clubRepositoryProvider).findActivePaymentRoute;
+      final route = await loader(user.clubId);
+
+      if (!mounted || lookupKey != _paymentRouteLookupKey) return;
+      setState(() {
+        _paymentRoute = route;
+        _paymentRouteError = null;
+        _paymentRouteMessage = route == null
+            ? 'Checkout payment setup is pending club activation.'
+            : null;
+      });
+    } catch (_) {
+      AfriLogger.warn(
+        'CartScreen',
+        'Payment availability could not be checked.',
+      );
+      if (!mounted || lookupKey != _paymentRouteLookupKey) return;
+      setState(() {
+        _paymentRoute = null;
+        _paymentRouteMessage = null;
+        _paymentRouteError =
+            'Payment availability could not be checked. Your cart and address are still here.';
+      });
+    } finally {
+      if (mounted && lookupKey == _paymentRouteLookupKey) {
+        setState(() => _paymentRouteLoading = false);
+      }
+    }
   }
 
   Future<void> _checkout(List<CartItem> items, int total) async {
+    if (_submitting) return;
+    if (!ConnectivityService.isOnline) {
+      AfriToast.error(
+        context,
+        'Connect before checking out. Your cart and address are still here.',
+      );
+      return;
+    }
+
     final user = ref.read(currentUserProvider);
     if (user == null) {
       context.go('/onboarding');
@@ -86,16 +186,26 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
 
     if (_addressController.text.trim().isEmpty) {
-      AfriToast.info(context, 'Enter a delivery address first.');
+      const message = 'Enter a delivery address first.';
+      setState(() => _addressError = message);
+      _addressFocusNode.requestFocus();
+      AfriToast.info(context, message);
       return;
     }
 
-    setState(() => _submitting = true);
+    setState(() {
+      _submitting = true;
+      _addressError = null;
+      _checkoutFailure = null;
+    });
 
     try {
-      final repo = ref.read(clubRepositoryProvider);
+      final repository = widget.orderPlacer == null || _paymentRoute == null
+          ? ref.read(clubRepositoryProvider)
+          : null;
       final route =
-          _paymentRoute ?? await repo.findActivePaymentRoute(user.clubId);
+          _paymentRoute ??
+          await repository!.findActivePaymentRoute(user.clubId);
       if (route == null) {
         if (!mounted) return;
         setState(() {
@@ -117,13 +227,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       if (!confirmed || !mounted) return;
 
       final paymentReference = 'order-${DateTime.now().millisecondsSinceEpoch}';
-      final orderId = await repo.placeOrder(
+      final orderPlacer = widget.orderPlacer ?? repository!.placeOrder;
+      final orderId = await orderPlacer(
         userId: user.id,
         partnerId: user.clubId,
         items: items,
         deliveryAddress: _addressController.text.trim(),
         paymentReference: paymentReference,
-      );
+      ).timeout(widget.checkoutTimeout);
 
       ref.read(shopCartProvider.notifier).clear();
 
@@ -153,8 +264,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       );
       context.go('/shop');
     } catch (error) {
+      final failure = _CartCheckoutFailure.fromError(error);
+      AfriLogger.warn(
+        'CartScreen',
+        'Checkout could not be completed (${failure.kind.name}).',
+      );
       if (!mounted) return;
-      AfriToast.error(context, 'Checkout failed: $error');
+      setState(() {
+        _checkoutFailure = failure;
+      });
     } finally {
       if (mounted) {
         setState(() => _submitting = false);
@@ -171,98 +289,87 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Review order', style: TypographyTokens.headlineSmall()),
-            const SizedBox(height: SpacingTokens.spacing4),
-            AfriSurfaceCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...items
-                      .take(3)
-                      .map(
-                        (item) => Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: SpacingTokens.spacing3,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  '${item.product.name}  x${item.quantity}',
-                                  style: TypographyTokens.bodyMedium(),
-                                ),
-                              ),
-                              Text(
-                                currency.format(item.lineTotal),
-                                style: TypographyTokens.titleSmall(),
-                              ),
-                            ],
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Review order', style: TypographyTokens.headlineSmall()),
+              const SizedBox(height: SpacingTokens.spacing4),
+              AfriSurfaceCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...items
+                        .take(3)
+                        .map(
+                          (item) => Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: SpacingTokens.spacing3,
+                            ),
+                            child: _CartSummaryRow(
+                              label: '${item.product.name}  x${item.quantity}',
+                              value: currency.format(item.lineTotal),
+                              valueStyle: TypographyTokens.titleSmall(),
+                            ),
                           ),
                         ),
-                      ),
-                  if (items.length > 3)
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: SpacingTokens.spacing3,
-                      ),
-                      child: Text(
-                        '+${items.length - 3} more items',
-                        style: TypographyTokens.bodySmall(
-                          ColorTokens.onSurfaceVariant,
+                    if (items.length > 3)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: SpacingTokens.spacing3,
+                        ),
+                        child: Text(
+                          '+${items.length - 3} more items',
+                          style: TypographyTokens.bodySmall(
+                            ColorTokens.onSurfaceVariant,
+                          ),
                         ),
                       ),
-                    ),
-                  const SizedBox(height: SpacingTokens.spacing2),
-                  Text(
-                    'Deliver to',
-                    style: TypographyTokens.labelSmall(
-                      ColorTokens.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing1),
-                  Text(
-                    _addressController.text.trim(),
-                    style: TypographyTokens.bodyMedium(),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Total', style: TypographyTokens.titleMedium()),
-                      Text(
-                        currency.format(total),
-                        style: TypographyTokens.titleLarge(
-                          ColorTokens.clubAccent,
-                        ),
+                    const SizedBox(height: SpacingTokens.spacing2),
+                    Text(
+                      'Deliver to',
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing1),
+                    Text(
+                      _addressController.text.trim(),
+                      style: TypographyTokens.bodyMedium(),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    _CartSummaryRow(
+                      label: 'Total',
+                      value: currency.format(total),
+                      labelStyle: TypographyTokens.titleMedium(),
+                      valueStyle: TypographyTokens.titleLarge(
+                        ColorTokens.clubAccent,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing5),
-            Text(
-              'Approve the MOMO prompt on your device, then confirm here. Orders remain pending until verification is complete.',
-              style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
-            ),
-            const SizedBox(height: SpacingTokens.spacing6),
-            AfriButton(
-              label: 'I submitted the payment',
-              fullWidth: true,
-              onTap: () => context.pop(true),
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            AfriButton(
-              label: 'Back',
-              variant: AfriButtonVariant.outline,
-              fullWidth: true,
-              onTap: () => context.pop(false),
-            ),
-          ],
+              const SizedBox(height: SpacingTokens.spacing5),
+              Text(
+                'Approve the MOMO prompt on your device, then confirm here. Orders remain pending until verification is complete.',
+                style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+              ),
+              const SizedBox(height: SpacingTokens.spacing6),
+              AfriButton(
+                label: 'I submitted the payment',
+                fullWidth: true,
+                onTap: () => Navigator.of(context).pop(true),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriButton(
+                label: 'Back',
+                variant: AfriButtonVariant.outline,
+                fullWidth: true,
+                onTap: () => Navigator.of(context).pop(false),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -278,25 +385,51 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     final deliveryHint = config == null
         ? 'Enter your delivery address'
         : 'Street, city, ${config.country}';
+    final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     _ensurePaymentRouteState(user);
 
     final items = ref.watch(shopCartProvider);
     final total = ref.watch(shopCartTotalProvider);
-    final paymentRouteBlocked = user != null && _paymentRouteMessage != null;
+    final paymentRouteBlocked =
+        user != null &&
+        (_paymentRouteLoading ||
+            _paymentRouteError != null ||
+            _paymentRouteMessage != null);
+    final checkoutHardBlocked =
+        _checkoutFailure?.kind == _CartCheckoutFailureKind.permissionDenied ||
+        _checkoutFailure?.kind == _CartCheckoutFailureKind.securityTimeout;
+    final cartChromeState =
+        '${items.length}:$total:${_paymentRouteLoading
+            ? 'loading'
+            : _paymentRouteError != null
+            ? 'error'
+            : _paymentRouteMessage != null
+            ? 'unavailable'
+            : _paymentRoute != null
+            ? 'ready'
+            : 'idle'}';
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Cart', style: TypographyTokens.headlineSmall()),
+        title: Text(
+          'Cart',
+          key: ValueKey<String>('cart-title-$cartChromeState'),
+          style: usesLargeText
+              ? TypographyTokens.titleLarge()
+              : TypographyTokens.headlineSmall(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
           tooltip: 'Back',
         ),
       ),
-      body: items.isEmpty
+      scrollable: false,
+      child: items.isEmpty
           ? Center(
+              key: const ValueKey('cart-empty-state'),
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing8),
                 child: Column(
@@ -361,61 +494,78 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         const SizedBox(height: SpacingTokens.spacing4),
                         AfriInputField(
                           controller: _addressController,
+                          focusNode: _addressFocusNode,
+                          minLines: 1,
                           maxLines: 2,
-                          hint: deliveryHint,
+                          hint: 'Delivery address',
+                          helperText: deliveryHint,
+                          helperMaxLines: 2,
+                          errorText: _addressError,
+                          autofillHints: const <String>[
+                            AutofillHints.fullStreetAddress,
+                          ],
+                          textInputAction: TextInputAction.done,
+                          onChanged: (_) {
+                            if (_addressError != null ||
+                                (_checkoutFailure != null &&
+                                    !checkoutHardBlocked)) {
+                              setState(() {
+                                _addressError = null;
+                                if (!checkoutHardBlocked) {
+                                  _checkoutFailure = null;
+                                }
+                              });
+                            }
+                          },
                         ),
                         const SizedBox(height: SpacingTokens.spacing6),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Subtotal',
-                              style: TypographyTokens.bodyMedium(
-                                ColorTokens.onSurfaceVariant,
-                              ),
-                            ),
-                            Text(
-                              currency.format(total),
-                              style: TypographyTokens.titleSmall(),
-                            ),
-                          ],
+                        _CartSummaryRow(
+                          label: 'Subtotal',
+                          value: currency.format(total),
+                          labelStyle: TypographyTokens.bodyMedium(
+                            ColorTokens.onSurfaceVariant,
+                          ),
+                          valueStyle: TypographyTokens.titleSmall(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Delivery',
-                              style: TypographyTokens.bodyMedium(
-                                ColorTokens.onSurfaceVariant,
-                              ),
-                            ),
-                            Text(
-                              currency.format(0),
-                              style: TypographyTokens.titleSmall(),
-                            ),
-                          ],
+                        _CartSummaryRow(
+                          label: 'Delivery',
+                          value: currency.format(0),
+                          labelStyle: TypographyTokens.bodyMedium(
+                            ColorTokens.onSurfaceVariant,
+                          ),
+                          valueStyle: TypographyTokens.titleSmall(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Total',
-                              style: TypographyTokens.titleMedium(),
-                            ),
-                            Text(
-                              currency.format(total),
-                              style: TypographyTokens.titleLarge(
-                                ColorTokens.clubAccent,
-                              ),
-                            ),
-                          ],
+                        _CartSummaryRow(
+                          label: 'Total',
+                          value: currency.format(total),
+                          labelStyle: TypographyTokens.titleMedium(),
+                          valueStyle: TypographyTokens.titleLarge(
+                            ColorTokens.clubAccent,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  if (_paymentRouteMessage != null) ...[
+                  if (_paymentRouteLoading) ...[
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    AfriStateView.loading(
+                      title: 'Checking payment',
+                      message:
+                          'Confirming the current MOMO route for this club.',
+                      compact: true,
+                    ),
+                  ] else if (_paymentRouteError != null) ...[
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    AfriStateView.error(
+                      title: 'Payment check failed',
+                      message: _paymentRouteError!,
+                      actionLabel: 'Retry',
+                      onAction: () => _refreshPaymentRouteState(user),
+                      compact: true,
+                    ),
+                  ] else if (_paymentRouteMessage != null) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriStateView.offline(
                       title: 'Checkout unavailable',
@@ -427,7 +577,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     AfriSurfaceCard(
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             AfriIcons.verified,
                             color: ColorTokens.success,
                             size: 20,
@@ -443,22 +593,148 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       ),
                     ),
                   ],
+                  if (_checkoutFailure case final failure?) ...[
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    AfriStateView.error(
+                      key: const ValueKey<String>('cart-checkout-failure'),
+                      title: failure.title,
+                      message: failure.message,
+                      actionLabel: failure.canDismiss ? 'Review cart' : null,
+                      onAction: failure.canDismiss
+                          ? () => setState(() => _checkoutFailure = null)
+                          : null,
+                      compact: true,
+                    ),
+                  ],
                   const SizedBox(height: SpacingTokens.spacing8),
-                  AfriButton(
-                    label: paymentRouteBlocked
-                        ? 'Payment route not ready'
-                        : _submitting
-                        ? 'Processing'
-                        : 'Checkout via MOMO',
-                    fullWidth: true,
-                    isLoading: _submitting,
-                    onTap: () => _checkout(items, total),
-                    enabled: !_submitting && !paymentRouteBlocked,
+                  ConnectivityBuilder(
+                    builder: (context, isOnline) => AfriButton(
+                      label: !isOnline
+                          ? 'Connection required'
+                          : _paymentRouteLoading
+                          ? 'Checking payment'
+                          : _paymentRouteError != null
+                          ? 'Payment check failed'
+                          : paymentRouteBlocked
+                          ? 'Payment route not ready'
+                          : _checkoutFailure?.kind ==
+                                _CartCheckoutFailureKind.permissionDenied
+                          ? 'Checkout not permitted'
+                          : _checkoutFailure?.kind ==
+                                _CartCheckoutFailureKind.securityTimeout
+                          ? 'Status uncertain'
+                          : _submitting
+                          ? 'Processing'
+                          : usesLargeText
+                          ? 'Pay with MOMO'
+                          : 'Checkout via MOMO',
+                      fullWidth: true,
+                      isLoading: _submitting,
+                      onTap: () => _checkout(items, total),
+                      enabled:
+                          isOnline &&
+                          !_submitting &&
+                          !paymentRouteBlocked &&
+                          !checkoutHardBlocked,
+                    ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing10),
                 ],
               ),
             ),
+    );
+  }
+}
+
+enum _CartCheckoutFailureKind {
+  permissionDenied,
+  conflict,
+  securityTimeout,
+  unknown,
+}
+
+class _CartCheckoutFailure {
+  const _CartCheckoutFailure({
+    required this.kind,
+    required this.title,
+    required this.message,
+    required this.canDismiss,
+  });
+
+  final _CartCheckoutFailureKind kind;
+  final String title;
+  final String message;
+  final bool canDismiss;
+
+  factory _CartCheckoutFailure.fromError(Object error) {
+    if (error is TimeoutException) {
+      return const _CartCheckoutFailure(
+        kind: _CartCheckoutFailureKind.securityTimeout,
+        title: 'Order status is uncertain',
+        message:
+            'The secure checkout timed out. Your cart and address are still here. Do not submit again until club support confirms whether the order was saved.',
+        canDismiss: false,
+      );
+    }
+    if (error is OrderConflictException) {
+      return const _CartCheckoutFailure(
+        kind: _CartCheckoutFailureKind.conflict,
+        title: 'Order details changed',
+        message:
+            'The order changed while it was being submitted. Your cart and address are still here. Review them before trying again.',
+        canDismiss: true,
+      );
+    }
+
+    final normalized = error.toString().toLowerCase();
+    if (normalized.contains('permission denied') ||
+        normalized.contains('row-level security') ||
+        normalized.contains('not authorized') ||
+        normalized.contains('unauthorized') ||
+        normalized.contains('forbidden')) {
+      return const _CartCheckoutFailure(
+        kind: _CartCheckoutFailureKind.permissionDenied,
+        title: 'Checkout not permitted',
+        message:
+            'Your account cannot place this order. Your cart and address are still here. Contact club support before trying again.',
+        canDismiss: false,
+      );
+    }
+
+    return const _CartCheckoutFailure(
+      kind: _CartCheckoutFailureKind.unknown,
+      title: 'Checkout could not start',
+      message:
+          'No order was confirmed. Your cart and address are still here. Review them and try again.',
+      canDismiss: true,
+    );
+  }
+}
+
+class _CartSummaryRow extends StatelessWidget {
+  const _CartSummaryRow({
+    required this.label,
+    required this.value,
+    this.labelStyle,
+    this.valueStyle,
+  });
+
+  final String label;
+  final String value;
+  final TextStyle? labelStyle;
+  final TextStyle? valueStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: Text(label, style: labelStyle)),
+        const SizedBox(width: SpacingTokens.spacing3),
+        Flexible(
+          child: Text(value, textAlign: TextAlign.end, style: valueStyle),
+        ),
+      ],
     );
   }
 }

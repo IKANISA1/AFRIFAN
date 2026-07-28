@@ -150,7 +150,7 @@ class _StatComparisonRow extends StatelessWidget {
                 Flexible(
                   flex: (leftPct * 1000).round().clamp(1, 999),
                   child: Container(color: ColorTokens.clubAccent)
-                      .animate(delay: delay.ms)
+                      .afriAnimate(context, delay: delay.ms)
                       .scaleX(
                         begin: 0,
                         end: 1,
@@ -168,7 +168,7 @@ class _StatComparisonRow extends StatelessWidget {
                               alpha: 0.35,
                             ),
                           )
-                          .animate(delay: delay.ms)
+                          .afriAnimate(context, delay: delay.ms)
                           .scaleX(
                             begin: 0,
                             end: 1,

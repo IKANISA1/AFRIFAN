@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import { Landmark, ShieldCheck, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SiteChromeCopy } from "@/lib/site-copy";
-import { ui } from "@/ui-kit";
-
 import { PlatformFeature } from "@/lib/feature-config";
 
 const BASE_TABS = [

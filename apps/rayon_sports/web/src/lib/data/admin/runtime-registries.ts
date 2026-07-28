@@ -15,14 +15,14 @@ import type {
 } from "@/lib/types";
 import { requestAdminApi } from "./http";
 import {
-  deleteRecordWithMatchers,
-  mutateRecordWithVariants,
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
   requireAdminClubId,
   safeNumber,
   safeString,
 } from "./helpers";
 
-const scopedRuntimeTables = [
+const _scopedRuntimeTables = [
   "platform_route_registry",
   "platform_option_sets",
   "runtime_copy",
@@ -31,7 +31,7 @@ const scopedRuntimeTables = [
   "venue_governance_controls",
 ] as const;
 
-type ScopedRuntimeTable = (typeof scopedRuntimeTables)[number];
+type ScopedRuntimeTable = (typeof _scopedRuntimeTables)[number];
 
 function toRecord(value: unknown): Record<string, unknown> {
   return value != null && typeof value === "object" && !Array.isArray(value)
@@ -301,10 +301,11 @@ async function saveScopedRecord(
     action,
   );
 
-  return mutateRecordWithVariants(
+  return mutateRecordWithVariantsIfUnchanged(
     client,
     table,
     id,
+    safeString(input.expectedUpdatedAt) || null,
     [{ ...payload, club_id: clubId }],
     scopedMatchers(access, action),
   );
@@ -315,13 +316,22 @@ async function deleteScopedRecord(
   access: AdminAccess,
   table: ScopedRuntimeTable,
   id: string,
+  expectedUpdatedAt: string,
   action: string,
 ) {
-  await deleteRecordWithMatchers(
+  const matchers = scopedMatchers(access, action);
+  await deleteAdminRecordWithAuditIfUnchanged(
     client,
     table,
     id,
-    scopedMatchers(access, action),
+    expectedUpdatedAt,
+    matchers,
+    {
+      actorId: access.userId,
+      clubId: access.clubId,
+      action: action.replaceAll(" ", "_"),
+      source: "admin_runtime_registries",
+    },
   );
 }
 
@@ -373,14 +383,15 @@ export async function deleteAdminPlatformRoute(
   client: SupabaseClient,
   access: AdminAccess,
   id: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<{ success: true }>("runtime-routes", {
       method: "DELETE",
-      query: { id },
+      query: { id, expected_updated_at: expectedUpdatedAt },
     });
   }
-  await deleteScopedRecord(client, access, "platform_route_registry", id, "delete runtime route");
+  await deleteScopedRecord(client, access, "platform_route_registry", id, expectedUpdatedAt, "delete runtime route");
 }
 
 export async function saveAdminPlatformOptionSet(
@@ -417,14 +428,15 @@ export async function deleteAdminPlatformOptionSet(
   client: SupabaseClient,
   access: AdminAccess,
   id: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<{ success: true }>("runtime-option-sets", {
       method: "DELETE",
-      query: { id },
+      query: { id, expected_updated_at: expectedUpdatedAt },
     });
   }
-  await deleteScopedRecord(client, access, "platform_option_sets", id, "delete option set");
+  await deleteScopedRecord(client, access, "platform_option_sets", id, expectedUpdatedAt, "delete option set");
 }
 
 async function ensureOptionSetWriteAccess(
@@ -469,10 +481,13 @@ export async function saveAdminPlatformOptionValue(
   const optionSetId = required(input.optionSetId, "Option set");
   await ensureOptionSetWriteAccess(client, access, optionSetId);
 
-  return mutateRecordWithVariants(
+  return mutateRecordWithVariantsIfUnchanged(
     client,
     "platform_option_values",
     safeString(input.id) || null,
+    safeString(
+      (input as unknown as Record<string, unknown>).expectedUpdatedAt,
+    ) || null,
     [
       {
         option_set_id: optionSetId,
@@ -492,11 +507,12 @@ export async function deleteAdminPlatformOptionValue(
   client: SupabaseClient,
   access: AdminAccess,
   id: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<{ success: true }>("runtime-option-values", {
       method: "DELETE",
-      query: { id },
+      query: { id, expected_updated_at: expectedUpdatedAt },
     });
   }
 
@@ -510,7 +526,19 @@ export async function deleteAdminPlatformOptionValue(
   }
   const optionSetId = safeString((data as Record<string, unknown> | null)?.option_set_id);
   await ensureOptionSetWriteAccess(client, access, optionSetId);
-  await deleteRecordWithMatchers(client, "platform_option_values", id);
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    "platform_option_values",
+    id,
+    expectedUpdatedAt,
+    {},
+    {
+      actorId: access.userId,
+      clubId: access.clubId,
+      action: "delete_option_value",
+      source: "admin_runtime_registries",
+    },
+  );
 }
 
 export async function saveAdminRuntimeCopyEntry(
@@ -547,14 +575,15 @@ export async function deleteAdminRuntimeCopyEntry(
   client: SupabaseClient,
   access: AdminAccess,
   id: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<{ success: true }>("runtime-copy", {
       method: "DELETE",
-      query: { id },
+      query: { id, expected_updated_at: expectedUpdatedAt },
     });
   }
-  await deleteScopedRecord(client, access, "runtime_copy", id, "delete runtime copy");
+  await deleteScopedRecord(client, access, "runtime_copy", id, expectedUpdatedAt, "delete runtime copy");
 }
 
 export async function saveAdminSiteNavigationItem(
@@ -593,14 +622,15 @@ export async function deleteAdminSiteNavigationItem(
   client: SupabaseClient,
   access: AdminAccess,
   id: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<{ success: true }>("runtime-navigation", {
       method: "DELETE",
-      query: { id },
+      query: { id, expected_updated_at: expectedUpdatedAt },
     });
   }
-  await deleteScopedRecord(client, access, "site_navigation_items", id, "delete navigation item");
+  await deleteScopedRecord(client, access, "site_navigation_items", id, expectedUpdatedAt, "delete navigation item");
 }
 
 export async function saveAdminSiteSearchItem(
@@ -641,14 +671,15 @@ export async function deleteAdminSiteSearchItem(
   client: SupabaseClient,
   access: AdminAccess,
   id: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<{ success: true }>("runtime-search", {
       method: "DELETE",
-      query: { id },
+      query: { id, expected_updated_at: expectedUpdatedAt },
     });
   }
-  await deleteScopedRecord(client, access, "site_search_items", id, "delete search item");
+  await deleteScopedRecord(client, access, "site_search_items", id, expectedUpdatedAt, "delete search item");
 }
 
 export async function saveAdminVenueGovernanceControl(
@@ -688,11 +719,12 @@ export async function deleteAdminVenueGovernanceControl(
   client: SupabaseClient,
   access: AdminAccess,
   id: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<{ success: true }>("runtime-venue-controls", {
       method: "DELETE",
-      query: { id },
+      query: { id, expected_updated_at: expectedUpdatedAt },
     });
   }
   await deleteScopedRecord(
@@ -700,6 +732,7 @@ export async function deleteAdminVenueGovernanceControl(
     access,
     "venue_governance_controls",
     id,
+    expectedUpdatedAt,
     "delete venue control",
   );
 }

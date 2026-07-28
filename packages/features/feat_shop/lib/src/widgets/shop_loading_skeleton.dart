@@ -10,6 +10,21 @@ class ShopLoadingSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final reduceMotion = AfriMotion.reduceMotion(context);
+
+    Widget shimmer(Widget child, {Duration delay = Duration.zero}) {
+      if (reduceMotion) {
+        return child;
+      }
+      return child
+          .afriAnimate(context, onPlay: (controller) => controller.repeat())
+          .shimmer(
+            duration: AfriMotion.rewardReveal,
+            delay: delay,
+            color: ColorTokens.surfaceContainerHigh,
+          );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
       child: Column(
@@ -19,53 +34,40 @@ class ShopLoadingSkeleton extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                      height: 220,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: ColorTokens.surfaceContainerLow,
-                        borderRadius: ShapeTokens.cardRadius,
-                      ),
-                    )
-                    .animate(onPlay: (c) => c.repeat())
-                    .shimmer(
-                      duration: 1200.ms,
-                      color: ColorTokens.surfaceContainerHigh,
+                shimmer(
+                  Container(
+                    height: 220,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: ColorTokens.surfaceContainerLow,
+                      borderRadius: ShapeTokens.cardRadius,
                     ),
+                  ),
+                ),
                 const SizedBox(height: SpacingTokens.spacing3),
-                Container(
-                      height: 22,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        color: ColorTokens.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(
-                          ShapeTokens.radiusSm,
-                        ),
-                      ),
-                    )
-                    .animate(onPlay: (c) => c.repeat())
-                    .shimmer(
-                      duration: 1200.ms,
-                      delay: 100.ms,
-                      color: ColorTokens.surfaceContainerHigh,
+                shimmer(
+                  Container(
+                    height: 22,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      color: ColorTokens.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
                     ),
+                  ),
+                  delay: AfriMotion.staggerCompact,
+                ),
                 const SizedBox(height: SpacingTokens.spacing2),
-                Container(
-                      height: 18,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        color: ColorTokens.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(
-                          ShapeTokens.radiusSm,
-                        ),
-                      ),
-                    )
-                    .animate(onPlay: (c) => c.repeat())
-                    .shimmer(
-                      duration: 1200.ms,
-                      delay: 200.ms,
-                      color: ColorTokens.surfaceContainerHigh,
+                shimmer(
+                  Container(
+                    height: 18,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color: ColorTokens.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
                     ),
+                  ),
+                  delay: AfriMotion.staggerStandard,
+                ),
               ],
             ),
           );

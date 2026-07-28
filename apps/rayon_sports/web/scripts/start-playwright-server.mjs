@@ -6,9 +6,20 @@ const appPort = Number(process.argv[2] ?? 3200);
 const readyPort = Number(process.argv[3] ?? 3201);
 const root = resolve(process.cwd());
 const nextBin = resolve(root, "node_modules/next/dist/bin/next");
-const ensureArtifacts = resolve(root, "scripts/ensure-next-build-artifacts.mjs");
-const fixRouteGroupManifests = resolve(root, "scripts/fix-route-group-manifests.mjs");
-const warmupPaths = ["/manifest.webmanifest", "/admin", "/offline", "/admin/matches"];
+const ensureArtifacts = resolve(
+  root,
+  "scripts/ensure-next-build-artifacts.mjs",
+);
+const fixRouteGroupManifests = resolve(
+  root,
+  "scripts/fix-route-group-manifests.mjs",
+);
+const warmupPaths = [
+  "/manifest.webmanifest",
+  "/admin",
+  "/offline",
+  "/admin/matches",
+];
 
 let ready = false;
 let shuttingDown = false;
@@ -104,6 +115,7 @@ const child = spawn(
     cwd: root,
     env: process.env,
     stdio: "inherit",
+    detached: true,
   },
 );
 
@@ -129,7 +141,11 @@ function shutdown(signal) {
   log(`received ${signal}, stopping Next server`);
 
   if (!childExited) {
-    child.kill(signal);
+    try {
+      process.kill(-child.pid, signal);
+    } catch {
+      child.kill(signal);
+    }
   }
 
   readyServer.close(() => {
@@ -137,6 +153,18 @@ function shutdown(signal) {
       process.exit(0);
     }
   });
+
+  const forcedExit = globalThis.setTimeout(() => {
+    if (!childExited) {
+      try {
+        process.kill(-child.pid, "SIGKILL");
+      } catch {
+        child.kill("SIGKILL");
+      }
+    }
+    process.exit(0);
+  }, 5_000);
+  forcedExit.unref();
 }
 
 process.on("SIGINT", () => shutdown("SIGINT"));

@@ -4,7 +4,6 @@ import { Camera, Globe, LucideIcon, Music2, Send } from "lucide-react";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
 import type { SiteNavigationItem } from "@/lib/feature-config";
-import { ui } from "@/ui-kit";
 
 const socialIconMap: Record<string, LucideIcon> = {
   facebook: Globe,
@@ -46,7 +45,7 @@ function groupFooterNavigation(items: SiteNavigationItem[]) {
 
 export function SiteFooter({
   club,
-  copy,
+  copy: _copy,
   navigationItems = [],
 }: SiteFooterProps) {
   const socialLinks = [

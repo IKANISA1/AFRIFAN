@@ -95,6 +95,11 @@ import {
   deleteAdminSiteSearchItem,
   deleteAdminVenueGovernanceControl,
 } from "@/lib/data/admin";
+import { AdminMutationConflictError } from "@/lib/data/admin/helpers";
+import {
+  getAdminDestructivePermission,
+  getAdminDestructiveRouteContract,
+} from "@/lib/admin-destructive-actions";
 import {
   rejectInsecureMutation,
   rejectRateLimitedRequest,
@@ -179,7 +184,11 @@ function missingIdResponse() {
 }
 
 function withScopedFeatureGuard(
-  access: { clubId: string | null; isAuthenticated: boolean; role: string | null },
+  access: {
+    clubId: string | null;
+    isAuthenticated: boolean;
+    role: string | null;
+  },
   featureKey: string,
   handler: () => Promise<NextResponse>,
 ) {
@@ -382,7 +391,9 @@ export async function GET(
         );
     }
   } catch (error) {
-    const resource = await context.params.then((p) => p.resource).catch(() => "unknown");
+    const resource = await context.params
+      .then((p) => p.resource)
+      .catch(() => "unknown");
     console.error(`[admin-api] GET /${resource} failed:`, error);
     return NextResponse.json(
       {
@@ -546,7 +557,11 @@ export async function POST(
         });
       case "predictions-markets":
         return NextResponse.json({
-          data: await saveAdminPredictionMarket(adminClient, access, body as never),
+          data: await saveAdminPredictionMarket(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "predictions-competitions":
         return NextResponse.json({
@@ -582,35 +597,67 @@ export async function POST(
         );
       case "livescore-sources":
         return NextResponse.json({
-          data: await saveAdminLiveScoreCompetitionSource(adminClient, access, body as never),
+          data: await saveAdminLiveScoreCompetitionSource(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "runtime-routes":
         return NextResponse.json({
-          data: await saveAdminPlatformRoute(adminClient, access, body as never),
+          data: await saveAdminPlatformRoute(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "runtime-option-sets":
         return NextResponse.json({
-          data: await saveAdminPlatformOptionSet(adminClient, access, body as never),
+          data: await saveAdminPlatformOptionSet(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "runtime-option-values":
         return NextResponse.json({
-          data: await saveAdminPlatformOptionValue(adminClient, access, body as never),
+          data: await saveAdminPlatformOptionValue(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "runtime-copy":
         return NextResponse.json({
-          data: await saveAdminRuntimeCopyEntry(adminClient, access, body as never),
+          data: await saveAdminRuntimeCopyEntry(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "runtime-navigation":
         return NextResponse.json({
-          data: await saveAdminSiteNavigationItem(adminClient, access, body as never),
+          data: await saveAdminSiteNavigationItem(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "runtime-search":
         return NextResponse.json({
-          data: await saveAdminSiteSearchItem(adminClient, access, body as never),
+          data: await saveAdminSiteSearchItem(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "runtime-venue-controls":
         return NextResponse.json({
-          data: await saveAdminVenueGovernanceControl(adminClient, access, body as never),
+          data: await saveAdminVenueGovernanceControl(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       default:
         return NextResponse.json(
@@ -621,6 +668,15 @@ export async function POST(
         );
     }
   } catch (error) {
+    if (error instanceof AdminMutationConflictError) {
+      return NextResponse.json(
+        {
+          code: "STALE_RECORD",
+          error: error.message,
+        },
+        { status: 409 },
+      );
+    }
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Admin request failed.",
@@ -658,10 +714,32 @@ export async function DELETE(
     const { access, adminClient } = requestContext;
     const { resource } = await context.params;
     const id = request.nextUrl.searchParams.get("id");
+    const expectedUpdatedAt = request.nextUrl.searchParams.get(
+      "expected_updated_at",
+    );
 
     if (requiresPlatformAdmin(resource) && !access.isSuperAdmin) {
       return NextResponse.json(
         { error: "Platform admin access is required." },
+        { status: 403 },
+      );
+    }
+
+    const destructiveContract =
+      getAdminDestructiveRouteContract(resource);
+    if (destructiveContract == null) {
+      return NextResponse.json(
+        { error: "Unknown admin resource." },
+        { status: 404 },
+      );
+    }
+    const destructivePermission = getAdminDestructivePermission(
+      access,
+      destructiveContract,
+    );
+    if (!destructivePermission.allowed) {
+      return NextResponse.json(
+        { error: destructivePermission.reason },
         { status: 403 },
       );
     }
@@ -675,64 +753,164 @@ export async function DELETE(
         await revokeAdminRole(requestContext.serverClient, access, id);
         break;
       case "matches":
-        await deleteAdminMatch(adminClient, access, id);
+        await deleteAdminMatch(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "cms":
-        await deleteAdminArticle(adminClient, access, id);
+        await deleteAdminArticle(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "cms-config":
-        await deleteAdminConfigEntry(adminClient, access, id);
+        await deleteAdminConfigEntry(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "cms-content":
-        await deleteAdminContentBlock(adminClient, access, id);
+        await deleteAdminContentBlock(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "membership":
-        await deleteAdminMembershipPackage(adminClient, access, id);
+        await deleteAdminMembershipPackage(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "shop":
-        await deleteAdminProduct(adminClient, access, id);
+        await deleteAdminProduct(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "fan-clubs":
-        await deleteAdminFanClub(adminClient, access, id);
+        await deleteAdminFanClub(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "standings":
-        await deleteAdminStandingRow(adminClient, access, id);
+        await deleteAdminStandingRow(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "contributions":
-        await deleteAdminContributionGroup(adminClient, access, id);
+        await deleteAdminContributionGroup(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "squad":
-        await deleteAdminSquadPlayer(adminClient, access, id);
+        await deleteAdminSquadPlayer(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "gamification":
-        await deleteAdminFanEngagementToken(adminClient, access, id);
+        await deleteAdminFanEngagementToken(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "offers":
-        await deleteAdminOffer(adminClient, access, id);
+        await deleteAdminOffer(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "livescore-sources":
-        await deleteAdminLiveScoreCompetitionSource(adminClient, access, id);
+        await deleteAdminLiveScoreCompetitionSource(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "runtime-routes":
-        await deleteAdminPlatformRoute(adminClient, access, id);
+        await deleteAdminPlatformRoute(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "runtime-option-sets":
-        await deleteAdminPlatformOptionSet(adminClient, access, id);
+        await deleteAdminPlatformOptionSet(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "runtime-option-values":
-        await deleteAdminPlatformOptionValue(adminClient, access, id);
+        await deleteAdminPlatformOptionValue(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "runtime-copy":
-        await deleteAdminRuntimeCopyEntry(adminClient, access, id);
+        await deleteAdminRuntimeCopyEntry(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "runtime-navigation":
-        await deleteAdminSiteNavigationItem(adminClient, access, id);
+        await deleteAdminSiteNavigationItem(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "runtime-search":
-        await deleteAdminSiteSearchItem(adminClient, access, id);
+        await deleteAdminSiteSearchItem(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       case "runtime-venue-controls":
-        await deleteAdminVenueGovernanceControl(adminClient, access, id);
+        await deleteAdminVenueGovernanceControl(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
         break;
       default:
         return NextResponse.json(
@@ -745,6 +923,15 @@ export async function DELETE(
 
     return NextResponse.json({ data: { success: true } });
   } catch (error) {
+    if (error instanceof AdminMutationConflictError) {
+      return NextResponse.json(
+        {
+          code: "STALE_RECORD",
+          error: error.message,
+        },
+        { status: 409 },
+      );
+    }
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Admin request failed.",

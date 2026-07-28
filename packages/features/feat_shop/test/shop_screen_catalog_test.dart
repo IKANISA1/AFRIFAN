@@ -1,6 +1,8 @@
+import 'package:core_theme/core_theme.dart';
 import 'package:feat_shop/src/screens/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:test_support/touch_target_audit.dart';
 
 void main() {
   group('ShopCatalogSlivers', () {
@@ -98,6 +100,83 @@ void main() {
       expect(find.text('Club store'), findsOneWidget);
       expect(find.text('Home Jersey'), findsOneWidget);
       expect(find.text('No products found'), findsNothing);
+      expectTapTargetsMeetMinimum(tester);
+    });
+
+    testWidgets('keeps cached products visible with an explicit stale label', (
+      tester,
+    ) async {
+      final products = [
+        {
+          'id': 'jersey-home',
+          'name': 'Home Jersey',
+          'category': 'Jerseys',
+          'price': 25000,
+        },
+      ];
+
+      await tester.pumpWidget(
+        _CatalogHarness(
+          child: ShopCatalogSlivers(
+            isLoading: false,
+            isStale: true,
+            error: null,
+            products: products,
+            filteredProducts: products,
+            categories: const ['All', 'Jerseys'],
+            selectedCategory: 'All',
+            onCategorySelected: (_) {},
+            onRetry: () {},
+            onProductTap: (_) {},
+            onAddToCart: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('Home Jersey'), findsOneWidget);
+      expect(find.text('Saved store content'), findsOneWidget);
+      expect(
+        find.text(
+          'Inventory may be out of date. '
+          'Reconnect to refresh before checkout.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('keeps cached products visible during a slow refresh', (
+      tester,
+    ) async {
+      final products = [
+        {
+          'id': 'jersey-home',
+          'name': 'Home Jersey',
+          'category': 'Jerseys',
+          'price': 25000,
+        },
+      ];
+
+      await tester.pumpWidget(
+        _CatalogHarness(
+          child: ShopCatalogSlivers(
+            isLoading: false,
+            isRefreshing: true,
+            error: null,
+            products: products,
+            filteredProducts: products,
+            categories: const ['All', 'Jerseys'],
+            selectedCategory: 'All',
+            onCategorySelected: (_) {},
+            onRetry: () {},
+            onProductTap: (_) {},
+            onAddToCart: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('Home Jersey'), findsOneWidget);
+      expect(find.text('Refreshing store'), findsOneWidget);
+      expect(find.text('Current inventory is being checked.'), findsOneWidget);
     });
   });
 }
@@ -110,6 +189,7 @@ class _CatalogHarness extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ClubTheme.from(ClubConfig.fallback()),
       home: Scaffold(body: CustomScrollView(slivers: [child])),
     );
   }

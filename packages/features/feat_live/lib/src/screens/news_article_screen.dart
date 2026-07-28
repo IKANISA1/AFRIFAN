@@ -107,15 +107,24 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
     final subtitle = article?['subtitle']?.toString() ?? 'Club News';
     final category = article?['category']?.toString() ?? 'CLUB NEWS';
     final imageUrl = article?['image_url']?.toString();
+    final imageProvenanceId =
+        article?['image_provenance_id']?.toString().trim() ?? '';
+    final imageRightsApproved =
+        article?['image_rights_approved'] == true &&
+        imageProvenanceId.isNotEmpty;
     final content =
         article?['body']?.toString() ??
         article?['content']?.toString() ??
         subtitle;
     final createdAt = article?['created_at']?.toString() ?? '';
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: _loading
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: false,
+      child: _loading
           ? const SafeArea(
               child: Padding(
                 padding: EdgeInsets.all(SpacingTokens.spacing6),
@@ -159,11 +168,18 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                         ? Stack(
                             fit: StackFit.expand,
                             children: [
-                              Image.network(
-                                imageUrl,
+                              AfriGovernedCachedImage(
+                                imageUrl: imageUrl,
+                                semanticLabel: '$title article image',
+                                provenanceId: imageProvenanceId.isEmpty
+                                    ? 'news:${widget.articleId}:unapproved'
+                                    : imageProvenanceId,
+                                rightsApproved: imageRightsApproved,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) =>
-                                    _ArticleHeroFallback(category: category),
+                                borderRadius: 0,
+                                errorFallback: _ArticleHeroFallback(
+                                  category: category,
+                                ),
                               ),
                               Container(
                                 decoration: BoxDecoration(

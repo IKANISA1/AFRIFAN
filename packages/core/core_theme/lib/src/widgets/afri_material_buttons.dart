@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
@@ -47,6 +48,7 @@ class AfriTextButton extends StatelessWidget {
       foregroundColor: ColorTokens.chromeForeground,
       disabledForegroundColor: ColorTokens.onSurfaceVariant,
       textStyle: TypographyTokens.labelLarge(),
+      minimumSize: const Size(0, SizeTokens.touchTargetMin),
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing4,
         vertical: SpacingTokens.spacing3,
@@ -128,7 +130,7 @@ class AfriOutlinedButton extends StatelessWidget {
       disabledForegroundColor: ColorTokens.onSurfaceVariant,
       side: BorderTokens.side(color: ColorTokens.chromeBorder),
       textStyle: TypographyTokens.labelLarge(),
-      minimumSize: const Size(0, 44),
+      minimumSize: const Size(0, SizeTokens.touchTargetMin),
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing4,
         vertical: SpacingTokens.spacing3,
@@ -211,7 +213,7 @@ class AfriElevatedButton extends StatelessWidget {
       disabledBackgroundColor: ColorTokens.surfaceContainerHigh,
       disabledForegroundColor: ColorTokens.onSurfaceVariant,
       textStyle: TypographyTokens.labelLarge(),
-      minimumSize: const Size(0, 44),
+      minimumSize: const Size(0, SizeTokens.touchTargetMin),
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing5,
         vertical: SpacingTokens.spacing3,

@@ -39,8 +39,8 @@ class _AfriDeferredRouteLoaderState extends State<AfriDeferredRouteLoader> {
         }
 
         return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 150),
-          switchInCurve: Curves.easeOutCubic,
+          duration: AfriMotion.resolve(context, AfriMotion.quick),
+          switchInCurve: AfriMotion.enterCurve,
           child: Builder(
             key: const ValueKey('loaded'),
             builder: widget.builder,
@@ -56,19 +56,19 @@ class _AfriDeferredRouteLoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: const SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            SpacingTokens.screenPadding,
-            SpacingTokens.spacing6,
-            SpacingTokens.screenPadding,
-            SpacingTokens.spacing10,
-          ),
-          child: AfriSkeletonList(itemCount: 4),
+      showAppBar: false,
+      scrollable: false,
+      constrainContent: true,
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(
+          SpacingTokens.screenPadding,
+          SpacingTokens.spacing6,
+          SpacingTokens.screenPadding,
+          SpacingTokens.spacing10,
         ),
+        child: AfriSkeletonList(itemCount: 4),
       ),
     );
   }
@@ -81,17 +81,18 @@ class _AfriDeferredRouteErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-            child: AfriStateView.error(
-              title: 'Screen failed to load',
-              message: error?.toString() ?? 'Please try again.',
-              compact: true,
-            ),
+      showAppBar: false,
+      scrollable: false,
+      constrainContent: true,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+          child: AfriStateView.error(
+            title: 'Screen failed to load',
+            message: error?.toString() ?? 'Please try again.',
+            compact: true,
           ),
         ),
       ),

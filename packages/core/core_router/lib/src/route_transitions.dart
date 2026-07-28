@@ -24,7 +24,7 @@ Page<T> afriRoutePage<T>(
     reverseTransitionDuration: reverseTransitionDuration,
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      final reduceMotion = MediaQuery.disableAnimationsOf(context);
+      final reduceMotion = AfriMotion.reduceMotion(context);
       if (reduceMotion) {
         return child;
       }
@@ -77,7 +77,7 @@ Page<T> afriSheetPage<T>(
       child: child,
     ),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      final reduceMotion = MediaQuery.disableAnimationsOf(context);
+      final reduceMotion = AfriMotion.reduceMotion(context);
       if (reduceMotion) {
         return child;
       }

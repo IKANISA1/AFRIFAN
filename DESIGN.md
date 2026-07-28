@@ -218,6 +218,90 @@ Secondary color gates:
 - Letter spacing is `0` unless a platform text style requires otherwise.
 - Do not scale font size with viewport width. Use responsive layout, wrapping, truncation, or alternate component density.
 
+#### Lovelies Typography Profile
+
+Applicability: Lovelies consumer Flutter and web surfaces under
+`/Volumes/PRO-G40/MEMORIES`. This profile specializes the universal typography
+tokens without importing COOL-specific applicability or finance-specific
+visual language into Lovelies.
+
+Primary family: Inter 4.1, packaged and self-hosted from the official Inter
+release. Inter is selected because it was designed for computer screens, has a
+tall x-height, includes tabular numbers and disambiguation features, supports a
+complete interface weight range, is available under the SIL Open Font License
+1.1, and already matches the declared Lovelies web family. Its neutral
+neo-grotesque construction lets photography remain the visual subject.
+
+Lovelies uses one text family. The image wordmark remains a brand asset and is
+not evidence of a second reusable text family. Unsupported scripts fall back to
+the platform UI and Noto families without changing semantic hierarchy.
+
+| Token | Size | Weight | Line height | Tracking | Required use |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `type.display` | 40 | 700 | 44 | 0 | One true hero or first-viewport value. |
+| `type.title.lg` | 24 | 700 | 30 | 0 | Screen title or major section. |
+| `type.title.md` | 18 | 600 | 24 | 0 | Section title, sheet title, or card-group heading. |
+| `type.title.sm` | 15 | 600 | 20 | Compact title or emphasized row heading. |
+| `type.body.lg` | 17 | 400 | 25 | Primary reading text and important instructions. |
+| `type.body.md` | 15 | 400 | 22 | Default interface copy. |
+| `type.body.sm` | 13 | 400 | 19 | Supporting copy that still passes contrast and large-text checks. |
+| `type.label.lg` | 15 | 600 | 20 | Primary controls, tabs, and prominent chips. |
+| `type.label.md` | 13 | 600 | 18 | Secondary controls, metadata labels, and badges. |
+| `type.label.sm` | 11 | 500 | 16 | Tertiary metadata only; never essential long-form copy. |
+| `type.number.lg` | 32 | 700 | 36 | Hero count, metric, or high-value numeric result. |
+| `type.number.md` | 20 | 600 | 24 | OTP timer, phone number, count, price, or compact metric. |
+| `type.number.sm` | 14 | 500 | 18 | Dense numeric metadata. |
+
+Implementation rules:
+
+- Package the Regular 400, Medium 500, SemiBold 600, and Bold 700 static font
+  files. Do not synthesize missing weights and do not use ExtraBold 800 or Black
+  900 for interface text.
+- Map the semantic roles into Flutter `ThemeData.textTheme` through a typed
+  `LoveliesTypography` `ThemeExtension`; feature screens must not create a
+  competing scale.
+- Number roles use tabular figures when the renderer and selected font asset
+  support them. OTPs and phone numbers remain real text with accessible
+  semantics and are never spaced with decorative tracking.
+- Tracking remains `0`. A non-zero platform-required value needs a Design
+  Exceptions Register entry and regression evidence.
+- Use Regular for reading, Medium for quiet emphasis, SemiBold for labels and
+  compact titles, and Bold for major titles or hero values. Hierarchy must come
+  from semantic role, size, color, and placement rather than repeated heavy
+  weight.
+- At 200 percent text scale, important labels wrap or adapt rather than
+  disappear behind ellipsis. Collection names allow two lines or a wider
+  adaptive layout, with the full accessible label preserved.
+- Light and dark themes use the same type metrics. Only semantic color tokens
+  change between modes.
+- Font delivery is local and deterministic. Production mobile or web UI must
+  not depend on a runtime request to a third-party font CDN.
+
+Material mapping:
+
+- `displayLarge` maps to `type.display`; smaller display and headline slots are
+  derived inside the central typography theme only.
+- `titleLarge`, `titleMedium`, and `titleSmall` map to `type.title.lg`,
+  `type.title.md`, and `type.title.sm`.
+- `bodyLarge`, `bodyMedium`, and `bodySmall` map to `type.body.lg`,
+  `type.body.md`, and `type.body.sm`.
+- `labelLarge`, `labelMedium`, and `labelSmall` map to `type.label.lg`,
+  `type.label.md`, and `type.label.sm`.
+- Numeric content uses the typed `type.number.*` roles rather than borrowing a
+  title style.
+
+Research record:
+
+- Inter 4.1 official source and license: `https://github.com/rsms/inter`.
+- Flutter custom-font guidance: `https://docs.flutter.dev/cookbook/design/fonts`.
+- Apple typography and Dynamic Type guidance:
+  `https://developer.apple.com/design/human-interface-guidelines/typography`.
+- Google Sans Flex was evaluated as the expressive 2026 challenger. It was not
+  selected as the first Lovelies family because its Google product signature
+  and multi-axis complexity add brand and implementation cost that do not
+  improve a photo-first interface enough to outweigh Inter's neutrality,
+  existing cross-surface fit, and deterministic static delivery.
+
 ### Spacing And Shape Tokens
 
 - Base spacing step is 4 dp; common values are 4, 8, 12, 16, 20, 24, 32, 40, 48.

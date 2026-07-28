@@ -73,28 +73,31 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: Column(
-            children: [
-              _buildHeader(),
-              Expanded(
-                child: _isLoading
-                    ? const Padding(
-                        padding: EdgeInsets.all(SpacingTokens.spacing6),
-                        child: AfriSkeletonList(),
-                      )
-                    : _error != null
-                    ? _buildError()
-                    : AfriRefreshIndicator(
-                        onRefresh: _loadFeatures,
-                        child: _buildFeatureList(),
-                      ),
-              ),
-            ],
-          ),
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: true,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(),
+            Expanded(
+              child: _isLoading
+                  ? const Padding(
+                      padding: EdgeInsets.all(SpacingTokens.spacing6),
+                      child: AfriSkeletonList(),
+                    )
+                  : _error != null
+                  ? _buildError()
+                  : AfriRefreshIndicator(
+                      onRefresh: _loadFeatures,
+                      child: _buildFeatureList(),
+                    ),
+            ),
+          ],
         ),
       ),
     );

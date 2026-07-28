@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../extensions.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
@@ -17,6 +20,7 @@ class AfriListRow extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.onTap,
+    this.enabled = true,
   });
 
   final IconData icon;
@@ -24,10 +28,21 @@ class AfriListRow extends StatelessWidget {
   final String? subtitle;
   final Widget? trailing;
   final VoidCallback? onTap;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.afriSemanticColors;
+    final disabledForeground = ColorTokens.accessibleDisabledColor(
+      colors.secondaryText,
+    );
+    final primaryForeground = enabled ? colors.primaryText : disabledForeground;
+    final secondaryForeground = enabled
+        ? colors.secondaryText
+        : disabledForeground;
+    final focusAccent = ColorTokens.accessibleChartColor(colors.accent);
     return AfriPressFeedback(
+      enabled: enabled,
       onTap: onTap,
       semanticsLabel: title,
       tooltip: title,
@@ -40,28 +55,33 @@ class AfriListRow extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: AfriComponentSizes.listLeading,
+              height: AfriComponentSizes.listLeading,
               decoration: BoxDecoration(
                 color: ColorTokens.surfaceContainer,
                 borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
               ),
               alignment: Alignment.center,
-              child: Icon(icon, size: 18, color: ColorTokens.onSurface),
+              child: Icon(
+                icon,
+                size: SizeTokens.iconSm,
+                color: primaryForeground,
+              ),
             ),
             const SizedBox(width: SpacingTokens.spacing4),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: TypographyTokens.titleMedium()),
+                  Text(
+                    title,
+                    style: TypographyTokens.titleMedium(primaryForeground),
+                  ),
                   if (subtitle != null) ...[
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
                       subtitle!,
-                      style: TypographyTokens.bodySmall(
-                        ColorTokens.onSurfaceVariant,
-                      ),
+                      style: TypographyTokens.bodySmall(secondaryForeground),
                     ),
                   ],
                 ],
@@ -71,9 +91,7 @@ class AfriListRow extends StatelessWidget {
             trailing ??
                 Icon(
                   AfriIcons.chevronRight,
-                  color: state.isFocused
-                      ? ColorTokens.primaryContainer
-                      : ColorTokens.onSurfaceVariant,
+                  color: state.isFocused ? focusAccent : secondaryForeground,
                 ),
           ],
         ),

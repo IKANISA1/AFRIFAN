@@ -6,8 +6,8 @@ import type { AdminAccess, AdminShopProduct } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
-  deleteRecordWithMatchers,
-  mutateRecordWithVariants,
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
   requireAdminClubId,
   resolveProductTable,
 } from "./helpers";
@@ -27,6 +27,7 @@ function mapAdminShopProduct(row: Record<string, unknown>): AdminShopProduct {
     collection: safeString(row.collection) || null,
     sortOrder: safeNumber(row.sort_order, 0),
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
   };
 }
 
@@ -52,7 +53,7 @@ export async function getAdminProducts(
 
 export async function saveAdminProduct(
   client: SupabaseClient, access: AdminAccess,
-  input: { id?: string | null; name: string; subtitle: string; description: string; category: string; price: number; imageUrl?: string; sizes: string[]; isActive: boolean; collection?: string; sortOrder: number },
+  input: { id?: string | null; expectedUpdatedAt?: string | null; name: string; subtitle: string; description: string; category: string; price: number; imageUrl?: string; sizes: string[]; isActive: boolean; collection?: string; sortOrder: number },
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<string>("shop", {
@@ -62,7 +63,7 @@ export async function saveAdminProduct(
   }
   const clubId = requireAdminClubId(access, "save products");
   const table = await resolveProductTable(client);
-  return mutateRecordWithVariants(client, table, input.id, [{
+  return mutateRecordWithVariantsIfUnchanged(client, table, input.id, input.expectedUpdatedAt, [{
     club_id: clubId,
     name: input.name.trim(), subtitle: input.subtitle.trim(), description: input.description.trim(),
     category: input.category.trim(), price: safeNumber(input.price, 0),
@@ -76,15 +77,28 @@ export async function deleteAdminProduct(
   client: SupabaseClient,
   access: AdminAccess,
   productId: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("shop", {
       method: "DELETE",
-      query: { id: productId },
+      query: { id: productId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "delete products");
   const table = await resolveProductTable(client);
-  await deleteRecordWithMatchers(client, table, productId, { club_id: clubId });
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    table,
+    productId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_shop_product",
+      source: "admin_shop",
+    },
+  );
 }

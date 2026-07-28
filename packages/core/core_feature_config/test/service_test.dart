@@ -517,12 +517,17 @@ void main() {
     test('getFeatureKeyForPath resolves configured and fallback routes', () {
       expect(service.getFeatureKeyForPath('/tickets'), 'ticketing');
       expect(service.getFeatureKeyForPath('/tickets/checkout'), 'ticketing');
+      expect(
+        service.getFeatureKeyForPath('/fanzone?section=supporters'),
+        'fanzone',
+      );
       expect(service.getFeatureKeyForPath('/unknown'), isNull);
     });
 
     test('isRouteAvailable blocks disabled feature routes gracefully', () {
       expect(service.isRouteAvailable('/tickets'), isTrue);
       expect(service.isRouteAvailable('/membership'), isFalse);
+      expect(service.isRouteAvailable('/membership?source=home'), isFalse);
       expect(service.isRouteAvailable('/somewhere-else'), isTrue);
     });
 

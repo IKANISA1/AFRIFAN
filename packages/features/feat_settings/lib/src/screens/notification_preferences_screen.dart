@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/user_notification_settings.dart';
 import '../settings_providers.dart';
+import '../settings_repository.dart';
 import '../widgets/settings_navigation_scope.dart';
 import '../widgets/settings_overlays.dart';
 
@@ -25,15 +26,51 @@ class _NotificationPreferencesScreenState
   bool _isSaving = false;
   PushPermissionStatus? _permissionStatus;
   String? _localStatusMessage;
+  bool _draftEdited = false;
+  late bool _wasOnline;
 
   @override
   void initState() {
     super.initState();
+    _wasOnline = ConnectivityService.isOnline;
+    ConnectivityService.onlineNotifier.addListener(_handleConnectivityChange);
     unawaited(_refreshPermissionStatus());
   }
 
+  @override
+  void dispose() {
+    ConnectivityService.onlineNotifier.removeListener(
+      _handleConnectivityChange,
+    );
+    super.dispose();
+  }
+
+  void _handleConnectivityChange() {
+    final isOnline = ConnectivityService.isOnline;
+    final restored = !_wasOnline && isOnline;
+    _wasOnline = isOnline;
+    if (!mounted || !restored) return;
+
+    if (_draftEdited) {
+      setState(() {
+        _localStatusMessage =
+            'Connection restored. Review your kept changes, then save.';
+      });
+      return;
+    }
+
+    setState(() {
+      _draft = null;
+      _draftUserId = null;
+      _localStatusMessage = 'Connection restored. Refreshing preferences.';
+    });
+    ref.invalidate(notificationSettingsProvider);
+  }
+
   Future<void> _refreshPermissionStatus() async {
-    final status = await PushNotificationService.getPermissionStatus();
+    final status = await ref
+        .read(notificationPermissionGatewayProvider)
+        .getPermissionStatus();
     if (!mounted) return;
     setState(() => _permissionStatus = status);
   }
@@ -46,6 +83,7 @@ class _NotificationPreferencesScreenState
       setState(() {
         _draft = settings;
         _draftUserId = settings.userId;
+        _draftEdited = false;
       });
     });
   }
@@ -69,10 +107,19 @@ class _NotificationPreferencesScreenState
     if (_isSaving) {
       return;
     }
+    if (!ConnectivityService.isOnline) {
+      _showMessage(
+        'Connect before changing notification delivery on this device.',
+      );
+      return;
+    }
     if (settings.pushEnabled) {
-      await PushNotificationService.unregisterCurrentDevice();
+      await ref
+          .read(notificationPermissionGatewayProvider)
+          .unregisterCurrentDevice();
       setState(() {
         _draft = settings.copyWith(pushEnabled: false);
+        _draftEdited = true;
         _localStatusMessage =
             'Device notifications were turned off. Save to update your account preference.';
       });
@@ -83,7 +130,9 @@ class _NotificationPreferencesScreenState
     final enabled = await showNotificationPermissionModal(context);
     if (!enabled || !mounted) return;
 
-    final status = await PushNotificationService.requestPermission();
+    final status = await ref
+        .read(notificationPermissionGatewayProvider)
+        .requestPermission();
     if (!mounted) return;
 
     switch (status) {
@@ -91,6 +140,7 @@ class _NotificationPreferencesScreenState
       case PushPermissionStatus.provisional:
         setState(() {
           _draft = settings.copyWith(pushEnabled: true);
+          _draftEdited = true;
           _localStatusMessage =
               'Permission granted on this device. Save to enable alerts on your account.';
         });
@@ -110,6 +160,11 @@ class _NotificationPreferencesScreenState
   }
 
   Future<void> _saveSettings(UserNotificationSettings settings) async {
+    if (!ConnectivityService.isOnline) {
+      _showMessage('Your changes are kept. Connect before saving.');
+      return;
+    }
+
     setState(() => _isSaving = true);
 
     try {
@@ -117,17 +172,36 @@ class _NotificationPreferencesScreenState
           .read(settingsRepositoryProvider)
           .updateNotificationSettings(_normalizeForSave(settings));
       if (saved.pushEnabled) {
-        await PushNotificationService.syncToken();
+        await ref.read(notificationPermissionGatewayProvider).syncToken();
       } else {
-        await PushNotificationService.unregisterCurrentDevice();
+        await ref
+            .read(notificationPermissionGatewayProvider)
+            .unregisterCurrentDevice();
       }
       ref.invalidate(notificationSettingsProvider);
       if (!mounted) return;
       setState(() {
         _draft = saved;
+        _draftEdited = false;
         _localStatusMessage = null;
       });
       _showMessage('Notification preferences saved.');
+    } on SettingsConflictException {
+      ref.invalidate(notificationSettingsProvider);
+      if (!mounted) return;
+      setState(() {
+        _draft = null;
+        _draftUserId = null;
+        _localStatusMessage =
+            'Preferences changed elsewhere. The latest version is loading; review it before saving again.';
+      });
+      unawaited(
+        FirebaseAnalyticsService.logErrorRecovery(
+          surface: 'notification_settings',
+          outcome: 'conflict_refresh',
+        ),
+      );
+      _showMessage(_localStatusMessage!);
     } catch (error) {
       _showMessage(error.toString());
     } finally {
@@ -166,7 +240,7 @@ class _NotificationPreferencesScreenState
     };
 
     return SettingsBackGuard(
-      child: Scaffold(
+      child: AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
           title: Text(
@@ -181,16 +255,18 @@ class _NotificationPreferencesScreenState
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           ),
         ),
-        body: settings == null
+        scrollable: false,
+        child: settings == null
             ? asyncSettings.hasError
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                        child: Text(
-                          'Could not load notification settings.',
-                          style: TypographyTokens.bodyMedium(),
-                          textAlign: TextAlign.center,
-                        ),
+                  ? ConnectivityBuilder(
+                      builder: (context, isOnline) => AfriErrorView(
+                        message: isOnline
+                            ? 'Could not load notification settings.'
+                            : 'Connect to load notification settings.',
+                        actionLabel: isOnline ? 'Retry' : 'Connection required',
+                        onRetry: isOnline
+                            ? () => ref.invalidate(notificationSettingsProvider)
+                            : null,
                       ),
                     )
                   : const Padding(
@@ -200,6 +276,22 @@ class _NotificationPreferencesScreenState
             : ListView(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 children: [
+                  ConnectivityBuilder(
+                    builder: (context, isOnline) => isOnline
+                        ? const SizedBox.shrink()
+                        : const Padding(
+                            padding: EdgeInsets.only(
+                              bottom: SpacingTokens.spacing4,
+                            ),
+                            child: AfriStateBanner(
+                              icon: AfriIcons.statusWarning,
+                              title: 'Saved notification settings',
+                              subtitle:
+                                  'Values may be out of date. Reconnect before making changes or saving.',
+                              tone: AfriStateBannerTone.warning,
+                            ),
+                          ),
+                  ),
                   GlassCard(
                     animate: false,
                     child: Column(
@@ -231,23 +323,27 @@ class _NotificationPreferencesScreenState
                           ),
                         ],
                         const SizedBox(height: SpacingTokens.spacing4),
-                        AfriOutlinedButton(
-                          onPressed: _isSaving
-                              ? null
-                              : () => _togglePush(settings),
-                          style: AfriOutlinedButton.styleFrom(
-                            minimumSize: const Size(
-                              double.infinity,
-                              SizeTokens.buttonMinHeight,
+                        ConnectivityBuilder(
+                          builder: (context, isOnline) => AfriOutlinedButton(
+                            onPressed: isOnline && !_isSaving
+                                ? () => _togglePush(settings)
+                                : null,
+                            style: AfriOutlinedButton.styleFrom(
+                              minimumSize: const Size(
+                                double.infinity,
+                                SizeTokens.buttonMinHeight,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: ShapeTokens.buttonRadius,
+                              ),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: ShapeTokens.buttonRadius,
+                            child: Text(
+                              !isOnline
+                                  ? 'CONNECTION REQUIRED'
+                                  : settings.pushEnabled
+                                  ? 'DISABLE ALERTS'
+                                  : 'ENABLE ALERTS',
                             ),
-                          ),
-                          child: Text(
-                            settings.pushEnabled
-                                ? 'DISABLE ALERTS'
-                                : 'ENABLE ALERTS',
                           ),
                         ),
                       ],
@@ -279,12 +375,18 @@ class _NotificationPreferencesScreenState
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
-                  AfriButton(
-                    label: _isSaving ? 'Saving…' : 'Save',
-                    fullWidth: true,
-                    isLoading: _isSaving,
-                    onTap: () => _saveSettings(settings),
-                    enabled: !_isSaving,
+                  ConnectivityBuilder(
+                    builder: (context, isOnline) => AfriButton(
+                      label: !isOnline
+                          ? 'Connection required'
+                          : _isSaving
+                          ? 'Saving…'
+                          : 'Save',
+                      fullWidth: true,
+                      isLoading: _isSaving,
+                      onTap: () => _saveSettings(settings),
+                      enabled: isOnline && !_isSaving,
+                    ),
                   ),
                 ],
               ),

@@ -42,7 +42,7 @@ class TierDetailScreen extends ConsumerWidget {
     final detailAsync = ref.watch(_tierDetailProvider(tierId.toLowerCase()));
     final detail = detailAsync.valueOrNull ?? _TierDetailData.fallback(tierId);
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         title: Text(
@@ -57,7 +57,8 @@ class TierDetailScreen extends ConsumerWidget {
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
       ),
-      body: SingleChildScrollView(
+      scrollable: false,
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         child: Column(
           children: [
@@ -226,7 +227,7 @@ class _PerkCard extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     AfriIcons.checkGroup,
                     color: ColorTokens.success,
                     size: SizeTokens.iconSm,

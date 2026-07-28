@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -148,6 +147,11 @@ class _IntelCard extends StatelessWidget {
     final title = article['title']?.toString() ?? '';
     final subtitle = article['subtitle']?.toString() ?? '';
     final imageUrl = article['image_url']?.toString();
+    final imageProvenanceId =
+        article['image_provenance_id']?.toString().trim() ?? '';
+    final imageRightsApproved =
+        article['image_rights_approved'] == true &&
+        imageProvenanceId.isNotEmpty;
 
     return SizedBox(
       width:
@@ -192,14 +196,23 @@ class _IntelCard extends StatelessWidget {
                         SpacingTokens.spacing1 / 2,
                     width: double.infinity,
                     child: imageUrl != null && imageUrl.isNotEmpty
-                        ? CachedNetworkImage(
+                        ? AfriGovernedCachedImage(
                             imageUrl: imageUrl,
-                            cacheManager: AfriImageCacheManager.instance,
+                            semanticLabel: title.isEmpty
+                                ? 'Latest club article image'
+                                : '$title article image',
+                            provenanceId: imageProvenanceId.isEmpty
+                                ? 'news:${articleId ?? 'unknown'}:unapproved'
+                                : imageProvenanceId,
+                            rightsApproved: imageRightsApproved,
                             fit: BoxFit.cover,
-                            placeholder: (_, __) =>
-                                _GradientFallback(primaryColor: primaryColor),
-                            errorWidget: (_, __, ___) =>
-                                _GradientFallback(primaryColor: primaryColor),
+                            borderRadius: 0,
+                            placeholder: _GradientFallback(
+                              primaryColor: primaryColor,
+                            ),
+                            errorFallback: _GradientFallback(
+                              primaryColor: primaryColor,
+                            ),
                           )
                         : _GradientFallback(primaryColor: primaryColor),
                   ),

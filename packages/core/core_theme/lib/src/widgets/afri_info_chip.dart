@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
+import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
+import 'afri_press_feedback.dart';
 
 /// Lightweight inline metadata chip — no border, just tinted background + text.
 ///
@@ -35,31 +39,38 @@ class AfriInfoChip extends StatelessWidget {
     final child = Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
-        vertical: 5,
+        vertical: AfriComponentSizes.infoChipVerticalPadding,
       ),
       decoration: BoxDecoration(
         color: chipColor.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: ShapeTokens.buttonRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 12, color: chipColor),
+            Icon(icon, size: SizeTokens.iconXxs, color: chipColor),
             const SizedBox(width: SpacingTokens.spacing1),
           ],
-          Text(
-            label,
-            style: TypographyTokens.labelSmall(chipColor).copyWith(height: 1.0),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TypographyTokens.labelSmall(
+                chipColor,
+              ).copyWith(height: TypographyTokens.lineHeightSolid),
+            ),
           ),
         ],
       ),
     );
 
     if (onTap != null) {
-      return GestureDetector(
+      return AfriPressFeedback(
         onTap: onTap,
-        behavior: HitTestBehavior.opaque,
+        haptic: false,
+        semanticsLabel: label,
         child: child,
       );
     }

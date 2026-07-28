@@ -16,3 +16,4 @@ export 'src/firebase_analytics_service.dart';
 export 'src/firebase_observability_config.dart';
 export 'src/offline_event_queue.dart';
 export 'src/operational_health_service.dart';
+export 'src/privacy_safe_analytics.dart';

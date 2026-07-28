@@ -90,7 +90,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
       );
     }
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         title: Text('MY TICKETS', style: TypographyTokens.headlineLarge()),
@@ -116,7 +116,8 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
           ],
         ),
       ),
-      body: body,
+      scrollable: false,
+      child: body,
     );
   }
 

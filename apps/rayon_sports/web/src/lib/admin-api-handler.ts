@@ -9,6 +9,11 @@ import { enforceFeatureState } from "@/lib/server-feature-guard";
 import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
+import { AdminMutationConflictError } from "@/lib/data/admin/helpers";
+import {
+  getAdminDestructiveActionContract,
+  getAdminDestructivePermission,
+} from "@/lib/admin-destructive-actions";
 
 type AdminRouteHandler<T> = (
   adminClient: NonNullable<ReturnType<typeof getAdminSupabase>>,
@@ -26,6 +31,7 @@ type AdminRouteOptions = {
   rateLimitKey?: string;
   mutationLimit?: number;
   mutationWindowMs?: number;
+  destructiveActionId?: string;
 };
 
 function getRequestedClubId(request: NextRequest) {
@@ -120,6 +126,25 @@ export async function handleAdminApiRoute<T>(
       );
     }
 
+    if (options.destructiveActionId) {
+      const contract = getAdminDestructiveActionContract(
+        options.destructiveActionId,
+      );
+      if (contract == null) {
+        return NextResponse.json(
+          { error: "Unknown destructive action contract." },
+          { status: 500 },
+        );
+      }
+      const permission = getAdminDestructivePermission(access, contract);
+      if (!permission.allowed) {
+        return NextResponse.json(
+          { error: permission.reason },
+          { status: 403 },
+        );
+      }
+    }
+
     const adminClient = getAdminSupabase();
     if (adminClient == null) {
       return NextResponse.json(
@@ -131,6 +156,15 @@ export async function handleAdminApiRoute<T>(
     const data = await handler(adminClient, access, serverClient);
     return NextResponse.json({ data });
   } catch (error) {
+    if (error instanceof AdminMutationConflictError) {
+      return NextResponse.json(
+        {
+          code: "STALE_RECORD",
+          error: error.message,
+        },
+        { status: 409 },
+      );
+    }
     return NextResponse.json(
       {
         error:

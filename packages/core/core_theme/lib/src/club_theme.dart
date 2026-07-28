@@ -19,19 +19,63 @@ import 'tokens/typography_tokens.dart';
 class ClubTheme {
   ClubTheme._();
 
-  static ThemeData from(ClubConfig config) {
-    final semanticColors = AfriSemanticColors.dark.copyWith(
-      accent: ColorTokens.primaryContainer,
-      accentSoft: ColorTokens.primaryContainer.withValues(alpha: 0.18),
-      buttonPrimaryBackground: ColorTokens.primaryContainer,
-    );
+  static ThemeData from(
+    ClubConfig config, {
+    Brightness brightness = Brightness.dark,
+    bool highContrast = false,
+  }) {
+    final previousBrightness = ColorTokens.brightness;
+    ColorTokens.setBrightness(brightness);
+    try {
+      return _build(config, brightness, highContrast);
+    } finally {
+      ColorTokens.setBrightness(previousBrightness);
+    }
+  }
+
+  static ThemeData _build(
+    ClubConfig config,
+    Brightness brightness,
+    bool highContrast,
+  ) {
+    final isDark = brightness == Brightness.dark;
+    final baseSemanticColors =
+        (isDark ? AfriSemanticColors.dark : AfriSemanticColors.light).copyWith(
+          accent: ColorTokens.primaryContainer,
+          accentSoft: ColorTokens.primaryContainer.withValues(alpha: 0.18),
+          buttonPrimaryBackground: ColorTokens.primaryContainer,
+          buttonPrimaryForeground: ColorTokens.contrastForeground(
+            ColorTokens.primaryContainer,
+          ),
+        );
+    final highContrastBoundary = isDark ? Colors.white : ColorTokens.onSurface;
+    final semanticColors = highContrast
+        ? baseSemanticColors.copyWith(
+            secondaryText: ColorTokens.onSurface,
+            tertiaryText: ColorTokens.onSurface,
+            border: highContrastBoundary,
+            borderStrong: highContrastBoundary,
+            accentSoft: ColorTokens.primaryContainer.withValues(alpha: 0.36),
+          )
+        : baseSemanticColors;
+    final boundaryColor = highContrast
+        ? highContrastBoundary
+        : ColorTokens.ghostBorder;
+    final boundaryWidth = highContrast
+        ? BorderTokens.strong
+        : BorderTokens.hairline;
+    final focusWidth = highContrast
+        ? AfriDesignTokens.highContrast().focusRingWidth
+        : BorderTokens.focus;
 
     final colorScheme = ColorScheme(
-      brightness: Brightness.dark,
+      brightness: brightness,
       primary: ColorTokens.primary,
-      onPrimary: Colors.white,
+      onPrimary: ColorTokens.contrastForeground(ColorTokens.primary),
       primaryContainer: ColorTokens.primaryContainer,
-      onPrimaryContainer: Colors.white,
+      onPrimaryContainer: ColorTokens.contrastForeground(
+        ColorTokens.primaryContainer,
+      ),
       secondary: ColorTokens.clubAccent,
       onSecondary: ColorTokens.background,
       secondaryContainer: ColorTokens.secondaryContainer,
@@ -45,20 +89,27 @@ class ClubTheme {
       surfaceContainerHighest: ColorTokens.surfaceContainerHighest,
       error: ColorTokens.error,
       onError: ColorTokens.background,
-      outline: ColorTokens.outlineVariant,
-      outlineVariant: ColorTokens.ghostBorder,
+      outline: highContrast ? highContrastBoundary : ColorTokens.outlineVariant,
+      outlineVariant: boundaryColor,
     );
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
+      brightness: brightness,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: ColorTokens.background,
       dividerColor: Colors.transparent,
-      extensions: <ThemeExtension>[semanticColors, AfriDesignTokens.standard()],
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      splashFactory: NoSplash.splashFactory,
+      extensions: <ThemeExtension>[
+        semanticColors,
+        highContrast
+            ? AfriDesignTokens.highContrast()
+            : AfriDesignTokens.standard(),
+      ],
+      splashColor: ColorTokens.primaryContainer.withValues(alpha: 0.20),
+      highlightColor: ColorTokens.primaryContainer.withValues(alpha: 0.14),
+      hoverColor: ColorTokens.primaryContainer.withValues(alpha: 0.10),
+      focusColor: ColorTokens.primaryContainer.withValues(alpha: 0.18),
+      splashFactory: InkRipple.splashFactory,
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: _AfriPageTransitionsBuilder(),
@@ -84,7 +135,11 @@ class ClubTheme {
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: ShapeTokens.cardRadius,
-          side: BorderTokens.side(color: ColorTokens.ghostBorder, opacity: 0.8),
+          side: BorderTokens.side(
+            color: boundaryColor,
+            opacity: highContrast ? 1 : 0.8,
+            width: boundaryWidth,
+          ),
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -100,7 +155,7 @@ class ClubTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: ColorTokens.primaryContainer,
-          foregroundColor: Colors.white,
+          foregroundColor: semanticColors.buttonPrimaryForeground,
           elevation: 0,
           shadowColor: ColorTokens.primary.withValues(alpha: 0.18),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -111,7 +166,7 @@ class ClubTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: ColorTokens.primaryContainer,
-          foregroundColor: Colors.white,
+          foregroundColor: semanticColors.buttonPrimaryForeground,
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.spacing6,
             vertical: SpacingTokens.spacing4,
@@ -133,19 +188,21 @@ class ClubTheme {
         fillColor: ColorTokens.surfaceContainerLowest,
         border: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
-          color: ColorTokens.ghostBorder,
-          opacity: 0.95,
+          color: boundaryColor,
+          opacity: highContrast ? 1 : 0.95,
+          width: boundaryWidth,
         ),
         enabledBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
-          color: ColorTokens.ghostBorder,
-          opacity: 0.95,
+          color: boundaryColor,
+          opacity: highContrast ? 1 : 0.95,
+          width: boundaryWidth,
         ),
         focusedBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
           color: ColorTokens.primaryContainer,
-          opacity: 0.75,
-          width: BorderTokens.focus,
+          opacity: highContrast ? 1 : 0.75,
+          width: focusWidth,
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
@@ -172,7 +229,11 @@ class ClubTheme {
         labelStyle: TypographyTokens.labelMedium().copyWith(
           color: ColorTokens.onSurface,
         ),
-        side: BorderTokens.side(color: ColorTokens.ghostBorder, opacity: 0.9),
+        side: BorderTokens.side(
+          color: boundaryColor,
+          opacity: highContrast ? 1 : 0.9,
+          width: boundaryWidth,
+        ),
         shape: RoundedRectangleBorder(borderRadius: ShapeTokens.chipRadius),
       ),
       snackBarTheme: SnackBarThemeData(
@@ -206,6 +267,7 @@ class ClubTheme {
           }
           return ColorTokens.surfaceContainerLow;
         }),
+        overlayColor: _controlInteractionOverlay,
       ),
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith<Color>((states) {
@@ -218,10 +280,26 @@ class ClubTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
         ),
-        side: BorderTokens.side(),
+        side: BorderTokens.side(color: boundaryColor, width: boundaryWidth),
+        overlayColor: _controlInteractionOverlay,
       ),
+      radioTheme: RadioThemeData(overlayColor: _controlInteractionOverlay),
     );
   }
+
+  static final WidgetStateProperty<Color?> _controlInteractionOverlay =
+      WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.focused)) {
+          return ColorTokens.primaryContainer.withValues(alpha: 0.22);
+        }
+        if (states.contains(WidgetState.pressed)) {
+          return ColorTokens.primaryContainer.withValues(alpha: 0.18);
+        }
+        if (states.contains(WidgetState.hovered)) {
+          return ColorTokens.primaryContainer.withValues(alpha: 0.12);
+        }
+        return null;
+      });
 
   static TextTheme _buildTextTheme() {
     return TextTheme(
@@ -255,6 +333,7 @@ class _AfriPageTransitionsBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
+    if (AfriMotion.reduceMotion(context)) return child;
     return FadeTransition(
       opacity: CurvedAnimation(parent: animation, curve: AfriMotion.enterCurve),
       child: ScaleTransition(

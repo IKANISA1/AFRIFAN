@@ -6,9 +6,9 @@ import type { AdminAccess, AdminFanClub } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
-  deleteRecordWithMatchers,
+  deleteAdminRecordWithAuditIfUnchanged,
   fanClubTable,
-  mutateRecordWithVariants,
+  mutateRecordWithVariantsIfUnchanged,
   requireAdminClubId,
   resolveClubFootballPartnerId,
 } from "./helpers";
@@ -26,6 +26,7 @@ function mapAdminFanClub(row: Record<string, unknown>): AdminFanClub {
     bannerImageUrl: safeString(row.banner_image_url) || null,
     isActive: row.is_active !== false,
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
   };
 }
 
@@ -50,7 +51,7 @@ export async function getAdminFanClubs(
 
 export async function saveAdminFanClub(
   client: SupabaseClient, access: AdminAccess,
-  input: { id?: string | null; name: string; region: string; description: string; memberCount: number; eventCount: number; rating: number; bannerImageUrl?: string; isActive: boolean },
+  input: { id?: string | null; expectedUpdatedAt?: string | null; name: string; region: string; description: string; memberCount: number; eventCount: number; rating: number; bannerImageUrl?: string; isActive: boolean },
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<string>("fan-clubs", {
@@ -60,7 +61,7 @@ export async function saveAdminFanClub(
   }
   const clubId = requireAdminClubId(access, "save supporter chapters");
   const partnerId = await resolveClubFootballPartnerId(client, clubId);
-  return mutateRecordWithVariants(client, fanClubTable, input.id, [{
+  return mutateRecordWithVariantsIfUnchanged(client, fanClubTable, input.id, input.expectedUpdatedAt, [{
     partner_id: partnerId,
     club_id: clubId,
     name: input.name.trim(), region: input.region.trim(), description: input.description.trim(),
@@ -74,16 +75,27 @@ export async function deleteAdminFanClub(
   client: SupabaseClient,
   access: AdminAccess,
   fanClubId: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("fan-clubs", {
       method: "DELETE",
-      query: { id: fanClubId },
+      query: { id: fanClubId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "delete supporter chapters");
-  await deleteRecordWithMatchers(client, fanClubTable, fanClubId, {
-    club_id: clubId,
-  });
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    fanClubTable,
+    fanClubId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_supporter_chapter",
+      source: "admin_community",
+    },
+  );
 }

@@ -67,8 +67,8 @@ The app collects and processes user data through Supabase (backend) and local st
 
 ## Declarations
 
-- [ ] App does NOT sell user data
-- [ ] App encrypts data in transit
-- [ ] App provides a way for users to request data deletion
-- [ ] App complies with Google Play Families Policy (N/A — target 13+)
-- [ ] App follows the User Data Policy
+- [x] App does NOT sell user data
+- [x] App encrypts data in transit
+- [x] App provides a way for users to request data deletion
+- [x] App is not directed to children under 13
+- [x] Repository implementation is designed to follow the User Data Policy; console answers still require release-owner verification

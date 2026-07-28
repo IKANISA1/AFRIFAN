@@ -12,8 +12,24 @@ import 'package:feat_settings/feat_settings.dart';
 import 'package:feat_shop/feat_shop.dart';
 import 'package:feat_ticketing/feat_ticketing.dart';
 
+/// Compile-time authority for shipping the internal Flutter admin module.
+///
+/// Remote platform configuration and club feature flags cannot turn this on
+/// in a normal consumer binary. An explicitly governed internal build must
+/// pass `--dart-define=AFRICLUB_INTERNAL_MOBILE_ADMIN=true`.
+const bool internalMobileAdminBuild = bool.fromEnvironment(
+  'AFRICLUB_INTERNAL_MOBILE_ADMIN',
+);
+
 /// Shared registry for all feature modules used by AFRICLUB apps.
 abstract final class AppModuleRegistry {
+  /// Complete registered module catalog for tooling and architecture audits.
+  ///
+  /// Runtime apps must continue to call [build] so feature/config policy is
+  /// applied. The returned view is immutable and cannot alter registration.
+  static List<FeatureModule> get allModules =>
+      List<FeatureModule>.unmodifiable(_allModules);
+
   /// Build the active module list for this app configuration.
   ///
   /// When [configSnapshot] (the raw JSON from `get_platform_config`) is
@@ -26,16 +42,22 @@ abstract final class AppModuleRegistry {
   static List<FeatureModule> build(
     ClubConfig config, {
     Map<String, dynamic>? configSnapshot,
+    bool allowInternalMobileAdmin = internalMobileAdminBuild,
   }) {
-    return _allModules.where((module) {
-      if (configSnapshot != null) {
-        return module.isEnabledForConfig(
-          featureFlags: config.features,
-          configSnapshot: configSnapshot,
-        );
-      }
-      return module.isEnabled(config.features);
-    }).toList(growable: false);
+    return _allModules
+        .where((module) {
+          if (module.featureKey == 'admin' && !allowInternalMobileAdmin) {
+            return false;
+          }
+          if (configSnapshot != null) {
+            return module.isEnabledForConfig(
+              featureFlags: config.features,
+              configSnapshot: configSnapshot,
+            );
+          }
+          return module.isEnabled(config.features);
+        })
+        .toList(growable: false);
   }
 
   static final List<FeatureModule> _allModules = <FeatureModule>[

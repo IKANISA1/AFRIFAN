@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -29,6 +30,125 @@ void main() {
       expect(content, contains('/Volumes/PRO-G40/DESIGN/DESIGN.md'));
       expect(content, contains('output/design_compliance'));
       expect(content, contains('route_evidence_matrix.md'));
+    });
+
+    test('Primary mobile journeys retain automated touch-target audits', () {
+      const auditedRouteTests = <String>[
+        'packages/features/feat_home/test/home_screen_states_test.dart',
+        'packages/features/feat_home/test/discovery_search_test.dart',
+        'packages/features/feat_gamification/test/fanzone_hub_screen_test.dart',
+        'packages/features/feat_settings/test/settings_screens_test.dart',
+        'packages/features/feat_onboarding/test/onboarding_flow_test.dart',
+        'packages/features/feat_membership/test/membership_screen_ui_test.dart',
+        'packages/features/feat_contributions/test/groups_screen_empty_state_test.dart',
+        'packages/features/feat_ticketing/test/match_list_ui_test.dart',
+        'packages/features/feat_shop/test/shop_screen_catalog_test.dart',
+      ];
+
+      for (final relativePath in auditedRouteTests) {
+        final file = File('${repoRoot.path}/$relativePath');
+        expect(
+          file.existsSync(),
+          isTrue,
+          reason: 'Missing primary-route test: $relativePath',
+        );
+        expect(
+          file.readAsStringSync(),
+          contains('expectTapTargetsMeetMinimum(tester'),
+          reason:
+              '$relativePath must retain its rendered 48x48 touch-target audit.',
+        );
+      }
+    });
+
+    test('Reduced-motion coverage stays attached to required surfaces', () {
+      const requiredSourceContracts = <String, List<String>>{
+        'packages/core/core_router/lib/src/route_transitions.dart': [
+          'AfriMotion.reduceMotion(context)',
+        ],
+        'packages/features/feat_onboarding/lib/src/screens/onboarding_screen.dart':
+            [
+              'if (!AfriMotion.reduceMotion(context))',
+              '_pageController.jumpToPage(next)',
+              'AfriMotion.resolve(context, AfriMotion.standard)',
+            ],
+        'packages/features/feat_gamification/lib/src/widgets/animated_fet_counter.dart':
+            ['_reduceMotion = AfriMotion.reduceMotion(context)'],
+        'packages/features/feat_gamification/lib/src/widgets/confetti_overlay.dart':
+            ['if (AfriMotion.reduceMotion(context))'],
+        'packages/core/core_theme/lib/src/widgets/afri_skeleton.dart': [
+          '_reduceMotion = AfriMotion.reduceMotion(context)',
+        ],
+        'packages/core/core_theme/lib/src/widgets/afri_scanner_shell.dart': [
+          '_reduceMotion = AfriMotion.reduceMotion(context)',
+          '.afriAnimate(context)',
+        ],
+        'packages/features/feat_gamification/lib/src/widgets/notification_toast_overlay.dart':
+            ['_reduceMotion = AfriMotion.reduceMotion(context)'],
+        'packages/features/feat_shop/lib/src/widgets/shop_loading_skeleton.dart':
+            ['final reduceMotion = AfriMotion.reduceMotion(context)'],
+        'packages/core/core_theme/lib/src/widgets/afri_bottom_sheet.dart': [
+          'AnimationStyle.noAnimation',
+        ],
+        'packages/core/core_theme/lib/src/widgets/afri_action_sheet.dart': [
+          'AnimationStyle.noAnimation',
+        ],
+        'apps/rayon_sports/web/src/components/count-up.tsx': [
+          'useReducedMotion()',
+        ],
+        'apps/rayon_sports/web/src/components/mobile-nav-drawer.tsx': [
+          'useReducedMotion()',
+          'motion-reduce:transition-none',
+        ],
+        'apps/rayon_sports/web/src/components/admin/admin-shell.tsx': [
+          'motion-reduce:transition-none',
+        ],
+        'apps/rayon_sports/web/src/ui-kit/theme.css': [
+          '@media (prefers-reduced-motion: reduce)',
+          'animation-delay: 0ms !important',
+          'transition-delay: 0ms !important',
+        ],
+      };
+
+      for (final entry in requiredSourceContracts.entries) {
+        final file = File('${repoRoot.path}/${entry.key}');
+        expect(file.existsSync(), isTrue, reason: 'Missing ${entry.key}');
+        final source = file.readAsStringSync();
+        for (final contract in entry.value) {
+          expect(
+            source,
+            contains(contract),
+            reason: '${entry.key} lost reduced-motion contract: $contract',
+          );
+        }
+      }
+    });
+
+    test('Feature effect chains route through the reduced-motion adapter', () {
+      final violations = <String>[];
+      final featuresRoot = Directory('${repoRoot.path}/packages/features');
+
+      for (final entity in _safeRecursiveList(featuresRoot)) {
+        if (entity is! File || !entity.path.endsWith('.dart')) continue;
+        final normalizedPath = entity.path.replaceAll('\\', '/');
+        if (!normalizedPath.contains('/lib/')) continue;
+        final source = entity.readAsStringSync();
+        if (!source.contains('package:flutter_animate/flutter_animate.dart')) {
+          continue;
+        }
+        if (RegExp(r'\.animate\s*\(').hasMatch(source)) {
+          violations.add(normalizedPath);
+        }
+      }
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found a feature Widget.animate() chain. Use afriAnimate(context) so reduced motion skips effects and stagger delays.',
+          violations,
+        ),
+      );
     });
 
     test('ThemeData construction stays centralized in core_theme', () {
@@ -161,6 +281,111 @@ void main() {
       );
     });
 
+    test('Shared top and bottom chrome contain no standard-covered literals', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory(
+            '${repoRoot.path}/packages/core/core_theme/lib/src/widgets',
+          ),
+        ],
+        pattern: RegExp(
+          r'\b(TextStyle|BoxShadow|Duration)\s*\(|'
+          r'\bColors\.|'
+          r'\bBorder\.all\s*\(|'
+          r'ImageFilter\.blur\([^)]*(?:sigmaX|sigmaY):\s*-?[0-9]|'
+          r'(?:width|height|size|minWidth|minHeight|blurRadius|spreadRadius|fontSize|letterSpacing|scaleEnd|alpha):\s*-?[0-9]',
+          multiLine: true,
+        ),
+        allow: (path) =>
+            !path.endsWith('/afri_top_command_bar.dart') &&
+            !path.endsWith('/africlub_bottom_nav.dart'),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found a one-off chrome constant. Route command/nav geometry, focus, blur, shadow, typography, color strength, and motion through semantic tokens.',
+          violations,
+        ),
+      );
+    });
+
+    test(
+      'Shared components centralize typography, motion, blur, and shadows',
+      () {
+        final violations = _scanDartFiles(
+          roots: [
+            Directory(
+              '${repoRoot.path}/packages/core/core_theme/lib/src/widgets',
+            ),
+          ],
+          pattern: RegExp(
+            r'(^|[^A-Za-z])TextStyle\s*\(|'
+            r'\b(BoxShadow|Duration)\s*\(|'
+            r'\b[0-9]+\.(?:ms|seconds)\b|'
+            r'ImageFilter\.blur\([^)]*(?:sigmaX|sigmaY):\s*-?[0-9]',
+            multiLine: true,
+          ),
+        );
+
+        expect(
+          violations,
+          isEmpty,
+          reason: _formatViolations(
+            'Found a standard-covered shared-component literal. Use TypographyTokens, AfriMotion, AfriBlur, or AfriShadows.',
+            violations,
+          ),
+        );
+      },
+    );
+
+    test('Shared component boundaries route through BorderTokens', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory(
+            '${repoRoot.path}/packages/core/core_theme/lib/src/widgets',
+          ),
+        ],
+        pattern: RegExp(r'\bBorder\.all\s*\('),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found a direct shared-component border. Use BorderTokens so normal and focus boundaries stay synchronized.',
+          violations,
+        ),
+      );
+    });
+
+    test('Shared fixed geometry routes through semantic size tokens', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory(
+            '${repoRoot.path}/packages/core/core_theme/lib/src/widgets',
+          ),
+        ],
+        pattern: RegExp(
+          r'(?:width|height|size|minWidth|minHeight|maxWidth|maxHeight|dimension|strokeWidth|indicatorWeight|displacement|edgeOffset|fontSize|letterSpacing|scaleEnd):\s*(?:[^,\n]*\?\s*)?-?[0-9]+(?:\.[0-9]+)?|'
+          r'this\.(?:width|height|size|minWidth|minHeight|maxWidth|maxHeight|displacement|edgeOffset|strokeWidth|fontSize)\s*=\s*-?[0-9]+(?:\.[0-9]+)?|'
+          r'EdgeInsets\.(?:all|symmetric|only|fromLTRB)\([^)]*(?:horizontal|vertical|top|bottom|left|right):\s*-?[0-9]+(?:\.[0-9]+)?|'
+          r'BoxConstraints\([^)]*(?:minWidth|minHeight|maxWidth|maxHeight):\s*-?[0-9]+(?:\.[0-9]+)?',
+          multiLine: true,
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found fixed shared-component geometry outside AfriComponentSizes, SizeTokens, SpacingTokens, ShapeTokens, BorderTokens, or TypographyTokens.',
+          violations,
+        ),
+      );
+    });
+
     test('Feature packages do not declare local font fixtures', () {
       final violations = _scanTextFiles(
         roots: [Directory('${repoRoot.path}/packages/features')],
@@ -281,6 +506,197 @@ void main() {
       );
     });
 
+    test('Priority transaction routes use the shared responsive scaffold', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory(
+            '${repoRoot.path}/packages/features/feat_membership/lib/src/screens',
+          ),
+          Directory(
+            '${repoRoot.path}/packages/features/feat_contributions/lib/src/screens',
+          ),
+          Directory(
+            '${repoRoot.path}/packages/features/feat_shop/lib/src/screens',
+          ),
+          Directory(
+            '${repoRoot.path}/packages/features/feat_ticketing/lib/src/screens',
+          ),
+          Directory(
+            '${repoRoot.path}/packages/features/feat_onboarding/lib/src/screens',
+          ),
+        ],
+        pattern: RegExp(r'return\s+(?:const\s+)?Scaffold\s*\('),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found a priority transaction route bypassing AfriScreenScaffold.',
+          violations,
+        ),
+      );
+    });
+
+    test('Priority notification route uses the shared responsive scaffold', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory(
+            '${repoRoot.path}/packages/features/feat_gamification/lib/src/screens',
+          ),
+          Directory(
+            '${repoRoot.path}/packages/features/feat_settings/lib/src/screens',
+          ),
+        ],
+        pattern: RegExp(r'return\s+(?:const\s+)?Scaffold\s*\('),
+        allow: (path) {
+          return !path.endsWith('/prediction_notifications_screen.dart') &&
+              !path.endsWith('/notification_preferences_screen.dart');
+        },
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found the priority notification route bypassing AfriScreenScaffold.',
+          violations,
+        ),
+      );
+    });
+
+    test('Fan Zone route uses the shared responsive scaffold', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory(
+            '${repoRoot.path}/packages/features/feat_gamification/lib/src/screens',
+          ),
+        ],
+        pattern: RegExp(r'return\s+(?:const\s+)?Scaffold\s*\('),
+        allow: (path) => !path.endsWith('/club_fan_zone_screen.dart'),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found the Fan Zone route bypassing AfriScreenScaffold.',
+          violations,
+        ),
+      );
+    });
+
+    test(
+      'Router fallbacks and migrated Settings routes use the shared scaffold',
+      () {
+        final violations = _scanDartFiles(
+          roots: [
+            Directory('${repoRoot.path}/packages/core/core_router/lib/src'),
+            Directory(
+              '${repoRoot.path}/packages/features/feat_settings/lib/src/screens',
+            ),
+          ],
+          pattern: RegExp(r'\bScaffold\s*\('),
+          allow: (path) {
+            if (path.contains('/packages/core/core_router/lib/src/')) {
+              return false;
+            }
+
+            return !path.endsWith('/edit_profile_screen.dart') &&
+                !path.endsWith('/privacy_settings_screen.dart');
+          },
+        );
+
+        expect(
+          violations,
+          isEmpty,
+          reason: _formatViolations(
+            'Found a migrated router or Settings route bypassing AfriScreenScaffold.',
+            violations,
+          ),
+        );
+      },
+    );
+
+    test('Fan club and live routes use the shared responsive scaffold', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory(
+            '${repoRoot.path}/packages/features/feat_fan_clubs/lib/src/screens',
+          ),
+          Directory(
+            '${repoRoot.path}/packages/features/feat_live/lib/src/screens',
+          ),
+        ],
+        pattern: RegExp(r'\bScaffold\s*\('),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found a Fan Club or Live route bypassing AfriScreenScaffold.',
+          violations,
+        ),
+      );
+    });
+
+    test('All gamification routes use the shared responsive scaffold', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory(
+            '${repoRoot.path}/packages/features/feat_gamification/lib/src/screens',
+          ),
+        ],
+        pattern: RegExp(r'\bScaffold\s*\('),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found a gamification route bypassing AfriScreenScaffold.',
+          violations,
+        ),
+      );
+    });
+
+    test('All Flutter admin routes use the shared responsive scaffold', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory(
+            '${repoRoot.path}/packages/features/feat_admin/lib/src/screens',
+          ),
+        ],
+        pattern: RegExp(r'\bScaffold\s*\('),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found a Flutter admin route bypassing AfriScreenScaffold.',
+          violations,
+        ),
+      );
+    });
+
+    test('Native TV routes use the shared responsive scaffold', () {
+      final violations = _scanDartFiles(
+        roots: [Directory('${repoRoot.path}/apps/rayon_sports_tv/lib')],
+        pattern: RegExp(r'\bScaffold\s*\('),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found a native TV route bypassing AfriScreenScaffold.',
+          violations,
+        ),
+      );
+    });
+
     test('Feature route tab bars use shared chrome', () {
       final violations = _scanDartFiles(
         roots: [
@@ -326,6 +742,7 @@ void main() {
           Directory('${repoRoot.path}/apps'),
         ],
         pattern: RegExp(r'\b(InkWell|InkResponse)\s*\('),
+        allow: _isTouchTargetAuditTool,
       );
 
       expect(
@@ -333,6 +750,31 @@ void main() {
         isEmpty,
         reason: _formatViolations(
           'Found direct Material press surfaces. Use AfriPressFeedback from core_theme.',
+          violations,
+        ),
+      );
+    });
+
+    test('Visible task copy does not describe obvious interface mechanics', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features'),
+          Directory('${repoRoot.path}/apps'),
+        ],
+        pattern: RegExp(
+          r'''['"][^'"]*(action below|confirm below|app UI|show in [^'"]+ UI|controls UI rendering state|safe (app|product) destination|pair securely|connecting securely|last safe controller layout|on this screen|in this app|secure sign-in code)[^'"]*['"]''',
+          caseSensitive: false,
+        ),
+        allow: (path) => path.endsWith(
+          '/packages/core/core_theme/test/ui_source_guardrails_test.dart',
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found visible copy that explains obvious interface mechanics.',
           violations,
         ),
       );
@@ -641,6 +1083,7 @@ void main() {
           Directory('${repoRoot.path}/apps'),
         ],
         pattern: RegExp(r'\b(TextButton|OutlinedButton|ElevatedButton)\s*\('),
+        allow: _isTouchTargetAuditTool,
       );
 
       expect(
@@ -662,6 +1105,7 @@ void main() {
         pattern: RegExp(
           r'\b(Chip|ActionChip|FilterChip|ChoiceChip|InputChip|RawChip)\s*\(',
         ),
+        allow: _isTouchTargetAuditTool,
       );
 
       expect(
@@ -683,6 +1127,7 @@ void main() {
         pattern: RegExp(
           r'\b(ListTile|SwitchListTile|CheckboxListTile|RadioListTile)\s*\(',
         ),
+        allow: _isTouchTargetAuditTool,
       );
 
       expect(
@@ -702,6 +1147,7 @@ void main() {
           Directory('${repoRoot.path}/apps'),
         ],
         pattern: RegExp(r'\b(TextField|TextFormField)\s*\('),
+        allow: _isTouchTargetAuditTool,
       );
 
       expect(
@@ -721,6 +1167,7 @@ void main() {
           Directory('${repoRoot.path}/apps'),
         ],
         pattern: RegExp(r'\b(Switch|Checkbox|Radio|Slider)\s*\('),
+        allow: _isTouchTargetAuditTool,
       );
 
       expect(
@@ -752,14 +1199,14 @@ void main() {
       );
     });
 
-    test('Repo does not store visual design assets', () {
+    test('Repo stores only governed runtime media', () {
       final violations = _findStoredVisualAssets(repoRoot);
 
       expect(
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found stored visual assets. Use generated brand marks, remote product media, or DESIGN.md-governed runtime code instead.',
+          'Found unmanaged visual assets. Runtime product media must live under an app assets directory with a same-folder SOURCES.md entry, source URL, and explicit release-approval requirement.',
           violations,
         ),
       );
@@ -832,12 +1279,70 @@ List<String> _findStoredVisualAssets(Directory repoRoot) {
 
     final lower = normalizedPath.toLowerCase();
     if (forbiddenExtensions.any(lower.endsWith)) {
+      if (_isGovernedRuntimeMedia(repoRoot, entity)) continue;
+      if (_isGovernedGoldenEvidence(repoRoot, entity)) continue;
       violations.add(normalizedPath);
     }
   }
 
   violations.sort();
   return violations;
+}
+
+bool _isGovernedRuntimeMedia(Directory repoRoot, File mediaFile) {
+  final normalizedRoot = repoRoot.path.replaceAll('\\', '/');
+  final normalizedPath = mediaFile.path.replaceAll('\\', '/');
+  if (!normalizedPath.startsWith('$normalizedRoot/apps/') ||
+      !normalizedPath.contains('/assets/')) {
+    return false;
+  }
+
+  final manifest = File('${mediaFile.parent.path}/SOURCES.md');
+  if (!manifest.existsSync()) return false;
+
+  final content = manifest.readAsStringSync();
+  final filename = mediaFile.uri.pathSegments.last;
+  final hasFileEntry = content.contains('`$filename`');
+  final hasSourceUrl = RegExp(
+    r'\bsource:\s*`https://',
+    caseSensitive: false,
+  ).hasMatch(content);
+  final hasApprovalGate = RegExp(
+    r'\b(approval|right[- ]to[- ]use|rights)\b.*\b(recorded|required|approved)\b',
+    caseSensitive: false,
+    dotAll: true,
+  ).hasMatch(content);
+
+  return hasFileEntry && hasSourceUrl && hasApprovalGate;
+}
+
+bool _isGovernedGoldenEvidence(Directory repoRoot, File mediaFile) {
+  final normalizedRoot = repoRoot.path.replaceAll('\\', '/');
+  final normalizedPath = mediaFile.path.replaceAll('\\', '/');
+  if (!normalizedPath.startsWith('$normalizedRoot/packages/') ||
+      !normalizedPath.contains('/test/goldens/')) {
+    return false;
+  }
+
+  final manifest = File(
+    '${repoRoot.path}/docs/governance/golden-baselines.json',
+  );
+  if (!manifest.existsSync()) return false;
+
+  final relativePath = normalizedPath.substring(normalizedRoot.length + 1);
+  try {
+    final decoded = jsonDecode(manifest.readAsStringSync());
+    if (decoded is! Map<String, dynamic>) return false;
+    final baselines = decoded['baselines'];
+    if (baselines is! List<dynamic>) return false;
+    return baselines.whereType<Map<String, dynamic>>().any(
+      (baseline) =>
+          baseline['path'] == relativePath &&
+          RegExp(r'^[0-9a-f]{64}$').hasMatch('${baseline['sha256']}'),
+    );
+  } on FormatException {
+    return false;
+  }
 }
 
 List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
@@ -997,6 +1502,15 @@ bool _isGeneratedPath(String normalizedPath) {
       normalizedPath.contains('/output/') ||
       normalizedPath.contains('/node_modules/') ||
       normalizedPath.contains('/ios/Pods/');
+}
+
+bool _isTouchTargetAuditTool(String normalizedPath) {
+  return normalizedPath.endsWith(
+        '/packages/features/test_support/lib/touch_target_audit.dart',
+      ) ||
+      normalizedPath.endsWith(
+        '/packages/features/test_support/test/touch_target_audit_test.dart',
+      );
 }
 
 String _formatViolations(String heading, List<String> violations) {

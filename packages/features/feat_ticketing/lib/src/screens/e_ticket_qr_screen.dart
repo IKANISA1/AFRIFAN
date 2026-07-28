@@ -68,7 +68,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
   Widget build(BuildContext context) {
     final ticketAsync = ref.watch(myTicketProvider(widget.ticketId));
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -79,7 +79,8 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
           tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
         ),
       ),
-      body: ticketAsync.when(
+      scrollable: false,
+      child: ticketAsync.when(
         loading: () => const Padding(
           padding: EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriSkeletonList(),
@@ -116,49 +117,54 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                 // Upper Pass: QR Code
                 Padding(
                   padding: const EdgeInsets.all(SpacingTokens.spacing8),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: BorderTokens.all(
-                            color: ColorTokens.inkBase,
-                            opacity: 0.05,
+                  child: AfriQrBarcodeSurface(
+                    semanticLabel: 'Ticket entry code',
+                    helperText:
+                        'Present only to an authorized matchday scanner.',
+                    code: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: BorderTokens.all(
+                              color: ColorTokens.inkBase,
+                              opacity: 0.05,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              ShapeTokens.radiusSm,
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(
-                            ShapeTokens.radiusSm,
+                          child: QrImageView(
+                            data: code,
+                            size: 220,
+                            backgroundColor: ColorTokens.paperSurface,
+                            eyeStyle: const QrEyeStyle(
+                              eyeShape: QrEyeShape.square,
+                              color: ColorTokens.inkBase,
+                            ),
+                            dataModuleStyle: const QrDataModuleStyle(
+                              dataModuleShape: QrDataModuleShape.square,
+                              color: ColorTokens.inkBase,
+                            ),
                           ),
                         ),
-                        child: QrImageView(
-                          data: code,
-                          size: 220,
-                          backgroundColor: ColorTokens.paperSurface,
-                          eyeStyle: const QrEyeStyle(
-                            eyeShape: QrEyeShape.square,
-                            color: ColorTokens.inkBase,
+                        if (!reduceMotion)
+                          AnimatedBuilder(
+                            animation: _scannerController,
+                            builder: (context, child) {
+                              return Positioned(
+                                top: _scannerController.value * 220,
+                                child: Container(
+                                  key: const Key('qr_scanner_overlay'),
+                                  width: 220,
+                                  height: 2,
+                                  color: ColorTokens.clubPrimary,
+                                ),
+                              );
+                            },
                           ),
-                          dataModuleStyle: const QrDataModuleStyle(
-                            dataModuleShape: QrDataModuleShape.square,
-                            color: ColorTokens.inkBase,
-                          ),
-                        ),
-                      ),
-                      if (!reduceMotion)
-                        AnimatedBuilder(
-                          animation: _scannerController,
-                          builder: (context, child) {
-                            return Positioned(
-                              top: _scannerController.value * 220,
-                              child: Container(
-                                key: const Key('qr_scanner_overlay'),
-                                width: 220,
-                                height: 2,
-                                color: ColorTokens.clubPrimary,
-                              ),
-                            );
-                          },
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
 
@@ -260,7 +266,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         children: [
                           reduceMotion
                               ? passCard
-                              : passCard.animate().scale(
+                              : passCard.afriAnimate(context).scale(
                                     duration: 400.ms,
                                     curve: Curves.easeOutBack,
                                   ),

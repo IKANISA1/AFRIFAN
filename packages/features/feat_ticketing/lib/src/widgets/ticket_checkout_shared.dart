@@ -82,16 +82,22 @@ class TicketSummaryRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TypographyTokens.bodyMedium()),
-          Text(
-            value,
-            style: highlighted
-                ? TypographyTokens.headlineMedium().copyWith(
-                    color: ColorTokens.clubAccent,
-                  )
-                : TypographyTokens.labelLarge(),
+          Expanded(
+            child: Text(label, style: TypographyTokens.bodyMedium()),
+          ),
+          const SizedBox(width: SpacingTokens.spacing3),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: highlighted
+                  ? TypographyTokens.headlineMedium().copyWith(
+                      color: ColorTokens.clubAccent,
+                    )
+                  : TypographyTokens.labelLarge(),
+            ),
           ),
         ],
       ),

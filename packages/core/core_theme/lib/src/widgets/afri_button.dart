@@ -1,18 +1,26 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../extensions.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/motion_tokens.dart';
+import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
+import 'afri_press_feedback.dart';
 
 /// Button variant enumeration for AFRICLUB UI primitives.
-enum AfriButtonVariant { primary, secondary, outline, ghost, accent }
+enum AfriButtonVariant {
+  primary,
+  secondary,
+  outline,
+  ghost,
+  accent,
+  destructive,
+}
 
 /// Shared button component with a small, consistent set of emphasis levels.
 class AfriButton extends StatefulWidget {
@@ -25,6 +33,9 @@ class AfriButton extends StatefulWidget {
     this.isLoading = false,
     this.fullWidth = true,
     this.enabled = true,
+    this.autofocus = false,
+    this.focusNode,
+    this.labelMaxLines = 1,
     super.key,
   });
 
@@ -36,51 +47,19 @@ class AfriButton extends StatefulWidget {
   final bool isLoading;
   final bool fullWidth;
   final bool enabled;
+  final bool autofocus;
+  final FocusNode? focusNode;
+  final int labelMaxLines;
 
   @override
   State<AfriButton> createState() => _AfriButtonState();
 }
 
-class _AfriButtonState extends State<AfriButton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _scaleController;
-  late final Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _scaleController = AnimationController(
-      vsync: this,
-      duration: AfriMotion.press,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.985).animate(
-      CurvedAnimation(parent: _scaleController, curve: AfriMotion.pressCurve),
-    );
-  }
-
-  @override
-  void dispose() {
-    _scaleController.dispose();
-    super.dispose();
-  }
-
+class _AfriButtonState extends State<AfriButton> {
   bool get _isActive => widget.enabled && !widget.isLoading;
-
-  void _onTapDown(TapDownDetails _) {
-    if (_isActive) unawaited(_scaleController.forward());
-  }
-
-  void _onTapUp(TapUpDetails _) {
-    if (_isActive) unawaited(_scaleController.reverse());
-  }
-
-  void _onTapCancel() {
-    if (_isActive) unawaited(_scaleController.reverse());
-  }
 
   void _onTap() {
     if (!_isActive) return;
-    unawaited(HapticFeedback.lightImpact());
     widget.onTap();
   }
 
@@ -96,14 +75,7 @@ class _AfriButtonState extends State<AfriButton>
       case AfriButtonVariant.primary:
         background = colors.buttonPrimaryBackground;
         foreground = colors.buttonPrimaryForeground;
-        shadows = [
-          BoxShadow(
-            color: background.withValues(alpha: 0.16),
-            blurRadius: 16,
-            spreadRadius: -8,
-            offset: const Offset(0, 8),
-          ),
-        ];
+        shadows = AfriShadows.primaryAction(background);
       case AfriButtonVariant.secondary:
         background = colors.cardSurfaceStrong;
         foreground = colors.primaryText;
@@ -121,19 +93,24 @@ class _AfriButtonState extends State<AfriButton>
       case AfriButtonVariant.accent:
         background = colors.accent;
         foreground = ColorTokens.background;
-        shadows = [
-          BoxShadow(
-            color: colors.accent.withValues(alpha: 0.14),
-            blurRadius: 14,
-            spreadRadius: -10,
-            offset: const Offset(0, 6),
-          ),
-        ];
+        shadows = AfriShadows.semanticAction(colors.accent);
+      case AfriButtonVariant.destructive:
+        background = colors.danger;
+        foreground = ColorTokens.contrastForeground(colors.danger);
+        shadows = AfriShadows.semanticAction(colors.danger);
     }
 
     if (!_isActive) {
-      background = background.withValues(alpha: background.a * 0.45);
-      foreground = foreground.withValues(alpha: foreground.a * 0.55);
+      if (widget.variant == AfriButtonVariant.primary ||
+          widget.variant == AfriButtonVariant.accent ||
+          widget.variant == AfriButtonVariant.destructive) {
+        background = colors.cardSurfaceStrong;
+      }
+      foreground = ColorTokens.accessibleDisabledColor(colors.secondaryText);
+      border = BorderTokens.all(
+        color: ColorTokens.accessibleChartColor(colors.borderStrong),
+        width: BorderTokens.standard,
+      );
       shadows = null;
     }
 
@@ -143,58 +120,62 @@ class _AfriButtonState extends State<AfriButton>
       children: [
         if (widget.isLoading) ...[
           SizedBox(
-            width: 18,
-            height: 18,
+            width: SizeTokens.iconSm,
+            height: SizeTokens.iconSm,
             child: CircularProgressIndicator(
-              strokeWidth: 2,
+              strokeWidth: AfriComponentSizes.progressStroke,
               valueColor: AlwaysStoppedAnimation(foreground),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
         ] else if (widget.icon != null) ...[
-          Icon(widget.icon, size: 18, color: foreground),
+          Icon(widget.icon, size: SizeTokens.iconSm, color: foreground),
           const SizedBox(width: SpacingTokens.spacing2),
         ],
         Flexible(
           child: Text(
             widget.label,
-            maxLines: 1,
+            maxLines: widget.labelMaxLines,
             overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
             style: TypographyTokens.labelLarge(foreground),
           ),
         ),
       ],
     );
 
-    return Semantics(
-      button: true,
+    return AfriPressFeedback(
+      onTap: _onTap,
       enabled: _isActive,
-      label: widget.semanticsLabel ?? widget.label,
-      child: GestureDetector(
-        onTapDown: _onTapDown,
-        onTapUp: _onTapUp,
-        onTapCancel: _onTapCancel,
-        onTap: _onTap,
-        behavior: HitTestBehavior.opaque,
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: AnimatedContainer(
-            duration: AfriMotion.quick,
-            curve: AfriMotion.enterCurve,
-            constraints: const BoxConstraints(minHeight: 48),
-            padding: const EdgeInsets.symmetric(
-              horizontal: SpacingTokens.spacing5,
-              vertical: 14,
-            ),
-            decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
-              border: border,
-              boxShadow: shadows,
-            ),
-            child: content,
-          ),
+      autofocus: widget.autofocus,
+      focusNode: widget.focusNode,
+      semanticsLabel: widget.semanticsLabel ?? widget.label,
+      excludeChildSemantics: true,
+      scaleEnd: AfriMotion.buttonPressScale,
+      builder: (context, state) => AnimatedContainer(
+        duration: AfriMotion.resolve(context, AfriMotion.quick),
+        curve: AfriMotion.enterCurve,
+        constraints: const BoxConstraints(minHeight: SizeTokens.touchTargetMin),
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing5,
+          vertical: AfriComponentSizes.buttonVerticalPadding,
         ),
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
+          border: state.isFocused
+              ? BorderTokens.focusAll(
+                  // The action fill can itself be the accent color. The
+                  // theme's primary text role stays high-contrast against
+                  // both the page canvas and action fills in light and dark
+                  // modes, so keyboard focus remains visibly non-color-only.
+                  color: colors.primaryText,
+                  width: context.afriDesignTokens.focusRingWidth,
+                )
+              : border,
+          boxShadow: shadows,
+        ),
+        child: content,
       ),
     );
   }

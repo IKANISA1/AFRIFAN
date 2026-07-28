@@ -36,7 +36,7 @@ class _SocialHubScreenState extends ConsumerState<SocialHubScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -60,7 +60,9 @@ class _SocialHubScreenState extends ConsumerState<SocialHubScreen>
           ],
         ),
       ),
-      body: TabBarView(
+      scrollable: false,
+      constrainContent: false,
+      child: TabBarView(
         controller: _tabController,
         children: [
           _FriendsTab(searchController: _searchController),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'glass_card.dart';
@@ -39,6 +41,8 @@ class AfriStat {
 class AfriStatRow extends StatelessWidget {
   const AfriStatRow({super.key, required this.stats, this.compact = false});
 
+  static const double _largeTextMinTileWidth = 160;
+
   final List<AfriStat> stats;
 
   /// When true, renders as inline chips instead of cards.
@@ -54,6 +58,31 @@ class AfriStatRow extends StatelessWidget {
       );
     }
 
+    final useLargeTextLayout =
+        MediaQuery.textScalerOf(context).scale(1) >= 1.5 && stats.length > 2;
+    if (useLargeTextLayout) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final twoColumnWidth =
+              (constraints.maxWidth - SpacingTokens.listItemGap) / 2;
+          final itemWidth = twoColumnWidth >= _largeTextMinTileWidth
+              ? twoColumnWidth
+              : constraints.maxWidth;
+          return Wrap(
+            spacing: SpacingTokens.listItemGap,
+            runSpacing: SpacingTokens.listItemGap,
+            children: [
+              for (final stat in stats)
+                SizedBox(
+                  width: itemWidth,
+                  child: _StatTile(stat: stat, allowTwoLineLabel: true),
+                ),
+            ],
+          );
+        },
+      );
+    }
+
     return Row(
       children: [
         for (int i = 0; i < stats.length; i++) ...[
@@ -66,12 +95,19 @@ class AfriStatRow extends StatelessWidget {
 }
 
 class _StatTile extends StatelessWidget {
-  const _StatTile({required this.stat});
+  const _StatTile({required this.stat, this.allowTwoLineLabel = false});
 
   final AfriStat stat;
+  final bool allowTwoLineLabel;
 
   @override
   Widget build(BuildContext context) {
+    final accent = ColorTokens.accessibleMetricColor(
+      stat.accentColor ?? ColorTokens.primaryContainer,
+    );
+    final supporting = ColorTokens.accessibleMetricColor(
+      ColorTokens.onSurfaceVariant,
+    );
     final child = GlassCard(
       animate: false,
       padding: const EdgeInsets.all(SpacingTokens.spacing4),
@@ -79,23 +115,21 @@ class _StatTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (stat.icon != null) ...[
-            Icon(
-              stat.icon,
-              size: 14,
-              color: stat.accentColor ?? ColorTokens.primaryContainer,
-            ),
+            Icon(stat.icon, size: SizeTokens.iconXs, color: accent),
             const SizedBox(height: SpacingTokens.spacing2),
           ],
           Text(
             stat.label.toUpperCase(),
-            style: TypographyTokens.metricLabel(),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+            style: TypographyTokens.metricLabel(supporting),
+            maxLines: allowTwoLineLabel ? 2 : 1,
+            overflow: allowTwoLineLabel
+                ? TextOverflow.visible
+                : TextOverflow.ellipsis,
           ),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
             stat.value,
-            style: TypographyTokens.metricValue(stat.accentColor),
+            style: TypographyTokens.metricValue(accent),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -120,7 +154,12 @@ class _CompactStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = stat.accentColor ?? ColorTokens.primaryContainer;
+    final color = ColorTokens.accessibleMetricColor(
+      stat.accentColor ?? ColorTokens.primaryContainer,
+    );
+    final supporting = ColorTokens.accessibleMetricColor(
+      ColorTokens.onSurfaceVariant,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -128,7 +167,7 @@ class _CompactStat extends StatelessWidget {
         vertical: SpacingTokens.spacing2,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: ShapeTokens.buttonRadius,
         color: color.withValues(alpha: 0.12),
       ),
       child: Row(
@@ -136,7 +175,7 @@ class _CompactStat extends StatelessWidget {
         children: [
           Text(
             stat.label.toUpperCase(),
-            style: TypographyTokens.metricLabel(ColorTokens.onSurfaceVariant),
+            style: TypographyTokens.metricLabel(supporting),
           ),
           const SizedBox(width: SpacingTokens.spacing2),
           Text(

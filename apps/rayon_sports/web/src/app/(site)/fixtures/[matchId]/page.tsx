@@ -2,16 +2,12 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MatchCard } from "@/components/match-card";
-import { MatchPoll } from "@/components/engagement/match-poll";
-import { MotmVoting } from "@/components/engagement/motm-voting";
 import { ScorePrediction } from "@/components/engagement/score-prediction";
 import { MatchLineups } from "@/components/engagement/match-lineups";
 import { MatchTimeline } from "@/components/engagement/match-timeline";
 import { LiveTableContext } from "@/components/engagement/live-table-context";
 import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
-import { ShareActionButton } from "@/components/pwa/share-action-button";
-import { getClubProfile, getMatchById, getMatches, getStandings } from "@/lib/data/public";
+import { getClubProfile, getMatchById, getStandings } from "@/lib/data/public";
 import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import {
   buildMatchJsonLd,
@@ -56,10 +52,9 @@ export default async function FixtureDetailPage({
   }
 
   const { matchId } = await params;
-  const [club, match, matches, standings] = await Promise.all([
+  const [club, match, standings] = await Promise.all([
     getClubProfile(),
     getMatchById(matchId),
-    getMatches(),
     getStandings(),
   ]);
 
@@ -67,9 +62,6 @@ export default async function FixtureDetailPage({
     notFound();
   }
 
-  const relatedMatches = matches
-    .filter((candidate) => candidate.id !== match.id)
-    .slice(0, 2);
   const live = isLiveMatch(match.matchStatus);
   const result = isResultMatch(match.matchStatus);
 

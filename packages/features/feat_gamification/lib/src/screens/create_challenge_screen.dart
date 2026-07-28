@@ -163,7 +163,8 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
     final hasBalance =
         hasStakePolicy && (wallet?.balance ?? 0) >= selectedStakeFet;
 
-    return Scaffold(
+    return AfriScreenScaffold(
+      backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         title: Text(
           'CREATE CHALLENGE',
@@ -172,7 +173,9 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
           ),
         ),
       ),
-      body: _loadingFixtures
+      scrollable: false,
+      constrainContent: true,
+      child: _loadingFixtures
           ? const Center(child: AfriLoadingIndicator())
           : AfriRefreshIndicator(
               onRefresh: _loadFixtures,

@@ -9,7 +9,11 @@ import type {
 } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
-import { deleteRecordWithMatchers, requireAdminClubId } from "./helpers";
+import {
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
+  requireAdminClubId,
+} from "./helpers";
 
 const fanEngagementTokenTable = "fan_engagement_token_catalog";
 
@@ -133,6 +137,7 @@ export async function saveAdminFanEngagementToken(
   access: AdminAccess,
   input: {
     id?: string | null;
+    expectedUpdatedAt?: string | null;
     code: string;
     templateScope: AdminFanEngagementTemplateScope;
     category: string;
@@ -158,17 +163,14 @@ export async function saveAdminFanEngagementToken(
   const payload = buildPayload(clubId, input);
 
   if (input.id) {
-    const { error } = await client
-      .from(fanEngagementTokenTable)
-      .update(payload)
-      .eq("id", input.id)
-      .eq("club_id", clubId);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return input.id;
+    return mutateRecordWithVariantsIfUnchanged(
+      client,
+      fanEngagementTokenTable,
+      input.id,
+      input.expectedUpdatedAt,
+      [payload],
+      { club_id: clubId },
+    );
   }
 
   const { data, error } = await client
@@ -188,17 +190,28 @@ export async function deleteAdminFanEngagementToken(
   client: SupabaseClient,
   access: AdminAccess,
   tokenId: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("gamification", {
       method: "DELETE",
-      query: { id: tokenId },
+      query: { id: tokenId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
 
   const clubId = requireAdminClubId(access, "delete FET catalog entries");
-  await deleteRecordWithMatchers(client, fanEngagementTokenTable, tokenId, {
-    club_id: clubId,
-  });
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    fanEngagementTokenTable,
+    tokenId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_fet_catalog_entry",
+      source: "admin_gamification",
+    },
+  );
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
@@ -54,35 +55,42 @@ class AfriChoiceChip extends StatelessWidget {
         : ColorTokens.onSurfaceVariant;
     final accent = ColorTokens.primaryContainer;
 
-    return ChoiceChip(
-      avatar: avatar,
-      label: label,
-      selected: selected,
-      onSelected: onSelected,
-      tooltip: tooltip,
-      labelStyle: labelStyle ?? TypographyTokens.labelMedium(foreground),
-      backgroundColor: backgroundColor ?? ColorTokens.surfaceContainerLow,
-      selectedColor: selectedColor ?? accent,
-      disabledColor: disabledColor ?? ColorTokens.surfaceContainer,
-      side:
-          side ??
-          BorderTokens.side(
-            color: selected ? accent : ColorTokens.ghostBorder,
-            opacity: selected ? 0.42 : 1,
-          ),
-      shape:
-          shape ?? RoundedRectangleBorder(borderRadius: ShapeTokens.chipRadius),
-      padding:
-          padding ??
-          const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing1),
-      labelPadding:
-          labelPadding ??
-          const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing2),
-      visualDensity: visualDensity ?? VisualDensity.compact,
-      materialTapTargetSize:
-          materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap,
-      showCheckmark: showCheckmark ?? false,
-      checkmarkColor: checkmarkColor ?? foreground,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minWidth: SizeTokens.touchTargetMin,
+        minHeight: SizeTokens.touchTargetMin,
+      ),
+      child: ChoiceChip(
+        avatar: avatar,
+        label: label,
+        selected: selected,
+        onSelected: onSelected,
+        tooltip: tooltip,
+        labelStyle: labelStyle ?? TypographyTokens.labelMedium(foreground),
+        backgroundColor: backgroundColor ?? ColorTokens.surfaceContainerLow,
+        selectedColor: selectedColor ?? accent,
+        disabledColor: disabledColor ?? ColorTokens.surfaceContainer,
+        side:
+            side ??
+            BorderTokens.side(
+              color: selected ? accent : ColorTokens.ghostBorder,
+              opacity: selected ? 0.42 : 1,
+            ),
+        shape:
+            shape ??
+            RoundedRectangleBorder(borderRadius: ShapeTokens.chipRadius),
+        padding:
+            padding ??
+            const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing1),
+        labelPadding:
+            labelPadding ??
+            const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing2),
+        visualDensity: visualDensity ?? VisualDensity.compact,
+        materialTapTargetSize:
+            materialTapTargetSize ?? MaterialTapTargetSize.padded,
+        showCheckmark: showCheckmark ?? false,
+        checkmarkColor: checkmarkColor ?? foreground,
+      ),
     );
   }
 }

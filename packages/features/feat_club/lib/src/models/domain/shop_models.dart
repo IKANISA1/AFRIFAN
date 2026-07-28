@@ -136,6 +136,7 @@ class ClubShopOrder extends Equatable {
     required this.paymentReference,
     required this.status,
     required this.createdAt,
+    this.updatedAt,
   });
 
   final String id;
@@ -150,6 +151,7 @@ class ClubShopOrder extends Equatable {
   final String paymentReference;
   final jh.OrderStatus status;
   final DateTime createdAt;
+  final DateTime? updatedAt;
 
   factory ClubShopOrder.fromJson(Map<String, dynamic> json) {
     final rawItems = json['items'] as List? ?? const [];
@@ -180,9 +182,10 @@ class ClubShopOrder extends Equatable {
       paymentReference: jh.asStringOrNull(json['momo_reference']) ?? '',
       status: jh.OrderStatusX.fromValue(json['status']?.toString()),
       createdAt: jh.parseDateTime(json['created_at']) ?? DateTime.now(),
+      updatedAt: jh.parseDateTime(json['updated_at']),
     );
   }
 
   @override
-  List<Object?> get props => [id, userId, status, total, createdAt];
+  List<Object?> get props => [id, userId, status, total, createdAt, updatedAt];
 }

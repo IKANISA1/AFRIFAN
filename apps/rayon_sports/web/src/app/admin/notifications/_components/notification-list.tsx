@@ -1,9 +1,16 @@
+"use client";
+
+import { Search } from "lucide-react";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminEmptyState } from "@/components/admin/admin-empty-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminSurface } from "@/components/admin/admin-surface";
 import { ProgressBar } from "@/components/progress-bar";
 import { Skeleton } from "@/components/skeleton";
 import type { AdminNotificationContext, AdminNotificationRecord } from "@/lib/types";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 function notificationTone(status: string) {
   switch (status) {
@@ -35,6 +42,36 @@ export function NotificationList({
   loading: boolean;
   onRefresh: () => void;
 }) {
+  const notificationCollection = useAdminCollection({
+    records: context.history,
+    getId: (item) => item.id,
+    getSearchValues: (item) => [
+      item.title,
+      item.body,
+      item.audienceType,
+      audienceLabel(item),
+      item.deliveryMode,
+      item.status,
+      item.lastError,
+    ],
+    getSortValue: (
+      item,
+      key: "message" | "audience" | "delivery" | "status" | "sent" | "failures",
+    ) => {
+      switch (key) {
+        case "message": return item.title;
+        case "audience": return audienceLabel(item);
+        case "delivery": return new Date(item.scheduledAt ?? item.sentAt ?? item.createdAt);
+        case "status": return item.status;
+        case "sent": return item.sentCount;
+        case "failures": return item.failedCount;
+      }
+    },
+    initialSortKey: "delivery" as const,
+    initialSortDirection: "descending",
+    pageSize: 25,
+  });
+
   return (
     <AdminSurface
       title="Delivery queue"
@@ -46,6 +83,9 @@ export function NotificationList({
         >
           Refresh
         </button>
+      }
+      toolbar={
+        <AdminFilterBar><label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search notification delivery queue</span><input type="search" value={notificationCollection.query} onChange={(event) => notificationCollection.setQuery(event.target.value)} placeholder="Search message, audience, delivery, or status" /></label></AdminFilterBar>
       }
       flush
     >
@@ -63,31 +103,27 @@ export function NotificationList({
             </div>
           ))}
         </div>
-      ) : context.history.length === 0 ? (
-        <AdminEmptyState
-          title="No notifications recorded"
-          description="Campaign deliveries and schedules will appear here after the first send."
-        />
       ) : (
-        <div className="admin-table-shell">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Message</th>
-                <th>Audience</th>
-                <th>Delivery</th>
-                <th>Status</th>
-                <th>Sent</th>
-                <th>Failures</th>
-              </tr>
-            </thead>
-            <tbody>
-              {context.history.map((item) => {
+        <>
+          <AdminDataGrid
+            caption="Notification delivery queue"
+            columns={[
+              { key: "message", label: "Message", priority: "primary", sortable: true, sortDirection: notificationCollection.sortDirectionFor("message"), onSort: () => notificationCollection.toggleSort("message") },
+              { key: "audience", label: "Audience", priority: "primary", sortable: true, sortDirection: notificationCollection.sortDirectionFor("audience"), onSort: () => notificationCollection.toggleSort("audience") },
+              { key: "delivery", label: "Delivery", priority: "secondary", sortable: true, sortDirection: notificationCollection.sortDirectionFor("delivery"), onSort: () => notificationCollection.toggleSort("delivery") },
+              { key: "status", label: "Status", priority: "primary", sortable: true, sortDirection: notificationCollection.sortDirectionFor("status"), onSort: () => notificationCollection.toggleSort("status") },
+              { key: "sent", label: "Sent", priority: "secondary", sortable: true, sortDirection: notificationCollection.sortDirectionFor("sent"), onSort: () => notificationCollection.toggleSort("sent") },
+              { key: "failures", label: "Failures", priority: "secondary", sortable: true, sortDirection: notificationCollection.sortDirectionFor("failures"), onSort: () => notificationCollection.toggleSort("failures") },
+            ]}
+          >
+            {notificationCollection.pageResult.items.length === 0 ? (
+              <tr><td colSpan={6}><AdminEmptyState title="No notifications recorded" description={notificationCollection.query ? "No notifications match the current search." : "Campaign deliveries and schedules will appear here after the first send."} /></td></tr>
+            ) : notificationCollection.pageResult.items.map((item) => {
                 const total = Math.max(item.sentCount + item.failedCount, item.requestedRecipientCount);
 
                 return (
-                  <tr key={item.id} className="admin-table-row">
-                    <td className="admin-table-cell" data-column-label="Message">
+                  <tr key={item.id}>
+                    <td>
                       <p className="admin-row-title">{item.title}</p>
                       <p className="admin-row-copy">{item.body}</p>
                       {item.lastError ? (
@@ -97,11 +133,11 @@ export function NotificationList({
                         </div>
                       ) : null}
                     </td>
-                    <td className="admin-table-cell" data-column-label="Audience">
+                    <td>
                       <p className="text-sm font-medium text-white">{audienceLabel(item)}</p>
                       <p className="admin-row-meta">{item.audienceType.replaceAll("_", " ")}</p>
                     </td>
-                    <td className="admin-table-cell" data-column-label="Delivery">
+                    <td>
                       <p className="text-sm font-medium text-white">
                         {item.deliveryMode === "schedule" ? "Scheduled" : "Immediate"}
                       </p>
@@ -114,13 +150,13 @@ export function NotificationList({
                         })}
                       </p>
                     </td>
-                    <td className="admin-table-cell" data-column-label="Status">
+                    <td>
                       <AdminStatusBadge
                         label={item.status}
                         tone={notificationTone(item.status)}
                       />
                     </td>
-                    <td className="admin-table-cell min-w-[180px]" data-column-label="Sent">
+                    <td className="min-w-[180px]">
                       <p className="text-sm font-medium text-white">
                         {item.sentCount} / {total}
                       </p>
@@ -130,7 +166,7 @@ export function NotificationList({
                         </div>
                       ) : null}
                     </td>
-                    <td className="admin-table-cell" data-column-label="Failures">
+                    <td>
                       <p className="text-sm font-medium text-white">{item.failedCount}</p>
                       <p className="admin-row-meta">
                         {item.failedCount > 0 ? "needs review" : "clear"}
@@ -139,9 +175,9 @@ export function NotificationList({
                   </tr>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
+          </AdminDataGrid>
+          <AdminPagination page={notificationCollection.pageResult} onPageChange={notificationCollection.setPage} label="Notification delivery queue" />
+        </>
       )}
     </AdminSurface>
   );

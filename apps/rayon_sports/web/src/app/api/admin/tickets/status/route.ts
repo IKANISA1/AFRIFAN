@@ -1,6 +1,9 @@
 import { NextRequest } from "next/server";
 import { handleAdminApiRoute } from "@/lib/admin-api-handler";
-import { updateTicketStatus } from "@/lib/data/admin/tickets";
+import {
+  isAdminTicketStatusAction,
+  updateTicketStatus,
+} from "@/lib/data/admin/tickets";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +18,7 @@ export async function POST(request: NextRequest) {
       const ticketId = String(body.ticketId ?? "").trim();
       const status = String(body.status ?? "").trim();
 
-      if (!ticketId || !status) {
+      if (!ticketId || !isAdminTicketStatusAction(status)) {
         throw new Error("Both ticketId and status are required.");
       }
 

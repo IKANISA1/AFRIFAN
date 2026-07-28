@@ -173,7 +173,7 @@ class _JackpotChallengeScreenState
         ? 0.0
         : _selections.length / fixtureCount;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -221,7 +221,9 @@ class _JackpotChallengeScreenState
           ),
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: true,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

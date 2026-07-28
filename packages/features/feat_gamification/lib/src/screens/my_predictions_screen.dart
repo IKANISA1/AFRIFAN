@@ -79,7 +79,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -104,7 +104,9 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
           ],
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: false,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

@@ -122,7 +122,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
     final wallet = _wallet;
     final rewardOptions = _rewardOptions;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -139,7 +139,9 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
           tooltip: 'Back',
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: true,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

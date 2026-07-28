@@ -8,6 +8,26 @@ import { safeNumber, safeString, toIdString } from "@/lib/utils";
 
 export { safeNumber, safeString, toIdString };
 
+export class AdminMutationConflictError extends Error {
+  constructor(
+    message =
+      "This record changed after it was loaded. Refresh the latest data, review the differences, and try again.",
+  ) {
+    super(message);
+    this.name = "AdminMutationConflictError";
+  }
+}
+
+export function requireExpectedUpdatedAt(value: string | null | undefined) {
+  const expectedUpdatedAt = safeString(value);
+  if (!expectedUpdatedAt) {
+    throw new AdminMutationConflictError(
+      "This record has no loaded version. Refresh the latest data before editing it.",
+    );
+  }
+  return expectedUpdatedAt;
+}
+
 /* ────────────────────────────────────────────────────────── */
 /*  Table resolution helpers                                  */
 /* ────────────────────────────────────────────────────────── */
@@ -145,6 +165,49 @@ export async function mutateRecordWithVariants(
   throw new Error(lastError?.message ?? "Could not save record.");
 }
 
+export async function mutateRecordWithVariantsIfUnchanged(
+  client: SupabaseClient,
+  table: string,
+  id: string | null | undefined,
+  expectedUpdatedAt: string | null | undefined,
+  payloadVariants: Array<Record<string, unknown>>,
+  matchers: Record<string, unknown> = {},
+) {
+  if (!id) {
+    return mutateRecordWithVariants(
+      client,
+      table,
+      id,
+      payloadVariants,
+      matchers,
+    );
+  }
+
+  const loadedVersion = requireExpectedUpdatedAt(expectedUpdatedAt);
+  let lastError: { message?: string } | null = null;
+
+  for (const payload of payloadVariants) {
+    let query = client.from(table).update(payload);
+    for (const [column, value] of Object.entries(matchers)) {
+      query = query.eq(column, value);
+    }
+    const response = await query
+      .eq("id", id)
+      .eq("updated_at", loadedVersion)
+      .select("id")
+      .maybeSingle();
+    if (!response.error) {
+      if (response.data == null) {
+        throw new AdminMutationConflictError();
+      }
+      return id;
+    }
+    lastError = response.error;
+  }
+
+  throw new Error(lastError?.message ?? "Could not save record.");
+}
+
 export async function deleteRecordWithMatchers(
   client: SupabaseClient,
   table: string,
@@ -158,6 +221,100 @@ export async function deleteRecordWithMatchers(
   const { error } = await query.eq("id", id);
   if (error) {
     throw new Error(error.message);
+  }
+}
+
+export async function deleteRecordWithMatchersIfUnchanged(
+  client: SupabaseClient,
+  table: string,
+  id: string,
+  expectedUpdatedAt: string | null | undefined,
+  matchers: Record<string, unknown> = {},
+) {
+  const loadedVersion = requireExpectedUpdatedAt(expectedUpdatedAt);
+  let query = client.from(table).delete();
+  for (const [column, value] of Object.entries(matchers)) {
+    query = query.eq(column, value);
+  }
+  const response = await query
+    .eq("id", id)
+    .eq("updated_at", loadedVersion)
+    .select("id")
+    .maybeSingle();
+  if (response.error) {
+    throw new Error(response.error.message);
+  }
+  if (response.data == null) {
+    throw new AdminMutationConflictError();
+  }
+}
+
+export interface AdminDeleteAuditContext {
+  actorId: string | null | undefined;
+  clubId?: number | string | null;
+  requiresPlatformAdmin?: boolean;
+  action: string;
+  source: string;
+}
+
+export async function deleteAdminRecordWithAuditIfUnchanged(
+  client: SupabaseClient,
+  table: string,
+  id: string,
+  expectedUpdatedAt: string | null | undefined,
+  matchers: Record<string, unknown>,
+  audit: AdminDeleteAuditContext,
+) {
+  const loadedVersion = requireExpectedUpdatedAt(expectedUpdatedAt);
+  const actorId = safeString(audit.actorId);
+  if (!actorId) {
+    throw new Error("An authenticated audit actor is required.");
+  }
+
+  const matcherKeys = Object.keys(matchers);
+  if (matcherKeys.some((key) => key !== "club_id")) {
+    throw new Error("Governed admin deletion only supports active-club scoping.");
+  }
+
+  const matcherClubId =
+    matchers.club_id == null
+      ? null
+      : safeNumber(matchers.club_id, Number.NaN);
+  const configuredClubId =
+    audit.clubId == null
+      ? null
+      : safeNumber(audit.clubId, Number.NaN);
+  const clubId = Number.isFinite(matcherClubId as number)
+    ? matcherClubId
+    : Number.isFinite(configuredClubId as number)
+      ? configuredClubId
+      : null;
+
+  const { error } = await client.rpc(
+    "admin_delete_mutable_record_if_unchanged",
+    {
+      p_table_name: table,
+      p_record_id: id,
+      p_expected_updated_at: loadedVersion,
+      p_actor_id: actorId,
+      p_club_id: clubId,
+      p_enforce_club_scope: matchers.club_id != null,
+      p_requires_platform_admin: audit.requiresPlatformAdmin === true,
+      p_action: audit.action,
+      p_source: audit.source,
+    },
+  );
+
+  if (error) {
+    const message = safeString(error.message, "Could not delete record.");
+    if (
+      /changed after it was loaded|loaded version|outside the active admin scope/i.test(
+        message,
+      )
+    ) {
+      throw new AdminMutationConflictError(message);
+    }
+    throw new Error(message);
   }
 }
 

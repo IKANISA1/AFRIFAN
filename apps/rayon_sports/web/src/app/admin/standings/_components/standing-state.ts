@@ -1,5 +1,6 @@
 export type StandingForm = {
   id: string;
+  expectedUpdatedAt: string;
   position: string;
   club: string;
   clubSlug: string;
@@ -11,6 +12,7 @@ export type StandingForm = {
 
 export const emptyForm: StandingForm = {
   id: "",
+  expectedUpdatedAt: "",
   position: "",
   club: "",
   clubSlug: "",

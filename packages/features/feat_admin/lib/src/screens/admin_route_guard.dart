@@ -16,46 +16,45 @@ class AdminRouteGuard extends ConsumerWidget {
       return child;
     }
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing8),
-              child: GlassCard(
-                animate: false,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      AfriIcons.lock,
-                      size: 64,
-                      color: ColorTokens.warning,
-                    ),
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: true,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(SpacingTokens.spacing8),
+            child: GlassCard(
+              animate: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(AfriIcons.lock, size: 64, color: ColorTokens.warning),
 
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    Text(
-                      'ADMIN ACCESS REQUIRED',
-                      textAlign: TextAlign.center,
-                      style: TypographyTokens.headlineMedium().copyWith(
-                        color: ColorTokens.onSurface,
-                      ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  Text(
+                    'ADMIN ACCESS REQUIRED',
+                    textAlign: TextAlign.center,
+                    style: TypographyTokens.headlineMedium().copyWith(
+                      color: ColorTokens.onSurface,
                     ),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    Text(
-                      'This workspace is limited to verified club administrators for the active club.',
-                      textAlign: TextAlign.center,
-                      style: TypographyTokens.bodyMedium(),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing6),
-                    AfriButton(
-                      label: 'Back to settings',
-                      fullWidth: true,
-                      onTap: () => context.go('/settings'),
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  Text(
+                    'This workspace is limited to verified club administrators for the active club.',
+                    textAlign: TextAlign.center,
+                    style: TypographyTokens.bodyMedium(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing6),
+                  AfriButton(
+                    label: 'Back to settings',
+                    fullWidth: true,
+                    onTap: () => context.go('/settings'),
+                  ),
+                ],
               ),
             ),
           ),

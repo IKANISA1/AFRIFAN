@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
@@ -33,33 +35,48 @@ class AfriStatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _color;
+    final toneLabel = switch (tone) {
+      AfriStatusTone.neutral => 'Status',
+      AfriStatusTone.info => 'Information',
+      AfriStatusTone.success => 'Success',
+      AfriStatusTone.warning => 'Warning',
+      AfriStatusTone.error => 'Error',
+      AfriStatusTone.live => 'Live',
+    };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing3,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
-        border: BorderTokens.all(color: color, width: BorderTokens.standard),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: 12, color: color),
-            const SizedBox(width: SpacingTokens.spacing1),
-          ],
-          Flexible(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TypographyTokens.labelSmall(color).copyWith(height: 1.0),
+    return Semantics(
+      container: true,
+      excludeSemantics: true,
+      label: '$toneLabel status: $label',
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing3,
+          vertical: AfriComponentSizes.compactVerticalPadding,
+        ),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
+          border: BorderTokens.all(color: color, width: BorderTokens.standard),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: SizeTokens.iconXxs, color: color),
+              const SizedBox(width: SpacingTokens.spacing1),
+            ],
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TypographyTokens.labelSmall(
+                  color,
+                ).copyWith(height: TypographyTokens.lineHeightSolid),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

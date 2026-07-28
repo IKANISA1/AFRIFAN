@@ -85,28 +85,76 @@ class AppShell extends ConsumerWidget {
           )
         : shell;
 
-    return Scaffold(
-      backgroundColor: ColorTokens.background,
-      extendBody: true,
-      body: body,
-      bottomNavigationBar: AfriClubBottomNav(
-        currentIndex: selectedIndex,
-        onTap: (index) {
-          final branchIndex = resolvedEntries[index].key;
-          shell.goBranch(
-            branchIndex,
-            initialLocation: branchIndex == shell.currentIndex,
+    final navigationItems = resolvedEntries
+        .map(
+          (entry) => AfriClubNavItem(
+            icon: entry.value.tabRoute!.icon,
+            activeIcon: entry.value.tabRoute!.activeIcon,
+            label: entry.value.tabRoute!.label,
+          ),
+        )
+        .toList();
+
+    void selectDestination(int index) {
+      final branchIndex = resolvedEntries[index].key;
+      shell.goBranch(
+        branchIndex,
+        initialLocation: branchIndex == shell.currentIndex,
+      );
+    }
+
+    return DisplayFeatureSubScreen(
+      key: const ValueKey('adaptive-app-shell'),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final usesSideRail =
+              constraints.maxWidth >= AfriResponsive.sideRailMinWidth;
+          if (usesSideRail) {
+            return Scaffold(
+              backgroundColor: ColorTokens.background,
+              body: Row(
+                children: [
+                  AfriSideRail(
+                    destinations: navigationItems
+                        .map(
+                          (item) => AfriSideRailDestination(
+                            label: item.label,
+                            icon: item.icon,
+                            selectedIcon: item.activeIcon ?? item.icon,
+                          ),
+                        )
+                        .toList(),
+                    selectedIndex: selectedIndex,
+                    onDestinationSelected: selectDestination,
+                    extended:
+                        constraints.maxWidth >= AfriResponsive.expandedMaxWidth,
+                  ),
+                  const VerticalDivider(width: 1, thickness: 1),
+                  Expanded(
+                    child: AfriShellNavigationScope(
+                      usesBottomNavigation: false,
+                      child: body,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return Scaffold(
+            backgroundColor: ColorTokens.background,
+            extendBody: true,
+            body: AfriShellNavigationScope(
+              usesBottomNavigation: true,
+              child: body,
+            ),
+            bottomNavigationBar: AfriClubBottomNav(
+              currentIndex: selectedIndex,
+              onTap: selectDestination,
+              items: navigationItems,
+            ),
           );
         },
-        items: resolvedEntries
-            .map(
-              (entry) => AfriClubNavItem(
-                icon: entry.value.tabRoute!.icon,
-                activeIcon: entry.value.tabRoute!.activeIcon,
-                label: entry.value.tabRoute!.label,
-              ),
-            )
-            .toList(),
       ),
     );
   }

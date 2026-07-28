@@ -70,7 +70,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -81,7 +81,9 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
           tooltip: 'Back',
         ),
       ),
-      body: _isLoading
+      scrollable: false,
+      constrainContent: true,
+      child: _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

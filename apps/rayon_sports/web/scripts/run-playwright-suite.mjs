@@ -34,11 +34,36 @@ async function waitForReady() {
 }
 
 function stopChild(child, signal = "SIGTERM") {
-  if (child.exitCode != null || child.killed) {
+  if (child.exitCode != null) {
     return;
   }
 
   child.kill(signal);
+}
+
+async function stopServer() {
+  if (server.exitCode != null) {
+    return;
+  }
+
+  stopChild(server, "SIGTERM");
+
+  const exited = await Promise.race([
+    new Promise((resolveExit) => {
+      server.once("exit", () => resolveExit(true));
+    }),
+    wait(7_000).then(() => false),
+  ]);
+
+  if (!exited) {
+    if (server.exitCode != null) {
+      return;
+    }
+    stopChild(server, "SIGKILL");
+    await new Promise((resolveExit) => {
+      server.once("exit", () => resolveExit());
+    });
+  }
 }
 
 const server = spawn(
@@ -71,30 +96,22 @@ try {
   await waitForReady();
   log("server is ready; starting Playwright");
 
-  const runner = spawn(
-    process.execPath,
-    [playwrightCli, "test", ...testArgs],
-    {
-      cwd: root,
-      env: process.env,
-      stdio: "inherit",
-    },
-  );
+  const runner = spawn(process.execPath, [playwrightCli, "test", ...testArgs], {
+    cwd: root,
+    env: process.env,
+    stdio: "inherit",
+  });
 
   const runnerExitCode = await new Promise((resolveExit) => {
     runner.on("exit", (code) => resolveExit(code ?? 1));
   });
 
   testsFinished = true;
-  stopChild(server, "SIGTERM");
-
-  await new Promise((resolveExit) => {
-    server.on("exit", () => resolveExit());
-  });
+  await stopServer();
 
   process.exit(runnerExitCode);
 } catch (error) {
   console.error(error);
-  stopChild(server, "SIGTERM");
+  await stopServer();
   process.exit(1);
 }

@@ -149,9 +149,13 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(
+      return AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
-        body: const SafeArea(
+        showAppBar: false,
+        showBackButton: false,
+        scrollable: false,
+        constrainContent: true,
+        child: const SafeArea(
           child: Padding(
             padding: EdgeInsets.all(SpacingTokens.spacing6),
             child: AfriSkeletonList(),
@@ -161,7 +165,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     }
 
     if (_error != null || _club == null) {
-      return Scaffold(
+      return AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
           backgroundColor: ColorTokens.transparent,
@@ -171,7 +175,9 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
             tooltip: 'Back',
           ),
         ),
-        body: Center(
+        scrollable: false,
+        constrainContent: true,
+        child: Center(
           child: Padding(
             padding: const EdgeInsets.all(SpacingTokens.spacing6),
             child: Text(
@@ -196,9 +202,13 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     final isActive = club['is_active'] as bool? ?? true;
     final match = _upcomingMatch;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: CustomScrollView(
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: false,
+      child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           AfriSliverAppBar(

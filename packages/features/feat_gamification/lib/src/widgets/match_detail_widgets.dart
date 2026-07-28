@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -123,11 +124,10 @@ class MatchStatsTabBody extends StatelessWidget {
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         children: [
           const SizedBox(height: SpacingTokens.spacing8),
-          const AfriEmptyView(
+          AfriEmptyView(
             compact: true,
             title: 'Stats not yet available',
-            message:
-                'Match statistics will appear here once the match is live or completed.',
+            message: context.afriL10n.fanZoneStatsEmpty,
             icon: AfriIcons.chart,
           ),
           const SizedBox(height: SpacingTokens.spacing4),

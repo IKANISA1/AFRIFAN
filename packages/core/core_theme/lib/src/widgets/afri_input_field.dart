@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 
 import '../extensions.dart';
 import '../tokens/afri_semantic_colors.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
@@ -41,13 +43,20 @@ class AfriInputField extends StatelessWidget {
     this.enabled = true,
     this.obscureText = false,
     this.onChanged,
+    this.onTap,
     this.onSubmitted,
     this.focusNode,
     this.autofocus = false,
     this.textInputAction,
     this.style,
     this.helperText,
+    this.helperMaxLines,
+    this.errorText,
     this.contentPadding,
+    this.autofillHints,
+    this.enableSuggestions = true,
+    this.autocorrect = true,
+    this.inputFormatters,
   });
 
   final TextEditingController controller;
@@ -67,19 +76,26 @@ class AfriInputField extends StatelessWidget {
   final bool enabled;
   final bool obscureText;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onTap;
   final ValueChanged<String>? onSubmitted;
   final FocusNode? focusNode;
   final bool autofocus;
   final TextInputAction? textInputAction;
   final TextStyle? style;
   final String? helperText;
+  final int? helperMaxLines;
+  final String? errorText;
   final EdgeInsetsGeometry? contentPadding;
+  final Iterable<String>? autofillHints;
+  final bool enableSuggestions;
+  final bool autocorrect;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.afriSemanticColors;
 
-    return TextField(
+    final field = TextField(
       controller: controller,
       keyboardType: keyboardType,
       textCapitalization: textCapitalization,
@@ -90,6 +106,7 @@ class AfriInputField extends StatelessWidget {
       enabled: enabled,
       obscureText: obscureText,
       onChanged: onChanged,
+      onTap: onTap,
       onSubmitted: onSubmitted,
       focusNode: focusNode,
       autofocus: autofocus,
@@ -97,6 +114,10 @@ class AfriInputField extends StatelessWidget {
       maxLength: maxLength,
       maxLengthEnforcement:
           maxLengthEnforcement ?? MaxLengthEnforcement.enforced,
+      autofillHints: autofillHints,
+      enableSuggestions: enableSuggestions,
+      autocorrect: autocorrect,
+      inputFormatters: inputFormatters,
       buildCounter: maxLength != null
           ? (
               context, {
@@ -110,9 +131,15 @@ class AfriInputField extends StatelessWidget {
         labelText: label,
         hintText: hint,
         helperText: helperText,
+        helperMaxLines: helperMaxLines,
+        errorText: errorText,
         prefixText: prefixText,
         prefixIcon: prefixIcon != null
-            ? Icon(prefixIcon, size: 20, color: colors.secondaryText)
+            ? Icon(
+                prefixIcon,
+                size: SizeTokens.iconMd,
+                color: colors.secondaryText,
+              )
             : null,
         suffixIcon: suffixIcon,
         filled: true,
@@ -136,9 +163,14 @@ class AfriInputField extends StatelessWidget {
         focusedBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
           color: colors.accent,
-          width: BorderTokens.focus,
+          width: context.afriDesignTokens.focusRingWidth,
         ),
       ),
+    );
+    return _withAsyncErrorSemantics(
+      errorText: errorText,
+      fieldLabel: label ?? hint,
+      child: field,
     );
   }
 }
@@ -165,6 +197,7 @@ class AfriTextFormField extends StatelessWidget {
     this.enabled = true,
     this.obscureText = false,
     this.onChanged,
+    this.onTap,
     this.onFieldSubmitted,
     this.validator,
     this.focusNode,
@@ -172,7 +205,13 @@ class AfriTextFormField extends StatelessWidget {
     this.textInputAction,
     this.style,
     this.helperText,
+    this.helperMaxLines,
+    this.errorText,
     this.contentPadding,
+    this.autofillHints,
+    this.enableSuggestions = true,
+    this.autocorrect = true,
+    this.inputFormatters,
   });
 
   final TextEditingController? controller;
@@ -193,6 +232,7 @@ class AfriTextFormField extends StatelessWidget {
   final bool enabled;
   final bool obscureText;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onTap;
   final ValueChanged<String>? onFieldSubmitted;
   final FormFieldValidator<String>? validator;
   final FocusNode? focusNode;
@@ -200,13 +240,19 @@ class AfriTextFormField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final TextStyle? style;
   final String? helperText;
+  final int? helperMaxLines;
+  final String? errorText;
   final EdgeInsetsGeometry? contentPadding;
+  final Iterable<String>? autofillHints;
+  final bool enableSuggestions;
+  final bool autocorrect;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.afriSemanticColors;
 
-    return TextFormField(
+    final field = TextFormField(
       controller: controller,
       initialValue: controller == null ? initialValue : null,
       keyboardType: keyboardType,
@@ -218,6 +264,7 @@ class AfriTextFormField extends StatelessWidget {
       enabled: enabled,
       obscureText: obscureText,
       onChanged: onChanged,
+      onTap: onTap,
       onFieldSubmitted: onFieldSubmitted,
       validator: validator,
       focusNode: focusNode,
@@ -226,6 +273,10 @@ class AfriTextFormField extends StatelessWidget {
       maxLength: maxLength,
       maxLengthEnforcement:
           maxLengthEnforcement ?? MaxLengthEnforcement.enforced,
+      autofillHints: autofillHints,
+      enableSuggestions: enableSuggestions,
+      autocorrect: autocorrect,
+      inputFormatters: inputFormatters,
       buildCounter: maxLength != null
           ? (
               context, {
@@ -237,23 +288,55 @@ class AfriTextFormField extends StatelessWidget {
       style: style ?? TypographyTokens.bodyLarge(colors.primaryText),
       decoration: _universalInputDecoration(
         colors: colors,
+        focusRingWidth: context.afriDesignTokens.focusRingWidth,
         label: label,
         hint: hint,
         helperText: helperText,
+        helperMaxLines: helperMaxLines,
+        errorText: errorText,
         prefixText: prefixText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         contentPadding: contentPadding,
       ),
     );
+    return _withAsyncErrorSemantics(
+      errorText: errorText,
+      fieldLabel: label ?? hint,
+      child: field,
+    );
   }
+}
+
+Widget _withAsyncErrorSemantics({
+  required String? errorText,
+  required String? fieldLabel,
+  required Widget child,
+}) {
+  final normalizedError = errorText?.trim();
+  if (normalizedError == null || normalizedError.isEmpty) return child;
+  final normalizedLabel = fieldLabel?.trim();
+  final label = normalizedLabel == null || normalizedLabel.isEmpty
+      ? 'Error: $normalizedError'
+      : '$normalizedLabel. Error: $normalizedError';
+  return Semantics(
+    container: true,
+    explicitChildNodes: true,
+    liveRegion: true,
+    validationResult: SemanticsValidationResult.invalid,
+    label: label,
+    child: child,
+  );
 }
 
 InputDecoration _universalInputDecoration({
   required AfriSemanticColors colors,
+  required double focusRingWidth,
   required String? label,
   required String? hint,
   required String? helperText,
+  required int? helperMaxLines,
+  required String? errorText,
   required String? prefixText,
   required IconData? prefixIcon,
   required Widget? suffixIcon,
@@ -263,9 +346,11 @@ InputDecoration _universalInputDecoration({
     labelText: label,
     hintText: hint,
     helperText: helperText,
+    helperMaxLines: helperMaxLines,
+    errorText: errorText,
     prefixText: prefixText,
     prefixIcon: prefixIcon != null
-        ? Icon(prefixIcon, size: 20, color: colors.secondaryText)
+        ? Icon(prefixIcon, size: SizeTokens.iconMd, color: colors.secondaryText)
         : null,
     suffixIcon: suffixIcon,
     filled: true,
@@ -289,7 +374,7 @@ InputDecoration _universalInputDecoration({
     focusedBorder: BorderTokens.input(
       borderRadius: ShapeTokens.inputRadius,
       color: colors.accent,
-      width: BorderTokens.focus,
+      width: focusRingWidth,
     ),
   );
 }

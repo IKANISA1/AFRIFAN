@@ -8,8 +8,8 @@ import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
   contributionTable,
-  deleteRecordWithMatchers,
-  mutateRecordWithVariants,
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
   requireAdminClubId,
 } from "./helpers";
 
@@ -29,6 +29,7 @@ function mapContributionGroup(row: Record<string, unknown>): AdminContributionGr
     isActive: row.is_closed !== true,
     creatorId: safeString(row.creator_id) || null,
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
     isClosed: row.is_closed === true,
   };
 }
@@ -53,7 +54,7 @@ export async function getAdminContributionSnapshot(client: SupabaseClient, acces
   // Fetch groups scoped to the admin's club
   const groupsQuery = client
     .from(contributionTable)
-    .select("id, name, description, group_type, target_amount, current_total, member_count, creator_id, is_closed, created_at, currency")
+    .select("id, name, description, group_type, target_amount, current_total, member_count, creator_id, is_closed, created_at, updated_at, currency")
     .eq("club_id", clubId)
     .order("created_at", { ascending: false });
 
@@ -134,7 +135,7 @@ export async function downloadContributionExcel(snapshot: AdminContributionSnaps
 
 export async function saveAdminContributionGroup(
   client: SupabaseClient, access: AdminAccess,
-  input: { id?: string | null; name: string; description: string; groupType: AdminContributionGroup["groupType"]; targetAmount: number; currentTotal: number; currency: string; memberCount: number; isClosed: boolean },
+  input: { id?: string | null; expectedUpdatedAt?: string | null; name: string; description: string; groupType: AdminContributionGroup["groupType"]; targetAmount: number; currentTotal: number; currency: string; memberCount: number; isClosed: boolean },
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<string>("contributions", {
@@ -143,7 +144,7 @@ export async function saveAdminContributionGroup(
     });
   }
   const clubId = requireAdminClubId(access, "save contribution groups");
-  return mutateRecordWithVariants(client, contributionWriteTable, input.id, [
+  return mutateRecordWithVariantsIfUnchanged(client, contributionWriteTable, input.id, input.expectedUpdatedAt, [
     {
       club_id: clubId,
       name: input.name.trim(),
@@ -176,16 +177,27 @@ export async function deleteAdminContributionGroup(
   client: SupabaseClient,
   access: AdminAccess,
   groupId: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("contributions", {
       method: "DELETE",
-      query: { id: groupId },
+      query: { id: groupId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "delete contribution groups");
-  await deleteRecordWithMatchers(client, contributionWriteTable, groupId, {
-    club_id: clubId,
-  });
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    contributionWriteTable,
+    groupId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_contribution_group",
+      source: "admin_contributions",
+    },
+  );
 }

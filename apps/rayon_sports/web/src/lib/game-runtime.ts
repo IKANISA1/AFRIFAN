@@ -214,6 +214,12 @@ export type GameActionBody =
       session_id?: string;
     }
   | {
+      action: "revoke_tv_device";
+      club_id: number;
+      tv_device_id: string;
+      reason?: string;
+    }
+  | {
       action: "review_question_draft";
       club_id: number;
       draft_id: string;
@@ -455,6 +461,19 @@ export function createGameRuntimeClient(options: GameRuntimeClientOptions) {
         device_label: input.deviceLabel,
         pairing_code: input.pairingCode,
         session_id: input.sessionId,
+      });
+    },
+
+    revokeTvDevice(input: {
+      clubId: number;
+      tvDeviceId: string;
+      reason?: string;
+    }) {
+      return postGameAction<{ tvDeviceId: string; status: string }>(options, {
+        action: "revoke_tv_device",
+        club_id: input.clubId,
+        tv_device_id: input.tvDeviceId,
+        reason: input.reason,
       });
     },
 

@@ -415,7 +415,7 @@ function AdminAuthCard() {
                         disabled={authBusy}
                         className={cn(
                           ui.input,
-                          "!pl-[100px] !h-14 !text-base !font-semibold !tracking-wide",
+                          "admin-auth-phone-input",
                         )}
                       />
                     </div>
@@ -746,7 +746,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           className={cn(
             "hidden shrink-0 xl:block",
             sidebarCollapsed ? "w-[64px]" : "w-[260px]",
-            "transition-all duration-300"
+            "transition-all duration-300 motion-reduce:transition-none"
           )}
         >
           <div className="sticky top-0 flex h-screen flex-col border-r border-[var(--admin-border)] bg-[var(--admin-zinc-950)] px-3 py-4">

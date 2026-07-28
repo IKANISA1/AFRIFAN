@@ -84,37 +84,40 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       return _buildUnauthorized();
     }
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: _isLoading
-              ? const Padding(
-                  padding: EdgeInsets.all(SpacingTokens.spacing6),
-                  child: AfriSkeletonList(),
-                )
-              : _error != null
-              ? _buildError()
-              : AfriRefreshIndicator(
-                  onRefresh: _loadDashboard,
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildHeader(),
-                        const SizedBox(height: SpacingTokens.spacing6),
-                        _buildMetrics(),
-                        const SizedBox(height: SpacingTokens.spacing6),
-                        _buildQuickActions(),
-                        const SizedBox(height: SpacingTokens.spacing6),
-                        _buildRecentActivity(),
-                      ],
-                    ),
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: true,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: SafeArea(
+        child: _isLoading
+            ? const Padding(
+                padding: EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriSkeletonList(),
+              )
+            : _error != null
+            ? _buildError()
+            : AfriRefreshIndicator(
+                onRefresh: _loadDashboard,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeader(),
+                      const SizedBox(height: SpacingTokens.spacing6),
+                      _buildMetrics(),
+                      const SizedBox(height: SpacingTokens.spacing6),
+                      _buildQuickActions(),
+                      const SizedBox(height: SpacingTokens.spacing6),
+                      _buildRecentActivity(),
+                    ],
                   ),
                 ),
-        ),
+              ),
       ),
     );
   }
@@ -276,44 +279,47 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   }
 
   Widget _buildUnauthorized() {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing8),
-              child: GlassCard(
-                animate: false,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      AfriIcons.lock,
-                      size: 48,
-                      color: ColorTokens.onSurfaceVariant,
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: true,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(SpacingTokens.spacing8),
+            child: GlassCard(
+              animate: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    AfriIcons.lock,
+                    size: 48,
+                    color: ColorTokens.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  Text(
+                    'ACCESS DENIED',
+                    style: TypographyTokens.headlineMedium().copyWith(
+                      color: ColorTokens.onSurface,
                     ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    Text(
-                      'ACCESS DENIED',
-                      style: TypographyTokens.headlineMedium().copyWith(
-                        color: ColorTokens.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    Text(
-                      'Admin privileges are required. Contact a club administrator.',
-                      textAlign: TextAlign.center,
-                      style: TypographyTokens.bodyMedium(),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing6),
-                    AfriButton(
-                      label: 'Go back',
-                      fullWidth: true,
-                      onTap: () => context.pop(),
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  Text(
+                    'Admin privileges are required. Contact a club administrator.',
+                    textAlign: TextAlign.center,
+                    style: TypographyTokens.bodyMedium(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing6),
+                  AfriButton(
+                    label: 'Go back',
+                    fullWidth: true,
+                    onTap: () => context.pop(),
+                  ),
+                ],
               ),
             ),
           ),

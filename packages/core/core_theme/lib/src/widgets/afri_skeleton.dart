@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../extensions.dart';
+import '../tokens/component_size_tokens.dart';
+import '../tokens/motion_tokens.dart';
 import '../tokens/shape_tokens.dart';
 
 /// Shimmer-effect skeleton for loading states.
@@ -16,7 +18,7 @@ import '../tokens/shape_tokens.dart';
 class AfriSkeleton extends StatefulWidget {
   const AfriSkeleton({
     this.width,
-    this.height = 16,
+    this.height = AfriComponentSizes.skeletonDefaultHeight,
     this.borderRadius = ShapeTokens.radiusMd,
     super.key,
   });
@@ -50,15 +52,27 @@ class AfriSkeleton extends StatefulWidget {
 class _AfriSkeletonState extends State<AfriSkeleton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  bool _reduceMotion = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: AfriMotion.skeletonShimmer,
     );
-    unawaited(_controller.repeat());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _reduceMotion = AfriMotion.reduceMotion(context);
+    if (_reduceMotion) {
+      _controller.stop();
+      _controller.value = 0;
+    } else if (!_controller.isAnimating) {
+      unawaited(_controller.repeat());
+    }
   }
 
   @override
@@ -70,9 +84,7 @@ class _AfriSkeletonState extends State<AfriSkeleton>
   @override
   Widget build(BuildContext context) {
     final colors = context.afriSemanticColors;
-    final reduceMotion = MediaQuery.disableAnimationsOf(context);
-
-    if (reduceMotion) {
+    if (_reduceMotion) {
       return ExcludeSemantics(
         child: Container(
           width: widget.width,
@@ -143,7 +155,7 @@ class AfriSkeletonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 210,
+      height: AfriComponentSizes.skeletonRowHeight,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: itemCount,

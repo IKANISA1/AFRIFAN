@@ -6,13 +6,22 @@ import 'color_tokens.dart';
 class TypographyTokens {
   TypographyTokens._();
 
-  /// Compatibility hook retained for older tests; typography now uses platform
-  /// system fonts only.
+  /// Forces the deterministic font loaded by golden tests.
+  ///
+  /// Production keeps this disabled so typography continues to use each
+  /// platform's system font.
   static bool debugUseFallbackFonts = false;
   static const double lineHeightHero = 0.90;
   static const double lineHeightCompact = 0.95;
   static const double lineHeightSolid = 1.0;
+  static const double lineHeightDense = 1.05;
+  static const double lineHeightTight = 1.1;
+  static const double lineHeightBody = 1.45;
   static const double lineHeightRelaxed = 1.5;
+  static const double lineHeightSpacious = 1.6;
+  static const double trackingNone = 0;
+  static const double trackingCompact = 0.3;
+  static const double numericAliasDefaultSize = 20;
 
   static const Map<String, double> semanticSizes = {
     'displayLarge': 48.0,
@@ -179,6 +188,7 @@ class TypographyTokens {
     double? decorationThickness,
   }) {
     return (textStyle ?? const TextStyle()).copyWith(
+      fontFamily: debugUseFallbackFonts ? 'GoldenRoboto' : null,
       color: color,
       fontSize: fontSize,
       fontWeight: fontWeight,
@@ -359,5 +369,25 @@ class TypographyTokens {
     color: color ?? ColorTokens.primaryContainer,
     height: 1.15,
     letterSpacing: 0.2,
+  );
+
+  /// Compact label used by shared floating bottom navigation.
+  static TextStyle navigationLabel({
+    required Color color,
+    required bool selected,
+  }) => utilityFont(
+    fontSize: 11,
+    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+    color: color,
+    letterSpacing: 0,
+  );
+
+  /// Compact numeric badge label.
+  static TextStyle badgeLabel([Color? color]) => utilityFont(
+    fontSize: 10,
+    fontWeight: FontWeight.w700,
+    color: color ?? ColorTokens.onDark,
+    height: lineHeightSolid,
+    letterSpacing: trackingNone,
   );
 }

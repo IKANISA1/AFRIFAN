@@ -127,6 +127,7 @@ export interface AdminNewsArticle {
   sortOrder: number;
   publishedAt: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface AdminMatchItem extends MatchItem {
@@ -135,12 +136,14 @@ export interface AdminMatchItem extends MatchItem {
   saleStartsAt: string | null;
   capacity: number;
   soldCount: number;
+  updatedAt: string;
 }
 
 export interface AdminMembershipPackage extends MembershipPackage {
   clubId: number | null;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface AdminMembershipApplication {
@@ -156,6 +159,7 @@ export interface AdminMembershipApplication {
   notes?: string | null;
   userName?: string;
   userPhone?: string;
+  updatedAt: string;
 }
 
 export interface AdminSupporter {
@@ -175,6 +179,7 @@ export interface AdminShopProduct extends ShopProduct {
   clubId: number | null;
   sortOrder: number;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface PlatformFeature {
@@ -187,6 +192,7 @@ export interface PlatformFeature {
   category: string | null;
   isEnabled: boolean;
   visibilityState: "visible" | "hidden" | "maintenance";
+  updatedAt: string;
   channels: {
     id: string | null;
     channel: "mobile" | "web";
@@ -340,6 +346,7 @@ export interface AdminFanClub extends FanClubItem {
   clubId: number | null;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface AdminStandingRow {
@@ -352,11 +359,13 @@ export interface AdminStandingRow {
   points: number;
   form: string[];
   clubSlug: string | null;
+  updatedAt: string;
 }
 
 export interface AdminContributionGroup extends ContributionGroup {
   creatorId: string | null;
   createdAt: string;
+  updatedAt: string;
   isClosed: boolean;
 }
 

@@ -18,7 +18,7 @@ class ProfileScreen extends ConsumerWidget {
     final membershipSummary = ref.watch(_profileMembershipSummaryProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -35,7 +35,8 @@ class ProfileScreen extends ConsumerWidget {
           ),
         ),
       ),
-      body: SafeArea(
+      scrollable: false,
+      child: SafeArea(
         top: false,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),

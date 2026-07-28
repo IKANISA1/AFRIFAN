@@ -178,6 +178,7 @@ describe("admin data helpers", () => {
           isActive: true,
           creatorId: "user-1",
           createdAt: "2026-04-03T08:00:00.000Z",
+          updatedAt: "2026-04-03T08:05:00.000Z",
           isClosed: false,
         },
       ],

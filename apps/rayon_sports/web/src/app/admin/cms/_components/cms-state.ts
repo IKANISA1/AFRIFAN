@@ -1,5 +1,6 @@
 export type ArticleForm = {
   id: string;
+  expectedUpdatedAt: string;
   title: string;
   subtitle: string;
   category: string;
@@ -12,6 +13,7 @@ export type ArticleForm = {
 
 export const emptyArticleForm: ArticleForm = {
   id: "",
+  expectedUpdatedAt: "",
   title: "",
   subtitle: "",
   category: "News",

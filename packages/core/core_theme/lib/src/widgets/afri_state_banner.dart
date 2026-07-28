@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_surface_card.dart';
@@ -41,8 +43,16 @@ class AfriStateBanner extends StatelessWidget {
     final resolvedSubtitle = subtitle?.trim();
     final showSubtitle =
         resolvedSubtitle != null && resolvedSubtitle.isNotEmpty;
-    final label =
-        semanticsLabel ?? (showSubtitle ? '$title. $resolvedSubtitle' : title);
+    final toneLabel = switch (tone) {
+      AfriStateBannerTone.neutral => 'Status',
+      AfriStateBannerTone.brand => 'Highlighted',
+      AfriStateBannerTone.info => 'Information',
+      AfriStateBannerTone.success => 'Success',
+      AfriStateBannerTone.warning => 'Warning',
+      AfriStateBannerTone.danger => 'Danger',
+    };
+    final contentLabel = showSubtitle ? '$title. $resolvedSubtitle' : title;
+    final label = semanticsLabel ?? '$toneLabel status: $contentLabel';
 
     final card = AfriSurfaceCard(
       onTap: onTap,
@@ -56,8 +66,12 @@ class AfriStateBanner extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: compact ? 36 : 42,
-            height: compact ? 36 : 42,
+            width: compact
+                ? AfriComponentSizes.stateBannerCompact
+                : AfriComponentSizes.stateBannerRegular,
+            height: compact
+                ? AfriComponentSizes.stateBannerCompact
+                : AfriComponentSizes.stateBannerRegular,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colors.background,
@@ -65,7 +79,7 @@ class AfriStateBanner extends StatelessWidget {
             ),
             child: Icon(
               icon,
-              size: compact ? AfriIcons.sizeInline : 20,
+              size: compact ? AfriIcons.sizeInline : SizeTokens.iconMd,
               color: colors.foreground,
             ),
           ),

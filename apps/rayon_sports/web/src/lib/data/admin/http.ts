@@ -1,4 +1,5 @@
 import { fetchWithOfflineQueue } from "@/lib/offline-queue";
+import { AdminMutationConflictError } from "./helpers";
 
 type AdminApiMethod = "GET" | "POST" | "DELETE";
 
@@ -7,6 +8,25 @@ type AdminApiOptions = {
   body?: unknown;
   query?: Record<string, string | number | boolean | null | undefined>;
 };
+
+export class AdminApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+    readonly code: string | null,
+  ) {
+    super(message);
+    this.name = "AdminApiError";
+  }
+}
+
+export function isAdminMutationConflict(error: unknown) {
+  return (
+    error instanceof AdminMutationConflictError ||
+    (error instanceof AdminApiError &&
+      (error.status === 409 || error.code === "STALE_RECORD"))
+  );
+}
 
 export async function requestAdminApi<T>(
   resource: string,
@@ -65,10 +85,15 @@ export async function requestAdminApi<T>(
   const payload = (await response.json().catch(() => ({}))) as {
     data?: T;
     error?: string;
+    code?: string;
   };
 
   if (!response.ok) {
-    throw new Error(payload.error ?? "Admin request failed.");
+    throw new AdminApiError(
+      payload.error ?? "Admin request failed.",
+      response.status,
+      payload.code ?? null,
+    );
   }
 
   return payload.data as T;

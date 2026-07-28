@@ -20,6 +20,7 @@ class UserProfile extends Equatable {
     this.momoProvider,
     this.isActive = true,
     this.isAdmin = false,
+    this.updatedAt,
   }) : momoNumber = momoNumber ?? phone,
        displayName = displayName ?? fullName,
        countryCode = countryCode ?? country;
@@ -36,6 +37,7 @@ class UserProfile extends Equatable {
   final String? momoProvider;
   final bool isActive;
   final bool isAdmin;
+  final String? updatedAt;
 
   // ─── Derived helpers ──────────────────────────────────────────
 
@@ -80,6 +82,7 @@ class UserProfile extends Equatable {
       momoProvider: _asNullableString(json['momo_provider']),
       isActive: _asBool(json['is_active'], fallback: true),
       isAdmin: _asBool(json['is_admin'], fallback: false),
+      updatedAt: _asNullableString(json['updated_at']),
     );
   }
 
@@ -141,6 +144,7 @@ class UserProfile extends Equatable {
     String? momoProvider,
     bool? isActive,
     bool? isAdmin,
+    String? updatedAt,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -155,6 +159,7 @@ class UserProfile extends Equatable {
       momoProvider: momoProvider ?? this.momoProvider,
       isActive: isActive ?? this.isActive,
       isAdmin: isAdmin ?? this.isAdmin,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -176,6 +181,7 @@ class UserProfile extends Equatable {
     momoProvider,
     isActive,
     isAdmin,
+    updatedAt,
   ];
 }
 

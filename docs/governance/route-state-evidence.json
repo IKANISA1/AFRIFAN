@@ -1,0 +1,2040 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-07-25T06:22:30Z",
+  "cells": {},
+  "groups": [
+    {
+      "id": "mobile-home-dark",
+      "cells": ["mobile|/home|tab|dark"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_compact_dark_320x760.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Home route has a deterministic dark-theme real-route widget test and exact compact screenshot.",
+      "owner": "Consumer experience QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-home-light",
+      "cells": ["mobile|/home|tab|light"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_compact_light_374x812.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Home route has a deterministic light-theme real-route widget test and exact compact screenshot.",
+      "owner": "Consumer experience QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-dark",
+      "cells": ["mobile|/search|route|dark"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_compact_dark_320x760.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Search route has a deterministic dark-theme real-route widget test and exact compact screenshot.",
+      "owner": "Search QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-light",
+      "cells": ["mobile|/search|route|light"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_compact_light_374x812.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Search route has a deterministic light-theme real-route widget test and exact compact screenshot.",
+      "owner": "Search QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-fanzone-dark",
+      "cells": ["mobile|/fanzone|tab|dark"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_compact_dark_320x760.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Fan Zone route has a deterministic dark-theme real-route widget test and exact compact screenshot.",
+      "owner": "Fan Zone QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-fanzone-light",
+      "cells": ["mobile|/fanzone|tab|light"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_compact_light_374x812.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Fan Zone route has a deterministic light-theme real-route widget test and exact compact screenshot.",
+      "owner": "Fan Zone QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-membership-dark",
+      "cells": ["mobile|/membership|route|dark"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_compact_dark_320x760.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Membership route has a deterministic dark-theme real-route widget test and exact compact screenshot.",
+      "owner": "Membership QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-membership-light",
+      "cells": ["mobile|/membership|route|light"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_compact_light_374x812.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Membership route has a deterministic light-theme real-route widget test and exact compact screenshot.",
+      "owner": "Membership QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-onboarding-dark",
+      "cells": ["mobile|/onboarding|route|dark"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_flow_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_compact_dark_320x760.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Onboarding route has a deterministic dark-theme real-route widget test and exact compact screenshot.",
+      "owner": "Identity and onboarding QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-onboarding-light",
+      "cells": ["mobile|/onboarding|route|light"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_flow_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_compact_light_374x812.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Onboarding route has a deterministic light-theme real-route widget test and exact compact screenshot.",
+      "owner": "Identity and onboarding QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-settings-dark",
+      "cells": ["mobile|/settings|tab|dark"],
+      "test_evidence": ["packages/features/feat_settings/test/settings_goldens_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_settings/test/goldens/settings_compact_dark_320x760.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Settings route has a deterministic dark-theme real-route widget test and exact compact screenshot.",
+      "owner": "Settings QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-settings-light",
+      "cells": ["mobile|/settings|tab|light"],
+      "test_evidence": ["packages/features/feat_settings/test/settings_goldens_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_settings/test/goldens/settings_compact_light_374x812.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Settings route has a deterministic light-theme real-route widget test and exact compact screenshot.",
+      "owner": "Settings QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-shop-cart-dark",
+      "cells": ["mobile|/shop/cart|route|dark"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_responsive_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_checkout_compact_dark_320x760.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Shop cart route has a deterministic dark-theme real-screen widget test and exact compact screenshot.",
+      "owner": "Commerce QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-shop-cart-light",
+      "cells": ["mobile|/shop/cart|route|light"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_responsive_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_checkout_compact_light_374x812.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Shop cart route has a deterministic light-theme real-screen widget test and exact compact screenshot.",
+      "owner": "Commerce QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-tickets-dark",
+      "cells": ["mobile|/tickets|route|dark"],
+      "test_evidence": ["packages/features/feat_ticketing/test/ticketing_state_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/ticket_checkout_compact_dark_320x760.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Tickets route checkout state has a deterministic dark-theme widget test and exact compact screenshot.",
+      "owner": "Ticketing QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-tickets-light",
+      "cells": ["mobile|/tickets|route|light"],
+      "test_evidence": ["packages/features/feat_ticketing/test/ticketing_state_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/ticket_checkout_compact_light_374x812.png"],
+      "accessibility_evidence": ["output/implementation_goal_20260724/theme_parity_matrix/theme-parity-matrix.json"],
+      "performance_evidence": [],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "platform_build_evidence": ["output/implementation_goal_20260724/engagement-manifest.json"],
+      "disposition_note": "The production Tickets route checkout state has a deterministic light-theme widget test and exact compact screenshot.",
+      "owner": "Ticketing QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-home-reduced-motion",
+      "cells": ["mobile|/home|tab|reduced_motion"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_home/test/goldens/home_compact_dark_320x760.png",
+        "packages/features/feat_home/test/goldens/home_compact_light_374x812.png"
+      ],
+      "accessibility_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Home route golden harness sets disableAnimations and accessibleNavigation before both exact compact captures.",
+      "owner": "Consumer experience QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-reduced-motion",
+      "cells": ["mobile|/search|route|reduced_motion"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_home/test/goldens/search_compact_dark_320x760.png",
+        "packages/features/feat_home/test/goldens/search_compact_light_374x812.png"
+      ],
+      "accessibility_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Search route golden harness sets disableAnimations and accessibleNavigation before both exact compact captures.",
+      "owner": "Search QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-fanzone-reduced-motion",
+      "cells": ["mobile|/fanzone|tab|reduced_motion"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_gamification/test/goldens/fanzone_compact_dark_320x760.png",
+        "packages/features/feat_gamification/test/goldens/fanzone_compact_light_374x812.png"
+      ],
+      "accessibility_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Fan Zone route golden harness sets disableAnimations and accessibleNavigation before both exact compact captures.",
+      "owner": "Fan Zone QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-membership-reduced-motion",
+      "cells": ["mobile|/membership|route|reduced_motion"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_membership/test/goldens/membership_compact_dark_320x760.png",
+        "packages/features/feat_membership/test/goldens/membership_compact_light_374x812.png"
+      ],
+      "accessibility_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Membership route golden harness sets disableAnimations and accessibleNavigation before both exact compact captures.",
+      "owner": "Membership QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-onboarding-reduced-motion",
+      "cells": ["mobile|/onboarding|route|reduced_motion"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_flow_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_onboarding/test/goldens/onboarding_compact_dark_320x760.png",
+        "packages/features/feat_onboarding/test/goldens/onboarding_compact_light_374x812.png"
+      ],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_flow_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Onboarding route golden harness sets disableAnimations and accessibleNavigation before both exact compact captures.",
+      "owner": "Identity and onboarding QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-settings-reduced-motion",
+      "cells": ["mobile|/settings|tab|reduced_motion"],
+      "test_evidence": ["packages/features/feat_settings/test/settings_goldens_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_settings/test/goldens/settings_compact_dark_320x760.png",
+        "packages/features/feat_settings/test/goldens/settings_compact_light_374x812.png"
+      ],
+      "accessibility_evidence": ["packages/features/feat_settings/test/settings_goldens_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Settings route golden harness sets disableAnimations and accessibleNavigation before both exact compact captures.",
+      "owner": "Settings QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-shop-cart-reduced-motion",
+      "cells": ["mobile|/shop/cart|route|reduced_motion"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_responsive_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_shop/test/goldens/shop_checkout_compact_dark_320x760.png",
+        "packages/features/feat_shop/test/goldens/shop_checkout_compact_light_374x812.png"
+      ],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_responsive_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Shop cart route golden harness sets disableAnimations and accessibleNavigation before both exact compact captures.",
+      "owner": "Commerce QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-tickets-reduced-motion",
+      "cells": ["mobile|/tickets|route|reduced_motion"],
+      "test_evidence": ["packages/features/feat_ticketing/test/ticketing_state_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_ticketing/test/goldens/ticket_checkout_compact_dark_320x760.png",
+        "packages/features/feat_ticketing/test/goldens/ticket_checkout_compact_light_374x812.png"
+      ],
+      "accessibility_evidence": ["packages/features/feat_ticketing/test/ticketing_state_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Tickets route golden harness sets disableAnimations and accessibleNavigation before both exact compact captures.",
+      "owner": "Ticketing QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-loading",
+      "cells": ["mobile|/search|route|loading"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_loading_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Search route keeps its input and category controls visible while the repository request remains pending.",
+      "owner": "Search QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-empty",
+      "cells": ["mobile|/search|route|empty"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_empty_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Search route renders a bounded no-results state with a category-reset recovery action.",
+      "owner": "Search QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-error",
+      "cells": ["mobile|/search|route|error"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_error_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Search route renders an explicit request failure with a deterministic Retry action.",
+      "owner": "Search QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-offline",
+      "cells": ["mobile|/search|route|offline"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_offline_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Search route labels device-stored results as offline and warns that live content may be out of date.",
+      "owner": "Search QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-large-text",
+      "cells": ["mobile|/search|route|large_text"],
+      "test_evidence": [
+        "packages/features/feat_home/test/discovery_search_test.dart",
+        "packages/core/core_theme/test/afri_screen_scaffold_test.dart",
+        "packages/core/core_theme/test/accessibility_primitives_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, the governed compact title stays on one line, filter labels remain intact in the horizontal selector, and the task message remains readable.",
+      "owner": "Search and accessibility QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-focused",
+      "cells": ["mobile|/search|route|focused"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Search input exposes a visible focus treatment before query entry.",
+      "owner": "Search and accessibility QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-search-selected",
+      "cells": ["mobile|/search|route|selected"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Search category selector exposes a visually distinct Supporters selection and the test asserts selected index one.",
+      "owner": "Search and accessibility QA",
+      "reviewed_at": "2026-07-24"
+    },
+    {
+      "id": "mobile-home-loading",
+      "cells": ["mobile|/home|tab|loading"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_loading_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Home route preserves its command bar and renders deterministic hero and content skeletons while the feed request remains pending.",
+      "owner": "Home QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-empty",
+      "cells": ["mobile|/home|tab|empty"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_empty_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Home route renders its truthful local fallback, paused-live-data notice, Matchday empty state, and task shortcuts without clipping.",
+      "owner": "Home QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-error",
+      "cells": ["mobile|/home|tab|error"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_error_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Home route retains navigation and safe shortcuts while presenting an explicit feed failure and Try Again recovery action.",
+      "owner": "Home QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-large-text",
+      "cells": ["mobile|/home|tab|large_text"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, the production Home command bar, hero, Match Strip, and scrollable primary task path remain readable without render overflow.",
+      "owner": "Home and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-offline",
+      "cells": ["mobile|/home|tab|offline"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_offline_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Home route detects offline state before repository access, preserves safe local shortcuts and Matchday guidance, and tells the user that connection is required to refresh.",
+      "owner": "Home resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-permission-denied",
+      "cells": ["mobile|/home|tab|permission_denied"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_permission_denied_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Home route maps policy rejection to stable account-access guidance, exposes no retry that would repeat a denied request, and omits raw account or row-policy diagnostics.",
+      "owner": "Home security and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-disabled",
+      "cells": ["mobile|/home|tab|disabled"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Visible-but-unavailable Fan Zone work remains discoverable as a muted, disabled Matchday command and shortcut with an explicit Unavailable consequence instead of disappearing.",
+      "owner": "Home and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-focused",
+      "cells": ["mobile|/home|tab|focused"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Tickets shortcut receives real traditional focus through its FocusableActionDetector and exposes a complete high-contrast focus ring.",
+      "owner": "Home and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-pressed",
+      "cells": ["mobile|/home|tab|pressed"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer drives the production Tickets shortcut through AfriPressFeedback and produces a visibly darker, scaled press response before activation.",
+      "owner": "Home interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-selected",
+      "cells": ["mobile|/home|tab|selected"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real PageView swipe selects the second production hero item and updates the active page indicator while preserving the complete Home task context.",
+      "owner": "Home interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-syncing",
+      "cells": ["mobile|/home|tab|syncing"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_syncing_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production refresh path retains the current matchday, points, and shortcuts beneath complete Refreshing Home guidance while a bounded request remains pending.",
+      "owner": "Home resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-conflict",
+      "cells": ["mobile|/home|tab|conflict"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_conflict_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Home route converts stale revision conflicts into current-data guidance and a bounded Refresh action without exposing raw supporter identifiers.",
+      "owner": "Home resilience and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-home-security-timeout",
+      "cells": ["mobile|/home|tab|security_timeout"],
+      "test_evidence": ["packages/features/feat_home/test/home_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/home_state_security_timeout_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A genuinely pending repository request is bounded by the provider-owned timeout and becomes privacy-safe security-check guidance with an explicit Refresh action.",
+      "owner": "Home security and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-loading",
+      "cells": ["mobile|/fanzone|tab|loading"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_loading_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Fan Zone route keeps its section selector visible and announces Opening Fan Zone while repository data remains pending.",
+      "owner": "Fan Zone QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-empty",
+      "cells": ["mobile|/fanzone|tab|empty"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_empty_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Fan Zone route exposes its task shortcuts and an explicit No matchday rounds state when the repository returns a valid empty snapshot.",
+      "owner": "Fan Zone QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-error",
+      "cells": ["mobile|/fanzone|tab|error"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_error_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Fan Zone route presents an explicit unavailable state, bounded failure message, and Retry recovery action after a repository exception.",
+      "owner": "Fan Zone QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-offline",
+      "cells": ["mobile|/fanzone|tab|offline"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_offline_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Fan Zone route renders a Live updates paused warning and disables live behavior when connectivity is unavailable.",
+      "owner": "Fan Zone QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-large-text",
+      "cells": ["mobile|/fanzone|tab|large_text"],
+      "test_evidence": [
+        "packages/features/feat_gamification/test/fanzone_hub_screen_test.dart",
+        "packages/core/core_theme/test/accessibility_primitives_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, Fan Zone metrics reflow vertically without truncation and icon-labelled sections retain readable labels in a horizontal selector.",
+      "owner": "Fan Zone and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-selected",
+      "cells": ["mobile|/fanzone|tab|selected"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Fan Zone selector exposes a visually distinct League selection and the route query initializes that section deterministically.",
+      "owner": "Fan Zone and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-permission-denied",
+      "cells": ["mobile|/fanzone|tab|permission_denied"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_permission_denied_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Fan Zone route maps policy rejection to stable account-access guidance, exposes no retry that would repeat a denied request, and omits raw account or row-policy diagnostics.",
+      "owner": "Fan Zone security and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-disabled",
+      "cells": ["mobile|/fanzone|tab|disabled"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Visible but unavailable venue features retain their task labels and consequences, expose an Unavailable status, and render non-interactive rows instead of disappearing or accepting input.",
+      "owner": "Fan Zone product and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-focused",
+      "cells": ["mobile|/fanzone|tab|focused"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/focus_traversal_contract_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real platform traditional-focus execution places a measurable blue non-colour ring around the unselected League segment while the selected Pick state and current Fan Zone content remain visible.",
+      "owner": "Fan Zone and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-pressed",
+      "cells": ["mobile|/fanzone|tab|pressed"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/universal_interaction_state_golden_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer drives the production League segment press feedback while current metrics, selection, and Fan Zone actions remain visible.",
+      "owner": "Fan Zone and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-syncing",
+      "cells": ["mobile|/fanzone|tab|syncing"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_syncing_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production refresh path retains current points, rounds, selection, and actions beneath complete Refreshing Fan Zone guidance while bounded requests remain pending.",
+      "owner": "Fan Zone resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-conflict",
+      "cells": ["mobile|/fanzone|tab|conflict"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_conflict_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A revision conflict maps to stable changed-data guidance and one Refresh action without rendering raw revision, supporter, or backend diagnostics.",
+      "owner": "Fan Zone resilience and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-fanzone-security-timeout",
+      "cells": ["mobile|/fanzone|tab|security_timeout"],
+      "test_evidence": ["packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_gamification/test/goldens/fanzone_state_security_timeout_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real pending request is bounded by the production timeout and maps to stable security-check guidance with one Refresh action before the supporter continues.",
+      "owner": "Fan Zone security and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-loading",
+      "cells": ["mobile|/membership|route|loading"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_loading_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Membership route retains identity and navigation context while rendering deterministic package skeletons during a pending repository request.",
+      "owner": "Membership QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-empty",
+      "cells": ["mobile|/membership|route|empty"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_empty_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Membership route shows an explicit Membership setup pending state and explains that packages appear after club publication.",
+      "owner": "Membership QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-error",
+      "cells": ["mobile|/membership|route|error"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_error_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Membership route presents an explicit unavailable state, bounded failure message, and Retry recovery action after a repository exception.",
+      "owner": "Membership QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-offline",
+      "cells": ["mobile|/membership|route|offline"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_offline_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Membership route distinguishes connectivity loss from an online request failure and instructs the supporter to reconnect for current details.",
+      "owner": "Membership QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-large-text",
+      "cells": ["mobile|/membership|route|large_text"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, membership package title, current status, description, complete price, and full-width action reflow vertically without truncation or overflow.",
+      "owner": "Membership and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-selected",
+      "cells": ["mobile|/membership|route|selected"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The current Gold membership package exposes a distinct success-toned Current label, selected semantics, and Renew action while other packages remain Switch actions.",
+      "owner": "Membership and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-loading",
+      "cells": ["mobile|/tickets|route|loading"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_loading_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Tickets route retains app-bar and tab context while rendering deterministic match-card skeletons during a pending inventory request.",
+      "owner": "Ticketing QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-empty",
+      "cells": ["mobile|/tickets|route|empty"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_empty_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Tickets route shows an explicit no-upcoming-fixtures state, explains when inventory appears, and retains a Refresh recovery action.",
+      "owner": "Ticketing QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-error",
+      "cells": ["mobile|/tickets|route|error"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_error_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Tickets route presents an explicit inventory failure, bounded explanation, and Retry action after an online repository exception.",
+      "owner": "Ticketing QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-offline",
+      "cells": ["mobile|/tickets|route|offline"],
+      "test_evidence": [
+        "packages/features/feat_ticketing/test/match_list_ui_test.dart",
+        "packages/features/feat_ticketing/test/ticket_offline_recovery_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_offline_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Tickets route distinguishes connectivity loss from an online failure, instructs the supporter to reconnect, and visibly disables refresh/retry actions while offline.",
+      "owner": "Ticketing and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-large-text",
+      "cells": ["mobile|/tickets|route|large_text"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, the semantic NEXT tab label, availability, teams, competition, full date, venue, price, and full-width Buy ticket action reflow without truncation or overflow.",
+      "owner": "Ticketing and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-selected",
+      "cells": ["mobile|/tickets|route|selected"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Tickets route exposes a visually distinct and semantically selected Past tab with deterministic historical fixture content.",
+      "owner": "Ticketing and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-disabled",
+      "cells": ["mobile|/tickets|route|disabled"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A sold-out fixture keeps its price and match context visible while exposing a complete Sold out purchase action that is visibly and semantically disabled.",
+      "owner": "Ticketing and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-focused",
+      "cells": ["mobile|/tickets|route|focused"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Real platform focus lands on the available fixture purchase action and produces the shared non-color-only focus ring while the fixture and price remain visible.",
+      "owner": "Ticketing and keyboard-accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-pressed",
+      "cells": ["mobile|/tickets|route|pressed"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer on Buy ticket produces the shared press-scale response without navigating away from the fixture list.",
+      "owner": "Ticketing and interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-permission-denied",
+      "cells": ["mobile|/tickets|route|permission_denied"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_permission_denied_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A ticket-inventory policy rejection maps to stable account-access guidance, disables retry, and never renders the raw account, row, or RLS diagnostic.",
+      "owner": "Ticketing, security, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-syncing",
+      "cells": ["mobile|/tickets|route|syncing"],
+      "test_evidence": [
+        "packages/features/feat_ticketing/test/match_list_ui_test.dart",
+        "packages/features/feat_ticketing/test/ticket_offline_recovery_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_syncing_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A refresh retains the last settled fixture and purchase context while a complete Refreshing ticket inventory banner marks availability as being checked.",
+      "owner": "Ticketing, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-conflict",
+      "cells": ["mobile|/tickets|route|conflict"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_conflict_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A fixture revision conflict maps to stable Ticket inventory changed guidance, requires refresh before ticket choice, and excludes raw revision diagnostics.",
+      "owner": "Ticketing, resilience, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-tickets-security-timeout",
+      "cells": ["mobile|/tickets|route|security_timeout"],
+      "test_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_ticketing/test/goldens/tickets_state_security_timeout_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_ticketing/test/match_list_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The inventory provider has a bounded timeout that renders concise secure-check recovery without exposing transport, account, or backend diagnostics.",
+      "owner": "Ticketing, security, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-loading",
+      "cells": ["mobile|/shop|route|loading"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_loading_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Shop route retains app-bar, search, cart, and category context while rendering deterministic catalog skeletons during a pending product request.",
+      "owner": "Shop QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-empty",
+      "cells": ["mobile|/shop|route|empty"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_empty_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Shop route shows an explicit no-products state, explains the absence of current inventory, and retains a Retry recovery action.",
+      "owner": "Shop QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-error",
+      "cells": ["mobile|/shop|route|error"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_error_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Shop route distinguishes an online catalog failure with error-toned treatment, a bounded explanation, and Retry recovery.",
+      "owner": "Shop QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-offline",
+      "cells": ["mobile|/shop|route|offline"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_offline_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Shop route distinguishes connectivity loss from an online failure, explains that current merchandise requires reconnection, and omits an inoperable Retry action.",
+      "owner": "Shop and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-large-text",
+      "cells": ["mobile|/shop|route|large_text"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, the catalog reflows to one natural-height column with complete product name, description, price, and add action without overflow.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-selected",
+      "cells": ["mobile|/shop|route|selected"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Shop route exposes a visibly distinct and semantically selected Jerseys category and filters the catalog to the matching product.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-disabled",
+      "cells": ["mobile|/shop|route|disabled"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An unavailable product is explicitly labelled OUT OF STOCK and its add action is visibly and semantically disabled rather than accepting an invalid cart mutation.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-focused",
+      "cells": ["mobile|/shop|route|focused"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Real platform focus on the first product card produces a high-contrast non-colour ring through the shared press-feedback primitive while retaining the complete card content.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-pressed",
+      "cells": ["mobile|/shop|route|pressed"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer on the first product card produces the shared reduced-scale and pressed-shadow treatment before release without triggering navigation.",
+      "owner": "Shop and interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-permission-denied",
+      "cells": ["mobile|/shop|route|permission_denied"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_permission_denied_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Authorization failure maps to stable access-denied copy, omits an inoperable retry, and never exposes raw backend diagnostics or identifiers.",
+      "owner": "Shop, security, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-syncing",
+      "cells": ["mobile|/shop|route|syncing"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_syncing_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real offline-to-online reconnect retains the complete catalog while a bounded refresh is pending and shows a complete Refreshing store status banner.",
+      "owner": "Shop and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-conflict",
+      "cells": ["mobile|/shop|route|conflict"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_conflict_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A catalog-version conflict renders distinct stable copy with one bounded refresh action and suppresses raw exception detail.",
+      "owner": "Shop and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-security-timeout",
+      "cells": ["mobile|/shop|route|security_timeout"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_security_timeout_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real pending catalog request is bounded by the production timeout and resolves to stable security-check copy with one refresh action.",
+      "owner": "Shop, security, and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-reduced-motion",
+      "cells": ["mobile|/shop|route|reduced_motion"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_reduced_motion_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "With platform reduced motion enabled, the production route remains complete and the shared motion resolver returns zero duration for its product-card entrance and interaction transitions.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-dark",
+      "cells": ["mobile|/shop|route|dark"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Shop route is rendered under the explicit dark club theme with complete catalog hierarchy, inventory actions, and readable product metadata.",
+      "owner": "Shop and visual QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-light",
+      "cells": ["mobile|/shop|route|light"],
+      "test_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/shop_state_light_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/shop_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Shop route is rendered under the explicit light club theme with complete hierarchy, legible product content, and no clipping or overlap at the target viewport.",
+      "owner": "Shop and visual QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-loading",
+      "cells": ["mobile|/shop/product/:productId|route|loading"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_loading_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production product-detail route preserves a visible close action and deterministic detail skeletons while a product request is pending.",
+      "owner": "Shop QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-empty",
+      "cells": ["mobile|/shop/product/:productId|route|empty"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_empty_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A missing product renders an explicit not-found state, explains that the item is no longer available in the current club store, and provides a bounded return action.",
+      "owner": "Shop QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-error",
+      "cells": ["mobile|/shop/product/:productId|route|error"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_error_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An online detail request failure uses error-toned treatment, bounded non-technical copy, and an explicit Refresh recovery action.",
+      "owner": "Shop QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-offline",
+      "cells": ["mobile|/shop/product/:productId|route|offline"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_offline_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The detail route distinguishes connectivity loss, explains that current price, size, and availability require reconnection, retains a return action, and automatically reloads when connectivity is restored.",
+      "owner": "Shop and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-large-text",
+      "cells": ["mobile|/shop/product/:productId|route|large_text"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, product media fallback, price, sizes, quantity, full total, Add to cart, and Buy now actions reflow without rendering overflow.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-selected",
+      "cells": ["mobile|/shop/product/:productId|route|selected"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The XL size control exposes a visually distinct gold treatment and semantic selected state while the other available sizes remain unselected.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-permission-denied",
+      "cells": ["mobile|/shop/product/:productId|route|permission_denied"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_permission_denied_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Policy rejection maps to stable account-access copy, omits an inoperable retry, and suppresses raw row and backend diagnostics.",
+      "owner": "Shop, security, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-disabled",
+      "cells": ["mobile|/shop/product/:productId|route|disabled"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Out-of-stock inventory retains product, price, size, and quantity context while Add to cart and Buy now remain visibly disabled.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-focused",
+      "cells": ["mobile|/shop/product/:productId|route|focused"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Real platform focus on the unselected M size renders a three-pixel blue non-colour ring while the selected S size remains distinct.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-pressed",
+      "cells": ["mobile|/shop/product/:productId|route|pressed"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer on the M size renders the shared pressed treatment before release without changing the selected S size.",
+      "owner": "Shop and interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-reduced-motion",
+      "cells": ["mobile|/shop/product/:productId|route|reduced_motion"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_reduced_motion_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Platform reduced motion resolves route and size-control animation durations to zero while preserving the complete purchase task.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-dark",
+      "cells": ["mobile|/shop/product/:productId|route|dark"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The explicit dark theme retains complete product, availability, variant, quantity, total, and purchase-action hierarchy.",
+      "owner": "Shop and visual QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-light",
+      "cells": ["mobile|/shop/product/:productId|route|light"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_light_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The explicit light theme retains legible product, availability, variant, quantity, total, and purchase actions without overlap.",
+      "owner": "Shop and visual QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-syncing",
+      "cells": ["mobile|/shop/product/:productId|route|syncing"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_syncing_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real offline-to-online transition retains settled product and purchase context beneath complete Refreshing product details guidance.",
+      "owner": "Shop and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-conflict",
+      "cells": ["mobile|/shop/product/:productId|route|conflict"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_conflict_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A product revision conflict renders stable current-data guidance with one bounded Refresh action and no raw diagnostics.",
+      "owner": "Shop and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-product-security-timeout",
+      "cells": ["mobile|/shop/product/:productId|route|security_timeout"],
+      "test_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/product_detail_state_security_timeout_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/product_detail_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real pending detail request is bounded by the production timeout and resolves to stable secure-check guidance with one Refresh action.",
+      "owner": "Shop, security, and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-loading",
+      "cells": ["mobile|/shop/cart|route|loading"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_loading_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production cart retains item, delivery, total, and return context while displaying a deterministic payment-availability check and a visibly disabled checkout action.",
+      "owner": "Shop QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-empty",
+      "cells": ["mobile|/shop/cart|route|empty"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_empty_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production cart presents a central empty-state identity, explains how to recover, and provides a full-width Back to shop action.",
+      "owner": "Shop QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-error",
+      "cells": ["mobile|/shop/cart|route|error"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_error_dark_390x844.png"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A failed payment-availability request now produces bounded error treatment, preserves the cart and address, provides Retry, and disables checkout until availability is known.",
+      "owner": "Shop QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-offline",
+      "cells": ["mobile|/shop/cart|route|offline"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_offline_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The cart keeps item and draft context offline, explains that current payment availability requires reconnection, disables checkout, and automatically refreshes the payment route after reconnect.",
+      "owner": "Shop and resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-disabled",
+      "cells": ["mobile|/shop/cart|route|disabled"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "When the club has no active payment route, the cart states the activation consequence and exposes a visibly and programmatically disabled Payment route not ready action.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-focused",
+      "cells": ["mobile|/shop/cart|route|focused"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The focused delivery-address field retains entered text, a visible cursor, a non-colliding address hint, payment destination context, and a reachable checkout action.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-selected",
+      "cells": ["mobile|/shop/cart|route|selected"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Increasing quantity updates both the visible Qty 2 status and all dependent line, subtotal, and total amounts while preserving decrement, increment, remove, and checkout controls.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-large-text",
+      "cells": ["mobile|/shop/cart|route|large_text"],
+      "test_evidence": [
+        "packages/features/feat_shop/test/cart_screen_states_test.dart",
+        "packages/features/feat_shop/test/cart_screen_responsive_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, the full subtotal, delivery, total, payment-destination consequence, and adaptive Pay with MOMO action remain complete without overflow or truncation.",
+      "owner": "Shop and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-loading",
+      "cells": ["mobile|/auth/phone|route|loading"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_loading_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production phone-auth route masks the entered number, disables duplicate actions, and presents a bounded Sending code state while the WhatsApp OTP request remains pending.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-empty",
+      "cells": ["mobile|/auth/phone|route|empty"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_empty_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The initial phone-auth route exposes a labeled empty input, synthetic format hint, privacy consequence, disabled Send code action, and available guest recovery path.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-error",
+      "cells": ["mobile|/auth/phone|route|error"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/core/core_auth/test/auth_action_failure_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_error_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An unknown OTP-request failure is sanitized, announced in a live bounded state, keeps the masked draft, and provides explicit Edit number recovery without rendering backend details.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-offline",
+      "cells": ["mobile|/auth/phone|route|offline"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_offline_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production route distinguishes connectivity loss, explains that a code cannot be sent offline, disables only the network action, preserves the guest path, and clears the offline state on reconnect.",
+      "owner": "Identity, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-permission-denied",
+      "cells": ["mobile|/auth/phone|route|permission_denied"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/core/core_auth/test/auth_action_failure_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_permission_denied_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Permission and policy failures map to stable non-technical copy, retain a masked draft, avoid falsely marking the number invalid, and expose an Edit number recovery action.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-disabled",
+      "cells": ["mobile|/auth/phone|route|disabled"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A syntactically incomplete number keeps Send code visibly and programmatically disabled while retaining the draft, privacy helper, focus treatment, and alternative guest path.",
+      "owner": "Identity and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-focused",
+      "cells": ["mobile|/auth/phone|route|focused"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production phone input exposes a distinct token-driven focus ring and cursor using synthetic masked-looking content, and remains sequentially reachable above the keyboard at 200 percent text.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-large-text",
+      "cells": ["mobile|/auth/phone|route|large_text"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, decorative header media is omitted, the full task explanation, short Phone label, privacy consequence, and Send code action remain complete and vertically scrollable without overflow.",
+      "owner": "Identity and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-loading",
+      "cells": ["mobile|/auth/otp|route|loading"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_loading_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production OTP route obscures every entered digit, disables verification, resend, and number changes during the request, and renders a bounded Checking code state.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-empty",
+      "cells": ["mobile|/auth/otp|route|empty"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_empty_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The OTP route no longer renders the destination phone number, presents an empty obscured one-time-code field, explains its privacy behavior, disables verification, and preserves change-number recovery.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-error",
+      "cells": ["mobile|/auth/otp|route|error"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/core/core_auth/test/auth_action_failure_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_error_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An invalid code produces sanitized bounded error treatment, concise field guidance without truncation, masked retained digits, Check code recovery, and no raw backend or OTP value.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-offline",
+      "cells": ["mobile|/auth/otp|route|offline"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_offline_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Connectivity loss is distinguished from a rejected code, blocks verification and resend, keeps change-number recovery available, retains an obscured draft, and clears automatically after reconnection.",
+      "owner": "Identity, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-permission-denied",
+      "cells": ["mobile|/auth/otp|route|permission_denied"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/core/core_auth/test/auth_action_failure_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_permission_denied_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Permission and policy rejection renders stable Verification unavailable guidance, preserves masked digits, avoids falsely marking the code malformed, and keeps both Check code and Change number recovery.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-disabled",
+      "cells": ["mobile|/auth/otp|route|disabled"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An incomplete obscured code keeps Verify and continue visibly and programmatically disabled while the resend cooldown and change-number recovery remain clear.",
+      "owner": "Identity and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-focused",
+      "cells": ["mobile|/auth/otp|route|focused"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The obscured one-time-code field exposes a distinct focus ring and cursor, retains OTP autofill semantics, and never exposes entered digits in the governed screenshot.",
+      "owner": "Identity, privacy, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-large-text",
+      "cells": ["mobile|/auth/otp|route|large_text"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, decorative header media is omitted and the full task context, short Code label, privacy consequence, adaptive Verify code action, resend cooldown, and change-number recovery remain scrollable without overflow.",
+      "owner": "Identity and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-pressed",
+      "cells": ["mobile|/auth/phone|route|pressed"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer gesture produces the shared pressed opacity and scale treatment on Send code while the input uses an unmistakably synthetic all-zero value and the action remains operable.",
+      "owner": "Identity, interaction, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-selected",
+      "cells": ["mobile|/auth/phone|route|selected"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Real text selection visibly highlights only the synthetic masked-looking phone format, preserves the focus ring and privacy consequence, and keeps the invalid draft from enabling submission.",
+      "owner": "Identity, interaction, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-reduced-motion",
+      "cells": ["mobile|/auth/phone|route|reduced_motion"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_reduced_motion_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "With platform disable-animations and accessible-navigation signals active, phone authentication renders immediately at its stable task state and all route-owned scrolling resolves through the shared reduced-motion contract.",
+      "owner": "Identity and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-theme-parity",
+      "cells": [
+        "mobile|/auth/phone|route|dark",
+        "mobile|/auth/phone|route|light"
+      ],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_onboarding/test/goldens/auth_phone_state_dark_dark_390x844.png",
+        "packages/features/feat_onboarding/test/goldens/auth_phone_state_light_light_390x844.png"
+      ],
+      "accessibility_evidence": ["packages/core/core_theme/test/contrast_audit_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Exact same-viewport dark and light captures retain the phone task hierarchy, focus, disabled action, and privacy guidance. Review rejected the inherited white guest action in light mode; it now uses the current semantic primary-text color.",
+      "owner": "Identity, design, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-syncing",
+      "cells": ["mobile|/auth/phone|route|syncing"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_syncing_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "While the WhatsApp request is synchronizing with the remote identity provider, the route shows bounded Sending code progress, masks the draft, disables duplicate actions, and explains why the screen must remain open.",
+      "owner": "Identity, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-conflict",
+      "cells": ["mobile|/auth/phone|route|conflict"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/core/core_auth/test/auth_action_failure_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_conflict_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An account-link conflict maps to stable Number already linked guidance, masks the retained draft, exposes Edit number recovery, and never renders backend diagnostics or account identifiers.",
+      "owner": "Identity, security, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-phone-security-timeout",
+      "cells": ["mobile|/auth/phone|route|security_timeout"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/core/core_auth/test/auth_action_failure_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_phone_state_security_timeout_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A timed-out request is distinguished from invalid input, presents safe retry guidance, masks the retained draft, and keeps Edit number plus Send code recovery available.",
+      "owner": "Identity, security, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-pressed",
+      "cells": ["mobile|/auth/otp|route|pressed"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer gesture produces the shared pressed treatment on Verify and continue while all entered OTP digits remain obscured and resend/change-number context stays available.",
+      "owner": "Identity, interaction, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-selected",
+      "cells": ["mobile|/auth/otp|route|selected"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Real text selection visibly highlights only obscured bullet glyphs, preserves the focus ring and privacy consequence, and never reveals the selected one-time-code digits.",
+      "owner": "Identity, interaction, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-reduced-motion",
+      "cells": ["mobile|/auth/otp|route|reduced_motion"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_reduced_motion_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "With platform disable-animations and accessible-navigation signals active, OTP verification renders directly at its stable task state without delayed route-owned motion.",
+      "owner": "Identity and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-theme-parity",
+      "cells": [
+        "mobile|/auth/otp|route|dark",
+        "mobile|/auth/otp|route|light"
+      ],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": [
+        "packages/features/feat_onboarding/test/goldens/auth_otp_state_dark_dark_390x844.png",
+        "packages/features/feat_onboarding/test/goldens/auth_otp_state_light_light_390x844.png"
+      ],
+      "accessibility_evidence": ["packages/core/core_theme/test/contrast_audit_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Exact same-viewport dark and light captures retain the OTP hierarchy, focus, disabled action, privacy guidance, resend cooldown, and change-number recovery. Review rejected the inherited white light-mode recovery action; both text actions now use semantic enabled and disabled colors.",
+      "owner": "Identity, design, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-syncing",
+      "cells": ["mobile|/auth/otp|route|syncing"],
+      "test_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_syncing_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A resend request uses bounded Sending new code progress, disables verification, resend, and number changes, retains no exposed OTP value, and explains the active remote request.",
+      "owner": "Identity, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-conflict",
+      "cells": ["mobile|/auth/otp|route|conflict"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/core/core_auth/test/auth_action_failure_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_conflict_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An account-link conflict maps to stable Number already linked guidance, keeps every retained digit obscured, and exposes Check code plus Change number recovery without backend or account identifiers.",
+      "owner": "Identity, security, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-auth-otp-security-timeout",
+      "cells": ["mobile|/auth/otp|route|security_timeout"],
+      "test_evidence": [
+        "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart",
+        "packages/core/core_auth/test/auth_action_failure_test.dart"
+      ],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/auth_otp_state_security_timeout_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An expired code is distinguished from invalid input, keeps all retained digits obscured, gives concise Request a new code field guidance, and preserves Check code, resend, and change-number recovery.",
+      "owner": "Identity, security, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-permission-denied",
+      "cells": ["mobile|/shop/cart|route|permission_denied"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_permission_denied_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_responsive_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A checkout policy rejection now maps to a stable Checkout not permitted state, retains the cart and address, disables resubmission, and never renders the raw tenant, policy, or account diagnostic.",
+      "owner": "Commerce, security, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-pressed",
+      "cells": ["mobile|/shop/cart|route|pressed"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer gesture produces the shared pressed treatment on Checkout via MOMO while the populated cart, payment destination, and delivery context remain visible.",
+      "owner": "Commerce and interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-syncing",
+      "cells": ["mobile|/shop/cart|route|syncing"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_syncing_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_responsive_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "After explicit order confirmation, a pending remote write produces bounded Processing feedback, disables duplicate checkout, and retains the cart, address, total, and payment destination.",
+      "owner": "Commerce, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-conflict",
+      "cells": ["mobile|/shop/cart|route|conflict"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_conflict_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_responsive_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An order conflict renders stable Order details changed guidance, retains the cart and address, and requires the supporter to review the current cart before resubmitting.",
+      "owner": "Commerce, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-shop-cart-security-timeout",
+      "cells": ["mobile|/shop/cart|route|security_timeout"],
+      "test_evidence": ["packages/features/feat_shop/test/cart_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_shop/test/goldens/cart_state_security_timeout_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_shop/test/cart_screen_responsive_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A bounded secure-checkout timeout distinguishes uncertain order status from an ordinary failure, preserves the cart and address, disables resubmission, and directs the supporter to obtain confirmation before trying again.",
+      "owner": "Commerce, security, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-search-disabled",
+      "cells": ["mobile|/search|route|disabled"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A one-character query now produces explicit Keep typing guidance at the governed two-character threshold while the search field and category controls remain reachable.",
+      "owner": "Discovery and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-search-pressed",
+      "cells": ["mobile|/search|route|pressed"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer gesture produces visible shared pressed feedback on a result row without navigating away or losing the active query.",
+      "owner": "Discovery and interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-search-permission-denied",
+      "cells": ["mobile|/search|route|permission_denied"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_permission_denied_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A live-search policy rejection maps to stable Search not permitted guidance, preserves local navigation and the query, omits retry, and never renders the raw account or policy diagnostic.",
+      "owner": "Discovery, security, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-search-syncing",
+      "cells": ["mobile|/search|route|syncing"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_syncing_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Changing an already-settled query produces bounded Updating results feedback while preserving the new query and preventing stale results from appearing current.",
+      "owner": "Discovery, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-search-conflict",
+      "cells": ["mobile|/search|route|conflict"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_conflict_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A result revision conflict renders stable Search changed guidance, retains the current query and category, offers retry, and excludes the raw revision diagnostic.",
+      "owner": "Discovery, resilience, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-search-security-timeout",
+      "cells": ["mobile|/search|route|security_timeout"],
+      "test_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_home/test/goldens/search_state_security_timeout_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_home/test/discovery_search_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The federated search request has a bounded timeout that renders concise retry guidance, preserves the current query and category, and does not expose transport or backend diagnostics.",
+      "owner": "Discovery, security, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-disabled",
+      "cells": ["mobile|/membership|route|disabled"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A pending Gold application exposes a clear Pending review action that is visibly and semantically disabled while other eligible membership choices remain available.",
+      "owner": "Membership and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-focused",
+      "cells": ["mobile|/membership|route|focused"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Real platform focus lands on the Silver membership action and produces the shared non-color-only focus ring while tier, price, and action context remain visible.",
+      "owner": "Membership and keyboard-accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-pressed",
+      "cells": ["mobile|/membership|route|pressed"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer on the Silver membership action produces shared press feedback without submitting or leaving the route.",
+      "owner": "Membership and interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-permission-denied",
+      "cells": ["mobile|/membership|route|permission_denied"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_permission_denied_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A policy rejection maps to stable Membership change not permitted guidance, preserves current membership details, blocks further changes, and never renders the raw account or RLS diagnostic.",
+      "owner": "Membership, security, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-syncing",
+      "cells": ["mobile|/membership|route|syncing"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_syncing_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A pending activation exposes bounded Submitting membership request feedback and disables the selected package action without losing current tier, price, or selection context.",
+      "owner": "Membership, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-conflict",
+      "cells": ["mobile|/membership|route|conflict"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_conflict_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A concurrent membership update maps to stable Membership details changed guidance, preserves the current membership view, offers Refresh, and excludes raw revision diagnostics.",
+      "owner": "Membership, resilience, and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-membership-security-timeout",
+      "cells": ["mobile|/membership|route|security_timeout"],
+      "test_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_membership/test/goldens/membership_state_security_timeout_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_membership/test/membership_screen_ui_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A bounded secure activation timeout preserves current membership context, blocks further changes until status refresh, and avoids implying whether an uncertain request was saved.",
+      "owner": "Membership, security, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-loading",
+      "cells": ["mobile|/onboarding|route|loading"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_loading_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production Onboarding route renders deterministic pending guidance while preserving the AFRICLUB identity and both WhatsApp and guest continuation paths.",
+      "owner": "Onboarding and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-empty",
+      "cells": ["mobile|/onboarding|route|empty"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_empty_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "When the repository returns zero welcome slides, the production route states that no current welcome is available, offers Refresh, and retains both safe sign-in alternatives.",
+      "owner": "Onboarding resilience QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-error",
+      "cells": ["mobile|/onboarding|route|error"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_error_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "An unknown welcome failure maps to stable user guidance and a bounded Try again action while preserving WhatsApp and guest continuation without exposing raw diagnostics.",
+      "owner": "Onboarding resilience and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-offline",
+      "cells": ["mobile|/onboarding|route|offline"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_offline_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Offline detection returns the governed local welcome, explains that saved content remains available, disables network sign-in, and keeps guest continuation reachable.",
+      "owner": "Onboarding resilience and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-permission-denied",
+      "cells": ["mobile|/onboarding|route|permission_denied"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_permission_denied_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A policy rejection maps to stable welcome-access guidance, exposes no retry that would repeat the denied request, retains both continuation alternatives, and omits raw account or policy identifiers.",
+      "owner": "Onboarding security and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-disabled",
+      "cells": ["mobile|/onboarding|route|disabled"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_disabled_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Compile-time feature configuration keeps WhatsApp sign-in visibly unavailable with an explicit consequence while preserving the production guest continuation path.",
+      "owner": "Onboarding and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-focused",
+      "cells": ["mobile|/onboarding|route|focused"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_focused_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/accessibility_primitives_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "Real platform focus on the production WhatsApp action produces a complete high-contrast non-colour focus ring without moving or clipping the welcome content.",
+      "owner": "Onboarding and keyboard-accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-pressed",
+      "cells": ["mobile|/onboarding|route|pressed"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_pressed_dark_390x844.png"],
+      "accessibility_evidence": ["packages/core/core_theme/test/afri_press_feedback_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real held pointer drives the production WhatsApp action through the shared press treatment and creates a visibly distinct response before activation.",
+      "owner": "Onboarding interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-selected",
+      "cells": ["mobile|/onboarding|route|selected"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_selected_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A real PageView fling selects the second governed welcome slide, updates the active indicator, and keeps both continuation paths reachable.",
+      "owner": "Onboarding interaction QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-large-text",
+      "cells": ["mobile|/onboarding|route|large_text"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_large_text_dark_320x720.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "At 320 by 720 and 200 percent platform text, the production title, club copy, multi-line WhatsApp label, and guest action remain complete without decorative overlap or render overflow.",
+      "owner": "Onboarding and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-syncing",
+      "cells": ["mobile|/onboarding|route|syncing"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_syncing_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "The production refresh path retains the current welcome and both continuation choices beneath complete Refreshing welcome guidance while the bounded repository request remains pending.",
+      "owner": "Onboarding resilience and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-conflict",
+      "cells": ["mobile|/onboarding|route|conflict"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_conflict_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A stale welcome revision maps to current-version guidance and a bounded Refresh action while both continuation alternatives remain visible and raw revision diagnostics stay hidden.",
+      "owner": "Onboarding resilience and privacy QA",
+      "reviewed_at": "2026-07-25"
+    },
+    {
+      "id": "mobile-onboarding-security-timeout",
+      "cells": ["mobile|/onboarding|route|security_timeout"],
+      "test_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "screenshot_evidence": ["packages/features/feat_onboarding/test/goldens/onboarding_state_security_timeout_dark_390x844.png"],
+      "accessibility_evidence": ["packages/features/feat_onboarding/test/onboarding_screen_states_test.dart"],
+      "privacy_evidence": ["output/implementation_goal_20260724/evidence-privacy-validation.json"],
+      "disposition_note": "A genuinely pending repository request is bounded by the provider-owned timeout and becomes privacy-safe welcome verification guidance with Refresh plus both safe continuation alternatives.",
+      "owner": "Onboarding security, resilience, and accessibility QA",
+      "reviewed_at": "2026-07-25"
+    }
+  ]
+}

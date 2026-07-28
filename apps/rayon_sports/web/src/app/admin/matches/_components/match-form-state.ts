@@ -3,6 +3,7 @@ import type { AdminMatchItem } from "@/lib/types";
 
 export const emptyMatchForm = {
   id: "",
+  expectedUpdatedAt: "",
   homeTeam: fallbackClubProfile.shortName,
   awayTeam: "",
   competition: fallbackClubProfile.league,
@@ -36,6 +37,7 @@ export const statusColors: Record<string, string> = {
 export function matchToFormState(match: AdminMatchItem): MatchFormState {
   return {
     id: match.id,
+    expectedUpdatedAt: match.updatedAt,
     homeTeam: match.homeTeam,
     awayTeam: match.awayTeam,
     competition: match.competition,

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_l10n/core_l10n.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -55,10 +57,10 @@ class FanzoneHubScreen extends ConsumerWidget {
     final asyncHub = ref.watch(fanzoneHubProvider);
     final notifier = ref.read(fanzoneHubProvider.notifier);
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
-        title: Text('Fanzone', style: TypographyTokens.headlineSmall()),
+        title: Text('Fan Zone', style: TypographyTokens.headlineSmall()),
         actions: [
           AfriIconButton(
             icon: AfriIcons.more,
@@ -67,20 +69,34 @@ class FanzoneHubScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: AfriAsyncStateView<FanzoneHubSnapshot>(
+      scrollable: false,
+      constrainContent: false,
+      bottomNavigationAware: true,
+      child: AfriAsyncStateView<FanzoneHubSnapshot>(
         value: asyncHub,
         loading: (_) => _buildPendingContent(context, ref),
-        error: (_, error, stackTrace) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-            child: AfriStateView.offline(
-              title: 'Fanzone unavailable',
-              message: 'Fanzone is temporarily unavailable.',
-              actionLabel: 'Retry',
-              onAction: () => notifier.refresh(),
+        error: (_, error, stackTrace) {
+          final failure = _FanzoneFailureContent.fromError(error);
+          return ConnectivityBuilder(
+            builder: (context, isOnline) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                child: AfriStateView.offline(
+                  title: isOnline ? failure.title : 'Fan Zone unavailable',
+                  message: isOnline
+                      ? failure.message
+                      : 'Connect to load Fan Zone.',
+                  actionLabel: isOnline
+                      ? failure.actionLabel
+                      : 'Connection required',
+                  onAction: isOnline && failure.actionLabel != null
+                      ? () => notifier.refresh()
+                      : null,
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
         data: (context, snapshot) =>
             _buildContent(context, ref, snapshot, asyncHub.isRefreshing),
       ),
@@ -107,9 +123,8 @@ class FanzoneHubScreen extends ConsumerWidget {
                 0,
               ),
               child: AfriStateView.loading(
-                title: 'Opening Fanzone',
-                message:
-                    'Picks, league, points, fans, and rewards are loading.',
+                title: 'Opening Fan Zone',
+                message: context.afriL10n.fanZoneLoading,
                 compact: true,
               ),
             ),
@@ -131,7 +146,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                 SpacingTokens.screenPadding,
                 SpacingTokens.sectionGap,
                 SpacingTokens.screenPadding,
-                120,
+                SpacingTokens.spacing20,
               ),
               child: AfriSkeletonList(itemCount: 2),
             ),
@@ -162,6 +177,26 @@ class FanzoneHubScreen extends ConsumerWidget {
             parent: AlwaysScrollableScrollPhysics(),
           ),
           slivers: [
+            if (isRefreshing)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    SpacingTokens.screenPadding,
+                    SpacingTokens.spacing4,
+                    SpacingTokens.screenPadding,
+                    0,
+                  ),
+                  child: AfriStateBanner(
+                    icon: AfriIcons.refresh,
+                    title: 'Refreshing Fan Zone',
+                    subtitle:
+                        'Keeping your current points, rounds, and picks visible while updates load.',
+                    tone: AfriStateBannerTone.info,
+                    compact: true,
+                  ),
+                ),
+              ),
+
             // ── Degraded / partial error banner ──
             if (snapshot.status != FanzoneHubStatus.ok &&
                 snapshot.message != null)
@@ -228,16 +263,14 @@ class FanzoneHubScreen extends ConsumerWidget {
                         _HubAction(
                           icon: AfriIcons.live,
                           title: 'Enter TV code',
-                          subtitle:
-                              'Join a live session and use this phone as the controller',
+                          subtitle: context.afriL10n.fanZoneJoinSession,
                           onTap: () => context.push('/fanzone/game'),
                         ),
                         _HubAction.featureGated(
                           featureKey: 'venue_checkin',
                           icon: AfriIcons.qrScan,
                           title: 'Venue check-in',
-                          subtitle:
-                              'Scan or enter the rotating venue code after you arrive',
+                          subtitle: context.afriL10n.fanZoneVenueCode,
                           onTap: () => context.push('/fanzone/venue'),
                         ),
                         _HubAction.featureGated(
@@ -275,8 +308,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                     child: snapshot.partnerPools.isEmpty
                         ? _sectionState(
                             title: 'No matchday rounds',
-                            message:
-                                'Club and partner rounds will appear when matchday opens.',
+                            message: context.afriL10n.fanZoneRoundsEmpty,
                           )
                         : Column(
                             children: snapshot.partnerPools
@@ -419,8 +451,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                     child: snapshot.leaderboard.isEmpty
                         ? _sectionState(
                             title: 'Leaderboard unavailable',
-                            message:
-                                'Supporter rankings will appear after live updates resume.',
+                            message: context.afriL10n.fanZoneRankingsEmpty,
                           )
                         : Column(
                             children: snapshot.leaderboard
@@ -500,8 +531,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                               onTap: () => _showSupporterSurfaceSheet(
                                 context,
                                 title: 'Supporter clubs',
-                                message:
-                                    'Fan clubs and chapters now live inside Supporters.',
+                                message: context.afriL10n.fanZoneClubsMoved,
                               ),
                             ),
                             _HubAction(
@@ -512,8 +542,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                               onTap: () => _showSupporterSurfaceSheet(
                                 context,
                                 title: 'Member fans',
-                                message:
-                                    'The supporter registry is consolidated into Fan Zone Supporters.',
+                                message: context.afriL10n.fanZoneRegistryMoved,
                               ),
                             ),
                             _HubAction(
@@ -584,9 +613,7 @@ class FanzoneHubScreen extends ConsumerWidget {
               ),
 
             const SliverToBoxAdapter(
-              child: SizedBox(
-                height: SpacingTokens.spacing20 + SpacingTokens.spacing10,
-              ),
+              child: SizedBox(height: SpacingTokens.spacing20),
             ),
           ],
         ),
@@ -612,6 +639,12 @@ class FanzoneHubScreen extends ConsumerWidget {
       selectedIndex: _FanzoneHubSection.values.indexOf(selectedSection),
       onChanged: (index) {
         final section = _FanzoneHubSection.values[index];
+        unawaited(
+          FirebaseAnalyticsService.logFanzoneEngagement(
+            surface: section.value,
+            action: 'open',
+          ),
+        );
         context.go('/fanzone?section=${section.value}');
       },
     );
@@ -647,6 +680,13 @@ class FanzoneHubScreen extends ConsumerWidget {
           builder: (context, setSheetState) {
             Future<void> submit() async {
               if (isSubmitting) return;
+              if (!ConnectivityService.isOnline) {
+                AfriToast.error(
+                  sheetContext,
+                  'Connect before joining this round.',
+                );
+                return;
+              }
               setSheetState(() => isSubmitting = true);
 
               final result = await ref
@@ -710,11 +750,14 @@ class FanzoneHubScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
-                AfriButton(
-                  label: 'Join round',
-                  icon: AfriIcons.predict,
-                  isLoading: isSubmitting,
-                  onTap: submit,
+                ConnectivityBuilder(
+                  builder: (context, isOnline) => AfriButton(
+                    label: isOnline ? 'Join round' : 'Connection required',
+                    icon: AfriIcons.predict,
+                    isLoading: isSubmitting,
+                    onTap: submit,
+                    enabled: isOnline && !isSubmitting,
+                  ),
                 ),
               ],
             );
@@ -728,7 +771,7 @@ class FanzoneHubScreen extends ConsumerWidget {
     unawaited(
       showAfriActionSheet(
         context: context,
-        title: 'Fanzone',
+        title: 'Fan Zone',
         actions: [
           AfriSheetAction(
             icon: AfriIcons.myPicks,
@@ -771,7 +814,7 @@ class FanzoneHubScreen extends ConsumerWidget {
             Text('Support the club', style: TypographyTokens.sectionTitle()),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              'Choose a contribution mode without leaving the Supporters hub.',
+              context.afriL10n.fanZoneContributionMode,
               style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
@@ -857,7 +900,7 @@ class FanzoneHubScreen extends ConsumerWidget {
             Text('Achievements', style: TypographyTokens.sectionTitle()),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              'Badges, streaks, and reward momentum in one compact view.',
+              context.afriL10n.fanZoneRewardsSummary,
               style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
@@ -998,32 +1041,87 @@ class _HubAction {
   final String? featureKey;
 }
 
-class _HubActionList extends StatelessWidget {
+class _HubActionList extends ConsumerWidget {
   const _HubActionList({required this.actions});
 
   final List<_HubAction> actions;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final featureConfig = ref.watch(featureConfigServiceProvider);
     return Column(
       children: actions
           .map((action) {
+            final featureKey = action.featureKey;
+            final access = featureKey == null
+                ? null
+                : featureConfig.getFeatureAccess(featureKey);
+            if (access != null && !access.isVisible) {
+              return const SizedBox.shrink();
+            }
+            final enabled = access?.isAvailable ?? true;
             final row = Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.listItemGap),
               child: AfriListRow(
                 icon: action.icon,
                 title: action.title,
-                subtitle: action.subtitle,
-                onTap: action.onTap,
+                subtitle: enabled
+                    ? action.subtitle
+                    : '${action.subtitle}. Unavailable.',
+                trailing: enabled
+                    ? null
+                    : AfriInfoChip(
+                        label: 'Unavailable',
+                        color: ColorTokens.warning,
+                      ),
+                onTap: enabled ? action.onTap : null,
+                enabled: enabled,
               ),
             );
-            final featureKey = action.featureKey;
-            if (featureKey == null) {
-              return row;
-            }
-            return FeatureGate(featureKey: featureKey, child: row);
+            return row;
           })
           .toList(growable: false),
     );
+  }
+}
+
+class _FanzoneFailureContent {
+  const _FanzoneFailureContent({
+    required this.title,
+    required this.message,
+    required this.actionLabel,
+  });
+
+  final String title;
+  final String message;
+  final String? actionLabel;
+
+  factory _FanzoneFailureContent.fromError(Object error) {
+    final failure = FanzoneHubFailure.fromError(error);
+    return switch (failure.kind) {
+      FanzoneHubFailureKind.permissionDenied => const _FanzoneFailureContent(
+        title: 'Fan Zone access not available',
+        message:
+            'Your account cannot open Fan Zone right now. Contact support if this should be available.',
+        actionLabel: null,
+      ),
+      FanzoneHubFailureKind.conflict => const _FanzoneFailureContent(
+        title: 'Fan Zone changed',
+        message:
+            'Fan Zone data changed while you were viewing it. Refresh to load the current version.',
+        actionLabel: 'Refresh',
+      ),
+      FanzoneHubFailureKind.securityTimeout => const _FanzoneFailureContent(
+        title: 'Fan Zone security check timed out',
+        message:
+            'We could not confirm current Fan Zone access. Refresh before continuing.',
+        actionLabel: 'Refresh',
+      ),
+      FanzoneHubFailureKind.unknown => const _FanzoneFailureContent(
+        title: 'Fan Zone unavailable',
+        message: 'Fan Zone is temporarily unavailable.',
+        actionLabel: 'Retry',
+      ),
+    };
   }
 }

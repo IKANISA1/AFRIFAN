@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 
 const CLUB_ID = 24;
@@ -39,6 +39,48 @@ function createAdminServiceClient() {
       persistSession: false,
     },
   });
+}
+
+async function installSupabaseSessionCookies(
+  page: Page,
+  baseURL: string,
+  email: string,
+  password: string,
+) {
+  const env = loadLocalEnv();
+  const supabaseUrl = env.SUPABASE_URL ?? env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const anonKey =
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? env.SUPABASE_ANON_KEY ?? "";
+  if (!supabaseUrl || !anonKey) {
+    throw new Error(
+      "Public Supabase credentials are required for authenticated E2E.",
+    );
+  }
+
+  const client = createClient(supabaseUrl, anonKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+  const signedIn = await client.auth.signInWithPassword({ email, password });
+  if (signedIn.error || signedIn.data.session == null) {
+    throw signedIn.error ?? new Error("Supabase did not return a session.");
+  }
+
+  const projectRef = new URL(supabaseUrl).hostname.split(".")[0];
+  const cookieKey = `sb-${projectRef}-auth-token`;
+  const encoded = `base64-${Buffer.from(
+    JSON.stringify(signedIn.data.session),
+    "utf8",
+  ).toString("base64url")}`;
+  const chunks = encoded.match(/.{1,3180}/g) ?? [];
+  await page.context().addCookies(
+    chunks.map((value, index) => ({
+      name: chunks.length === 1 ? cookieKey : `${cookieKey}.${index}`,
+      value,
+      url: baseURL,
+      httpOnly: false,
+      sameSite: "Lax" as const,
+    })),
+  );
 }
 
 /* ────────────────────────────────────────────────────────── */
@@ -139,9 +181,8 @@ test("pwa manifest and offline route are reachable", async ({
 /*  Offline synthetic test                                    */
 /* ────────────────────────────────────────────────────────── */
 
-test("admin surfaces an offline indicator when network is disabled", async ({
+test("admin surfaces an offline indicator when the browser reports offline", async ({
   page,
-  context,
   browserName,
 }) => {
   test.skip(
@@ -152,17 +193,26 @@ test("admin surfaces an offline indicator when network is disabled", async ({
   // First visit the admin shell so the page has a mounted offline listener.
   await page.goto("/admin", { waitUntil: "domcontentloaded" });
   await expect(page.getByText(/secure sign in/i)).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-africlub-network-observer",
+    "ready",
+  );
 
-  // Go offline
-  await context.setOffline(true);
+  // Dispatch the same browser event used by a real network transition. Keeping
+  // the test page online avoids a race with Next.js auth bootstrap navigation;
+  // the separately tested /admin-offline route covers navigation fallback.
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event("offline"));
+  });
   await expect(
     page.getByText(
       /admin shell stays available|live admin data and writes require the network/i,
     ),
   ).toBeVisible({ timeout: 5_000 });
 
-  // Restore network
-  await context.setOffline(false);
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event("online"));
+  });
 });
 
 /* ────────────────────────────────────────────────────────── */
@@ -177,6 +227,10 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
   test.skip(
     browserName === "webkit",
     "Playwright WebKit is unreliable for live Supabase magic-link admin sessions.",
+  );
+  test.skip(
+    process.env.ALLOW_LIVE_ADMIN_E2E !== "1",
+    "Live admin user and assignment mutations require ALLOW_LIVE_ADMIN_E2E=1.",
   );
 
   const serviceClient = createAdminServiceClient();
@@ -269,7 +323,9 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
     await expect(moreDialog).toBeHidden();
 
     const horizontalOverflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
     );
     expect(horizontalOverflow).toBeLessThanOrEqual(1);
   } finally {
@@ -279,6 +335,156 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
         .delete()
         .eq("user_id", userId);
       await serviceClient.auth.admin.deleteUser(userId);
+    }
+  }
+});
+
+/* ────────────────────────────────────────────────────────── */
+/*  Venue: assignment-backed workflows and revocation        */
+/* ────────────────────────────────────────────────────────── */
+
+test("venue manager session reaches every scoped workflow and revocation fails closed", async ({
+  page,
+  baseURL,
+  browserName,
+}) => {
+  test.skip(
+    browserName === "webkit",
+    "Playwright WebKit is unreliable for live Supabase magic-link sessions.",
+  );
+  test.skip(
+    process.env.ALLOW_LIVE_ADMIN_E2E !== "1",
+    "Live venue, user, and membership mutations require ALLOW_LIVE_ADMIN_E2E=1.",
+  );
+
+  const serviceClient = createAdminServiceClient();
+  if (serviceClient == null) {
+    test.skip(true, "Live Supabase admin credentials are missing.");
+    return;
+  }
+
+  const venueResult = await serviceClient
+    .from("venues")
+    .select("id, club_id")
+    .eq("club_id", CLUB_ID)
+    .eq("status", "approved")
+    .limit(1)
+    .maybeSingle();
+  if (venueResult.error) throw venueResult.error;
+
+  const email = `playwright-venue-${Date.now()}@example.com`;
+  const password = `Venue-E2E-${crypto.randomUUID()}-Aa9!`;
+  let userId = "";
+  let membershipId = "";
+  let venueId = venueResult.data?.id ?? "";
+  let createdTemporaryVenue = false;
+
+  try {
+    if (!venueId) {
+      const temporaryVenue = await serviceClient
+        .from("venues")
+        .insert({
+          club_id: CLUB_ID,
+          slug: `playwright-venue-${Date.now()}`,
+          display_name: "Playwright Venue",
+          status: "approved",
+          venue_type: "partner_bar",
+          city: "Kigali",
+          country_code: "RW",
+          timezone: "Africa/Kigali",
+          approved_public_profile: false,
+          metadata: { purpose: "temporary authenticated venue E2E" },
+        })
+        .select("id")
+        .single();
+      if (temporaryVenue.error) throw temporaryVenue.error;
+      venueId = temporaryVenue.data.id;
+      createdTemporaryVenue = true;
+    }
+
+    const created = await serviceClient.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      app_metadata: { role: "venue_manager", club_id: CLUB_ID },
+    });
+    if (created.error) throw created.error;
+    userId = created.data.user.id;
+
+    const membership = await serviceClient
+      .from("venue_staff_memberships")
+      .insert({
+        user_id: userId,
+        club_id: CLUB_ID,
+        venue_id: venueId,
+        role: "manager",
+        is_active: true,
+        notes: "temporary authenticated venue Playwright verification user",
+      })
+      .select("id")
+      .single();
+    if (membership.error) throw membership.error;
+    membershipId = membership.data.id;
+
+    await installSupabaseSessionCookies(page, baseURL ?? "", email, password);
+
+    const workflows = [
+      ["/venue", /today at the venue/i],
+      ["/venue/orders", /drinks orders/i],
+      ["/venue/menu", /drinks menu/i],
+      ["/venue/checkins", /^check-ins$/i],
+      ["/venue/promotions", /^promotions$/i],
+      ["/venue/tv-code", /tv code status/i],
+      ["/venue/staff", /venue staff/i],
+    ] as const;
+    const evidenceDir = path.resolve(
+      process.cwd(),
+      "../../../output/release_readiness_20260718/venue_authenticated_e2e",
+    );
+    fs.mkdirSync(evidenceDir, { recursive: true });
+
+    for (const [route, heading] of workflows) {
+      await page.goto(route, { waitUntil: "networkidle" });
+      await expect(
+        page.getByRole("heading", { name: heading }).first(),
+      ).toBeVisible({
+        timeout: 20_000,
+      });
+      await expect(page.getByText(/assigned venue/i).first()).toBeVisible();
+      await expect(page.getByText(/manager/i).first()).toBeVisible();
+      await page.screenshot({
+        path: path.join(
+          evidenceDir,
+          `${route === "/venue" ? "today" : route.split("/").at(-1)}.png`,
+        ),
+        fullPage: true,
+      });
+    }
+
+    const revoked = await serviceClient
+      .from("venue_staff_memberships")
+      .update({ is_active: false, revoked_at: new Date().toISOString() })
+      .eq("id", membershipId);
+    if (revoked.error) throw revoked.error;
+
+    await page.goto("/venue", { waitUntil: "networkidle" });
+    await expect(
+      page.getByRole("heading", { name: /no active venue assignment/i }),
+    ).toBeVisible({ timeout: 20_000 });
+    await page.screenshot({
+      path: path.join(evidenceDir, "revoked-access.png"),
+      fullPage: true,
+    });
+  } finally {
+    if (membershipId) {
+      await serviceClient
+        .from("venue_staff_memberships")
+        .delete()
+        .eq("id", membershipId);
+    }
+    if (userId) await serviceClient.auth.admin.deleteUser(userId);
+    if (createdTemporaryVenue && venueId) {
+      await serviceClient.from("venues").delete().eq("id", venueId);
     }
   }
 });

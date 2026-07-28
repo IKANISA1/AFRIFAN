@@ -2,9 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../tokens/blur_tokens.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
 /// Numeric alias badge — the "Anonymous Identity" system.
@@ -22,7 +25,7 @@ class NumericAlias extends StatelessWidget {
   const NumericAlias({
     super.key,
     required this.alias,
-    this.fontSize = 20,
+    this.fontSize = TypographyTokens.numericAliasDefaultSize,
     this.color,
     this.showBadge = true,
   });
@@ -44,9 +47,15 @@ class NumericAlias extends StatelessWidget {
     return ClipRRect(
       borderRadius: ShapeTokens.aliasPillRadius,
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        filter: ImageFilter.blur(
+          sigmaX: AfriBlur.subtle,
+          sigmaY: AfriBlur.subtle,
+        ),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.spacing3,
+            vertical: AfriComponentSizes.compactVerticalPadding,
+          ),
           decoration: BoxDecoration(
             color: ColorTokens.glassFill,
             borderRadius: ShapeTokens.aliasPillRadius,

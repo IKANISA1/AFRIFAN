@@ -2,6 +2,67 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 
+/// Fail-closed policy for destinations that may be handed to the in-app
+/// router.
+///
+/// A route target must be a local absolute path. Schemes, authorities,
+/// residual traversal segments, encoded separators, backslashes, and control
+/// characters are rejected before route matching. Use [parse] when the raw
+/// destination string is available so URI dot-segment normalization cannot
+/// erase evidence of a traversal attempt before validation.
+abstract final class InternalRouteUriPolicy {
+  static final RegExp _controlCharacters = RegExp(r'[\u0000-\u001F\u007F]');
+  static final RegExp _rawTraversalSegment = RegExp(
+    r'(?:^|/)(?:\.|%2e)(?:\.|%2e)?(?:/|$)',
+    caseSensitive: false,
+  );
+  static final RegExp _encodedSeparator = RegExp(
+    r'%(?:2f|5c)',
+    caseSensitive: false,
+  );
+
+  static Uri? parse(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty ||
+        _rawTraversalSegment.hasMatch(trimmed) ||
+        _encodedSeparator.hasMatch(trimmed) ||
+        trimmed.contains(r'\') ||
+        _controlCharacters.hasMatch(trimmed)) {
+      return null;
+    }
+
+    return validate(Uri.tryParse(trimmed));
+  }
+
+  static Uri? validate(Uri? candidate) {
+    if (candidate == null) {
+      return null;
+    }
+    final path = candidate.path;
+    if (candidate.isAbsolute ||
+        candidate.hasAuthority ||
+        path.isEmpty ||
+        !path.startsWith('/') ||
+        path.contains('//') ||
+        path.contains(r'\') ||
+        _controlCharacters.hasMatch(path)) {
+      return null;
+    }
+
+    for (final segment in candidate.pathSegments) {
+      if (segment == '.' ||
+          segment == '..' ||
+          segment.contains('/') ||
+          segment.contains(r'\') ||
+          _controlCharacters.hasMatch(segment)) {
+        return null;
+      }
+    }
+
+    return candidate;
+  }
+}
+
 /// Normalizes inbound app/universal links into in-app router destinations.
 class DeepLinkParser {
   DeepLinkParser({Uri? websiteUri, String? customScheme})
@@ -34,10 +95,12 @@ class DeepLinkParser {
 
     final normalizedIncomingScheme = incoming.scheme.trim().toLowerCase();
     if (_matchesWebsiteLink(incoming, normalizedIncomingScheme)) {
-      return _buildInternalUri(
-        path: _normalizePath(incoming.path),
-        query: incoming.hasQuery ? incoming.query : null,
-        fragment: incoming.hasFragment ? incoming.fragment : null,
+      return InternalRouteUriPolicy.validate(
+        _buildInternalUri(
+          path: _normalizePath(incoming.path),
+          query: incoming.hasQuery ? incoming.query : null,
+          fragment: incoming.hasFragment ? incoming.fragment : null,
+        ),
       );
     }
 
@@ -46,10 +109,12 @@ class DeepLinkParser {
       if (path == null) {
         return null;
       }
-      return _buildInternalUri(
-        path: path,
-        query: incoming.hasQuery ? incoming.query : null,
-        fragment: incoming.hasFragment ? incoming.fragment : null,
+      return InternalRouteUriPolicy.validate(
+        _buildInternalUri(
+          path: path,
+          query: incoming.hasQuery ? incoming.query : null,
+          fragment: incoming.hasFragment ? incoming.fragment : null,
+        ),
       );
     }
 

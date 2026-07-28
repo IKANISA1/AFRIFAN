@@ -63,28 +63,31 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: Column(
-            children: [
-              _buildHeader(),
-              Expanded(
-                child: _isLoading
-                    ? const Padding(
-                        padding: EdgeInsets.all(SpacingTokens.spacing6),
-                        child: AfriSkeletonList(),
-                      )
-                    : _error != null
-                    ? _buildError()
-                    : AfriRefreshIndicator(
-                        onRefresh: _load,
-                        child: _buildContent(),
-                      ),
-              ),
-            ],
-          ),
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: true,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(),
+            Expanded(
+              child: _isLoading
+                  ? const Padding(
+                      padding: EdgeInsets.all(SpacingTokens.spacing6),
+                      child: AfriSkeletonList(),
+                    )
+                  : _error != null
+                  ? _buildError()
+                  : AfriRefreshIndicator(
+                      onRefresh: _load,
+                      child: _buildContent(),
+                    ),
+            ),
+          ],
         ),
       ),
     );
@@ -230,7 +233,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
             const AfriDivider(color: ColorTokens.onDarkHairline),
             _buildToggleRow(
               label: 'Visible',
-              subtitle: 'Show in $channelName UI',
+              subtitle: 'Available in $channelName',
               value: channel.isVisible,
               onChanged: (value) =>
                   _updateChannel(channel.channel, {'is_visible': value}),
@@ -401,7 +404,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               children: [
                 Text('Visibility', style: TypographyTokens.bodyMedium()),
                 Text(
-                  'Controls UI rendering state',
+                  'Controls feature visibility',
                   style: TypographyTokens.bodySmall().copyWith(
                     color: ColorTokens.onDarkFaint,
                   ),
@@ -660,11 +663,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              AfriIcons.statusError,
-              size: 48,
-              color: ColorTokens.error,
-            ),
+            Icon(AfriIcons.statusError, size: 48, color: ColorTokens.error),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               'Failed to load feature',

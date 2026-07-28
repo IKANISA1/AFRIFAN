@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Plus, CalendarDays, Radio, Ticket } from "lucide-react";
+import { Plus } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { KPISummaryRibbon, KPITile } from "@/components/admin/kpi-summary-ribbon";
@@ -17,6 +17,7 @@ import type { AdminMatchItem } from "@/lib/types";
 import { emptyMatchForm, matchToFormState } from "./_components/match-form-state";
 import { MatchForm } from "./_components/match-form";
 import { MatchList } from "./_components/match-list";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 
 export default function AdminMatchesPage() {
   const { access, activeClub, client } = useAdminPortal();
@@ -60,15 +61,28 @@ export default function AdminMatchesPage() {
   async function removeMatch(match: AdminMatchItem) {
     if (client == null) return;
     if (!confirmAdminDestructiveAction({
+      action: "Delete",
       subject: `${match.homeTeam} vs ${match.awayTeam}`,
-      detail: "The selected fixture and its admin configuration will be removed.",
+      scope: access.clubId == null
+        ? "Platform fixture catalogue"
+        : `Active club ${access.clubId}`,
+      impact: "The selected fixture and its admin configuration will be removed.",
+      undo: "not_available",
     })) return;
 
     try {
-      await deleteAdminMatch(client, access, match.id);
+      await deleteAdminMatch(
+        client,
+        access,
+        match.id,
+        match.updatedAt,
+      );
       await loadMatches();
       showAdminToast(`${match.homeTeam} vs ${match.awayTeam} removed.`, "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await loadMatches();
+      }
       showAdminToast(caught instanceof Error ? caught.message : "Could not remove fixture.", "error");
     }
   }
@@ -128,6 +142,13 @@ export default function AdminMatchesPage() {
           onSaved={async () => {
             setDrawerOpen(false);
             await loadMatches();
+          }}
+          onConflict={async () => {
+            await loadMatches();
+            showAdminToast(
+              "Latest fixtures loaded. Your draft is retained; review it before restarting the edit.",
+              "info",
+            );
           }}
           onCancel={() => setDrawerOpen(false)}
         />

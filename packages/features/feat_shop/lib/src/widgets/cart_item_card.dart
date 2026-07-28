@@ -42,11 +42,26 @@ class CartItemCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  item.product.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TypographyTokens.titleMedium(),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item.product.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TypographyTokens.titleMedium(),
+                      ),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    Flexible(
+                      child: Text(
+                        priceLabel,
+                        textAlign: TextAlign.end,
+                        style: TypographyTokens.titleMedium(),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: SpacingTokens.spacing1),
                 Wrap(
@@ -59,14 +74,16 @@ class CartItemCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
-                Row(
+                Wrap(
+                  spacing: SpacingTokens.spacing2,
+                  runSpacing: SpacingTokens.spacing2,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     AfriIconButton(
                       icon: AfriIcons.remove,
                       tooltip: 'Decrease quantity',
                       onTap: onDecrement,
                     ),
-                    const SizedBox(width: SpacingTokens.spacing2),
                     SizedBox(
                       width: SpacingTokens.spacing6,
                       child: Text(
@@ -75,24 +92,23 @@ class CartItemCard extends StatelessWidget {
                         style: TypographyTokens.labelLarge(),
                       ),
                     ),
-                    const SizedBox(width: SpacingTokens.spacing2),
                     AfriIconButton(
                       icon: AfriIcons.add,
                       tooltip: 'Increase quantity',
                       onTap: onIncrement,
                     ),
-                    const SizedBox(width: SpacingTokens.spacing3),
                     AfriTextButton(
                       onPressed: onRemove,
-                      child: const Text('Remove'),
+                      child: Text(
+                        'Remove',
+                        style: TypographyTokens.labelLarge(ColorTokens.error),
+                      ),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          const SizedBox(width: SpacingTokens.spacing3),
-          Text(priceLabel, style: TypographyTokens.titleMedium()),
         ],
       ),
     );

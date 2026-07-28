@@ -6,25 +6,54 @@ import 'package:flutter/widgets.dart';
 
 import 'firebase_bootstrap_service.dart';
 import 'firebase_observability_config.dart';
+import 'privacy_safe_analytics.dart';
 
 /// Service for logging general usage and tracking user journeys.
 class FirebaseAnalyticsService {
   FirebaseAnalyticsService._();
 
+  static bool _consentGranted = false;
+
+  static bool get consentGranted => _consentGranted;
+
   static FirebaseAnalytics? get _analytics {
     if (!FirebaseObservabilityConfig.enabled ||
-        !FirebaseBootstrapService.isInitialized) {
+        !FirebaseBootstrapService.isInitialized ||
+        !_consentGranted) {
       return null;
     }
     return FirebaseAnalytics.instance;
   }
 
-  /// Sets the user identifier for analytics.
-  static Future<void> setUserId(String? userId) async {
+  /// Applies explicit user consent to the current session.
+  ///
+  /// The compile-time observability gate remains authoritative. A true value
+  /// cannot enable collection in an unverified release build.
+  static Future<void> configureConsent({required bool enabled}) async {
+    _consentGranted = enabled && FirebaseObservabilityConfig.enabled;
+    if (!FirebaseObservabilityConfig.enabled ||
+        !FirebaseBootstrapService.isInitialized) {
+      return;
+    }
     try {
-      await _analytics?.setUserId(id: userId);
-    } catch (e, stack) {
-      AfriLogger.error('Analytics', 'Failed to set user ID: $e', e, stack);
+      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(
+        _consentGranted,
+      );
+      if (!_consentGranted) {
+        await FirebaseAnalytics.instance.setUserId(id: null);
+      }
+    } catch (error) {
+      _consentGranted = false;
+      AfriLogger.warn('Analytics', 'Failed to apply analytics consent: $error');
+    }
+  }
+
+  /// Retained for source compatibility; personal identifiers are never sent.
+  ///
+  /// Passing null also closes the session consent gate during sign-out.
+  static Future<void> setUserId(String? userId) async {
+    if (userId == null) {
+      await configureConsent(enabled: false);
     }
   }
 
@@ -33,8 +62,20 @@ class FirebaseAnalyticsService {
     String name, {
     Map<String, Object>? parameters,
   }) async {
+    if (!_consentGranted) return;
+    final event = PrivacySafeAnalyticsPolicy.prepare(
+      name,
+      parameters: parameters,
+    );
+    if (event == null) {
+      AfriLogger.warn('Analytics', 'Rejected event outside privacy contract.');
+      return;
+    }
     try {
-      await _analytics?.logEvent(name: name, parameters: parameters);
+      await _analytics?.logEvent(
+        name: event.name,
+        parameters: event.parameters.isEmpty ? null : event.parameters,
+      );
     } catch (e) {
       AfriLogger.warn('Analytics', 'Failed to log event "$name": $e');
     }
@@ -45,9 +86,14 @@ class FirebaseAnalyticsService {
     String screenName, {
     String screenClassOverride = 'Flutter',
   }) async {
+    if (!_consentGranted) return;
+    final safeScreenName = PrivacySafeAnalyticsPolicy.sanitizeScreenName(
+      screenName,
+    );
+    if (safeScreenName == null) return;
     try {
       await _analytics?.logScreenView(
-        screenName: screenName,
+        screenName: safeScreenName,
         screenClass: screenClassOverride,
       );
     } catch (e) {
@@ -84,9 +130,9 @@ class FirebaseAnalyticsService {
   }) => logEvent(
     'prediction_placed',
     parameters: <String, Object>{
-      'market_slug': marketSlug,
-      'selected_outcome': selectedOutcome,
-      'fet_staked': fetStaked,
+      'market': marketSlug,
+      'outcome': selectedOutcome,
+      'value_bucket': PrivacySafeAnalyticsPolicy.valueBucket(fetStaked),
     },
   );
 
@@ -96,7 +142,10 @@ class FirebaseAnalyticsService {
     required int fetEarned,
   }) => logEvent(
     'prediction_settled',
-    parameters: <String, Object>{'status': status, 'fet_earned': fetEarned},
+    parameters: <String, Object>{
+      'status': status,
+      'value_bucket': PrivacySafeAnalyticsPolicy.valueBucket(fetEarned),
+    },
   );
 
   /// FET wallet transfer sent.
@@ -105,21 +154,23 @@ class FirebaseAnalyticsService {
     required String direction,
   }) => logEvent(
     'wallet_transfer',
-    parameters: <String, Object>{'amount': amount, 'direction': direction},
+    parameters: <String, Object>{
+      'value_bucket': PrivacySafeAnalyticsPolicy.valueBucket(amount),
+      'direction': direction,
+    },
   );
 
   /// Challenge created by user.
   static Future<void> logChallengeCreated({required int stakeFet}) => logEvent(
     'challenge_created',
-    parameters: <String, Object>{'stake_fet': stakeFet},
+    parameters: <String, Object>{
+      'value_bucket': PrivacySafeAnalyticsPolicy.valueBucket(stakeFet),
+    },
   );
 
   /// User joined a challenge.
   static Future<void> logChallengeJoined({required String challengeId}) =>
-      logEvent(
-        'challenge_joined',
-        parameters: <String, Object>{'challenge_id': challengeId},
-      );
+      logEvent('challenge_joined');
 
   /// Membership created or renewed.
   static Future<void> logMembershipAction({required String action}) => logEvent(
@@ -133,13 +184,88 @@ class FirebaseAnalyticsService {
     required int amount,
   }) => logEvent(
     'momo_sms_parsed',
-    parameters: <String, Object>{'provider': provider, 'amount': amount},
+    parameters: <String, Object>{
+      'provider': provider,
+      'value_bucket': PrivacySafeAnalyticsPolicy.valueBucket(amount),
+    },
   );
 
   /// Feature flag check — logs when a disabled feature is accessed.
   static Future<void> logFeatureGated({required String featureKey}) => logEvent(
     'feature_gated',
-    parameters: <String, Object>{'feature_key': featureKey},
+    parameters: <String, Object>{'feature': featureKey},
+  );
+
+  static Future<void> logHomeActionSelected({
+    required String action,
+    required String layer,
+  }) => logEvent(
+    'home_action_selected',
+    parameters: <String, Object>{'action': action, 'layer': layer},
+  );
+
+  static Future<void> logSearchSuccess({
+    required String category,
+    required int resultCount,
+  }) => logEvent(
+    'search_success',
+    parameters: <String, Object>{
+      'category': category,
+      'result_count_bucket': PrivacySafeAnalyticsPolicy.resultCountBucket(
+        resultCount,
+      ),
+    },
+  );
+
+  static Future<void> logTicketCompletion({
+    required String ticketType,
+    required String paymentChannel,
+  }) => logEvent(
+    'ticket_completion',
+    parameters: <String, Object>{
+      'ticket_type': ticketType,
+      'payment_channel': paymentChannel,
+    },
+  );
+
+  static Future<void> logContributionCompletion({
+    required String paymentChannel,
+    required int amount,
+  }) => logEvent(
+    'contribution_completion',
+    parameters: <String, Object>{
+      'payment_channel': paymentChannel,
+      'value_bucket': PrivacySafeAnalyticsPolicy.valueBucket(amount),
+    },
+  );
+
+  static Future<void> logFanzoneEngagement({
+    required String surface,
+    required String action,
+  }) => logEvent(
+    'fanzone_engagement',
+    parameters: <String, Object>{'surface': surface, 'action': action},
+  );
+
+  static Future<void> logSupportAccess({required String channel}) => logEvent(
+    'support_access',
+    parameters: <String, Object>{'channel': channel},
+  );
+
+  static Future<void> logErrorRecovery({
+    required String surface,
+    required String outcome,
+  }) => logEvent(
+    'error_recovery',
+    parameters: <String, Object>{'surface': surface, 'outcome': outcome},
+  );
+
+  static Future<void> logTaskAbandonment({
+    required String task,
+    required String stage,
+  }) => logEvent(
+    'task_abandonment',
+    parameters: <String, Object>{'task': task, 'stage': stage},
   );
 }
 

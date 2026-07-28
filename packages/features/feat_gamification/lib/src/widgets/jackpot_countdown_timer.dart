@@ -107,7 +107,7 @@ class _JackpotCountdownTimerState extends State<JackpotCountdownTimer> {
             ],
           ),
         )
-        .animate(target: isExpired ? 1 : 0)
+        .afriAnimate(context, target: isExpired ? 1 : 0)
         .tint(color: ColorTokens.error.withValues(alpha: 0.2));
   }
 }

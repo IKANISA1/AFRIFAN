@@ -71,10 +71,12 @@ export function PwaShell() {
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
+    document.documentElement.dataset.africlubNetworkObserver = "ready";
 
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
+      delete document.documentElement.dataset.africlubNetworkObserver;
     };
   }, [dismissedPromptKey]);
 

@@ -7,7 +7,13 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   return handleAdminApiRoute(request, async (client, access) => {
     const body = await request.json();
-    await updateAdminFeature(client, access, body.id, body.updates);
+    await updateAdminFeature(
+      client,
+      access,
+      body.id,
+      body.expectedUpdatedAt,
+      body.updates,
+    );
     return { success: true };
   });
 }

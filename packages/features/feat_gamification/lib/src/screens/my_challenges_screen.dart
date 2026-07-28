@@ -57,7 +57,7 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
   Widget build(BuildContext context) {
     final state = ref.watch(myChallengesProvider);
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -83,7 +83,9 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
           ],
         ),
       ),
-      body: AfriRefreshIndicator(
+      scrollable: false,
+      constrainContent: false,
+      child: AfriRefreshIndicator(
         onRefresh: _loadForCurrentTab,
         child: state.when(
           loading: () => ListView(

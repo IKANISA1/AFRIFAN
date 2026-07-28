@@ -12,15 +12,26 @@ export interface AdminAuditRecord {
   userId: string;
   userName?: string;
   action: string;
+  targetTable?: string;
+  targetId?: string;
+  oldData: Record<string, unknown>;
+  newData: Record<string, unknown>;
   metadata: Record<string, unknown>;
+  notes?: string;
   createdAt: string;
 }
 
 interface AdminAuditRow extends Record<string, unknown> {
   id?: unknown;
   user_id?: unknown;
+  actor_id?: unknown;
   action?: unknown;
+  target_table?: unknown;
+  target_id?: unknown;
+  old_data?: unknown;
+  new_data?: unknown;
   metadata?: unknown;
+  notes?: unknown;
   created_at?: unknown;
   profiles?: { full_name?: unknown } | null;
 }
@@ -28,7 +39,7 @@ interface AdminAuditRow extends Record<string, unknown> {
 export async function getAdminAuditLogs(
   client: SupabaseClient,
   access: AdminAccess,
-  limit = 100
+  limit = 500,
 ): Promise<AdminAuditRecord[]> {
   if (typeof window !== "undefined") {
     return requestAdminApi<AdminAuditRecord[]>("audit-logs");
@@ -42,8 +53,14 @@ export async function getAdminAuditLogs(
     .select(`
       id,
       user_id,
+      actor_id,
       action,
+      target_table,
+      target_id,
+      old_data,
+      new_data,
       metadata,
+      notes,
       created_at,
       profiles:user_id (full_name)
     `)
@@ -60,10 +77,15 @@ export async function getAdminAuditLogs(
 
   return ((data ?? []) as AdminAuditRow[]).map((row) => ({
     id: toIdString(row.id, ""),
-    userId: safeString(row.user_id, ""),
+    userId: safeString(row.user_id) || safeString(row.actor_id, ""),
     userName: safeString(row.profiles?.full_name, "System / Unknown"),
     action: safeString(row.action, "Operation"),
+    targetTable: safeString(row.target_table, ""),
+    targetId: safeString(row.target_id, ""),
+    oldData: isRecord(row.old_data) ? row.old_data : {},
+    newData: isRecord(row.new_data) ? row.new_data : {},
     metadata: isRecord(row.metadata) ? row.metadata : {},
+    notes: safeString(row.notes, ""),
     createdAt: safeString(row.created_at, new Date().toISOString()),
   }));
 }

@@ -132,7 +132,7 @@ class H2hTabBody extends StatelessWidget {
                 ],
               ),
             )
-            .animate()
+            .afriAnimate(context)
             .fadeIn(duration: 400.ms)
             .slideY(begin: 0.04, end: 0, duration: 400.ms),
 

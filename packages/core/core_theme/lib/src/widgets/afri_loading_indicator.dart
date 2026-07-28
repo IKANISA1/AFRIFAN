@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/size_tokens.dart';
 
 /// Minimalist loading indicator aligned with the monolith aesthetic.
 class AfriLoadingIndicator extends StatelessWidget {
   const AfriLoadingIndicator({
-    this.size = 24,
+    this.size = SizeTokens.loadingIndicator,
     this.color,
     this.value,
-    this.strokeWidth = 2,
+    this.strokeWidth = AfriComponentSizes.progressStroke,
     super.key,
   });
 
@@ -41,7 +43,7 @@ class AfriLinearProgressIndicator extends StatelessWidget {
   const AfriLinearProgressIndicator({
     super.key,
     this.value,
-    this.minHeight = 4,
+    this.minHeight = SizeTokens.linearIndicatorHeight,
     this.color,
     this.backgroundColor,
     this.borderRadius,

@@ -24,6 +24,7 @@ void main() {
           'momo_provider': 'MTN',
           'is_active': true,
           'is_admin': false,
+          'updated_at': '2026-07-24T10:00:00Z',
         });
 
         expect(profile.id, 'user-1');
@@ -38,6 +39,7 @@ void main() {
         expect(profile.momoProvider, 'MTN');
         expect(profile.isActive, isTrue);
         expect(profile.isAdmin, isFalse);
+        expect(profile.updatedAt, '2026-07-24T10:00:00Z');
       });
 
       test('handles legacy field  (phone, full_name, country)', () {
@@ -204,6 +206,20 @@ void main() {
         expect(updated.isAdmin, isTrue);
         expect(updated.momoNumber, '+250788111111'); // unchanged
         expect(updated.id, 'u1'); // unchanged
+      });
+
+      test('preserves the optimistic concurrency token', () {
+        const original = UserProfile(
+          id: 'u1',
+          clubId: '1',
+          updatedAt: '2026-07-24T10:00:00Z',
+        );
+
+        expect(
+          original.copyWith(displayName: 'Updated').updatedAt,
+          original.updatedAt,
+        );
+        expect(original.toProfileRow().containsKey('updated_at'), isFalse);
       });
     });
 

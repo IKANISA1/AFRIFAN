@@ -6,7 +6,7 @@ void main() {
   group('Firebase startup contract', () {
     test('Android manifest disables automatic Firebase network collection', () {
       final manifest = File(
-        'apps/rayon_sports/android/app/src/main/AndroidManifest.xml',
+        '${_workspacePrefix()}apps/rayon_sports/android/app/src/main/AndroidManifest.xml',
       ).readAsStringSync();
 
       expect(manifest, contains('firebase_data_collection_default_enabled'));
@@ -75,7 +75,7 @@ void main() {
 
     test('push service does not enable FCM auto-init during startup', () {
       final source = File(
-        'packages/core/core_network/lib/src/push_notification_service.dart',
+        '${_workspacePrefix()}packages/core/core_network/lib/src/push_notification_service.dart',
       ).readAsStringSync();
       final initializeBody = RegExp(
         r'static Future<void> initialize\(\{required String clubId\}\) async \{([\s\S]*?)\n  static Future<PushPermissionStatus> getPermissionStatus',
@@ -101,10 +101,10 @@ void main() {
 
     test('Android application disables persisted FCM auto-init before Dart', () {
       final manifest = File(
-        'apps/rayon_sports/android/app/src/main/AndroidManifest.xml',
+        '${_workspacePrefix()}apps/rayon_sports/android/app/src/main/AndroidManifest.xml',
       ).readAsStringSync();
       final application = File(
-        'apps/rayon_sports/android/app/src/main/kotlin/rw/gikundiro/app/RayonSportsApplication.kt',
+        '${_workspacePrefix()}apps/rayon_sports/android/app/src/main/kotlin/rw/gikundiro/app/RayonSportsApplication.kt',
       ).readAsStringSync();
 
       expect(manifest, contains('android:name=".RayonSportsApplication"'));
@@ -120,19 +120,19 @@ void main() {
 
     test('Dart observability SDKs are compile-time gated by default', () {
       final config = File(
-        'packages/core/core_network/lib/src/firebase_observability_config.dart',
+        '${_workspacePrefix()}packages/core/core_network/lib/src/firebase_observability_config.dart',
       ).readAsStringSync();
       final bootstrap = File(
-        'packages/core/core_network/lib/src/firebase_bootstrap_service.dart',
+        '${_workspacePrefix()}packages/core/core_network/lib/src/firebase_bootstrap_service.dart',
       ).readAsStringSync();
       final appCheck = File(
-        'packages/core/core_network/lib/src/app_check_service.dart',
+        '${_workspacePrefix()}packages/core/core_network/lib/src/app_check_service.dart',
       ).readAsStringSync();
       final crashlytics = File(
-        'packages/core/core_network/lib/src/crashlytics_service.dart',
+        '${_workspacePrefix()}packages/core/core_network/lib/src/crashlytics_service.dart',
       ).readAsStringSync();
       final analytics = File(
-        'packages/core/core_network/lib/src/firebase_analytics_service.dart',
+        '${_workspacePrefix()}packages/core/core_network/lib/src/firebase_analytics_service.dart',
       ).readAsStringSync();
 
       expect(config, contains('ENABLE_FIREBASE_OBSERVABILITY'));
@@ -151,4 +151,9 @@ void main() {
       expect(analytics, contains('FirebaseObservabilityConfig.enabled'));
     });
   });
+}
+
+String _workspacePrefix() {
+  final current = Directory.current.path.replaceAll('\\', '/');
+  return current.endsWith('/apps/rayon_sports') ? '../../' : '';
 }

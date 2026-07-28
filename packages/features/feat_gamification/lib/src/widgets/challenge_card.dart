@@ -232,29 +232,30 @@ class ScorePredictionPill extends StatelessWidget {
     required this.homeScore,
     required this.awayScore,
     required this.label,
-    this.accent = ColorTokens.success,
+    this.accent,
   });
 
   final int homeScore;
   final int awayScore;
   final String label;
-  final Color accent;
+  final Color? accent;
 
   @override
   Widget build(BuildContext context) {
+    final effectiveAccent = accent ?? ColorTokens.success;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
         vertical: SpacingTokens.spacing3 / 2,
       ),
       decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.12),
+        color: effectiveAccent.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
         '$label  $homeScore-$awayScore',
         style: TypographyTokens.metricLabel(
-          accent,
+          effectiveAccent,
         ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.7),
       ),
     );

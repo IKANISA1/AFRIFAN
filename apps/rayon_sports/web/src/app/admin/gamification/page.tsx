@@ -21,6 +21,7 @@ import {
 } from "./_components/fet-state";
 import { FetEditorForm } from "./_components/fet-editor-form";
 import { FetList } from "./_components/fet-list";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 
 export default function AdminGamificationPage() {
   const { access, client } = useAdminPortal();
@@ -63,8 +64,11 @@ export default function AdminGamificationPage() {
     if (client == null) return;
     if (
       !confirmAdminDestructiveAction({
+        action: "Delete",
         subject: token.code,
-        detail: "The FET catalog entry will be removed from this club scope.",
+        scope: `Active club ${access.clubId ?? "not selected"}`,
+        impact: "The FET catalog entry will be removed from this club scope.",
+        undo: "not_available",
       })
     ) {
       return;
@@ -72,13 +76,21 @@ export default function AdminGamificationPage() {
 
     showAdminToast(`Removing ${token.code}...`, "info");
     try {
-      await deleteAdminFanEngagementToken(client, access, token.id);
+      await deleteAdminFanEngagementToken(
+        client,
+        access,
+        token.id,
+        token.updatedAt,
+      );
       await load();
       if (form.id === token.id) {
         setForm(emptyFetForm);
       }
       showAdminToast(`${token.code} removed.`, "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await load();
+      }
       showAdminToast(
         caught instanceof Error
           ? caught.message
@@ -98,6 +110,7 @@ export default function AdminGamificationPage() {
     try {
       await saveAdminFanEngagementToken(client, access, {
         id: token.id,
+        expectedUpdatedAt: token.updatedAt,
         code: token.code,
         templateScope: token.templateScope,
         category: token.category,
@@ -117,6 +130,9 @@ export default function AdminGamificationPage() {
         "success",
       );
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await load();
+      }
       showAdminToast(
         caught instanceof Error
           ? caught.message
@@ -180,6 +196,13 @@ export default function AdminGamificationPage() {
           client={client}
           access={access}
           onSaved={load}
+          onConflict={async () => {
+            await load();
+            showAdminToast(
+              "Latest FET catalogue loaded. Your draft is retained; review it before restarting the edit.",
+              "info",
+            );
+          }}
         />
         {loadError && !loading ? (
           <AdminErrorState

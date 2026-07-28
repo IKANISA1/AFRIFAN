@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_surface_card.dart';
@@ -24,7 +25,11 @@ class AfriMetricTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = accentColor ?? ColorTokens.primaryContainer;
+    final rawAccent = accentColor ?? ColorTokens.primaryContainer;
+    final accent = ColorTokens.accessibleMetricColor(rawAccent);
+    final supporting = ColorTokens.accessibleMetricColor(
+      ColorTokens.onSurfaceVariant,
+    );
 
     return AfriSurfaceCard(
       padding: const EdgeInsets.all(SpacingTokens.spacing4),
@@ -34,15 +39,13 @@ class AfriMetricTile extends StatelessWidget {
           Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 16, color: accent),
+                Icon(icon, size: SizeTokens.iconBase, color: accent),
                 const SizedBox(width: SpacingTokens.spacing2),
               ],
               Expanded(
                 child: Text(
                   label,
-                  style: TypographyTokens.labelSmall(
-                    ColorTokens.onSurfaceVariant,
-                  ),
+                  style: TypographyTokens.labelSmall(supporting),
                 ),
               ),
             ],
@@ -52,14 +55,11 @@ class AfriMetricTile extends StatelessWidget {
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TypographyTokens.headlineSmall(accentColor),
+            style: TypographyTokens.headlineSmall(accent),
           ),
           if (meta != null) ...[
             const SizedBox(height: SpacingTokens.spacing1),
-            Text(
-              meta!,
-              style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
-            ),
+            Text(meta!, style: TypographyTokens.bodySmall(supporting)),
           ],
         ],
       ),

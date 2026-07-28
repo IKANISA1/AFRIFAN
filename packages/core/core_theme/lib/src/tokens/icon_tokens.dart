@@ -17,6 +17,7 @@ class AfriIcons {
   static const IconData home = Icons.home_rounded;
   static const IconData fanzone = Icons.sports_soccer_rounded;
   static const IconData settings = Icons.settings_outlined;
+  static const IconData appearance = Icons.contrast_rounded;
   static const IconData wallet = Icons.account_balance_wallet_outlined;
   static const IconData membership = Icons.card_membership_outlined;
   static const IconData contribute = Icons.volunteer_activism_outlined;
@@ -44,6 +45,7 @@ class AfriIcons {
   static const IconData close = Icons.close_rounded;
   static const IconData more = Icons.more_horiz_rounded;
   static const IconData refresh = Icons.refresh_rounded;
+  static const IconData link = Icons.link_rounded;
   static const IconData edit = Icons.edit_outlined;
   static const IconData logout = Icons.logout_rounded;
   static const IconData help = Icons.chat_outlined;
@@ -54,6 +56,7 @@ class AfriIcons {
   static const IconData admin = Icons.admin_panel_settings_outlined;
   static const IconData visibility = Icons.visibility_rounded;
   static const IconData visibilityOff = Icons.visibility_off_rounded;
+  static const IconData mediaUnavailable = Icons.image_not_supported_rounded;
   static const IconData check = Icons.check_rounded;
   static const IconData verified = Icons.verified_rounded;
 

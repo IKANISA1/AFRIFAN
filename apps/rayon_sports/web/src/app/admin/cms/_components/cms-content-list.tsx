@@ -1,11 +1,17 @@
-import { PencilLine, Star, Trash2, Upload } from "lucide-react";
+"use client";
+
+import { PencilLine, Search, Star, Trash2, Upload } from "lucide-react";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminEmptyState } from "@/components/admin/admin-empty-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminSurface } from "@/components/admin/admin-surface";
 import { Skeleton } from "@/components/skeleton";
 import { cn } from "@/lib/utils";
 import type { AdminNewsArticle } from "@/lib/types";
 import { wordCount } from "./cms-state";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 interface CMSContentListProps {
   articles: AdminNewsArticle[];
@@ -24,6 +30,35 @@ export function CMSContentList({
   onToggleField,
   onRemove,
 }: CMSContentListProps) {
+  const articleCollection = useAdminCollection({
+    records: articles,
+    getId: (article) => article.id,
+    getSearchValues: (article) => [
+      article.title,
+      article.subtitle,
+      article.excerpt,
+      article.category,
+      article.isPublished ? "live published" : "draft",
+      article.isFeatured ? "featured" : "standard",
+    ],
+    getSortValue: (
+      article,
+      key: "article" | "category" | "status" | "featured" | "words" | "updated",
+    ) => {
+      switch (key) {
+        case "article": return article.title;
+        case "category": return article.category;
+        case "status": return article.isPublished;
+        case "featured": return article.isFeatured;
+        case "words": return wordCount(article.body);
+        case "updated": return new Date(article.publishedAt ?? article.createdAt);
+      }
+    },
+    initialSortKey: "updated" as const,
+    initialSortDirection: "descending",
+    pageSize: 25,
+  });
+
   return (
     <AdminSurface
       title="Article queue"
@@ -35,6 +70,9 @@ export function CMSContentList({
         >
           Refresh
         </button>
+      }
+      toolbar={
+        <AdminFilterBar><label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search article queue</span><input type="search" value={articleCollection.query} onChange={(event) => articleCollection.setQuery(event.target.value)} placeholder="Search article, category, or state" /></label></AdminFilterBar>
       }
       flush
     >
@@ -52,32 +90,33 @@ export function CMSContentList({
             </div>
           ))}
         </div>
-      ) : articles.length === 0 ? (
-        <AdminEmptyState
-          title="No articles yet"
-          description="Use the editor to publish the first story."
-        />
       ) : (
-        <div className="admin-table-shell">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Article</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Flags</th>
-                <th>Words</th>
-                <th>Updated</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {articles.map((article) => (
+        <>
+          <AdminDataGrid
+            caption="Article publishing queue"
+            onRowActivate={(rowId) => {
+              const article = articles.find((item) => item.id === rowId);
+              if (article) onBeginEdit(article);
+            }}
+            columns={[
+              { key: "article", label: "Article", priority: "primary", sortable: true, sortDirection: articleCollection.sortDirectionFor("article"), onSort: () => articleCollection.toggleSort("article") },
+              { key: "category", label: "Category", priority: "secondary", sortable: true, sortDirection: articleCollection.sortDirectionFor("category"), onSort: () => articleCollection.toggleSort("category") },
+              { key: "status", label: "Status", priority: "primary", sortable: true, sortDirection: articleCollection.sortDirectionFor("status"), onSort: () => articleCollection.toggleSort("status") },
+              { key: "flags", label: "Flags", priority: "secondary", sortable: true, sortDirection: articleCollection.sortDirectionFor("featured"), onSort: () => articleCollection.toggleSort("featured") },
+              { key: "words", label: "Words", priority: "tertiary", sortable: true, sortDirection: articleCollection.sortDirectionFor("words"), onSort: () => articleCollection.toggleSort("words") },
+              { key: "updated", label: "Updated", priority: "secondary", sortable: true, sortDirection: articleCollection.sortDirectionFor("updated"), onSort: () => articleCollection.toggleSort("updated") },
+              { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
+            ]}
+          >
+            {articleCollection.pageResult.items.length === 0 ? (
+              <tr><td colSpan={7}><AdminEmptyState title="No articles yet" description={articleCollection.query ? "No articles match the current search." : "Use the editor to publish the first story."} /></td></tr>
+            ) : articleCollection.pageResult.items.map((article) => (
                 <tr
                   key={article.id}
-                  className={cn("admin-table-row", !article.isPublished && "opacity-80")}
+                  data-row-id={article.id}
+                  className={cn(!article.isPublished && "opacity-80")}
                 >
-                  <td className="admin-table-cell" data-column-label="Article">
+                  <td>
                     <div className="flex gap-3">
                       {article.imageUrl ? (
                         <div className="hidden h-12 w-12 overflow-hidden rounded-xl border border-border-soft sm:block">
@@ -91,16 +130,16 @@ export function CMSContentList({
                       </div>
                     </div>
                   </td>
-                  <td className="admin-table-cell" data-column-label="Category">
+                  <td>
                     <AdminStatusBadge label={article.category} tone="neutral" />
                   </td>
-                  <td className="admin-table-cell" data-column-label="Status">
+                  <td>
                     <AdminStatusBadge
                       label={article.isPublished ? "Live" : "Draft"}
                       tone={article.isPublished ? "success" : "neutral"}
                     />
                   </td>
-                  <td className="admin-table-cell" data-column-label="Flags">
+                  <td>
                     <div className="flex flex-wrap gap-2">
                       {article.isFeatured ? (
                         <AdminStatusBadge label="Featured" tone="accent" />
@@ -109,13 +148,13 @@ export function CMSContentList({
                       )}
                     </div>
                   </td>
-                  <td className="admin-table-cell" data-column-label="Words">
+                  <td>
                     <p className="text-sm font-medium text-white">
                       {wordCount(article.body)}
                     </p>
                     <p className="admin-row-meta">body words</p>
                   </td>
-                  <td className="admin-table-cell" data-column-label="Updated">
+                  <td>
                     <p className="text-sm font-medium text-white">
                       {new Date(article.publishedAt ?? article.createdAt).toLocaleDateString("en-US", {
                         month: "short",
@@ -127,7 +166,7 @@ export function CMSContentList({
                       {article.isPublished ? "published" : "created"}
                     </p>
                   </td>
-                  <td className="admin-table-cell" data-column-label="Actions">
+                  <td>
                     <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
                       <button
                         type="button"
@@ -165,9 +204,9 @@ export function CMSContentList({
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+          </AdminDataGrid>
+          <AdminPagination page={articleCollection.pageResult} onPageChange={articleCollection.setPage} label="Article queue" />
+        </>
       )}
     </AdminSurface>
   );

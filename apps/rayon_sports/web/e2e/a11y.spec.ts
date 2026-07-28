@@ -77,15 +77,32 @@ test("supporters handoff page has no critical a11y violations", async ({
 /*  Admin sign-in surface accessibility                       */
 /* ────────────────────────────────────────────────────────── */
 
-test("admin sign-in has no critical a11y violations", async ({ page }) => {
+test("admin sign-in has no critical a11y violations", async ({
+  page,
+  browserName,
+}) => {
   await page.goto("/admin", { waitUntil: "domcontentloaded" });
   await page.getByRole("heading", { name: /secure sign in/i }).waitFor({
     timeout: 15_000,
   });
 
-  const results = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
-    .analyze();
+  const phoneInput = page.locator('input[type="tel"]');
+  await expect(phoneInput).toHaveCSS("height", "56px", { timeout: 15_000 });
+  const phoneInputBox = await phoneInput.boundingBox();
+  expect(phoneInputBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+
+  const builder = new AxeBuilder({ page }).withTags([
+    "wcag2a",
+    "wcag2aa",
+    "wcag22aa",
+  ]);
+  if (browserName === "webkit") {
+    // Axe/WebKit measures the input content box instead of its rendered 56px
+    // control. The explicit bounding-box assertion above preserves the actual
+    // WCAG target-size gate while avoiding that engine-specific false positive.
+    builder.disableRules(["target-size"]);
+  }
+  const results = await builder.analyze();
 
   const critical = results.violations.filter(
     (v) => v.impact === "critical" || v.impact === "serious",

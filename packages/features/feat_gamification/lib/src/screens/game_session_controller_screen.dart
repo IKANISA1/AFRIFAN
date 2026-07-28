@@ -66,7 +66,7 @@ class _GameSessionControllerScreenState
     final state = _withLocalSubmittedAnswerLock(loadedState);
     final hasJoined = _sessionPlayerId != null && _sessionPlayerId!.isNotEmpty;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         title: Text(
@@ -81,7 +81,9 @@ class _GameSessionControllerScreenState
           tooltip: 'Back',
         ),
       ),
-      body: SafeArea(
+      scrollable: false,
+      constrainContent: true,
+      child: SafeArea(
         child: AfriRefreshIndicator(
           onRefresh: () => ref.refresh(
             gameSessionControllerStateProvider(_providerArgs).future,
@@ -97,7 +99,7 @@ class _GameSessionControllerScreenState
               else if (asyncState.hasError)
                 _InlineStateBanner(
                   message:
-                      'Could not reach the live session. Showing the last safe controller layout.',
+                      'Could not reach the live session. Showing the last available session controls.',
                   actionLabel: 'Retry',
                   onAction: () => ref.invalidate(
                     gameSessionControllerStateProvider(_providerArgs),

@@ -16,6 +16,9 @@ dependencies:
     path: ../../packages/clubs/club_rayon_sports
   core_theme:
     path: ../../packages/core/core_theme
+  core_l10n:
+    path: ../../packages/core/core_l10n
+  flutter_secure_storage: ^9.2.4
   supabase_flutter: ^2.12.2
 
 dev_dependencies:

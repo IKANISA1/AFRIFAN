@@ -422,7 +422,7 @@ class _ShareCardModalSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
                   ),
                   alignment: Alignment.center,
-                  child: const Icon(
+                  child: Icon(
                     AfriIcons.verified,
                     color: ColorTokens.success,
                     size: SpacingTokens.spacing7,

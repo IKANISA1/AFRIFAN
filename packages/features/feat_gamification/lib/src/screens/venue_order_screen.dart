@@ -39,7 +39,7 @@ class _VenueOrderScreenState extends State<VenueOrderScreen> {
   Widget build(BuildContext context) {
     final status = _orderStatusFor(_statusCode);
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -50,133 +50,134 @@ class _VenueOrderScreenState extends State<VenueOrderScreen> {
           tooltip: 'Back',
         ),
       ),
-      body: GradientBackground(
-        child: ListView(
-          padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-          children: [
-            AfriSurfaceCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    AfriIcons.cart,
-                    color: ColorTokens.clubAccent,
-                    size: SpacingTokens.spacing10,
+      scrollable: false,
+      constrainContent: true,
+      bodyWrapper: (child) => GradientBackground(child: child),
+      child: ListView(
+        padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+        children: [
+          AfriSurfaceCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  AfriIcons.cart,
+                  color: ColorTokens.clubAccent,
+                  size: SpacingTokens.spacing10,
+                ),
+                const SizedBox(height: SpacingTokens.spacing4),
+                Text(
+                  'Order from the approved drinks menu',
+                  style: TypographyTokens.headlineLarge().copyWith(
+                    fontWeight: FontWeight.w900,
+                    height: TypographyTokens.lineHeightCompact,
                   ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Text(
-                    'Order from the approved drinks menu',
-                    style: TypographyTokens.headlineLarge().copyWith(
-                      fontWeight: FontWeight.w900,
-                      height: TypographyTokens.lineHeightCompact,
-                    ),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  Text(
-                    'Supporters can create and track drinks-only orders. Staff queue controls and admin approvals stay outside the mobile app.',
-                    style: TypographyTokens.bodyMedium(),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                Text(
+                  'Supporters can create and track drinks-only orders. Staff queue controls and admin approvals stay outside the mobile app.',
+                  style: TypographyTokens.bodyMedium(),
+                ),
+              ],
             ),
-            const SizedBox(height: SpacingTokens.sectionGap),
-            AfriSectionCard(
-              title: 'Approved drinks',
-              child: Column(
-                children: [
-                  _DrinkStepper(
-                    label: 'Water',
-                    detail: 'RWF 1,500',
-                    count: _waterCount,
-                    onAdd: () => setState(() => _waterCount++),
-                    onRemove: _waterCount == 0
-                        ? null
-                        : () => setState(() => _waterCount--),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  _DrinkStepper(
-                    label: 'Passion juice',
-                    detail: 'RWF 2,500',
-                    count: _juiceCount,
-                    onAdd: () => setState(() => _juiceCount++),
-                    onRemove: _juiceCount == 0
-                        ? null
-                        : () => setState(() => _juiceCount--),
-                  ),
-                ],
-              ),
+          ),
+          const SizedBox(height: SpacingTokens.sectionGap),
+          AfriSectionCard(
+            title: 'Approved drinks',
+            child: Column(
+              children: [
+                _DrinkStepper(
+                  label: 'Water',
+                  detail: 'RWF 1,500',
+                  count: _waterCount,
+                  onAdd: () => setState(() => _waterCount++),
+                  onRemove: _waterCount == 0
+                      ? null
+                      : () => setState(() => _waterCount--),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                _DrinkStepper(
+                  label: 'Passion juice',
+                  detail: 'RWF 2,500',
+                  count: _juiceCount,
+                  onAdd: () => setState(() => _juiceCount++),
+                  onRemove: _juiceCount == 0
+                      ? null
+                      : () => setState(() => _juiceCount--),
+                ),
+              ],
             ),
-            const SizedBox(height: SpacingTokens.sectionGap),
-            AfriSurfaceCard(
-              child: Row(
-                children: [
-                  Icon(
-                    AfriIcons.myPicks,
-                    color: ColorTokens.clubAccent,
-                    size: AfriIcons.sizeNav,
+          ),
+          const SizedBox(height: SpacingTokens.sectionGap),
+          AfriSurfaceCard(
+            child: Row(
+              children: [
+                Icon(
+                  AfriIcons.myPicks,
+                  color: ColorTokens.clubAccent,
+                  size: AfriIcons.sizeNav,
+                ),
+                const SizedBox(width: SpacingTokens.spacing3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Receipt preview',
+                        style: TypographyTokens.titleLarge(),
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing1),
+                      Text(
+                        '$_totalItems item${_totalItems == 1 ? '' : 's'} · RWF $_totalAmount',
+                        style: TypographyTokens.bodyMedium(),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: SpacingTokens.spacing3),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Receipt preview',
-                          style: TypographyTokens.titleLarge(),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing1),
-                        Text(
-                          '$_totalItems item${_totalItems == 1 ? '' : 's'} · RWF $_totalAmount',
-                          style: TypographyTokens.bodyMedium(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(height: SpacingTokens.sectionGap),
-            AfriStateBanner(
-              icon: status.icon,
-              title: status.title,
-              subtitle: status.subtitle,
-              tone: status.tone,
+          ),
+          const SizedBox(height: SpacingTokens.sectionGap),
+          AfriStateBanner(
+            icon: status.icon,
+            title: status.title,
+            subtitle: status.subtitle,
+            tone: status.tone,
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          AfriButton(
+            label: 'Create order',
+            icon: AfriIcons.cart,
+            onTap: _submitOrder,
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          AfriButton(
+            label: 'Preview next status',
+            icon: AfriIcons.statusPending,
+            variant: AfriButtonVariant.secondary,
+            onTap: _advanceStatus,
+          ),
+          const SizedBox(height: SpacingTokens.sectionGap),
+          const AfriSectionCard(
+            title: 'Order protections',
+            child: Column(
+              children: [
+                _ProtectionRow(
+                  label: 'Alcohol items',
+                  detail: 'Age gate required',
+                ),
+                _ProtectionRow(
+                  label: 'Duplicate submit',
+                  detail: 'Idempotency key',
+                ),
+                _ProtectionRow(
+                  label: 'Staff actions',
+                  detail: 'Venue portal only',
+                ),
+              ],
             ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            AfriButton(
-              label: 'Create order',
-              icon: AfriIcons.cart,
-              onTap: _submitOrder,
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            AfriButton(
-              label: 'Preview next status',
-              icon: AfriIcons.statusPending,
-              variant: AfriButtonVariant.secondary,
-              onTap: _advanceStatus,
-            ),
-            const SizedBox(height: SpacingTokens.sectionGap),
-            const AfriSectionCard(
-              title: 'Order protections',
-              child: Column(
-                children: [
-                  _ProtectionRow(
-                    label: 'Alcohol items',
-                    detail: 'Age gate required',
-                  ),
-                  _ProtectionRow(
-                    label: 'Duplicate submit',
-                    detail: 'Idempotency key',
-                  ),
-                  _ProtectionRow(
-                    label: 'Staff actions',
-                    detail: 'Venue portal only',
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -243,7 +244,7 @@ class _ProtectionRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             AfriIcons.shield,
             color: ColorTokens.success,
             size: AfriIcons.sizeInline,

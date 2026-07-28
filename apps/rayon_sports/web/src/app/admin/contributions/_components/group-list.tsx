@@ -1,21 +1,22 @@
 "use client";
 
-import { Download, PencilLine, Trash2 } from "lucide-react";
+import { Download, PencilLine, Search, Trash2 } from "lucide-react";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminEmptyState } from "@/components/admin/admin-empty-state";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminSurface } from "@/components/admin/admin-surface";
 import { ProgressBar } from "@/components/progress-bar";
 import { Skeleton } from "@/components/skeleton";
 import { formatCurrency } from "@/lib/utils";
 import type { AdminContributionGroup, AdminContributionSnapshot } from "@/lib/types";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 interface GroupListProps {
   snapshot: AdminContributionSnapshot;
   currencyCode: string;
   filter: string;
   setFilter: (filter: string) => void;
-  sortMode: string;
-  setSortMode: (mode: string) => void;
   loading: boolean;
   onEdit: (group: AdminContributionGroup) => void;
   onDelete: (group: AdminContributionGroup) => void;
@@ -27,15 +28,12 @@ export function ContributionGroupList({
   currencyCode,
   filter,
   setFilter,
-  sortMode,
-  setSortMode,
   loading,
   onEdit,
   onDelete,
   onExportExcel,
 }: GroupListProps) {
-  const filteredGroups = snapshot.groups
-    .filter((group) => {
+  const filteredGroups = snapshot.groups.filter((group) => {
       switch (filter) {
         case "CLUB PROJECTS":
           return group.groupType === "project";
@@ -46,16 +44,36 @@ export function ContributionGroupList({
         default:
           return true;
       }
-    })
-    .sort((left, right) => {
-      if (sortMode === "TOTAL") {
-        return right.currentTotal - left.currentTotal;
-      }
-      if (sortMode === "MEMBERS") {
-        return right.memberCount - left.memberCount;
-      }
-      return right.createdAt.localeCompare(left.createdAt);
     });
+  const groupCollection = useAdminCollection({
+    records: filteredGroups,
+    getId: (group) => group.id,
+    getSearchValues: (group) => [
+      group.name,
+      group.description,
+      group.groupType,
+      group.isClosed ? "closed" : "active",
+      group.creatorId,
+      group.currency,
+    ],
+    getSortValue: (
+      group,
+      key: "initiative" | "type" | "status" | "members" | "total" | "progress" | "createdAt",
+    ) => {
+      switch (key) {
+        case "initiative": return group.name;
+        case "type": return group.groupType;
+        case "status": return group.isClosed;
+        case "members": return group.memberCount;
+        case "total": return group.currentTotal;
+        case "progress": return group.targetAmount === 0 ? 0 : group.currentTotal / group.targetAmount;
+        case "createdAt": return new Date(group.createdAt);
+      }
+    },
+    initialSortKey: "createdAt" as const,
+    initialSortDirection: "descending",
+    pageSize: 25,
+  });
 
   return (
     <AdminSurface
@@ -83,17 +101,29 @@ export function ContributionGroupList({
               {item}
             </button>
           ))}
-          {["RECENT", "TOTAL", "MEMBERS"].map((item) => (
+          {(["RECENT", "TOTAL", "MEMBERS"] as const).map((item) => (
             <button
               key={item}
               type="button"
-              data-active={sortMode === item}
-              onClick={() => setSortMode(item)}
+              data-active={
+                (item === "RECENT" && groupCollection.sortKey === "createdAt") ||
+                (item === "TOTAL" && groupCollection.sortKey === "total") ||
+                (item === "MEMBERS" && groupCollection.sortKey === "members")
+              }
+              onClick={() => {
+                const key = item === "RECENT" ? "createdAt" : item === "TOTAL" ? "total" : "members";
+                groupCollection.toggleSort(key);
+              }}
               className="dashboard-chip"
             >
               Sort {item}
             </button>
           ))}
+          <label className="admin-search-field">
+            <Search size={14} aria-hidden="true" />
+            <span className="sr-only">Search public initiatives</span>
+            <input type="search" value={groupCollection.query} onChange={(event) => groupCollection.setQuery(event.target.value)} placeholder="Search initiative, type, owner, or state" />
+          </label>
         </div>
       }
       flush
@@ -112,50 +142,50 @@ export function ContributionGroupList({
             </div>
           ))}
         </div>
-      ) : filteredGroups.length === 0 ? (
-          <AdminEmptyState
-          title="No public initiatives in this view"
-          description="Adjust the current filter or create a new initiative from the editor."
-        />
       ) : (
-        <div className="admin-table-shell">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Initiative</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Members</th>
-                <th>Raised</th>
-                <th>Progress</th>
-                <th>Owner</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredGroups.map((group) => {
+        <>
+          <AdminDataGrid
+            caption="Public contribution initiatives"
+            onRowActivate={(rowId) => {
+              const group = snapshot.groups.find((item) => item.id === rowId);
+              if (group) onEdit(group);
+            }}
+            columns={[
+              { key: "initiative", label: "Initiative", priority: "primary", sortable: true, sortDirection: groupCollection.sortDirectionFor("initiative"), onSort: () => groupCollection.toggleSort("initiative") },
+              { key: "type", label: "Type", priority: "secondary", sortable: true, sortDirection: groupCollection.sortDirectionFor("type"), onSort: () => groupCollection.toggleSort("type") },
+              { key: "status", label: "Status", priority: "primary", sortable: true, sortDirection: groupCollection.sortDirectionFor("status"), onSort: () => groupCollection.toggleSort("status") },
+              { key: "members", label: "Members", priority: "secondary", sortable: true, sortDirection: groupCollection.sortDirectionFor("members"), onSort: () => groupCollection.toggleSort("members") },
+              { key: "raised", label: "Raised", priority: "primary", sortable: true, sortDirection: groupCollection.sortDirectionFor("total"), onSort: () => groupCollection.toggleSort("total") },
+              { key: "progress", label: "Progress", priority: "tertiary", sortable: true, sortDirection: groupCollection.sortDirectionFor("progress"), onSort: () => groupCollection.toggleSort("progress") },
+              { key: "owner", label: "Owner", priority: "tertiary", sortable: true, sortDirection: groupCollection.sortDirectionFor("createdAt"), onSort: () => groupCollection.toggleSort("createdAt") },
+              { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
+            ]}
+          >
+            {groupCollection.pageResult.items.length === 0 ? (
+              <tr><td colSpan={8}><AdminEmptyState title="No public initiatives in this view" description={groupCollection.query ? "No initiatives match the current search and filter." : "Adjust the current filter or create a new initiative from the editor."} /></td></tr>
+            ) : groupCollection.pageResult.items.map((group) => {
                 const creatorAlias = group.creatorId?.slice(0, 6) ?? "000000";
 
                 return (
-                  <tr key={group.id} className="admin-table-row">
-                    <td className="admin-table-cell" data-column-label="Initiative">
+                  <tr key={group.id} data-row-id={group.id}>
+                    <td>
                       <p className="admin-row-title">{group.name}</p>
                       <p className="admin-row-copy">{group.description}</p>
                     </td>
-                    <td className="admin-table-cell" data-column-label="Type">
+                    <td>
                       <AdminStatusBadge label={group.groupType} tone="neutral" />
                     </td>
-                    <td className="admin-table-cell" data-column-label="Status">
+                    <td>
                       <AdminStatusBadge
                         label={group.isClosed ? "Closed" : "Active"}
                         tone={group.isClosed ? "danger" : "success"}
                       />
                     </td>
-                    <td className="admin-table-cell" data-column-label="Members">
+                    <td>
                       <p className="text-sm font-medium text-white">{group.memberCount}</p>
                       <p className="admin-row-meta">contributors</p>
                     </td>
-                    <td className="admin-table-cell" data-column-label="Raised">
+                    <td>
                       <p className="text-sm font-medium text-white">
                         {formatCurrency(group.currentTotal, currencyCode)}
                       </p>
@@ -163,7 +193,7 @@ export function ContributionGroupList({
                         Target {formatCurrency(group.targetAmount, currencyCode)}
                       </p>
                     </td>
-                    <td className="admin-table-cell min-w-[180px]" data-column-label="Progress">
+                    <td className="min-w-[180px]">
                       <ProgressBar
                         value={group.currentTotal}
                         max={Math.max(group.targetAmount, group.currentTotal, 1)}
@@ -173,7 +203,7 @@ export function ContributionGroupList({
                         {Math.round((group.currentTotal / Math.max(group.targetAmount, 1)) * 100)}% funded
                       </p>
                     </td>
-                    <td className="admin-table-cell" data-column-label="Owner">
+                    <td>
                       <p className="text-sm font-medium text-white">{creatorAlias}</p>
                       <p className="admin-row-meta">
                         {new Date(group.createdAt).toLocaleDateString("en-US", {
@@ -183,7 +213,7 @@ export function ContributionGroupList({
                         })}
                       </p>
                     </td>
-                    <td className="admin-table-cell" data-column-label="Actions">
+                    <td>
                       <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
                         <button
                           type="button"
@@ -206,9 +236,9 @@ export function ContributionGroupList({
                   </tr>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
+          </AdminDataGrid>
+          <AdminPagination page={groupCollection.pageResult} onPageChange={groupCollection.setPage} label="Public contribution initiatives" />
+        </>
       )}
     </AdminSurface>
   );

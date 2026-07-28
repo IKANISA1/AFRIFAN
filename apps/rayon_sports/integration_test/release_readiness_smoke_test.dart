@@ -97,7 +97,8 @@ void main() {
     );
 
     expect(find.byType(QuickActionsGrid), findsOneWidget);
-    expect(find.text('Support'), findsAtLeastNWidgets(1));
+    expect(find.text('Tickets'), findsAtLeastNWidgets(1));
+    expect(find.text('Fan Zone'), findsAtLeastNWidgets(1));
   });
 
   testWidgets(

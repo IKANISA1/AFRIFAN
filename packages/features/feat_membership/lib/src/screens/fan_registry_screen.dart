@@ -185,7 +185,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
         ? 'This registry mirrors the club membership roster.'
         : 'Filtered results for "${_searchQuery!}".';
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -202,7 +202,8 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
           ),
         ),
       ),
-      body: AfriRefreshIndicator(
+      scrollable: false,
+      child: AfriRefreshIndicator(
         color: ColorTokens.clubAccent,
         onRefresh: _reloadFans,
         child: CustomScrollView(

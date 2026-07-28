@@ -18,9 +18,21 @@ import '../widgets/digital_membership_card.dart';
 import '../widgets/membership_card.dart';
 import '../widgets/tier_progress.dart';
 
+typedef MembershipPackageActivator =
+    Future<void> Function(Map<String, dynamic> package);
+
 /// Membership screen — tier display, digital card, membership packages.
 class MembershipScreen extends ConsumerStatefulWidget {
-  const MembershipScreen({super.key});
+  const MembershipScreen({
+    super.key,
+    this.packageActivator,
+    this.activationTimeout = const Duration(seconds: 30),
+    this.autofocusTier,
+  });
+
+  final MembershipPackageActivator? packageActivator;
+  final Duration activationTimeout;
+  final String? autofocusTier;
 
   @override
   ConsumerState<MembershipScreen> createState() => _MembershipScreenState();
@@ -36,6 +48,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   // Only write-side transient state remains here.
   bool _isJoining = false;
   String? _joiningTier;
+  MembershipFailure? _activationFailure;
 
   MembershipSnapshot? get _snapshot => ref.read(membershipProvider).valueOrNull;
 
@@ -50,6 +63,11 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   }
 
   Future<void> _activatePackage(Map<String, dynamic> pkg) async {
+    if (!ConnectivityService.isOnline) {
+      _showError('Connect before changing membership.');
+      return;
+    }
+
     final user = ref.read(currentUserProvider);
     if (user == null) {
       _showInfo('Sign in first to activate membership.');
@@ -64,9 +82,18 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     setState(() {
       _isJoining = true;
       _joiningTier = tierValue;
+      _activationFailure = null;
     });
 
     try {
+      final packageActivator = widget.packageActivator;
+      if (packageActivator != null) {
+        await packageActivator(pkg).timeout(widget.activationTimeout);
+        if (!mounted) return;
+        _showSuccess('$tierLabel membership request submitted.');
+        return;
+      }
+
       final client = ref.read(supabaseClientProvider);
       final resolver = ClubScopeResolver(client: client);
       final scope = await resolver.requireResolved();
@@ -131,7 +158,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       );
     } catch (error) {
       if (!mounted) return;
-      _showError('Membership activation failed: $error');
+      setState(() {
+        _activationFailure = MembershipFailure.fromError(error);
+      });
     } finally {
       if (mounted) {
         setState(() {
@@ -329,6 +358,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     final errorMessage = asyncMembership.hasError
         ? 'Membership details are temporarily unavailable.'
         : null;
+    final isSyncing =
+        asyncMembership.isRefreshing ||
+        (asyncMembership.isLoading && snapshot != null);
     final packages = snapshot?.packages ?? const <Map<String, dynamic>>[];
     final membership = snapshot?.membership;
     final contributions =
@@ -348,7 +380,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       membership?['payment_status']?.toString(),
     );
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -360,311 +392,389 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         ),
         title: Text('Membership', style: TypographyTokens.headlineSmall()),
       ),
-      body: GradientBackground(
-        routePath: '/membership',
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
+      scrollable: false,
+      bodyWrapper: (child) =>
+          GradientBackground(routePath: '/membership', child: child),
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        slivers: [
+          // Digital membership card
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                SpacingTokens.spacing6,
+                SpacingTokens.spacing4,
+                SpacingTokens.spacing6,
+                SpacingTokens.spacing6,
+              ),
+              child: MembershipCard(
+                tierLabel: currentTier,
+                fet: currentFet,
+                paymentStatus: paymentStatus,
+              ),
+            ),
           ),
-          slivers: [
-            // Digital membership card
+
+          // Tier progress
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing6,
+              ),
+              child: TierProgress(currentFet: currentFet),
+            ),
+          ),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing8),
+          ),
+
+          if (snapshot?.isStale == true)
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
                   SpacingTokens.spacing6,
-                  SpacingTokens.spacing4,
+                  0,
                   SpacingTokens.spacing6,
                   SpacingTokens.spacing6,
                 ),
-                child: MembershipCard(
-                  tierLabel: currentTier,
-                  fet: currentFet,
-                  paymentStatus: paymentStatus,
+                child: AfriStateBanner(
+                  icon: AfriIcons.statusWarning,
+                  title: 'Saved membership details',
+                  subtitle: snapshot?.recoveryMessage,
+                  tone: AfriStateBannerTone.warning,
                 ),
               ),
             ),
 
-            // Tier progress
+          // ── Digital card ──
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.screenPadding,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AfriSectionHeader(
+                    title: 'Digital card',
+                    padding: EdgeInsets.zero,
+                    trailing: AfriInfoChip(
+                      icon: AfriIcons.share,
+                      label: 'Share',
+                      onTap: () async {
+                        final supporterId = user?.publicUserId != null
+                            ? AliasGenerator.format(user!.publicUserId!)
+                            : '000000';
+                        await Clipboard.setData(
+                          ClipboardData(
+                            text:
+                                '${RuntimeBranding.displayHomeTeamName} membership\n'
+                                'Tier: $currentTier\n'
+                                'Supporter ID: #$supporterId',
+                          ),
+                        );
+                        if (!context.mounted) {
+                          return;
+                        }
+                        AfriToast.success(
+                          context,
+                          'Membership details copied.',
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  DigitalMembershipCardFull(
+                    clubName: RuntimeBranding.displayHomeTeamName,
+                    tier: currentTier,
+                    fanId: user?.publicUserId != null
+                        ? AliasGenerator.format(user!.publicUserId!)
+                        : '#000000',
+                    memberSince: membership?['joined_at'] != null
+                        ? _formatMembershipDate(
+                            membership?['joined_at']?.toString(),
+                          )
+                        : null,
+                    accentColor: primary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing8),
+          ),
+
+          // ── Status summary ──
+          if (!isLoading && errorMessage == null)
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: SpacingTokens.spacing6,
                 ),
-                child: TierProgress(currentFet: currentFet),
-              ),
-            ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing8),
-            ),
-
-            // ── Digital card ──
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.screenPadding,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AfriSectionHeader(
-                      title: 'Digital card',
-                      padding: EdgeInsets.zero,
-                      trailing: AfriInfoChip(
-                        icon: AfriIcons.share,
-                        label: 'Share',
-                        onTap: () async {
-                          final supporterId = user?.publicUserId != null
-                              ? AliasGenerator.format(user!.publicUserId!)
-                              : '000000';
-                          await Clipboard.setData(
-                            ClipboardData(
-                              text:
-                                  '${RuntimeBranding.displayHomeTeamName} membership\n'
-                                  'Tier: $currentTier\n'
-                                  'Supporter ID: #$supporterId',
-                            ),
-                          );
-                          if (!context.mounted) {
-                            return;
-                          }
-                          AfriToast.success(
-                            context,
-                            'Membership details copied.',
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    DigitalMembershipCardFull(
-                      clubName: RuntimeBranding.displayHomeTeamName,
-                      tier: currentTier,
-                      fanId: user?.publicUserId != null
-                          ? AliasGenerator.format(user!.publicUserId!)
-                          : '#000000',
-                      memberSince: membership?['joined_at'] != null
-                          ? _formatMembershipDate(
-                              membership?['joined_at']?.toString(),
-                            )
-                          : null,
-                      accentColor: primary,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing8),
-            ),
-
-            // ── Status summary ──
-            if (!isLoading && errorMessage == null)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: latestPendingApplication != null
-                      ? AfriStateBanner(
-                          icon: AfriIcons.statusWarning,
-                          title: 'Membership review',
-                          subtitle:
-                              '${_membershipPackageLabel(latestPendingApplication['tier']?.toString() ?? 'imena')} request is awaiting payment verification.',
-                          tone: AfriStateBannerTone.warning,
-                        )
-                      : GlassCard(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      currentTier,
-                                      style: TypographyTokens.metricValue(
-                                        ColorTokens.clubAccent,
-                                      ),
+                child: latestPendingApplication != null
+                    ? AfriStateBanner(
+                        icon: AfriIcons.statusWarning,
+                        title: 'Membership review',
+                        subtitle:
+                            '${_membershipPackageLabel(latestPendingApplication['tier']?.toString() ?? 'imena')} request is awaiting payment verification.',
+                        tone: AfriStateBannerTone.warning,
+                      )
+                    : GlassCard(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    currentTier,
+                                    style: TypographyTokens.metricValue(
+                                      ColorTokens.clubAccent,
                                     ),
+                                  ),
+                                  const SizedBox(
+                                    height: SpacingTokens.spacing2,
+                                  ),
+                                  Text(
+                                    currentFet == 0
+                                        ? 'Membership activity appears after ticket, fanclub, and contribution reviews.'
+                                        : '$currentFet activity points recorded.',
+                                    style: TypographyTokens.bodyMedium(),
+                                  ),
+                                  if (membership?['expires_at'] != null) ...[
                                     const SizedBox(
                                       height: SpacingTokens.spacing2,
                                     ),
                                     Text(
-                                      currentFet == 0
-                                          ? 'Membership activity appears after ticket, fanclub, and contribution reviews.'
-                                          : '$currentFet activity points recorded.',
-                                      style: TypographyTokens.bodyMedium(),
+                                      'Renews on ${_formatMembershipDate(membership?['expires_at']?.toString())}',
+                                      style: TypographyTokens.bodySmall(
+                                        ColorTokens.onSurfaceVariant,
+                                      ),
                                     ),
-                                    if (membership?['expires_at'] != null) ...[
-                                      const SizedBox(
-                                        height: SpacingTokens.spacing2,
-                                      ),
-                                      Text(
-                                        'Renews on ${_formatMembershipDate(membership?['expires_at']?.toString())}',
-                                        style: TypographyTokens.bodySmall(
-                                          ColorTokens.onSurfaceVariant,
-                                        ),
-                                      ),
-                                    ],
                                   ],
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                ),
+                      ),
               ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing6),
             ),
 
-            // ── B-3: Payment Lifecycle Status Card ──
-            if (!isLoading &&
-                errorMessage == null &&
-                latestPendingApplication != null)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: _PaymentStatusCard(
-                    application: latestPendingApplication,
-                    tierLabel: _membershipPackageLabel(
-                      latestPendingApplication['tier']?.toString() ?? 'imena',
-                    ),
-                    formatDate: _formatMembershipDate,
-                    onContactSupport: () {
-                      final phoneNumber = _supportWhatsApp.trim();
-                      if (phoneNumber.isNotEmpty) {
-                        final sanitizedPhoneNumber = phoneNumber.replaceAll(
-                          '+',
-                          '',
-                        );
-                        final uri = Uri.parse(
-                          'https://wa.me/$sanitizedPhoneNumber?text=${Uri.encodeComponent('Hi, I need help with my membership payment verification.')}',
-                        );
-                        unawaited(
-                          launchUrl(
-                            uri,
-                            mode: LaunchMode.externalApplication,
-                          ).then((launched) {
-                            if (!launched && mounted) {
-                              _showError(
-                                'Could not open WhatsApp. Please contact support.',
-                              );
-                            }
-                          }),
-                        );
-                      } else {
-                        _showInfo('Support contact is not configured yet.');
-                      }
-                    },
-                  ),
-                ),
-              ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing6),
+          ),
 
-            // ── Contribution History ──
+          // ── B-3: Payment Lifecycle Status Card ──
+          if (!isLoading &&
+              errorMessage == null &&
+              latestPendingApplication != null)
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: SpacingTokens.spacing6,
                 ),
-                child: ContributionHistorySection(
-                  contributions: contributions,
-                  currencySymbol: context.afriCurrencySymbol,
+                child: _PaymentStatusCard(
+                  application: latestPendingApplication,
+                  tierLabel: _membershipPackageLabel(
+                    latestPendingApplication['tier']?.toString() ?? 'imena',
+                  ),
+                  formatDate: _formatMembershipDate,
+                  onContactSupport: () {
+                    final phoneNumber = _supportWhatsApp.trim();
+                    if (phoneNumber.isNotEmpty) {
+                      final sanitizedPhoneNumber = phoneNumber.replaceAll(
+                        '+',
+                        '',
+                      );
+                      final uri = Uri.parse(
+                        'https://wa.me/$sanitizedPhoneNumber?text=${Uri.encodeComponent('Hi, I need help with my membership payment verification.')}',
+                      );
+                      unawaited(
+                        launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        ).then((launched) {
+                          if (!launched && mounted) {
+                            _showError(
+                              'Could not open WhatsApp. Please contact support.',
+                            );
+                          }
+                        }),
+                      );
+                    } else {
+                      _showInfo('Support contact is not configured yet.');
+                    }
+                  },
                 ),
               ),
             ),
 
-            const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing8),
+          // ── Contribution History ──
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing6,
+              ),
+              child: ContributionHistorySection(
+                contributions: contributions,
+                currencySymbol: context.afriCurrencySymbol,
+              ),
             ),
+          ),
 
-            // ── Registry ──
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing8),
+          ),
+
+          // ── Registry ──
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.screenPadding,
+              ),
+              child: AfriListRow(
+                icon: AfriIcons.clubZone,
+                title: 'Fan registry',
+                subtitle: 'Browse all supporters',
+                onTap: () => context.go('/fanzone?section=supporters'),
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing8),
+          ),
+
+          // ── Packages ──
+          const SliverToBoxAdapter(child: AfriSectionHeader(title: 'Packages')),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing4),
+          ),
+
+          if (_isJoining || isSyncing)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.screenPadding,
+                padding: const EdgeInsets.fromLTRB(
+                  SpacingTokens.spacing6,
+                  0,
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing4,
                 ),
-                child: AfriListRow(
-                  icon: AfriIcons.clubZone,
-                  title: 'Fan registry',
-                  subtitle: 'Browse all supporters',
-                  onTap: () => context.go('/fanzone?section=supporters'),
+                child: AfriStateView.loading(
+                  key: const ValueKey<String>('membership-syncing'),
+                  title: _isJoining
+                      ? 'Submitting membership request'
+                      : 'Updating membership',
+                  message: _isJoining
+                      ? 'Keep this screen open while the club receives your request.'
+                      : 'Refreshing packages and current membership details.',
+                  compact: true,
                 ),
               ),
             ),
 
-            const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing8),
-            ),
-
-            // ── Packages ──
-            const SliverToBoxAdapter(
-              child: AfriSectionHeader(title: 'Packages'),
-            ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing4),
-            ),
-
+          if (_activationFailure case final failure?)
             SliverToBoxAdapter(
-              child: AfriAsyncStateView<MembershipSnapshot>(
-                value: asyncMembership,
-                loading: (_) => const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: AfriSkeletonList(),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SpacingTokens.spacing6,
+                  0,
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing4,
                 ),
-                error: (_, error, stackTrace) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: AfriStateView.offline(
-                    title: 'Membership unavailable',
-                    message: 'Membership details are temporarily unavailable.',
-                    actionLabel: 'Retry',
-                    onAction: _refreshMembership,
-                  ),
+                child: _MembershipFailureView(
+                  failure: failure,
+                  onRefresh: () {
+                    setState(() => _activationFailure = null);
+                    unawaited(_refreshMembership());
+                  },
                 ),
-                data: (context, resolvedSnapshot) {
-                  final resolvedPackages = resolvedSnapshot.packages;
-                  if (resolvedPackages.isEmpty) {
-                    return emptyMessage == null
-                        ? const SizedBox.shrink()
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: SpacingTokens.spacing6,
-                            ),
-                            child: AfriStateView.empty(
-                              title: 'Membership setup pending',
-                              message: emptyMessage,
-                            ),
-                          );
-                  }
+              ),
+            ),
 
-                  return _MembershipPackageList(
-                    packages: resolvedPackages,
-                    user: user,
-                    packagePriceLabel: _packagePriceLabel,
-                    packageLabel: _membershipPackageLabel,
-                    actionLabel: _membershipActionLabel,
-                    isCurrentJoiningTier: (tierId) =>
-                        _isJoining && _joiningTier == tierId,
-                    hasPendingApplication: _hasPendingApplicationForTier,
-                    onActivatePackage: _activatePackage,
+          SliverToBoxAdapter(
+            child: AfriAsyncStateView<MembershipSnapshot>(
+              value: asyncMembership,
+              loading: (_) => const Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: SpacingTokens.spacing6,
+                ),
+                child: AfriSkeletonList(),
+              ),
+              error: (_, error, stackTrace) => ConnectivityBuilder(
+                builder: (context, isOnline) {
+                  if (!isOnline) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: SpacingTokens.spacing6,
+                      ),
+                      child: AfriStateView.offline(
+                        title: 'Membership unavailable',
+                        message: 'Connect to load current membership details.',
+                        actionLabel: 'Connection required',
+                      ),
+                    );
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing6,
+                    ),
+                    child: _MembershipFailureView(
+                      failure: MembershipFailure.fromError(error),
+                      onRefresh: _refreshMembership,
+                    ),
                   );
                 },
               ),
-            ),
+              data: (context, resolvedSnapshot) {
+                final resolvedPackages = resolvedSnapshot.packages;
+                if (resolvedPackages.isEmpty) {
+                  return emptyMessage == null
+                      ? const SizedBox.shrink()
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: SpacingTokens.spacing6,
+                          ),
+                          child: AfriStateView.empty(
+                            title: 'Membership setup pending',
+                            message: emptyMessage,
+                          ),
+                        );
+                }
 
-            const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing20),
+                return _MembershipPackageList(
+                  packages: resolvedPackages,
+                  user: user,
+                  changesBlocked:
+                      _activationFailure?.kind ==
+                          MembershipFailureKind.permissionDenied ||
+                      _activationFailure?.kind ==
+                          MembershipFailureKind.securityTimeout,
+                  autofocusTier: widget.autofocusTier,
+                  packagePriceLabel: _packagePriceLabel,
+                  packageLabel: _membershipPackageLabel,
+                  actionLabel: _membershipActionLabel,
+                  isCurrentJoiningTier: (tierId) =>
+                      _isJoining && _joiningTier == tierId,
+                  isCurrentTier: _isCurrentTier,
+                  hasPendingApplication: _hasPendingApplicationForTier,
+                  onActivatePackage: _activatePackage,
+                );
+              },
             ),
-          ],
-        ),
+          ),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing20),
+          ),
+        ],
       ),
     );
   }
@@ -708,24 +818,82 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   }
 }
 
+class _MembershipFailureView extends StatelessWidget {
+  const _MembershipFailureView({
+    required this.failure,
+    required this.onRefresh,
+  });
+
+  final MembershipFailure failure;
+  final VoidCallback onRefresh;
+
+  @override
+  Widget build(BuildContext context) {
+    final content = switch (failure.kind) {
+      MembershipFailureKind.permissionDenied => (
+        stateId: 'permission-denied',
+        title: 'Membership change not permitted',
+        message:
+            'Your account cannot change membership right now. Your current membership remains unchanged.',
+        canRefresh: false,
+      ),
+      MembershipFailureKind.conflict => (
+        stateId: 'conflict',
+        title: 'Membership details changed',
+        message:
+            'The club updated these details while you were reviewing them. Refresh before choosing a package.',
+        canRefresh: true,
+      ),
+      MembershipFailureKind.securityTimeout => (
+        stateId: 'security-timeout',
+        title: 'Membership request timed out',
+        message:
+            'The secure request window expired. Refresh membership status before trying again.',
+        canRefresh: true,
+      ),
+      MembershipFailureKind.unknown => (
+        stateId: 'error',
+        title: 'Membership unavailable',
+        message: 'Membership details are temporarily unavailable.',
+        canRefresh: true,
+      ),
+    };
+
+    return AfriStateView.error(
+      key: ValueKey<String>('membership-${content.stateId}'),
+      title: content.title,
+      message: content.message,
+      actionLabel: content.canRefresh ? 'Refresh' : null,
+      onAction: content.canRefresh ? onRefresh : null,
+      compact: true,
+    );
+  }
+}
+
 class _MembershipPackageList extends StatelessWidget {
   const _MembershipPackageList({
     required this.packages,
     required this.user,
+    required this.changesBlocked,
+    required this.autofocusTier,
     required this.packagePriceLabel,
     required this.packageLabel,
     required this.actionLabel,
     required this.isCurrentJoiningTier,
+    required this.isCurrentTier,
     required this.hasPendingApplication,
     required this.onActivatePackage,
   });
 
   final List<Map<String, dynamic>> packages;
   final UserProfile? user;
+  final bool changesBlocked;
+  final String? autofocusTier;
   final String Function(Map<String, dynamic> pkg) packagePriceLabel;
   final String Function(String tierValue) packageLabel;
   final String Function(String tierValue) actionLabel;
   final bool Function(String tierId) isCurrentJoiningTier;
+  final bool Function(String tierId) isCurrentTier;
   final bool Function(String tierId) hasPendingApplication;
   final Future<void> Function(Map<String, dynamic> pkg) onActivatePackage;
 
@@ -737,10 +905,13 @@ class _MembershipPackageList extends StatelessWidget {
           _MembershipPackageTile(
             pkg: pkg,
             user: user,
+            changesBlocked: changesBlocked,
+            autofocus: autofocusTier == (pkg['tier'] ?? '').toString(),
             packagePriceLabel: packagePriceLabel,
             packageLabel: packageLabel,
             actionLabel: actionLabel,
             isCurrentJoiningTier: isCurrentJoiningTier,
+            isCurrentTier: isCurrentTier,
             hasPendingApplication: hasPendingApplication,
             onActivatePackage: onActivatePackage,
           ),
@@ -753,20 +924,26 @@ class _MembershipPackageTile extends StatelessWidget {
   const _MembershipPackageTile({
     required this.pkg,
     required this.user,
+    required this.changesBlocked,
+    required this.autofocus,
     required this.packagePriceLabel,
     required this.packageLabel,
     required this.actionLabel,
     required this.isCurrentJoiningTier,
+    required this.isCurrentTier,
     required this.hasPendingApplication,
     required this.onActivatePackage,
   });
 
   final Map<String, dynamic> pkg;
   final UserProfile? user;
+  final bool changesBlocked;
+  final bool autofocus;
   final String Function(Map<String, dynamic> pkg) packagePriceLabel;
   final String Function(String tierValue) packageLabel;
   final String Function(String tierValue) actionLabel;
   final bool Function(String tierId) isCurrentJoiningTier;
+  final bool Function(String tierId) isCurrentTier;
   final bool Function(String tierId) hasPendingApplication;
   final Future<void> Function(Map<String, dynamic> pkg) onActivatePackage;
 
@@ -774,6 +951,34 @@ class _MembershipPackageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final tierId = (pkg['tier'] ?? 'bronze').toString().toLowerCase();
     final isJoiningTier = isCurrentJoiningTier(tierId);
+    final isCurrent = isCurrentTier(tierId);
+    final useLargeTextLayout = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+    final tierLabel = packageLabel(pkg['tier']?.toString() ?? '');
+    final statusChip = AfriStatusChip(
+      label: isCurrent ? '$tierLabel · Current' : tierLabel,
+      tone: isCurrent ? AfriStatusTone.success : AfriStatusTone.info,
+    );
+    final action = ConnectivityBuilder(
+      builder: (context, isOnline) => AfriButton(
+        key: ValueKey<String>('membership-action-$tierId'),
+        autofocus: autofocus,
+        label: changesBlocked
+            ? 'Refresh required'
+            : !isOnline
+            ? 'Connection required'
+            : isJoiningTier
+            ? 'Submitting'
+            : actionLabel(tierId),
+        onTap: () => onActivatePackage(pkg),
+        isLoading: false,
+        enabled:
+            isOnline &&
+            !changesBlocked &&
+            !isJoiningTier &&
+            !hasPendingApplication(tierId),
+        fullWidth: useLargeTextLayout,
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -782,59 +987,86 @@ class _MembershipPackageTile extends StatelessWidget {
         SpacingTokens.spacing6,
         SpacingTokens.spacing3,
       ),
-      child: AfriSurfaceCard(
-        onTap: () => context.push('/membership/tier/$tierId'),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    (pkg['title'] ?? pkg['tier'] ?? 'Package').toString(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TypographyTokens.titleMedium(),
-                  ),
+      child: Semantics(
+        container: true,
+        selected: isCurrent,
+        label: isCurrent
+            ? '${packageLabel(pkg['tier']?.toString() ?? '')} membership package, current'
+            : null,
+        child: AfriSurfaceCard(
+          onTap: () => context.push('/membership/tier/$tierId'),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (useLargeTextLayout) ...[
+                Text(
+                  (pkg['title'] ?? pkg['tier'] ?? 'Package').toString(),
+                  maxLines: 2,
+                  style: TypographyTokens.titleMedium(),
                 ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                AfriStatusChip(
-                  label: packageLabel(pkg['tier']?.toString() ?? ''),
-                  tone: AfriStatusTone.info,
+                const SizedBox(height: SpacingTokens.spacing3),
+                Align(alignment: Alignment.centerLeft, child: statusChip),
+              ] else
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        (pkg['title'] ?? pkg['tier'] ?? 'Package').toString(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TypographyTokens.titleMedium(),
+                      ),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing3),
+                    statusChip,
+                  ],
+                ),
+              if (pkg['description'] != null) ...[
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  pkg['description'].toString(),
+                  style: TypographyTokens.bodySmall(
+                    ColorTokens.onSurfaceVariant,
+                  ),
+                  maxLines: useLargeTextLayout ? 5 : 2,
+                  overflow: useLargeTextLayout
+                      ? TextOverflow.visible
+                      : TextOverflow.ellipsis,
                 ),
               ],
-            ),
-            if (pkg['description'] != null) ...[
-              const SizedBox(height: SpacingTokens.spacing2),
-              Text(
-                pkg['description'].toString(),
-                style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              if (useLargeTextLayout)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      packagePriceLabel(pkg),
+                      style: TypographyTokens.titleMedium(
+                        ColorTokens.clubAccent,
+                      ),
+                    ),
+                    if (user != null) ...[
+                      const SizedBox(height: SpacingTokens.spacing3),
+                      action,
+                    ],
+                  ],
+                )
+              else
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        packagePriceLabel(pkg),
+                        style: TypographyTokens.titleMedium(
+                          ColorTokens.clubAccent,
+                        ),
+                      ),
+                    ),
+                    if (user != null) Flexible(child: action),
+                  ],
+                ),
             ],
-            const SizedBox(height: SpacingTokens.spacing4),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    packagePriceLabel(pkg),
-                    style: TypographyTokens.titleMedium(ColorTokens.clubAccent),
-                  ),
-                ),
-                if (user != null)
-                  AfriButton(
-                    label: isJoiningTier
-                        ? 'Processing...'
-                        : actionLabel(tierId),
-                    onTap: () => onActivatePackage(pkg),
-                    isLoading: isJoiningTier,
-                    enabled: !isJoiningTier && !hasPendingApplication(tierId),
-                    fullWidth: false,
-                  ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -895,11 +1127,7 @@ class _PaymentStatusCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                AfriIcons.statusInfo,
-                size: 20,
-                color: ColorTokens.warning,
-              ),
+              Icon(AfriIcons.statusInfo, size: 20, color: ColorTokens.warning),
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: Text(
@@ -940,7 +1168,7 @@ class _PaymentStatusCard extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     child: step.isComplete
-                        ? const Icon(
+                        ? Icon(
                             AfriIcons.verified,
                             size: 12,
                             color: ColorTokens.success,
@@ -949,7 +1177,7 @@ class _PaymentStatusCard extends StatelessWidget {
                         ? Container(
                             width: 8,
                             height: 8,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: ColorTokens.warning,
                             ),

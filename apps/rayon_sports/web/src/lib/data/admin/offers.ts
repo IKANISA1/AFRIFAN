@@ -5,6 +5,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
+import {
+  deleteAdminRecordWithAuditIfUnchanged,
+  mutateRecordWithVariantsIfUnchanged,
+} from "./helpers";
 
 export interface AdminPartnerOffer {
   id: string;
@@ -22,6 +26,7 @@ export interface AdminPartnerOffer {
   startsAt: string | null;
   expiresAt: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 function mapOffer(row: Record<string, unknown>): AdminPartnerOffer {
@@ -41,6 +46,7 @@ function mapOffer(row: Record<string, unknown>): AdminPartnerOffer {
     startsAt: safeString(row.starts_at) || null,
     expiresAt: safeString(row.expires_at) || null,
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
   };
 }
 
@@ -71,6 +77,7 @@ export async function saveAdminOffer(
   _access: AdminAccess,
   input: {
     id?: string | null;
+    expectedUpdatedAt?: string | null;
     title: string;
     description: string;
     partnerName: string;
@@ -108,12 +115,13 @@ export async function saveAdminOffer(
   };
 
   if (input.id) {
-    const { error } = await client
-      .from("fet_partner_offers")
-      .update(payload)
-      .eq("id", input.id);
-    if (error) throw new Error(error.message);
-    return input.id;
+    return mutateRecordWithVariantsIfUnchanged(
+      client,
+      "fet_partner_offers",
+      input.id,
+      input.expectedUpdatedAt,
+      [payload],
+    );
   }
 
   const { data, error } = await client
@@ -127,20 +135,29 @@ export async function saveAdminOffer(
 
 export async function deleteAdminOffer(
   client: SupabaseClient,
-  _access: AdminAccess,
+  access: AdminAccess,
   offerId: string,
+  expectedUpdatedAt: string,
 ): Promise<void> {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("offers", {
       method: "DELETE",
-      query: { id: offerId },
+      query: { id: offerId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
 
-  const { error } = await client
-    .from("fet_partner_offers")
-    .delete()
-    .eq("id", offerId);
-  if (error) throw new Error(error.message);
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    "fet_partner_offers",
+    offerId,
+    expectedUpdatedAt,
+    {},
+    {
+      actorId: access.userId,
+      requiresPlatformAdmin: true,
+      action: "delete_partner_offer",
+      source: "admin_offers",
+    },
+  );
 }

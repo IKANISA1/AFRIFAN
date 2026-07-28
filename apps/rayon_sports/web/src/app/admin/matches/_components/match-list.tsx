@@ -5,11 +5,13 @@ import { AdminEmptyState } from "@/components/admin/admin-empty-state";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { ProgressBar } from "@/components/progress-bar";
 import { Skeleton } from "@/components/skeleton";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { AdminMatchItem } from "@/lib/types";
+import { useAdminCollection } from "@/lib/use-admin-collection";
 
 function matchTone(status: string) {
   switch (status) {
@@ -59,6 +61,33 @@ export function MatchList({
       default: return true;
     }
   });
+  const matchCollection = useAdminCollection({
+    records: filteredMatches,
+    getId: (match) => match.id,
+    getSearchValues: (match) => [
+      match.homeTeam,
+      match.awayTeam,
+      match.competition,
+      match.venue,
+      match.matchStatus,
+      match.isOnSale ? "on sale" : "closed",
+    ],
+    getSortValue: (
+      match,
+      key: "fixture" | "status" | "kickoff" | "sales" | "capacity",
+    ) => {
+      switch (key) {
+        case "fixture": return `${match.homeTeam} ${match.awayTeam}`;
+        case "status": return match.matchStatus;
+        case "kickoff": return new Date(match.matchDate);
+        case "sales": return match.isOnSale;
+        case "capacity": return match.capacity === 0 ? 0 : match.soldCount / match.capacity;
+      }
+    },
+    initialSortKey: "kickoff" as const,
+    initialSortDirection: "descending",
+    pageSize: 25,
+  });
 
   return (
     <div className="admin-surface">
@@ -83,21 +112,28 @@ export function MatchList({
           </div>
         }
       >
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] text-[var(--admin-zinc-400)]">
-          <Search size={14} />
-          <span className="text-[11px] uppercase tracking-wider">Fixtures list</span>
-        </div>
+        <label className="admin-search-field">
+          <Search size={14} aria-hidden="true" />
+          <span className="sr-only">Search fixtures</span>
+          <input type="search" value={matchCollection.query} onChange={(event) => matchCollection.setQuery(event.target.value)} placeholder="Search team, competition, venue, or state" />
+        </label>
       </AdminFilterBar>
 
       <AdminDataGrid
+        caption="Match operations"
+        busy={loading}
+        onRowActivate={(rowId) => {
+          const match = matches.find((item) => item.id === rowId);
+          if (match) onEdit(match);
+        }}
         columns={[
-          { key: "fixture", label: "Fixture" },
-          { key: "status", label: "Status" },
-          { key: "kickoff", label: "Kickoff" },
-          { key: "sales", label: "Sales" },
-          { key: "score", label: "Score" },
-          { key: "capacity", label: "Capacity" },
-          { key: "actions", label: "", className: "w-24" },
+          { key: "fixture", label: "Fixture", priority: "primary", sortable: true, sortDirection: matchCollection.sortDirectionFor("fixture"), onSort: () => matchCollection.toggleSort("fixture") },
+          { key: "status", label: "Status", priority: "primary", sortable: true, sortDirection: matchCollection.sortDirectionFor("status"), onSort: () => matchCollection.toggleSort("status") },
+          { key: "kickoff", label: "Kickoff", priority: "primary", sortable: true, sortDirection: matchCollection.sortDirectionFor("kickoff"), onSort: () => matchCollection.toggleSort("kickoff") },
+          { key: "sales", label: "Sales", priority: "secondary", sortable: true, sortDirection: matchCollection.sortDirectionFor("sales"), onSort: () => matchCollection.toggleSort("sales") },
+          { key: "score", label: "Score", priority: "secondary" },
+          { key: "capacity", label: "Capacity", priority: "tertiary", sortable: true, sortDirection: matchCollection.sortDirectionFor("capacity"), onSort: () => matchCollection.toggleSort("capacity") },
+          { key: "actions", label: "Actions", priority: "primary", className: "w-24" },
         ]}
       >
         {loading ? (
@@ -106,21 +142,21 @@ export function MatchList({
               <td colSpan={7} className="p-4"><Skeleton className="skeleton-text h-4 w-full" /></td>
             </tr>
           ))
-        ) : filteredMatches.length === 0 ? (
+        ) : matchCollection.pageResult.items.length === 0 ? (
           <tr>
             <td colSpan={7}>
               <AdminEmptyState
                 title="No fixtures found"
-                description="Change filters or create a new fixture."
+                description={matchCollection.query ? "No fixtures match the current search and status filters." : "Change filters or create a new fixture."}
                 className="!min-h-[200px]"
               />
             </td>
           </tr>
         ) : (
-          filteredMatches.map((match) => {
+          matchCollection.pageResult.items.map((match) => {
             const isLive = match.matchStatus === "live" || match.matchStatus === "halftime";
             return (
-              <tr key={match.id} className={cn(isLive && "bg-emerald-500/[0.02]")}>
+              <tr key={match.id} data-row-id={match.id} className={cn(isLive && "bg-emerald-500/[0.02]")}>
                 <td>
                   <div className="space-y-0.5">
                     <p className="admin-row-title">{match.homeTeam} vs {match.awayTeam}</p>
@@ -186,6 +222,7 @@ export function MatchList({
           })
         )}
       </AdminDataGrid>
+      <AdminPagination page={matchCollection.pageResult} onPageChange={matchCollection.setPage} label="Match operations" />
     </div>
   );
 }

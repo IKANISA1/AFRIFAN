@@ -131,7 +131,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
         .toUpperCase();
     final memberCount = (group?['member_count'] as num?)?.toInt() ?? 0;
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -154,7 +154,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           },
         ),
       ),
-      body: _loading
+      scrollable: false,
+      child: _loading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing4),
               child: AfriSkeletonList(),
@@ -219,16 +220,21 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             ],
                           ),
                           const SizedBox(height: SpacingTokens.spacing5),
-                          AfriButton(
-                            label: 'Contribute now',
-                            fullWidth: true,
-                            onTap: () => showMomoAmountEntrySheet(
-                              context,
-                              title: title,
-                              groupId: widget.groupId,
-                              recipientMomo:
-                                  group['momo_recipient_code']?.toString() ??
-                                  group['receiving_momo_code']?.toString(),
+                          ConnectivityBuilder(
+                            builder: (context, isOnline) => AfriButton(
+                              label: isOnline
+                                  ? 'Contribute now'
+                                  : 'Connection required',
+                              fullWidth: true,
+                              onTap: () => showMomoAmountEntrySheet(
+                                context,
+                                title: title,
+                                groupId: widget.groupId,
+                                recipientMomo:
+                                    group['momo_recipient_code']?.toString() ??
+                                    group['receiving_momo_code']?.toString(),
+                              ),
+                              enabled: isOnline,
                             ),
                           ),
                         ],

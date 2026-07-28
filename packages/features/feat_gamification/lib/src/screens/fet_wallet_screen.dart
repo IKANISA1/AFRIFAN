@@ -82,7 +82,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
   Widget build(BuildContext context) {
     final asyncWallet = ref.watch(fetWalletProvider);
 
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -100,7 +100,9 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           ),
         ],
       ),
-      body: asyncWallet.when(
+      scrollable: false,
+      constrainContent: true,
+      child: asyncWallet.when(
         loading: () => const Padding(
           padding: EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriSkeletonList(),
@@ -154,7 +156,9 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                 const SizedBox(height: SpacingTokens.spacing3),
                 Text(
                   '${_formatPoints(wallet?.balance ?? 0)} pts',
-                  style: TypographyTokens.metricValue(ColorTokens.clubAccent),
+                  style: TypographyTokens.metricValue(
+                    ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
+                  ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 AfriStatusChip(

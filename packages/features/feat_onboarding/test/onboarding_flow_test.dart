@@ -1,15 +1,18 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_onboarding/src/screens/onboarding_screen.dart';
 import 'package:feat_onboarding/src/screens/splash_screen.dart';
 import 'package:feat_onboarding/src/screens/supporter_phone_auth_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/touch_target_audit.dart';
 
 class FakeAuthRepository extends AuthRepository {
   FakeAuthRepository({
@@ -366,6 +369,7 @@ void main() {
     await tester.pump();
 
     expect(find.byType(OnboardingScreen), findsOneWidget);
+    expectTapTargetsMeetMinimum(tester);
   });
 
   testWidgets('onboarding first viewport uses Rayon club identity', (
@@ -384,16 +388,124 @@ void main() {
 
     await tester.pump();
 
-    expect(find.text('Rayon Sports FC matchday app.'), findsOneWidget);
+    expect(find.text('Your club.\nYour matchday.'), findsOneWidget);
     expect(
-      find.text(
-        'The official Gikundiro fan platform for Rayon Sports FC. Matches, contributions, and more.',
-      ),
+      find.text('Follow Rayon Sports FC wherever the blue family gathers.'),
       findsOneWidget,
     );
-    expect(find.text('Official Rayon Sports FC identity'), findsOneWidget);
     expect(find.text('RS'), findsOneWidget);
+    expect(find.byType(PageView), findsOneWidget);
+    final governedImage = tester.widget<AfriGovernedImage>(
+      find.byType(AfriGovernedImage),
+    );
+    expect(governedImage.rightsApproved, isFalse);
+    expect(find.byType(Image), findsNothing);
   });
+
+  testWidgets('onboarding exposes three swipeable governed media slides', (
+    tester,
+  ) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: ClubConfigScope(
+          config: _RayonTestConfig(),
+          child: MaterialApp(home: OnboardingScreen(mediaRightsApproved: true)),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.byType(Image), findsOneWidget);
+
+    await tester.flingFrom(const Offset(350, 250), const Offset(-320, 0), 900);
+    await tester.pumpAndSettle();
+    expect(find.text('Every moment.\nOne blue family.'), findsOneWidget);
+
+    await tester.flingFrom(const Offset(350, 250), const Offset(-320, 0), 900);
+    await tester.pumpAndSettle();
+    expect(find.text('Closer to\nGikundiro.'), findsOneWidget);
+    expect(find.text('Continue with WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets(
+    'reduced motion keeps onboarding static without delaying its actions',
+    (tester) async {
+      _setMobileSurface(tester);
+
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: ClubConfigScope(
+            config: _RayonTestConfig(),
+            child: MaterialApp(home: OnboardingScreen()),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Your club.\nYour matchday.'), findsOneWidget);
+      expect(
+        tester
+            .widgetList<AnimatedSwitcher>(find.byType(AnimatedSwitcher))
+            .every((widget) => widget.duration == Duration.zero),
+        isTrue,
+      );
+      expect(
+        tester
+            .widgetList<AnimatedContainer>(find.byType(AnimatedContainer))
+            .every((widget) => widget.duration == Duration.zero),
+        isTrue,
+      );
+
+      await tester.pump(AfriMotion.carouselInterval * 2);
+
+      expect(find.text('Your club.\nYour matchday.'), findsOneWidget);
+      expect(find.text('Continue with WhatsApp'), findsOneWidget);
+      expect(tester.hasRunningAnimations, isFalse);
+    },
+  );
+
+  testWidgets(
+    'preserves the active onboarding media slide across rotation and resume',
+    (tester) async {
+      _setMobileSurface(tester);
+
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: ClubConfigScope(
+            config: _RayonTestConfig(),
+            child: MaterialApp(home: OnboardingScreen()),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.flingFrom(
+        const Offset(350, 250),
+        const Offset(-320, 0),
+        900,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Every moment.\nOne blue family.'), findsOneWidget);
+
+      tester.view.physicalSize = const Size(852, 393);
+      await tester.pumpAndSettle();
+      expect(find.text('Every moment.\nOne blue family.'), findsOneWidget);
+
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      await tester.pump();
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Every moment.\nOne blue family.'), findsOneWidget);
+      expect(find.byType(PageView), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('matches the compressed onboarding surface at 200 percent text', (
     tester,
@@ -429,6 +541,201 @@ void main() {
     expect(find.text('Continue without sign-in'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  for (final locale in const <Locale>[
+    Locale('en'),
+    Locale('fr'),
+    Locale('rw'),
+  ]) {
+    testWidgets('localized onboarding fits compact 200 percent text in '
+        '${locale.languageCode}', (tester) async {
+      tester.view.physicalSize = const Size(320, 568);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final l10n = lookupAfriLocalizations(locale);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: ClubConfigScope(
+            config: const _RayonTestConfig(),
+            child: MaterialApp(
+              locale: const Locale('en'),
+              supportedLocales: const <Locale>[Locale('en')],
+              localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+                AfriLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              builder: (context, child) => AfriLocalizationsScope(
+                locale: locale,
+                child: child ?? const SizedBox.shrink(),
+              ),
+              theme: _testTheme(),
+              home: const OnboardingScreen(),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text(l10n.onboardingBelongTitle), findsOneWidget);
+      await tester.ensureVisible(find.text(l10n.onboardingContinueWhatsApp));
+      await tester.ensureVisible(
+        find.text(l10n.onboardingContinueWithoutSignIn),
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets(
+    'onboarding media and actions stay usable in compact-height landscape',
+    (tester) async {
+      tester.view.physicalSize = const Size(720, 320);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: _testTheme(),
+            home: const OnboardingScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(PageView), findsOneWidget);
+      await tester.ensureVisible(find.text('Continue with WhatsApp'));
+      await tester.ensureVisible(find.text('Continue without sign-in'));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('onboarding caps interactive content on tablet width', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(720, 1024);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(theme: _testTheme(), home: const OnboardingScreen()),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(AfriScreenScaffold), findsOneWidget);
+    expect(
+      tester
+          .getSize(
+            find.byKey(const ValueKey<String>('onboarding-responsive-content')),
+          )
+          .width,
+      AfriResponsive.tabletContentMax,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  for (final profile in _compactGoldenProfiles) {
+    testWidgets('golden compact onboarding route ${profile.id}', (
+      tester,
+    ) async {
+      _setGoldenSurface(tester, profile.size);
+      TypographyTokens.debugUseFallbackFonts = true;
+      addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
+      ColorTokens.setBrightness(profile.brightness);
+      addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authRepositoryProvider.overrideWithValue(
+              FakeAuthRepository(restoreResult: null),
+            ),
+          ],
+          child: ClubConfigScope(
+            config: const _RayonTestConfig(),
+            child: MaterialApp(
+              theme: ClubTheme.from(
+                const _RayonTestConfig(),
+                brightness: profile.brightness,
+              ),
+              home: const RepaintBoundary(
+                key: ValueKey<String>('onboarding-route-golden'),
+                child: OnboardingScreen(),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      await expectLater(
+        find.byKey(const ValueKey<String>('onboarding-route-golden')),
+        matchesGoldenFile('goldens/onboarding_${profile.id}.png'),
+      );
+    });
+  }
+}
+
+const _compactGoldenProfiles =
+    <({String id, Size size, Brightness brightness})>[
+      (
+        id: 'compact_dark_320x760',
+        size: Size(320, 760),
+        brightness: Brightness.dark,
+      ),
+      (
+        id: 'compact_light_374x812',
+        size: Size(374, 812),
+        brightness: Brightness.light,
+      ),
+      (
+        id: 'standard_dark_390x844',
+        size: Size(390, 844),
+        brightness: Brightness.dark,
+      ),
+      (
+        id: 'large_light_430x900',
+        size: Size(430, 900),
+        brightness: Brightness.light,
+      ),
+      (
+        id: 'wide_dark_599x900',
+        size: Size(599, 900),
+        brightness: Brightness.dark,
+      ),
+      (
+        id: 'foldable_half_light_674x842',
+        size: Size(674, 842),
+        brightness: Brightness.light,
+      ),
+      (
+        id: 'tablet_dark_834x1194',
+        size: Size(834, 1194),
+        brightness: Brightness.dark,
+      ),
+    ];
+
+void _setGoldenSurface(WidgetTester tester, Size size) {
+  tester.view.physicalSize = size;
+  tester.view.devicePixelRatio = 1;
+  tester.platformDispatcher.accessibilityFeaturesTestValue =
+      const FakeAccessibilityFeatures(
+        disableAnimations: true,
+        accessibleNavigation: true,
+      );
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
 }
 
 Future<void> _pumpPastSplash(WidgetTester tester) async {

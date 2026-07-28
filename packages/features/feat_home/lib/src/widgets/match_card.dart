@@ -15,9 +15,19 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+double homeHeroHeight(BuildContext context) {
+  final size = MediaQuery.sizeOf(context);
+  if (size.width > size.height) {
+    return (size.height * 0.62).clamp(176.0, 240.0);
+  }
+  return size.height * 0.333;
+}
+
 /// A single match/event slide — CMS-managed, admin-controlled.
 class MatchSlide {
   final String? imageUrl;
+  final String? imageProvenanceId;
+  final bool imageRightsApproved;
   final String homeTeam;
   final String awayTeam;
   final String venue;
@@ -31,6 +41,8 @@ class MatchSlide {
 
   const MatchSlide({
     this.imageUrl,
+    this.imageProvenanceId,
+    this.imageRightsApproved = false,
     // §2.4 LOCKED — no hardcoded club/venue names.
     this.homeTeam = '',
     this.awayTeam = '',
@@ -105,10 +117,8 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
   Widget build(BuildContext context) {
     if (widget.slides.isEmpty) return const SizedBox.shrink();
 
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return SizedBox(
-      height: screenHeight * 0.333,
+      height: homeHeroHeight(context),
       child: Stack(
         fit: StackFit.expand,
         children: [

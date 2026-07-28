@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/component_size_tokens.dart';
+import '../tokens/shadow_tokens.dart';
+import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
@@ -15,6 +19,8 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
     this.isScrollable = false,
     this.variant = AfriTabBarVariant.line,
     this.padding,
+    this.disabledIndices = const <int>{},
+    this.onTap,
   });
 
   const AfriTabBar.line({
@@ -23,6 +29,8 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
     this.controller,
     this.isScrollable = false,
     this.padding,
+    this.disabledIndices = const <int>{},
+    this.onTap,
   }) : variant = AfriTabBarVariant.line;
 
   const AfriTabBar.segmented({
@@ -31,6 +39,8 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
     this.controller,
     this.isScrollable = false,
     this.padding,
+    this.disabledIndices = const <int>{},
+    this.onTap,
   }) : variant = AfriTabBarVariant.segmented;
 
   final List<Widget> tabs;
@@ -38,6 +48,8 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isScrollable;
   final AfriTabBarVariant variant;
   final EdgeInsetsGeometry? padding;
+  final Set<int> disabledIndices;
+  final ValueChanged<int>? onTap;
 
   static const double _lineHeight = 48;
   static const double _segmentedHeight = 46;
@@ -57,8 +69,8 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final effectivePadding = padding ?? _defaultPadding;
     final tabBar = switch (variant) {
-      AfriTabBarVariant.line => _buildLineTabBar(),
-      AfriTabBarVariant.segmented => _buildSegmentedTabBar(),
+      AfriTabBarVariant.line => _buildLineTabBar(context),
+      AfriTabBarVariant.segmented => _buildSegmentedTabBar(context),
     };
 
     return Padding(padding: effectivePadding, child: tabBar);
@@ -71,12 +83,12 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
     SpacingTokens.spacing2,
   );
 
-  Widget _buildLineTabBar() {
+  Widget _buildLineTabBar(BuildContext context) {
     return TabBar(
       controller: controller,
       isScrollable: isScrollable,
       indicatorColor: ColorTokens.clubAccent,
-      indicatorWeight: 2.5,
+      indicatorWeight: BorderTokens.tabIndicator,
       indicatorSize: TabBarIndicatorSize.label,
       labelColor: ColorTokens.clubAccent,
       unselectedLabelColor: ColorTokens.onSurfaceVariant,
@@ -85,33 +97,26 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       unselectedLabelStyle: TypographyTokens.labelSmall(),
       dividerColor: ColorTokens.transparent,
-      overlayColor: WidgetStateProperty.all(ColorTokens.transparent),
-      splashFactory: NoSplash.splashFactory,
-      tabs: tabs,
+      overlayColor: _interactionOverlay,
+      onTap: (index) => _handleTap(context, index),
+      tabs: _resolvedTabs,
     );
   }
 
-  Widget _buildSegmentedTabBar() {
+  Widget _buildSegmentedTabBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(3),
+      padding: const EdgeInsets.all(AfriComponentSizes.segmentedInset),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
       ),
       child: TabBar(
         controller: controller,
         isScrollable: isScrollable,
         indicator: BoxDecoration(
           color: ColorTokens.surfaceContainerLowest,
-          borderRadius: BorderRadius.circular(11),
-          boxShadow: [
-            BoxShadow(
-              color: ColorTokens.ambientShadow.withValues(alpha: 0.12),
-              blurRadius: 8,
-              spreadRadius: -4,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          borderRadius: ShapeTokens.segmentedInnerRadius,
+          boxShadow: AfriShadows.selectedControl(),
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         labelColor: ColorTokens.onSurface,
@@ -121,10 +126,44 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
           ColorTokens.onSurfaceVariant,
         ),
         dividerColor: ColorTokens.transparent,
-        overlayColor: WidgetStateProperty.all(ColorTokens.transparent),
-        splashFactory: NoSplash.splashFactory,
-        tabs: tabs,
+        overlayColor: _interactionOverlay,
+        onTap: (index) => _handleTap(context, index),
+        tabs: _resolvedTabs,
       ),
     );
+  }
+
+  List<Widget> get _resolvedTabs => [
+    for (var index = 0; index < tabs.length; index++)
+      if (disabledIndices.contains(index))
+        Opacity(
+          opacity: 0.48,
+          child: Semantics(enabled: false, child: tabs[index]),
+        )
+      else
+        tabs[index],
+  ];
+
+  WidgetStateProperty<Color?> get _interactionOverlay =>
+      WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.focused)) {
+          return ColorTokens.primaryTint(0.22);
+        }
+        if (states.contains(WidgetState.pressed)) {
+          return ColorTokens.primaryTint(0.18);
+        }
+        if (states.contains(WidgetState.hovered)) {
+          return ColorTokens.primaryTint(0.10);
+        }
+        return ColorTokens.transparent;
+      });
+
+  void _handleTap(BuildContext context, int index) {
+    if (disabledIndices.contains(index)) {
+      final resolvedController = controller ?? DefaultTabController.of(context);
+      resolvedController.animateTo(resolvedController.previousIndex);
+      return;
+    }
+    onTap?.call(index);
   }
 }

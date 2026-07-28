@@ -33,7 +33,7 @@ console.log(`SQL length: ${sql.length} chars\n`);
 
 // Use the Supabase REST RPC endpoint to execute SQL via a helper function
 // First create exec_sql if it doesn't exist, then use it
-const createExecSqlFn = `
+const _createExecSqlFn = `
 CREATE OR REPLACE FUNCTION public._exec_migration_sql(p_sql text)
 RETURNS void
 LANGUAGE plpgsql

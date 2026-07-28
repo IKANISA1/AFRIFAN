@@ -1,7 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, ShieldCheck, Zap } from "lucide-react";
-import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getSquad } from "@/lib/data/public";
 import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import {

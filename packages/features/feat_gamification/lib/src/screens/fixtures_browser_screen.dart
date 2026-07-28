@@ -160,7 +160,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
@@ -180,7 +180,9 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
           ),
         ],
       ),
-      body: SafeArea(
+      scrollable: false,
+      constrainContent: false,
+      child: SafeArea(
         child: Column(
           children: [
             if (_dashboard != null)
@@ -346,7 +348,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                               );
                             },
                           )
-                          .animate(delay: (index * 50).ms)
+                          .afriAnimate(context, delay: (index * 50).ms)
                           .fadeIn(duration: 300.ms)
                           .slideY(begin: 0.04, end: 0, duration: 300.ms),
                 );

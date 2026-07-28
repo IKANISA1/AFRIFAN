@@ -10,9 +10,9 @@ import type {
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
-  deleteRecordWithMatchers,
+  deleteAdminRecordWithAuditIfUnchanged,
   membershipTable,
-  mutateRecordWithVariants,
+  mutateRecordWithVariantsIfUnchanged,
   requireAdminClubId,
 } from "./helpers";
 
@@ -35,6 +35,7 @@ function mapAdminMembershipPackage(row: Record<string, unknown>): AdminMembershi
         : description.split(/[.;]/).map((item) => item.trim()).filter((item) => item.length > 2).slice(0, 4),
     isActive: row.is_active !== false,
     createdAt: safeString(row.created_at, new Date().toISOString()),
+    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
   };
 }
 
@@ -81,7 +82,7 @@ export async function getAdminMembershipPackages(
 
 export async function saveAdminMembershipPackage(
   client: SupabaseClient, access: AdminAccess,
-  input: { id?: string | null; tier: AdminMembershipPackage["tier"]; title: string; description: string; annualPrice: number; sortOrder: number; perks: string[]; isActive: boolean },
+  input: { id?: string | null; expectedUpdatedAt?: string | null; tier: AdminMembershipPackage["tier"]; title: string; description: string; annualPrice: number; sortOrder: number; perks: string[]; isActive: boolean },
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<string>("membership", {
@@ -95,7 +96,7 @@ export async function saveAdminMembershipPackage(
     tier: input.tier, title: input.title.trim(), description: input.description.trim(),
     sort_order: safeNumber(input.sortOrder, 0), is_active: input.isActive,
   };
-  return mutateRecordWithVariants(client, membershipTable, input.id, [
+  return mutateRecordWithVariantsIfUnchanged(client, membershipTable, input.id, input.expectedUpdatedAt, [
     { ...basePayload, annual_price: safeNumber(input.annualPrice, 0), price: safeNumber(input.annualPrice, 0), benefits: input.perks },
     { ...basePayload, annual_price: safeNumber(input.annualPrice, 0), benefits: input.perks },
     { ...basePayload, price: safeNumber(input.annualPrice, 0), benefits: input.perks },
@@ -107,16 +108,27 @@ export async function deleteAdminMembershipPackage(
   client: SupabaseClient,
   access: AdminAccess,
   packageId: string,
+  expectedUpdatedAt: string,
 ) {
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: true }>("membership", {
       method: "DELETE",
-      query: { id: packageId },
+      query: { id: packageId, expected_updated_at: expectedUpdatedAt },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "delete membership packages");
-  await deleteRecordWithMatchers(client, membershipTable, packageId, {
-    club_id: clubId,
-  });
+  await deleteAdminRecordWithAuditIfUnchanged(
+    client,
+    membershipTable,
+    packageId,
+    expectedUpdatedAt,
+    { club_id: clubId },
+    {
+      actorId: access.userId,
+      clubId,
+      action: "delete_membership_tier",
+      source: "admin_membership",
+    },
+  );
 }

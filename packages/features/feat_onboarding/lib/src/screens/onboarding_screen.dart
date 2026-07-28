@@ -1,13 +1,29 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../onboarding_content_provider.dart';
+
 class OnboardingScreen extends ConsumerStatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({
+    this.mediaRightsApproved = const bool.fromEnvironment(
+      'AFRICLUB_ONBOARDING_MEDIA_RIGHTS_APPROVED',
+      defaultValue: false,
+    ),
+    super.key,
+  });
+
+  /// Release-controlled approval for the documented onboarding photographs.
+  ///
+  /// The default is fail-closed. Store/release builds may enable this only
+  /// after the exact files and sources in `assets/onboarding/SOURCES.md` have
+  /// accountable right-to-use approval.
+  final bool mediaRightsApproved;
 
   @override
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -15,21 +31,92 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _isSubmitting = false;
+  final PageController _pageController = PageController();
+  Timer? _slideTimer;
+  int _currentSlide = 0;
 
-  List<Map<String, String>> _slidesFor({
+  List<_WelcomeSlide> _slidesFor({
     required String appName,
     required String clubName,
+    required AfriLocalizations l10n,
+    required List<OnboardingSlideId> slideIds,
   }) {
     final appLabel = appName.trim().isEmpty ? clubName.trim() : appName.trim();
     final clubLabel = clubName.trim().isEmpty ? appLabel : clubName.trim();
-    return <Map<String, String>>[
-      {
-        'title': '$clubLabel matchday app.',
-        'body':
-            'The official $appLabel fan platform for $clubLabel. Matches, contributions, and more.',
-        'source': 'Official $clubLabel identity',
-      },
-    ];
+    return slideIds
+        .map((id) {
+          return switch (id) {
+            OnboardingSlideId.belong => _WelcomeSlide(
+              imagePath: 'assets/onboarding/rayon_matchday_team.webp',
+              title: l10n.onboardingBelongTitle,
+              body: l10n.onboardingBelongBody(clubLabel),
+              semanticLabel:
+                  '$clubLabel players applauding supporters after a match',
+            ),
+            OnboardingSlideId.know => _WelcomeSlide(
+              imagePath: 'assets/onboarding/rayon_players_celebrating.webp',
+              title: l10n.onboardingKnowTitle,
+              body: l10n.onboardingKnowBody(appLabel),
+              semanticLabel: '$clubLabel players celebrating together',
+            ),
+            OnboardingSlideId.live => _WelcomeSlide(
+              imagePath: 'assets/onboarding/rayon_new_signing.webp',
+              title: l10n.onboardingLiveTitle,
+              body: l10n.onboardingLiveBody,
+              semanticLabel: '$clubLabel player portrait',
+            ),
+          };
+        })
+        .toList(growable: false);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _slideTimer?.cancel();
+    if (!AfriMotion.reduceMotion(context)) {
+      _slideTimer = Timer.periodic(AfriMotion.carouselInterval, (_) {
+        if (!mounted || !_pageController.hasClients) return;
+        final next = (_currentSlide + 1) % 3;
+        unawaited(
+          _pageController.animateToPage(
+            next,
+            duration: AfriMotion.resolve(
+              context,
+              AfriMotion.carouselTransition,
+            ),
+            curve: Curves.easeInOutCubic,
+          ),
+        );
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _slideTimer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _handleHorizontalDragEnd(DragEndDetails details, int slideCount) {
+    final velocity = details.primaryVelocity ?? 0;
+    if (velocity.abs() < 120 || !_pageController.hasClients) return;
+    final next = velocity < 0
+        ? (_currentSlide + 1).clamp(0, slideCount - 1)
+        : (_currentSlide - 1).clamp(0, slideCount - 1);
+    if (next == _currentSlide) return;
+    if (AfriMotion.reduceMotion(context)) {
+      _pageController.jumpToPage(next);
+      return;
+    }
+    unawaited(
+      _pageController.animateToPage(
+        next,
+        duration: AfriMotion.emphasized,
+        curve: AfriMotion.enterCurve,
+      ),
+    );
   }
 
   Future<void> _continueWithoutSignIn() async {
@@ -101,119 +188,469 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final clubConfig = ClubConfigScope.maybeOf(context);
     final appName = clubConfig?.appName ?? RuntimeBranding.displayAppName;
     final clubName = clubConfig?.clubName ?? RuntimeBranding.displayClubName;
-    final slides = _slidesFor(appName: appName, clubName: clubName);
-    final hero = slides.first;
-    return Scaffold(
-      backgroundColor: ColorTokens.transparent,
-      body: GradientBackground(
-        routePath: '/onboarding',
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final isCompact = constraints.maxHeight < 620;
-              final isLargeText =
-                  MediaQuery.textScalerOf(context).scale(1) > 1.45;
-              final mediaHeight = isCompact || isLargeText ? 210.0 : 280.0;
+    final asyncContent = ref.watch(onboardingContentProvider);
+    final snapshot = asyncContent.valueOrNull;
 
-              return SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing4,
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing6,
+    if (snapshot == null || snapshot.isEmpty) {
+      return _OnboardingContentState(
+        clubName: clubName,
+        state: asyncContent,
+        isEmpty: snapshot?.isEmpty ?? false,
+        onRefresh: () => ref.read(onboardingContentProvider.notifier).refresh(),
+        onSignIn: () => context.push(
+          Uri(
+            path: '/auth/phone',
+            queryParameters: <String, String>{
+              if (_deferredDestination() case final String from) 'from': from,
+            },
+          ).toString(),
+        ),
+        onSkip: _continueWithoutSignIn,
+      );
+    }
+
+    final slides = _slidesFor(
+      appName: appName,
+      clubName: clubName,
+      l10n: l10n,
+      slideIds: snapshot.slides,
+    );
+    final safeCurrentSlide = _currentSlide.clamp(0, slides.length - 1);
+    return AfriScreenScaffold(
+      backgroundColor: ColorTokens.referenceChromeBlack,
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      constrainContent: false,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: slides.length,
+            onPageChanged: (index) => setState(() => _currentSlide = index),
+            itemBuilder: (context, index) => _WelcomeBackground(
+              key: ValueKey(slides[index].imagePath),
+              slide: slides[index],
+              index: index,
+              count: slides.length,
+              rightsApproved: widget.mediaRightsApproved,
+            ),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: ColorTokens.imageScrimGradient(
+                color: ColorTokens.referenceChromeBlack,
+                alphas: const [0.12, 0.05, 0.55, 0.96],
+                stops: const [0.0, 0.38, 0.67, 1.0],
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: Center(
+              child: SizedBox(
+                key: const ValueKey<String>('onboarding-responsive-content'),
+                width: AfriResponsive.maxContentWidthForWidth(
+                  MediaQuery.sizeOf(context).width,
                 ),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight - SpacingTokens.spacing10,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onHorizontalDragEnd: (details) =>
+                      _handleHorizontalDragEnd(details, slides.length),
+                  child: SafeArea(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isLargeText =
+                            MediaQuery.textScalerOf(context).scale(16) >= 24;
+                        final isCompact =
+                            constraints.maxHeight < 620 || isLargeText;
+                        return Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            SpacingTokens.spacing6,
+                            SpacingTokens.spacing4,
+                            SpacingTokens.spacing6,
+                            isCompact
+                                ? SpacingTokens.spacing2
+                                : SpacingTokens.spacing5,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                children: [
+                                  AfriBrandMark(
+                                    label: clubName,
+                                    size: isCompact ? 46 : 56,
+                                    borderRadius: BorderRadius.circular(
+                                      ShapeTokens.radiusMd,
+                                    ),
+                                    semanticLabel: '$clubName identity',
+                                  ),
+                                  const Spacer(),
+                                  Semantics(
+                                    label: l10n.onboardingWelcomeImage(
+                                      _currentSlide + 1,
+                                      slides.length,
+                                    ),
+                                    liveRegion: true,
+                                    child: _PageIndicator(
+                                      count: slides.length,
+                                      current: safeCurrentSlide,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxHeight:
+                                      constraints.maxHeight *
+                                      (isCompact ? 0.82 : 0.58),
+                                ),
+                                child: SingleChildScrollView(
+                                  child: _WelcomeContent(
+                                    slide: slides[safeCurrentSlide],
+                                    compact: isCompact,
+                                    largeText: isLargeText,
+                                    isSubmitting: _isSubmitting,
+                                    isRefreshing: asyncContent.isRefreshing,
+                                    statusMessage: snapshot.message,
+                                    statusTone:
+                                        snapshot.status ==
+                                            OnboardingContentStatus
+                                                .localFallback
+                                        ? AfriStateBannerTone.warning
+                                        : AfriStateBannerTone.neutral,
+                                    whatsAppSignInAvailable:
+                                        snapshot.whatsAppSignInAvailable,
+                                    onSignIn: () => context.push(
+                                      Uri(
+                                        path: '/auth/phone',
+                                        queryParameters: <String, String>{
+                                          if (_deferredDestination()
+                                              case final String from)
+                                            'from': from,
+                                        },
+                                      ).toString(),
+                                    ),
+                                    onSkip: _continueWithoutSignIn,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WelcomeSlide {
+  const _WelcomeSlide({
+    required this.imagePath,
+    required this.title,
+    required this.body,
+    required this.semanticLabel,
+  });
+
+  final String imagePath;
+  final String title;
+  final String body;
+  final String semanticLabel;
+}
+
+class _WelcomeBackground extends StatelessWidget {
+  const _WelcomeBackground({
+    super.key,
+    required this.slide,
+    required this.index,
+    required this.count,
+    required this.rightsApproved,
+  });
+
+  final _WelcomeSlide slide;
+  final int index;
+  final int count;
+  final bool rightsApproved;
+
+  @override
+  Widget build(BuildContext context) {
+    final isLargeText = MediaQuery.textScalerOf(context).scale(16) >= 24;
+    return LayoutBuilder(
+      builder: (context, constraints) => AfriGovernedImage(
+        image: rightsApproved ? AssetImage(slide.imagePath) : null,
+        width: constraints.maxWidth,
+        height: constraints.maxHeight,
+        semanticLabel: '${slide.semanticLabel}. Image ${index + 1} of $count',
+        provenanceId: 'onboarding:${slide.imagePath}',
+        rightsApproved: rightsApproved,
+        fit: BoxFit.cover,
+        alignment: index == 0 ? const Alignment(0.15, 0) : Alignment.topCenter,
+        borderRadius: 0,
+        cacheWidth:
+            (constraints.maxWidth * MediaQuery.devicePixelRatioOf(context))
+                .ceil(),
+        cacheHeight:
+            (constraints.maxHeight * MediaQuery.devicePixelRatioOf(context))
+                .ceil(),
+        errorFallback: ColoredBox(
+          color: ColorTokens.clubPrimary,
+          child: isLargeText
+              ? null
+              : const Center(
+                  child: Icon(
+                    AfriIcons.stadium,
+                    color: ColorTokens.onDark,
+                    size: SizeTokens.iconDisplay,
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WelcomeContent extends StatelessWidget {
+  const _WelcomeContent({
+    required this.slide,
+    required this.compact,
+    required this.largeText,
+    required this.isSubmitting,
+    required this.isRefreshing,
+    required this.whatsAppSignInAvailable,
+    required this.onSignIn,
+    required this.onSkip,
+    this.statusMessage,
+    this.statusTone = AfriStateBannerTone.neutral,
+  });
+
+  final _WelcomeSlide slide;
+  final bool compact;
+  final bool largeText;
+  final bool isSubmitting;
+  final bool isRefreshing;
+  final bool whatsAppSignInAvailable;
+  final VoidCallback onSignIn;
+  final VoidCallback onSkip;
+  final String? statusMessage;
+  final AfriStateBannerTone statusTone;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AnimatedSwitcher(
+          duration: AfriMotion.resolve(context, AfriMotion.standard),
+          child: Column(
+            key: ValueKey(slide.title),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                slide.title,
+                style: largeText
+                    ? TypographyTokens.titleLarge(ColorTokens.onDark)
+                    : compact
+                    ? TypographyTokens.displaySmall(ColorTokens.onDark)
+                    : TypographyTokens.displayLarge(ColorTokens.onDark),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              Text(
+                slide.body,
+                style: largeText
+                    ? TypographyTokens.bodyMedium(ColorTokens.onDarkSubtle)
+                    : TypographyTokens.bodyLarge(ColorTokens.onDarkSubtle),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: compact ? SpacingTokens.spacing3 : SpacingTokens.spacing5,
+        ),
+        if (isRefreshing) ...[
+          const AfriStateBanner(
+            title: 'Refreshing welcome',
+            subtitle:
+                'Keeping the current welcome and choices visible while updates are checked.',
+            tone: AfriStateBannerTone.info,
+            icon: AfriIcons.refresh,
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+        ] else if (statusMessage case final String message) ...[
+          AfriStateBanner(
+            title: whatsAppSignInAvailable
+                ? 'Welcome status'
+                : 'WhatsApp sign-in unavailable',
+            subtitle: message,
+            tone: statusTone,
+            icon: whatsAppSignInAvailable
+                ? AfriIcons.statusInfo
+                : AfriIcons.warning,
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+        ],
+        AfriButton(
+          key: const ValueKey<String>('onboarding-whatsapp-action'),
+          label: whatsAppSignInAvailable
+              ? context.afriL10n.onboardingContinueWhatsApp
+              : 'WhatsApp sign-in unavailable',
+          icon: AfriIcons.chat,
+          fullWidth: true,
+          enabled: whatsAppSignInAvailable && !isSubmitting,
+          isLoading: isSubmitting,
+          labelMaxLines: largeText ? 3 : 1,
+          onTap: onSignIn,
+        ),
+        const SizedBox(height: SpacingTokens.spacing2),
+        Center(
+          child: AfriTextButton(
+            key: const ValueKey<String>('onboarding-skip-action'),
+            onPressed: isSubmitting ? null : onSkip,
+            child: Text(
+              context.afriL10n.onboardingContinueWithoutSignIn,
+              style: TypographyTokens.labelLarge(ColorTokens.onDark),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _OnboardingContentState extends StatelessWidget {
+  const _OnboardingContentState({
+    required this.clubName,
+    required this.state,
+    required this.isEmpty,
+    required this.onRefresh,
+    required this.onSignIn,
+    required this.onSkip,
+  });
+
+  final String clubName;
+  final AsyncValue<OnboardingContentSnapshot> state;
+  final bool isEmpty;
+  final VoidCallback onRefresh;
+  final VoidCallback onSignIn;
+  final VoidCallback onSkip;
+
+  @override
+  Widget build(BuildContext context) {
+    final error = state.error;
+    final failure = error == null
+        ? null
+        : OnboardingContentFailure.fromError(error);
+    final stateView = isEmpty
+        ? AfriStateView.empty(
+            title: 'Welcome content unavailable',
+            message:
+                'There is no welcome content to show yet. Refresh or continue without signing in.',
+            actionLabel: 'Refresh',
+            onAction: onRefresh,
+          )
+        : failure == null
+        ? AfriStateView.loading(
+            title: 'Preparing your welcome',
+            message: 'Loading the latest club welcome and sign-in choices.',
+          )
+        : switch (failure.kind) {
+            OnboardingContentFailureKind.permissionDenied => AfriStateView.error(
+              title: 'Welcome access unavailable',
+              message:
+                  'This welcome cannot be opened for this account. WhatsApp sign-in and guest access remain available.',
+            ),
+            OnboardingContentFailureKind.conflict => AfriStateView.error(
+              title: 'Welcome changed',
+              message:
+                  'The welcome changed while it was opening. Refresh to load the current version.',
+              actionLabel: 'Refresh',
+              onAction: onRefresh,
+            ),
+            OnboardingContentFailureKind.securityTimeout => AfriStateView.error(
+              title: 'Welcome security check timed out',
+              message:
+                  'The welcome could not be verified in time. Check your connection and refresh.',
+              actionLabel: 'Refresh',
+              onAction: onRefresh,
+            ),
+            OnboardingContentFailureKind.unknown => AfriStateView.error(
+              title: 'Welcome unavailable',
+              message:
+                  'The welcome could not be loaded safely. Try again or continue without signing in.',
+              actionLabel: 'Try again',
+              onAction: onRefresh,
+            ),
+          };
+
+    return AfriScreenScaffold(
+      backgroundColor: ColorTokens.referenceChromeBlack,
+      showAppBar: false,
+      showBackButton: false,
+      scrollable: false,
+      child: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      AfriSurfaceCard(
-                        backgroundColor: ColorTokens.surfaceContainerLow
-                            .withValues(alpha: 0.82),
-                        height: mediaHeight,
-                        width: double.infinity,
-                        padding: EdgeInsets.zero,
-                        child: _OnboardingMedia(
-                          source: hero['source']!,
-                          icon: AfriIcons.stadium,
-                          accent: ColorTokens.primary,
-                          brandLabel: clubName,
-                        ),
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing6),
-                      Text(
-                        hero['title']!,
-                        style: TypographyTokens.displaySmall().copyWith(
-                          fontSize: isCompact ? 32 : 40,
-                          height: 1.1,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      Text(
-                        hero['body']!,
-                        style: TypographyTokens.bodyLarge(
-                          ColorTokens.onSurfaceVariant,
-                        ),
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing6),
-                      const Wrap(
-                        spacing: SpacingTokens.spacing2,
-                        runSpacing: SpacingTokens.spacing2,
-                        children: [
-                          _OnboardingChip(
-                            icon: AfriIcons.membership,
-                            label: 'Member',
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: AfriBrandMark(
+                          label: clubName,
+                          size: 56,
+                          borderRadius: BorderRadius.circular(
+                            ShapeTokens.radiusMd,
                           ),
-                          _OnboardingChip(
-                            icon: AfriIcons.tickets,
-                            label: 'Tickets',
-                          ),
-                          _OnboardingChip(
-                            icon: AfriIcons.predict,
-                            label: 'Picks',
-                          ),
-                        ],
+                          semanticLabel: '$clubName identity',
+                        ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing5),
-                      _isSubmitting
-                          ? const Center(child: AfriLoadingIndicator())
-                          : AfriButton(
-                              label: 'Continue with WhatsApp',
-                              icon: AfriIcons.chat,
-                              fullWidth: true,
-                              onTap: () => context.push(
-                                Uri(
-                                  path: '/auth/phone',
-                                  queryParameters: <String, String>{
-                                    if (_deferredDestination()
-                                        case final String from)
-                                      'from': from,
-                                  },
-                                ).toString(),
-                              ),
-                            ),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      Align(
-                        alignment: Alignment.centerRight,
+                      Expanded(child: stateView),
+                      AfriButton(
+                        key: const ValueKey<String>(
+                          'onboarding-state-whatsapp-action',
+                        ),
+                        label: context.afriL10n.onboardingContinueWhatsApp,
+                        icon: AfriIcons.chat,
+                        onTap: onSignIn,
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing2),
+                      Center(
                         child: AfriTextButton(
-                          onPressed: _isSubmitting
-                              ? null
-                              : _continueWithoutSignIn,
-                          child: const Text('Continue without sign-in'),
+                          key: const ValueKey<String>(
+                            'onboarding-state-skip-action',
+                          ),
+                          onPressed: onSkip,
+                          child: Text(
+                            context.afriL10n.onboardingContinueWithoutSignIn,
+                            style: TypographyTokens.labelLarge(
+                              ColorTokens.onDark,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ),
       ),
@@ -221,101 +658,32 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 }
 
-class _OnboardingChip extends StatelessWidget {
-  const _OnboardingChip({required this.icon, required this.label});
+class _PageIndicator extends StatelessWidget {
+  const _PageIndicator({required this.count, required this.current});
 
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return AfriStatusChip(label: label, icon: icon, tone: AfriStatusTone.info);
-  }
-}
-
-class _OnboardingMedia extends StatelessWidget {
-  const _OnboardingMedia({
-    required this.source,
-    required this.icon,
-    required this.accent,
-    required this.brandLabel,
-  });
-
-  final String source;
-  final IconData icon;
-  final Color accent;
-  final String brandLabel;
+  final int count;
+  final int current;
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: ColorTokens.heroGradient(
-                from: accent,
-                to: ColorTokens.referencePaymentsPurpleDeep,
-              ),
-            ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(
+        count,
+        (index) => AnimatedContainer(
+          duration: AfriMotion.resolve(context, AfriMotion.standard),
+          width: index == current
+              ? SpacingTokens.spacing6
+              : SpacingTokens.spacing2,
+          height: SpacingTokens.spacing2,
+          margin: const EdgeInsets.only(left: SpacingTokens.spacing2),
+          decoration: BoxDecoration(
+            color: index == current
+                ? ColorTokens.onDark
+                : ColorTokens.onDarkSubtle,
+            borderRadius: ShapeTokens.buttonRadius,
           ),
-          Align(
-            alignment: Alignment.center,
-            child: AfriBrandMark(
-              label: brandLabel,
-              size: 116,
-              borderRadius: BorderRadius.circular(ShapeTokens.radiusXl),
-              semanticLabel: '$brandLabel identity',
-            ),
-          ),
-          Positioned(
-            right: SpacingTokens.spacing5,
-            top: SpacingTokens.spacing5,
-            child: Icon(
-              icon,
-              size: 42,
-              color: ColorTokens.chromeForeground.withValues(alpha: 0.72),
-            ),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: ColorTokens.imageScrimGradient(
-                color: ColorTokens.background,
-                alphas: const [0.0, 0.08, 0.55, 0.78],
-                stops: const [0.0, 0.32, 0.72, 1.0],
-              ),
-            ),
-          ),
-          Positioned(
-            left: SpacingTokens.spacing5,
-            right: SpacingTokens.spacing5,
-            bottom: SpacingTokens.spacing5,
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: ColorTokens.primaryContainer,
-                    borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-                  ),
-                  child: Icon(icon, color: ColorTokens.onSurface, size: 22),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: Text(
-                    source,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TypographyTokens.labelSmall(ColorTokens.onDark),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

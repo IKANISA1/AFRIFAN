@@ -1,5 +1,3 @@
-import { ui } from "@/ui-kit";
-
 interface SectionHeadingProps {
   eyebrow?: string;
   title: string;

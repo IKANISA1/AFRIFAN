@@ -1,0 +1,55 @@
+{
+  "@@locale": "en",
+  "appTitle": "AfriClub",
+  "genericError": "Something went wrong. Try again.",
+  "retry": "Retry",
+  "connectionRequired": "Connection required",
+  "onboardingBelongTitle": "Your club.\nYour matchday.",
+  "onboardingBelongBody": "Follow {clubName} wherever the blue family gathers.",
+  "@onboardingBelongBody": {
+    "placeholders": {
+      "clubName": {"type": "String"}
+    }
+  },
+  "onboardingKnowTitle": "Every moment.\nOne blue family.",
+  "onboardingKnowBody": "Get official {appName} news, fixtures, tickets, and membership.",
+  "@onboardingKnowBody": {
+    "placeholders": {
+      "appName": {"type": "String"}
+    }
+  },
+  "onboardingLiveTitle": "Closer to\nGikundiro.",
+  "onboardingLiveBody": "Meet the squad and carry your club with you every day.",
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next",
+  "onboardingStart": "Get started",
+  "onboardingContinueWhatsApp": "Continue with WhatsApp",
+  "onboardingContinueWithoutSignIn": "Continue without sign-in",
+  "onboardingWelcomeImage": "Welcome image {current} of {total}",
+  "@onboardingWelcomeImage": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "supportUnavailable": "Support is unavailable in this build.",
+  "fanZoneLoading": "Picks, league, points, fans, and rewards are loading.",
+  "fanZoneJoinSession": "Join a live session and use this phone to play.",
+  "fanZoneVenueCode": "Enter the venue code after you arrive.",
+  "fanZoneRoundsEmpty": "Matchday rounds will appear when they open.",
+  "fanZoneRankingsEmpty": "Rankings will appear after updates resume.",
+  "fanZoneClubsMoved": "Fan clubs and chapters are under Supporters.",
+  "fanZoneRegistryMoved": "The supporter list is under Fan Zone Supporters.",
+  "fanZoneContributionMode": "Choose how to contribute.",
+  "fanZoneRewardsSummary": "Badges, streaks, and rewards.",
+  "fanZoneLineupsEmpty": "Lineups will appear before kickoff.",
+  "fanZoneStatsEmpty": "Stats will appear when the match starts.",
+  "fanIdVerifyPrompt": "Verify your Fan ID to make picks and earn points.",
+  "fanIdPrivacyTrust": "Verification uses your Fan ID. No personal details are shared.",
+  "tvPairingUnavailable": "Pairing unavailable. Check the connection and retry.",
+  "tvConfigurationMissing": "Setup is incomplete. Contact the deployment owner.",
+  "tvCredentialRevoked": "This device was revoked. Create a new pairing code.",
+  "tvEnterAdminCode": "Enter the code from the admin device list.",
+  "tvJoinFromFanZone": "Use this code to join from Fan Zone.",
+  "tvConnectionLostRetry": "Connection lost — retry"
+}

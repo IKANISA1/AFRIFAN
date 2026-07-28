@@ -15,6 +15,7 @@ import type { AdminNewsArticle } from "@/lib/types";
 import { emptyArticleForm } from "./_components/cms-state";
 import { CMSContentEditor } from "./_components/cms-content-editor";
 import { CMSContentList } from "./_components/cms-content-list";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 
 export default function AdminCmsPage() {
   const { access, client } = useAdminPortal();
@@ -55,6 +56,7 @@ export default function AdminCmsPage() {
   function beginEdit(article: AdminNewsArticle) {
     setForm({
       id: article.id,
+      expectedUpdatedAt: article.updatedAt,
       title: article.title,
       subtitle: article.subtitle ?? "",
       category: article.category,
@@ -77,6 +79,7 @@ export default function AdminCmsPage() {
     try {
       await saveAdminArticle(client, access, {
         id: form.id || null,
+        expectedUpdatedAt: form.expectedUpdatedAt || null,
         title: String(formData.get("title") ?? ""),
         subtitle: String(formData.get("subtitle") ?? ""),
         category: String(formData.get("category") ?? "News"),
@@ -90,6 +93,9 @@ export default function AdminCmsPage() {
       await loadArticles();
       showAdminToast("Article saved.", "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await loadArticles();
+      }
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not save article.",
         "error",
@@ -105,6 +111,7 @@ export default function AdminCmsPage() {
     try {
       await saveAdminArticle(client, access, {
         id: article.id,
+        expectedUpdatedAt: article.updatedAt,
         title: article.title,
         subtitle: article.subtitle ?? "",
         category: article.category,
@@ -122,6 +129,9 @@ export default function AdminCmsPage() {
         : (article.isFeatured ? "Unfeatured" : "Featured");
       showAdminToast(`${action} "${article.title}".`, "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await loadArticles();
+      }
       showAdminToast(
         caught instanceof Error
           ? caught.message
@@ -137,18 +147,29 @@ export default function AdminCmsPage() {
     }
     if (
       !confirmAdminDestructiveAction({
+        action: "Delete",
         subject: article.title,
-        detail: "The article will be removed from this club scope.",
+        scope: `Active club ${access.clubId ?? "not selected"}`,
+        impact: "The article will be removed from this club scope.",
+        undo: "not_available",
       })
     ) {
       return;
     }
 
     try {
-      await deleteAdminArticle(client, access, article.id);
+      await deleteAdminArticle(
+        client,
+        access,
+        article.id,
+        article.updatedAt,
+      );
       await loadArticles();
       showAdminToast(`Removed "${article.title}".`, "success");
     } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await loadArticles();
+      }
       showAdminToast(
         caught instanceof Error
           ? caught.message
