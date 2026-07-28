@@ -23,9 +23,9 @@ to accept changed pixels automatically.
   high-contrast semantics from passing unnoticed.
 - Dark and light 430 × 900 contrast-evidence sheets cover overlay hierarchy,
   inactive controls, metrics, and chart communication without color alone.
-- The current manifest contains 473 exact-pixel baselines, including exact
-  Search, Home, Fan Zone, Membership, Tickets, Shop, product-detail, cart,
-  phone-auth, and OTP-auth task-state captures.
+- The current manifest contains 502 exact-pixel baselines, including exact
+  Search, Home, Fan Zone, Onboarding, Settings, Membership, Tickets, Shop,
+  product-detail, cart, phone-auth, and OTP-auth task-state captures.
 - Tests must not contact Firebase, Supabase, production storage, or live media.
 - `docs/governance/golden-baselines.json` identifies every governed baseline,
   its viewport, purpose, and SHA-256 digest.
@@ -42,6 +42,7 @@ to accept changed pixels automatically.
    - `packages/features/feat_gamification/test/fanzone_hub_screen_test.dart`
    - `packages/features/feat_gamification/test/prediction_notifications_list_test.dart`
    - `packages/features/feat_settings/test/settings_goldens_test.dart`
+   - `packages/features/feat_settings/test/settings_screen_states_test.dart`
    - `packages/features/feat_onboarding/test/onboarding_flow_test.dart`
    - `packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart`
    - `packages/features/feat_membership/test/membership_screen_ui_test.dart`
@@ -465,3 +466,134 @@ synthetic and stable.
 - Approval boundary: live WhatsApp authentication and remote content,
   physical assistive-technology/device execution, pinned CI, and accountable
   human design/privacy approval remain pending.
+
+## 2026-07-28 Complete Settings route-state engineering review
+
+- Scope: all 16 governed states on `/settings`, with loading, empty, error,
+  offline, permission-denied, disabled, focused, pressed, selected,
+  large-text, syncing, conflict, and security-timeout captures added to the
+  prior reduced-motion, dark, and light evidence.
+- Inspection: Codex inspected all 13 new production-route screenshots at
+  source resolution before evidence credit.
+- Behavior and privacy: the production support lookup now uses a typed
+  repository/notifier contract; offline and disabled states keep unrelated
+  account and appearance tasks usable while disabling unavailable support;
+  real platform focus, a held pointer, and the production Appearance sheet
+  drive interaction states; refresh retains settled Settings content; reads
+  are bounded by a provider-owned cancellable timer; policy, revision,
+  timeout, and unknown failures map to stable copy without raw diagnostics.
+- Rejection and remediation: source-resolution review rejected a permission
+  consequence truncated by the state banner and a single-line Membership
+  details action that ellipsized at 320 by 720 with 200-percent text. The
+  permission copy is now complete, the primary action adapts to two lines,
+  and shared-source guardrails replaced direct Material progress indicators
+  with the governed loading primitive.
+- Result: accepted for local engineering evidence. All 16 Settings cells are
+  linked to current tests and screenshots; focus, held press, selected theme,
+  unavailable-support consequences, retained synchronization, and typed
+  recovery remain complete without overlap, exposed diagnostics, or broken
+  padding.
+- Regression: the exact Settings state file passes 13 tests, the complete
+  Settings package passes 68 tests, Core Theme passes 432 tests, package and
+  workspace strict analysis report no issues, and the 486-digest golden
+  contract plus automated privacy and design-compliance checks pass.
+- Approval boundary: live support configuration and session behavior,
+  physical assistive-technology/device execution, pinned CI, and accountable
+  human design/privacy approval remain pending.
+
+## 2026-07-28 Complete Edit profile route-state engineering review
+
+- Scope: all 16 governed states on `/settings/edit-profile`: loading, empty,
+  error, offline, permission-denied, disabled, focused, pressed, selected,
+  large-text, reduced motion, dark, light, syncing, conflict, and security
+  timeout.
+- Inspection: Codex inspected every final production-route screenshot at
+  source resolution before evidence credit.
+- Behavior and privacy: the production route now uses a typed
+  repository/notifier contract, retains a local authenticated profile offline,
+  blocks mutation when offline or feature-disabled, bounds profile reads,
+  saves, and conflict refreshes, preserves drafts while confirmation is
+  pending, refreshes the latest profile after conflict, and maps permission,
+  conflict, timeout, and unknown failures to stable copy without exposing raw
+  backend diagnostics. Account-deletion failure copy is also sanitized.
+- Rejection and remediation: the first pressed capture was byte-identical to
+  the default state and was rejected. The test now dispatches and holds a real
+  pointer through the production Save changes action, asserts a measurable
+  scale value below one, and captures a visibly distinct pressed state.
+- Result: accepted for local engineering evidence. The 320 by 720,
+  200-percent-text capture keeps alias, language, nickname, save, and
+  destructive-account actions complete and scroll-reachable. Focus and text
+  selection are driven by the real platform controls, and light/dark parity
+  retains the same hierarchy without overlap, clipping, or exposed
+  diagnostics.
+- Regression: the exact profile state file passes 16 tests, the complete
+  Settings package passes 84 tests, Core Theme passes 432 tests, package and
+  workspace strict analysis report no issues, and the 502-digest golden
+  contract plus automated privacy and design-compliance checks pass.
+- Approval boundary: authenticated live profile/update/delete behavior,
+  physical assistive-technology/device execution, pinned CI, and accountable
+  human design/privacy approval remain pending.
+
+## 2026-07-28 Complete Notifications route-state engineering review
+
+- Scope: all 16 governed states on `/settings/notifications`: loading, empty,
+  error, offline, permission-denied, disabled, focused, pressed, selected,
+  large-text, reduced motion, dark, light, syncing, conflict, and security
+  timeout.
+- Inspection: Codex inspected every final production-route screenshot at
+  source resolution before evidence credit.
+- Behavior and privacy: typed reader/writer boundaries now bound repository
+  loads and saves; platform permission, token synchronization, and device
+  unregister calls are also time-bounded. Offline and platform-unavailable
+  states retain confirmed preferences while blocking unsafe actions; pending
+  saves prevent duplicates; conflicts invalidate and refresh; uncertain
+  timeouts fail closed; raw policy, repository, and account identifiers never
+  enter supporter-facing copy.
+- Rejection and remediation: visual review rejected an ellipsized
+  200-percent delivery action, state captures with inherited scroll offsets,
+  and route-title contrast outside shared chrome ownership. The accepted suite
+  uses a governed two-line action, deterministic route-origin capture, and a
+  title whose foreground is owned by the shared app bar. The press test holds the production
+  press handler at a measured scale below one and produces a distinct digest.
+- Result: accepted for local engineering evidence. The all-or-nothing delivery
+  model remains truthful; focus and toggled semantics are explicit; the 320 by
+  720 large-text route keeps controls complete and scroll-reachable; light,
+  dark, and reduced-motion executions retain the same hierarchy.
+- Regression: the exact Notifications state file passes 16 tests, complete
+  Settings passes 100 tests, Core Theme passes 432 tests, package and workspace
+  analysis report no issues, and the 518-digest golden contract passes.
+- Approval boundary: live FCM/APNs permission and token behavior,
+  authenticated cross-device conflict reconciliation, physical
+  assistive-technology/device execution, pinned CI, and accountable human
+  design/privacy approval remain pending.
+
+## 2026-07-28 Complete Privacy route-state engineering review
+
+- Scope: all 16 governed states on `/settings/privacy`: loading, empty, error,
+  offline, permission-denied, disabled, focused, pressed, selected, large-text,
+  reduced motion, dark, light, syncing, conflict, and security timeout.
+- Inspection: Codex inspected the representative and interaction-critical
+  final production-route screenshots at source resolution before evidence
+  credit, including both themes, 200-percent text, recovery, focus, press,
+  toggled, synchronization, conflict, and timeout states.
+- Behavior and privacy: typed reader/writer boundaries now bound privacy loads
+  and saves, analytics-consent and MoMo SMS synchronization, and other-session
+  sign-out. Offline and feature-disabled states retain confirmed choices and
+  drafts while blocking unsafe actions; pending mutations prevent duplicates;
+  conflicts invalidate and require review; uncertain timeouts fail closed; raw
+  policy, repository, session, and account identifiers never enter
+  supporter-facing copy.
+- Rejection and remediation: visual review rejected state captures with
+  inherited scroll offsets and missing or low-contrast route chrome. The
+  accepted suite resets the route origin deterministically and delegates title
+  foreground to the governed shared app bar.
+- Result: accepted for local engineering evidence. Focus, pressed scale, and
+  toggled semantics are explicit; the 320 by 720 large-text route keeps the
+  session action reachable; light, dark, and reduced-motion executions retain
+  the same hierarchy; export, policy, and session availability stay truthful.
+- Regression: the exact Privacy state file passes 16 tests, complete Settings
+  passes 116 tests, Core Theme passes 432 tests, package and workspace analysis
+  report no issues, and the 534-digest golden contract passes.
+- Approval boundary: authenticated live consent/export/policy/session and MoMo
+  SMS behavior, physical assistive-technology/device execution, pinned CI, and
+  accountable human design/privacy approval remain pending.

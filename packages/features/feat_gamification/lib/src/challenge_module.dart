@@ -2,7 +2,7 @@ import 'package:core_router/core_router.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/challenge_detail_screen.dart';
-import 'screens/challenges_screen.dart';
+import 'screens/challenge_feed_screen.dart';
 import 'screens/create_challenge_screen.dart';
 import 'screens/my_challenges_screen.dart';
 
@@ -20,7 +20,7 @@ class ChallengeModule extends FeatureModule {
   List<RouteBase> get routes => [
     GoRoute(
       path: '/challenge',
-      builder: (context, state) => const ChallengesScreen(),
+      builder: (context, state) => const ChallengeFeedScreen(),
     ),
     GoRoute(
       path: '/challenge/create',

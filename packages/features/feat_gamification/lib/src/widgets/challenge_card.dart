@@ -9,10 +9,12 @@ class ChallengeCard extends StatelessWidget {
     super.key,
     required this.challenge,
     this.compact = false,
+    this.enabled = true,
   });
 
   final Challenge challenge;
   final bool compact;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -26,121 +28,124 @@ class ChallengeCard extends StatelessWidget {
         challenge.status == ChallengeStatus.open && countdown.inSeconds > 0;
 
     return GlassCard(
-      onTap: () => context.push('/challenge/${challenge.id}'),
+      onTap: enabled ? () => context.push('/challenge/${challenge.id}') : null,
       animate: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _AvatarBadge(
-                label: challenge.creatorDisplayName,
-                avatarUrl: challenge.creatorAvatarUrl,
-              ),
-              const SizedBox(width: SpacingTokens.spacing3),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      child: Opacity(
+        opacity: enabled ? 1 : 0.72,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _AvatarBadge(
+                  label: challenge.creatorDisplayName,
+                  avatarUrl: challenge.creatorAvatarUrl,
+                ),
+                const SizedBox(width: SpacingTokens.spacing3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        challenge.creatorDisplayName,
+                        style: TypographyTokens.titleSmall(),
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing1 / 2),
+                      Text(
+                        fixture.competitionName,
+                        style: TypographyTokens.labelSmall(
+                          ColorTokens.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ChallengeStatusChip(status: challenge.status),
+              ],
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            Row(
+              children: [
+                Expanded(
+                  child: _TeamColumn(
+                    name: fixture.homeTeamShort,
+                    alignment: CrossAxisAlignment.start,
+                  ),
+                ),
+                Column(
                   children: [
                     Text(
-                      challenge.creatorDisplayName,
-                      style: TypographyTokens.titleSmall(),
+                      fixture.status == 'finished' || fixture.status == 'live'
+                          ? '${fixture.homeScore ?? 0}-${fixture.awayScore ?? 0}'
+                          : 'VS',
+                      style: TypographyTokens.titleLarge(
+                        fixture.status == 'live'
+                            ? ColorTokens.error
+                            : ColorTokens.clubAccent,
+                      ).copyWith(fontWeight: FontWeight.w900),
                     ),
-                    const SizedBox(height: SpacingTokens.spacing1 / 2),
-                    Text(
-                      fixture.competitionName,
-                      style: TypographyTokens.labelSmall(
-                        ColorTokens.onSurfaceVariant,
+                    const SizedBox(height: SpacingTokens.spacing1),
+                    if (hasCountdown)
+                      Text(
+                        _formatCountdown(countdown),
+                        style: TypographyTokens.labelSmall(ColorTokens.warning),
+                      )
+                    else
+                      Text(
+                        compact
+                            ? fixture.kickoffAt
+                                      ?.toLocal()
+                                      .toString()
+                                      .split('.')
+                                      .first ??
+                                  'Kickoff soon'
+                            : _formatKickoff(fixture.kickoffAt),
+                        style: TypographyTokens.labelSmall(
+                          ColorTokens.onSurfaceVariant,
+                        ),
                       ),
-                    ),
                   ],
                 ),
-              ),
-              ChallengeStatusChip(status: challenge.status),
-            ],
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          Row(
-            children: [
-              Expanded(
-                child: _TeamColumn(
-                  name: fixture.homeTeamShort,
-                  alignment: CrossAxisAlignment.start,
-                ),
-              ),
-              Column(
-                children: [
-                  Text(
-                    fixture.status == 'finished' || fixture.status == 'live'
-                        ? '${fixture.homeScore ?? 0}-${fixture.awayScore ?? 0}'
-                        : 'VS',
-                    style: TypographyTokens.titleLarge(
-                      fixture.status == 'live'
-                          ? ColorTokens.error
-                          : ColorTokens.clubAccent,
-                    ).copyWith(fontWeight: FontWeight.w900),
+                Expanded(
+                  child: _TeamColumn(
+                    name: fixture.awayTeamShort,
+                    alignment: CrossAxisAlignment.end,
                   ),
-                  const SizedBox(height: SpacingTokens.spacing1),
-                  if (hasCountdown)
-                    Text(
-                      _formatCountdown(countdown),
-                      style: TypographyTokens.labelSmall(ColorTokens.warning),
-                    )
-                  else
-                    Text(
-                      compact
-                          ? fixture.kickoffAt
-                                    ?.toLocal()
-                                    .toString()
-                                    .split('.')
-                                    .first ??
-                                'Kickoff soon'
-                          : _formatKickoff(fixture.kickoffAt),
-                      style: TypographyTokens.labelSmall(
-                        ColorTokens.onSurfaceVariant,
-                      ),
-                    ),
-                ],
-              ),
-              Expanded(
-                child: _TeamColumn(
-                  name: fixture.awayTeamShort,
-                  alignment: CrossAxisAlignment.end,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          Wrap(
-            spacing: SpacingTokens.spacing2,
-            runSpacing: SpacingTokens.spacing2,
-            children: [
-              StakeBadge(stakeFet: challenge.stakeFet),
-              _InfoChip(
-                icon: AfriIcons.users,
-                label: '${challenge.totalParticipants} joined',
-              ),
-              _InfoChip(
-                icon: AfriIcons.rewards,
-                label: '${challenge.totalPoolFet} pts total',
-              ),
-              if (challenge.creatorPrediction != null)
-                ScorePredictionPill(
-                  homeScore: challenge.creatorPrediction!.homeScore,
-                  awayScore: challenge.creatorPrediction!.awayScore,
-                  label: 'Creator',
+              ],
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            Wrap(
+              spacing: SpacingTokens.spacing2,
+              runSpacing: SpacingTokens.spacing2,
+              children: [
+                StakeBadge(stakeFet: challenge.stakeFet),
+                _InfoChip(
+                  icon: AfriIcons.users,
+                  label: '${challenge.totalParticipants} joined',
                 ),
-              if (challenge.myEntry != null)
-                ScorePredictionPill(
-                  homeScore: challenge.myEntry!.predictedHomeScore,
-                  awayScore: challenge.myEntry!.predictedAwayScore,
-                  label: 'My pick',
-                  accent: ColorTokens.clubAccent,
+                _InfoChip(
+                  icon: AfriIcons.rewards,
+                  label: '${challenge.totalPoolFet} pts total',
                 ),
-            ],
-          ),
-        ],
+                if (challenge.creatorPrediction != null)
+                  ScorePredictionPill(
+                    homeScore: challenge.creatorPrediction!.homeScore,
+                    awayScore: challenge.creatorPrediction!.awayScore,
+                    label: 'Creator',
+                  ),
+                if (challenge.myEntry != null)
+                  ScorePredictionPill(
+                    homeScore: challenge.myEntry!.predictedHomeScore,
+                    awayScore: challenge.myEntry!.predictedAwayScore,
+                    label: 'My pick',
+                    accent: ColorTokens.clubAccent,
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

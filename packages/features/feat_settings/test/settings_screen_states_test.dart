@@ -192,6 +192,7 @@ void main() {
     await _pumpSettingsStateGolden(
       tester,
       id: 'large_text',
+      // Manifest viewport contract: 320x720, dark.
       size: const Size(320, 720),
       textScale: 2,
       repository: _currentRepository,

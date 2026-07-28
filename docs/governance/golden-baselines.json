@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "provenance": {
-    "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
+    "baseline_commit": "bd5956b0215ece5bf0b7197ca5d00c8b1072a1ba",
     "dirty_state": true,
     "app_version": "1.0.3",
     "build_number": "5",
@@ -9,7 +9,7 @@
     "platform": "flutter_test_macos_arm64",
     "runtime": "Flutter 3.44.4; Dart 3.12.2",
     "locale": "en",
-    "generated_at": "2026-07-25T05:49:21Z",
+    "generated_at": "2026-07-28T05:54:16Z",
     "data_source": "synthetic_non_production"
   },
   "comparison": {
@@ -5658,6 +5658,738 @@
       "theme": "dark",
       "data_source": "synthetic",
       "sha256": "c2616f1f4a53e7b6f47ab729a3ea8bebbcfcdf43ae8e0d299a2892d915d081d3"
+    },
+    {
+      "id": "settings-state-loading-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_loading_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "6c9a2de5c4c7187c98ab4275ad64d107a8a773f1b959e1aec80b9cd3b634f6b7"
+    },
+    {
+      "id": "settings-state-empty-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_empty_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "28fb844a5f8a061ed5a162683b82371cdfc5376de5814b8afaf825c7c3786c4d"
+    },
+    {
+      "id": "settings-state-error-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_error_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "06a70c6bec327fcc474c09ca5128c4b3e90abf99b8b3dbf27c4a3a654b47531c"
+    },
+    {
+      "id": "settings-state-offline-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_offline_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "551aafa08380ce1012c02d2e94b92b69988790121b41a6c4e09785128766cb8c"
+    },
+    {
+      "id": "settings-state-permission-denied-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_permission_denied_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "c2dab044a5538d7e01c9d5bedf7c183a47340d7c2e5b74983a73ce60ce0a7dc4"
+    },
+    {
+      "id": "settings-state-disabled-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_disabled_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "a419a6dc1f35cfca83ccd66c04111e3f464046afc0070395729e9fef42d52887"
+    },
+    {
+      "id": "settings-state-focused-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_focused_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "ac2d8177d4a20c1f6277135eb6b35f20aefc9a11fc475e5ad6bf977b71600251"
+    },
+    {
+      "id": "settings-state-pressed-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_pressed_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "ea436e2a71d810be2b5e4fda34903d6c443817f695d5eebcf8dc94ec1733556c"
+    },
+    {
+      "id": "settings-state-selected-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_selected_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "320a15da9b98cfb6b0e710781e10eca3d3290fcfa06541c27514673a445e337f"
+    },
+    {
+      "id": "settings-state-large-text-dark-320x720",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_large_text_dark_320x720.png",
+      "viewport": {
+        "width": 320,
+        "height": 720,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "1d8bfe08c6e75ddbc2b2072d469baa6e0a88e86eafeaf8a39426765da2df1fbf"
+    },
+    {
+      "id": "settings-state-syncing-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_syncing_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "2045a8f8add0647c34a8281258be0d4e75c8b18251a6fb0d05c416f8934909c1"
+    },
+    {
+      "id": "settings-state-conflict-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_conflict_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "d136e836f5ef0524195b40cf6727fb59a93e1664089ace023ccdd8ee4f669eaf"
+    },
+    {
+      "id": "settings-state-security-timeout-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/settings_state_security_timeout_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "3cce482ec04375b59049534c248475dcc9e329f181ee135e562d5d074c5f06ed"
+    },
+    {
+      "id": "profile-state-loading-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_loading_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "0385ecbede1ac29d2733b770e0f9f2999b55998bbdf6993bcd74013d5fc1bb66"
+    },
+    {
+      "id": "profile-state-empty-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_empty_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "ab3fa6be5a4110fe9e515ce4b8a8e282f6202f496bb225ea35fd3fd1b6c47208"
+    },
+    {
+      "id": "profile-state-error-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_error_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "5b9e9b3addf24bc82ed05a86d2d60f3be95bc4d0997ea322e6aea38472476f4d"
+    },
+    {
+      "id": "profile-state-offline-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_offline_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "d73e19cd2af1eb1d85f420911b301d9c0339d53f0fb1f58f70664ebcecef5a63"
+    },
+    {
+      "id": "profile-state-permission-denied-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_permission_denied_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "1f1bab40045620c0ac35aa9963b33a0c1eea684d2efbef96e59e951c0de44a2b"
+    },
+    {
+      "id": "profile-state-disabled-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_disabled_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "ed19be8af51d06566fe397061e5d79119447da95bec0fd04282b50efc28b3e05"
+    },
+    {
+      "id": "profile-state-focused-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_focused_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "4b44d76553604282be2761d3ea01a88e8a95c365fecc4c36b0696edca384c289"
+    },
+    {
+      "id": "profile-state-pressed-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_pressed_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "4ef7ef897ade94938f008028d0159006da2df6d285e0f262925432c2b8bdd594"
+    },
+    {
+      "id": "profile-state-selected-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_selected_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "03a5d90ac55a778e4306aa9484fc39e548246ab0085f9389165e7398513133f1"
+    },
+    {
+      "id": "profile-state-large-text-dark-320x720",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_large_text_dark_320x720.png",
+      "viewport": {
+        "width": 320,
+        "height": 720,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "a8c081dc22d09e1adca46da6b296000f76b3ef0057f780b390ce3878be78261d"
+    },
+    {
+      "id": "profile-state-reduced-motion-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_reduced_motion_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "95c1f9937cd0d4af5016986bf007bcce451ff47d109b872fbd13f0c8668fd307"
+    },
+    {
+      "id": "profile-state-dark-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_dark_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "95c1f9937cd0d4af5016986bf007bcce451ff47d109b872fbd13f0c8668fd307"
+    },
+    {
+      "id": "profile-state-light-light-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_light_light_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "light",
+      "data_source": "synthetic",
+      "sha256": "7db778c9c4f575787871fa15701959bac9b2783e2a22b07392f273c1f71f6166"
+    },
+    {
+      "id": "profile-state-syncing-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_syncing_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "17643f969b836a9d534016c223515f453d834f57604cbf70f11820dc0b9f6881"
+    },
+    {
+      "id": "profile-state-conflict-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_conflict_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "0fd6c9a7ebcf0e9f550789ac51058994d4826fb59919d79b079a09e5ab9eac77"
+    },
+    {
+      "id": "profile-state-security-timeout-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/profile_state_security_timeout_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "a16653a2edcdf5e188eb0aeba2fa69fe8edb3092aac130c01f82a1aacd8c2c39"
+    },
+    {
+      "id": "notifications-state-conflict-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_conflict_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "d4a7547d3f23e9476f942ce2d3c9d0f47a22f450612b9ae80b2cc2d740efe9d6"
+    },
+    {
+      "id": "notifications-state-dark-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_dark_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "8eff73c15f4f2addff06926dcc5be52b155c192543b4e8edba2be14254250ff7"
+    },
+    {
+      "id": "notifications-state-disabled-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_disabled_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "db18c7f4424c5090ff7b91fa9f6c0fbf5d7aabac700446b464a0629c6bb3eb33"
+    },
+    {
+      "id": "notifications-state-empty-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_empty_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "4624c7463e9bbcd73db439fd55af94ce7ae4802f3942df3fec47476aefbdc4bc"
+    },
+    {
+      "id": "notifications-state-error-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_error_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "899e73fb59d2ba12a3a66d30b631b6e62739af1429b1775ecf87a45afb17e4fd"
+    },
+    {
+      "id": "notifications-state-focused-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_focused_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "c302aec8ef4ef4353733373dc5ca63272dd6b20f797648b898a0a775e2b13ddb"
+    },
+    {
+      "id": "notifications-state-large-text-dark-320x720",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_large_text_dark_320x720.png",
+      "viewport": {
+        "width": 320,
+        "height": 720,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "51de2b3de13a2f31673d1d609403346a6fcf009006a8c9f29772a88bd0fae9ae"
+    },
+    {
+      "id": "notifications-state-light-light-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_light_light_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "light",
+      "data_source": "synthetic",
+      "sha256": "5fcaf396ff4779acb9d7580c8b881296836411adf6e745b2fad35c1648da7890"
+    },
+    {
+      "id": "notifications-state-loading-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_loading_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "4c2f8514f8916e3364adca2a2c2d4bd7ecefe13a4316923ee84ca72ae8566bf5"
+    },
+    {
+      "id": "notifications-state-offline-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_offline_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "258bc299dd669e50e1299bee79e7919e72bdb01368de3604db54e71ce259c6d7"
+    },
+    {
+      "id": "notifications-state-permission-denied-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_permission_denied_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "3f65250d5ffa504d7f2ce3f0d0e20fbb11141172628f68e2690aa3988f995147"
+    },
+    {
+      "id": "notifications-state-pressed-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_pressed_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "842f824ad88296b73f19b0c0d82a255cb94deb1ddab2d965f5596b6ec26c02d9"
+    },
+    {
+      "id": "notifications-state-reduced-motion-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_reduced_motion_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "8eff73c15f4f2addff06926dcc5be52b155c192543b4e8edba2be14254250ff7"
+    },
+    {
+      "id": "notifications-state-security-timeout-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_security_timeout_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "8cce722dbaba64faeac46f6147f9dfc1600904be0572366fb804d0690644b46e"
+    },
+    {
+      "id": "notifications-state-selected-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_selected_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "bb48796c1411ebc5f7188bd111dbcaf38b38d0885f48f7d89c4c52155aef3b5e"
+    },
+    {
+      "id": "notifications-state-syncing-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/notifications_state_syncing_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "9639370ed9804389b82f809d9860fa81f4b503ee948b8478e9f7c0449e3c8ebb"
+    },
+    {
+      "id": "privacy-state-conflict-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_conflict_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "607f0a47bfe50e59ab22f953bab234724bf88189229d9c12af500ca9d91efd43"
+    },
+    {
+      "id": "privacy-state-dark-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_dark_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "b4853088fb6137f0a9784f699ea660594e95ab10dd07938db56eb05d8e176ed5"
+    },
+    {
+      "id": "privacy-state-disabled-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_disabled_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "8ec66dacb7f689e3149efe9c4cbf3f6430cb1ec84540dc7bdff14ad11342fa3f"
+    },
+    {
+      "id": "privacy-state-empty-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_empty_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "d2f5592b98a8c7d58cc10ced9086d42ea1d97ef489ca0169cfcdb382634906c0"
+    },
+    {
+      "id": "privacy-state-error-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_error_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "2b289ebefa07c03523f6f8dfc5006217b34c53685fcb3ae94d0f1dbef3e70415"
+    },
+    {
+      "id": "privacy-state-focused-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_focused_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "2057fd4ceb7a7c299ef41fdbb015a9969d29623a3b4541919ebfd7885fada2d3"
+    },
+    {
+      "id": "privacy-state-large-text-dark-320x720",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_large_text_dark_320x720.png",
+      "viewport": {
+        "width": 320,
+        "height": 720,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "afa977fef770fcd0e12f1a3b4a1f599a49995937067b10846d77f2182b00e3ab"
+    },
+    {
+      "id": "privacy-state-light-light-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_light_light_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "light",
+      "data_source": "synthetic",
+      "sha256": "9dbebb40ffe0a44bab3cad5f12ea2c3f3cb94bd184cbeacc111748666f17356f"
+    },
+    {
+      "id": "privacy-state-loading-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_loading_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "7288447ea69e89e67069f12b52334e67b0cd7ff79a81043ada79929b3e5452fd"
+    },
+    {
+      "id": "privacy-state-offline-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_offline_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "237a8af069e19c0e3ec5509e6c85475659a74176ac2943a4a6db0054eabfdce2"
+    },
+    {
+      "id": "privacy-state-permission-denied-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_permission_denied_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "815b70c5b9b51955106c5a7442cf95a53d29534fbcf4c6f08733252933328286"
+    },
+    {
+      "id": "privacy-state-pressed-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_pressed_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "12ed47692534112466aaf103fe6a69876d8d0fbabc5da21ddf2b10701aea5fdf"
+    },
+    {
+      "id": "privacy-state-reduced-motion-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_reduced_motion_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "b4853088fb6137f0a9784f699ea660594e95ab10dd07938db56eb05d8e176ed5"
+    },
+    {
+      "id": "privacy-state-security-timeout-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_security_timeout_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "d30372329b36a8ef9550877d095b80c1087b799851f8b26443bf37c135b66720"
+    },
+    {
+      "id": "privacy-state-selected-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_selected_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "18badd411c28d44c72f390e86985d03d2d01091b00f67eed1850781682fc277e"
+    },
+    {
+      "id": "privacy-state-syncing-dark-390x844",
+      "path": "packages/features/feat_settings/test/goldens/privacy_state_syncing_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "9256e72110522d3553b3d76ead548098a7aceded083e86e6194ec5d5cd211d44"
     }
   ]
 }

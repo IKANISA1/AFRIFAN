@@ -392,7 +392,7 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.byType(AfriSkeletonList), findsOneWidget);
+    expect(find.text('Loading privacy settings'), findsOneWidget);
 
     pending.completeError(StateError('simulated privacy failure'));
     await tester.pumpAndSettle();
@@ -463,7 +463,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Saved privacy settings'), findsOneWidget);
-    expect(find.textContaining('Reconnect before saving'), findsOneWidget);
+    expect(
+      find.textContaining('Reconnect before changing or saving'),
+      findsOneWidget,
+    );
     final save = find.widgetWithText(AfriButton, 'Connection required');
     await tester.ensureVisible(save.first);
     expect(tester.widget<AfriButton>(save.first).enabled, isFalse);
@@ -473,7 +476,7 @@ void main() {
 
     expect(loads, 2);
     expect(find.text('Saved privacy settings'), findsNothing);
-    expect(find.text('Save privacy settings'), findsOneWidget);
+    expect(find.text('No changes to save'), findsOneWidget);
   });
 
   testWidgets(
@@ -501,10 +504,10 @@ void main() {
 
       expect(find.text('Saved notification settings'), findsOneWidget);
       expect(find.text('CONNECTION REQUIRED'), findsOneWidget);
-      final toggle = tester.widget<AfriOutlinedButton>(
-        find.widgetWithText(AfriOutlinedButton, 'CONNECTION REQUIRED'),
+      final toggle = tester.widget<AfriButton>(
+        find.widgetWithText(AfriButton, 'CONNECTION REQUIRED'),
       );
-      expect(toggle.onPressed, isNull);
+      expect(toggle.enabled, isFalse);
     },
   );
 }

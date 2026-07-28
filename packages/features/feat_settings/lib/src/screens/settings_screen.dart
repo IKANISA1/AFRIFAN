@@ -89,6 +89,7 @@ class SettingsScreen extends ConsumerWidget {
                 AfriButton(
                   key: const ValueKey<String>('settings-membership-action'),
                   label: 'Membership details',
+                  labelMaxLines: 2,
                   onTap: () => context.push('/membership'),
                   variant: AfriButtonVariant.primary,
                 ),
@@ -181,10 +182,7 @@ class SettingsScreen extends ConsumerWidget {
         title: 'Refreshing settings',
         subtitle: 'Current account and appearance settings stay available.',
         tone: AfriStateBannerTone.info,
-        trailing: SizedBox.square(
-          dimension: SizeTokens.iconMd,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
+        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
 
@@ -227,10 +225,7 @@ class SettingsScreen extends ConsumerWidget {
         title: 'Loading settings',
         subtitle: 'Checking support availability.',
         tone: AfriStateBannerTone.info,
-        trailing: SizedBox.square(
-          dimension: SizeTokens.iconMd,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
+        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
 
@@ -245,9 +240,7 @@ class SettingsScreen extends ConsumerWidget {
         key: ValueKey<String>('settings-state-permission-denied'),
         icon: AfriIcons.lock,
         title: 'Settings access limited',
-        subtitle:
-            'Support availability could not be verified. '
-            'Account and appearance settings remain available.',
+        subtitle: 'Support could not be verified. Other settings still work.',
         tone: AfriStateBannerTone.warning,
       ),
       SettingsRouteContentFailureKind.conflict => AfriStateBanner(
