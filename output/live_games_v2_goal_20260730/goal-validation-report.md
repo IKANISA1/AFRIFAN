@@ -49,7 +49,10 @@ implementation task complete. The operational goal begins at LG-000 and remains
 - The intermediate `feature/live-games-v2` branch was created from the
   observed baseline without changing the pre-existing dirty-state hash. The
   resulting clean commit `aab4999` was later fast-forwarded to `main` with no
-  divergence under the owner's main-only instruction.
+  divergence under the owner's main-only instruction. The control package was
+  committed as `fe9f184`, local and `origin/main` were verified equal, and the
+  redundant local and remote feature branches were deleted only after their
+  commit was proven reachable from main.
 - LG-000 and LG-001 are in progress.
 - The lifecycle, pairing, projection, Realtime, and service-level contracts for
   LG-103, LG-104, and LG-105 are implemented as a proposed machine-readable

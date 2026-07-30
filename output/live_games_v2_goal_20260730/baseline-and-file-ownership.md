@@ -86,11 +86,14 @@ clean
 conflict, or divergent history. All further implementation for this goal must
 remain directly on `main`.
 
+The controlled goal package was added in `fe9f184`, pushed to `origin/main`,
+and verified with identical local and remote commit IDs. The former
+`feature/live-games-v2` commit was proven reachable from `origin/main`; the
+redundant local and remote feature branches were then deleted.
+
 ## Remaining LG-000 closure work
 
 - Record file-level ownership for every overlapping Live Games source file.
-- Record remote-main confirmation and redundant-branch removal after the
-  controlled goal package is committed and pushed.
 
 Until original file-level ownership is reconciled, LG-000 remains
 `in_progress`. Protected or overlapping implementation also remains subject to
