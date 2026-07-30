@@ -76,9 +76,11 @@ implementation task complete. The operational goal begins at LG-000 and remains
   backend/client implementation, and external gates remain open. A clean
   controlled source candidate now exists on `main`; original file-level
   ownership attribution remains open.
-- The goal is `active_red`. At the latest time-scoped observation, local and
-  origin `main` both resolved to `f63dbdf`; the checkout had 92 dirty entries
-  with status hash
-  `6e857663dd6709975c9c152a03a0c10bc6abc97aafa9c3033cc2583ddca6923d`.
-  The current user-owned Fan Zone diff retains participant TV-code entry, so
-  LG-202 and G3 remain open.
+- The goal is `blocked_red_pending_owner_approval` after the same material
+  approval/ownership blocker persisted for three consecutive goal turns and
+  all useful safe non-protected work was exhausted. At the latest time-scoped
+  observation, local and origin `main` both resolved to `6d35576`; the checkout
+  had 129 tracked dirty entries with status hash
+  `0b5e49dad8a4c5b22c9aef634bdfb06537301b4543db416bdcb786f04f196bf1`.
+  DEC-01–06 and APR-01–05 remain pending. The current user-owned Fan Zone diff
+  retains participant TV-code entry, so LG-202 and G3 remain open.

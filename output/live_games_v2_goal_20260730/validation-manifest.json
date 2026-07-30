@@ -5,10 +5,10 @@
   "candidate": {
     "controlled": false,
     "branch": "main",
-    "head_commit": "f63dbdf9bddfc97a8bdad15d5149fb10f518e3b3",
-    "dirty_entries": 92,
-    "status_sha256": "6e857663dd6709975c9c152a03a0c10bc6abc97aafa9c3033cc2583ddca6923d",
-    "note": "Current main is dirty from concurrent user-owned work plus the isolated answer slice. Historical clean candidate aab4999 remains preserved; current exact-candidate gates cannot close."
+    "head_commit": "6d35576996307a51e8fe131f100a3b3bb253c7b2",
+    "dirty_entries": 129,
+    "status_sha256": "0b5e49dad8a4c5b22c9aef634bdfb06537301b4543db416bdcb786f04f196bf1",
+    "note": "Local and origin main match, but 129 concurrent user-owned tracked changes make the current checkout uncontrolled. Historical clean candidate aab4999 remains preserved; current exact-candidate gates cannot close."
   },
   "summary": {
     "total": 27,

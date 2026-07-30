@@ -2,7 +2,7 @@
 
 ## Current status
 
-**Active Red.** The main-only historical implementation candidate,
+**Blocked Red pending owner approval.** The main-only historical implementation candidate,
 proposed ADR, machine-readable lifecycle/projection/discovery contract, deterministic
 contract validator, code-free participant projection, synchronization, and
 discovery domain now exist. The current checkout is dirty with concurrent work,
@@ -45,11 +45,11 @@ It forwards answer submission only after eligible live entry.
 The exact local-source request is recorded in `approval-request.md`. APR-06
 through APR-09 are explicitly excluded from the current request.
 
-## Active blocker audit
+## Third consecutive blocker audit
 
-The previous blocked status has been superseded by the reactivated goal.
-Owner approval and dirty-file ownership remain unresolved, but meaningful
-isolated non-protected work resumed without inventing the pending decisions:
+Owner approval and dirty-file ownership remain unresolved for the third
+consecutive goal turn. Meaningful isolated non-protected work was completed
+without inventing the pending decisions:
 
 - the proposed ADR and validated machine-readable contract;
 - typed code-free participant projection and privacy validation;
@@ -64,6 +64,12 @@ isolated non-protected work resumed without inventing the pending decisions:
 Protected migrations/RLS/rules/localized messages and overlapping user-owned
 backend, mobile, TV, and admin files remain gated. The current Fan Zone diff
 still exposes participant TV-code entry and cannot count toward LG-202.
+
+No useful safe in-scope work now remains. Further implementation would require
+inventing unresolved product decisions, modifying protected files without
+approval, or overwriting concurrently edited user-owned surfaces. The goal is
+therefore blocked under its repeated-audit rule; this is not a completion or
+release-readiness claim.
 
 ## Immediate next action after approval
 

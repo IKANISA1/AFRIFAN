@@ -4,7 +4,7 @@
   "agent": "flutter",
   "task": "AFRICLUB Live Games V2 full implementation",
   "goal": "Fully implement, test, validate, evidence, and release-harden the complete AFRICLUB Live Games V2 plan across Supabase, participant mobile, owner and organizer mobile, native TV, admin, AI moderation, security, accessibility, performance, devices, and controlled rollout.",
-  "goal_status": "active_red",
+  "goal_status": "blocked_red_pending_owner_approval",
   "scope": {
     "governed_tasks": 27,
     "verified_complete": 0,
@@ -50,16 +50,28 @@
     "main_only_policy": true
   },
   "current_worktree": {
-    "observed_at": "2026-07-30T11:29:00+02:00",
+    "observed_at": "2026-07-30T10:57:14+02:00",
     "branch": "main",
-    "head_commit": "f63dbdf9bddfc97a8bdad15d5149fb10f518e3b3",
-    "origin_main_commit": "f63dbdf9bddfc97a8bdad15d5149fb10f518e3b3",
-    "tracked_dirty_entries": 90,
-    "untracked_entries": 2,
-    "total_dirty_entries": 92,
-    "full_status_sha256": "6e857663dd6709975c9c152a03a0c10bc6abc97aafa9c3033cc2583ddca6923d",
+    "head_commit": "6d35576996307a51e8fe131f100a3b3bb253c7b2",
+    "origin_main_commit": "6d35576996307a51e8fe131f100a3b3bb253c7b2",
+    "tracked_dirty_entries": 129,
+    "untracked_entries": 0,
+    "total_dirty_entries": 129,
+    "full_status_sha256": "0b5e49dad8a4c5b22c9aef634bdfb06537301b4543db416bdcb786f04f196bf1",
     "controlled": false,
-    "note": "The historical clean candidate remains reachable, but the current checkout contains concurrent user-owned changes plus two isolated Codex-owned Live Games V2 answer files. No concurrent file was reset, overwritten, or staged."
+    "note": "Local and origin main match. The current checkout contains 129 concurrent user-owned tracked changes; all Codex-owned Live Games V2 controller tranches are committed. No concurrent file was reset, overwritten, or staged."
+  },
+  "blocker_audit": {
+    "status": "blocked",
+    "consecutive_goal_turns": 3,
+    "observed_at": "2026-07-30T10:57:14+02:00",
+    "conditions": [
+      "DEC-01 through DEC-06 remain pending owner approval",
+      "APR-01 through APR-05 remain unapproved",
+      "overlapping Fan Zone and shared localization files remain user-owned and dirty",
+      "participant production UI still exposes Enter TV code and /fanzone/game"
+    ],
+    "safe_work_exhausted": "The proposed contract, participant models, discovery, reconciliation, synchronization, answer submission, unified Riverpod runtime, and code-free entry coordinator are implemented with 77 passing focused tests. Remaining work crosses protected schema, RLS, rules, localization, or overlapping backend/mobile/TV/admin surfaces."
   },
   "authorities": {
     "design": "/Volumes/PRO-G40/AFRICLUB/DESIGN.md",

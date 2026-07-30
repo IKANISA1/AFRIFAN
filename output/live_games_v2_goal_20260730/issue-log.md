@@ -2,7 +2,7 @@
 
 | ID | Issue | Severity | Evidence | Recommendation | Owner | Status | Escalation required |
 |---|---|---|---|---|---|---|---|
-| ISS-001 | Historical source ownership remains unresolved and the current main checkout has 92 dirty entries, including overlapping mobile work | Critical | E-005, E-007, E-015 | Complete LG-000 before overlapping source edits; checkpoint and assign file ownership without reset | Repository owner | mitigated_in_progress | Yes |
+| ISS-001 | Historical source ownership remains unresolved and the current main checkout has 129 tracked dirty entries, including overlapping mobile/localization work | Critical | E-005, E-007, E-015, E-020 | Complete LG-000 before overlapping source edits; checkpoint and assign file ownership without reset | Repository owner | blocked_pending_owner | Yes |
 | ISS-002 | Migrations and RLS required by the plan are protected | Critical | `RULES.md`, APR-01/APR-02 | Record explicit approval before implementation or execution | Repository owner/security owner | open | Yes |
 | ISS-003 | Existing rules prohibit venue/admin operations in supporter mobile | Critical | `RULES.md` quick reference | Approve a narrow owner/organizer role amendment under APR-03 | Product/repository owner | open | Yes |
 | ISS-004 | Clean iOS build is blocked by Firebase iOS 15 requirements versus target iOS 13 | High | E-002 | Reconcile all iOS deployment targets and prove clean build under LG-604 | Mobile/release owner | open | Yes if protected config changes are needed |
