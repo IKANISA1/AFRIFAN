@@ -10,13 +10,16 @@ so exact-candidate gates remain open.
 
 LG-000, LG-001, LG-103, LG-104, LG-105, LG-200, LG-201, and LG-202 are in
 progress; 19 tasks remain unverified and all 13 quality gates remain open.
-The isolated participant tranche has 67 passing tests and clean focused
+The isolated participant tranche has 77 passing tests and clean focused
 analysis. It now includes an answer-submission boundary with expected versions,
 stable idempotency, duplicate coalescing, timeout uncertainty, sanitized
 failures, authoritative response reconciliation, and a unified Riverpod
 runtime for automatic invalidation follow, offline retention, reconnect,
 permission revocation, and timeout recovery. It does not close production
-gateway, UI, device, or backend gates.
+gateway, UI, device, or backend gates. A code-free entry controller now waits
+for authoritative discovery, admits only feed-eligible session identities,
+supports invitation/deep-link sources, and rejects alias mismatch.
+It forwards answer submission only after eligible live entry.
 
 ## Decisions required
 
@@ -55,7 +58,8 @@ isolated non-protected work resumed without inventing the pending decisions:
 - code-free eligible-session discovery and session-identity recovery;
 - expected-version and idempotent participant answer submission;
 - unified Riverpod participant synchronization and mutation orchestration;
-- 67 focused tests, clean focused analysis, and reconciled goal evidence.
+- code-free discovery-to-runtime entry with deep-link race protection;
+- 77 focused tests, clean focused analysis, and reconciled goal evidence.
 
 Protected migrations/RLS/rules/localized messages and overlapping user-owned
 backend, mobile, TV, and admin files remain gated. The current Fan Zone diff

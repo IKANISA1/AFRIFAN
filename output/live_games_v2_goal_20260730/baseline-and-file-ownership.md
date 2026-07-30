@@ -44,6 +44,7 @@ Files newly created for this execution are Codex-owned:
 - `packages/features/feat_gamification/lib/src/controllers/live_game_v2_discovery_controller.dart`
 - `packages/features/feat_gamification/lib/src/controllers/live_game_v2_answer_controller.dart`
 - `packages/features/feat_gamification/lib/src/controllers/live_game_v2_participant_controller.dart`
+- `packages/features/feat_gamification/lib/src/controllers/live_game_v2_entry_controller.dart`
 - `packages/features/feat_gamification/test/live_game_v2_models_test.dart`
 - `packages/features/feat_gamification/test/live_game_v2_discovery_models_test.dart`
 - `packages/features/feat_gamification/test/live_game_v2_reconciler_test.dart`
@@ -51,6 +52,7 @@ Files newly created for this execution are Codex-owned:
 - `packages/features/feat_gamification/test/live_game_v2_discovery_controller_test.dart`
 - `packages/features/feat_gamification/test/live_game_v2_answer_controller_test.dart`
 - `packages/features/feat_gamification/test/live_game_v2_participant_controller_test.dart`
+- `packages/features/feat_gamification/test/live_game_v2_entry_controller_test.dart`
 
 No pre-existing mobile, native-TV, admin, web-TV, migration, RLS, localization,
 theme, CI, authentication, or release file is in the first change set.

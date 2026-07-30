@@ -82,7 +82,7 @@ class ParticipantDiscoveryController {
 
   Future<void> start() {
     _ensureActive();
-    if (_started) return Future<void>.value();
+    if (_started) return _refreshInFlight ?? Future<void>.value();
     _started = true;
     return refresh();
   }

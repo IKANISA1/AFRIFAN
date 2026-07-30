@@ -338,7 +338,7 @@
         "200 percent text",
         "safe-area evidence"
       ],
-      "next_action": "After APR-05 and ownership reconciliation, wire the verified code-free discovery controller into Fan Zone routes and localized UI; then prove navigation, 200 percent text, compact/tablet, safe-area, reduced-motion, and legacy-route cutover states."
+      "next_action": "After APR-05 and ownership reconciliation, wire the verified code-free discovery-to-runtime entry controller into Fan Zone routes and localized UI; then prove navigation, authenticated deep links, 200 percent text, compact/tablet, safe-area, reduced-motion, and legacy-route cutover states."
     },
     {
       "id": "LG-300",

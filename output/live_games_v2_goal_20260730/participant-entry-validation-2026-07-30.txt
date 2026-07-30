@@ -1,0 +1,43 @@
+AFRICLUB Live Games V2 code-free participant entry validation
+Date: 2026-07-30
+Workspace: /Volumes/PRO-G40/AFRICLUB
+Branch: main
+Implementation base: 91505e5794018dc4cab6bd459bc5269168db128f
+
+Focused entry test command:
+flutter test test/live_game_v2_entry_controller_test.dart
+
+Observed result:
+10 tests passed; 0 failed.
+
+Combined participant V2 command:
+flutter test test/live_game_v2_entry_controller_test.dart test/live_game_v2_participant_controller_test.dart test/live_game_v2_answer_controller_test.dart test/live_game_v2_models_test.dart test/live_game_v2_reconciler_test.dart test/live_game_v2_synchronizer_test.dart test/live_game_v2_discovery_models_test.dart test/live_game_v2_discovery_controller_test.dart
+
+Observed combined result:
+77 tests passed; 0 failed.
+
+Focused analysis command:
+flutter analyze lib/src/controllers/live_game_v2_discovery_controller.dart lib/src/controllers/live_game_v2_entry_controller.dart test/live_game_v2_discovery_controller_test.dart test/live_game_v2_entry_controller_test.dart --fatal-infos
+
+Observed result:
+No issues found.
+
+Entry behavior demonstrated:
+- discovery loads without creating or accepting a participant code;
+- only an eligible session identity from the authoritative feed creates a
+  runtime;
+- answer submission is forwarded only after eligible live entry;
+- unknown or code-like identities fail without runtime creation;
+- scheduled games remain scheduled and do not start a live runtime;
+- invitation and deep-link sources work only when present in the eligible feed;
+- deep-link opening waits for an auto-started discovery fetch;
+- discovery/runtime governed aliases must match;
+- switching sessions disposes the old runtime;
+- offline/reconnect propagates while retaining discovery;
+- disposal closes discovery and the active runtime.
+
+Limitations:
+The discovery gateway and runtime factory are injected test doubles. This does
+not prove production Supabase RPC/RLS, authenticated deep-link routing,
+Fan Zone UI/localization, adaptive/accessibility behavior, staging,
+physical-device behavior, signing, deployment, or release.
