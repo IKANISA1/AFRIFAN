@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "goal_id": "africlub_live_games_v2_full_implementation_20260730",
+  "agent": "flutter",
+  "task": "AFRICLUB Live Games V2 full implementation",
+  "goal": "Fully implement, test, validate, evidence, and release-harden the complete AFRICLUB Live Games V2 plan across Supabase, participant mobile, owner and organizer mobile, native TV, admin, AI moderation, security, accessibility, performance, devices, and controlled rollout.",
+  "goal_status": "blocked_red_pending_owner_approval",
+  "scope": {
+    "governed_tasks": 27,
+    "verified_complete": 0,
+    "verified_incomplete": 0,
+    "in_progress": 8,
+    "unverified": 19,
+    "blocked": 0,
+    "quality_gates": 13,
+    "quality_gates_closed": 0
+  },
+  "client_or_entity": "AFRICLUB / Rayon Sports / Gikundiro",
+  "matter_or_period": "Live Games V2 unified mobile, native TV, admin, and backend implementation",
+  "jurisdiction": "Rwanda; Apple, Google, web, Supabase, privacy, and platform requirements where applicable",
+  "deadline": "not provided",
+  "authority_status": "Local goal creation and planning authorized. Protected source changes, staging or production mutation, signing, deployment, and external release require recorded approval.",
+  "stakeholders": [
+    "repository and product owner",
+    "mobile engineering owner",
+    "native TV owner",
+    "admin and operator owner",
+    "backend and security owner",
+    "AI content and moderation owner",
+    "privacy and legal owner",
+    "QA and release owner"
+  ],
+  "created_at": "2026-07-30T07:14:16+02:00",
+  "workspace": "/Volumes/PRO-G40/AFRICLUB",
+  "baseline": {
+    "branch": "main",
+    "head_commit": "aab4999dcc57c6707ecbcf7f036a80d2ef953f87",
+    "tracked_dirty_entries": 0,
+    "untracked_entries": 0,
+    "total_dirty_entries": 0,
+    "initial_tracked_dirty_entries": 313,
+    "initial_untracked_entries": 557,
+    "initial_total_dirty_entries": 870,
+    "dirty_state_policy": "Preserve original ownership attribution for all files that were dirty before consolidation; commit authorship does not transfer source authorship.",
+    "full_status_sha256": "d6b30997b4c16e393f843f165b715693a6a8dccf7de96a2f95d76bcf3017d322",
+    "live_games_scope_status_sha256": "48206b324bb34be41962c6b2e856855e3eba6a2ef7bb9eee1a3d718255f7a974",
+    "controlled_candidate_established": true,
+    "controlled_candidate_commit": "aab4999dcc57c6707ecbcf7f036a80d2ef953f87",
+    "implementation_branch_established": true,
+    "main_only_policy": true
+  },
+  "authorities": {
+    "design": "/Volumes/PRO-G40/AFRICLUB/DESIGN.md",
+    "design_sha256": "d5347c722734fe1e844e08fc63e411a0e42b38af91baefad9c2d90659408e321",
+    "repository_rules": "/Volumes/PRO-G40/AFRICLUB/RULES.md",
+    "implementation_plan": "/Users/jeanbosco/Documents/Codex/2026-05-15/Codex Professional Agents/desktop-output/flutter/africlub_game_architecture_review_20260730/AFRICLUB_LIVE_GAMES_IMPLEMENTATION_PLAN_2026-07-30.md",
+    "implementation_plan_sha256": "2094653cdc3968aee7f350eadb7d0dec8435abc2e96299bbfb5eb6818ce510d5",
+    "architecture_review": "/Users/jeanbosco/Documents/Codex/2026-05-15/Codex Professional Agents/desktop-output/flutter/africlub_game_architecture_review_20260730/AFRICLUB_GAME_ARCHITECTURE_AND_UX_REVIEW_2026-07-30.md",
+    "architecture_review_sha256": "50d1d936bdb652b40e6bde2e475bb85fe0d50fbc4f8b4583e301dba7ef2f8d3a",
+    "wider_goal": "/Volumes/PRO-G40/AFRICLUB/output/design_audit_20260723/AFRICLUB_FULL_IMPLEMENTATION_GOAL_2026-07-24.md",
+    "relationship_to_wider_goal": "scoped sub-goal; does not replace or reduce the wider 87-task goal"
+  },
+  "toolchain_observed": {
+    "flutter": "3.44.4 stable",
+    "dart": "3.12.2",
+    "node": "24.18.0",
+    "npm": "11.16.0"
+  },
+  "human_review_required": true,
+  "external_mutation_authorized": false,
+  "production_mutation_authorized": false,
+  "release_authorized": false
+}

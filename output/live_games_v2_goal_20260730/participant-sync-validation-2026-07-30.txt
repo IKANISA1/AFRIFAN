@@ -1,0 +1,47 @@
+AFRICLUB Live Games V2 participant synchronization validation
+Date: 2026-07-30
+Workspace: /Volumes/PRO-G40/AFRICLUB
+Branch: main (candidate later consolidated as aab4999)
+Candidate scope:
+  packages/features/feat_gamification/lib/src/models/live_game_v2_models.dart
+  packages/features/feat_gamification/lib/src/controllers/live_game_v2_reconciler.dart
+  packages/features/feat_gamification/lib/src/controllers/live_game_v2_synchronizer.dart
+  packages/features/feat_gamification/test/live_game_v2_models_test.dart
+  packages/features/feat_gamification/test/live_game_v2_reconciler_test.dart
+  packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart
+
+Formatting command:
+  dart format <six candidate files>
+Observed result:
+  Pass; no remaining formatting changes.
+
+Focused test command:
+  flutter test test/live_game_v2_models_test.dart test/live_game_v2_reconciler_test.dart test/live_game_v2_synchronizer_test.dart
+Observed result:
+  Pass; 28 tests passed.
+
+Focused analysis command:
+  flutter analyze <six candidate files> --fatal-infos
+Observed result:
+  Pass; no issues found.
+
+Covered behavior:
+  - code-free, scope-bound participant projections
+  - pre-reveal answer protection and privacy-field rejection
+  - monotonic session-version and event-sequence reconciliation
+  - newer, duplicate, stale, and wrong-scope invalidation handling
+  - overlapping-refresh coalescing
+  - offline retained state and reconnect refresh
+  - timeout and sanitized failure mapping
+  - wrong-scope snapshot rejection
+  - subscription disposal and reuse prevention
+
+Known non-blocking environment warning:
+  core_theme declares uses-material-design true while the primary pubspec
+  declares false. This warning pre-existed this candidate and was not changed.
+
+Limitations:
+  This proves isolated Dart contract and synchronization behavior only. It does
+  not prove the production Supabase gateway, RLS, Realtime delivery, Riverpod
+  lifecycle, UI behavior, cross-client propagation latency, physical devices,
+  staging, signing, deployment, or release.

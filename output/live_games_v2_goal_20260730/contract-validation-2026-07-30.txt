@@ -1,0 +1,15 @@
+Command:
+node tools/scripts/validate_live_games_v2_contract.mjs
+
+Result:
+Live Games V2 contract validation passed: 10 states, 12 transitions, 7 roles,
+3 discovery sources.
+
+Additional checks:
+- JSON parsing passed for the architecture contract and three control manifests.
+- git diff --check passed for the new architecture and validator files.
+
+Evidence boundary:
+This proves internal consistency of the proposed architecture contract. It does
+not prove owner approval, migration/RLS implementation, client implementation,
+staging correctness, or release readiness.

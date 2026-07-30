@@ -1,0 +1,214 @@
+{
+  "schema_version": "1.0",
+  "goal_id": "africlub_live_games_v2_full_implementation_20260730",
+  "generated_at": "2026-07-30T07:14:16+02:00",
+  "candidate": {
+    "controlled": true,
+    "branch": "main",
+    "head_commit": "aab4999dcc57c6707ecbcf7f036a80d2ef953f87",
+    "dirty_entries": 0,
+    "note": "The formerly dirty worktree was consolidated into this commit and fast-forwarded to main. Original file ownership attribution is preserved."
+  },
+  "summary": {
+    "total": 27,
+    "verified_complete": 0,
+    "verified_incomplete": 0,
+    "in_progress": 8,
+    "blocked": 0,
+    "unverified": 19,
+    "required_quality_gates": 13,
+    "quality_gates_closed": 0,
+    "completion_proven": false
+  },
+  "quality_gates": [
+    {
+      "id": "G0",
+      "name": "Authority and baseline",
+      "status": "open",
+      "required_evidence": [
+        "controlled candidate",
+        "file ownership",
+        "decisions",
+        "protected approvals"
+      ]
+    },
+    {
+      "id": "G1",
+      "name": "Architecture and scope",
+      "status": "open",
+      "required_evidence": [
+        "approved ADR",
+        "lifecycle",
+        "role model",
+        "pairing direction",
+        "sunset plan"
+      ]
+    },
+    {
+      "id": "G2",
+      "name": "Backend and RLS",
+      "status": "open",
+      "required_evidence": [
+        "additive schema",
+        "RLS isolation",
+        "credentials",
+        "audit",
+        "idempotency",
+        "projections"
+      ]
+    },
+    {
+      "id": "G3",
+      "name": "Participant mobile",
+      "status": "open",
+      "required_evidence": [
+        "code-free discovery",
+        "synchronized play",
+        "governed alias",
+        "route-state evidence"
+      ]
+    },
+    {
+      "id": "G4",
+      "name": "Owner and organizer mobile",
+      "status": "open",
+      "required_evidence": [
+        "role isolation",
+        "My TVs",
+        "Games I Manage",
+        "audit trail"
+      ]
+    },
+    {
+      "id": "G5",
+      "name": "Native TV",
+      "status": "open",
+      "required_evidence": [
+        "native package",
+        "full projection",
+        "owner-claim pairing",
+        "D-pad",
+        "720p/1080p",
+        "privacy"
+      ]
+    },
+    {
+      "id": "G6",
+      "name": "Admin and AI",
+      "status": "open",
+      "required_evidence": [
+        "human review",
+        "Content Studio",
+        "Session Planner",
+        "Live Control",
+        "authenticated accessibility"
+      ]
+    },
+    {
+      "id": "G7",
+      "name": "Cross-client correctness",
+      "status": "open",
+      "required_evidence": [
+        "version/sequence consistency",
+        "reconnect",
+        "stale handling",
+        "duplicate handling"
+      ]
+    },
+    {
+      "id": "G8",
+      "name": "Security and privacy",
+      "status": "open",
+      "required_evidence": [
+        "cross-club isolation",
+        "role isolation",
+        "no answer leak",
+        "sanitized TV and evidence payloads"
+      ]
+    },
+    {
+      "id": "G9",
+      "name": "Accessibility and performance",
+      "status": "open",
+      "required_evidence": [
+        "mobile/admin/TV accessibility",
+        "2 second propagation p95",
+        "5 second reconnect",
+        "soak/performance"
+      ]
+    },
+    {
+      "id": "G10",
+      "name": "Platform and build",
+      "status": "open",
+      "required_evidence": [
+        "clean iOS",
+        "clean Android",
+        "clean Android TV",
+        "clean web/admin"
+      ]
+    },
+    {
+      "id": "G11",
+      "name": "Staging, device, and release",
+      "status": "open",
+      "required_evidence": [
+        "authenticated staging",
+        "physical devices",
+        "signing",
+        "deployment/store",
+        "rollback"
+      ]
+    },
+    {
+      "id": "G12",
+      "name": "Closeout",
+      "status": "open",
+      "required_evidence": [
+        "27 of 27 verified complete",
+        "register reconciliation",
+        "wider AFRICLUB goal reconciliation",
+        "final handoff"
+      ]
+    }
+  ],
+  "tasks": [
+    {"id":"LG-000","evidence_result":"in_progress","evidence":["baseline-and-file-ownership.md","main at aab4999dcc57c6707ecbcf7f036a80d2ef953f87","initial dirty-state hashes","clean fast-forward evidence"],"acceptance_criteria_satisfied":false},
+    {"id":"LG-001","evidence_result":"in_progress","evidence":["/Volumes/PRO-G40/AFRICLUB/docs/architecture/live-games-v2.md","E-008"],"acceptance_criteria_satisfied":false},
+    {"id":"LG-002","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-100","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-101","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-102","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-103","evidence_result":"in_progress","evidence":["docs/architecture/live-games-v2-contract.json","contract-validation-2026-07-30.txt"],"acceptance_criteria_satisfied":false},
+    {"id":"LG-104","evidence_result":"in_progress","evidence":["docs/architecture/live-games-v2-contract.json","contract-validation-2026-07-30.txt"],"acceptance_criteria_satisfied":false},
+    {"id":"LG-105","evidence_result":"in_progress","evidence":["docs/architecture/live-games-v2-contract.json","contract-validation-2026-07-30.txt"],"acceptance_criteria_satisfied":false},
+    {"id":"LG-200","evidence_result":"in_progress","evidence":["packages/features/feat_gamification/lib/src/models/live_game_v2_models.dart","packages/features/feat_gamification/test/live_game_v2_models_test.dart","participant-contract-validation-2026-07-30.txt"],"acceptance_criteria_satisfied":false},
+    {"id":"LG-201","evidence_result":"in_progress","evidence":["packages/features/feat_gamification/lib/src/controllers/live_game_v2_reconciler.dart","packages/features/feat_gamification/lib/src/controllers/live_game_v2_synchronizer.dart","packages/features/feat_gamification/test/live_game_v2_reconciler_test.dart","packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart","participant-contract-validation-2026-07-30.txt","participant-sync-validation-2026-07-30.txt"],"acceptance_criteria_satisfied":false},
+    {"id":"LG-202","evidence_result":"in_progress","evidence":["packages/features/feat_gamification/lib/src/models/live_game_v2_discovery_models.dart","packages/features/feat_gamification/lib/src/controllers/live_game_v2_discovery_controller.dart","packages/features/feat_gamification/test/live_game_v2_discovery_models_test.dart","packages/features/feat_gamification/test/live_game_v2_discovery_controller_test.dart","participant-discovery-validation-2026-07-30.txt"],"acceptance_criteria_satisfied":false},
+    {"id":"LG-300","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-301","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-302","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-400","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-401","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-402","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-500","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-501","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-502","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-503","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-600","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-601","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-602","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-603","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false},
+    {"id":"LG-604","evidence_result":"unverified","evidence":[],"acceptance_criteria_satisfied":false}
+  ],
+  "completion_invariants": {
+    "total_tasks": 27,
+    "required_verified_complete": 27,
+    "required_verified_incomplete": 0,
+    "required_unverified": 0,
+    "required_blocked": 0,
+    "required_open_approvals": 0,
+    "required_open_decisions": 0,
+    "required_open_quality_gates": 0
+  }
+}

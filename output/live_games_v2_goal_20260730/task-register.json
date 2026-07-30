@@ -1,0 +1,774 @@
+{
+  "schema_version": "1.0",
+  "goal_id": "africlub_live_games_v2_full_implementation_20260730",
+  "generated_at": "2026-07-30T07:14:16+02:00",
+  "status_vocabulary": [
+    "unverified",
+    "verified_incomplete",
+    "in_progress",
+    "blocked",
+    "verified_complete"
+  ],
+  "summary": {
+    "total": 27,
+    "verified_complete": 0,
+    "verified_incomplete": 0,
+    "in_progress": 8,
+    "blocked": 0,
+    "unverified": 19
+  },
+  "tasks": [
+    {
+      "id": "LG-000",
+      "tranche": 0,
+      "title": "Establish controlled baseline and file ownership",
+      "priority": "P0",
+      "status": "in_progress",
+      "dependencies": [],
+      "approvals": [],
+      "implementation_targets": [
+        "git/worktree control",
+        "engagement-manifest.json",
+        "task and evidence registers"
+      ],
+      "acceptance": "Exact branch, commit, dirty inventory, toolchain, file ownership, approved implementation branch, and preserved user changes are evidenced.",
+      "evidence_required": [
+        "current git inventory",
+        "baseline command log",
+        "file ownership manifest",
+        "controlled candidate commit"
+      ],
+      "next_action": "Preserve the main-only policy, finish file-level ownership attribution for overlapping Live Games files, and keep commit authorship distinct from original source ownership."
+    },
+    {
+      "id": "LG-001",
+      "tranche": 0,
+      "title": "Approve and record the Live Games V2 architecture decision",
+      "priority": "P0",
+      "status": "in_progress",
+      "dependencies": [
+        "LG-000"
+      ],
+      "approvals": [
+        "DEC-01",
+        "DEC-02",
+        "DEC-03",
+        "DEC-04",
+        "DEC-05",
+        "DEC-06"
+      ],
+      "implementation_targets": [
+        "docs/blueprint.md",
+        "docs/venue_app_architecture.md",
+        "docs/tv_fleet_release_and_operations_runbook.md",
+        "docs/architecture/live-games-v2.md"
+      ],
+      "acceptance": "Architecture, lifecycle, roles, pairing direction, channel naming, native-TV authority, compatibility window, and exclusions are internally consistent and approved.",
+      "evidence_required": [
+        "approved ADR",
+        "documentation consistency search",
+        "decision log"
+      ],
+      "next_action": "Obtain decisions DEC-01 through DEC-06 and promote the proposed ADR to accepted."
+    },
+    {
+      "id": "LG-002",
+      "tranche": 0,
+      "title": "Align repository role-boundary rules",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-001"
+      ],
+      "approvals": [
+        "APR-03"
+      ],
+      "implementation_targets": [
+        "RULES.md"
+      ],
+      "acceptance": "Rules permit only owner-scoped TV management and assigned-organizer game operations in mobile while generic admin and venue operations remain excluded.",
+      "evidence_required": [
+        "owner approval",
+        "RULES.md diff",
+        "quick-reference and changelog consistency"
+      ],
+      "next_action": "Prepare the minimal rule amendment after APR-03."
+    },
+    {
+      "id": "LG-100",
+      "tranche": 1,
+      "title": "Implement TV ownership and venue or home scope",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-000",
+        "LG-001",
+        "LG-002"
+      ],
+      "approvals": [
+        "APR-01",
+        "APR-02"
+      ],
+      "implementation_targets": [
+        "new Supabase migration",
+        "supabase/tests/game_runtime_contract.sql",
+        "new RLS contract tests"
+      ],
+      "acceptance": "Owner, home/venue scope, display identity, health fields, and least-privilege RLS are additive and cross-club/owner/venue isolation is proven.",
+      "evidence_required": [
+        "migration review",
+        "SQL/RLS tests",
+        "staging-ready rollback notes"
+      ],
+      "next_action": "Design additive schema and policy matrix after APR-01 and APR-02."
+    },
+    {
+      "id": "LG-101",
+      "tranche": 1,
+      "title": "Implement owner-claim TV pairing challenge",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-100"
+      ],
+      "approvals": [
+        "APR-01",
+        "APR-02"
+      ],
+      "implementation_targets": [
+        "new Supabase migration or RPCs",
+        "TV credential functions",
+        "pairing security tests"
+      ],
+      "acceptance": "TV creates a short-lived single-use challenge; authorized owner claims it; replay, expiry, wrong role, wrong club, and revocation fail safely.",
+      "evidence_required": [
+        "RPC tests",
+        "challenge hashing proof",
+        "credential rotation/revocation tests",
+        "audit-event evidence"
+      ],
+      "next_action": "Specify challenge state machine and threat cases."
+    },
+    {
+      "id": "LG-102",
+      "tranche": 1,
+      "title": "Implement multi-display game assignments",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-100"
+      ],
+      "approvals": [
+        "APR-01",
+        "APR-02",
+        "DEC-01"
+      ],
+      "implementation_targets": [
+        "new game_display_assignments migration",
+        "assignment RPCs",
+        "assignment RLS tests"
+      ],
+      "acceptance": "Authorized organizers can assign one session to permitted displays without conflicting active-session assignment, and every change is audited.",
+      "evidence_required": [
+        "SQL tests",
+        "conflict tests",
+        "audit evidence",
+        "cross-scope denial tests"
+      ],
+      "next_action": "Define cardinality, conflict, and removal rules."
+    },
+    {
+      "id": "LG-103",
+      "tranche": 1,
+      "title": "Implement server-authoritative lifecycle and idempotency",
+      "priority": "P0",
+      "status": "in_progress",
+      "dependencies": [
+        "LG-100",
+        "LG-001"
+      ],
+      "approvals": [
+        "APR-01",
+        "APR-02"
+      ],
+      "implementation_targets": [
+        "new lifecycle migration/RPCs",
+        "supabase/functions/game-session-action/index.ts",
+        "SQL and Deno tests"
+      ],
+      "acceptance": "Only valid role-scoped transitions succeed; expected-version and idempotency checks prevent stale or duplicate advancement; all actions are audited.",
+      "evidence_required": [
+        "transition matrix tests",
+        "duplicate request tests",
+        "stale version tests",
+        "role denial tests",
+        "audit evidence"
+      ],
+      "next_action": "Promote the validated transition contract into approved server functions after APR-01 and APR-02."
+    },
+    {
+      "id": "LG-104",
+      "tranche": 1,
+      "title": "Implement discovery and versioned role projections",
+      "priority": "P0",
+      "status": "in_progress",
+      "dependencies": [
+        "LG-102",
+        "LG-103"
+      ],
+      "approvals": [
+        "APR-01",
+        "APR-02"
+      ],
+      "implementation_targets": [
+        "participant discovery RPC",
+        "participant projection RPC",
+        "organizer projection RPC",
+        "TV credential projection RPC",
+        "admin projection RPC"
+      ],
+      "acceptance": "Code-free discovery and sanitized participant, organizer, TV, and admin snapshots include version, sequence, and server time without pre-reveal answer or personal-data leakage.",
+      "evidence_required": [
+        "projection contract tests",
+        "forbidden-field tests",
+        "answer-leakage tests",
+        "eligibility tests"
+      ],
+      "next_action": "Promote the validated projection contract into approved RPCs after APR-01 and APR-02."
+    },
+    {
+      "id": "LG-105",
+      "tranche": 1,
+      "title": "Implement club-scoped Realtime invalidation contract",
+      "priority": "P0",
+      "status": "in_progress",
+      "dependencies": [
+        "LG-104"
+      ],
+      "approvals": [
+        "APR-01",
+        "APR-02"
+      ],
+      "implementation_targets": [
+        "Realtime publication/policies if required",
+        "mobile, TV, and web channel contracts"
+      ],
+      "acceptance": "Clients use {club_id}:game_session:{session_id}, treat events as invalidation hints, reconcile snapshots, and recover from duplicate, missing, and out-of-order events.",
+      "evidence_required": [
+        "channel naming tests",
+        "cross-club denial",
+        "reconnect tests",
+        "event-order tests"
+      ],
+      "next_action": "Implement the validated channel and reconciliation contract after APR-01 and APR-02."
+    },
+    {
+      "id": "LG-200",
+      "tranche": 2,
+      "title": "Implement shared versioned Flutter game contracts",
+      "priority": "P0",
+      "status": "in_progress",
+      "dependencies": [
+        "LG-104"
+      ],
+      "approvals": [],
+      "implementation_targets": [
+        "packages/features/feat_gamification/lib/src/models/game_session_models.dart",
+        "packages/features/feat_gamification/lib/src/repositories/game_session_repository.dart",
+        "packages/features/feat_gamification/lib/src/game_session_providers.dart"
+      ],
+      "acceptance": "Typed projections cover lobby through completion, fail closed on malformed/privacy-unsafe payloads, and no longer require participant joinCode.",
+      "evidence_required": [
+        "model/repository tests",
+        "privacy payload tests",
+        "static analysis"
+      ],
+      "next_action": "Integrate the verified V2 models into the user-owned repository/provider surfaces after ownership reconciliation."
+    },
+    {
+      "id": "LG-201",
+      "tranche": 2,
+      "title": "Implement participant live synchronization controller",
+      "priority": "P0",
+      "status": "in_progress",
+      "dependencies": [
+        "LG-105",
+        "LG-200"
+      ],
+      "approvals": [],
+      "implementation_targets": [
+        "game session Riverpod controllers",
+        "game session providers",
+        "controller and repository tests"
+      ],
+      "acceptance": "Participant state updates automatically, never rolls backward, and recovers after offline, resume, timeout, stale event, conflict, or permission revocation.",
+      "evidence_required": [
+        "Riverpod tests",
+        "resume/reconnect tests",
+        "stale/duplicate event tests",
+        "latency evidence"
+      ],
+      "next_action": "Wire the verified synchronizer to the production snapshot and invalidation gateway plus Riverpod lifecycle after backend approval and ownership reconciliation; then capture cross-client latency and device evidence."
+    },
+    {
+      "id": "LG-202",
+      "tranche": 2,
+      "title": "Implement code-free participant discovery and join UX",
+      "priority": "P0",
+      "status": "in_progress",
+      "dependencies": [
+        "LG-200",
+        "LG-201"
+      ],
+      "approvals": [
+        "APR-05"
+      ],
+      "implementation_targets": [
+        "fanzone_module.dart",
+        "Fan Zone hub",
+        "game session routes/screens",
+        "localization ARB files",
+        "route and golden tests"
+      ],
+      "acceptance": "Eligible games appear as Live now or scheduled; joining uses account eligibility and governed alias; V2 has no participant TV-code or free-text display-name input.",
+      "evidence_required": [
+        "route/navigation tests",
+        "copy search",
+        "widget and golden states",
+        "200 percent text",
+        "safe-area evidence"
+      ],
+      "next_action": "After APR-05 and ownership reconciliation, wire the verified code-free discovery controller into Fan Zone routes and localized UI; then prove navigation, 200 percent text, compact/tablet, safe-area, reduced-motion, and legacy-route cutover states."
+    },
+    {
+      "id": "LG-300",
+      "tranche": 3,
+      "title": "Create role-gated game operations Flutter module",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-002",
+        "LG-100",
+        "LG-103",
+        "LG-200"
+      ],
+      "approvals": [
+        "APR-04",
+        "APR-05"
+      ],
+      "implementation_targets": [
+        "packages/features/feat_game_operations",
+        "core_router guarded routes",
+        "role provider/tests"
+      ],
+      "acceptance": "Owners and assigned organizers receive only their scoped routes; participants never see operations; no generic admin route enters the consumer tree.",
+      "evidence_required": [
+        "route guard tests",
+        "role matrix tests",
+        "package validation",
+        "dependency approval"
+      ],
+      "next_action": "Approve package boundary and role matrix."
+    },
+    {
+      "id": "LG-301",
+      "tranche": 3,
+      "title": "Implement My TVs mobile experience",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-101",
+        "LG-300"
+      ],
+      "approvals": [
+        "APR-05"
+      ],
+      "implementation_targets": [
+        "feat_game_operations TV inventory/add/detail routes",
+        "pairing and TV repository/controllers",
+        "widget/golden tests"
+      ],
+      "acceptance": "Owner can pair, list, rename, inspect, and revoke only owned TVs; pairing challenge/QR exists only in owner workflow; all required recovery states pass.",
+      "evidence_required": [
+        "repository/controller tests",
+        "role denial tests",
+        "mobile route evidence",
+        "accessibility evidence",
+        "revocation audit evidence"
+      ],
+      "next_action": "Implement after backend pairing and role module are verified."
+    },
+    {
+      "id": "LG-302",
+      "tranche": 3,
+      "title": "Implement Games I Manage mobile experience",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-102",
+        "LG-103",
+        "LG-104",
+        "LG-201",
+        "LG-300"
+      ],
+      "approvals": [
+        "APR-05"
+      ],
+      "implementation_targets": [
+        "feat_game_operations session list/planner/live routes",
+        "organizer repository/controllers",
+        "widget/golden/integration tests"
+      ],
+      "acceptance": "Assigned organizer can schedule, assign, activate, start, pause, reveal, advance, complete, and handle exceptions with one valid next action and idempotent controls.",
+      "evidence_required": [
+        "transition UI tests",
+        "role/scope tests",
+        "duplicate tap tests",
+        "responsive/accessibility evidence",
+        "audit evidence"
+      ],
+      "next_action": "Implement after lifecycle and display assignment are verified."
+    },
+    {
+      "id": "LG-400",
+      "tranche": 4,
+      "title": "Modularize the native Flutter TV runtime",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-000",
+        "LG-200"
+      ],
+      "approvals": [],
+      "implementation_targets": [
+        "apps/rayon_sports_tv/lib/main.dart",
+        "apps/rayon_sports_tv/lib/src/models",
+        "apps/rayon_sports_tv/lib/src/repositories",
+        "apps/rayon_sports_tv/lib/src/controllers",
+        "apps/rayon_sports_tv/lib/src/screens"
+      ],
+      "acceptance": "Bootstrap, pairing, credential, projection, synchronization, and UI concerns are separated without new unapproved dependencies or regression of focus behavior.",
+      "evidence_required": [
+        "unit/widget tests",
+        "static analysis",
+        "existing TV regression",
+        "file ownership reconciliation"
+      ],
+      "next_action": "Reconcile the modified main.dart before extracting modules."
+    },
+    {
+      "id": "LG-401",
+      "tranche": 4,
+      "title": "Implement owner-claim pairing on native TV",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-101",
+        "LG-400"
+      ],
+      "approvals": [
+        "APR-05"
+      ],
+      "implementation_targets": [
+        "native TV pairing controller and screen",
+        "credential storage",
+        "TV state/golden tests"
+      ],
+      "acceptance": "Unpaired TV displays short-lived challenge/QR, requires no admin code entry on TV, handles expiry/offline/claim/revocation safely, and stores a revocable credential.",
+      "evidence_required": [
+        "720p/1080p golden evidence",
+        "D-pad tests",
+        "pairing integration test",
+        "credential revocation test"
+      ],
+      "next_action": "Implement after backend challenge contract is fixed."
+    },
+    {
+      "id": "LG-402",
+      "tranche": 4,
+      "title": "Implement full synchronized native-TV projection",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-104",
+        "LG-105",
+        "LG-400"
+      ],
+      "approvals": [
+        "APR-05"
+      ],
+      "implementation_targets": [
+        "native TV projection repository/controller",
+        "lobby/question/reveal/standings/completion screens",
+        "TV route-state and integration tests"
+      ],
+      "acceptance": "Native TV renders complete privacy-safe live trivia, synchronizes within target latency, shows answer only at reveal, and recovers through Realtime reconciliation plus polling fallback.",
+      "evidence_required": [
+        "projection and privacy tests",
+        "720p/1080p route evidence",
+        "D-pad/focus tests",
+        "latency/reconnect evidence",
+        "native package proof"
+      ],
+      "next_action": "Implement after projection and Realtime contracts are stable."
+    },
+    {
+      "id": "LG-500",
+      "tranche": 5,
+      "title": "Implement admin Content Studio",
+      "priority": "P1",
+      "status": "unverified",
+      "dependencies": [
+        "LG-001",
+        "LG-103"
+      ],
+      "approvals": [],
+      "implementation_targets": [
+        "apps/rayon_sports/web/src/app/admin/games content routes/components",
+        "AI draft function/contracts",
+        "Vitest and browser tests"
+      ],
+      "acceptance": "Evidence-backed drafts remain pending until human approval; review, QA indicators, preview, ordered pack building, role states, accessibility, and auditability are verified without raw-ID operation.",
+      "evidence_required": [
+        "AI safety tests",
+        "component/route tests",
+        "authenticated browser evidence",
+        "keyboard/accessibility evidence",
+        "audit record"
+      ],
+      "next_action": "Reconcile existing modified admin games files before route split."
+    },
+    {
+      "id": "LG-501",
+      "tranche": 5,
+      "title": "Implement admin Session Planner",
+      "priority": "P1",
+      "status": "unverified",
+      "dependencies": [
+        "LG-102",
+        "LG-103",
+        "LG-104"
+      ],
+      "approvals": [],
+      "implementation_targets": [
+        "admin games planner routes/components",
+        "planner API route tests",
+        "authenticated browser tests"
+      ],
+      "acceptance": "Operator chooses pack, schedule, eligibility, organizer, and authorized displays through human-readable selectors with conflict/readiness review and audit trail.",
+      "evidence_required": [
+        "API tests",
+        "component/route tests",
+        "conflict tests",
+        "authenticated responsive evidence",
+        "audit evidence"
+      ],
+      "next_action": "Implement after backend assignments and lifecycle are stable."
+    },
+    {
+      "id": "LG-502",
+      "tranche": 5,
+      "title": "Implement admin Live Control",
+      "priority": "P1",
+      "status": "unverified",
+      "dependencies": [
+        "LG-103",
+        "LG-104",
+        "LG-105"
+      ],
+      "approvals": [],
+      "implementation_targets": [
+        "admin live control route/components",
+        "live control API tests",
+        "authenticated browser tests"
+      ],
+      "acceptance": "Admin sees authoritative state, display/mobile projections, health, freshness, one valid next transition, guarded exceptions, stale protection, and accessible audit detail.",
+      "evidence_required": [
+        "stale/conflict tests",
+        "component/route tests",
+        "authenticated browser evidence",
+        "keyboard/screen-reader evidence",
+        "audit evidence"
+      ],
+      "next_action": "Implement after lifecycle and projections are stable."
+    },
+    {
+      "id": "LG-503",
+      "tranche": 5,
+      "title": "Correct and sunset web TV compatibility",
+      "priority": "P2",
+      "status": "unverified",
+      "dependencies": [
+        "LG-402",
+        "LG-603",
+        "LG-604"
+      ],
+      "approvals": [
+        "DEC-06",
+        "APR-08"
+      ],
+      "implementation_targets": [
+        "apps/rayon_sports/web/src/app/tv-display",
+        "TV operations documentation",
+        "deprecation telemetry"
+      ],
+      "acceptance": "Web TV is corrected while active, no longer represented as product of record, and removed or disabled only after native adoption, rollback window, and owner approval.",
+      "evidence_required": [
+        "channel naming tests",
+        "usage/adoption evidence",
+        "approved sunset decision",
+        "rollback proof"
+      ],
+      "next_action": "Prepare compatibility corrections; defer destructive sunset until rollout evidence exists."
+    },
+    {
+      "id": "LG-600",
+      "tranche": 6,
+      "title": "Complete backend contract and security test matrix",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-105"
+      ],
+      "approvals": [],
+      "implementation_targets": [
+        "Supabase SQL tests",
+        "Edge Function Deno tests",
+        "security evidence pack"
+      ],
+      "acceptance": "RLS roles/scopes, pairing abuse, assignments, idempotency, stale transitions, answer leakage, forbidden TV payloads, channel naming, and audit completeness all pass.",
+      "evidence_required": [
+        "complete SQL test output",
+        "complete Deno test output",
+        "security coverage map",
+        "reviewed threat cases"
+      ],
+      "next_action": "Build the requirement-to-test matrix before calling the backend complete."
+    },
+    {
+      "id": "LG-601",
+      "tranche": 6,
+      "title": "Complete Flutter mobile and native-TV test matrix",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-202",
+        "LG-302",
+        "LG-402"
+      ],
+      "approvals": [],
+      "implementation_targets": [
+        "Flutter unit/widget/golden/integration tests",
+        "route-state evidence",
+        "native TV test suites"
+      ],
+      "acceptance": "All required states, breakpoints, roles, routes, accessibility, D-pad, focus, reconnect, privacy, and sanitized visual evidence pass from the exact candidate.",
+      "evidence_required": [
+        "analysis output",
+        "test output",
+        "golden contract",
+        "route evidence",
+        "accessibility evidence"
+      ],
+      "next_action": "Expand tests alongside each implementation task and run full affected suites."
+    },
+    {
+      "id": "LG-602",
+      "tranche": 6,
+      "title": "Complete admin authenticated test matrix",
+      "priority": "P1",
+      "status": "unverified",
+      "dependencies": [
+        "LG-500",
+        "LG-501",
+        "LG-502"
+      ],
+      "approvals": [],
+      "implementation_targets": [
+        "Vitest suites",
+        "authenticated browser/Playwright evidence",
+        "admin accessibility/performance evidence"
+      ],
+      "acceptance": "Content Studio, Planner, and Live Control pass desktop/tablet/compact, role, stale, partial-failure, high-volume, keyboard, screen-reader, and audit tests.",
+      "evidence_required": [
+        "Vitest output",
+        "authenticated route captures",
+        "accessibility output",
+        "performance trace",
+        "permission-state evidence"
+      ],
+      "next_action": "Prepare the authenticated evidence matrix and authorized environment."
+    },
+    {
+      "id": "LG-603",
+      "tranche": 6,
+      "title": "Prove multi-client end-to-end correctness",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-202",
+        "LG-302",
+        "LG-402",
+        "LG-502",
+        "LG-600",
+        "LG-601",
+        "LG-602"
+      ],
+      "approvals": [
+        "APR-07"
+      ],
+      "implementation_targets": [
+        "authorized staging environment",
+        "organizer mobile",
+        "two participant phones",
+        "two native TVs",
+        "admin live control"
+      ],
+      "acceptance": "The full session survives activation, late join, duplicate actions, background/resume, disconnect, out-of-order events, revocation, reassignment, pause/resume, completion, and final standings within service levels.",
+      "evidence_required": [
+        "staging run identifier",
+        "multi-client logs",
+        "latency measurements",
+        "sanitized screenshots/recordings",
+        "failure/recovery evidence"
+      ],
+      "next_action": "Run only after staging authorization and all component matrices pass."
+    },
+    {
+      "id": "LG-604",
+      "tranche": 6,
+      "title": "Complete platform, physical-device, release, and rollout gates",
+      "priority": "P0",
+      "status": "unverified",
+      "dependencies": [
+        "LG-600",
+        "LG-601",
+        "LG-602",
+        "LG-603"
+      ],
+      "approvals": [
+        "APR-06",
+        "APR-07",
+        "APR-08",
+        "APR-09"
+      ],
+      "implementation_targets": [
+        "iOS/Android/Android TV/web builds",
+        "physical UAT",
+        "staging and production migration process",
+        "signing/store/deployment",
+        "rollback and release documentation"
+      ],
+      "acceptance": "Exact candidates build cleanly, pass authorized staging and physical-device UAT, have approved migration/rollback, and complete required signing, deployment, store, privacy, security, operations, and release approvals.",
+      "evidence_required": [
+        "clean build logs",
+        "physical-device evidence",
+        "staging migration evidence",
+        "release approvals",
+        "signing/store/deployment status",
+        "rollback rehearsal"
+      ],
+      "next_action": "Keep each external gate open until independently evidenced."
+    }
+  ]
+}

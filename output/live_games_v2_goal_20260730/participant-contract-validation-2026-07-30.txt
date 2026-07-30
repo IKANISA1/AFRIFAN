@@ -1,0 +1,46 @@
+Commands:
+dart format \
+  lib/src/models/live_game_v2_models.dart \
+  lib/src/controllers/live_game_v2_reconciler.dart \
+  test/live_game_v2_models_test.dart \
+  test/live_game_v2_reconciler_test.dart
+
+flutter test \
+  test/live_game_v2_models_test.dart \
+  test/live_game_v2_reconciler_test.dart
+
+flutter analyze \
+  lib/src/models/live_game_v2_models.dart \
+  lib/src/controllers/live_game_v2_reconciler.dart \
+  test/live_game_v2_models_test.dart \
+  test/live_game_v2_reconciler_test.dart \
+  --fatal-infos
+
+Results:
+- 19 focused tests passed.
+- Focused analysis passed with no issues.
+- Formatting completed.
+- git diff --check passed.
+
+Covered:
+- code-free participant projection parsing;
+- expected-club and expected-session scope;
+- governed public alias without free-text display identity;
+- participant TV/join-code field rejection;
+- pre-reveal answer-leak rejection;
+- reveal-phase correct answer validation;
+- option integrity;
+- version and event-sequence ordering;
+- duplicate, stale, and wrong-scope invalidation handling;
+- deterministic snapshot replacement and clear-on-scope-change behavior.
+
+Evidence boundary:
+The typed projection and pure reconciliation contracts are implemented and
+locally verified. Repository/network/Realtime wiring, Riverpod route state,
+backend RPCs, UI, staging, multi-client, device, and release evidence remain
+open.
+
+Observed non-blocking warning:
+The workspace reports that core_theme uses Material icons while the primary
+pubspec declares uses-material-design false. This pre-existing warning is not
+caused by the new files and remains outside the focused contract result.
