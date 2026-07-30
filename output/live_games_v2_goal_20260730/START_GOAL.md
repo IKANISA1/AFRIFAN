@@ -1,5 +1,9 @@
 # Start AFRICLUB Live Games V2
 
+For the complete copy-paste command capped at 4,000 characters, use
+`GOAL_4000_CHARACTERS.txt` (validated at 3,983 characters including its final
+newline).
+
 Use this short durable goal. The long methodology and acceptance criteria remain
 in the controlled goal package and implementation plan.
 

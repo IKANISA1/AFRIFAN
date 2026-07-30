@@ -3,6 +3,7 @@
 | Deliverable | Version | Owner | Reviewer | Due date | Status | Final file path |
 |---|---|---|---|---|---|---|
 | Controlled full implementation goal | 1.0 | Flutter implementation lead | Product owner | not provided | complete for goal creation | `AFRICLUB_LIVE_GAMES_V2_FULL_IMPLEMENTATION_GOAL.md` |
+| Reusable 4,000-character goal command | 1.0 | Flutter implementation lead | Product owner | not provided | complete; validated at 3,983 characters | `GOAL_4000_CHARACTERS.txt` |
 | Engagement manifest | 1.0 | Flutter implementation lead | Repository owner | not provided | initialized | `engagement-manifest.json` |
 | Task register | 1.0 | Flutter implementation lead | Engineering/product owners | not provided | initialized, 27 unverified | `task-register.json` |
 | Validation manifest | 1.0 | QA/evidence owner | Product/release owners | not provided | initialized, fail-closed | `validation-manifest.json` |
