@@ -195,6 +195,24 @@ class ParticipantAnswerSubmissionController {
     return true;
   }
 
+  bool resetFromAuthoritativeProjection(ParticipantGameProjection projection) {
+    _ensureActive();
+    _assertScope(projection);
+    if (_submissionInFlight != null) return false;
+    final current = _state.projection;
+    final isSameRevision =
+        projection.version.sessionVersion == current.version.sessionVersion &&
+        projection.version.eventSequence == current.version.eventSequence;
+    if (!projection.shouldReplace(current) && !isSameRevision) return false;
+    _emit(
+      ParticipantAnswerSubmissionState(
+        status: ParticipantAnswerSubmissionStatus.idle,
+        projection: projection,
+      ),
+    );
+    return true;
+  }
+
   Future<void> dispose() async {
     if (_disposed) return;
     _disposed = true;

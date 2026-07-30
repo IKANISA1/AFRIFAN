@@ -308,7 +308,7 @@
         "stale/duplicate event tests",
         "latency evidence"
       ],
-      "next_action": "Wire the verified synchronizer and answer-submission controller to the production snapshot, mutation, and invalidation gateways plus Riverpod lifecycle after backend approval and ownership reconciliation; then capture cross-client latency and device evidence."
+      "next_action": "Wire the verified unified Riverpod participant runtime to the production snapshot, mutation, and invalidation gateways after backend approval and route ownership reconciliation; then capture cross-client latency and device evidence."
     },
     {
       "id": "LG-202",

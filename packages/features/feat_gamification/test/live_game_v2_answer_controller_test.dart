@@ -151,6 +151,27 @@ void main() {
     );
 
     test(
+      'same-revision authoritative refresh safely clears uncertainty',
+      () async {
+        final gateway = _Gateway()
+          ..pendingResponse = Completer<ParticipantGameProjection>();
+        final controller = _controller(
+          gateway,
+          submissionTimeout: const Duration(milliseconds: 1),
+        );
+        addTearDown(controller.dispose);
+        await controller.submit('a');
+
+        expect(
+          controller.resetFromAuthoritativeProjection(_projection()),
+          isTrue,
+        );
+        expect(controller.state.status, ParticipantAnswerSubmissionStatus.idle);
+        expect(controller.state.requiresAuthoritativeRefresh, isFalse);
+      },
+    );
+
+    test(
       'keeps a newer Realtime answer confirmation over a stale response',
       () async {
         final pending = Completer<ParticipantGameProjection>();

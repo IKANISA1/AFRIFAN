@@ -1,0 +1,38 @@
+AFRICLUB Live Games V2 unified participant runtime validation
+Date: 2026-07-30
+Workspace: /Volumes/PRO-G40/AFRICLUB
+Branch: main
+Implementation base: 6f1fd9921e3b57933bf74a0553c69c4129d9de87
+
+Focused runtime test command:
+flutter test test/live_game_v2_participant_controller_test.dart test/live_game_v2_answer_controller_test.dart
+
+Observed result:
+18 tests passed; 0 failed (8 unified runtime plus 10 answer-submission tests).
+
+Combined participant V2 command:
+flutter test test/live_game_v2_participant_controller_test.dart test/live_game_v2_answer_controller_test.dart test/live_game_v2_models_test.dart test/live_game_v2_reconciler_test.dart test/live_game_v2_synchronizer_test.dart test/live_game_v2_discovery_models_test.dart test/live_game_v2_discovery_controller_test.dart
+
+Observed combined result:
+67 tests passed; 0 failed.
+
+Focused analysis command:
+flutter analyze lib/src/controllers/live_game_v2_answer_controller.dart lib/src/controllers/live_game_v2_participant_controller.dart lib/src/controllers/live_game_v2_synchronizer.dart lib/src/models/live_game_v2_models.dart test/live_game_v2_answer_controller_test.dart test/live_game_v2_participant_controller_test.dart --fatal-infos
+
+Observed result:
+No issues found.
+
+Runtime behavior demonstrated:
+- initial authoritative projection enables only projection-allowed answers;
+- newer Realtime hints trigger automatic authoritative snapshot retrieval;
+- answer mutation adopts the authoritative response projection;
+- offline state retains content and blocks mutation;
+- timeout uncertainty clears only after authoritative refresh;
+- permission revocation retains content but blocks further actions;
+- reconnect retrieves a newer projection;
+- disposal closes subscriptions and prevents controller reuse.
+
+Limitations:
+The gateways are injected test doubles. This does not prove production
+Supabase RPC/RLS, authenticated Realtime, route/UI integration, propagation
+latency, staging, physical-device behavior, signing, deployment, or release.

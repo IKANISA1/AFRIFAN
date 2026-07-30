@@ -60,14 +60,16 @@ implementation task complete. The operational goal begins at LG-000 and remains
 - Eight tasks are in progress, 19 remain unverified, and no task is yet
   `verified_complete`. The typed participant projection and pure snapshot
   reconciler, participant synchronizer, code-free discovery domain, and
-  participant answer-submission boundary have 58
+  participant answer-submission boundary, and unified Riverpod participant
+  runtime have 67
   passing focused tests and clean focused analysis. Coverage includes initial
   loading, version monotonicity, newer/stale/wrong-scope invalidation,
   overlapping-refresh coalescing, eligible live/scheduled discovery,
   session-identity/deep-link recovery, governed alias use, offline retention,
   reconnect, timeout, sanitized failure handling, privacy/scope rejection, and
   disposal, expected session/question versions, stable idempotency, duplicate
-  answer coalescing, timeout uncertainty, and authoritative mutation responses.
+  answer coalescing, timeout uncertainty, authoritative mutation responses,
+  permission-revocation blocking, and offline/reconnect orchestration.
 - The goal remains Red because owner decisions, protected approvals,
   backend/client implementation, and external gates remain open. A clean
   controlled source candidate now exists on `main`; original file-level

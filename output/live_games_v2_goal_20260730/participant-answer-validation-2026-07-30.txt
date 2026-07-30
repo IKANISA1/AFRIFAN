@@ -8,7 +8,7 @@ Focused combined test command:
 flutter test test/live_game_v2_answer_controller_test.dart test/live_game_v2_models_test.dart test/live_game_v2_reconciler_test.dart test/live_game_v2_synchronizer_test.dart test/live_game_v2_discovery_models_test.dart test/live_game_v2_discovery_controller_test.dart
 
 Observed result:
-58 tests passed; 0 failed.
+59 foundational participant V2 tests passed; 0 failed.
 
 Focused analysis command:
 flutter analyze lib/src/controllers/live_game_v2_answer_controller.dart lib/src/models/live_game_v2_models.dart test/live_game_v2_answer_controller_test.dart --fatal-infos
@@ -27,6 +27,7 @@ Coverage demonstrated by the new answer-controller tests:
   allowed-action flag is present;
 - a newer Realtime answer confirmation wins over a slower stale mutation
   response;
+- a same-revision authoritative refresh clears mutation uncertainty safely;
 - stale mutation responses fail closed as contract violations;
 - permission errors are reduced to a sanitized failure kind;
 - wrong-club and wrong-session projections fail closed.
