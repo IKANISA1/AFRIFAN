@@ -59,18 +59,22 @@ implementation task complete. The operational goal begins at LG-000 and remains
   contract and pass their deterministic local validator.
 - Eight tasks are in progress, 19 remain unverified, and no task is yet
   `verified_complete`. The typed participant projection and pure snapshot
-  reconciler, participant synchronizer, and code-free discovery domain have 49
+  reconciler, participant synchronizer, code-free discovery domain, and
+  participant answer-submission boundary have 58
   passing focused tests and clean focused analysis. Coverage includes initial
   loading, version monotonicity, newer/stale/wrong-scope invalidation,
   overlapping-refresh coalescing, eligible live/scheduled discovery,
   session-identity/deep-link recovery, governed alias use, offline retention,
   reconnect, timeout, sanitized failure handling, privacy/scope rejection, and
-  disposal.
+  disposal, expected session/question versions, stable idempotency, duplicate
+  answer coalescing, timeout uncertainty, and authoritative mutation responses.
 - The goal remains Red because owner decisions, protected approvals,
   backend/client implementation, and external gates remain open. A clean
   controlled source candidate now exists on `main`; original file-level
   ownership attribution remains open.
-- After three consecutive goal turns without the required owner response, the
-  goal is `blocked_red_pending_owner_approval`. All meaningful isolated
-  non-protected participant work has been completed; remaining implementation
-  would touch protected or pre-existing user-owned surfaces.
+- The goal is `active_red`. At the latest time-scoped observation, local and
+  origin `main` both resolved to `f63dbdf`; the checkout had 92 dirty entries
+  with status hash
+  `6e857663dd6709975c9c152a03a0c10bc6abc97aafa9c3033cc2583ddca6923d`.
+  The current user-owned Fan Zone diff retains participant TV-code entry, so
+  LG-202 and G3 remain open.

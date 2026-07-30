@@ -4,7 +4,7 @@
   "agent": "flutter",
   "task": "AFRICLUB Live Games V2 full implementation",
   "goal": "Fully implement, test, validate, evidence, and release-harden the complete AFRICLUB Live Games V2 plan across Supabase, participant mobile, owner and organizer mobile, native TV, admin, AI moderation, security, accessibility, performance, devices, and controlled rollout.",
-  "goal_status": "blocked_red_pending_owner_approval",
+  "goal_status": "active_red",
   "scope": {
     "governed_tasks": 27,
     "verified_complete": 0,
@@ -19,7 +19,7 @@
   "matter_or_period": "Live Games V2 unified mobile, native TV, admin, and backend implementation",
   "jurisdiction": "Rwanda; Apple, Google, web, Supabase, privacy, and platform requirements where applicable",
   "deadline": "not provided",
-  "authority_status": "Local goal creation and planning authorized. Protected source changes, staging or production mutation, signing, deployment, and external release require recorded approval.",
+  "authority_status": "Local non-protected implementation is authorized by the active goal. Protected source changes, staging or production mutation, signing, deployment, and external release require recorded approval.",
   "stakeholders": [
     "repository and product owner",
     "mobile engineering owner",
@@ -48,6 +48,18 @@
     "controlled_candidate_commit": "aab4999dcc57c6707ecbcf7f036a80d2ef953f87",
     "implementation_branch_established": true,
     "main_only_policy": true
+  },
+  "current_worktree": {
+    "observed_at": "2026-07-30T11:29:00+02:00",
+    "branch": "main",
+    "head_commit": "f63dbdf9bddfc97a8bdad15d5149fb10f518e3b3",
+    "origin_main_commit": "f63dbdf9bddfc97a8bdad15d5149fb10f518e3b3",
+    "tracked_dirty_entries": 90,
+    "untracked_entries": 2,
+    "total_dirty_entries": 92,
+    "full_status_sha256": "6e857663dd6709975c9c152a03a0c10bc6abc97aafa9c3033cc2583ddca6923d",
+    "controlled": false,
+    "note": "The historical clean candidate remains reachable, but the current checkout contains concurrent user-owned changes plus two isolated Codex-owned Live Games V2 answer files. No concurrent file was reset, overwritten, or staged."
   },
   "authorities": {
     "design": "/Volumes/PRO-G40/AFRICLUB/DESIGN.md",

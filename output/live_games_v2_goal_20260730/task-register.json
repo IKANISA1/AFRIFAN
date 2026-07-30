@@ -283,7 +283,7 @@
         "privacy payload tests",
         "static analysis"
       ],
-      "next_action": "Integrate the verified V2 models into the user-owned repository/provider surfaces after ownership reconciliation."
+      "next_action": "Integrate the verified V2 models and answer-submission boundary into the user-owned repository/provider surfaces after ownership reconciliation and protected backend approval."
     },
     {
       "id": "LG-201",
@@ -308,7 +308,7 @@
         "stale/duplicate event tests",
         "latency evidence"
       ],
-      "next_action": "Wire the verified synchronizer to the production snapshot and invalidation gateway plus Riverpod lifecycle after backend approval and ownership reconciliation; then capture cross-client latency and device evidence."
+      "next_action": "Wire the verified synchronizer and answer-submission controller to the production snapshot, mutation, and invalidation gateways plus Riverpod lifecycle after backend approval and ownership reconciliation; then capture cross-client latency and device evidence."
     },
     {
       "id": "LG-202",

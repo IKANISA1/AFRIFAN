@@ -296,6 +296,7 @@ class ParticipantGameProjection {
   bool get canSubmitAnswer =>
       eligible &&
       version.phase == LiveGamePhase.questionOpen &&
+      answerState == ParticipantAnswerState.notAnswered &&
       allowedActions.contains(ParticipantGameAction.submitAnswer) &&
       question != null;
 

@@ -2,15 +2,19 @@
 
 ## Current status
 
-**Blocked Red pending owner approval.** The main-only implementation candidate,
+**Active Red.** The main-only historical implementation candidate,
 proposed ADR, machine-readable lifecycle/projection/discovery contract, deterministic
 contract validator, code-free participant projection, synchronization, and
-discovery domain now exist.
+discovery domain now exist. The current checkout is dirty with concurrent work,
+so exact-candidate gates remain open.
 
 LG-000, LG-001, LG-103, LG-104, LG-105, LG-200, LG-201, and LG-202 are in
 progress; 19 tasks remain unverified and all 13 quality gates remain open.
-The isolated participant tranche has 49 passing tests and clean focused
-analysis. It does not close production gateway, UI, device, or backend gates.
+The isolated participant tranche has 58 passing tests and clean focused
+analysis. It now includes an answer-submission boundary with expected versions,
+stable idempotency, duplicate coalescing, timeout uncertainty, sanitized
+failures, and authoritative response reconciliation. It does not close
+production gateway, UI, device, or backend gates.
 
 ## Decisions required
 
@@ -36,24 +40,23 @@ analysis. It does not close production gateway, UI, device, or backend gates.
 The exact local-source request is recorded in `approval-request.md`. APR-06
 through APR-09 are explicitly excluded from the current request.
 
-## Blocker audit
+## Active blocker audit
 
-The same owner-approval and dirty-file-ownership condition has remained
-unresolved across three consecutive goal turns. During those turns, all
-meaningful non-protected work that could proceed without inventing the pending
-decisions was completed:
+The previous blocked status has been superseded by the reactivated goal.
+Owner approval and dirty-file ownership remain unresolved, but meaningful
+isolated non-protected work resumed without inventing the pending decisions:
 
 - the proposed ADR and validated machine-readable contract;
 - typed code-free participant projection and privacy validation;
 - monotonic Realtime invalidation reconciliation;
 - offline/reconnect-aware participant synchronization;
 - code-free eligible-session discovery and session-identity recovery;
-- 49 focused tests, clean focused analysis, and reconciled goal evidence.
+- expected-version and idempotent participant answer submission;
+- 58 focused tests, clean focused analysis, and reconciled goal evidence.
 
-Remaining source work touches protected migrations/RLS/rules/package/localized
-messages or overlaps pre-existing user-owned backend, mobile, TV, and admin
-files. Continuing without owner direction would breach repository authority or
-risk overwriting unowned changes.
+Protected migrations/RLS/rules/localized messages and overlapping user-owned
+backend, mobile, TV, and admin files remain gated. The current Fan Zone diff
+still exposes participant TV-code entry and cannot count toward LG-202.
 
 ## Immediate next action after approval
 
