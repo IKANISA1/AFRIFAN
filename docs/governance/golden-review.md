@@ -1877,3 +1877,37 @@ synthetic and stable.
   real-device sync audit reconciliation, physical assistive-technology/device
   execution, accountable design/privacy approval, pinned CI, signing, store
   processing, deployment, and release approval remain open.
+
+## 2026-07-30 Revolut-reference mobile hierarchy tranche 1
+
+- Scope: Home empty/degraded hero density, light-mode glass-shadow restraint,
+  Club primary-route title treatment, and Fan Zone football-first action
+  ordering. The frozen match-score hero, routes, providers, APIs, Supabase,
+  dependencies, and assets were not changed.
+- Golden evidence: ten Home and thirteen Fan Zone baselines changed across
+  compact, standard, large-phone, wide, foldable-half, tablet, high-contrast,
+  and affected route states. Codex inspected representative dark, light,
+  compact, and tablet test images at source resolution before regenerating
+  only `home_screen_states_test.dart` and `fanzone_hub_screen_test.dart`.
+- Runtime evidence: the current source built, installed, and launched on the
+  connected physical Pixel 4a. Home, Club, the Fan Zone first viewport, and
+  the scrolled TV-game actions were captured locally. This is Android device
+  evidence only and does not establish iPhone execution.
+- Result: Home exposes Matchday and all four shortcuts within the first
+  viewport when no fixture is published; Club uses the shared compact command
+  title without italic or forced uppercase treatment; Fan Zone leads with
+  Matchday rounds and places Supporters before TV-code and venue actions; the
+  floating bottom navigation remains clear of task content.
+- Regression: the complete Home and Fan Zone state files pass after the
+  controlled baseline update; Club, token, scaffold, and navigation widget
+  tests pass; all four affected packages analyze with zero issues; all 23
+  changed digests match `docs/governance/golden-baselines.json`; and the
+  automated evidence privacy scan passes.
+- Open boundaries: the repository-wide golden validator is blocked by a
+  pre-existing digest mismatch for
+  `packages/core/core_app/test/goldens/adaptive_shell_hinge_dark_850x900.png`.
+  The iOS Simulator build is blocked because Firebase Swift packages require
+  iOS 15 while the generated plugin target supports iOS 13. Accountable human
+  visual/privacy approval, physical iPhone and assistive-technology execution,
+  pinned CI, signing, store processing, deployment, and release approval
+  remain pending.

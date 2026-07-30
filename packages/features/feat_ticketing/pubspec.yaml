@@ -14,6 +14,8 @@ dependencies:
   # Core Platform
   core_auth:
     path: ../../core/core_auth
+  core_l10n:
+    path: ../../core/core_l10n
   core_theme:
     path: ../../core/core_theme
   core_network:

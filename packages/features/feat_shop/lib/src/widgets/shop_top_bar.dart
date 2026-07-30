@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +29,7 @@ class ShopTopBar extends StatelessWidget {
         children: [
           AfriIconButton(
             icon: AfriIcons.back,
-            tooltip: 'Back',
+            tooltip: context.afriL10n.shopBack,
             onTap: () {
               if (context.canPop()) {
                 context.pop();
@@ -39,11 +40,14 @@ class ShopTopBar extends StatelessWidget {
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
-            child: Text('Shop', style: TypographyTokens.headlineSmall()),
+            child: Text(
+              context.afriL10n.shopTitle,
+              style: TypographyTokens.headlineSmall(),
+            ),
           ),
           AfriIconButton(
             icon: AfriIcons.search,
-            tooltip: 'Search',
+            tooltip: context.afriL10n.shopSearch,
             onTap: onSearchPressed,
           ),
           const SizedBox(width: SpacingTokens.spacing2),
@@ -52,7 +56,7 @@ class ShopTopBar extends StatelessWidget {
             children: [
               AfriIconButton(
                 icon: AfriIcons.cart,
-                tooltip: 'Cart',
+                tooltip: context.afriL10n.shopCart,
                 onTap: () => context.push('/shop/cart'),
               ),
               if (cartItemCount > 0)

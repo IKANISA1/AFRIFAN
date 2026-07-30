@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -65,7 +66,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     if (!isOnline) {
       setState(() {
         _paymentRouteMessage =
-            'Connect to verify current ticket payment availability.';
+            context.afriL10n.ticketPaymentAvailabilityOffline;
       });
     } else if (restored) {
       unawaited(
@@ -101,7 +102,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!mounted || lookupKey != _paymentRouteLookupKey) return;
       setState(() {
         _paymentRouteMessage =
-            'Connect to verify current ticket payment availability.';
+            context.afriL10n.ticketPaymentAvailabilityOffline;
       });
       return;
     }
@@ -115,16 +116,15 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!mounted || lookupKey != _paymentRouteLookupKey) return;
       setState(() {
         _paymentRoute = route;
-        _paymentRouteMessage = route == null
-            ? 'Ticket payment setup is pending club activation.'
-            : null;
+        _paymentRouteMessage =
+            route == null ? context.afriL10n.ticketPaymentSetupPending : null;
       });
     } catch (_) {
       if (!mounted || lookupKey != _paymentRouteLookupKey) return;
       setState(() {
         _paymentRoute = null;
         _paymentRouteMessage =
-            'Payment route verification is unavailable. Try again.';
+            context.afriL10n.ticketPaymentVerificationUnavailable;
       });
     }
   }
@@ -134,14 +134,14 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     if (!ConnectivityService.isOnline) {
       AfriToast.error(
         context,
-        'Connect before purchasing. Your seat and quantity are still selected.',
+        context.afriL10n.ticketConnectBeforePurchase,
       );
       return;
     }
 
     final user = ref.read(currentUserProvider);
     if (user == null) {
-      AfriToast.info(context, 'Sign in first to buy tickets.');
+      AfriToast.info(context, context.afriL10n.ticketSignInBeforePurchase);
       context.go('/onboarding');
       return;
     }
@@ -161,12 +161,11 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (route == null) {
         if (!mounted) return;
         setState(() {
-          _paymentRouteMessage =
-              'Ticket payment setup is pending club activation.';
+          _paymentRouteMessage = context.afriL10n.ticketPaymentSetupPending;
         });
         AfriToast.error(
           context,
-          'MOMO ticketing setup is pending club activation.',
+          context.afriL10n.ticketMomoSetupPending,
         );
         return;
       }
@@ -190,7 +189,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (tickets.isEmpty) {
         AfriToast.error(
           context,
-          'Ticket reservation failed. Please try again from the match screen.',
+          context.afriL10n.ticketReservationFailed,
         );
         return;
       }
@@ -207,7 +206,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!launched) {
         AfriToast.error(
           context,
-          'Ticket request was saved, but the MOMO dialer could not open.',
+          context.afriL10n.ticketDialerOpenFailed,
         );
         context.go('/tickets?tab=mine');
         return;
@@ -215,9 +214,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
 
       AfriToast.success(
         context,
-        _quantity == 1
-            ? 'Ticket request submitted — pending payment verification.'
-            : '${tickets.length} ticket requests submitted — pending verification.',
+        context.afriL10n.ticketRequestsSubmitted(tickets.length),
       );
       unawaited(
         FirebaseAnalyticsService.logTicketCompletion(
@@ -237,14 +234,14 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!mounted) return;
       AfriToast.error(
         context,
-        'Ticket confirmation timed out. Check My Tickets before trying again.',
+        context.afriL10n.ticketConfirmationTimedOut,
       );
       context.go('/tickets?tab=mine');
     } catch (_) {
       if (!mounted) return;
       AfriToast.error(
         context,
-        'Ticket request failed. Your selection is still available.',
+        context.afriL10n.ticketRequestFailed,
       );
     } finally {
       if (mounted) {
@@ -255,6 +252,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final user = ref.watch(currentUserProvider);
     final accessEnabled = ref.watch(ticketDetailAccessEnabledProvider);
     if (accessEnabled) {
@@ -286,14 +284,15 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
             }
           },
         ),
-        title: Text('MATCH DAY', style: TypographyTokens.headlineLarge()),
+        title:
+            Text(l10n.ticketMatchDay, style: TypographyTokens.headlineLarge()),
       ),
       scrollable: false,
       child: !accessEnabled
           ? MatchDetailEmptyState(
-              title: 'Ticket sales unavailable',
-              body: 'Ticket selection is not enabled for this build or club.',
-              actionLabel: 'Back to Tickets',
+              title: l10n.ticketSalesUnavailableTitle,
+              body: l10n.ticketSalesUnavailableMessage,
+              actionLabel: l10n.ticketBackToTickets,
               onPressed: () => context.go('/tickets'),
             )
           : detailAsync.when(
@@ -306,9 +305,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
                 final match = detail.match;
                 if (match == null) {
                   return MatchDetailEmptyState(
-                    title: 'Fixture not found',
-                    body: 'This fixture is unavailable.',
-                    actionLabel: 'Back to Tickets',
+                    title: l10n.ticketFixtureNotFoundTitle,
+                    body: l10n.ticketFixtureNotFoundMessage,
+                    actionLabel: l10n.ticketBackToTickets,
                     onPressed: () => context.go('/tickets'),
                   );
                 }
@@ -399,45 +398,46 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
   }
 
   Widget _failureConsequence(Object error) {
+    final l10n = context.afriL10n;
     final failure = error is TicketDetailFailure
         ? error
         : TicketDetailFailure.fromError(error);
     switch (failure.kind) {
       case TicketDetailFailureKind.offline:
         return MatchDetailEmptyState(
-          title: 'Ticket details unavailable offline',
-          body: 'Connect to load this fixture and current ticket availability.',
-          actionLabel: 'Back to Tickets',
+          title: l10n.ticketDetailOfflineTitle,
+          body: l10n.ticketDetailOfflineMessage,
+          actionLabel: l10n.ticketBackToTickets,
           onPressed: () => context.go('/tickets'),
         );
       case TicketDetailFailureKind.permissionDenied:
         return MatchDetailEmptyState(
-          title: 'Ticket access denied',
-          body: 'This fixture is not available for the current club account.',
-          actionLabel: 'Back to Tickets',
+          title: l10n.ticketDetailAccessTitle,
+          body: l10n.ticketDetailAccessMessage,
+          actionLabel: l10n.ticketBackToTickets,
           onPressed: () => context.go('/tickets'),
         );
       case TicketDetailFailureKind.securityTimeout:
         return MatchDetailEmptyState(
-          title: 'Ticket security check timed out',
-          body: 'The fixture could not be confirmed safely. Try again.',
-          actionLabel: 'TRY AGAIN',
+          title: l10n.ticketDetailSecurityTitle,
+          body: l10n.ticketDetailSecurityMessage,
+          actionLabel: l10n.ticketTryAgainUpper,
           onPressed: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
         );
       case TicketDetailFailureKind.conflict:
         return MatchDetailEmptyState(
-          title: 'Fixture details changed',
-          body: 'Refresh the fixture before selecting ticket access.',
-          actionLabel: 'REFRESH FIXTURE',
+          title: l10n.ticketDetailChangedTitle,
+          body: l10n.ticketDetailChangedMessage,
+          actionLabel: l10n.ticketRefreshFixtureUpper,
           onPressed: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
         );
       case TicketDetailFailureKind.unknown:
         return MatchDetailEmptyState(
-          title: 'Unable to load this fixture',
-          body: 'The fixture could not be confirmed. Try again.',
-          actionLabel: 'TRY AGAIN',
+          title: l10n.ticketDetailUnavailableTitle,
+          body: l10n.ticketDetailUnavailableMessage,
+          actionLabel: l10n.ticketTryAgainUpper,
           onPressed: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
         );
@@ -445,18 +445,18 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
   }
 
   Widget? _retainedBanner(TicketDetailState detail) {
+    final l10n = context.afriL10n;
     if (!ConnectivityService.isOnline) {
-      return const _TicketDetailStatus(
-        title: 'Showing saved fixture',
-        body:
-            'Ticket prices may have changed. Reconnect before reviewing or purchasing.',
+      return _TicketDetailStatus(
+        title: l10n.ticketSavedFixtureTitle,
+        body: l10n.ticketSavedFixtureMessage,
         tone: AfriStateBannerTone.warning,
       );
     }
     if (detail.phase == TicketDetailPhase.syncing) {
-      return const _TicketDetailStatus(
-        title: 'Refreshing fixture',
-        body: 'The last confirmed ticket options remain visible.',
+      return _TicketDetailStatus(
+        title: l10n.ticketRefreshingFixtureTitle,
+        body: l10n.ticketRefreshingFixtureMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -464,41 +464,36 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     if (failure == null) return null;
     return switch (failure.kind) {
       TicketDetailFailureKind.conflict => _TicketDetailStatus(
-          title: 'Fixture changed',
-          body:
-              'These are the last confirmed options. Refresh before continuing.',
+          title: l10n.ticketFixtureChangedTitle,
+          body: l10n.ticketLastConfirmedOptionsMessage,
           tone: AfriStateBannerTone.warning,
-          actionLabel: 'REFRESH FIXTURE',
+          actionLabel: l10n.ticketRefreshFixtureUpper,
           onAction: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
         ),
       TicketDetailFailureKind.securityTimeout => _TicketDetailStatus(
-          title: 'Fixture check timed out',
-          body:
-              'These are the last confirmed options. Refresh before continuing.',
+          title: l10n.ticketFixtureCheckTimedOutTitle,
+          body: l10n.ticketLastConfirmedOptionsMessage,
           tone: AfriStateBannerTone.warning,
-          actionLabel: 'REFRESH FIXTURE',
+          actionLabel: l10n.ticketRefreshFixtureUpper,
           onAction: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
         ),
-      TicketDetailFailureKind.permissionDenied => const _TicketDetailStatus(
-          title: 'Ticket access changed',
-          body:
-              'The saved fixture is read-only. Return to Tickets to continue safely.',
+      TicketDetailFailureKind.permissionDenied => _TicketDetailStatus(
+          title: l10n.ticketAccessChangedTitle,
+          body: l10n.ticketSavedFixtureReadOnlyMessage,
           tone: AfriStateBannerTone.danger,
         ),
-      TicketDetailFailureKind.offline => const _TicketDetailStatus(
-          title: 'Showing saved fixture',
-          body:
-              'Ticket prices may have changed. Reconnect before reviewing or purchasing.',
+      TicketDetailFailureKind.offline => _TicketDetailStatus(
+          title: l10n.ticketSavedFixtureTitle,
+          body: l10n.ticketSavedFixtureMessage,
           tone: AfriStateBannerTone.warning,
         ),
       TicketDetailFailureKind.unknown => _TicketDetailStatus(
-          title: 'Fixture refresh failed',
-          body:
-              'These are the last confirmed options. Refresh before continuing.',
+          title: l10n.ticketFixtureRefreshFailedTitle,
+          body: l10n.ticketLastConfirmedOptionsMessage,
           tone: AfriStateBannerTone.warning,
-          actionLabel: 'REFRESH FIXTURE',
+          actionLabel: l10n.ticketRefreshFixtureUpper,
           onAction: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
         ),

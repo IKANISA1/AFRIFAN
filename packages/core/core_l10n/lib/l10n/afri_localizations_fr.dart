@@ -1996,4 +1996,2166 @@ class AfriLocalizationsFr extends AfriLocalizations {
 
   @override
   String get fanClubDetailsAction => 'Détails';
+
+  @override
+  String get liveMatchLoadError =>
+      'Impossible de charger le centre du match en direct pour le moment.';
+
+  @override
+  String get liveStatusLive => 'EN DIRECT';
+
+  @override
+  String get liveStatusHalfTime => 'MI-TEMPS';
+
+  @override
+  String get liveStatusFullTime => 'TERMINÉ';
+
+  @override
+  String get liveStatusPostponed => 'REPORTÉ';
+
+  @override
+  String get liveStatusCancelled => 'ANNULÉ';
+
+  @override
+  String get liveStatusUpcoming => 'À VENIR';
+
+  @override
+  String get liveStatusFinal => 'FINAL';
+
+  @override
+  String liveTimeVenue(String time, String venue) {
+    return '$time  •  $venue';
+  }
+
+  @override
+  String get liveMatchUpdate => 'Mise à jour du match';
+
+  @override
+  String liveMatchTeamsUpper(String home, String away) {
+    return '$home CONTRE $away';
+  }
+
+  @override
+  String get liveModeActive =>
+      'Le direct est actif. Les événements apparaissent en temps réel.';
+
+  @override
+  String get liveMatchReport => 'RAPPORT DU MATCH';
+
+  @override
+  String get liveMatchFinishedPending => 'Match terminé. Résumé en attente.';
+
+  @override
+  String get liveMatchdayIntel => 'INFOS DU JOUR DE MATCH';
+
+  @override
+  String get liveFixturePublished =>
+      'Match publié. Les mises à jour commenceront peu avant le coup d’envoi.';
+
+  @override
+  String get liveStatPossession => 'Possession';
+
+  @override
+  String get liveStatShots => 'Tirs';
+
+  @override
+  String get liveStatCorners => 'Corners';
+
+  @override
+  String get liveStatPending => 'À CONFIRMER';
+
+  @override
+  String get liveMatchCenter => 'Centre du match';
+
+  @override
+  String get liveMyPredictions => 'Mes pronostics';
+
+  @override
+  String liveScore(int homeScore, int awayScore) {
+    return '$homeScore - $awayScore';
+  }
+
+  @override
+  String get liveMatchIntel => 'Infos du match';
+
+  @override
+  String get liveBrowsePredictions => 'Voir les pronostics';
+
+  @override
+  String get liveShareMatch => 'Partager le match';
+
+  @override
+  String liveShareText(
+    String appName,
+    String homeTeam,
+    int homeScore,
+    int awayScore,
+    String awayTeam,
+    String status,
+  ) {
+    return '$appName : $homeTeam $homeScore-$awayScore $awayTeam ($status)';
+  }
+
+  @override
+  String get liveMatchCopied => 'Mise à jour du match copiée.';
+
+  @override
+  String get liveCenterUnavailable => 'CENTRE DU DIRECT INDISPONIBLE';
+
+  @override
+  String get liveRefresh => 'Actualiser';
+
+  @override
+  String get newsArticleNotFoundTitle => 'Article introuvable';
+
+  @override
+  String get newsArticleNotFoundMessage =>
+      'Cette actualité a peut-être été supprimée ou n’est plus disponible.';
+
+  @override
+  String get newsBackToLiveMatch => 'Retour au match en direct';
+
+  @override
+  String get newsClubNews => 'Actualités du club';
+
+  @override
+  String newsArticleImageSemantic(String title) {
+    return 'Image de l’article $title';
+  }
+
+  @override
+  String get newsRefreshingTitle => 'Actualisation de l’article';
+
+  @override
+  String get newsRefreshingMessage =>
+      'L’article confirmé reste affiché pendant la vérification de la dernière version.';
+
+  @override
+  String get newsRelatedUnavailableTitle => 'Actualités liées indisponibles';
+
+  @override
+  String get newsRelatedUnavailableMessage =>
+      'Vous pouvez lire cet article, mais la navigation vers les actualités liées est désactivée pour cette version.';
+
+  @override
+  String get newsShowingSavedTitle => 'Article enregistré affiché';
+
+  @override
+  String get newsShowingSavedMessage =>
+      'Reconnectez-vous et actualisez avant d’ouvrir une autre actualité.';
+
+  @override
+  String newsSelectedSemantic(String title) {
+    return 'Article sélectionné $title';
+  }
+
+  @override
+  String get newsToday => 'Aujourd’hui';
+
+  @override
+  String newsMetadata(String date) {
+    return 'Actualités du club  ·  $date  ·  Service médias';
+  }
+
+  @override
+  String get newsRelatedIntel => 'Actualités liées';
+
+  @override
+  String get newsRefreshArticle => 'ACTUALISER L’ARTICLE';
+
+  @override
+  String get newsConnectionRestored => 'Connexion rétablie';
+
+  @override
+  String get newsArticleOffline => 'Article hors ligne';
+
+  @override
+  String get newsRefreshLatest =>
+      'Actualisez pour confirmer la dernière version.';
+
+  @override
+  String get newsReconnectLatest =>
+      'Reconnectez-vous pour charger la dernière version.';
+
+  @override
+  String get newsAccessUnavailableTitle => 'Accès à l’article indisponible';
+
+  @override
+  String get newsAccessUnavailableMessage =>
+      'Le compte actuel ne peut pas consulter cette actualité.';
+
+  @override
+  String get newsChangedTitle => 'L’article a changé';
+
+  @override
+  String get newsChangedMessage =>
+      'Actualisez avant d’ouvrir une autre actualité.';
+
+  @override
+  String get newsSecurityTimeoutTitle =>
+      'La vérification de sécurité de l’article a expiré';
+
+  @override
+  String get newsSecurityTimeoutMessage =>
+      'Aucune nouvelle version n’a été confirmée. Actualisez pour réessayer.';
+
+  @override
+  String get newsUnavailableTitle => 'Article indisponible';
+
+  @override
+  String get newsUnavailableMessage =>
+      'La dernière version n’a pas pu être confirmée. Actualisez pour réessayer.';
+
+  @override
+  String liveTeamLogoSemantic(String label) {
+    return 'Logo de l’équipe $label';
+  }
+
+  @override
+  String get liveTeamFallback => 'Équipe';
+
+  @override
+  String liveMatchEventSemantic(String event) {
+    return 'Événement du match : $event';
+  }
+
+  @override
+  String get liveEventGoal => 'but';
+
+  @override
+  String get liveEventCard => 'carton';
+
+  @override
+  String get liveEventSubstitution => 'remplacement';
+
+  @override
+  String get liveEventVarReview => 'vérification VAR';
+
+  @override
+  String get liveEventUpdate => 'mise à jour';
+
+  @override
+  String liveStatSemantic(String label, String value) {
+    return '$label $value';
+  }
+
+  @override
+  String get shopAllCategory => 'Tous';
+
+  @override
+  String get shopProductFallback => 'Produit';
+
+  @override
+  String shopProductAdded(String name) {
+    return '$name ajouté au panier.';
+  }
+
+  @override
+  String get shopStoreTitle => 'Boutique';
+
+  @override
+  String get shopTitle => 'Boutique';
+
+  @override
+  String get shopSearch => 'Rechercher';
+
+  @override
+  String get shopSearchProducts => 'Rechercher des produits';
+
+  @override
+  String get shopViewCart => 'Voir le panier';
+
+  @override
+  String get shopCart => 'Panier';
+
+  @override
+  String get shopBack => 'Retour';
+
+  @override
+  String get shopNoProductsTitle => 'Aucun produit disponible';
+
+  @override
+  String shopNoProductsCategoryTitle(String category) {
+    return 'Aucun produit dans $category';
+  }
+
+  @override
+  String get shopNoProductsMessage =>
+      'Les produits officiels apparaîtront ici lorsque le club publiera son stock.';
+
+  @override
+  String get shopNoProductsCategoryMessage =>
+      'Essayez une autre catégorie ou effacez le filtre pour voir toute la boutique.';
+
+  @override
+  String get shopRetry => 'Réessayer';
+
+  @override
+  String get shopRefresh => 'Actualiser';
+
+  @override
+  String get shopShowAll => 'Tout afficher';
+
+  @override
+  String get shopRefreshingTitle => 'Actualisation de la boutique';
+
+  @override
+  String get shopRefreshingMessage =>
+      'Le stock actuel est en cours de vérification.';
+
+  @override
+  String get shopSavedTitle => 'Contenu enregistré de la boutique';
+
+  @override
+  String get shopSavedMessage =>
+      'Le stock peut être obsolète. Reconnectez-vous et actualisez avant de payer.';
+
+  @override
+  String get shopRefreshingSemantic =>
+      'Information : actualisation de la boutique. Le stock actuel est en cours de vérification.';
+
+  @override
+  String get shopSavedSemantic =>
+      'Avertissement : contenu enregistré. Le stock peut être obsolète. Reconnectez-vous avant de payer.';
+
+  @override
+  String get shopClubStore => 'Boutique du club';
+
+  @override
+  String shopItemsAvailable(int count) {
+    return '$count articles disponibles.';
+  }
+
+  @override
+  String get shopOfflineTitle => 'Boutique hors ligne';
+
+  @override
+  String get shopOfflineMessage =>
+      'Connectez-vous pour charger les produits actuels du club.';
+
+  @override
+  String get shopAccessTitle => 'Accès à la boutique indisponible';
+
+  @override
+  String get shopAccessMessage =>
+      'Ce compte ne peut pas charger les produits du club. Contactez l’assistance si cet accès devrait être disponible.';
+
+  @override
+  String get shopInventoryChangedTitle => 'Le stock de la boutique a changé';
+
+  @override
+  String get shopInventoryChangedMessage =>
+      'La disponibilité des produits a changé pendant le chargement. Actualisez avant d’ajouter un produit.';
+
+  @override
+  String get shopSecurityTimeoutTitle =>
+      'Délai de sécurité de la boutique dépassé';
+
+  @override
+  String get shopSecurityTimeoutMessage =>
+      'La vérification sécurisée du stock a pris trop de temps. Actualisez pour réessayer.';
+
+  @override
+  String get shopUnavailableTitle => 'Boutique indisponible';
+
+  @override
+  String get shopUnavailableMessage =>
+      'Impossible de charger les produits pour le moment.';
+
+  @override
+  String get shopOutOfStockUpper => 'RUPTURE DE STOCK';
+
+  @override
+  String get shopOutOfStock => 'Rupture de stock';
+
+  @override
+  String get shopAddToCart => 'Ajouter au panier';
+
+  @override
+  String shopProductImageSemantic(String name) {
+    return 'Image du produit $name';
+  }
+
+  @override
+  String shopProductUnavailableSemantic(String name) {
+    return '$name, actuellement en rupture de stock';
+  }
+
+  @override
+  String get shopOpenProduct => 'Ouvrir le produit';
+
+  @override
+  String get shopSearchHint => 'Rechercher maillots, écharpes et nouveautés';
+
+  @override
+  String get shopMerchFallback => 'Produits';
+
+  @override
+  String shopQuantityValue(int quantity) {
+    return 'Qté $quantity';
+  }
+
+  @override
+  String get shopDecreaseQuantity => 'Diminuer la quantité';
+
+  @override
+  String get shopIncreaseQuantity => 'Augmenter la quantité';
+
+  @override
+  String get shopRemove => 'Retirer';
+
+  @override
+  String get shopReadyToCheckout => 'Prêt à payer';
+
+  @override
+  String get shopCheckout => 'Payer';
+
+  @override
+  String get shopItemOutOfStockToast =>
+      'Cet article est actuellement en rupture de stock.';
+
+  @override
+  String get shopSelectSizeToast =>
+      'Sélectionnez une taille avant d’ajouter au panier.';
+
+  @override
+  String get shopViewCartAction => 'Voir le panier';
+
+  @override
+  String get shopProductNotFoundTitle => 'Produit introuvable';
+
+  @override
+  String get shopProductNotFoundMessage =>
+      'Cet article n’est plus disponible dans la boutique actuelle du club.';
+
+  @override
+  String get shopBackToStore => 'Retour à la boutique';
+
+  @override
+  String get shopProductOfflineTitle => 'Détails du produit hors ligne';
+
+  @override
+  String get shopProductOfflineMessage =>
+      'Reconnectez-vous pour vérifier le prix, la taille et la disponibilité.';
+
+  @override
+  String get shopProductAccessTitle => 'Accès au produit indisponible';
+
+  @override
+  String get shopProductAccessMessage =>
+      'Ce produit ne peut pas être ouvert avec le compte actuel.';
+
+  @override
+  String get shopProductChangedTitle => 'Les détails du produit ont changé';
+
+  @override
+  String get shopProductChangedMessage =>
+      'Actualisez pour charger le prix, les tailles et la disponibilité actuels.';
+
+  @override
+  String get shopProductSecurityTitle => 'Délai de sécurité du produit dépassé';
+
+  @override
+  String get shopProductSecurityMessage =>
+      'La vérification sécurisée du produit a pris trop de temps. Actualisez avant d’acheter.';
+
+  @override
+  String get shopProductUnavailableTitle => 'Produit indisponible';
+
+  @override
+  String get shopProductUnavailableMessage =>
+      'Impossible de charger les derniers détails du produit.';
+
+  @override
+  String get shopLoadingProductName => 'Chargement du maillot officiel';
+
+  @override
+  String get shopLoadingProductDescription =>
+      'Chargement des détails des produits officiels...';
+
+  @override
+  String get shopLoadingBadge => 'CHARGEMENT';
+
+  @override
+  String get shopOfficialMerchandise => 'Produit officiel du club.';
+
+  @override
+  String get shopCloseProductDetails => 'Fermer les détails du produit';
+
+  @override
+  String get shopRefreshingProductTitle => 'Actualisation du produit';
+
+  @override
+  String get shopRefreshingProductMessage =>
+      'Le prix, les tailles et la disponibilité sont en cours de vérification.';
+
+  @override
+  String get shopSavedProductTitle => 'Détails du produit enregistrés';
+
+  @override
+  String get shopSavedProductMessage =>
+      'Reconnectez-vous pour actualiser le prix, les tailles et la disponibilité avant d’acheter.';
+
+  @override
+  String get shopInStock => 'EN STOCK';
+
+  @override
+  String shopStockAvailable(int count) {
+    return '$count DISPONIBLES';
+  }
+
+  @override
+  String get shopSelectSize => 'Choisir une taille';
+
+  @override
+  String shopSizeTooltip(String size) {
+    return 'Taille $size';
+  }
+
+  @override
+  String get shopSizeSelectedHint => 'Sélectionnée';
+
+  @override
+  String get shopSizeAvailableHint => 'Disponible';
+
+  @override
+  String get shopQuantity => 'Quantité';
+
+  @override
+  String get shopTotal => 'Total';
+
+  @override
+  String get shopBuyNow => 'Acheter maintenant';
+
+  @override
+  String get shopConnectPaymentAvailability =>
+      'Connectez-vous pour vérifier les moyens de paiement actuels.';
+
+  @override
+  String get shopPaymentSetupPending =>
+      'La configuration du paiement attend l’activation du club.';
+
+  @override
+  String get shopPaymentCheckError =>
+      'Impossible de vérifier les paiements. Votre panier et votre adresse sont conservés.';
+
+  @override
+  String get shopConnectBeforeCheckout =>
+      'Connectez-vous avant de payer. Votre panier et votre adresse sont conservés.';
+
+  @override
+  String get shopAddressRequired =>
+      'Saisissez d’abord une adresse de livraison.';
+
+  @override
+  String get shopMomoSetupPending =>
+      'La configuration du paiement MOMO attend l’activation du club.';
+
+  @override
+  String shopOrderDialerFailure(String orderId) {
+    return 'La commande $orderId a été enregistrée, mais le composeur MOMO n’a pas pu s’ouvrir.';
+  }
+
+  @override
+  String shopOrderCreated(String orderId) {
+    return 'Commande $orderId créée. La vérification du paiement est toujours en attente.';
+  }
+
+  @override
+  String get shopReviewOrder => 'Vérifier la commande';
+
+  @override
+  String shopItemQuantitySummary(String name, int quantity) {
+    return '$name x$quantity';
+  }
+
+  @override
+  String shopMoreItems(int count) {
+    return '+$count autres articles';
+  }
+
+  @override
+  String get shopDeliverTo => 'Livrer à';
+
+  @override
+  String get shopPaymentInstructions =>
+      'Approuvez la demande MOMO sur votre appareil, puis confirmez ici. La commande reste en attente jusqu’à la vérification.';
+
+  @override
+  String get shopPaymentSubmitted => 'J’ai soumis le paiement';
+
+  @override
+  String get shopCartEmptyTitle => 'Le panier est vide';
+
+  @override
+  String get shopCartEmptyMessage =>
+      'Ajoutez des articles depuis la boutique pour commencer.';
+
+  @override
+  String get shopBackToShop => 'Retour à la boutique';
+
+  @override
+  String get shopDelivery => 'Livraison';
+
+  @override
+  String get shopAddressAndTotal => 'Adresse et total';
+
+  @override
+  String get shopDeliveryAddress => 'Adresse de livraison';
+
+  @override
+  String get shopEnterDeliveryAddress => 'Saisissez votre adresse de livraison';
+
+  @override
+  String shopStreetCityCountry(String country) {
+    return 'Rue, ville, $country';
+  }
+
+  @override
+  String get shopSubtotal => 'Sous-total';
+
+  @override
+  String get shopCheckingPayment => 'Vérification du paiement';
+
+  @override
+  String get shopCheckingPaymentMessage =>
+      'Confirmation du moyen de paiement MOMO actuel de ce club.';
+
+  @override
+  String get shopPaymentCheckFailed => 'Échec de la vérification du paiement';
+
+  @override
+  String get shopCheckoutUnavailable => 'Paiement indisponible';
+
+  @override
+  String shopPayTo(String label) {
+    return 'Payer à $label';
+  }
+
+  @override
+  String get shopReviewCart => 'Vérifier le panier';
+
+  @override
+  String get shopConnectionRequired => 'Connexion requise';
+
+  @override
+  String get shopPaymentRouteNotReady => 'Moyen de paiement non prêt';
+
+  @override
+  String get shopCheckoutNotPermitted => 'Paiement non autorisé';
+
+  @override
+  String get shopStatusUncertain => 'Statut incertain';
+
+  @override
+  String get shopProcessing => 'Traitement';
+
+  @override
+  String get shopPayWithMomo => 'Payer avec MOMO';
+
+  @override
+  String get shopCheckoutViaMomo => 'Payer via MOMO';
+
+  @override
+  String get shopOrderUncertainTitle =>
+      'Le statut de la commande est incertain';
+
+  @override
+  String get shopOrderUncertainMessage =>
+      'Le paiement sécurisé a expiré. Votre panier et votre adresse sont conservés. Ne recommencez pas avant confirmation du club.';
+
+  @override
+  String get shopOrderChangedTitle => 'Les détails de la commande ont changé';
+
+  @override
+  String get shopOrderChangedMessage =>
+      'La commande a changé pendant l’envoi. Votre panier et votre adresse sont conservés. Vérifiez-les avant de réessayer.';
+
+  @override
+  String get shopCheckoutDeniedMessage =>
+      'Votre compte ne peut pas passer cette commande. Votre panier et votre adresse sont conservés. Contactez l’assistance du club.';
+
+  @override
+  String get shopCheckoutFailureTitle => 'Le paiement n’a pas pu démarrer';
+
+  @override
+  String get shopCheckoutFailureMessage =>
+      'Aucune commande n’a été confirmée. Votre panier et votre adresse sont conservés. Vérifiez-les puis réessayez.';
+
+  @override
+  String get shopSampleProductName => 'Maillot domicile Rayon';
+
+  @override
+  String get shopSampleProductDescription =>
+      'Maillot officiel de match avec écusson tissé, tissu respirant et finitions bleues pour tous les supporters.';
+
+  @override
+  String get shopOfficialBadge => 'OFFICIEL';
+
+  @override
+  String get shopSampleProductSummary =>
+      'Tenue officielle · S M L XL · 47 disponibles';
+
+  @override
+  String get shopProductImageUnavailable => 'Image du produit indisponible';
+
+  @override
+  String get shopOfficialKit => 'Tenue officielle Rayon';
+
+  @override
+  String get shopPremiumMerchandise => 'Produit premium de jour de match';
+
+  @override
+  String get ticketQrAccessUnavailableTitle =>
+      'Accès au billet électronique indisponible';
+
+  @override
+  String get ticketQrAccessUnavailableMessage =>
+      'Les codes d’entrée sont désactivés dans cette version. Consultez votre portefeuille de billets pour le statut.';
+
+  @override
+  String get ticketNotFoundTitle => 'Billet introuvable';
+
+  @override
+  String get ticketUnavailableShort => 'Billet électronique indisponible.';
+
+  @override
+  String get ticketPaymentPendingTitle => 'Vérification du paiement en attente';
+
+  @override
+  String get ticketPaymentPendingMessage =>
+      'La demande a été enregistrée, mais le code QR sera débloqué après vérification du paiement.';
+
+  @override
+  String get ticketEntryCode => 'Code d’entrée du billet';
+
+  @override
+  String get ticketScannerHelper =>
+      'Présentez-le uniquement à un scanner officiel le jour du match.';
+
+  @override
+  String get ticketDateLabel => 'DATE';
+
+  @override
+  String get ticketTimeLabel => 'HEURE';
+
+  @override
+  String get ticketVenueLabel => 'LIEU';
+
+  @override
+  String get ticketAppleWallet => 'Apple Wallet';
+
+  @override
+  String get ticketGoogleWallet => 'Google Wallet';
+
+  @override
+  String get ticketWalletExportUnavailable =>
+      'L’export vers un portefeuille n’est pas encore disponible dans cette version.';
+
+  @override
+  String ticketSelectedSemantic(String match) {
+    return 'Billet électronique sélectionné : $match';
+  }
+
+  @override
+  String get ticketOfflineTitle => 'Billet électronique hors ligne';
+
+  @override
+  String get ticketOfflineMessage =>
+      'Reconnectez-vous avant de charger ce code d’entrée.';
+
+  @override
+  String get ticketAccessDeniedTitle => 'Accès au billet refusé';
+
+  @override
+  String get ticketAccessDeniedMessage =>
+      'Ce billet ne peut pas être ouvert avec le compte actuel.';
+
+  @override
+  String get ticketChangedTitle => 'Le billet a changé';
+
+  @override
+  String get ticketChangedMessage =>
+      'Actualisez votre portefeuille avant de présenter ce code.';
+
+  @override
+  String get ticketSecurityTimeoutTitle =>
+      'Délai de sécurité du billet dépassé';
+
+  @override
+  String get ticketSecurityTimeoutMessage =>
+      'Le code d’entrée n’a pas été confirmé. Actualisez avant l’entrée au match.';
+
+  @override
+  String get ticketUnavailableTitle => 'Billet indisponible';
+
+  @override
+  String get ticketUnavailableMessage =>
+      'Ce billet n’a pas pu être confirmé depuis votre portefeuille.';
+
+  @override
+  String get ticketRefreshAction => 'Actualiser le billet';
+
+  @override
+  String get ticketSavedCodeTitle => 'Code d’entrée enregistré affiché';
+
+  @override
+  String get ticketRefreshingTitle => 'Actualisation du billet';
+
+  @override
+  String get ticketAccessChangedTitle => 'L’accès aux billets a changé';
+
+  @override
+  String get ticketCheckTimedOutTitle => 'La vérification du billet a expiré';
+
+  @override
+  String get ticketRefreshUnavailableTitle =>
+      'Actualisation du billet indisponible';
+
+  @override
+  String get ticketSavedCodeMessage =>
+      'Reconnectez-vous et actualisez avant de présenter ce code à l’entrée.';
+
+  @override
+  String get ticketRefreshingMessage =>
+      'Le dernier code confirmé reste visible pendant la vérification du portefeuille.';
+
+  @override
+  String get ticketRefreshBeforeUse =>
+      'Actualisez avant de vous fier à ce code d’entrée.';
+
+  @override
+  String get ticketRefreshUpper => 'ACTUALISER LE BILLET';
+
+  @override
+  String get ticketWalletUnavailableTitle =>
+      'Portefeuille de billets indisponible';
+
+  @override
+  String get ticketWalletUnavailableMessage =>
+      'Impossible de charger votre portefeuille. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get ticketMyTickets => 'MES BILLETS';
+
+  @override
+  String get ticketRefreshTickets => 'Actualiser les billets';
+
+  @override
+  String get ticketUpcoming => 'À VENIR';
+
+  @override
+  String get ticketPast => 'PASSÉS';
+
+  @override
+  String get ticketBrowseMatches => 'Parcourir les matchs';
+
+  @override
+  String get ticketOpenQr => 'Ouvrir le code QR du billet';
+
+  @override
+  String ticketWalletSemantic(String match, String status, String seat) {
+    return '$match, billet $status, $seat';
+  }
+
+  @override
+  String ticketSeatPrice(String seat, String price) {
+    return '$seat • $price';
+  }
+
+  @override
+  String get ticketPendingQrMessage =>
+      'Le paiement reçu sur votre téléphone doit encore être vérifié avant le déblocage du QR.';
+
+  @override
+  String get ticketCheckoutSummary => 'RÉCAPITULATIF';
+
+  @override
+  String get ticketMatchLabel => 'Match';
+
+  @override
+  String get ticketSeatTypeLabel => 'Type de place';
+
+  @override
+  String get ticketQuantityLabel => 'Quantité';
+
+  @override
+  String get ticketSeatCodeLabel => 'Code de place';
+
+  @override
+  String get ticketTotalLabel => 'Total';
+
+  @override
+  String get ticketPaymentRouteLabel => 'Moyen de paiement';
+
+  @override
+  String ticketPayToDialer(String label) {
+    return 'Payer à $label\nLe composeur ouvrira la demande USSD.';
+  }
+
+  @override
+  String get ticketSoldOut => 'Complet';
+
+  @override
+  String get ticketPayViaMomo => 'Payer via MOMO';
+
+  @override
+  String get ticketConfirmAfterMomo =>
+      'Confirmez après avoir terminé la demande MOMO.';
+
+  @override
+  String get ticketConfirmPurchase => 'CONFIRMER L’ACHAT';
+
+  @override
+  String get ticketMatchUpper => 'MATCH';
+
+  @override
+  String get ticketZoneUpper => 'ZONE';
+
+  @override
+  String get ticketSeatUpper => 'PLACE';
+
+  @override
+  String get ticketQuantityUpper => 'QUANTITÉ';
+
+  @override
+  String get ticketServiceFeeUpper => 'FRAIS DE SERVICE';
+
+  @override
+  String get ticketTotalUpper => 'TOTAL';
+
+  @override
+  String get ticketIncluded => 'Inclus';
+
+  @override
+  String ticketMomoValue(String label) {
+    return 'MOMO : $label';
+  }
+
+  @override
+  String get ticketConfirmPaymentWarning =>
+      'Confirmez uniquement après le paiement MoMo sur votre téléphone.';
+
+  @override
+  String get ticketCompletedPayment => 'J’ai effectué le paiement';
+
+  @override
+  String get ticketDidNotPay => 'Je n’ai pas payé';
+
+  @override
+  String ticketMatchVersus(String home, String away) {
+    return '$home contre $away';
+  }
+
+  @override
+  String ticketCompetitionVenue(String competition, String venue) {
+    return '$competition  •  $venue';
+  }
+
+  @override
+  String ticketRemainingCapacity(int count) {
+    return 'Capacité restante : $count';
+  }
+
+  @override
+  String get ticketChooseAccess => 'CHOISIR L’ACCÈS';
+
+  @override
+  String get ticketGeneral => 'GÉNÉRAL';
+
+  @override
+  String get ticketGeneralSubtitle => 'Tribunes ouvertes';
+
+  @override
+  String get ticketVip => 'VIP';
+
+  @override
+  String get ticketVipSubtitle => 'Places premium en salon';
+
+  @override
+  String get ticketChooseSeat => 'CHOISIR UNE PLACE';
+
+  @override
+  String get ticketChangeSeat => 'CHANGER LA PLACE';
+
+  @override
+  String get ticketReview => 'Vérifier';
+
+  @override
+  String get ticketReviewReservation => 'Vérifier la réservation';
+
+  @override
+  String get ticketOfficialCategories => 'CATÉGORIES OFFICIELLES';
+
+  @override
+  String get ticketOfficialCategoriesMessage =>
+      'Tarifs publics approuvés. La disponibilité apparaît lorsque le club active une vente officielle.';
+
+  @override
+  String get ticketListTitle => 'BILLETS';
+
+  @override
+  String get ticketFilterMatches => 'Filtrer les matchs';
+
+  @override
+  String get ticketMatchFilters => 'Filtres des matchs';
+
+  @override
+  String get ticketSortSoonest => 'Le plus proche';
+
+  @override
+  String get ticketSortLatest => 'Le plus récent';
+
+  @override
+  String get ticketSortCheapest => 'Le moins cher';
+
+  @override
+  String get ticketTypeAvailable => 'Disponible';
+
+  @override
+  String get ticketTypeSoldOut => 'Épuisé';
+
+  @override
+  String get ticketTypeVipZones => 'Zones VIP';
+
+  @override
+  String get ticketRefreshMatches => 'Actualiser les matchs';
+
+  @override
+  String get ticketRefreshMatchesOffline =>
+      'Connexion requise pour actualiser les matchs';
+
+  @override
+  String get ticketNext => 'SUIVANT';
+
+  @override
+  String get ticketMine => 'MES BILLETS';
+
+  @override
+  String get ticketUpcomingSemantic => 'Billets à venir';
+
+  @override
+  String get ticketPastSemantic => 'Billets passés';
+
+  @override
+  String get ticketMineSemantic => 'Mes billets';
+
+  @override
+  String get ticketRefreshingInventoryTitle => 'Actualisation des billets';
+
+  @override
+  String get ticketRefreshingInventoryMessage =>
+      'Les matchs et leur disponibilité sont en cours de vérification.';
+
+  @override
+  String get ticketSavedInventoryTitle => 'Billets enregistrés';
+
+  @override
+  String get ticketSavedInventoryMessage =>
+      'La disponibilité peut être obsolète. Reconnectez-vous avant l’achat.';
+
+  @override
+  String get ticketNoUpcomingTitle => 'Aucun match avec billetterie à venir';
+
+  @override
+  String get ticketNoUpcomingMessage =>
+      'Les billets à venir apparaîtront ici lorsque le club ouvrira les ventes du prochain match.';
+
+  @override
+  String get ticketNoPastTitle => 'Aucun ancien match avec billetterie';
+
+  @override
+  String get ticketNoPastMessage =>
+      'Les anciens matchs apparaîtront ici après la clôture des ventes du jour de match.';
+
+  @override
+  String get ticketRefresh => 'Actualiser';
+
+  @override
+  String get ticketStatusSoldOut => 'ÉPUISÉ';
+
+  @override
+  String get ticketStatusAvailable => 'DISPONIBLE';
+
+  @override
+  String get ticketFrom => 'À PARTIR DE';
+
+  @override
+  String get ticketBuyAction => 'Acheter un billet';
+
+  @override
+  String get ticketSalesNotOpen => 'Ventes non ouvertes';
+
+  @override
+  String get ticketVersusUpper => 'CONTRE';
+
+  @override
+  String get ticketListOfflineTitle => 'Connectez-vous pour voir les billets';
+
+  @override
+  String get ticketListOfflineMessage =>
+      'Reconnectez-vous pour charger les matchs et la disponibilité des billets.';
+
+  @override
+  String get ticketConnectionRequired => 'Connexion requise';
+
+  @override
+  String get ticketListAccessTitle => 'Accès aux billets indisponible';
+
+  @override
+  String get ticketListAccessMessage =>
+      'Ce compte ne peut pas charger la billetterie du club. Contactez le support du club si l’accès devrait être disponible.';
+
+  @override
+  String get ticketAccessRequired => 'Accès requis';
+
+  @override
+  String get ticketInventoryChangedTitle => 'La billetterie a changé';
+
+  @override
+  String get ticketInventoryChangedMessage =>
+      'Le match ou la disponibilité a changé pendant le chargement. Actualisez avant de choisir un billet.';
+
+  @override
+  String get ticketInventorySecurityTitle =>
+      'Délai de sécurité des billets dépassé';
+
+  @override
+  String get ticketInventorySecurityMessage =>
+      'La vérification sécurisée a pris trop de temps. Actualisez pour réessayer.';
+
+  @override
+  String get ticketFixturesUnavailableTitle =>
+      'Impossible de charger les matchs';
+
+  @override
+  String get ticketFixturesUnavailableMessage =>
+      'La billetterie est indisponible pour le moment. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get ticketRetry => 'Réessayer';
+
+  @override
+  String get ticketPaymentAvailabilityOffline =>
+      'Connectez-vous pour vérifier la disponibilité actuelle du paiement des billets.';
+
+  @override
+  String get ticketPaymentSetupPending =>
+      'La configuration du paiement attend l’activation du club.';
+
+  @override
+  String get ticketPaymentVerificationUnavailable =>
+      'La vérification du mode de paiement est indisponible. Réessayez.';
+
+  @override
+  String get ticketConnectBeforePurchase =>
+      'Connectez-vous avant l’achat. Votre place et votre quantité restent sélectionnées.';
+
+  @override
+  String get ticketSignInBeforePurchase =>
+      'Connectez-vous d’abord pour acheter des billets.';
+
+  @override
+  String get ticketMomoSetupPending =>
+      'La billetterie MOMO attend l’activation du club.';
+
+  @override
+  String get ticketReservationFailed =>
+      'La réservation du billet a échoué. Réessayez depuis l’écran du match.';
+
+  @override
+  String get ticketDialerOpenFailed =>
+      'La demande de billet a été enregistrée, mais le composeur MOMO ne s’est pas ouvert.';
+
+  @override
+  String ticketRequestsSubmitted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count demandes de billets envoyées — vérification en attente.',
+      one: 'Demande de billet envoyée — vérification du paiement en attente.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ticketConfirmationTimedOut =>
+      'La confirmation du billet a expiré. Consultez Mes billets avant de réessayer.';
+
+  @override
+  String get ticketRequestFailed =>
+      'La demande de billet a échoué. Votre sélection reste disponible.';
+
+  @override
+  String get ticketMatchDay => 'JOUR DE MATCH';
+
+  @override
+  String get ticketSalesUnavailableTitle => 'Vente de billets indisponible';
+
+  @override
+  String get ticketSalesUnavailableMessage =>
+      'La sélection de billets n’est pas activée pour cette version ou ce club.';
+
+  @override
+  String get ticketBackToTickets => 'Retour aux billets';
+
+  @override
+  String get ticketFixtureNotFoundTitle => 'Match introuvable';
+
+  @override
+  String get ticketFixtureNotFoundMessage => 'Ce match est indisponible.';
+
+  @override
+  String get ticketDetailOfflineTitle =>
+      'Détails des billets indisponibles hors ligne';
+
+  @override
+  String get ticketDetailOfflineMessage =>
+      'Connectez-vous pour charger ce match et la disponibilité actuelle.';
+
+  @override
+  String get ticketDetailAccessTitle => 'Accès aux billets refusé';
+
+  @override
+  String get ticketDetailAccessMessage =>
+      'Ce match n’est pas disponible pour le compte du club actuel.';
+
+  @override
+  String get ticketDetailSecurityTitle =>
+      'Délai de sécurité des billets dépassé';
+
+  @override
+  String get ticketDetailSecurityMessage =>
+      'Le match n’a pas pu être confirmé de façon sûre. Réessayez.';
+
+  @override
+  String get ticketDetailChangedTitle => 'Les détails du match ont changé';
+
+  @override
+  String get ticketDetailChangedMessage =>
+      'Actualisez le match avant de choisir un accès.';
+
+  @override
+  String get ticketDetailUnavailableTitle => 'Impossible de charger ce match';
+
+  @override
+  String get ticketDetailUnavailableMessage =>
+      'Le match n’a pas pu être confirmé. Réessayez.';
+
+  @override
+  String get ticketTryAgainUpper => 'RÉESSAYER';
+
+  @override
+  String get ticketRefreshFixtureUpper => 'ACTUALISER LE MATCH';
+
+  @override
+  String get ticketSavedFixtureTitle => 'Match enregistré affiché';
+
+  @override
+  String get ticketSavedFixtureMessage =>
+      'Les prix peuvent avoir changé. Reconnectez-vous avant de vérifier ou d’acheter.';
+
+  @override
+  String get ticketRefreshingFixtureTitle => 'Actualisation du match';
+
+  @override
+  String get ticketRefreshingFixtureMessage =>
+      'Les dernières options confirmées restent visibles.';
+
+  @override
+  String get ticketFixtureChangedTitle => 'Le match a changé';
+
+  @override
+  String get ticketLastConfirmedOptionsMessage =>
+      'Voici les dernières options confirmées. Actualisez avant de continuer.';
+
+  @override
+  String get ticketFixtureCheckTimedOutTitle =>
+      'La vérification du match a expiré';
+
+  @override
+  String get ticketSavedFixtureReadOnlyMessage =>
+      'Le match enregistré est en lecture seule. Revenez aux billets pour continuer en sécurité.';
+
+  @override
+  String get ticketFixtureRefreshFailedTitle =>
+      'Échec de l’actualisation du match';
+
+  @override
+  String get ticketSeatMapTitle => 'CHOISIR UNE PLACE';
+
+  @override
+  String get ticketConfirm => 'Confirmer';
+
+  @override
+  String get ticketSeatSelectionUnavailableTitle =>
+      'Sélection de place indisponible';
+
+  @override
+  String get ticketSeatSelectionUnavailableMessage =>
+      'La sélection de place n’est pas activée pour cette version ou ce club.';
+
+  @override
+  String get ticketBackToTicketUpper => 'RETOUR AU BILLET';
+
+  @override
+  String get ticketSeatMapUnavailableTitle => 'Plan des places indisponible';
+
+  @override
+  String get ticketSeatMapUnavailableMessage => 'Ce match est introuvable.';
+
+  @override
+  String get ticketSeatMapOfflineTitle =>
+      'Plan des places indisponible hors ligne';
+
+  @override
+  String get ticketSeatMapOfflineMessage =>
+      'Connectez-vous pour confirmer la disponibilité actuelle des places.';
+
+  @override
+  String get ticketSeatMapAccessTitle => 'Accès au plan des places refusé';
+
+  @override
+  String get ticketSeatMapAccessMessage =>
+      'Ce match n’est pas disponible pour le compte du club actuel.';
+
+  @override
+  String get ticketSeatMapSecurityTitle => 'Délai de sécurité du plan dépassé';
+
+  @override
+  String get ticketSeatMapSecurityMessage =>
+      'Le match n’a pas pu être confirmé de façon sûre. Réessayez.';
+
+  @override
+  String get ticketSeatMapChangedTitle => 'Le plan des places a changé';
+
+  @override
+  String get ticketSeatMapChangedMessage =>
+      'Actualisez le match avant de choisir une place.';
+
+  @override
+  String get ticketRefreshSeatMapUpper => 'ACTUALISER LE PLAN';
+
+  @override
+  String get ticketSeatMapLoadFailedTitle => 'Impossible de charger le plan';
+
+  @override
+  String get ticketSeatMapLoadFailedMessage =>
+      'Le match n’a pas pu être confirmé. Réessayez.';
+
+  @override
+  String get ticketSavedSeatMapTitle => 'Plan enregistré affiché';
+
+  @override
+  String get ticketSavedSeatMapMessage =>
+      'La disponibilité peut avoir changé. Reconnectez-vous avant de confirmer.';
+
+  @override
+  String get ticketRefreshingSeatMapTitle => 'Actualisation du plan';
+
+  @override
+  String get ticketRefreshingSeatMapMessage =>
+      'Le dernier match confirmé reste visible.';
+
+  @override
+  String get ticketLastConfirmedStandsMessage =>
+      'Voici les dernières tribunes confirmées. Actualisez avant de choisir.';
+
+  @override
+  String get ticketSeatMapCheckTimedOutTitle =>
+      'La vérification du plan a expiré';
+
+  @override
+  String get ticketSeatAccessChangedTitle => 'L’accès aux places a changé';
+
+  @override
+  String get ticketSavedSeatMapReadOnlyMessage =>
+      'Le plan enregistré est en lecture seule. Revenez au billet pour continuer.';
+
+  @override
+  String get ticketSeatMapRefreshFailedTitle =>
+      'Échec de l’actualisation du plan';
+
+  @override
+  String get ticketSelectedSeatUpper => 'PLACE SÉLECTIONNÉE';
+
+  @override
+  String get ticketSeatMapSemantic => 'Plan interactif des places du stade';
+
+  @override
+  String ticketSeatMapSelectedSemantic(String seat) {
+    return 'Plan interactif des places, place sélectionnée : $seat';
+  }
+
+  @override
+  String get ticketSeatMapHint => 'Touchez une tribune pour choisir une place';
+
+  @override
+  String ticketSelectedStandSemantic(String stand) {
+    return 'Tribune $stand sélectionnée';
+  }
+
+  @override
+  String ticketSelectStandSemantic(String stand) {
+    return 'Choisir la tribune $stand';
+  }
+
+  @override
+  String ticketSeatCode(String stand, int number) {
+    return '$stand, place $number';
+  }
+
+  @override
+  String get ticketStandVipGold => 'VIP Or';
+
+  @override
+  String get ticketStandEast => 'Tribune Est';
+
+  @override
+  String get ticketStandTribuneRed => 'Tribune Rouge';
+
+  @override
+  String get ticketStandStanding => 'Debout';
+
+  @override
+  String get ticketLegendVip => 'VIP';
+
+  @override
+  String get ticketLegendTribune => 'Tribune';
+
+  @override
+  String get contributionsClubProjectsTitle => 'PROJETS DU CLUB';
+
+  @override
+  String get contributionsProjectsUnavailableTitle => 'Projets indisponibles';
+
+  @override
+  String get contributionsProjectsUnavailableMessage =>
+      'Les projets du club sont temporairement indisponibles.';
+
+  @override
+  String get contributionsProjectFallback => 'Projet';
+
+  @override
+  String contributionsFundingProgress(String current, String target) {
+    return '$current / $target';
+  }
+
+  @override
+  String contributionsSupporters(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count supporters',
+      one: '1 supporter',
+      zero: 'Aucun supporter',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contributionsContributeAction => 'Contribuer';
+
+  @override
+  String get contributionsCommunitiesTitle => 'Communautés';
+
+  @override
+  String get contributionsCommunitiesLoadError =>
+      'Impossible de charger les communautés publiques pour le moment.';
+
+  @override
+  String get contributionsInitiatives => 'Initiatives';
+
+  @override
+  String get contributionsContributed => 'Contributions';
+
+  @override
+  String get contributionsActiveInitiatives => 'Initiatives actives';
+
+  @override
+  String get contributionsCommunitiesUnavailableTitle =>
+      'Communautés indisponibles';
+
+  @override
+  String get contributionsCommunityQuietTitle => 'La communauté est calme';
+
+  @override
+  String get contributionsCommunityQuietMessage =>
+      'Les communautés de contribution apparaîtront ici lorsque le club ouvrira la prochaine initiative.';
+
+  @override
+  String get contributionsPublicGroupFallback => 'Groupe public';
+
+  @override
+  String contributionsContributors(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count contributeurs',
+      one: '1 contributeur',
+      zero: 'Aucun contributeur',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String contributionsGoalPercent(int percent) {
+    return '$percent % de l’objectif';
+  }
+
+  @override
+  String get contributionsConnectToLoad =>
+      'Connectez-vous pour charger les initiatives de contribution.';
+
+  @override
+  String get contributionsInitiativesUnavailableMessage =>
+      'Les initiatives sont temporairement indisponibles.';
+
+  @override
+  String get contributionsSmsEnabled =>
+      'La synchronisation SMS MoMo est activée sur cet appareil.';
+
+  @override
+  String get contributionsSmsPermissionDenied =>
+      'L’accès aux SMS n’a pas été accordé. La synchronisation reste désactivée.';
+
+  @override
+  String get contributionsSmsEnableFailed =>
+      'Impossible d’activer la synchronisation SMS. Vérifiez les autorisations et réessayez.';
+
+  @override
+  String get contributionsSmsDisabled =>
+      'La synchronisation SMS MoMo est désactivée.';
+
+  @override
+  String get contributionsConnectBeforeSmsSync =>
+      'Connectez-vous avant de synchroniser les messages MoMo.';
+
+  @override
+  String contributionsSmsSyncComplete(int uploaded, int duplicates) {
+    return 'Synchronisation terminée : $uploaded envoyés, $duplicates doublons.';
+  }
+
+  @override
+  String get contributionsSmsSyncFailed =>
+      'Échec de la synchronisation SMS. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get contributionsHubTitle => 'CONTRIBUER';
+
+  @override
+  String get contributionsRefreshingTitle => 'Actualisation des contributions';
+
+  @override
+  String get contributionsRefreshingMessage =>
+      'Les totaux et les initiatives sont en cours de vérification.';
+
+  @override
+  String get contributionsSavedTitle => 'Données de contribution enregistrées';
+
+  @override
+  String get contributionsSavedMessage =>
+      'Les totaux peuvent être obsolètes. Reconnectez-vous avant de contribuer ou synchroniser.';
+
+  @override
+  String get contributionsTeamProjects => 'PROJETS DE L’ÉQUIPE';
+
+  @override
+  String contributionsRaised(String current, String target) {
+    return '$current sur $target collectés.';
+  }
+
+  @override
+  String contributionsOpenMetric(int count) {
+    return '$count OUVERTS';
+  }
+
+  @override
+  String get contributionsCommunitiesUpper => 'COMMUNAUTÉS';
+
+  @override
+  String contributionsInitiativesActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count initiatives actives.',
+      one: '1 initiative active.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String contributionsLiveMetric(int count) {
+    return '$count EN DIRECT';
+  }
+
+  @override
+  String get contributionsCommunityUpper => 'COMMUNAUTÉ';
+
+  @override
+  String get contributionsFanClubsChapters => 'Fan-clubs et sections locales.';
+
+  @override
+  String get contributionsLive => 'EN DIRECT';
+
+  @override
+  String get contributionsMomoSmsSync => 'Synchronisation SMS MoMo';
+
+  @override
+  String get contributionsUnavailableBuild =>
+      'Indisponible dans cette version.';
+
+  @override
+  String get contributionsActiveUpper => 'ACTIF';
+
+  @override
+  String get contributionsSyncing => 'Synchronisation…';
+
+  @override
+  String get contributionsSyncNow => 'Synchroniser';
+
+  @override
+  String get contributionsDisable => 'Désactiver';
+
+  @override
+  String get contributionsEnabling => 'Activation…';
+
+  @override
+  String get contributionsEnableSmsSync => 'Activer la synchronisation SMS';
+
+  @override
+  String get contributionsLiveCampaigns => 'Campagnes actives';
+
+  @override
+  String get contributionsGroupsUnavailableTitle => 'Groupes indisponibles';
+
+  @override
+  String get contributionsGroupFallback => 'Groupe';
+
+  @override
+  String contributionsAmountOfTarget(String current, String target) {
+    return '$current sur $target';
+  }
+
+  @override
+  String get contributionsSeeAllGroups =>
+      'Voir tous les groupes de contribution';
+
+  @override
+  String contributionsSeeAllGroupsSemantic(int count) {
+    return 'Voir les $count groupes de contribution';
+  }
+
+  @override
+  String get contributionsOpenGroupsHint =>
+      'Ouvrir les groupes de contribution';
+
+  @override
+  String contributionsSeeAll(int count) {
+    return 'Voir les $count';
+  }
+
+  @override
+  String get contributionsInitiativeTitle => 'INITIATIVE PUBLIQUE';
+
+  @override
+  String get contributionsInitiativeLoadingTitle =>
+      'Chargement de l’initiative publique';
+
+  @override
+  String get contributionsInitiativeLoadingMessage =>
+      'Vérification du total confirmé et du registre public.';
+
+  @override
+  String get contributionsRefresh => 'Actualiser';
+
+  @override
+  String get contributionsBackToCommunities => 'Retour aux communautés';
+
+  @override
+  String get contributionsInitiativeRefreshingTitle =>
+      'Actualisation de l’initiative';
+
+  @override
+  String get contributionsInitiativeRefreshingMessage =>
+      'Le dernier total et le registre confirmés restent visibles pendant la vérification.';
+
+  @override
+  String get contributionsReadOnlyTitle => 'Contributions en lecture seule';
+
+  @override
+  String get contributionsReadOnlyMessage =>
+      'L’activité publique confirmée reste visible, mais le paiement est désactivé dans cette version.';
+
+  @override
+  String get contributionsSavedInitiativeTitle =>
+      'Données enregistrées affichées';
+
+  @override
+  String get contributionsSavedInitiativeMessage =>
+      'Reconnectez-vous et actualisez avant un paiement ou avant de vous fier au dernier total.';
+
+  @override
+  String get contributionsRefreshInitiativeUpper => 'ACTUALISER L’INITIATIVE';
+
+  @override
+  String get contributionsClosedTitle => 'Contributions fermées';
+
+  @override
+  String get contributionsClosedMessage =>
+      'Le total confirmé et le registre public restent disponibles pour consultation.';
+
+  @override
+  String get contributionsPaymentRouteUnavailableTitle =>
+      'Mode de paiement indisponible';
+
+  @override
+  String get contributionsPaymentRouteUnavailableMessage =>
+      'Aucun paiement ne commencera avant la publication d’un destinataire vérifié.';
+
+  @override
+  String get contributionsDisabled => 'Contributions désactivées';
+
+  @override
+  String get contributionsClosed => 'Contributions fermées';
+
+  @override
+  String get contributionsPaymentUnavailable => 'Paiement indisponible';
+
+  @override
+  String get contributionsCheckingLatestTotal =>
+      'Vérification du dernier total';
+
+  @override
+  String get contributionsRefreshBeforeContributing =>
+      'Actualisez avant de contribuer';
+
+  @override
+  String get contributionsContributeNow => 'Contribuer maintenant';
+
+  @override
+  String get contributionsConfirmedTotal => 'Total confirmé';
+
+  @override
+  String contributionsTargetProgress(String target, int percent) {
+    return 'Objectif $target · $percent %';
+  }
+
+  @override
+  String contributionsProgressSemantic(int percent) {
+    return '$percent pour cent de l’objectif confirmé';
+  }
+
+  @override
+  String get contributionsTypeUpper => 'TYPE';
+
+  @override
+  String get contributionsContributorsUpper => 'CONTRIBUTEURS';
+
+  @override
+  String contributionsContributeToSemantic(String group) {
+    return 'Contribuer à $group';
+  }
+
+  @override
+  String contributionsPaymentUnavailableSemantic(String action) {
+    return '$action. Le paiement est indisponible.';
+  }
+
+  @override
+  String get contributionsPublicLedgerTitle => 'REGISTRE PUBLIC';
+
+  @override
+  String get contributionsPublicLedgerPrivacy =>
+      'Uniquement les alias publics. Les références de paiement et les comptes ne sont jamais affichés.';
+
+  @override
+  String get contributionsLedgerEmptyTitle => 'Aucune contribution';
+
+  @override
+  String get contributionsLedgerEmptyMessage =>
+      'L’activité publique confirmée apparaîtra ici sans exposer les détails de paiement.';
+
+  @override
+  String contributionsMetaSemantic(String label, String value) {
+    return '$label, $value';
+  }
+
+  @override
+  String contributionsLedgerEntrySemantic(
+    String alias,
+    String amount,
+    String status,
+    String date,
+  ) {
+    return '$alias, $amount, $status, $date';
+  }
+
+  @override
+  String get contributionsStatusConfirmed => 'CONFIRMÉ';
+
+  @override
+  String get contributionsStatusProcessing => 'EN TRAITEMENT';
+
+  @override
+  String get contributionsStatusFailed => 'ÉCHEC';
+
+  @override
+  String get contributionsTypeProject => 'PROJET D’ÉQUIPE';
+
+  @override
+  String get contributionsTypeCommunity => 'COMMUNAUTÉ';
+
+  @override
+  String get contributionsConnectionRestoredTitle => 'Connexion rétablie';
+
+  @override
+  String get contributionsInitiativeOfflineTitle => 'Initiative hors ligne';
+
+  @override
+  String get contributionsConnectionRestoredMessage =>
+      'Actualisez pour vérifier le dernier total et le registre public.';
+
+  @override
+  String get contributionsInitiativeOfflineMessage =>
+      'Reconnectez-vous pour charger cette initiative publique.';
+
+  @override
+  String get contributionsInitiativeNotFoundTitle => 'Initiative introuvable';
+
+  @override
+  String get contributionsInitiativeNotFoundMessage =>
+      'Cette initiative peut être fermée ou le lien n’est peut-être plus valide.';
+
+  @override
+  String get contributionsInitiativeUnavailableTitle =>
+      'Initiative indisponible';
+
+  @override
+  String get contributionsInitiativeAccessMessage =>
+      'Votre accès actuel au club ne permet pas cette initiative.';
+
+  @override
+  String get contributionsInitiativeChangedTitle => 'L’initiative a changé';
+
+  @override
+  String get contributionsInitiativeChangedMessage =>
+      'Actualisez et vérifiez le dernier total avant de contribuer.';
+
+  @override
+  String get contributionsInitiativeTimeoutTitle => 'La vérification a expiré';
+
+  @override
+  String get contributionsInitiativeTimeoutMessage =>
+      'Aucun total n’a été confirmé. Actualisez avant de contribuer.';
+
+  @override
+  String get contributionsInitiativeUnavailableMessage =>
+      'Actualisez et réessayez lorsque le registre public sera disponible.';
+
+  @override
+  String get contributionsEmptyCsvCopied =>
+      'CSV vide copié dans le presse-papiers.';
+
+  @override
+  String get contributionsCsvCopied =>
+      'CSV respectueux de la vie privée copié dans le presse-papiers.';
+
+  @override
+  String get contributionsStatementTitle => 'RELEVÉ PUBLIC';
+
+  @override
+  String get contributionsStatementLoadingTitle =>
+      'Chargement du relevé public';
+
+  @override
+  String get contributionsStatementLoadingMessage =>
+      'Vérification des contributions confirmées et des alias publics.';
+
+  @override
+  String get contributionsBackToInitiative => 'Retour à l’initiative';
+
+  @override
+  String get contributionsStatementRefreshingTitle => 'Actualisation du relevé';
+
+  @override
+  String get contributionsStatementRefreshingMessage =>
+      'Le dernier relevé confirmé reste visible pendant la vérification.';
+
+  @override
+  String get contributionsStatementReadOnlyTitle =>
+      'Export du relevé en lecture seule';
+
+  @override
+  String get contributionsStatementReadOnlyMessage =>
+      'Vous pouvez consulter les entrées publiques, mais la copie est désactivée dans cette version.';
+
+  @override
+  String get contributionsSavedStatementTitle => 'Relevé enregistré affiché';
+
+  @override
+  String get contributionsSavedStatementMessage =>
+      'Reconnectez-vous et actualisez avant d’exporter ou de vous fier au dernier total.';
+
+  @override
+  String get contributionsRefreshStatementUpper => 'ACTUALISER LE RELEVÉ';
+
+  @override
+  String get contributionsCopyCsvSemantic =>
+      'Copier le relevé CSV respectueux de la vie privée';
+
+  @override
+  String contributionsExportUnavailableSemantic(String reason) {
+    return 'Export indisponible. $reason';
+  }
+
+  @override
+  String get contributionsFromUpper => 'DE';
+
+  @override
+  String get contributionsToUpper => 'À';
+
+  @override
+  String get contributionsAllTime => 'Depuis toujours';
+
+  @override
+  String get contributionsNow => 'Maintenant';
+
+  @override
+  String get contributionsSortUpper => 'TRIER';
+
+  @override
+  String get contributionsSortDate => 'PAR DATE';
+
+  @override
+  String get contributionsSortAmount => 'PAR MONTANT';
+
+  @override
+  String get contributionsSortAlias => 'PAR ALIAS';
+
+  @override
+  String get contributionsPdf => 'PDF';
+
+  @override
+  String get contributionsCsv => 'CSV';
+
+  @override
+  String get contributionsComingSoon => 'Bientôt disponible';
+
+  @override
+  String get contributionsClipboard => 'Presse-papiers';
+
+  @override
+  String get contributionsCopyingCsv => 'Copie du CSV…';
+
+  @override
+  String get contributionsExportDisabled => 'Export désactivé';
+
+  @override
+  String get contributionsCheckingLatestEntries =>
+      'Vérification des dernières entrées';
+
+  @override
+  String get contributionsRefreshBeforeExporting =>
+      'Actualisez avant d’exporter';
+
+  @override
+  String get contributionsCopyCsvStatement => 'Copier le relevé CSV';
+
+  @override
+  String contributionsStatementSummarySemantic(
+    String group,
+    int count,
+    String total,
+  ) {
+    return 'Relevé public de $group, $count entrées, total confirmé $total';
+  }
+
+  @override
+  String get contributionsConfirmedTotalUpper => 'TOTAL CONFIRMÉ';
+
+  @override
+  String contributionsPublicEntriesInRange(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count entrées publiques dans cette période',
+      one: '1 entrée publique dans cette période',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contributionsStatementPrivacy =>
+      'Uniquement les alias publics. Les noms, téléphones, références de paiement et identifiants de compte sont exclus.';
+
+  @override
+  String contributionsFormatSemantic(String label, String helper) {
+    return 'Format d’export $label, $helper';
+  }
+
+  @override
+  String get contributionsPreviewUpper => 'APERÇU';
+
+  @override
+  String contributionsPreviewShowing(int count) {
+    return 'Affichage de 5 entrées sur $count. Le CSV comprend toute la période limitée.';
+  }
+
+  @override
+  String get contributionsPreviewPublicFields =>
+      'Le CSV comprend uniquement les champs publics affichés ci-dessous.';
+
+  @override
+  String get contributionsNoStatementEntriesTitle => 'Aucune entrée de relevé';
+
+  @override
+  String get contributionsNoStatementEntriesMessage =>
+      'Aucune contribution publique ne correspond à cette période. Choisissez-en une autre et actualisez.';
+
+  @override
+  String get contributionsStatementOfflineTitle => 'Relevé hors ligne';
+
+  @override
+  String get contributionsStatementRestoredMessage =>
+      'Actualisez pour vérifier les dernières entrées publiques confirmées.';
+
+  @override
+  String get contributionsStatementOfflineMessage =>
+      'Reconnectez-vous pour charger ce relevé public.';
+
+  @override
+  String get contributionsStatementNotFoundTitle => 'Relevé introuvable';
+
+  @override
+  String get contributionsStatementNotFoundMessage =>
+      'L’initiative peut être fermée ou le lien du relevé n’est peut-être plus valide.';
+
+  @override
+  String get contributionsStatementUnavailableTitle => 'Relevé indisponible';
+
+  @override
+  String get contributionsStatementAccessMessage =>
+      'Votre accès actuel au club ne permet pas ce relevé.';
+
+  @override
+  String get contributionsStatementChangedTitle => 'Le relevé a changé';
+
+  @override
+  String get contributionsStatementChangedMessage =>
+      'Actualisez et vérifiez les dernières entrées avant d’exporter.';
+
+  @override
+  String get contributionsStatementTimeoutTitle =>
+      'La vérification du relevé a expiré';
+
+  @override
+  String get contributionsStatementTimeoutMessage =>
+      'Aucun relevé actuel n’a été confirmé. Actualisez avant d’exporter.';
+
+  @override
+  String get contributionsStatementUnavailableMessage =>
+      'Actualisez et réessayez lorsque le registre public sera disponible.';
+
+  @override
+  String get contributionsConnectBeforeContributing =>
+      'Connectez-vous avant de contribuer. Aucun paiement ni contribution n’a été envoyé.';
+
+  @override
+  String get contributionsDialerFailed =>
+      'Impossible d’ouvrir le composeur MOMO. La contribution n’a pas été envoyée.';
+
+  @override
+  String contributionsStatusAnnouncement(String heading, String message) {
+    return '$heading. $message';
+  }
+
+  @override
+  String get contributionsAmountPrompt => 'COMBIEN VOULEZ-VOUS CONTRIBUER ?';
+
+  @override
+  String contributionsQuickAmount(int thousands) {
+    return '+${thousands}K';
+  }
+
+  @override
+  String get contributionsLaunchMomoDialer => 'Ouvrir le composeur MOMO';
+
+  @override
+  String get contributionsLaunchingMomo => 'OUVERTURE DE MOMO';
+
+  @override
+  String get contributionsChangeAmount => 'Changer le montant';
+
+  @override
+  String get contributionsDialNow => 'Composer maintenant';
+
+  @override
+  String get contributionsCancel => 'Annuler la contribution';
+
+  @override
+  String get contributionsPaymentConfirmedTitle => 'PAIEMENT CONFIRMÉ';
+
+  @override
+  String contributionsPaymentConfirmedMessage(String amount) {
+    return 'Votre contribution de $amount a été vérifiée et enregistrée.';
+  }
+
+  @override
+  String get contributionsPaymentFailedTitle => 'ÉCHEC DU PAIEMENT';
+
+  @override
+  String get contributionsPaymentFailedMessage =>
+      'Le paiement n’a pas pu être vérifié. Vérifiez votre solde MoMo et réessayez, ou contactez le support.';
+
+  @override
+  String get contributionsPaymentProcessingTitle => 'TOUJOURS EN TRAITEMENT';
+
+  @override
+  String get contributionsPaymentProcessingMessage =>
+      'Le paiement prend plus de temps que prévu. Consultez le registre du groupe. Si le transfert MoMo est terminé, il apparaîtra bientôt.';
+
+  @override
+  String get contributionsRecordFailedTitle => 'ENREGISTREMENT IMPOSSIBLE';
+
+  @override
+  String get contributionsRecordFailedMessage =>
+      'Le composeur MoMo s’est ouvert, mais la contribution n’a pas été enregistrée. Revenez au groupe et réessayez.';
+
+  @override
+  String get contributionsAwaitingPaymentTitle => 'PAIEMENT EN ATTENTE';
+
+  @override
+  String get contributionsAwaitingPaymentMessage =>
+      'Terminez le paiement MoMo sur votre téléphone. La contribution reste « En traitement » jusqu’à confirmation.';
+
+  @override
+  String get contributionsCheckingPaymentStatus => 'Vérification du paiement…';
+
+  @override
+  String get contributionsVerifiedUpper => 'VÉRIFIÉ';
+
+  @override
+  String get contributionsDone => 'Terminé';
+
+  @override
+  String get contributionsBackToGroup => 'Retour au groupe';
+
+  @override
+  String get contributionsEnableMomoSmsTitle =>
+      'ACTIVER LA SYNCHRONISATION SMS MOMO';
+
+  @override
+  String contributionsSmsPrivacyMessage(String app) {
+    return '$app lit uniquement les confirmations MoMo pour enregistrer automatiquement les reçus. Les autres messages ne sont pas consultés.';
+  }
+
+  @override
+  String get contributionsAllowSmsReading => 'Autoriser la lecture des SMS';
+
+  @override
+  String get contributionsEnable => 'Activer';
+
+  @override
+  String get contributionsNotNowUpper => 'PAS MAINTENANT';
 }

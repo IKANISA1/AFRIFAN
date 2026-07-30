@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_club/feat_club.dart';
@@ -110,6 +111,40 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(MatchListScreen), findsOneWidget);
+  });
+
+  testWidgets('renders the empty ticket journey in French', (tester) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(
+      _buildTicketingApp(
+        ticketMatchesProvider.overrideWith((ref) async => const <ClubMatch>[]),
+        locale: const Locale('fr'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('BILLETS'), findsOneWidget);
+    expect(find.text('Aucun match avec billetterie à venir'), findsOneWidget);
+    expect(find.text('Actualiser'), findsWidgets);
+  });
+
+  testWidgets('renders the empty ticket journey in Kinyarwanda', (
+    tester,
+  ) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(
+      _buildTicketingApp(
+        ticketMatchesProvider.overrideWith((ref) async => const <ClubMatch>[]),
+        locale: const Locale('rw'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('AMATIKE'), findsOneWidget);
+    expect(find.text('Nta mukino uri imbere ufite amatike'), findsOneWidget);
+    expect(find.text('Vugurura'), findsWidgets);
   });
 
   testWidgets('matches the ticketing error layout', (tester) async {
@@ -355,6 +390,7 @@ Widget _buildTicketingApp(
   Brightness brightness = Brightness.dark,
   Key? goldenKey,
   String? autofocusMatchId,
+  Locale locale = const Locale('en'),
 }) {
   final router = GoRouter(
     initialLocation: '/tickets',
@@ -385,6 +421,9 @@ Widget _buildTicketingApp(
       ticketMatchesOverride,
     ],
     child: MaterialApp.router(
+      locale: locale.languageCode == 'rw' ? const Locale('en') : locale,
+      localizationsDelegates: AfriLocalizations.localizationsDelegates,
+      supportedLocales: const <Locale>[Locale('en'), Locale('fr')],
       theme: ClubTheme.from(
         ClubConfig.fallback(),
         brightness: brightness,
@@ -392,11 +431,14 @@ Widget _buildTicketingApp(
       routerConfig: router,
       builder: (context, child) {
         final mediaQuery = MediaQuery.of(context);
-        return MediaQuery(
-          data: mediaQuery.copyWith(disableAnimations: true),
-          child: ClubConfigScope(
-            config: ClubConfig.fallback(),
-            child: child ?? const SizedBox.shrink(),
+        return AfriLocalizationsScope(
+          locale: locale,
+          child: MediaQuery(
+            data: mediaQuery.copyWith(disableAnimations: true),
+            child: ClubConfigScope(
+              config: ClubConfig.fallback(),
+              child: child ?? const SizedBox.shrink(),
+            ),
           ),
         );
       },

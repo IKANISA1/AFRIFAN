@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -57,7 +58,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _error = 'Could not load public communities right now.';
+          _error = context.afriL10n.contributionsCommunitiesLoadError;
         });
       }
     }
@@ -65,6 +66,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final currency = CurrencyFormatter(
       currencyCode: context.afriCurrencyCode,
       currencySymbol: context.afriCurrencySymbol,
@@ -77,10 +79,13 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Communities', style: TypographyTokens.headlineSmall()),
+        title: Text(
+          l10n.contributionsCommunitiesTitle,
+          style: TypographyTokens.headlineSmall(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
-          tooltip: 'Back',
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           onTap: () {
             if (context.canPop()) {
               context.pop();
@@ -110,7 +115,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                     children: [
                       Expanded(
                         child: AfriMetricTile(
-                          label: 'Initiatives',
+                          label: l10n.contributionsInitiatives,
                           value: '${_groups.length}',
                           accentColor: ColorTokens.clubAccent,
                         ),
@@ -118,7 +123,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                       const SizedBox(width: SpacingTokens.spacing3),
                       Expanded(
                         child: AfriMetricTile(
-                          label: 'Contributed',
+                          label: l10n.contributionsContributed,
                           value: currency.formatPlain(totalContributed),
                           meta: context.afriCurrencyCode,
                         ),
@@ -129,8 +134,10 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
               ),
 
             if (_groups.isNotEmpty)
-              const SliverToBoxAdapter(
-                child: AfriSectionHeader(title: 'Active initiatives'),
+              SliverToBoxAdapter(
+                child: AfriSectionHeader(
+                  title: l10n.contributionsActiveInitiatives,
+                ),
               ),
 
             const SliverToBoxAdapter(
@@ -155,9 +162,9 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                     horizontal: SpacingTokens.spacing6,
                   ),
                   child: AfriStateView.offline(
-                    title: 'Communities unavailable',
+                    title: l10n.contributionsCommunitiesUnavailableTitle,
                     message: _error!,
-                    actionLabel: 'Retry',
+                    actionLabel: l10n.retry,
                     onAction: _loadGroups,
                     compact: true,
                   ),
@@ -171,10 +178,8 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                     horizontal: SpacingTokens.spacing6,
                   ),
                   child: AfriStateView.empty(
-                    title: 'Community board is quiet',
-                    message:
-                        'Public contribution communities will appear here '
-                        'when the club opens the next supporter initiative.',
+                    title: l10n.contributionsCommunityQuietTitle,
+                    message: l10n.contributionsCommunityQuietMessage,
                     compact: true,
                   ),
                 ),

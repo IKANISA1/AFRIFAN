@@ -153,7 +153,10 @@ class _GlassSurface extends StatelessWidget {
                     width: BorderTokens.standard,
                   ),
             boxShadow: [
-              ...AfriShadows.glass(strength: isPressed ? 0.65 : 1.0),
+              ...AfriShadows.glass(
+                Theme.of(context).brightness,
+                strength: isPressed ? 0.65 : 1.0,
+              ),
               if (isFocused)
                 AfriShadows.focusGlow(ColorTokens.primaryContainer),
             ],

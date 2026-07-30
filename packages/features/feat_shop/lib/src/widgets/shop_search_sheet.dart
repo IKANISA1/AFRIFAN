@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ void showShopSearchSheet({
                     controller: searchController,
                     autofocus: true,
                     onChanged: (value) => setModalState(() => query = value),
-                    hint: 'Search kits, scarves, and drops',
+                    hint: context.afriL10n.shopSearchHint,
                     prefixIcon: AfriIcons.search,
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
@@ -70,9 +71,12 @@ void showShopSearchSheet({
                         );
                         final product = results[index];
                         final id = product['id']?.toString() ?? '';
-                        final name = product['name']?.toString() ?? 'Product';
+                        final name =
+                            product['name']?.toString() ??
+                            context.afriL10n.shopProductFallback;
                         final category =
-                            product['category']?.toString() ?? 'Merch';
+                            product['category']?.toString() ??
+                            context.afriL10n.shopMerchFallback;
                         final price =
                             (product['price'] as num?)?.toDouble() ?? 0;
 

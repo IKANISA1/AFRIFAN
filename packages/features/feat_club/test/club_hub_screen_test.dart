@@ -24,6 +24,13 @@ void main() {
     expect(find.text(l10n.clubProjectsTitle), findsOneWidget);
     expect(find.text(l10n.clubTicketsTitle), findsOneWidget);
     expect(find.text(l10n.clubShopTitle), findsOneWidget);
+    final appBarTitle = tester.widget<Text>(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.text(l10n.clubTitle),
+      ),
+    );
+    expect(appBarTitle.style?.fontStyle, isNot(FontStyle.italic));
   });
 
   testWidgets('retains verified app identity when live club lookup fails', (

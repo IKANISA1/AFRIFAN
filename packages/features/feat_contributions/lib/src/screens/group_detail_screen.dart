@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -41,6 +42,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final detailAsync = ref.watch(groupDetailProvider(widget.groupId));
     final configuredActionsEnabled = ref.watch(
       groupContributionActionsEnabledProvider,
@@ -62,7 +64,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           appBar: AfriAppBar(
             backgroundColor: ColorTokens.transparent,
             title: Text(
-              'PUBLIC INITIATIVE',
+              l10n.contributionsInitiativeTitle,
               style: TypographyTokens.titleLarge(
                 ColorTokens.chromeForeground,
               ).copyWith(fontWeight: FontWeight.w700),
@@ -83,9 +85,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                 padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                 children: [
                   AfriStateView.loading(
-                    title: 'Loading public initiative',
-                    message:
-                        'Checking the confirmed total and public contribution ledger.',
+                    title: l10n.contributionsInitiativeLoadingTitle,
+                    message: l10n.contributionsInitiativeLoadingMessage,
                   ),
                 ],
               ),
@@ -107,8 +108,13 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   }
 
   Widget _buildFailureView(Object error, bool isOnline) {
+    final l10n = context.afriL10n;
     final failure = GroupDetailFailure.fromError(error);
-    final content = _GroupDetailFailureContent.fromFailure(failure, isOnline);
+    final content = _GroupDetailFailureContent.fromFailure(
+      failure,
+      isOnline,
+      l10n,
+    );
     final refreshAction = content.canRefresh
         ? () => unawaited(_refresh())
         : null;
@@ -117,20 +123,20 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       GroupDetailFailureKind.offline => AfriStateView.offline(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.contributionsRefresh : null,
         onAction: refreshAction,
       ),
       GroupDetailFailureKind.notFound => AfriStateView.empty(
         title: content.title,
         message: content.message,
         icon: AfriIcons.groups,
-        actionLabel: 'Back to communities',
+        actionLabel: l10n.contributionsBackToCommunities,
         onAction: _goBack,
       ),
       _ => AfriStateView.error(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.contributionsRefresh : null,
         onAction: refreshAction,
       ),
     };
@@ -141,6 +147,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     required bool isOnline,
     required bool configuredActionsEnabled,
   }) {
+    final l10n = context.afriL10n;
     final snapshot = state.snapshot;
     final group = snapshot.group;
     final paymentConfigured =
@@ -156,33 +163,30 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
 
     if (state.phase == GroupDetailPhase.syncing) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.refresh,
-          title: 'Refreshing initiative',
-          subtitle:
-              'Keeping the last confirmed total and ledger visible while new activity is checked.',
+          title: l10n.contributionsInitiativeRefreshingTitle,
+          subtitle: l10n.contributionsInitiativeRefreshingMessage,
           tone: AfriStateBannerTone.info,
           compact: true,
         ),
       );
     } else if (!configuredActionsEnabled) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.lock,
-          title: 'Contributions are read-only',
-          subtitle:
-              'Confirmed public activity remains visible, but starting a payment is disabled for this build.',
+          title: l10n.contributionsReadOnlyTitle,
+          subtitle: l10n.contributionsReadOnlyMessage,
           tone: AfriStateBannerTone.warning,
           compact: true,
         ),
       );
     } else if (!isOnline) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.offline,
-          title: 'Showing saved initiative data',
-          subtitle:
-              'Reconnect and refresh before starting a payment or relying on the latest total.',
+          title: l10n.contributionsSavedInitiativeTitle,
+          subtitle: l10n.contributionsSavedInitiativeMessage,
           tone: AfriStateBannerTone.warning,
           compact: true,
         ),
@@ -194,7 +198,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
         children.add(
           AfriButton(
             key: const ValueKey<String>('group-detail-refresh-action'),
-            label: 'REFRESH INITIATIVE',
+            label: l10n.contributionsRefreshInitiativeUpper,
             icon: AfriIcons.refresh,
             variant: AfriButtonVariant.outline,
             labelMaxLines: 2,
@@ -204,22 +208,20 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       }
     } else if (!initiativeOpen) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.lock,
-          title: 'Contributions are closed',
-          subtitle:
-              'The confirmed total and public ledger remain available for review.',
+          title: l10n.contributionsClosedTitle,
+          subtitle: l10n.contributionsClosedMessage,
           tone: AfriStateBannerTone.info,
           compact: true,
         ),
       );
     } else if (!paymentConfigured) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.warning,
-          title: 'Payment route unavailable',
-          subtitle:
-              'No payment will start until the club publishes a verified recipient.',
+          title: l10n.contributionsPaymentRouteUnavailableTitle,
+          subtitle: l10n.contributionsPaymentRouteUnavailableMessage,
           tone: AfriStateBannerTone.warning,
           compact: true,
         ),
@@ -277,15 +279,18 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     required bool initiativeOpen,
     required bool paymentConfigured,
   }) {
-    if (!configuredActionsEnabled) return 'Contributions disabled';
-    if (!isOnline) return 'Connection required';
-    if (!initiativeOpen) return 'Contributions closed';
-    if (!paymentConfigured) return 'Payment unavailable';
-    if (state.phase == GroupDetailPhase.syncing) return 'Checking latest total';
-    if (state.phase == GroupDetailPhase.degraded) {
-      return 'Refresh before contributing';
+    final l10n = context.afriL10n;
+    if (!configuredActionsEnabled) return l10n.contributionsDisabled;
+    if (!isOnline) return l10n.connectionRequired;
+    if (!initiativeOpen) return l10n.contributionsClosed;
+    if (!paymentConfigured) return l10n.contributionsPaymentUnavailable;
+    if (state.phase == GroupDetailPhase.syncing) {
+      return l10n.contributionsCheckingLatestTotal;
     }
-    return 'Contribute now';
+    if (state.phase == GroupDetailPhase.degraded) {
+      return l10n.contributionsRefreshBeforeContributing;
+    }
+    return l10n.contributionsContributeNow;
   }
 }
 
@@ -306,6 +311,7 @@ class _GroupSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final currency = CurrencyFormatter(
       currencyCode: context.afriCurrencyCode,
       currencySymbol: context.afriCurrencySymbol,
@@ -334,7 +340,7 @@ class _GroupSummaryCard extends StatelessWidget {
           ],
           const SizedBox(height: SpacingTokens.spacing5),
           Text(
-            'Confirmed total',
+            l10n.contributionsConfirmedTotal,
             style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing1),
@@ -346,14 +352,15 @@ class _GroupSummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            'Target ${currency.format(group.targetAmount)} · '
-            '${(progress * 100).round()}%',
+            l10n.contributionsTargetProgress(
+              currency.format(group.targetAmount),
+              (progress * 100).round(),
+            ),
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Semantics(
-            label:
-                '${(progress * 100).round()} percent of the contribution target confirmed',
+            label: l10n.contributionsProgressSemantic((progress * 100).round()),
             child: AfriLinearProgressIndicator(
               value: progress,
               minHeight: 10,
@@ -368,11 +375,16 @@ class _GroupSummaryCard extends StatelessWidget {
             runSpacing: SpacingTokens.spacing3,
             children: [
               _GroupMetaStat(
-                label: 'TYPE',
-                value: group.groupType.label.toUpperCase(),
+                label: l10n.contributionsTypeUpper,
+                value: switch (group.groupType) {
+                  ContributionGroupType.project =>
+                    l10n.contributionsTypeProject,
+                  ContributionGroupType.community =>
+                    l10n.contributionsTypeCommunity,
+                },
               ),
               _GroupMetaStat(
-                label: 'CONTRIBUTORS',
+                label: l10n.contributionsContributorsUpper,
                 value: '${group.memberCount}',
               ),
             ],
@@ -382,8 +394,8 @@ class _GroupSummaryCard extends StatelessWidget {
             key: const ValueKey<String>('group-detail-contribute-action'),
             label: actionLabel,
             semanticsLabel: actionEnabled
-                ? 'Contribute to ${group.name}'
-                : '$actionLabel. Payment is unavailable.',
+                ? l10n.contributionsContributeToSemantic(group.name)
+                : l10n.contributionsPaymentUnavailableSemantic(actionLabel),
             fullWidth: true,
             labelMaxLines: 2,
             focusNode: actionFocusNode,
@@ -408,12 +420,13 @@ class GroupLedgerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return Column(
       key: const ValueKey<String>('group-detail-ledger'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PUBLIC LEDGER',
+          l10n.contributionsPublicLedgerTitle,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
@@ -421,22 +434,20 @@ class GroupLedgerSection extends StatelessWidget {
         ),
         const SizedBox(height: SpacingTokens.spacing2),
         Text(
-          'Public supporter aliases only. Payment references and account details are never shown.',
+          l10n.contributionsPublicLedgerPrivacy,
           style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         if (ledger.isEmpty)
-          const GlassCard(
-            key: ValueKey<String>('group-ledger-empty'),
+          GlassCard(
+            key: const ValueKey<String>('group-ledger-empty'),
             animate: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('No contributions yet'),
-                SizedBox(height: SpacingTokens.spacing1),
-                Text(
-                  'Confirmed public activity will appear here without exposing payment details.',
-                ),
+                Text(l10n.contributionsLedgerEmptyTitle),
+                const SizedBox(height: SpacingTokens.spacing1),
+                Text(l10n.contributionsLedgerEmptyMessage),
               ],
             ),
           )
@@ -464,7 +475,7 @@ class _GroupMetaStat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: '$label, $value',
+      label: context.afriL10n.contributionsMetaSemantic(label, value),
       child: ConstrainedBox(
         constraints: const BoxConstraints(minWidth: 112),
         child: Column(
@@ -488,6 +499,7 @@ class _LedgerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final metricAccent = ColorTokens.accessibleMetricColor(
       ColorTokens.clubAccent,
     );
@@ -497,13 +509,22 @@ class _LedgerRow extends StatelessWidget {
       GroupLedgerStatus.processing => AfriStatusTone.warning,
       GroupLedgerStatus.failed => AfriStatusTone.error,
     };
+    final statusLabel = switch (entry.status) {
+      GroupLedgerStatus.confirmed => l10n.contributionsStatusConfirmed,
+      GroupLedgerStatus.processing => l10n.contributionsStatusProcessing,
+      GroupLedgerStatus.failed => l10n.contributionsStatusFailed,
+    };
+    final date = AfriDateFormatter.formatDate(entry.createdAt);
     return GlassCard(
       animate: false,
       child: Semantics(
         container: true,
-        label:
-            '${entry.publicAlias}, $amount, ${entry.status.label}, '
-            '${AfriDateFormatter.formatDate(entry.createdAt)}',
+        label: l10n.contributionsLedgerEntrySemantic(
+          entry.publicAlias,
+          amount,
+          statusLabel,
+          date,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -544,9 +565,9 @@ class _LedgerRow extends StatelessWidget {
               spacing: SpacingTokens.spacing3,
               runSpacing: SpacingTokens.spacing2,
               children: [
-                AfriStatusChip(label: entry.status.label, tone: tone),
+                AfriStatusChip(label: statusLabel, tone: tone),
                 Text(
-                  AfriDateFormatter.formatDate(entry.createdAt),
+                  date,
                   style: TypographyTokens.bodySmall(
                     ColorTokens.onSurfaceVariant,
                   ),
@@ -574,43 +595,41 @@ class _GroupDetailFailureContent {
   factory _GroupDetailFailureContent.fromFailure(
     GroupDetailFailure failure,
     bool isOnline,
+    AfriLocalizations l10n,
   ) {
     return switch (failure.kind) {
       GroupDetailFailureKind.offline => _GroupDetailFailureContent(
-        title: isOnline ? 'Connection restored' : 'Initiative offline',
+        title: isOnline
+            ? l10n.contributionsConnectionRestoredTitle
+            : l10n.contributionsInitiativeOfflineTitle,
         message: isOnline
-            ? 'Refresh to check the latest confirmed total and public ledger.'
-            : 'Reconnect to load this public initiative.',
+            ? l10n.contributionsConnectionRestoredMessage
+            : l10n.contributionsInitiativeOfflineMessage,
         canRefresh: isOnline,
       ),
-      GroupDetailFailureKind.notFound => const _GroupDetailFailureContent(
-        title: 'Initiative not found',
-        message:
-            'This contribution initiative may have closed or the link may no longer be valid.',
+      GroupDetailFailureKind.notFound => _GroupDetailFailureContent(
+        title: l10n.contributionsInitiativeNotFoundTitle,
+        message: l10n.contributionsInitiativeNotFoundMessage,
         canRefresh: false,
       ),
-      GroupDetailFailureKind.permissionDenied => const _GroupDetailFailureContent(
-        title: 'Initiative unavailable',
-        message:
-            'Your current club access does not allow this contribution initiative.',
+      GroupDetailFailureKind.permissionDenied => _GroupDetailFailureContent(
+        title: l10n.contributionsInitiativeUnavailableTitle,
+        message: l10n.contributionsInitiativeAccessMessage,
         canRefresh: false,
       ),
-      GroupDetailFailureKind.conflict => const _GroupDetailFailureContent(
-        title: 'Initiative changed',
-        message:
-            'Refresh and review the latest total before starting a contribution.',
+      GroupDetailFailureKind.conflict => _GroupDetailFailureContent(
+        title: l10n.contributionsInitiativeChangedTitle,
+        message: l10n.contributionsInitiativeChangedMessage,
         canRefresh: true,
       ),
-      GroupDetailFailureKind.securityTimeout =>
-        const _GroupDetailFailureContent(
-          title: 'Initiative check timed out',
-          message:
-              'No total was confirmed. Refresh before starting a contribution.',
-          canRefresh: true,
-        ),
-      GroupDetailFailureKind.unknown => const _GroupDetailFailureContent(
-        title: 'Initiative unavailable',
-        message: 'Refresh and try again when the public ledger is available.',
+      GroupDetailFailureKind.securityTimeout => _GroupDetailFailureContent(
+        title: l10n.contributionsInitiativeTimeoutTitle,
+        message: l10n.contributionsInitiativeTimeoutMessage,
+        canRefresh: true,
+      ),
+      GroupDetailFailureKind.unknown => _GroupDetailFailureContent(
+        title: l10n.contributionsInitiativeUnavailableTitle,
+        message: l10n.contributionsInitiativeUnavailableMessage,
         canRefresh: true,
       ),
     };
@@ -624,7 +643,11 @@ class _RetainedGroupDetailFailure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = _GroupDetailFailureContent.fromFailure(failure, true);
+    final content = _GroupDetailFailureContent.fromFailure(
+      failure,
+      true,
+      context.afriL10n,
+    );
     return AfriStateBanner(
       icon: failure.kind == GroupDetailFailureKind.permissionDenied
           ? AfriIcons.lock

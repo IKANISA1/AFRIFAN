@@ -4,7 +4,8 @@ import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_club/feat_club.dart';
-import 'package:feat_contributions/src/screens/club_projects_screen.dart';
+import 'package:feat_contributions/src/screens/club_projects_screen.dart'
+    as contribution_projects;
 import 'package:feat_contributions/src/screens/contributions_hub_screen.dart';
 import 'package:feat_contributions/src/screens/groups_screen.dart';
 import 'package:feat_sms_ledger/feat_sms_ledger.dart';
@@ -222,7 +223,9 @@ void main() {
         () => repository.getContributionGroups(),
       ).thenAnswer((_) async => <ContributionGroup>[]);
 
-      await tester.pumpWidget(createSubject(const ClubProjectsScreen()));
+      await tester.pumpWidget(
+        createSubject(const contribution_projects.ClubProjectsScreen()),
+      );
 
       await tester.pumpAndSettle();
 
@@ -249,7 +252,9 @@ void main() {
         ],
       );
 
-      await tester.pumpWidget(createSubject(const ClubProjectsScreen()));
+      await tester.pumpWidget(
+        createSubject(const contribution_projects.ClubProjectsScreen()),
+      );
 
       await tester.pumpAndSettle();
 
@@ -276,7 +281,9 @@ void main() {
           ],
         );
 
-        await tester.pumpWidget(createSubject(const ClubProjectsScreen()));
+        await tester.pumpWidget(
+          createSubject(const contribution_projects.ClubProjectsScreen()),
+        );
         await tester.pumpAndSettle();
         ConnectivityService.setOnlineForTest(false);
         await tester.pump();
@@ -321,6 +328,21 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+
+      final routeScrollable = find
+          .descendant(
+            of: find.byKey(
+              const ValueKey<String>('contributions-route-golden'),
+            ),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      final routePosition = tester
+          .state<ScrollableState>(routeScrollable)
+          .position;
+      routePosition.jumpTo(routePosition.minScrollExtent);
+      await tester.pumpAndSettle();
+      expect(routePosition.pixels, routePosition.minScrollExtent);
 
       expect(tester.takeException(), isNull);
       await expectLater(

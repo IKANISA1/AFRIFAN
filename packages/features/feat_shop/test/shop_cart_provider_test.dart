@@ -32,7 +32,11 @@ void main() {
 
     test('addRawProduct adds a new item to the cart', () {
       final notifier = container.read(shopCartProvider.notifier);
-      notifier.addRawProduct(rawProductA, partnerId: 'PARTNER1', selectedVariant: 'M');
+      notifier.addRawProduct(
+        rawProductA,
+        partnerId: 'PARTNER1',
+        selectedVariant: 'M',
+      );
 
       final cart = container.read(shopCartProvider);
       expect(cart.length, 1);
@@ -44,8 +48,18 @@ void main() {
 
     test('addRawProduct increments quantity for same product and variant', () {
       final notifier = container.read(shopCartProvider.notifier);
-      notifier.addRawProduct(rawProductA, partnerId: 'PARTNER1', selectedVariant: 'M', quantity: 2);
-      notifier.addRawProduct(rawProductA, partnerId: 'PARTNER1', selectedVariant: 'M', quantity: 1);
+      notifier.addRawProduct(
+        rawProductA,
+        partnerId: 'PARTNER1',
+        selectedVariant: 'M',
+        quantity: 2,
+      );
+      notifier.addRawProduct(
+        rawProductA,
+        partnerId: 'PARTNER1',
+        selectedVariant: 'M',
+        quantity: 1,
+      );
 
       final cart = container.read(shopCartProvider);
       expect(cart.length, 1);
@@ -54,8 +68,16 @@ void main() {
 
     test('addRawProduct creates separate items for different variants', () {
       final notifier = container.read(shopCartProvider.notifier);
-      notifier.addRawProduct(rawProductA, partnerId: 'PARTNER1', selectedVariant: 'M');
-      notifier.addRawProduct(rawProductA, partnerId: 'PARTNER1', selectedVariant: 'L');
+      notifier.addRawProduct(
+        rawProductA,
+        partnerId: 'PARTNER1',
+        selectedVariant: 'M',
+      );
+      notifier.addRawProduct(
+        rawProductA,
+        partnerId: 'PARTNER1',
+        selectedVariant: 'L',
+      );
 
       final cart = container.read(shopCartProvider);
       expect(cart.length, 2);
@@ -90,7 +112,11 @@ void main() {
 
     test('remove removes item completely', () {
       final notifier = container.read(shopCartProvider.notifier);
-      notifier.addRawProduct(rawProductA, partnerId: 'PARTNER1', selectedVariant: 'M');
+      notifier.addRawProduct(
+        rawProductA,
+        partnerId: 'PARTNER1',
+        selectedVariant: 'M',
+      );
       notifier.addRawProduct(rawProductB, partnerId: 'PARTNER1');
 
       var cart = container.read(shopCartProvider);
@@ -104,7 +130,11 @@ void main() {
 
     test('clear empties the cart', () {
       final notifier = container.read(shopCartProvider.notifier);
-      notifier.addRawProduct(rawProductA, partnerId: 'PARTNER1', selectedVariant: 'M');
+      notifier.addRawProduct(
+        rawProductA,
+        partnerId: 'PARTNER1',
+        selectedVariant: 'M',
+      );
       notifier.addRawProduct(rawProductB, partnerId: 'PARTNER1');
 
       notifier.clear();
@@ -113,8 +143,17 @@ void main() {
 
     test('totals providers calculate correctly', () {
       final notifier = container.read(shopCartProvider.notifier);
-      notifier.addRawProduct(rawProductA, partnerId: 'PARTNER1', selectedVariant: 'M', quantity: 2); // 2 * 15000 = 30000
-      notifier.addRawProduct(rawProductB, partnerId: 'PARTNER1', quantity: 3); // 3 * 5000 = 15000
+      notifier.addRawProduct(
+        rawProductA,
+        partnerId: 'PARTNER1',
+        selectedVariant: 'M',
+        quantity: 2,
+      ); // 2 * 15000 = 30000
+      notifier.addRawProduct(
+        rawProductB,
+        partnerId: 'PARTNER1',
+        quantity: 3,
+      ); // 3 * 5000 = 15000
 
       final count = container.read(shopCartItemCountProvider);
       final total = container.read(shopCartTotalProvider);

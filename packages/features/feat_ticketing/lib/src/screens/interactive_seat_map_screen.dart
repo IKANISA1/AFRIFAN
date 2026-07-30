@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/gestures.dart';
@@ -21,13 +22,6 @@ class InteractiveSeatMapScreen extends ConsumerStatefulWidget {
 
 class _InteractiveSeatMapScreenState
     extends ConsumerState<InteractiveSeatMapScreen> {
-  static const List<String> _standZones = <String>[
-    'VIP Gold',
-    'East Stand',
-    'Tribune Red',
-    'Standing',
-  ];
-
   String? _selectedSeat;
   late bool _wasOnline;
 
@@ -69,7 +63,7 @@ class _InteractiveSeatMapScreenState
 
   void _selectStand(String zone) {
     setState(() {
-      _selectedSeat = '$zone, Seat 1';
+      _selectedSeat = context.afriL10n.ticketSeatCode(zone, 1);
     });
   }
 
@@ -89,23 +83,27 @@ class _InteractiveSeatMapScreenState
 
       String zone;
       if (angle > -45 && angle < 45) {
-        zone = 'East Stand';
+        zone = context.afriL10n.ticketStandEast;
       } else if (angle > 45 && angle < 135) {
-        zone = 'Tribune Red'; // Bottom
+        zone = context.afriL10n.ticketStandTribuneRed; // Bottom
       } else if (angle > 135 || angle < -135) {
-        zone = 'VIP Gold'; // West
+        zone = context.afriL10n.ticketStandVipGold; // West
       } else {
-        zone = 'Standing'; // Top
+        zone = context.afriL10n.ticketStandStanding; // Top
       }
 
       setState(() {
-        _selectedSeat = '$zone, Seat ${(angle.abs() * 10).toInt() % 100}';
+        _selectedSeat = context.afriL10n.ticketSeatCode(
+          zone,
+          (angle.abs() * 10).toInt() % 100,
+        );
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final accessEnabled = ref.watch(seatMapAccessEnabledProvider);
     final detailAsync = ref.watch(ticketDetailProvider(widget.matchId));
     final mapAvailable =
@@ -115,7 +113,8 @@ class _InteractiveSeatMapScreenState
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
-        title: Text('SELECT SEAT', style: TypographyTokens.headlineLarge()),
+        title: Text(l10n.ticketSeatMapTitle,
+            style: TypographyTokens.headlineLarge()),
         backgroundColor: ColorTokens.transparent,
         elevation: 0,
         leading: AfriIconButton(
@@ -144,7 +143,7 @@ class _InteractiveSeatMapScreenState
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),
                           AfriButton(
-                            label: 'Confirm',
+                            label: l10n.ticketConfirm,
                             onTap: () => _close(_selectedSeat),
                           ),
                         ],
@@ -160,7 +159,7 @@ class _InteractiveSeatMapScreenState
                           ),
                           const SizedBox(width: SpacingTokens.spacing4),
                           AfriButton(
-                            label: 'Confirm',
+                            label: l10n.ticketConfirm,
                             fullWidth: false,
                             onTap: () => _close(_selectedSeat),
                           ),
@@ -172,9 +171,9 @@ class _InteractiveSeatMapScreenState
       scrollable: false,
       child: !accessEnabled
           ? _SeatMapConsequence(
-              title: 'Seat selection unavailable',
-              body: 'Seat selection is not enabled for this build or club.',
-              actionLabel: 'BACK TO TICKET',
+              title: l10n.ticketSeatSelectionUnavailableTitle,
+              body: l10n.ticketSeatSelectionUnavailableMessage,
+              actionLabel: l10n.ticketBackToTicketUpper,
               onAction: _close,
             )
           : detailAsync.when(
@@ -186,9 +185,9 @@ class _InteractiveSeatMapScreenState
               data: (detail) {
                 if (detail.match == null) {
                   return _SeatMapConsequence(
-                    title: 'Seat map unavailable',
-                    body: 'This fixture could not be found.',
-                    actionLabel: 'BACK TO TICKET',
+                    title: l10n.ticketSeatMapUnavailableTitle,
+                    body: l10n.ticketSeatMapUnavailableMessage,
+                    actionLabel: l10n.ticketBackToTicketUpper,
                     onAction: _close,
                   );
                 }
@@ -205,6 +204,7 @@ class _InteractiveSeatMapScreenState
     TicketDetailState detail, {
     required bool compactControls,
   }) {
+    final l10n = context.afriL10n;
     return Column(
       children: [
         if (_retainedBanner(detail) case final banner?) banner,
@@ -248,13 +248,19 @@ class _InteractiveSeatMapScreenState
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildLegendItem(ColorTokens.clubAccent, 'VIP'),
+                      _buildLegendItem(
+                        ColorTokens.clubAccent,
+                        l10n.ticketLegendVip,
+                      ),
                       const SizedBox(width: SpacingTokens.spacing4),
-                      _buildLegendItem(ColorTokens.clubPrimary, 'Tribune'),
+                      _buildLegendItem(
+                        ColorTokens.clubPrimary,
+                        l10n.ticketLegendTribune,
+                      ),
                       const SizedBox(width: SpacingTokens.spacing4),
                       _buildLegendItem(
                         ColorTokens.outlineVariant,
-                        'Standing',
+                        l10n.ticketStandStanding,
                       ),
                     ],
                   ),
@@ -268,40 +274,41 @@ class _InteractiveSeatMapScreenState
   }
 
   Widget _failureConsequence(Object error) {
+    final l10n = context.afriL10n;
     final failure = error is TicketDetailFailure
         ? error
         : TicketDetailFailure.fromError(error);
     return switch (failure.kind) {
       TicketDetailFailureKind.offline => _SeatMapConsequence(
-          title: 'Seat map unavailable offline',
-          body: 'Connect to confirm current seat availability.',
-          actionLabel: 'BACK TO TICKET',
+          title: l10n.ticketSeatMapOfflineTitle,
+          body: l10n.ticketSeatMapOfflineMessage,
+          actionLabel: l10n.ticketBackToTicketUpper,
           onAction: _close,
         ),
       TicketDetailFailureKind.permissionDenied => _SeatMapConsequence(
-          title: 'Seat map access denied',
-          body: 'This fixture is not available for the current club account.',
-          actionLabel: 'BACK TO TICKET',
+          title: l10n.ticketSeatMapAccessTitle,
+          body: l10n.ticketSeatMapAccessMessage,
+          actionLabel: l10n.ticketBackToTicketUpper,
           onAction: _close,
         ),
       TicketDetailFailureKind.securityTimeout => _SeatMapConsequence(
-          title: 'Seat map security check timed out',
-          body: 'The fixture could not be confirmed safely. Try again.',
-          actionLabel: 'TRY AGAIN',
+          title: l10n.ticketSeatMapSecurityTitle,
+          body: l10n.ticketSeatMapSecurityMessage,
+          actionLabel: l10n.ticketTryAgainUpper,
           onAction: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
         ),
       TicketDetailFailureKind.conflict => _SeatMapConsequence(
-          title: 'Seat map changed',
-          body: 'Refresh the fixture before selecting a seat.',
-          actionLabel: 'REFRESH SEAT MAP',
+          title: l10n.ticketSeatMapChangedTitle,
+          body: l10n.ticketSeatMapChangedMessage,
+          actionLabel: l10n.ticketRefreshSeatMapUpper,
           onAction: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
         ),
       TicketDetailFailureKind.unknown => _SeatMapConsequence(
-          title: 'Unable to load seat map',
-          body: 'The fixture could not be confirmed. Try again.',
-          actionLabel: 'TRY AGAIN',
+          title: l10n.ticketSeatMapLoadFailedTitle,
+          body: l10n.ticketSeatMapLoadFailedMessage,
+          actionLabel: l10n.ticketTryAgainUpper,
           onAction: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
         ),
@@ -309,17 +316,17 @@ class _InteractiveSeatMapScreenState
   }
 
   Widget? _retainedBanner(TicketDetailState detail) {
+    final l10n = context.afriL10n;
     if (!ConnectivityService.isOnline) {
-      return const _SeatMapStatus(
-        title: 'Showing saved seat map',
-        body:
-            'Seat availability may have changed. Reconnect before confirming.',
+      return _SeatMapStatus(
+        title: l10n.ticketSavedSeatMapTitle,
+        body: l10n.ticketSavedSeatMapMessage,
       );
     }
     if (detail.phase == TicketDetailPhase.syncing) {
-      return const _SeatMapStatus(
-        title: 'Refreshing seat map',
-        body: 'The last confirmed fixture remains visible.',
+      return _SeatMapStatus(
+        title: l10n.ticketRefreshingSeatMapTitle,
+        body: l10n.ticketRefreshingSeatMapMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -327,36 +334,32 @@ class _InteractiveSeatMapScreenState
     if (failure == null) return null;
     return switch (failure.kind) {
       TicketDetailFailureKind.conflict => _SeatMapStatus(
-          title: 'Seat map changed',
-          body:
-              'These are the last confirmed stands. Refresh before selecting.',
-          actionLabel: 'REFRESH SEAT MAP',
+          title: l10n.ticketSeatMapChangedTitle,
+          body: l10n.ticketLastConfirmedStandsMessage,
+          actionLabel: l10n.ticketRefreshSeatMapUpper,
           onAction: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
         ),
       TicketDetailFailureKind.securityTimeout => _SeatMapStatus(
-          title: 'Seat map check timed out',
-          body:
-              'These are the last confirmed stands. Refresh before selecting.',
-          actionLabel: 'REFRESH SEAT MAP',
+          title: l10n.ticketSeatMapCheckTimedOutTitle,
+          body: l10n.ticketLastConfirmedStandsMessage,
+          actionLabel: l10n.ticketRefreshSeatMapUpper,
           onAction: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
         ),
-      TicketDetailFailureKind.permissionDenied => const _SeatMapStatus(
-          title: 'Seat access changed',
-          body: 'The saved map is read-only. Return to the ticket to continue.',
+      TicketDetailFailureKind.permissionDenied => _SeatMapStatus(
+          title: l10n.ticketSeatAccessChangedTitle,
+          body: l10n.ticketSavedSeatMapReadOnlyMessage,
           tone: AfriStateBannerTone.danger,
         ),
-      TicketDetailFailureKind.offline => const _SeatMapStatus(
-          title: 'Showing saved seat map',
-          body:
-              'Seat availability may have changed. Reconnect before confirming.',
+      TicketDetailFailureKind.offline => _SeatMapStatus(
+          title: l10n.ticketSavedSeatMapTitle,
+          body: l10n.ticketSavedSeatMapMessage,
         ),
       TicketDetailFailureKind.unknown => _SeatMapStatus(
-          title: 'Seat map refresh failed',
-          body:
-              'These are the last confirmed stands. Refresh before selecting.',
-          actionLabel: 'REFRESH SEAT MAP',
+          title: l10n.ticketSeatMapRefreshFailedTitle,
+          body: l10n.ticketLastConfirmedStandsMessage,
+          actionLabel: l10n.ticketRefreshSeatMapUpper,
           onAction: () =>
               ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
         ),
@@ -364,8 +367,15 @@ class _InteractiveSeatMapScreenState
   }
 
   Widget _buildAccessibleStandPicker({required bool compact}) {
+    final l10n = context.afriL10n;
+    final standZones = <String>[
+      l10n.ticketStandVipGold,
+      l10n.ticketStandEast,
+      l10n.ticketStandTribuneRed,
+      l10n.ticketStandStanding,
+    ];
     final buttons = <Widget>[
-      for (final zone in _standZones)
+      for (final zone in standZones)
         Semantics(
           selected: _selectedSeat?.startsWith(zone) == true,
           child: AfriButton(
@@ -375,8 +385,8 @@ class _InteractiveSeatMapScreenState
                 ? AfriButtonVariant.primary
                 : AfriButtonVariant.outline,
             semanticsLabel: _selectedSeat?.startsWith(zone) == true
-                ? 'Selected $zone stand'
-                : 'Select $zone stand',
+                ? l10n.ticketSelectedStandSemantic(zone)
+                : l10n.ticketSelectStandSemantic(zone),
             onTap: () => _selectStand(zone),
           ),
         ),
@@ -447,7 +457,7 @@ class _SelectedSeatLabel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'SELECTED SEAT',
+          context.afriL10n.ticketSelectedSeatUpper,
           style: TypographyTokens.labelSmall().copyWith(
             color: ColorTokens.onSurfaceVariant,
           ),
@@ -601,12 +611,13 @@ class _TappableSeatMapState extends State<_TappableSeatMap> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return Semantics(
       button: true,
       label: widget.selectedSeat == null
-          ? 'Interactive stadium seat map'
-          : 'Interactive stadium seat map, selected ${widget.selectedSeat}',
-      hint: 'Tap a stand to select a seat',
+          ? l10n.ticketSeatMapSemantic
+          : l10n.ticketSeatMapSelectedSemantic(widget.selectedSeat!),
+      hint: l10n.ticketSeatMapHint,
       onTap: _handleSemanticTap,
       child: Listener(
         behavior: HitTestBehavior.opaque,

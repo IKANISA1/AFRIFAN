@@ -232,7 +232,7 @@ class _FixtureSettlementScreenState
         builder: (context, state) => DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: ShapeTokens.cardRadius,
-            border: Border.all(
+            border: BorderTokens.all(
               color: state.isFocused
                   ? ColorTokens.primaryContainer
                   : state.isPressed
@@ -630,7 +630,10 @@ class _StatusChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainer,
         borderRadius: ShapeTokens.buttonRadius,
-        border: Border.all(color: color.withValues(alpha: 0.7)),
+        border: BorderTokens.all(
+          color: color.withValues(alpha: 0.7),
+          width: BorderTokens.standard,
+        ),
       ),
       child: Text(
         status.toUpperCase(),

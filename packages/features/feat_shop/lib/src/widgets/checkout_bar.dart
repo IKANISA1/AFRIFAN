@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ class CheckoutBar extends StatelessWidget {
                       style: TypographyTokens.titleLarge(),
                     ),
                     Text(
-                      'Ready to checkout',
+                      context.afriL10n.shopReadyToCheckout,
                       style: TypographyTokens.bodySmall(
                         ColorTokens.onSurfaceVariant,
                       ),
@@ -63,7 +64,7 @@ class CheckoutBar extends StatelessWidget {
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               AfriButton(
-                label: 'Checkout',
+                label: context.afriL10n.shopCheckout,
                 icon: AfriIcons.forward,
                 onTap: onCheckout ?? () {},
                 fullWidth: false,

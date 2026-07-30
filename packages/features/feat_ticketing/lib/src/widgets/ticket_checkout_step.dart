@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -46,27 +47,33 @@ class TicketCheckoutStep extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('CHECKOUT SUMMARY', style: TypographyTokens.labelLarge()),
+                Text(
+                  context.afriL10n.ticketCheckoutSummary,
+                  style: TypographyTokens.labelLarge(),
+                ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 TicketSummaryRow(
-                  label: 'Match',
-                  value: '${match.homeTeam} vs ${match.awayTeam}',
+                  label: context.afriL10n.ticketMatchLabel,
+                  value: context.afriL10n.ticketMatchVersus(
+                    match.homeTeam,
+                    match.awayTeam,
+                  ),
                 ),
                 TicketSummaryRow(
-                  label: 'Seat type',
+                  label: context.afriL10n.ticketSeatTypeLabel,
                   value: selectedSeatType.label,
                 ),
                 TicketSummaryRow(
-                  label: 'Quantity',
+                  label: context.afriL10n.ticketQuantityLabel,
                   value: '$quantity',
                 ),
                 if (selectedSeatCode != null)
                   TicketSummaryRow(
-                    label: 'Seat code',
+                    label: context.afriL10n.ticketSeatCodeLabel,
                     value: selectedSeatCode!,
                   ),
                 TicketSummaryRow(
-                  label: 'Total',
+                  label: context.afriL10n.ticketTotalLabel,
                   value: currency.format(total),
                   highlighted: true,
                 ),
@@ -77,7 +84,7 @@ class TicketCheckoutStep extends StatelessWidget {
             const SizedBox(height: SpacingTokens.spacing4),
             AfriStateBanner(
               icon: AfriIcons.statusWarning,
-              title: 'Payment route',
+              title: context.afriL10n.ticketPaymentRouteLabel,
               subtitle: paymentRouteMessage!,
               tone: AfriStateBannerTone.warning,
               compact: true,
@@ -94,7 +101,9 @@ class TicketCheckoutStep extends StatelessWidget {
                   const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
                     child: Text(
-                      'Pay to ${paymentRoute!.payToLabel}\nDialer will open USSD prompt.',
+                      context.afriL10n.ticketPayToDialer(
+                        paymentRoute!.payToLabel,
+                      ),
                       style: TypographyTokens.bodyMedium(),
                     ),
                   ),
@@ -106,14 +115,14 @@ class TicketCheckoutStep extends StatelessWidget {
           ConnectivityBuilder(
             builder: (context, isOnline) => AfriButton(
               label: !isOnline
-                  ? 'Connection required'
+                  ? context.afriL10n.shopConnectionRequired
                   : match.isSoldOut
-                      ? 'Sold out'
+                      ? context.afriL10n.ticketSoldOut
                       : paymentRouteMessage != null
-                          ? 'Payment route not ready'
+                          ? context.afriL10n.shopPaymentRouteNotReady
                           : submitting
-                              ? 'Processing'
-                              : 'Pay via MOMO',
+                              ? context.afriL10n.shopProcessing
+                              : context.afriL10n.ticketPayViaMomo,
               icon: AfriIcons.phone,
               fullWidth: true,
               isLoading: submitting,
@@ -127,7 +136,7 @@ class TicketCheckoutStep extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Text(
-            'Confirm payment after completing the MOMO prompt.',
+            context.afriL10n.ticketConfirmAfterMomo,
             style: TypographyTokens.bodySmall(),
             textAlign: TextAlign.center,
           ),

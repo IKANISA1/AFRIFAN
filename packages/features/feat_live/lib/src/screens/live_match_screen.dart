@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     } catch (error) {
       if (!mounted) return;
       setState(() {
-        _error = 'Could not load the live match center right now.';
+        _error = context.afriL10n.liveMatchLoadError;
         _isLoading = false;
       });
     }
@@ -150,12 +151,12 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
 
   String _statusLabel(String status) {
     return switch (status) {
-      'live' => 'LIVE',
-      'halftime' => 'HALF-TIME',
-      'fulltime' => 'FULL-TIME',
-      'postponed' => 'POSTPONED',
-      'cancelled' => 'CANCELLED',
-      _ => 'UPCOMING',
+      'live' => context.afriL10n.liveStatusLive,
+      'halftime' => context.afriL10n.liveStatusHalfTime,
+      'fulltime' => context.afriL10n.liveStatusFullTime,
+      'postponed' => context.afriL10n.liveStatusPostponed,
+      'cancelled' => context.afriL10n.liveStatusCancelled,
+      _ => context.afriL10n.liveStatusUpcoming,
     };
   }
 
@@ -168,18 +169,27 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     final matchDate = DateTime.tryParse(match['match_date']?.toString() ?? '');
 
     if ((status == 'live' || status == 'halftime') && liveMinute != null) {
-      return '$liveMinute\'  •  ${venue.toUpperCase()}';
+      return context.afriL10n.liveTimeVenue(
+        "$liveMinute'",
+        venue.toUpperCase(),
+      );
     }
 
     if (status == 'fulltime') {
-      return 'FINAL  •  ${venue.toUpperCase()}';
+      return context.afriL10n.liveTimeVenue(
+        context.afriL10n.liveStatusFinal,
+        venue.toUpperCase(),
+      );
     }
 
     if (matchDate != null) {
       final local = matchDate.toLocal();
       final hour = local.hour.toString().padLeft(2, '0');
       final minute = local.minute.toString().padLeft(2, '0');
-      return '$hour:$minute  •  ${venue.toUpperCase()}';
+      return context.afriL10n.liveTimeVenue(
+        '$hour:$minute',
+        venue.toUpperCase(),
+      );
     }
 
     return venue.toUpperCase();
@@ -193,7 +203,9 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
           .map(
             (entry) => MatchIntelEvent(
               minute: entry['minute']?.toString() ?? '',
-              title: entry['title']?.toString() ?? 'Match update',
+              title:
+                  entry['title']?.toString() ??
+                  context.afriL10n.liveMatchUpdate,
               body: entry['body']?.toString() ?? '',
             ),
           )
@@ -217,11 +229,14 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     if (status == 'live' || status == 'halftime') {
       return <MatchIntelEvent>[
         MatchIntelEvent(
-          minute: liveMinute == null ? 'LIVE' : '$liveMinute\'',
-          title: '${homeTeam.toUpperCase()} VS ${awayTeam.toUpperCase()}',
-          body: summary.isEmpty
-              ? 'Live mode active. Events appear in real time.'
-              : summary,
+          minute: liveMinute == null
+              ? context.afriL10n.liveStatusLive
+              : "$liveMinute'",
+          title: context.afriL10n.liveMatchTeamsUpper(
+            homeTeam.toUpperCase(),
+            awayTeam.toUpperCase(),
+          ),
+          body: summary.isEmpty ? context.afriL10n.liveModeActive : summary,
         ),
       ];
     }
@@ -230,8 +245,10 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       return <MatchIntelEvent>[
         MatchIntelEvent(
           minute: 'FT',
-          title: 'MATCH REPORT',
-          body: summary.isEmpty ? 'Match finished. Summary pending.' : summary,
+          title: context.afriL10n.liveMatchReport,
+          body: summary.isEmpty
+              ? context.afriL10n.liveMatchFinishedPending
+              : summary,
         ),
       ];
     }
@@ -239,10 +256,8 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     return <MatchIntelEvent>[
       MatchIntelEvent(
         minute: 'PRE',
-        title: 'MATCHDAY INTEL',
-        body: summary.isEmpty
-            ? 'Fixture published. Live updates start near kickoff.'
-            : summary,
+        title: context.afriL10n.liveMatchdayIntel,
+        body: summary.isEmpty ? context.afriL10n.liveFixturePublished : summary,
       ),
     ];
   }
@@ -252,25 +267,27 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     if (raw is Map) {
       final stats = Map<String, dynamic>.from(raw);
       return <String, String>{
-        'POSSESSION': stats['possession']?.toString() ?? 'TBD',
-        'SHOTS': stats['shots']?.toString() ?? 'TBD',
-        'CORNERS': stats['corners']?.toString() ?? 'TBD',
+        'POSSESSION':
+            stats['possession']?.toString() ?? context.afriL10n.liveStatPending,
+        'SHOTS': stats['shots']?.toString() ?? context.afriL10n.liveStatPending,
+        'CORNERS':
+            stats['corners']?.toString() ?? context.afriL10n.liveStatPending,
       };
     }
 
     final status = _statusOf(match);
     if (status == 'live' || status == 'halftime' || status == 'fulltime') {
-      return const <String, String>{
-        'POSSESSION': 'LIVE',
-        'SHOTS': 'LIVE',
-        'CORNERS': 'LIVE',
+      return <String, String>{
+        'POSSESSION': context.afriL10n.liveStatusLive,
+        'SHOTS': context.afriL10n.liveStatusLive,
+        'CORNERS': context.afriL10n.liveStatusLive,
       };
     }
 
-    return const <String, String>{
-      'POSSESSION': 'TBD',
-      'SHOTS': 'TBD',
-      'CORNERS': 'TBD',
+    return <String, String>{
+      'POSSESSION': context.afriL10n.liveStatPending,
+      'SHOTS': context.afriL10n.liveStatPending,
+      'CORNERS': context.afriL10n.liveStatPending,
     };
   }
 
@@ -315,7 +332,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                       AfriIconButton(
                         icon: AfriIcons.back,
                         onTap: () => context.pop(),
-                        tooltip: 'Back',
+                        tooltip: context.afriL10n.authBack,
                       ),
                   ],
                 ),
@@ -368,17 +385,20 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Match Center', style: TypographyTokens.headlineSmall()),
+        title: Text(
+          context.afriL10n.liveMatchCenter,
+          style: TypographyTokens.headlineSmall(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.authBack,
         ),
         actions: [
           AfriIconButton(
             icon: AfriIcons.history,
             onTap: () => unawaited(context.push('/fanzone/my')),
-            tooltip: 'My Predictions',
+            tooltip: context.afriL10n.liveMyPredictions,
           ),
         ],
       ),
@@ -432,7 +452,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                           ),
                           const SizedBox(width: SpacingTokens.spacing6),
                           Text(
-                            '$homeScore - $awayScore',
+                            context.afriL10n.liveScore(homeScore, awayScore),
                             style: TypographyTokens.displayMedium(),
                           ),
                           const SizedBox(width: SpacingTokens.spacing6),
@@ -466,21 +486,21 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                   children: [
                     Expanded(
                       child: AfriMetricTile(
-                        label: 'Possession',
+                        label: context.afriL10n.liveStatPossession,
                         value: stats['POSSESSION']!,
                       ),
                     ),
                     const SizedBox(width: SpacingTokens.spacing3),
                     Expanded(
                       child: AfriMetricTile(
-                        label: 'Shots',
+                        label: context.afriL10n.liveStatShots,
                         value: stats['SHOTS']!,
                       ),
                     ),
                     const SizedBox(width: SpacingTokens.spacing3),
                     Expanded(
                       child: AfriMetricTile(
-                        label: 'Corners',
+                        label: context.afriL10n.liveStatCorners,
                         value: stats['CORNERS']!,
                       ),
                     ),
@@ -488,13 +508,15 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   top: SpacingTokens.spacing8,
                   bottom: SpacingTokens.spacing4,
                 ),
-                child: AfriSectionHeader(title: 'Match Intel'),
+                child: AfriSectionHeader(
+                  title: context.afriL10n.liveMatchIntel,
+                ),
               ),
             ),
             SliverList(
@@ -524,24 +546,30 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                 child: Column(
                   children: [
                     AfriButton(
-                      label: 'Browse predictions',
+                      label: context.afriL10n.liveBrowsePredictions,
                       onTap: () => context.go('/fanzone/fixtures'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     AfriButton(
-                      label: 'Share match',
+                      label: context.afriL10n.liveShareMatch,
                       variant: AfriButtonVariant.outline,
                       onTap: () async {
                         await Clipboard.setData(
                           ClipboardData(
-                            text:
-                                '${RuntimeBranding.displayAppName}: $homeTeam $homeScore-$awayScore $awayTeam ($statusLabel)',
+                            text: context.afriL10n.liveShareText(
+                              RuntimeBranding.displayAppName,
+                              homeTeam,
+                              homeScore,
+                              awayScore,
+                              awayTeam,
+                              statusLabel,
+                            ),
                           ),
                         );
                         if (context.mounted) {
                           AfriToast.success(
                             context,
-                            'Match update copied to clipboard.',
+                            context.afriL10n.liveMatchCopied,
                           );
                         }
                       },
@@ -626,7 +654,7 @@ class LiveMatchFallbackContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'LIVE CENTER UNAVAILABLE',
+              context.afriL10n.liveCenterUnavailable,
               style: TypographyTokens.headlineMedium(ColorTokens.onDark)
                   .copyWith(
                     fontWeight: FontWeight.w900,
@@ -641,7 +669,11 @@ class LiveMatchFallbackContent extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: SpacingTokens.spacing5),
-            AfriButton(label: 'Refresh', fullWidth: true, onTap: onRetry),
+            AfriButton(
+              label: context.afriL10n.liveRefresh,
+              fullWidth: true,
+              onTap: onRetry,
+            ),
           ],
         ),
       ),

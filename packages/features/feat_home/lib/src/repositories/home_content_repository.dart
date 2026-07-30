@@ -97,6 +97,8 @@ class HomeFeedSnapshot {
     this.quickActions = const <HomeQuickAction>[],
     this.userFet = 0,
     this.fanRank = 0,
+    this.membershipTier,
+    this.membershipPaymentStatus,
     this.status = HomeFeedStatus.empty,
     this.notice,
     this.showFixturePlaceholder = false,
@@ -109,6 +111,8 @@ class HomeFeedSnapshot {
   /// The current user's own activity balance.
   final int userFet;
   final int fanRank;
+  final String? membershipTier;
+  final String? membershipPaymentStatus;
   final HomeFeedStatus status;
   final HomeFeedNotice? notice;
   final bool showFixturePlaceholder;
@@ -117,8 +121,14 @@ class HomeFeedSnapshot {
   bool get hasLeaderboard => leaderboard.isNotEmpty;
   bool get hasHeroSlides => heroSlides.isNotEmpty;
   bool get hasQuickActions => quickActions.isNotEmpty;
+  bool get hasMembership =>
+      membershipTier != null && membershipTier!.trim().isNotEmpty;
   bool get hasAnyContent =>
-      hasHeroSlides || hasStats || hasLeaderboard || hasQuickActions;
+      hasHeroSlides ||
+      hasStats ||
+      hasLeaderboard ||
+      hasQuickActions ||
+      hasMembership;
 
   HomeFeedSnapshot copyWith({
     List<MatchSlide>? heroSlides,
@@ -126,6 +136,8 @@ class HomeFeedSnapshot {
     List<HomeQuickAction>? quickActions,
     int? userFet,
     int? fanRank,
+    String? membershipTier,
+    String? membershipPaymentStatus,
     HomeFeedStatus? status,
     HomeFeedNotice? notice,
     bool? showFixturePlaceholder,
@@ -136,6 +148,9 @@ class HomeFeedSnapshot {
       quickActions: quickActions ?? this.quickActions,
       userFet: userFet ?? this.userFet,
       fanRank: fanRank ?? this.fanRank,
+      membershipTier: membershipTier ?? this.membershipTier,
+      membershipPaymentStatus:
+          membershipPaymentStatus ?? this.membershipPaymentStatus,
       status: status ?? this.status,
       notice: notice ?? this.notice,
       showFixturePlaceholder:
@@ -326,21 +341,28 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     // ── Derive the current user's personal activity balance and rank ──
     var userFet = 0;
     var fanRank = 0;
+    String? membershipTier;
+    String? membershipPaymentStatus;
     if (currentUserId != null) {
       final index = memberships.indexWhere(
         (row) => row['user_id']?.toString() == currentUserId,
       );
       if (index != -1) {
-        userFet = (memberships[index]['points'] as num?)?.toInt() ?? 0;
+        final membership = memberships[index];
+        userFet = (membership['points'] as num?)?.toInt() ?? 0;
         fanRank = index + 1;
+        membershipTier = membership['tier']?.toString();
+        membershipPaymentStatus = membership['payment_status']?.toString();
       } else {
         // User not in the top-20 batch — look up their row directly.
         await _resolveUserFetAndRank(
           scope: scope,
           currentUserId: currentUserId,
-          result: (int fet, int rank) {
+          result: (int fet, int rank, String? tier, String? paymentStatus) {
             userFet = fet;
             fanRank = rank;
+            membershipTier = tier;
+            membershipPaymentStatus = paymentStatus;
           },
         );
       }
@@ -357,6 +379,8 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         quickActions: quickActions,
         userFet: userFet,
         fanRank: fanRank,
+        membershipTier: membershipTier,
+        membershipPaymentStatus: membershipPaymentStatus,
         status: HomeFeedStatus.degraded,
         notice: quickActionsError == null
             ? HomeFeedNotice.partialUnavailable
@@ -382,6 +406,8 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       quickActions: quickActions,
       userFet: userFet,
       fanRank: fanRank,
+      membershipTier: membershipTier,
+      membershipPaymentStatus: membershipPaymentStatus,
       status: HomeFeedStatus.success,
       showFixturePlaceholder: heroSlides.isEmpty,
     );
@@ -392,12 +418,18 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
   Future<void> _resolveUserFetAndRank({
     required ClubScope scope,
     required String currentUserId,
-    required void Function(int fet, int rank) result,
+    required void Function(
+      int fet,
+      int rank,
+      String? tier,
+      String? paymentStatus,
+    )
+    result,
   }) async {
     try {
       var query = client
           .from('fan_memberships')
-          .select('points')
+          .select('points, tier, payment_status')
           .eq('user_id', currentUserId);
       query = ClubScopeResolver(client: client).apply(query, scope);
       final row = await query.maybeSingle();
@@ -414,7 +446,12 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       final higherRows = List<Map<String, dynamic>>.from(await countQuery);
       final rank = higherRows.length + 1;
 
-      result(userPoints, rank);
+      result(
+        userPoints,
+        rank,
+        row['tier']?.toString(),
+        row['payment_status']?.toString(),
+      );
     } catch (error, stackTrace) {
       AfriLogger.warn(
         'HomeContentRepository',

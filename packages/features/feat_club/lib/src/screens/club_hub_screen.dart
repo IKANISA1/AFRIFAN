@@ -28,8 +28,13 @@ class ClubHubScreen extends ConsumerWidget {
     ].join(' • ');
 
     return AfriScreenScaffold(
-      showBackButton: false,
-      title: l10n.clubTitle.toUpperCase(),
+      appBar: AfriAppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          l10n.clubTitle,
+          style: TypographyTokens.headlineSmall(),
+        ),
+      ),
       bottomNavigationAware: true,
       bodyWrapper: (child) => GradientBackground(
         routePath: '/club',

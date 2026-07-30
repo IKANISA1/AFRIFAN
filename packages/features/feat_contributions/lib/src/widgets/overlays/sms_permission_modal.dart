@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,7 +31,7 @@ Future<bool> showSmsPermissionModal(BuildContext context) async {
                 ),
                 const SizedBox(height: SpacingTokens.spacing4),
                 Text(
-                  'ENABLE MOMO SMS SYNC',
+                  context.afriL10n.contributionsEnableMomoSmsTitle,
                   style: TypographyTokens.headlineLarge().copyWith(
                     fontWeight: FontWeight.w800,
                   ),
@@ -38,7 +39,9 @@ Future<bool> showSmsPermissionModal(BuildContext context) async {
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 Text(
-                  '${RuntimeBranding.displayAppName} reads only MoMo confirmations to auto-log receipts. Other messages are not accessed.',
+                  context.afriL10n.contributionsSmsPrivacyMessage(
+                    RuntimeBranding.displayAppName,
+                  ),
                   textAlign: TextAlign.center,
                   style: TypographyTokens.bodyMedium(),
                 ),
@@ -46,12 +49,12 @@ Future<bool> showSmsPermissionModal(BuildContext context) async {
                 AfriSwitchListTile(
                   value: allowReading,
                   activeThumbColor: ColorTokens.clubPrimary,
-                  title: const Text('Allow SMS reading'),
+                  title: Text(context.afriL10n.contributionsAllowSmsReading),
                   onChanged: (value) => setState(() => allowReading = value),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 AfriButton(
-                  label: 'Enable',
+                  label: context.afriL10n.contributionsEnable,
                   fullWidth: true,
                   onTap: () => context.pop(true),
                   enabled: allowReading,
@@ -62,7 +65,7 @@ Future<bool> showSmsPermissionModal(BuildContext context) async {
                   style: AfriOutlinedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 56),
                   ),
-                  child: const Text('NOT NOW'),
+                  child: Text(context.afriL10n.contributionsNotNowUpper),
                 ),
               ],
             ),

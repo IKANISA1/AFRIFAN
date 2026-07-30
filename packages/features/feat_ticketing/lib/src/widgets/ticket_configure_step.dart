@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -64,12 +65,18 @@ class TicketConfigureStep extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${match.homeTeam} vs ${match.awayTeam}',
+                  context.afriL10n.ticketMatchVersus(
+                    match.homeTeam,
+                    match.awayTeam,
+                  ),
                   style: TypographyTokens.headlineLarge(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  '${match.competition}  •  ${match.venue}',
+                  context.afriL10n.ticketCompetitionVenue(
+                    match.competition,
+                    match.venue,
+                  ),
                   style: TypographyTokens.bodyMedium(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
@@ -81,26 +88,31 @@ class TicketConfigureStep extends StatelessWidget {
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  'Remaining capacity: ${match.remainingCapacity}',
+                  context.afriL10n.ticketRemainingCapacity(
+                    match.remainingCapacity,
+                  ),
                   style: TypographyTokens.bodySmall(),
                 ),
               ],
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
-          Text('CHOOSE ACCESS', style: TypographyTokens.labelLarge()),
+          Text(
+            context.afriL10n.ticketChooseAccess,
+            style: TypographyTokens.labelLarge(),
+          ),
           const SizedBox(height: SpacingTokens.spacing3),
           SeatTypeCard(
-            title: 'GENERAL',
-            subtitle: 'Open stands / Bleachers area',
+            title: context.afriL10n.ticketGeneral,
+            subtitle: context.afriL10n.ticketGeneralSubtitle,
             amount: currency.format(match.ticketGeneralPrice),
             selected: generalSelected,
             onTap: () => onSeatTypeChanged(SeatType.general),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           SeatTypeCard(
-            title: 'VIP',
-            subtitle: 'Premium lounge seating',
+            title: context.afriL10n.ticketVip,
+            subtitle: context.afriL10n.ticketVipSubtitle,
             amount: currency.format(match.ticketVipPrice),
             selected: !generalSelected,
             onTap: () => onSeatTypeChanged(SeatType.vip),
@@ -113,7 +125,10 @@ class TicketConfigureStep extends StatelessWidget {
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('QUANTITY', style: TypographyTokens.labelLarge()),
+                      Text(
+                        context.afriL10n.ticketQuantityUpper,
+                        style: TypographyTokens.labelLarge(),
+                      ),
                       const SizedBox(height: SpacingTokens.spacing3),
                       Align(
                         alignment: Alignment.centerRight,
@@ -124,7 +139,10 @@ class TicketConfigureStep extends StatelessWidget {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('QUANTITY', style: TypographyTokens.labelLarge()),
+                      Text(
+                        context.afriL10n.ticketQuantityUpper,
+                        style: TypographyTokens.labelLarge(),
+                      ),
                       quantityControls,
                     ],
                   ),
@@ -135,8 +153,8 @@ class TicketConfigureStep extends StatelessWidget {
             icon: const Icon(AfriIcons.seat),
             label: Text(
               selectedSeatCode == null
-                  ? 'CHOOSE SPECIFIC SEAT'
-                  : 'CHANGE SELECTED SEAT',
+                  ? context.afriL10n.ticketChooseSeat
+                  : context.afriL10n.ticketChangeSeat,
             ),
             style: AfriOutlinedButton.styleFrom(
               minimumSize: const Size(
@@ -150,7 +168,9 @@ class TicketConfigureStep extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing6),
           AfriButton(
-            label: stackControls ? 'Review' : 'Review reservation',
+            label: stackControls
+                ? context.afriL10n.ticketReview
+                : context.afriL10n.ticketReviewReservation,
             onTap: onReviewRequested,
             enabled: !match.isSoldOut && match.isOnSale,
             fullWidth: true,
@@ -173,10 +193,13 @@ class _OfficialTicketCategoryReference extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('OFFICIAL CATEGORIES', style: TypographyTokens.labelLarge()),
+          Text(
+            context.afriL10n.ticketOfficialCategories,
+            style: TypographyTokens.labelLarge(),
+          ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            'Approved public ticket tiers. Sale-specific availability appears when the club activates an official sale.',
+            context.afriL10n.ticketOfficialCategoriesMessage,
             style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing4),

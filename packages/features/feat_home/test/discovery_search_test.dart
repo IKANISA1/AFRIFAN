@@ -23,6 +23,62 @@ void main() {
   group('LocalDiscoverySearchRepository', () {
     const repository = LocalDiscoverySearchRepository();
 
+    test('indexes the canonical football-club route family', () async {
+      for (final testCase in <({String query, String id, String destination})>[
+        (query: 'official club', id: 'club', destination: '/club'),
+        (query: 'squad players', id: 'club-team', destination: '/club/team'),
+        (query: 'official story', id: 'club-news', destination: '/club/news'),
+        (
+          query: 'score matches',
+          id: 'club-results',
+          destination: '/club/results',
+        ),
+        (
+          query: 'club heritage',
+          id: 'club-history',
+          destination: '/club/history',
+        ),
+        (
+          query: 'projects support',
+          id: 'club-projects',
+          destination: '/club/projects',
+        ),
+        (
+          query: 'match schedule',
+          id: 'fixtures',
+          destination: '/club/fixtures',
+        ),
+        (
+          query: 'league table',
+          id: 'standings',
+          destination: '/club/standings',
+        ),
+      ]) {
+        final response = await repository.search(
+          DiscoverySearchQuery(text: testCase.query),
+        );
+        final result = response.results.singleWhere(
+          (item) => item.id == testCase.id,
+        );
+        expect(result.destination, testCase.destination);
+      }
+    });
+
+    test('keeps approved venues secondary under matchday services', () async {
+      final response = await repository.search(
+        const DiscoverySearchQuery(
+          text: 'venue watch',
+          category: DiscoveryCategory.services,
+        ),
+      );
+
+      final venue = response.results.singleWhere(
+        (result) => result.id == 'approved-venues',
+      );
+      expect(venue.destination, '/fanzone/venue');
+      expect(venue.category, DiscoveryCategory.services);
+    });
+
     test(
       'returns bounded fixture results without private identifiers',
       () async {
@@ -688,7 +744,7 @@ void main() {
       tester
           .widget<AfriSegmentedControl>(find.byType(AfriSegmentedControl))
           .selectedIndex,
-      1,
+      DiscoveryCategory.values.indexOf(DiscoveryCategory.supporters),
     );
     expect(tester.takeException(), isNull);
     await expectLater(

@@ -114,6 +114,214 @@ abstract base class SupabaseDiscoverySearchSource
   }
 }
 
+final class SupabaseClubDiscoverySource extends SupabaseDiscoverySearchSource {
+  SupabaseClubDiscoverySource({required super.client})
+    : super(category: DiscoveryCategory.club);
+
+  @override
+  Future<List<DiscoveryResult>> search(DiscoverySearchQuery query) async {
+    if (!supports(query)) {
+      return const <DiscoveryResult>[];
+    }
+
+    final scope = await scopeResolver.requireResolved();
+    final clubId = scope.clubId;
+    if (clubId == null || clubId <= 0) {
+      throw StateError('The active club could not be resolved.');
+    }
+
+    final responses = await Future.wait(<Future<List<DiscoveryResult>>>[
+      _searchIdentity(query, clubId),
+      _searchNews(query, clubId),
+      _searchSquad(query, clubId),
+      _searchHistory(query, clubId),
+      _searchProjects(query, clubId),
+    ]);
+    return responses
+        .expand((items) => items)
+        .take(SupabaseDiscoverySearchSource.sourceLimit)
+        .toList(growable: false);
+  }
+
+  Future<List<DiscoveryResult>> _searchIdentity(
+    DiscoverySearchQuery query,
+    int clubId,
+  ) async {
+    final row = await client
+        .from('african_football_clubs')
+        .select('id, club_name, country_name, league, nickname_brand_identity')
+        .eq('id', clubId)
+        .maybeSingle();
+    if (row == null ||
+        !matches(query, <String?>[
+          row['club_name']?.toString(),
+          row['country_name']?.toString(),
+          row['league']?.toString(),
+          row['nickname_brand_identity']?.toString(),
+        ])) {
+      return const <DiscoveryResult>[];
+    }
+    final name = row['club_name']?.toString().trim() ?? '';
+    if (name.isEmpty) {
+      return const <DiscoveryResult>[];
+    }
+    return <DiscoveryResult>[
+      DiscoveryResult(
+        id: 'club:$clubId',
+        title: name,
+        description: <String>[
+          row['league']?.toString() ?? '',
+          row['country_name']?.toString() ?? '',
+        ].where((value) => value.trim().isNotEmpty).join(' • '),
+        category: DiscoveryCategory.club,
+        destination: '/club',
+        icon: AfriIcons.stadium,
+        keywords: const <String>['club', 'official', 'football'],
+      ),
+    ];
+  }
+
+  Future<List<DiscoveryResult>> _searchNews(
+    DiscoverySearchQuery query,
+    int clubId,
+  ) async {
+    final rows = await client
+        .from('news_articles')
+        .select('id, title, subtitle, category')
+        .eq('club_id', clubId)
+        .eq('is_published', true)
+        .order('published_at', ascending: false)
+        .limit(SupabaseDiscoverySearchSource.sourceLimit * 3);
+    return rows
+        .where(
+          (row) => matches(query, <String?>[
+            row['title']?.toString(),
+            row['subtitle']?.toString(),
+            row['category']?.toString(),
+          ]),
+        )
+        .map((row) {
+          final id = row['id']?.toString() ?? '';
+          return DiscoveryResult(
+            id: 'club-news:$id',
+            title: row['title']?.toString() ?? query.l10n.clubNewsTitle,
+            description:
+                row['subtitle']?.toString() ?? query.l10n.clubNewsSubtitle,
+            category: DiscoveryCategory.club,
+            destination: '/club/news/$id',
+            icon: AfriIcons.article,
+            keywords: const <String>['club', 'news', 'article'],
+          );
+        })
+        .where((result) => !result.destination.endsWith('/'))
+        .toList(growable: false);
+  }
+
+  Future<List<DiscoveryResult>> _searchSquad(
+    DiscoverySearchQuery query,
+    int clubId,
+  ) async {
+    final rows = await client
+        .from('squad_players')
+        .select('id, name, position, nationality')
+        .eq('club_id', clubId)
+        .eq('is_active', true)
+        .order('shirt_number')
+        .limit(SupabaseDiscoverySearchSource.sourceLimit * 3);
+    return rows
+        .where(
+          (row) => matches(query, <String?>[
+            row['name']?.toString(),
+            row['position']?.toString(),
+            row['nationality']?.toString(),
+          ]),
+        )
+        .map(
+          (row) => DiscoveryResult(
+            id: 'club-player:${row['id'] ?? ''}',
+            title: row['name']?.toString() ?? query.l10n.clubTeamTitle,
+            description:
+                row['position']?.toString() ?? query.l10n.clubTeamSubtitle,
+            category: DiscoveryCategory.club,
+            destination: '/club/team',
+            icon: AfriIcons.people,
+            keywords: const <String>['team', 'squad', 'player'],
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  Future<List<DiscoveryResult>> _searchHistory(
+    DiscoverySearchQuery query,
+    int clubId,
+  ) async {
+    final rows = await client
+        .from('ai_content')
+        .select('id, title, subtitle')
+        .eq('club_id', clubId)
+        .eq('content_type', 'club_history')
+        .eq('is_active', true)
+        .order('sort_order')
+        .limit(SupabaseDiscoverySearchSource.sourceLimit * 2);
+    return rows
+        .where(
+          (row) => matches(query, <String?>[
+            row['title']?.toString(),
+            row['subtitle']?.toString(),
+          ]),
+        )
+        .map(
+          (row) => DiscoveryResult(
+            id: 'club-history:${row['id'] ?? ''}',
+            title: row['title']?.toString() ?? query.l10n.clubHistoryTitle,
+            description:
+                row['subtitle']?.toString() ?? query.l10n.clubHistorySubtitle,
+            category: DiscoveryCategory.club,
+            destination: '/club/history',
+            icon: AfriIcons.history,
+            keywords: const <String>['club', 'history', 'heritage'],
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  Future<List<DiscoveryResult>> _searchProjects(
+    DiscoverySearchQuery query,
+    int clubId,
+  ) async {
+    final rows = await client
+        .from('contribution_groups')
+        .select('id, name, description')
+        .eq('club_id', clubId)
+        .eq('is_active', true)
+        .order('created_at', ascending: false)
+        .limit(SupabaseDiscoverySearchSource.sourceLimit * 2);
+    return rows
+        .where(
+          (row) => matches(query, <String?>[
+            row['name']?.toString(),
+            row['description']?.toString(),
+          ]),
+        )
+        .map((row) {
+          final id = row['id']?.toString() ?? '';
+          return DiscoveryResult(
+            id: 'club-project:$id',
+            title: row['name']?.toString() ?? query.l10n.clubProjectsTitle,
+            description:
+                row['description']?.toString() ??
+                query.l10n.clubProjectsSubtitle,
+            category: DiscoveryCategory.club,
+            destination: '/club/projects/$id',
+            icon: AfriIcons.business,
+            keywords: const <String>['club', 'project', 'contribution'],
+          );
+        })
+        .where((result) => !result.destination.endsWith('/'))
+        .toList(growable: false);
+  }
+}
+
 final class SupabaseSupporterDiscoverySource
     extends SupabaseDiscoverySearchSource {
   SupabaseSupporterDiscoverySource({required super.client})
@@ -206,12 +414,64 @@ final class SupabaseFixtureDiscoverySource
                 ? l10n.searchFixtureOnSaleDescription(competition)
                 : l10n.searchFixtureDescription(competition),
             category: DiscoveryCategory.fixtures,
-            destination: '/fanzone/match/$id',
+            destination: '/club/fixtures/$id',
             icon: AfriIcons.fixture,
             keywords: const <String>['fixture', 'match', 'live'],
           );
         })
         .where((result) => !result.destination.endsWith('/'))
+        .toList(growable: false);
+  }
+}
+
+final class SupabaseVenueDiscoverySource extends SupabaseDiscoverySearchSource {
+  SupabaseVenueDiscoverySource({required super.client})
+    : super(category: DiscoveryCategory.services);
+
+  @override
+  Future<List<DiscoveryResult>> search(DiscoverySearchQuery query) async {
+    if (!supports(query)) {
+      return const <DiscoveryResult>[];
+    }
+
+    final l10n = query.l10n;
+    final scope = await scopeResolver.requireResolved();
+    var request = client
+        .from('venues')
+        .select('id, slug, display_name, city, public_summary')
+        .eq('approved_public_profile', true)
+        .eq('status', 'approved');
+    request = scopeResolver.apply(request, scope);
+    final rows = await request
+        .order('display_name')
+        .limit(SupabaseDiscoverySearchSource.sourceLimit * 3);
+
+    return rows
+        .where(
+          (row) => matches(query, <String?>[
+            row['display_name']?.toString(),
+            row['city']?.toString(),
+            row['public_summary']?.toString(),
+          ]),
+        )
+        .take(SupabaseDiscoverySearchSource.sourceLimit)
+        .map((row) {
+          final slug = row['slug']?.toString() ?? '';
+          return DiscoveryResult(
+            id: 'venue:${row['id'] ?? slug}',
+            title: row['display_name']?.toString() ?? l10n.fanZoneVenueCode,
+            description:
+                row['public_summary']?.toString() ??
+                row['city']?.toString() ??
+                l10n.searchFanZoneDescription,
+            category: DiscoveryCategory.services,
+            destination:
+                '/fanzone/venue?venue=${Uri.encodeQueryComponent(slug)}',
+            icon: AfriIcons.location,
+            keywords: const <String>['venue', 'bar', 'watch', 'matchday'],
+          );
+        })
+        .where((result) => !result.destination.endsWith('venue='))
         .toList(growable: false);
   }
 }

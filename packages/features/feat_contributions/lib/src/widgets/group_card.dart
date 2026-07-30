@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,9 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = group['name']?.toString() ?? 'Public group';
+    final l10n = context.afriL10n;
+    final name =
+        group['name']?.toString() ?? l10n.contributionsPublicGroupFallback;
     final target = (group['target_amount'] as num?)?.toDouble() ?? 0;
     final current = (group['current_total'] as num?)?.toDouble() ?? 0;
     final progress = target > 0 ? (current / target).clamp(0.0, 1.0) : 0.0;
@@ -55,7 +58,7 @@ class GroupCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      '$memberCount contributors',
+                      l10n.contributionsContributors(memberCount),
                       style: TypographyTokens.bodyLarge(
                         ColorTokens.onSurfaceVariant,
                       ),
@@ -84,7 +87,7 @@ class GroupCard extends StatelessWidget {
             ),
             const SizedBox(height: SpacingTokens.spacing1),
             Text(
-              '${(progress * 100).toStringAsFixed(0)}% of goal',
+              l10n.contributionsGoalPercent((progress * 100).round()),
               style: TypographyTokens.bodyLarge(ColorTokens.onSurfaceVariant),
             ),
           ],

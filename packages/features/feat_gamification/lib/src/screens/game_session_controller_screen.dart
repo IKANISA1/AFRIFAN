@@ -439,7 +439,7 @@ class _AnswerPad extends StatelessWidget {
             (option) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               child: SizedBox(
-                height: 64,
+                height: SizeTokens.prominentControlHeight,
                 child: _AnswerButton(
                   option: option,
                   selected: option.key == state.selectedOptionKey,
@@ -752,8 +752,8 @@ class _ControllerConsequence extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: SizeTokens.touchTargetMin,
+                  height: SizeTokens.touchTargetMin,
                   decoration: BoxDecoration(
                     color: context.afriSemanticColors.accentSoft,
                     borderRadius: ShapeTokens.buttonRadius,

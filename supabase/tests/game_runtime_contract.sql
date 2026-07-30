@@ -1,7 +1,11 @@
 -- AFRICLUB game runtime contract checks.
--- Run against a migrated database with psql.
+-- Run against a migrated database with `supabase test db`.
+
+create extension if not exists pgtap with schema extensions;
 
 begin;
+
+select plan(9);
 
 do $$
 begin
@@ -18,6 +22,8 @@ begin
     raise exception 'missing africlub_game.answer_claims';
   end if;
 end $$;
+
+select pass('game runtime tables exist');
 
 do $$
 begin
@@ -39,6 +45,8 @@ begin
     raise exception 'missing first-correct unique claim index';
   end if;
 end $$;
+
+select pass('game runtime uniqueness indexes exist');
 
 do $$
 begin
@@ -86,6 +94,8 @@ begin
   end if;
 end $$;
 
+select pass('game runtime RPC signatures exist');
+
 do $$
 declare
   tv_state_source text;
@@ -109,6 +119,8 @@ begin
     raise exception 'TV session state RPC does not emit canonical game runtime shape';
   end if;
 end $$;
+
+select pass('TV projection is canonical and answer-safe');
 
 do $$
 declare
@@ -135,6 +147,8 @@ begin
   end if;
 end $$;
 
+select pass('question review queue exposes governed QA metadata');
+
 do $$
 declare
   table_name text;
@@ -159,6 +173,8 @@ begin
     end if;
   end loop;
 end $$;
+
+select pass('game runtime tables enforce row-level security');
 
 do $$
 declare
@@ -185,6 +201,8 @@ begin
   end if;
 end $$;
 
+select pass('game runtime realtime publication is complete when enabled');
+
 do $$
 begin
   if to_regprocedure('public.exchange_tv_pairing_code(text,bigint)') is null then
@@ -207,6 +225,8 @@ begin
     raise exception 'legacy TV state RPC remains executable by anon';
   end if;
 end $$;
+
+select pass('TV credential RPC and storage contract exists');
 
 do $$
 declare
@@ -264,5 +284,9 @@ begin
     raise exception 'revoked TV credential remained usable: %', v_state;
   end if;
 end $$;
+
+select pass('TV pairing exchange is one-time, hashed, scoped, and revocable');
+
+select * from finish();
 
 rollback;

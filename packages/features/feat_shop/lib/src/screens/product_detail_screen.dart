@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -296,13 +297,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   void _applyAuditSampleProduct() {
     final product = <String, dynamic>{
       'id': _auditSampleProductId,
-      'name': 'Rayon Home Jersey',
+      'name': context.afriL10n.shopSampleProductName,
       'price': 25000,
-      'description':
-          'Official matchday jersey with a premium woven club mark, breathable '
-          'stadium fabric, and club-blue trim for everyday supporters.',
+      'description': context.afriL10n.shopSampleProductDescription,
       'image_url': '',
-      'badge_label': 'OFFICIAL',
+      'badge_label': context.afriL10n.shopOfficialBadge,
       'available_sizes': const ['S', 'M', 'L', 'XL'],
       'inventory_count': 47,
       'in_stock': true,
@@ -345,14 +344,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     }
 
     if (!_isInStock(product)) {
-      AfriToast.error(context, 'This item is currently out of stock.');
+      AfriToast.error(context, context.afriL10n.shopItemOutOfStockToast);
       return;
     }
 
     final sizes = _availableSizes(product);
     if (sizes.isNotEmpty &&
         (_selectedSize == null || !sizes.contains(_selectedSize))) {
-      AfriToast.info(context, 'Select a size before adding to cart.');
+      AfriToast.info(context, context.afriL10n.shopSelectSizeToast);
       return;
     }
 
@@ -365,27 +364,30 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         .addRawProduct(
           product,
           partnerId: user.clubId,
+          fallbackName: context.afriL10n.shopProductFallback,
           selectedVariant: sizes.isEmpty ? null : _selectedSize,
           quantity: quantity,
         );
 
     AfriToast.success(
       context,
-      '${product['name'] ?? 'Product'} added to cart.',
-      actionLabel: 'View Cart',
+      context.afriL10n.shopProductAdded(
+        product['name']?.toString() ?? context.afriL10n.shopProductFallback,
+      ),
+      actionLabel: context.afriL10n.shopViewCartAction,
       onAction: () => context.push('/shop/cart'),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     if (_isNotFound && !_isLoading) {
       return _buildStateScreen(
         AfriStateView.empty(
-          title: 'Product not found',
-          message:
-              'This item is no longer available in the current club store.',
-          actionLabel: 'Back to store',
+          title: l10n.shopProductNotFoundTitle,
+          message: l10n.shopProductNotFoundMessage,
+          actionLabel: l10n.shopBackToStore,
           onAction: _returnToShop,
         ),
       );
@@ -394,10 +396,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     if (_isOffline && !_isLoading) {
       return _buildStateScreen(
         AfriStateView.offline(
-          title: 'Product details offline',
-          message:
-              'Reconnect to check the latest price, size, and availability.',
-          actionLabel: 'Back to store',
+          title: l10n.shopProductOfflineTitle,
+          message: l10n.shopProductOfflineMessage,
+          actionLabel: l10n.shopBackToStore,
           onAction: _returnToShop,
         ),
       );
@@ -407,21 +408,19 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       final failure = _failure!;
       final title = switch (failure.kind) {
         ProductDetailFailureKind.permissionDenied =>
-          'Product access not available',
-        ProductDetailFailureKind.conflict => 'Product details changed',
+          l10n.shopProductAccessTitle,
+        ProductDetailFailureKind.conflict => l10n.shopProductChangedTitle,
         ProductDetailFailureKind.securityTimeout =>
-          'Product security check timed out',
-        ProductDetailFailureKind.unknown => 'Product unavailable',
+          l10n.shopProductSecurityTitle,
+        ProductDetailFailureKind.unknown => l10n.shopProductUnavailableTitle,
       };
       final message = switch (failure.kind) {
         ProductDetailFailureKind.permissionDenied =>
-          'This product cannot be opened with the current account.',
-        ProductDetailFailureKind.conflict =>
-          'Refresh to load the current price, sizes, and availability.',
+          l10n.shopProductAccessMessage,
+        ProductDetailFailureKind.conflict => l10n.shopProductChangedMessage,
         ProductDetailFailureKind.securityTimeout =>
-          'The secure product check took too long. Refresh before buying.',
-        ProductDetailFailureKind.unknown =>
-          'The latest product details could not be loaded.',
+          l10n.shopProductSecurityMessage,
+        ProductDetailFailureKind.unknown => l10n.shopProductUnavailableMessage,
       };
       final canRetry =
           failure.kind != ProductDetailFailureKind.permissionDenied;
@@ -429,7 +428,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         AfriStateView.error(
           title: title,
           message: message,
-          actionLabel: canRetry ? 'Refresh' : null,
+          actionLabel: canRetry ? l10n.shopRefresh : null,
           onAction: canRetry ? () => unawaited(_loadProduct()) : null,
         ),
       );
@@ -439,22 +438,21 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final product =
         _product ??
         {
-          'name': 'Official Jersey Loading',
+          'name': l10n.shopLoadingProductName,
           'price': 25000,
-          'description':
-              'Loading official merchandise details from the armoury...',
+          'description': l10n.shopLoadingProductDescription,
           'image_url': '',
-          'badge_label': 'LOADING',
+          'badge_label': l10n.shopLoadingBadge,
           'sizes': ['S', 'M', 'L', 'XL'],
           'in_stock': true,
         };
 
-    final name = product['name']?.toString() ?? 'Product';
+    final name = product['name']?.toString() ?? l10n.shopProductFallback;
     final price = (product['price'] as num?)?.toInt() ?? 0;
     final currency = _currencyFormatter(context);
     final total = price * _quantity;
     final description =
-        product['description']?.toString() ?? 'Official club merchandise.';
+        product['description']?.toString() ?? l10n.shopOfficialMerchandise;
     final imageUrl = product['image_url']?.toString();
     final imageProvenanceId =
         product['image_provenance_id']?.toString().trim() ?? '';
@@ -479,7 +477,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           leading: AfriIconButton(
             icon: AfriIcons.close,
             onTap: _returnToShop,
-            tooltip: 'Close product details',
+            tooltip: l10n.shopCloseProductDetails,
           ),
         ),
         scrollable: false,
@@ -517,7 +515,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         ),
                         child: AfriIconButton(
                           icon: AfriIcons.back,
-                          tooltip: 'Back',
+                          tooltip: l10n.shopBack,
                           onTap: () {
                             if (context.canPop()) {
                               context.pop();
@@ -537,7 +535,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       if (imageUrl != null && imageUrl.isNotEmpty)
                         AfriGovernedCachedImage(
                           imageUrl: imageUrl,
-                          semanticLabel: '$name product image',
+                          semanticLabel: l10n.shopProductImageSemantic(name),
                           provenanceId: imageProvenanceId.isEmpty
                               ? 'shop:${widget.productId}:unapproved'
                               : imageProvenanceId,
@@ -589,11 +587,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               ? AfriIcons.refresh
                               : AfriIcons.statusWarning,
                           title: _isRefreshing
-                              ? 'Refreshing product details'
-                              : 'Saved product details',
+                              ? l10n.shopRefreshingProductTitle
+                              : l10n.shopSavedProductTitle,
                           subtitle: _isRefreshing
-                              ? 'Current price, sizes, and availability are being checked.'
-                              : 'Reconnect to refresh price, sizes, and availability before buying.',
+                              ? l10n.shopRefreshingProductMessage
+                              : l10n.shopSavedProductMessage,
                           tone: _isRefreshing
                               ? AfriStateBannerTone.info
                               : AfriStateBannerTone.warning,
@@ -655,17 +653,17 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       AfriStatusChip(
                         label: inStock
                             ? (stockCount != null
-                                  ? '$stockCount available now'
-                                  : 'Available now')
-                            : 'Out of stock',
+                                  ? l10n.shopStockAvailable(stockCount)
+                                  : l10n.shopInStock)
+                            : l10n.shopOutOfStock,
                         tone: inStock
                             ? AfriStatusTone.success
                             : AfriStatusTone.error,
                       ),
                       const SizedBox(height: SpacingTokens.spacing8),
                       if (sizes.isNotEmpty) ...[
-                        const AfriSectionHeader(
-                          title: 'Select size',
+                        AfriSectionHeader(
+                          title: l10n.shopSelectSize,
                           padding: EdgeInsets.zero,
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
@@ -683,11 +681,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               },
                               autofocus: widget.autofocusSize == size,
                               selected: selected,
-                              tooltip: 'Size $size',
-                              semanticsLabel: 'Size $size',
+                              tooltip: l10n.shopSizeTooltip(size),
+                              semanticsLabel: l10n.shopSizeTooltip(size),
                               semanticsHint: selected
-                                  ? 'Selected size'
-                                  : 'Select size',
+                                  ? l10n.shopSizeSelectedHint
+                                  : l10n.shopSizeAvailableHint,
                               excludeChildSemantics: true,
                               builder: (context, state) {
                                 return AnimatedContainer(
@@ -802,7 +800,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.close,
           onTap: _returnToShop,
-          tooltip: 'Close product details',
+          tooltip: context.afriL10n.shopCloseProductDetails,
         ),
       ),
       scrollable: false,
@@ -834,7 +832,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           AfriIconButton(
             icon: AfriIcons.remove,
             onTap: _quantity > 1 ? _decrement : null,
-            tooltip: 'Decrease quantity',
+            tooltip: context.afriL10n.shopDecreaseQuantity,
           ),
           SizedBox(
             width: SpacingTokens.spacing10,
@@ -845,7 +843,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           AfriIconButton(
             icon: AfriIcons.add,
             onTap: _quantity < maxQuantity ? _increment : null,
-            tooltip: 'Increase quantity',
+            tooltip: context.afriL10n.shopIncreaseQuantity,
           ),
         ],
       ),
@@ -855,7 +853,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const AfriSectionHeader(title: 'Quantity', padding: EdgeInsets.zero),
+          AfriSectionHeader(
+            title: context.afriL10n.shopQuantity,
+            padding: EdgeInsets.zero,
+          ),
           const SizedBox(height: SpacingTokens.spacing3),
           controls,
         ],
@@ -864,8 +865,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
     return Row(
       children: [
-        const Expanded(
-          child: AfriSectionHeader(title: 'Quantity', padding: EdgeInsets.zero),
+        Expanded(
+          child: AfriSectionHeader(
+            title: context.afriL10n.shopQuantity,
+            padding: EdgeInsets.zero,
+          ),
         ),
         const SizedBox(width: SpacingTokens.spacing4),
         controls,
@@ -884,7 +888,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Total',
+          context.afriL10n.shopTotal,
           style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
         ),
         Text(
@@ -898,7 +902,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       children: [
         AfriButton(
           key: const ValueKey<String>('product-detail-add'),
-          label: 'Add to cart',
+          label: context.afriL10n.shopAddToCart,
           icon: AfriIcons.cart,
           onTap: _addToCart,
           enabled: inStock,
@@ -906,7 +910,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         const SizedBox(height: SpacingTokens.spacing2),
         AfriButton(
           key: const ValueKey<String>('product-detail-buy'),
-          label: 'Buy now',
+          label: context.afriL10n.shopBuyNow,
           variant: AfriButtonVariant.outline,
           onTap: () {
             _addToCart();
@@ -969,12 +973,12 @@ class _AuditSampleProductSummary extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Rayon Home Jersey',
+                  context.afriL10n.shopSampleProductName,
                   style: TypographyTokens.titleMedium(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing1),
                 Text(
-                  'Official kit · S M L XL · 47 available',
+                  context.afriL10n.shopSampleProductSummary,
                   style: TypographyTokens.bodySmall().copyWith(
                     color: ColorTokens.onSurfaceVariant,
                   ),
@@ -1039,8 +1043,8 @@ class _ImageFallback extends StatelessWidget {
               ),
               Text(
                 usesLargeTextLayout
-                    ? 'Product image unavailable'
-                    : 'Official Rayon kit',
+                    ? context.afriL10n.shopProductImageUnavailable
+                    : context.afriL10n.shopOfficialKit,
                 textAlign: TextAlign.center,
                 style: usesLargeTextLayout
                     ? TypographyTokens.titleMedium(ColorTokens.onSurface)
@@ -1049,7 +1053,7 @@ class _ImageFallback extends StatelessWidget {
               if (!usesLargeTextLayout) ...[
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  'Premium matchday merchandise',
+                  context.afriL10n.shopPremiumMerchandise,
                   textAlign: TextAlign.center,
                   style: TypographyTokens.bodyMedium().copyWith(
                     color: ColorTokens.onSurfaceVariant,

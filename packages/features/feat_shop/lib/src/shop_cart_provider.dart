@@ -25,10 +25,15 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
   void addRawProduct(
     Map<String, dynamic> rawProduct, {
     required String partnerId,
+    String fallbackName = '',
     String? selectedVariant,
     int quantity = 1,
   }) {
-    final product = _toClubProduct(rawProduct, partnerId: partnerId);
+    final product = _toClubProduct(
+      rawProduct,
+      partnerId: partnerId,
+      fallbackName: fallbackName,
+    );
     final maxQuantity = _maxQuantityFor(product);
     if (maxQuantity <= 0) {
       return;
@@ -115,6 +120,7 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
   ClubProduct _toClubProduct(
     Map<String, dynamic> rawProduct, {
     required String partnerId,
+    required String fallbackName,
   }) {
     final sizes = switch (rawProduct['available_sizes'] ??
         rawProduct['sizes']) {
@@ -135,7 +141,7 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
           rawProduct['partner_id']?.toString() ??
           rawProduct['club_id']?.toString() ??
           partnerId,
-      name: rawProduct['name']?.toString() ?? 'Product',
+      name: rawProduct['name']?.toString() ?? fallbackName,
       description: rawProduct['description']?.toString() ?? '',
       category: ProductCategoryX.fromValue(rawProduct['category']?.toString()),
       price: (rawProduct['price'] as num?)?.round() ?? 0,

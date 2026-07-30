@@ -190,7 +190,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
         builder: (context, state) => DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: ShapeTokens.cardRadius,
-            border: Border.all(
+            border: BorderTokens.all(
               color: state.isFocused || state.isPressed || selected
                   ? ColorTokens.primaryContainer
                   : ColorTokens.transparent,
@@ -458,7 +458,10 @@ class _StatusChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainer,
         borderRadius: ShapeTokens.buttonRadius,
-        border: Border.all(color: color.withValues(alpha: 0.8)),
+        border: BorderTokens.all(
+          color: color.withValues(alpha: 0.8),
+          width: BorderTokens.standard,
+        ),
       ),
       child: Text(label, style: TypographyTokens.labelSmall(color)),
     );

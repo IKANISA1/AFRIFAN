@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -46,10 +47,9 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
         child: AfriSkeletonList(),
       ),
       error: (error, _) => _TicketWalletState(
-        title: 'Ticket wallet unavailable',
-        body:
-            'We could not load your ticket wallet right now. Check your connection and try again.',
-        actionLabel: 'Retry',
+        title: context.afriL10n.ticketWalletUnavailableTitle,
+        body: context.afriL10n.ticketWalletUnavailableMessage,
+        actionLabel: context.afriL10n.shopRetry,
         onPressed: () => ref.invalidate(myTicketsProvider),
       ),
       data: (tickets) {
@@ -80,10 +80,9 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
           child: AfriSkeletonList(),
         ),
         error: (error, _) => _TicketWalletState(
-          title: 'Ticket wallet unavailable',
-          body:
-              'We could not load your ticket wallet right now. Check your connection and try again.',
-          actionLabel: 'Retry',
+          title: context.afriL10n.ticketWalletUnavailableTitle,
+          body: context.afriL10n.ticketWalletUnavailableMessage,
+          actionLabel: context.afriL10n.shopRetry,
           onPressed: () => ref.invalidate(myTicketsProvider),
         ),
         data: (tickets) => _buildTicketList(context, tickets: tickets),
@@ -93,7 +92,10 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
-        title: Text('MY TICKETS', style: TypographyTokens.headlineLarge()),
+        title: Text(
+          context.afriL10n.ticketMyTickets,
+          style: TypographyTokens.headlineLarge(),
+        ),
         backgroundColor: ColorTokens.transparent,
         elevation: 0,
         leading: AfriIconButton(
@@ -105,14 +107,14 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
           AfriIconButton(
             icon: AfriIcons.refresh,
             onTap: () => ref.invalidate(myTicketsProvider),
-            tooltip: 'Refresh tickets',
+            tooltip: context.afriL10n.ticketRefreshTickets,
           ),
         ],
         bottom: AfriTabBar.line(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'UPCOMING'),
-            Tab(text: 'PAST'),
+          tabs: [
+            Tab(text: context.afriL10n.ticketUpcoming),
+            Tab(text: context.afriL10n.ticketPast),
           ],
         ),
       ),
@@ -128,7 +130,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
     if (tickets.isEmpty) {
       return Center(
         child: AfriButton(
-          label: 'Browse matches',
+          label: context.afriL10n.ticketBrowseMatches,
           icon: AfriIcons.tickets,
           onTap: () => context.go('/tickets'),
         ),
@@ -157,10 +159,13 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
         return AfriPressFeedback(
           onTap: isActive ? () => context.push('/e-ticket/${ticket.id}') : null,
           enabled: isActive,
-          tooltip: isActive ? 'Open ticket QR code' : null,
-          semanticsLabel:
-              '${ticket.matchTitle}, ${ticket.status.name} ticket, ${ticket.seatType.label}',
-          semanticsHint: isActive ? 'Open ticket QR code' : null,
+          tooltip: isActive ? context.afriL10n.ticketOpenQr : null,
+          semanticsLabel: context.afriL10n.ticketWalletSemantic(
+            ticket.matchTitle,
+            ticket.status.name,
+            ticket.seatType.label,
+          ),
+          semanticsHint: isActive ? context.afriL10n.ticketOpenQr : null,
           child: Container(
             decoration: BoxDecoration(
               color: ColorTokens.surface,
@@ -192,13 +197,16 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
                       Text(
-                        '${ticket.seatType.label}  •  ${_currencyFormatter.format(ticket.amountPaid)}',
+                        context.afriL10n.ticketSeatPrice(
+                          ticket.seatType.label,
+                          _currencyFormatter.format(ticket.amountPaid),
+                        ),
                         style: TypographyTokens.bodyMedium(),
                       ),
                       if (isPending) ...[
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          'Payment received on your phone still needs verification before the QR unlocks.',
+                          context.afriL10n.ticketPendingQrMessage,
                           style: TypographyTokens.bodySmall(
                             ColorTokens.onSurfaceVariant,
                           ),

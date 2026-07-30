@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -83,7 +84,7 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Club projects are temporarily unavailable.';
+        _error = context.afriL10n.contributionsProjectsUnavailableMessage;
       });
     }
   }
@@ -95,7 +96,7 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'CLUB PROJECTS',
+          context.afriL10n.contributionsClubProjectsTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -118,9 +119,9 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Projects unavailable',
+                  title: context.afriL10n.contributionsProjectsUnavailableTitle,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.retry,
                   onAction: () => unawaited(_loadProjects()),
                 ),
               ),
@@ -155,7 +156,9 @@ class _ProjectCard extends StatelessWidget {
       currencyCode: context.afriCurrencyCode,
       currencySymbol: context.afriCurrencySymbol,
     );
-    final title = project['name']?.toString() ?? 'Project';
+    final l10n = context.afriL10n;
+    final title =
+        project['name']?.toString() ?? l10n.contributionsProjectFallback;
     final body = project['description']?.toString() ?? '';
     final currentTotal = (project['current_total'] as num?)?.toInt() ?? 0;
     final targetAmount = (project['target_amount'] as num?)?.toInt() ?? 0;
@@ -193,15 +196,23 @@ class _ProjectCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            '${currency.format(currentTotal)} / ${currency.format(targetAmount)}',
+            l10n.contributionsFundingProgress(
+              currency.format(currentTotal),
+              currency.format(targetAmount),
+            ),
             style: TypographyTokens.bodySmall(),
           ),
           const SizedBox(height: SpacingTokens.spacing1),
-          Text('$memberCount supporters', style: TypographyTokens.bodySmall()),
+          Text(
+            l10n.contributionsSupporters(memberCount),
+            style: TypographyTokens.bodySmall(),
+          ),
           const SizedBox(height: SpacingTokens.spacing4),
           ConnectivityBuilder(
             builder: (context, isOnline) => AfriButton(
-              label: isOnline ? 'Contribute' : 'Connection required',
+              label: isOnline
+                  ? l10n.contributionsContributeAction
+                  : l10n.connectionRequired,
               fullWidth: true,
               onTap: () =>
                   unawaited(showMomoAmountEntrySheet(context, title: title)),

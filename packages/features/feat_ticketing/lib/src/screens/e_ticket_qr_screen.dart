@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -101,6 +102,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
     required bool isOnline,
     required bool accessEnabled,
   }) {
+    final l10n = context.afriL10n;
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
@@ -117,10 +119,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
       ),
       scrollable: false,
       child: !accessEnabled
-          ? const _QrState(
-              title: 'E-ticket access unavailable',
-              body:
-                  'Entry codes are disabled for this build. Return to your ticket wallet for status updates.',
+          ? _QrState(
+              title: l10n.ticketQrAccessUnavailableTitle,
+              body: l10n.ticketQrAccessUnavailableMessage,
             )
           : ticketAsync.when(
               loading: () => const Padding(
@@ -131,17 +132,16 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
               data: (routeState) {
                 final ticket = routeState.ticket;
                 if (ticket == null) {
-                  return const _QrState(
-                    title: 'Ticket not found',
-                    body: 'E-ticket unavailable.',
+                  return _QrState(
+                    title: l10n.ticketNotFoundTitle,
+                    body: l10n.ticketUnavailableShort,
                   );
                 }
 
                 if (ticket.status == TicketStatus.pending) {
-                  return const _QrState(
-                    title: 'Payment verification pending',
-                    body:
-                        'This ticket request was recorded, but the QR code will only unlock after payment verification completes.',
+                  return _QrState(
+                    title: l10n.ticketPaymentPendingTitle,
+                    body: l10n.ticketPaymentPendingMessage,
                   );
                 }
 
@@ -164,9 +164,8 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                       Padding(
                         padding: const EdgeInsets.all(SpacingTokens.spacing8),
                         child: AfriQrBarcodeSurface(
-                          semanticLabel: 'Ticket entry code',
-                          helperText:
-                              'Present only to an authorized matchday scanner.',
+                          semanticLabel: l10n.ticketEntryCode,
+                          helperText: l10n.ticketScannerHelper,
                           code: Stack(
                             alignment: Alignment.center,
                             children: [
@@ -271,33 +270,36 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                             const SizedBox(height: SpacingTokens.spacing6),
                             if (stackWalletActions) ...[
                               _buildPassMeta(
-                                'DATE',
+                                l10n.ticketDateLabel,
                                 AfriDateFormatter.formatDate(
                                   ticket.match.matchDate,
                                 ),
                               ),
                               const SizedBox(height: SpacingTokens.spacing3),
-                              _buildPassMeta('TIME', ticket.match.kickoffTime),
+                              _buildPassMeta(
+                                l10n.ticketTimeLabel,
+                                ticket.match.kickoffTime,
+                              ),
                             ] else
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   _buildPassMeta(
-                                    'DATE',
+                                    l10n.ticketDateLabel,
                                     AfriDateFormatter.formatDate(
                                       ticket.match.matchDate,
                                     ),
                                   ),
                                   _buildPassMeta(
-                                    'TIME',
+                                    l10n.ticketTimeLabel,
                                     ticket.match.kickoffTime,
                                   ),
                                 ],
                               ),
                             const SizedBox(height: SpacingTokens.spacing4),
                             _buildPassMeta(
-                              'VENUE',
+                              l10n.ticketVenueLabel,
                               ticket.match.venue.toUpperCase(),
                             ),
                           ],
@@ -336,7 +338,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                   SizedBox(
                                     width: double.infinity,
                                     child: AfriButton(
-                                      label: 'Apple Wallet',
+                                      label: l10n.ticketAppleWallet,
                                       onTap: () {},
                                       variant: AfriButtonVariant.outline,
                                       icon: AfriIcons.addCard,
@@ -349,7 +351,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                   SizedBox(
                                     width: double.infinity,
                                     child: AfriButton(
-                                      label: 'Google Wallet',
+                                      label: l10n.ticketGoogleWallet,
                                       onTap: () {},
                                       variant: AfriButtonVariant.outline,
                                       icon: AfriIcons.wallet,
@@ -361,7 +363,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                     children: [
                                       Expanded(
                                         child: AfriButton(
-                                          label: 'Apple Wallet',
+                                          label: l10n.ticketAppleWallet,
                                           onTap: () {},
                                           variant: AfriButtonVariant.outline,
                                           icon: AfriIcons.addCard,
@@ -373,7 +375,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                       ),
                                       Expanded(
                                         child: AfriButton(
-                                          label: 'Google Wallet',
+                                          label: l10n.ticketGoogleWallet,
                                           onTap: () {},
                                           variant: AfriButtonVariant.outline,
                                           icon: AfriIcons.wallet,
@@ -384,7 +386,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                   ),
                                 const SizedBox(height: SpacingTokens.spacing3),
                                 Text(
-                                  'Wallet export is not available in this release yet.',
+                                  l10n.ticketWalletExportUnavailable,
                                   style: TypographyTokens.bodySmall(
                                     ColorTokens.onSurfaceVariant,
                                   ),
@@ -436,7 +438,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                 }
                 return Semantics(
                   selected: true,
-                  label: 'Selected e-ticket ${ticket.matchTitle}',
+                  label: l10n.ticketSelectedSemantic(ticket.matchTitle),
                   child: pass,
                 );
               },
@@ -447,18 +449,18 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
   Widget _failureState(Object error, bool isOnline) {
     final failure = ETicketFailure.fromError(error);
     return switch (failure.kind) {
-      ETicketFailureKind.offline => const _QrState(
-          title: 'E-ticket unavailable offline',
-          body: 'Reconnect before loading this entry code.',
+      ETicketFailureKind.offline => _QrState(
+          title: context.afriL10n.ticketOfflineTitle,
+          body: context.afriL10n.ticketOfflineMessage,
         ),
-      ETicketFailureKind.permissionDenied => const _QrState(
-          title: 'E-ticket access denied',
-          body: 'This ticket cannot be opened with the current account.',
+      ETicketFailureKind.permissionDenied => _QrState(
+          title: context.afriL10n.ticketAccessDeniedTitle,
+          body: context.afriL10n.ticketAccessDeniedMessage,
         ),
       ETicketFailureKind.conflict => _QrState(
-          title: 'Ticket changed',
-          body: 'Refresh your wallet before presenting this entry code.',
-          actionLabel: isOnline ? 'Refresh ticket' : null,
+          title: context.afriL10n.ticketChangedTitle,
+          body: context.afriL10n.ticketChangedMessage,
+          actionLabel: isOnline ? context.afriL10n.ticketRefreshAction : null,
           onAction: isOnline
               ? () => unawaited(
                     ref
@@ -468,9 +470,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
               : null,
         ),
       ETicketFailureKind.securityTimeout => _QrState(
-          title: 'Ticket security check timed out',
-          body: 'The entry code was not confirmed. Refresh before match entry.',
-          actionLabel: isOnline ? 'Refresh ticket' : null,
+          title: context.afriL10n.ticketSecurityTimeoutTitle,
+          body: context.afriL10n.ticketSecurityTimeoutMessage,
+          actionLabel: isOnline ? context.afriL10n.ticketRefreshAction : null,
           onAction: isOnline
               ? () => unawaited(
                     ref
@@ -480,9 +482,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
               : null,
         ),
       ETicketFailureKind.unknown => _QrState(
-          title: 'Ticket unavailable',
-          body: 'This ticket could not be confirmed from your wallet.',
-          actionLabel: isOnline ? 'Refresh ticket' : null,
+          title: context.afriL10n.ticketUnavailableTitle,
+          body: context.afriL10n.ticketUnavailableMessage,
+          actionLabel: isOnline ? context.afriL10n.ticketRefreshAction : null,
           onAction: isOnline
               ? () => unawaited(
                     ref
@@ -534,22 +536,23 @@ class _RetainedTicketBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final title = !online
-        ? 'Showing saved entry code'
+        ? l10n.ticketSavedCodeTitle
         : refreshing
-            ? 'Refreshing ticket'
+            ? l10n.ticketRefreshingTitle
             : failure?.kind == ETicketFailureKind.permissionDenied
-                ? 'Ticket access changed'
+                ? l10n.ticketAccessChangedTitle
                 : failure?.kind == ETicketFailureKind.conflict
-                    ? 'Ticket changed'
+                    ? l10n.ticketChangedTitle
                     : failure?.kind == ETicketFailureKind.securityTimeout
-                        ? 'Ticket check timed out'
-                        : 'Ticket refresh unavailable';
+                        ? l10n.ticketCheckTimedOutTitle
+                        : l10n.ticketRefreshUnavailableTitle;
     final subtitle = !online
-        ? 'Reconnect and refresh before presenting this code at match entry.'
+        ? l10n.ticketSavedCodeMessage
         : refreshing
-            ? 'The last confirmed code remains visible while wallet status is checked.'
-            : 'Refresh before relying on this entry code.';
+            ? l10n.ticketRefreshingMessage
+            : l10n.ticketRefreshBeforeUse;
     return Column(
       children: [
         AfriStateBanner(
@@ -564,7 +567,7 @@ class _RetainedTicketBanner extends StatelessWidget {
         if (onRefresh != null && !refreshing) ...[
           const SizedBox(height: SpacingTokens.spacing2),
           AfriButton(
-            label: 'REFRESH TICKET',
+            label: l10n.ticketRefreshUpper,
             icon: AfriIcons.refresh,
             variant: AfriButtonVariant.outline,
             onTap: onRefresh!,

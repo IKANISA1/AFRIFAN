@@ -8,48 +8,36 @@ void main() {
       expect(scope.isResolved, isTrue);
     });
 
-    test('isResolved returns true when partnerId is set', () {
+    test('partner metadata alone does not resolve club tenancy', () {
       const scope = ClubScope(partnerId: 'rayon-sports', clubId: null);
-      expect(scope.isResolved, isTrue);
+      expect(scope.isResolved, isFalse);
     });
 
     test('isResolved returns false when both are empty/null', () {
       const scope = ClubScope(partnerId: '', clubId: null);
       expect(scope.isResolved, isFalse);
     });
+
+    test('requiredClubId fails closed without a positive club id', () {
+      const scope = ClubScope(partnerId: 'legacy-partner', clubId: null);
+      expect(() => scope.requiredClubId, throwsStateError);
+    });
   });
 
-  group('ClubScopeResolver.payload', () {
-    // ClubScopeResolver.payload is a pure method — testable without Supabase.
-    // We test it by constructing a scope and calling payload.
-
-    test('includes club_id when present', () {
+  group('ClubScope write payload', () {
+    test('always includes club_id and may retain partner metadata', () {
       const scope = ClubScope(partnerId: 'cool', clubId: 7);
-      // ClubScopeResolver.payload is an instance method, but its logic is pure.
-      // We'll test the expected shape directly.
-      final result = <String, Object?>{
-        if (scope.clubId != null) 'club_id': scope.clubId,
-        if (scope.partnerId.isNotEmpty) 'partner_id': scope.partnerId,
-      };
-      expect(result, {'club_id': 7, 'partner_id': 'cool'});
+      expect(scope.toWritePayload(), {'club_id': 7, 'partner_id': 'cool'});
     });
 
-    test('includes only partner_id when clubId is null', () {
+    test('refuses a partner-only write payload', () {
       const scope = ClubScope(partnerId: 'test-partner', clubId: null);
-      final result = <String, Object?>{
-        if (scope.clubId != null) 'club_id': scope.clubId,
-        if (scope.partnerId.isNotEmpty) 'partner_id': scope.partnerId,
-      };
-      expect(result, {'partner_id': 'test-partner'});
+      expect(scope.toWritePayload, throwsStateError);
     });
 
-    test('returns empty map when scope is unresolved', () {
+    test('refuses an unresolved write payload', () {
       const scope = ClubScope(partnerId: '', clubId: null);
-      final result = <String, Object?>{
-        if (scope.clubId != null) 'club_id': scope.clubId,
-        if (scope.partnerId.isNotEmpty) 'partner_id': scope.partnerId,
-      };
-      expect(result, isEmpty);
+      expect(scope.toWritePayload, throwsStateError);
     });
   });
 

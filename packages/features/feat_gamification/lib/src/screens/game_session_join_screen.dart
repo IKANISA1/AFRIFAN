@@ -165,8 +165,8 @@ class _GameSessionJoinScreenState extends ConsumerState<GameSessionJoinScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: 48,
-                        height: 48,
+                        width: SizeTokens.touchTargetMin,
+                        height: SizeTokens.touchTargetMin,
                         decoration: BoxDecoration(
                           color: ColorTokens.clubAccent.withValues(alpha: 0.14),
                           borderRadius: ShapeTokens.buttonRadius,
@@ -416,7 +416,7 @@ class _JoinConsequence extends StatelessWidget {
             children: [
               Icon(
                 AfriIcons.live,
-                size: 56,
+                size: SizeTokens.iconXxl,
                 color: ColorTokens.onSurfaceVariant,
               ),
               const SizedBox(height: SpacingTokens.spacing4),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -28,12 +29,20 @@ class _ContributionsHubScreenState
   bool _isUpdatingSmsSync = false;
   String? _error;
   late bool _wasOnline;
+  bool _didStartInitialLoad = false;
 
   @override
   void initState() {
     super.initState();
     _wasOnline = ConnectivityService.isOnline;
     ConnectivityService.onlineNotifier.addListener(_handleConnectivityChange);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didStartInitialLoad) return;
+    _didStartInitialLoad = true;
     unawaited(_loadGroups());
   }
 
@@ -66,7 +75,7 @@ class _ContributionsHubScreenState
         _isRefreshing = false;
         _isStale = _groups.isNotEmpty;
         _error = _groups.isEmpty
-            ? 'Connect to load contribution initiatives.'
+            ? context.afriL10n.contributionsConnectToLoad
             : null;
       });
       return;
@@ -135,7 +144,7 @@ class _ContributionsHubScreenState
         _isRefreshing = false;
         _isStale = _groups.isNotEmpty;
         _error = _groups.isEmpty
-            ? 'Contribution initiatives are temporarily unavailable.'
+            ? context.afriL10n.contributionsInitiativesUnavailableMessage
             : null;
       });
     }
@@ -153,8 +162,8 @@ class _ContributionsHubScreenState
       ref.invalidate(momoSmsSyncEnabledProvider);
       if (!mounted) return;
       final message = enabled
-          ? 'MoMo SMS sync enabled for this device.'
-          : 'SMS access was not granted. Sync remains off.';
+          ? context.afriL10n.contributionsSmsEnabled
+          : context.afriL10n.contributionsSmsPermissionDenied;
       if (enabled) {
         AfriToast.success(context, message);
       } else {
@@ -162,10 +171,7 @@ class _ContributionsHubScreenState
       }
     } catch (error) {
       if (!mounted) return;
-      AfriToast.error(
-        context,
-        'Could not enable SMS sync. Check your permissions and try again.',
-      );
+      AfriToast.error(context, context.afriL10n.contributionsSmsEnableFailed);
     } finally {
       if (mounted) {
         setState(() => _isUpdatingSmsSync = false);
@@ -179,7 +185,7 @@ class _ContributionsHubScreenState
       await ref.read(momoSmsAutoreadServiceProvider).disable();
       ref.invalidate(momoSmsSyncEnabledProvider);
       if (!mounted) return;
-      AfriToast.info(context, 'MoMo SMS sync disabled.');
+      AfriToast.info(context, context.afriL10n.contributionsSmsDisabled);
     } finally {
       if (mounted) {
         setState(() => _isUpdatingSmsSync = false);
@@ -189,7 +195,10 @@ class _ContributionsHubScreenState
 
   Future<void> _runManualSmsSync() async {
     if (!ConnectivityService.isOnline) {
-      AfriToast.error(context, 'Connect before syncing MoMo messages.');
+      AfriToast.error(
+        context,
+        context.afriL10n.contributionsConnectBeforeSmsSync,
+      );
       return;
     }
 
@@ -201,14 +210,14 @@ class _ContributionsHubScreenState
       if (!mounted) return;
       AfriToast.success(
         context,
-        'SMS sync complete: ${result.uploadedMessages} uploaded, ${result.duplicateMessages} duplicates.',
+        context.afriL10n.contributionsSmsSyncComplete(
+          result.uploadedMessages,
+          result.duplicateMessages,
+        ),
       );
     } catch (error) {
       if (!mounted) return;
-      AfriToast.error(
-        context,
-        'SMS sync failed. Check your connection and try again.',
-      );
+      AfriToast.error(context, context.afriL10n.contributionsSmsSyncFailed);
     } finally {
       if (mounted) {
         setState(() => _isUpdatingSmsSync = false);
@@ -218,6 +227,7 @@ class _ContributionsHubScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final currency = CurrencyFormatter(
       currencyCode: context.afriCurrencyCode,
       currencySymbol: context.afriCurrencySymbol,
@@ -251,7 +261,7 @@ class _ContributionsHubScreenState
               children: [
                 AfriIconButton(
                   icon: AfriIcons.back,
-                  tooltip: 'Back',
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
                   onTap: () {
                     if (context.canPop()) {
                       context.pop();
@@ -263,7 +273,7 @@ class _ContributionsHubScreenState
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
                   child: Text(
-                    'CONTRIBUTE',
+                    l10n.contributionsHubTitle,
                     style: TypographyTokens.headlineSmall().copyWith(
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1.4,
@@ -279,11 +289,11 @@ class _ContributionsHubScreenState
                     ? AfriIcons.refresh
                     : AfriIcons.statusWarning,
                 title: _isRefreshing
-                    ? 'Refreshing contributions'
-                    : 'Saved contribution data',
+                    ? l10n.contributionsRefreshingTitle
+                    : l10n.contributionsSavedTitle,
                 subtitle: _isRefreshing
-                    ? 'Current totals and initiatives are being checked.'
-                    : 'Totals may be out of date. Reconnect before making or syncing a contribution.',
+                    ? l10n.contributionsRefreshingMessage
+                    : l10n.contributionsSavedMessage,
                 tone: _isRefreshing
                     ? AfriStateBannerTone.info
                     : AfriStateBannerTone.warning,
@@ -292,53 +302,58 @@ class _ContributionsHubScreenState
             ],
             if (hasGroups) ...[
               _HubCard(
-                title: 'TEAM PROJECTS',
-                subtitle:
-                    '${currency.format(totalRaised)} of ${currency.format(totalTarget)} raised.',
+                title: l10n.contributionsTeamProjects,
+                subtitle: l10n.contributionsRaised(
+                  currency.format(totalRaised),
+                  currency.format(totalTarget),
+                ),
                 accent: ColorTokens.clubPrimary,
-                metricLabel: '${_groups.length} OPEN',
+                metricLabel: l10n.contributionsOpenMetric(_groups.length),
                 onTap: () => context.push('/contribute/projects'),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               _HubCard(
-                title: 'COMMUNITIES',
-                subtitle: '$_groupsCountLabel active.',
+                title: l10n.contributionsCommunitiesUpper,
+                subtitle: l10n.contributionsInitiativesActive(_groups.length),
                 accent: ColorTokens.success,
-                metricLabel: '${_groups.length} LIVE',
+                metricLabel: l10n.contributionsLiveMetric(_groups.length),
                 onTap: () => context.push('/contribute/groups'),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               _HubCard(
-                title: 'COMMUNITY',
-                subtitle: 'Fan clubs & local chapters.',
+                title: l10n.contributionsCommunityUpper,
+                subtitle: l10n.contributionsFanClubsChapters,
                 accent: ColorTokens.info,
-                metricLabel: 'LIVE',
+                metricLabel: l10n.contributionsLive,
                 onTap: () => context.push('/fan-clubs'),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
             ],
             AfriSectionCard(
-              title: 'MoMo SMS sync',
+              title: l10n.contributionsMomoSmsSync,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (!smsSyncAvailable)
                     Text(
-                      'Unavailable in this build.',
+                      l10n.contributionsUnavailableBuild,
                       style: TypographyTokens.bodySmall(
                         ColorTokens.onSurfaceVariant,
                       ),
                     )
                   else if (smsSyncEnabled) ...[
-                    AfriInfoChip(label: 'ACTIVE', color: ColorTokens.success),
+                    AfriInfoChip(
+                      label: l10n.contributionsActiveUpper,
+                      color: ColorTokens.success,
+                    ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     ConnectivityBuilder(
                       builder: (context, isOnline) => AfriButton(
                         label: !isOnline
-                            ? 'Connection required'
+                            ? l10n.connectionRequired
                             : _isUpdatingSmsSync
-                            ? 'Syncing…'
-                            : 'Sync now',
+                            ? l10n.contributionsSyncing
+                            : l10n.contributionsSyncNow,
                         onTap: _runManualSmsSync,
                         isLoading: _isUpdatingSmsSync,
                         enabled: isOnline && !_isUpdatingSmsSync,
@@ -346,7 +361,7 @@ class _ContributionsHubScreenState
                     ),
                     const SizedBox(height: SpacingTokens.listItemGap),
                     AfriButton(
-                      label: 'Disable',
+                      label: l10n.contributionsDisable,
                       variant: AfriButtonVariant.outline,
                       onTap: _disableSmsSync,
                       enabled: !_isUpdatingSmsSync,
@@ -354,8 +369,8 @@ class _ContributionsHubScreenState
                   ] else
                     AfriButton(
                       label: _isUpdatingSmsSync
-                          ? 'Enabling…'
-                          : 'Enable SMS sync',
+                          ? l10n.contributionsEnabling
+                          : l10n.contributionsEnableSmsSync,
                       variant: AfriButtonVariant.outline,
                       onTap: _enableSmsSync,
                       isLoading: _isUpdatingSmsSync,
@@ -367,7 +382,7 @@ class _ContributionsHubScreenState
             if (_isLoading || _error != null || hasGroups) ...[
               const SizedBox(height: SpacingTokens.spacing4),
               AfriSectionCard(
-                title: 'Live campaigns',
+                title: l10n.contributionsLiveCampaigns,
                 child: Column(
                   children: [
                     if (_isLoading)
@@ -377,16 +392,16 @@ class _ContributionsHubScreenState
                         builder: (context, isOnline) => Column(
                           children: [
                             AfriStateView.offline(
-                              title: 'Groups unavailable',
+                              title: l10n.contributionsGroupsUnavailableTitle,
                               message: _error!,
-                              actionLabel: isOnline ? 'Retry' : null,
+                              actionLabel: isOnline ? l10n.retry : null,
                               onAction: isOnline ? _loadGroups : null,
                               compact: true,
                             ),
                             if (!isOnline) ...[
                               const SizedBox(height: SpacingTokens.listItemGap),
                               AfriButton(
-                                label: 'Connection required',
+                                label: l10n.connectionRequired,
                                 onTap: () {},
                                 enabled: false,
                               ),
@@ -397,7 +412,9 @@ class _ContributionsHubScreenState
                     else
                       ..._groups.take(3).map((group) {
                         final groupId = group['id']?.toString() ?? '';
-                        final name = group['name']?.toString() ?? 'Group';
+                        final name =
+                            group['name']?.toString() ??
+                            l10n.contributionsGroupFallback;
                         final currentTotal =
                             (group['current_total'] as num?)?.toInt() ?? 0;
                         final targetAmount =
@@ -409,8 +426,10 @@ class _ContributionsHubScreenState
                           child: AfriListRow(
                             icon: AfriIcons.contribute,
                             title: name,
-                            subtitle:
-                                '${currency.format(currentTotal)} of ${currency.format(targetAmount)}',
+                            subtitle: l10n.contributionsAmountOfTarget(
+                              currency.format(currentTotal),
+                              currency.format(targetAmount),
+                            ),
                             onTap: () =>
                                 context.push('/contribute/group/$groupId'),
                           ),
@@ -421,17 +440,19 @@ class _ContributionsHubScreenState
                         alignment: Alignment.centerRight,
                         child: AfriPressFeedback(
                           onTap: () => context.push('/contribute/groups'),
-                          tooltip: 'See all contribution groups',
-                          semanticsLabel:
-                              'See all ${_groups.length} contribution groups',
-                          semanticsHint: 'Open contribution groups',
+                          tooltip: l10n.contributionsSeeAllGroups,
+                          semanticsLabel: l10n
+                              .contributionsSeeAllGroupsSemantic(
+                                _groups.length,
+                              ),
+                          semanticsHint: l10n.contributionsOpenGroupsHint,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               vertical: SpacingTokens.spacing2,
                               horizontal: SpacingTokens.spacing2,
                             ),
                             child: Text(
-                              'See all ${_groups.length}',
+                              l10n.contributionsSeeAll(_groups.length),
                               style: TypographyTokens.inlineAction(),
                             ),
                           ),
@@ -446,10 +467,6 @@ class _ContributionsHubScreenState
       ),
     );
   }
-
-  String get _groupsCountLabel => _groups.length == 1
-      ? '1 initiative is'
-      : '${_groups.length} initiatives are';
 }
 
 class _HubCard extends StatelessWidget {

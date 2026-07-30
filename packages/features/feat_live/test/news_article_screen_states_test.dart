@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_live/src/providers/news_article_provider.dart';
@@ -97,6 +98,32 @@ void main() {
 
     expect(controller.refreshCount, 1);
     expect(find.text('Connection restored'), findsOneWidget);
+  });
+
+  testWidgets('News article renders French and Kinyarwanda task copy', (
+    tester,
+  ) async {
+    await _pumpRoute(
+      tester,
+      controller: _Controller(AsyncData<NewsArticleState>(_ready())),
+      appCopyLocale: const Locale('fr'),
+      capture: false,
+    );
+    expect(
+      find.text('Actualités du club  ·  2026-07-28  ·  Service médias'),
+      findsOneWidget,
+    );
+
+    await _pumpRoute(
+      tester,
+      controller: _Controller(AsyncData<NewsArticleState>(_ready())),
+      appCopyLocale: const Locale('rw'),
+      capture: false,
+    );
+    expect(
+      find.text('Amakuru ya club  ·  2026-07-28  ·  Ishami ry’itangazamakuru'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('golden News article loading state', (tester) async {
@@ -383,6 +410,7 @@ Future<void> _pumpRoute(
   bool settle = true,
   Future<void> Function(WidgetTester tester)? check,
   String? goldenPath,
+  Locale appCopyLocale = const Locale('en'),
 }) async {
   tester.view.devicePixelRatio = 1;
   tester.view.physicalSize = size;
@@ -416,20 +444,23 @@ Future<void> _pumpRoute(
         newsArticleProvider.overrideWith((ref, articleId) => controller),
         newsArticleLinksEnabledProvider.overrideWithValue(linksEnabled),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
-        builder: (context, child) {
-          final media = MediaQuery.of(context);
-          return MediaQuery(
-            data: media.copyWith(
-              textScaler: TextScaler.linear(textScale),
-              disableAnimations: reducedMotion,
-            ),
-            child: child!,
-          );
-        },
-        routerConfig: router,
+      child: AfriLocalizationsScope(
+        locale: appCopyLocale,
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+          builder: (context, child) {
+            final media = MediaQuery.of(context);
+            return MediaQuery(
+              data: media.copyWith(
+                textScaler: TextScaler.linear(textScale),
+                disableAnimations: reducedMotion,
+              ),
+              child: child!,
+            );
+          },
+          routerConfig: router,
+        ),
       ),
     ),
   );

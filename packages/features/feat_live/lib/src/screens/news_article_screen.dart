@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,7 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: _leaveArticle,
-          tooltip: 'Back',
+          tooltip: context.afriL10n.authBack,
         ),
       ),
       scrollable: false,
@@ -91,10 +92,10 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
   Widget _buildEmpty() {
     return _buildStateScaffold(
       AfriStateView.empty(
-        title: 'Article not found',
-        message: 'This story may have been removed or is no longer available.',
+        title: context.afriL10n.newsArticleNotFoundTitle,
+        message: context.afriL10n.newsArticleNotFoundMessage,
         icon: AfriIcons.article,
-        actionLabel: 'Back to live match',
+        actionLabel: context.afriL10n.newsBackToLiveMatch,
         onAction: _leaveArticle,
       ),
     );
@@ -102,7 +103,11 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
 
   Widget _buildFailure(Object error, bool isOnline) {
     final failure = NewsArticleFailure.fromError(error);
-    final content = _NewsArticleFailureContent.fromFailure(failure, isOnline);
+    final content = _NewsArticleFailureContent.fromFailure(
+      context.afriL10n,
+      failure,
+      isOnline,
+    );
     final onAction = content.canRefresh
         ? () => unawaited(
             ref.read(newsArticleProvider(widget.articleId).notifier).refresh(),
@@ -112,13 +117,13 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
       NewsArticleFailureKind.offline => AfriStateView.offline(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? context.afriL10n.liveRefresh : null,
         onAction: onAction,
       ),
       _ => AfriStateView.error(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? context.afriL10n.liveRefresh : null,
         onAction: onAction,
       ),
     };
@@ -129,11 +134,11 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
-        title: const Text('Club news'),
+        title: Text(context.afriL10n.newsClubNews),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: _leaveArticle,
-          tooltip: 'Back',
+          tooltip: context.afriL10n.authBack,
         ),
       ),
       scrollable: false,
@@ -175,7 +180,7 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
               leading: AfriIconButton(
                 icon: AfriIcons.back,
                 onTap: _leaveArticle,
-                tooltip: 'Back',
+                tooltip: context.afriL10n.authBack,
               ),
               flexibleSpace: FlexibleSpaceBar(
                 background:
@@ -185,7 +190,8 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                         children: [
                           AfriGovernedCachedImage(
                             imageUrl: article.imageUrl,
-                            semanticLabel: '${article.title} article image',
+                            semanticLabel: context.afriL10n
+                                .newsArticleImageSemantic(article.title),
                             provenanceId: article.imageProvenanceId.isEmpty
                                 ? 'news:${widget.articleId}:unapproved'
                                 : article.imageProvenanceId,
@@ -209,9 +215,9 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
               ),
             ),
             if (isRefreshing || routeState.phase == NewsArticlePhase.syncing)
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(
+                  padding: const EdgeInsets.fromLTRB(
                     SpacingTokens.spacing6,
                     SpacingTokens.spacing4,
                     SpacingTokens.spacing6,
@@ -219,18 +225,17 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                   ),
                   child: AfriStateBanner(
                     icon: AfriIcons.refresh,
-                    title: 'Refreshing article',
-                    subtitle:
-                        'Keeping the confirmed story visible while the latest version is checked.',
+                    title: context.afriL10n.newsRefreshingTitle,
+                    subtitle: context.afriL10n.newsRefreshingMessage,
                     tone: AfriStateBannerTone.info,
                     compact: true,
                   ),
                 ),
               ),
             if (!configuredLinksEnabled)
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(
+                  padding: const EdgeInsets.fromLTRB(
                     SpacingTokens.spacing6,
                     SpacingTokens.spacing4,
                     SpacingTokens.spacing6,
@@ -238,18 +243,17 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                   ),
                   child: AfriStateBanner(
                     icon: AfriIcons.lock,
-                    title: 'Related stories unavailable',
-                    subtitle:
-                        'You can read this article, but related-story navigation is disabled for this build.',
+                    title: context.afriL10n.newsRelatedUnavailableTitle,
+                    subtitle: context.afriL10n.newsRelatedUnavailableMessage,
                     tone: AfriStateBannerTone.warning,
                     compact: true,
                   ),
                 ),
               )
             else if (!isOnline)
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(
+                  padding: const EdgeInsets.fromLTRB(
                     SpacingTokens.spacing6,
                     SpacingTokens.spacing4,
                     SpacingTokens.spacing6,
@@ -257,9 +261,8 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                   ),
                   child: AfriStateBanner(
                     icon: AfriIcons.offline,
-                    title: 'Showing saved article',
-                    subtitle:
-                        'Reconnect and refresh before opening another story.',
+                    title: context.afriL10n.newsShowingSavedTitle,
+                    subtitle: context.afriL10n.newsShowingSavedMessage,
                     tone: AfriStateBannerTone.warning,
                     compact: true,
                   ),
@@ -305,7 +308,9 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                     const SizedBox(height: SpacingTokens.spacing4),
                     Semantics(
                       selected: true,
-                      label: 'Selected article ${article.title}',
+                      label: context.afriL10n.newsSelectedSemantic(
+                        article.title,
+                      ),
                       child: Text(
                         article.title,
                         style: TypographyTokens.headlineLarge().copyWith(
@@ -315,7 +320,11 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     Text(
-                      'Club News  ·  ${article.createdAt.isEmpty ? 'Today' : article.createdAt.split('T').first}  ·  Media Desk',
+                      context.afriL10n.newsMetadata(
+                        article.createdAt.isEmpty
+                            ? context.afriL10n.newsToday
+                            : article.createdAt.split('T').first,
+                      ),
                       style: TypographyTokens.bodySmall(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing6),
@@ -325,8 +334,8 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                     ),
                     if (article.related.isNotEmpty) ...[
                       const SizedBox(height: SpacingTokens.spacing8),
-                      const AfriSectionHeader(
-                        title: 'Related intel',
+                      AfriSectionHeader(
+                        title: context.afriL10n.newsRelatedIntel,
                         padding: EdgeInsets.zero,
                       ),
                       const SizedBox(height: SpacingTokens.spacing4),
@@ -397,7 +406,11 @@ class _RetainedArticleFailureBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = _NewsArticleFailureContent.fromFailure(failure, true);
+    final content = _NewsArticleFailureContent.fromFailure(
+      context.afriL10n,
+      failure,
+      true,
+    );
     return Column(
       children: [
         AfriStateBanner(
@@ -415,7 +428,7 @@ class _RetainedArticleFailureBanner extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
             key: const ValueKey<String>('news-article-refresh-action'),
-            label: 'REFRESH ARTICLE',
+            label: context.afriL10n.newsRefreshArticle,
             icon: AfriIcons.refresh,
             variant: AfriButtonVariant.outline,
             labelMaxLines: 2,
@@ -439,37 +452,34 @@ class _NewsArticleFailureContent {
   final bool canRefresh;
 
   factory _NewsArticleFailureContent.fromFailure(
+    AfriLocalizations l10n,
     NewsArticleFailure failure,
     bool isOnline,
   ) {
     return switch (failure.kind) {
       NewsArticleFailureKind.offline => _NewsArticleFailureContent(
-        title: isOnline ? 'Connection restored' : 'Article offline',
-        message: isOnline
-            ? 'Refresh to confirm the latest story.'
-            : 'Reconnect to load the latest story.',
+        title: isOnline ? l10n.newsConnectionRestored : l10n.newsArticleOffline,
+        message: isOnline ? l10n.newsRefreshLatest : l10n.newsReconnectLatest,
         canRefresh: isOnline,
       ),
-      NewsArticleFailureKind.permissionDenied =>
-        const _NewsArticleFailureContent(
-          title: 'Article access unavailable',
-          message: 'Your current account cannot review this story.',
-          canRefresh: false,
-        ),
+      NewsArticleFailureKind.permissionDenied => _NewsArticleFailureContent(
+        title: l10n.newsAccessUnavailableTitle,
+        message: l10n.newsAccessUnavailableMessage,
+        canRefresh: false,
+      ),
       NewsArticleFailureKind.conflict => _NewsArticleFailureContent(
-        title: 'Article changed',
-        message: 'Refresh before opening another story.',
+        title: l10n.newsChangedTitle,
+        message: l10n.newsChangedMessage,
         canRefresh: isOnline,
       ),
       NewsArticleFailureKind.securityTimeout => _NewsArticleFailureContent(
-        title: 'Article security check timed out',
-        message: 'No updated story was confirmed. Refresh to try again.',
+        title: l10n.newsSecurityTimeoutTitle,
+        message: l10n.newsSecurityTimeoutMessage,
         canRefresh: isOnline,
       ),
       NewsArticleFailureKind.unknown => _NewsArticleFailureContent(
-        title: 'Article unavailable',
-        message:
-            'The latest story could not be confirmed. Refresh to try again.',
+        title: l10n.newsUnavailableTitle,
+        message: l10n.newsUnavailableMessage,
         canRefresh: isOnline,
       ),
     };

@@ -27,6 +27,7 @@ class SizeTokens {
   static const double touchTargetDense = 44.0;
 
   static const double buttonMinHeight = 56.0;
+  static const double prominentControlHeight = 64.0;
 
   static const double loadingIndicator = 24.0;
   static const double linearIndicatorHeight = 4.0;

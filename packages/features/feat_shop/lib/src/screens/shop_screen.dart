@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -206,11 +207,17 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
 
     ref
         .read(shopCartProvider.notifier)
-        .addRawProduct(product, partnerId: user.clubId);
+        .addRawProduct(
+          product,
+          partnerId: user.clubId,
+          fallbackName: context.afriL10n.shopProductFallback,
+        );
     unawaited(HapticFeedback.lightImpact());
     AfriToast.success(
       context,
-      '${product['name'] ?? 'Product'} added to cart.',
+      context.afriL10n.shopProductAdded(
+        product['name']?.toString() ?? context.afriL10n.shopProductFallback,
+      ),
     );
   }
 
@@ -223,13 +230,16 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Store', style: TypographyTokens.headlineSmall()),
+        title: Text(
+          context.afriL10n.shopStoreTitle,
+          style: TypographyTokens.headlineSmall(),
+        ),
         actions: [
           AfriIconButton(
             icon: AfriIcons.search,
             onTap: () =>
                 showShopSearchSheet(context: context, products: _products),
-            tooltip: 'Search products',
+            tooltip: context.afriL10n.shopSearchProducts,
           ),
           Stack(
             alignment: Alignment.center,
@@ -237,7 +247,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
               AfriIconButton(
                 icon: AfriIcons.cart,
                 onTap: () => unawaited(context.push('/shop/cart')),
-                tooltip: 'View cart',
+                tooltip: context.afriL10n.shopViewCart,
               ),
               if (cartItemCount > 0)
                 Positioned(
@@ -376,6 +386,7 @@ class ShopCatalogSlivers extends StatelessWidget {
         (error == null
             ? null
             : const ShopCatalogFailure(ShopCatalogFailureKind.unknown));
+    final l10n = context.afriL10n;
 
     if (isLoading) {
       return const SliverToBoxAdapter(child: ShopLoadingSkeleton());
@@ -395,12 +406,12 @@ class ShopCatalogSlivers extends StatelessWidget {
       return SliverToBoxAdapter(
         child: _ShopEmptyState(
           title: products.isEmpty
-              ? 'No products available'
-              : 'No products in $selectedCategory',
+              ? l10n.shopNoProductsTitle
+              : l10n.shopNoProductsCategoryTitle(selectedCategory),
           message: products.isEmpty
-              ? 'Official merchandise will appear here when the club publishes store inventory.'
-              : 'Try another category or clear the filter to see the full store.',
-          actionLabel: products.isEmpty ? 'Retry' : 'Show all',
+              ? l10n.shopNoProductsMessage
+              : l10n.shopNoProductsCategoryMessage,
+          actionLabel: products.isEmpty ? l10n.shopRetry : l10n.shopShowAll,
           onAction: products.isEmpty
               ? onRetry
               : () => onCategorySelected('All'),
@@ -424,24 +435,24 @@ class ShopCatalogSlivers extends StatelessWidget {
                     ? AfriIcons.refresh
                     : AfriIcons.statusWarning,
                 title: isRefreshing
-                    ? 'Refreshing store'
-                    : 'Saved store content',
+                    ? l10n.shopRefreshingTitle
+                    : l10n.shopSavedTitle,
                 subtitle: isRefreshing
-                    ? 'Current inventory is being checked.'
-                    : 'Inventory may be out of date. Reconnect to refresh before checkout.',
+                    ? l10n.shopRefreshingMessage
+                    : l10n.shopSavedMessage,
                 tone: isRefreshing
                     ? AfriStateBannerTone.info
                     : AfriStateBannerTone.warning,
                 semanticsLabel: isRefreshing
-                    ? 'Information status: Refreshing store. Current inventory is being checked.'
-                    : 'Warning status: Saved store content. Inventory may be out of date. Reconnect to refresh before checkout.',
+                    ? l10n.shopRefreshingSemantic
+                    : l10n.shopSavedSemantic,
               ),
             ),
           ),
         SliverToBoxAdapter(
           child: AfriSectionHeader(
-            title: 'Club store',
-            subtitle: '${filteredProducts.length} items available now.',
+            title: l10n.shopClubStore,
+            subtitle: l10n.shopItemsAvailable(filteredProducts.length),
             padding: const EdgeInsets.fromLTRB(
               SpacingTokens.spacing6,
               SpacingTokens.spacing4,
@@ -466,7 +477,7 @@ class ShopCatalogSlivers extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(right: SpacingTokens.spacing2),
                   child: AfriChoiceChip(
-                    label: Text(cat),
+                    label: Text(cat == 'All' ? l10n.shopAllCategory : cat),
                     selected: isSelected,
                     onSelected: (_) => onCategorySelected(cat),
                     selectedColor: ColorTokens.clubAccent.withValues(
@@ -565,42 +576,40 @@ class _ShopFailureState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return Padding(
       padding: const EdgeInsets.all(SpacingTokens.spacing8),
       child: !isOnline || failure.kind == ShopCatalogFailureKind.offline
           ? AfriStateView.offline(
-              title: 'Store offline',
-              message: 'Connect to load current club merchandise.',
+              title: l10n.shopOfflineTitle,
+              message: l10n.shopOfflineMessage,
             )
           : switch (failure.kind) {
               ShopCatalogFailureKind.permissionDenied => AfriStateView.error(
-                title: 'Store access not available',
-                message:
-                    'This account cannot load club merchandise. Contact club support if access should be available.',
+                title: l10n.shopAccessTitle,
+                message: l10n.shopAccessMessage,
               ),
               ShopCatalogFailureKind.conflict => AfriStateView.error(
-                title: 'Store inventory changed',
-                message:
-                    'Product availability changed while loading. Refresh before adding merchandise.',
-                actionLabel: 'Refresh',
+                title: l10n.shopInventoryChangedTitle,
+                message: l10n.shopInventoryChangedMessage,
+                actionLabel: l10n.shopRefresh,
                 onAction: onRetry,
               ),
               ShopCatalogFailureKind.securityTimeout => AfriStateView.error(
-                title: 'Store security check timed out',
-                message:
-                    'The secure inventory check took too long. Refresh to try the check again.',
-                actionLabel: 'Refresh',
+                title: l10n.shopSecurityTimeoutTitle,
+                message: l10n.shopSecurityTimeoutMessage,
+                actionLabel: l10n.shopRefresh,
                 onAction: onRetry,
               ),
               ShopCatalogFailureKind.unknown => AfriStateView.error(
-                title: 'Store unavailable',
-                message: 'Could not load merchandise right now.',
-                actionLabel: 'Retry',
+                title: l10n.shopUnavailableTitle,
+                message: l10n.shopUnavailableMessage,
+                actionLabel: l10n.shopRetry,
                 onAction: onRetry,
               ),
               ShopCatalogFailureKind.offline => AfriStateView.offline(
-                title: 'Store offline',
-                message: 'Connect to load current club merchandise.',
+                title: l10n.shopOfflineTitle,
+                message: l10n.shopOfflineMessage,
               ),
             },
     );

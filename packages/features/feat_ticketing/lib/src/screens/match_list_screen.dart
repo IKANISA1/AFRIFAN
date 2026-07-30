@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -86,6 +87,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final usesLargeTextLayout =
         MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     final matchesAsync = ref.watch(ticketMatchesProvider);
@@ -114,24 +116,31 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
           onTap: () => context.pop(),
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
-        title: Text('TICKETS', style: TypographyTokens.headlineLarge()),
+        title:
+            Text(l10n.ticketListTitle, style: TypographyTokens.headlineLarge()),
         actions: [
           AfriIconButton(
             icon: AfriIcons.filter,
-            tooltip: 'Filter matches',
+            tooltip: l10n.ticketFilterMatches,
             onTap: () async {
               final result = await showAfriFilterSortSheet(
                 context: context,
-                title: 'Match Filters',
-                sortOptions: const [
-                  AfriFilterOption(value: 'soonest', label: 'Soonest'),
-                  AfriFilterOption(value: 'latest', label: 'Latest'),
-                  AfriFilterOption(value: 'cheapest', label: 'Cheapest'),
+                title: l10n.ticketMatchFilters,
+                sortOptions: [
+                  AfriFilterOption(
+                      value: 'soonest', label: l10n.ticketSortSoonest),
+                  AfriFilterOption(
+                      value: 'latest', label: l10n.ticketSortLatest),
+                  AfriFilterOption(
+                      value: 'cheapest', label: l10n.ticketSortCheapest),
                 ],
-                typeOptions: const [
-                  AfriFilterOption(value: 'available', label: 'Available'),
-                  AfriFilterOption(value: 'sold_out', label: 'Sold Out'),
-                  AfriFilterOption(value: 'vip', label: 'VIP Zones'),
+                typeOptions: [
+                  AfriFilterOption(
+                      value: 'available', label: l10n.ticketTypeAvailable),
+                  AfriFilterOption(
+                      value: 'sold_out', label: l10n.ticketTypeSoldOut),
+                  AfriFilterOption(
+                      value: 'vip', label: l10n.ticketTypeVipZones),
                 ],
                 initialSortBy: _sortBy,
                 initialSelectedTypes: _selectedTypes,
@@ -155,8 +164,8 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
               onTap:
                   isOnline ? () => ref.invalidate(ticketMatchesProvider) : null,
               tooltip: isOnline
-                  ? 'Refresh matches'
-                  : 'Connection required to refresh matches',
+                  ? l10n.ticketRefreshMatches
+                  : l10n.ticketRefreshMatchesOffline,
             ),
           ),
         ],
@@ -165,26 +174,26 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
           tabs: [
             Tab(
               child: Text(
-                usesLargeTextLayout ? 'NEXT' : 'UPCOMING',
-                semanticsLabel: 'Upcoming tickets',
+                usesLargeTextLayout ? l10n.ticketNext : l10n.ticketUpcoming,
+                semanticsLabel: l10n.ticketUpcomingSemantic,
                 maxLines: 1,
                 softWrap: false,
                 overflow: TextOverflow.visible,
               ),
             ),
-            const Tab(
+            Tab(
               child: Text(
-                'PAST',
-                semanticsLabel: 'Past tickets',
+                l10n.ticketPast,
+                semanticsLabel: l10n.ticketPastSemantic,
                 maxLines: 1,
                 softWrap: false,
                 overflow: TextOverflow.visible,
               ),
             ),
-            const Tab(
+            Tab(
               child: Text(
-                'MINE',
-                semanticsLabel: 'My tickets',
+                l10n.ticketMine,
+                semanticsLabel: l10n.ticketMineSemantic,
                 maxLines: 1,
                 softWrap: false,
                 overflow: TextOverflow.visible,
@@ -208,11 +217,11 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                 icon:
                     isRefreshing ? AfriIcons.refresh : AfriIcons.statusWarning,
                 title: isRefreshing
-                    ? 'Refreshing ticket inventory'
-                    : 'Saved ticket inventory',
+                    ? l10n.ticketRefreshingInventoryTitle
+                    : l10n.ticketSavedInventoryTitle,
                 subtitle: isRefreshing
-                    ? 'Current fixtures and availability are being checked.'
-                    : 'Availability may be out of date. Reconnect before purchasing.',
+                    ? l10n.ticketRefreshingInventoryMessage
+                    : l10n.ticketSavedInventoryMessage,
                 tone: isRefreshing
                     ? AfriStateBannerTone.info
                     : AfriStateBannerTone.warning,
@@ -248,16 +257,14 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                     _buildMatchList(
                       context,
                       matches: upcoming,
-                      emptyTitle: 'No upcoming ticketed fixtures',
-                      emptyBody:
-                          'Upcoming ticket inventory will appear here once the club publishes sales for the next fixture.',
+                      emptyTitle: l10n.ticketNoUpcomingTitle,
+                      emptyBody: l10n.ticketNoUpcomingMessage,
                     ),
                     _buildMatchList(
                       context,
                       matches: past,
-                      emptyTitle: 'No past ticketed fixtures',
-                      emptyBody:
-                          'Past ticketed fixtures will appear here after matchday sales are completed.',
+                      emptyTitle: l10n.ticketNoPastTitle,
+                      emptyBody: l10n.ticketNoPastMessage,
                     ),
                     const MyTicketsScreen(embedded: true),
                   ],
@@ -331,7 +338,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
       return _TicketState(
         title: emptyTitle,
         body: emptyBody,
-        actionLabel: 'Refresh',
+        actionLabel: context.afriL10n.ticketRefresh,
         onPressed: () => ref.invalidate(ticketMatchesProvider),
       );
     }
@@ -349,6 +356,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
         final soldOut = match.isSoldOut;
         final onSale = match.isOnSale && !soldOut;
         final price = _currencyFormatter.format(match.ticketGeneralPrice);
+        final l10n = context.afriL10n;
 
         return Container(
           decoration: BoxDecoration(
@@ -362,10 +370,10 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
             children: [
               _MatchAvailabilityHeader(
                 status: soldOut
-                    ? 'SOLD OUT'
+                    ? l10n.ticketStatusSoldOut
                     : onSale
-                        ? 'AVAILABLE'
-                        : 'UPCOMING',
+                        ? l10n.ticketStatusAvailable
+                        : l10n.ticketUpcoming,
                 statusColor: soldOut
                     ? ColorTokens.onSurfaceVariant
                     : onSale
@@ -381,7 +389,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                '${match.homeTeam} vs ${match.awayTeam}',
+                l10n.ticketMatchVersus(match.homeTeam, match.awayTeam),
                 style: TypographyTokens.titleLarge(ColorTokens.onSurface),
               ),
               const SizedBox(height: SpacingTokens.spacing1),
@@ -403,7 +411,8 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                   final priceBlock = Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('FROM', style: TypographyTokens.labelSmall()),
+                      Text(l10n.ticketFrom,
+                          style: TypographyTokens.labelSmall()),
                       Text(
                         price,
                         style: TypographyTokens.headlineMedium().copyWith(
@@ -413,10 +422,10 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                     ],
                   );
                   final actionLabel = soldOut
-                      ? 'Sold out'
+                      ? l10n.ticketSoldOut
                       : onSale
-                          ? 'Buy ticket'
-                          : 'Sales not open';
+                          ? l10n.ticketBuyAction
+                          : l10n.ticketSalesNotOpen;
                   final actionButton = AfriButton(
                     key: ValueKey<String>('ticket-action-${match.id}'),
                     label: actionLabel,
@@ -494,12 +503,13 @@ class _MatchAvailabilityHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final teams = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         brandMarkBuilder(),
         const SizedBox(width: SpacingTokens.spacing2),
-        Text('VS', style: TypographyTokens.labelMedium()),
+        Text(l10n.ticketVersusUpper, style: TypographyTokens.labelMedium()),
         const SizedBox(width: SpacingTokens.spacing2),
         brandMarkBuilder(),
       ],
@@ -669,42 +679,39 @@ class _TicketFailureView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     if (!isOnline) {
-      return const _TicketState(
-        title: 'Connect to view tickets',
-        body: 'Reconnect to load current fixtures and ticket availability.',
-        actionLabel: 'Connection required',
+      return _TicketState(
+        title: l10n.ticketListOfflineTitle,
+        body: l10n.ticketListOfflineMessage,
+        actionLabel: l10n.ticketConnectionRequired,
         onPressed: null,
       );
     }
 
     return switch (failure.kind) {
-      TicketMatchesFailureKind.permissionDenied => const _TicketState(
-          title: 'Ticket access not available',
-          body:
-              'This account cannot load the club ticket inventory. Contact club support if access should be available.',
-          actionLabel: 'Access required',
+      TicketMatchesFailureKind.permissionDenied => _TicketState(
+          title: l10n.ticketListAccessTitle,
+          body: l10n.ticketListAccessMessage,
+          actionLabel: l10n.ticketAccessRequired,
           onPressed: null,
         ),
       TicketMatchesFailureKind.conflict => _TicketState(
-          title: 'Ticket inventory changed',
-          body:
-              'Fixture or availability details changed while loading. Refresh before choosing a ticket.',
-          actionLabel: 'Refresh',
+          title: l10n.ticketInventoryChangedTitle,
+          body: l10n.ticketInventoryChangedMessage,
+          actionLabel: l10n.ticketRefresh,
           onPressed: onRetry,
         ),
       TicketMatchesFailureKind.securityTimeout => _TicketState(
-          title: 'Ticket security check timed out',
-          body:
-              'The secure inventory check took too long. Refresh to try the check again.',
-          actionLabel: 'Refresh',
+          title: l10n.ticketInventorySecurityTitle,
+          body: l10n.ticketInventorySecurityMessage,
+          actionLabel: l10n.ticketRefresh,
           onPressed: onRetry,
         ),
       TicketMatchesFailureKind.unknown => _TicketState(
-          title: 'Unable to load fixtures',
-          body:
-              'Ticket inventory is unavailable right now. Check your connection and try again.',
-          actionLabel: 'Retry',
+          title: l10n.ticketFixturesUnavailableTitle,
+          body: l10n.ticketFixturesUnavailableMessage,
+          actionLabel: l10n.ticketRetry,
           onPressed: onRetry,
         ),
     };

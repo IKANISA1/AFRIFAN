@@ -127,13 +127,16 @@ class AfriShadows {
     ];
   }
 
-  static List<BoxShadow> glass({double strength = 1.0}) {
+  static List<BoxShadow> glass(Brightness brightness, {double strength = 1.0}) {
+    final isLight = brightness == Brightness.light;
     return [
       BoxShadow(
-        color: ColorTokens.ambientShadow.withValues(alpha: 0.18 * strength),
-        blurRadius: 20,
+        color: ColorTokens.ambientShadow.withValues(
+          alpha: (isLight ? 0.06 : 0.18) * strength,
+        ),
+        blurRadius: isLight ? 14 : 20,
         spreadRadius: -8,
-        offset: const Offset(0, 10),
+        offset: Offset(0, isLight ? 6 : 10),
       ),
     ];
   }

@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -62,7 +63,7 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
         ),
         const SizedBox(height: SpacingTokens.spacing4),
         Text(
-          'CONFIRM PURCHASE',
+          context.afriL10n.ticketConfirmPurchase,
           style: TypographyTokens.headlineMedium().copyWith(
             fontWeight: FontWeight.w800,
           ),
@@ -73,15 +74,35 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SheetRow(label: 'MATCH', value: matchTitle),
-              _SheetRow(label: 'ZONE', value: zone),
-              if (seatCode != null) _SheetRow(label: 'SEAT', value: seatCode!),
-              _SheetRow(label: 'QUANTITY', value: '$quantity'),
-              const _SheetRow(label: 'SERVICE FEE', value: 'Included'),
-              _SheetRow(label: 'TOTAL', value: totalLabel, highlighted: true),
+              _SheetRow(
+                label: context.afriL10n.ticketMatchUpper,
+                value: matchTitle,
+              ),
+              _SheetRow(
+                label: context.afriL10n.ticketZoneUpper,
+                value: zone,
+              ),
+              if (seatCode != null)
+                _SheetRow(
+                  label: context.afriL10n.ticketSeatUpper,
+                  value: seatCode!,
+                ),
+              _SheetRow(
+                label: context.afriL10n.ticketQuantityUpper,
+                value: '$quantity',
+              ),
+              _SheetRow(
+                label: context.afriL10n.ticketServiceFeeUpper,
+                value: context.afriL10n.ticketIncluded,
+              ),
+              _SheetRow(
+                label: context.afriL10n.ticketTotalUpper,
+                value: totalLabel,
+                highlighted: true,
+              ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                'MOMO: $momoLabel',
+                context.afriL10n.ticketMomoValue(momoLabel),
                 style: TypographyTokens.bodySmall(),
               ),
             ],
@@ -89,18 +110,18 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
         ),
         const SizedBox(height: SpacingTokens.spacing4),
         Text(
-          'Confirm only after completing the MoMo payment on your phone.',
+          context.afriL10n.ticketConfirmPaymentWarning,
           style: TypographyTokens.bodySmall(),
         ),
         const SizedBox(height: SpacingTokens.spacing5),
         AfriButton(
-          label: 'I completed payment',
+          label: context.afriL10n.ticketCompletedPayment,
           fullWidth: true,
           onTap: () => context.pop(true),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         AfriButton(
-          label: 'I did not pay',
+          label: context.afriL10n.ticketDidNotPay,
           variant: AfriButtonVariant.outline,
           fullWidth: true,
           onTap: () => context.pop(false),

@@ -105,6 +105,17 @@ void main() {
     });
   });
 
+  group('Shadow Tokens — tonal surface parity', () {
+    test('light glass is quieter than dark glass', () {
+      final light = AfriShadows.glass(Brightness.light).single;
+      final dark = AfriShadows.glass(Brightness.dark).single;
+
+      expect(light.color.a, lessThan(dark.color.a));
+      expect(light.blurRadius, lessThan(dark.blurRadius));
+      expect(light.offset.dy, lessThan(dark.offset.dy));
+    });
+  });
+
   group('Color Tokens — Dark Mode Enforced', () {
     test('clubPrimary is defined and not transparent', () {
       expect(ColorTokens.clubPrimary.a, greaterThan(0));

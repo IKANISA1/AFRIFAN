@@ -1319,8 +1319,10 @@ bool _isGovernedRuntimeMedia(Directory repoRoot, File mediaFile) {
 bool _isGovernedGoldenEvidence(Directory repoRoot, File mediaFile) {
   final normalizedRoot = repoRoot.path.replaceAll('\\', '/');
   final normalizedPath = mediaFile.path.replaceAll('\\', '/');
-  if (!normalizedPath.startsWith('$normalizedRoot/packages/') ||
-      !normalizedPath.contains('/test/goldens/')) {
+  final isTestSurface =
+      normalizedPath.startsWith('$normalizedRoot/packages/') ||
+      normalizedPath.startsWith('$normalizedRoot/apps/');
+  if (!isTestSurface || !normalizedPath.contains('/test/goldens/')) {
     return false;
   }
 

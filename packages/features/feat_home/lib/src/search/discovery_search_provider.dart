@@ -15,9 +15,11 @@ final discoverySearchRepositoryProvider = Provider<DiscoverySearchRepository>((
   return FederatedDiscoverySearchRepository(
     local: const LocalDiscoverySearchRepository(),
     liveSources: <DiscoverySearchSource>[
+      SupabaseClubDiscoverySource(client: client),
       SupabaseSupporterDiscoverySource(client: client),
       SupabaseFixtureDiscoverySource(client: client),
       SupabaseCommerceDiscoverySource(client: client),
+      SupabaseVenueDiscoverySource(client: client),
     ],
   );
 });

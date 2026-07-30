@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_shop/src/screens/shop_screen.dart';
 import 'package:flutter/material.dart';
@@ -178,19 +179,58 @@ void main() {
       expect(find.text('Refreshing store'), findsOneWidget);
       expect(find.text('Current inventory is being checked.'), findsOneWidget);
     });
+
+    for (final locale in const <Locale>[Locale('fr'), Locale('rw')]) {
+      testWidgets(
+        'renders localized empty and recovery journey in ${locale.languageCode}',
+        (tester) async {
+          var retried = false;
+          await tester.pumpWidget(
+            _CatalogHarness(
+              locale: locale,
+              child: ShopCatalogSlivers(
+                isLoading: false,
+                products: const [],
+                filteredProducts: const [],
+                categories: const ['All'],
+                selectedCategory: 'All',
+                onCategorySelected: (_) {},
+                onRetry: () => retried = true,
+                onProductTap: (_) {},
+                onAddToCart: (_) {},
+              ),
+            ),
+          );
+
+          final l10n = lookupAfriLocalizations(locale);
+          expect(find.text(l10n.shopNoProductsTitle), findsOneWidget);
+          expect(find.text(l10n.shopNoProductsMessage), findsOneWidget);
+          await tester.tap(find.text(l10n.shopRetry));
+          expect(retried, isTrue);
+          expect(find.text('No products available'), findsNothing);
+        },
+      );
+    }
   });
 }
 
 class _CatalogHarness extends StatelessWidget {
-  const _CatalogHarness({required this.child});
+  const _CatalogHarness({
+    required this.child,
+    this.locale = const Locale('en'),
+  });
 
   final Widget child;
+  final Locale locale;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ClubTheme.from(ClubConfig.fallback()),
-      home: Scaffold(body: CustomScrollView(slivers: [child])),
+      home: AfriLocalizationsScope(
+        locale: locale,
+        child: Scaffold(body: CustomScrollView(slivers: [child])),
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -78,13 +79,14 @@ class _StatementDownloadScreenState
     AfriToast.success(
       context,
       state.snapshot.entries.isEmpty
-          ? 'Empty CSV copied to clipboard.'
-          : 'Privacy-safe CSV copied to clipboard.',
+          ? context.afriL10n.contributionsEmptyCsvCopied
+          : context.afriL10n.contributionsCsvCopied,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final statementAsync = ref.watch(statementProvider(widget.groupId));
     final configuredExportEnabled = ref.watch(statementExportEnabledProvider);
 
@@ -104,7 +106,7 @@ class _StatementDownloadScreenState
           appBar: AfriAppBar(
             backgroundColor: ColorTokens.transparent,
             title: Text(
-              'PUBLIC STATEMENT',
+              l10n.contributionsStatementTitle,
               style: TypographyTokens.titleLarge(
                 ColorTokens.chromeForeground,
               ).copyWith(fontWeight: FontWeight.w700),
@@ -125,9 +127,8 @@ class _StatementDownloadScreenState
                 padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                 children: [
                   AfriStateView.loading(
-                    title: 'Loading public statement',
-                    message:
-                        'Checking confirmed contributions and privacy-safe supporter aliases.',
+                    title: l10n.contributionsStatementLoadingTitle,
+                    message: l10n.contributionsStatementLoadingMessage,
                   ),
                 ],
               ),
@@ -149,27 +150,32 @@ class _StatementDownloadScreenState
   }
 
   Widget _buildFailure(Object error, bool isOnline) {
+    final l10n = context.afriL10n;
     final failure = StatementFailure.fromError(error);
-    final content = _StatementFailureContent.fromFailure(failure, isOnline);
+    final content = _StatementFailureContent.fromFailure(
+      failure,
+      isOnline,
+      l10n,
+    );
     final refresh = content.canRefresh ? () => unawaited(_refresh()) : null;
     return switch (failure.kind) {
       StatementFailureKind.offline => AfriStateView.offline(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.contributionsRefresh : null,
         onAction: refresh,
       ),
       StatementFailureKind.notFound => AfriStateView.empty(
         title: content.title,
         message: content.message,
         icon: AfriIcons.groups,
-        actionLabel: 'Back to initiative',
+        actionLabel: l10n.contributionsBackToInitiative,
         onAction: _goBack,
       ),
       _ => AfriStateView.error(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.contributionsRefresh : null,
         onAction: refresh,
       ),
     };
@@ -180,6 +186,7 @@ class _StatementDownloadScreenState
     required bool isOnline,
     required bool configuredExportEnabled,
   }) {
+    final l10n = context.afriL10n;
     final exportEnabled =
         configuredExportEnabled &&
         isOnline &&
@@ -195,33 +202,30 @@ class _StatementDownloadScreenState
 
     if (state.phase == StatementPhase.syncing) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.refresh,
-          title: 'Refreshing statement',
-          subtitle:
-              'Keeping the last confirmed statement visible while new activity is checked.',
+          title: l10n.contributionsStatementRefreshingTitle,
+          subtitle: l10n.contributionsStatementRefreshingMessage,
           tone: AfriStateBannerTone.info,
           compact: true,
         ),
       );
     } else if (!configuredExportEnabled) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.lock,
-          title: 'Statement export is read-only',
-          subtitle:
-              'You can review confirmed public entries, but copying a statement is disabled for this build.',
+          title: l10n.contributionsStatementReadOnlyTitle,
+          subtitle: l10n.contributionsStatementReadOnlyMessage,
           tone: AfriStateBannerTone.warning,
           compact: true,
         ),
       );
     } else if (!isOnline) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.offline,
-          title: 'Showing saved statement data',
-          subtitle:
-              'Reconnect and refresh before exporting or relying on the latest total.',
+          title: l10n.contributionsSavedStatementTitle,
+          subtitle: l10n.contributionsSavedStatementMessage,
           tone: AfriStateBannerTone.warning,
           compact: true,
         ),
@@ -233,7 +237,7 @@ class _StatementDownloadScreenState
         children.add(
           AfriButton(
             key: const ValueKey<String>('statement-refresh-action'),
-            label: 'REFRESH STATEMENT',
+            label: l10n.contributionsRefreshStatementUpper,
             icon: AfriIcons.refresh,
             variant: AfriButtonVariant.outline,
             labelMaxLines: 2,
@@ -263,8 +267,14 @@ class _StatementDownloadScreenState
           configuredExportEnabled: configuredExportEnabled,
         ),
         semanticsLabel: exportEnabled
-            ? 'Copy privacy-safe CSV statement'
-            : 'Statement export unavailable. ${_exportLabel(state: state, isOnline: isOnline, configuredExportEnabled: configuredExportEnabled)}',
+            ? l10n.contributionsCopyCsvSemantic
+            : l10n.contributionsExportUnavailableSemantic(
+                _exportLabel(
+                  state: state,
+                  isOnline: isOnline,
+                  configuredExportEnabled: configuredExportEnabled,
+                ),
+              ),
         icon: AfriIcons.excel,
         fullWidth: true,
         labelMaxLines: 2,
@@ -281,9 +291,9 @@ class _StatementDownloadScreenState
         children: [
           Expanded(
             child: _DateInputCard(
-              label: 'FROM',
+              label: l10n.contributionsFromUpper,
               value: state.from == null
-                  ? 'All time'
+                  ? l10n.contributionsAllTime
                   : DateFormat('dd MMM yyyy').format(state.from!),
               enabled: isOnline && !state.actionsBlocked,
               onTap: () => _pickDate(state, isFrom: true),
@@ -292,9 +302,9 @@ class _StatementDownloadScreenState
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
             child: _DateInputCard(
-              label: 'TO',
+              label: l10n.contributionsToUpper,
               value: state.to == null
-                  ? 'Now'
+                  ? l10n.contributionsNow
                   : DateFormat('dd MMM yyyy').format(state.to!),
               enabled: isOnline && !state.actionsBlocked,
               onTap: () => _pickDate(state, isFrom: false),
@@ -310,7 +320,10 @@ class _StatementDownloadScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('SORT', style: TypographyTokens.labelSmall()),
+            Text(
+              l10n.contributionsSortUpper,
+              style: TypographyTokens.labelSmall(),
+            ),
             const SizedBox(height: SpacingTokens.spacing2),
             Wrap(
               spacing: SpacingTokens.spacing2,
@@ -320,8 +333,8 @@ class _StatementDownloadScreenState
                     (sort) => AfriChoiceChip(
                       key: ValueKey<String>('statement-sort-${sort.name}'),
                       selected: state.sort == sort,
-                      label: Text(sort.label),
-                      tooltip: sort.label,
+                      label: Text(_statementSortLabel(sort, l10n)),
+                      tooltip: _statementSortLabel(sort, l10n),
                       onSelected: state.actionsBlocked
                           ? null
                           : (_) => ref
@@ -339,25 +352,25 @@ class _StatementDownloadScreenState
     );
     children.add(const SizedBox(height: SpacingTokens.spacing4));
     children.add(
-      const Row(
+      Row(
         children: [
           Expanded(
             child: _FormatCard(
-              label: 'PDF',
+              label: l10n.contributionsPdf,
               icon: AfriIcons.pdf,
               selected: false,
               enabled: false,
-              helper: 'Coming soon',
+              helper: l10n.contributionsComingSoon,
             ),
           ),
-          SizedBox(width: SpacingTokens.spacing3),
+          const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
             child: _FormatCard(
-              label: 'CSV',
+              label: l10n.contributionsCsv,
               icon: AfriIcons.excel,
               selected: true,
               enabled: true,
-              helper: 'Clipboard',
+              helper: l10n.contributionsClipboard,
             ),
           ),
         ],
@@ -387,15 +400,25 @@ class _StatementDownloadScreenState
     required bool isOnline,
     required bool configuredExportEnabled,
   }) {
-    if (_isExporting) return 'Copying CSV…';
-    if (!configuredExportEnabled) return 'Export disabled';
-    if (!isOnline) return 'Connection required';
-    if (state.phase == StatementPhase.syncing) return 'Checking latest entries';
-    if (state.phase == StatementPhase.degraded) {
-      return 'Refresh before exporting';
+    final l10n = context.afriL10n;
+    if (_isExporting) return l10n.contributionsCopyingCsv;
+    if (!configuredExportEnabled) return l10n.contributionsExportDisabled;
+    if (!isOnline) return l10n.connectionRequired;
+    if (state.phase == StatementPhase.syncing) {
+      return l10n.contributionsCheckingLatestEntries;
     }
-    return 'Copy CSV statement';
+    if (state.phase == StatementPhase.degraded) {
+      return l10n.contributionsRefreshBeforeExporting;
+    }
+    return l10n.contributionsCopyCsvStatement;
   }
+
+  String _statementSortLabel(StatementSort sort, AfriLocalizations l10n) =>
+      switch (sort) {
+        StatementSort.date => l10n.contributionsSortDate,
+        StatementSort.amount => l10n.contributionsSortAmount,
+        StatementSort.alias => l10n.contributionsSortAlias,
+      };
 }
 
 class _StatementSummaryCard extends StatelessWidget {
@@ -411,6 +434,7 @@ class _StatementSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final metricAccent = ColorTokens.accessibleMetricColor(
       ColorTokens.clubAccent,
     );
@@ -419,8 +443,11 @@ class _StatementSummaryCard extends StatelessWidget {
       animate: false,
       child: Semantics(
         container: true,
-        label:
-            '$groupName public statement, $entryCount entries, confirmed total $confirmedTotal',
+        label: l10n.contributionsStatementSummarySemantic(
+          groupName,
+          entryCount,
+          confirmedTotal,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -432,7 +459,7 @@ class _StatementSummaryCard extends StatelessWidget {
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
-              'CONFIRMED TOTAL',
+              l10n.contributionsConfirmedTotalUpper,
               style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
             ),
             const SizedBox(height: SpacingTokens.spacing1),
@@ -444,12 +471,12 @@ class _StatementSummaryCard extends StatelessWidget {
             ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              '$entryCount public ${entryCount == 1 ? 'entry' : 'entries'} in this range',
+              l10n.contributionsPublicEntriesInRange(entryCount),
               style: TypographyTokens.bodyMedium(),
             ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              'Public supporter aliases only. Names, phone numbers, payment references, and account identifiers are excluded.',
+              l10n.contributionsStatementPrivacy,
               style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
             ),
           ],
@@ -480,7 +507,10 @@ class _DateInputCard extends StatelessWidget {
         onTap: onTap,
         enabled: enabled,
         tooltip: label,
-        semanticsLabel: '$label, $value',
+        semanticsLabel: context.afriL10n.contributionsMetaSemantic(
+          label,
+          value,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -527,7 +557,7 @@ class _FormatCard extends StatelessWidget {
     return Semantics(
       selected: selected,
       enabled: enabled,
-      label: '$label export format, $helper',
+      label: context.afriL10n.contributionsFormatSemantic(label, helper),
       child: GlassCard(
         animate: false,
         borderColor: selected
@@ -574,12 +604,13 @@ class _StatementPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return Column(
       key: const ValueKey<String>('statement-preview'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PREVIEW',
+          l10n.contributionsPreviewUpper,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
@@ -588,17 +619,16 @@ class _StatementPreview extends StatelessWidget {
         const SizedBox(height: SpacingTokens.spacing2),
         Text(
           totalEntryCount > 5
-              ? 'Showing 5 of $totalEntryCount entries. The CSV includes the full bounded range.'
-              : 'The CSV includes only the public fields shown below.',
+              ? l10n.contributionsPreviewShowing(totalEntryCount)
+              : l10n.contributionsPreviewPublicFields,
           style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         if (entries.isEmpty)
           AfriStateView.empty(
             key: const ValueKey<String>('statement-empty'),
-            title: 'No statement entries',
-            message:
-                'No public contributions match this date range. Choose another range and refresh.',
+            title: l10n.contributionsNoStatementEntriesTitle,
+            message: l10n.contributionsNoStatementEntriesMessage,
             icon: AfriIcons.excel,
             compact: true,
           )
@@ -622,6 +652,7 @@ class _StatementEntryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final amount = currency.format(entry.amount);
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     final tone = switch (entry.status) {
@@ -629,12 +660,22 @@ class _StatementEntryRow extends StatelessWidget {
       StatementEntryStatus.processing => AfriStatusTone.warning,
       StatementEntryStatus.failed => AfriStatusTone.error,
     };
+    final statusLabel = switch (entry.status) {
+      StatementEntryStatus.confirmed => l10n.contributionsStatusConfirmed,
+      StatementEntryStatus.processing => l10n.contributionsStatusProcessing,
+      StatementEntryStatus.failed => l10n.contributionsStatusFailed,
+    };
+    final date = AfriDateFormatter.formatDate(entry.createdAt);
     return GlassCard(
       animate: false,
       child: Semantics(
         container: true,
-        label:
-            '${entry.publicAlias}, $amount, ${entry.status.label}, ${AfriDateFormatter.formatDate(entry.createdAt)}',
+        label: l10n.contributionsLedgerEntrySemantic(
+          entry.publicAlias,
+          amount,
+          statusLabel,
+          date,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -677,9 +718,9 @@ class _StatementEntryRow extends StatelessWidget {
               spacing: SpacingTokens.spacing3,
               runSpacing: SpacingTokens.spacing2,
               children: [
-                AfriStatusChip(label: entry.status.label, tone: tone),
+                AfriStatusChip(label: statusLabel, tone: tone),
                 Text(
-                  AfriDateFormatter.formatDate(entry.createdAt),
+                  date,
                   style: TypographyTokens.bodySmall(
                     ColorTokens.onSurfaceVariant,
                   ),
@@ -707,43 +748,41 @@ class _StatementFailureContent {
   factory _StatementFailureContent.fromFailure(
     StatementFailure failure,
     bool isOnline,
+    AfriLocalizations l10n,
   ) {
     return switch (failure.kind) {
       StatementFailureKind.offline => _StatementFailureContent(
-        title: isOnline ? 'Connection restored' : 'Statement offline',
+        title: isOnline
+            ? l10n.contributionsConnectionRestoredTitle
+            : l10n.contributionsStatementOfflineTitle,
         message: isOnline
-            ? 'Refresh to check the latest confirmed public entries.'
-            : 'Reconnect to load this public statement.',
+            ? l10n.contributionsStatementRestoredMessage
+            : l10n.contributionsStatementOfflineMessage,
         canRefresh: isOnline,
       ),
-      StatementFailureKind.notFound => const _StatementFailureContent(
-        title: 'Statement not found',
-        message:
-            'This initiative may have closed or the statement link may no longer be valid.',
+      StatementFailureKind.notFound => _StatementFailureContent(
+        title: l10n.contributionsStatementNotFoundTitle,
+        message: l10n.contributionsStatementNotFoundMessage,
         canRefresh: false,
       ),
-      StatementFailureKind.permissionDenied => const _StatementFailureContent(
-        title: 'Statement unavailable',
-        message:
-            'Your current club access does not allow this contribution statement.',
+      StatementFailureKind.permissionDenied => _StatementFailureContent(
+        title: l10n.contributionsStatementUnavailableTitle,
+        message: l10n.contributionsStatementAccessMessage,
         canRefresh: false,
       ),
-      StatementFailureKind.conflict => const _StatementFailureContent(
-        title: 'Statement changed',
-        message:
-            'Refresh and review the latest confirmed entries before exporting.',
+      StatementFailureKind.conflict => _StatementFailureContent(
+        title: l10n.contributionsStatementChangedTitle,
+        message: l10n.contributionsStatementChangedMessage,
         canRefresh: true,
       ),
-      StatementFailureKind.securityTimeout => const _StatementFailureContent(
-        title: 'Statement check timed out',
-        message:
-            'No current statement was confirmed. Refresh before exporting.',
+      StatementFailureKind.securityTimeout => _StatementFailureContent(
+        title: l10n.contributionsStatementTimeoutTitle,
+        message: l10n.contributionsStatementTimeoutMessage,
         canRefresh: true,
       ),
-      StatementFailureKind.unknown => const _StatementFailureContent(
-        title: 'Statement unavailable',
-        message:
-            'Refresh and try again when the public contribution ledger is available.',
+      StatementFailureKind.unknown => _StatementFailureContent(
+        title: l10n.contributionsStatementUnavailableTitle,
+        message: l10n.contributionsStatementUnavailableMessage,
         canRefresh: true,
       ),
     };
@@ -757,7 +796,11 @@ class _RetainedStatementFailure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = _StatementFailureContent.fromFailure(failure, true);
+    final content = _StatementFailureContent.fromFailure(
+      failure,
+      true,
+      context.afriL10n,
+    );
     return AfriStateBanner(
       icon: failure.kind == StatementFailureKind.permissionDenied
           ? AfriIcons.lock

@@ -637,7 +637,7 @@ class _FanClubConsequence extends StatelessWidget {
             children: [
               Icon(
                 AfriIcons.groups,
-                size: 56,
+                size: SizeTokens.iconXxl,
                 color: ColorTokens.onSurfaceVariant,
               ),
               const SizedBox(height: SpacingTokens.spacing4),

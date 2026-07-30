@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:flutter/material.dart';
 
-enum DiscoveryCategory { all, supporters, fixtures, commerce, services }
+enum DiscoveryCategory { all, club, supporters, fixtures, commerce, services }
 
 extension DiscoveryCategoryLabel on DiscoveryCategory {
   String label(AfriLocalizations l10n) => switch (this) {
     DiscoveryCategory.all => l10n.searchCategoryAll,
+    DiscoveryCategory.club => l10n.clubTitle,
     DiscoveryCategory.supporters => l10n.searchCategorySupporters,
     DiscoveryCategory.fixtures => l10n.searchCategoryFixtures,
     DiscoveryCategory.commerce => l10n.searchCategoryCommerce,

@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,9 @@ class CartItemCard extends StatelessWidget {
                   children: [
                     if (variant != null && variant.isNotEmpty)
                       AfriStatusChip(label: variant),
-                    AfriStatusChip(label: 'Qty ${item.quantity}'),
+                    AfriStatusChip(
+                      label: context.afriL10n.shopQuantityValue(item.quantity),
+                    ),
                   ],
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
@@ -81,7 +84,7 @@ class CartItemCard extends StatelessWidget {
                   children: [
                     AfriIconButton(
                       icon: AfriIcons.remove,
-                      tooltip: 'Decrease quantity',
+                      tooltip: context.afriL10n.shopDecreaseQuantity,
                       onTap: onDecrement,
                     ),
                     SizedBox(
@@ -94,13 +97,13 @@ class CartItemCard extends StatelessWidget {
                     ),
                     AfriIconButton(
                       icon: AfriIcons.add,
-                      tooltip: 'Increase quantity',
+                      tooltip: context.afriL10n.shopIncreaseQuantity,
                       onTap: onIncrement,
                     ),
                     AfriTextButton(
                       onPressed: onRemove,
                       child: Text(
-                        'Remove',
+                        context.afriL10n.shopRemove,
                         style: TypographyTokens.labelLarge(ColorTokens.error),
                       ),
                     ),

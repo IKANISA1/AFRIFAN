@@ -105,8 +105,9 @@ void main() {
         await tester.pump();
 
         expect(find.textContaining('temporarily unavailable'), findsOneWidget);
+        await _scrollHomeTo(tester, find.text('Tickets'));
         expect(find.text('Tickets'), findsOneWidget);
-        expect(find.text('Join Gikundiro'), findsOneWidget);
+        expect(find.text('Join Gikundiro'), findsWidgets);
         expect(find.text('Fan Zone'), findsOneWidget);
         expect(find.text('Shop'), findsOneWidget);
       },
@@ -141,8 +142,9 @@ void main() {
         );
         expect(find.text('Matchday'), findsOneWidget);
         expect(find.text('Open Fan Zone'), findsOneWidget);
+        await _scrollHomeTo(tester, find.text('Tickets'));
         expect(find.text('Tickets'), findsOneWidget);
-        expect(find.text('Join Gikundiro'), findsOneWidget);
+        expect(find.text('Join Gikundiro'), findsWidgets);
         expect(find.text('Fan Zone'), findsOneWidget);
         expect(find.text('Shop'), findsOneWidget);
       },
@@ -180,8 +182,9 @@ void main() {
         await tester.pump(const Duration(milliseconds: 300));
         await tester.pump();
 
-        expect(find.text(testCase.ticket), findsOneWidget);
         expect(find.text(testCase.notice), findsOneWidget);
+        await _scrollHomeTo(tester, find.text(testCase.ticket));
+        expect(find.text(testCase.ticket), findsOneWidget);
       }
     });
 
@@ -358,6 +361,16 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(HomeScreen), findsOneWidget);
+      final compactHero = find.byKey(
+        const ValueKey<String>('home-hero-state-compact'),
+      );
+      expect(compactHero, findsOneWidget);
+      expect(
+        tester.getSize(compactHero).height,
+        lessThan(homeHeroHeight(tester.element(compactHero))),
+      );
+      await _scrollHomeTo(tester, find.text('Tickets'));
+      expect(find.text('Tickets'), findsOneWidget);
     });
 
     testWidgets('matches the home layout at 200 percent text scale', (
@@ -815,12 +828,59 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     await tester.pumpAndSettle();
 
+    final topChrome = find.byKey(const ValueKey<String>('home-top-chrome'));
+    final homeScrollable = find
+        .ancestor(of: topChrome, matching: find.byType(Scrollable))
+        .first;
+    final homePosition = tester.state<ScrollableState>(homeScrollable).position;
+    homePosition.jumpTo(homePosition.minScrollExtent);
+    await tester.pumpAndSettle();
+    expect(homePosition.pixels, homePosition.minScrollExtent);
+
     expect(tester.takeException(), isNull);
     await expectLater(
       find.byKey(const ValueKey<String>('home-high-contrast-golden')),
       matchesGoldenFile('goldens/home_high_contrast_dark_390x844.png'),
     );
   });
+
+  testWidgets('shows the current membership projection on Home', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _buildApp(
+        homeRepository: const _FakeHomeFeedRepository(
+          snapshot: HomeFeedSnapshot(
+            status: HomeFeedStatus.success,
+            quickActions: homeFeedLocalFallbackActions,
+            membershipTier: 'Gold',
+            membershipPaymentStatus: 'confirmed',
+          ),
+        ),
+        latestIntelRepository: const _FakeLatestIntelRepository(
+          LatestIntelSnapshot(status: LatestIntelStatus.empty),
+        ),
+        child: const HomeScreen(),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Gold · Current'), findsOneWidget);
+    expect(
+      find.text('View membership status and club benefits.'),
+      findsOneWidget,
+    );
+  });
+}
+
+Future<void> _scrollHomeTo(WidgetTester tester, Finder target) async {
+  await tester.scrollUntilVisible(
+    target,
+    260,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.pumpAndSettle();
 }
 
 Future<void> _pumpHomeStateGolden(

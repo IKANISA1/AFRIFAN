@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -21,7 +22,7 @@ Future<void> showMomoAmountEntrySheet(
   if (!ConnectivityService.isOnline) {
     AfriToast.error(
       context,
-      'Connect before contributing. No payment or contribution was submitted.',
+      context.afriL10n.contributionsConnectBeforeContributing,
     );
     return;
   }
@@ -71,10 +72,7 @@ Future<void> showMomoAmountEntrySheet(
 
   if (!launched) {
     if (!context.mounted) return;
-    AfriToast.error(
-      context,
-      'Could not open the MOMO dialer. Contribution was not submitted.',
-    );
+    AfriToast.error(context, context.afriL10n.contributionsDialerFailed);
     return;
   }
 
@@ -139,7 +137,7 @@ class ContributionPaymentStatusAnnouncement extends StatelessWidget {
       container: true,
       explicitChildNodes: true,
       liveRegion: true,
-      label: '$heading. $message',
+      label: context.afriL10n.contributionsStatusAnnouncement(heading, message),
       child: child,
     );
   }
@@ -193,7 +191,7 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                'HOW MUCH TO CONTRIBUTE?',
+                context.afriL10n.contributionsAmountPrompt,
                 style: TypographyTokens.headlineMedium().copyWith(
                   fontWeight: FontWeight.w800,
                 ),
@@ -217,7 +215,9 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
                       (value) => AfriChoiceChip(
                         selected: _amount == value,
                         label: Text(
-                          '+${value ~/ 1000}K',
+                          context.afriL10n.contributionsQuickAmount(
+                            value ~/ 1000,
+                          ),
                           semanticsLabel: currency.format(value),
                         ),
                         onSelected: (_) => setState(() => _amount = value),
@@ -227,7 +227,7 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
               ),
               const SizedBox(height: SpacingTokens.spacing5),
               AfriButton(
-                label: 'Launch MOMO dialer',
+                label: context.afriL10n.contributionsLaunchMomoDialer,
                 fullWidth: true,
                 onTap: () => Navigator.of(context).pop(_amount),
               ),
@@ -258,6 +258,7 @@ class _UssdConfirmationSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final ussdCode = country.buildUssdCode(
       recipientMomo: recipientMomo,
       amount: amount,
@@ -272,7 +273,7 @@ class _UssdConfirmationSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'LAUNCHING MOMO',
+                l10n.contributionsLaunchingMomo,
                 style: TypographyTokens.headlineMedium().copyWith(
                   fontWeight: FontWeight.w800,
                 ),
@@ -290,7 +291,7 @@ class _UssdConfirmationSheet extends StatelessWidget {
                 children: [
                   Expanded(
                     child: AfriButton(
-                      label: 'Change amount',
+                      label: l10n.contributionsChangeAmount,
                       variant: AfriButtonVariant.outline,
                       onTap: () => Navigator.of(context).pop(false),
                     ),
@@ -298,7 +299,7 @@ class _UssdConfirmationSheet extends StatelessWidget {
                   const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
                     child: AfriButton(
-                      label: 'Dial now',
+                      label: l10n.contributionsDialNow,
                       onTap: () => Navigator.of(context).pop(true),
                     ),
                   ),
@@ -307,7 +308,7 @@ class _UssdConfirmationSheet extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing3),
               AfriTextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel contribution'),
+                child: Text(l10n.contributionsCancel),
               ),
             ],
           ),
@@ -426,6 +427,7 @@ class _ContributionSuccessDialogState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final currency = CurrencyFormatter(
       currencyCode: context.afriCurrencyCode,
       currencySymbol: context.afriCurrencySymbol,
@@ -440,44 +442,34 @@ class _ContributionSuccessDialogState
       case 'verified':
         icon = AfriIcons.statusSuccess;
         iconColor = ColorTokens.success;
-        heading = 'PAYMENT CONFIRMED';
-        body =
-            'Your contribution of ${currency.format(widget.amount)} '
-            'has been verified and recorded.';
+        heading = l10n.contributionsPaymentConfirmedTitle;
+        body = l10n.contributionsPaymentConfirmedMessage(
+          currency.format(widget.amount),
+        );
         break;
       case 'failed':
         icon = AfriIcons.statusWarning;
         iconColor = ColorTokens.error;
-        heading = 'PAYMENT FAILED';
-        body =
-            'The payment could not be verified. '
-            'Check your MoMo balance and try again, or contact support.';
+        heading = l10n.contributionsPaymentFailedTitle;
+        body = l10n.contributionsPaymentFailedMessage;
         break;
       case 'timeout':
         icon = AfriIcons.statusPending;
         iconColor = ColorTokens.warning;
-        heading = 'STILL PROCESSING';
-        body =
-            'Your payment is taking longer than usual. '
-            'Check the Group ledger for your updated status. '
-            'If you completed the MoMo transfer, it will appear shortly.';
+        heading = l10n.contributionsPaymentProcessingTitle;
+        body = l10n.contributionsPaymentProcessingMessage;
         break;
       case 'error':
         icon = AfriIcons.statusWarning;
         iconColor = ColorTokens.error;
-        heading = 'COULD NOT RECORD';
-        body =
-            'The MoMo dialer was launched but the contribution '
-            'could not be saved. Return to the Group and try again.';
+        heading = l10n.contributionsRecordFailedTitle;
+        body = l10n.contributionsRecordFailedMessage;
         break;
       default: // 'pending'
         icon = AfriIcons.statusPending;
         iconColor = ColorTokens.warning;
-        heading = 'AWAITING PAYMENT';
-        body =
-            'Complete the MoMo payment on your phone. '
-            'Your contribution appears as "Processing" '
-            'until we receive confirmation.';
+        heading = l10n.contributionsAwaitingPaymentTitle;
+        body = l10n.contributionsAwaitingPaymentMessage;
     }
 
     return AfriDialog(
@@ -520,7 +512,7 @@ class _ContributionSuccessDialogState
                     const AfriLoadingIndicator(size: 20),
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
-                      'Checking payment status…',
+                      l10n.contributionsCheckingPaymentStatus,
                       style: TypographyTokens.bodySmall(
                         ColorTokens.onSurfaceVariant,
                       ),
@@ -528,14 +520,19 @@ class _ContributionSuccessDialogState
                   ],
                   if (_status == 'verified') ...[
                     const SizedBox(height: SpacingTokens.spacing3),
-                    AfriInfoChip(label: 'VERIFIED', color: ColorTokens.success),
+                    AfriInfoChip(
+                      label: l10n.contributionsVerifiedUpper,
+                      color: ColorTokens.success,
+                    ),
                   ],
                 ],
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             AfriButton(
-              label: _status == 'verified' ? 'Done' : 'Back to group',
+              label: _status == 'verified'
+                  ? l10n.contributionsDone
+                  : l10n.contributionsBackToGroup,
               fullWidth: true,
               onTap: () => Navigator.of(context).pop(),
             ),

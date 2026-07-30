@@ -140,18 +140,18 @@ class ChallengeOpsScreen extends ConsumerWidget {
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => AfriAlertDialog(
         title: const Text('Retry settlement?'),
         content: Text(
           'Recheck ${item.homeTeam} vs ${item.awayTeam}. '
           'Do not retry again until the refreshed status is confirmed.',
         ),
         actions: [
-          TextButton(
+          AfriTextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
             child: const Text('CANCEL'),
           ),
-          TextButton(
+          AfriTextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             child: const Text('RETRY'),
           ),

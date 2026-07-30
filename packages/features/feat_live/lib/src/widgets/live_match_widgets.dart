@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class TeamBadge extends StatelessWidget {
     final hasLogo = logoUrl != null && logoUrl!.isNotEmpty;
 
     return Semantics(
-      label: '$label team logo',
+      label: context.afriL10n.liveTeamLogoSemantic(label),
       image: true,
       child: Container(
         width: size,
@@ -59,7 +60,7 @@ class TeamBadge extends StatelessWidget {
                   imageUrl: logoUrl!,
                   width: size * 0.76,
                   height: size * 0.76,
-                  semanticLabel: '$label team logo',
+                  semanticLabel: context.afriL10n.liveTeamLogoSemantic(label),
                   provenanceId: provenanceId?.trim().isNotEmpty == true
                       ? provenanceId!.trim()
                       : 'team-logo:$label:unapproved',
@@ -124,7 +125,9 @@ class TeamLogoInline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semanticLabel = '${fallbackLabel ?? 'Team'} logo';
+    final semanticLabel = context.afriL10n.liveTeamLogoSemantic(
+      fallbackLabel ?? context.afriL10n.liveTeamFallback,
+    );
 
     if (logoUrl != null && logoUrl!.isNotEmpty) {
       return AfriGovernedCachedImage(
@@ -174,9 +177,9 @@ class MatchEventIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventVisual = _iconForType(eventType);
+    final eventVisual = _iconForType(context, eventType);
     return Semantics(
-      label: 'Match event: ${eventVisual.label}',
+      label: context.afriL10n.liveMatchEventSemantic(eventVisual.label),
       image: true,
       child: Container(
         width: size + 8,
@@ -195,32 +198,32 @@ class MatchEventIcon extends StatelessWidget {
     );
   }
 
-  _MatchEventVisual _iconForType(String type) {
+  _MatchEventVisual _iconForType(BuildContext context, String type) {
     return switch (type.toLowerCase()) {
       'goal' => _MatchEventVisual(
         icon: AfriIcons.fanzone,
         color: ColorTokens.success,
-        label: 'goal',
+        label: context.afriL10n.liveEventGoal,
       ),
       'card' => _MatchEventVisual(
         icon: AfriIcons.warning,
         color: ColorTokens.error,
-        label: 'card',
+        label: context.afriL10n.liveEventCard,
       ),
       'substitution' || 'subst' => _MatchEventVisual(
         icon: AfriIcons.versus,
         color: ColorTokens.info,
-        label: 'substitution',
+        label: context.afriL10n.liveEventSubstitution,
       ),
       'var' => _MatchEventVisual(
         icon: AfriIcons.visibility,
         color: ColorTokens.warning,
-        label: 'VAR review',
+        label: context.afriL10n.liveEventVarReview,
       ),
-      _ => const _MatchEventVisual(
+      _ => _MatchEventVisual(
         icon: AfriIcons.statusInfo,
         color: ColorTokens.onDarkSubtle,
-        label: 'update',
+        label: context.afriL10n.liveEventUpdate,
       ),
     };
   }
@@ -249,7 +252,7 @@ class LiveStatBox extends StatelessWidget {
     return Expanded(
       child: MergeSemantics(
         child: Semantics(
-          label: '$label $value',
+          label: context.afriL10n.liveStatSemantic(label, value),
           child: AfriPanelCard(
             padding: const EdgeInsets.symmetric(
               horizontal: SpacingTokens.spacing4,

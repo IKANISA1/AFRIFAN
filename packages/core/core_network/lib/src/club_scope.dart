@@ -3,13 +3,36 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ClubScope {
   const ClubScope({required this.partnerId, required this.clubId});
 
+  /// Legacy commercial-partner metadata.
+  ///
+  /// This value may be retained on compatibility payloads, but it is never a
+  /// tenant boundary. Club-owned reads and writes are authorized by [clubId].
   final String partnerId;
   final int? clubId;
 
-  bool get isResolved => clubId != null || partnerId.isNotEmpty;
+  bool get isResolved => clubId != null && clubId! > 0;
+
+  int get requiredClubId {
+    final value = clubId;
+    if (value == null || value <= 0) {
+      throw StateError('Could not resolve the required club_id scope.');
+    }
+    return value;
+  }
+
+  Map<String, Object?> toWritePayload() {
+    return <String, Object?>{
+      'club_id': requiredClubId,
+      if (partnerId.isNotEmpty) 'partner_id': partnerId,
+    };
+  }
 }
 
-/// Resolves the active club tenancy context from auth metadata or partner hints.
+/// Resolves the active club tenancy context from trusted auth metadata or a
+/// numeric club id / public club slug hint.
+///
+/// `partner_id` is compatibility metadata only. It must never be accepted as
+/// the sole tenant boundary for a club-owned query or mutation.
 class ClubScopeResolver {
   ClubScopeResolver({required SupabaseClient client}) : _client = client;
 
@@ -41,12 +64,27 @@ class ClubScopeResolver {
     return null;
   }
 
-  Future<ClubScope> resolve(String? partnerId) async {
-    final normalized = partnerId?.trim() ?? '';
+  Future<ClubScope> resolve(String? clubScopeHint) async {
+    final normalized = clubScopeHint?.trim() ?? '';
     final requestingClubId = currentClubId;
-    final numericPartnerId = int.tryParse(normalized);
-    if (numericPartnerId != null) {
-      return ClubScope(partnerId: normalized, clubId: numericPartnerId);
+    final numericClubId = int.tryParse(normalized);
+
+    if (requestingClubId != null) {
+      if (numericClubId != null &&
+          numericClubId > 0 &&
+          numericClubId != requestingClubId) {
+        throw StateError(
+          'Requested club scope does not match the authenticated club.',
+        );
+      }
+      return ClubScope(
+        partnerId: numericClubId == null ? normalized : '',
+        clubId: requestingClubId,
+      );
+    }
+
+    if (numericClubId != null && numericClubId > 0) {
+      return ClubScope(partnerId: '', clubId: numericClubId);
     }
 
     if (normalized.isNotEmpty) {
@@ -57,24 +95,19 @@ class ClubScopeResolver {
             .eq('club_slug', normalized)
             .maybeSingle();
         final resolvedClubId = int.tryParse(row?['id']?.toString() ?? '');
-        if (resolvedClubId != null) {
-          return ClubScope(partnerId: normalized, clubId: resolvedClubId);
+        if (resolvedClubId != null && resolvedClubId > 0) {
+          return ClubScope(partnerId: '', clubId: resolvedClubId);
         }
       } catch (_) {
         // This lookup is best-effort in tests and partial environments.
       }
     }
 
-    return ClubScope(
-      partnerId: normalized.isNotEmpty
-          ? normalized
-          : (requestingClubId?.toString() ?? ''),
-      clubId: requestingClubId,
-    );
+    return ClubScope(partnerId: normalized, clubId: null);
   }
 
-  Future<ClubScope> requireResolved([String? partnerId]) async {
-    final scope = await resolve(partnerId);
+  Future<ClubScope> requireResolved([String? clubScopeHint]) async {
+    final scope = await resolve(clubScopeHint);
     if (scope.isResolved) {
       return scope;
     }
@@ -82,19 +115,10 @@ class ClubScopeResolver {
   }
 
   dynamic apply(dynamic query, ClubScope scope) {
-    if (scope.clubId != null) {
-      return query.eq('club_id', scope.clubId!);
-    }
-    if (scope.partnerId.isNotEmpty) {
-      return query.eq('partner_id', scope.partnerId);
-    }
-    return query;
+    return query.eq('club_id', scope.requiredClubId);
   }
 
   Map<String, Object?> payload(ClubScope scope) {
-    return <String, Object?>{
-      if (scope.clubId != null) 'club_id': scope.clubId,
-      if (scope.partnerId.isNotEmpty) 'partner_id': scope.partnerId,
-    };
+    return scope.toWritePayload();
   }
 }

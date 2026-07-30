@@ -337,15 +337,20 @@ void main() {
     expect(find.text('Rewards'), findsOneWidget);
     expect(find.text('Jackpot'), findsNothing);
     expect(find.byTooltip('More options'), findsOneWidget);
-    expect(find.text('TV game'), findsOneWidget);
-    expect(find.text('Enter TV code'), findsOneWidget);
-    expectTapTargetsMeetMinimum(tester);
-
-    await _scrollFanzoneTo(tester, find.text('Matchday rounds'));
-
     expect(find.text('Matchday rounds'), findsOneWidget);
     expect(find.text('100 point entry'), findsOneWidget);
     expect(find.text('Join round'), findsOneWidget);
+    expectTapTargetsMeetMinimum(tester);
+
+    await _scrollFanzoneTo(tester, find.text('TV game'));
+
+    expect(find.text('TV game'), findsOneWidget);
+    expect(find.text('Supporters'), findsOneWidget);
+    expect(find.text('Enter TV code'), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.text('Supporters')).dy,
+      lessThan(tester.getTopLeft(find.text('Enter TV code')).dy),
+    );
     expect(find.text('Challenges'), findsNothing);
     expectTapTargetsMeetMinimum(tester);
   });
@@ -564,6 +569,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
+        await _scrollFanzoneTo(tester, find.text('TV game'));
         expect(find.text(l10n.fanZoneJoinSession), findsOneWidget);
         expect(find.text(l10n.fanZoneVenueCode), findsOneWidget);
         expect(tester.takeException(), isNull);

@@ -257,51 +257,6 @@ class FanzoneHubScreen extends ConsumerWidget {
                     0,
                   ),
                   child: AfriSectionCard(
-                    title: 'TV game',
-                    child: _HubActionList(
-                      actions: [
-                        _HubAction(
-                          icon: AfriIcons.live,
-                          title: 'Enter TV code',
-                          subtitle: context.afriL10n.fanZoneJoinSession,
-                          onTap: () => context.push('/fanzone/game'),
-                        ),
-                        _HubAction.featureGated(
-                          featureKey: 'venue_checkin',
-                          icon: AfriIcons.qrScan,
-                          title: 'Venue check-in',
-                          subtitle: context.afriL10n.fanZoneVenueCode,
-                          onTap: () => context.push('/fanzone/venue'),
-                        ),
-                        _HubAction.featureGated(
-                          featureKey: 'venue_checkin',
-                          icon: AfriIcons.cart,
-                          title: 'Venue order',
-                          subtitle:
-                              'Order approved drinks and track pickup status',
-                          onTap: () => context.push('/fanzone/venue/order'),
-                        ),
-                        _HubAction(
-                          icon: AfriIcons.profile,
-                          title: 'Supporters',
-                          subtitle: 'Review joined rounds, cards, and results',
-                          onTap: () =>
-                              context.go('/fanzone?section=supporters'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    SpacingTokens.screenPadding,
-                    SpacingTokens.sectionGap,
-                    SpacingTokens.screenPadding,
-                    0,
-                  ),
-                  child: AfriSectionCard(
                     title: 'Matchday rounds',
                     trailingLabel: 'Picks',
                     onTrailingTap: () => context.push('/fanzone/my'),
@@ -329,6 +284,51 @@ class FanzoneHubScreen extends ConsumerWidget {
                                 )
                                 .toList(growable: false),
                           ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    SpacingTokens.screenPadding,
+                    SpacingTokens.sectionGap,
+                    SpacingTokens.screenPadding,
+                    0,
+                  ),
+                  child: AfriSectionCard(
+                    title: 'TV game',
+                    child: _HubActionList(
+                      actions: [
+                        _HubAction(
+                          icon: AfriIcons.profile,
+                          title: 'Supporters',
+                          subtitle: 'Review joined rounds, cards, and results',
+                          onTap: () =>
+                              context.go('/fanzone?section=supporters'),
+                        ),
+                        _HubAction(
+                          icon: AfriIcons.live,
+                          title: 'Enter TV code',
+                          subtitle: context.afriL10n.fanZoneJoinSession,
+                          onTap: () => context.push('/fanzone/game'),
+                        ),
+                        _HubAction.featureGated(
+                          featureKey: 'venue_checkin',
+                          icon: AfriIcons.qrScan,
+                          title: 'Venue check-in',
+                          subtitle: context.afriL10n.fanZoneVenueCode,
+                          onTap: () => context.push('/fanzone/venue'),
+                        ),
+                        _HubAction.featureGated(
+                          featureKey: 'venue_checkin',
+                          icon: AfriIcons.cart,
+                          title: 'Venue order',
+                          subtitle:
+                              'Order approved drinks and track pickup status',
+                          onTap: () => context.push('/fanzone/venue/order'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

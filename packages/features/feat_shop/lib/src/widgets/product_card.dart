@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -27,7 +28,8 @@ class ArmouryProductCard extends StatelessWidget {
       currencyCode: context.afriCurrencyCode,
       currencySymbol: context.afriCurrencySymbol,
     );
-    final name = product['name']?.toString() ?? 'Product';
+    final l10n = context.afriL10n;
+    final name = product['name']?.toString() ?? l10n.shopProductFallback;
     final price = (product['price'] as num?)?.toDouble() ?? 0;
     final subtitle = product['subtitle']?.toString() ?? '';
     final badge = product['badge_label']?.toString();
@@ -38,7 +40,7 @@ class ArmouryProductCard extends StatelessWidget {
         product['is_active'] != false &&
         product['in_stock'] != false &&
         (stock == null || stock > 0);
-    final visibleBadge = isAvailable ? badge : 'OUT OF STOCK';
+    final visibleBadge = isAvailable ? badge : l10n.shopOutOfStockUpper;
     final imageUrl = product['image_url']?.toString();
     final imageProvenanceId =
         product['image_provenance_id']?.toString().trim() ?? '';
@@ -58,7 +60,7 @@ class ArmouryProductCard extends StatelessWidget {
             child: _ProductImage(
               imageUrl: imageUrl,
               category: category,
-              semanticLabel: '$name product image',
+              semanticLabel: l10n.shopProductImageSemantic(name),
               provenanceId: imageProvenanceId.isEmpty
                   ? 'shop:${product['id'] ?? 'unknown'}:unapproved'
                   : imageProvenanceId,
@@ -81,7 +83,7 @@ class ArmouryProductCard extends StatelessWidget {
           child: AfriIconButton(
             key: ValueKey<String>('shop-add-${product['id'] ?? index}'),
             icon: AfriIcons.add,
-            tooltip: isAvailable ? 'Add to cart' : 'Out of stock',
+            tooltip: isAvailable ? l10n.shopAddToCart : l10n.shopOutOfStock,
             onTap: isAvailable ? onAddToCart : null,
           ),
         ),
@@ -91,8 +93,10 @@ class ArmouryProductCard extends StatelessWidget {
     return AfriSurfaceCard(
       onTap: onTap,
       autofocus: autofocus,
-      semanticsLabel: isAvailable ? name : '$name, currently out of stock',
-      semanticsHint: 'Open product',
+      semanticsLabel: isAvailable
+          ? name
+          : l10n.shopProductUnavailableSemantic(name),
+      semanticsHint: l10n.shopOpenProduct,
       padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

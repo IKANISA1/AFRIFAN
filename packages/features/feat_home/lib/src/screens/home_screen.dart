@@ -31,32 +31,39 @@ const List<ContentBlock> _localHomeContentBlocks = <ContentBlock>[
     sortOrder: 2,
   ),
   ContentBlock(
+    blockKey: 'local_home_membership_status',
+    blockType: 'widget',
+    placementKey: 'home_mid',
+    content: <String, dynamic>{'widget': 'membership_status'},
+    sortOrder: 3,
+  ),
+  ContentBlock(
     blockKey: 'local_home_quick_actions',
     blockType: 'widget',
     placementKey: 'home_mid',
     content: <String, dynamic>{'widget': 'quick_actions_grid'},
-    sortOrder: 3,
+    sortOrder: 4,
   ),
   ContentBlock(
     blockKey: 'local_home_stats',
     blockType: 'widget',
     placementKey: 'home_mid',
     content: <String, dynamic>{'widget': 'stats_row'},
-    sortOrder: 4,
+    sortOrder: 5,
   ),
   ContentBlock(
     blockKey: 'local_home_leaderboard',
     blockType: 'widget',
     placementKey: 'home_bottom',
     content: <String, dynamic>{'widget': 'contributor_leaderboard'},
-    sortOrder: 5,
+    sortOrder: 6,
   ),
   ContentBlock(
     blockKey: 'local_home_latest_intel',
     blockType: 'widget',
     placementKey: 'home_bottom',
     content: <String, dynamic>{'widget': 'latest_intel_section'},
-    sortOrder: 6,
+    sortOrder: 7,
   ),
 ];
 
@@ -183,7 +190,24 @@ class HomeScreen extends ConsumerWidget {
       useLocalComposition: useLocalComposition,
     );
 
-    final blocks = [...heroBlocks, ...topBlocks, ...midBlocks, ...bottomBlocks];
+    final blocks = <ContentBlock>[
+      ...heroBlocks,
+      ...topBlocks,
+      ...midBlocks,
+      ...bottomBlocks,
+    ];
+    if (!blocks.any(
+      (block) => block.content['widget']?.toString() == 'membership_status',
+    )) {
+      blocks.add(
+        _localHomeContentBlocks.firstWhere(
+          (block) => block.content['widget']?.toString() == 'membership_status',
+        ),
+      );
+      blocks.sort(
+        (left, right) => (left.sortOrder ?? 0).compareTo(right.sortOrder ?? 0),
+      );
+    }
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(
@@ -296,6 +320,39 @@ class HomeScreen extends ConsumerWidget {
             actions: snapshot.hasQuickActions
                 ? snapshot.quickActions
                 : homeFeedLocalFallbackActions,
+          ),
+        );
+        break;
+      case 'membership_status':
+        final normalizedPaymentStatus = snapshot.membershipPaymentStatus
+            ?.trim()
+            .toLowerCase();
+        final reviewPending =
+            normalizedPaymentStatus == 'pending' ||
+            normalizedPaymentStatus == 'submitted' ||
+            normalizedPaymentStatus == 'verifying';
+        content = Padding(
+          padding: const EdgeInsets.fromLTRB(
+            SpacingTokens.screenPadding,
+            SpacingTokens.sectionGap,
+            SpacingTokens.screenPadding,
+            0,
+          ),
+          child: AfriSectionCard(
+            title: context.afriL10n.membershipTitle,
+            child: AfriListRow(
+              icon: AfriIcons.membership,
+              title: snapshot.hasMembership
+                  ? context.afriL10n.membershipCurrentStatus(
+                      snapshot.membershipTier!.trim(),
+                    )
+                  : context.afriL10n.homeMembershipAction,
+              subtitle: reviewPending
+                  ? context.afriL10n.profileMembershipReviewPending
+                  : context.afriL10n.searchMembershipDescription,
+              trailing: const Icon(AfriIcons.chevronRight),
+              onTap: () => context.go('/membership'),
+            ),
           ),
         );
         break;
@@ -413,6 +470,8 @@ class HomeScreen extends ConsumerWidget {
 
     if (slides.isEmpty) {
       return _HomeHeroStateCard(
+        key: const ValueKey<String>('home-hero-state-compact'),
+        compactHeight: true,
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing5),
           child: AfriStateView.empty(
@@ -584,15 +643,20 @@ class _HomeHeroSkeleton extends StatelessWidget {
 }
 
 class _HomeHeroStateCard extends StatelessWidget {
-  const _HomeHeroStateCard({required this.child});
+  const _HomeHeroStateCard({
+    required this.child,
+    this.compactHeight = false,
+    super.key,
+  });
 
   final Widget child;
+  final bool compactHeight;
 
   @override
   Widget build(BuildContext context) {
     final height = homeHeroHeight(context);
     return Container(
-      constraints: BoxConstraints(minHeight: height),
+      constraints: BoxConstraints(minHeight: compactHeight ? 0 : height),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.vertical(
           bottom: Radius.circular(ShapeTokens.radiusXl),

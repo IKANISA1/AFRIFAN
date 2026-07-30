@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -87,8 +88,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       setState(() {
         _paymentRouteLoading = false;
         _paymentRouteError = null;
-        _paymentRouteMessage =
-            'Connect to verify current payment availability.';
+        _paymentRouteMessage = context.afriL10n.shopConnectPaymentAvailability;
       });
     } else if (restored) {
       unawaited(_refreshPaymentRouteState(ref.read(currentUserProvider)));
@@ -124,8 +124,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       setState(() {
         _paymentRouteLoading = false;
         _paymentRouteError = null;
-        _paymentRouteMessage =
-            'Connect to verify current payment availability.';
+        _paymentRouteMessage = context.afriL10n.shopConnectPaymentAvailability;
       });
       return;
     }
@@ -147,7 +146,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         _paymentRoute = route;
         _paymentRouteError = null;
         _paymentRouteMessage = route == null
-            ? 'Checkout payment setup is pending club activation.'
+            ? context.afriL10n.shopPaymentSetupPending
             : null;
       });
     } catch (_) {
@@ -159,8 +158,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       setState(() {
         _paymentRoute = null;
         _paymentRouteMessage = null;
-        _paymentRouteError =
-            'Payment availability could not be checked. Your cart and address are still here.';
+        _paymentRouteError = context.afriL10n.shopPaymentCheckError;
       });
     } finally {
       if (mounted && lookupKey == _paymentRouteLookupKey) {
@@ -172,10 +170,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   Future<void> _checkout(List<CartItem> items, int total) async {
     if (_submitting) return;
     if (!ConnectivityService.isOnline) {
-      AfriToast.error(
-        context,
-        'Connect before checking out. Your cart and address are still here.',
-      );
+      AfriToast.error(context, context.afriL10n.shopConnectBeforeCheckout);
       return;
     }
 
@@ -186,7 +181,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
 
     if (_addressController.text.trim().isEmpty) {
-      const message = 'Enter a delivery address first.';
+      final message = context.afriL10n.shopAddressRequired;
       setState(() => _addressError = message);
       _addressFocusNode.requestFocus();
       AfriToast.info(context, message);
@@ -209,13 +204,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       if (route == null) {
         if (!mounted) return;
         setState(() {
-          _paymentRouteMessage =
-              'Checkout payment setup is pending club activation.';
+          _paymentRouteMessage = context.afriL10n.shopPaymentSetupPending;
         });
-        AfriToast.error(
-          context,
-          'MOMO checkout setup is pending club activation.',
-        );
+        AfriToast.error(context, context.afriL10n.shopMomoSetupPending);
         return;
       }
 
@@ -252,19 +243,16 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       if (!launched) {
         AfriToast.error(
           context,
-          'Order $orderId was saved, but the MOMO dialer could not open.',
+          context.afriL10n.shopOrderDialerFailure(orderId),
         );
         context.go('/shop');
         return;
       }
 
-      AfriToast.success(
-        context,
-        'Order $orderId created. Payment verification is still pending.',
-      );
+      AfriToast.success(context, context.afriL10n.shopOrderCreated(orderId));
       context.go('/shop');
     } catch (error) {
-      final failure = _CartCheckoutFailure.fromError(error);
+      final failure = _CartCheckoutFailure.fromError(error, context.afriL10n);
       AfriLogger.warn(
         'CartScreen',
         'Checkout could not be completed (${failure.kind.name}).',
@@ -294,7 +282,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Review order', style: TypographyTokens.headlineSmall()),
+              Text(
+                context.afriL10n.shopReviewOrder,
+                style: TypographyTokens.headlineSmall(),
+              ),
               const SizedBox(height: SpacingTokens.spacing4),
               AfriSurfaceCard(
                 child: Column(
@@ -308,7 +299,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               bottom: SpacingTokens.spacing3,
                             ),
                             child: _CartSummaryRow(
-                              label: '${item.product.name}  x${item.quantity}',
+                              label: context.afriL10n.shopItemQuantitySummary(
+                                item.product.name,
+                                item.quantity,
+                              ),
                               value: currency.format(item.lineTotal),
                               valueStyle: TypographyTokens.titleSmall(),
                             ),
@@ -320,7 +314,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           bottom: SpacingTokens.spacing3,
                         ),
                         child: Text(
-                          '+${items.length - 3} more items',
+                          context.afriL10n.shopMoreItems(items.length - 3),
                           style: TypographyTokens.bodySmall(
                             ColorTokens.onSurfaceVariant,
                           ),
@@ -328,7 +322,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
-                      'Deliver to',
+                      context.afriL10n.shopDeliverTo,
                       style: TypographyTokens.labelSmall(
                         ColorTokens.onSurfaceVariant,
                       ),
@@ -340,7 +334,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     _CartSummaryRow(
-                      label: 'Total',
+                      label: context.afriL10n.shopTotal,
                       value: currency.format(total),
                       labelStyle: TypographyTokens.titleMedium(),
                       valueStyle: TypographyTokens.titleLarge(
@@ -352,18 +346,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               ),
               const SizedBox(height: SpacingTokens.spacing5),
               Text(
-                'Approve the MOMO prompt on your device, then confirm here. Orders remain pending until verification is complete.',
+                context.afriL10n.shopPaymentInstructions,
                 style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               AfriButton(
-                label: 'I submitted the payment',
+                label: context.afriL10n.shopPaymentSubmitted,
                 fullWidth: true,
                 onTap: () => Navigator.of(context).pop(true),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               AfriButton(
-                label: 'Back',
+                label: context.afriL10n.shopBack,
                 variant: AfriButtonVariant.outline,
                 fullWidth: true,
                 onTap: () => Navigator.of(context).pop(false),
@@ -383,8 +377,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     final config = ClubConfigScope.maybeOf(context);
     final currency = _currencyFormatter;
     final deliveryHint = config == null
-        ? 'Enter your delivery address'
-        : 'Street, city, ${config.country}';
+        ? context.afriL10n.shopEnterDeliveryAddress
+        : context.afriL10n.shopStreetCityCountry(config.country);
     final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     _ensurePaymentRouteState(user);
 
@@ -414,7 +408,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'Cart',
+          context.afriL10n.shopCart,
           key: ValueKey<String>('cart-title-$cartChromeState'),
           style: usesLargeText
               ? TypographyTokens.titleLarge()
@@ -423,7 +417,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.shopBack,
         ),
       ),
       scrollable: false,
@@ -442,18 +436,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     Text(
-                      'Cart is empty',
+                      context.afriL10n.shopCartEmptyTitle,
                       style: TypographyTokens.headlineSmall(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
-                      'Add items from the shop to start checkout.',
+                      context.afriL10n.shopCartEmptyMessage,
                       textAlign: TextAlign.center,
                       style: TypographyTokens.bodyMedium(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing6),
                     AfriButton(
-                      label: 'Back to shop',
+                      label: context.afriL10n.shopBackToShop,
                       onTap: () => context.go('/shop'),
                     ),
                   ],
@@ -486,9 +480,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const AfriSectionHeader(
-                          title: 'Delivery',
-                          subtitle: 'Address and total',
+                        AfriSectionHeader(
+                          title: context.afriL10n.shopDelivery,
+                          subtitle: context.afriL10n.shopAddressAndTotal,
                           padding: EdgeInsets.zero,
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
@@ -497,7 +491,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           focusNode: _addressFocusNode,
                           minLines: 1,
                           maxLines: 2,
-                          hint: 'Delivery address',
+                          hint: context.afriL10n.shopDeliveryAddress,
                           helperText: deliveryHint,
                           helperMaxLines: 2,
                           errorText: _addressError,
@@ -520,7 +514,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing6),
                         _CartSummaryRow(
-                          label: 'Subtotal',
+                          label: context.afriL10n.shopSubtotal,
                           value: currency.format(total),
                           labelStyle: TypographyTokens.bodyMedium(
                             ColorTokens.onSurfaceVariant,
@@ -529,7 +523,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         _CartSummaryRow(
-                          label: 'Delivery',
+                          label: context.afriL10n.shopDelivery,
                           value: currency.format(0),
                           labelStyle: TypographyTokens.bodyMedium(
                             ColorTokens.onSurfaceVariant,
@@ -538,7 +532,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
                         _CartSummaryRow(
-                          label: 'Total',
+                          label: context.afriL10n.shopTotal,
                           value: currency.format(total),
                           labelStyle: TypographyTokens.titleMedium(),
                           valueStyle: TypographyTokens.titleLarge(
@@ -551,24 +545,23 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   if (_paymentRouteLoading) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriStateView.loading(
-                      title: 'Checking payment',
-                      message:
-                          'Confirming the current MOMO route for this club.',
+                      title: context.afriL10n.shopCheckingPayment,
+                      message: context.afriL10n.shopCheckingPaymentMessage,
                       compact: true,
                     ),
                   ] else if (_paymentRouteError != null) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriStateView.error(
-                      title: 'Payment check failed',
+                      title: context.afriL10n.shopPaymentCheckFailed,
                       message: _paymentRouteError!,
-                      actionLabel: 'Retry',
+                      actionLabel: context.afriL10n.shopRetry,
                       onAction: () => _refreshPaymentRouteState(user),
                       compact: true,
                     ),
                   ] else if (_paymentRouteMessage != null) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriStateView.offline(
-                      title: 'Checkout unavailable',
+                      title: context.afriL10n.shopCheckoutUnavailable,
                       message: _paymentRouteMessage!,
                       compact: true,
                     ),
@@ -585,7 +578,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           const SizedBox(width: SpacingTokens.spacing3),
                           Expanded(
                             child: Text(
-                              'Pay to ${_paymentRoute!.payToLabel}',
+                              context.afriL10n.shopPayTo(
+                                _paymentRoute!.payToLabel,
+                              ),
                               style: TypographyTokens.bodySmall(),
                             ),
                           ),
@@ -599,7 +594,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       key: const ValueKey<String>('cart-checkout-failure'),
                       title: failure.title,
                       message: failure.message,
-                      actionLabel: failure.canDismiss ? 'Review cart' : null,
+                      actionLabel: failure.canDismiss
+                          ? context.afriL10n.shopReviewCart
+                          : null,
                       onAction: failure.canDismiss
                           ? () => setState(() => _checkoutFailure = null)
                           : null,
@@ -610,24 +607,24 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   ConnectivityBuilder(
                     builder: (context, isOnline) => AfriButton(
                       label: !isOnline
-                          ? 'Connection required'
+                          ? context.afriL10n.shopConnectionRequired
                           : _paymentRouteLoading
-                          ? 'Checking payment'
+                          ? context.afriL10n.shopCheckingPayment
                           : _paymentRouteError != null
-                          ? 'Payment check failed'
+                          ? context.afriL10n.shopPaymentCheckFailed
                           : paymentRouteBlocked
-                          ? 'Payment route not ready'
+                          ? context.afriL10n.shopPaymentRouteNotReady
                           : _checkoutFailure?.kind ==
                                 _CartCheckoutFailureKind.permissionDenied
-                          ? 'Checkout not permitted'
+                          ? context.afriL10n.shopCheckoutNotPermitted
                           : _checkoutFailure?.kind ==
                                 _CartCheckoutFailureKind.securityTimeout
-                          ? 'Status uncertain'
+                          ? context.afriL10n.shopStatusUncertain
                           : _submitting
-                          ? 'Processing'
+                          ? context.afriL10n.shopProcessing
                           : usesLargeText
-                          ? 'Pay with MOMO'
-                          : 'Checkout via MOMO',
+                          ? context.afriL10n.shopPayWithMomo
+                          : context.afriL10n.shopCheckoutViaMomo,
                       fullWidth: true,
                       isLoading: _submitting,
                       onTap: () => _checkout(items, total),
@@ -666,22 +663,20 @@ class _CartCheckoutFailure {
   final String message;
   final bool canDismiss;
 
-  factory _CartCheckoutFailure.fromError(Object error) {
+  factory _CartCheckoutFailure.fromError(Object error, AfriLocalizations l10n) {
     if (error is TimeoutException) {
-      return const _CartCheckoutFailure(
+      return _CartCheckoutFailure(
         kind: _CartCheckoutFailureKind.securityTimeout,
-        title: 'Order status is uncertain',
-        message:
-            'The secure checkout timed out. Your cart and address are still here. Do not submit again until club support confirms whether the order was saved.',
+        title: l10n.shopOrderUncertainTitle,
+        message: l10n.shopOrderUncertainMessage,
         canDismiss: false,
       );
     }
     if (error is OrderConflictException) {
-      return const _CartCheckoutFailure(
+      return _CartCheckoutFailure(
         kind: _CartCheckoutFailureKind.conflict,
-        title: 'Order details changed',
-        message:
-            'The order changed while it was being submitted. Your cart and address are still here. Review them before trying again.',
+        title: l10n.shopOrderChangedTitle,
+        message: l10n.shopOrderChangedMessage,
         canDismiss: true,
       );
     }
@@ -692,20 +687,18 @@ class _CartCheckoutFailure {
         normalized.contains('not authorized') ||
         normalized.contains('unauthorized') ||
         normalized.contains('forbidden')) {
-      return const _CartCheckoutFailure(
+      return _CartCheckoutFailure(
         kind: _CartCheckoutFailureKind.permissionDenied,
-        title: 'Checkout not permitted',
-        message:
-            'Your account cannot place this order. Your cart and address are still here. Contact club support before trying again.',
+        title: l10n.shopCheckoutNotPermitted,
+        message: l10n.shopCheckoutDeniedMessage,
         canDismiss: false,
       );
     }
 
-    return const _CartCheckoutFailure(
+    return _CartCheckoutFailure(
       kind: _CartCheckoutFailureKind.unknown,
-      title: 'Checkout could not start',
-      message:
-          'No order was confirmed. Your cart and address are still here. Review them and try again.',
+      title: l10n.shopCheckoutFailureTitle,
+      message: l10n.shopCheckoutFailureMessage,
       canDismiss: true,
     );
   }
