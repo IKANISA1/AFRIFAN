@@ -9,6 +9,7 @@ import {
   allocateAdminSmsManualReview,
   deleteAdminFanEngagementToken,
   deleteAdminArticle,
+  deleteAdminBanner,
   deleteAdminConfigEntry,
   deleteAdminContentBlock,
   deleteAdminContributionGroup,
@@ -19,7 +20,9 @@ import {
   deleteAdminSquadPlayer,
   deleteAdminStandingRow,
   getAdminArticles,
+  getAdminBanners,
   getAdminAppConfig,
+  getAdminAuditLogs,
   getAdminContentBlocks,
   getAdminContentTypes,
   getAdminClubScopeOptions,
@@ -43,11 +46,13 @@ import {
   getAdminSquad,
   getAdminStandings,
   getAdminTicketOrders,
+  getAdminVenueOverview,
   findAdminUserCandidate,
   rejectAdminSmsManualReview,
   resolveAdminAccess,
   revokeAdminRole,
   saveAdminArticle,
+  saveAdminBanner,
   saveAdminConfigEntry,
   saveAdminContentBlock,
   saveAdminContributionGroup,
@@ -63,6 +68,7 @@ import {
   getAdminOffers,
   saveAdminOffer,
   deleteAdminOffer,
+  getAdminPredictionsWorkspace,
   getAdminPredictionMarkets,
   saveAdminPredictionMarket,
   saveAdminPlatformOptionSet,
@@ -96,6 +102,9 @@ import {
   deleteAdminVenueGovernanceControl,
 } from "@/lib/data/admin";
 import { AdminMutationConflictError } from "@/lib/data/admin/helpers";
+import { AdminRuntimeRegistryValidationError } from "@/lib/data/admin/runtime-registries";
+import { AdminShopValidationError } from "@/lib/data/admin/shop";
+import { AdminSmsValidationError } from "@/lib/data/admin/sms";
 import {
   getAdminDestructivePermission,
   getAdminDestructiveRouteContract,
@@ -107,6 +116,11 @@ import {
 import { withFeatureGuard } from "@/lib/server-feature-guard";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
+import {
+  controlledApiFailureResponse,
+  controlledApiJson,
+  withControlledApiTimeout,
+} from "@/lib/controlled-api-response";
 
 export const dynamic = "force-dynamic";
 
@@ -121,9 +135,14 @@ async function getAdminRequestContext(request: NextRequest) {
   const serverClient = await getServerSupabase();
   if (serverClient == null) {
     return {
-      response: NextResponse.json(
-        { error: "Server Supabase is not configured." },
-        { status: 500 },
+      response: controlledApiJson(
+        {
+          code: "ADMIN_RESOURCE_FAILED",
+          error: "The admin resource could not be loaded.",
+          retryable: true,
+          change_confirmed: false,
+        },
+        502,
       ),
     };
   }
@@ -134,9 +153,12 @@ async function getAdminRequestContext(request: NextRequest) {
   } = await serverClient.auth.getUser();
   if (authError || user == null) {
     return {
-      response: NextResponse.json(
-        { error: "Admin authentication is required." },
-        { status: 401 },
+      response: controlledApiJson(
+        {
+          code: "ADMIN_AUTHENTICATION_REQUIRED",
+          error: "Admin authentication is required.",
+        },
+        401,
       ),
     };
   }
@@ -146,9 +168,12 @@ async function getAdminRequestContext(request: NextRequest) {
   });
   if (!access.hasAccess) {
     return {
-      response: NextResponse.json(
-        { error: "Admin access denied." },
-        { status: 403 },
+      response: controlledApiJson(
+        {
+          code: "ADMIN_ACCESS_DENIED",
+          error: "Admin access denied.",
+        },
+        403,
       ),
     };
   }
@@ -156,9 +181,14 @@ async function getAdminRequestContext(request: NextRequest) {
   const adminClient = getAdminSupabase();
   if (adminClient == null) {
     return {
-      response: NextResponse.json(
-        { error: "Server admin client is not configured." },
-        { status: 500 },
+      response: controlledApiJson(
+        {
+          code: "ADMIN_RESOURCE_FAILED",
+          error: "The admin resource could not be loaded.",
+          retryable: true,
+          change_confirmed: false,
+        },
+        502,
       ),
     };
   }
@@ -167,7 +197,11 @@ async function getAdminRequestContext(request: NextRequest) {
 }
 
 function requiresPlatformAdmin(resource: string) {
-  return resource === "access" || resource === "access-users";
+  return (
+    resource === "access" ||
+    resource === "access-users" ||
+    resource === "sms-manual-reviews"
+  );
 }
 
 async function parseJsonBody(request: NextRequest) {
@@ -175,12 +209,101 @@ async function parseJsonBody(request: NextRequest) {
 }
 
 function missingIdResponse() {
-  return NextResponse.json(
-    { error: "An id query parameter is required." },
+  return controlledApiJson(
     {
-      status: 400,
+      code: "ADMIN_RESOURCE_EMPTY",
+      error: "An id query parameter is required.",
+      retryable: false,
+      change_confirmed: false,
     },
+    400,
   );
+}
+
+function adminResourceEmptyResponse() {
+  return controlledApiJson(
+    {
+      code: "ADMIN_RESOURCE_EMPTY",
+      error: "Unknown admin resource.",
+      retryable: false,
+      change_confirmed: false,
+    },
+    404,
+  );
+}
+
+function adminResourceConflictResponse() {
+  return controlledApiJson(
+    {
+      code: "STALE_RECORD",
+      error:
+        "This record changed after it was loaded. Refresh the latest data before retrying.",
+      retryable: true,
+      change_confirmed: false,
+    },
+    409,
+  );
+}
+
+function adminShopInvalidResponse() {
+  return controlledApiJson(
+    {
+      code: "ADMIN_SHOP_PRODUCT_INVALID",
+      error: "Review the product and correct invalid values.",
+      retryable: false,
+      change_confirmed: false,
+    },
+    400,
+  );
+}
+
+function adminSmsInvalidResponse() {
+  return controlledApiJson(
+    {
+      code: "ADMIN_SMS_ACTION_INVALID",
+      error: "Review the SMS action and correct invalid values.",
+      retryable: false,
+      change_confirmed: false,
+    },
+    400,
+  );
+}
+
+async function runAdminResourceOperation(
+  operation: () => Promise<NextResponse | undefined>,
+) {
+  try {
+    const response = await withControlledApiTimeout(
+      Promise.resolve().then(operation),
+    );
+    if (response == null) {
+      return controlledApiFailureResponse(
+        new Error("Admin resource returned no response."),
+        "ADMIN_RESOURCE",
+      );
+    }
+    response.headers.set("Cache-Control", "no-store");
+
+    if (response.status === 200) {
+      const body = (await response
+        .clone()
+        .json()
+        .catch(() => null)) as {
+        data?: unknown;
+      } | null;
+      if (Array.isArray(body?.data) && body.data.length === 0) {
+        return controlledApiJson({
+          code: "ADMIN_RESOURCE_EMPTY",
+          state: "empty",
+          data: [],
+        });
+      }
+    }
+
+    return response;
+  } catch (error) {
+    return controlledApiFailureResponse(error, "ADMIN_RESOURCE");
+  }
 }
 
 function withScopedFeatureGuard(
@@ -199,7 +322,7 @@ function withScopedFeatureGuard(
   });
 }
 
-export async function GET(
+async function handleGet(
   request: NextRequest,
   context: { params: Promise<{ resource: string }> },
 ) {
@@ -213,9 +336,12 @@ export async function GET(
     const { resource } = await context.params;
 
     if (requiresPlatformAdmin(resource) && !access.isSuperAdmin) {
-      return NextResponse.json(
-        { error: "Platform admin access is required." },
-        { status: 403 },
+      return controlledApiJson(
+        {
+          code: "ADMIN_ACCESS_DENIED",
+          error: "Platform admin access is required.",
+        },
+        403,
       );
     }
 
@@ -255,6 +381,10 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminArticles(adminClient, access),
         });
+      case "cms-banners":
+        return NextResponse.json({
+          data: await getAdminBanners(adminClient, access),
+        });
       case "cms-config":
         return NextResponse.json({
           data: await getAdminAppConfig(adminClient, access),
@@ -270,6 +400,12 @@ export async function GET(
       case "settings":
         return NextResponse.json({
           data: await getAdminClubProfile(adminClient, access),
+        });
+      case "audit-logs":
+        return NextResponse.json({
+          data: await getAdminAuditLogs(adminClient, access, {
+            limit: Number(request.nextUrl.searchParams.get("limit") ?? 500),
+          }),
         });
       case "club-scope":
         return NextResponse.json({
@@ -294,6 +430,10 @@ export async function GET(
       case "tickets":
         return NextResponse.json({
           data: await getAdminTicketOrders(adminClient, access),
+        });
+      case "venues-overview":
+        return NextResponse.json({
+          data: await getAdminVenueOverview(adminClient, access),
         });
       case "fan-clubs":
         return NextResponse.json({
@@ -337,6 +477,12 @@ export async function GET(
       case "offers":
         return NextResponse.json({
           data: await getAdminOffers(adminClient, access),
+        });
+      case "predictions":
+        return NextResponse.json({
+          data: await getAdminPredictionsWorkspace(adminClient, access, {
+            poolClient: serverClient,
+          }),
         });
       case "predictions-markets":
         return NextResponse.json({
@@ -383,29 +529,14 @@ export async function GET(
           data: await getAdminLiveScoreCompetitionSources(adminClient, access),
         });
       default:
-        return NextResponse.json(
-          { error: "Unknown admin resource." },
-          {
-            status: 404,
-          },
-        );
+        return adminResourceEmptyResponse();
     }
   } catch (error) {
-    const resource = await context.params
-      .then((p) => p.resource)
-      .catch(() => "unknown");
-    console.error(`[admin-api] GET /${resource} failed:`, error);
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Admin request failed.",
-        resource,
-      },
-      { status: 500 },
-    );
+    return controlledApiFailureResponse(error, "ADMIN_RESOURCE");
   }
 }
 
-export async function POST(
+async function handlePost(
   request: NextRequest,
   context: { params: Promise<{ resource: string }> },
 ) {
@@ -435,9 +566,12 @@ export async function POST(
     const body = await parseJsonBody(request);
 
     if (requiresPlatformAdmin(resource) && !access.isSuperAdmin) {
-      return NextResponse.json(
-        { error: "Platform admin access is required." },
-        { status: 403 },
+      return controlledApiJson(
+        {
+          code: "ADMIN_ACCESS_DENIED",
+          error: "Platform admin access is required.",
+        },
+        403,
       );
     }
 
@@ -475,6 +609,10 @@ export async function POST(
       case "cms":
         return NextResponse.json({
           data: await saveAdminArticle(adminClient, access, body as never),
+        });
+      case "cms-banners":
+        return NextResponse.json({
+          data: await saveAdminBanner(adminClient, access, body as never),
         });
       case "cms-config":
         return NextResponse.json({
@@ -660,33 +798,35 @@ export async function POST(
           ),
         });
       default:
-        return NextResponse.json(
-          { error: "Unknown admin resource." },
-          {
-            status: 404,
-          },
-        );
+        return adminResourceEmptyResponse();
     }
   } catch (error) {
     if (error instanceof AdminMutationConflictError) {
-      return NextResponse.json(
+      return adminResourceConflictResponse();
+    }
+    if (error instanceof AdminRuntimeRegistryValidationError) {
+      return controlledApiJson(
         {
-          code: "STALE_RECORD",
-          error: error.message,
+          code: "ADMIN_RUNTIME_REGISTRY_INVALID",
+          error:
+            "Review the runtime registry record and correct invalid values.",
+          retryable: false,
+          change_confirmed: false,
         },
-        { status: 409 },
+        400,
       );
     }
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Admin request failed.",
-      },
-      { status: 500 },
-    );
+    if (error instanceof AdminShopValidationError) {
+      return adminShopInvalidResponse();
+    }
+    if (error instanceof AdminSmsValidationError) {
+      return adminSmsInvalidResponse();
+    }
+    return controlledApiFailureResponse(error, "ADMIN_RESOURCE");
   }
 }
 
-export async function DELETE(
+async function handleDelete(
   request: NextRequest,
   context: { params: Promise<{ resource: string }> },
 ) {
@@ -719,28 +859,30 @@ export async function DELETE(
     );
 
     if (requiresPlatformAdmin(resource) && !access.isSuperAdmin) {
-      return NextResponse.json(
-        { error: "Platform admin access is required." },
-        { status: 403 },
+      return controlledApiJson(
+        {
+          code: "ADMIN_ACCESS_DENIED",
+          error: "Platform admin access is required.",
+        },
+        403,
       );
     }
 
-    const destructiveContract =
-      getAdminDestructiveRouteContract(resource);
+    const destructiveContract = getAdminDestructiveRouteContract(resource);
     if (destructiveContract == null) {
-      return NextResponse.json(
-        { error: "Unknown admin resource." },
-        { status: 404 },
-      );
+      return adminResourceEmptyResponse();
     }
     const destructivePermission = getAdminDestructivePermission(
       access,
       destructiveContract,
     );
     if (!destructivePermission.allowed) {
-      return NextResponse.json(
-        { error: destructivePermission.reason },
-        { status: 403 },
+      return controlledApiJson(
+        {
+          code: "ADMIN_ACCESS_DENIED",
+          error: destructivePermission.reason,
+        },
+        403,
       );
     }
 
@@ -762,6 +904,14 @@ export async function DELETE(
         break;
       case "cms":
         await deleteAdminArticle(
+          adminClient,
+          access,
+          id,
+          expectedUpdatedAt ?? "",
+        );
+        break;
+      case "cms-banners":
+        await deleteAdminBanner(
           adminClient,
           access,
           id,
@@ -913,30 +1063,38 @@ export async function DELETE(
         );
         break;
       default:
-        return NextResponse.json(
-          { error: "Unknown admin resource." },
-          {
-            status: 404,
-          },
-        );
+        return adminResourceEmptyResponse();
     }
 
     return NextResponse.json({ data: { success: true } });
   } catch (error) {
     if (error instanceof AdminMutationConflictError) {
-      return NextResponse.json(
-        {
-          code: "STALE_RECORD",
-          error: error.message,
-        },
-        { status: 409 },
-      );
+      return adminResourceConflictResponse();
     }
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Admin request failed.",
-      },
-      { status: 500 },
-    );
+    if (error instanceof AdminShopValidationError) {
+      return adminShopInvalidResponse();
+    }
+    return controlledApiFailureResponse(error, "ADMIN_RESOURCE");
   }
+}
+
+export function GET(
+  request: NextRequest,
+  context: { params: Promise<{ resource: string }> },
+) {
+  return runAdminResourceOperation(() => handleGet(request, context));
+}
+
+export function POST(
+  request: NextRequest,
+  context: { params: Promise<{ resource: string }> },
+) {
+  return runAdminResourceOperation(() => handlePost(request, context));
+}
+
+export function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ resource: string }> },
+) {
+  return runAdminResourceOperation(() => handleDelete(request, context));
 }

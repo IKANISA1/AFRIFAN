@@ -48,7 +48,7 @@ void main() {
     final retained = container.read(homeFeedProvider).valueOrNull;
     expect(retained?.userFet, 120);
     expect(retained?.status, HomeFeedStatus.degraded);
-    expect(retained?.message, contains('Showing saved Home content'));
+    expect(retained?.notice, HomeFeedNotice.savedContent);
   });
 
   test('automatically refreshes retained Home data after reconnect', () async {

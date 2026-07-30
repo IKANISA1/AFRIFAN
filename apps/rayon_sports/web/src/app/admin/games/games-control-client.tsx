@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ClipboardCheck,
   Eye,
@@ -16,7 +16,14 @@ import {
   StepForward,
 } from "lucide-react";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
-import { createGameRuntimeClient } from "@/lib/game-runtime";
+import {
+  createGameRuntimeClient,
+  GameRuntimeRequestError,
+} from "@/lib/game-runtime";
+import {
+  normalizeAdminGameAudit,
+  normalizeAdminGameDrafts,
+} from "@/lib/data/admin/games";
 import type {
   GameAuditLogRow,
   GameQuestionDraftQueueRow,
@@ -106,10 +113,7 @@ type GameControlActionClient = {
     status: string;
     isComplete: boolean;
   }>;
-  closeSession(input: {
-    clubId: number;
-    sessionId: string;
-  }): Promise<{
+  closeSession(input: { clubId: number; sessionId: string }): Promise<{
     sessionId: string;
     status: string;
     closedQuestionCount: number;
@@ -133,17 +137,25 @@ type GameControlActionClient = {
 };
 
 const GAME_ADMIN_PAGE_SIZE = 25;
+const EMPTY_DRAFT_ROWS: GameQuestionDraftQueueRow[] = [];
+const EMPTY_AUDIT_ROWS: GameAuditLogRow[] = [];
 
 type GamesControlClientProps = {
   defaultClubId: number;
   defaultSessionQuestionId?: string;
   actionClient?: GameControlActionClient;
+  initialDraftRows?: GameQuestionDraftQueueRow[];
+  initialAuditRows?: GameAuditLogRow[];
+  onSelectionChange?: (selected: boolean) => void;
 };
 
 export function GamesControlClient({
   defaultClubId,
   defaultSessionQuestionId = "",
   actionClient,
+  initialDraftRows = EMPTY_DRAFT_ROWS,
+  initialAuditRows = EMPTY_AUDIT_ROWS,
+  onSelectionChange,
 }: GamesControlClientProps) {
   const defaultClient = useMemo(() => createGameRuntimeClient({}), []);
   const client = actionClient ?? defaultClient;
@@ -164,7 +176,8 @@ export function GamesControlClient({
   const [sourceDate, setSourceDate] = useState("");
   const [draftCount, setDraftCount] = useState("5");
   const [generatedDraftIds, setGeneratedDraftIds] = useState<string[]>([]);
-  const [draftRows, setDraftRows] = useState<GameQuestionDraftQueueRow[]>([]);
+  const [draftRows, setDraftRows] =
+    useState<GameQuestionDraftQueueRow[]>(initialDraftRows);
   const [draftOffset, setDraftOffset] = useState(0);
   const [draftStatusFilter, setDraftStatusFilter] = useState<
     GameQuestionDraftStatus | ""
@@ -182,8 +195,11 @@ export function GamesControlClient({
   const [auditActionFilter, setAuditActionFilter] = useState("");
   const [auditEntityType, setAuditEntityType] = useState("");
   const [auditOffset, setAuditOffset] = useState(0);
-  const [auditRows, setAuditRows] = useState<GameAuditLogRow[]>([]);
-  const [selectedAuditRowId, setSelectedAuditRowId] = useState("");
+  const [auditRows, setAuditRows] =
+    useState<GameAuditLogRow[]>(initialAuditRows);
+  const [selectedAuditRowId, setSelectedAuditRowId] = useState(
+    initialAuditRows[0]?.id ?? "",
+  );
   const [pendingAction, setPendingAction] = useState<
     | "create"
     | "pair"
@@ -244,7 +260,35 @@ export function GamesControlClient({
     pendingAction == null;
   const canLoadAudit = hasValidClubId && pendingAction == null;
   const selectedAuditRow =
-    auditRows.find((row) => row.id === selectedAuditRowId) ?? auditRows[0] ?? null;
+    auditRows.find((row) => row.id === selectedAuditRowId) ??
+    auditRows[0] ??
+    null;
+
+  useEffect(() => {
+    setDraftRows(initialDraftRows);
+    setDraftId(initialDraftRows[0]?.id ?? "");
+  }, [initialDraftRows]);
+
+  useEffect(() => {
+    setAuditRows(initialAuditRows);
+    setSelectedAuditRowId(initialAuditRows[0]?.id ?? "");
+  }, [initialAuditRows]);
+
+  function controlledActionFailure(error: unknown, fallback: string) {
+    if (error instanceof GameRuntimeRequestError) {
+      switch (error.kind) {
+        case "permission_denied":
+          return "Game operation access was denied.";
+        case "conflict":
+          return "Game operations changed. Refresh before retrying.";
+        case "security_timeout":
+          return "The game operation timed out without a confirmed change.";
+        default:
+          return fallback;
+      }
+    }
+    return fallback;
+  }
 
   async function createSession() {
     if (!canCreateSession) {
@@ -274,9 +318,7 @@ export function GamesControlClient({
         `Session created with code ${result.joinCode}. ${result.questionTotal} question(s) loaded.`,
       );
     } catch (caught) {
-      setStatus(
-        caught instanceof Error ? caught.message : "Could not create session.",
-      );
+      setStatus(controlledActionFailure(caught, "Could not create session."));
     } finally {
       setPendingAction(null);
     }
@@ -304,9 +346,7 @@ export function GamesControlClient({
       }
       setStatus(`TV display paired with code ${result.pairingCode}.`);
     } catch (caught) {
-      setStatus(
-        caught instanceof Error ? caught.message : "Could not pair TV display.",
-      );
+      setStatus(controlledActionFailure(caught, "Could not pair TV display."));
     } finally {
       setPendingAction(null);
     }
@@ -317,13 +357,16 @@ export function GamesControlClient({
       setStatus("Club id and TV device id are required.");
       return;
     }
-    if (!confirmAdminDestructiveAction({
-      action: "Revoke",
-      subject: `TV credential ${tvDeviceId.trim()}`,
-      scope: `Club ${parsedClubId}; one paired display`,
-      impact: "The display will be disconnected and must pair again before use.",
-      undo: "manual_recovery",
-    })) {
+    if (
+      !confirmAdminDestructiveAction({
+        action: "Revoke",
+        subject: `TV credential ${tvDeviceId.trim()}`,
+        scope: `Club ${parsedClubId}; one paired display`,
+        impact:
+          "The display will be disconnected and must pair again before use.",
+        undo: "manual_recovery",
+      })
+    ) {
       return;
     }
     setPendingAction("revoke-device");
@@ -334,9 +377,13 @@ export function GamesControlClient({
         tvDeviceId: tvDeviceId.trim(),
         reason: "Revoked from game operations console",
       });
-      setStatus("TV credential revoked. The display must pair again before use.");
+      setStatus(
+        "TV credential revoked. The display must pair again before use.",
+      );
     } catch (caught) {
-      setStatus(caught instanceof Error ? caught.message : "Could not revoke TV device.");
+      setStatus(
+        controlledActionFailure(caught, "Could not revoke TV credential."),
+      );
     } finally {
       setPendingAction(null);
     }
@@ -373,7 +420,9 @@ export function GamesControlClient({
           if (result.nextSessionQuestionId) {
             setSessionId(result.sessionId);
             setSessionQuestionId(result.nextSessionQuestionId);
-            setStatus(`Advanced to next question ${result.nextSessionQuestionId}.`);
+            setStatus(
+              `Advanced to next question ${result.nextSessionQuestionId}.`,
+            );
           } else {
             setSessionId(result.sessionId);
             setSessionQuestionId("");
@@ -382,9 +431,7 @@ export function GamesControlClient({
         }
       }
     } catch (caught) {
-      setStatus(
-        caught instanceof Error ? caught.message : "Game control action failed.",
-      );
+      setStatus(controlledActionFailure(caught, "Game control action failed."));
     } finally {
       setPendingAction(null);
     }
@@ -409,9 +456,7 @@ export function GamesControlClient({
         `Session closed. ${result.closedQuestionCount} question(s) closed.`,
       );
     } catch (caught) {
-      setStatus(
-        caught instanceof Error ? caught.message : "Could not close session.",
-      );
+      setStatus(controlledActionFailure(caught, "Could not close session."));
     } finally {
       setPendingAction(null);
     }
@@ -438,9 +483,7 @@ export function GamesControlClient({
           : `Draft ${result.decision}.`,
       );
     } catch (caught) {
-      setStatus(
-        caught instanceof Error ? caught.message : "Could not review draft.",
-      );
+      setStatus(controlledActionFailure(caught, "Could not review draft."));
     } finally {
       setPendingAction(null);
     }
@@ -448,7 +491,9 @@ export function GamesControlClient({
 
   async function generateDrafts() {
     if (!canGenerateDrafts) {
-      setStatus("Club id, source title, source fact, and draft count are required.");
+      setStatus(
+        "Club id, source title, source fact, and draft count are required.",
+      );
       return;
     }
 
@@ -473,9 +518,7 @@ export function GamesControlClient({
       );
     } catch (caught) {
       setStatus(
-        caught instanceof Error
-          ? caught.message
-          : "Could not generate draft questions.",
+        controlledActionFailure(caught, "Could not generate draft questions."),
       );
     } finally {
       setPendingAction(null);
@@ -498,17 +541,18 @@ export function GamesControlClient({
         limit: GAME_ADMIN_PAGE_SIZE,
         offset: nextOffset,
       });
-      setDraftRows(rows);
+      const normalizedRows = normalizeAdminGameDrafts(rows);
+      setDraftRows(normalizedRows);
       setDraftOffset(nextOffset);
-      if (rows[0]) {
-        setDraftId(rows[0].id);
+      if (normalizedRows[0]) {
+        setDraftId(normalizedRows[0].id);
       }
-      setStatus(`Loaded ${rows.length} draft row(s) from ${nextOffset + 1}.`);
+      setStatus(
+        `Loaded ${normalizedRows.length} draft row(s) from ${nextOffset + 1}.`,
+      );
     } catch (caught) {
       setStatus(
-        caught instanceof Error
-          ? caught.message
-          : "Could not load question drafts.",
+        controlledActionFailure(caught, "Could not load question drafts."),
       );
     } finally {
       setPendingAction(null);
@@ -517,7 +561,9 @@ export function GamesControlClient({
 
   async function publishPack() {
     if (!canPublishPack) {
-      setStatus("Pack title and exactly 20 approved question ids are required.");
+      setStatus(
+        "Pack title and exactly 20 approved question ids are required.",
+      );
       return;
     }
 
@@ -536,9 +582,7 @@ export function GamesControlClient({
         `Pack published: ${result.title} (${result.questionCount} questions).`,
       );
     } catch (caught) {
-      setStatus(
-        caught instanceof Error ? caught.message : "Could not publish pack.",
-      );
+      setStatus(controlledActionFailure(caught, "Could not publish pack."));
     } finally {
       setPendingAction(null);
     }
@@ -560,14 +604,15 @@ export function GamesControlClient({
         actionFilter: auditActionFilter.trim() || undefined,
         entityType: auditEntityType.trim() || undefined,
       });
-      setAuditRows(rows);
+      const normalizedRows = normalizeAdminGameAudit(rows);
+      setAuditRows(normalizedRows);
       setAuditOffset(nextOffset);
-      setSelectedAuditRowId(rows[0]?.id ?? "");
-      setStatus(`Loaded ${rows.length} audit row(s) from ${nextOffset + 1}.`);
-    } catch (caught) {
+      setSelectedAuditRowId(normalizedRows[0]?.id ?? "");
       setStatus(
-        caught instanceof Error ? caught.message : "Could not load audit rows.",
+        `Loaded ${normalizedRows.length} audit row(s) from ${nextOffset + 1}.`,
       );
+    } catch (caught) {
+      setStatus(controlledActionFailure(caught, "Could not load audit rows."));
     } finally {
       setPendingAction(null);
     }
@@ -586,7 +631,7 @@ export function GamesControlClient({
             through the same game runtime contract used by TV and mobile.
           </p>
         </div>
-        <div className="inline-flex items-center gap-2 rounded-md bg-emerald-500/10 px-3 py-2 text-sm font-semibold text-emerald-700">
+        <div className="inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm font-semibold text-[var(--admin-text-strong)]">
           <ShieldCheck className="h-4 w-4" aria-hidden="true" />
           Club scoped
         </div>
@@ -714,7 +759,9 @@ export function GamesControlClient({
           className="admin-button admin-button-secondary disabled:opacity-60"
         >
           <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-          {pendingAction === "revoke-device" ? "Revoking..." : "Revoke TV credential"}
+          {pendingAction === "revoke-device"
+            ? "Revoking..."
+            : "Revoke TV credential"}
         </button>
       </div>
 
@@ -780,7 +827,10 @@ export function GamesControlClient({
 
       <div className="mt-8 border-t border-[var(--admin-border)] pt-6">
         <div className="flex flex-wrap items-center gap-2">
-          <Sparkles className="h-4 w-4 text-[var(--admin-muted)]" aria-hidden="true" />
+          <Sparkles
+            className="h-4 w-4 text-[var(--admin-muted)]"
+            aria-hidden="true"
+          />
           <h3 className="text-sm font-semibold text-[var(--admin-text)]">
             Draft generation
           </h3>
@@ -867,7 +917,10 @@ export function GamesControlClient({
 
       <div className="mt-8 border-t border-[var(--admin-border)] pt-6">
         <div className="flex flex-wrap items-center gap-2">
-          <ClipboardCheck className="h-4 w-4 text-[var(--admin-muted)]" aria-hidden="true" />
+          <ClipboardCheck
+            className="h-4 w-4 text-[var(--admin-muted)]"
+            aria-hidden="true"
+          />
           <h3 className="text-sm font-semibold text-[var(--admin-text)]">
             Content moderation
           </h3>
@@ -878,7 +931,9 @@ export function GamesControlClient({
             <select
               value={draftStatusFilter}
               onChange={(event) =>
-                setDraftStatusFilter(event.target.value as GameQuestionDraftStatus | "")
+                setDraftStatusFilter(
+                  event.target.value as GameQuestionDraftStatus | "",
+                )
               }
               className="admin-input"
               aria-label="Draft status"
@@ -920,7 +975,10 @@ export function GamesControlClient({
               <button
                 type="button"
                 key={row.id}
-                onClick={() => setDraftId(row.id)}
+                onClick={() => {
+                  setDraftId(row.id);
+                  onSelectionChange?.(true);
+                }}
                 className="rounded-md border border-[var(--admin-border)] bg-[var(--admin-bg)] p-3 text-left hover:border-[var(--admin-accent)]"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -931,11 +989,11 @@ export function GamesControlClient({
                     {row.validationStatus}
                   </span>
                   {row.hasDuplicatePrompt ? (
-                    <span className="rounded-md bg-amber-500/10 px-2 py-1 text-xs font-semibold text-amber-700">
+                    <span className="rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-xs font-semibold text-[var(--admin-text-strong)]">
                       Exact duplicate ({row.duplicatePromptCount})
                     </span>
                   ) : row.hasSimilarPrompt ? (
-                    <span className="rounded-md bg-sky-500/10 px-2 py-1 text-xs font-semibold text-sky-700">
+                    <span className="rounded-md border border-sky-500/30 bg-sky-500/10 px-2 py-1 text-xs font-semibold text-[var(--admin-text-strong)]">
                       Similar prompt ({row.similarPromptCount})
                     </span>
                   ) : null}
@@ -979,7 +1037,8 @@ export function GamesControlClient({
                   );
                 }}
                 disabled={
-                  draftRows.length < GAME_ADMIN_PAGE_SIZE || pendingAction != null
+                  draftRows.length < GAME_ADMIN_PAGE_SIZE ||
+                  pendingAction != null
                 }
                 className="admin-button admin-button-secondary disabled:opacity-60"
               >
@@ -1005,7 +1064,8 @@ export function GamesControlClient({
               value={reviewDecision}
               onChange={(event) =>
                 setReviewDecision(
-                  event.target.value as "approved" | "rejected" | "needs_changes",
+                  event.target.value as
+                    "approved" | "rejected" | "needs_changes",
                 )
               }
               className="admin-input"
@@ -1043,7 +1103,10 @@ export function GamesControlClient({
 
       <div className="mt-8 border-t border-[var(--admin-border)] pt-6">
         <div className="flex flex-wrap items-center gap-2">
-          <FileText className="h-4 w-4 text-[var(--admin-muted)]" aria-hidden="true" />
+          <FileText
+            className="h-4 w-4 text-[var(--admin-muted)]"
+            aria-hidden="true"
+          />
           <h3 className="text-sm font-semibold text-[var(--admin-text)]">
             Pack builder
           </h3>
@@ -1109,7 +1172,10 @@ export function GamesControlClient({
       <div className="mt-8 border-t border-[var(--admin-border)] pt-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <History className="h-4 w-4 text-[var(--admin-muted)]" aria-hidden="true" />
+            <History
+              className="h-4 w-4 text-[var(--admin-muted)]"
+              aria-hidden="true"
+            />
             <h3 className="text-sm font-semibold text-[var(--admin-text)]">
               Recent audit
             </h3>
@@ -1179,7 +1245,10 @@ export function GamesControlClient({
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => setSelectedAuditRowId(row.id)}
+                      onClick={() => {
+                        setSelectedAuditRowId(row.id);
+                        onSelectionChange?.(true);
+                      }}
                       className="admin-button admin-button-secondary"
                     >
                       <Eye className="h-4 w-4" aria-hidden="true" />

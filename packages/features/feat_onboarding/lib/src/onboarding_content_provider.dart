@@ -8,11 +8,13 @@ enum OnboardingSlideId { belong, know, live }
 
 enum OnboardingContentStatus { current, localFallback }
 
+enum OnboardingContentNotice { offlineSaved, whatsAppUnavailable }
+
 class OnboardingContentSnapshot {
   const OnboardingContentSnapshot({
     required this.slides,
     this.status = OnboardingContentStatus.current,
-    this.message,
+    this.notice,
     this.whatsAppSignInAvailable = true,
   });
 
@@ -24,11 +26,12 @@ class OnboardingContentSnapshot {
 
   factory OnboardingContentSnapshot.current({
     bool whatsAppSignInAvailable = true,
-    String? message,
   }) {
     return OnboardingContentSnapshot(
       slides: defaultSlides,
-      message: message,
+      notice: whatsAppSignInAvailable
+          ? null
+          : OnboardingContentNotice.whatsAppUnavailable,
       whatsAppSignInAvailable: whatsAppSignInAvailable,
     );
   }
@@ -37,14 +40,14 @@ class OnboardingContentSnapshot {
     return const OnboardingContentSnapshot(
       slides: defaultSlides,
       status: OnboardingContentStatus.localFallback,
-      message: 'Offline. Saved welcome is available. Continue without sign-in.',
+      notice: OnboardingContentNotice.offlineSaved,
       whatsAppSignInAvailable: false,
     );
   }
 
   final List<OnboardingSlideId> slides;
   final OnboardingContentStatus status;
-  final String? message;
+  final OnboardingContentNotice? notice;
   final bool whatsAppSignInAvailable;
 
   bool get isEmpty => slides.isEmpty;
@@ -110,9 +113,6 @@ class OnboardingContentRepository {
     }
     return OnboardingContentSnapshot.current(
       whatsAppSignInAvailable: whatsAppSignInEnabled,
-      message: whatsAppSignInEnabled
-          ? null
-          : 'Continue without sign-in, or try WhatsApp later.',
     );
   }
 }

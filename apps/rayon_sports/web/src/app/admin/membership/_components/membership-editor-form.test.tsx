@@ -35,6 +35,14 @@ describe("MembershipEditorForm accessibility recovery", () => {
 
     const title = screen.getByRole("textbox", { name: "Title" });
     await user.type(title, "Family tier");
+    await user.type(
+      screen.getByRole("textbox", { name: "Description" }),
+      "Family membership benefits.",
+    );
+    await user.type(
+      screen.getByRole("spinbutton", { name: "Annual price (RWF)" }),
+      "0",
+    );
     await user.click(screen.getByRole("button", { name: "Create tier" }));
 
     await screen.findAllByRole("alert");
@@ -69,6 +77,14 @@ describe("MembershipEditorForm accessibility recovery", () => {
     );
 
     await user.type(screen.getByRole("textbox", { name: "Title" }), "Family tier");
+    await user.type(
+      screen.getByRole("textbox", { name: "Description" }),
+      "Family membership benefits.",
+    );
+    await user.type(
+      screen.getByRole("spinbutton", { name: "Annual price (RWF)" }),
+      "0",
+    );
     expect(screen.getByRole("textbox", { name: "Title" })).toBeRequired();
     expect(screen.getByRole("spinbutton", { name: "Annual price (RWF)" })).toHaveAttribute(
       "type",

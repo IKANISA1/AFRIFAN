@@ -18,7 +18,10 @@ interface AdminToastContextValue {
 
 let globalShowToast: AdminToastContextValue["showToast"] | null = null;
 
-export function showAdminToast(message: string, variant: ToastVariant = "info") {
+export function showAdminToast(
+  message: string,
+  variant: ToastVariant = "info",
+) {
   if (globalShowToast) {
     globalShowToast(message, variant);
   }
@@ -39,10 +42,13 @@ const variantStyles: Record<ToastVariant, string> = {
 export function AdminToastProvider() {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const showToast = useCallback((message: string, variant: ToastVariant = "info") => {
-    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-    setToasts((current) => [...current.slice(-4), { id, message, variant }]);
-  }, []);
+  const showToast = useCallback(
+    (message: string, variant: ToastVariant = "info") => {
+      const id = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+      setToasts((current) => [...current.slice(-4), { id, message, variant }]);
+    },
+    [],
+  );
 
   const dismiss = useCallback((id: string) => {
     setToasts((current) => current.filter((t) => t.id !== id));
@@ -70,7 +76,7 @@ export function AdminToastProvider() {
     <div
       role="status"
       aria-live="polite"
-      className="fixed bottom-20 right-4 z-[80] flex flex-col gap-2 xl:bottom-6 xl:right-6 max-w-sm w-full pointer-events-none"
+      className="pointer-events-none fixed bottom-20 left-4 right-4 z-[80] flex max-w-sm flex-col gap-2 sm:left-auto xl:bottom-6 xl:right-6"
     >
       {toasts.map((toast) => {
         const Icon = icons[toast.variant];
@@ -89,7 +95,7 @@ export function AdminToastProvider() {
             <button
               type="button"
               onClick={() => dismiss(toast.id)}
-              className="mt-0.5 flex-shrink-0 rounded-full p-1 transition hover:bg-white/10"
+              className="mt-0.5 inline-flex min-h-12 min-w-12 flex-shrink-0 items-center justify-center rounded-full p-3 transition hover:bg-white/10"
               aria-label="Dismiss"
             >
               <X size={14} />

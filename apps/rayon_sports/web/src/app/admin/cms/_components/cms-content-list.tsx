@@ -8,7 +8,6 @@ import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminSurface } from "@/components/admin/admin-surface";
 import { Skeleton } from "@/components/skeleton";
-import { cn } from "@/lib/utils";
 import type { AdminNewsArticle } from "@/lib/types";
 import { wordCount } from "./cms-state";
 import { useAdminCollection } from "@/lib/use-admin-collection";
@@ -16,6 +15,8 @@ import { useAdminCollection } from "@/lib/use-admin-collection";
 interface CMSContentListProps {
   articles: AdminNewsArticle[];
   loading: boolean;
+  busy: boolean;
+  mutationLocked: boolean;
   onRefresh: () => void;
   onBeginEdit: (article: AdminNewsArticle) => void;
   onToggleField: (article: AdminNewsArticle, field: "isPublished" | "isFeatured") => void;
@@ -25,6 +26,8 @@ interface CMSContentListProps {
 export function CMSContentList({
   articles,
   loading,
+  busy,
+  mutationLocked,
   onRefresh,
   onBeginEdit,
   onToggleField,
@@ -66,7 +69,9 @@ export function CMSContentList({
         <button
           type="button"
           onClick={onRefresh}
-          className="admin-action-button"
+          disabled={busy}
+          aria-label="Refresh article queue"
+          className="admin-action-button min-h-12 min-w-12"
         >
           Refresh
         </button>
@@ -96,7 +101,7 @@ export function CMSContentList({
             caption="Article publishing queue"
             onRowActivate={(rowId) => {
               const article = articles.find((item) => item.id === rowId);
-              if (article) onBeginEdit(article);
+              if (article && !mutationLocked) onBeginEdit(article);
             }}
             columns={[
               { key: "article", label: "Article", priority: "primary", sortable: true, sortDirection: articleCollection.sortDirectionFor("article"), onSort: () => articleCollection.toggleSort("article") },
@@ -114,7 +119,6 @@ export function CMSContentList({
                 <tr
                   key={article.id}
                   data-row-id={article.id}
-                  className={cn(!article.isPublished && "opacity-80")}
                 >
                   <td>
                     <div className="flex gap-3">
@@ -149,13 +153,13 @@ export function CMSContentList({
                     </div>
                   </td>
                   <td>
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-[var(--admin-text-strong)]">
                       {wordCount(article.body)}
                     </p>
                     <p className="admin-row-meta">body words</p>
                   </td>
                   <td>
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-[var(--admin-text-strong)]">
                       {new Date(article.publishedAt ?? article.createdAt).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -170,32 +174,40 @@ export function CMSContentList({
                     <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
                       <button
                         type="button"
+                        disabled={mutationLocked}
                         onClick={() => onBeginEdit(article)}
-                        className="admin-action-button"
+                        aria-label={`Edit ${article.title}`}
+                        className="admin-action-button min-h-12 min-w-12"
                       >
                         <PencilLine size={13} />
                         Edit
                       </button>
                       <button
                         type="button"
+                        disabled={mutationLocked}
                         onClick={() => onToggleField(article, "isPublished")}
-                        className="admin-action-button"
+                        aria-label={`${article.isPublished ? "Unpublish" : "Publish"} ${article.title}`}
+                        className="admin-action-button min-h-12 min-w-12"
                       >
                         <Upload size={13} />
                         {article.isPublished ? "Unpublish" : "Publish"}
                       </button>
                       <button
                         type="button"
+                        disabled={mutationLocked}
                         onClick={() => onToggleField(article, "isFeatured")}
-                        className="admin-action-button"
+                        aria-label={`${article.isFeatured ? "Unfeature" : "Feature"} ${article.title}`}
+                        className="admin-action-button min-h-12 min-w-12"
                       >
                         <Star size={13} />
                         {article.isFeatured ? "Unfeature" : "Feature"}
                       </button>
                       <button
                         type="button"
+                        disabled={mutationLocked}
                         onClick={() => onRemove(article)}
-                        className="admin-action-button admin-action-button-danger"
+                        aria-label={`Delete ${article.title}`}
+                        className="admin-action-button admin-action-button-danger min-h-12 min-w-12"
                       >
                         <Trash2 size={13} />
                         Delete

@@ -114,11 +114,6 @@ final challengeFeedProvider =
       ),
     );
 
-final myChallengesProvider =
-    StateNotifierProvider<MyChallengesController, AsyncValue<List<Challenge>>>(
-      (ref) => MyChallengesController(ref.watch(challengeRepositoryProvider)),
-    );
-
 class ChallengeFeedController
     extends StateNotifier<AsyncValue<ChallengeFeedState>> {
   ChallengeFeedController(
@@ -226,39 +221,5 @@ class ChallengeFeedController
       ChallengeFeedFailureKind.unknown =>
         'Live challenge updates are paused. Saved pools remain visible.',
     };
-  }
-}
-
-class MyChallengesController
-    extends StateNotifier<AsyncValue<List<Challenge>>> {
-  MyChallengesController(this._repository) : super(const AsyncValue.loading()) {
-    unawaited(loadOpen());
-  }
-
-  final ChallengeRepository _repository;
-
-  Future<void> loadOpen() => _load(const <String>['open'], sort: 'ending_soon');
-
-  Future<void> loadLocked() =>
-      _load(const <String>['locked'], sort: 'ending_soon');
-
-  Future<void> loadSettled() =>
-      _load(const <String>['settled'], sort: 'settled');
-
-  Future<void> loadVoided() =>
-      _load(const <String>['void', 'cancelled'], sort: 'settled');
-
-  Future<void> _load(List<String> statuses, {required String sort}) async {
-    state = const AsyncLoading();
-    try {
-      final items = await _repository.loadMyChallenges(
-        statuses: statuses,
-        sort: sort,
-        limit: 40,
-      );
-      state = AsyncValue.data(items);
-    } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
-    }
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -59,11 +60,12 @@ class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
   @override
   Widget build(BuildContext context) {
     final featureService = ref.watch(featureConfigServiceProvider);
+    final l10n = context.afriL10n;
 
     final visibleActions = prioritizeHomeQuickActions(
       widget.actions.where((action) {
         if (!action.isActive ||
-            action.title.trim().isEmpty ||
+            _localizedHomeActionTitle(l10n, action).trim().isEmpty ||
             action.route.trim().isEmpty) {
           return false;
         }
@@ -87,16 +89,16 @@ class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AfriSectionHeader(
-          title: 'Shortcuts',
+          title: l10n.homeShortcutsTitle,
           padding: EdgeInsets.zero,
           trailing: secondaryActions.isEmpty
               ? null
               : AfriButton(
                   key: const ValueKey<String>('home-secondary-actions-toggle'),
-                  label: _showSecondaryActions ? 'Less' : 'More',
+                  label: _showSecondaryActions ? l10n.homeLess : l10n.homeMore,
                   semanticsLabel: _showSecondaryActions
-                      ? 'Hide more shortcuts'
-                      : 'Show more shortcuts',
+                      ? l10n.homeHideMoreShortcuts
+                      : l10n.homeShowMoreShortcuts,
                   onTap: () {
                     setState(() {
                       _showSecondaryActions = !_showSecondaryActions;
@@ -118,7 +120,7 @@ class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
           const SizedBox(height: SpacingTokens.spacing6),
           const AfriDivider(),
           const SizedBox(height: SpacingTokens.spacing4),
-          Text('More shortcuts', style: TypographyTokens.titleSmall()),
+          Text(l10n.homeMoreShortcuts, style: TypographyTokens.titleSmall()),
           const SizedBox(height: SpacingTokens.spacing3),
           _SecondaryActionGrid(
             actions: secondaryActions,
@@ -228,6 +230,10 @@ class _PrimaryActionGrid extends StatelessWidget {
           children: actions
               .map((action) {
                 final available = isAvailable(action);
+                final title = _localizedHomeActionTitle(
+                  context.afriL10n,
+                  action,
+                );
                 return SizedBox(
                   key: ValueKey<String>(
                     'home-primary-action-${action.actionKey}',
@@ -236,12 +242,12 @@ class _PrimaryActionGrid extends StatelessWidget {
                   child: AfriQuickAction(
                     icon: resolveIcon(action),
                     label: available
-                        ? action.title
-                        : '${action.title}\nUnavailable',
+                        ? title
+                        : context.afriL10n.homeActionUnavailable(title),
                     enabled: available,
                     semanticsHint: available
-                        ? 'Opens ${action.title}'
-                        : '${action.title} is unavailable',
+                        ? context.afriL10n.homeActionOpensHint(title)
+                        : context.afriL10n.homeActionUnavailableHint(title),
                     onTap: () => onTap(action),
                   ),
                 );
@@ -286,13 +292,17 @@ class _SecondaryActionGrid extends StatelessWidget {
           children: actions
               .map((action) {
                 final available = isAvailable(action);
+                final title = _localizedHomeActionTitle(
+                  context.afriL10n,
+                  action,
+                );
                 return SizedBox(
                   width: tileWidth,
                   child: AfriActionRow(
                     icon: resolveIcon(action),
                     label: available
-                        ? action.title
-                        : '${action.title} · Unavailable',
+                        ? title
+                        : context.afriL10n.homeActionUnavailableInline(title),
                     enabled: available,
                     onTap: () => onTap(action),
                   ),
@@ -303,4 +313,32 @@ class _SecondaryActionGrid extends StatelessWidget {
       },
     );
   }
+}
+
+String _localizedHomeActionTitle(
+  AfriLocalizations l10n,
+  HomeQuickAction action,
+) {
+  final configuredTitle = action.title.trim();
+  if (configuredTitle.isNotEmpty) {
+    return configuredTitle;
+  }
+  final key = action.actionKey.trim().toLowerCase();
+  final route = action.route.trim().toLowerCase();
+  if (key.contains('ticket') || route.startsWith('/tickets')) {
+    return l10n.homeTicketsAction;
+  }
+  if (key.contains('membership') || route.startsWith('/membership')) {
+    return l10n.homeMembershipAction;
+  }
+  if (key == 'fan_zone' ||
+      key.contains('supporter') ||
+      route == '/fanzone' ||
+      route.startsWith('/fanzone?')) {
+    return l10n.homeFanZoneAction;
+  }
+  if (key.contains('shop') || route.startsWith('/shop')) {
+    return l10n.homeShopAction;
+  }
+  return configuredTitle;
 }

@@ -1,8 +1,15 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { serverSupabaseConfig } from "@/lib/config";
 import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
 import type { GameQuestionDraftGenerationBody } from "@/lib/game-runtime";
+import {
+  edgeFunctionFailureResponse,
+  edgeFunctionConfigurationResponse,
+  edgeFunctionEmptyResponse,
+  edgeFunctionOperationTimeoutMs,
+  proxyEdgeFunctionRequest,
+  withEdgeFunctionOperationTimeout,
+} from "@/lib/edge-function-proxy";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +19,7 @@ type GenerateQuestionDraftsRouteDependencies = {
   rejectRateLimitedRequest: typeof rejectRateLimitedRequest;
   supabaseUrl: string;
   supabaseAnonKey: string;
+  operationTimeoutMs: number;
 };
 
 function defaultDependencies(): GenerateQuestionDraftsRouteDependencies {
@@ -21,6 +29,7 @@ function defaultDependencies(): GenerateQuestionDraftsRouteDependencies {
     rejectRateLimitedRequest,
     supabaseUrl: serverSupabaseConfig.url,
     supabaseAnonKey: serverSupabaseConfig.anonKey,
+    operationTimeoutMs: edgeFunctionOperationTimeoutMs,
   };
 }
 
@@ -87,50 +96,44 @@ export function createGenerateQuestionDraftsRouteHandler(
       return rejectedOrigin;
     }
 
-    const rejectedLimit = await deps.rejectRateLimitedRequest(
-      request,
-      "generate-question-drafts",
-      24,
-      60_000,
-    );
+    let rejectedLimit: Response | null;
+    try {
+      rejectedLimit = await withEdgeFunctionOperationTimeout(
+        deps.rejectRateLimitedRequest(
+          request,
+          "generate-question-drafts",
+          24,
+          60_000,
+        ),
+        deps.operationTimeoutMs,
+      );
+    } catch (error) {
+      return edgeFunctionFailureResponse(error);
+    }
     if (rejectedLimit) {
       return rejectedLimit;
     }
 
     const body = await request.json().catch(() => null);
     if (!isValidBody(body)) {
-      return NextResponse.json(
-        { error: "Invalid question draft generation payload." },
-        { status: 400 },
+      return edgeFunctionEmptyResponse(
+        "Invalid question draft generation payload.",
       );
     }
 
     if (!deps.supabaseUrl || !deps.supabaseAnonKey) {
-      return NextResponse.json(
-        { error: "Supabase server configuration is not available." },
-        { status: 503 },
-      );
+      return edgeFunctionConfigurationResponse();
     }
 
-    const upstream = await deps.fetcher(
-      `${deps.supabaseUrl}/functions/v1/generate-question-drafts`,
-      {
+    return proxyEdgeFunctionRequest({
+      fetcher: deps.fetcher,
+      url: `${deps.supabaseUrl}/functions/v1/generate-question-drafts`,
+      timeoutMs: deps.operationTimeoutMs,
+      init: {
         method: "POST",
         headers: authHeaders(request, deps.supabaseAnonKey),
         body: JSON.stringify(body),
         cache: "no-store",
-      },
-    );
-
-    const responseText = await upstream.text();
-    const contentType =
-      upstream.headers.get("content-type") ?? "application/json";
-
-    return new NextResponse(responseText, {
-      status: upstream.status,
-      headers: {
-        "Content-Type": contentType,
-        "Cache-Control": "no-store",
       },
     });
   };

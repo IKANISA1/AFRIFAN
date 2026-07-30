@@ -1,38 +1,62 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Users, DollarSign, Plus, Download, Search } from "lucide-react";
+import { DollarSign, Download, Plus, Search, Users } from "lucide-react";
+import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminPagination } from "@/components/admin/admin-pagination";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
-import { AdminDataGrid } from "@/components/admin/admin-data-grid";
-import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
-import { AdminPagination } from "@/components/admin/admin-pagination";
-import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
-import {
-  deleteAdminFanClub,
-  getAdminFanClubs,
-  saveAdminFanClub,
-} from "@/lib/data/admin/fan-clubs";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import {
   deleteAdminContributionGroup,
   downloadContributionExcel,
   getAdminContributionSnapshot,
+  normalizeAdminContributionSnapshot,
 } from "@/lib/data/admin/contributions";
+import {
+  deleteAdminFanClub,
+  getAdminFanClubs,
+  normalizeAdminFanClubs,
+  saveAdminFanClub,
+} from "@/lib/data/admin/fan-clubs";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
-import type { AdminFanClub, AdminContributionGroup, AdminContributionSnapshot } from "@/lib/types";
-import { emptyForm as emptyChapterForm, type CommunityForm } from "./_components/community-state";
-import { emptyGroupForm, groupToFormState } from "../contributions/_components/group-form-state";
-import { CommunityContentEditor } from "./_components/community-content-editor";
-import { ContributionGroupForm } from "../contributions/_components/group-form";
+import type {
+  AdminContributionGroup,
+  AdminContributionSnapshot,
+  AdminFanClub,
+} from "@/lib/types";
+import { useAdminCollection } from "@/lib/use-admin-collection";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useHydrated } from "@/lib/use-hydrated";
-import { useAdminCollection } from "@/lib/use-admin-collection";
+import { ContributionGroupForm } from "../contributions/_components/group-form";
+import {
+  emptyGroupForm,
+  groupToFormState,
+} from "../contributions/_components/group-form-state";
+import { CommunityContentEditor } from "./_components/community-content-editor";
+import {
+  emptyForm as emptyChapterForm,
+  type CommunityForm,
+} from "./_components/community-state";
 
 type CommunityTab = "chapters" | "groups" | "contributions";
+
+type CommunityBundle = {
+  chapters: AdminFanClub[];
+  snapshot: AdminContributionSnapshot;
+};
 
 const emptySnapshot: AdminContributionSnapshot = {
   groups: [],
@@ -40,432 +64,1026 @@ const emptySnapshot: AdminContributionSnapshot = {
   monthlyTotal: 0,
 };
 
+const emptyCommunityBundle: CommunityBundle = {
+  chapters: [],
+  snapshot: emptySnapshot,
+};
+
+const communityBundleIsEmpty = (value: CommunityBundle) =>
+  value.chapters.length === 0 &&
+  value.snapshot.groups.length === 0 &&
+  value.snapshot.contributions.length === 0;
+
+const statusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading community operations",
+    detail: "Waiting for the first authenticated community snapshot.",
+  },
+  ready: {
+    label: "Community snapshot confirmed",
+    detail: "Chapters, public groups, and contribution activity are current.",
+  },
+  empty: {
+    label: "No community records in this scope",
+    detail: "Create the first authorized chapter or public group.",
+  },
+  error: {
+    label: "Community operations unavailable",
+    detail: "Confirmed records remain visible. Retry when service recovers.",
+  },
+  offline: {
+    label: "Community workspace is offline",
+    detail: "Confirmed records remain visible until connection returns.",
+  },
+  permission_denied: {
+    label: "Community access denied",
+    detail:
+      "Previously loaded records, filters, selections, and drafts were cleared.",
+  },
+  syncing: {
+    label: "Refreshing community operations",
+    detail: "Confirmed records remain visible during refresh.",
+  },
+  conflict: {
+    label: "Community records changed",
+    detail: "Refresh and review the current record before changing it.",
+  },
+  security_timeout: {
+    label: "Community request timed out",
+    detail: "No community operation or change was confirmed.",
+  },
+};
+
+export function normalizeCommunityBundle(value: unknown): CommunityBundle {
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    return emptyCommunityBundle;
+  }
+  const record = value as Record<string, unknown>;
+  return {
+    chapters: normalizeAdminFanClubs(record.chapters),
+    snapshot: normalizeAdminContributionSnapshot(record.snapshot),
+  };
+}
+
+function contributionStatusTone(status: string) {
+  if (status === "confirmed" || status === "completed") return "success";
+  if (status === "pending") return "warning";
+  return "danger";
+}
+
+function fundingPercent(group: AdminContributionGroup) {
+  if (group.targetAmount <= 0) return 0;
+  return Math.min(
+    Math.max(Math.round((group.currentTotal / group.targetAmount) * 100), 0),
+    100,
+  );
+}
+
 export default function AdminCommunityHubPage() {
   const { access, client, activeClub } = useAdminPortal();
   const hydrated = useHydrated();
   const [activeTab, setActiveTab] = useState<CommunityTab>("chapters");
-  const [clubs, setClubs] = useState<AdminFanClub[]>([]);
-  const [contributionSnapshot, setSnapshot] = useState<AdminContributionSnapshot>(emptySnapshot);
-  const [chapterForm, setChapterForm] = useState<CommunityForm>(emptyChapterForm);
+  const [chapterForm, setChapterForm] =
+    useState<CommunityForm>(emptyChapterForm);
   const [circleForm, setCircleForm] = useState(emptyGroupForm);
-  const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"chapter" | "circle">("chapter");
-  const controlsDisabled = !hydrated || client == null || loading;
-  const [detailContributionId, setDetailContributionId] = useState<string | null>(null);
+  const [detailContributionId, setDetailContributionId] = useState<
+    string | null
+  >(null);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
+
+  const loadCommunity = useCallback(
+    async (signal: AbortSignal) => {
+      if (client == null) return emptyCommunityBundle;
+      const [chapters, snapshot] = await Promise.all([
+        getAdminFanClubs(client, access, { signal }),
+        getAdminContributionSnapshot(client, access, { signal }),
+      ]);
+      return { chapters, snapshot };
+    },
+    [access, client],
+  );
+
+  const clearDeniedState = useCallback(() => {
+    setActiveTab("chapters");
+    setChapterForm(emptyChapterForm);
+    setCircleForm(emptyGroupForm);
+    setDrawerOpen(false);
+    setDetailContributionId(null);
+    setInteraction("idle");
+  }, []);
+
+  const {
+    data,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState({
+    enabled: client != null && access.hasAccess,
+    emptyValue: emptyCommunityBundle,
+    isEmpty: communityBundleIsEmpty,
+    load: loadCommunity,
+    normalize: normalizeCommunityBundle,
+    onPermissionDenied: clearDeniedState,
+    resourceLabel: "community operations",
+  });
 
   const chapterCollection = useAdminCollection({
-    records: clubs,
-    getId: (club) => club.id,
-    getSearchValues: (club) => [club.name, club.description, club.region, club.isActive ? "active" : "hidden"],
-    getSortValue: (club, key: "name" | "region" | "status" | "members" | "rating") => {
+    records: data.chapters,
+    getId: (chapter) => chapter.id,
+    getSearchValues: (chapter) => [
+      chapter.name,
+      chapter.description,
+      chapter.region,
+      chapter.isActive ? "active" : "hidden",
+    ],
+    getSortValue: (
+      chapter,
+      key: "name" | "region" | "status" | "members" | "rating",
+    ) => {
       switch (key) {
-        case "name": return club.name;
-        case "region": return club.region;
-        case "status": return club.isActive;
-        case "members": return club.memberCount;
-        case "rating": return club.rating;
+        case "name":
+          return chapter.name;
+        case "region":
+          return chapter.region;
+        case "status":
+          return chapter.isActive;
+        case "members":
+          return chapter.memberCount;
+        case "rating":
+          return chapter.rating;
       }
     },
     initialSortKey: "name" as const,
     pageSize: 25,
   });
+
   const groupCollection = useAdminCollection({
-    records: contributionSnapshot.groups,
+    records: data.snapshot.groups,
     getId: (group) => group.id,
-    getSearchValues: (group) => [group.name, group.groupType, group.isClosed ? "closed" : "active", group.currency],
+    getSearchValues: (group) => [
+      group.name,
+      group.groupType,
+      group.isClosed ? "closed" : "active",
+      group.currency,
+    ],
     getSortValue: (group, key: "name" | "type" | "funding" | "members") => {
       switch (key) {
-        case "name": return group.name;
-        case "type": return group.groupType;
-        case "funding": return group.targetAmount === 0 ? 0 : group.currentTotal / group.targetAmount;
-        case "members": return group.memberCount;
+        case "name":
+          return group.name;
+        case "type":
+          return group.groupType;
+        case "funding":
+          return fundingPercent(group);
+        case "members":
+          return group.memberCount;
       }
     },
     initialSortKey: "name" as const,
     pageSize: 25,
   });
+
   const contributionCollection = useAdminCollection({
-    records: contributionSnapshot.contributions,
+    records: data.snapshot.contributions,
     getId: (item) => item.id,
     getSearchValues: (item) => [
       item.userId,
       item.status,
       item.amount,
-      contributionSnapshot.groups.find((group) => group.id === item.groupId)?.name,
+      data.snapshot.groups.find((group) => group.id === item.groupId)?.name,
     ],
-    getSortValue: (item, key: "supporter" | "amount" | "circle" | "status" | "date") => {
+    getSortValue: (
+      item,
+      key: "supporter" | "amount" | "group" | "status" | "date",
+    ) => {
       switch (key) {
-        case "supporter": return item.userId;
-        case "amount": return item.amount;
-        case "circle": return contributionSnapshot.groups.find((group) => group.id === item.groupId)?.name ?? "";
-        case "status": return item.status;
-        case "date": return new Date(item.createdAt);
+        case "supporter":
+          return item.userId;
+        case "amount":
+          return item.amount;
+        case "group":
+          return (
+            data.snapshot.groups.find((group) => group.id === item.groupId)
+              ?.name ?? ""
+          );
+        case "status":
+          return item.status;
+        case "date":
+          return new Date(item.createdAt);
       }
     },
     initialSortKey: "date" as const,
     initialSortDirection: "descending",
     pageSize: 25,
   });
-  const detailContribution = contributionSnapshot.contributions.find((item) => item.id === detailContributionId) ?? null;
-
-  const loadChapters = useCallback(async () => {
-    if (!client) return;
-    try {
-      setClubs(await getAdminFanClubs(client, access));
-    } catch (e) {
-      showAdminToast(e instanceof Error ? e.message : "Error loading chapters", "error");
-    }
-  }, [access, client]);
-
-  const loadCircles = useCallback(async () => {
-    if (!client) return;
-    try {
-      setSnapshot(await getAdminContributionSnapshot(client, access));
-    } catch (e) {
-      showAdminToast(e instanceof Error ? e.message : "Error loading circles", "error");
-    }
-  }, [access, client]);
-
-  const loadAll = useCallback(async () => {
-    setLoading(true);
-    await Promise.all([loadChapters(), loadCircles()]);
-    setLoading(false);
-  }, [loadChapters, loadCircles]);
 
   useEffect(() => {
-    if (client == null || !access.hasAccess) return;
-    queueMicrotask(() => {
-      loadAll().catch(() => {});
-    });
-  }, [access.hasAccess, client, loadAll]);
+    if (status !== "permission_denied") return;
+    if (chapterCollection.query) chapterCollection.setQuery("");
+    if (groupCollection.query) groupCollection.setQuery("");
+    if (contributionCollection.query) contributionCollection.setQuery("");
+  }, [chapterCollection, contributionCollection, groupCollection, status]);
 
-  function beginChapterEdit(club: AdminFanClub) {
+  const mutationLocked =
+    !hydrated || client == null || (status !== "ready" && status !== "empty");
+  const detailContribution =
+    data.snapshot.contributions.find(
+      (item) => item.id === detailContributionId,
+    ) ?? null;
+
+  function beginChapterCreate() {
+    setChapterForm(emptyChapterForm);
+    setDrawerMode("chapter");
+    setDrawerOpen(true);
+    setInteraction("selected");
+  }
+
+  function beginCircleCreate() {
+    setCircleForm({
+      ...emptyGroupForm,
+      currency: activeClub?.currencyCode ?? "USD",
+    });
+    setDrawerMode("circle");
+    setDrawerOpen(true);
+    setInteraction("selected");
+  }
+
+  function beginChapterEdit(chapter: AdminFanClub) {
     setChapterForm({
-      id: club.id,
-      expectedUpdatedAt: club.updatedAt,
-      name: club.name,
-      region: club.region,
-      description: club.description,
-      memberCount: String(club.memberCount),
-      eventCount: String(club.eventCount),
-      rating: String(club.rating),
-      bannerImageUrl: club.bannerImageUrl ?? "",
-      isActive: club.isActive,
+      id: chapter.id,
+      expectedUpdatedAt: chapter.updatedAt,
+      name: chapter.name,
+      region: chapter.region,
+      description: chapter.description,
+      memberCount: String(chapter.memberCount),
+      eventCount: String(chapter.eventCount),
+      rating: String(chapter.rating),
+      bannerImageUrl: chapter.bannerImageUrl ?? "",
+      isActive: chapter.isActive,
     });
     setDrawerMode("chapter");
     setDrawerOpen(true);
+    setInteraction("selected");
   }
 
   function beginCircleEdit(group: AdminContributionGroup) {
     setCircleForm(groupToFormState(group));
     setDrawerMode("circle");
     setDrawerOpen(true);
+    setInteraction("selected");
   }
 
-  async function removeChapter(club: AdminFanClub) {
-    if (!client) return;
-    if (confirmAdminDestructiveAction({
-      action: "Remove",
-      subject: club.name,
-      scope: `Active club ${access.clubId ?? "not selected"}`,
-      impact: "The supporter chapter and its admin listing will be removed.",
-      undo: "not_available",
-    })) {
-      try {
-        await deleteAdminFanClub(
-          client,
-          access,
-          club.id,
-          club.updatedAt,
-        );
-        await loadChapters();
-      } catch (caught) {
-        if (isAdminMutationConflict(caught)) {
-          await loadChapters();
-        }
-        throw caught;
+  function closeEditor() {
+    setDrawerOpen(false);
+    setChapterForm(emptyChapterForm);
+    setCircleForm(emptyGroupForm);
+    setInteraction("idle");
+  }
+
+  function mutationFailureMessage(caught: unknown, fallback: string) {
+    const nextStatus = applyFailure(caught);
+    return nextStatus === "conflict" ? statusCopy.conflict.label : fallback;
+  }
+
+  async function saveChapter(formData: FormData) {
+    if (client == null) return;
+    try {
+      await saveAdminFanClub(client, access, {
+        id: chapterForm.id || null,
+        expectedUpdatedAt: chapterForm.expectedUpdatedAt || null,
+        name: String(formData.get("name") ?? ""),
+        region: String(formData.get("region") ?? ""),
+        description: String(formData.get("description") ?? ""),
+        memberCount: Number(formData.get("memberCount") ?? 0),
+        eventCount: Number(formData.get("eventCount") ?? 0),
+        rating: Number(formData.get("rating") ?? 0),
+        bannerImageUrl: String(formData.get("bannerImageUrl") ?? ""),
+        isActive: formData.get("isActive") === "on",
+      });
+      closeEditor();
+      await refresh();
+      showAdminToast("Community chapter saved.", "success");
+    } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await refresh();
       }
+      showAdminToast(
+        mutationFailureMessage(caught, "Could not confirm the chapter change."),
+        "error",
+      );
+    }
+  }
+
+  async function removeChapter(chapter: AdminFanClub) {
+    if (
+      client == null ||
+      !confirmAdminDestructiveAction({
+        action: "Remove",
+        subject: chapter.name,
+        scope: `Active club ${access.clubId ?? "not selected"}`,
+        impact: "The supporter chapter and its admin listing will be removed.",
+        undo: "not_available",
+      })
+    ) {
+      return;
+    }
+
+    try {
+      await deleteAdminFanClub(client, access, chapter.id, chapter.updatedAt);
+      await refresh();
+      showAdminToast("Community chapter removed.", "success");
+    } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await refresh();
+      }
+      showAdminToast(
+        mutationFailureMessage(caught, "Could not confirm chapter removal."),
+        "error",
+      );
     }
   }
 
   async function removeCircle(group: AdminContributionGroup) {
-    if (!client) return;
-    if (confirmAdminDestructiveAction({
-      action: "Remove",
-      subject: group.name,
-      scope: `Active club ${access.clubId ?? "not selected"}`,
-      impact: "The contribution group will no longer accept or display contributions.",
-      undo: "not_available",
-    })) {
-      try {
-        await deleteAdminContributionGroup(
-          client,
-          access,
-          group.id,
-          group.updatedAt,
-        );
-        await loadCircles();
-      } catch (caught) {
-        if (isAdminMutationConflict(caught)) {
-          await loadCircles();
-        }
-        throw caught;
+    if (
+      client == null ||
+      !confirmAdminDestructiveAction({
+        action: "Remove",
+        subject: group.name,
+        scope: `Active club ${access.clubId ?? "not selected"}`,
+        impact:
+          "The contribution group will no longer accept or display contributions.",
+        undo: "not_available",
+      })
+    ) {
+      return;
+    }
+
+    try {
+      await deleteAdminContributionGroup(
+        client,
+        access,
+        group.id,
+        group.updatedAt,
+      );
+      await refresh();
+      showAdminToast("Public contribution group removed.", "success");
+    } catch (caught) {
+      if (isAdminMutationConflict(caught)) {
+        await refresh();
       }
+      showAdminToast(
+        mutationFailureMessage(
+          caught,
+          "Could not confirm contribution-group removal.",
+        ),
+        "error",
+      );
     }
   }
 
-  const totalMembers = clubs.reduce((sum, club) => sum + club.memberCount, 0);
+  async function exportContributionReport() {
+    try {
+      await downloadContributionExcel(data.snapshot);
+      showAdminToast("Contribution report prepared.", "success");
+    } catch {
+      showAdminToast("Could not prepare the contribution report.", "error");
+    }
+  }
+
+  function selectTab(tab: CommunityTab) {
+    setActiveTab(tab);
+    setDetailContributionId(null);
+    setInteraction(tab === "chapters" ? "idle" : "selected");
+  }
+
+  const totalMembers = data.chapters.reduce(
+    (sum, chapter) => sum + chapter.memberCount,
+    0,
+  );
+
   return (
-    <div className="section-grid !gap-6">
+    <section
+      className="admin-community-state-surface section-grid min-w-0 max-w-full"
+      data-admin-community-status={status}
+      data-admin-community-interaction={interaction}
+      data-admin-community-refresh-disabled={busy}
+      aria-busy={busy || undefined}
+    >
       <AdminPageHeader
         eyebrow="Ecosystem"
         title="Community hub"
         meta={
-          <div className="flex gap-2">
+          <span className="admin-meta-chip">
+            <Users size={12} className="mr-1 inline" aria-hidden="true" />
+            Chapters, groups & contributions
+          </span>
+        }
+        actions={
+          <>
             <button
-              onClick={() => { setChapterForm(emptyChapterForm); setDrawerMode("chapter"); setDrawerOpen(true); }}
-              disabled={controlsDisabled}
-              className="admin-action-button !bg-club-accent !text-white disabled:opacity-60"
+              type="button"
+              onClick={beginChapterCreate}
+              disabled={mutationLocked}
+              className="admin-action-button min-h-12 !bg-club-primary !text-white hover:!bg-club-primary-light disabled:opacity-70"
             >
-              <Plus size={14} /> New Chapter
+              <Plus size={16} aria-hidden="true" /> New chapter
             </button>
             <button
-              onClick={() => { setCircleForm(emptyGroupForm); setDrawerMode("circle"); setDrawerOpen(true); }}
-              disabled={controlsDisabled}
-              className="admin-action-button !bg-[var(--admin-zinc-800)] !text-white disabled:opacity-60"
+              type="button"
+              onClick={beginCircleCreate}
+              disabled={mutationLocked}
+              className="admin-action-button min-h-12 disabled:opacity-70"
             >
-              <Plus size={14} /> New Public Group
+              <Plus size={16} aria-hidden="true" /> New public group
             </button>
-          </div>
+          </>
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <AdminResourceStatusBanner
+        status={status}
+        label={statusCopy[status].label}
+        detail={statusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh community operations"
+        selected={interaction === "selected"}
+        onRefresh={() => void refresh()}
+        onInteractionChange={setInteraction}
+        className="admin-community-status"
+      />
+
+      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr))]">
         <AdminStateCard
-          label="Total Chapters"
-          value={loading ? "..." : clubs.length.toString()}
+          label="Total chapters"
+          value={initialLoading ? "…" : String(data.chapters.length)}
           icon={Users}
         />
         <AdminStateCard
-          label="Chapter Members"
-          value={loading ? "..." : totalMembers.toLocaleString()}
+          label="Chapter members"
+          value={initialLoading ? "…" : totalMembers.toLocaleString()}
           helper="Geographic reach"
         />
         <AdminStateCard
-          label="Public Groups"
-          value={loading ? "..." : contributionSnapshot.groups.length.toString()}
+          label="Public groups"
+          value={initialLoading ? "…" : String(data.snapshot.groups.length)}
           icon={DollarSign}
         />
         <AdminStateCard
-          label="Monthly Raised"
-          value={loading ? "..." : formatCurrency(contributionSnapshot.monthlyTotal, activeClub?.currencyCode)}
+          label="Monthly raised"
+          value={
+            initialLoading
+              ? "…"
+              : formatCurrency(
+                  data.snapshot.monthlyTotal,
+                  activeClub?.currencyCode,
+                )
+          }
           tone="success"
         />
       </div>
 
-      <div className="flex items-center gap-1 border-b border-[var(--admin-border)] overflow-x-auto no-scrollbar">
-        {(["chapters", "groups", "contributions"] as CommunityTab[]).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={cn(
-              "px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors relative",
-              activeTab === tab ? "text-white" : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]"
+      {!hasConfirmed && !initialLoading ? (
+        <AdminErrorState
+          title={statusCopy[status].label}
+          description={statusCopy[status].detail}
+          onRetry={
+            status === "permission_denied" ? undefined : () => void refresh()
+          }
+        />
+      ) : (
+        <>
+          <div
+            className="flex min-w-0 items-center gap-1 overflow-x-auto border-b border-[var(--admin-border)] no-scrollbar"
+            role="tablist"
+            aria-label="Community operations"
+          >
+            {(["chapters", "groups", "contributions"] as CommunityTab[]).map(
+              (tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === tab}
+                  onClick={() => selectTab(tab)}
+                  className={cn(
+                    "relative min-h-12 shrink-0 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transition-none",
+                    activeTab === tab
+                      ? "text-[var(--admin-text-strong)]"
+                      : "text-[var(--admin-text-muted)] hover:text-[var(--admin-text-strong)]",
+                  )}
+                >
+                  {tab}
+                  {activeTab === tab ? (
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-0 bottom-0 h-0.5 bg-club-accent"
+                    />
+                  ) : null}
+                </button>
+              ),
             )}
-          >
-            {tab}
-            {activeTab === tab && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-club-accent" />
-            )}
-          </button>
-        ))}
-      </div>
-
-      {activeTab === "chapters" && (
-        <div className="admin-surface">
-          <AdminFilterBar><label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search community chapters</span><input type="search" value={chapterCollection.query} onChange={(event) => chapterCollection.setQuery(event.target.value)} placeholder="Search chapter, region, or state" /></label></AdminFilterBar>
-          <AdminDataGrid
-            caption="Community chapters"
-            busy={loading}
-            onRowActivate={(rowId) => {
-              const club = clubs.find((item) => item.id === rowId);
-              if (club) beginChapterEdit(club);
-            }}
-            columns={[
-              { key: "chapter", label: "Chapter Name", priority: "primary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("name"), onSort: () => chapterCollection.toggleSort("name") },
-              { key: "region", label: "Region", priority: "primary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("region"), onSort: () => chapterCollection.toggleSort("region") },
-              { key: "status", label: "Status", priority: "primary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("status"), onSort: () => chapterCollection.toggleSort("status") },
-              { key: "members", label: "Members", priority: "secondary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("members"), onSort: () => chapterCollection.toggleSort("members") },
-              { key: "rating", label: "Engagement", priority: "secondary", sortable: true, sortDirection: chapterCollection.sortDirectionFor("rating"), onSort: () => chapterCollection.toggleSort("rating") },
-              { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
-            ]}
-          >
-          {chapterCollection.pageResult.items.length === 0 ? (
-            <tr><td colSpan={6} className="py-8 text-center text-sm text-slate-400">{chapterCollection.query ? "No chapters match the current search." : "No community chapters found."}</td></tr>
-          ) : chapterCollection.pageResult.items.map((club) => (
-            <tr key={club.id} data-row-id={club.id}>
-              <td>
-                <p className="admin-row-title">{club.name}</p>
-                <p className="admin-row-meta line-clamp-1">{club.description}</p>
-              </td>
-              <td>
-                <AdminStatusBadge label={club.region} tone="info" />
-              </td>
-              <td>
-                <AdminStatusBadge label={club.isActive ? "Active" : "Hidden"} tone={club.isActive ? "success" : "neutral"} />
-              </td>
-              <td>
-                <p className="text-sm font-medium text-white">{club.memberCount}</p>
-                <p className="admin-row-meta">official fans</p>
-              </td>
-              <td>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs font-bold text-amber-400">★ {club.rating}</span>
-                </div>
-              </td>
-              <td className="text-right">
-                 <div className="flex justify-end gap-2">
-                    <button onClick={() => beginChapterEdit(club)} className="admin-action-button">Edit</button>
-                    <button onClick={() => removeChapter(club)} className="admin-action-button admin-action-button-danger">Remove</button>
-                 </div>
-              </td>
-            </tr>
-          ))}
-          </AdminDataGrid>
-          <AdminPagination page={chapterCollection.pageResult} onPageChange={chapterCollection.setPage} label="Community chapters" />
-        </div>
-      )}
-
-      {activeTab === "groups" && (
-        <div className="admin-surface">
-          <AdminFilterBar><label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search public groups</span><input type="search" value={groupCollection.query} onChange={(event) => groupCollection.setQuery(event.target.value)} placeholder="Search group, type, state, or currency" /></label></AdminFilterBar>
-          <AdminDataGrid
-            caption="Public contribution groups"
-            busy={loading}
-            onRowActivate={(rowId) => {
-              const group = contributionSnapshot.groups.find((item) => item.id === rowId);
-              if (group) beginCircleEdit(group);
-            }}
-            columns={[
-              { key: "circle", label: "Public Group", priority: "primary", sortable: true, sortDirection: groupCollection.sortDirectionFor("name"), onSort: () => groupCollection.toggleSort("name") },
-              { key: "type", label: "Type", priority: "secondary", sortable: true, sortDirection: groupCollection.sortDirectionFor("type"), onSort: () => groupCollection.toggleSort("type") },
-              { key: "funding", label: "Funding Status", priority: "primary", sortable: true, sortDirection: groupCollection.sortDirectionFor("funding"), onSort: () => groupCollection.toggleSort("funding") },
-              { key: "members", label: "Members", priority: "secondary", sortable: true, sortDirection: groupCollection.sortDirectionFor("members"), onSort: () => groupCollection.toggleSort("members") },
-              { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
-            ]}
-          >
-          {groupCollection.pageResult.items.length === 0 ? (
-            <tr><td colSpan={5} className="py-8 text-center text-sm text-slate-400">{groupCollection.query ? "No public groups match the current search." : "No public groups found."}</td></tr>
-          ) : groupCollection.pageResult.items.map((group) => (
-            <tr key={group.id} data-row-id={group.id}>
-              <td>
-                <p className="admin-row-title">{group.name}</p>
-                <p className="admin-row-meta">{group.isClosed ? "Operational closed" : "Active fundraising"}</p>
-              </td>
-              <td>
-                <AdminStatusBadge label={group.groupType} tone="neutral" />
-              </td>
-              <td>
-                <div className="w-full max-w-[120px] space-y-1">
-                  <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider">
-                     <span>{Math.round((group.currentTotal / group.targetAmount) * 100)}%</span>
-                     <span className="text-[var(--admin-zinc-500)]">{formatCurrency(group.targetAmount, group.currency)}</span>
-                  </div>
-                  <div className="h-1 w-full rounded-full bg-[var(--admin-zinc-800)] overflow-hidden">
-                     <div className="h-full bg-emerald-500" style={{ width: `${Math.min((group.currentTotal / group.targetAmount) * 100, 100)}%` }} />
-                  </div>
-                </div>
-              </td>
-              <td>
-                <p className="text-sm font-medium text-white">{group.memberCount}</p>
-              </td>
-              <td className="text-right">
-                 <div className="flex justify-end gap-2">
-                    <button onClick={() => beginCircleEdit(group)} className="admin-action-button">Edit</button>
-                    <button onClick={() => removeCircle(group)} className="admin-action-button admin-action-button-danger">Remove</button>
-                 </div>
-              </td>
-            </tr>
-          ))}
-          </AdminDataGrid>
-          <AdminPagination page={groupCollection.pageResult} onPageChange={groupCollection.setPage} label="Public contribution groups" />
-        </div>
-      )}
-
-      {activeTab === "contributions" && (
-        <div className="space-y-4">
-          <AdminFilterBar actions={<button onClick={() => downloadContributionExcel(contributionSnapshot)} className="admin-action-button"><Download size={14} /> Export Report</button>}>
-            <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search contribution activity</span><input type="search" value={contributionCollection.query} onChange={(event) => contributionCollection.setQuery(event.target.value)} placeholder="Search contributor, group, amount, or status" /></label>
-          </AdminFilterBar>
-          <div className="flex justify-between items-center">
-            <p className="text-xs font-bold uppercase tracking-widest text-[var(--admin-zinc-500)]">Recent funding activity</p>
           </div>
-          <AdminDataGrid
-            caption="Contribution activity"
-            busy={loading}
-            onRowActivate={setDetailContributionId}
-            columns={[
-              { key: "supporter", label: "Contributor", priority: "primary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("supporter"), onSort: () => contributionCollection.toggleSort("supporter") },
-              { key: "amount", label: "Amount", priority: "primary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("amount"), onSort: () => contributionCollection.toggleSort("amount") },
-              { key: "circle", label: "Target Circle", priority: "primary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("circle"), onSort: () => contributionCollection.toggleSort("circle") },
-              { key: "status", label: "Status", priority: "secondary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("status"), onSort: () => contributionCollection.toggleSort("status") },
-              { key: "date", label: "Date", priority: "secondary", sortable: true, sortDirection: contributionCollection.sortDirectionFor("date"), onSort: () => contributionCollection.toggleSort("date") },
-            ]}
-          >
-            {contributionCollection.pageResult.items.length === 0 ? (
-              <tr><td colSpan={5} className="py-8 text-center text-sm text-slate-400">{contributionCollection.query ? "No contributions match the current search." : "No contribution activity found."}</td></tr>
-            ) : contributionCollection.pageResult.items.map((item) => {
-               const group = contributionSnapshot.groups.find(g => g.id === item.groupId);
-               return (
-                <tr key={item.id} data-row-id={item.id}>
-                  <td>
-                    <p className="text-sm font-medium text-white">{item.userId.slice(0, 8)}...</p>
-                  </td>
-                  <td>
-                    <p className="text-sm font-bold text-emerald-400">{formatCurrency(item.amount, group?.currency)}</p>
-                  </td>
-                  <td>
-                    <p className="text-sm text-[var(--admin-zinc-300)]">{group?.name || "Unknown Group"}</p>
-                  </td>
-                  <td>
-                    <AdminStatusBadge label={item.status} tone={item.status === "confirmed" ? "success" : item.status === "pending" ? "warning" : "danger"} />
-                  </td>
-                  <td className="text-xs text-[var(--admin-zinc-500)]">
-                    {new Date(item.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
-               );
-            })}
-          </AdminDataGrid>
-          <AdminPagination page={contributionCollection.pageResult} onPageChange={contributionCollection.setPage} label="Contribution activity" />
-        </div>
+
+          {activeTab === "chapters" ? (
+            <div className="admin-surface min-w-0">
+              <AdminFilterBar>
+                <label className="admin-search-field min-h-12">
+                  <Search size={16} aria-hidden="true" />
+                  <span className="sr-only">Search community chapters</span>
+                  <input
+                    type="search"
+                    value={chapterCollection.query}
+                    onChange={(event) =>
+                      chapterCollection.setQuery(event.target.value)
+                    }
+                    placeholder="Search chapter, region, or state"
+                  />
+                </label>
+              </AdminFilterBar>
+              <AdminDataGrid
+                caption="Community chapters"
+                busy={busy}
+                onRowActivate={(rowId) => {
+                  const chapter = data.chapters.find(
+                    (item) => item.id === rowId,
+                  );
+                  if (chapter && !mutationLocked) beginChapterEdit(chapter);
+                }}
+                columns={[
+                  {
+                    key: "chapter",
+                    label: "Chapter name",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection: chapterCollection.sortDirectionFor("name"),
+                    onSort: () => chapterCollection.toggleSort("name"),
+                  },
+                  {
+                    key: "region",
+                    label: "Region",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection: chapterCollection.sortDirectionFor("region"),
+                    onSort: () => chapterCollection.toggleSort("region"),
+                  },
+                  {
+                    key: "status",
+                    label: "Status",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection: chapterCollection.sortDirectionFor("status"),
+                    onSort: () => chapterCollection.toggleSort("status"),
+                  },
+                  {
+                    key: "members",
+                    label: "Members",
+                    priority: "secondary",
+                    sortable: true,
+                    sortDirection:
+                      chapterCollection.sortDirectionFor("members"),
+                    onSort: () => chapterCollection.toggleSort("members"),
+                  },
+                  {
+                    key: "rating",
+                    label: "Engagement",
+                    priority: "secondary",
+                    sortable: true,
+                    sortDirection: chapterCollection.sortDirectionFor("rating"),
+                    onSort: () => chapterCollection.toggleSort("rating"),
+                  },
+                  {
+                    key: "actions",
+                    label: "Actions",
+                    priority: "primary",
+                    className: "text-right",
+                  },
+                ]}
+              >
+                {chapterCollection.pageResult.items.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="py-8 text-center text-sm text-[var(--admin-text-muted)]"
+                    >
+                      {chapterCollection.query
+                        ? "No chapters match the current search."
+                        : "No community chapters in this scope."}
+                    </td>
+                  </tr>
+                ) : (
+                  chapterCollection.pageResult.items.map((chapter) => (
+                    <tr
+                      key={chapter.id}
+                      data-row-id={chapter.id}
+                      data-selected={chapterForm.id === chapter.id || undefined}
+                    >
+                      <td>
+                        <p className="admin-row-title">{chapter.name}</p>
+                        <p className="admin-row-meta line-clamp-1">
+                          {chapter.description}
+                        </p>
+                      </td>
+                      <td>
+                        <AdminStatusBadge label={chapter.region} tone="info" />
+                      </td>
+                      <td>
+                        <AdminStatusBadge
+                          label={chapter.isActive ? "Active" : "Hidden"}
+                          tone={chapter.isActive ? "success" : "neutral"}
+                        />
+                      </td>
+                      <td>
+                        <p className="text-sm font-medium text-[var(--admin-text-strong)]">
+                          {chapter.memberCount}
+                        </p>
+                        <p className="admin-row-meta">official fans</p>
+                      </td>
+                      <td>
+                        <span className="text-xs font-bold text-[var(--admin-text-strong)]">
+                          <span aria-hidden="true" className="text-amber-400">
+                            ★
+                          </span>{" "}
+                          {chapter.rating.toFixed(1)}
+                        </span>
+                      </td>
+                      <td className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => beginChapterEdit(chapter)}
+                            disabled={mutationLocked}
+                            aria-label={`Edit community chapter ${chapter.name}`}
+                            className="admin-action-button min-h-12"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => void removeChapter(chapter)}
+                            disabled={mutationLocked}
+                            aria-label={`Remove community chapter ${chapter.name}`}
+                            className="admin-action-button admin-action-button-danger min-h-12"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </AdminDataGrid>
+              <AdminPagination
+                page={chapterCollection.pageResult}
+                onPageChange={chapterCollection.setPage}
+                label="Community chapters"
+              />
+            </div>
+          ) : null}
+
+          {activeTab === "groups" ? (
+            <div className="admin-surface min-w-0">
+              <AdminFilterBar>
+                <label className="admin-search-field min-h-12">
+                  <Search size={16} aria-hidden="true" />
+                  <span className="sr-only">Search public groups</span>
+                  <input
+                    type="search"
+                    value={groupCollection.query}
+                    onChange={(event) =>
+                      groupCollection.setQuery(event.target.value)
+                    }
+                    placeholder="Search group, type, state, or currency"
+                  />
+                </label>
+              </AdminFilterBar>
+              <AdminDataGrid
+                caption="Public contribution groups"
+                busy={busy}
+                onRowActivate={(rowId) => {
+                  const group = data.snapshot.groups.find(
+                    (item) => item.id === rowId,
+                  );
+                  if (group && !mutationLocked) beginCircleEdit(group);
+                }}
+                columns={[
+                  {
+                    key: "group",
+                    label: "Public group",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection: groupCollection.sortDirectionFor("name"),
+                    onSort: () => groupCollection.toggleSort("name"),
+                  },
+                  {
+                    key: "type",
+                    label: "Type",
+                    priority: "secondary",
+                    sortable: true,
+                    sortDirection: groupCollection.sortDirectionFor("type"),
+                    onSort: () => groupCollection.toggleSort("type"),
+                  },
+                  {
+                    key: "funding",
+                    label: "Funding status",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection: groupCollection.sortDirectionFor("funding"),
+                    onSort: () => groupCollection.toggleSort("funding"),
+                  },
+                  {
+                    key: "members",
+                    label: "Members",
+                    priority: "secondary",
+                    sortable: true,
+                    sortDirection: groupCollection.sortDirectionFor("members"),
+                    onSort: () => groupCollection.toggleSort("members"),
+                  },
+                  {
+                    key: "actions",
+                    label: "Actions",
+                    priority: "primary",
+                    className: "text-right",
+                  },
+                ]}
+              >
+                {groupCollection.pageResult.items.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="py-8 text-center text-sm text-[var(--admin-text-muted)]"
+                    >
+                      {groupCollection.query
+                        ? "No public groups match the current search."
+                        : "No public groups in this scope."}
+                    </td>
+                  </tr>
+                ) : (
+                  groupCollection.pageResult.items.map((group) => {
+                    const percent = fundingPercent(group);
+                    return (
+                      <tr
+                        key={group.id}
+                        data-row-id={group.id}
+                        data-selected={circleForm.id === group.id || undefined}
+                      >
+                        <td>
+                          <p className="admin-row-title">{group.name}</p>
+                          <p className="admin-row-meta">
+                            {group.isClosed
+                              ? "Closed to new activity"
+                              : "Active fundraising"}
+                          </p>
+                        </td>
+                        <td>
+                          <AdminStatusBadge
+                            label={group.groupType}
+                            tone="neutral"
+                          />
+                        </td>
+                        <td>
+                          <div className="w-full max-w-40 space-y-1">
+                            <div className="flex flex-wrap justify-between gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text-strong)]">
+                              <span>{percent}%</span>
+                              <span className="text-[var(--admin-text-muted)]">
+                                {formatCurrency(
+                                  group.targetAmount,
+                                  group.currency,
+                                )}
+                              </span>
+                            </div>
+                            <div
+                              className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--admin-zinc-800)]"
+                              role="progressbar"
+                              aria-label={`${group.name} funding progress`}
+                              aria-valuemin={0}
+                              aria-valuemax={100}
+                              aria-valuenow={percent}
+                            >
+                              <div
+                                className="h-full bg-emerald-500"
+                                style={{ width: `${percent}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <p className="text-sm font-medium text-[var(--admin-text-strong)]">
+                            {group.memberCount}
+                          </p>
+                        </td>
+                        <td className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <button
+                              type="button"
+                              onClick={() => beginCircleEdit(group)}
+                              disabled={mutationLocked}
+                              aria-label={`Edit public group ${group.name}`}
+                              className="admin-action-button min-h-12"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => void removeCircle(group)}
+                              disabled={mutationLocked}
+                              aria-label={`Remove public group ${group.name}`}
+                              className="admin-action-button admin-action-button-danger min-h-12"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </AdminDataGrid>
+              <AdminPagination
+                page={groupCollection.pageResult}
+                onPageChange={groupCollection.setPage}
+                label="Public contribution groups"
+              />
+            </div>
+          ) : null}
+
+          {activeTab === "contributions" ? (
+            <div className="admin-surface min-w-0">
+              <AdminFilterBar
+                actions={
+                  <button
+                    type="button"
+                    onClick={() => void exportContributionReport()}
+                    disabled={!hasConfirmed}
+                    className="admin-action-button min-h-12 disabled:opacity-70"
+                  >
+                    <Download size={16} aria-hidden="true" /> Export report
+                  </button>
+                }
+              >
+                <label className="admin-search-field min-h-12">
+                  <Search size={16} aria-hidden="true" />
+                  <span className="sr-only">Search contribution activity</span>
+                  <input
+                    type="search"
+                    value={contributionCollection.query}
+                    onChange={(event) =>
+                      contributionCollection.setQuery(event.target.value)
+                    }
+                    placeholder="Search contributor, group, amount, or status"
+                  />
+                </label>
+              </AdminFilterBar>
+              <AdminDataGrid
+                caption="Contribution activity"
+                busy={busy}
+                onRowActivate={(rowId) => {
+                  setDetailContributionId(rowId);
+                  setInteraction("selected");
+                }}
+                columns={[
+                  {
+                    key: "supporter",
+                    label: "Contributor",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection:
+                      contributionCollection.sortDirectionFor("supporter"),
+                    onSort: () =>
+                      contributionCollection.toggleSort("supporter"),
+                  },
+                  {
+                    key: "amount",
+                    label: "Amount",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection:
+                      contributionCollection.sortDirectionFor("amount"),
+                    onSort: () => contributionCollection.toggleSort("amount"),
+                  },
+                  {
+                    key: "group",
+                    label: "Target group",
+                    priority: "primary",
+                    sortable: true,
+                    sortDirection:
+                      contributionCollection.sortDirectionFor("group"),
+                    onSort: () => contributionCollection.toggleSort("group"),
+                  },
+                  {
+                    key: "status",
+                    label: "Status",
+                    priority: "secondary",
+                    sortable: true,
+                    sortDirection:
+                      contributionCollection.sortDirectionFor("status"),
+                    onSort: () => contributionCollection.toggleSort("status"),
+                  },
+                  {
+                    key: "date",
+                    label: "Date",
+                    priority: "secondary",
+                    sortable: true,
+                    sortDirection:
+                      contributionCollection.sortDirectionFor("date"),
+                    onSort: () => contributionCollection.toggleSort("date"),
+                  },
+                ]}
+              >
+                {contributionCollection.pageResult.items.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="py-8 text-center text-sm text-[var(--admin-text-muted)]"
+                    >
+                      {contributionCollection.query
+                        ? "No contributions match the current search."
+                        : "No contribution activity in this scope."}
+                    </td>
+                  </tr>
+                ) : (
+                  contributionCollection.pageResult.items.map((item) => {
+                    const group = data.snapshot.groups.find(
+                      (candidate) => candidate.id === item.groupId,
+                    );
+                    const contributorLabel =
+                      item.userId.length > 12
+                        ? `${item.userId.slice(0, 12)}…`
+                        : item.userId;
+                    return (
+                      <tr
+                        key={item.id}
+                        data-row-id={item.id}
+                        data-selected={
+                          detailContributionId === item.id || undefined
+                        }
+                      >
+                        <td>
+                          <p className="break-all text-sm font-medium text-[var(--admin-text-strong)]">
+                            {contributorLabel}
+                          </p>
+                        </td>
+                        <td>
+                          <p className="text-sm font-bold text-emerald-300">
+                            {formatCurrency(item.amount, group?.currency)}
+                          </p>
+                        </td>
+                        <td>
+                          <p className="text-sm text-[var(--admin-text-strong)]">
+                            {group?.name ?? "Unavailable group"}
+                          </p>
+                        </td>
+                        <td>
+                          <AdminStatusBadge
+                            label={item.status}
+                            tone={contributionStatusTone(item.status)}
+                          />
+                        </td>
+                        <td className="text-xs text-[var(--admin-text-muted)]">
+                          {new Date(item.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </AdminDataGrid>
+              <AdminPagination
+                page={contributionCollection.pageResult}
+                onPageChange={contributionCollection.setPage}
+                label="Contribution activity"
+              />
+            </div>
+          ) : null}
+        </>
       )}
 
       <AdminActionDrawer
         isOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        title={drawerMode === "chapter" ? (chapterForm.id ? "Edit Chapter" : "New Chapter") : (circleForm.id ? "Edit Public Group" : "New Public Group")}
+        onClose={closeEditor}
+        title={
+          drawerMode === "chapter"
+            ? chapterForm.id
+              ? "Edit chapter"
+              : "New chapter"
+            : circleForm.id
+              ? "Edit public group"
+              : "New public group"
+        }
       >
         {drawerMode === "chapter" ? (
           <CommunityContentEditor
             form={chapterForm}
             setForm={setChapterForm}
-            onSubmit={async (formData) => {
-               await saveAdminFanClub(client!, access, {
-                 id: chapterForm.id || null,
-                 expectedUpdatedAt: chapterForm.expectedUpdatedAt || null,
-                 name: String(formData.get("name")),
-                 region: String(formData.get("region")),
-                 description: String(formData.get("description")),
-                 memberCount: Number(formData.get("memberCount")),
-                 eventCount: Number(formData.get("eventCount")),
-                 rating: Number(formData.get("rating")),
-                 isActive: formData.get("isActive") === "on",
-               });
-               setDrawerOpen(false);
-               await loadChapters();
-            }}
+            disabled={mutationLocked}
+            onSubmit={(formData) => void saveChapter(formData)}
           />
         ) : (
           <ContributionGroupForm
@@ -475,28 +1093,72 @@ export default function AdminCommunityHubPage() {
             defaultCurrencyCode={activeClub?.currencyCode ?? "USD"}
             client={client}
             access={access}
-            onSaved={async () => { setDrawerOpen(false); await loadCircles(); }}
-            onConflict={async () => {
-              await loadCircles();
-              showAdminToast(
-                "The latest group list is loaded. Your draft is retained; review it before restarting the edit.",
-                "info",
-              );
+            disabled={mutationLocked}
+            onSaved={async () => {
+              closeEditor();
+              await refresh();
             }}
+            onConflict={refresh}
+            onFailure={(caught) =>
+              mutationFailureMessage(
+                caught,
+                "Could not confirm the public-group change.",
+              )
+            }
           />
         )}
       </AdminActionDrawer>
-      <AdminActionDrawer open={detailContribution != null} onClose={() => setDetailContributionId(null)} title="Contribution details">
+
+      <AdminActionDrawer
+        isOpen={detailContribution != null}
+        onClose={() => {
+          setDetailContributionId(null);
+          setInteraction("idle");
+        }}
+        title="Contribution details"
+      >
         {detailContribution ? (
-          <dl className="grid gap-4 text-sm">
-            <div><dt className="text-slate-500">Contributor</dt><dd className="mt-1 break-all text-slate-100">{detailContribution.userId}</dd></div>
-            <div><dt className="text-slate-500">Amount</dt><dd className="mt-1 text-slate-100">{formatCurrency(detailContribution.amount, contributionSnapshot.groups.find((group) => group.id === detailContribution.groupId)?.currency)}</dd></div>
-            <div><dt className="text-slate-500">Target group</dt><dd className="mt-1 text-slate-100">{contributionSnapshot.groups.find((group) => group.id === detailContribution.groupId)?.name ?? "Unknown group"}</dd></div>
-            <div><dt className="text-slate-500">Status</dt><dd className="mt-1 text-slate-100">{detailContribution.status}</dd></div>
-            <div><dt className="text-slate-500">Created</dt><dd className="mt-1 text-slate-100">{new Date(detailContribution.createdAt).toLocaleString()}</dd></div>
+          <dl className="grid gap-4 p-4 text-sm">
+            <div>
+              <dt className="text-[var(--admin-text-muted)]">Contributor</dt>
+              <dd className="mt-1 break-all text-[var(--admin-text-strong)]">
+                {detailContribution.userId}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[var(--admin-text-muted)]">Amount</dt>
+              <dd className="mt-1 text-[var(--admin-text-strong)]">
+                {formatCurrency(
+                  detailContribution.amount,
+                  data.snapshot.groups.find(
+                    (group) => group.id === detailContribution.groupId,
+                  )?.currency,
+                )}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[var(--admin-text-muted)]">Target group</dt>
+              <dd className="mt-1 text-[var(--admin-text-strong)]">
+                {data.snapshot.groups.find(
+                  (group) => group.id === detailContribution.groupId,
+                )?.name ?? "Unavailable group"}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[var(--admin-text-muted)]">Status</dt>
+              <dd className="mt-1 text-[var(--admin-text-strong)]">
+                {detailContribution.status}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[var(--admin-text-muted)]">Created</dt>
+              <dd className="mt-1 text-[var(--admin-text-strong)]">
+                {new Date(detailContribution.createdAt).toLocaleString()}
+              </dd>
+            </div>
           </dl>
         ) : null}
       </AdminActionDrawer>
-    </div>
+    </section>
   );
 }

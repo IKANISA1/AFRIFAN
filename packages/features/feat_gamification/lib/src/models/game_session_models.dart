@@ -66,8 +66,8 @@ class GameSessionJoinResult {
       sessionId: _asString(json['sessionId'] ?? json['session_id']) ?? '',
       sessionPlayerId:
           _asString(json['sessionPlayerId'] ?? json['session_player_id']) ?? '',
-      displayName: _asString(json['displayName'] ?? json['display_name']) ??
-          'Supporter',
+      displayName:
+          _asString(json['displayName'] ?? json['display_name']) ?? 'Supporter',
       joinCode: _asString(json['joinCode'] ?? json['join_code']) ?? '',
       score: _asInt(json['score']) ?? 0,
       teamId: _asString(json['teamId'] ?? json['team_id']),
@@ -119,6 +119,7 @@ class GameSessionControllerState {
   GameSessionControllerState copyWith({
     GameSessionControllerPhase? phase,
     String? sessionPlayerId,
+    String? playerName,
     String? selectedOptionKey,
     String? statusMessage,
   }) {
@@ -126,7 +127,7 @@ class GameSessionControllerState {
       sessionId: sessionId,
       phase: phase ?? this.phase,
       joinCode: joinCode,
-      playerName: playerName,
+      playerName: playerName ?? this.playerName,
       teamName: teamName,
       questionLabel: questionLabel,
       prompt: prompt,
@@ -149,23 +150,22 @@ class GameSessionControllerState {
     );
     final leaderboardRows = _asList(json['leaderboard'])
         .whereType<Map>()
-        .map((row) => GameLeaderboardRow.fromJson(Map<String, dynamic>.from(row)))
+        .map(
+          (row) => GameLeaderboardRow.fromJson(Map<String, dynamic>.from(row)),
+        )
         .toList(growable: false);
     final questionTotal =
         _asInt(json['questionTotal'] ?? json['question_total']) ?? 0;
     final questionIndex =
         _asInt(json['questionIndex'] ?? json['question_index']) ?? 0;
-    final rawPhase = _asString(
-      currentQuestion?['phase'] ?? json['phase'],
-    );
+    final rawPhase = _asString(currentQuestion?['phase'] ?? json['phase']);
     final phase = _phaseFromTvValue(rawPhase);
     final prompt = _asString(currentQuestion?['prompt']);
     final options = _asList(currentQuestion?['options'])
         .whereType<Map>()
         .map(
-          (option) => GameAnswerOption.fromJson(
-            Map<String, dynamic>.from(option),
-          ),
+          (option) =>
+              GameAnswerOption.fromJson(Map<String, dynamic>.from(option)),
         )
         .where((option) => option.key.isNotEmpty && option.label.isNotEmpty)
         .toList(growable: false);
@@ -174,8 +174,8 @@ class GameSessionControllerState {
       sessionId: _asString(json['sessionId'] ?? json['session_id']) ?? '',
       phase: phase,
       joinCode: _asString(json['joinCode'] ?? json['join_code']) ?? 'WAIT',
-      playerName: _asString(json['playerName'] ?? json['player_name']) ??
-          'Supporter',
+      playerName:
+          _asString(json['playerName'] ?? json['player_name']) ?? 'Supporter',
       teamName: _asString(json['teamName'] ?? json['team_name']) ?? 'Fan Zone',
       questionLabel: questionTotal > 0
           ? 'Question $questionIndex of $questionTotal'
@@ -188,7 +188,8 @@ class GameSessionControllerState {
       statusMessage: _statusMessageFor(phase),
       leaderboard: leaderboardRows,
       sessionQuestionId: _asString(currentQuestion?['id']),
-      sessionPlayerId: sessionPlayerId ??
+      sessionPlayerId:
+          sessionPlayerId ??
           _asString(json['sessionPlayerId'] ?? json['session_player_id']),
       updatedAt: DateTime.tryParse(
         _asString(json['updatedAt'] ?? json['updated_at']) ?? '',
@@ -208,8 +209,11 @@ class GameSessionControllerState {
       playerName: 'Supporter',
       teamName: 'Blue Zone',
       questionLabel: 'Question 4 of 20',
-      prompt: 'Which season delivered the first league title of the modern era?',
-      selectedOptionKey: phase == GameSessionControllerPhase.locked ? 'b' : null,
+      prompt:
+          'Which season delivered the first league title of the modern era?',
+      selectedOptionKey: phase == GameSessionControllerPhase.locked
+          ? 'b'
+          : null,
       statusMessage: _statusMessageFor(phase),
       sessionQuestionId: '00000000-0000-4000-8000-000000000004',
       sessionPlayerId: sessionPlayerId,

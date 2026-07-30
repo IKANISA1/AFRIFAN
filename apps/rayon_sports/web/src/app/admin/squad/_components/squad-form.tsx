@@ -15,9 +15,20 @@ interface SquadFormProps {
   access: ReturnType<typeof useAdminPortal>["access"];
   onSaved: () => Promise<void>;
   onConflict: () => Promise<void>;
+  onFailure?: (error: unknown) => void;
+  onCancel?: () => void;
 }
 
-export function SquadEditorForm({ form, setForm, client, access, onSaved, onConflict }: SquadFormProps) {
+export function SquadEditorForm({
+  form,
+  setForm,
+  client,
+  access,
+  onSaved,
+  onConflict,
+  onFailure,
+  onCancel,
+}: SquadFormProps) {
   async function submitForm(formData: FormData) {
     if (client == null) {
       return;
@@ -43,9 +54,11 @@ export function SquadEditorForm({ form, setForm, client, access, onSaved, onConf
     } catch (caught) {
       if (isAdminMutationConflict(caught)) {
         await onConflict();
+        return;
       }
+      onFailure?.(caught);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not save player.",
+        "Could not confirm the player change.",
         "error",
       );
     }
@@ -57,18 +70,29 @@ export function SquadEditorForm({ form, setForm, client, access, onSaved, onConf
         <p className="font-display text-3xl font-bold uppercase leading-none">
           {form.id ? "Edit player" : "New player"}
         </p>
-        {form.id ? (
-          <button
-            type="button"
-            onClick={() => {
-              setForm(emptySquadForm);
-              showAdminToast("Form cleared.", "info");
-            }}
-            className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
-          >
-            Clear
-          </button>
-        ) : null}
+        <div className="flex items-center gap-2">
+          {onCancel ? (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+            >
+              Close
+            </button>
+          ) : null}
+          {form.id ? (
+            <button
+              type="button"
+              onClick={() => {
+                setForm(emptySquadForm);
+                showAdminToast("Form cleared.", "info");
+              }}
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+            >
+              Clear
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -160,7 +184,7 @@ export function SquadEditorForm({ form, setForm, client, access, onSaved, onConf
 
       <button
         type="submit"
-        className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+        className="min-h-12 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
       >
         {form.id ? "Save player" : "Add player"}
       </button>

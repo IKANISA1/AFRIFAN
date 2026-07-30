@@ -1,15 +1,27 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { VenueAccessResult } from "@/lib/data/venue-access";
 import {
   VenueAccessBoundary,
   VenueDataError,
   VenueEmptyState,
 } from "./venue-shell";
+import { MenuItemForm } from "./venue-forms";
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/venue",
+}));
+
+beforeEach(() => {
+  Object.defineProperty(navigator, "onLine", {
+    configurable: true,
+    value: true,
+  });
+});
 
 describe("VenueAccessBoundary", () => {
   it.each([
-    ["not_configured", "Venue service is not configured"],
+    ["not_configured", "Venue operations unavailable"],
     ["signed_out", "Secure sign-in required"],
     ["forbidden", "No active venue assignment"],
   ] as const)("renders the %s fail-closed state", (status, heading) => {
@@ -62,7 +74,45 @@ describe("VenueAccessBoundary", () => {
     expect(screen.getByText("Amahoro Hospitality")).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "Venue operations" })).toBeInTheDocument();
     expect(screen.getAllByRole("link")).toHaveLength(7);
+    expect(screen.getByRole("link", { name: "Today" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
     expect(screen.getByText("private workflow")).toBeInTheDocument();
+  });
+
+  it("retains confirmed content and disables venue mutations while offline", () => {
+    Object.defineProperty(navigator, "onLine", {
+      configurable: true,
+      value: false,
+    });
+    const result = {
+      status: "ready",
+      access: {
+        userId: "11111111-1111-4111-8111-111111111111",
+        clubId: 24,
+        venueId: "22222222-2222-4222-8222-222222222222",
+        venueName: "Amahoro Hospitality",
+        venueCity: "Kigali",
+        role: "manager",
+        canManageMenu: true,
+        canOperateOrders: true,
+        canLaunchPromotions: true,
+      },
+      client: {},
+      user: {},
+    } as unknown as VenueAccessResult;
+    render(
+      <VenueAccessBoundary result={result}>
+        <p>confirmed venue data</p>
+        <MenuItemForm />
+      </VenueAccessBoundary>,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Confirmed venue information remains visible",
+    );
+    expect(screen.getByText("confirmed venue data")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add drink" })).toBeDisabled();
   });
 });
 

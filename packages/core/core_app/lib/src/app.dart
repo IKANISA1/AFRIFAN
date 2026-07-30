@@ -340,14 +340,38 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
       return;
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    final binding = WidgetsBinding.instance;
+    binding.addPostFrameCallback((_) {
       if (!mounted) {
         return;
       }
-      // Use push (not go) to preserve the user's existing navigation history.
-      // Deep links should add to the stack, not replace it entirely.
-      unawaited(_appRouter.router.push(target));
+      if (_isShellDestination(safeInternalUri.path)) {
+        // Stateful-shell destinations must switch branches. Pushing a tab
+        // route can render its content over the current branch while leaving
+        // the wrong navigation destination selected.
+        _appRouter.router.go(target);
+      } else {
+        // Standalone task links add to the current history.
+        unawaited(_appRouter.router.push(target));
+      }
     });
+    // A warm link can arrive while Flutter is completely idle. Registering a
+    // post-frame callback does not itself guarantee that another frame will be
+    // produced, so explicitly wake the scheduler.
+    binding.ensureVisualUpdate();
+  }
+
+  bool _isShellDestination(String path) {
+    for (final module in widget.modules) {
+      final tab = module.tabRoute;
+      if (tab == null || !shellBranchFeatureKeys.contains(module.featureKey)) {
+        continue;
+      }
+      if (path == tab.path || path.startsWith('${tab.path}/')) {
+        return true;
+      }
+    }
+    return false;
   }
 
   String? _handleRedirect(BuildContext context, GoRouterState state) {

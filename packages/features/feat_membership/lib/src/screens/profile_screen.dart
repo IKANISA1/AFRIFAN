@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -14,6 +15,7 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.afriL10n;
     final profile = ref.watch(currentUserProvider);
     final membershipSummary = ref.watch(_profileMembershipSummaryProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
@@ -26,10 +28,10 @@ class ProfileScreen extends ConsumerWidget {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
         title: Text(
-          'PROFILE',
+          l10n.profileTitle.toUpperCase(),
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -100,19 +102,19 @@ class ProfileScreen extends ConsumerWidget {
                           const SizedBox(width: SpacingTokens.spacing3),
                           membershipSummary.when(
                             data: (summary) => Text(
-                              summary.activityLabel,
+                              summary.activityLabel(l10n),
                               style: TypographyTokens.titleMedium(
                                 ColorTokens.onSurfaceVariant,
                               ).copyWith(fontWeight: FontWeight.w700),
                             ),
                             loading: () => Text(
-                              'Loading membership...',
+                              l10n.profileLoadingMembership,
                               style: TypographyTokens.titleMedium(
                                 ColorTokens.onSurfaceVariant,
                               ).copyWith(fontWeight: FontWeight.w700),
                             ),
                             error: (_, __) => Text(
-                              'Membership review pending',
+                              l10n.profileMembershipReviewPending,
                               style: TypographyTokens.titleMedium(
                                 ColorTokens.onSurfaceVariant,
                               ).copyWith(fontWeight: FontWeight.w700),
@@ -137,7 +139,7 @@ class ProfileScreen extends ConsumerWidget {
                   horizontal: SpacingTokens.spacing6,
                 ),
                 child: Text(
-                  'MY CLUB',
+                  l10n.profileMyClub.toUpperCase(),
                   style: TypographyTokens.labelMedium(
                     ColorTokens.onSurfaceVariant,
                   ).copyWith(fontWeight: FontWeight.w700),
@@ -158,37 +160,37 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     _MenuItem(
                       icon: AfriIcons.membership,
-                      label: 'Membership',
+                      label: l10n.membershipTitle,
                       onTap: () => context.go('/membership'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: AfriIcons.bolt,
-                      label: 'Matchday',
+                      label: l10n.profileMatchday,
                       onTap: () => context.go('/fanzone?section=league'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: AfriIcons.myPicks,
-                      label: 'My Picks',
+                      label: l10n.profileMyPicks,
                       onTap: () => context.push('/fanzone/my'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: AfriIcons.premium,
-                      label: 'Club Benefits',
+                      label: l10n.profileClubBenefits,
                       onTap: () => context.go('/fanzone?section=rewards'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: AfriIcons.contribute,
-                      label: 'Contributions',
+                      label: l10n.profileContributions,
                       onTap: () => context.go('/fanzone?section=supporters'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: AfriIcons.shop,
-                      label: 'Shop',
+                      label: l10n.profileShop,
                       onTap: () => context.push('/shop'),
                     ),
                   ],
@@ -207,7 +209,7 @@ class ProfileScreen extends ConsumerWidget {
                   horizontal: SpacingTokens.spacing6,
                 ),
                 child: Text(
-                  'APP',
+                  l10n.profileApp.toUpperCase(),
                   style: TypographyTokens.labelMedium(
                     ColorTokens.onSurfaceVariant,
                   ).copyWith(fontWeight: FontWeight.w700),
@@ -228,13 +230,13 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     _MenuItem(
                       icon: AfriIcons.notifications,
-                      label: 'Notifications',
+                      label: l10n.profileNotifications,
                       onTap: () => context.push('/settings/notifications'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: AfriIcons.history,
-                      label: 'Activity History',
+                      label: l10n.profileActivityHistory,
                       onTap: () => context.push('/tickets?tab=mine'),
                     ),
                   ],
@@ -287,23 +289,11 @@ class _ProfileMembershipSummary {
   final String tier;
   final int points;
 
-  String get activityLabel {
+  String activityLabel(AfriLocalizations l10n) {
     if (points <= 0) {
-      return 'Membership review pending';
+      return l10n.profileMembershipReviewPending;
     }
-    return '${_formatPoints(points)} activity points';
-  }
-
-  static String _formatPoints(int value) {
-    final buffer = StringBuffer();
-    final digits = value.toString();
-    for (var index = 0; index < digits.length; index++) {
-      if (index > 0 && (digits.length - index) % 3 == 0) {
-        buffer.write(',');
-      }
-      buffer.write(digits[index]);
-    }
-    return buffer.toString();
+    return l10n.profileActivityPoints(points);
   }
 }
 

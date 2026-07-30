@@ -18,6 +18,8 @@ dependencies:
 
   feat_home:
     path: ../features/feat_home
+  feat_club:
+    path: ../features/feat_club
   feat_membership:
     path: ../features/feat_membership
   feat_gamification:

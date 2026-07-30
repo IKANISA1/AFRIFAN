@@ -15,12 +15,15 @@ APP_DIR="$REPO_ROOT/apps/rayon_sports"
 ANDROID_DIR="$APP_DIR/android"
 KEYSTORE_FILE="$ANDROID_DIR/upload-keystore.jks"
 KEYSTORE_PROPS="$ANDROID_DIR/keystore.properties"
+FLUTTER_PIN="$(tr -d '[:space:]' < "$REPO_ROOT/.fvmrc")"
 
 # ── Resolve Flutter ──
-if command -v flutter &>/dev/null; then
-  FLUTTER=flutter
-elif [ -x "$HOME/fvm/versions/3.38.9/bin/flutter" ]; then
-  FLUTTER="$HOME/fvm/versions/3.38.9/bin/flutter"
+if [ -x "$REPO_ROOT/.fvm/flutter_sdk/bin/flutter" ]; then
+  FLUTTER="$REPO_ROOT/.fvm/flutter_sdk/bin/flutter"
+elif [ -x "$HOME/fvm/versions/$FLUTTER_PIN/bin/flutter" ]; then
+  FLUTTER="$HOME/fvm/versions/$FLUTTER_PIN/bin/flutter"
+elif command -v flutter &>/dev/null; then
+  FLUTTER="$(command -v flutter)"
 elif [ -x "/usr/local/share/flutter/bin/flutter" ]; then
   FLUTTER="/usr/local/share/flutter/bin/flutter"
 else
@@ -30,6 +33,8 @@ fi
 
 echo "🔧 Using Flutter: $FLUTTER"
 $FLUTTER --version | head -1
+bash "$REPO_ROOT/tools/scripts/validate_flutter_runtime_pins.sh" \
+  --runtime "$FLUTTER"
 
 # ── Validate signing prerequisites ──
 if [ ! -f "$KEYSTORE_FILE" ]; then

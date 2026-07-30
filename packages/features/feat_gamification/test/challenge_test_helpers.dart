@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:feat_gamification/src/models/challenge_models.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
@@ -39,6 +41,21 @@ class FakeChallengeRepository extends ChallengeRepository {
   String? lastCancelledChallengeId;
   List<String>? lastMyStatuses;
   String? lastMySort;
+  Object? loadError;
+  Completer<List<Challenge>>? loadCompleter;
+  int loadCalls = 0;
+  Object? detailLoadError;
+  Completer<ChallengeDetailPayload?>? detailLoadCompleter;
+  int detailLoadCalls = 0;
+  Object? joinError;
+  Completer<ChallengeMutationResult>? joinCompleter;
+  int joinCalls = 0;
+  Object? cancelError;
+  Completer<ChallengeMutationResult>? cancelCompleter;
+  int cancelCalls = 0;
+  Object? createError;
+  Completer<ChallengeMutationResult>? createCompleter;
+  int createCalls = 0;
 
   @override
   Future<List<Challenge>> loadChallenges({
@@ -48,6 +65,11 @@ class FakeChallengeRepository extends ChallengeRepository {
     int offset = 0,
     bool onlyJoined = false,
   }) async {
+    loadCalls++;
+    final error = loadError;
+    if (error != null) throw error;
+    final completer = loadCompleter;
+    if (completer != null) return completer.future;
     if (onlyJoined) {
       return myOpenChallenges;
     }
@@ -72,6 +94,11 @@ class FakeChallengeRepository extends ChallengeRepository {
     int limit = 20,
     int offset = 0,
   }) async {
+    loadCalls++;
+    final error = loadError;
+    if (error != null) throw error;
+    final completer = loadCompleter;
+    if (completer != null) return completer.future;
     lastMyStatuses = statuses;
     lastMySort = sort;
     final normalized = (statuses ?? const <String>[])
@@ -96,6 +123,11 @@ class FakeChallengeRepository extends ChallengeRepository {
   Future<ChallengeDetailPayload?> loadChallengeDetail(
     String challengeId,
   ) async {
+    detailLoadCalls++;
+    final error = detailLoadError;
+    if (error != null) throw error;
+    final completer = detailLoadCompleter;
+    if (completer != null) return completer.future;
     return detailsById[challengeId];
   }
 
@@ -106,6 +138,11 @@ class FakeChallengeRepository extends ChallengeRepository {
     required int awayScore,
     required int stakeFet,
   }) async {
+    createCalls++;
+    final error = createError;
+    if (error != null) throw error;
+    final completer = createCompleter;
+    if (completer != null) return completer.future;
     lastCreateRequest = <String, dynamic>{
       'matchId': matchId,
       'homeScore': homeScore,
@@ -121,6 +158,11 @@ class FakeChallengeRepository extends ChallengeRepository {
     required int homeScore,
     required int awayScore,
   }) async {
+    joinCalls++;
+    final error = joinError;
+    if (error != null) throw error;
+    final completer = joinCompleter;
+    if (completer != null) return completer.future;
     lastJoinRequest = <String, dynamic>{
       'challengeId': challengeId,
       'homeScore': homeScore,
@@ -131,6 +173,11 @@ class FakeChallengeRepository extends ChallengeRepository {
 
   @override
   Future<ChallengeMutationResult> cancelChallenge(String challengeId) async {
+    cancelCalls++;
+    final error = cancelError;
+    if (error != null) throw error;
+    final completer = cancelCompleter;
+    if (completer != null) return completer.future;
     lastCancelledChallengeId = challengeId;
     return cancelResult;
   }
@@ -141,6 +188,9 @@ class FakeChallengeFixturesGateway extends ChallengeFixturesGateway {
     : super(PredictionRepository(client: MockSupabaseClient()));
 
   List<FixtureSummary> fixtures = const <FixtureSummary>[];
+  Object? loadError;
+  Completer<List<FixtureSummary>>? loadCompleter;
+  int loadCalls = 0;
 
   @override
   Future<List<FixtureSummary>> loadFixtures({
@@ -149,6 +199,11 @@ class FakeChallengeFixturesGateway extends ChallengeFixturesGateway {
     int limit = 50,
     int offset = 0,
   }) async {
+    loadCalls++;
+    final error = loadError;
+    if (error != null) throw error;
+    final completer = loadCompleter;
+    if (completer != null) return completer.future;
     return fixtures;
   }
 }

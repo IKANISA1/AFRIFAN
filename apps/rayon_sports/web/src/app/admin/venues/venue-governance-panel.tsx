@@ -100,9 +100,9 @@ function VenueGovernanceRow({
           <p className="mt-2 text-sm leading-6 text-[var(--admin-text-muted)]">
             {item.detail}
           </p>
-          <button type="button" className={`${ui.buttonTertiary} mt-3`}>
-            {item.actionLabel}
-          </button>
+          <p className={`${ui.buttonTertiary} mt-3 inline-flex cursor-default`}>
+            Next gate: {item.actionLabel}
+          </p>
         </div>
       </div>
     </article>

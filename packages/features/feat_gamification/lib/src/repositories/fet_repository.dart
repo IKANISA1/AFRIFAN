@@ -472,6 +472,43 @@ class FetRepository {
     return FetWalletSummary.fromJson(rows.first);
   }
 
+  /// Loads the route-level wallet projection without collapsing RPC failures
+  /// into an empty wallet.
+  ///
+  /// Compact wallet surfaces intentionally keep their historical empty
+  /// fallback through [loadWallet]. The dedicated wallet route uses this
+  /// strict variant so permission and transport failures remain explicit.
+  Future<FetWalletSummary?> loadWalletStrict() async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return null;
+    }
+
+    final result = await SafeRpc.call(
+      'fet_get_wallet',
+      params: <String, dynamic>{'p_club_id': scope.clubId},
+      tag: _tag,
+    );
+
+    if (!result.isSuccess) {
+      throw StateError(result.error ?? 'Wallet summary unavailable');
+    }
+    if (result.data is! List) {
+      throw StateError('Wallet summary response was invalid');
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
+
+    if (rows.isEmpty) {
+      return null;
+    }
+
+    return FetWalletSummary.fromJson(rows.first);
+  }
+
   Future<List<FetWalletTransaction>> loadWalletTransactions({
     int limit = 50,
     int offset = 0,
@@ -493,6 +530,42 @@ class FetRepository {
 
     if (!result.isSuccess || result.data is! List) {
       return const <FetWalletTransaction>[];
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
+
+    return rows.map(FetWalletTransaction.fromJson).toList(growable: false);
+  }
+
+  /// Loads the route-level private ledger without misrepresenting an RPC
+  /// failure as an empty transaction history.
+  Future<List<FetWalletTransaction>> loadWalletTransactionsStrict({
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <FetWalletTransaction>[];
+    }
+
+    final result = await SafeRpc.call(
+      'fet_get_wallet_transactions',
+      params: <String, dynamic>{
+        'p_club_id': scope.clubId,
+        'p_limit': limit,
+        'p_offset': offset,
+      },
+      tag: _tag,
+    );
+
+    if (!result.isSuccess) {
+      throw StateError(result.error ?? 'Wallet history unavailable');
+    }
+    if (result.data is! List) {
+      throw StateError('Wallet history response was invalid');
     }
 
     final rows = (result.data as List)

@@ -69,7 +69,7 @@ void main() {
       beforeCapture: (tester) async {
         expect(find.text('WhatsApp sign-in unavailable'), findsWidgets);
         expect(
-          find.textContaining('Saved welcome is available'),
+          find.textContaining('saved welcome is available'),
           findsOneWidget,
         );
         expect(find.text('Continue without sign-in'), findsOneWidget);
@@ -99,10 +99,7 @@ void main() {
       tester,
       id: 'disabled',
       repository: _ValueOnboardingContentRepository(
-        OnboardingContentSnapshot.current(
-          whatsAppSignInAvailable: false,
-          message: 'Continue without sign-in, or try WhatsApp later.',
-        ),
+        OnboardingContentSnapshot.current(whatsAppSignInAvailable: false),
       ),
       beforeCapture: (tester) async {
         final action = tester.widget<AfriButton>(

@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,7 @@ class FanClubFeaturedCard extends StatelessWidget {
               borderRadius: ShapeTokens.chipRadius,
             ),
             child: Text(
-              'FEATURED CHAPTER',
+              context.afriL10n.fanClubsFeaturedChapter,
               style: TypographyTokens.labelSmall(
                 ColorTokens.clubAccent,
               ).copyWith(fontWeight: FontWeight.w900),
@@ -40,7 +41,8 @@ class FanClubFeaturedCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           Text(
-            (club['name']?.toString() ?? 'FAN CLUB').toUpperCase(),
+            (club['name']?.toString() ?? context.afriL10n.fanClubFallbackName)
+                .toUpperCase(),
             style: TypographyTokens.displaySmall(ColorTokens.inkBase).copyWith(
               fontWeight: FontWeight.w900,
               fontStyle: FontStyle.italic,
@@ -49,7 +51,8 @@ class FanClubFeaturedCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            club['description']?.toString() ?? 'Official supporter chapter.',
+            club['description']?.toString() ??
+                context.afriL10n.fanClubOfficialChapterFallback,
             maxLines: 2,
             style: TypographyTokens.bodySmall(ColorTokens.inkMuted),
           ),
@@ -57,9 +60,19 @@ class FanClubFeaturedCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildMeta('REGION', club['region']?.toString() ?? 'Unknown'),
-              _buildMeta('MEMBERS', fanclubMemberLabel(club)),
-              _buildMeta('STATUS', fanclubStatusLabel(club)),
+              _buildMeta(
+                context.afriL10n.fanClubRegionLabel,
+                club['region']?.toString() ??
+                    context.afriL10n.fanClubUnknownRegion,
+              ),
+              _buildMeta(
+                context.afriL10n.fanClubMembersLabel,
+                fanclubMemberLabel(club),
+              ),
+              _buildMeta(
+                context.afriL10n.fanClubStatusLabel,
+                fanclubStatusLabel(club),
+              ),
             ],
           ),
         ],
@@ -110,12 +123,11 @@ class FanClubListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final members = fanclubMemberLabel(club);
-    final memberCopy =
-        members.toLowerCase().contains('member') ||
-            members.toLowerCase().contains('pending')
+    final memberCopy = num.tryParse(members) == null
         ? members
-        : '$members Members';
-    final region = club['region']?.toString() ?? 'Unknown';
+        : context.afriL10n.fanClubMembersValue(members);
+    final region =
+        club['region']?.toString() ?? context.afriL10n.fanClubUnknownRegion;
 
     return AfriPanelCard(
       onTap: onTap,
@@ -127,7 +139,9 @@ class FanClubListItem extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  (club['name']?.toString() ?? 'Fan Club').toUpperCase(),
+                  (club['name']?.toString() ??
+                          context.afriL10n.fanClubFallbackName)
+                      .toUpperCase(),
                   style: TypographyTokens.headlineSmall().copyWith(
                     fontWeight: FontWeight.w900,
                     fontStyle: FontStyle.italic,
@@ -144,7 +158,9 @@ class FanClubListItem extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
-            '$region • $memberCopy'.toUpperCase(),
+            context.afriL10n
+                .fanClubRegionMembers(region, memberCopy)
+                .toUpperCase(),
             style: TypographyTokens.labelSmall(
               ColorTokens.onSurfaceVariant,
             ).copyWith(fontWeight: FontWeight.w900),
@@ -154,7 +170,9 @@ class FanClubListItem extends StatelessWidget {
             children: [
               Expanded(
                 child: AfriButton(
-                  label: isJoined ? 'Review requested' : 'Request review',
+                  label: isJoined
+                      ? context.afriL10n.fanClubReviewRequested
+                      : context.afriL10n.fanClubRequestReview,
                   onTap: onJoinToggled,
                   isLoading: isPending,
                   variant: isJoined
@@ -164,7 +182,7 @@ class FanClubListItem extends StatelessWidget {
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               AfriButton(
-                label: 'Details',
+                label: context.afriL10n.fanClubDetailsAction,
                 onTap: onTap,
                 fullWidth: false,
                 variant: AfriButtonVariant.secondary,

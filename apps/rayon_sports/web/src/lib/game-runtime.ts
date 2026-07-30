@@ -265,11 +265,33 @@ export type GameRuntimeClientOptions = {
   endpoint?: string;
   draftGenerationEndpoint?: string;
   fetcher?: typeof fetch;
+  timeoutMs?: number;
 };
+
+export type GameRuntimeFailureKind =
+  | "error"
+  | "permission_denied"
+  | "conflict"
+  | "security_timeout";
+
+export class GameRuntimeRequestError extends Error {
+  constructor(
+    readonly kind: GameRuntimeFailureKind,
+    message: string,
+    readonly status: number | null = null,
+  ) {
+    super(message);
+    this.name = "GameRuntimeRequestError";
+  }
+}
 
 type SearchParamReader = {
   get(name: string): string | null;
 };
+
+const DEFAULT_GAME_RUNTIME_TIMEOUT_MS = 12_000;
+const MIN_GAME_RUNTIME_TIMEOUT_MS = 250;
+const MAX_GAME_RUNTIME_TIMEOUT_MS = 30_000;
 
 function isSearchParamReader(value: unknown): value is SearchParamReader {
   return (
@@ -329,12 +351,16 @@ export function assertTvPayloadIsSafe(value: unknown) {
 
 function parseActionResponse<T>(payload: unknown): T {
   if (payload == null || typeof payload !== "object") {
-    throw new Error("Game action returned an invalid response.");
+    throw new GameRuntimeRequestError(
+      "error",
+      "Game action returned an invalid response.",
+    );
   }
 
   const body = payload as Record<string, unknown>;
   if (body["success"] !== true) {
-    throw new Error(
+    throw new GameRuntimeRequestError(
+      "error",
       typeof body["error"] === "string" ? body["error"] : "Game action failed.",
     );
   }
@@ -342,26 +368,121 @@ function parseActionResponse<T>(payload: unknown): T {
   return body["data"] as T;
 }
 
+function boundedRuntimeTimeout(timeoutMs: number | undefined) {
+  if (timeoutMs == null || !Number.isFinite(timeoutMs)) {
+    return DEFAULT_GAME_RUNTIME_TIMEOUT_MS;
+  }
+
+  return Math.min(
+    MAX_GAME_RUNTIME_TIMEOUT_MS,
+    Math.max(MIN_GAME_RUNTIME_TIMEOUT_MS, Math.trunc(timeoutMs)),
+  );
+}
+
+function controlledRuntimeMessage(payload: unknown, fallback: string) {
+  if (payload == null || typeof payload !== "object") {
+    return fallback;
+  }
+
+  const raw = (payload as Record<string, unknown>)["error"];
+  if (typeof raw !== "string") {
+    return fallback;
+  }
+
+  const normalized = raw.replace(/[\u0000-\u001f\u007f]+/g, " ").trim();
+  return normalized ? normalized.slice(0, 240) : fallback;
+}
+
+function failureKindForStatus(status: number): GameRuntimeFailureKind {
+  if (status === 401 || status === 403) return "permission_denied";
+  if (status === 409) return "conflict";
+  if (status === 408 || status === 504) return "security_timeout";
+  return "error";
+}
+
+async function executeBoundedGameRequest<T>({
+  fetcher,
+  input,
+  timeoutMs,
+}: {
+  fetcher: typeof fetch;
+  input: Parameters<typeof fetch>;
+  timeoutMs: number;
+}) {
+  const controller = new AbortController();
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutHandle = setTimeout(() => {
+      controller.abort();
+      reject(
+        new GameRuntimeRequestError(
+          "security_timeout",
+          "The game service did not respond in time.",
+          504,
+        ),
+      );
+    }, timeoutMs);
+  });
+
+  try {
+    return await Promise.race([
+      (async () => {
+        const [url, init] = input;
+        const response = await fetcher(url, {
+          ...init,
+          signal: controller.signal,
+        });
+        const payload = await response.json().catch(() => null);
+
+        if (!response.ok) {
+          const status = response.status || 500;
+          throw new GameRuntimeRequestError(
+            failureKindForStatus(status),
+            controlledRuntimeMessage(payload, "Game action failed."),
+            status,
+          );
+        }
+
+        return parseActionResponse<T>(payload);
+      })(),
+      timeout,
+    ]);
+  } catch (error) {
+    if (error instanceof GameRuntimeRequestError) {
+      throw error;
+    }
+    throw new GameRuntimeRequestError(
+      controller.signal.aborted ? "security_timeout" : "error",
+      controller.signal.aborted
+        ? "The game service did not respond in time."
+        : "The game service is temporarily unavailable.",
+      controller.signal.aborted ? 504 : null,
+    );
+  } finally {
+    if (timeoutHandle != null) {
+      clearTimeout(timeoutHandle);
+    }
+  }
+}
+
 async function postGameAction<T>(
   options: GameRuntimeClientOptions,
   body: GameActionBody,
 ) {
   const fetcher = options.fetcher ?? fetch;
-  const response = await fetcher(options.endpoint ?? "/api/game-session-action", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(body),
+  return executeBoundedGameRequest<T>({
+    fetcher,
+    timeoutMs: boundedRuntimeTimeout(options.timeoutMs),
+    input: [
+      options.endpoint ?? "/api/game-session-action",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(body),
+      },
+    ],
   });
-  const payload = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      typeof payload?.error === "string" ? payload.error : "Game action failed.",
-    );
-  }
-
-  return parseActionResponse<T>(payload);
 }
 
 async function postQuestionDraftGeneration<T>(
@@ -369,26 +490,19 @@ async function postQuestionDraftGeneration<T>(
   body: GameQuestionDraftGenerationBody,
 ) {
   const fetcher = options.fetcher ?? fetch;
-  const response = await fetcher(
-    options.draftGenerationEndpoint ?? "/api/generate-question-drafts",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(body),
-    },
-  );
-  const payload = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      typeof payload?.error === "string"
-        ? payload.error
-        : "Question draft generation failed.",
-    );
-  }
-
-  return parseActionResponse<T>(payload);
+  return executeBoundedGameRequest<T>({
+    fetcher,
+    timeoutMs: boundedRuntimeTimeout(options.timeoutMs),
+    input: [
+      options.draftGenerationEndpoint ?? "/api/generate-question-drafts",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(body),
+      },
+    ],
+  });
 }
 
 export function createGameRuntimeClient(options: GameRuntimeClientOptions) {
@@ -682,5 +796,22 @@ export function createDemoTvSessionState(): GameTvSessionState {
       { rank: 2, teamName: "Blue Zone", score: 760 },
       { rank: 3, teamName: "Away Corner", score: 610 },
     ],
+  };
+}
+
+export function createTvSessionPlaceholder(
+  sessionId: string,
+): GameTvSessionState {
+  return {
+    sessionId,
+    clubId: 0,
+    title: "Matchday display",
+    phase: "lobby",
+    joinCode: null,
+    questionIndex: 0,
+    questionTotal: 0,
+    updatedAt: "",
+    currentQuestion: null,
+    leaderboard: [],
   };
 }

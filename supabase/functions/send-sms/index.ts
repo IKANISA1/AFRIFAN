@@ -22,56 +22,13 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { sendOtpTemplate } from "../_shared/whatsapp.ts";
-import { jsonError, jsonOk } from "../_shared/response.ts";
+import { createSendSmsHandler } from "./handler.ts";
 
-// ── Types ───────────────────────────────────────────────────────
-interface SendSmsHookPayload {
-  user: {
-    phone: string;
-    id?: string;
-  };
-  sms: {
-    otp: string;
-  };
-}
-
-// ── Handler ─────────────────────────────────────────────────────
-async function handleRequest(req: Request) {
-  // Only accept POST
-  if (req.method !== "POST") {
-    return jsonError("Method not allowed", 405);
-  }
-
-  try {
-    const payload: SendSmsHookPayload = await req.json();
-    const phone = payload.user?.phone;
-    const otp = payload.sms?.otp;
-
-    if (!phone || !otp) {
-      console.error("send-sms: missing phone or otp in payload", payload);
-      return jsonError("Missing phone or otp", 400);
-    }
-
-    console.log(`send-sms: delivering OTP to ${phone.slice(0, 6)}***`);
-
-    // Deliver via the active WhatsApp OTP template.
-    await sendOtpTemplate({
-      phone,
-      code: otp,
-      language: "en_US",
-    });
-
-    console.log(`send-sms: OTP delivered to ${phone.slice(0, 6)}***`);
-
-    return jsonOk({ success: true });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.error("send-sms: failed to deliver OTP:", message);
-
-    // Return 500 so Supabase Auth knows delivery failed
-    return jsonError(message, 500);
-  }
-}
+export const handleRequest = createSendSmsHandler({
+  sendOtpTemplate,
+  getHookSecret: () =>
+    Deno.env.get("SUPABASE_AUTH_HOOK_SEND_SMS_SECRET")?.trim(),
+});
 
 if (import.meta.main) {
   Deno.serve(handleRequest);

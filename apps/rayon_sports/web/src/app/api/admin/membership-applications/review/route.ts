@@ -1,5 +1,8 @@
 import { NextRequest } from "next/server";
-import { handleAdminApiRoute } from "@/lib/admin-api-handler";
+import {
+  AdminApiValidationError,
+  handleAdminApiRoute,
+} from "@/lib/admin-api-handler";
 import { reviewMembershipApplication } from "@/lib/data/admin/membership-ops";
 
 export const dynamic = "force-dynamic";
@@ -24,8 +27,9 @@ export async function POST(request: NextRequest) {
           : undefined;
 
       if (!applicationId || !expectedUpdatedAt || decision == null) {
-        throw new Error(
-          "A valid applicationId, expectedUpdatedAt, and decision are required.",
+        throw new AdminApiValidationError(
+          "A valid application id, loaded version, and decision are required.",
+          "ADMIN_MEMBERSHIP_REVIEW_EMPTY",
         );
       }
 

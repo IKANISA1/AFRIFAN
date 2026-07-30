@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -41,9 +42,9 @@ class _SupporterPhoneAuthScreenState
   }
 
   bool get _isOnline => _connectivity.value;
-  String? get _phoneError =>
+  String? _phoneError(AfriLocalizations l10n) =>
       _phoneFailure?.kind == AuthActionFailureKind.invalidInput
-      ? _phoneFailure?.message
+      ? l10n.authPhoneInvalidMessage
       : null;
 
   @override
@@ -152,11 +153,10 @@ class _SupporterPhoneAuthScreenState
       );
       return null;
     } on StateError {
-      const message = 'Country metadata is unavailable for this build.';
       setState(
-        () => _phoneFailure = const AuthActionFailure(
+        () => _phoneFailure = AuthActionFailure(
           kind: AuthActionFailureKind.unknown,
-          message: message,
+          message: context.afriL10n.authCountryUnavailable,
         ),
       );
       return null;
@@ -210,11 +210,12 @@ class _SupporterPhoneAuthScreenState
   }
 
   Widget? _buildPhoneStatus() {
+    final l10n = context.afriL10n;
     if (_isLoading) {
       return AfriStateView.loading(
         key: const ValueKey<String>('supporter-phone-state'),
-        title: 'Sending code',
-        message: 'Keep this screen open while WhatsApp sign-in starts.',
+        title: l10n.authSendingCodeTitle,
+        message: l10n.authSendingCodeMessage,
         compact: true,
       );
     }
@@ -224,25 +225,25 @@ class _SupporterPhoneAuthScreenState
     if (failure.kind == AuthActionFailureKind.offline) {
       return AfriStateView.offline(
         key: const ValueKey<String>('supporter-phone-state'),
-        title: 'Connection required',
-        message: failure.message,
+        title: l10n.connectionRequired,
+        message: l10n.authPhoneOfflineMessage,
         compact: true,
       );
     }
 
     final title = switch (failure.kind) {
-      AuthActionFailureKind.permissionDenied => 'Sign-in unavailable',
-      AuthActionFailureKind.securityTimeout => 'Request timed out',
-      AuthActionFailureKind.conflict => 'Number already linked',
-      AuthActionFailureKind.invalidInput => 'Check the number',
-      AuthActionFailureKind.unknown => 'Code not sent',
-      AuthActionFailureKind.offline => 'Connection required',
+      AuthActionFailureKind.permissionDenied => l10n.authSignInUnavailableTitle,
+      AuthActionFailureKind.securityTimeout => l10n.authRequestTimeoutTitle,
+      AuthActionFailureKind.conflict => l10n.authNumberLinkedTitle,
+      AuthActionFailureKind.invalidInput => l10n.authCheckNumberTitle,
+      AuthActionFailureKind.unknown => l10n.authCodeNotSentTitle,
+      AuthActionFailureKind.offline => l10n.connectionRequired,
     };
     return AfriStateView.error(
       key: const ValueKey<String>('supporter-phone-state'),
       title: title,
-      message: failure.message,
-      actionLabel: 'Edit number',
+      message: _localizedPhoneFailureMessage(l10n, failure.kind),
+      actionLabel: l10n.authEditNumber,
       onAction: _editNumber,
       compact: true,
     );
@@ -250,6 +251,7 @@ class _SupporterPhoneAuthScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final phoneStatus = _buildPhoneStatus();
     final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     final protectPhoneValue =
@@ -266,7 +268,7 @@ class _SupporterPhoneAuthScreenState
         elevation: 0,
         leading: AfriIconButton(
           icon: AfriIcons.back,
-          tooltip: 'Back',
+          tooltip: l10n.authBack,
           onTap: () {
             if (context.canPop()) {
               context.pop();
@@ -290,10 +292,10 @@ class _SupporterPhoneAuthScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const _AuthStepHeader(
-                eyebrow: 'WhatsApp',
-                title: 'Enter number',
-                body: 'We will send a private sign-in code.',
+              _AuthStepHeader(
+                eyebrow: l10n.authWhatsAppEyebrow,
+                title: l10n.authEnterNumberTitle,
+                body: l10n.authEnterNumberBody,
                 icon: AfriIcons.chat,
               ),
               const SizedBox(height: SpacingTokens.spacing6),
@@ -313,9 +315,11 @@ class _SupporterPhoneAuthScreenState
                       key: const ValueKey<String>('supporter-phone-input'),
                       controller: _phoneController,
                       focusNode: _phoneFocusNode,
-                      label: usesLargeText ? 'Phone' : 'WhatsApp number',
-                      hint: '+250 7xx xxx xxx',
-                      helperText: 'Your number stays private.',
+                      label: usesLargeText
+                          ? l10n.authPhoneLabel
+                          : l10n.authWhatsAppNumberLabel,
+                      hint: l10n.authPhoneHint,
+                      helperText: l10n.authPhonePrivacy,
                       helperMaxLines: 2,
                       keyboardType: TextInputType.phone,
                       enabled: !_isLoading,
@@ -324,7 +328,7 @@ class _SupporterPhoneAuthScreenState
                       maxLength: 20,
                       autofocus: !usesLargeText,
                       textInputAction: TextInputAction.done,
-                      errorText: _phoneError,
+                      errorText: _phoneError(l10n),
                       autofillHints: const <String>[
                         AutofillHints.telephoneNumber,
                       ],
@@ -335,7 +339,9 @@ class _SupporterPhoneAuthScreenState
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriButton(
                       key: const ValueKey<String>('supporter-send-otp-button'),
-                      label: _isOnline ? 'Send code' : 'Connection required',
+                      label: _isOnline
+                          ? l10n.authSendCode
+                          : l10n.connectionRequired,
                       icon: AfriIcons.forward,
                       onTap: _sendCode,
                       isLoading: _isLoading,
@@ -364,11 +370,11 @@ class _SupporterPhoneAuthScreenState
 
                         AfriToast.error(
                           context,
-                          'Could not start anonymous session.',
+                          l10n.authGuestSessionUnavailable,
                         );
                       },
                 child: Text(
-                  'Continue without sign-in',
+                  l10n.onboardingContinueWithoutSignIn,
                   style: TypographyTokens.labelLarge(guestActionColor),
                 ),
               ),
@@ -413,9 +419,9 @@ class _SupporterOtpVerificationScreenState
   String get _otpValue => _otpController.text.trim();
   bool get _canSubmitOtp => _phone.isNotEmpty && _otpValue.length >= 5;
   bool get _isOnline => _connectivity.value;
-  String? get _otpError => switch (_otpFailure?.kind) {
-    AuthActionFailureKind.invalidInput => 'Check the code and try again.',
-    AuthActionFailureKind.securityTimeout => 'Request a new code.',
+  String? _otpError(AfriLocalizations l10n) => switch (_otpFailure?.kind) {
+    AuthActionFailureKind.invalidInput => l10n.authOtpInvalidMessage,
+    AuthActionFailureKind.securityTimeout => l10n.authOtpExpiredMessage,
     _ => null,
   };
 
@@ -512,7 +518,7 @@ class _SupporterOtpVerificationScreenState
 
     if (failure == null) {
       _startCooldown();
-      AfriToast.success(context, 'New WhatsApp code sent.');
+      AfriToast.success(context, context.afriL10n.authNewCodeSent);
       return;
     }
   }
@@ -584,13 +590,16 @@ class _SupporterOtpVerificationScreenState
   }
 
   Widget? _buildOtpStatus() {
+    final l10n = context.afriL10n;
     if (_isVerifying || _isResending) {
       return AfriStateView.loading(
         key: const ValueKey<String>('supporter-otp-state'),
-        title: _isResending ? 'Sending new code' : 'Checking code',
+        title: _isResending
+            ? l10n.authSendingNewCodeTitle
+            : l10n.authCheckingCodeTitle,
         message: _isResending
-            ? 'Keep this screen open while a new code is requested.'
-            : 'Keep this screen open while the code is verified.',
+            ? l10n.authSendingNewCodeMessage
+            : l10n.authCheckingCodeMessage,
         compact: true,
       );
     }
@@ -600,25 +609,26 @@ class _SupporterOtpVerificationScreenState
     if (failure.kind == AuthActionFailureKind.offline) {
       return AfriStateView.offline(
         key: const ValueKey<String>('supporter-otp-state'),
-        title: 'Connection required',
-        message: failure.message,
+        title: l10n.connectionRequired,
+        message: l10n.authOtpOfflineMessage,
         compact: true,
       );
     }
 
     final title = switch (failure.kind) {
-      AuthActionFailureKind.permissionDenied => 'Verification unavailable',
-      AuthActionFailureKind.securityTimeout => 'Code expired',
-      AuthActionFailureKind.conflict => 'Number already linked',
-      AuthActionFailureKind.invalidInput => 'Code not accepted',
-      AuthActionFailureKind.unknown => 'Verification failed',
-      AuthActionFailureKind.offline => 'Connection required',
+      AuthActionFailureKind.permissionDenied =>
+        l10n.authVerificationUnavailableTitle,
+      AuthActionFailureKind.securityTimeout => l10n.authCodeExpiredTitle,
+      AuthActionFailureKind.conflict => l10n.authNumberLinkedTitle,
+      AuthActionFailureKind.invalidInput => l10n.authCodeNotAcceptedTitle,
+      AuthActionFailureKind.unknown => l10n.authVerificationFailedTitle,
+      AuthActionFailureKind.offline => l10n.connectionRequired,
     };
     return AfriStateView.error(
       key: const ValueKey<String>('supporter-otp-state'),
       title: title,
-      message: failure.message,
-      actionLabel: 'Check code',
+      message: _localizedOtpFailureMessage(l10n, failure.kind),
+      actionLabel: l10n.authCheckCode,
       onAction: _editCode,
       compact: true,
     );
@@ -626,6 +636,7 @@ class _SupporterOtpVerificationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     if (_phone.isEmpty) {
       return AfriScreenScaffold(
         backgroundColor: ColorTokens.transparent,
@@ -638,9 +649,9 @@ class _SupporterOtpVerificationScreenState
             child: Padding(
               padding: const EdgeInsets.all(SpacingTokens.screenPadding),
               child: AfriStateView.error(
-                title: 'Phone number missing',
-                message: 'Start again to request a WhatsApp code.',
-                actionLabel: 'Enter number',
+                title: l10n.authPhoneMissingTitle,
+                message: l10n.authPhoneMissingMessage,
+                actionLabel: l10n.authEnterNumberTitle,
                 onAction: () => context.go(_phoneEntryRoute()),
                 compact: true,
               ),
@@ -670,10 +681,10 @@ class _SupporterOtpVerificationScreenState
       ),
       label: Text(
         !_isOnline
-            ? 'Connection required'
+            ? l10n.connectionRequired
             : _resendCooldown > 0
-            ? 'Resend in ${_resendCooldown}s'
-            : 'Resend code',
+            ? l10n.authResendIn(_resendCooldown)
+            : l10n.authResendCode,
         style: TypographyTokens.labelLarge(resendActionColor),
       ),
     );
@@ -682,7 +693,7 @@ class _SupporterOtpVerificationScreenState
           ? null
           : () => context.go(_phoneEntryRoute()),
       child: Text(
-        'Change number',
+        l10n.authChangeNumber,
         style: TypographyTokens.labelLarge(changeNumberActionColor),
       ),
     );
@@ -694,7 +705,7 @@ class _SupporterOtpVerificationScreenState
         elevation: 0,
         leading: AfriIconButton(
           icon: AfriIcons.back,
-          tooltip: 'Change number',
+          tooltip: l10n.authChangeNumber,
           onTap: () => context.go(_phoneEntryRoute()),
         ),
       ),
@@ -710,10 +721,10 @@ class _SupporterOtpVerificationScreenState
             SpacingTokens.spacing8,
           ),
           children: [
-            const _AuthStepHeader(
-              eyebrow: 'Check WhatsApp',
-              title: 'Enter code',
-              body: 'Sent to your WhatsApp number.',
+            _AuthStepHeader(
+              eyebrow: l10n.authCheckWhatsAppEyebrow,
+              title: l10n.authEnterCodeTitle,
+              body: l10n.authEnterCodeBody,
               icon: AfriIcons.chat,
             ),
             const SizedBox(height: SpacingTokens.spacing6),
@@ -733,9 +744,11 @@ class _SupporterOtpVerificationScreenState
                     key: const ValueKey<String>('supporter-phone-otp-input'),
                     controller: _otpController,
                     focusNode: _otpFocusNode,
-                    label: usesLargeText ? 'Code' : 'WhatsApp code',
-                    hint: '••••••',
-                    helperText: 'Code hidden for privacy.',
+                    label: usesLargeText
+                        ? l10n.authCodeLabel
+                        : l10n.authWhatsAppCodeLabel,
+                    hint: l10n.authCodeHint,
+                    helperText: l10n.authCodePrivacy,
                     helperMaxLines: 2,
                     keyboardType: TextInputType.number,
                     enabled: !_isVerifying && !_isResending,
@@ -744,7 +757,7 @@ class _SupporterOtpVerificationScreenState
                     maxLength: 6,
                     autofocus: !usesLargeText,
                     textInputAction: TextInputAction.done,
-                    errorText: _otpError,
+                    errorText: _otpError(l10n),
                     autofillHints: const <String>[AutofillHints.oneTimeCode],
                     enableSuggestions: false,
                     autocorrect: false,
@@ -755,9 +768,9 @@ class _SupporterOtpVerificationScreenState
                     key: const ValueKey<String>('supporter-verify-otp-button'),
                     label: _isOnline
                         ? usesLargeText
-                              ? 'Verify code'
-                              : 'Verify and continue'
-                        : 'Connection required',
+                              ? l10n.authVerifyCode
+                              : l10n.authVerifyAndContinue
+                        : l10n.connectionRequired,
                     icon: AfriIcons.verified,
                     onTap: _verifyCode,
                     isLoading: _isVerifying,
@@ -792,13 +805,41 @@ class _SupporterOtpVerificationScreenState
 
 const _offlinePhoneFailure = AuthActionFailure(
   kind: AuthActionFailureKind.offline,
-  message: 'Connect to the internet to send a WhatsApp code.',
+  message: '',
 );
 
 const _offlineOtpFailure = AuthActionFailure(
   kind: AuthActionFailureKind.offline,
-  message: 'Connect to the internet to verify the WhatsApp code.',
+  message: '',
 );
+
+String _localizedPhoneFailureMessage(
+  AfriLocalizations l10n,
+  AuthActionFailureKind kind,
+) {
+  return switch (kind) {
+    AuthActionFailureKind.permissionDenied => l10n.authPhonePermissionMessage,
+    AuthActionFailureKind.securityTimeout => l10n.authPhoneTimeoutMessage,
+    AuthActionFailureKind.conflict => l10n.authPhoneConflictMessage,
+    AuthActionFailureKind.invalidInput => l10n.authPhoneInvalidMessage,
+    AuthActionFailureKind.unknown => l10n.authPhoneUnknownMessage,
+    AuthActionFailureKind.offline => l10n.authPhoneOfflineMessage,
+  };
+}
+
+String _localizedOtpFailureMessage(
+  AfriLocalizations l10n,
+  AuthActionFailureKind kind,
+) {
+  return switch (kind) {
+    AuthActionFailureKind.permissionDenied => l10n.authOtpPermissionMessage,
+    AuthActionFailureKind.securityTimeout => l10n.authOtpExpiredMessage,
+    AuthActionFailureKind.conflict => l10n.authOtpConflictMessage,
+    AuthActionFailureKind.invalidInput => l10n.authOtpInvalidMessage,
+    AuthActionFailureKind.unknown => l10n.authOtpUnknownMessage,
+    AuthActionFailureKind.offline => l10n.authOtpOfflineMessage,
+  };
+}
 
 class _AuthStepHeader extends StatelessWidget {
   const _AuthStepHeader({

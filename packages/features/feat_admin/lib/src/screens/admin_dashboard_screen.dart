@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../admin_providers.dart';
-import '../repositories/admin_repository.dart';
+import '../admin_dashboard_controller.dart';
 
 class AdminDashboardScreen extends ConsumerStatefulWidget {
-  const AdminDashboardScreen({super.key});
+  const AdminDashboardScreen({this.firstActionFocusNode, super.key});
+
+  final FocusNode? firstActionFocusNode;
 
   @override
   ConsumerState<AdminDashboardScreen> createState() =>
@@ -17,72 +18,13 @@ class AdminDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
-  AdminDashboardMetrics _metrics = const AdminDashboardMetrics();
-  List<String> _activity = const <String>[];
-  bool _isLoading = true;
-  bool _isAuthorized = true;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_loadDashboard());
-  }
-
-  Future<void> _loadDashboard() async {
-    try {
-      final repo = ref.read(adminRepositoryProvider);
-
-      // RBAC gate: verify admin access
-      final isAdmin = await repo.isCurrentUserAdmin();
-      if (!isAdmin) {
-        if (!mounted) return;
-        setState(() {
-          _isAuthorized = false;
-          _isLoading = false;
-        });
-        return;
-      }
-
-      final results = await Future.wait([
-        repo.getDashboardMetrics(),
-        repo.getRecentNewsTitles(),
-        repo.getContributionGroups(limit: 3),
-      ]);
-
-      final metrics = results[0] as AdminDashboardMetrics;
-      final newsTitles = results[1] as List<String>;
-      final groups = results[2] as List<Map<String, dynamic>>;
-
-      final activity = <String>[
-        ...newsTitles.map((title) => 'CMS  •  $title'),
-        ...groups.take(2).map((group) {
-          final total = (group['current_total'] as num?)?.toInt() ?? 0;
-          final currencySymbol = RuntimeBranding.displayCurrencySymbol;
-          return 'CONTRIBUTIONS  •  ${group['name']?.toString() ?? 'Group'} at $currencySymbol $total';
-        }),
-      ];
-
-      if (!mounted) return;
-      setState(() {
-        _metrics = metrics;
-        _activity = activity;
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _error = e.toString();
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!_isAuthorized) {
-      return _buildUnauthorized();
-    }
+    final enabled = ref.watch(adminDashboardEnabledProvider);
+    final dashboard = ref.watch(adminDashboardProvider);
+    final permissionDenied =
+        dashboard.valueOrNull?.failure?.kind ==
+        AdminDashboardFailureKind.permissionDenied;
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
@@ -92,15 +34,29 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       constrainContent: true,
       bodyWrapper: (child) => GradientBackground(child: child),
       child: SafeArea(
-        child: _isLoading
-            ? const Padding(
-                padding: EdgeInsets.all(SpacingTokens.spacing6),
-                child: AfriSkeletonList(),
+        child: !enabled
+            ? _buildDisabled()
+            : permissionDenied
+            ? _buildUnavailable(
+                const AdminDashboardFailure(
+                  AdminDashboardFailureKind.permissionDenied,
+                ),
               )
-            : _error != null
-            ? _buildError()
+            : dashboard.isLoading && dashboard.valueOrNull == null
+            ? Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriStateView.loading(
+                  key: const ValueKey<String>('admin-dashboard-state-loading'),
+                  title: 'Loading admin workspace',
+                  message: 'Checking current club operations.',
+                ),
+              )
+            : dashboard.hasError && dashboard.valueOrNull == null
+            ? _buildUnavailable(
+                AdminDashboardFailure.fromError(dashboard.error!),
+              )
             : AfriRefreshIndicator(
-                onRefresh: _loadDashboard,
+                onRefresh: ref.read(adminDashboardProvider.notifier).refresh,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -109,11 +65,20 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                     children: [
                       _buildHeader(),
                       const SizedBox(height: SpacingTokens.spacing6),
-                      _buildMetrics(),
-                      const SizedBox(height: SpacingTokens.spacing6),
-                      _buildQuickActions(),
-                      const SizedBox(height: SpacingTokens.spacing6),
-                      _buildRecentActivity(),
+                      if (_buildStatusBanner(dashboard) case final banner?) ...[
+                        banner,
+                        const SizedBox(height: SpacingTokens.spacing4),
+                      ],
+                      if (dashboard.valueOrNull case final snapshot?) ...[
+                        _buildMetrics(snapshot),
+                        const SizedBox(height: SpacingTokens.spacing6),
+                        _buildQuickActions(
+                          enabled:
+                              snapshot.actionsEnabled && !dashboard.isLoading,
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing6),
+                        _buildRecentActivity(snapshot),
+                      ],
                     ],
                   ),
                 ),
@@ -123,6 +88,39 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   }
 
   Widget _buildHeader() {
+    final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.8;
+    if (usesLargeText) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'CLUB ADMIN',
+                  style: TypographyTokens.titleSmall().copyWith(
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+              AfriIconButton(
+                icon: AfriIcons.close,
+                onTap: () => context.pop(),
+                tooltip: 'Exit Admin',
+              ),
+            ],
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            'COMMAND CENTER',
+            style: TypographyTokens.displaySmall(
+              ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
+            ),
+          ),
+        ],
+      );
+    }
+
     return Row(
       children: [
         Expanded(
@@ -135,7 +133,9 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
               ),
               Text(
                 'COMMAND CENTER',
-                style: TypographyTokens.displaySmall(ColorTokens.clubAccent),
+                style: TypographyTokens.displaySmall(
+                  ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
+                ),
               ),
             ],
           ),
@@ -149,20 +149,20 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     );
   }
 
-  Widget _buildMetrics() {
+  Widget _buildMetrics(AdminDashboardSnapshot snapshot) {
     return Column(
       children: [
         Row(
           children: [
             _MetricCard(
               label: 'TOTAL USERS',
-              value: '${_metrics.totalUsers}',
+              value: '${snapshot.metrics.totalUsers}',
               icon: AfriIcons.people,
             ),
             const SizedBox(width: SpacingTokens.spacing3),
             _MetricCard(
-              label: 'ACTIVE Groups',
-              value: '${_metrics.activeGroups}',
+              label: 'ACTIVE GROUPS',
+              value: '${snapshot.metrics.activeGroups}',
               icon: AfriIcons.groups,
             ),
           ],
@@ -172,13 +172,13 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           children: [
             _MetricCard(
               label: 'TX TODAY',
-              value: '${_metrics.transactionsToday}',
+              value: '${snapshot.metrics.transactionsToday}',
               icon: AfriIcons.myPicks,
             ),
             const SizedBox(width: SpacingTokens.spacing3),
             _MetricCard(
               label: 'TICKETS SOLD',
-              value: '${_metrics.ticketsSold}',
+              value: '${snapshot.metrics.ticketsSold}',
               icon: AfriIcons.tickets,
             ),
           ],
@@ -187,7 +187,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     );
   }
 
-  Widget _buildQuickActions() {
+  Widget _buildQuickActions({required bool enabled}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -197,65 +197,105 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         ),
         const SizedBox(height: SpacingTokens.spacing4),
         _AdminActionTile(
+          route: '/admin/cms',
           title: 'Manage CMS',
           subtitle: 'News articles, banners, and content surfaces',
           icon: AfriIcons.article,
-          onTap: () => context.push('/admin/cms'),
+          enabled: enabled,
+          focusNode: widget.firstActionFocusNode,
+          selected:
+              ref.watch(adminDashboardSelectedActionProvider) == '/admin/cms',
+          onTap: () => _openAdminRoute('/admin/cms'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
+          route: '/admin/matches',
           title: 'Create Match',
           subtitle: 'Fixture setup, zoning, and ticket controls',
           icon: AfriIcons.predict,
-          onTap: () => context.push('/admin/matches'),
+          enabled: enabled,
+          selected:
+              ref.watch(adminDashboardSelectedActionProvider) ==
+              '/admin/matches',
+          onTap: () => _openAdminRoute('/admin/matches'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
+          route: '/admin/contributions',
           title: 'View Contributions',
           subtitle: 'Monitor club and community fundraising',
           icon: AfriIcons.contribute,
-          onTap: () => context.push('/admin/contributions'),
+          enabled: enabled,
+          selected:
+              ref.watch(adminDashboardSelectedActionProvider) ==
+              '/admin/contributions',
+          onTap: () => _openAdminRoute('/admin/contributions'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
+          route: '/admin/notifications',
           title: 'Send Notification',
           subtitle: 'Tier, group, and all-fan push delivery',
           icon: AfriIcons.notificationsActive,
-          onTap: () => context.push('/admin/notifications'),
+          enabled: enabled,
+          selected:
+              ref.watch(adminDashboardSelectedActionProvider) ==
+              '/admin/notifications',
+          onTap: () => _openAdminRoute('/admin/notifications'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
+          route: '/admin/settle',
           title: 'Settle Fixtures',
           subtitle: 'Enter results and grade prediction markets',
           icon: AfriIcons.scoreboard,
-          onTap: () => context.push('/admin/settle'),
+          enabled: enabled,
+          selected:
+              ref.watch(adminDashboardSelectedActionProvider) ==
+              '/admin/settle',
+          onTap: () => _openAdminRoute('/admin/settle'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
+          route: '/admin/competitions',
           title: 'Manage Competitions',
           subtitle: 'Add, edit, and toggle supported leagues and cups',
           icon: AfriIcons.rank,
-          onTap: () => context.push('/admin/competitions'),
+          enabled: enabled,
+          selected:
+              ref.watch(adminDashboardSelectedActionProvider) ==
+              '/admin/competitions',
+          onTap: () => _openAdminRoute('/admin/competitions'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
+          route: '/admin/sms-monitor',
           title: 'SMS Sync Monitor',
           subtitle: 'MoMo SMS ingestion pipeline health',
           icon: AfriIcons.sms,
-          onTap: () => context.push('/admin/sms-monitor'),
+          enabled: enabled,
+          selected:
+              ref.watch(adminDashboardSelectedActionProvider) ==
+              '/admin/sms-monitor',
+          onTap: () => _openAdminRoute('/admin/sms-monitor'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
+          route: '/admin/features',
           title: 'Feature Manager',
           subtitle: 'Toggle features, visibility, and scheduling',
           icon: AfriIcons.settings,
-          onTap: () => context.push('/admin/features'),
+          enabled: enabled,
+          selected:
+              ref.watch(adminDashboardSelectedActionProvider) ==
+              '/admin/features',
+          onTap: () => _openAdminRoute('/admin/features'),
         ),
       ],
     );
   }
 
-  Widget _buildRecentActivity() {
+  Widget _buildRecentActivity(AdminDashboardSnapshot snapshot) {
     return GlassCard(
       animate: false,
       child: Column(
@@ -266,11 +306,28 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          if (_activity.isNotEmpty)
-            ..._activity.map(
+          if (snapshot.activityUnavailable)
+            const AfriStateBanner(
+              key: ValueKey<String>('admin-dashboard-activity-unavailable'),
+              icon: AfriIcons.statusWarning,
+              title: 'Recent activity unavailable',
+              subtitle:
+                  'Dashboard totals are current. Refresh to retry the activity feed.',
+              tone: AfriStateBannerTone.warning,
+            )
+          else if (snapshot.activity.isEmpty)
+            AfriStateView.empty(
+              key: const ValueKey<String>('admin-dashboard-state-empty'),
+              title: 'No recent activity',
+              message:
+                  'Current totals are confirmed. New club activity will appear here.',
+              compact: true,
+            )
+          else
+            ...snapshot.activity.map(
               (item) => Padding(
                 padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
-                child: _AdminFeedRow(title: item, meta: 'LIVE DATA'),
+                child: _AdminFeedRow(title: item.title, meta: item.category),
               ),
             ),
         ],
@@ -278,91 +335,106 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     );
   }
 
-  Widget _buildUnauthorized() {
-    return AfriScreenScaffold(
-      backgroundColor: ColorTokens.background,
-      showAppBar: false,
-      showBackButton: false,
-      scrollable: false,
-      constrainContent: true,
-      bodyWrapper: (child) => GradientBackground(child: child),
-      child: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(SpacingTokens.spacing8),
-            child: GlassCard(
-              animate: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    AfriIcons.lock,
-                    size: 48,
-                    color: ColorTokens.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Text(
-                    'ACCESS DENIED',
-                    style: TypographyTokens.headlineMedium().copyWith(
-                      color: ColorTokens.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  Text(
-                    'Admin privileges are required. Contact a club administrator.',
-                    textAlign: TextAlign.center,
-                    style: TypographyTokens.bodyMedium(),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing6),
-                  AfriButton(
-                    label: 'Go back',
-                    fullWidth: true,
-                    onTap: () => context.pop(),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+  void _openAdminRoute(String route) {
+    ref.read(adminDashboardSelectedActionProvider.notifier).state = route;
+    unawaited(context.push(route));
+  }
+
+  Widget _buildDisabled() {
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: AfriStateView.empty(
+        key: const ValueKey<String>('admin-dashboard-state-disabled'),
+        title: 'Admin workspace unavailable',
+        message: 'Mobile administration is disabled for this controlled build.',
+        icon: AfriIcons.lock,
+        actionLabel: 'Back to settings',
+        onAction: () => context.go('/settings'),
       ),
     );
   }
 
-  Widget _buildError() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(SpacingTokens.spacing8),
-        child: GlassCard(
-          animate: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                AfriIcons.statusError,
-                size: 48,
-                color: ColorTokens.onSurfaceVariant,
-              ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              Text(
-                'Failed to load dashboard.',
-                style: TypographyTokens.bodyLarge(),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              AfriButton(
-                label: 'Retry',
-                fullWidth: true,
-                onTap: () {
-                  setState(() {
-                    _isLoading = true;
-                    _error = null;
-                  });
-                  unawaited(_loadDashboard());
-                },
-              ),
-            ],
-          ),
-        ),
+  Widget _buildUnavailable(AdminDashboardFailure failure) {
+    final state = switch (failure.kind) {
+      AdminDashboardFailureKind.offline => AfriStateView.offline(
+        key: const ValueKey<String>('admin-dashboard-state-offline'),
+        title: 'Admin workspace offline',
+        message: 'Reconnect before loading private club operations.',
+        actionLabel: 'Try again',
+        onAction: () =>
+            unawaited(ref.read(adminDashboardProvider.notifier).refresh()),
       ),
+      AdminDashboardFailureKind.permissionDenied => AfriStateView.error(
+        key: const ValueKey<String>('admin-dashboard-state-permission-denied'),
+        title: 'Admin access unavailable',
+        message:
+            'This account cannot view the current club administration workspace.',
+        actionLabel: 'Back to settings',
+        onAction: () => context.go('/settings'),
+      ),
+      AdminDashboardFailureKind.conflict => AfriStateView.error(
+        key: const ValueKey<String>('admin-dashboard-state-conflict'),
+        title: 'Admin data changed',
+        message: 'Refresh before continuing with current club operations.',
+        actionLabel: 'Refresh',
+        onAction: () =>
+            unawaited(ref.read(adminDashboardProvider.notifier).refresh()),
+      ),
+      AdminDashboardFailureKind.securityTimeout => AfriStateView.error(
+        key: const ValueKey<String>('admin-dashboard-state-security-timeout'),
+        title: 'Security check timed out',
+        message: 'No admin data was shown. Check your connection and retry.',
+        actionLabel: 'Retry',
+        onAction: () =>
+            unawaited(ref.read(adminDashboardProvider.notifier).refresh()),
+      ),
+      AdminDashboardFailureKind.unknown => AfriStateView.error(
+        key: const ValueKey<String>('admin-dashboard-state-error'),
+        title: 'Admin workspace unavailable',
+        message: 'Private club data remains hidden. Try again.',
+        actionLabel: 'Try again',
+        onAction: () =>
+            unawaited(ref.read(adminDashboardProvider.notifier).refresh()),
+      ),
+    };
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: state,
+    );
+  }
+
+  Widget? _buildStatusBanner(AsyncValue<AdminDashboardSnapshot> dashboard) {
+    final snapshot = dashboard.valueOrNull;
+    if (snapshot == null) return null;
+    if (dashboard.isLoading) {
+      return const AfriStateBanner(
+        key: ValueKey<String>('admin-dashboard-state-syncing'),
+        icon: AfriIcons.refresh,
+        title: 'Refreshing admin workspace',
+        subtitle:
+            'Showing the last confirmed dashboard while current data is checked.',
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    final failure = snapshot.failure;
+    if (snapshot.phase != AdminDashboardPhase.degraded || failure == null) {
+      return null;
+    }
+    return AfriStateBanner(
+      key: ValueKey<String>('admin-dashboard-state-${failure.kind.name}'),
+      icon: failure.kind == AdminDashboardFailureKind.offline
+          ? AfriIcons.offline
+          : AfriIcons.statusWarning,
+      title: failure.kind == AdminDashboardFailureKind.conflict
+          ? 'Admin data changed'
+          : failure.kind == AdminDashboardFailureKind.securityTimeout
+          ? 'Refresh timed out'
+          : failure.kind == AdminDashboardFailureKind.offline
+          ? 'Admin workspace offline'
+          : 'Current refresh unavailable',
+      subtitle:
+          'Showing the last confirmed dashboard. Actions are paused until refresh succeeds.',
+      tone: AfriStateBannerTone.warning,
     );
   }
 }
@@ -392,14 +464,23 @@ class _MetricCard extends StatelessWidget {
               children: [
                 Icon(icon, size: 18, color: ColorTokens.onSurfaceVariant),
                 const SizedBox(width: SpacingTokens.spacing2),
-                Text(label, style: TypographyTokens.labelSmall()),
+                Expanded(
+                  child: Text(
+                    label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TypographyTokens.labelSmall(),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               value,
               style: TypographyTokens.headlineLarge().copyWith(
-                color: ColorTokens.clubAccent,
+                color: ColorTokens.accessibleMetricColor(
+                  ColorTokens.clubAccent,
+                ),
               ),
             ),
           ],
@@ -411,44 +492,73 @@ class _MetricCard extends StatelessWidget {
 
 class _AdminActionTile extends StatelessWidget {
   const _AdminActionTile({
+    required this.route,
     required this.title,
     required this.subtitle,
     required this.icon,
     required this.onTap,
+    required this.enabled,
+    required this.selected,
+    this.focusNode,
   });
 
+  final String route;
   final String title;
   final String subtitle;
   final IconData icon;
   final VoidCallback onTap;
+  final bool enabled;
+  final bool selected;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      onTap: onTap,
-      child: Row(
-        children: [
-          Icon(icon, size: 24, color: ColorTokens.clubAccent),
-          const SizedBox(width: SpacingTokens.spacing4),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title.toUpperCase(),
-                  style: TypographyTokens.titleLarge().copyWith(
-                    color: ColorTokens.onSurface,
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(subtitle, style: TypographyTokens.bodyMedium()),
-              ],
+    return Semantics(
+      key: ValueKey<String>('admin-dashboard-action-$route'),
+      selected: selected,
+      child: AfriSurfaceCard(
+        backgroundColor: selected
+            ? ColorTokens.clubAccent.withValues(alpha: 0.14)
+            : null,
+        enabled: enabled,
+        onTap: onTap,
+        focusNode: focusNode,
+        semanticsLabel: title,
+        semanticsHint: enabled
+            ? 'Opens the $title workspace'
+            : 'Unavailable while dashboard data is being checked',
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 24,
+              color: ColorTokens.accessibleChartColor(ColorTokens.clubAccent),
             ),
-          ),
-          const SizedBox(width: SpacingTokens.spacing4),
-          const Icon(AfriIcons.forward),
-        ],
+            const SizedBox(width: SpacingTokens.spacing4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title.toUpperCase(),
+                    style: TypographyTokens.titleLarge().copyWith(
+                      color: ColorTokens.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  Text(subtitle, style: TypographyTokens.bodyMedium()),
+                ],
+              ),
+            ),
+            const SizedBox(width: SpacingTokens.spacing4),
+            Icon(
+              selected ? AfriIcons.statusSuccess : AfriIcons.forward,
+              color: selected
+                  ? ColorTokens.accessibleChartColor(ColorTokens.clubAccent)
+                  : null,
+            ),
+          ],
+        ),
       ),
     );
   }

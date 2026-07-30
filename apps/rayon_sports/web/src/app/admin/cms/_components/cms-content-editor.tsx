@@ -7,11 +7,20 @@ interface CMSContentEditorProps {
   form: ArticleForm;
   setForm: (update: ArticleForm | ((prev: ArticleForm) => ArticleForm)) => void;
   onSubmit: (formData: FormData) => void;
+  disabled?: boolean;
+  onClear?: () => void;
 }
 
-export function CMSContentEditor({ form, setForm, onSubmit }: CMSContentEditorProps) {
+export function CMSContentEditor({
+  form,
+  setForm,
+  onSubmit,
+  disabled = false,
+  onClear,
+}: CMSContentEditorProps) {
   return (
     <form action={onSubmit} className="glass-panel grid gap-4 rounded-[32px] p-6">
+      <fieldset disabled={disabled} className="contents">
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-bold uppercase leading-none">
           {form.id ? "Edit article" : "New article"}
@@ -21,9 +30,10 @@ export function CMSContentEditor({ form, setForm, onSubmit }: CMSContentEditorPr
             type="button"
             onClick={() => {
               setForm(emptyArticleForm);
+              onClear?.();
               showAdminToast("Composer reset.", "info");
             }}
-            className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+            className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
           >
             Clear
           </button>
@@ -91,7 +101,7 @@ export function CMSContentEditor({ form, setForm, onSubmit }: CMSContentEditorPr
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span>Excerpt</span>
-          <span className="font-mono text-[10px] text-slate-400">{form.excerpt.length} chars</span>
+          <span className="font-mono text-[10px] text-[var(--admin-text-muted)]">{form.excerpt.length} chars</span>
         </div>
         <textarea
           name="excerpt"
@@ -109,7 +119,7 @@ export function CMSContentEditor({ form, setForm, onSubmit }: CMSContentEditorPr
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span>Body</span>
-          <span className="font-mono text-[10px] text-slate-400">{wordCount(form.body)} words</span>
+          <span className="font-mono text-[10px] text-[var(--admin-text-muted)]">{wordCount(form.body)} words</span>
         </div>
         <textarea
           name="body"
@@ -154,10 +164,11 @@ export function CMSContentEditor({ form, setForm, onSubmit }: CMSContentEditorPr
       </div>
       <button
         type="submit"
-        className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+        className="min-h-12 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:cursor-not-allowed disabled:opacity-70"
       >
         {form.id ? "Save article" : "Create article"}
       </button>
+      </fieldset>
     </form>
   );
 }

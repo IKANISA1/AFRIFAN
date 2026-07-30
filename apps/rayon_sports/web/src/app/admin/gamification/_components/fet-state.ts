@@ -4,8 +4,8 @@ import type {
 } from "@/lib/types";
 
 export const scopeColors: Record<AdminFanEngagementTemplateScope, string> = {
-  generic: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
-  club_specific: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+  generic: "admin-fet-scope-generic",
+  club_specific: "admin-fet-scope-club",
 };
 
 export type FetForm = {

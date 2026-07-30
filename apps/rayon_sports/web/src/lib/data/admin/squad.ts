@@ -46,12 +46,121 @@ function mapAdminSquadPlayer(row: Record<string, unknown>): AdminSquadPlayer {
   };
 }
 
+const allowedSquadRoles = new Set([
+  "Goalkeeper",
+  "Defender",
+  "Midfielder",
+  "Forward",
+]);
+
+function boundedText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : null;
+}
+
+function boundedInteger(value: unknown, minimum: number, maximum: number) {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
+}
+
+function boundedImageUrl(value: unknown) {
+  if (value == null || value === "") {
+    return null;
+  }
+  const text = boundedText(value, 2_048);
+  if (text == null) {
+    return null;
+  }
+  if (text.startsWith("/") && !text.startsWith("//")) {
+    return text;
+  }
+  try {
+    const url = new URL(text);
+    return url.protocol === "https:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+export function normalizeAdminSquad(value: unknown): AdminSquadPlayer[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 500).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const id = boundedText(record.id, 128);
+    const name = boundedText(record.name, 120);
+    const role = boundedText(record.role, 32);
+    const number = boundedInteger(record.number, 1, 99);
+    const nationality = boundedText(record.nationality, 80);
+    const bio = boundedText(record.bio, 2_000);
+    const createdAt = boundedDate(record.createdAt);
+    const updatedAt = boundedDate(record.updatedAt);
+
+    if (
+      id == null ||
+      name == null ||
+      role == null ||
+      !allowedSquadRoles.has(role) ||
+      number == null ||
+      nationality == null ||
+      bio == null ||
+      createdAt == null ||
+      updatedAt == null ||
+      typeof record.isActive !== "boolean"
+    ) {
+      return [];
+    }
+
+    const clubId =
+      record.clubId == null
+        ? null
+        : boundedInteger(record.clubId, 1, 1_000_000_000);
+    if (record.clubId != null && clubId == null) {
+      return [];
+    }
+
+    return [{
+      id,
+      clubId,
+      name,
+      role,
+      number,
+      nationality,
+      bio,
+      imageUrl: boundedImageUrl(record.imageUrl),
+      isActive: record.isActive === true,
+      createdAt,
+      updatedAt,
+    }];
+  });
+}
+
 export async function getAdminSquad(
   client: SupabaseClient,
   access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ): Promise<AdminSquadPlayer[]> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminSquadPlayer[]>("squad");
+    return requestAdminApi<AdminSquadPlayer[]>("squad", {
+      signal: options.signal,
+    });
   }
   const clubId = requireAdminClubId(access, "load squad");
   const { data, error } = await client

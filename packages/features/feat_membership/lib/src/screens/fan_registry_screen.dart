@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -103,7 +104,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
         _hasMore = false;
         _isLoading = false;
         _isLoadingMore = false;
-        _error = 'Fan registry is temporarily unavailable.';
+        _error = context.afriL10n.fanRegistryUnavailableMessage;
       });
     }
   }
@@ -149,7 +150,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
       setState(() {
         _isLoadingMore = false;
       });
-      AfriToast.error(context, 'Could not load more fans right now.');
+      AfriToast.error(context, context.afriL10n.fanRegistryLoadMoreFailure);
     }
   }
 
@@ -177,13 +178,12 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final primary = ColorTokens.clubPrimary;
-    final fansLabel = _fans.length == 1
-        ? '1 fan loaded'
-        : '${_fans.length} fans loaded';
+    final fansLabel = l10n.fanRegistryLoaded(_fans.length);
     final summaryLabel = _searchQuery == null
-        ? 'This registry mirrors the club membership roster.'
-        : 'Filtered results for "${_searchQuery!}".';
+        ? l10n.fanRegistrySummary
+        : l10n.fanRegistryFiltered(_searchQuery!);
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
@@ -193,10 +193,10 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
         title: Text(
-          'FAN REGISTRY',
+          l10n.fanRegistryTitle.toUpperCase(),
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -275,7 +275,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
                 ),
                 child: AfriInputField(
                   controller: _searchController,
-                  hint: 'Search fans by name',
+                  hint: l10n.fanRegistrySearchHint,
                   prefixIcon: AfriIcons.search,
                   onChanged: _handleSearchChanged,
                   textInputAction: TextInputAction.search,
@@ -284,7 +284,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
                       : AfriIconButton(
                           icon: AfriIcons.close,
                           onTap: _clearSearch,
-                          tooltip: 'Clear search',
+                          tooltip: l10n.searchClearTooltip,
                           filled: false,
                         ),
                 ),
@@ -339,9 +339,9 @@ class FanRegistryResultsSliver extends StatelessWidget {
             horizontal: SpacingTokens.spacing6,
           ),
           child: AfriStateView.offline(
-            title: 'Registry unavailable',
+            title: context.afriL10n.fanRegistryUnavailable,
             message: error!,
-            actionLabel: 'Retry',
+            actionLabel: context.afriL10n.retry,
             onAction: onRetry,
           ),
         ),
@@ -403,6 +403,7 @@ class _FanRegistryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final tierColor = _tierColor(fan.tier);
     final statusColor = _statusColor(fan.paymentStatus);
     final membershipNumber = fan.membershipNumber.trim();
@@ -451,7 +452,9 @@ class _FanRegistryCard extends StatelessWidget {
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               Text(
-                fan.points <= 0 ? 'Pending' : '${fan.points} activity',
+                fan.points <= 0
+                    ? l10n.fanRegistryPending
+                    : l10n.fanRegistryActivity(fan.points),
                 style: TypographyTokens.titleSmall(
                   ColorTokens.clubAccent,
                 ).copyWith(fontWeight: FontWeight.w700),
@@ -479,8 +482,14 @@ class _FanRegistryCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           Text(
-            'Joined ${AfriDateFormatter.formatDate(fan.joinedAt.toLocal())}'
-            '${fan.expiresAt != null ? '  •  Renews ${AfriDateFormatter.formatDate(fan.expiresAt!.toLocal())}' : ''}',
+            fan.expiresAt == null
+                ? l10n.fanRegistryJoined(
+                    AfriDateFormatter.formatDate(fan.joinedAt.toLocal()),
+                  )
+                : l10n.fanRegistryJoinedRenews(
+                    AfriDateFormatter.formatDate(fan.joinedAt.toLocal()),
+                    AfriDateFormatter.formatDate(fan.expiresAt!.toLocal()),
+                  ),
             style: TypographyTokens.bodyMedium(
               ColorTokens.onSurfaceVariant,
             ).copyWith(height: 1.45),

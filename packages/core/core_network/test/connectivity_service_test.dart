@@ -3,6 +3,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ConnectivityService', () {
+    test('offline QA override is compile-time and fail-closed', () {
+      const requested = bool.fromEnvironment('AFRICLUB_QA_FORCE_OFFLINE');
+
+      expect(ConnectivityService.qaOfflineOverrideActive, requested);
+
+      if (requested) {
+        ConnectivityService.setOnlineForTest(true);
+        expect(ConnectivityService.isOnline, isFalse);
+        expect(ConnectivityService.onlineNotifier.value, isFalse);
+      }
+    });
+
     setUp(() {
       // Reset to known state before each test.
       ConnectivityService.setOnlineForTest(true);
@@ -53,25 +65,20 @@ void main() {
         expect(transitions, equals(<bool>[false, true, false]));
 
         // Cleanup.
-        ConnectivityService.onlineNotifier
-            .removeListener(() {}); // no-op, but tests won't leak.
+        ConnectivityService.onlineNotifier.removeListener(
+          () {},
+        ); // no-op, but tests won't leak.
       });
     });
 
     group('dispose', () {
       test('can be called without error when not initialized', () async {
-        await expectLater(
-          ConnectivityService.dispose(),
-          completes,
-        );
+        await expectLater(ConnectivityService.dispose(), completes);
       });
 
       test('can be called multiple times safely', () async {
         await ConnectivityService.dispose();
-        await expectLater(
-          ConnectivityService.dispose(),
-          completes,
-        );
+        await expectLater(ConnectivityService.dispose(), completes);
       });
     });
   });

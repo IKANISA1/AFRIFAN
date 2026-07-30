@@ -1,17 +1,41 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import {
   initialVenueActionState,
   launchVenuePromotion,
   saveVenueMenuItem,
   updateVenueOrderStatus,
+  type VenueActionState,
 } from "../actions";
 import type { VenueMenuItem } from "@/lib/data/venue-operations";
 import { ui } from "@/ui-kit";
+import { useVenueOnline } from "./venue-shell-client";
+
+function ActionFeedback({ state }: { state: VenueActionState }) {
+  if (!state.message) return null;
+  const className =
+    state.status === "success"
+      ? "text-sm text-emerald-300"
+      : state.status === "conflict" || state.status === "security_timeout"
+        ? "text-sm text-amber-200"
+        : "text-sm text-red-300";
+  return (
+    <p
+      role={state.status === "success" ? "status" : "alert"}
+      aria-live="polite"
+      className={className}
+    >
+      {state.message}
+    </p>
+  );
+}
 
 export function OrderStatusForm({ orderId, currentStatus }: { orderId: string; currentStatus: string }) {
   const [state, action, pending] = useActionState(updateVenueOrderStatus, initialVenueActionState);
+  const online = useVenueOnline();
+  const uncertain =
+    state.status === "conflict" || state.status === "security_timeout";
   const transitions: Record<string, string[]> = {
     created: ["accepted", "cancelled"],
     accepted: ["preparing", "cancelled"],
@@ -33,27 +57,69 @@ export function OrderStatusForm({ orderId, currentStatus }: { orderId: string; c
         Reason or handoff note
         <input name="reason" maxLength={240} className={ui.input} />
       </label>
-      <button className={ui.buttonPrimary} disabled={pending || available.length === 0}>
+      <label className="flex min-h-12 items-start gap-3 text-sm">
+        <input
+          type="checkbox"
+          name="confirmConsequence"
+          value="confirmed"
+          required
+          className="mt-1"
+        />
+        <span>
+          I reviewed the order and understand this status change is recorded in
+          the venue audit trail.
+        </span>
+      </label>
+      <button className={ui.buttonPrimary} disabled={pending || !online || uncertain || available.length === 0}>
         {pending ? "Updating…" : "Update order"}
       </button>
-      {state.message ? <p role="status" className={state.status === "error" ? "text-sm text-red-300" : "text-sm text-emerald-300"}>{state.message}</p> : null}
+      <ActionFeedback state={state} />
     </form>
   );
 }
 
 export function PromotionLaunchForm({ campaignId }: { campaignId: string }) {
   const [state, action, pending] = useActionState(launchVenuePromotion, initialVenueActionState);
+  const idempotencyKey = useRef<HTMLInputElement>(null);
+  const online = useVenueOnline();
+  const uncertain =
+    state.status === "conflict" || state.status === "security_timeout";
   return (
-    <form action={action} className="mt-5 border-t border-white/10 pt-4">
+    <form
+      action={action}
+      className="mt-5 grid gap-4 border-t border-white/10 pt-4"
+      onSubmit={() => {
+        if (idempotencyKey.current && !idempotencyKey.current.value) {
+          idempotencyKey.current.value = crypto.randomUUID();
+        }
+      }}
+    >
       <input type="hidden" name="campaignId" value={campaignId} />
-      <button className={ui.buttonPrimary} disabled={pending}>{pending ? "Launching…" : "Launch approved promotion"}</button>
-      {state.message ? <p role="status" className={state.status === "error" ? "mt-3 text-sm text-red-300" : "mt-3 text-sm text-emerald-300"}>{state.message}</p> : null}
+      <input ref={idempotencyKey} type="hidden" name="idempotencyKey" />
+      <label className="flex min-h-12 items-start gap-3 text-sm">
+        <input
+          type="checkbox"
+          name="confirmConsequence"
+          value="confirmed"
+          required
+          className="mt-1"
+        />
+        <span>
+          Launch the approved promotion for this venue. Budget and campaign
+          rules cannot be changed here.
+        </span>
+      </label>
+      <button className={ui.buttonPrimary} disabled={pending || !online || uncertain}>{pending ? "Launching…" : "Launch approved promotion"}</button>
+      <ActionFeedback state={state} />
     </form>
   );
 }
 
 export function MenuItemForm({ item }: { item?: VenueMenuItem }) {
   const [state, action, pending] = useActionState(saveVenueMenuItem, initialVenueActionState);
+  const online = useVenueOnline();
+  const uncertain =
+    state.status === "conflict" || state.status === "security_timeout";
   return (
     <form action={action} className={`${ui.panel} grid gap-4 rounded-lg p-5`}>
       <input type="hidden" name="itemId" value={item?.id ?? ""} />
@@ -68,8 +134,8 @@ export function MenuItemForm({ item }: { item?: VenueMenuItem }) {
         <label className="flex min-h-11 items-center gap-2"><input type="checkbox" name="isActive" defaultChecked={item?.isActive ?? true} /> Active</label>
         <label className="flex min-h-11 items-center gap-2"><input type="checkbox" name="isAlcohol" defaultChecked={item?.isAlcohol ?? false} /> Contains alcohol</label>
       </div>
-      <button className={ui.buttonPrimary} disabled={pending}>{pending ? "Saving…" : item ? "Save item" : "Add drink"}</button>
-      {state.message ? <p role="status" className={state.status === "error" ? "text-sm text-red-300" : "text-sm text-emerald-300"}>{state.message}</p> : null}
+      <button className={ui.buttonPrimary} disabled={pending || !online || uncertain}>{pending ? "Saving…" : item ? "Save item" : "Add drink"}</button>
+      <ActionFeedback state={state} />
     </form>
   );
 }

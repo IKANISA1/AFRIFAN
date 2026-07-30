@@ -1,8 +1,8 @@
-# Universal App Design Standard 2026
+# AFRICLUB Universal App Design Standard 2026
 
 This document is the single design authority for this repository. Any production mobile app, native Flutter TV app, admin panel, Flutter-first web shell, native iOS or Android app, React Native app, or embedded app surface must use this file as its design contract. No secondary design folder, screenshot parity matrix, token JSON, design-system markdown, source-variant asset folder, provenance note, or archived design report may override this standard.
 
-This standard is built from current platform guidance, local implementation evidence, and the supplied Revolut reference screenshot grammar. The screenshot base is mandatory as a quality and interaction target: dark immersive shells, compact command chrome, large first-viewport value, circular quick actions, restrained copy, translucent panels, stable navigation, and premium state handling. Product teams must adapt those lessons to their truthful domain, roles, data, permissions, and compliance boundaries.
+This standard is built from current platform guidance, local implementation evidence, and the Revolut reference grammar. Revolut is the interaction-quality benchmark for hierarchy, density, chrome, motion, and state polish; AFRICLUB remains a football-club product with its own identity, data, routes, accessibility obligations, and legal boundaries. Product teams must not copy finance, crypto, rewards, card, regulated, or account semantics merely to resemble the reference.
 
 ## Universal Design Goal
 
@@ -14,10 +14,21 @@ The standard is intentionally universal. Product teams must replace domain examp
 
 This file is grounded in these evidence inputs:
 
-- Local reference screenshots: `/Users/jeanbosco/Downloads/Revolut10/`, 10 Revolut reference captures at `1170 x 2532` that show account, invest, payments, crypto, rewards, contact detail, and profile surfaces.
-- Local implementation evidence: `/Volumes/PRO-G40/COOL/DESIGN.md`, COOL route/admin screenshots under `.cache/repo_wide_qa_uat/`, and COOL token seeds in `lib/app/theme/collect_colors.dart`.
-- Prior comparative audits: MOBI Revolut comparison docs under `/Volumes/PRO-G40/MOBI/mobi_app/docs/product/`, especially the reference-gap and Flutter/admin audit reports.
-- Current platform guidance checked on 2026-07-02: Flutter adaptive/responsive design, Flutter accessibility, Flutter focus and shortcuts, Apple Human Interface Guidelines, Apple tvOS HIG, Android TV design/navigation, Material 3 adaptive navigation, and WCAG 2.2.
+- Fresh Rayon iOS evidence captured on 2026-07-30 from the installed `rw.ikanisa.rayonSports` build on iPhone 17 Simulator under `output/revolut_rayon_visual_audit_20260730/screenshots/rayon/`.
+- Fresh Revolut iOS evidence captured on 2026-07-30 through iPhone Mirroring under `output/revolut_rayon_visual_audit_20260730/screenshots/revolut/`: 44 screenshots covering the five primary roots plus Home/account, statement, converter, catalogue, search, Wallet/card, Analytics, Payments, payment group, Profile/identity, documents, support, transaction, contact, Crypto settings, and appearance branches.
+- Current AFRICLUB implementation evidence in `packages/core/core_theme`, `packages/core/core_app`, `packages/core/core_router`, the feature packages, and the governed route/state closure outputs.
+- Current official Revolut public evidence: the App Store listing and accessibility declarations, Revolut 10 product-design statements, and the 2026 Open Banking brand colour guidance.
+- Fresh public user research checked on 2026-07-30, including current praise for fluid iOS motion and transaction scanning and current complaints about renamed actions, feature discovery, navigation complexity, and unwanted product prominence.
+- Current platform guidance checked for this profile: Flutter adaptive/responsive design and accessibility, Apple Human Interface Guidelines and accessibility, Android TV navigation, Material 3, and WCAG 2.2.
+
+### Evidence Status On 2026-07-30
+
+- The requested iPhone Mirroring session connected to `iPhone (2)`. After the user unlocked the device, the current logged-in Revolut app was explored read-only. Eight privacy-safe screens and 36 user-authorized personal reference screens were accepted and inspected locally. The personal set includes balances, account identifiers, merchants, contacts, payment history, group links, profile, address, phone, email, and card suffixes; it must not be published, attached to public issues, or used in shared design tools without redaction.
+- Financial actions and high-risk branches were not activated: no transfer, trade, investment, payment, card-detail, security-setting, support-conversation, or offer action was submitted or changed.
+- The former local path `/Users/jeanbosco/Downloads/Revolut10/` is not present. Any earlier notes derived from that pack are historical design context only, not fresh evidence.
+- Current Revolut brand colours below come from Revolut's official Open Banking guidance. They are brand-reference values, not proof of every colour used by the current retail iOS app.
+- Current Rayon screenshots prove the visible installed build only. A clean iOS build still fails because Firebase package products require iOS 15 while the generated target supports iOS 13.
+- Therefore `revolut_live_capture_partial=true`, `revolut_live_capture_complete=false`, `clean_ios_build=false`, and `design_complete=false`. The exact Revolut build/version, submitted or hidden transactional branches, full card detail, motion, accessibility modes, and full state coverage remain open. No document, screenshot count, or local green test may override these gates.
 
 Authoritative external references:
 
@@ -62,7 +73,7 @@ World-class benchmark conclusion: the target is not "make it look like one app."
 
 ## Reference Screenshot Lessons
 
-The Revolut screenshot base defines the required interaction grammar for this system. It is not optional inspiration; it is the benchmark for density, hierarchy, motion, contrast, command chrome, navigation, and polish. Use it to extract durable UI rules while replacing all product data, copy, regulated claims, brand marks, icons, and unsupported flows with truthful product-owned content.
+The accepted live Revolut screenshot base defines the required interaction grammar for this system. It is not optional inspiration; it is the benchmark for density, hierarchy, contrast, command chrome, navigation, and polish. Motion remains a benchmark supported by public research rather than a completed matched-state capture in this run. Use the reference to extract durable UI rules while replacing all product data, copy, regulated claims, brand marks, icons, and unsupported flows with truthful product-owned content.
 
 The visible reference grammar is:
 
@@ -78,6 +89,9 @@ The visible reference grammar is:
 - Keep bottom navigation floating, dark, stable, thumb-accessible, and branch-preserving where depth requires it.
 - Make empty, loading, offline, error, disabled, selected, pressed, focused, and permission states feel designed rather than bolted on.
 - Use background, elevation, blur, opacity, and tonal contrast to separate zones without visual noise.
+- Let each primary route use one controlled atmospheric field: Invest uses teal, Crypto uses blue, RevPoints uses purple and editorial imagery, while the stable black chrome keeps the system coherent.
+- For visual preference controls, show the appearance consequence before applying it; the observed Theme flow separates phone-shaped previews from the Light, Dark, and System mode choice.
+- Let Security and profile-class routes use a restrained near-black shell, one identity or trust hero, and grouped list panels rather than decorative card stacks.
 - Make every screen feel production-ready in both light and dark mode, even if the primary brand expression is dark-first.
 
 The screenshot base also defines what not to do:
@@ -125,11 +139,79 @@ Shared rules:
 - Admin surfaces may be denser than mobile, but they must still use the same premium dark shell grammar, concise copy, stable navigation, tokenized panels, and designed states.
 - A feature is not design-complete until its mobile, TV where applicable, and admin/operator implications are either implemented or explicitly marked not applicable in this file or the product source of truth.
 
-## COOL Surface Applicability
+## AFRICLUB Football-Club-First Product Contract
 
-For the COOL repository release covered by this contract, the in-scope product surfaces are consumer Flutter mobile, Flutter-first public/web shell where present, and Admin PWA/operator surfaces. The Native Flutter TV Standard remains part of the universal design standard for products that have a TV surface, but TV is `not_applicable_for_cool` in this release because COOL has no TV product surface in this release.
+For AFRICLUB, football club identity is the governing product and visual
+hierarchy. Fintech-grade polish is an interaction-quality benchmark, not the
+product identity. The interface must first feel like the official digital home
+of a football club.
 
-The following TV requirements are `not_applicable_for_cool`: Flutter TV routes, native TV packaging, D-pad traversal, TV remote shortcuts, TV focus screenshots, native TV screenshots, TV screenshot baselines, and TV route evidence. Universal gates must not block COOL on missing TV routes, D-pad behavior, TV screenshots, or native TV packaging evidence when this applicability record is present. Mobile, public/web shell, and Admin PWA requirements remain fully enforced.
+The mandatory product priority is:
+
+1. Club identity, team, news, fixtures, results, standings, and history.
+2. Membership, fan clubs, contributions, projects, tickets, and shop.
+3. Selected-match predictions, competitions, and governed football or approved
+   music trivia.
+4. Secondary matchday utilities such as venues, check-in, drinks ordering,
+   promotions, and venue-hosted game events.
+
+The target mobile primary navigation is `Home · Club · Fan Zone · Membership`.
+Settings, privacy, notifications, support, language, theme, and account
+controls belong behind profile. A venue, wallet, generic entertainment, or
+settings surface must not displace Club or Membership in the primary shell.
+
+AFRICLUB screen hierarchy must follow these rules:
+
+- Home leads with club identity and current football context: next fixture,
+  live/current result, latest official news, membership state, or one relevant
+  matchday action.
+- Club is a first-class hub for overview, team/squad, news, fixtures, results,
+  standings, history, projects, tickets, and shop.
+- Membership makes belonging visible through the digital card, plan/status,
+  fan clubs, contribution history/statements, and relevant club projects.
+- Fan Zone contains free selected-match predictions, approved competitions,
+  reviewed football trivia, feature-gated approved music trivia, TV games,
+  points/reward context, and supporter communities.
+- Matchday experiences or Places to watch contains secondary venue discovery,
+  explicit check-in, a bounded drinks menu/order, venue game events, and
+  approved promotions.
+- Search must discover club, team, news, fixtures, results, standings,
+  projects, tickets, products, supporter communities, games, and approved
+  venues according to permissions and availability.
+
+Prediction and trivia presentation is safety-critical:
+
+- predictions are free-to-enter and available only for selected approved
+  matches from configured main leagues, the local league, or approved club
+  competitions;
+- no odds, staking, betting, cash-payout, or fantasy-squad implication is
+  permitted;
+- AI-assisted trivia remains a draft until a governed human review/publish
+  workflow approves correctness, difficulty, duplication, rights, language,
+  and answer integrity;
+- game eligibility, score, session state, and rewards display one authoritative
+  cross-surface truth.
+
+All supported club apps use the same semantic system and shared domain
+contracts. Branding and configuration may vary, but shared layouts must reserve
+the same hierarchy for club/football, membership, engagement, and secondary
+venue utility. Rayon Sports is a reference profile, not a hardcoded shared
+assumption.
+
+## AFRICLUB Surface Applicability
+
+The in-scope surfaces are consumer Flutter mobile apps, the native Flutter TV
+app where enabled for a club, the public club website, the admin/operator PWA,
+and the bounded venue/operator portal. Each surface uses the shared semantic
+system but must keep its own role boundary, density, input model, and route
+tree. Rayon Sports is the fully governed reference club profile; other club
+apps inherit the shared system through runtime club configuration.
+
+Mobile, public web, admin, and route/state evidence are required for Rayon.
+Native TV evidence is required where the Rayon TV product is enabled. Venue
+routes are secondary matchday utilities and do not replace the Home, Club, Fan
+Zone, or Membership hierarchy. A surface may be marked not applicable only in
+the governed route matrix with a reason, owner, date, and review release.
 
 ## Design Principles
 
@@ -208,6 +290,46 @@ Secondary color gates:
 - Charts may use expanded categorical colors only when every series has a legend, pattern or marker fallback, and accessible contrast.
 - Feature teams may request a new secondary color only through the Design Exceptions Register.
 
+### Revolut Reference And Rayon Ownership Matrix
+
+Revolut's official 2026 Open Banking guidance publishes white `#FFFFFF`, black
+`#000000`, UI background black `#161618`, deep blue `#1326FD`, mid blue
+`#6FA0FF`, light blue `#C6D9FD`, purple `#9539F2`, and lime `#BFFF37`. These
+values explain the reference brand's neutral/deep-blue foundation and selective
+accent strategy. They are not a licence to make AFRICLUB look like a Revolut
+financial product.
+
+Rayon owns this runtime identity:
+
+| Role | Current seed | Contract |
+| --- | --- | --- |
+| Club primary | `#0D63F3` | Primary action, active control, focus derivation, and brand energy. Never large body text on light backgrounds without contrast resolution. |
+| Club secondary | `#0A1326` | Dark shell depth and gradient foundation. |
+| Club accent | `#E2B85F` | Membership tier, trophy, achievement, and verified club emphasis. Not a generic CTA fill. |
+| Chrome black | `#050510` | Search pill, floating navigation, modal chrome, and TV backplates. |
+| Dark canvas seed | `#100820` | Lower-shell depth blended with club primary at runtime. |
+| Dark panel seed | `#181038` | Grouped immersive panels blended with club primary at runtime. |
+| Dark asset seed | `#101830` | Cards and media-safe dark surfaces. |
+| Light canvas | `#F7F9FC` | Base light theme. |
+| Light surface lowest | `#FFFFFF` | Primary readable panels. |
+| Light surfaces | `#F3F6FA`, `#EDF2F8`, `#E7EEF6`, `#DEE8F3`, `#D5E0ED` | Tonal depth sequence; do not add grey shadows to compensate for weak hierarchy. |
+
+Rules:
+
+- Revolut values remain in the research/reference namespace. Rayon runtime code
+  consumes `ColorTokens`, `ColorScheme`, and `AfriSemanticColors`.
+- Club configuration may change primary, secondary, accent, and gradient seeds.
+  Every foreground is contrast-resolved across the active surface.
+- Dark mode is the premium reference expression. Light mode must use the same
+  hierarchy and density, not a separate pale-card design language.
+- Gradients are reserved for shell atmosphere, identity, membership tiers,
+  live/match state, or one hero. They are not page filler.
+- Success, warning, danger, focus, and information colours keep stable semantic
+  meaning across every club and surface.
+- A written partnership may authorize Revolut assets or fonts, but production
+  use still requires the supplied official kit, permitted contexts, and
+  cross-platform licence record in the repository.
+
 ### Typography Tokens
 
 - `type.display`: only for true hero or high-value first-viewport moments.
@@ -218,89 +340,60 @@ Secondary color gates:
 - Letter spacing is `0` unless a platform text style requires otherwise.
 - Do not scale font size with viewport width. Use responsive layout, wrapping, truncation, or alternate component density.
 
-#### Lovelies Typography Profile
+#### AFRICLUB And Rayon Typography Profile
 
-Applicability: Lovelies consumer Flutter and web surfaces under
-`/Volumes/PRO-G40/MEMORIES`. This profile specializes the universal typography
-tokens without importing COOL-specific applicability or finance-specific
-visual language into Lovelies.
+Production Flutter currently uses the platform UI font because
+`TypographyTokens` leaves `fontFamily` unset. Golden tests alone use
+`GoldenRoboto` for deterministic rendering. This is the authoritative current
+decision until a licensed, packaged family is approved and implemented across
+iOS, Android, web, admin, and TV.
 
-Primary family: Inter 4.1, packaged and self-hosted from the official Inter
-release. Inter is selected because it was designed for computer screens, has a
-tall x-height, includes tabular numbers and disambiguation features, supports a
-complete interface weight range, is available under the SIL Open Font License
-1.1, and already matches the declared Lovelies web family. Its neutral
-neo-grotesque construction lets photography remain the visual subject.
+Revolut's use of Aeonik Pro is a reference-brand decision, not permission to
+ship that family in AFRICLUB. Do not name or package Aeonik Pro unless the
+partnership supplies the exact licensed font files, allowed platforms, weights,
+fallback policy, and distribution terms. Visual parity must come first from
+hierarchy, metrics, weight, spacing, and motion rather than an unlicensed font.
 
-Lovelies uses one text family. The image wordmark remains a brand asset and is
-not evidence of a second reusable text family. Unsupported scripts fall back to
-the platform UI and Noto families without changing semantic hierarchy.
-
-| Token | Size | Weight | Line height | Tracking | Required use |
+| Flutter role | Size | Weight | Line height | Tracking | Required use |
 | --- | ---: | ---: | ---: | ---: | --- |
-| `type.display` | 40 | 700 | 44 | 0 | One true hero or first-viewport value. |
-| `type.title.lg` | 24 | 700 | 30 | 0 | Screen title or major section. |
-| `type.title.md` | 18 | 600 | 24 | 0 | Section title, sheet title, or card-group heading. |
-| `type.title.sm` | 15 | 600 | 20 | Compact title or emphasized row heading. |
-| `type.body.lg` | 17 | 400 | 25 | Primary reading text and important instructions. |
-| `type.body.md` | 15 | 400 | 22 | Default interface copy. |
-| `type.body.sm` | 13 | 400 | 19 | Supporting copy that still passes contrast and large-text checks. |
-| `type.label.lg` | 15 | 600 | 20 | Primary controls, tabs, and prominent chips. |
-| `type.label.md` | 13 | 600 | 18 | Secondary controls, metadata labels, and badges. |
-| `type.label.sm` | 11 | 500 | 16 | Tertiary metadata only; never essential long-form copy. |
-| `type.number.lg` | 32 | 700 | 36 | Hero count, metric, or high-value numeric result. |
-| `type.number.md` | 20 | 600 | 24 | OTP timer, phone number, count, price, or compact metric. |
-| `type.number.sm` | 14 | 500 | 18 | Dense numeric metadata. |
+| `displayLarge` | 48 | 700 | 0.96 | 0 | One hero result, identity, score, or value. |
+| `displayMedium` | 40 | 700 | 0.98 | 0 | Compact hero on smaller screens. |
+| `displaySmall` | 32 | 700 | 1.00 | 0 | Large card or detail value. |
+| `headlineLarge` | 28 | 700 | 1.10 | 0 | Screen title when a hero is not present. |
+| `headlineMedium` | 24 | 700 | 1.14 | 0 | Major section title. |
+| `headlineSmall` | 20 | 700 | 1.18 | 0 | Dense section heading. |
+| `titleLarge` | 18 | 600 | 1.22 | 0 | Sheet, panel, or route title. |
+| `titleMedium` | 16 | 600 | 1.24 | Card group or emphasized row. |
+| `titleSmall` | 14 | 600 | 1.25 | Compact row title. |
+| `bodyLarge` | 16 | 500 | 1.48 | Important explanatory content. |
+| `bodyMedium` | 14 | 500 | 1.46 | Default interface copy. |
+| `bodySmall` | 13 | 500 | 1.42 | Supporting copy; never critical legal text. |
+| `labelLarge` | 14 | 700 | 1.18 | Primary buttons and selected tabs. |
+| `labelMedium` | 13 | 600 | 1.15 | Secondary actions, chips, and metadata. |
+| `labelSmall` | 12 | 600 | 1.10 | Tertiary metadata only. |
+| `metricValue` | 28 | 800 | 1.00 | Score, points, rank, or membership number. |
+| `metricLabel` | 11 | 600 | 1.10 | Short uppercase metric label; tracking `0.6`. |
+| `navigationLabel` | 11 | 600/800 | default | 0 | Bottom navigation; selected uses 800. |
+| `badgeLabel` | 10 | 700 | 1.00 | Compact non-essential badge. |
 
-Implementation rules:
+Typography rules:
 
-- Package the Regular 400, Medium 500, SemiBold 600, and Bold 700 static font
-  files. Do not synthesize missing weights and do not use ExtraBold 800 or Black
-  900 for interface text.
-- Map the semantic roles into Flutter `ThemeData.textTheme` through a typed
-  `LoveliesTypography` `ThemeExtension`; feature screens must not create a
-  competing scale.
-- Number roles use tabular figures when the renderer and selected font asset
-  support them. OTPs and phone numbers remain real text with accessible
-  semantics and are never spaced with decorative tracking.
-- Tracking remains `0`. A non-zero platform-required value needs a Design
-  Exceptions Register entry and regression evidence.
-- Use Regular for reading, Medium for quiet emphasis, SemiBold for labels and
-  compact titles, and Bold for major titles or hero values. Hierarchy must come
-  from semantic role, size, color, and placement rather than repeated heavy
-  weight.
-- At 200 percent text scale, important labels wrap or adapt rather than
-  disappear behind ellipsis. Collection names allow two lines or a wider
-  adaptive layout, with the full accessible label preserved.
-- Light and dark themes use the same type metrics. Only semantic color tokens
-  change between modes.
-- Font delivery is local and deterministic. Production mobile or web UI must
-  not depend on a runtime request to a third-party font CDN.
-
-Material mapping:
-
-- `displayLarge` maps to `type.display`; smaller display and headline slots are
-  derived inside the central typography theme only.
-- `titleLarge`, `titleMedium`, and `titleSmall` map to `type.title.lg`,
-  `type.title.md`, and `type.title.sm`.
-- `bodyLarge`, `bodyMedium`, and `bodySmall` map to `type.body.lg`,
-  `type.body.md`, and `type.body.sm`.
-- `labelLarge`, `labelMedium`, and `labelSmall` map to `type.label.lg`,
-  `type.label.md`, and `type.label.sm`.
-- Numeric content uses the typed `type.number.*` roles rather than borrowing a
-  title style.
-
-Research record:
-
-- Inter 4.1 official source and license: `https://github.com/rsms/inter`.
-- Flutter custom-font guidance: `https://docs.flutter.dev/cookbook/design/fonts`.
-- Apple typography and Dynamic Type guidance:
-  `https://developer.apple.com/design/human-interface-guidelines/typography`.
-- Google Sans Flex was evaluated as the expressive 2026 challenger. It was not
-  selected as the first Lovelies family because its Google product signature
-  and multi-axis complexity add brand and implementation cost that do not
-  improve a photo-first interface enough to outweigh Inter's neutrality,
-  existing cross-surface fit, and deterministic static delivery.
+- Use one platform UI family per platform and a language-appropriate platform or
+  Noto fallback. Club wordmarks and crests are brand assets, not reusable fonts.
+- Use weights 500, 600, 700, and the documented 800 metric/navigation emphasis.
+  Synthetic weights and route-local font families fail the design gate.
+- Numbers use tabular figures where supported. Scores, membership numbers,
+  timers, prices, and points remain real accessible text.
+- Tracking is zero except the governed `metricLabel` role. Route-local
+  all-caps or non-zero tracking needs an exception and golden evidence.
+- At 200 percent text scale, important content wraps, reflows, or changes
+  density. It must not disappear behind ellipsis or the floating navigation.
+- Light and dark modes use identical metrics. Only semantic colours and
+  elevation change.
+- If a partnership font is later approved, add the font licence record, package
+  files locally, map every weight explicitly, update golden baselines, and prove
+  Kinyarwanda, French, English, numeric, large-text, web, admin, and TV coverage
+  before changing this profile.
 
 ### Spacing And Shape Tokens
 
@@ -355,6 +448,97 @@ The Revolut reference screenshots and Apple Design Award examples both show that
 - Skeletons and optimistic updates must preserve layout stability.
 - Sheets, dialogs, snackbars, toasts, and banners must have clear severity and recovery behavior.
 - Destructive or irreversible actions require review, confirmation, or undo according to risk.
+- For AFRICLUB, the primary shell must preserve Home, Club, Fan Zone, and
+  Membership branch state; profile owns Settings. Temporary route aliases must
+  not create multiple canonical destinations for the same club object.
+
+### Rayon Mobile Element Anatomy
+
+The following measurements are the current governed Flutter targets. A change
+to these values starts at the token layer and requires compact, standard,
+large-text, light, dark, and state evidence.
+
+| Element | Anatomy |
+| --- | --- |
+| Top command control | `58 x 58` target, maximum two trailing command actions. |
+| Club/avatar mark | `40 x 40` inside the command control. |
+| Search command | Minimum label width `142`, icon `27`, concise query hint, full semantic label. |
+| Circular command icon | `25`; notification dot `11` with tokenized inset. |
+| Floating bottom navigation | Compact `66` high, regular `78` high, `18` horizontal margin, `12` bottom margin, `24` blur sigma, `42` radius. |
+| Navigation item | Minimum width `64`, icon `22` or `24` at large text, label `11`, selected label weight `800`, inactive opacity `0.68`. |
+| Quick action | `64` diameter, minimum `48` tap target, one icon plus one short label, maximum four in the primary row. |
+| Primary button | Minimum height `56`, full pill radius, one clear verb, loading and disabled states preserve width. |
+| Screen spacing | Default responsive scaffold inset `16`; large content blocks may use the semantic `24` screen inset. Do not mix both within one alignment column. |
+| Card spacing | `20` internal padding, `12` sibling gap, `32` major section gap. |
+| Shape scale | Card `8`, control `12`, compact panel `14`, input `20`, large surface `24`, hero `32`, chrome `42`, pill `9999`. |
+| Border scale | Hairline `0.6`, standard `1`, focus `1.2`, chrome `1.15`, strong `1.5`, emphasis `2`, tab indicator `2.5`. |
+| Blur scale | Subtle `12`, standard `20`, overlay `28`, atmospheric `40`. |
+| Icon scale | Chip `14`, inline `18`, navigation `20-24`, medium `20`, large `28`, hero `40`, display `64`. |
+| Motion | Press `80 ms`, quick `150 ms`, navigation `180 ms`, standard `250 ms`, emphasized `350 ms`, atmospheric `600 ms`. |
+
+### Rayon Primary Route Visual Contract
+
+Home:
+
+- Use a compact avatar/search/notification/context-action command row.
+- The first content block is current football or membership value, not a blank
+  marketing hero. When no fixture exists, the empty state is compact and does
+  not consume most of the first viewport.
+- Keep Tickets, Members, Predict, and Shop as four primary quick actions only
+  when they are enabled and truthful. Hidden capabilities do not leave empty
+  slots.
+- News, supporters, membership, and matchday content follow in a single scroll
+  hierarchy with no floating panel covering content.
+
+Club:
+
+- Lead with official Rayon identity and one compact club summary.
+- Team, News, Fixtures, Results, Standings, History, Projects, Tickets, and Shop
+  are grouped, scan-friendly routes using the same row anatomy.
+- The `CLUB` display title may use the display role, but route titles must not
+  create an unrelated italic or all-caps font system.
+
+Fan Zone:
+
+- Lead with the user's active pick, accuracy, and points only when data is
+  available and explained.
+- Pick, League, and Points use a shared segmented control. TV code, venue
+  check-in, and venue order remain a secondary Matchday group below football
+  prediction, club competitions, and supporter activity.
+- No odds, staking, payouts, probability advice, or cash language.
+
+Membership:
+
+- Lead with status and the digital member card, then tier progress, benefits,
+  contribution history, fanclub, projects, renewal/support, and statements.
+- Membership numbers and identity are masked in screenshots and analytics.
+- Pending review is shown through text, icon/shape, and colour; colour alone is
+  insufficient.
+
+Search:
+
+- Use one strong search field, a maximum of four task-relevant filters, recent
+  searches where safe, loading, results, no-results, offline, and retry states.
+- Search explanatory copy is limited to one short sentence. Results group by
+  Club, Fixtures, Tickets/Shop, Supporters, Membership, Fan Zone, and Help.
+
+Profile and Settings:
+
+- Profile is the only primary entry to account, appearance, notifications,
+  privacy, support, legal, language, diagnostics, export, and deletion.
+- Settings use grouped full-width rows, stable icon roles, right chevrons, and
+  no unrelated hero decoration.
+- Appearance is a bottom sheet with System, Light, and Dark segments. The
+  selected mode must remain obvious without relying on colour alone.
+
+Unavailable, error, and recovery:
+
+- The title says what happened; supporting copy gives the safe next step; one
+  primary recovery action is visible.
+- Feature-disabled routes use generic `Requested section` language and never
+  reveal hidden route names, diagnostics, provider identifiers, or entitlements.
+- The state panel is vertically balanced but must not float behind the status
+  bar or leave the user without back navigation.
 
 ## Universal Component Library
 
@@ -593,6 +777,9 @@ Completion requires all of the following:
 ### Phase 3: Flutter Mobile Upgrade
 
 - Apply the shared shell to all mobile routes.
+- For AFRICLUB, complete the Club module and Home, Club, Fan Zone, Membership,
+  profile/settings hierarchy before treating venue or generic engagement
+  expansion as primary navigation work.
 - Ensure every primary mobile screen has a first-viewport value, concise top chrome, one primary action, state-safe async loading, and stable navigation.
 - Verify compact, standard, large phone, tablet, landscape, keyboard-open, large-text, and offline states.
 - Block admin routes and admin affordances from the consumer mobile route tree.
@@ -656,6 +843,50 @@ Every production route must have evidence. Use this template in release docs, QA
 
 Routes with missing evidence are not design-complete, even if they compile and pass basic tests.
 
+## Reference Fidelity Definition
+
+`100 percent reference fidelity` means every approved AFRICLUB component,
+screen archetype, interaction state, and motion behaviour matches the extracted
+reference contract within the product's own content and platform rules. It does
+not mean placing Revolut financial screens, names, assets, balances, or
+regulated flows inside a football-club app.
+
+Fidelity is measured at matched viewport and state:
+
+1. Capture the accepted reference screen and the exact-current Rayon screen.
+2. Mask private values without changing layout.
+3. Compare hierarchy, safe areas, first-viewport value, spacing, type metrics,
+   colour roles, shape, border, blur, icon anatomy, navigation, scroll
+   continuity, motion, loading, empty, error, offline, focus, pressed,
+   selected, disabled, permission, light, dark, large-text, and reduced-motion
+   states.
+4. Record every mismatch as fixed, accepted exception, not applicable, or open.
+5. Re-capture after implementation using the same viewport and state.
+
+The parity gate cannot pass while any of these are true:
+
+- live reference capture is unavailable or the reference build/version is
+  unknown;
+- the current implementation was not built cleanly from the audited checkout;
+- a screenshot comes from a stale installed build, prior chat, old artifact, or
+  different viewport without explicit historical labeling;
+- route/state, accessibility, performance, privacy, or responsive cells remain
+  open;
+- a partnership font, logo, icon, or asset is referenced without the supplied
+  licensed source and allowed-use record;
+- `design_complete=false` in the governed evidence output.
+
+Current 2026-07-30 controlled status:
+
+- 158 governed routes.
+- 1,633 fully evidenced applicable state cells.
+- 256 applicable state cells still open.
+- 639 cells explicitly not applicable.
+- `Closure complete: false`.
+- `revolut_live_capture_partial=true`.
+- `revolut_live_capture_complete=false`.
+- `clean_ios_build=false`.
+
 ## Quality Gates
 
 A product is not design-complete until all Quality Gates pass:
@@ -673,6 +904,9 @@ A product is not design-complete until all Quality Gates pass:
 - Performance coverage: first frame, scroll, animation, and memory behavior are acceptable on representative devices.
 - Privacy coverage: screenshots, logs, analytics, and UI mask sensitive data.
 - Platform coverage: Android and iOS platform conventions, permissions, status bars, navigation, haptics, and safe areas are respected.
+- AFRICLUB product coverage: club-first hierarchy, canonical Club routes,
+  selected-match game taxonomy, membership/project journey, and secondary
+  venue placement are verified on exact-current mobile evidence.
 
 ## Universal App Generation Prompt
 

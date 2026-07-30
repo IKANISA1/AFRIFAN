@@ -324,6 +324,9 @@ void main() {
             config: config,
             modules: <FeatureModule>[
               _HomeModule(),
+              _ClubModule(),
+              _FanZoneModule(),
+              _MembershipModule(),
               _OnboardingModule(),
               _SettingsModule(),
             ],
@@ -346,7 +349,7 @@ void main() {
           find.byKey(const ValueKey('home-route-draft')),
           'Preserve this draft',
         );
-        await tester.tap(find.text('Settings'));
+        await tester.tap(find.text('Membership'));
         await tester.pumpAndSettle();
         expect(find.byType(_FakeSettingsScreen), findsOneWidget);
 
@@ -429,6 +432,9 @@ void main() {
             config: config,
             modules: <FeatureModule>[
               _HomeModule(),
+              _ClubModule(),
+              _FanZoneModule(),
+              _MembershipModule(),
               _OnboardingModule(),
               _SettingsModule(),
             ],
@@ -466,6 +472,9 @@ void main() {
           config: config,
           modules: <FeatureModule>[
             _HomeModule(),
+            _ClubModule(),
+            _FanZoneModule(),
+            _MembershipModule(),
             _OnboardingModule(),
             _SettingsModule(),
           ],
@@ -516,6 +525,9 @@ void main() {
             config: config,
             modules: <FeatureModule>[
               _HomeModule(),
+              _ClubModule(),
+              _FanZoneModule(),
+              _MembershipModule(),
               _OnboardingModule(),
               _SettingsModule(),
             ],
@@ -888,6 +900,48 @@ class _SettingsModule extends FeatureModule {
       ),
     ),
   ];
+}
+
+class _ClubModule extends FeatureModule {
+  @override
+  String get featureKey => 'club';
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+    path: '/club',
+    label: 'Club',
+    icon: AfriIcons.clubZone,
+    activeIcon: AfriIcons.clubZone,
+    builder: (context, state) => const Scaffold(body: Text('Club')),
+  );
+}
+
+class _FanZoneModule extends FeatureModule {
+  @override
+  String get featureKey => 'fanzone';
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+    path: '/fanzone',
+    label: 'Fan Zone',
+    icon: AfriIcons.bolt,
+    activeIcon: AfriIcons.bolt,
+    builder: (context, state) => const Scaffold(body: Text('Fan Zone')),
+  );
+}
+
+class _MembershipModule extends FeatureModule {
+  @override
+  String get featureKey => 'membership';
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+    path: '/membership',
+    label: 'Membership',
+    icon: AfriIcons.membership,
+    activeIcon: AfriIcons.membership,
+    builder: (context, state) => const _FakeSettingsScreen(),
+  );
 }
 
 class _FakeSettingsDetailScreen extends StatelessWidget {

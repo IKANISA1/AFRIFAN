@@ -1,16 +1,17 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:flutter/material.dart';
 
 enum DiscoveryCategory { all, supporters, fixtures, commerce, services }
 
 extension DiscoveryCategoryLabel on DiscoveryCategory {
-  String get label => switch (this) {
-    DiscoveryCategory.all => 'All',
-    DiscoveryCategory.supporters => 'Supporters',
-    DiscoveryCategory.fixtures => 'Fixtures',
-    DiscoveryCategory.commerce => 'Tickets & shop',
-    DiscoveryCategory.services => 'Services',
+  String label(AfriLocalizations l10n) => switch (this) {
+    DiscoveryCategory.all => l10n.searchCategoryAll,
+    DiscoveryCategory.supporters => l10n.searchCategorySupporters,
+    DiscoveryCategory.fixtures => l10n.searchCategoryFixtures,
+    DiscoveryCategory.commerce => l10n.searchCategoryCommerce,
+    DiscoveryCategory.services => l10n.searchCategoryServices,
   };
 }
 
@@ -40,20 +41,28 @@ class DiscoverySearchQuery {
   const DiscoverySearchQuery({
     required this.text,
     this.category = DiscoveryCategory.all,
+    this.localeName = 'en',
   });
 
   final String text;
   final DiscoveryCategory category;
+  final String localeName;
+
+  AfriLocalizations get l10n {
+    final languageCode = localeName.split(RegExp('[-_]')).first;
+    return lookupAfriLocalizations(Locale(languageCode));
+  }
 
   @override
   bool operator ==(Object other) {
     return other is DiscoverySearchQuery &&
         other.text == text &&
-        other.category == category;
+        other.category == category &&
+        other.localeName == localeName;
   }
 
   @override
-  int get hashCode => Object.hash(text, category);
+  int get hashCode => Object.hash(text, category, localeName);
 }
 
 @immutable

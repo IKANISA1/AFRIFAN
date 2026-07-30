@@ -20,18 +20,12 @@ void main() {
       final snapshot = localHomeFeedFallbackSnapshot();
 
       expect(snapshot.status, HomeFeedStatus.degraded);
-      expect(snapshot.message, homeFeedLocalFallbackMessage);
-      expect(snapshot.message, isNot(contains('Could not resolve')));
+      expect(snapshot.notice, HomeFeedNotice.liveUnavailable);
       expect(snapshot.hasQuickActions, isTrue);
       expect(snapshot.showFixturePlaceholder, isTrue);
       expect(
-        snapshot.quickActions.map((action) => action.title),
-        orderedEquals(<String>[
-          'Tickets',
-          'Join Gikundiro',
-          'Fan Zone',
-          'Shop',
-        ]),
+        snapshot.quickActions.map((action) => action.actionKey),
+        orderedEquals(<String>['tickets', 'membership', 'fan_zone', 'shop']),
       );
       expect(
         snapshot.quickActions
@@ -48,7 +42,7 @@ void main() {
 
       expect(snapshot.status, LatestIntelStatus.empty);
       expect(snapshot.articles, isEmpty);
-      expect(snapshot.message, 'Club updates will appear when published.');
+      expect(snapshot.notice, LatestIntelNotice.unpublished);
     });
   });
 }

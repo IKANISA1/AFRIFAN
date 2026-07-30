@@ -1,19 +1,29 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Award } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
+import { AdminSurface } from "@/components/admin/admin-surface";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
+import { Skeleton } from "@/components/skeleton";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import {
   deleteAdminFanEngagementToken,
   getAdminFanEngagementTokens,
+  normalizeAdminFanEngagementTokens,
   saveAdminFanEngagementToken,
 } from "@/lib/data/admin/gamification";
 import type { AdminFanEngagementToken } from "@/lib/types";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
+import { useHydrated } from "@/lib/use-hydrated";
 import {
   emptyFetForm,
   type FetForm,
@@ -23,41 +33,104 @@ import { FetEditorForm } from "./_components/fet-editor-form";
 import { FetList } from "./_components/fet-list";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
 
+const emptyTokens: AdminFanEngagementToken[] = [];
+const tokensAreEmpty = (items: AdminFanEngagementToken[]) => items.length === 0;
+
+const statusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading FET catalogue",
+    detail: "Waiting for the first authenticated reward-definition snapshot.",
+  },
+  ready: {
+    label: "FET catalogue confirmed",
+    detail: "The bounded reward-definition catalogue is current.",
+  },
+  empty: {
+    label: "No FET items in this scope",
+    detail: "Create an approved reward definition for this club.",
+  },
+  error: {
+    label: "FET catalogue unavailable",
+    detail: "Confirmed items remain visible. Retry when service recovers.",
+  },
+  offline: {
+    label: "Gamification workspace is offline",
+    detail:
+      "Confirmed items remain visible; mutations are locked until reconnect.",
+  },
+  permission_denied: {
+    label: "Gamification access denied",
+    detail:
+      "Previously loaded items, filters, selection, and the active draft were cleared.",
+  },
+  syncing: {
+    label: "Refreshing FET catalogue",
+    detail: "Confirmed items remain visible during the bounded refresh.",
+  },
+  conflict: {
+    label: "FET catalogue changed",
+    detail: "Review the current item before restarting the change.",
+  },
+  security_timeout: {
+    label: "FET catalogue request timed out",
+    detail: "No catalogue change was confirmed.",
+  },
+};
+
 export default function AdminGamificationPage() {
   const { access, client } = useAdminPortal();
-  const [tokens, setTokens] = useState<AdminFanEngagementToken[]>([]);
+  const hydrated = useHydrated();
   const [form, setForm] = useState<FetForm>(emptyFetForm);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
 
-  const load = useCallback(async () => {
-    if (client == null) return;
+  const loadTokens = useCallback(
+    async (signal: AbortSignal) => {
+      if (client == null) return emptyTokens;
+      return getAdminFanEngagementTokens(client, access, { signal });
+    },
+    [access, client],
+  );
 
-    setLoading(true);
-    try {
-      setTokens(await getAdminFanEngagementTokens(client, access));
-      setLoadError(null);
-    } catch (caught) {
-      const message =
-        caught instanceof Error ? caught.message : "Could not load FET catalog.";
-      setLoadError(message);
-      showAdminToast(
-        message,
-        "error",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [access, client]);
+  const clearDeniedState = useCallback(() => {
+    setForm(emptyFetForm);
+    setInteraction("idle");
+  }, []);
 
-  useEffect(() => {
-    if (client == null || !access.hasAccess) return;
-    load().catch(() => {});
-  }, [access.hasAccess, client, load]);
+  const {
+    data: tokens,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState({
+    enabled: hydrated && client != null && access.hasAccess,
+    emptyValue: emptyTokens,
+    isEmpty: tokensAreEmpty,
+    load: loadTokens,
+    normalize: normalizeAdminFanEngagementTokens,
+    onPermissionDenied: clearDeniedState,
+    resourceLabel: "FET catalogue",
+  });
+
+  const mutationLocked = status !== "ready" && status !== "empty";
+  const unrecoveredFailure =
+    !hasConfirmed &&
+    (status === "error" ||
+      status === "offline" ||
+      status === "permission_denied" ||
+      status === "conflict" ||
+      status === "security_timeout");
 
   function beginEdit(token: AdminFanEngagementToken) {
     setForm(tokenToForm(token));
-    showAdminToast(`Editing ${token.code}.`, "info");
+    setInteraction("selected");
+    showAdminToast("Reward definition selected for review.", "info");
   }
 
   async function removeToken(token: AdminFanEngagementToken) {
@@ -82,21 +155,18 @@ export default function AdminGamificationPage() {
         token.id,
         token.updatedAt,
       );
-      await load();
+      await refresh();
       if (form.id === token.id) {
         setForm(emptyFetForm);
+        setInteraction("idle");
       }
-      showAdminToast(`${token.code} removed.`, "success");
+      showAdminToast("Reward definition removed.", "success");
     } catch (caught) {
+      applyFailure(caught);
       if (isAdminMutationConflict(caught)) {
-        await load();
+        await refresh();
       }
-      showAdminToast(
-        caught instanceof Error
-          ? caught.message
-          : "Could not remove FET item.",
-        "error",
-      );
+      showAdminToast("Could not remove the reward definition.", "error");
     }
   }
 
@@ -124,42 +194,59 @@ export default function AdminGamificationPage() {
         sortOrder: token.sortOrder,
         isActive: !token.isActive,
       });
-      await load();
-      showAdminToast(
-        `${token.code} ${token.isActive ? "deactivated" : "activated"}.`,
-        "success",
-      );
+      await refresh();
+      showAdminToast("Reward activation state updated.", "success");
     } catch (caught) {
+      applyFailure(caught);
       if (isAdminMutationConflict(caught)) {
-        await load();
+        await refresh();
       }
-      showAdminToast(
-        caught instanceof Error
-          ? caught.message
-          : "Could not update FET activation state.",
-        "error",
-      );
+      showAdminToast("Could not update the reward activation state.", "error");
     }
   }
 
   return (
-    <div className="section-grid">
+    <section
+      className="admin-gamification-state-surface section-grid min-w-0 max-w-full"
+      data-admin-gamification-status={status}
+      data-admin-gamification-interaction={interaction}
+      data-admin-gamification-refresh-disabled={busy}
+      data-admin-gamification-mutation-disabled={mutationLocked}
+      aria-busy={busy || undefined}
+    >
       <AdminPageHeader
         eyebrow="Gamification"
         title="Fan Engagement Tokens"
+        meta={
+          <span className="admin-meta-chip">
+            Bounded club-scoped reward definitions
+          </span>
+        }
       />
 
-      <div className="grid gap-5 md:grid-cols-4">
+      <AdminResourceStatusBanner
+        status={status}
+        label={statusCopy[status].label}
+        detail={statusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh FET catalogue"
+        selected={interaction === "selected"}
+        onRefresh={() => void refresh()}
+        onInteractionChange={setInteraction}
+      />
+
+      <div className="admin-gamification-metrics-grid">
         <AdminStateCard
           label="Catalog items"
-          value={loading ? "..." : tokens.length.toString()}
-          helper="Configured reward definitions."
+          value={initialLoading ? "..." : tokens.length.toString()}
+          helper="Strict catalogue window, capped at 500."
           icon={Award}
         />
         <AdminStateCard
           label="Active"
           value={
-            loading
+            initialLoading
               ? "..."
               : tokens.filter((token) => token.isActive).length.toString()
           }
@@ -168,7 +255,7 @@ export default function AdminGamificationPage() {
         <AdminStateCard
           label="Generic"
           value={
-            loading
+            initialLoading
               ? "..."
               : tokens
                   .filter((token) => token.templateScope === "generic")
@@ -179,7 +266,7 @@ export default function AdminGamificationPage() {
         <AdminStateCard
           label="Club-specific"
           value={
-            loading
+            initialLoading
               ? "..."
               : tokens
                   .filter((token) => token.templateScope === "club_specific")
@@ -189,39 +276,57 @@ export default function AdminGamificationPage() {
         />
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-        <FetEditorForm
-          form={form}
-          setForm={setForm}
-          client={client}
-          access={access}
-          onSaved={load}
-          onConflict={async () => {
-            await load();
-            showAdminToast(
-              "Latest FET catalogue loaded. Your draft is retained; review it before restarting the edit.",
-              "info",
-            );
-          }}
+      {unrecoveredFailure ? (
+        <AdminErrorState
+          title={statusCopy[status].label}
+          description={statusCopy[status].detail}
+          onRetry={
+            status === "permission_denied" ? undefined : () => void refresh()
+          }
+          retryLabel="Retry FET catalogue"
         />
-        {loadError && !loading ? (
-          <AdminErrorState
-            title="FET catalogue could not be loaded"
-            description={loadError}
-            onRetry={() => {
-              load().catch(() => {});
+      ) : initialLoading ? (
+        <AdminSurface title="FET catalogue workspace">
+          <div className="space-y-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-4"
+              >
+                <Skeleton className="skeleton-text h-5 w-1/3" />
+                <Skeleton className="skeleton-text mt-2 h-3 w-2/3" />
+              </div>
+            ))}
+          </div>
+        </AdminSurface>
+      ) : (
+        <div className="admin-gamification-content-grid">
+          <FetEditorForm
+            form={form}
+            setForm={setForm}
+            client={client}
+            access={access}
+            disabled={mutationLocked}
+            onSaved={refresh}
+            onFailure={applyFailure}
+            onConflict={async () => {
+              await refresh();
+              showAdminToast(
+                "Latest FET catalogue loaded. Your draft is retained; review it before restarting the edit.",
+                "info",
+              );
             }}
           />
-        ) : (
           <FetList
             tokens={tokens}
-            loading={loading}
+            loading={false}
+            mutationDisabled={mutationLocked}
             onEdit={beginEdit}
             onDelete={removeToken}
             onToggleActive={toggleActive}
           />
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </section>
   );
 }

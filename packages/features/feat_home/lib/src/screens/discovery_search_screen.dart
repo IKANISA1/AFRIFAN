@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -64,28 +65,33 @@ class _DiscoverySearchScreenState extends ConsumerState<DiscoverySearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final recent =
         ref.watch(recentDiscoverySearchesProvider).valueOrNull ??
         const <String>[];
     final hasSearch = _query.length >= 2;
     final draftLength = _controller.text.trim().length;
-    final request = DiscoverySearchQuery(text: _query, category: _category);
+    final request = DiscoverySearchQuery(
+      text: _query,
+      category: _category,
+      localeName: l10n.localeName,
+    );
 
     return AfriScreenScaffold(
-      title: 'Search',
+      title: l10n.searchTitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AfriInputField(
             key: const ValueKey<String>('discovery-search-input'),
             controller: _controller,
-            hint: 'Fans, fixtures, tickets, shop, wallet, help',
+            hint: l10n.searchHint,
             prefixIcon: AfriIcons.search,
             suffixIcon: _controller.text.isEmpty
                 ? null
                 : AfriIconButton(
                     icon: AfriIcons.close,
-                    tooltip: 'Clear search',
+                    tooltip: l10n.searchClearTooltip,
                     onTap: () {
                       _debounce?.cancel();
                       _controller.clear();
@@ -101,7 +107,7 @@ class _DiscoverySearchScreenState extends ConsumerState<DiscoverySearchScreen> {
           const SizedBox(height: SpacingTokens.spacing4),
           AfriSegmentedControl(
             items: DiscoveryCategory.values
-                .map((category) => AfriSegment(label: category.label))
+                .map((category) => AfriSegment(label: category.label(l10n)))
                 .toList(growable: false),
             selectedIndex: DiscoveryCategory.values.indexOf(_category),
             onChanged: (index) {
@@ -113,9 +119,8 @@ class _DiscoverySearchScreenState extends ConsumerState<DiscoverySearchScreen> {
             if (draftLength == 1)
               AfriStateView.empty(
                 key: const ValueKey<String>('discovery-search-disabled'),
-                title: 'Keep typing',
-                message:
-                    'Enter at least two characters before search can start.',
+                title: l10n.searchKeepTypingTitle,
+                message: l10n.searchKeepTypingMessage,
                 icon: AfriIcons.search,
                 compact: true,
               )
@@ -137,22 +142,27 @@ class _DiscoverySearchScreenState extends ConsumerState<DiscoverySearchScreen> {
                           ? 'discovery-search-syncing'
                           : 'discovery-search-loading',
                     ),
-                    title: _hasSettledSearch ? 'Updating results' : 'Searching',
+                    title: _hasSettledSearch
+                        ? l10n.searchUpdatingTitle
+                        : l10n.searchSearchingTitle,
                     message: _hasSettledSearch
-                        ? 'Refreshing sections and public supporter content.'
-                        : 'Searching sections and supporter content.',
+                        ? l10n.searchUpdatingMessage
+                        : l10n.searchSearchingMessage,
                     compact: true,
                   ),
                   error: (error, stackTrace) {
                     _markSearchSettled();
-                    final failure = _SearchFailureContent.fromError(error);
+                    final failure = _SearchFailureContent.fromError(
+                      error,
+                      l10n,
+                    );
                     return AfriStateView.error(
                       key: ValueKey<String>(
                         'discovery-search-${failure.stateId}',
                       ),
                       title: failure.title,
                       message: failure.message,
-                      actionLabel: failure.canRetry ? 'Retry' : null,
+                      actionLabel: failure.canRetry ? l10n.retry : null,
                       onAction: failure.canRetry
                           ? () {
                               unawaited(
@@ -222,34 +232,34 @@ class _SearchFailureContent {
   final String message;
   final bool canRetry;
 
-  factory _SearchFailureContent.fromError(Object error) {
+  factory _SearchFailureContent.fromError(
+    Object error,
+    AfriLocalizations l10n,
+  ) {
     final failure = DiscoverySearchFailure.fromError(error);
     return switch (failure.kind) {
-      DiscoverySearchFailureKind.permissionDenied => const _SearchFailureContent(
+      DiscoverySearchFailureKind.permissionDenied => _SearchFailureContent(
         stateId: 'permission-denied',
-        title: 'Search not permitted',
-        message:
-            'Your account cannot use live search. Local navigation and your query remain available. Contact club support.',
+        title: l10n.searchPermissionTitle,
+        message: l10n.searchPermissionMessage,
         canRetry: false,
       ),
-      DiscoverySearchFailureKind.conflict => const _SearchFailureContent(
+      DiscoverySearchFailureKind.conflict => _SearchFailureContent(
         stateId: 'conflict',
-        title: 'Search changed',
-        message:
-            'Available content changed during this search. Review the current query and try again.',
+        title: l10n.searchConflictTitle,
+        message: l10n.searchConflictMessage,
         canRetry: true,
       ),
-      DiscoverySearchFailureKind.securityTimeout => const _SearchFailureContent(
+      DiscoverySearchFailureKind.securityTimeout => _SearchFailureContent(
         stateId: 'security-timeout',
-        title: 'Search timed out',
-        message:
-            'The secure search window expired. Your query is still here. Try again when you are ready.',
+        title: l10n.searchTimeoutTitle,
+        message: l10n.searchTimeoutMessage,
         canRetry: true,
       ),
-      DiscoverySearchFailureKind.unknown => const _SearchFailureContent(
+      DiscoverySearchFailureKind.unknown => _SearchFailureContent(
         stateId: 'error',
-        title: 'Search is unavailable',
-        message: 'Try again. Your query has not been sent elsewhere.',
+        title: l10n.searchUnavailableTitle,
+        message: l10n.searchUnavailableMessage,
         canRetry: true,
       ),
     };
@@ -269,24 +279,24 @@ class _SearchStartState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AfriStateView.empty(
           key: const ValueKey<String>('discovery-search-start'),
-          title: 'Find what you need',
-          message:
-              'Enter at least two characters. Search covers app sections and public supporter content.',
+          title: l10n.searchStartTitle,
+          message: l10n.searchStartMessage,
           icon: AfriIcons.search,
           compact: true,
         ),
         if (recentSearches.isNotEmpty) ...[
           const SizedBox(height: SpacingTokens.spacing6),
           AfriSectionHeader(
-            title: 'Recent searches',
+            title: l10n.searchRecentTitle,
             padding: EdgeInsets.zero,
             trailing: AfriButton(
-              label: 'Clear',
+              label: l10n.searchClear,
               onTap: onClearRecent,
               variant: AfriButtonVariant.ghost,
               fullWidth: false,
@@ -301,7 +311,7 @@ class _SearchStartState extends StatelessWidget {
                   (query) => AfriChoiceChip(
                     label: Text(query),
                     selected: false,
-                    tooltip: 'Search for $query',
+                    tooltip: l10n.searchForTooltip(query),
                     onSelected: (_) => onRecentTap(query),
                   ),
                 )
@@ -328,12 +338,13 @@ class _SearchResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     if (response.results.isEmpty) {
       return AfriStateView.empty(
         key: const ValueKey<String>('discovery-search-empty'),
-        title: 'No results',
-        message: 'No result matches “$query”.',
-        actionLabel: 'Show all categories',
+        title: l10n.searchNoResultsTitle,
+        message: l10n.searchNoResultsMessage(query),
+        actionLabel: l10n.searchShowAllCategories,
         onAction: onClearFilters,
         compact: true,
       );
@@ -345,9 +356,8 @@ class _SearchResults extends StatelessWidget {
         if (response.offline) ...[
           AfriStateView.offline(
             key: const ValueKey<String>('discovery-search-offline'),
-            title: 'Offline results',
-            message:
-                'Showing results stored on this device. Live content may be out of date.',
+            title: l10n.searchOfflineTitle,
+            message: l10n.searchOfflineMessage,
             compact: true,
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -355,7 +365,7 @@ class _SearchResults extends StatelessWidget {
         Semantics(
           liveRegion: true,
           child: Text(
-            '${response.results.length} result${response.results.length == 1 ? '' : 's'}',
+            l10n.searchResultCount(response.results.length),
             style: TypographyTokens.labelLarge(ColorTokens.onSurfaceVariant),
           ),
         ),

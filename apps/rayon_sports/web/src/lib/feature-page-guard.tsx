@@ -8,6 +8,7 @@ import {
 type FeaturePageGuardOptions = {
   title?: string;
   description?: string;
+  allowControlledRouteEvidence?: boolean;
 };
 
 const FEATURE_LABELS: Record<string, string> = {
@@ -42,6 +43,14 @@ export async function getFeaturePageGuard(
   featureKey: string,
   options: FeaturePageGuardOptions = {},
 ) {
+  const controlledRouteEvidenceAllowed =
+    options.allowControlledRouteEvidence === true &&
+    process.env.AFRICLUB_ALLOW_HTTP_PREVIEW === "1" &&
+    process.env.AFRICLUB_CONTROLLED_ROUTE_EVIDENCE === "1";
+  if (controlledRouteEvidenceAllowed) {
+    return null;
+  }
+
   const config = await getPlatformConfig();
   const access = getFeatureAccess(config, featureKey);
 

@@ -1,7 +1,6 @@
 "use client";
 
 import type { Dispatch, SetStateAction } from "react";
-import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { Skeleton } from "@/components/skeleton";
 import {
   isValidHexColor,
@@ -13,9 +12,9 @@ import type { SettingsForm } from "./settings-form-state";
 interface IdentityFormProps {
   form: SettingsForm | null;
   setForm: Dispatch<SetStateAction<SettingsForm | null>>;
-  error: string | null;
   loading: boolean;
-  onReload: () => void;
+  canSave: boolean;
+  saving: boolean;
   onSave: () => void;
 }
 
@@ -33,7 +32,12 @@ function isValidUrl(value: string) {
 
   try {
     const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
+    return (
+      url.protocol === "https:" &&
+      url.username === "" &&
+      url.password === "" &&
+      url.hash === ""
+    );
   } catch {
     return false;
   }
@@ -47,9 +51,9 @@ function resolveColorValue(value: string) {
 export function IdentityForm({
   form,
   setForm,
-  error,
   loading,
-  onReload,
+  canSave,
+  saving,
   onSave,
 }: IdentityFormProps) {
   function updateField<K extends keyof SettingsForm>(field: K, value: SettingsForm[K]) {
@@ -115,31 +119,21 @@ export function IdentityForm({
         <p className="font-display text-3xl font-bold uppercase leading-none">
           Identity settings
         </p>
-        <button
-          type="button"
-          onClick={onReload}
-          className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
-        >
-          Reload
-        </button>
+        <span className="admin-meta-chip">
+          {canSave ? "Editable" : "Read only"}
+        </span>
       </div>
 
       {loading || form == null ? (
-        error && !loading ? (
-          <AdminErrorState
-            title="Settings could not be loaded"
-            description={error}
-            onRetry={onReload}
-          />
-        ) : (
         <div className="space-y-4">
           {Array.from({ length: 7 }).map((_, index) => (
             <Skeleton key={index} className="h-14 rounded-[22px]" />
           ))}
         </div>
-        )
       ) : (
         <>
+          <fieldset disabled={!canSave || saving} className="contents">
+          <legend className="sr-only">Club identity fields</legend>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="grid gap-2 text-sm">
               Club name
@@ -331,11 +325,18 @@ export function IdentityForm({
           <button
             type="button"
             onClick={onSave}
-            disabled={!isValid}
-            className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+            disabled={!isValid || !canSave || saving}
+            className="min-h-12 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transition-none"
           >
-            Save settings
+            {saving ? "Saving settings..." : "Save settings"}
           </button>
+          </fieldset>
+          {!canSave ? (
+            <p className="text-sm leading-6 text-slate-300" role="note">
+              Club moderator access is read only. A club administrator must
+              review and save identity changes.
+            </p>
+          ) : null}
         </>
       )}
     </section>

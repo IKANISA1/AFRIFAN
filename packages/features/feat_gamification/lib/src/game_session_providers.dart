@@ -1,7 +1,7 @@
 import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'models/game_session_models.dart';
+import 'controllers/game_session_controller.dart';
 import 'repositories/game_session_repository.dart';
 
 class GameSessionControllerArgs {
@@ -28,12 +28,34 @@ final gameSessionRepositoryProvider = Provider<GameSessionRepository>(
   (ref) => GameSessionRepository(client: ref.watch(supabaseClientProvider)),
 );
 
-final gameSessionControllerStateProvider = FutureProvider.family<
-    GameSessionControllerState,
-    GameSessionControllerArgs>((ref, args) async {
-  final repository = ref.read(gameSessionRepositoryProvider);
-  return repository.loadControllerState(
-    sessionId: args.sessionId,
-    sessionPlayerId: args.sessionPlayerId,
-  );
-});
+final gameSessionGatewayProvider = Provider<GameSessionGateway>(
+  (ref) =>
+      RepositoryGameSessionGateway(ref.watch(gameSessionRepositoryProvider)),
+);
+
+final gameSessionLoadTimeoutProvider = Provider<Duration>(
+  (ref) => const Duration(seconds: 12),
+);
+
+final gameSessionMutationTimeoutProvider = Provider<Duration>(
+  (ref) => const Duration(seconds: 12),
+);
+
+final gameSessionControllerAccessEnabledProvider = Provider<bool>(
+  (ref) => true,
+);
+
+final gameSessionControllerStateProvider =
+    StateNotifierProvider.family<
+      GameSessionController,
+      AsyncValue<GameSessionRouteState>,
+      GameSessionControllerArgs
+    >((ref, args) {
+      return GameSessionController(
+        ref.watch(gameSessionGatewayProvider),
+        sessionId: args.sessionId,
+        sessionPlayerId: args.sessionPlayerId,
+        loadTimeout: ref.watch(gameSessionLoadTimeoutProvider),
+        mutationTimeout: ref.watch(gameSessionMutationTimeoutProvider),
+      );
+    });

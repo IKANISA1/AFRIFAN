@@ -41,7 +41,7 @@ const requiredScreenArchetypes = <String>[
 ];
 
 void main(List<String> arguments) {
-  final workspace = Directory.current.absolute;
+  final workspace = resolveRouteInventoryWorkspace(Directory.current);
   final outputDirectory = Directory(
     arguments.isEmpty
         ? '${workspace.path}/output/route_inventory'
@@ -58,6 +58,28 @@ void main(List<String> arguments) {
       'Duplicate route inventory keys: ${duplicateKeys.join(', ')}',
     );
     exitCode = 1;
+  }
+}
+
+Directory resolveRouteInventoryWorkspace(Directory start) {
+  var candidate = start.absolute;
+
+  while (true) {
+    final hasAppRegistry = Directory(
+      '${candidate.path}/packages/app_registry',
+    ).existsSync();
+    final hasRayonWeb = Directory(
+      '${candidate.path}/apps/rayon_sports/web',
+    ).existsSync();
+    if (hasAppRegistry && hasRayonWeb) {
+      return candidate;
+    }
+
+    final parent = candidate.parent;
+    if (parent.path == candidate.path) {
+      return start.absolute;
+    }
+    candidate = parent;
   }
 }
 
@@ -434,6 +456,7 @@ Map<String, Object?> generateRouteStateClosure({
   var notApplicableCells = 0;
   var testEvidencedCells = 0;
   var visualEvidencedCells = 0;
+  var responseEvidencedCells = 0;
   var evidencedCells = 0;
 
   for (final route in routes) {
@@ -453,14 +476,21 @@ Map<String, Object?> generateRouteStateClosure({
       final testEvidence = evidence?.testEvidence ?? const <String>[];
       final screenshotEvidence =
           evidence?.screenshotEvidence ?? const <String>[];
+      final responseEvidence = evidence?.responseEvidence ?? const <String>[];
       final hasTestEvidence = testEvidence.isNotEmpty;
       final hasScreenshotEvidence = screenshotEvidence.isNotEmpty;
-      final isEvidenced =
-          applicable && hasTestEvidence && hasScreenshotEvidence;
+      final hasResponseEvidence = responseEvidence.isNotEmpty;
+      final isEndpoint =
+          route['kind'] == 'api_route' || route['kind'] == 'http_route';
+      final hasRequiredArtifact = isEndpoint
+          ? hasResponseEvidence
+          : hasScreenshotEvidence;
+      final isEvidenced = applicable && hasTestEvidence && hasRequiredArtifact;
       if (applicable) {
         applicableCells += 1;
         if (hasTestEvidence) testEvidencedCells += 1;
         if (hasScreenshotEvidence) visualEvidencedCells += 1;
+        if (hasResponseEvidence) responseEvidencedCells += 1;
         if (isEvidenced) {
           evidencedCells += 1;
         } else {
@@ -483,10 +513,13 @@ Map<String, Object?> generateRouteStateClosure({
                 baseRationale: classification.$2,
                 hasTestEvidence: hasTestEvidence,
                 hasScreenshotEvidence: hasScreenshotEvidence,
+                hasResponseEvidence: hasResponseEvidence,
+                requiresResponseEvidence: isEndpoint,
               )
             : classification.$2,
         'test_evidence': testEvidence,
         'screenshot_evidence': screenshotEvidence,
+        'response_evidence': responseEvidence,
         'accessibility_evidence':
             evidence?.accessibilityEvidence ?? const <String>[],
         'performance_evidence':
@@ -504,6 +537,8 @@ Map<String, Object?> generateRouteStateClosure({
       'surface': route['surface'],
       'path': route['path'],
       'kind': route['kind'],
+      'endpoint_state_contract': route['endpoint_state_contract'],
+      'rendered_state_contract': route['rendered_state_contract'],
       'role_boundary': route['role_boundary'],
       'guard': route['guard'],
       'source': route['source'],
@@ -517,7 +552,7 @@ Map<String, Object?> generateRouteStateClosure({
   final jsonPath = '${outputDirectory.path}/route-state-closure.json';
   final markdownPath = '${outputDirectory.path}/route-state-closure.md';
   final payload = <String, Object?>{
-    'schema_version': '1.1',
+    'schema_version': '1.2',
     'generated_at': generated,
     'workspace': workspace.path,
     'source_inventory': '${outputDirectory.path}/route-inventory.json',
@@ -529,6 +564,7 @@ Map<String, Object?> generateRouteStateClosure({
     'not_applicable_cell_count': notApplicableCells,
     'test_evidenced_cell_count': testEvidencedCells,
     'visual_evidenced_cell_count': visualEvidencedCells,
+    'response_evidenced_cell_count': responseEvidencedCells,
     'evidenced_cell_count': evidencedCells,
     'open_cell_count': applicableCells - evidencedCells,
     'closure_complete':
@@ -553,6 +589,7 @@ Map<String, Object?> generateRouteStateClosure({
     ..writeln('- Explicitly not-applicable cells: `$notApplicableCells`')
     ..writeln('- Test-evidenced cells: `$testEvidencedCells`')
     ..writeln('- Visual-evidenced cells: `$visualEvidencedCells`')
+    ..writeln('- Response-evidenced cells: `$responseEvidencedCells`')
     ..writeln('- Fully evidenced cells: `$evidencedCells`')
     ..writeln(
       '- Closure complete: '
@@ -564,16 +601,18 @@ Map<String, Object?> generateRouteStateClosure({
     ..writeln(
       'An `open` cell is a controlled requirement, not evidence that the state '
       'already works. A cell becomes `evidenced` only after both a current '
-      'executable test and controlled visual artifact are linked. A '
+      'executable test and the surface-appropriate controlled artifact are '
+      'linked: a screenshot for rendered routes, or a response contract for '
+      'HTTP endpoints. A '
       '`not_applicable` cell is limited to redirects or HTTP endpoints with no '
       'rendered interaction.',
     )
     ..writeln()
     ..writeln(
       '| Route | Surface | Kind | Evidenced | Open states | Not applicable | '
-      'Test links | Screenshot links |',
+      'Test links | Screenshot links | Response links |',
     )
-    ..writeln('| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |');
+    ..writeln('| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |');
   for (final row in routeRows) {
     final states = row['states']! as Map<String, Object?>;
     final open = states.values
@@ -612,9 +651,18 @@ Map<String, Object?> generateRouteStateClosure({
         )
         .toSet()
         .length;
+    final responseLinks = states.values
+        .expand(
+          (value) =>
+              (value! as Map<String, Object?>)['response_evidence']!
+                  as List<Object?>,
+        )
+        .toSet()
+        .length;
     markdown.writeln(
       '| `${row['path']}` | ${row['surface']} | ${row['kind']} | '
-      '$evidenced | $open | $notApplicable | $testLinks | $screenshotLinks |',
+      '$evidenced | $open | $notApplicable | $testLinks | $screenshotLinks | '
+      '$responseLinks |',
     );
   }
   File(markdownPath).writeAsStringSync(markdown.toString());
@@ -630,13 +678,22 @@ String _openRouteStateRationale({
   required String baseRationale,
   required bool hasTestEvidence,
   required bool hasScreenshotEvidence,
+  required bool hasResponseEvidence,
+  required bool requiresResponseEvidence,
 }) {
-  if (hasTestEvidence && !hasScreenshotEvidence) {
+  final hasRequiredArtifact = requiresResponseEvidence
+      ? hasResponseEvidence
+      : hasScreenshotEvidence;
+  final artifactLabel = requiresResponseEvidence
+      ? 'controlled response-contract proof'
+      : 'controlled visual proof';
+  if (hasTestEvidence && !hasRequiredArtifact) {
     return '$baseRationale Current executable test evidence is linked; '
-        'controlled visual proof remains open.';
+        '$artifactLabel remains open.';
   }
-  if (!hasTestEvidence && hasScreenshotEvidence) {
-    return '$baseRationale Controlled visual proof is linked; current '
+  if (!hasTestEvidence && hasRequiredArtifact) {
+    return '$baseRationale ${artifactLabel[0].toUpperCase()}'
+        '${artifactLabel.substring(1)} is linked; current '
         'executable test evidence remains open.';
   }
   return baseRationale;
@@ -646,6 +703,7 @@ class _RouteStateEvidence {
   const _RouteStateEvidence({
     required this.testEvidence,
     required this.screenshotEvidence,
+    required this.responseEvidence,
     required this.accessibilityEvidence,
     required this.performanceEvidence,
     required this.privacyEvidence,
@@ -657,6 +715,7 @@ class _RouteStateEvidence {
 
   final List<String> testEvidence;
   final List<String> screenshotEvidence;
+  final List<String> responseEvidence;
   final List<String> accessibilityEvidence;
   final List<String> performanceEvidence;
   final List<String> privacyEvidence;
@@ -741,6 +800,12 @@ Map<String, _RouteStateEvidence> _loadRouteStateEvidence({
         cellKey: cellKey,
         field: 'screenshot_evidence',
         value: rawCell['screenshot_evidence'],
+      ),
+      responseEvidence: _readRouteEvidencePaths(
+        workspace: workspace,
+        cellKey: cellKey,
+        field: 'response_evidence',
+        value: rawCell['response_evidence'],
       ),
       accessibilityEvidence: _readRouteEvidencePaths(
         workspace: workspace,
@@ -851,6 +916,127 @@ List<String> _readRouteEvidencePaths({
 
 (bool, String) _classifyClosureState(Map<String, Object?> route, String state) {
   final kind = route['kind'] as String;
+  if (route['rendered_state_contract'] == 'static_contact_surface') {
+    const contactStates = <String>{
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    final applicable = contactStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Static contact surface must prove this interaction or '
+                'presentation state with current rendered evidence.'
+          : 'Static contact surface always renders governed fallback content '
+                'and owns no collection, authorization, selection, mutation, '
+                'synchronization, conflict, or timeout operation.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'controlled_search_surface') {
+    return (
+      true,
+      'Controlled search surface must prove every content, recovery, '
+          'interaction, presentation, synchronization, conflict, and bounded '
+          'operation state with current rendered evidence.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'controlled_history_surface') {
+    return (
+      true,
+      'Controlled history surface must prove every content, recovery, '
+          'interaction, presentation, synchronization, conflict, and bounded '
+          'operation state with current rendered evidence.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'static_legal_document') {
+    const legalDocumentStates = <String>{
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    final applicable = legalDocumentStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Static legal document must prove this responsive or presentation '
+                'state with current rendered evidence.'
+          : 'Static legal document always renders governed fallback copy and '
+                'owns no controls, authorization, mutation, synchronization, '
+                'conflict, or timeout workflow.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'display_only_live_surface') {
+    const displayOnlyStates = <String>{
+      'loading',
+      'empty',
+      'error',
+      'offline',
+      'permission_denied',
+      'disabled',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'conflict',
+      'security_timeout',
+    };
+    final applicable = displayOnlyStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Display-only live surface must prove this content, recovery, '
+                'presentation, synchronization, or bounded-operation state.'
+          : 'Display-only live surface exposes no focusable, pressable, or '
+                'selectable controls.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'bounded_share_target') {
+    const shareTargetStates = <String>{
+      'empty',
+      'offline',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    final applicable = shareTargetStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Bounded share intake must prove this content, recovery, '
+                'interaction, or presentation state.'
+          : 'Bounded share intake performs no authorization, mutation, '
+                'selection, synchronization, conflict, or timed operation.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'standalone_offline_recovery') {
+    const recoveryStates = <String>{
+      'offline',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    final applicable = recoveryStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Standalone recovery page must prove this rendered recovery or '
+                'interaction state.'
+          : 'Standalone recovery page has no collection, authorization, '
+                'mutation, synchronization, conflict, or timeout operation.',
+    );
+  }
   if (kind == 'redirect') {
     final applicable =
         state == 'error' ||
@@ -861,6 +1047,14 @@ List<String> _readRouteEvidencePaths({
       applicable
           ? 'Redirect navigation must handle this outcome deterministically.'
           : 'Redirect has no rendered control or visual state.',
+    );
+  }
+  if (kind == 'http_route' &&
+      route['endpoint_state_contract'] == 'deterministic_asset') {
+    return (
+      false,
+      'Deterministic local asset has no input, authorization, mutation, '
+          'upstream operation, or rendered interaction state.',
     );
   }
   if (kind == 'api_route' || kind == 'http_route') {
@@ -1033,6 +1227,19 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
     final path = normalized.isEmpty ? '/' : '/$normalized';
     final isApi = path == '/api' || path.startsWith('/api/');
     final isRouteHandler = file.path.endsWith('/route.ts');
+    final isDeterministicAsset =
+        isRouteHandler &&
+        const <String>{'/brand-mark.svg', '/brand-surface.svg'}.contains(path);
+    final isStandaloneOfflineRecovery =
+        !isRouteHandler &&
+        const <String>{'/offline', '/admin-offline'}.contains(path);
+    final isBoundedShareTarget = !isRouteHandler && path == '/share-target';
+    final isDisplayOnlyLiveSurface = !isRouteHandler && path == '/tv-display';
+    final isStaticLegalDocument =
+        !isRouteHandler && const <String>{'/privacy', '/terms'}.contains(path);
+    final isStaticContactSurface = !isRouteHandler && path == '/contact';
+    final isControlledSearchSurface = !isRouteHandler && path == '/search';
+    final isControlledHistorySurface = !isRouteHandler && path == '/history';
     final isAdmin = path == '/admin' || path.startsWith('/admin/');
     final isVenue = path == '/venue' || path.startsWith('/venue/');
     final surface = isApi
@@ -1065,10 +1272,32 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
       'presentation': isApi || isRouteHandler
           ? 'endpoint'
           : 'responsive web page',
+      'endpoint_state_contract': isDeterministicAsset
+          ? 'deterministic_asset'
+          : isApi || isRouteHandler
+          ? 'controlled_response'
+          : null,
+      'rendered_state_contract': isStandaloneOfflineRecovery
+          ? 'standalone_offline_recovery'
+          : isBoundedShareTarget
+          ? 'bounded_share_target'
+          : isDisplayOnlyLiveSurface
+          ? 'display_only_live_surface'
+          : isStaticLegalDocument
+          ? 'static_legal_document'
+          : isStaticContactSurface
+          ? 'static_contact_surface'
+          : isControlledSearchSurface
+          ? 'controlled_search_surface'
+          : isControlledHistorySurface
+          ? 'controlled_history_surface'
+          : null,
       'recommendation': null,
       'target_path': null,
       'source': file.path.substring(workspace.path.length + 1),
-      'required_state_evidence': isApi || isRouteHandler
+      'required_state_evidence': isDeterministicAsset
+          ? <String>['deterministic_success']
+          : isApi || isRouteHandler
           ? <String>[
               'success',
               'invalid_input',

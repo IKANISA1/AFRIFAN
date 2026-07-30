@@ -30,11 +30,20 @@ call the Meta Graph API or carry WhatsApp Cloud API secrets.
 - **Local test OTP**: `250788767816 = "12345"` in `supabase/config.toml`
 
 #### Required Edge Function Secrets
+- `SUPABASE_AUTH_HOOK_SEND_SMS_SECRET` — the Standard Webhooks signing secret
+  configured for the Supabase Send SMS HTTP Hook
 - `WHATSAPP_PHONE_NUMBER_ID`
 - `WHATSAPP_CLOUD_API_TOKEN` or `WHATSAPP_CLOUD_ACCESS_TOKEN`
 - `WHATSAPP_AUTH_TEMPLATE_NAME=gikundiro`
 - `WHATSAPP_AUTH_TEMPLATE_LANGUAGE=en_US`
 - `WHATSAPP_GRAPH_API_VERSION` optional, defaults to `v25.0`
+
+The hook must fail closed when its signing secret is absent or the
+`webhook-id`, `webhook-timestamp`, and `webhook-signature` headers do not
+verify. OTP values and phone numbers must never be written to application
+logs. The former Next.js `/api/admin/auth/whatsapp-webhook` duplicate is
+retired; only the signed `send-sms` Edge Function is an approved delivery
+boundary.
 
 #### Client-Side Usage
 ```ts

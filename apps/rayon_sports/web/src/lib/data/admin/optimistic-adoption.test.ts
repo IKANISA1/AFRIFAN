@@ -66,7 +66,7 @@ describe("admin optimistic-concurrency adoption", () => {
       "[resource]/route.ts",
     );
     expect(value).toContain('code: "STALE_RECORD"');
-    expect(value).toContain("{ status: 409 }");
+    expect(value).toMatch(/code:\s*"STALE_RECORD"[\s\S]*?,\s*409,/);
   });
 
   it.each([

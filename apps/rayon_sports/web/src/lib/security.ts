@@ -101,17 +101,30 @@ export function rejectInsecureMutation(request: NextRequest) {
   }
 
   return NextResponse.json(
-    { error: "Cross-site mutation blocked." },
-    { status: 403 },
+    {
+      code: "MUTATION_ACCESS_DENIED",
+      error: "Cross-site mutation blocked.",
+    },
+    {
+      status: 403,
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    },
   );
 }
 
 function rejectWithRetryAfter(retryAfterSeconds: number) {
   return NextResponse.json(
-    { error: "Too many requests. Please try again shortly." },
+    {
+      code: "REQUEST_RATE_LIMITED",
+      error: "Too many requests. Please try again shortly.",
+      retryable: true,
+    },
     {
       status: 429,
       headers: {
+        "Cache-Control": "no-store",
         "Retry-After": String(retryAfterSeconds),
       },
     },

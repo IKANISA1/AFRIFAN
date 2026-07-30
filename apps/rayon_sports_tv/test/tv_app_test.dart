@@ -16,6 +16,7 @@ void main() {
     tester,
   ) async {
     _setTvSurface(tester, const Size(1280, 720));
+    final rw = lookupAfriLocalizations(const Locale('rw'));
 
     await tester.pumpWidget(
       const RayonSportsTvApp(
@@ -33,8 +34,8 @@ void main() {
     expect(find.text('Gikundiro TV'), findsOneWidget);
     expect(find.text('Kigali Arena'), findsOneWidget);
     expect(find.text('SCREEN24'), findsOneWidget);
-    expect(find.text('25 FET reward'), findsOneWidget);
-    expect(find.text('Expires 21:45'), findsOneWidget);
+    expect(find.text(rw.tvFetRewardLabel(25)), findsOneWidget);
+    expect(find.text(rw.tvExpiresLabel('21:45')), findsOneWidget);
 
     final visibleText = tester
         .widgetList<Text>(find.byType(Text))
@@ -99,7 +100,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('KGL2026'), findsOneWidget);
-      expect(find.text('Expires expired'), findsOneWidget);
+      final rw = lookupAfriLocalizations(const Locale('rw'));
+      expect(find.text(rw.tvExpiresLabel(rw.tvExpired)), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   }

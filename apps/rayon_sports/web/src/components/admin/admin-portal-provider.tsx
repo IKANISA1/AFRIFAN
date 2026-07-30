@@ -21,6 +21,10 @@ import {
   formatAdminPhoneForDisplay,
 } from "@/lib/admin-auth";
 import {
+  fetchAdminWithTimeout,
+  withAdminOperationTimeout,
+} from "@/lib/admin-operation-timeout";
+import {
   adminClubScopeCookieName,
   getRequestedAdminClubId,
   readCookieValue,
@@ -100,10 +104,13 @@ async function consumeHashSession(client: SupabaseClient) {
     return readAuthErrorFromUrl();
   }
 
-  const { error } = await client.auth.setSession({
-    access_token: accessToken,
-    refresh_token: refreshToken,
-  });
+  const { error } = await withAdminOperationTimeout(
+    client.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    }),
+    "Admin session recovery",
+  );
 
   if (error) {
     throw error;
@@ -156,6 +163,7 @@ export function AdminPortalProvider({
   const [error, setError] = useState<string | null>(initialState?.error ?? null);
   const [notice, setNotice] = useState<string | null>(null);
   const [pendingPhone, setPendingPhone] = useState<string | null>(null);
+  const controlledEvidence = initialState?.controlledEvidence === true;
 
   const syncPendingPhone = useCallback((value: string | null) => {
     setPendingPhone(value);
@@ -187,22 +195,31 @@ export function AdminPortalProvider({
 
     try {
       const urlError = await consumeHashSession(client);
-      const result = await client.auth.getSession();
+      const result = await withAdminOperationTimeout(
+        client.auth.getSession(),
+        "Admin session refresh",
+      );
       const nextSession = result.data.session ?? null;
       const nextUser = nextSession?.user ?? null;
       startTransition(() => {
         setSession(nextSession);
         setUser(nextUser);
       });
-      const nextAccess = await resolveAdminAccess(client, nextUser, {
-        requestedClubId: getRequestedClubIdFromLocation(),
-      });
+      const nextAccess = await withAdminOperationTimeout(
+        resolveAdminAccess(client, nextUser, {
+          requestedClubId: getRequestedClubIdFromLocation(),
+        }),
+        "Admin access check",
+      );
       startTransition(() => {
         setAccess(nextAccess);
       });
       if (nextAccess.hasAccess) {
         try {
-          const nextClubOptions = await getAdminClubScopeOptions(client, nextAccess);
+          const nextClubOptions = await withAdminOperationTimeout(
+            getAdminClubScopeOptions(client, nextAccess),
+            "Admin club scope loading",
+          );
           startTransition(() => {
             setClubOptions(nextClubOptions);
           });
@@ -253,16 +270,20 @@ export function AdminPortalProvider({
       setAuthBusy(true);
 
       try {
-        const eligibilityResponse = await fetch("/api/admin/auth/eligible", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Africlub-CSRF": "1",
+        const eligibilityResponse = await fetchAdminWithTimeout(
+          "/api/admin/auth/eligible",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Africlub-CSRF": "1",
+            },
+            body: JSON.stringify({ phone: normalizedPhone }),
+            credentials: "same-origin",
+            cache: "no-store",
           },
-          body: JSON.stringify({ phone: normalizedPhone }),
-          credentials: "same-origin",
-          cache: "no-store",
-        });
+          "Admin eligibility check",
+        );
         const eligibilityPayload = (await eligibilityResponse
           .json()
           .catch(() => ({}))) as { error?: string };
@@ -273,21 +294,9 @@ export function AdminPortalProvider({
           );
         }
 
-        const { error: authError } = await client.auth.signInWithOtp({
-          phone: normalizedPhone,
-          options: {
-            shouldCreateUser: false,
-            channel: "whatsapp",
-          },
-        });
-
-        if (authError) {
-          throw authError;
-        }
-
         syncPendingPhone(normalizedPhone);
         setNotice(
-          `Verification code sent to ${formatAdminPhoneForDisplay(normalizedPhone)}.`,
+          `If ${formatAdminPhoneForDisplay(normalizedPhone)} is approved, a verification code will arrive shortly.`,
         );
       } finally {
         setAuthBusy(false);
@@ -316,11 +325,14 @@ export function AdminPortalProvider({
       setAuthBusy(true);
 
       try {
-        const { error: authError } = await client.auth.verifyOtp({
-          phone: pendingPhone,
-          token,
-          type: "sms",
-        });
+        const { error: authError } = await withAdminOperationTimeout(
+          client.auth.verifyOtp({
+            phone: pendingPhone,
+            token,
+            type: "sms",
+          }),
+          "Admin code verification",
+        );
 
         if (authError) {
           throw authError;
@@ -369,13 +381,21 @@ export function AdminPortalProvider({
       return;
     }
 
-    await client.auth.signOut();
+    await withAdminOperationTimeout(
+      client.auth.signOut(),
+      "Admin sign-out",
+    );
     syncPendingPhone(null);
     setNotice("Signed out of admin workspace.");
     await runRefresh({ blocking: false });
   }, [client, runRefresh, syncPendingPhone]);
 
   useEffect(() => {
+    if (controlledEvidence) {
+      setLoading(false);
+      return;
+    }
+
     if (client == null) {
       setLoading(false);
       setError("Supabase browser configuration is missing.");
@@ -412,7 +432,13 @@ export function AdminPortalProvider({
     return () => {
       subscription.unsubscribe();
     };
-  }, [client, initialState, runRefresh, syncPendingPhone]);
+  }, [
+    client,
+    controlledEvidence,
+    initialState,
+    runRefresh,
+    syncPendingPhone,
+  ]);
 
   useEffect(() => {
     if (!notice) {

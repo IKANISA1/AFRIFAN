@@ -12,7 +12,9 @@ interface MembershipEditorFormProps {
   currencyCode: string;
   client: SupabaseClient | null;
   access: AdminAccess;
+  disabled?: boolean;
   onSaved: () => Promise<void>;
+  onFailure?: (error: unknown) => void;
   onConflict: () => Promise<void>;
 }
 
@@ -22,7 +24,9 @@ export function MembershipEditorForm({
   currencyCode,
   client,
   access,
+  disabled = false,
   onSaved,
+  onFailure,
   onConflict,
 }: MembershipEditorFormProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -37,39 +41,64 @@ export function MembershipEditorForm({
   }, [errorMessage]);
 
   async function submitForm(formData: FormData) {
-    if (client == null || submittingRef.current) return;
+    if (client == null || disabled || submittingRef.current) return;
 
     submittingRef.current = true;
     setSubmitting(true);
     setErrorMessage(null);
     showAdminToast(form.id ? "Saving tier..." : "Creating tier...", "info");
     try {
+      const title = String(formData.get("title") ?? "").trim();
+      const description = String(formData.get("description") ?? "").trim();
+      const annualPrice = Number(formData.get("annualPrice") ?? 0);
+      const sortOrder = Number(formData.get("sortOrder") ?? 0);
+      const perks = String(formData.get("perks") ?? "")
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean);
+      if (
+        title.length === 0 ||
+        title.length > 160 ||
+        description.length === 0 ||
+        description.length > 2_000 ||
+        !Number.isFinite(annualPrice) ||
+        annualPrice < 0 ||
+        annualPrice > 1_000_000_000 ||
+        !Number.isInteger(sortOrder) ||
+        sortOrder < 0 ||
+        sortOrder > 1_000_000 ||
+        perks.length > 20 ||
+        perks.some((perk) => perk.length > 240)
+      ) {
+        throw new Error("invalid_membership_tier_input");
+      }
+
       await saveAdminMembershipPackage(client, access, {
         id: form.id || null,
         expectedUpdatedAt: form.expectedUpdatedAt || null,
         tier: String(
           formData.get("tier") ?? "imena",
         ) as AdminMembershipPackage["tier"],
-        title: String(formData.get("title") ?? ""),
-        description: String(formData.get("description") ?? ""),
-        annualPrice: Number(formData.get("annualPrice") ?? 0),
-        perks: String(formData.get("perks") ?? "")
-          .split("\n")
-          .map((item) => item.trim())
-          .filter(Boolean),
-        sortOrder: Number(formData.get("sortOrder") ?? 0),
+        title,
+        description,
+        annualPrice,
+        perks,
+        sortOrder,
         isActive: formData.get("isActive") === "on",
       });
       setForm(emptyForm);
       await onSaved();
       showAdminToast("Membership tier saved.", "success");
     } catch (caught) {
+      onFailure?.(caught);
       if (isAdminMutationConflict(caught)) {
         await onConflict();
       }
-      const message = caught instanceof Error
-        ? caught.message
-        : "Could not save tier.";
+      const message =
+        caught instanceof Error &&
+        caught.message === "invalid_membership_tier_input"
+          ? "Review the tier fields and bounded values before retrying."
+          : "Could not save the membership tier. Retry when service recovers.";
       setErrorMessage(message);
       showAdminToast(message, "error");
     } finally {
@@ -115,6 +144,7 @@ export function MembershipEditorForm({
           Tier
           <select
             name="tier"
+            disabled={disabled || submitting}
             value={form.tier}
             onChange={(event) =>
               setForm((current) => ({
@@ -137,6 +167,8 @@ export function MembershipEditorForm({
           <input
             name="title"
             required
+            maxLength={160}
+            disabled={disabled || submitting}
             value={form.title}
             onChange={(event) =>
               setForm((current) => ({
@@ -153,6 +185,9 @@ export function MembershipEditorForm({
         Description
         <textarea
           name="description"
+          required
+          maxLength={2_000}
+          disabled={disabled || submitting}
           rows={3}
           value={form.description}
           onChange={(event) =>
@@ -171,6 +206,11 @@ export function MembershipEditorForm({
           <input
             type="number"
             name="annualPrice"
+            min={0}
+            max={1_000_000_000}
+            step="any"
+            required
+            disabled={disabled || submitting}
             value={form.annualPrice}
             onChange={(event) =>
               setForm((current) => ({
@@ -186,6 +226,11 @@ export function MembershipEditorForm({
           <input
             type="number"
             name="sortOrder"
+            min={0}
+            max={1_000_000}
+            step={1}
+            required
+            disabled={disabled || submitting}
             value={form.sortOrder}
             onChange={(event) =>
               setForm((current) => ({
@@ -207,6 +252,8 @@ export function MembershipEditorForm({
         </div>
         <textarea
           name="perks"
+          maxLength={4_800}
+          disabled={disabled || submitting}
           rows={5}
           value={form.perks}
           onChange={(event) =>
@@ -223,6 +270,7 @@ export function MembershipEditorForm({
         <input
           type="checkbox"
           name="isActive"
+          disabled={disabled || submitting}
           checked={form.isActive}
           onChange={(event) =>
             setForm((current) => ({
@@ -241,7 +289,7 @@ export function MembershipEditorForm({
         {form.id ? (
           <button
             type="button"
-            disabled={submitting}
+            disabled={disabled || submitting}
             onClick={() => setForm(emptyForm)}
             className="rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8 disabled:cursor-not-allowed disabled:opacity-60"
           >
@@ -250,7 +298,7 @@ export function MembershipEditorForm({
         ) : null}
         <button
           type="submit"
-          disabled={submitting || client == null}
+          disabled={disabled || submitting || client == null}
           aria-busy={submitting}
           className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:cursor-not-allowed disabled:opacity-60"
         >

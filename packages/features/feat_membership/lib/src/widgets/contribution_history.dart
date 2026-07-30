@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class ContributionHistorySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'CONTRIBUTION HISTORY',
+          context.afriL10n.contributionHistory.toUpperCase(),
           style: TypographyTokens.titleMedium().copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -83,7 +84,10 @@ class _ContributionRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${record.amount} $currencySymbol',
+                    <String>[
+                      record.amount.toString(),
+                      currencySymbol,
+                    ].join(' '),
                     style: TypographyTokens.titleSmall(),
                   ),
                   const SizedBox(height: SpacingTokens.spacing1 / 2),

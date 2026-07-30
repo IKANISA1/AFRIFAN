@@ -100,7 +100,7 @@ export function MatchList({
                 type="button"
                 onClick={() => setFilter(item)}
                 className={cn(
-                  "px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-colors",
+                  "min-h-12 min-w-12 px-3 py-2 text-[10px] font-bold uppercase tracking-wider rounded-md transition-colors",
                   filter === item
                     ? "bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-100)] shadow-sm"
                     : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]"
@@ -203,15 +203,15 @@ export function MatchList({
                   <div className="flex justify-end gap-1">
                     <button
                       onClick={() => onEdit(match)}
-                      className="p-2 rounded hover:bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-100)] transition-colors"
-                      title="Edit"
+                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded hover:bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-100)] transition-colors"
+                      aria-label={`Edit ${match.homeTeam} versus ${match.awayTeam}`}
                     >
                       <PencilLine size={16} />
                     </button>
                     <button
                       onClick={() => onDelete(match)}
-                      className="p-2 rounded hover:bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-500)] hover:text-rose-500 transition-colors"
-                      title="Delete"
+                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded hover:bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-500)] hover:text-rose-500 transition-colors"
+                      aria-label={`Delete ${match.homeTeam} versus ${match.awayTeam}`}
                     >
                       <Trash2 size={16} />
                     </button>

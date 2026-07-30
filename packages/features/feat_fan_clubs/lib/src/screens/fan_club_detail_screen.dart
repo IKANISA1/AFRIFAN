@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../official_fanclub_register.dart';
+import '../providers/fan_club_detail_provider.dart';
 
 class FanClubDetailScreen extends ConsumerStatefulWidget {
   const FanClubDetailScreen({required this.clubId, super.key});
@@ -19,112 +21,47 @@ class FanClubDetailScreen extends ConsumerStatefulWidget {
       _FanClubDetailScreenState();
 }
 
-void _reportNonCriticalError(Object error, StackTrace stackTrace) {
-  FlutterError.reportError(
-    FlutterErrorDetails(
-      exception: error,
-      stack: stackTrace,
-      library: 'feat_fan_clubs',
-      context: ErrorDescription('FanClubDetailScreen non-critical operation'),
-    ),
-  );
-}
-
 class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
-  Map<String, dynamic>? _club;
-  Map<String, dynamic>? _upcomingMatch;
-  final bool _joined = false;
-  final bool _isJoinMutationPending = false;
-  bool _isLoading = true;
-  String? _error;
+  late bool _wasOnline;
 
   @override
   void initState() {
     super.initState();
-    unawaited(_loadClub());
+    _wasOnline = ConnectivityService.isOnline;
+    ConnectivityService.onlineNotifier.addListener(_handleConnectivityChange);
   }
 
-  Future<void> _loadClub() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final client = ref.read(supabaseClientProvider);
-      final resolver = ClubScopeResolver(client: client);
-      final scope = await resolver.requireResolved();
-      if (scope.clubId == null) {
-        throw StateError('Fan clubs require a numeric club scope.');
-      }
-      final clubRow = await _loadFanclubRow();
-
-      if (clubRow == null) {
-        if (!mounted) return;
-        setState(() {
-          _isLoading = false;
-          _error = 'This fan club is unavailable.';
-        });
-        return;
-      }
-
-      Map<String, dynamic>? matchRow;
-      try {
-        var query = client
-            .from('unified_matches')
-            .select()
-            .eq('is_on_sale', true);
-        query = resolver.apply(query, scope);
-        matchRow = await query
-            .order('match_date', ascending: true)
-            .limit(1)
-            .maybeSingle();
-      } catch (error, stackTrace) {
-        _reportNonCriticalError(error, stackTrace);
-        matchRow = null;
-      }
-
-      if (!mounted) return;
-      setState(() {
-        _club = normalizeFanclubRow(Map<String, dynamic>.from(clubRow));
-        _upcomingMatch = matchRow == null
-            ? null
-            : Map<String, dynamic>.from(matchRow);
-        _isLoading = false;
-      });
-    } catch (error, stackTrace) {
-      _reportNonCriticalError(error, stackTrace);
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _error = 'Could not load this fan club.';
-      });
-    }
-  }
-
-  Future<void> _toggleJoin() async {
-    final club = _club;
-    final userId = ref.read(supabaseClientProvider).auth.currentUser?.id;
-    if (club == null || _isJoinMutationPending) return;
-    if (!(club['is_active'] as bool? ?? true)) {
-      return;
-    }
-
-    if (userId == null) {
-      context.go('/onboarding');
-      return;
-    }
-
-    final clubId = club['id']?.toString();
-    if (clubId == null || clubId.isEmpty) {
-      return;
-    }
-
-    unawaited(HapticFeedback.mediumImpact());
-    AfriToast.info(
-      context,
-      'Request sent for admin review. You are not joined until the club approves it.',
+  @override
+  void dispose() {
+    ConnectivityService.onlineNotifier.removeListener(
+      _handleConnectivityChange,
     );
+    super.dispose();
+  }
+
+  void _handleConnectivityChange() {
+    final isOnline = ConnectivityService.isOnline;
+    final restored = !_wasOnline && isOnline;
+    _wasOnline = isOnline;
+    if (!mounted) return;
+    setState(() {});
+    if (restored) {
+      unawaited(
+        ref.read(fanClubDetailProvider(widget.clubId).notifier).refresh(),
+      );
+    }
+  }
+
+  void _close() {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/fanzone?section=supporters');
+    }
+  }
+
+  void _openSupporters() {
+    context.go('/fanzone?section=supporters');
   }
 
   Future<void> _copyShareLink() async {
@@ -135,72 +72,23 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     final normalizedWebsite = websiteUrl.trim().replaceAll(RegExp(r'/$'), '');
     final shareTarget = normalizedWebsite.isNotEmpty
         ? '$normalizedWebsite/fan-clubs/${widget.clubId}'
-        : 'Open ${RuntimeBranding.displayAppName} and visit the Fan Clubs section.';
+        : context.afriL10n.fanClubShareFallback(RuntimeBranding.displayAppName);
     await Clipboard.setData(
       ClipboardData(
-        text:
-            'Join this ${RuntimeBranding.displayAppName} fan club: $shareTarget',
+        text: context.afriL10n.fanClubShareText(
+          RuntimeBranding.displayAppName,
+          shareTarget,
+        ),
       ),
     );
     if (!mounted) return;
-    AfriToast.success(context, 'Fan club link copied.');
+    AfriToast.success(context, context.afriL10n.fanClubLinkCopied);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return AfriScreenScaffold(
-        backgroundColor: ColorTokens.background,
-        showAppBar: false,
-        showBackButton: false,
-        scrollable: false,
-        constrainContent: true,
-        child: const SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(SpacingTokens.spacing6),
-            child: AfriSkeletonList(),
-          ),
-        ),
-      );
-    }
-
-    if (_error != null || _club == null) {
-      return AfriScreenScaffold(
-        backgroundColor: ColorTokens.background,
-        appBar: AfriAppBar(
-          backgroundColor: ColorTokens.transparent,
-          leading: AfriIconButton(
-            icon: AfriIcons.back,
-            onTap: () => context.pop(),
-            tooltip: 'Back',
-          ),
-        ),
-        scrollable: false,
-        constrainContent: true,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(SpacingTokens.spacing6),
-            child: Text(
-              _error ?? 'Fan club unavailable.',
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyLarge(),
-            ),
-          ),
-        ),
-      );
-    }
-
-    final club = _club!;
-    final primary = ColorTokens.clubAccent;
-    final name = club['name']?.toString() ?? 'Fan Club';
-    final description = club['description']?.toString() ?? '';
-    final region = club['region']?.toString() ?? 'Unknown';
-    final members = fanclubMemberLabel(club);
-    final statusLabel = fanclubStatusLabel(club);
-    final sourceLabel =
-        club['source_label']?.toString() ?? 'Protected request path';
-    final isActive = club['is_active'] as bool? ?? true;
-    final match = _upcomingMatch;
+    final accessEnabled = ref.watch(fanClubDetailAccessEnabledProvider);
+    final detailAsync = ref.watch(fanClubDetailProvider(widget.clubId));
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
@@ -208,17 +96,72 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
       showBackButton: false,
       scrollable: false,
       constrainContent: false,
+      child: !accessEnabled
+          ? _FanClubConsequence(
+              title: context.afriL10n.fanClubPreviewUnavailableTitle,
+              body: context.afriL10n.fanClubPreviewUnavailableMessage,
+              actionLabel: context.afriL10n.fanClubBackToSupporters,
+              onAction: _close,
+            )
+          : detailAsync.when(
+              loading: () => const SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(SpacingTokens.spacing6),
+                  child: AfriSkeletonList(),
+                ),
+              ),
+              error: (error, _) => _failureConsequence(error),
+              data: (detail) {
+                final data = detail.data;
+                if (data == null) {
+                  return _FanClubConsequence(
+                    title: context.afriL10n.fanClubUnavailableTitle,
+                    body: context.afriL10n.fanClubUnavailableMessage,
+                    actionLabel: context.afriL10n.fanClubBackToSupporters,
+                    onAction: _close,
+                  );
+                }
+                return _buildReady(detail, data);
+              },
+            ),
+    );
+  }
+
+  Widget _buildReady(FanClubDetailState detail, FanClubDetailData data) {
+    final club = data.club;
+    final primary = ColorTokens.clubAccent;
+    final name =
+        club['name']?.toString() ?? context.afriL10n.fanClubFallbackName;
+    final description = club['description']?.toString() ?? '';
+    final region =
+        club['region']?.toString() ?? context.afriL10n.fanClubUnknownRegion;
+    final members = fanclubMemberLabel(club);
+    final statusLabel = fanclubStatusLabel(club);
+    final sourceLabel =
+        club['source_label']?.toString() ??
+        context.afriL10n.fanClubProtectedRequestPath;
+    final isActive = club['is_active'] as bool? ?? true;
+    final match = data.upcomingMatch;
+    final stackContent = MediaQuery.textScalerOf(context).scale(16) >= 28;
+
+    return AfriRefreshIndicator(
+      onRefresh: () =>
+          ref.read(fanClubDetailProvider(widget.clubId).notifier).refresh(),
+      color: primary,
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
+          if (_retainedBanner(detail) case final banner?)
+            SliverToBoxAdapter(child: SafeArea(bottom: false, child: banner)),
           AfriSliverAppBar(
-            expandedHeight: 280,
+            expandedHeight: stackContent ? 500 : 280,
             backgroundColor: ColorTokens.background,
             pinned: true,
             leading: AfriIconButton(
+              key: const ValueKey<String>('fan-club-detail-back'),
               icon: AfriIcons.back,
-              onTap: () => context.pop(),
-              tooltip: 'Back',
+              onTap: _close,
+              tooltip: context.afriL10n.authBack,
             ),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
@@ -259,7 +202,9 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                               borderRadius: ShapeTokens.buttonRadius,
                             ),
                             child: Text(
-                              isActive ? 'ACTIVE' : 'PENDING REVIEW',
+                              isActive
+                                  ? context.afriL10n.fanClubActive
+                                  : context.afriL10n.fanClubPendingReview,
                               style: TypographyTokens.labelMedium(
                                 isActive
                                     ? ColorTokens.clubAccent
@@ -270,11 +215,15 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: SpacingTokens.spacing4),
-                      Text(
-                        name.toUpperCase(),
-                        style: TypographyTokens.displaySmall().copyWith(
-                          fontWeight: FontWeight.w800,
-                          height: TypographyTokens.lineHeightSolid,
+                      Semantics(
+                        selected: true,
+                        label: context.afriL10n.fanClubCurrentSemantic(name),
+                        child: Text(
+                          name.toUpperCase(),
+                          style: TypographyTokens.displaySmall().copyWith(
+                            fontWeight: FontWeight.w800,
+                            height: TypographyTokens.lineHeightSolid,
+                          ),
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
@@ -295,20 +244,11 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _DetailStat(label: 'MEMBERS', value: members),
-                      ),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      Expanded(
-                        child: _DetailStat(label: 'STATUS', value: statusLabel),
-                      ),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      Expanded(
-                        child: _DetailStat(label: 'REGION', value: region),
-                      ),
-                    ],
+                  _DetailStats(
+                    members: members,
+                    status: statusLabel,
+                    region: region,
+                    stacked: stackContent,
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
                   GlassCard(
@@ -317,7 +257,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'ABOUT THIS CLUB',
+                          context.afriL10n.fanClubAboutTitle,
                           style: TypographyTokens.titleLarge().copyWith(
                             fontWeight: FontWeight.w700,
                           ),
@@ -326,7 +266,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         Text(description, style: TypographyTokens.bodyMedium()),
                         const SizedBox(height: SpacingTokens.spacing3),
                         Text(
-                          'Region: $region',
+                          context.afriL10n.fanClubRegionValue(region),
                           style: TypographyTokens.bodySmall(),
                         ),
                       ],
@@ -339,7 +279,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Group SNAPSHOT',
+                          context.afriL10n.fanClubSnapshotTitle,
                           style: TypographyTokens.titleLarge().copyWith(
                             fontWeight: FontWeight.w700,
                           ),
@@ -347,18 +287,20 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         const SizedBox(height: SpacingTokens.spacing3),
                         _SnapshotRow(
                           title: !isActive
-                              ? 'This fan club is waiting for admin approval.'
-                              : _joined
-                              ? 'You are a member.'
-                              : 'Request admin review before joining is confirmed.',
+                              ? context.afriL10n.fanClubAwaitingApproval
+                              : context.afriL10n.fanClubJoinRequestsReviewed,
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
-                        _SnapshotRow(title: 'Region: $region.'),
+                        _SnapshotRow(
+                          title: context.afriL10n.fanClubRegionSentence(region),
+                        ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         _SnapshotRow(title: sourceLabel),
                         const SizedBox(height: SpacingTokens.spacing2),
                         _SnapshotRow(
-                          title: '$members supporters listed publicly.',
+                          title: context.afriL10n.fanClubPublicSupporters(
+                            members,
+                          ),
                         ),
                       ],
                     ),
@@ -369,40 +311,14 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                     match: match,
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AfriButton(
-                          label: !isActive
-                              ? 'PENDING REVIEW'
-                              : _isJoinMutationPending
-                              ? 'UPDATING...'
-                              : _joined
-                              ? 'REQUESTED'
-                              : 'REQUEST REVIEW',
-                          variant: AfriButtonVariant.primary,
-                          enabled: isActive && !_isJoinMutationPending,
-                          isLoading: isActive && _isJoinMutationPending,
-                          onTap: _toggleJoin,
-                        ),
-                      ),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      if (isActive)
-                        SizedBox(
-                          width: SizeTokens.buttonMinHeight,
-                          height: SizeTokens.buttonMinHeight,
-                          child: AfriOutlinedButton(
-                            onPressed: _copyShareLink,
-                            style: AfriOutlinedButton.styleFrom(
-                              side: BorderTokens.side(color: primary),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: ShapeTokens.buttonRadius,
-                              ),
-                            ),
-                            child: const Icon(AfriIcons.share),
-                          ),
-                        ),
-                    ],
+                  _FanClubActions(
+                    isActive: isActive,
+                    blocked:
+                        detail.actionsBlocked || !ConnectivityService.isOnline,
+                    stacked: stackContent,
+                    primary: primary,
+                    onOpenSupporters: _openSupporters,
+                    onShare: _copyShareLink,
                   ),
                 ],
               ),
@@ -412,56 +328,96 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
       ),
     );
   }
-}
 
-extension on _FanClubDetailScreenState {
-  Future<Map<String, dynamic>?> _loadFanclubRow() async {
-    final client = ref.read(supabaseClientProvider);
-    final routeId = widget.clubId;
-
-    try {
-      if (_looksLikeUuid(routeId)) {
-        final byId = await client
-            .from('fanclubs')
-            .select()
-            .eq('id', routeId)
-            .eq('approval_status', 'approved')
-            .eq('active', true)
-            .eq('visibility', 'public')
-            .maybeSingle();
-        if (byId != null) {
-          return Map<String, dynamic>.from(byId);
-        }
-      }
-
-      final bySlug = await client
-          .from('fanclubs')
-          .select()
-          .eq('slug', routeId)
-          .eq('approval_status', 'approved')
-          .eq('active', true)
-          .eq('visibility', 'public')
-          .maybeSingle();
-      if (bySlug != null) {
-        return Map<String, dynamic>.from(bySlug);
-      }
-    } catch (_) {
-      // Fall through to the verified register fallback.
-    }
-
-    for (final fanclub in officialFanclubRegister()) {
-      if (fanclub['id']?.toString() == routeId ||
-          fanclub['slug']?.toString() == routeId) {
-        return fanclub;
-      }
-    }
-    return null;
+  Widget _failureConsequence(Object error) {
+    final failure = error is FanClubDetailFailure
+        ? error
+        : FanClubDetailFailure.fromError(error);
+    return switch (failure.kind) {
+      FanClubDetailFailureKind.offline => _FanClubConsequence(
+        title: context.afriL10n.fanClubUnavailableOfflineTitle,
+        body: context.afriL10n.fanClubUnavailableOfflineMessage,
+        actionLabel: context.afriL10n.fanClubBackToSupporters,
+        onAction: _close,
+      ),
+      FanClubDetailFailureKind.permissionDenied => _FanClubConsequence(
+        title: context.afriL10n.fanClubAccessDeniedTitle,
+        body: context.afriL10n.fanClubAccessDeniedMessage,
+        actionLabel: context.afriL10n.fanClubBackToSupporters,
+        onAction: _close,
+      ),
+      FanClubDetailFailureKind.conflict => _FanClubConsequence(
+        title: context.afriL10n.fanClubDetailsChangedTitle,
+        body: context.afriL10n.fanClubRefreshBeforeSupporters,
+        actionLabel: context.afriL10n.fanClubRefreshAction,
+        onAction: () =>
+            ref.read(fanClubDetailProvider(widget.clubId).notifier).load(),
+      ),
+      FanClubDetailFailureKind.securityTimeout => _FanClubConsequence(
+        title: context.afriL10n.fanClubSecurityTimeoutTitle,
+        body: context.afriL10n.fanClubSecurityTimeoutMessage,
+        actionLabel: context.afriL10n.fanClubTryAgainAction,
+        onAction: () =>
+            ref.read(fanClubDetailProvider(widget.clubId).notifier).load(),
+      ),
+      FanClubDetailFailureKind.unknown => _FanClubConsequence(
+        title: context.afriL10n.fanClubLoadFailureTitle,
+        body: context.afriL10n.fanClubLoadFailureMessage,
+        actionLabel: context.afriL10n.fanClubTryAgainAction,
+        onAction: () =>
+            ref.read(fanClubDetailProvider(widget.clubId).notifier).load(),
+      ),
+    };
   }
 
-  bool _looksLikeUuid(String value) {
-    return RegExp(
-      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
-    ).hasMatch(value);
+  Widget? _retainedBanner(FanClubDetailState detail) {
+    if (!ConnectivityService.isOnline) {
+      return _FanClubStatus(
+        title: context.afriL10n.fanClubShowingSavedTitle,
+        body: context.afriL10n.fanClubSavedDetailsMayChange,
+      );
+    }
+    if (detail.phase == FanClubDetailPhase.syncing) {
+      return _FanClubStatus(
+        title: context.afriL10n.fanClubRefreshingTitle,
+        body: context.afriL10n.fanClubLastConfirmedVisible,
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    final failure = detail.failure;
+    if (failure == null) return null;
+    return switch (failure.kind) {
+      FanClubDetailFailureKind.conflict => _FanClubStatus(
+        title: context.afriL10n.fanClubDetailsChangedTitle,
+        body: context.afriL10n.fanClubLastConfirmedRefresh,
+        actionLabel: context.afriL10n.fanClubRefreshAction,
+        onAction: () =>
+            ref.read(fanClubDetailProvider(widget.clubId).notifier).refresh(),
+      ),
+      FanClubDetailFailureKind.securityTimeout => _FanClubStatus(
+        title: context.afriL10n.fanClubCheckTimedOutTitle,
+        body: context.afriL10n.fanClubLastConfirmedRefresh,
+        actionLabel: context.afriL10n.fanClubRefreshAction,
+        onAction: () =>
+            ref.read(fanClubDetailProvider(widget.clubId).notifier).refresh(),
+      ),
+      FanClubDetailFailureKind.permissionDenied => _FanClubStatus(
+        title: context.afriL10n.fanClubAccessChangedTitle,
+        body: context.afriL10n.fanClubAccessChangedMessage,
+        tone: AfriStateBannerTone.danger,
+      ),
+      FanClubDetailFailureKind.offline => _FanClubStatus(
+        title: context.afriL10n.fanClubShowingSavedTitle,
+        body: context.afriL10n.fanClubSavedDetailsMayChange,
+      ),
+      FanClubDetailFailureKind.unknown => _FanClubStatus(
+        title: context.afriL10n.fanClubRefreshFailedTitle,
+        body: context.afriL10n.fanClubLastConfirmedRefresh,
+        actionLabel: context.afriL10n.fanClubRefreshAction,
+        onAction: () =>
+            ref.read(fanClubDetailProvider(widget.clubId).notifier).refresh(),
+      ),
+    };
   }
 }
 
@@ -490,28 +446,262 @@ class FanClubMatchdayAgendaSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'MATCHDAY AGENDA',
+            context.afriL10n.fanClubMatchdayAgenda,
             style: TypographyTokens.titleLarge().copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Text(
-            '${agendaMatch['home_team']} vs ${agendaMatch['away_team']}',
+            context.afriL10n.homeMatchTitle(
+              agendaMatch['home_team']?.toString() ?? '',
+              agendaMatch['away_team']?.toString() ?? '',
+            ),
             style: TypographyTokens.headlineMedium().copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            '${agendaMatch['competition']}  •  ${agendaMatch['venue']}',
+            context.afriL10n.fanClubMatchMeta(
+              agendaMatch['competition']?.toString() ?? '',
+              agendaMatch['venue']?.toString() ?? '',
+            ),
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            '${agendaMatch['match_date']}  •  ${agendaMatch['kickoff_time']}',
+            context.afriL10n.fanClubMatchSchedule(
+              agendaMatch['match_date']?.toString() ?? '',
+              agendaMatch['kickoff_time']?.toString() ?? '',
+            ),
             style: TypographyTokens.bodySmall(),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailStats extends StatelessWidget {
+  const _DetailStats({
+    required this.members,
+    required this.status,
+    required this.region,
+    required this.stacked,
+  });
+
+  final String members;
+  final String status;
+  final String region;
+  final bool stacked;
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = <Widget>[
+      _DetailStat(label: context.afriL10n.fanClubMembersLabel, value: members),
+      _DetailStat(label: context.afriL10n.fanClubStatusLabel, value: status),
+      _DetailStat(label: context.afriL10n.fanClubRegionLabel, value: region),
+    ];
+    if (stacked) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var index = 0; index < cards.length; index++) ...[
+            if (index > 0) const SizedBox(height: SpacingTokens.spacing3),
+            cards[index],
+          ],
+        ],
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(child: cards[0]),
+            const SizedBox(width: SpacingTokens.spacing3),
+            Expanded(child: cards[1]),
+          ],
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        cards[2],
+      ],
+    );
+  }
+}
+
+class _FanClubActions extends StatelessWidget {
+  const _FanClubActions({
+    required this.isActive,
+    required this.blocked,
+    required this.stacked,
+    required this.primary,
+    required this.onOpenSupporters,
+    required this.onShare,
+  });
+
+  final bool isActive;
+  final bool blocked;
+  final bool stacked;
+  final Color primary;
+  final VoidCallback onOpenSupporters;
+  final VoidCallback onShare;
+
+  @override
+  Widget build(BuildContext context) {
+    final openButton = Semantics(
+      label: isActive
+          ? context.afriL10n.fanClubOpenSupportersSemantic
+          : context.afriL10n.fanClubPendingReviewSemantic,
+      button: true,
+      enabled: isActive && !blocked,
+      excludeSemantics: true,
+      child: AfriButton(
+        label: isActive
+            ? (stacked
+                  ? context.afriL10n.fanClubSupportersAction
+                  : context.afriL10n.fanClubOpenSupportersAction)
+            : context.afriL10n.fanClubPendingReview,
+        variant: AfriButtonVariant.primary,
+        enabled: isActive && !blocked,
+        onTap: onOpenSupporters,
+      ),
+    );
+    if (stacked) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          openButton,
+          if (isActive) ...[
+            const SizedBox(height: SpacingTokens.spacing3),
+            AfriButton(
+              label: context.afriL10n.fanClubCopyLink,
+              variant: AfriButtonVariant.outline,
+              onTap: onShare,
+            ),
+          ],
+        ],
+      );
+    }
+    return Row(
+      children: [
+        Expanded(child: openButton),
+        if (isActive) ...[
+          const SizedBox(width: SpacingTokens.spacing3),
+          Semantics(
+            button: true,
+            label: context.afriL10n.fanClubCopyLinkSemantic,
+            child: SizedBox(
+              width: SizeTokens.buttonMinHeight,
+              height: SizeTokens.buttonMinHeight,
+              child: AfriOutlinedButton(
+                onPressed: onShare,
+                style: AfriOutlinedButton.styleFrom(
+                  side: BorderTokens.side(color: primary),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: ShapeTokens.buttonRadius,
+                  ),
+                ),
+                child: const Icon(AfriIcons.share),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _FanClubConsequence extends StatelessWidget {
+  const _FanClubConsequence({
+    required this.title,
+    required this.body,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  final String title;
+  final String body;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(SpacingTokens.spacing8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                AfriIcons.groups,
+                size: 56,
+                color: ColorTokens.onSurfaceVariant,
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TypographyTokens.headlineSmall(),
+              ),
+              const SizedBox(height: SpacingTokens.spacing2),
+              Text(
+                body,
+                textAlign: TextAlign.center,
+                style: TypographyTokens.bodyMedium(),
+              ),
+              const SizedBox(height: SpacingTokens.spacing6),
+              AfriButton(label: actionLabel, onTap: onAction),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FanClubStatus extends StatelessWidget {
+  const _FanClubStatus({
+    required this.title,
+    required this.body,
+    this.tone = AfriStateBannerTone.warning,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final String title;
+  final String body;
+  final AfriStateBannerTone tone;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        SpacingTokens.spacing4,
+        SpacingTokens.spacing2,
+        SpacingTokens.spacing4,
+        0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AfriStateBanner(
+            icon: tone == AfriStateBannerTone.danger
+                ? AfriIcons.statusError
+                : AfriIcons.statusWarning,
+            title: title,
+            subtitle: body,
+            tone: tone,
+            compact: true,
+          ),
+          if (actionLabel != null) ...[
+            const SizedBox(height: SpacingTokens.spacing2),
+            AfriButton(label: actionLabel!, onTap: onAction!),
+          ],
         ],
       ),
     );

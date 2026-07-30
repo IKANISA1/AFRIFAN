@@ -1,4 +1,8 @@
-import type { ClubProfile, FeatureFlags } from "@/lib/types";
+import type { FeatureFlags } from "@/lib/types";
+import type {
+  AdminClubProfile,
+  AdminClubProfileInput,
+} from "@/lib/data/admin/settings";
 
 export type SettingsForm = {
   id: number;
@@ -23,17 +27,10 @@ export type SettingsForm = {
   secondaryColorHex: string;
   accentColorHex: string;
   featureFlags: FeatureFlags;
+  expectedUpdatedAt: string;
 };
 
-export const defaultFeatureFlags: FeatureFlags = {
-  chat: true,
-  fan_clubs: true,
-  shop: true,
-  sms_ledger: true,
-  ticketing: true,
-};
-
-export function profileToForm(profile: ClubProfile): SettingsForm {
+export function profileToForm(profile: AdminClubProfile): SettingsForm {
   return {
     id: profile.id,
     clubSlug: profile.clubSlug,
@@ -56,14 +53,12 @@ export function profileToForm(profile: ClubProfile): SettingsForm {
     primaryColorHex: profile.primaryColorHex,
     secondaryColorHex: profile.secondaryColorHex,
     accentColorHex: profile.accentColorHex,
-    featureFlags: {
-      ...defaultFeatureFlags,
-      ...profile.featureFlags,
-    },
+    featureFlags: { ...profile.featureFlags },
+    expectedUpdatedAt: profile.updatedAt,
   };
 }
 
-export function formToProfile(form: SettingsForm): ClubProfile {
+export function formToProfile(form: SettingsForm): AdminClubProfileInput {
   return {
     id: form.id,
     clubName: form.clubName.trim(),
@@ -90,5 +85,6 @@ export function formToProfile(form: SettingsForm): ClubProfile {
     secondaryColorHex: form.secondaryColorHex.trim(),
     accentColorHex: form.accentColorHex.trim(),
     featureFlags: form.featureFlags,
+    expectedUpdatedAt: form.expectedUpdatedAt,
   };
 }

@@ -48,10 +48,15 @@ describe("getAdminMembershipApplications", () => {
                     order(orderColumn: string, options: { ascending: boolean }) {
                       expect(orderColumn).toBe("application_date");
                       expect(options).toEqual({ ascending: false });
-                      return Promise.resolve({
-                        data: applicationRows,
-                        error: null,
-                      });
+                      return {
+                        limit(limit: number) {
+                          expect(limit).toBe(500);
+                          return Promise.resolve({
+                            data: applicationRows,
+                            error: null,
+                          });
+                        },
+                      };
                     },
                   };
                 },
@@ -162,10 +167,15 @@ describe("getAdminMembershipApplications", () => {
                     order(orderColumn: string, options: { ascending: boolean }) {
                       expect(orderColumn).toBe("application_date");
                       expect(options).toEqual({ ascending: false });
-                      return Promise.resolve({
-                        data: applicationRows,
-                        error: null,
-                      });
+                      return {
+                        limit(limit: number) {
+                          expect(limit).toBe(500);
+                          return Promise.resolve({
+                            data: applicationRows,
+                            error: null,
+                          });
+                        },
+                      };
                     },
                   };
                 },

@@ -138,7 +138,7 @@ fi
 if [ -f "$ROUTE_STATE_CLOSURE_JSON" ] &&
   jq -e --argjson inventory_route_count "$inventory_route_count" '
     . as $root |
-    (.schema_version == "1.1") and
+    (.schema_version == "1.2") and
     (.evidence_source | type == "string" and length > 0) and
     (.route_count == $inventory_route_count) and
     (.state_count == 16) and
@@ -146,7 +146,7 @@ if [ -f "$ROUTE_STATE_CLOSURE_JSON" ] &&
     (.applicable_cell_count + .not_applicable_cell_count == .cell_count) and
     (.evidenced_cell_count + .open_cell_count == .applicable_cell_count) and
     (.test_evidenced_cell_count >= .evidenced_cell_count) and
-    (.visual_evidenced_cell_count >= .evidenced_cell_count) and
+    (.response_evidenced_cell_count | type == "number") and
     (
       .closure_complete ==
       (.open_cell_count == 0 and .evidenced_cell_count == .applicable_cell_count)
@@ -154,6 +154,7 @@ if [ -f "$ROUTE_STATE_CLOSURE_JSON" ] &&
     (.routes | type == "array" and length == $root.route_count) and
     all(
       .routes[];
+      . as $route |
       (.route_key | type == "string" and length > 0) and
       (.closure_status == "evidence_complete" or
        .closure_status == "evidence_open") and
@@ -182,6 +183,7 @@ if [ -f "$ROUTE_STATE_CLOSURE_JSON" ] &&
         (.rationale | type == "string" and length > 0) and
         (.test_evidence | type == "array") and
         (.screenshot_evidence | type == "array") and
+        (.response_evidence | type == "array") and
         (.accessibility_evidence | type == "array") and
         (.performance_evidence | type == "array") and
         (.privacy_evidence | type == "array") and
@@ -189,7 +191,14 @@ if [ -f "$ROUTE_STATE_CLOSURE_JSON" ] &&
         (
           if .evidence_status == "evidenced" then
             (.test_evidence | length > 0) and
-            (.screenshot_evidence | length > 0) and
+            (
+              if ($route.kind == "api_route" or
+                  $route.kind == "http_route") then
+                (.response_evidence | length > 0)
+              else
+                (.screenshot_evidence | length > 0)
+              end
+            ) and
             (.owner | type == "string" and length > 0) and
             (.reviewed_at | type == "string" and length > 0)
           else
@@ -371,7 +380,7 @@ visual_assets="$(
         rg -q -i '(approval|right[- ]to[- ]use|rights).*(recorded|required|approved)' "$source_manifest"; then
         continue
       fi
-      if [[ "$normalized" == packages/*/test/goldens/* ]] &&
+      if [[ "$normalized" == */test/goldens/* ]] &&
         [ -f "$GOLDEN_BASELINES_JSON" ]; then
         expected_sha="$(
           jq -r --arg path "$normalized" \

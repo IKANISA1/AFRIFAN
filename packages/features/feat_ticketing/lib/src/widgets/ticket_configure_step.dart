@@ -33,6 +33,26 @@ class TicketConfigureStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final generalSelected = selectedSeatType == SeatType.general;
+    final stackControls = MediaQuery.textScalerOf(context).scale(16) >= 28;
+    final quantityControls = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AfriIconButton(
+          icon: AfriIcons.remove,
+          onTap: quantity > 1 ? () => onQuantityChanged(quantity - 1) : null,
+        ),
+        const SizedBox(width: SpacingTokens.spacing3),
+        Text(
+          '$quantity',
+          style: TypographyTokens.headlineMedium(),
+        ),
+        const SizedBox(width: SpacingTokens.spacing3),
+        AfriIconButton(
+          icon: AfriIcons.add,
+          onTap: quantity < 8 ? () => onQuantityChanged(quantity + 1) : null,
+        ),
+      ],
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -89,34 +109,25 @@ class TicketConfigureStep extends StatelessWidget {
           _OfficialTicketCategoryReference(currency: currency),
           const SizedBox(height: SpacingTokens.spacing6),
           AfriSurfaceCard(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('QUANTITY', style: TypographyTokens.labelLarge()),
-                Row(
-                  children: [
-                    AfriIconButton(
-                      icon: AfriIcons.remove,
-                      onTap: quantity > 1
-                          ? () => onQuantityChanged(quantity - 1)
-                          : null,
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing3),
-                    Text(
-                      '$quantity',
-                      style: TypographyTokens.headlineMedium(),
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing3),
-                    AfriIconButton(
-                      icon: AfriIcons.add,
-                      onTap: quantity < 8
-                          ? () => onQuantityChanged(quantity + 1)
-                          : null,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            child: stackControls
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('QUANTITY', style: TypographyTokens.labelLarge()),
+                      const SizedBox(height: SpacingTokens.spacing3),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: quantityControls,
+                      ),
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('QUANTITY', style: TypographyTokens.labelLarge()),
+                      quantityControls,
+                    ],
+                  ),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
           AfriOutlinedIconButton(
@@ -139,7 +150,7 @@ class TicketConfigureStep extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing6),
           AfriButton(
-            label: 'Review reservation',
+            label: stackControls ? 'Review' : 'Review reservation',
             onTap: onReviewRequested,
             enabled: !match.isSoldOut && match.isOnSale,
             fullWidth: true,
@@ -157,6 +168,7 @@ class _OfficialTicketCategoryReference extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final stackContent = MediaQuery.textScalerOf(context).scale(16) >= 28;
     return AfriSurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,24 +183,43 @@ class _OfficialTicketCategoryReference extends StatelessWidget {
           ...officialTicketCategories.map(
             (category) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      category.name,
-                      style: TypographyTokens.bodyMedium().copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+              child: stackContent
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category.name,
+                          style: TypographyTokens.bodyMedium().copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing1),
+                        Text(
+                          currency.format(category.priceRwf),
+                          style: TypographyTokens.labelMedium(
+                            ColorTokens.clubAccent,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            category.name,
+                            style: TypographyTokens.bodyMedium().copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          currency.format(category.priceRwf),
+                          style: TypographyTokens.labelMedium(
+                            ColorTokens.clubAccent,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Text(
-                    currency.format(category.priceRwf),
-                    style: TypographyTokens.labelMedium(
-                      ColorTokens.clubAccent,
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ],

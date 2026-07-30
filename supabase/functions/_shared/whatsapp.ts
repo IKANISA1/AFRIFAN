@@ -34,7 +34,10 @@ function whatsappGraphApiVersion(): string {
   return configured.startsWith("v") ? configured : `v${configured}`;
 }
 
-async function postWhatsAppMessage(payload: Record<string, unknown>) {
+async function postWhatsAppMessage(
+  payload: Record<string, unknown>,
+  signal?: AbortSignal,
+) {
   const phoneNumberId = requireEnv("WHATSAPP_PHONE_NUMBER_ID");
   const accessToken = requireAnyEnv([
     "WHATSAPP_CLOUD_API_TOKEN",
@@ -50,6 +53,7 @@ async function postWhatsAppMessage(payload: Record<string, unknown>) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
+      signal,
     },
   );
 
@@ -95,6 +99,7 @@ export async function sendOtpTemplate(options: {
   phone: string;
   code: string;
   language: string;
+  signal?: AbortSignal;
 }) {
   const templateName = optionalEnv("WHATSAPP_AUTH_TEMPLATE_NAME") ??
     "gikundiro";
@@ -134,7 +139,7 @@ export async function sendOtpTemplate(options: {
         },
       ],
     },
-  });
+  }, options.signal);
 }
 
 export async function sendContributionConfirmation(options: {

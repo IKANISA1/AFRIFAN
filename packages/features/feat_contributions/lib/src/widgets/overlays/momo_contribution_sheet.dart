@@ -204,17 +204,22 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
               Text(
                 currency.format(_amount),
                 style: TypographyTokens.displayLarge(
-                  ColorTokens.clubAccent,
+                  ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
                 ).copyWith(fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Wrap(
                 spacing: SpacingTokens.spacing2,
+                runSpacing: SpacingTokens.spacing2,
+                alignment: WrapAlignment.center,
                 children: [1000, 2000, 5000, 10000]
                     .map(
                       (value) => AfriChoiceChip(
                         selected: _amount == value,
-                        label: Text('+$value'),
+                        label: Text(
+                          '+${value ~/ 1000}K',
+                          semanticsLabel: currency.format(value),
+                        ),
                         onSelected: (_) => setState(() => _amount = value),
                       ),
                     )

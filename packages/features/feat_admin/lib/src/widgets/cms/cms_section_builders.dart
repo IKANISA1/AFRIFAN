@@ -45,37 +45,6 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
     };
   }
 
-  // ─── Error State ───────────────────────────────────────────────────────
-
-  Widget buildErrorState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(SpacingTokens.spacing8),
-        child: GlassCard(
-          animate: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(AfriIcons.statusError, size: 48),
-              const SizedBox(height: SpacingTokens.spacing4),
-              Text(
-                'Failed to load content manager',
-                style: TypographyTokens.titleLarge(),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              Text(
-                _error ?? 'Unknown error',
-                style: TypographyTokens.bodyMedium(),
-              ),
-              const SizedBox(height: SpacingTokens.spacing5),
-              AfriButton(label: 'RETRY', onTap: _loadContent),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   // ─── News Section ──────────────────────────────────────────────────────
 
   Widget buildNewsSection() {
@@ -85,7 +54,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
         _SectionHeader(
           title: 'News Articles',
           actionLabel: 'ADD ARTICLE',
-          onAction: _showCreateArticleDialog,
+          onAction: _actionsEnabled ? _showCreateArticleDialog : null,
+          actionFocusNode: widget.primaryActionFocusNode,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         if (_articles.isNotEmpty)
@@ -94,10 +64,12 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               child: _ArticleCard(
                 article: article,
-                onTogglePublish: () => _togglePublish(
-                  article['id'].toString(),
-                  article['is_published'] == true,
-                ),
+                onTogglePublish: _actionsEnabled
+                    ? () => _togglePublish(
+                        article['id'].toString(),
+                        article['is_published'] == true,
+                      )
+                    : null,
               ),
             ),
           ),
@@ -114,7 +86,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
         _SectionHeader(
           title: 'Home Quick Actions',
           actionLabel: 'ADD ACTION',
-          onAction: _showQuickActionDialog,
+          onAction: _actionsEnabled ? _showQuickActionDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         if (_quickActions.isNotEmpty)
@@ -129,8 +101,12 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                   (action['icon_key']?.toString() ?? 'icon').toUpperCase(),
                   action['is_active'] == true ? 'ACTIVE' : 'INACTIVE',
                 ],
-                onEdit: () => _showQuickActionDialog(action),
-                onToggle: () => _toggleQuickAction(action),
+                onEdit: _actionsEnabled
+                    ? () => _showQuickActionDialog(action)
+                    : null,
+                onToggle: _actionsEnabled
+                    ? () => _toggleQuickAction(action)
+                    : null,
                 toggleLabel: action['is_active'] == true
                     ? 'DEACTIVATE'
                     : 'ACTIVATE',
@@ -150,7 +126,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
         _SectionHeader(
           title: 'Partners',
           actionLabel: 'ADD PARTNER',
-          onAction: _showPartnerDialog,
+          onAction: _actionsEnabled ? _showPartnerDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         if (_partners.isNotEmpty)
@@ -168,8 +144,12 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                       : 'DIRECT',
                   partner['is_active'] == true ? 'ACTIVE' : 'INACTIVE',
                 ],
-                onEdit: () => _showPartnerDialog(partner),
-                onToggle: () => _togglePartner(partner),
+                onEdit: _actionsEnabled
+                    ? () => _showPartnerDialog(partner)
+                    : null,
+                onToggle: _actionsEnabled
+                    ? () => _togglePartner(partner)
+                    : null,
                 toggleLabel: partner['is_active'] == true
                     ? 'DEACTIVATE'
                     : 'ACTIVATE',
@@ -189,7 +169,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
         _SectionHeader(
           title: 'Partner Services',
           actionLabel: 'ADD SERVICE',
-          onAction: _showPartnerServiceDialog,
+          onAction: _actionsEnabled ? _showPartnerServiceDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         if (_partnerServices.isNotEmpty)
@@ -209,8 +189,12 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                       : 'STANDARD',
                   service['is_active'] == true ? 'ACTIVE' : 'INACTIVE',
                 ],
-                onEdit: () => _showPartnerServiceDialog(service),
-                onToggle: () => _togglePartnerService(service),
+                onEdit: _actionsEnabled
+                    ? () => _showPartnerServiceDialog(service)
+                    : null,
+                onToggle: _actionsEnabled
+                    ? () => _togglePartnerService(service)
+                    : null,
                 toggleLabel: service['is_active'] == true
                     ? 'DEACTIVATE'
                     : 'ACTIVATE',
@@ -230,7 +214,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
         _SectionHeader(
           title: 'Prediction Competitions',
           actionLabel: 'ADD COMPETITION',
-          onAction: _showPredictionCompetitionDialog,
+          onAction: _actionsEnabled ? _showPredictionCompetitionDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         if (_predictionCompetitions.isNotEmpty)
@@ -249,8 +233,12 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                       ? 'SUPPORTED'
                       : 'INACTIVE',
                 ],
-                onEdit: () => _showPredictionCompetitionDialog(competition),
-                onToggle: () => _togglePredictionCompetition(competition),
+                onEdit: _actionsEnabled
+                    ? () => _showPredictionCompetitionDialog(competition)
+                    : null,
+                onToggle: _actionsEnabled
+                    ? () => _togglePredictionCompetition(competition)
+                    : null,
                 toggleLabel: competition['is_supported'] == true
                     ? 'DEACTIVATE'
                     : 'ACTIVATE',
@@ -270,7 +258,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
         _SectionHeader(
           title: 'Platform Content Blocks',
           actionLabel: 'ADD BLOCK',
-          onAction: _showContentBlockDialog,
+          onAction: _actionsEnabled ? _showContentBlockDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         if (_contentBlocks.isNotEmpty)
@@ -287,8 +275,12 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                   (block['block_type']?.toString() ?? 'banner').toUpperCase(),
                   block['is_active'] == true ? 'ACTIVE' : 'INACTIVE',
                 ],
-                onEdit: () => _showContentBlockDialog(block),
-                onToggle: () => _toggleContentBlock(block),
+                onEdit: _actionsEnabled
+                    ? () => _showContentBlockDialog(block)
+                    : null,
+                onToggle: _actionsEnabled
+                    ? () => _toggleContentBlock(block)
+                    : null,
                 toggleLabel: block['is_active'] == true
                     ? 'DEACTIVATE'
                     : 'ACTIVATE',
@@ -351,7 +343,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                     ),
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
-                      'Changed by: ${log['changed_by'] ?? 'System'}',
+                      'Actor details are withheld in the mobile workspace.',
                       style: TypographyTokens.bodySmall(),
                     ),
                     if (log['notes'] != null) ...[

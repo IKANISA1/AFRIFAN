@@ -50,9 +50,9 @@ class AdminRepository {
       AfriLogger.warn('AdminRepository', 'Admin role check failed: $e');
     }
 
-    final role =
-        user?.userMetadata?['role']?.toString().toLowerCase() ??
-        user?.appMetadata['role']?.toString().toLowerCase();
+    // app_metadata is server-controlled. Never authorize from user_metadata:
+    // authenticated users can update that client-owned field themselves.
+    final role = user?.appMetadata['role']?.toString().toLowerCase();
     return _isAdminRole(role);
   }
 
@@ -121,7 +121,7 @@ class AdminRepository {
       );
     } catch (e) {
       AfriLogger.error('AdminRepository', 'Dashboard metrics failed', e);
-      return const AdminDashboardMetrics();
+      rethrow;
     }
   }
 
@@ -170,6 +170,119 @@ class AdminRepository {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getManagedMatches({
+    int limit = 200,
+  }) async {
+    final boundedLimit = limit.clamp(1, 200);
+    final data = await _client
+        .from('matches')
+        .select(
+          'id, partner_id, home_team, away_team, competition, venue, '
+          'match_date, kickoff_time, is_on_sale, ticket_general_price, '
+          'ticket_vip_price, capacity, sold_count, match_status, home_score, '
+          'away_score, live_minute, match_summary',
+        )
+        .order('match_date', ascending: true)
+        .limit(boundedLimit);
+    return List<Map<String, dynamic>>.from(
+      (data as List).map((row) => Map<String, dynamic>.from(row as Map)),
+    );
+  }
+
+  Future<void> createManagedMatch(Map<String, dynamic> values) async {
+    await _client.from('matches').insert(values);
+  }
+
+  Future<void> updateManagedMatch(
+    String matchId,
+    Map<String, dynamic> values,
+  ) async {
+    await _client.from('matches').update(values).eq('id', matchId);
+  }
+
+  Future<Map<String, List<Map<String, dynamic>>>>
+  getAdminNotificationContext() async {
+    final scope = await _scopeResolver.requireResolved();
+    var groupsQuery = _client
+        .from('contribution_groups')
+        .select('id, name')
+        .eq('is_closed', false);
+    groupsQuery = _scopeResolver.apply(groupsQuery, scope);
+    var historyQuery = _client
+        .from('notifications')
+        .select(
+          'id, title, body, audience_type, audience_tier, audience_group_name, '
+          'delivery_mode, status, scheduled_at, sent_at, '
+          'requested_recipient_count, sent_count, failed_count, created_at',
+        );
+    historyQuery = _scopeResolver.apply(historyQuery, scope);
+    final results = await Future.wait<dynamic>(<Future<dynamic>>[
+      groupsQuery.order('name', ascending: true).limit(50),
+      historyQuery.order('created_at', ascending: false).limit(100),
+    ]);
+    return <String, List<Map<String, dynamic>>>{
+      'groups': List<Map<String, dynamic>>.from(
+        (results[0] as List).map(
+          (row) => Map<String, dynamic>.from(row as Map),
+        ),
+      ),
+      'history': List<Map<String, dynamic>>.from(
+        (results[1] as List).map(
+          (row) => Map<String, dynamic>.from(row as Map),
+        ),
+      ),
+    };
+  }
+
+  Future<List<Map<String, dynamic>>> getPredictionSettlementFixtures({
+    int limit = 100,
+  }) async {
+    final boundedLimit = limit.clamp(1, 100);
+    final data = await _client
+        .schema('football')
+        .from('fixtures')
+        .select(
+          'id, status, stage_name, group_name, kickoff_at, venue_city, '
+          'home_score, away_score, '
+          'home_team:teams!fixtures_home_team_id_fkey(id, name, short_name), '
+          'away_team:teams!fixtures_away_team_id_fkey(id, name, short_name), '
+          'competition:competitions!fixtures_competition_id_fkey('
+          'id, name, short_name)',
+        )
+        .order('kickoff_at', ascending: true)
+        .limit(boundedLimit);
+    return List<Map<String, dynamic>>.from(
+      (data as List).map((row) => Map<String, dynamic>.from(row as Map)),
+    );
+  }
+
+  Future<Map<String, List<Map<String, dynamic>>>>
+  getAdminSmsMonitorWorkspace() async {
+    final results = await Future.wait<dynamic>(<Future<dynamic>>[
+      _client.rpc('get_momo_sms_operational_summary'),
+      _client
+          .from('momo_sms_sync_runs')
+          .select(
+            'id, status, trigger, scanned_messages, uploaded_messages, '
+            'duplicate_messages, scan_started_at, scan_completed_at',
+          )
+          .order('scan_started_at', ascending: false)
+          .limit(50),
+    ]);
+    return <String, List<Map<String, dynamic>>>{
+      'metrics': List<Map<String, dynamic>>.from(
+        (results[0] as List).map(
+          (row) => Map<String, dynamic>.from(row as Map),
+        ),
+      ),
+      'runs': List<Map<String, dynamic>>.from(
+        (results[1] as List).map(
+          (row) => Map<String, dynamic>.from(row as Map),
+        ),
+      ),
+    };
+  }
+
   bool _assignmentMatchesClub(Map<String, dynamic> row, int? currentClubId) {
     final role = _normalizeRole(row['role']);
     final assignmentClubId = _asInt(row['club_id']);
@@ -187,6 +300,26 @@ class AdminRepository {
       'admin' || 'super_admin' || 'club_admin' || 'club_moderator' => true,
       _ => false,
     };
+  }
+
+  /// Uses only server-controlled JWT app metadata for high-risk admin
+  /// workspaces. Client-writable user metadata is intentionally ignored.
+  Future<bool> isCurrentUserAppMetadataAdmin() async {
+    final role = _client.auth.currentUser?.appMetadata['role']
+        ?.toString()
+        .trim()
+        .toLowerCase();
+    return _isAdminRole(role);
+  }
+
+  /// Platform-wide operational monitoring must not be exposed to a
+  /// club-scoped moderator or administrator.
+  Future<bool> isCurrentUserAppMetadataPlatformAdmin() async {
+    final role = _client.auth.currentUser?.appMetadata['role']
+        ?.toString()
+        .trim()
+        .toLowerCase();
+    return role == 'admin' || role == 'super_admin';
   }
 
   String? _normalizeRole(dynamic value) {
@@ -242,6 +375,29 @@ class AdminRepository {
         .from('group_contributions')
         .select('id, user_id, amount, status, momo_reference, created_at')
         .eq('group_id', groupId)
+        .order('created_at', ascending: false)
+        .limit(limit);
+    return List<Map<String, dynamic>>.from(
+      (data as List).map((row) => Map<String, dynamic>.from(row as Map)),
+    );
+  }
+
+  /// Returns the bounded, privacy-minimized records used by the contribution
+  /// monitor. Supporter identifiers and payment references are not selected.
+  Future<List<Map<String, dynamic>>> getContributionMonitorRecords(
+    List<String> groupIds, {
+    int limit = 500,
+  }) async {
+    if (groupIds.isEmpty || groupIds.length > 200) {
+      throw const FormatException('Invalid contribution group scope.');
+    }
+    if (limit < 1 || limit > 500) {
+      throw const FormatException('Invalid contribution monitor limit.');
+    }
+    final data = await _client
+        .from('group_contributions')
+        .select('id, group_id, amount, status, created_at')
+        .inFilter('group_id', groupIds)
         .order('created_at', ascending: false)
         .limit(limit);
     return List<Map<String, dynamic>>.from(
@@ -475,6 +631,71 @@ class AdminRepository {
         .order('name', ascending: true)
         .limit(limit);
     return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  Future<List<Map<String, dynamic>>> getManagedFootballCompetitions({
+    int limit = 200,
+  }) async {
+    final boundedLimit = limit.clamp(1, 200);
+    final data = await _client
+        .schema('football')
+        .from('competitions')
+        .select(
+          'id, slug, name, short_name, competition_kind, region, '
+          'country_code, country_name, organizer, gender, format_notes, '
+          'is_active',
+        )
+        .order('name', ascending: true)
+        .limit(boundedLimit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  Future<List<Map<String, dynamic>>> getManagedFootballSeasons({
+    int limit = 300,
+  }) async {
+    final boundedLimit = limit.clamp(1, 300);
+    final data = await _client
+        .schema('football')
+        .from('seasons')
+        .select(
+          'id, competition_id, slug, label, year_start, year_end, '
+          'status, is_active',
+        )
+        .order('year_start', ascending: false)
+        .limit(boundedLimit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  Future<void> createManagedFootballCompetition(
+    Map<String, dynamic> values,
+  ) async {
+    await _client.schema('football').from('competitions').insert(values);
+  }
+
+  Future<void> updateManagedFootballCompetition(
+    String competitionId,
+    Map<String, dynamic> values,
+  ) async {
+    await _client
+        .schema('football')
+        .from('competitions')
+        .update(values)
+        .eq('id', competitionId);
+  }
+
+  Future<void> createManagedFootballSeason(Map<String, dynamic> values) async {
+    await _client.schema('football').from('seasons').insert(values);
+  }
+
+  Future<void> updateManagedFootballSeason(
+    String seasonId,
+    Map<String, dynamic> values,
+  ) async {
+    await _client
+        .schema('football')
+        .from('seasons')
+        .update(values)
+        .eq('id', seasonId);
   }
 
   Future<List<Map<String, dynamic>>> getPredictionSupportedCompetitions({
@@ -829,26 +1050,17 @@ class AdminRepository {
 
   /// Returns recent news titles for dashboard feed.
   Future<List<String>> getRecentNewsTitles({int limit = 3}) async {
-    try {
-      final newsTable = await _resolveNewsTable();
-      final scope = await _scopeResolver.resolve(null);
-      var query = _client.from(newsTable).select('title');
-      query = _scopeResolver.apply(query, scope);
-      final data = await query
-          .order('created_at', ascending: false)
-          .limit(limit);
-      return (data as List)
-          .map((item) => item['title']?.toString() ?? 'News update')
-          .toList();
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'AdminRepository',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      return [];
-    }
+    final newsTable = await _resolveNewsTable();
+    final scope = await _scopeResolver.resolve(null);
+    var query = _client.from(newsTable).select('title');
+    query = _scopeResolver.apply(query, scope);
+    final data = await query
+        .order('created_at', ascending: false)
+        .limit(limit.clamp(1, 10));
+    return (data as List)
+        .map((item) => item['title']?.toString().trim() ?? '')
+        .where((title) => title.isNotEmpty)
+        .toList(growable: false);
   }
 
   Future<List<Map<String, dynamic>>> getPredictionChallenges({
@@ -856,9 +1068,15 @@ class AdminRepository {
     int limit = 50,
     int offset = 0,
   }) async {
+    if (limit < 1 || limit > 100) {
+      throw RangeError.range(limit, 1, 100, 'limit');
+    }
+    if (offset < 0) {
+      throw RangeError.range(offset, 0, null, 'offset');
+    }
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
-      return const <Map<String, dynamic>>[];
+      throw StateError('Admin access required.');
     }
 
     final result = await SafeRpc.call(
@@ -872,8 +1090,11 @@ class AdminRepository {
       tag: 'AdminChallenges',
     );
 
-    if (!result.isSuccess || result.data is! List) {
-      return const <Map<String, dynamic>>[];
+    if (!result.isSuccess) {
+      throw StateError(result.error ?? 'Challenge operations unavailable.');
+    }
+    if (result.data is! List) {
+      throw const FormatException('Invalid challenge operations response.');
     }
 
     return (result.data as List)
@@ -885,6 +1106,11 @@ class AdminRepository {
   Future<Map<String, dynamic>> retryPredictionChallengeSettlement(
     String challengeId,
   ) async {
+    if (!RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
+    ).hasMatch(challengeId)) {
+      throw const FormatException('Invalid challenge identifier.');
+    }
     final result = await SafeRpc.call(
       'prediction_challenge_admin_retry_settlement',
       params: <String, dynamic>{'p_challenge_id': challengeId},
@@ -892,11 +1118,11 @@ class AdminRepository {
       maxAttempts: 1,
     );
 
-    if (!result.isSuccess || result.data is! Map) {
-      return <String, dynamic>{
-        'status': 'error',
-        'message': result.error ?? 'Retry failed.',
-      };
+    if (!result.isSuccess) {
+      throw StateError(result.error ?? 'Settlement retry unavailable.');
+    }
+    if (result.data is! Map) {
+      throw const FormatException('Invalid settlement retry response.');
     }
 
     return Map<String, dynamic>.from(result.data as Map);
@@ -943,6 +1169,30 @@ class AdminRepository {
     }
 
     throw const FormatException('Unexpected admin notification response.');
+  }
+
+  Future<Map<String, dynamic>> settlePredictionFixture(
+    Map<String, dynamic> payload,
+  ) async {
+    final response = await _client.functions.invoke(
+      'admin-settle-fixture',
+      body: payload,
+    );
+    final raw = response.data;
+    if (raw is! Map) {
+      throw const FormatException('Unexpected fixture settlement response.');
+    }
+    final map = Map<String, dynamic>.from(raw);
+    if (map['success'] != true || map['data'] is! Map) {
+      throw StateError(
+        map['error']?.toString() ?? 'Fixture settlement was not confirmed.',
+      );
+    }
+    final data = Map<String, dynamic>.from(map['data'] as Map);
+    if (data['receipt'] is! Map) {
+      throw const FormatException('Unexpected fixture settlement receipt.');
+    }
+    return Map<String, dynamic>.from(data['receipt'] as Map);
   }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -63,14 +64,15 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   }
 
   Future<void> _activatePackage(Map<String, dynamic> pkg) async {
+    final l10n = context.afriL10n;
     if (!ConnectivityService.isOnline) {
-      _showError('Connect before changing membership.');
+      _showError(l10n.membershipConnectBeforeChange);
       return;
     }
 
     final user = ref.read(currentUserProvider);
     if (user == null) {
-      _showInfo('Sign in first to activate membership.');
+      _showInfo(l10n.membershipSignInFirst);
       context.go('/onboarding');
       return;
     }
@@ -90,7 +92,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       if (packageActivator != null) {
         await packageActivator(pkg).timeout(widget.activationTimeout);
         if (!mounted) return;
-        _showSuccess('$tierLabel membership request submitted.');
+        _showSuccess(l10n.membershipRequestSubmitted(tierLabel));
         return;
       }
 
@@ -99,9 +101,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       final scope = await resolver.requireResolved();
       final hasPendingRequest = _hasPendingApplicationForTier(tierValue);
       if (hasPendingRequest) {
-        _showInfo(
-          '$tierLabel membership is already pending payment verification.',
-        );
+        _showInfo(l10n.membershipAlreadyPending(tierLabel));
         return;
       }
 
@@ -114,13 +114,13 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         );
         await _refreshMembership();
         if (!mounted) return;
-        _showSuccess('$tierLabel membership started.');
+        _showSuccess(l10n.membershipStarted(tierLabel));
         return;
       }
 
       final route = await _findActivePaymentRoute(client, resolver, scope);
       if (route == null) {
-        _showError('Membership payment setup is pending club activation.');
+        _showError(l10n.membershipPaymentSetupPending);
         return;
       }
 
@@ -148,14 +148,10 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
       if (!mounted) return;
       if (!launched) {
-        _showError(
-          '$tierLabel request was saved, but the MOMO dialer could not open.',
-        );
+        _showError(l10n.membershipDialerFailed(tierLabel));
         return;
       }
-      _showSuccess(
-        '$tierLabel request submitted. Payment verification happens in the background.',
-      );
+      _showSuccess(l10n.membershipSubmittedBackground(tierLabel));
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -313,17 +309,18 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   }
 
   String _membershipActionLabel(String tierValue) {
+    final l10n = context.afriL10n;
     if (_hasPendingApplicationForTier(tierValue)) {
-      return 'Pending review';
+      return l10n.membershipPendingReviewAction;
     }
     final membership = ref.read(membershipProvider).valueOrNull?.membership;
     if (membership == null) {
-      return 'Activate';
+      return l10n.membershipActivateAction;
     }
     if (_isCurrentTier(tierValue)) {
-      return 'Renew';
+      return l10n.membershipRenewAction;
     }
-    return 'Switch';
+    return l10n.membershipSwitchAction;
   }
 
   String _membershipPackageLabel(String tierValue) {
@@ -347,6 +344,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final user = ref.watch(currentUserProvider);
@@ -356,7 +354,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     final snapshot = asyncMembership.valueOrNull;
     final isLoading = asyncMembership.isLoading;
     final errorMessage = asyncMembership.hasError
-        ? 'Membership details are temporarily unavailable.'
+        ? l10n.membershipUnavailableMessage
         : null;
     final isSyncing =
         asyncMembership.isRefreshing ||
@@ -367,7 +365,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         snapshot?.contributions ?? const <ContributionRecord>[];
     final emptyMessage =
         (packages.isEmpty && !isLoading && errorMessage == null)
-        ? 'Membership packages will appear once the club publishes them.'
+        ? l10n.membershipPackageEmpty
         : null;
 
     final currentFet = (membership?['points'] as num?)?.toInt() ?? 0;
@@ -388,9 +386,12 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
-        title: Text('Membership', style: TypographyTokens.headlineSmall()),
+        title: Text(
+          l10n.membershipTitle,
+          style: TypographyTokens.headlineSmall(),
+        ),
       ),
       scrollable: false,
       bodyWrapper: (child) =>
@@ -442,7 +443,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                 ),
                 child: AfriStateBanner(
                   icon: AfriIcons.statusWarning,
-                  title: 'Saved membership details',
+                  title: l10n.membershipSavedDetails,
                   subtitle: snapshot?.recoveryMessage,
                   tone: AfriStateBannerTone.warning,
                 ),
@@ -459,30 +460,28 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AfriSectionHeader(
-                    title: 'Digital card',
+                    title: l10n.membershipDigitalCard,
                     padding: EdgeInsets.zero,
                     trailing: AfriInfoChip(
                       icon: AfriIcons.share,
-                      label: 'Share',
+                      label: l10n.share,
                       onTap: () async {
                         final supporterId = user?.publicUserId != null
                             ? AliasGenerator.format(user!.publicUserId!)
                             : '000000';
                         await Clipboard.setData(
                           ClipboardData(
-                            text:
-                                '${RuntimeBranding.displayHomeTeamName} membership\n'
-                                'Tier: $currentTier\n'
-                                'Supporter ID: #$supporterId',
+                            text: l10n.membershipShareText(
+                              RuntimeBranding.displayHomeTeamName,
+                              currentTier,
+                              supporterId,
+                            ),
                           ),
                         );
                         if (!context.mounted) {
                           return;
                         }
-                        AfriToast.success(
-                          context,
-                          'Membership details copied.',
-                        );
+                        AfriToast.success(context, l10n.membershipCopied);
                       },
                     ),
                   ),
@@ -519,9 +518,13 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                 child: latestPendingApplication != null
                     ? AfriStateBanner(
                         icon: AfriIcons.statusWarning,
-                        title: 'Membership review',
-                        subtitle:
-                            '${_membershipPackageLabel(latestPendingApplication['tier']?.toString() ?? 'imena')} request is awaiting payment verification.',
+                        title: l10n.membershipReviewTitle,
+                        subtitle: l10n.membershipReviewSubtitle(
+                          _membershipPackageLabel(
+                            latestPendingApplication['tier']?.toString() ??
+                                'imena',
+                          ),
+                        ),
                         tone: AfriStateBannerTone.warning,
                       )
                     : GlassCard(
@@ -542,8 +545,10 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                                   ),
                                   Text(
                                     currentFet == 0
-                                        ? 'Membership activity appears after ticket, fanclub, and contribution reviews.'
-                                        : '$currentFet activity points recorded.',
+                                        ? l10n.membershipActivityPending
+                                        : l10n.membershipActivityRecorded(
+                                            currentFet,
+                                          ),
                                     style: TypographyTokens.bodyMedium(),
                                   ),
                                   if (membership?['expires_at'] != null) ...[
@@ -551,7 +556,11 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                                       height: SpacingTokens.spacing2,
                                     ),
                                     Text(
-                                      'Renews on ${_formatMembershipDate(membership?['expires_at']?.toString())}',
+                                      l10n.membershipRenewsOn(
+                                        _formatMembershipDate(
+                                          membership?['expires_at']?.toString(),
+                                        ),
+                                      ),
                                       style: TypographyTokens.bodySmall(
                                         ColorTokens.onSurfaceVariant,
                                       ),
@@ -593,7 +602,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                         '',
                       );
                       final uri = Uri.parse(
-                        'https://wa.me/$sanitizedPhoneNumber?text=${Uri.encodeComponent('Hi, I need help with my membership payment verification.')}',
+                        'https://wa.me/$sanitizedPhoneNumber?text=${Uri.encodeComponent(l10n.membershipSupportMessage)}',
                       );
                       unawaited(
                         launchUrl(
@@ -601,14 +610,12 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                           mode: LaunchMode.externalApplication,
                         ).then((launched) {
                           if (!launched && mounted) {
-                            _showError(
-                              'Could not open WhatsApp. Please contact support.',
-                            );
+                            _showError(l10n.membershipWhatsAppUnavailable);
                           }
                         }),
                       );
                     } else {
-                      _showInfo('Support contact is not configured yet.');
+                      _showInfo(l10n.membershipSupportNotConfigured);
                     }
                   },
                 ),
@@ -640,8 +647,8 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               ),
               child: AfriListRow(
                 icon: AfriIcons.clubZone,
-                title: 'Fan registry',
-                subtitle: 'Browse all supporters',
+                title: l10n.fanRegistryTitle,
+                subtitle: l10n.fanRegistryBrowseAll,
                 onTap: () => context.go('/fanzone?section=supporters'),
               ),
             ),
@@ -652,7 +659,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
           ),
 
           // ── Packages ──
-          const SliverToBoxAdapter(child: AfriSectionHeader(title: 'Packages')),
+          SliverToBoxAdapter(
+            child: AfriSectionHeader(title: l10n.membershipPackagesTitle),
+          ),
 
           const SliverToBoxAdapter(
             child: SizedBox(height: SpacingTokens.spacing4),
@@ -670,11 +679,11 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                 child: AfriStateView.loading(
                   key: const ValueKey<String>('membership-syncing'),
                   title: _isJoining
-                      ? 'Submitting membership request'
-                      : 'Updating membership',
+                      ? l10n.membershipSubmittingTitle
+                      : l10n.membershipUpdatingTitle,
                   message: _isJoining
-                      ? 'Keep this screen open while the club receives your request.'
-                      : 'Refreshing packages and current membership details.',
+                      ? l10n.membershipSubmittingMessage
+                      : l10n.membershipUpdatingMessage,
                   compact: true,
                 ),
               ),
@@ -716,9 +725,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                         horizontal: SpacingTokens.spacing6,
                       ),
                       child: AfriStateView.offline(
-                        title: 'Membership unavailable',
-                        message: 'Connect to load current membership details.',
-                        actionLabel: 'Connection required',
+                        title: l10n.membershipOfflineTitle,
+                        message: l10n.membershipOfflineMessage,
+                        actionLabel: l10n.connectionRequired,
                       ),
                     );
                   }
@@ -743,7 +752,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                             horizontal: SpacingTokens.spacing6,
                           ),
                           child: AfriStateView.empty(
-                            title: 'Membership setup pending',
+                            title: l10n.membershipSetupPending,
                             message: emptyMessage,
                           ),
                         );
@@ -797,24 +806,25 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   String _formatMembershipDate(String? rawValue) {
     final date = DateTime.tryParse(rawValue ?? '');
     if (date == null) {
-      return 'next year';
+      return context.afriL10n.membershipDateNextYear;
     }
     final local = date.toLocal();
+    final l10n = context.afriL10n;
     final month = switch (local.month) {
-      1 => 'Jan',
-      2 => 'Feb',
-      3 => 'Mar',
-      4 => 'Apr',
-      5 => 'May',
-      6 => 'Jun',
-      7 => 'Jul',
-      8 => 'Aug',
-      9 => 'Sep',
-      10 => 'Oct',
-      11 => 'Nov',
-      _ => 'Dec',
+      1 => l10n.membershipMonthJan,
+      2 => l10n.membershipMonthFeb,
+      3 => l10n.membershipMonthMar,
+      4 => l10n.membershipMonthApr,
+      5 => l10n.membershipMonthMay,
+      6 => l10n.membershipMonthJun,
+      7 => l10n.membershipMonthJul,
+      8 => l10n.membershipMonthAug,
+      9 => l10n.membershipMonthSep,
+      10 => l10n.membershipMonthOct,
+      11 => l10n.membershipMonthNov,
+      _ => l10n.membershipMonthDec,
     };
-    return '${local.day} $month ${local.year}';
+    return l10n.membershipDate(local.day, month, local.year);
   }
 }
 
@@ -829,32 +839,30 @@ class _MembershipFailureView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final content = switch (failure.kind) {
       MembershipFailureKind.permissionDenied => (
         stateId: 'permission-denied',
-        title: 'Membership change not permitted',
-        message:
-            'Your account cannot change membership right now. Your current membership remains unchanged.',
+        title: l10n.membershipChangeDeniedTitle,
+        message: l10n.membershipChangeDeniedMessage,
         canRefresh: false,
       ),
       MembershipFailureKind.conflict => (
         stateId: 'conflict',
-        title: 'Membership details changed',
-        message:
-            'The club updated these details while you were reviewing them. Refresh before choosing a package.',
+        title: l10n.membershipChangedTitle,
+        message: l10n.membershipChangedMessage,
         canRefresh: true,
       ),
       MembershipFailureKind.securityTimeout => (
         stateId: 'security-timeout',
-        title: 'Membership request timed out',
-        message:
-            'The secure request window expired. Refresh membership status before trying again.',
+        title: l10n.membershipTimeoutTitle,
+        message: l10n.membershipTimeoutMessage,
         canRefresh: true,
       ),
       MembershipFailureKind.unknown => (
         stateId: 'error',
-        title: 'Membership unavailable',
-        message: 'Membership details are temporarily unavailable.',
+        title: l10n.membershipOfflineTitle,
+        message: l10n.membershipUnavailableMessage,
         canRefresh: true,
       ),
     };
@@ -863,7 +871,7 @@ class _MembershipFailureView extends StatelessWidget {
       key: ValueKey<String>('membership-${content.stateId}'),
       title: content.title,
       message: content.message,
-      actionLabel: content.canRefresh ? 'Refresh' : null,
+      actionLabel: content.canRefresh ? l10n.membershipRefreshAction : null,
       onAction: content.canRefresh ? onRefresh : null,
       compact: true,
     );
@@ -949,13 +957,14 @@ class _MembershipPackageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final tierId = (pkg['tier'] ?? 'bronze').toString().toLowerCase();
     final isJoiningTier = isCurrentJoiningTier(tierId);
     final isCurrent = isCurrentTier(tierId);
     final useLargeTextLayout = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     final tierLabel = packageLabel(pkg['tier']?.toString() ?? '');
     final statusChip = AfriStatusChip(
-      label: isCurrent ? '$tierLabel · Current' : tierLabel,
+      label: isCurrent ? l10n.membershipCurrentStatus(tierLabel) : tierLabel,
       tone: isCurrent ? AfriStatusTone.success : AfriStatusTone.info,
     );
     final action = ConnectivityBuilder(
@@ -963,11 +972,11 @@ class _MembershipPackageTile extends StatelessWidget {
         key: ValueKey<String>('membership-action-$tierId'),
         autofocus: autofocus,
         label: changesBlocked
-            ? 'Refresh required'
+            ? l10n.membershipRefreshRequired
             : !isOnline
-            ? 'Connection required'
+            ? l10n.connectionRequired
             : isJoiningTier
-            ? 'Submitting'
+            ? l10n.membershipSubmittingAction
             : actionLabel(tierId),
         onTap: () => onActivatePackage(pkg),
         isLoading: false,
@@ -991,7 +1000,9 @@ class _MembershipPackageTile extends StatelessWidget {
         container: true,
         selected: isCurrent,
         label: isCurrent
-            ? '${packageLabel(pkg['tier']?.toString() ?? '')} membership package, current'
+            ? l10n.membershipPackageCurrentSemantic(
+                packageLabel(pkg['tier']?.toString() ?? ''),
+              )
             : null,
         child: AfriSurfaceCard(
           onTap: () => context.push('/membership/tier/$tierId'),
@@ -1000,7 +1011,10 @@ class _MembershipPackageTile extends StatelessWidget {
             children: [
               if (useLargeTextLayout) ...[
                 Text(
-                  (pkg['title'] ?? pkg['tier'] ?? 'Package').toString(),
+                  (pkg['title'] ??
+                          pkg['tier'] ??
+                          l10n.membershipPackageFallback)
+                      .toString(),
                   maxLines: 2,
                   style: TypographyTokens.titleMedium(),
                 ),
@@ -1011,7 +1025,10 @@ class _MembershipPackageTile extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        (pkg['title'] ?? pkg['tier'] ?? 'Package').toString(),
+                        (pkg['title'] ??
+                                pkg['tier'] ??
+                                l10n.membershipPackageFallback)
+                            .toString(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TypographyTokens.titleMedium(),
@@ -1093,6 +1110,7 @@ class _PaymentStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final metadata = application['metadata'] is Map
         ? Map<String, dynamic>.from(application['metadata'] as Map)
         : const <String, dynamic>{};
@@ -1105,17 +1123,17 @@ class _PaymentStatusCard extends StatelessWidget {
 
     final steps = <_PaymentStep>[
       _PaymentStep(
-        label: 'Payment sent',
+        label: l10n.membershipPaymentSent,
         isComplete: paymentStatus != 'unpaid',
         isCurrent: paymentStatus == 'unpaid',
       ),
       _PaymentStep(
-        label: 'Verifying payment',
+        label: l10n.membershipPaymentVerifying,
         isComplete: paymentStatus == 'verified',
         isCurrent: paymentStatus == 'pending' || paymentStatus == 'unpaid',
       ),
       _PaymentStep(
-        label: 'Membership confirmed',
+        label: l10n.membershipConfirmed,
         isComplete: paymentStatus == 'verified',
         isCurrent: false,
       ),
@@ -1131,7 +1149,7 @@ class _PaymentStatusCard extends StatelessWidget {
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: Text(
-                  '$tierLabel MEMBERSHIP REQUEST',
+                  l10n.membershipRequestTitle(tierLabel).toUpperCase(),
                   style: TypographyTokens.labelMedium(ColorTokens.warning),
                 ),
               ),
@@ -1144,7 +1162,17 @@ class _PaymentStatusCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               child: Text(
-                'Amount: $currencySymbol ${CurrencyFormatter(currencyCode: currencySymbol.toString(), currencySymbol: currencySymbol.toString()).formatPlain(amount is num ? amount.toInt() : int.tryParse(amount.toString()) ?? 0)}',
+                l10n.membershipAmount(
+                  currencySymbol.toString(),
+                  CurrencyFormatter(
+                    currencyCode: currencySymbol.toString(),
+                    currencySymbol: currencySymbol.toString(),
+                  ).formatPlain(
+                    amount is num
+                        ? amount.toInt()
+                        : int.tryParse(amount.toString()) ?? 0,
+                  ),
+                ),
                 style: TypographyTokens.bodyMedium(),
               ),
             ),
@@ -1204,15 +1232,14 @@ class _PaymentStatusCard extends StatelessWidget {
 
           // Estimated wait time
           Text(
-            'Verification typically takes 1–24 hours. '
-            'You will be notified once confirmed.',
+            l10n.membershipVerificationTime,
             style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
           ),
 
           if (applicationDate != null) ...[
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              'Requested: ${formatDate(applicationDate)}',
+              l10n.membershipRequestedOn(formatDate(applicationDate)),
               style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
             ),
           ],
@@ -1221,7 +1248,7 @@ class _PaymentStatusCard extends StatelessWidget {
 
           // Contact support CTA
           AfriButton(
-            label: 'CONTACT SUPPORT',
+            label: l10n.contactSupport.toUpperCase(),
             variant: AfriButtonVariant.secondary,
             icon: AfriIcons.chat,
             onTap: onContactSupport,

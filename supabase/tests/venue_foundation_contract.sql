@@ -144,6 +144,7 @@ declare
   v_launch_campaign_id uuid;
   v_drink_id uuid;
   v_alcohol_drink_id uuid;
+  v_checkin_id uuid;
   v_order_id uuid;
   v_result jsonb;
   i integer;
@@ -227,6 +228,7 @@ begin
      (v_result ->> 'fet_awarded')::integer <> 5 then
     raise exception 'check-in success contract failed: %', v_result;
   end if;
+  v_checkin_id := (v_result ->> 'checkin_id')::uuid;
 
   v_result := public.venue_checkin_validate(v_club_id, 'contract-code-hash', 'checkin-1', 20);
   if v_result ->> 'code' <> 'idempotent_replay' then
@@ -308,7 +310,7 @@ begin
     perform public.venue_order_create(
       v_club_id,
       v_venue_id,
-      null,
+      v_checkin_id,
       jsonb_build_array(jsonb_build_object('drink_item_id', v_alcohol_drink_id, 'quantity', 1)),
       false,
       'order-age-gate'
@@ -324,7 +326,7 @@ begin
   v_result := public.venue_order_create(
     v_club_id,
     v_venue_id,
-    null,
+    v_checkin_id,
     jsonb_build_array(jsonb_build_object('drink_item_id', v_alcohol_drink_id, 'quantity', 2)),
     true,
     'order-ok'
@@ -344,6 +346,19 @@ begin
       and to_status = 'created'
   ) then
     raise exception 'order create did not write order_created event';
+  end if;
+
+  perform set_config('request.jwt.claim.sub', v_other_user_id::text, true);
+  v_result := public.venue_order_create(
+    v_club_id,
+    v_venue_id,
+    v_checkin_id,
+    jsonb_build_array(jsonb_build_object('drink_item_id', v_alcohol_drink_id, 'quantity', 1)),
+    true,
+    'cross-user-checkin'
+  );
+  if v_result ->> 'code' <> 'checkin_required' then
+    raise exception 'cross-user check-in order was not denied: %', v_result;
   end if;
 
   insert into public.venue_staff_memberships (club_id, venue_id, user_id, role)

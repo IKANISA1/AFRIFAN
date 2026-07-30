@@ -47,7 +47,7 @@ class OnboardingModule extends FeatureModule {
       path: '/splash',
       presentation: RoutePresentation.deepLinkOnly,
       recommendation: 'delete as visible screen',
-      targetPath: '/home',
+      targetPath: '/onboarding',
       rationale: 'Startup should use native launch plus auth/loading state.',
     ),
     RoutePresentationDecision(

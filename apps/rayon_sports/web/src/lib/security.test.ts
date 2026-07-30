@@ -90,7 +90,7 @@ describe("security helpers", () => {
     expect(rejectInsecureMutation(request)).toBeNull();
   });
 
-  it("still blocks cross-site mutations even when the Africlub CSRF header is present", () => {
+  it("still blocks cross-site mutations even when the Africlub CSRF header is present", async () => {
     const request = makeRequest({
       "x-africlub-csrf": "1",
       "sec-fetch-site": "cross-site",
@@ -98,6 +98,11 @@ describe("security helpers", () => {
     });
 
     expect(isSameOriginMutation(request)).toBe(false);
-    expect(rejectInsecureMutation(request)?.status).toBe(403);
+    const response = rejectInsecureMutation(request);
+    expect(response?.status).toBe(403);
+    expect(response?.headers.get("cache-control")).toBe("no-store");
+    await expect(response?.json()).resolves.toMatchObject({
+      code: "MUTATION_ACCESS_DENIED",
+    });
   });
 });

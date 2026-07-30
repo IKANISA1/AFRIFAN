@@ -1,0 +1,12 @@
+{
+  "status": 503,
+  "headers": {
+    "content-type": "application/json",
+    "cache-control": "no-store"
+  },
+  "body": {
+    "error": "Service temporarily unavailable.",
+    "retryable": true,
+    "change_confirmed": false
+  }
+}

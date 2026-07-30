@@ -1,175 +1,30 @@
 import 'dart:async';
 
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../admin_competitions_controller.dart';
 
 part '../widgets/competitions/competition_widgets.dart';
 
-/// Admin screen for managing supported competitions and seasons.
-///
-/// Provides CRUD: list / add / edit / toggle active / manage seasons.
-/// Competitions drive which matches appear in the prediction engine.
-class CompetitionManagerScreen extends ConsumerStatefulWidget {
-  const CompetitionManagerScreen({super.key});
+/// Controlled workspace for managing prediction competitions and seasons.
+class CompetitionManagerScreen extends ConsumerWidget {
+  const CompetitionManagerScreen({this.firstActionFocusNode, super.key});
+
+  final FocusNode? firstActionFocusNode;
 
   @override
-  ConsumerState<CompetitionManagerScreen> createState() =>
-      _CompetitionManagerScreenState();
-}
-
-class _CompetitionManagerScreenState
-    extends ConsumerState<CompetitionManagerScreen> {
-  List<Map<String, dynamic>> _competitions = const [];
-  bool _isLoading = true;
-  String? _error;
-  String _regionFilter = 'all';
-  String _kindFilter = 'all';
-
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_loadCompetitions());
-  }
-
-  Future<void> _loadCompetitions() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final client = ref.read(supabaseClientProvider);
-      var query = client.schema('football').from('competitions').select('''
-        id, slug, name, short_name, competition_kind,
-        region, country_code, country_name, organizer,
-        gender, format_notes, is_active, metadata,
-        created_at, updated_at
-      ''');
-
-      if (_regionFilter != 'all') {
-        query = query.eq('region', _regionFilter);
-      }
-      if (_kindFilter != 'all') {
-        query = query.eq('competition_kind', _kindFilter);
-      }
-
-      final rows = await query.order('name', ascending: true);
-      if (!mounted) return;
-      setState(() {
-        _competitions = List<Map<String, dynamic>>.from(rows);
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _toggleActive(Map<String, dynamic> competition) async {
-    final id = competition['id']?.toString();
-    final currentlyActive = competition['is_active'] == true;
-    if (id == null) return;
-
-    try {
-      final client = ref.read(supabaseClientProvider);
-      await client
-          .schema('football')
-          .from('competitions')
-          .update({'is_active': !currentlyActive})
-          .eq('id', id);
-
-      await _loadCompetitions();
-
-      if (!mounted) return;
-      final message = currentlyActive
-          ? '${competition['name']} deactivated'
-          : '${competition['name']} activated';
-      if (currentlyActive) {
-        AfriToast.error(context, message);
-      } else {
-        AfriToast.success(context, message);
-      }
-    } catch (e) {
-      if (!mounted) return;
-      AfriToast.error(context, 'Failed: $e');
-    }
-  }
-
-  Future<void> _openCompetitionForm([Map<String, dynamic>? existing]) async {
-    final result = await showAfriBottomSheet<Map<String, dynamic>>(
-      context: context,
-      isScrollControlled: true,
-      builder: (ctx) => _CompetitionFormSheet(existing: existing),
-    );
-
-    if (result == null) return;
-    if (!mounted) return;
-
-    // Show loading
-    unawaited(
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (ctx) => const AfriLoadingIndicator(),
-      ),
-    );
-
-    try {
-      final client = ref.read(supabaseClientProvider);
-
-      if (existing != null) {
-        // Update
-        await client
-            .schema('football')
-            .from('competitions')
-            .update(result)
-            .eq('id', existing['id']);
-      } else {
-        // Insert
-        await client.schema('football').from('competitions').insert(result);
-      }
-
-      if (!mounted) return;
-      context.pop(); // close loading
-      await _loadCompetitions();
-
-      if (!mounted) return;
-      AfriToast.success(
-        context,
-        existing != null ? 'Competition updated' : 'Competition created',
-      );
-    } catch (e) {
-      if (!mounted) return;
-      context.pop(); // close loading
-      AfriToast.error(context, 'Failed: $e');
-    }
-  }
-
-  Future<void> _openSeasonManager(Map<String, dynamic> competition) async {
-    await showAfriBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (ctx) => _SeasonManagerSheet(
-        competitionId: competition['id'].toString(),
-        competitionName: competition['name']?.toString() ?? '',
-        supabaseClient: ref.read(supabaseClientProvider),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final activeCount = _competitions
-        .where((c) => c['is_active'] == true)
-        .length;
-    final totalCount = _competitions.length;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final enabled = ref.watch(adminCompetitionsEnabledProvider);
+    final competitions = ref.watch(adminCompetitionsProvider);
+    final snapshot = competitions.valueOrNull;
+    final denied =
+        snapshot?.failure?.kind ==
+        AdminCompetitionsFailureKind.permissionDenied;
+    final controlsEnabled =
+        enabled && snapshot?.actionsEnabled == true && !competitions.isLoading;
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
@@ -183,168 +38,468 @@ class _CompetitionManagerScreenState
         ),
         actions: [
           AfriIconButton(
+            key: const ValueKey<String>('admin-competitions-add'),
             icon: AfriIcons.add,
-            onTap: () => _openCompetitionForm(),
-            tooltip: 'Add competition',
+            onTap: controlsEnabled
+                ? () => _openCompetitionForm(context, ref)
+                : null,
+            tooltip: controlsEnabled
+                ? 'Add competition'
+                : 'Competition actions unavailable',
           ),
         ],
       ),
       scrollable: false,
       constrainContent: true,
-      child: _isLoading
-          ? const Padding(
-              padding: EdgeInsets.all(SpacingTokens.spacing6),
-              child: AfriSkeletonList(),
-            )
-          : _error != null
-          ? _buildError()
-          : AfriRefreshIndicator(
-              onRefresh: _loadCompetitions,
-              child: ListView(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                children: [
-                  // Stats row
-                  _buildStatsRow(activeCount, totalCount),
-                  const SizedBox(height: SpacingTokens.spacing4),
-
-                  // Region filter
-                  _buildRegionFilter(),
-                  const SizedBox(height: SpacingTokens.spacing2),
-
-                  // Kind filter
-                  _buildKindFilter(),
-                  const SizedBox(height: SpacingTokens.spacing4),
-
-                  if (_competitions.isEmpty)
-                    _buildEmpty()
-                  else
-                    ..._competitions.map(_buildCompetitionCard),
-                ],
+      child: !enabled
+          ? _disabled(context)
+          : denied
+          ? _unavailable(
+              context,
+              ref,
+              const AdminCompetitionsFailure(
+                AdminCompetitionsFailureKind.permissionDenied,
               ),
-            ),
+            )
+          : competitions.isLoading && snapshot == null
+          ? Padding(
+              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriStateView.loading(
+                key: const ValueKey<String>('admin-competitions-state-loading'),
+                title: 'Loading competitions',
+                message: 'Checking the controlled competition workspace.',
+              ),
+            )
+          : competitions.hasError && snapshot == null
+          ? _unavailable(
+              context,
+              ref,
+              AdminCompetitionsFailure.fromError(competitions.error!),
+            )
+          : _content(context, ref, competitions),
     );
   }
 
-  Widget _buildStatsRow(int active, int total) {
+  Widget _content(
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue<AdminCompetitionsSnapshot> competitions,
+  ) {
+    final snapshot = competitions.requireValue;
+    final visible = snapshot.visibleCompetitions;
+    final controlsEnabled = snapshot.actionsEnabled && !competitions.isLoading;
+    return AfriRefreshIndicator(
+      onRefresh: ref.read(adminCompetitionsProvider.notifier).refresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        children: [
+          if (_statusBanner(competitions) case final banner?) ...[
+            banner,
+            const SizedBox(height: SpacingTokens.spacing4),
+          ],
+          Text(
+            'Manage the competitions and seasons available to the prediction engine.',
+            style: TypographyTokens.bodyMedium(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          _CompetitionStats(
+            total: snapshot.competitions.length,
+            active: snapshot.activeCount,
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          _CompetitionFilters(
+            snapshot: snapshot,
+            enabled: controlsEnabled,
+            onRegion: ref.read(adminCompetitionsProvider.notifier).selectRegion,
+            onKind: ref.read(adminCompetitionsProvider.notifier).selectKind,
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          if (visible.isEmpty)
+            AfriStateView.empty(
+              key: const ValueKey<String>('admin-competitions-state-empty'),
+              title: snapshot.competitions.isEmpty
+                  ? 'No competitions configured'
+                  : 'No competitions match',
+              message: snapshot.competitions.isEmpty
+                  ? 'Create the first controlled competition when access is available.'
+                  : 'Choose another region or competition kind.',
+              compact: true,
+              actionLabel: snapshot.competitions.isEmpty && controlsEnabled
+                  ? 'Add competition'
+                  : null,
+              onAction: snapshot.competitions.isEmpty && controlsEnabled
+                  ? () => _openCompetitionForm(context, ref)
+                  : null,
+            )
+          else
+            ...visible.indexed.map(
+              (entry) => _CompetitionCard(
+                item: entry.$2,
+                enabled: controlsEnabled,
+                primaryFocusNode: entry.$1 == 0 ? firstActionFocusNode : null,
+                onSeasons: () => _openSeasonManager(context, ref, entry.$2),
+                onEdit: () =>
+                    _openCompetitionForm(context, ref, existing: entry.$2),
+                onToggle: () =>
+                    _confirmCompetitionToggle(context, ref, entry.$2),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _disabled(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: AfriStateView.empty(
+        key: const ValueKey<String>('admin-competitions-state-disabled'),
+        title: 'Competition management unavailable',
+        message: 'Competition controls are disabled for this controlled build.',
+        icon: AfriIcons.lock,
+        actionLabel: 'Back to admin',
+        onAction: () => context.pop(),
+      ),
+    );
+  }
+
+  Widget _unavailable(
+    BuildContext context,
+    WidgetRef ref,
+    AdminCompetitionsFailure failure,
+  ) {
+    final view = switch (failure.kind) {
+      AdminCompetitionsFailureKind.offline => AfriStateView.offline(
+        key: const ValueKey<String>('admin-competitions-state-offline'),
+        title: 'Competition workspace offline',
+        message: 'Reconnect before loading private competition records.',
+        actionLabel: 'Try again',
+        onAction: () =>
+            unawaited(ref.read(adminCompetitionsProvider.notifier).refresh()),
+      ),
+      AdminCompetitionsFailureKind.permissionDenied => AfriStateView.error(
+        key: const ValueKey<String>(
+          'admin-competitions-state-permission-denied',
+        ),
+        title: 'Competition access unavailable',
+        message:
+            'This account cannot view or change competition configuration.',
+        actionLabel: 'Back to admin',
+        onAction: () => context.pop(),
+      ),
+      AdminCompetitionsFailureKind.conflict => AfriStateView.error(
+        key: const ValueKey<String>('admin-competitions-state-conflict'),
+        title: 'Competition data changed',
+        message: 'Refresh before continuing with competition work.',
+        actionLabel: 'Refresh',
+        onAction: () =>
+            unawaited(ref.read(adminCompetitionsProvider.notifier).refresh()),
+      ),
+      AdminCompetitionsFailureKind.securityTimeout => AfriStateView.error(
+        key: const ValueKey<String>(
+          'admin-competitions-state-security-timeout',
+        ),
+        title: 'Security check timed out',
+        message: 'No competition data was shown. Check your connection.',
+        actionLabel: 'Retry',
+        onAction: () =>
+            unawaited(ref.read(adminCompetitionsProvider.notifier).refresh()),
+      ),
+      AdminCompetitionsFailureKind.unknown => AfriStateView.error(
+        key: const ValueKey<String>('admin-competitions-state-error'),
+        title: 'Competition workspace unavailable',
+        message: 'Private competition records remain hidden. Try again.',
+        actionLabel: 'Try again',
+        onAction: () =>
+            unawaited(ref.read(adminCompetitionsProvider.notifier).refresh()),
+      ),
+    };
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: view,
+    );
+  }
+
+  Widget? _statusBanner(AsyncValue<AdminCompetitionsSnapshot> value) {
+    final snapshot = value.valueOrNull;
+    if (snapshot == null) return null;
+    if (snapshot.isMutating) {
+      return const AfriStateBanner(
+        key: ValueKey<String>('admin-competitions-state-syncing'),
+        icon: AfriIcons.refresh,
+        title: 'Updating competition workspace',
+        subtitle: 'Controls are paused until the current result is confirmed.',
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    if (value.isLoading) {
+      return const AfriStateBanner(
+        key: ValueKey<String>('admin-competitions-state-syncing'),
+        icon: AfriIcons.refresh,
+        title: 'Refreshing competitions',
+        subtitle:
+            'Showing the last confirmed records while current data is checked.',
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    final failure = snapshot.failure;
+    if (snapshot.phase != AdminCompetitionsPhase.degraded || failure == null) {
+      return null;
+    }
+    final uncertain = snapshot.mutationOutcomeUnconfirmed;
+    return AfriStateBanner(
+      key: ValueKey<String>('admin-competitions-state-${failure.kind.name}'),
+      icon: failure.kind == AdminCompetitionsFailureKind.offline
+          ? AfriIcons.offline
+          : AfriIcons.statusWarning,
+      title: failure.kind == AdminCompetitionsFailureKind.conflict
+          ? 'Competition data changed'
+          : failure.kind == AdminCompetitionsFailureKind.securityTimeout
+          ? 'Security check timed out'
+          : failure.kind == AdminCompetitionsFailureKind.offline
+          ? 'Competition workspace offline'
+          : 'Current refresh unavailable',
+      subtitle: uncertain
+          ? 'The update outcome is not confirmed. Refresh before taking another action.'
+          : 'Showing the last confirmed records. Actions are paused until refresh succeeds.',
+      tone: AfriStateBannerTone.warning,
+    );
+  }
+
+  Future<void> _openCompetitionForm(
+    BuildContext context,
+    WidgetRef ref, {
+    AdminCompetitionItem? existing,
+  }) async {
+    final payload = await showAfriBottomSheet<Map<String, dynamic>>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => _CompetitionFormSheet(existing: existing),
+    );
+    if (payload == null || !context.mounted) return;
+    final saved = await ref
+        .read(adminCompetitionsProvider.notifier)
+        .saveCompetition(payload, competitionId: existing?.id);
+    if (!context.mounted) return;
+    if (saved) {
+      AfriToast.success(
+        context,
+        existing == null ? 'Competition created' : 'Competition updated',
+      );
+    }
+  }
+
+  Future<void> _openSeasonManager(
+    BuildContext context,
+    WidgetRef ref,
+    AdminCompetitionItem competition,
+  ) {
+    return showAfriBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => _SeasonManagerSheet(competition: competition),
+    );
+  }
+
+  Future<void> _confirmCompetitionToggle(
+    BuildContext context,
+    WidgetRef ref,
+    AdminCompetitionItem competition,
+  ) async {
+    final activating = !competition.isActive;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AfriAlertDialog(
+        title: Text(activating ? 'ACTIVATE COMPETITION?' : 'DEACTIVATE?'),
+        content: Text(
+          activating
+              ? '${competition.name} will become available to configured prediction journeys.'
+              : '${competition.name} will stop being available to configured prediction journeys.',
+        ),
+        actions: [
+          AfriTextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('CANCEL'),
+          ),
+          AfriTextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(activating ? 'ACTIVATE' : 'DEACTIVATE'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    final saved = await ref
+        .read(adminCompetitionsProvider.notifier)
+        .setCompetitionActive(competition.id, activating);
+    if (!context.mounted || !saved) return;
+    AfriToast.success(
+      context,
+      activating ? 'Competition activated' : 'Competition deactivated',
+    );
+  }
+}
+
+class _CompetitionStats extends StatelessWidget {
+  const _CompetitionStats({required this.total, required this.active});
+
+  final int total;
+  final int active;
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = <Widget>[
+      _StatCard(
+        icon: AfriIcons.rank,
+        label: 'TOTAL',
+        value: '$total',
+        valueColor: ColorTokens.clubAccent,
+      ),
+      _StatCard(
+        icon: AfriIcons.statusSuccess,
+        label: 'ACTIVE',
+        value: '$active',
+        valueColor: ColorTokens.success,
+      ),
+    ];
+    if (MediaQuery.textScalerOf(context).scale(1) >= 1.8) {
+      return Column(
+        children: cards
+            .map(
+              (card) => Padding(
+                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+                child: card,
+              ),
+            )
+            .toList(growable: false),
+      );
+    }
     return Row(
       children: [
-        Expanded(
-          child: GlassCard(
-            animate: false,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      AfriIcons.rank,
-                      size: 18,
-                      color: ColorTokens.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Text('TOTAL', style: TypographyTokens.labelSmall()),
-                  ],
-                ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  '$total',
-                  style: TypographyTokens.headlineLarge().copyWith(
-                    color: ColorTokens.clubAccent,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        Expanded(child: cards[0]),
         const SizedBox(width: SpacingTokens.spacing3),
-        Expanded(
-          child: GlassCard(
-            animate: false,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      AfriIcons.statusSuccess,
-                      size: 18,
-                      color: ColorTokens.success,
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Text('ACTIVE', style: TypographyTokens.labelSmall()),
-                  ],
-                ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  '$active',
-                  style: TypographyTokens.headlineLarge().copyWith(
-                    color: ColorTokens.success,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        Expanded(child: cards[1]),
       ],
     );
   }
+}
 
-  Widget _buildRegionFilter() {
-    const regions = <String, String>{
-      'all': 'ALL',
-      'africa': 'AFRICA',
-      'europe': 'EUROPE',
-      'international': 'INTL',
-    };
-    return Wrap(
-      spacing: SpacingTokens.spacing2,
-      runSpacing: SpacingTokens.spacing2,
-      children: regions.entries
-          .map(
-            (e) => AfriChoiceChip(
-              selected: _regionFilter == e.key,
-              label: Text(e.value),
-              onSelected: (_) {
-                setState(() => _regionFilter = e.key);
-                unawaited(_loadCompetitions());
-              },
-            ),
-          )
-          .toList(),
+class _StatCard extends StatelessWidget {
+  const _StatCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.valueColor,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color valueColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      animate: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 18, color: ColorTokens.onSurfaceVariant),
+              const SizedBox(width: SpacingTokens.spacing2),
+              Text(label, style: TypographyTokens.labelSmall()),
+            ],
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            value,
+            style: TypographyTokens.headlineLarge().copyWith(color: valueColor),
+          ),
+        ],
+      ),
     );
   }
+}
 
-  Widget _buildKindFilter() {
-    const kinds = <String, String>{
-      'all': 'ALL',
-      'league': 'LEAGUE',
-      'cup': 'CUP',
-      'tournament': 'TOURNAMENT',
-    };
-    return Wrap(
-      spacing: SpacingTokens.spacing2,
-      runSpacing: SpacingTokens.spacing2,
-      children: kinds.entries
-          .map(
-            (e) => AfriChoiceChip(
-              selected: _kindFilter == e.key,
-              label: Text(e.value),
-              onSelected: (_) {
-                setState(() => _kindFilter = e.key);
-                unawaited(_loadCompetitions());
-              },
-            ),
-          )
-          .toList(),
+class _CompetitionFilters extends StatelessWidget {
+  const _CompetitionFilters({
+    required this.snapshot,
+    required this.enabled,
+    required this.onRegion,
+    required this.onKind,
+  });
+
+  final AdminCompetitionsSnapshot snapshot;
+  final bool enabled;
+  final ValueChanged<AdminCompetitionRegionFilter> onRegion;
+  final ValueChanged<AdminCompetitionKindFilter> onKind;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      container: true,
+      label: 'Competition filters',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('REGION', style: TypographyTokens.labelSmall()),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Wrap(
+            spacing: SpacingTokens.spacing2,
+            runSpacing: SpacingTokens.spacing2,
+            children: AdminCompetitionRegionFilter.values
+                .map(
+                  (filter) => AfriChoiceChip(
+                    selected: snapshot.regionFilter == filter,
+                    label: Text(filter.label),
+                    onSelected: enabled ? (_) => onRegion(filter) : null,
+                  ),
+                )
+                .toList(growable: false),
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          Text('KIND', style: TypographyTokens.labelSmall()),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Wrap(
+            spacing: SpacingTokens.spacing2,
+            runSpacing: SpacingTokens.spacing2,
+            children: AdminCompetitionKindFilter.values
+                .map(
+                  (filter) => AfriChoiceChip(
+                    selected: snapshot.kindFilter == filter,
+                    label: Text(filter.label),
+                    onSelected: enabled ? (_) => onKind(filter) : null,
+                  ),
+                )
+                .toList(growable: false),
+          ),
+        ],
+      ),
     );
   }
+}
 
-  Widget _buildCompetitionCard(Map<String, dynamic> competition) {
-    final isActive = competition['is_active'] == true;
-    final kind = competition['competition_kind']?.toString() ?? 'league';
-    final region = competition['region']?.toString() ?? '';
-    final country = competition['country_name']?.toString();
+class _CompetitionCard extends StatelessWidget {
+  const _CompetitionCard({
+    required this.item,
+    required this.enabled,
+    required this.onSeasons,
+    required this.onEdit,
+    required this.onToggle,
+    this.primaryFocusNode,
+  });
 
+  final AdminCompetitionItem item;
+  final bool enabled;
+  final VoidCallback onSeasons;
+  final VoidCallback onEdit;
+  final VoidCallback onToggle;
+  final FocusNode? primaryFocusNode;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
       child: GlassCard(
@@ -352,84 +507,101 @@ class _CompetitionManagerScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header row
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        competition['name']?.toString() ?? '',
+                        item.name,
                         style: TypographyTokens.titleLarge().copyWith(
                           color: ColorTokens.onSurface,
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing1),
                       Text(
-                        competition['short_name']?.toString() ?? '',
+                        item.shortName,
                         style: TypographyTokens.bodyMedium(),
                       ),
                     ],
                   ),
                 ),
-                _StatusBadge(isActive: isActive),
+                const SizedBox(width: SpacingTokens.spacing2),
+                _StatusBadge(isActive: item.isActive),
               ],
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-
-            // Info chips
             Wrap(
               spacing: SpacingTokens.spacing2,
               runSpacing: SpacingTokens.spacing2,
               children: [
-                _InfoChip(icon: AfriIcons.category, label: kind.toUpperCase()),
-                _InfoChip(icon: AfriIcons.public, label: region.toUpperCase()),
-                if (country != null)
-                  _InfoChip(icon: AfriIcons.challenge, label: country),
-                if (competition['organizer'] != null)
+                _InfoChip(
+                  icon: AfriIcons.category,
+                  label: item.kind.toUpperCase(),
+                ),
+                _InfoChip(
+                  icon: AfriIcons.public,
+                  label: item.region.toUpperCase(),
+                ),
+                if (item.countryName != null)
                   _InfoChip(
-                    icon: AfriIcons.business,
-                    label: competition['organizer'].toString(),
+                    icon: AfriIcons.challenge,
+                    label: item.countryName!,
                   ),
+                if (item.organizer != null)
+                  _InfoChip(icon: AfriIcons.business, label: item.organizer!),
               ],
             ),
-            if (competition['format_notes']?.toString().isNotEmpty == true) ...[
+            if (item.formatNotes != null) ...[
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                competition['format_notes'].toString(),
+                item.formatNotes!,
                 style: TypographyTokens.bodySmall(),
-                maxLines: 2,
+                maxLines: MediaQuery.textScalerOf(context).scale(1) >= 1.8
+                    ? 4
+                    : 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ],
             const SizedBox(height: SpacingTokens.spacing3),
-
-            // Action buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            Wrap(
+              alignment: WrapAlignment.end,
+              spacing: SpacingTokens.spacing2,
+              runSpacing: SpacingTokens.spacing2,
               children: [
                 AfriTextIconButton(
-                  onPressed: () => _openSeasonManager(competition),
+                  key: ValueKey<String>(
+                    'admin-competitions-seasons-${item.id}',
+                  ),
+                  focusNode: primaryFocusNode,
+                  onPressed: enabled ? onSeasons : null,
                   icon: const Icon(AfriIcons.calendar, size: 16),
                   label: const Text('SEASONS'),
+                  style: AfriTextButton.styleFrom(
+                    foregroundColor: ColorTokens.onSurface,
+                  ),
                 ),
-                const SizedBox(width: SpacingTokens.spacing2),
                 AfriTextIconButton(
-                  onPressed: () => _openCompetitionForm(competition),
+                  onPressed: enabled ? onEdit : null,
                   icon: const Icon(AfriIcons.edit, size: 16),
                   label: const Text('EDIT'),
+                  style: AfriTextButton.styleFrom(
+                    foregroundColor: ColorTokens.onSurface,
+                  ),
                 ),
-                const SizedBox(width: SpacingTokens.spacing2),
                 AfriTextIconButton(
-                  onPressed: () => _toggleActive(competition),
+                  onPressed: enabled ? onToggle : null,
                   icon: Icon(
-                    isActive ? AfriIcons.visibilityOff : AfriIcons.visibility,
+                    item.isActive
+                        ? AfriIcons.visibilityOff
+                        : AfriIcons.visibility,
                     size: 16,
                   ),
-                  label: Text(isActive ? 'DEACTIVATE' : 'ACTIVATE'),
+                  label: Text(item.isActive ? 'DEACTIVATE' : 'ACTIVATE'),
                   style: AfriTextButton.styleFrom(
-                    foregroundColor: isActive
+                    foregroundColor: item.isActive
                         ? ColorTokens.error
                         : ColorTokens.success,
                   ),
@@ -441,68 +613,4 @@ class _CompetitionManagerScreenState
       ),
     );
   }
-
-  Widget _buildEmpty() {
-    return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      child: GlassCard(
-        animate: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(AfriIcons.rank, size: 48, color: ColorTokens.onSurfaceVariant),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              'Adjust competition filters',
-              style: TypographyTokens.headlineMedium().copyWith(
-                color: ColorTokens.onSurface,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(
-              'Add a competition or adjust filters.',
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyMedium(),
-            ),
-            const SizedBox(height: SpacingTokens.spacing5),
-            AfriButton(
-              label: 'Add competition',
-              fullWidth: true,
-              onTap: () => _openCompetitionForm(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildError() {
-    return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      child: GlassCard(
-        animate: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(AfriIcons.statusError, size: 48, color: ColorTokens.error),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              'Failed to load competitions',
-              style: TypographyTokens.headlineMedium().copyWith(
-                color: ColorTokens.onSurface,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing5),
-            AfriButton(
-              label: 'Retry',
-              fullWidth: true,
-              onTap: _loadCompetitions,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
-
-// ── Competition Form Bottom Sheet ──

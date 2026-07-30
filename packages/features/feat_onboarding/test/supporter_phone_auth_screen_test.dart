@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_onboarding/src/screens/supporter_phone_auth_screen.dart';
@@ -100,6 +101,7 @@ GoRouter _buildRouter() {
 Future<void> _pumpApp(
   WidgetTester tester, {
   required _FakeAuthRepository repository,
+  Locale appLocale = const Locale('en'),
 }) async {
   tester.view.physicalSize = const Size(393, 852);
   tester.view.devicePixelRatio = 1.0;
@@ -109,7 +111,10 @@ Future<void> _pumpApp(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [authRepositoryProvider.overrideWithValue(repository)],
-      child: MaterialApp.router(routerConfig: _buildRouter()),
+      child: AfriLocalizationsScope(
+        locale: appLocale,
+        child: MaterialApp.router(routerConfig: _buildRouter()),
+      ),
     ),
   );
   await tester.pumpAndSettle();
@@ -487,6 +492,34 @@ void main() {
       semantics.dispose();
     },
   );
+
+  for (final locale in const <Locale>[Locale('fr'), Locale('rw')]) {
+    testWidgets('renders phone and OTP tasks in ${locale.languageCode}', (
+      tester,
+    ) async {
+      final repository = _FakeAuthRepository();
+      final l10n = lookupAfriLocalizations(locale);
+      await _pumpApp(tester, repository: repository, appLocale: locale);
+
+      expect(find.text(l10n.authEnterNumberTitle), findsOneWidget);
+      expect(find.text(l10n.authPhonePrivacy), findsOneWidget);
+      expect(find.text(l10n.authSendCode), findsOneWidget);
+
+      await tester.enterText(
+        find.byKey(const ValueKey<String>('supporter-phone-input')),
+        supporterPhoneAuthTestNumber,
+      );
+      await tester.pump();
+      await tester.tap(
+        find.byKey(const ValueKey<String>('supporter-send-otp-button')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.authEnterCodeTitle), findsOneWidget);
+      expect(find.text(l10n.authCodePrivacy), findsOneWidget);
+      expect(find.text(l10n.authVerifyAndContinue), findsOneWidget);
+    });
+  }
 }
 
 void _expectInKeyboardViewport(WidgetTester tester, Finder finder) {

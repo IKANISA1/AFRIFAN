@@ -1,17 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import type { VenueAccess, VenueAccessResult } from "@/lib/data/venue-access";
+import type { VenueAccessResult } from "@/lib/data/venue-access";
 import { ui } from "@/ui-kit";
-
-const navigation = [
-  ["Today", "/venue"],
-  ["Orders", "/venue/orders"],
-  ["Menu", "/venue/menu"],
-  ["Check-ins", "/venue/checkins"],
-  ["Promotions", "/venue/promotions"],
-  ["TV code", "/venue/tv-code"],
-  ["Staff", "/venue/staff"],
-] as const;
+import { VenueShellClient } from "./venue-shell-client";
 
 export function VenueAccessBoundary({
   result,
@@ -21,13 +12,13 @@ export function VenueAccessBoundary({
   children: ReactNode;
 }) {
   if (result.status === "ready") {
-    return <VenueShell access={result.access}>{children}</VenueShell>;
+    return <VenueShellClient access={result.access}>{children}</VenueShellClient>;
   }
 
   const state = {
     not_configured: {
-      title: "Venue service is not configured",
-      body: "Production Supabase settings are missing. Venue operations remain closed until an administrator restores the service.",
+      title: "Venue operations unavailable",
+      body: "The secure venue service is not ready. Operations remain closed until a club administrator restores access.",
       action: "Open admin status",
     },
     signed_out: {
@@ -48,7 +39,7 @@ export function VenueAccessBoundary({
   }[result.status];
 
   return (
-    <main className="grid min-h-screen place-items-center bg-[#050510] px-5 text-white">
+    <main className="venue-access-state grid min-h-screen place-items-center px-5">
       <section className={`${ui.panelElevated} max-w-xl rounded-lg p-7`} role="alert">
         <p className={ui.kicker}>Venue access</p>
         <h1 className="mt-3 font-display text-4xl font-bold uppercase">{state.title}</h1>
@@ -61,30 +52,6 @@ export function VenueAccessBoundary({
   );
 }
 
-function VenueShell({ access, children }: { access: VenueAccess; children: ReactNode }) {
-  return (
-    <div className="min-h-screen bg-[#050510] text-white">
-      <header className="border-b border-white/10 bg-[#080817] px-5 py-4">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className={ui.kicker}>Assigned venue</p>
-            <p className="mt-1 text-lg font-bold">{access.venueName}</p>
-            <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-              {access.venueCity || "Venue operations"} · {access.role}
-            </p>
-          </div>
-          <nav aria-label="Venue operations" className="flex max-w-full gap-2 overflow-x-auto pb-1">
-            {navigation.map(([label, href]) => (
-              <Link key={href} href={href} className={`${ui.buttonTertiary} shrink-0 whitespace-nowrap`}>{label}</Link>
-            ))}
-          </nav>
-        </div>
-      </header>
-      {children}
-    </div>
-  );
-}
-
 export function VenuePageHeader({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
   return (
     <header className={`${ui.panelElevated} rounded-lg p-5`}>
@@ -93,6 +60,14 @@ export function VenuePageHeader({ eyebrow, title, description }: { eyebrow: stri
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">{description}</p>
     </header>
   );
+}
+
+export function formatVenueLabel(value: string) {
+  return value
+    .split(/[_-]+/)
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(" ");
 }
 
 export function VenueEmptyState({ title, body }: { title: string; body: string }) {
@@ -108,7 +83,10 @@ export function VenueDataError({ correlationId }: { correlationId: string }) {
   return (
     <section className={`${ui.panel} rounded-lg border border-red-400/40 p-6`} role="alert">
       <h2 className="text-lg font-bold uppercase">Data unavailable</h2>
-      <p className="mt-2 text-sm text-slate-300">The venue service could not load this workflow. Retry and share correlation ID {correlationId} with support.</p>
+      <p className="mt-2 text-sm text-slate-300">The venue service could not load this workflow. No change was made. Retry and share reference {correlationId} with support if the problem continues.</p>
+      <Link className={`${ui.buttonSecondary} mt-5`} href="?retry=1">
+        Retry current workflow
+      </Link>
     </section>
   );
 }

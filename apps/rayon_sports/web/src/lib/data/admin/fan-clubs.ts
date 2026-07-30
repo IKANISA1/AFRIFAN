@@ -30,12 +30,124 @@ function mapAdminFanClub(row: Record<string, unknown>): AdminFanClub {
   };
 }
 
+function boundedText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : null;
+}
+
+function boundedInteger(value: unknown, minimum: number, maximum: number) {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedNumber(value: unknown, minimum: number, maximum: number) {
+  return typeof value === "number" &&
+    Number.isFinite(value) &&
+    value >= minimum &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
+}
+
+function boundedImageUrl(value: unknown) {
+  if (value == null || value === "") {
+    return null;
+  }
+  const text = boundedText(value, 2_048);
+  if (text == null) {
+    return null;
+  }
+  if (text.startsWith("/") && !text.startsWith("//")) {
+    return text;
+  }
+  try {
+    const url = new URL(text);
+    return url.protocol === "https:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+export function normalizeAdminFanClubs(value: unknown): AdminFanClub[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 500).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const id = boundedText(record.id, 128);
+    const name = boundedText(record.name, 160);
+    const region = boundedText(record.region, 120);
+    const description = boundedText(record.description, 3_000);
+    const memberCount = boundedInteger(record.memberCount, 0, 1_000_000_000);
+    const eventCount = boundedInteger(record.eventCount, 0, 1_000_000);
+    const rating = boundedNumber(record.rating, 0, 5);
+    const createdAt = boundedDate(record.createdAt);
+    const updatedAt = boundedDate(record.updatedAt);
+    const clubId =
+      record.clubId == null
+        ? null
+        : boundedInteger(record.clubId, 1, 1_000_000_000);
+
+    if (
+      id == null ||
+      name == null ||
+      region == null ||
+      description == null ||
+      memberCount == null ||
+      eventCount == null ||
+      rating == null ||
+      createdAt == null ||
+      updatedAt == null ||
+      typeof record.isActive !== "boolean" ||
+      (record.clubId != null && clubId == null)
+    ) {
+      return [];
+    }
+
+    return [
+      {
+        id,
+        clubId,
+        name,
+        region,
+        description,
+        memberCount,
+        eventCount,
+        rating,
+        bannerImageUrl: boundedImageUrl(record.bannerImageUrl),
+        isActive: record.isActive,
+        createdAt,
+        updatedAt,
+      },
+    ];
+  });
+}
+
 export async function getAdminFanClubs(
   client: SupabaseClient,
   access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ): Promise<AdminFanClub[]> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminFanClub[]>("fan-clubs");
+    return requestAdminApi<AdminFanClub[]>("fan-clubs", {
+      signal: options.signal,
+    });
   }
   const clubId = requireAdminClubId(access, "load supporter chapters");
   const { data, error } = await client
@@ -50,8 +162,20 @@ export async function getAdminFanClubs(
 }
 
 export async function saveAdminFanClub(
-  client: SupabaseClient, access: AdminAccess,
-  input: { id?: string | null; expectedUpdatedAt?: string | null; name: string; region: string; description: string; memberCount: number; eventCount: number; rating: number; bannerImageUrl?: string; isActive: boolean },
+  client: SupabaseClient,
+  access: AdminAccess,
+  input: {
+    id?: string | null;
+    expectedUpdatedAt?: string | null;
+    name: string;
+    region: string;
+    description: string;
+    memberCount: number;
+    eventCount: number;
+    rating: number;
+    bannerImageUrl?: string;
+    isActive: boolean;
+  },
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<string>("fan-clubs", {
@@ -61,14 +185,27 @@ export async function saveAdminFanClub(
   }
   const clubId = requireAdminClubId(access, "save supporter chapters");
   const partnerId = await resolveClubFootballPartnerId(client, clubId);
-  return mutateRecordWithVariantsIfUnchanged(client, fanClubTable, input.id, input.expectedUpdatedAt, [{
-    partner_id: partnerId,
-    club_id: clubId,
-    name: input.name.trim(), region: input.region.trim(), description: input.description.trim(),
-    member_count: safeNumber(input.memberCount, 0), event_count: safeNumber(input.eventCount, 0),
-    rating: safeNumber(input.rating, 0), banner_image_url: safeString(input.bannerImageUrl) || null,
-    is_active: input.isActive,
-  }], { club_id: clubId });
+  return mutateRecordWithVariantsIfUnchanged(
+    client,
+    fanClubTable,
+    input.id,
+    input.expectedUpdatedAt,
+    [
+      {
+        partner_id: partnerId,
+        club_id: clubId,
+        name: input.name.trim(),
+        region: input.region.trim(),
+        description: input.description.trim(),
+        member_count: safeNumber(input.memberCount, 0),
+        event_count: safeNumber(input.eventCount, 0),
+        rating: safeNumber(input.rating, 0),
+        banner_image_url: safeString(input.bannerImageUrl) || null,
+        is_active: input.isActive,
+      },
+    ],
+    { club_id: clubId },
+  );
 }
 
 export async function deleteAdminFanClub(

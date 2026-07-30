@@ -18,6 +18,8 @@ dependencies:
     path: ../../core/core_auth
   core_network:
     path: ../../core/core_network
+  core_l10n:
+    path: ../../core/core_l10n
   core_utils:
     path: ../../core/core_utils
   feat_club:

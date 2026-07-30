@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { AdminAccess } from "@/lib/types";
 import {
+  MAX_ADMIN_TICKET_ORDERS,
   canAdminTransitionTicketStatus,
   getAdminTicketBulkEligibility,
   getAdminTicketTargetPermission,
   isAdminTicketStatusAction,
+  normalizeAdminTicketOrders,
 } from "./tickets";
 
 const clubAdmin = {
@@ -19,6 +21,47 @@ const moderator = {
 } as AdminAccess;
 
 describe("ticket status safety contract", () => {
+  const validOrder = {
+    id: "ticket-1",
+    matchId: "match-1",
+    userId: "user-1",
+    seatType: "Standard",
+    amountPaid: 15_000,
+    status: "pending",
+    qrCode: "must-not-cross-the-boundary",
+    purchasedAt: "2026-07-30T09:00:00.000Z",
+    userName: "Verified Supporter",
+    userPhone: "+250700000000",
+    matchTitle: "Rayon Sports vs APR FC",
+    momoReference: "momo-1",
+  };
+
+  it("accepts strict ticket DTOs while removing unused QR payloads", () => {
+    expect(normalizeAdminTicketOrders([validOrder])).toEqual([
+      { ...validOrder, qrCode: null },
+    ]);
+  });
+
+  it.each([
+    ["duplicate ids", [validOrder, validOrder]],
+    ["invalid status", [{ ...validOrder, status: "arbitrary" }]],
+    ["invalid timestamp", [{ ...validOrder, purchasedAt: "not-a-time" }]],
+    ["negative amount", [{ ...validOrder, amountPaid: -1 }]],
+  ])("rejects %s instead of returning a partial queue", (_label, value) => {
+    expect(() => normalizeAdminTicketOrders(value)).toThrow();
+  });
+
+  it("rejects an oversized ticket queue", () => {
+    expect(() =>
+      normalizeAdminTicketOrders(
+        Array.from(
+          { length: MAX_ADMIN_TICKET_ORDERS + 1 },
+          (_, index) => ({ ...validOrder, id: `ticket-${index}` }),
+        ),
+      ),
+    ).toThrow("safe limit");
+  });
+
   it("accepts only the three supported operator actions", () => {
     expect(isAdminTicketStatusAction("valid")).toBe(true);
     expect(isAdminTicketStatusAction("used")).toBe(true);

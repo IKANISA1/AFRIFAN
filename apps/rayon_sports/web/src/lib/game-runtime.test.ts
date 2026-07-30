@@ -1,14 +1,19 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   assertTvPayloadIsSafe,
   buildTvDisplayViewModel,
   createDemoTvSessionState,
   createGameRuntimeClient,
+  createTvSessionPlaceholder,
   findTvPayloadLeakKeys,
   resolveTvSessionId,
 } from "./game-runtime";
 
 describe("game runtime contract", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("rejects TV payloads that leak correct-answer fields", () => {
     const payload = {
       currentQuestion: {
@@ -144,6 +149,62 @@ describe("game runtime contract", () => {
         selectedOptionKey: "a",
       }),
     ).rejects.toThrow("Question is not open.");
+  });
+
+  it.each([
+    [403, "permission_denied"],
+    [409, "conflict"],
+    [504, "security_timeout"],
+    [500, "error"],
+  ] as const)("classifies controlled HTTP %s failures as %s", async (
+    status,
+    kind,
+  ) => {
+    const fetcher = vi.fn().mockResolvedValue({
+      ok: false,
+      status,
+      json: async () => ({ error: "Controlled failure." }),
+    });
+    const client = createGameRuntimeClient({ fetcher });
+
+    await expect(client.getTvState("session-1")).rejects.toMatchObject({
+      name: "GameRuntimeRequestError",
+      kind,
+      status,
+      message: "Controlled failure.",
+    });
+  });
+
+  it("rejects a stalled request at the bounded client deadline", async () => {
+    vi.useFakeTimers();
+    const fetcher = vi.fn(() => new Promise<Response>(() => {}));
+    const client = createGameRuntimeClient({
+      fetcher,
+      timeoutMs: 250,
+    });
+
+    const request = client.getTvState("session-1");
+    const rejection = expect(request).rejects.toMatchObject({
+      name: "GameRuntimeRequestError",
+      kind: "security_timeout",
+      status: 504,
+    });
+    await vi.advanceTimersByTimeAsync(251);
+
+    await rejection;
+  });
+
+  it("creates a neutral live-session placeholder without demo content", () => {
+    const placeholder = createTvSessionPlaceholder("session-1");
+
+    expect(placeholder).toMatchObject({
+      sessionId: "session-1",
+      title: "Matchday display",
+      phase: "lobby",
+      currentQuestion: null,
+      leaderboard: [],
+    });
+    expect(JSON.stringify(placeholder)).not.toMatch(/modern era|East Stand/i);
   });
 
   it("posts create-session and pair-TV actions through the game action endpoint", async () => {

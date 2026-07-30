@@ -22,12 +22,12 @@ void main() {
     test('keeps only approved bottom tabs in the shell', () {
       expect(
         appRouter.tabs.map((tab) => tab.path),
-        orderedEquals(<String>['/home', '/fanzone', '/settings']),
+        orderedEquals(<String>['/home', '/club', '/fanzone', '/membership']),
       );
     });
 
     test(
-      'keeps compatibility paths registered without promoting them to tabs',
+      'keeps secondary compatibility paths registered without promoting them to tabs',
       () {
         final allPaths = <String>{};
 
@@ -292,6 +292,43 @@ void main() {
     });
   });
 
+  group('Official Club surface', () {
+    test('registers the complete canonical football and club route family', () {
+      final club = modules.firstWhere((module) => module.featureKey == 'club');
+      final paths = <String>{club.tabRoute!.path};
+
+      void collect(GoRoute route, String parent) {
+        final path = route.path.startsWith('/')
+            ? route.path
+            : '$parent/${route.path}';
+        paths.add(path);
+        for (final child in route.routes.whereType<GoRoute>()) {
+          collect(child, path);
+        }
+      }
+
+      for (final route in club.routes.whereType<GoRoute>()) {
+        collect(route, club.tabRoute!.path);
+      }
+      expect(
+        paths,
+        equals(<String>{
+          '/club',
+          '/club/team',
+          '/club/news',
+          '/club/news/:articleId',
+          '/club/fixtures',
+          '/club/fixtures/:matchId',
+          '/club/results',
+          '/club/standings',
+          '/club/history',
+          '/club/projects',
+          '/club/projects/:projectId',
+        }),
+      );
+    });
+  });
+
   group('Router surface size', () {
     test('approved full-screen set stays intentionally bounded', () {
       final fullScreens = modules
@@ -310,6 +347,17 @@ void main() {
           '/auth/otp',
           '/home',
           '/search',
+          '/club',
+          '/club/team',
+          '/club/news',
+          '/club/news/:articleId',
+          '/club/fixtures',
+          '/club/fixtures/:matchId',
+          '/club/results',
+          '/club/standings',
+          '/club/history',
+          '/club/projects',
+          '/club/projects/:projectId',
           '/fanzone',
           '/fanzone/venue',
           '/fanzone/venue/order',

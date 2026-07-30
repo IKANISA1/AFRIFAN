@@ -28,23 +28,20 @@ describe("AdminDataGrid", () => {
       </AdminDataGrid>,
     );
 
-    expect(screen.getByRole("table", { name: "Ticket operations queue" })).toHaveAttribute(
-      "aria-busy",
-      "true",
-    );
-    expect(screen.getByRole("columnheader", { name: /supporter/i })).toHaveAttribute(
-      "aria-sort",
-      "ascending",
-    );
-    expect(screen.getByRole("columnheader", { name: "Details" })).toHaveAttribute(
-      "data-column-priority",
-      "tertiary",
-    );
+    expect(
+      screen.getByRole("table", { name: "Ticket operations queue" }),
+    ).toHaveAttribute("aria-busy", "true");
+    expect(
+      screen.getByRole("columnheader", { name: /supporter/i }),
+    ).toHaveAttribute("aria-sort", "ascending");
+    expect(
+      screen.getByRole("columnheader", { name: "Details" }),
+    ).toHaveAttribute("data-column-priority", "tertiary");
     fireEvent.click(screen.getByRole("button", { name: /sort by supporter/i }));
     expect(onSort).toHaveBeenCalledTimes(1);
   });
 
-  it("opens an interactive row with Enter or Space without hijacking child controls", () => {
+  it("opens an interactive row with pointer, Enter, or Space without hijacking child controls", () => {
     const onRowActivate = vi.fn();
     render(
       <AdminDataGrid
@@ -61,14 +58,16 @@ describe("AdminDataGrid", () => {
 
     const row = screen.getByRole("row", { name: /child action/i });
     expect(row).toHaveAttribute("tabindex", "0");
+    fireEvent.click(row);
     fireEvent.keyDown(row, { key: "Enter" });
     fireEvent.keyDown(row, { key: " " });
-    expect(onRowActivate).toHaveBeenCalledTimes(2);
+    expect(onRowActivate).toHaveBeenCalledTimes(3);
     expect(onRowActivate).toHaveBeenNthCalledWith(1, "record-1");
 
+    fireEvent.click(screen.getByRole("button", { name: "Child action" }));
     fireEvent.keyDown(screen.getByRole("button", { name: "Child action" }), {
       key: "Enter",
     });
-    expect(onRowActivate).toHaveBeenCalledTimes(2);
+    expect(onRowActivate).toHaveBeenCalledTimes(3);
   });
 });

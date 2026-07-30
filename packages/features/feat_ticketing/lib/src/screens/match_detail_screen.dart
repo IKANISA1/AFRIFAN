@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../providers/ticket_detail_provider.dart';
 import '../ticketing_providers.dart';
 import '../widgets/ticket_checkout_shared.dart';
 import '../widgets/ticket_checkout_step.dart';
@@ -67,6 +68,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
             'Connect to verify current ticket payment availability.';
       });
     } else if (restored) {
+      unawaited(
+        ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+      );
       unawaited(_refreshPaymentRouteState(ref.read(currentUserProvider)));
     }
   }
@@ -102,17 +106,27 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       return;
     }
 
-    final route = await ref
-        .read(clubRepositoryProvider)
-        .findActivePaymentRoute(user.clubId);
+    try {
+      final route = await ref
+          .read(clubRepositoryProvider)
+          .findActivePaymentRoute(user.clubId)
+          .timeout(ref.read(ticketDetailLoadTimeoutProvider));
 
-    if (!mounted || lookupKey != _paymentRouteLookupKey) return;
-    setState(() {
-      _paymentRoute = route;
-      _paymentRouteMessage = route == null
-          ? 'Ticket payment setup is pending club activation.'
-          : null;
-    });
+      if (!mounted || lookupKey != _paymentRouteLookupKey) return;
+      setState(() {
+        _paymentRoute = route;
+        _paymentRouteMessage = route == null
+            ? 'Ticket payment setup is pending club activation.'
+            : null;
+      });
+    } catch (_) {
+      if (!mounted || lookupKey != _paymentRouteLookupKey) return;
+      setState(() {
+        _paymentRoute = null;
+        _paymentRouteMessage =
+            'Payment route verification is unavailable. Try again.';
+      });
+    }
   }
 
   Future<void> _handlePurchase(ClubMatch match) async {
@@ -140,8 +154,10 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     final total = amount * _quantity;
 
     try {
-      final route =
-          _paymentRoute ?? await repo.findActivePaymentRoute(user.clubId);
+      final route = _paymentRoute ??
+          await repo.findActivePaymentRoute(user.clubId).timeout(
+                ref.read(ticketDetailMutationTimeoutProvider),
+              );
       if (route == null) {
         if (!mounted) return;
         setState(() {
@@ -156,13 +172,15 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       }
 
       final reference = 'ticket-${DateTime.now().millisecondsSinceEpoch}';
-      final tickets = await repo.purchaseTickets(
-        matchId: match.id,
-        userId: user.id,
-        seatType: _selectedSeatType.value,
-        quantity: _quantity,
-        paymentReference: reference,
-      );
+      final tickets = await repo
+          .purchaseTickets(
+            matchId: match.id,
+            userId: user.id,
+            seatType: _selectedSeatType.value,
+            quantity: _quantity,
+            paymentReference: reference,
+          )
+          .timeout(ref.read(ticketDetailMutationTimeoutProvider));
 
       ref.invalidate(ticketMatchesProvider);
       ref.invalidate(myTicketsProvider);
@@ -215,9 +233,19 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       } else {
         context.go('/tickets?tab=mine');
       }
-    } catch (error) {
+    } on TimeoutException {
       if (!mounted) return;
-      AfriToast.error(context, 'Ticket request failed: $error');
+      AfriToast.error(
+        context,
+        'Ticket confirmation timed out. Check My Tickets before trying again.',
+      );
+      context.go('/tickets?tab=mine');
+    } catch (_) {
+      if (!mounted) return;
+      AfriToast.error(
+        context,
+        'Ticket request failed. Your selection is still available.',
+      );
     } finally {
       if (mounted) {
         setState(() => _submitting = false);
@@ -228,8 +256,11 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
-    _ensurePaymentRouteState(user);
-    final matchAsync = ref.watch(ticketMatchProvider(widget.matchId));
+    final accessEnabled = ref.watch(ticketDetailAccessEnabledProvider);
+    if (accessEnabled) {
+      _ensurePaymentRouteState(user);
+    }
+    final detailAsync = ref.watch(ticketDetailProvider(widget.matchId));
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
@@ -238,6 +269,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         elevation: 0,
         centerTitle: true,
         leading: AfriIconButton(
+          key: const ValueKey<String>('ticket-detail-back'),
           icon: AfriIcons.back,
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           onTap: () {
@@ -257,79 +289,264 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         title: Text('MATCH DAY', style: TypographyTokens.headlineLarge()),
       ),
       scrollable: false,
-      child: matchAsync.when(
-        loading: () => const Padding(
-          padding: EdgeInsets.all(SpacingTokens.spacing4),
-          child: AfriSkeletonList(),
-        ),
-        error: (error, _) => MatchDetailEmptyState(
-          title: 'Unable to load this fixture',
-          body: 'Refresh and try again.',
-          actionLabel: 'Back to Tickets',
-          onPressed: () => context.go('/tickets'),
-        ),
-        data: (match) {
-          if (match == null) {
-            return MatchDetailEmptyState(
-              title: 'Fixture not found',
-              body: 'This fixture is unavailable.',
+      child: !accessEnabled
+          ? MatchDetailEmptyState(
+              title: 'Ticket sales unavailable',
+              body: 'Ticket selection is not enabled for this build or club.',
               actionLabel: 'Back to Tickets',
               onPressed: () => context.go('/tickets'),
-            );
-          }
+            )
+          : detailAsync.when(
+              loading: () => const Padding(
+                padding: EdgeInsets.all(SpacingTokens.spacing4),
+                child: AfriSkeletonList(),
+              ),
+              error: (error, _) => _failureConsequence(error),
+              data: (detail) {
+                final match = detail.match;
+                if (match == null) {
+                  return MatchDetailEmptyState(
+                    title: 'Fixture not found',
+                    body: 'This fixture is unavailable.',
+                    actionLabel: 'Back to Tickets',
+                    onPressed: () => context.go('/tickets'),
+                  );
+                }
 
-          return AnimatedSwitcher(
-            duration: AfriMotion.emphasized,
-            transitionBuilder: (child, animation) {
-              final inAnimation =
-                  Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero)
-                      .animate(CurvedAnimation(
-                          parent: animation, curve: Curves.easeOut));
-              final outAnimation = Tween<Offset>(
-                      begin: const Offset(-1.0, 0.0), end: Offset.zero)
-                  .animate(CurvedAnimation(
-                      parent: animation, curve: Curves.easeOut));
-              if (child.key == const ValueKey(_CheckoutWizardStep.checkout)) {
-                return SlideTransition(position: inAnimation, child: child);
-              } else {
-                return SlideTransition(position: outAnimation, child: child);
-              }
-            },
-            child: _step == _CheckoutWizardStep.configure
-                ? TicketConfigureStep(
-                    key: const ValueKey(_CheckoutWizardStep.configure),
-                    match: match,
-                    currency: _currencyFormatter,
-                    selectedSeatType: _selectedSeatType,
-                    selectedSeatCode: _selectedSeatCode,
-                    quantity: _quantity,
-                    onSeatTypeChanged: (type) =>
-                        setState(() => _selectedSeatType = type),
-                    onQuantityChanged: (q) => setState(() => _quantity = q),
-                    onSeatCodeRequested: () async {
-                      final seat = await context.push<String>(
-                        '/tickets/map/${match.id}',
-                      );
-                      if (!mounted || seat == null) return;
-                      setState(() => _selectedSeatCode = seat);
-                    },
-                    onReviewRequested: () =>
-                        setState(() => _step = _CheckoutWizardStep.checkout),
-                  )
-                : TicketCheckoutStep(
-                    key: const ValueKey(_CheckoutWizardStep.checkout),
-                    match: match,
-                    currency: _currencyFormatter,
-                    selectedSeatType: _selectedSeatType,
-                    selectedSeatCode: _selectedSeatCode,
-                    quantity: _quantity,
-                    paymentRoute: _paymentRoute,
-                    paymentRouteMessage: _paymentRouteMessage,
-                    submitting: _submitting,
-                    onPurchaseRequest: () => _handlePurchase(match),
-                  ),
-          );
-        },
+                return Column(
+                  children: [
+                    if (_retainedBanner(detail) case final banner?) banner,
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: AfriMotion.emphasized,
+                        transitionBuilder: (child, animation) {
+                          final inAnimation = Tween<Offset>(
+                            begin: const Offset(1.0, 0.0),
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeOut,
+                            ),
+                          );
+                          final outAnimation = Tween<Offset>(
+                            begin: const Offset(-1.0, 0.0),
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeOut,
+                            ),
+                          );
+                          if (child.key ==
+                              const ValueKey(_CheckoutWizardStep.checkout)) {
+                            return SlideTransition(
+                              position: inAnimation,
+                              child: child,
+                            );
+                          }
+                          return SlideTransition(
+                            position: outAnimation,
+                            child: child,
+                          );
+                        },
+                        child: _step == _CheckoutWizardStep.configure
+                            ? TicketConfigureStep(
+                                key: const ValueKey(
+                                  _CheckoutWizardStep.configure,
+                                ),
+                                match: match,
+                                currency: _currencyFormatter,
+                                selectedSeatType: _selectedSeatType,
+                                selectedSeatCode: _selectedSeatCode,
+                                quantity: _quantity,
+                                onSeatTypeChanged: (type) =>
+                                    setState(() => _selectedSeatType = type),
+                                onQuantityChanged: (q) =>
+                                    setState(() => _quantity = q),
+                                onSeatCodeRequested: () async {
+                                  final seat = await context.push<String>(
+                                    '/tickets/map/${match.id}',
+                                  );
+                                  if (!mounted || seat == null) return;
+                                  setState(() => _selectedSeatCode = seat);
+                                },
+                                onReviewRequested: () => setState(
+                                  () => _step = _CheckoutWizardStep.checkout,
+                                ),
+                              )
+                            : TicketCheckoutStep(
+                                key: const ValueKey(
+                                  _CheckoutWizardStep.checkout,
+                                ),
+                                match: match,
+                                currency: _currencyFormatter,
+                                selectedSeatType: _selectedSeatType,
+                                selectedSeatCode: _selectedSeatCode,
+                                quantity: _quantity,
+                                paymentRoute: _paymentRoute,
+                                paymentRouteMessage: _paymentRouteMessage,
+                                submitting: _submitting,
+                                onPurchaseRequest: () => _handlePurchase(match),
+                              ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+    );
+  }
+
+  Widget _failureConsequence(Object error) {
+    final failure = error is TicketDetailFailure
+        ? error
+        : TicketDetailFailure.fromError(error);
+    switch (failure.kind) {
+      case TicketDetailFailureKind.offline:
+        return MatchDetailEmptyState(
+          title: 'Ticket details unavailable offline',
+          body: 'Connect to load this fixture and current ticket availability.',
+          actionLabel: 'Back to Tickets',
+          onPressed: () => context.go('/tickets'),
+        );
+      case TicketDetailFailureKind.permissionDenied:
+        return MatchDetailEmptyState(
+          title: 'Ticket access denied',
+          body: 'This fixture is not available for the current club account.',
+          actionLabel: 'Back to Tickets',
+          onPressed: () => context.go('/tickets'),
+        );
+      case TicketDetailFailureKind.securityTimeout:
+        return MatchDetailEmptyState(
+          title: 'Ticket security check timed out',
+          body: 'The fixture could not be confirmed safely. Try again.',
+          actionLabel: 'TRY AGAIN',
+          onPressed: () =>
+              ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
+        );
+      case TicketDetailFailureKind.conflict:
+        return MatchDetailEmptyState(
+          title: 'Fixture details changed',
+          body: 'Refresh the fixture before selecting ticket access.',
+          actionLabel: 'REFRESH FIXTURE',
+          onPressed: () =>
+              ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
+        );
+      case TicketDetailFailureKind.unknown:
+        return MatchDetailEmptyState(
+          title: 'Unable to load this fixture',
+          body: 'The fixture could not be confirmed. Try again.',
+          actionLabel: 'TRY AGAIN',
+          onPressed: () =>
+              ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
+        );
+    }
+  }
+
+  Widget? _retainedBanner(TicketDetailState detail) {
+    if (!ConnectivityService.isOnline) {
+      return const _TicketDetailStatus(
+        title: 'Showing saved fixture',
+        body:
+            'Ticket prices may have changed. Reconnect before reviewing or purchasing.',
+        tone: AfriStateBannerTone.warning,
+      );
+    }
+    if (detail.phase == TicketDetailPhase.syncing) {
+      return const _TicketDetailStatus(
+        title: 'Refreshing fixture',
+        body: 'The last confirmed ticket options remain visible.',
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    final failure = detail.failure;
+    if (failure == null) return null;
+    return switch (failure.kind) {
+      TicketDetailFailureKind.conflict => _TicketDetailStatus(
+          title: 'Fixture changed',
+          body:
+              'These are the last confirmed options. Refresh before continuing.',
+          tone: AfriStateBannerTone.warning,
+          actionLabel: 'REFRESH FIXTURE',
+          onAction: () =>
+              ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+        ),
+      TicketDetailFailureKind.securityTimeout => _TicketDetailStatus(
+          title: 'Fixture check timed out',
+          body:
+              'These are the last confirmed options. Refresh before continuing.',
+          tone: AfriStateBannerTone.warning,
+          actionLabel: 'REFRESH FIXTURE',
+          onAction: () =>
+              ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+        ),
+      TicketDetailFailureKind.permissionDenied => const _TicketDetailStatus(
+          title: 'Ticket access changed',
+          body:
+              'The saved fixture is read-only. Return to Tickets to continue safely.',
+          tone: AfriStateBannerTone.danger,
+        ),
+      TicketDetailFailureKind.offline => const _TicketDetailStatus(
+          title: 'Showing saved fixture',
+          body:
+              'Ticket prices may have changed. Reconnect before reviewing or purchasing.',
+          tone: AfriStateBannerTone.warning,
+        ),
+      TicketDetailFailureKind.unknown => _TicketDetailStatus(
+          title: 'Fixture refresh failed',
+          body:
+              'These are the last confirmed options. Refresh before continuing.',
+          tone: AfriStateBannerTone.warning,
+          actionLabel: 'REFRESH FIXTURE',
+          onAction: () =>
+              ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+        ),
+    };
+  }
+}
+
+class _TicketDetailStatus extends StatelessWidget {
+  const _TicketDetailStatus({
+    required this.title,
+    required this.body,
+    required this.tone,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final String title;
+  final String body;
+  final AfriStateBannerTone tone;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        SpacingTokens.spacing4,
+        SpacingTokens.spacing2,
+        SpacingTokens.spacing4,
+        0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AfriStateBanner(
+            icon: tone == AfriStateBannerTone.danger
+                ? AfriIcons.statusError
+                : AfriIcons.statusWarning,
+            title: title,
+            subtitle: body,
+            tone: tone,
+            compact: true,
+          ),
+          if (actionLabel != null) ...[
+            const SizedBox(height: SpacingTokens.spacing2),
+            AfriButton(label: actionLabel!, onTap: onAction!),
+          ],
+        ],
       ),
     );
   }

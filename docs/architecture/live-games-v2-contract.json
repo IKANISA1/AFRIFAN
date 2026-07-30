@@ -1,0 +1,307 @@
+{
+  "schema_version": "1.0",
+  "contract_id": "africlub_live_games_v2",
+  "status": "proposed_pending_owner_decisions",
+  "goal_id": "africlub_live_games_v2_full_implementation_20260730",
+  "design_authority": "DESIGN.md",
+  "roles": [
+    "participant",
+    "tv_owner",
+    "venue_manager",
+    "organizer",
+    "club_admin",
+    "platform_admin",
+    "tv_credential"
+  ],
+  "lifecycle": {
+    "states": [
+      "draft",
+      "validated",
+      "published",
+      "scheduled",
+      "activated_lobby",
+      "question_open",
+      "reveal",
+      "paused",
+      "completed",
+      "cancelled"
+    ],
+    "terminal_states": [
+      "completed",
+      "cancelled"
+    ],
+    "transitions": [
+      {
+        "action": "validate",
+        "from": ["draft"],
+        "to": "validated",
+        "roles": ["club_admin", "platform_admin"]
+      },
+      {
+        "action": "publish",
+        "from": ["validated"],
+        "to": "published",
+        "roles": ["club_admin", "platform_admin"],
+        "requires_human_question_approval": true
+      },
+      {
+        "action": "schedule",
+        "from": ["published"],
+        "to": "scheduled",
+        "roles": ["organizer", "club_admin", "platform_admin"]
+      },
+      {
+        "action": "activate",
+        "from": ["scheduled"],
+        "to": "activated_lobby",
+        "roles": ["organizer", "club_admin", "platform_admin"]
+      },
+      {
+        "action": "start_question",
+        "from": ["activated_lobby", "reveal"],
+        "to": "question_open",
+        "roles": ["organizer", "club_admin", "platform_admin"]
+      },
+      {
+        "action": "reveal",
+        "from": ["question_open"],
+        "to": "reveal",
+        "roles": ["organizer", "club_admin", "platform_admin"]
+      },
+      {
+        "action": "pause",
+        "from": ["activated_lobby", "question_open", "reveal"],
+        "to": "paused",
+        "roles": ["organizer", "club_admin", "platform_admin"]
+      },
+      {
+        "action": "resume_lobby",
+        "from": ["paused"],
+        "to": "activated_lobby",
+        "roles": ["organizer", "club_admin", "platform_admin"]
+      },
+      {
+        "action": "resume_question",
+        "from": ["paused"],
+        "to": "question_open",
+        "roles": ["organizer", "club_admin", "platform_admin"],
+        "requires_previous_active_phase": "question_open"
+      },
+      {
+        "action": "resume_reveal",
+        "from": ["paused"],
+        "to": "reveal",
+        "roles": ["organizer", "club_admin", "platform_admin"],
+        "requires_previous_active_phase": "reveal"
+      },
+      {
+        "action": "complete",
+        "from": ["activated_lobby", "reveal", "paused"],
+        "to": "completed",
+        "roles": ["organizer", "club_admin", "platform_admin"]
+      },
+      {
+        "action": "cancel",
+        "from": ["scheduled", "activated_lobby", "question_open", "reveal", "paused"],
+        "to": "cancelled",
+        "roles": ["organizer", "club_admin", "platform_admin"]
+      }
+    ],
+    "transition_requirements": [
+      "authenticated_role",
+      "club_scope",
+      "resource_scope",
+      "expected_session_version",
+      "idempotency_key",
+      "audit_event",
+      "new_projection"
+    ]
+  },
+  "pairing": {
+    "challenge_created_by": "unpaired_tv_bootstrap",
+    "challenge_claimed_by": ["tv_owner", "venue_manager"],
+    "challenge_properties": [
+      "hashed_at_rest",
+      "short_lived",
+      "single_use",
+      "club_scoped",
+      "scope_validated",
+      "not_logged",
+      "not_analytics_data"
+    ],
+    "credential_properties": [
+      "revocable",
+      "rotatable",
+      "device_scoped",
+      "projection_only"
+    ],
+    "participant_uses_pairing_challenge": false
+  },
+  "display_assignment": {
+    "cardinality": "many_displays_per_session",
+    "authorized_roles": ["organizer", "club_admin", "platform_admin"],
+    "required_checks": [
+      "same_club",
+      "owner_or_venue_scope",
+      "organizer_assignment",
+      "no_conflicting_active_session",
+      "audit_event"
+    ]
+  },
+  "projections": {
+    "discovery": {
+      "join_key": "session_id",
+      "sources": ["club_membership", "invitation", "deep_link"],
+      "discoverable_phases": [
+        "scheduled",
+        "activated_lobby",
+        "question_open",
+        "reveal",
+        "paused"
+      ],
+      "required_fields": [
+        "club_id",
+        "feed_version",
+        "server_time",
+        "public_alias",
+        "sessions",
+        "eligibility"
+      ],
+      "forbidden_fields": [
+        "join_code",
+        "tv_code",
+        "pairing_challenge",
+        "device_credential",
+        "display_name",
+        "real_name",
+        "phone",
+        "email",
+        "auth_uid"
+      ]
+    },
+    "common_required_fields": [
+      "club_id",
+      "session_id",
+      "phase",
+      "session_version",
+      "event_sequence",
+      "server_time",
+      "phase_deadline",
+      "question_version",
+      "freshness"
+    ],
+    "participant": {
+      "required_fields": [
+        "eligibility",
+        "public_alias",
+        "question",
+        "options",
+        "answer_state",
+        "leader_summary"
+      ],
+      "forbidden_fields": [
+        "join_code",
+        "pairing_challenge",
+        "device_credential",
+        "correct_answer_before_reveal",
+        "other_participant_private_identity"
+      ]
+    },
+    "organizer": {
+      "required_fields": [
+        "allowed_actions",
+        "assigned_displays",
+        "display_freshness",
+        "participant_count",
+        "current_question_control"
+      ],
+      "forbidden_fields": [
+        "device_credential",
+        "participant_real_name",
+        "participant_phone",
+        "participant_email"
+      ]
+    },
+    "tv": {
+      "required_fields": [
+        "display_name",
+        "lobby",
+        "question",
+        "options",
+        "timer",
+        "reveal_state",
+        "leader_summary",
+        "connection_state"
+      ],
+      "forbidden_fields": [
+        "auth_uid",
+        "real_name",
+        "phone",
+        "email",
+        "wallet_balance",
+        "check_in_identity",
+        "order_queue",
+        "device_credential",
+        "pairing_challenge",
+        "correct_answer_before_reveal"
+      ],
+      "allowed_actions": ["retry_projection"]
+    },
+    "admin": {
+      "required_fields": [
+        "allowed_actions",
+        "audit_summary",
+        "assigned_displays",
+        "display_freshness",
+        "participant_count",
+        "participant_aggregate",
+        "projection_previews"
+      ],
+      "forbidden_fields": [
+        "device_credential",
+        "participant_real_name",
+        "participant_phone",
+        "participant_email"
+      ]
+    }
+  },
+  "realtime": {
+    "channel_template": "{club_id}:game_session:{session_id}",
+    "event_role": "invalidation_hint",
+    "authoritative_source": "role_projection_rpc",
+    "apply_rule": "strictly_newer_version_or_sequence",
+    "reconcile_on": [
+      "event",
+      "event_gap",
+      "network_restore",
+      "application_resume",
+      "timeout",
+      "manual_retry"
+    ],
+    "polling_role": "bounded_recovery_fallback"
+  },
+  "service_levels": {
+    "normal_propagation_p95_ms": 2000,
+    "reconnect_to_current_snapshot_ms": 5000,
+    "cross_club_exposure_allowed": 0,
+    "duplicate_lifecycle_advance_allowed": 0,
+    "pre_reveal_answer_leak_allowed": 0,
+    "participant_tv_code_dependency_allowed": 0,
+    "personal_data_on_tv_allowed": 0
+  },
+  "required_owner_decisions": [
+    "DEC-01",
+    "DEC-02",
+    "DEC-03",
+    "DEC-04",
+    "DEC-05",
+    "DEC-06"
+  ],
+  "required_protected_approvals": [
+    "APR-01",
+    "APR-02",
+    "APR-03",
+    "APR-04",
+    "APR-05"
+  ]
+}

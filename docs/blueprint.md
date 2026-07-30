@@ -1,6 +1,6 @@
 # AFRICLUB Architecture Blueprint
 
-Updated: 2026-07-02
+Updated: 2026-07-30
 
 Design authority: this document is architecture-only. `../DESIGN.md` is the
 sole source for product visuals, interface rules, tokens, screen archetypes, and
@@ -17,6 +17,11 @@ AFRICLUB is a white-label club platform with five governed surfaces:
 5. White-label public website for clubs.
 
 Rayon Sports is the reference club profile used to seed defaults, configuration data, and example content. The platform does not support a browser fan portal.
+
+The platform is football-club-first. The product hierarchy is club and
+football, membership and club participation, governed fan engagement, then
+secondary venue/matchday utility. The operating sequence is controlled in
+[`FOOTBALL_CLUB_FIRST_IMPLEMENTATION_PLAN_2026-07-30.md`](FOOTBALL_CLUB_FIRST_IMPLEMENTATION_PLAN_2026-07-30.md).
 
 ## 2. Architectural Decisions
 
@@ -55,12 +60,37 @@ Rayon Sports is the reference club profile used to seed defaults, configuration 
 - Drinks ordering is a drinks-only top-10 MVP, not full POS or delivery.
 - TV surfaces are read-only and must not expose personal, order, or wallet data.
 
+### ADR-006: Football-Club-First Consumer Architecture
+
+- Primary Flutter navigation is Home, Club, Fan Zone, and Membership.
+- Settings, privacy, support, and account controls live behind profile.
+- Club owns team, news, fixtures, results, standings, history, projects,
+  tickets, and shop discovery.
+- Fan Zone owns selected-match predictions, competitions, football trivia,
+  approved music trivia, TV games, rewards context, and supporter engagement.
+- Venue entry points are contextual matchday experiences, not a primary
+  product branch.
+- Existing deep links may be aliased during migration, but every object has one
+  canonical route and analytics identity.
+
+### ADR-007: One Shared Domain Truth, Surface-Specific Projections
+
+- Mobile, native TV, public web, admin, and venue portal share authoritative
+  club-scoped domain records.
+- Surfaces receive role-appropriate projections; they do not duplicate or
+  independently score/publish the same object.
+- Realtime channels are club-scoped and resource-scoped.
+- AI may draft trivia content, but human review/publish owns consumer truth.
+- Feature flags control availability only; RLS and role checks control access.
+
 ## 3. Product Surface Ownership
 
 ### Flutter Fan App
 
 Purpose:
-- Identity, membership, ticketing, supporter communities, commerce, venue check-in, and authenticated fan engagement.
+- Official club identity and football, membership, ticketing, supporter
+  communities, commerce, and authenticated fan engagement. Venue check-in and
+  ordering are secondary matchday extensions.
 
 Code shape:
 - `apps/<club>/` contains the native shell and configuration data.
@@ -70,13 +100,19 @@ Code shape:
 
 Rules:
 - No admin or venue-staff operations in the supporter app.
-- Venue check-in and drinks-ordering routes stay under Fan Zone and behind launch flags.
+- The primary shell is Home, Club, Fan Zone, and Membership.
+- Club routes are official club/football truth, not generic engagement cards.
+- Prediction games are free-to-enter, selected-match-only, and contain no odds,
+  stakes, or payout language.
+- Venue check-in and drinks-ordering routes stay under contextual matchday
+  experiences and behind launch flags.
 - Foreground location is requested only after supporter action.
 
 ### Flutter Native TV App
 
 Purpose:
-- Screen-safe venue QR/code display, TV-led game runtime, and shared matchday state.
+- Screen-safe venue QR/code display, club-scoped game runtime, and shared
+  matchday state.
 
 Code shape:
 - `apps/rayon_sports_tv`
@@ -210,6 +246,29 @@ Each club app is intentionally thin:
 
 Shared business logic, routes, and modules live in packages. Feature flags determine which modules and routes are active for a club.
 
+Target composition:
+
+```text
+App shell
+  Home
+    club pulse + next fixture/current result + latest news + next action
+  Club
+    overview + team + news + fixtures + results + standings + history
+    projects + tickets + shop
+  Fan Zone
+    selected-match predictions + competitions + reviewed trivia
+    TV games + points/rewards + supporters
+  Membership
+    card + plans + fan registry + fan clubs + payments
+    contributions/statements + projects
+  Profile
+    settings + privacy + notifications + language + theme + support
+```
+
+`packages/features/feat_club` becomes the complete Club module and composes
+typed football read models. Home consumes bounded domain projections and must
+not duplicate repository or scoring logic.
+
 ## 7. Web Composition
 
 ### Public Site
@@ -234,6 +293,14 @@ Recent tenancy hardening includes:
 - club-scoped CMS/config access in public and admin loaders
 - white-label host/slug resolution in the public website
 - venue check-in, venue staff, drinks ordering, FET reservation, and order event foundations
+
+The shared-data migration must also:
+
+- normalize remaining partner-first feature APIs to `club_id`;
+- establish one canonical record for each club, fixture, result, standing,
+  project, ticket, game session, question, score, and reward event;
+- use `{club_id}:{feature}:{resource_id}` Realtime channel names;
+- keep prediction eligibility and AI-trivia review/publish server-authoritative.
 
 Migration policy:
 
@@ -263,6 +330,9 @@ The following are intentionally out of scope for the current architecture:
 - cross-club unscoped admin browsing without explicit club context
 - duplicate per-club web codebases
 - full POS, delivery, open-loop FET spend, or cash-out
+- betting, odds, staking, cash-payout, or fantasy-squad mechanics
+- unreviewed AI-generated trivia or unapproved music-rights content
+- venue-first primary navigation
 
 ## 11. Reference Implementation
 

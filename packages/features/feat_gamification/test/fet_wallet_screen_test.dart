@@ -34,6 +34,9 @@ class _FakeFetRepository extends FetRepository {
   }
 
   @override
+  Future<FetWalletSummary?> loadWalletStrict() => loadWallet();
+
+  @override
   Future<List<FetWalletTransaction>> loadWalletTransactions({
     int limit = 50,
     int offset = 0,
@@ -82,6 +85,14 @@ class _FakeFetRepository extends FetRepository {
         createdAt: DateTime.utc(2026, 4, 12, 11),
       ),
     ];
+  }
+
+  @override
+  Future<List<FetWalletTransaction>> loadWalletTransactionsStrict({
+    int limit = 50,
+    int offset = 0,
+  }) {
+    return loadWalletTransactions(limit: limit, offset: offset);
   }
 }
 

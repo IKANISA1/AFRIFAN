@@ -60,9 +60,153 @@ function mapMatch(row: Record<string, unknown>): AdminMatchItem {
   };
 }
 
-export async function getAdminMatches(client: SupabaseClient, access: AdminAccess) {
+const allowedMatchStatuses = new Set([
+  "scheduled",
+  "live",
+  "halftime",
+  "fulltime",
+  "postponed",
+  "cancelled",
+]);
+
+function boundedText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : null;
+}
+
+function boundedNumber(
+  value: unknown,
+  maximum = 1_000_000_000_000,
+) {
+  return typeof value === "number" &&
+    Number.isFinite(value) &&
+    value >= 0 &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
+}
+
+function boundedImageUrl(value: unknown) {
+  const text = boundedText(value, 2_048);
+  if (text == null) {
+    return null;
+  }
+  if (text.startsWith("/")) {
+    return text;
+  }
+  try {
+    const url = new URL(text);
+    return url.protocol === "https:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+export function normalizeAdminMatches(value: unknown): AdminMatchItem[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 500).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const id = boundedText(record.id, 128);
+    const homeTeam = boundedText(record.homeTeam, 120);
+    const awayTeam = boundedText(record.awayTeam, 120);
+    const competition = boundedText(record.competition, 160);
+    const venue = boundedText(record.venue, 160);
+    const matchDate = boundedDate(record.matchDate);
+    const updatedAt = boundedDate(record.updatedAt);
+    const kickoffTime = boundedText(record.kickoffTime, 16);
+    const matchStatus = boundedText(record.matchStatus, 32);
+    const generalPrice = boundedNumber(record.generalPrice);
+    const vipPrice = boundedNumber(record.vipPrice);
+    const capacity = boundedNumber(record.capacity, 10_000_000);
+    const soldCount = boundedNumber(record.soldCount, 10_000_000);
+    const homeScore = boundedNumber(record.homeScore, 999);
+    const awayScore = boundedNumber(record.awayScore, 999);
+
+    if (
+      id == null ||
+      homeTeam == null ||
+      awayTeam == null ||
+      competition == null ||
+      venue == null ||
+      matchDate == null ||
+      updatedAt == null ||
+      kickoffTime == null ||
+      matchStatus == null ||
+      !allowedMatchStatuses.has(matchStatus) ||
+      generalPrice == null ||
+      vipPrice == null ||
+      capacity == null ||
+      soldCount == null ||
+      soldCount > capacity ||
+      homeScore == null ||
+      awayScore == null
+    ) {
+      return [];
+    }
+
+    const clubId = boundedNumber(record.clubId, 1_000_000_000);
+    const liveMinute =
+      record.liveMinute == null
+        ? null
+        : boundedNumber(record.liveMinute, 999);
+    if (record.liveMinute != null && liveMinute == null) {
+      return [];
+    }
+
+    return [{
+      id,
+      clubId,
+      partnerId: boundedText(record.partnerId, 128),
+      homeTeam,
+      awayTeam,
+      competition,
+      venue,
+      matchDate,
+      kickoffTime,
+      isOnSale: record.isOnSale === true,
+      generalPrice,
+      vipPrice,
+      saleStartsAt:
+        record.saleStartsAt == null ? null : boundedDate(record.saleStartsAt),
+      capacity,
+      soldCount,
+      imageUrl: boundedImageUrl(record.imageUrl),
+      matchStatus,
+      homeScore,
+      awayScore,
+      liveMinute,
+      matchSummary: boundedText(record.matchSummary, 2_000),
+      liveStats: {},
+      liveEvents: [],
+      isFeatured: record.isFeatured === true,
+      updatedAt,
+    }];
+  });
+}
+
+export async function getAdminMatches(
+  client: SupabaseClient,
+  access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
+) {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminMatchItem[]>("matches");
+    return requestAdminApi<AdminMatchItem[]>("matches", {
+      signal: options.signal,
+    });
   }
 
   // Try the unified view first; fall back to the base matches table

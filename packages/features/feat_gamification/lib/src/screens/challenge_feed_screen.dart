@@ -70,10 +70,9 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                   backgroundColor: ColorTokens.transparent,
                   title: Text(
                     'CHALLENGE',
-                    style: TypographyTokens.headlineSmall().copyWith(
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.6,
-                    ),
+                    style: TypographyTokens.headlineSmall(
+                      ColorTokens.chromeForeground,
+                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
                   ),
                   actions: [
                     AfriIconButton(
@@ -499,7 +498,13 @@ class _SectionHeader extends StatelessWidget {
             ),
           ),
         ),
-        AfriTextButton(onPressed: onAction, child: Text(actionLabel)),
+        AfriTextButton(
+          onPressed: onAction,
+          child: Text(
+            actionLabel,
+            style: TypographyTokens.labelLarge(ColorTokens.onSurface),
+          ),
+        ),
       ],
     );
   }

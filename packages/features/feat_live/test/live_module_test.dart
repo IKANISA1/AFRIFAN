@@ -1,6 +1,7 @@
 import 'package:core_router/core_router.dart';
 import 'package:feat_live/feat_live.dart';
 import 'package:feat_live/src/widgets/live_match_widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
@@ -79,6 +80,48 @@ void main() {
         expect(decisions['/live-match'], RoutePresentation.redirect);
       },
     );
+
+    for (final source in <String>['/live', '/live-match']) {
+      testWidgets('$source resolves to the governed Match Detail target', (
+        tester,
+      ) async {
+        final redirectRoute = source == '/live'
+            ? module.routes.whereType<GoRoute>().singleWhere(
+                (route) => route.path == source,
+              )
+            : module.standaloneRoutes.whereType<GoRoute>().singleWhere(
+                (route) => route.path == source,
+              );
+        final router = GoRouter(
+          initialLocation: source,
+          routes: <RouteBase>[
+            redirectRoute,
+            GoRoute(
+              path: '/fanzone/match/:fixtureId',
+              builder: (context, state) =>
+                  Scaffold(body: Text('Target: ${state.uri}')),
+            ),
+          ],
+        );
+        addTearDown(router.dispose);
+
+        await tester.pumpWidget(
+          MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            routerConfig: router,
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        const target = '/fanzone/match/live';
+        expect(find.text('Target: $target'), findsOneWidget);
+        expect(router.routeInformationProvider.value.uri.toString(), target);
+        expect(
+          router.routeInformationProvider.value.uri.path,
+          isNot(Uri.parse(source).path),
+        );
+      });
+    }
   });
 
   // ═══════════════════════════════════════════════════════════

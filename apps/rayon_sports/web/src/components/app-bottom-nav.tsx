@@ -94,7 +94,7 @@ export function AppBottomNav({
       className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[var(--club-primary)]/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
       aria-label="Main navigation"
     >
-      <div className="mx-auto flex max-w-md items-stretch justify-around px-2 pt-2">
+      <div className="mx-auto flex max-w-md items-stretch justify-around px-[8px] pt-[8px]">
         {tabs.map((tab) => {
           const active = tab.id === activeTab;
           const Icon = tab.icon;
@@ -106,12 +106,12 @@ export function AppBottomNav({
               prefetch={false}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex flex-1 flex-col items-center gap-1.5 py-2 transition-all duration-300 active:scale-95",
-                active ? "text-[var(--club-accent)]" : "text-white/40 hover:text-white/60"
+                "flex min-w-0 flex-1 flex-col items-center gap-[6px] py-[8px] transition-all duration-300 active:scale-95",
+                active ? "text-[var(--club-accent)]" : "text-white/80 hover:text-white"
               )}
             >
               <div className={cn(
-                "flex h-8 w-12 items-center justify-center rounded-full transition-all duration-300",
+                "flex h-[32px] w-[48px] items-center justify-center rounded-full transition-all duration-300",
                 active && "bg-[var(--club-accent)]/10"
               )}>
                 <Icon
@@ -120,8 +120,8 @@ export function AppBottomNav({
                 />
               </div>
               <span className={cn(
-                "text-[9px] font-black uppercase tracking-[0.2em] transition-colors",
-                active ? "text-white" : "text-white/40"
+                "max-w-full text-center text-[0.5625rem] font-black uppercase tracking-normal transition-colors [overflow-wrap:anywhere]",
+                active ? "text-white" : "text-white/80"
               )}>
                 {tab.label}
               </span>

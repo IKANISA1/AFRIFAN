@@ -8,12 +8,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../controllers/statement_controller.dart';
 
 class StatementDownloadScreen extends ConsumerStatefulWidget {
-  const StatementDownloadScreen({required this.groupId, super.key});
+  const StatementDownloadScreen({
+    required this.groupId,
+    this.exportActionFocusNode,
+    super.key,
+  });
 
   final String groupId;
+  final FocusNode? exportActionFocusNode;
 
   @override
   ConsumerState<StatementDownloadScreen> createState() =>
@@ -22,417 +28,433 @@ class StatementDownloadScreen extends ConsumerStatefulWidget {
 
 class _StatementDownloadScreenState
     extends ConsumerState<StatementDownloadScreen> {
-  CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
-    currencyCode: context.afriCurrencyCode,
-    currencySymbol: context.afriCurrencySymbol,
-  );
-
-  List<_StatementEntry> _entries = const <_StatementEntry>[];
-  bool _isLoading = true;
+  bool? _lastOnline;
   bool _isExporting = false;
-  String? _error;
-  DateTime? _from;
-  DateTime? _to;
-  String _format = 'CSV';
-  final String _sort = 'date';
 
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_loadEntries());
-  }
+  Future<void> _refresh() =>
+      ref.read(statementProvider(widget.groupId).notifier).refresh();
 
-  Future<void> _loadEntries() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final client = ref.read(supabaseClientProvider);
-      final rows = await _loadGroupContributionRows(client);
-      final userIds = rows
-          .map((row) => row['user_id']?.toString())
-          .whereType<String>()
-          .toSet()
-          .toList(growable: false);
-      final aliasMap = <String, String>{};
-
-      if (userIds.isNotEmpty) {
-        final profiles = await client
-            .from('profiles')
-            .select('id, public_user_id')
-            .inFilter('id', userIds);
-        for (final profile in profiles) {
-          aliasMap[profile['id']?.toString() ?? ''] =
-              profile['public_user_id']?.toString() ?? '000000';
-        }
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        _entries = rows
-            .map((row) {
-              final createdAt = DateTime.tryParse(
-                row['created_at']?.toString() ?? '',
-              );
-              final alias =
-                  aliasMap[row['user_id']?.toString() ?? ''] ?? '000000';
-              final status = row['status']?.toString() ?? 'pending';
-              return _StatementEntry(
-                id: row['id']?.toString() ?? '',
-                alias: '#$alias',
-                amount: (row['amount'] as num?)?.toInt() ?? 0,
-                status: status,
-                reference: row['momo_reference']?.toString() ?? '',
-                createdAt: createdAt ?? DateTime.now(),
-              );
-            })
-            .toList(growable: false);
-        _isLoading = false;
-      });
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'StatementDownloadScreen',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _error = 'Could not load statement entries for this Group.';
-      });
+  void _goBack() {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/contribute/group/${widget.groupId}');
     }
   }
 
-  Future<List<Map<String, dynamic>>> _loadGroupContributionRows(
-    SupabaseClient client,
-  ) async {
-    var contributionQuery = client
-        .from('group_contributions')
-        .select('id, user_id, amount, status, momo_reference, created_at')
-        .eq('group_id', widget.groupId);
-
-    if (_from != null) {
-      contributionQuery = contributionQuery.gte(
-        'created_at',
-        DateTime(
-          _from!.year,
-          _from!.month,
-          _from!.day,
-        ).toUtc().toIso8601String(),
-      );
-    }
-    if (_to != null) {
-      contributionQuery = contributionQuery.lt(
-        'created_at',
-        DateTime(_to!.year, _to!.month, _to!.day + 1).toUtc().toIso8601String(),
-      );
-    }
-
-    return List<Map<String, dynamic>>.from(
-      await contributionQuery.order('created_at', ascending: false) as List,
-    );
-  }
-
-  Future<void> _pickDate({required bool isFrom}) async {
+  Future<void> _pickDate(StatementState state, {required bool isFrom}) async {
     final initialDate = isFrom
-        ? (_from ?? DateTime.now())
-        : (_to ?? _from ?? DateTime.now());
+        ? (state.from ?? DateTime.now())
+        : (state.to ?? state.from ?? DateTime.now());
     final picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
       firstDate: DateTime(2024),
       lastDate: DateTime(2100),
     );
-    if (picked == null) return;
+    if (picked == null || !mounted) return;
 
-    setState(() {
-      if (isFrom) {
-        _from = picked;
-        if (_to != null && _to!.isBefore(_from!)) {
-          _to = _from;
-        }
-      } else {
-        _to = picked;
-      }
-    });
-    await _loadEntries();
-  }
-
-  List<_StatementEntry> get _sortedEntries {
-    final entries = List<_StatementEntry>.from(_entries);
-    switch (_sort) {
-      case 'amount':
-        entries.sort((a, b) => b.amount.compareTo(a.amount));
-      case 'alias':
-        entries.sort((a, b) => a.alias.compareTo(b.alias));
-      case 'date':
-        entries.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    var from = state.from;
+    var to = state.to;
+    if (isFrom) {
+      from = picked;
+      if (to != null && to.isBefore(from)) to = from;
+    } else {
+      to = picked;
+      if (from != null && to.isBefore(from)) from = to;
     }
-    return entries;
+    await ref
+        .read(statementProvider(widget.groupId).notifier)
+        .setRange(from: from, to: to);
   }
 
-  int get _statementTotal {
-    return _entries
-        .where(
-          (entry) => entry.status != 'failed' && entry.status != 'reversed',
-        )
-        .fold<int>(0, (sum, entry) => sum + entry.amount);
-  }
-
-  Future<void> _downloadStatement() async {
-    if (_format == 'PDF') {
-      AfriToast.info(context, 'PDF export not available yet. Use CSV.');
-      return;
-    }
-
+  Future<void> _copyStatement(StatementState state) async {
+    if (_isExporting || state.actionsBlocked) return;
     setState(() => _isExporting = true);
-    final rows = _sortedEntries;
-    final buffer = StringBuffer()
-      ..writeln('Alias,Amount,Status,Reference,Date');
-
-    for (final row in rows) {
-      buffer.writeln(
-        [
-          row.alias,
-          row.amount,
-          row.status,
-          row.reference,
-          row.createdAt.toIso8601String(),
-        ].map(_escapeCsv).join(','),
-      );
-    }
-
-    await Clipboard.setData(ClipboardData(text: buffer.toString()));
+    final csv = buildStatementCsv(state);
+    await Clipboard.setData(ClipboardData(text: csv));
     if (!mounted) return;
-
     setState(() => _isExporting = false);
     AfriToast.success(
       context,
-      rows.isEmpty
-          ? 'Filtered CSV copied without rows.'
-          : 'CSV copied to clipboard.',
+      state.snapshot.entries.isEmpty
+          ? 'Empty CSV copied to clipboard.'
+          : 'Privacy-safe CSV copied to clipboard.',
     );
-  }
-
-  String _escapeCsv(Object? value) {
-    final field = value?.toString() ?? '';
-    if (field.contains(',') || field.contains('"') || field.contains('\n')) {
-      return '"${field.replaceAll('"', '""')}"';
-    }
-    return field;
   }
 
   @override
   Widget build(BuildContext context) {
-    final currency = _currencyFormatter;
-    final previewEntries = _sortedEntries.take(5).toList(growable: false);
+    final statementAsync = ref.watch(statementProvider(widget.groupId));
+    final configuredExportEnabled = ref.watch(statementExportEnabledProvider);
 
-    return AfriScreenScaffold(
-      backgroundColor: ColorTokens.background,
-      appBar: AfriAppBar(
-        backgroundColor: ColorTokens.transparent,
-        title: Text(
-          'DOWNLOAD STATEMENT',
-          style: TypographyTokens.headlineSmall().copyWith(
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.6,
+    return ConnectivityBuilder(
+      builder: (context, isOnline) {
+        final previousOnline = _lastOnline;
+        _lastOnline = isOnline;
+        if (previousOnline == false && isOnline) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            unawaited(_refresh());
+          });
+        }
+
+        return AfriScreenScaffold(
+          backgroundColor: ColorTokens.background,
+          appBar: AfriAppBar(
+            backgroundColor: ColorTokens.transparent,
+            title: Text(
+              'PUBLIC STATEMENT',
+              style: TypographyTokens.titleLarge(
+                ColorTokens.chromeForeground,
+              ).copyWith(fontWeight: FontWeight.w700),
+            ),
+            leading: AfriIconButton(
+              icon: AfriIcons.back,
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              onTap: _goBack,
+            ),
           ),
-        ),
-        leading: AfriIconButton(
-          icon: AfriIcons.back,
-          onTap: () => context.pop(),
-          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-        ),
-      ),
-      scrollable: false,
-      child: _isLoading
-          ? const Padding(
-              padding: EdgeInsets.all(SpacingTokens.spacing6),
-              child: AfriSkeletonList(),
-            )
-          : AfriRefreshIndicator(
-              onRefresh: _loadEntries,
-              child: ListView(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          scrollable: false,
+          constrainContent: true,
+          child: AfriRefreshIndicator(
+            onRefresh: _refresh,
+            child: statementAsync.when(
+              loading: () => ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                 children: [
-                  if (_error != null)
-                    GlassCard(
-                      animate: false,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(_error!, style: TypographyTokens.bodyMedium()),
-                          const SizedBox(height: SpacingTokens.spacing3),
-                          AfriButton(
-                            label: 'Try again',
-                            fullWidth: true,
-                            onTap: _loadEntries,
-                          ),
-                        ],
-                      ),
-                    )
-                  else ...[
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _DateInputCard(
-                            label: 'FROM',
-                            value: _from == null
-                                ? 'All time'
-                                : DateFormat('dd MMM yyyy').format(_from!),
-                            onTap: () => _pickDate(isFrom: true),
-                          ),
-                        ),
-                        const SizedBox(width: SpacingTokens.spacing3),
-                        Expanded(
-                          child: _DateInputCard(
-                            label: 'TO',
-                            value: _to == null
-                                ? 'Now'
-                                : DateFormat('dd MMM yyyy').format(_to!),
-                            onTap: () => _pickDate(isFrom: false),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    GlassCard(
-                      animate: false,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('SORT', style: TypographyTokens.labelSmall()),
-                          const SizedBox(height: SpacingTokens.spacing2),
-                          Wrap(
-                            spacing: SpacingTokens.spacing2,
-                            children:
-                                const [
-                                      ('date', 'BY DATE'),
-                                      ('amount', 'BY AMOUNT'),
-                                      ('alias', 'BY ALIAS'),
-                                    ]
-                                    .map(
-                                      (option) => const AfriChoiceChip(
-                                        selected: false,
-                                        label: Text(''),
-                                      ),
-                                    )
-                                    .toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _FormatCard(
-                            label: 'PDF',
-                            icon: AfriIcons.pdf,
-                            selected: _format == 'PDF',
-                            onTap: () => setState(() => _format = 'PDF'),
-                          ),
-                        ),
-                        const SizedBox(width: SpacingTokens.spacing3),
-                        Expanded(
-                          child: _FormatCard(
-                            label: 'CSV',
-                            icon: AfriIcons.excel,
-                            selected: _format == 'CSV',
-                            onTap: () => setState(() => _format = 'CSV'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    GlassCard(
-                      animate: false,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  'PREVIEW',
-                                  style: TypographyTokens.labelSmall(),
-                                ),
-                              ),
-                              Text(
-                                currency.format(_statementTotal),
-                                style: TypographyTokens.headlineMedium(
-                                  ColorTokens.clubAccent,
-                                ).copyWith(fontWeight: FontWeight.w800),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing2),
-                          Text(
-                            'Alias IDs only — no names or phone numbers.',
-                            style: TypographyTokens.bodySmall(),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing3),
-                          if (previewEntries.isEmpty)
-                            Text(
-                              'Contribution range is empty.',
-                              style: TypographyTokens.bodyMedium(),
-                            )
-                          else
-                            ...previewEntries.map(
-                              (entry) => Padding(
-                                padding: const EdgeInsets.only(
-                                  bottom: SpacingTokens.spacing2,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        entry.alias,
-                                        style: TypographyTokens.bodySmall(),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        currency.format(entry.amount),
-                                        style: TypographyTokens.bodySmall(),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        DateFormat(
-                                          'dd MMM',
-                                        ).format(entry.createdAt),
-                                        style: TypographyTokens.bodySmall(),
-                                        textAlign: TextAlign.right,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing6),
-                    AfriButton(
-                      label: _isExporting ? 'Exporting…' : 'Download',
-                      fullWidth: true,
-                      isLoading: _isExporting,
-                      onTap: _downloadStatement,
-                      enabled: !_isExporting,
-                    ),
-                  ],
+                  AfriStateView.loading(
+                    title: 'Loading public statement',
+                    message:
+                        'Checking confirmed contributions and privacy-safe supporter aliases.',
+                  ),
                 ],
               ),
+              error: (error, _) => ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                children: [_buildFailure(error, isOnline)],
+              ),
+              data: (state) => _buildStatement(
+                state,
+                isOnline: isOnline,
+                configuredExportEnabled: configuredExportEnabled,
+              ),
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFailure(Object error, bool isOnline) {
+    final failure = StatementFailure.fromError(error);
+    final content = _StatementFailureContent.fromFailure(failure, isOnline);
+    final refresh = content.canRefresh ? () => unawaited(_refresh()) : null;
+    return switch (failure.kind) {
+      StatementFailureKind.offline => AfriStateView.offline(
+        title: content.title,
+        message: content.message,
+        actionLabel: content.canRefresh ? 'Refresh' : null,
+        onAction: refresh,
+      ),
+      StatementFailureKind.notFound => AfriStateView.empty(
+        title: content.title,
+        message: content.message,
+        icon: AfriIcons.groups,
+        actionLabel: 'Back to initiative',
+        onAction: _goBack,
+      ),
+      _ => AfriStateView.error(
+        title: content.title,
+        message: content.message,
+        actionLabel: content.canRefresh ? 'Refresh' : null,
+        onAction: refresh,
+      ),
+    };
+  }
+
+  Widget _buildStatement(
+    StatementState state, {
+    required bool isOnline,
+    required bool configuredExportEnabled,
+  }) {
+    final exportEnabled =
+        configuredExportEnabled &&
+        isOnline &&
+        !state.actionsBlocked &&
+        !_isExporting;
+    final currency = CurrencyFormatter(
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
+    );
+    final entries = state.sortedEntries;
+    final preview = entries.take(5).toList(growable: false);
+    final children = <Widget>[];
+
+    if (state.phase == StatementPhase.syncing) {
+      children.add(
+        const AfriStateBanner(
+          icon: AfriIcons.refresh,
+          title: 'Refreshing statement',
+          subtitle:
+              'Keeping the last confirmed statement visible while new activity is checked.',
+          tone: AfriStateBannerTone.info,
+          compact: true,
+        ),
+      );
+    } else if (!configuredExportEnabled) {
+      children.add(
+        const AfriStateBanner(
+          icon: AfriIcons.lock,
+          title: 'Statement export is read-only',
+          subtitle:
+              'You can review confirmed public entries, but copying a statement is disabled for this build.',
+          tone: AfriStateBannerTone.warning,
+          compact: true,
+        ),
+      );
+    } else if (!isOnline) {
+      children.add(
+        const AfriStateBanner(
+          icon: AfriIcons.offline,
+          title: 'Showing saved statement data',
+          subtitle:
+              'Reconnect and refresh before exporting or relying on the latest total.',
+          tone: AfriStateBannerTone.warning,
+          compact: true,
+        ),
+      );
+    } else if (state.failure != null) {
+      children.add(_RetainedStatementFailure(failure: state.failure!));
+      if (state.failure!.kind != StatementFailureKind.permissionDenied) {
+        children.add(const SizedBox(height: SpacingTokens.spacing3));
+        children.add(
+          AfriButton(
+            key: const ValueKey<String>('statement-refresh-action'),
+            label: 'REFRESH STATEMENT',
+            icon: AfriIcons.refresh,
+            variant: AfriButtonVariant.outline,
+            labelMaxLines: 2,
+            onTap: _refresh,
+          ),
+        );
+      }
+    }
+
+    if (children.isNotEmpty) {
+      children.add(const SizedBox(height: SpacingTokens.spacing4));
+    }
+    children.add(
+      _StatementSummaryCard(
+        groupName: state.snapshot.groupName,
+        entryCount: entries.length,
+        confirmedTotal: currency.format(state.confirmedTotal),
+      ),
+    );
+    children.add(const SizedBox(height: SpacingTokens.spacing4));
+    children.add(
+      AfriButton(
+        key: const ValueKey<String>('statement-export-action'),
+        label: _exportLabel(
+          state: state,
+          isOnline: isOnline,
+          configuredExportEnabled: configuredExportEnabled,
+        ),
+        semanticsLabel: exportEnabled
+            ? 'Copy privacy-safe CSV statement'
+            : 'Statement export unavailable. ${_exportLabel(state: state, isOnline: isOnline, configuredExportEnabled: configuredExportEnabled)}',
+        icon: AfriIcons.excel,
+        fullWidth: true,
+        labelMaxLines: 2,
+        isLoading: _isExporting,
+        enabled: exportEnabled,
+        focusNode: widget.exportActionFocusNode,
+        onTap: () => _copyStatement(state),
+      ),
+    );
+    children.add(const SizedBox(height: SpacingTokens.spacing5));
+    children.add(
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _DateInputCard(
+              label: 'FROM',
+              value: state.from == null
+                  ? 'All time'
+                  : DateFormat('dd MMM yyyy').format(state.from!),
+              enabled: isOnline && !state.actionsBlocked,
+              onTap: () => _pickDate(state, isFrom: true),
+            ),
+          ),
+          const SizedBox(width: SpacingTokens.spacing3),
+          Expanded(
+            child: _DateInputCard(
+              label: 'TO',
+              value: state.to == null
+                  ? 'Now'
+                  : DateFormat('dd MMM yyyy').format(state.to!),
+              enabled: isOnline && !state.actionsBlocked,
+              onTap: () => _pickDate(state, isFrom: false),
+            ),
+          ),
+        ],
+      ),
+    );
+    children.add(const SizedBox(height: SpacingTokens.spacing4));
+    children.add(
+      GlassCard(
+        animate: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('SORT', style: TypographyTokens.labelSmall()),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Wrap(
+              spacing: SpacingTokens.spacing2,
+              runSpacing: SpacingTokens.spacing2,
+              children: StatementSort.values
+                  .map(
+                    (sort) => AfriChoiceChip(
+                      key: ValueKey<String>('statement-sort-${sort.name}'),
+                      selected: state.sort == sort,
+                      label: Text(sort.label),
+                      tooltip: sort.label,
+                      onSelected: state.actionsBlocked
+                          ? null
+                          : (_) => ref
+                                .read(
+                                  statementProvider(widget.groupId).notifier,
+                                )
+                                .setSort(sort),
+                    ),
+                  )
+                  .toList(growable: false),
+            ),
+          ],
+        ),
+      ),
+    );
+    children.add(const SizedBox(height: SpacingTokens.spacing4));
+    children.add(
+      const Row(
+        children: [
+          Expanded(
+            child: _FormatCard(
+              label: 'PDF',
+              icon: AfriIcons.pdf,
+              selected: false,
+              enabled: false,
+              helper: 'Coming soon',
+            ),
+          ),
+          SizedBox(width: SpacingTokens.spacing3),
+          Expanded(
+            child: _FormatCard(
+              label: 'CSV',
+              icon: AfriIcons.excel,
+              selected: true,
+              enabled: true,
+              helper: 'Clipboard',
+            ),
+          ),
+        ],
+      ),
+    );
+    children.add(const SizedBox(height: SpacingTokens.spacing4));
+    children.add(
+      _StatementPreview(
+        entries: preview,
+        totalEntryCount: entries.length,
+        currency: currency,
+      ),
+    );
+
+    return ListView(
+      key: const ValueKey<String>('statement-scroll-view'),
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+      children: children,
+    );
+  }
+
+  String _exportLabel({
+    required StatementState state,
+    required bool isOnline,
+    required bool configuredExportEnabled,
+  }) {
+    if (_isExporting) return 'Copying CSV…';
+    if (!configuredExportEnabled) return 'Export disabled';
+    if (!isOnline) return 'Connection required';
+    if (state.phase == StatementPhase.syncing) return 'Checking latest entries';
+    if (state.phase == StatementPhase.degraded) {
+      return 'Refresh before exporting';
+    }
+    return 'Copy CSV statement';
+  }
+}
+
+class _StatementSummaryCard extends StatelessWidget {
+  const _StatementSummaryCard({
+    required this.groupName,
+    required this.entryCount,
+    required this.confirmedTotal,
+  });
+
+  final String groupName;
+  final int entryCount;
+  final String confirmedTotal;
+
+  @override
+  Widget build(BuildContext context) {
+    final metricAccent = ColorTokens.accessibleMetricColor(
+      ColorTokens.clubAccent,
+    );
+    return GlassCard(
+      key: const ValueKey<String>('statement-summary-card'),
+      animate: false,
+      child: Semantics(
+        container: true,
+        label:
+            '$groupName public statement, $entryCount entries, confirmed total $confirmedTotal',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              groupName,
+              style: TypographyTokens.headlineMedium().copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            Text(
+              'CONFIRMED TOTAL',
+              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
+            ),
+            const SizedBox(height: SpacingTokens.spacing1),
+            Text(
+              confirmedTotal,
+              style: TypographyTokens.displayLarge(
+                metricAccent,
+              ).copyWith(fontWeight: FontWeight.w900),
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(
+              '$entryCount public ${entryCount == 1 ? 'entry' : 'entries'} in this range',
+              style: TypographyTokens.bodyMedium(),
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(
+              'Public supporter aliases only. Names, phone numbers, payment references, and account identifiers are excluded.',
+              style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -441,11 +463,13 @@ class _DateInputCard extends StatelessWidget {
   const _DateInputCard({
     required this.label,
     required this.value,
+    required this.enabled,
     required this.onTap,
   });
 
   final String label;
   final String value;
+  final bool enabled;
   final VoidCallback onTap;
 
   @override
@@ -454,6 +478,7 @@ class _DateInputCard extends StatelessWidget {
       animate: false,
       child: AfriPressFeedback(
         onTap: onTap,
+        enabled: enabled,
         tooltip: label,
         semanticsLabel: '$label, $value',
         child: Column(
@@ -466,7 +491,13 @@ class _DateInputCard extends StatelessWidget {
                 Expanded(
                   child: Text(value, style: TypographyTokens.bodyMedium()),
                 ),
-                const Icon(AfriIcons.calendar, size: 18),
+                Icon(
+                  AfriIcons.calendar,
+                  size: 18,
+                  color: enabled
+                      ? ColorTokens.onSurface
+                      : ColorTokens.onSurfaceVariant,
+                ),
               ],
             ),
           ],
@@ -481,21 +512,22 @@ class _FormatCard extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.selected,
-    required this.onTap,
+    required this.enabled,
+    required this.helper,
   });
 
   final String label;
   final IconData icon;
   final bool selected;
-  final VoidCallback onTap;
+  final bool enabled;
+  final String helper;
 
   @override
   Widget build(BuildContext context) {
-    return AfriPressFeedback(
-      onTap: onTap,
+    return Semantics(
       selected: selected,
-      tooltip: label,
-      semanticsLabel: '$label export format',
+      enabled: enabled,
+      label: '$label export format, $helper',
       child: GlassCard(
         animate: false,
         borderColor: selected
@@ -505,7 +537,9 @@ class _FormatCard extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: selected ? ColorTokens.clubPrimary : ColorTokens.onSurface,
+              color: selected
+                  ? ColorTokens.accessibleChartColor(ColorTokens.clubPrimary)
+                  : ColorTokens.onSurfaceVariant,
             ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
@@ -514,6 +548,12 @@ class _FormatCard extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
+            const SizedBox(height: SpacingTokens.spacing1),
+            Text(
+              helper,
+              textAlign: TextAlign.center,
+              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
+            ),
           ],
         ),
       ),
@@ -521,20 +561,211 @@ class _FormatCard extends StatelessWidget {
   }
 }
 
-class _StatementEntry {
-  const _StatementEntry({
-    required this.id,
-    required this.alias,
-    required this.amount,
-    required this.status,
-    required this.reference,
-    required this.createdAt,
+class _StatementPreview extends StatelessWidget {
+  const _StatementPreview({
+    required this.entries,
+    required this.totalEntryCount,
+    required this.currency,
   });
 
-  final String id;
-  final String alias;
-  final int amount;
-  final String status;
-  final String reference;
-  final DateTime createdAt;
+  final List<StatementEntry> entries;
+  final int totalEntryCount;
+  final CurrencyFormatter currency;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      key: const ValueKey<String>('statement-preview'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'PREVIEW',
+          style: TypographyTokens.titleLarge().copyWith(
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: SpacingTokens.spacing2),
+        Text(
+          totalEntryCount > 5
+              ? 'Showing 5 of $totalEntryCount entries. The CSV includes the full bounded range.'
+              : 'The CSV includes only the public fields shown below.',
+          style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        if (entries.isEmpty)
+          AfriStateView.empty(
+            key: const ValueKey<String>('statement-empty'),
+            title: 'No statement entries',
+            message:
+                'No public contributions match this date range. Choose another range and refresh.',
+            icon: AfriIcons.excel,
+            compact: true,
+          )
+        else
+          ...entries.map(
+            (entry) => Padding(
+              padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+              child: _StatementEntryRow(entry: entry, currency: currency),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _StatementEntryRow extends StatelessWidget {
+  const _StatementEntryRow({required this.entry, required this.currency});
+
+  final StatementEntry entry;
+  final CurrencyFormatter currency;
+
+  @override
+  Widget build(BuildContext context) {
+    final amount = currency.format(entry.amount);
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+    final tone = switch (entry.status) {
+      StatementEntryStatus.confirmed => AfriStatusTone.success,
+      StatementEntryStatus.processing => AfriStatusTone.warning,
+      StatementEntryStatus.failed => AfriStatusTone.error,
+    };
+    return GlassCard(
+      animate: false,
+      child: Semantics(
+        container: true,
+        label:
+            '${entry.publicAlias}, $amount, ${entry.status.label}, ${AfriDateFormatter.formatDate(entry.createdAt)}',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (largeText) ...[
+              Text(entry.publicAlias, style: TypographyTokens.titleMedium()),
+              const SizedBox(height: SpacingTokens.spacing2),
+              Text(
+                amount,
+                style: TypographyTokens.headlineMedium(
+                  ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
+                ).copyWith(fontWeight: FontWeight.w800),
+              ),
+            ] else
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      entry.publicAlias,
+                      style: TypographyTokens.titleMedium(),
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Flexible(
+                    child: Text(
+                      amount,
+                      textAlign: TextAlign.end,
+                      style: TypographyTokens.headlineMedium(
+                        ColorTokens.accessibleMetricColor(
+                          ColorTokens.clubAccent,
+                        ),
+                      ).copyWith(fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ],
+              ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: SpacingTokens.spacing3,
+              runSpacing: SpacingTokens.spacing2,
+              children: [
+                AfriStatusChip(label: entry.status.label, tone: tone),
+                Text(
+                  AfriDateFormatter.formatDate(entry.createdAt),
+                  style: TypographyTokens.bodySmall(
+                    ColorTokens.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatementFailureContent {
+  const _StatementFailureContent({
+    required this.title,
+    required this.message,
+    required this.canRefresh,
+  });
+
+  final String title;
+  final String message;
+  final bool canRefresh;
+
+  factory _StatementFailureContent.fromFailure(
+    StatementFailure failure,
+    bool isOnline,
+  ) {
+    return switch (failure.kind) {
+      StatementFailureKind.offline => _StatementFailureContent(
+        title: isOnline ? 'Connection restored' : 'Statement offline',
+        message: isOnline
+            ? 'Refresh to check the latest confirmed public entries.'
+            : 'Reconnect to load this public statement.',
+        canRefresh: isOnline,
+      ),
+      StatementFailureKind.notFound => const _StatementFailureContent(
+        title: 'Statement not found',
+        message:
+            'This initiative may have closed or the statement link may no longer be valid.',
+        canRefresh: false,
+      ),
+      StatementFailureKind.permissionDenied => const _StatementFailureContent(
+        title: 'Statement unavailable',
+        message:
+            'Your current club access does not allow this contribution statement.',
+        canRefresh: false,
+      ),
+      StatementFailureKind.conflict => const _StatementFailureContent(
+        title: 'Statement changed',
+        message:
+            'Refresh and review the latest confirmed entries before exporting.',
+        canRefresh: true,
+      ),
+      StatementFailureKind.securityTimeout => const _StatementFailureContent(
+        title: 'Statement check timed out',
+        message:
+            'No current statement was confirmed. Refresh before exporting.',
+        canRefresh: true,
+      ),
+      StatementFailureKind.unknown => const _StatementFailureContent(
+        title: 'Statement unavailable',
+        message:
+            'Refresh and try again when the public contribution ledger is available.',
+        canRefresh: true,
+      ),
+    };
+  }
+}
+
+class _RetainedStatementFailure extends StatelessWidget {
+  const _RetainedStatementFailure({required this.failure});
+
+  final StatementFailure failure;
+
+  @override
+  Widget build(BuildContext context) {
+    final content = _StatementFailureContent.fromFailure(failure, true);
+    return AfriStateBanner(
+      icon: failure.kind == StatementFailureKind.permissionDenied
+          ? AfriIcons.lock
+          : AfriIcons.warning,
+      title: content.title,
+      subtitle: content.message,
+      tone: AfriStateBannerTone.warning,
+      compact: true,
+    );
+  }
 }

@@ -16,8 +16,13 @@ dependencies:
     path: ../../core/core_network
   core_auth:
     path: ../../core/core_auth
+  core_router:
+    path: ../../core/core_router
   core_theme:
     path: ../../core/core_theme
+  core_l10n:
+    path: ../../core/core_l10n
+  go_router: ^14.8.1
   equatable: ^2.0.7
   flutter_riverpod: ^2.6.1
   supabase_flutter: ^2.9.0

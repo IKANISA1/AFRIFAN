@@ -28,12 +28,99 @@ function mapAdminStandingRow(row: Record<string, unknown>, index: number): Admin
   };
 }
 
+function boundedText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : null;
+}
+
+function boundedInteger(value: unknown, minimum: number, maximum: number) {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
+}
+
+export function normalizeAdminStandings(value: unknown): AdminStandingRow[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 500).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const id = boundedText(record.id, 128);
+    const position = boundedInteger(record.position, 1, 1_000);
+    const club = boundedText(record.club, 120);
+    const played = boundedInteger(record.played, 0, 1_000);
+    const goalDifference = boundedInteger(record.goalDifference, -1_000, 1_000);
+    const points = boundedInteger(record.points, 0, 10_000);
+    const updatedAt = boundedDate(record.updatedAt);
+    const clubSlug =
+      record.clubSlug == null ? null : boundedText(record.clubSlug, 128);
+    const clubId =
+      record.clubId == null
+        ? null
+        : boundedInteger(record.clubId, 1, 1_000_000_000);
+    const sourceForm = Array.isArray(record.form) ? record.form : null;
+    const form = sourceForm == null
+      ? null
+      : sourceForm.slice(0, 5).flatMap((result) =>
+          result === "W" || result === "D" || result === "L" ? [result] : [],
+        );
+
+    if (
+      id == null ||
+      position == null ||
+      club == null ||
+      played == null ||
+      goalDifference == null ||
+      points == null ||
+      updatedAt == null ||
+      form == null ||
+      sourceForm == null ||
+      form.length !== sourceForm.length ||
+      (record.clubSlug != null && clubSlug == null) ||
+      (record.clubId != null && clubId == null)
+    ) {
+      return [];
+    }
+
+    return [{
+      id,
+      clubId,
+      position,
+      club,
+      played,
+      goalDifference,
+      points,
+      form,
+      clubSlug,
+      updatedAt,
+    }];
+  });
+}
+
 export async function getAdminStandings(
   client: SupabaseClient,
   access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ): Promise<AdminStandingRow[]> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminStandingRow[]>("standings");
+    return requestAdminApi<AdminStandingRow[]>("standings", {
+      signal: options.signal,
+    });
   }
   const clubId = requireAdminClubId(access, "load standings");
   const { data, error } = await client

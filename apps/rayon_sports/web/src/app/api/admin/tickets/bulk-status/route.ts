@@ -1,5 +1,8 @@
 import { NextRequest } from "next/server";
-import { handleAdminApiRoute } from "@/lib/admin-api-handler";
+import {
+  AdminApiValidationError,
+  handleAdminApiRoute,
+} from "@/lib/admin-api-handler";
 import {
   bulkUpdateTicketStatus,
   isAdminTicketStatusAction,
@@ -27,8 +30,9 @@ export async function POST(request: NextRequest) {
         ticketIds.length > 100 ||
         !isAdminTicketStatusAction(status)
       ) {
-        throw new Error(
+        throw new AdminApiValidationError(
           "Select between 1 and 100 tickets and a supported status action.",
+          "ADMIN_TICKET_BULK_EMPTY",
         );
       }
 

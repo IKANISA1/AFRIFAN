@@ -61,9 +61,12 @@ export function SiteFooter({
       <div className="page-shell">
         <div className="grid gap-16 lg:grid-cols-12">
           {/* Brand Column */}
-          <div className="lg:col-span-4">
-            <Link href="/" className="inline-flex items-center gap-4 mb-8">
-              <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-1">
+          <div className="min-w-0 lg:col-span-4">
+            <Link
+              href="/"
+              className="mb-8 inline-flex max-w-full flex-col items-start gap-[16px] sm:flex-row sm:items-center"
+            >
+              <div className="h-[64px] w-[64px] shrink-0 overflow-hidden rounded-full bg-white p-[4px]">
                 <Image
                   src={club.officialLogoUrl ?? "/brand-mark.svg"}
                   alt={club.clubName}
@@ -72,8 +75,8 @@ export function SiteFooter({
                   className="h-full w-full object-contain"
                 />
               </div>
-              <div>
-                <p className="font-display text-3xl font-black uppercase italic leading-none text-white tracking-tighter">
+              <div className="min-w-0 max-w-full">
+                <p className="break-words font-display text-2xl font-black uppercase italic leading-none tracking-tighter text-white">
                   {club.shortName}
                 </p>
                 <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--club-accent)]">
@@ -81,11 +84,11 @@ export function SiteFooter({
                 </p>
               </div>
             </Link>
-            <p className="text-sm font-bold leading-relaxed text-white/40 mb-10 max-w-sm">
+            <p className="mb-10 max-w-full break-words text-sm font-bold leading-relaxed text-white/70">
               Experience the pulse of Rwandan football. From matchday magic at
               the Cathedral to digital fan engagement across the globe.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-[16px]">
               {socialLinks.map((entry) => {
                 const Icon = socialIconMap[entry.key];
                 return (
@@ -94,7 +97,7 @@ export function SiteFooter({
                     href={entry.href ?? "#"}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white hover:bg-[var(--club-accent)] hover:text-black transition-all"
+                    className="flex h-[40px] w-[40px] items-center justify-center rounded-full border border-white/10 text-white transition-all hover:bg-[var(--club-accent)] hover:text-black"
                     aria-label={entry.key}
                   >
                     <Icon size={18} />
@@ -117,7 +120,7 @@ export function SiteFooter({
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="text-sm font-bold text-white/40 hover:text-white transition-colors uppercase tracking-widest"
+                          className="text-sm font-bold text-white/70 hover:text-white transition-colors uppercase tracking-widest"
                         >
                           {link.label}
                         </Link>
@@ -132,7 +135,7 @@ export function SiteFooter({
 
         {/* Bottom Bar */}
         <div className="mt-20 border-t border-white/5 pt-12 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-wrap gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
+          <div className="flex flex-wrap gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
             <span>
               © {new Date().getFullYear()} {club.clubName}
             </span>
@@ -146,7 +149,7 @@ export function SiteFooter({
               Terms of Service
             </Link>
           </div>
-          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/70">
             <span>Powered by</span>
             <span className="text-white">AFRICLUB</span>
           </div>

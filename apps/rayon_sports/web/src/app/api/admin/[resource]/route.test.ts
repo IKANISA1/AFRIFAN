@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
 const {
@@ -10,6 +10,9 @@ const {
   settleAdminPartnerPredictionPoolMock,
   getAdminLiveScoreCompetitionSourcesMock,
   getAdminRuntimeRegistrySnapshotMock,
+  getAdminBannersMock,
+  getAdminAuditLogsMock,
+  getAdminPredictionsWorkspaceMock,
   saveAdminPlatformRouteMock,
   deleteAdminPlatformRouteMock,
   saveAdminLiveScoreCompetitionSourceMock,
@@ -31,6 +34,9 @@ const {
     settleAdminPartnerPredictionPoolMock: vi.fn(),
     getAdminLiveScoreCompetitionSourcesMock: vi.fn(),
     getAdminRuntimeRegistrySnapshotMock: vi.fn(),
+    getAdminBannersMock: vi.fn(),
+    getAdminAuditLogsMock: vi.fn(),
+    getAdminPredictionsWorkspaceMock: vi.fn(),
     saveAdminPlatformRouteMock: vi.fn(),
     deleteAdminPlatformRouteMock: vi.fn(),
     saveAdminLiveScoreCompetitionSourceMock: vi.fn(),
@@ -61,6 +67,7 @@ vi.mock("@/lib/data/admin", () => {
     assignAdminRole: noop,
     allocateAdminSmsManualReview: noop,
     deleteAdminArticle: noop,
+    deleteAdminBanner: noop,
     deleteAdminConfigEntry: noop,
     deleteAdminContentBlock: noop,
     deleteAdminContributionGroup: deleteAdminContributionGroupMock,
@@ -75,6 +82,8 @@ vi.mock("@/lib/data/admin", () => {
     findAdminUserCandidate: noop,
     getAdminAppConfig: noop,
     getAdminArticles: noop,
+    getAdminBanners: getAdminBannersMock,
+    getAdminAuditLogs: getAdminAuditLogsMock,
     getAdminClubProfile: noop,
     getAdminClubScopeOptions: noop,
     getAdminCompetitions: noop,
@@ -85,7 +94,8 @@ vi.mock("@/lib/data/admin", () => {
     getAdminFanEngagementTokens: noop,
     getAdminFetWalletSnapshot: noop,
     getAdminFixtures: noop,
-    getAdminLiveScoreCompetitionSources: getAdminLiveScoreCompetitionSourcesMock,
+    getAdminLiveScoreCompetitionSources:
+      getAdminLiveScoreCompetitionSourcesMock,
     getAdminRuntimeRegistrySnapshot: getAdminRuntimeRegistrySnapshotMock,
     getAdminMatches: noop,
     getAdminMembershipApplications: noop,
@@ -95,6 +105,7 @@ vi.mock("@/lib/data/admin", () => {
     getAdminPredictionMarkets: noop,
     getAdminPartnerPredictionPools: noop,
     getAdminPartnerOptions: noop,
+    getAdminPredictionsWorkspace: getAdminPredictionsWorkspaceMock,
     getAdminProducts: noop,
     getAdminRoleAssignments: noop,
     getAdminSeasons: noop,
@@ -108,6 +119,7 @@ vi.mock("@/lib/data/admin", () => {
     resolveAdminAccess: resolveAdminAccessMock,
     revokeAdminRole: noop,
     saveAdminArticle: noop,
+    saveAdminBanner: noop,
     saveAdminClubProfile: saveAdminClubProfileMock,
     saveAdminCompetition: noop,
     saveAdminConfigEntry: noop,
@@ -116,7 +128,8 @@ vi.mock("@/lib/data/admin", () => {
     saveAdminFanClub: noop,
     saveAdminFanEngagementToken: noop,
     saveAdminFixture: noop,
-    saveAdminLiveScoreCompetitionSource: saveAdminLiveScoreCompetitionSourceMock,
+    saveAdminLiveScoreCompetitionSource:
+      saveAdminLiveScoreCompetitionSourceMock,
     saveAdminPlatformRoute: saveAdminPlatformRouteMock,
     saveAdminMatch: noop,
     saveAdminMembershipPackage: noop,
@@ -129,7 +142,8 @@ vi.mock("@/lib/data/admin", () => {
     saveAdminStandingRow: noop,
     sendAdminNotification: noop,
     settleAdminPartnerPredictionPool: settleAdminPartnerPredictionPoolMock,
-    deleteAdminLiveScoreCompetitionSource: deleteAdminLiveScoreCompetitionSourceMock,
+    deleteAdminLiveScoreCompetitionSource:
+      deleteAdminLiveScoreCompetitionSourceMock,
     deleteAdminPlatformRoute: deleteAdminPlatformRouteMock,
     deleteAdminPlatformOptionSet: noop,
     deleteAdminPlatformOptionValue: noop,
@@ -153,10 +167,7 @@ vi.mock("@/lib/security", () => ({
 
 vi.mock("@/lib/server-feature-guard", () => ({
   withFeatureGuard: vi.fn(
-    async (
-      _featureKey: string,
-      handler: () => Promise<Response>,
-    ) => handler(),
+    async (_featureKey: string, handler: () => Promise<Response>) => handler(),
   ),
 }));
 
@@ -169,8 +180,13 @@ vi.mock("@/lib/supabase/server", () => ({
 }));
 
 import { DELETE, GET, POST } from "./route";
+import { AdminMutationConflictError } from "@/lib/data/admin/helpers";
 
 describe("admin resource route", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   beforeEach(() => {
     getUser.mockReset();
     resolveAdminAccessMock.mockReset();
@@ -180,6 +196,9 @@ describe("admin resource route", () => {
     settleAdminPartnerPredictionPoolMock.mockReset();
     getAdminLiveScoreCompetitionSourcesMock.mockReset();
     getAdminRuntimeRegistrySnapshotMock.mockReset();
+    getAdminBannersMock.mockReset();
+    getAdminAuditLogsMock.mockReset();
+    getAdminPredictionsWorkspaceMock.mockReset();
     saveAdminPlatformRouteMock.mockReset();
     deleteAdminPlatformRouteMock.mockReset();
     saveAdminLiveScoreCompetitionSourceMock.mockReset();
@@ -210,8 +229,13 @@ describe("admin resource route", () => {
     saveAdminContributionGroupMock.mockResolvedValue("group-1");
     saveAdminClubProfileMock.mockResolvedValue({ success: true });
     saveAdminPartnerPredictionPoolMock.mockResolvedValue({ id: "pool-1" });
-    settleAdminPartnerPredictionPoolMock.mockResolvedValue({ id: "pool-1", status: "settled" });
-    getAdminLiveScoreCompetitionSourcesMock.mockResolvedValue([{ id: "source-1" }]);
+    settleAdminPartnerPredictionPoolMock.mockResolvedValue({
+      id: "pool-1",
+      status: "settled",
+    });
+    getAdminLiveScoreCompetitionSourcesMock.mockResolvedValue([
+      { id: "source-1" },
+    ]);
     getAdminRuntimeRegistrySnapshotMock.mockResolvedValue({
       routes: [{ id: "route-1", routeKey: "home" }],
       optionSets: [],
@@ -220,6 +244,20 @@ describe("admin resource route", () => {
       navigation: [],
       search: [],
       venueControls: [],
+    });
+    getAdminBannersMock.mockResolvedValue([
+      { id: "banner-1", title: "Controlled banner" },
+    ]);
+    getAdminAuditLogsMock.mockResolvedValue([
+      { id: "audit-1", action: "settings.update" },
+    ]);
+    getAdminPredictionsWorkspaceMock.mockResolvedValue({
+      markets: [{ id: "market-1" }],
+      competitions: [],
+      seasons: [],
+      fixtures: [],
+      partnerPools: [],
+      partners: [],
     });
     saveAdminPlatformRouteMock.mockResolvedValue("route-1");
     deleteAdminPlatformRouteMock.mockResolvedValue(undefined);
@@ -245,6 +283,24 @@ describe("admin resource route", () => {
     expect(response.status).toBe(200);
   });
 
+  it("uses the scoped admin client and bounded limit for audit-log reads", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/audit-logs?limit=75",
+      { method: "GET" },
+    );
+
+    const response = (await GET(request, {
+      params: Promise.resolve({ resource: "audit-logs" }),
+    })) as Response;
+
+    expect(getAdminAuditLogsMock).toHaveBeenCalledWith(
+      adminClient,
+      expect.objectContaining({ clubId: "24" }),
+      { limit: 75 },
+    );
+    expect(response.status).toBe(200);
+  });
+
   it("uses the admin client for runtime registry reads", async () => {
     const request = new NextRequest(
       "https://admin.gikundiro.com/api/admin/runtime-registry",
@@ -260,6 +316,26 @@ describe("admin resource route", () => {
       expect.objectContaining({ clubId: "24" }),
     );
     expect(response.status).toBe(200);
+  });
+
+  it("uses the admin client for scoped home-banner reads", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/cms-banners",
+      { method: "GET" },
+    );
+
+    const response = (await GET(request, {
+      params: Promise.resolve({ resource: "cms-banners" }),
+    })) as Response;
+
+    expect(getAdminBannersMock).toHaveBeenCalledWith(
+      adminClient,
+      expect.objectContaining({ clubId: "24" }),
+    );
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      data: [{ id: "banner-1", title: "Controlled banner" }],
+    });
   });
 
   it("uses the admin client for contribution group creation", async () => {
@@ -329,6 +405,34 @@ describe("admin resource route", () => {
     expect(response.status).toBe(200);
   });
 
+  it("loads the prediction workspace through one mixed-client boundary", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/predictions",
+      { method: "GET" },
+    );
+
+    const response = (await GET(request, {
+      params: Promise.resolve({ resource: "predictions" }),
+    })) as Response;
+
+    expect(getAdminPredictionsWorkspaceMock).toHaveBeenCalledWith(
+      adminClient,
+      expect.objectContaining({ clubId: "24" }),
+      { poolClient: serverClient },
+    );
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      data: {
+        markets: [{ id: "market-1" }],
+        competitions: [],
+        seasons: [],
+        fixtures: [],
+        partnerPools: [],
+        partners: [],
+      },
+    });
+  });
+
   it("uses the server client for partner WDW pool settlement", async () => {
     const request = new NextRequest(
       "https://admin.gikundiro.com/api/admin/partner-prediction-pool-settlement",
@@ -343,7 +447,9 @@ describe("admin resource route", () => {
     );
 
     const response = (await POST(request, {
-      params: Promise.resolve({ resource: "partner-prediction-pool-settlement" }),
+      params: Promise.resolve({
+        resource: "partner-prediction-pool-settlement",
+      }),
     })) as Response;
 
     expect(settleAdminPartnerPredictionPoolMock).toHaveBeenCalledWith(
@@ -468,8 +574,10 @@ describe("admin resource route", () => {
 
     expect(response.status).toBe(403);
     expect(await response.json()).toEqual({
+      code: "ADMIN_ACCESS_DENIED",
       error: "Club-admin access is required.",
     });
+    expect(response.headers.get("cache-control")).toBe("no-store");
     expect(deleteAdminContributionGroupMock).not.toHaveBeenCalled();
   });
 
@@ -499,8 +607,10 @@ describe("admin resource route", () => {
 
     expect(response.status).toBe(403);
     expect(await response.json()).toEqual({
+      code: "ADMIN_ACCESS_DENIED",
       error: "An active club scope is required.",
     });
+    expect(response.headers.get("cache-control")).toBe("no-store");
     expect(deleteAdminContributionGroupMock).not.toHaveBeenCalled();
   });
 
@@ -585,5 +695,176 @@ describe("admin resource route", () => {
       }),
     );
     expect(response.status).toBe(200);
+  });
+
+  it("returns an explicit empty state for an empty resource collection", async () => {
+    getAdminLiveScoreCompetitionSourcesMock.mockResolvedValueOnce([]);
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      { method: "GET" },
+    );
+
+    const response = (await GET(request, {
+      params: Promise.resolve({ resource: "livescore-sources" }),
+    })) as Response;
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      code: "ADMIN_RESOURCE_EMPTY",
+      state: "empty",
+      data: [],
+    });
+    expect(response.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("sanitizes unexpected resource errors", async () => {
+    getAdminLiveScoreCompetitionSourcesMock.mockRejectedValueOnce(
+      new Error("database password and raw provider details"),
+    );
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      { method: "GET" },
+    );
+
+    const response = (await GET(request, {
+      params: Promise.resolve({ resource: "livescore-sources" }),
+    })) as Response;
+    const body = await response.json();
+
+    expect(response.status).toBe(502);
+    expect(body).toEqual({
+      code: "ADMIN_RESOURCE_FAILED",
+      error: "The operation could not be completed.",
+      retryable: true,
+      change_confirmed: false,
+    });
+    expect(JSON.stringify(body)).not.toContain("database password");
+    expect(response.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("returns a controlled permission-denied response before resource access", async () => {
+    resolveAdminAccessMock.mockResolvedValueOnce({
+      hasAccess: false,
+      isAuthenticated: true,
+      isSuperAdmin: false,
+      userId: "user-1",
+      role: null,
+      clubId: null,
+      availableClubIds: [],
+      canSelectClub: false,
+      assignmentCount: 0,
+    });
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      { method: "GET" },
+    );
+
+    const response = (await GET(request, {
+      params: Promise.resolve({ resource: "livescore-sources" }),
+    })) as Response;
+
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({
+      code: "ADMIN_ACCESS_DENIED",
+      error: "Admin access denied.",
+    });
+    expect(getAdminLiveScoreCompetitionSourcesMock).not.toHaveBeenCalled();
+    expect(response.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("does not confirm a mutation while its write is still syncing", async () => {
+    let resolveWrite: ((value: string) => void) | undefined;
+    saveAdminContributionGroupMock.mockReturnValueOnce(
+      new Promise<string>((resolve) => {
+        resolveWrite = resolve;
+      }),
+    );
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/contributions",
+      {
+        method: "POST",
+        headers: {
+          origin: "https://admin.gikundiro.com",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ name: "Circle" }),
+      },
+    );
+
+    let settled = false;
+    const responsePromise = POST(request, {
+      params: Promise.resolve({ resource: "contributions" }),
+    }).then((response) => {
+      settled = true;
+      return response;
+    });
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(settled).toBe(false);
+
+    resolveWrite?.("group-1");
+    const response = (await responsePromise) as Response;
+    expect(response.status).toBe(200);
+    expect(settled).toBe(true);
+  });
+
+  it("returns a controlled conflict without claiming the write succeeded", async () => {
+    saveAdminContributionGroupMock.mockRejectedValueOnce(
+      new AdminMutationConflictError("raw record version details"),
+    );
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/contributions",
+      {
+        method: "POST",
+        headers: {
+          origin: "https://admin.gikundiro.com",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ name: "Circle" }),
+      },
+    );
+
+    const response = (await POST(request, {
+      params: Promise.resolve({ resource: "contributions" }),
+    })) as Response;
+    const body = await response.json();
+
+    expect(response.status).toBe(409);
+    expect(body).toEqual({
+      code: "STALE_RECORD",
+      error:
+        "This record changed after it was loaded. Refresh the latest data before retrying.",
+      retryable: true,
+      change_confirmed: false,
+    });
+    expect(JSON.stringify(body)).not.toContain("raw record version");
+    expect(response.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("returns a bounded timeout with no success confirmation", async () => {
+    vi.useFakeTimers();
+    getAdminLiveScoreCompetitionSourcesMock.mockReturnValueOnce(
+      new Promise(() => undefined),
+    );
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      { method: "GET" },
+    );
+    const responsePromise = GET(request, {
+      params: Promise.resolve({ resource: "livescore-sources" }),
+    });
+
+    await vi.advanceTimersByTimeAsync(8_000);
+    const response = (await responsePromise) as Response;
+
+    expect(response.status).toBe(504);
+    expect(await response.json()).toEqual({
+      code: "ADMIN_RESOURCE_TIMEOUT",
+      error: "The operation timed out. Check current data before retrying.",
+      retryable: true,
+      change_confirmed: false,
+    });
+    expect(response.headers.get("cache-control")).toBe("no-store");
   });
 });

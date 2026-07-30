@@ -68,12 +68,14 @@ class AfriTextIconButton extends StatelessWidget {
     required this.icon,
     required this.label,
     this.style,
+    this.focusNode,
   });
 
   final VoidCallback? onPressed;
   final Widget icon;
   final Widget label;
   final ButtonStyle? style;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +83,10 @@ class AfriTextIconButton extends StatelessWidget {
       onPressed: onPressed,
       icon: icon,
       label: label,
-      style: AfriTextButton._textStyle().merge(style),
+      style:
+          style?.merge(AfriTextButton._textStyle()) ??
+          AfriTextButton._textStyle(),
+      focusNode: focusNode,
     );
   }
 }

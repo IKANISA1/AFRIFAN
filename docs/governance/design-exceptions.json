@@ -2,9 +2,9 @@
   "schema_version": "1.0",
   "design_authority": {
     "path": "/Volumes/PRO-G40/DESIGN/DESIGN.md",
-    "sha256": "d5347c722734fe1e844e08fc63e411a0e42b38af91baefad9c2d90659408e321"
+    "sha256": "0f3ccdec0f9c3d137e081d20c668419ce42489f1196951beb2653d4281803b86"
   },
-  "updated_at": "2026-07-24T09:38:00Z",
+  "updated_at": "2026-07-30T05:29:04Z",
   "exceptions": [
     {
       "id": "DEX-TV-001",

@@ -5,264 +5,401 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../admin_providers.dart';
-import '../repositories/feature_management_repository.dart';
+import '../admin_features_controller.dart';
 
-class FeatureManagerScreen extends ConsumerStatefulWidget {
-  const FeatureManagerScreen({super.key});
+/// Bounded, role-gated registry for platform feature controls.
+class FeatureManagerScreen extends ConsumerWidget {
+  const FeatureManagerScreen({this.firstActionFocusNode, super.key});
 
-  @override
-  ConsumerState<FeatureManagerScreen> createState() =>
-      _FeatureManagerScreenState();
-}
-
-class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
-  bool _isLoading = true;
-  List<ManagedPlatformFeature> _features = [];
-  String? _error;
+  final FocusNode? firstActionFocusNode;
 
   @override
-  void initState() {
-    super.initState();
-    unawaited(_loadFeatures());
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final enabled = ref.watch(adminFeaturesEnabledProvider);
+    final features = ref.watch(adminFeaturesProvider);
+    final snapshot = features.valueOrNull;
+    final denied =
+        snapshot?.failure?.kind == AdminFeaturesFailureKind.permissionDenied;
 
-  Future<void> _loadFeatures() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final features = await ref
-          .read(featureManagementRepositoryProvider)
-          .loadAllFeatures();
-      if (mounted) {
-        setState(() {
-          _features = features;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _error = e.toString();
-        });
-      }
-    }
-  }
-
-  Future<void> _toggleFeature(String featureId, bool enabled) async {
-    final success = await ref
-        .read(featureManagementRepositoryProvider)
-        .updateFeatureGlobalStatus(featureId, enabled);
-    if (success) {
-      await _loadFeatures();
-    }
-  }
-
-  Future<void> _changeVisibility(String featureId, String visibility) async {
-    final success = await ref
-        .read(featureManagementRepositoryProvider)
-        .updateFeatureVisibility(featureId, visibility);
-    if (success) {
-      await _loadFeatures();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      showAppBar: false,
-      showBackButton: false,
-      scrollable: false,
-      constrainContent: true,
-      bodyWrapper: (child) => GradientBackground(child: child),
-      child: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            Expanded(
-              child: _isLoading
-                  ? const Padding(
-                      padding: EdgeInsets.all(SpacingTokens.spacing6),
-                      child: AfriSkeletonList(),
-                    )
-                  : _error != null
-                  ? _buildError()
-                  : AfriRefreshIndicator(
-                      onRefresh: _loadFeatures,
-                      child: _buildFeatureList(),
-                    ),
-            ),
-          ],
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
+        title: Text('FEATURE MANAGER', style: TypographyTokens.titleLarge()),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
+      scrollable: false,
+      constrainContent: true,
+      child: !enabled
+          ? _disabled(context)
+          : denied
+          ? _unavailable(
+              context,
+              ref,
+              const AdminFeaturesFailure(
+                AdminFeaturesFailureKind.permissionDenied,
+              ),
+            )
+          : features.isLoading && snapshot == null
+          ? Padding(
+              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriStateView.loading(
+                key: const ValueKey<String>('admin-features-state-loading'),
+                title: 'Loading feature registry',
+                message: 'Checking controlled feature configuration.',
+              ),
+            )
+          : features.hasError && snapshot == null
+          ? _unavailable(
+              context,
+              ref,
+              AdminFeaturesFailure.fromError(features.error!),
+            )
+          : _content(context, ref, features),
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      child: Row(
+  Widget _content(
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue<AdminFeaturesSnapshot> features,
+  ) {
+    final snapshot = features.requireValue;
+    final visible = snapshot.visibleFeatures;
+    final controlsEnabled = snapshot.actionsEnabled && !features.isLoading;
+    final metricColor = Theme.of(context).brightness == Brightness.dark
+        ? ColorTokens.clubAccent
+        : ColorTokens.onSurface;
+
+    return AfriRefreshIndicator(
+      onRefresh: ref.read(adminFeaturesProvider.notifier).refresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
         children: [
-          AfriIconButton(
-            icon: AfriIcons.chevronLeft,
-            onTap: () => context.pop(),
-            tooltip: 'Back',
+          if (_statusBanner(features) case final banner?) ...[
+            banner,
+            const SizedBox(height: SpacingTokens.spacing4),
+          ],
+          Text(
+            'Control club-scoped feature availability with confirmed, bounded configuration.',
+            style: TypographyTokens.bodyMedium(),
           ),
-          const SizedBox(width: SpacingTokens.spacing3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: SpacingTokens.spacing4),
+          GlassCard(
+            animate: false,
+            child: Wrap(
+              spacing: SpacingTokens.spacing6,
+              runSpacing: SpacingTokens.spacing3,
               children: [
-                Text(
-                  'FEATURE MANAGER',
-                  style: TypographyTokens.titleSmall().copyWith(
-                    letterSpacing: 2,
-                  ),
+                _Metric(
+                  label: 'REGISTERED',
+                  value: '${snapshot.features.length}',
+                  color: metricColor,
                 ),
-                Text(
-                  '${_features.length} features registered',
-                  style: TypographyTokens.bodySmall(),
+                _Metric(
+                  label: 'ENABLED',
+                  value: '${snapshot.enabledCount}',
+                  color: metricColor,
                 ),
               ],
             ),
           ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Text('STATUS', style: TypographyTokens.labelSmall()),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Wrap(
+            spacing: SpacingTokens.spacing2,
+            runSpacing: SpacingTokens.spacing2,
+            children: AdminFeatureStatusFilter.values
+                .map(
+                  (filter) => AfriChoiceChip(
+                    selected: snapshot.filter == filter,
+                    label: Text(filter.label),
+                    onSelected: controlsEnabled
+                        ? (_) => ref
+                              .read(adminFeaturesProvider.notifier)
+                              .selectFilter(filter)
+                        : null,
+                  ),
+                )
+                .toList(growable: false),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          if (visible.isEmpty)
+            AfriStateView.empty(
+              key: const ValueKey<String>('admin-features-state-empty'),
+              title: snapshot.features.isEmpty
+                  ? 'No features configured'
+                  : 'No features match',
+              message: snapshot.features.isEmpty
+                  ? 'Confirmed feature configuration will appear here.'
+                  : 'Choose another status filter.',
+              compact: true,
+            )
+          else
+            ...visible.indexed.map(
+              (entry) => _FeatureCard(
+                feature: entry.$2,
+                enabled: controlsEnabled,
+                focusNode: entry.$1 == 0 ? firstActionFocusNode : null,
+                onOpen: () =>
+                    context.push('/admin/features/${entry.$2.featureKey}'),
+                onToggle: (value) => unawaited(
+                  ref
+                      .read(adminFeaturesProvider.notifier)
+                      .setGlobalEnabled(entry.$2.id, value),
+                ),
+                onVisibility: (value) => unawaited(
+                  ref
+                      .read(adminFeaturesProvider.notifier)
+                      .setVisibility(entry.$2.id, value),
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildFeatureList() {
-    final grouped = <String, List<ManagedPlatformFeature>>{};
-    for (final feature in _features) {
-      final category = (feature.category ?? 'OTHER').toUpperCase();
-      grouped.putIfAbsent(category, () => []).add(feature);
-    }
-
-    final categories = grouped.keys.toList()..sort();
-
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
-      itemCount: categories.length,
-      itemBuilder: (context, index) {
-        final cat = categories[index];
-        final features = grouped[cat]!;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (index > 0) const SizedBox(height: SpacingTokens.spacing5),
-            Text(
-              cat,
-              style: TypographyTokens.titleSmall().copyWith(
-                color: ColorTokens.clubAccent,
-                letterSpacing: 1.5,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            ...features.map(_buildFeatureTile),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildFeatureTile(ManagedPlatformFeature feature) {
-    final visibility = feature.visibilityState;
-    final visIcon = switch (visibility) {
-      'visible' => AfriIcons.visibility,
-      'hidden' => AfriIcons.visibilityOff,
-      'maintenance' => AfriIcons.statusWait,
-      _ => AfriIcons.statusInfo,
-    };
-
-    final visColor = switch (visibility) {
-      'visible' => ColorTokens.success,
-      'hidden' => ColorTokens.error,
-      'maintenance' => ColorTokens.warning,
-      _ => ColorTokens.onSurfaceVariant,
-    };
-
+  Widget _disabled(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
-      child: AfriPressFeedback(
-        onTap: () => context.push('/admin/features/${feature.featureKey}'),
-        tooltip: 'Open ${feature.displayName}',
-        semanticsLabel: '${feature.displayName} feature',
-        semanticsHint: 'Opens feature settings',
-        child: GlassCard(
-          animate: false,
-          child: Row(
-            children: [
-              Icon(visIcon, color: visColor, size: 20),
-              const SizedBox(width: SpacingTokens.spacing3),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      feature.displayName,
-                      style: TypographyTokens.bodyMedium(),
-                    ),
-                    Text(
-                      feature.featureKey,
-                      style: TypographyTokens.bodySmall().copyWith(
-                        color: ColorTokens.onDarkFaint,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              AfriPopupMenuButton<String>(
-                onSelected: (v) => _changeVisibility(feature.id, v),
-                tooltip: 'Change visibility',
-                itemBuilder: (_) => [
-                  const PopupMenuItem(value: 'visible', child: Text('Visible')),
-                  const PopupMenuItem(value: 'hidden', child: Text('Hidden')),
-                  const PopupMenuItem(
-                    value: 'maintenance',
-                    child: Text('Maintenance'),
-                  ),
-                ],
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: visColor.withValues(alpha: 0.1),
-                    borderRadius: ShapeTokens.buttonRadius,
-                    border: BorderTokens.all(color: visColor, opacity: 0.3),
-                  ),
-                  child: Text(
-                    visibility.toUpperCase(),
-                    style: TypographyTokens.metricLabel(visColor),
-                  ),
-                ),
-              ),
-              const SizedBox(width: SpacingTokens.spacing2),
-              Switch.adaptive(
-                value: feature.isEnabled,
-                onChanged: (v) => _toggleFeature(feature.id, v),
-                activeTrackColor: ColorTokens.clubAccent,
-              ),
-            ],
-          ),
-        ),
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: AfriStateView.empty(
+        key: const ValueKey<String>('admin-features-state-disabled'),
+        title: 'Feature management unavailable',
+        message: 'Feature controls are disabled for this controlled build.',
+        icon: AfriIcons.lock,
+        actionLabel: 'Back to admin',
+        onAction: () => context.pop(),
       ),
     );
   }
 
-  Widget _buildError() {
-    return Center(
-      child: AfriStateView.error(
-        title: 'Failed to load',
-        message: _error ?? 'Unknown error',
-        onAction: _loadFeatures,
+  Widget _unavailable(
+    BuildContext context,
+    WidgetRef ref,
+    AdminFeaturesFailure failure,
+  ) {
+    void retry() =>
+        unawaited(ref.read(adminFeaturesProvider.notifier).refresh());
+    final view = switch (failure.kind) {
+      AdminFeaturesFailureKind.offline => AfriStateView.offline(
+        key: const ValueKey<String>('admin-features-state-offline'),
+        title: 'Feature registry offline',
+        message: 'Reconnect before loading private feature configuration.',
+        actionLabel: 'Try again',
+        onAction: retry,
+      ),
+      AdminFeaturesFailureKind.permissionDenied => AfriStateView.error(
+        key: const ValueKey<String>('admin-features-state-permission-denied'),
+        title: 'Feature access unavailable',
+        message: 'This account cannot view or change feature configuration.',
+        actionLabel: 'Back to admin',
+        onAction: () => context.pop(),
+      ),
+      AdminFeaturesFailureKind.conflict => AfriStateView.error(
+        key: const ValueKey<String>('admin-features-state-conflict'),
+        title: 'Feature configuration changed',
+        message: 'Refresh before making another feature change.',
+        actionLabel: 'Refresh',
+        onAction: retry,
+      ),
+      AdminFeaturesFailureKind.securityTimeout => AfriStateView.error(
+        key: const ValueKey<String>('admin-features-state-security-timeout'),
+        title: 'Security check timed out',
+        message: 'No feature configuration was shown. Check your connection.',
+        actionLabel: 'Retry',
+        onAction: retry,
+      ),
+      AdminFeaturesFailureKind.unknown => AfriStateView.error(
+        key: const ValueKey<String>('admin-features-state-error'),
+        title: 'Feature registry unavailable',
+        message: 'Private feature configuration remains hidden. Try again.',
+        actionLabel: 'Try again',
+        onAction: retry,
+      ),
+    };
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: view,
+    );
+  }
+
+  Widget? _statusBanner(AsyncValue<AdminFeaturesSnapshot> value) {
+    final snapshot = value.valueOrNull;
+    if (snapshot == null) return null;
+    if (value.isLoading || snapshot.isMutating) {
+      return const AfriStateBanner(
+        key: ValueKey<String>('admin-features-state-syncing'),
+        icon: AfriIcons.refresh,
+        title: 'Checking feature configuration',
+        subtitle:
+            'Showing the last confirmed state while current data is checked.',
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    final failure = snapshot.failure;
+    if (snapshot.phase != AdminFeaturesPhase.degraded || failure == null) {
+      return null;
+    }
+    return AfriStateBanner(
+      key: ValueKey<String>('admin-features-state-${failure.kind.name}'),
+      icon: failure.kind == AdminFeaturesFailureKind.offline
+          ? AfriIcons.offline
+          : AfriIcons.statusWarning,
+      title: switch (failure.kind) {
+        AdminFeaturesFailureKind.conflict => 'Feature configuration changed',
+        AdminFeaturesFailureKind.securityTimeout => 'Security check timed out',
+        AdminFeaturesFailureKind.offline => 'Feature registry offline',
+        _ => 'Feature registry unavailable',
+      },
+      subtitle: snapshot.mutationOutcomeUnconfirmed
+          ? 'The last change is unconfirmed. Controls stay paused until refresh succeeds.'
+          : 'Last confirmed configuration remains visible. Controls are paused.',
+      tone: AfriStateBannerTone.warning,
+    );
+  }
+}
+
+class _Metric extends StatelessWidget {
+  const _Metric({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 120,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: TypographyTokens.labelSmall()),
+          Text(value, style: TypographyTokens.displayMedium(color)),
+        ],
+      ),
+    );
+  }
+}
+
+class _FeatureCard extends StatelessWidget {
+  const _FeatureCard({
+    required this.feature,
+    required this.enabled,
+    required this.onOpen,
+    required this.onToggle,
+    required this.onVisibility,
+    this.focusNode,
+  });
+
+  final AdminManagedFeature feature;
+  final bool enabled;
+  final VoidCallback onOpen;
+  final ValueChanged<bool> onToggle;
+  final ValueChanged<String> onVisibility;
+  final FocusNode? focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    final visibilityColor = switch (feature.visibility) {
+      'visible' => ColorTokens.success,
+      'hidden' => ColorTokens.error,
+      _ => ColorTokens.warning,
+    };
+    return Padding(
+      padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+      child: AfriPressFeedback(
+        key: ValueKey<String>('admin-feature-${feature.featureKey}'),
+        onTap: enabled ? onOpen : null,
+        focusNode: focusNode,
+        enabled: enabled,
+        tooltip: 'Open ${feature.displayName}',
+        semanticsLabel: '${feature.displayName} feature settings',
+        semanticsHint: 'Opens controlled feature settings',
+        child: GlassCard(
+          animate: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          feature.displayName,
+                          style: TypographyTokens.titleSmall(),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing1),
+                        Text(
+                          feature.featureKey,
+                          style: TypographyTokens.bodySmall().copyWith(
+                            color: ColorTokens.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AfriSwitch(
+                    value: feature.isEnabled,
+                    onChanged: enabled ? onToggle : null,
+                  ),
+                ],
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              Wrap(
+                spacing: SpacingTokens.spacing2,
+                runSpacing: SpacingTokens.spacing2,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  AfriChip(
+                    label: Text(
+                      feature.visibility.toUpperCase(),
+                      style: TypographyTokens.labelSmall(visibilityColor),
+                    ),
+                    backgroundColor: visibilityColor.withValues(alpha: 0.12),
+                    side: BorderTokens.side(
+                      color: visibilityColor,
+                      opacity: 0.4,
+                    ),
+                  ),
+                  AfriPopupMenuButton<String>(
+                    enabled: enabled,
+                    tooltip: 'Change ${feature.displayName} visibility',
+                    onSelected: onVisibility,
+                    itemBuilder: (_) => const [
+                      PopupMenuItem(value: 'visible', child: Text('Visible')),
+                      PopupMenuItem(value: 'hidden', child: Text('Hidden')),
+                      PopupMenuItem(
+                        value: 'maintenance',
+                        child: Text('Maintenance'),
+                      ),
+                    ],
+                    child: Text(
+                      'Change visibility',
+                      style: TypographyTokens.labelMedium(
+                        enabled
+                            ? ColorTokens.onSurface
+                            : ColorTokens.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

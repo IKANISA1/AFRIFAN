@@ -442,6 +442,1594 @@
       "themes": ["web_semantic", "not_applicable_transaction_contract"],
       "captured_at": "2026-07-24T23:55:00Z",
       "data_source": "current_local_source_and_synthetic_non_production"
+    },
+    {
+      "id": "api-response-contracts",
+      "directory": "output/implementation_goal_20260724/api_response_contracts",
+      "task_ids": ["STATE-01", "STATE-03", "EVID-02", "EVID-05", "EVID-08", "ADMIN-05", "ADMIN-06", "REL-06"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "web_and_auth_api_contract_test",
+      "platform": "web_unit_edge_function_node_and_static_config_contract",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Vitest 4.1.9; Web Crypto; repository source",
+      "viewport_profiles": [
+        {
+          "applicable": false,
+          "reason": "non-visual HTTP response, timeout, authorization, privacy, and conflict contracts"
+        }
+      ],
+      "locale": "en",
+      "themes": ["not_applicable_http_contract"],
+      "captured_at": "2026-07-29T08:51:02Z",
+      "data_source": "current_local_source_and_synthetic_non_production"
+    },
+    {
+      "id": "ios-runtime-evidence-current",
+      "directory": "output/implementation_goal_20260724/ios_runtime_evidence_current",
+      "task_ids": ["BUILD-02", "EVID-04"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "rayon_sports_production_local_debug_and_non_release_offline_qa_variant",
+      "platform": "ios_simulator",
+      "runtime_device": "iOS 26.5; iPhone 17 and temporary iPhone 17 Pro simulator; Flutter 3.44.4; Dart 3.12.2; Xcode 26.6",
+      "viewport_profiles": [{"width": 1206, "height": 2622, "device_pixel_ratio": "simulator_native"}],
+      "locale": "en_rw",
+      "themes": ["light"],
+      "captured_at": "2026-07-29T06:32:00Z",
+      "data_source": "current_dirty_local_source; configured read-only environment for normal routes; deterministic non-release compile-time override for offline state"
+    },
+    {
+      "id": "consumer-web-recovery-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_recovery_states",
+      "task_ids": ["STATE-01", "EVID-02", "EVID-04", "EVID-05", "EVID-08", "ADMIN-03", "ADMIN-06"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 839,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T09:38:26Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+    },
+    {
+      "id": "consumer-web-share-target-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_share_target_states",
+      "task_ids": ["STATE-01", "EVID-02", "EVID-04", "EVID-05", "EVID-08", "REL-04"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 839,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T09:24:40Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+    },
+    {
+      "id": "consumer-web-tv-display-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_tv_display_states",
+      "task_ids": ["STATE-01", "EVID-02", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local",
+      "platform": "nextjs_production_build_playwright_chromium_display",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium 1280 x 720 DPR 1 display profile",
+      "viewport_profiles": [
+        {
+          "width": 1280,
+          "height": 720,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T09:58:56Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+    },
+    {
+      "id": "consumer-web-legal-document-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_legal_document_states",
+      "task_ids": ["STATE-01", "EVID-02", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 839,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion"],
+      "captured_at": "2026-07-29T10:25:43Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+    },
+    {
+      "id": "consumer-web-contact-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_contact_states",
+      "task_ids": ["STATE-01", "EVID-02", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 839,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion"],
+      "captured_at": "2026-07-29T10:42:53Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+    },
+    {
+      "id": "consumer-web-search-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_search_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T11:10:20Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+    },
+    {
+      "id": "consumer-web-history-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_history_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T11:34:41Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+    },
+    {
+      "id": "consumer-web-news-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_news_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T13:59:00Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-news-article-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_news_article_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T14:21:00Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-fixtures-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_fixtures_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T12:39:50Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-fixture-detail-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_fixture_detail_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T13:08:29Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-ticket-detail-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_ticket_detail_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T13:08:29Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-ticket-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_ticket_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T13:35:26Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-results-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_results_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T13:35:26Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-standings-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_standings_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T13:57:31Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-squad-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_squad_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T14:19:08Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-venues-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_venues_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T14:47:00Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-supporters-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_supporters_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T14:57:57Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-circles-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_circles_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T15:13:52Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-fan-clubs-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_fan_clubs_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T15:28:56Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-membership-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_membership_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T15:43:01Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-shop-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_shop_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T16:04:30Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-shop-product-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_shop_product_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T16:04:30Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "consumer-web-home-states",
+      "directory": "output/implementation_goal_20260724/consumer_web_home_states",
+      "task_ids": ["MOB-08", "STATE-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-08", "REL-07"],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "consumer_web_production_local_controlled_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 915,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": ["dark", "light", "large_text_200_percent", "reduced_motion", "offline"],
+      "captured_at": "2026-07-29T16:25:00Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+    },
+    {
+      "id": "admin-pwa-dashboard-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_dashboard_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_shell_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T18:59:00Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_admin_shell_allowance_and_no_protected_api_bypass"
+    },
+    {
+      "id": "admin-pwa-access-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_access_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_platform_admin_shell_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T17:14:04Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_platform_admin_shell_allowance_and_no_protected_api_bypass"
+    },
+    {
+      "id": "admin-pwa-matches-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_matches_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_match_operations_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T17:30:00Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-squad-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_squad_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_squad_operations_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T17:43:58Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-standings-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_standings_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_standings_operations_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T17:59:39Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-cms-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_cms_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_cms_publishing_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T18:16:00Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-cms-banners-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_cms_banners_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_cms_home_banners_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T18:31:16Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-cms-config-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_cms_config_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_cms_app_configuration_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T18:45:34Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-cms-content-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_cms_content_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_cms_content_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T19:02:55Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-cms-content-blocks-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_cms_content_blocks_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_cms_placement_blocks_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T19:19:53Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-community-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_community_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_community_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T19:41:55Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-contributions-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_contributions_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-05",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_contributions_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T20:04:57Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-football-sync-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_football_sync_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-05",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_football_sync_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T20:27:22Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-games-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_games_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "TV-05",
+        "ADMIN-03",
+        "ADMIN-05",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_game_operations_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T20:50:33Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-gamification-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_gamification_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-05",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_gamification_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T21:15:29Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-gamification-wallet-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_gamification_wallet_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-05",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_gamification_wallet_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T21:41:38Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-membership-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_membership_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-05",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_membership_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T22:05:52Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-notifications-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_notifications_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-05",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_notifications_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T22:28:29Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+    },
+    {
+      "id": "admin-pwa-offers-states",
+      "directory": "output/implementation_goal_20260724/admin_pwa_offers_states",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-03",
+        "ADMIN-05",
+        "ADMIN-06",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-07"
+      ],
+      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "admin_pwa_production_local_controlled_authenticated_partner_offers_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-07-29T22:48:26Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
     }
   ]
 }

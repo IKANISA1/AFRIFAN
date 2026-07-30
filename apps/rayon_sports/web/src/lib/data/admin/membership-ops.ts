@@ -8,7 +8,7 @@ import type {
   AdminSupporter,
   MembershipTierSlug,
 } from "@/lib/types";
-import { safeString, toIdString } from "@/lib/utils";
+import { safeString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
   AdminMutationConflictError,
@@ -53,8 +53,47 @@ type MembershipApplicationRow = {
     | null;
 };
 
-function normalizeMembershipTier(value: string | null | undefined): MembershipTierSlug {
-  switch ((value ?? "").trim().toLowerCase()) {
+const MAX_SUPPORTERS = 500;
+const MAX_APPLICATIONS = 500;
+
+function boundedText(
+  value: unknown,
+  maxLength: number,
+  allowEmpty = false,
+) {
+  if (typeof value !== "string") return null;
+  const text = value.trim();
+  if (text.length > maxLength || (!allowEmpty && text.length === 0)) return null;
+  return text;
+}
+
+function boundedInteger(value: unknown, minimum: number, maximum: number) {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
+}
+
+function nullableText(value: unknown, maxLength: number) {
+  if (value == null || value === "") return null;
+  return boundedText(value, maxLength);
+}
+
+function nullableDate(value: unknown) {
+  if (value == null || value === "") return null;
+  return boundedDate(value);
+}
+
+function normalizeMembershipTier(value: unknown): MembershipTierSlug | null {
+  if (typeof value !== "string") return null;
+  switch (value.trim().toLowerCase()) {
     case "ingenzi-imanzi":
     case "ingenzi_imanzi":
     case "ingenzi":
@@ -71,8 +110,180 @@ function normalizeMembershipTier(value: string | null | undefined): MembershipTi
     case "gold":
       return "gold";
     default:
-      return "imena";
+      return null;
   }
+}
+
+function normalizeSupporterStatus(value: unknown): AdminSupporter["status"] | null {
+  return value === "active" ||
+    value === "pending" ||
+    value === "suspended" ||
+    value === "expired"
+    ? value
+    : null;
+}
+
+function mapAdminSupporter(
+  row: Record<string, unknown>,
+): AdminSupporter | null {
+  const id = boundedText(row.id, 128);
+  const userId = boundedText(row.userId ?? row.user_id, 128);
+  const displayName = boundedText(
+    row.displayName ?? row.display_name,
+    160,
+  );
+  const phone = nullableText(
+    row.phone ??
+      ((row.profiles as { phone?: unknown } | null | undefined)?.phone ?? null),
+    32,
+  );
+  const tier = normalizeMembershipTier(row.tier);
+  const status = normalizeSupporterStatus(row.status);
+  const points = boundedInteger(row.points, 0, 1_000_000_000);
+  const chapter = boundedText(row.chapter, 120);
+  const membershipNumber = boundedText(
+    row.membershipNumber ?? row.membership_number,
+    80,
+  );
+  const joinedAt = boundedDate(row.joinedAt ?? row.joined_at);
+  if (
+    id == null ||
+    userId == null ||
+    displayName == null ||
+    phone === undefined ||
+    tier == null ||
+    status == null ||
+    points == null ||
+    chapter == null ||
+    membershipNumber == null ||
+    joinedAt == null
+  ) {
+    return null;
+  }
+  return {
+    id,
+    userId,
+    displayName,
+    phone,
+    tier,
+    status,
+    points,
+    chapter,
+    membershipNumber,
+    joinedAt,
+  };
+}
+
+export function normalizeAdminSupporters(value: unknown): AdminSupporter[] {
+  if (!Array.isArray(value)) return [];
+  const supporters: AdminSupporter[] = [];
+  const seen = new Set<string>();
+  for (const entry of value.slice(0, MAX_SUPPORTERS)) {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      continue;
+    }
+    const supporter = mapAdminSupporter(entry as Record<string, unknown>);
+    if (supporter != null && !seen.has(supporter.id)) {
+      supporters.push(supporter);
+      seen.add(supporter.id);
+    }
+  }
+  return supporters;
+}
+
+function normalizeApplicationStatus(
+  value: unknown,
+): AdminMembershipApplication["status"] | null {
+  return value === "pending" || value === "approved" || value === "rejected"
+    ? value
+    : null;
+}
+
+function normalizePaymentStatus(
+  value: unknown,
+): AdminMembershipApplication["paymentStatus"] | null {
+  return value === "unpaid" || value === "paid" || value === "failed"
+    ? value
+    : null;
+}
+
+function mapAdminMembershipApplication(
+  row: Record<string, unknown>,
+): AdminMembershipApplication | null {
+  const id = boundedText(row.id, 128);
+  const userId = boundedText(row.userId ?? row.user_id, 128);
+  const clubId = boundedInteger(
+    row.clubId ?? row.club_id,
+    1,
+    2_147_483_647,
+  );
+  const tier = normalizeMembershipTier(row.tier);
+  const status = normalizeApplicationStatus(row.status);
+  const paymentStatus = normalizePaymentStatus(
+    row.paymentStatus ?? row.payment_status,
+  );
+  const applicationDate = boundedDate(
+    row.applicationDate ?? row.application_date ?? row.created_at,
+  );
+  const reviewDate = nullableDate(row.reviewDate ?? row.review_date);
+  const reviewerId = nullableText(row.reviewerId ?? row.reviewer_id, 128);
+  const notes = nullableText(row.notes, 1_000);
+  const userName = nullableText(row.userName, 160);
+  const userPhone = nullableText(row.userPhone, 32);
+  const updatedAt = boundedDate(row.updatedAt ?? row.updated_at);
+  if (
+    id == null ||
+    userId == null ||
+    clubId == null ||
+    tier == null ||
+    status == null ||
+    paymentStatus == null ||
+    applicationDate == null ||
+    reviewDate === undefined ||
+    reviewerId === undefined ||
+    notes === undefined ||
+    userName === undefined ||
+    userPhone === undefined ||
+    updatedAt == null
+  ) {
+    return null;
+  }
+  return {
+    id,
+    userId,
+    clubId,
+    tier,
+    status,
+    paymentStatus,
+    applicationDate,
+    reviewDate,
+    reviewerId,
+    notes,
+    userName: userName ?? undefined,
+    userPhone: userPhone ?? undefined,
+    updatedAt,
+  };
+}
+
+export function normalizeAdminMembershipApplications(
+  value: unknown,
+): AdminMembershipApplication[] {
+  if (!Array.isArray(value)) return [];
+  const applications: AdminMembershipApplication[] = [];
+  const seen = new Set<string>();
+  for (const entry of value.slice(0, MAX_APPLICATIONS)) {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      continue;
+    }
+    const application = mapAdminMembershipApplication(
+      entry as Record<string, unknown>,
+    );
+    if (application != null && !seen.has(application.id)) {
+      applications.push(application);
+      seen.add(application.id);
+    }
+  }
+  return applications;
 }
 
 type ProfileRow = {
@@ -90,9 +301,13 @@ type UserRow = {
 export async function getAdminSupporterRegistry(
   client: SupabaseClient,
   access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ): Promise<AdminSupporter[]> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminSupporter[]>("membership-supporters");
+    const result = await requestAdminApi<unknown>("membership-supporters", {
+      signal: options.signal,
+    });
+    return normalizeAdminSupporters(result);
   }
   const clubId = requireAdminClubId(access, "load supporters");
   
@@ -111,32 +326,26 @@ export async function getAdminSupporterRegistry(
       profiles:user_id (phone)
     `)
     .eq("club_id", clubId)
-    .order("joined_at", { ascending: false });
+    .order("joined_at", { ascending: false })
+    .limit(MAX_SUPPORTERS);
 
   if (error) throw new Error(error.message);
 
   const rows = (data ?? []) as SupporterRegistryRow[];
 
-  return rows.map((row) => ({
-    id: toIdString(row.id, ""),
-    userId: safeString(row.user_id, toIdString(row.id, "")),
-    displayName: safeString(row.display_name, "Anonymous Supporter"),
-    phone: safeString(row.profiles?.phone) || null,
-    tier: normalizeMembershipTier(row.tier),
-    status: (safeString(row.status, "active") as AdminSupporter["status"]),
-    points: row.points || 0,
-    chapter: safeString(row.chapter, "General"),
-    membershipNumber: safeString(row.membership_number, ""),
-    joinedAt: safeString(row.joined_at, new Date().toISOString()),
-  }));
+  return normalizeAdminSupporters(rows);
 }
 
 export async function getAdminMembershipApplications(
   client: SupabaseClient,
   access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ): Promise<AdminMembershipApplication[]> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminMembershipApplication[]>("membership-applications");
+    const result = await requestAdminApi<unknown>("membership-applications", {
+      signal: options.signal,
+    });
+    return normalizeAdminMembershipApplications(result);
   }
   const clubId = requireAdminClubId(access, "load applications");
 
@@ -144,7 +353,8 @@ export async function getAdminMembershipApplications(
     .from("membership_applications")
     .select("*")
     .eq("club_id", clubId)
-    .order("application_date", { ascending: false });
+    .order("application_date", { ascending: false })
+    .limit(MAX_APPLICATIONS);
 
   if (error) throw new Error(error.message);
 
@@ -195,7 +405,7 @@ export async function getAdminMembershipApplications(
     );
   }
 
-  return applicationRows.map((row) => {
+  return normalizeAdminMembershipApplications(applicationRows.map((row) => {
     const userId = safeString(row.user_id, "");
     const profile = userId ? profilesById.get(userId) : undefined;
     const user = userId ? usersById.get(userId) : undefined;
@@ -205,30 +415,29 @@ export async function getAdminMembershipApplications(
       safeString(row.metadata?.applicant_phone) || safeString(row.metadata?.phone);
 
     return {
-      id: toIdString(row.id, ""),
+      id: row.id,
       userId,
       clubId,
-      tier: normalizeMembershipTier(safeString(row.tier, "imena")),
-      status: safeString(row.status, "pending") as AdminMembershipApplication["status"],
-      paymentStatus: safeString(
-        row.payment_status,
-        "unpaid",
-      ) as AdminMembershipApplication["paymentStatus"],
-      applicationDate: safeString(row.application_date, row.created_at ?? undefined),
-      reviewDate: safeString(row.review_date) || null,
-      reviewerId: safeString(row.reviewer_id) || null,
-      notes: safeString(row.notes) || null,
-      userName: safeString(
-        profile?.full_name,
-        safeString(user?.full_name, metadataName || "Unknown"),
-      ),
-      userPhone: safeString(
-        profile?.phone,
-        safeString(user?.phone, metadataPhone || "—"),
-      ),
-      updatedAt: safeString(row.updated_at),
+      tier: row.tier,
+      status: row.status,
+      paymentStatus: row.payment_status,
+      applicationDate: row.application_date ?? row.created_at,
+      reviewDate: row.review_date,
+      reviewerId: row.reviewer_id,
+      notes: row.notes,
+      userName:
+        safeString(profile?.full_name) ||
+        safeString(user?.full_name) ||
+        metadataName ||
+        null,
+      userPhone:
+        safeString(profile?.phone) ||
+        safeString(user?.phone) ||
+        metadataPhone ||
+        null,
+      updatedAt: row.updated_at,
     };
-  });
+  }));
 }
 
 export async function reviewMembershipApplication(

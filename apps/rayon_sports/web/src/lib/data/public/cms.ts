@@ -117,29 +117,36 @@ export const getHomeBanners = cache(async function getHomeBanners(): Promise<Hom
   }
 });
 
-export const getCmsContent = cache(async function getCmsContent(
+export const getCmsContentStrict = cache(async function getCmsContentStrict(
   contentType?: string,
 ): Promise<CmsContent[]> {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return [];
 
+  let query = client
+    .from("ai_content")
+    .select("*")
+    .eq("club_id", activeClub.numericId)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true })
+    .limit(50);
+
+  if (contentType) {
+    query = query.eq("content_type", contentType);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  if (!data || data.length === 0) return [];
+  return data.map((row) => mapCmsContent(row));
+});
+
+export const getCmsContent = cache(async function getCmsContent(
+  contentType?: string,
+): Promise<CmsContent[]> {
   try {
-    let query = client
-      .from("ai_content")
-      .select("*")
-      .eq("club_id", activeClub.numericId)
-      .eq("is_active", true)
-      .order("sort_order", { ascending: true })
-      .limit(50);
-
-    if (contentType) {
-      query = query.eq("content_type", contentType);
-    }
-
-    const { data } = await query;
-    if (!data || data.length === 0) return [];
-    return data.map((row) => mapCmsContent(row));
+    return await getCmsContentStrict(contentType);
   } catch {
     return [];
   }

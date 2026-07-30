@@ -1,8 +1,33 @@
 # Rayon Fullstack UAT Matrix
 
-Updated: 2026-07-18
+Updated: 2026-07-30
 
 Status vocabulary: `PASS` means freshly verified against the current tree; `PARTIAL` means implementation is present but required representative-device or external-console evidence remains; `BLOCKED` means a named external approval/input is missing. Historical HTTP-200 screenshots are not workflow proof.
+
+## Product Identity Acceptance
+
+Status: `PARTIAL`.
+
+The football-club-first implementation contract is
+[`../FOOTBALL_CLUB_FIRST_IMPLEMENTATION_PLAN_2026-07-30.md`](../FOOTBALL_CLUB_FIRST_IMPLEMENTATION_PLAN_2026-07-30.md).
+Release UAT must prove:
+
+- primary navigation is Home, Club, Fan Zone, and Membership, with Settings
+  behind profile;
+- Club exposes official team, news, fixtures, results, standings, history,
+  projects, tickets, and shop journeys;
+- Home prioritizes current club/football state;
+- predictions are free, limited to selected approved matches, and contain no
+  betting language;
+- AI-assisted football trivia and any approved music trivia use review/publish
+  controls and authoritative scoring;
+- venue discovery/order/promotion is a secondary matchday experience;
+- mobile, TV, web, admin, and venue surfaces project the same club-scoped
+  records without role or personal-data leakage.
+
+This acceptance is open. The 2026-07-30 audit found the existing mobile shell
+and discovery hierarchy do not yet satisfy it. Existing route, build, or
+surface-specific PASS records remain evidence only for their stated scope.
 
 ## Required Evidence
 

@@ -17,12 +17,28 @@ import { getPlatformConfig, getSiteSearchItems } from "@/lib/feature-config";
 
 // Domain re-exports
 export { getClubProfile } from "./club";
-export { getMatches, getMatchById } from "./matches";
-export { getNewsArticles, getNewsArticleById } from "./news";
-export { getProducts, getProductById } from "./shop";
+export {
+  getMatches,
+  getMatchesStrict,
+  getMatchById,
+  getMatchByIdStrict,
+} from "./matches";
+export {
+  getNewsArticles,
+  getNewsArticlesStrict,
+  getNewsArticleById,
+  getNewsArticleByIdStrict,
+} from "./news";
+export {
+  getProducts,
+  getProductsStrict,
+  getProductById,
+  getProductByIdStrict,
+} from "./shop";
 export {
   getHomeBanners,
   getCmsContent,
+  getCmsContentStrict,
   getCmsContentBlock,
   getAppConfig,
   getConfigValue,
@@ -33,10 +49,15 @@ export {
 } from "./gamification";
 export {
   getMembershipPackages,
+  getMembershipPackagesStrict,
   getFanClubs,
+  getFanClubsStrict,
   getContributionGroups,
+  getContributionGroupsStrict,
   getStandings,
+  getStandingsStrict,
   getSquad,
+  getSquadStrict,
 } from "./community";
 
 // Composite fetchers (import from extracted modules)

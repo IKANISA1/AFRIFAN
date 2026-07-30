@@ -1,57 +1,129 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { Users, Shield, Plus, Search } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Plus, Search, Shield, Users } from "lucide-react";
+import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPagination } from "@/components/admin/admin-pagination";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
-import { AdminDataGrid } from "@/components/admin/admin-data-grid";
-import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
-import { getAdminSquad, deleteAdminSquadPlayer } from "@/lib/data/admin/squad";
-import type { AdminSquadPlayer } from "@/lib/data/admin/squad";
-import { emptySquadForm, positionColor } from "./_components/squad-form-state";
-import { SquadEditorForm } from "./_components/squad-form";
-import { cn } from "@/lib/utils";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
+import {
+  deleteAdminSquadPlayer,
+  getAdminSquad,
+  normalizeAdminSquad,
+  type AdminSquadPlayer,
+} from "@/lib/data/admin/squad";
 import { useAdminCollection } from "@/lib/use-admin-collection";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
+import { cn } from "@/lib/utils";
+import { SquadEditorForm } from "./_components/squad-form";
+import { emptySquadForm, positionColor } from "./_components/squad-form-state";
 
-type PositionFilter = "ALL" | "GOALKEEPER" | "DEFENDER" | "MIDFIELDER" | "FORWARD";
+type PositionFilter =
+  | "ALL"
+  | "GOALKEEPER"
+  | "DEFENDER"
+  | "MIDFIELDER"
+  | "FORWARD";
+
+const emptySquad: AdminSquadPlayer[] = [];
+const squadIsEmpty = (players: AdminSquadPlayer[]) => players.length === 0;
+
+const squadStatusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading squad operations",
+    detail: "Waiting for the first authenticated roster snapshot.",
+  },
+  ready: {
+    label: "Squad operations confirmed",
+    detail: "Roster profiles and availability are current.",
+  },
+  empty: {
+    label: "No players in this scope",
+    detail: "Add the first player or change the active club scope.",
+  },
+  error: {
+    label: "Squad operations unavailable",
+    detail: "Confirmed players remain visible. Retry when service recovers.",
+  },
+  offline: {
+    label: "Squad workspace is offline",
+    detail: "Confirmed players remain visible until connection returns.",
+  },
+  permission_denied: {
+    label: "Squad access denied",
+    detail: "Previously loaded player data has been cleared.",
+  },
+  syncing: {
+    label: "Refreshing squad operations",
+    detail: "Confirmed players remain visible during refresh.",
+  },
+  conflict: {
+    label: "Squad records changed",
+    detail: "Refresh before editing or removing the current player records.",
+  },
+  security_timeout: {
+    label: "Squad request timed out",
+    detail: "No roster operation or change was confirmed.",
+  },
+};
 
 export default function AdminSquadPage() {
   const { access, client } = useAdminPortal();
-  const [players, setPlayers] = useState<AdminSquadPlayer[]>([]);
   const [form, setForm] = useState(emptySquadForm);
   const [filter, setFilter] = useState<PositionFilter>("ALL");
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
 
-  const loadSquad = useCallback(async () => {
-    if (client == null) return;
-    setLoading(true);
-    try {
-      setPlayers(await getAdminSquad(client, access));
-      setLoadError(null);
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Could not load squad.";
-      setLoadError(message);
-      showAdminToast(message, "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [access, client]);
+  const loadSquad = useCallback(
+    (signal: AbortSignal) => {
+      if (client == null) {
+        return Promise.resolve([]);
+      }
+      return getAdminSquad(client, access, { signal });
+    },
+    [access, client],
+  );
+  const handlePermissionDenied = useCallback(() => {
+    setDrawerOpen(false);
+    setForm(emptySquadForm);
+    setInteraction("idle");
+  }, []);
 
-  useEffect(() => {
-    if (client == null || !access.hasAccess) return;
-    loadSquad().catch(() => {});
-  }, [access.hasAccess, client, loadSquad]);
+  const {
+    data: players,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState({
+    enabled: client != null && access.hasAccess,
+    emptyValue: emptySquad,
+    isEmpty: squadIsEmpty,
+    load: loadSquad,
+    normalize: normalizeAdminSquad,
+    onPermissionDenied: handlePermissionDenied,
+    resourceLabel: "Squad operations",
+  });
 
   function beginEdit(player: AdminSquadPlayer) {
     setForm({
@@ -66,22 +138,28 @@ export default function AdminSquadPage() {
       isActive: player.isActive,
     });
     setDrawerOpen(true);
+    setInteraction("selected");
   }
 
   function beginCreate() {
     setForm(emptySquadForm);
     setDrawerOpen(true);
+    setInteraction("selected");
   }
 
   async function removePlayer(player: AdminSquadPlayer) {
     if (client == null) return;
-    if (!confirmAdminDestructiveAction({
-      action: "Remove",
-      subject: player.name,
-      scope: `Active club ${access.clubId ?? "not selected"}`,
-      impact: "The player profile will be removed from the squad list.",
-      undo: "not_available",
-    })) return;
+    if (
+      !confirmAdminDestructiveAction({
+        action: "Remove",
+        subject: player.name,
+        scope: `Active club ${access.clubId ?? "not selected"}`,
+        impact: "The player profile will be removed from the squad list.",
+        undo: "not_available",
+      })
+    ) {
+      return;
+    }
 
     try {
       await deleteAdminSquadPlayer(
@@ -90,19 +168,25 @@ export default function AdminSquadPage() {
         player.id,
         player.updatedAt,
       );
-      await loadSquad();
+      await refresh();
       showAdminToast(`${player.name} removed.`, "success");
     } catch (caught) {
+      const nextStatus = applyFailure(caught);
       if (isAdminMutationConflict(caught)) {
-        await loadSquad();
+        await refresh();
       }
-      showAdminToast(caught instanceof Error ? caught.message : "Could not remove player.", "error");
+      showAdminToast(
+        nextStatus === "conflict"
+          ? squadStatusCopy.conflict.label
+          : "Could not confirm player removal.",
+        "error",
+      );
     }
   }
 
   const filteredPlayers = players.filter((player) => {
     if (filter === "ALL") return true;
-    return player.role.toLowerCase().includes(filter.toLowerCase());
+    return player.role.toLowerCase() === filter.toLowerCase();
   });
   const playerCollection = useAdminCollection({
     records: filteredPlayers,
@@ -119,11 +203,16 @@ export default function AdminSquadPage() {
       key: "name" | "number" | "role" | "nationality" | "status",
     ) => {
       switch (key) {
-        case "name": return player.name;
-        case "number": return player.number;
-        case "role": return player.role;
-        case "nationality": return player.nationality;
-        case "status": return player.isActive;
+        case "name":
+          return player.name;
+        case "number":
+          return player.number;
+        case "role":
+          return player.role;
+        case "nationality":
+          return player.nationality;
+        case "status":
+          return player.isActive;
       }
     },
     initialSortKey: "number" as const,
@@ -131,57 +220,114 @@ export default function AdminSquadPage() {
   });
 
   const positionCounts = {
-    goalkeepers: players.filter((p) => p.role.toLowerCase().includes("goalkeeper")).length,
-    defenders: players.filter((p) => p.role.toLowerCase().includes("defender")).length,
-    midfielders: players.filter((p) => p.role.toLowerCase().includes("midfielder")).length,
-    forwards: players.filter((p) => p.role.toLowerCase().includes("forward")).length,
+    defenders: players.filter((player) => player.role === "Defender").length,
+    midfielders: players.filter((player) => player.role === "Midfielder")
+      .length,
+    forwards: players.filter((player) => player.role === "Forward").length,
   };
+  const mutationLocked = busy || status === "permission_denied";
 
   return (
-    <div className="section-grid !gap-6">
+    <section
+      className="admin-squad-state-surface section-grid !gap-6"
+      data-admin-squad-status={status}
+      data-admin-squad-interaction={interaction}
+      data-admin-squad-refresh-disabled={busy}
+      aria-busy={busy || undefined}
+    >
       <AdminPageHeader
         eyebrow="Roster"
         title="Squad management"
-        meta={
+        actions={
           <button
             onClick={beginCreate}
-            className="admin-action-button !bg-club-accent !text-white"
+            disabled={mutationLocked}
+            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-zinc-950)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-zinc-800)] disabled:!text-[var(--admin-text-strong)]"
           >
-            <Plus size={14} /> Add Player
+            <Plus size={16} aria-hidden="true" />
+            <span>Add player</span>
           </button>
         }
       />
 
+      <AdminResourceStatusBanner
+        status={status}
+        label={squadStatusCopy[status].label}
+        detail={squadStatusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh squad"
+        selected={drawerOpen}
+        onRefresh={() => void refresh()}
+        onInteractionChange={setInteraction}
+        className="admin-squad-status"
+      />
+
       <div className="grid gap-4 md:grid-cols-4">
-        <AdminStateCard label="Total Squad" value={loading ? "..." : players.length.toString()} icon={Users} />
-        <AdminStateCard label="Defenders" value={loading ? "..." : positionCounts.defenders.toString()} icon={Shield} />
-        <AdminStateCard label="Midfielders" value={loading ? "..." : positionCounts.midfielders.toString()} />
-        <AdminStateCard label="Forwards" value={loading ? "..." : positionCounts.forwards.toString()} />
+        <AdminStateCard
+          label="Total squad"
+          value={initialLoading ? "..." : players.length.toString()}
+          icon={Users}
+        />
+        <AdminStateCard
+          label="Defenders"
+          value={initialLoading ? "..." : positionCounts.defenders.toString()}
+          icon={Shield}
+        />
+        <AdminStateCard
+          label="Midfielders"
+          value={initialLoading ? "..." : positionCounts.midfielders.toString()}
+        />
+        <AdminStateCard
+          label="Forwards"
+          value={initialLoading ? "..." : positionCounts.forwards.toString()}
+        />
       </div>
 
-      <div className="flex items-center gap-1 border-b border-[var(--admin-border)] overflow-x-auto no-scrollbar">
-        {(["ALL", "GOALKEEPER", "DEFENDER", "MIDFIELDER", "FORWARD"] as PositionFilter[]).map((tab) => (
+      <div
+        className="flex items-center gap-1 overflow-x-auto border-b border-[var(--admin-border)] no-scrollbar"
+        aria-label="Filter squad by position"
+      >
+        {(
+          [
+            "ALL",
+            "GOALKEEPER",
+            "DEFENDER",
+            "MIDFIELDER",
+            "FORWARD",
+          ] as PositionFilter[]
+        ).map((tab) => (
           <button
             key={tab}
+            type="button"
+            aria-pressed={filter === tab}
+            disabled={mutationLocked}
             onClick={() => setFilter(tab)}
             className={cn(
-              "px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors relative",
-              filter === tab ? "text-white" : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]"
+              "relative min-h-12 px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-70",
+              filter === tab
+                ? "text-[var(--admin-text-strong)]"
+                : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]",
             )}
           >
             {tab}
-            {filter === tab && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-club-accent" />
-            )}
+            {filter === tab ? (
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 bottom-0 h-0.5 bg-club-accent"
+              />
+            ) : null}
           </button>
         ))}
       </div>
 
-      {loadError && !loading ? (
+      {!hasConfirmed && !initialLoading ? (
         <AdminErrorState
-          title="Squad could not be loaded"
-          description={loadError}
-          onRetry={() => { loadSquad().catch(() => {}); }}
+          title={squadStatusCopy[status].label}
+          description={squadStatusCopy[status].detail}
+          onRetry={
+            status === "permission_denied" ? undefined : () => void refresh()
+          }
         />
       ) : (
         <div className="admin-surface">
@@ -189,79 +335,180 @@ export default function AdminSquadPage() {
             <label className="admin-search-field">
               <Search size={16} aria-hidden="true" />
               <span className="sr-only">Search squad</span>
-              <input type="search" value={playerCollection.query} onChange={(event) => playerCollection.setQuery(event.target.value)} placeholder="Search player, role, or nationality" />
+              <input
+                type="search"
+                value={playerCollection.query}
+                onChange={(event) =>
+                  playerCollection.setQuery(event.target.value)
+                }
+                placeholder="Search player, role, or nationality"
+              />
             </label>
           </AdminFilterBar>
           <AdminDataGrid
             caption="Squad players"
-            busy={loading}
+            busy={initialLoading}
             onRowActivate={(rowId) => {
               const player = players.find((item) => item.id === rowId);
-              if (player) beginEdit(player);
+              if (player && !mutationLocked) beginEdit(player);
             }}
             columns={[
-              { key: "player", label: "Player", priority: "primary", sortable: true, sortDirection: playerCollection.sortDirectionFor("name"), onSort: () => playerCollection.toggleSort("name") },
-              { key: "number", label: "No.", priority: "primary", className: "text-center", sortable: true, sortDirection: playerCollection.sortDirectionFor("number"), onSort: () => playerCollection.toggleSort("number") },
-              { key: "role", label: "Role", priority: "primary", sortable: true, sortDirection: playerCollection.sortDirectionFor("role"), onSort: () => playerCollection.toggleSort("role") },
-              { key: "nationality", label: "Nationality", priority: "secondary", sortable: true, sortDirection: playerCollection.sortDirectionFor("nationality"), onSort: () => playerCollection.toggleSort("nationality") },
-              { key: "status", label: "Status", priority: "secondary", sortable: true, sortDirection: playerCollection.sortDirectionFor("status"), onSort: () => playerCollection.toggleSort("status") },
-              { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
+              {
+                key: "player",
+                label: "Player",
+                priority: "primary",
+                sortable: true,
+                sortDirection: playerCollection.sortDirectionFor("name"),
+                onSort: () => playerCollection.toggleSort("name"),
+              },
+              {
+                key: "number",
+                label: "No.",
+                priority: "primary",
+                className: "text-center",
+                sortable: true,
+                sortDirection: playerCollection.sortDirectionFor("number"),
+                onSort: () => playerCollection.toggleSort("number"),
+              },
+              {
+                key: "role",
+                label: "Role",
+                priority: "primary",
+                sortable: true,
+                sortDirection: playerCollection.sortDirectionFor("role"),
+                onSort: () => playerCollection.toggleSort("role"),
+              },
+              {
+                key: "nationality",
+                label: "Nationality",
+                priority: "secondary",
+                sortable: true,
+                sortDirection:
+                  playerCollection.sortDirectionFor("nationality"),
+                onSort: () => playerCollection.toggleSort("nationality"),
+              },
+              {
+                key: "status",
+                label: "Status",
+                priority: "secondary",
+                sortable: true,
+                sortDirection: playerCollection.sortDirectionFor("status"),
+                onSort: () => playerCollection.toggleSort("status"),
+              },
+              {
+                key: "actions",
+                label: "Actions",
+                priority: "primary",
+                className: "text-right",
+              },
             ]}
           >
-            {playerCollection.pageResult.items.length === 0 ? (
-              <tr><td colSpan={6} className="py-8 text-center text-sm text-slate-400">{playerCollection.query ? "No players match the current search." : "No players found for this position."}</td></tr>
-            ) : playerCollection.pageResult.items.map((player) => (
-              <tr key={player.id} data-row-id={player.id}>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 overflow-hidden rounded-full bg-[var(--admin-zinc-800)] border border-[var(--admin-border)]">
-                      {player.imageUrl ? (
-                        <Image
-                          src={player.imageUrl}
-                          alt=""
-                          width={32}
-                          height={32}
-                          unoptimized
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-[var(--admin-zinc-500)]">
-                          {player.number}
-                        </div>
-                      )}
-                    </div>
-                    <p className="admin-row-title">{player.name}</p>
-                  </div>
-                </td>
-                <td className="text-center font-bold text-club-accent">{player.number}</td>
-                <td>
-                   <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider", positionColor(player.role))}>
-                     {player.role}
-                   </span>
-                </td>
-                <td className="text-[var(--admin-zinc-400)]">{player.nationality}</td>
-                <td>
-                  <AdminStatusBadge
-                    label={player.isActive ? "Active" : "Inactive"}
-                    tone={player.isActive ? "success" : "neutral"}
-                  />
-                </td>
-                <td className="text-right">
-                   <div className="flex justify-end gap-2">
-                      <button onClick={() => beginEdit(player)} className="admin-action-button">Edit</button>
-                      <button onClick={() => removePlayer(player)} className="admin-action-button admin-action-button-danger">Remove</button>
-                   </div>
+            {initialLoading ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="py-8 text-center text-sm text-[var(--admin-zinc-400)]"
+                >
+                  Loading squad roster…
                 </td>
               </tr>
-            ))}
+            ) : playerCollection.pageResult.items.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="py-8 text-center text-sm text-[var(--admin-zinc-400)]"
+                >
+                  {playerCollection.query
+                    ? "No players match the current search."
+                    : "No players found for this position."}
+                </td>
+              </tr>
+            ) : (
+              playerCollection.pageResult.items.map((player) => (
+                <tr key={player.id} data-row-id={player.id}>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 overflow-hidden rounded-full border border-[var(--admin-border)] bg-[var(--admin-zinc-800)]">
+                        {player.imageUrl ? (
+                          <Image
+                            src={player.imageUrl}
+                            alt=""
+                            width={32}
+                            height={32}
+                            unoptimized
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-[var(--admin-zinc-500)]">
+                            {player.number}
+                          </div>
+                        )}
+                      </div>
+                      <p className="admin-row-title">{player.name}</p>
+                    </div>
+                  </td>
+                  <td className="text-center font-bold text-club-accent">
+                    {player.number}
+                  </td>
+                  <td>
+                    <span
+                      className={cn(
+                        "inline-flex rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider",
+                        positionColor(player.role),
+                      )}
+                    >
+                      {player.role}
+                    </span>
+                  </td>
+                  <td className="text-[var(--admin-zinc-400)]">
+                    {player.nationality}
+                  </td>
+                  <td>
+                    <AdminStatusBadge
+                      label={player.isActive ? "Active" : "Inactive"}
+                      tone={player.isActive ? "success" : "neutral"}
+                    />
+                  </td>
+                  <td className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        disabled={mutationLocked}
+                        onClick={() => beginEdit(player)}
+                        aria-label={`Edit ${player.name}`}
+                        className="admin-action-button min-h-12 min-w-12"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        disabled={mutationLocked}
+                        onClick={() => void removePlayer(player)}
+                        aria-label={`Remove ${player.name}`}
+                        className="admin-action-button admin-action-button-danger min-h-12 min-w-12"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </AdminDataGrid>
-          <AdminPagination page={playerCollection.pageResult} onPageChange={playerCollection.setPage} label="Squad players" />
+          <AdminPagination
+            page={playerCollection.pageResult}
+            onPageChange={playerCollection.setPage}
+            label="Squad players"
+          />
         </div>
       )}
 
       <AdminActionDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        isOpen={drawerOpen}
+        onClose={() => {
+          setDrawerOpen(false);
+          setInteraction("idle");
+        }}
         title={form.id ? "Edit player profile" : "Add new player"}
       >
         <SquadEditorForm
@@ -269,16 +516,27 @@ export default function AdminSquadPage() {
           setForm={setForm}
           client={client}
           access={access}
-          onSaved={async () => { setDrawerOpen(false); await loadSquad(); }}
+          onSaved={async () => {
+            setDrawerOpen(false);
+            setInteraction("idle");
+            await refresh();
+          }}
           onConflict={async () => {
-            await loadSquad();
+            await refresh();
             showAdminToast(
               "Latest squad loaded. Your draft is retained; review it before restarting the edit.",
               "info",
             );
           }}
+          onFailure={(caught) => {
+            applyFailure(caught);
+          }}
+          onCancel={() => {
+            setDrawerOpen(false);
+            setInteraction("idle");
+          }}
         />
       </AdminActionDrawer>
-    </div>
+    </section>
   );
 }

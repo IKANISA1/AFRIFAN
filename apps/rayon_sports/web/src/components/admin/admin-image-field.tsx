@@ -22,6 +22,7 @@ interface AdminImageFieldProps {
   previewAlt?: string;
   promptPlaceholder?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 export function AdminImageField({
@@ -34,6 +35,7 @@ export function AdminImageField({
   previewAlt = "Image preview",
   promptPlaceholder,
   className,
+  disabled: externallyDisabled = false,
 }: AdminImageFieldProps) {
   const inputId = useId();
   const { client, access, activeClub } = useAdminPortal();
@@ -99,7 +101,8 @@ export function AdminImageField({
     }
   }
 
-  const disabled = client == null || !access.hasAccess || !access.clubId;
+  const disabled =
+    externallyDisabled || client == null || !access.hasAccess || !access.clubId;
 
   return (
     <div
@@ -111,8 +114,8 @@ export function AdminImageField({
       {name ? <input type="hidden" name={name} value={value} readOnly /> : null}
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-white">{label}</p>
-          <p className="text-xs text-slate-400">
+          <p className="text-sm font-semibold text-[var(--admin-text-strong)]">{label}</p>
+          <p className="text-xs text-[var(--admin-text-muted)]">
             Upload a file or generate one with Gemini Nano Banana. Manual URL entry is disabled.
           </p>
         </div>
@@ -120,7 +123,8 @@ export function AdminImageField({
           <button
             type="button"
             onClick={() => onChange("")}
-            className="rounded-full border border-border-soft p-2 text-slate-300 transition hover:bg-white/8"
+            disabled={disabled}
+            className="min-h-12 min-w-12 rounded-full border border-border-soft p-3 text-[var(--admin-text-strong)] transition hover:bg-white/8"
             title="Remove image"
           >
             <Trash2 size={14} />
@@ -131,7 +135,13 @@ export function AdminImageField({
       <div className="flex flex-wrap gap-3">
         <label
           htmlFor={inputId}
-          className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+          aria-disabled={disabled || uploading || generating}
+          className={cn(
+            "inline-flex min-h-12 items-center gap-2 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-white/8",
+            disabled || uploading || generating
+              ? "cursor-not-allowed opacity-60"
+              : "cursor-pointer",
+          )}
         >
           <Upload size={14} />
           {uploading ? "Uploading..." : "Upload image"}
@@ -150,7 +160,7 @@ export function AdminImageField({
             void handleGenerate();
           }}
           disabled={disabled || uploading || generating || !prompt.trim()}
-          className="inline-flex items-center gap-2 rounded-full bg-club-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+          className="inline-flex min-h-12 items-center gap-2 rounded-full bg-club-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
         >
           <Sparkles size={14} />
           {generating ? "Generating..." : "Generate image"}
@@ -158,11 +168,12 @@ export function AdminImageField({
       </div>
 
       <label className="grid gap-2 text-sm">
-        <span className="text-slate-200">Prompt</span>
+        <span className="text-[var(--admin-text-strong)]">Prompt</span>
         <textarea
           rows={3}
           value={prompt}
           onChange={(event) => setPrompt(event.target.value)}
+          disabled={disabled || uploading || generating}
           placeholder={
             promptPlaceholder ??
             "Describe the image you want the admin panel to generate for this entry."
@@ -177,7 +188,7 @@ export function AdminImageField({
           <img src={value} alt={previewAlt} className="h-32 w-full object-cover" />
         </div>
       ) : (
-        <div className="flex min-h-32 items-center justify-center rounded-[20px] border border-dashed border-border-soft bg-slate-950/30 text-sm text-slate-500">
+        <div className="flex min-h-32 items-center justify-center rounded-[20px] border border-dashed border-border-soft bg-[var(--admin-surface-muted)] text-sm text-[var(--admin-text-muted)]">
           <span className="inline-flex items-center gap-2">
             <ImagePlus size={16} />
             No image selected

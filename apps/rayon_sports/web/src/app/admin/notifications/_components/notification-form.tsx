@@ -1,4 +1,5 @@
 import type { AdminNotificationContext } from "@/lib/types";
+import type { AdminResourceInteraction } from "@/components/admin/admin-resource-status-banner";
 import type { NotificationForm as NotificationFormType } from "./notification-state";
 import { AdminImageField } from "@/components/admin/admin-image-field";
 
@@ -10,6 +11,7 @@ interface NotificationFormProps {
   disabled?: boolean;
   onSubmit: () => void;
   onCopyPayload: () => void;
+  onInteractionChange?: (interaction: AdminResourceInteraction) => void;
 }
 
 export function NotificationForm({
@@ -20,6 +22,7 @@ export function NotificationForm({
   disabled = false,
   onSubmit,
   onCopyPayload,
+  onInteractionChange,
 }: NotificationFormProps) {
   return (
     <form
@@ -35,12 +38,14 @@ export function NotificationForm({
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span>Title</span>
-          <span className="font-mono text-[10px] text-slate-400">{form.title.length}/120</span>
+          <span className="font-mono text-[10px] font-semibold text-[var(--admin-text-muted)]">{form.title.length}/120</span>
         </div>
         <input
           value={form.title}
           maxLength={120}
           required
+          disabled={disabled}
+          onFocus={() => onInteractionChange?.("focused")}
           onChange={(event) =>
             setForm((current: NotificationFormType) => ({ ...current, title: event.target.value }))
           }
@@ -50,12 +55,13 @@ export function NotificationForm({
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span>Body</span>
-          <span className="font-mono text-[10px] text-slate-400">{form.body.length}/500</span>
+          <span className="font-mono text-[10px] font-semibold text-[var(--admin-text-muted)]">{form.body.length}/500</span>
         </div>
         <textarea
           rows={6}
           maxLength={500}
           required
+          disabled={disabled}
           value={form.body}
           onChange={(event) =>
             setForm((current: NotificationFormType) => ({ ...current, body: event.target.value }))
@@ -69,12 +75,19 @@ export function NotificationForm({
           <select
             value={form.audience}
             onChange={(event) =>
-              setForm((current: NotificationFormType) => ({
-                ...current,
-                audience: event.target.value as typeof current.audience,
-              }))
+              {
+                setForm((current: NotificationFormType) => ({
+                  ...current,
+                  audience: event.target.value as typeof current.audience,
+                }));
+                onInteractionChange?.("selected");
+              }
             }
             className="dashboard-input"
+            disabled={disabled}
+            onFocus={() => onInteractionChange?.("focused")}
+            onBlur={() => onInteractionChange?.("idle")}
+            onClick={() => onInteractionChange?.("selected")}
           >
             <option value="all_fans">All fans</option>
             <option value="by_tier">By tier</option>
@@ -92,6 +105,7 @@ export function NotificationForm({
               }))
             }
             className="dashboard-input"
+            disabled={disabled}
           >
             <option value="send_now">Send now</option>
             <option value="schedule">Schedule</option>
@@ -107,6 +121,7 @@ export function NotificationForm({
               setForm((current: NotificationFormType) => ({ ...current, tier: event.target.value }))
             }
             className="dashboard-input"
+            disabled={disabled}
           >
             <option value="ingenzi-imanzi">Ingenzi / Imanzi</option>
             <option value="inyamibwa">Inyamibwa</option>
@@ -129,6 +144,7 @@ export function NotificationForm({
               }))
             }
             className="dashboard-input"
+            disabled={disabled}
           >
             <option value="">Select a group</option>
             {context.groups.map((group) => (
@@ -152,6 +168,7 @@ export function NotificationForm({
               }))
             }
             className="dashboard-input"
+            disabled={disabled}
           />
         </label>
       ) : null}
@@ -168,10 +185,11 @@ export function NotificationForm({
         subject={form.title}
         previewAlt="Notification preview"
         promptPlaceholder="Example: Simple promotional image for a supporter announcement, bold club colors, clean composition that still reads well when cropped."
+        disabled={disabled}
       />
-      <div className="rounded-[24px] border border-border-soft bg-black/10 px-4 py-4 text-sm text-slate-300">
+      <div className="rounded-[24px] border border-border-soft bg-[var(--admin-surface-muted)] px-4 py-4 text-sm text-[var(--admin-text-muted)]">
         Target:{" "}
-        <span className="font-semibold text-white">
+        <span className="font-semibold text-[var(--admin-text-strong)]">
           {form.audience === "all_fans"
             ? "All supporters"
             : form.audience === "by_tier"
@@ -192,7 +210,7 @@ export function NotificationForm({
           type="button"
           disabled={submitting || disabled}
           onClick={onCopyPayload}
-          className="rounded-full border border-border-soft px-5 py-3 font-semibold text-slate-100 disabled:opacity-60 transition hover:bg-white/8"
+          className="rounded-full border border-border-soft px-5 py-3 font-semibold text-[var(--admin-text-strong)] disabled:opacity-60 transition hover:bg-white/8"
         >
           Copy payload
         </button>

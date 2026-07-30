@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  canonicalRecoveryPath,
   isAdminHostname,
   mapAdminSubdomainPath,
   resolveRoutingHostname,
@@ -27,11 +28,18 @@ describe("host routing", () => {
     expect(mapAdminSubdomainPath("/admin")).toBe("/admin");
   });
 
+  it("normalizes the stale nested admin recovery path", () => {
+    expect(canonicalRecoveryPath("/admin/offline")).toBe("/admin-offline");
+    expect(canonicalRecoveryPath("/admin-offline")).toBeNull();
+    expect(canonicalRecoveryPath("/admin/offline/details")).toBeNull();
+  });
+
   it("bypasses static assets and shared PWA endpoints", () => {
     expect(shouldBypassSubdomainRewrite("/_next/static/chunk.js")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/manifest.webmanifest")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/share-target")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/offline")).toBe(true);
+    expect(shouldBypassSubdomainRewrite("/admin-offline")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/brand-mark.svg")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/tickets")).toBe(false);
   });

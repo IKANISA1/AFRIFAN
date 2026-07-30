@@ -21,8 +21,8 @@ void main() {
           selected: selected,
           onRefresh: () async {},
           onSelected: onSelected ?? (_) {},
-          onShare: (_) {},
-          onCopy: (_) {},
+          onShare: (_) async {},
+          onCopy: (_) async {},
         ),
       ),
     );

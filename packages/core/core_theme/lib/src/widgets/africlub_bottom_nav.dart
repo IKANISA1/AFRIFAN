@@ -233,19 +233,21 @@ class _NavItem extends StatelessWidget {
             ),
             if (!isLargeText) ...[
               const SizedBox(height: AfriChromeTokens.navigationLabelGap),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: TypographyTokens.navigationLabel(
-                  selected: isActive,
-                  color: isActive
-                      ? ColorTokens.chromeForeground
-                      : ColorTokens.chromeForeground.withValues(
-                          alpha:
-                              AfriChromeTokens.navigationInactiveContentOpacity,
-                        ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TypographyTokens.navigationLabel(
+                    selected: isActive,
+                    color: isActive
+                        ? ColorTokens.chromeForeground
+                        : ColorTokens.chromeForeground.withValues(
+                            alpha: AfriChromeTokens
+                                .navigationInactiveContentOpacity,
+                          ),
+                  ),
                 ),
               ),
             ],

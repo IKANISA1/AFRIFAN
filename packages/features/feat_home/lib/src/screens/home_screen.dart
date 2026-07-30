@@ -1,4 +1,5 @@
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -116,7 +117,10 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildErrorView(BuildContext context, WidgetRef ref, Object error) {
-    final failureContent = _HomeFailureContent.fromError(error);
+    final failureContent = _HomeFailureContent.fromError(
+      context.afriL10n,
+      error,
+    );
     return CustomScrollView(
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
@@ -151,7 +155,8 @@ class HomeScreen extends ConsumerWidget {
     final refreshKey = ref
         .read(homeFeedProvider.notifier)
         .latestIntelRefreshKey;
-    final statusMessage = snapshot.message?.trim();
+    final l10n = context.afriL10n;
+    final statusMessage = _localizedHomeNotice(l10n, snapshot.notice);
     final hasStatusMessage = statusMessage != null && statusMessage.isNotEmpty;
 
     // ── Load all placements for home ──
@@ -189,9 +194,9 @@ class HomeScreen extends ConsumerWidget {
           child: _HomeTopChrome(key: ValueKey<String>('home-top-chrome')),
         ),
         if (isRefreshing)
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(
+              padding: const EdgeInsets.fromLTRB(
                 SpacingTokens.screenPadding,
                 SpacingTokens.spacing4,
                 SpacingTokens.screenPadding,
@@ -199,9 +204,8 @@ class HomeScreen extends ConsumerWidget {
               ),
               child: AfriStateBanner(
                 icon: AfriIcons.refresh,
-                title: 'Refreshing Home',
-                subtitle:
-                    'Keeping the current matchday, points, and shortcuts visible while updates load.',
+                title: l10n.homeRefreshingTitle,
+                subtitle: l10n.homeRefreshingMessage,
                 tone: AfriStateBannerTone.info,
                 compact: true,
               ),
@@ -221,7 +225,7 @@ class HomeScreen extends ConsumerWidget {
                 0,
               ),
               child: AfriStateView.offline(
-                title: 'Live updates paused',
+                title: l10n.homeUpdatesPausedTitle,
                 message: statusMessage,
                 compact: true,
               ),
@@ -272,11 +276,11 @@ class HomeScreen extends ConsumerWidget {
           ),
           child: AfriButton(
             label: fanZoneAccess.isAvailable
-                ? 'Open matchday'
-                : 'Matchday unavailable',
+                ? context.afriL10n.homeOpenMatchday
+                : context.afriL10n.homeMatchdayUnavailable,
             semanticsLabel: fanZoneAccess.isAvailable
-                ? 'Open matchday in Fan Zone'
-                : 'Matchday in Fan Zone is unavailable',
+                ? context.afriL10n.homeOpenMatchdaySemantic
+                : context.afriL10n.homeMatchdayUnavailableSemantic,
             enabled: fanZoneAccess.isAvailable,
             onTap: () => context.push(heroRoute),
             variant: AfriButtonVariant.primary,
@@ -390,7 +394,8 @@ class HomeScreen extends ConsumerWidget {
     WidgetRef ref,
     HomeFeedSnapshot snapshot,
   ) {
-    final statusMessage = snapshot.message?.trim();
+    final l10n = context.afriL10n;
+    final statusMessage = _localizedHomeNotice(l10n, snapshot.notice);
 
     if (snapshot.status == HomeFeedStatus.error &&
         !snapshot.hasAnyContent &&
@@ -411,12 +416,12 @@ class HomeScreen extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing5),
           child: AfriStateView.empty(
-            title: 'Matchday',
+            title: l10n.homeMatchdayTitle,
             message: snapshot.showFixturePlaceholder
-                ? 'The next fixture will appear here when it is published.'
-                : 'Club fixtures are not available yet.',
+                ? l10n.homeNextFixturePending
+                : l10n.homeFixturesUnavailable,
             icon: AfriIcons.league,
-            actionLabel: 'Open Fan Zone',
+            actionLabel: l10n.homeOpenFanZone,
             onAction: () => context.go('/fanzone'),
             compact: true,
           ),
@@ -480,6 +485,7 @@ class _HomeTopChrome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return SafeArea(
       bottom: false,
       child: Padding(
@@ -490,19 +496,19 @@ class _HomeTopChrome extends StatelessWidget {
           SpacingTokens.spacing3,
         ),
         child: AfriTopCommandBar(
-          searchHint: 'Find',
-          searchSemanticsLabel: 'Search fans, fixtures, wallet',
+          searchHint: l10n.homeSearchHint,
+          searchSemanticsLabel: l10n.homeSearchSemantic,
           onSearchTap: () => context.push('/search'),
           onAvatarTap: () => context.go('/settings'),
           actions: [
             AfriTopCommandAction(
               icon: AfriIcons.notifications,
-              label: 'Notifications',
+              label: l10n.homeNotifications,
               onTap: () => context.push('/settings/notifications'),
             ),
             AfriTopCommandAction(
               icon: AfriIcons.wallet,
-              label: 'Wallet',
+              label: l10n.homeWallet,
               onTap: () => context.go('/fanzone?section=wallet'),
             ),
           ],
@@ -609,31 +615,42 @@ class _HomeFailureContent {
   final String message;
   final String? actionLabel;
 
-  factory _HomeFailureContent.fromError(Object error) {
+  factory _HomeFailureContent.fromError(AfriLocalizations l10n, Object error) {
     final failure = HomeFeedFailure.fromError(error);
     return switch (failure.kind) {
-      HomeFeedFailureKind.permissionDenied => const _HomeFailureContent(
-        title: 'Home access not available',
-        message:
-            'Your account cannot load Home right now. Contact support if this should be available.',
+      HomeFeedFailureKind.permissionDenied => _HomeFailureContent(
+        title: l10n.homeAccessUnavailableTitle,
+        message: l10n.homeAccessUnavailableMessage,
         actionLabel: null,
       ),
-      HomeFeedFailureKind.conflict => const _HomeFailureContent(
-        title: 'Home changed',
-        message:
-            'Home data changed while you were viewing it. Refresh to load the current version.',
-        actionLabel: 'Refresh',
+      HomeFeedFailureKind.conflict => _HomeFailureContent(
+        title: l10n.homeChangedTitle,
+        message: l10n.homeChangedMessage,
+        actionLabel: l10n.onboardingRefresh,
       ),
-      HomeFeedFailureKind.securityTimeout => const _HomeFailureContent(
-        title: 'Home security check timed out',
-        message: 'We could not confirm current Home access. Refresh to retry.',
-        actionLabel: 'Refresh',
+      HomeFeedFailureKind.securityTimeout => _HomeFailureContent(
+        title: l10n.homeSecurityTimeoutTitle,
+        message: l10n.homeSecurityTimeoutMessage,
+        actionLabel: l10n.onboardingRefresh,
       ),
-      HomeFeedFailureKind.unknown => const _HomeFailureContent(
-        title: 'Home unavailable',
-        message: 'Live club data is temporarily unavailable.',
-        actionLabel: 'Try Again',
+      HomeFeedFailureKind.unknown => _HomeFailureContent(
+        title: l10n.homeUnavailableTitle,
+        message: l10n.homeUnavailableMessage,
+        actionLabel: l10n.tryAgain,
       ),
     };
   }
+}
+
+String? _localizedHomeNotice(AfriLocalizations l10n, HomeFeedNotice? notice) {
+  return switch (notice) {
+    HomeFeedNotice.liveUnavailable => l10n.homeLiveUnavailableNotice,
+    HomeFeedNotice.savedContent => l10n.homeSavedContentNotice,
+    HomeFeedNotice.offlineShortcuts => l10n.homeOfflineShortcutsNotice,
+    HomeFeedNotice.partialUnavailable => l10n.homePartialUnavailableNotice,
+    HomeFeedNotice.partialShortcutsUnavailable =>
+      l10n.homePartialShortcutsUnavailableNotice,
+    HomeFeedNotice.matchdayPending => l10n.homeMatchdayPendingNotice,
+    null => null,
+  };
 }

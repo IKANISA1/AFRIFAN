@@ -1,38 +1,149 @@
 import { NextResponse } from "next/server";
+import {
+  ControlledApiTimeoutError,
+  withControlledApiTimeout,
+} from "@/lib/controlled-api-response";
 import { getServerSupabase } from "@/lib/supabase/server";
 
-function resolveNextPath(nextValue: string | null) {
-  if (typeof nextValue !== "string" || !nextValue.startsWith("/")) {
+type AuthCallbackState =
+  | "empty"
+  | "error"
+  | "permission_denied"
+  | "conflict"
+  | "security_timeout";
+
+export const authCallbackOperationTimeoutMs = 8_000;
+
+export function resolveNextPath(nextValue: string | null, origin: string) {
+  if (
+    typeof nextValue !== "string" ||
+    !nextValue.startsWith("/") ||
+    nextValue.startsWith("//") ||
+    nextValue.includes("\\") ||
+    /[\u0000-\u001f\u007f]/u.test(nextValue)
+  ) {
     return "/admin";
   }
 
-  return nextValue;
+  try {
+    const candidate = new URL(nextValue, origin);
+    if (candidate.origin !== origin) {
+      return "/admin";
+    }
+    return `${candidate.pathname}${candidate.search}${candidate.hash}`;
+  } catch {
+    return "/admin";
+  }
+}
+
+function authCallbackRedirect(
+  url: URL,
+  nextPath: string,
+  failure?: { error: string; state: AuthCallbackState },
+) {
+  const destination = new URL(nextPath, url.origin);
+  if (failure) {
+    destination.searchParams.set("error", failure.error);
+    destination.searchParams.set("state", failure.state);
+  }
+
+  const response = NextResponse.redirect(destination);
+  response.headers.set("Cache-Control", "no-store");
+  response.headers.set("Referrer-Policy", "no-referrer");
+  return response;
+}
+
+function isPermissionDenied(error: unknown) {
+  if (typeof error !== "object" || error == null) {
+    return false;
+  }
+  const candidate = error as { code?: unknown; status?: unknown };
+  return (
+    candidate.status === 401 ||
+    candidate.status === 403 ||
+    candidate.code === "42501" ||
+    candidate.code === "PGRST301"
+  );
+}
+
+function isConflict(error: unknown) {
+  if (typeof error !== "object" || error == null) {
+    return false;
+  }
+  const candidate = error as { code?: unknown; status?: unknown };
+  return candidate.status === 409 || candidate.code === "23505";
 }
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const nextPath = resolveNextPath(url.searchParams.get("next"));
+  const nextPath = resolveNextPath(url.searchParams.get("next"), url.origin);
 
   if (code == null) {
-    return NextResponse.redirect(
-      new URL(`${nextPath}?error=missing_auth_code`, url.origin),
-    );
+    return authCallbackRedirect(url, nextPath, {
+      error: "missing_auth_code",
+      state: "empty",
+    });
   }
 
-  const supabase = await getServerSupabase();
-  if (supabase == null) {
-    return NextResponse.redirect(
-      new URL(`${nextPath}?error=supabase_not_configured`, url.origin),
+  try {
+    const supabase = await withControlledApiTimeout(
+      getServerSupabase(),
+      authCallbackOperationTimeoutMs,
     );
-  }
+    if (supabase == null) {
+      return authCallbackRedirect(url, nextPath, {
+        error: "auth_service_unavailable",
+        state: "error",
+      });
+    }
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) {
-    return NextResponse.redirect(
-      new URL(`${nextPath}?error=auth_callback_failed`, url.origin),
+    const { error } = await withControlledApiTimeout(
+      supabase.auth.exchangeCodeForSession(code),
+      authCallbackOperationTimeoutMs,
     );
-  }
+    if (error) {
+      if (isPermissionDenied(error)) {
+        return authCallbackRedirect(url, nextPath, {
+          error: "auth_access_denied",
+          state: "permission_denied",
+        });
+      }
+      if (isConflict(error)) {
+        return authCallbackRedirect(url, nextPath, {
+          error: "auth_session_conflict",
+          state: "conflict",
+        });
+      }
+      return authCallbackRedirect(url, nextPath, {
+        error: "auth_callback_failed",
+        state: "error",
+      });
+    }
 
-  return NextResponse.redirect(new URL(nextPath, url.origin));
+    return authCallbackRedirect(url, nextPath);
+  } catch (error) {
+    if (error instanceof ControlledApiTimeoutError) {
+      return authCallbackRedirect(url, nextPath, {
+        error: "auth_callback_timeout",
+        state: "security_timeout",
+      });
+    }
+    if (isPermissionDenied(error)) {
+      return authCallbackRedirect(url, nextPath, {
+        error: "auth_access_denied",
+        state: "permission_denied",
+      });
+    }
+    if (isConflict(error)) {
+      return authCallbackRedirect(url, nextPath, {
+        error: "auth_session_conflict",
+        state: "conflict",
+      });
+    }
+    return authCallbackRedirect(url, nextPath, {
+      error: "auth_callback_failed",
+      state: "error",
+    });
+  }
 }

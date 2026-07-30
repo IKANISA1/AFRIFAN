@@ -10,11 +10,13 @@ class ChallengeCard extends StatelessWidget {
     required this.challenge,
     this.compact = false,
     this.enabled = true,
+    this.focusNode,
   });
 
   final Challenge challenge;
   final bool compact;
   final bool enabled;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +28,16 @@ class ChallengeCard extends StatelessWidget {
     final countdown = challenge.timeUntilLock;
     final hasCountdown =
         challenge.status == ChallengeStatus.open && countdown.inSeconds > 0;
+    final accentTextColor = ColorTokens.isDark
+        ? ColorTokens.clubAccent
+        : ColorTokens.onSurface;
+    final countdownTextColor = ColorTokens.isDark
+        ? ColorTokens.warning
+        : ColorTokens.onSurfaceVariant;
 
     return GlassCard(
       onTap: enabled ? () => context.push('/challenge/${challenge.id}') : null,
+      focusNode: focusNode,
       animate: false,
       child: Opacity(
         opacity: enabled ? 1 : 0.72,
@@ -82,14 +91,14 @@ class ChallengeCard extends StatelessWidget {
                       style: TypographyTokens.titleLarge(
                         fixture.status == 'live'
                             ? ColorTokens.error
-                            : ColorTokens.clubAccent,
+                            : accentTextColor,
                       ).copyWith(fontWeight: FontWeight.w900),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1),
                     if (hasCountdown)
                       Text(
                         _formatCountdown(countdown),
-                        style: TypographyTokens.labelSmall(ColorTokens.warning),
+                        style: TypographyTokens.labelSmall(countdownTextColor),
                       )
                     else
                       Text(
@@ -185,6 +194,7 @@ class ChallengeStatusChip extends StatelessWidget {
       ChallengeStatus.void_ => ColorTokens.onSurfaceVariant,
       ChallengeStatus.cancelled => ColorTokens.error,
     };
+    final textColor = ColorTokens.isDark ? color : ColorTokens.onSurface;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -198,7 +208,7 @@ class ChallengeStatusChip extends StatelessWidget {
       child: Text(
         status.name.replaceAll('_', '').toUpperCase(),
         style: TypographyTokens.metricLabel(
-          color,
+          textColor,
         ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
       ),
     );
@@ -212,6 +222,9 @@ class StakeBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = ColorTokens.isDark
+        ? ColorTokens.clubAccent
+        : ColorTokens.onSurface;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
@@ -224,7 +237,7 @@ class StakeBadge extends StatelessWidget {
       child: Text(
         '$stakeFet pts',
         style: TypographyTokens.metricLabel(
-          ColorTokens.clubAccent,
+          textColor,
         ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
       ),
     );
@@ -248,6 +261,9 @@ class ScorePredictionPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveAccent = accent ?? ColorTokens.success;
+    final textColor = ColorTokens.isDark
+        ? effectiveAccent
+        : ColorTokens.onSurface;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
@@ -260,7 +276,7 @@ class ScorePredictionPill extends StatelessWidget {
       child: Text(
         '$label  $homeScore-$awayScore',
         style: TypographyTokens.metricLabel(
-          effectiveAccent,
+          textColor,
         ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.7),
       ),
     );

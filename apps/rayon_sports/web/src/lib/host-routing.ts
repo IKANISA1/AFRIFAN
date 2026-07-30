@@ -35,6 +35,10 @@ export function isAdminHostname(hostname: string | null | undefined) {
   return ADMIN_HOSTNAMES.has(resolveRoutingHostname(hostname));
 }
 
+export function canonicalRecoveryPath(pathname: string) {
+  return pathname === "/admin/offline" ? "/admin-offline" : null;
+}
+
 export function shouldBypassSubdomainRewrite(pathname: string) {
   return (
     pathname.startsWith("/_next") ||

@@ -1,68 +1,180 @@
+import 'dart:async';
+
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../official_membership_tiers.dart';
+import '../providers/tier_detail_provider.dart';
 
-final _tierDetailProvider = FutureProvider.autoDispose
-    .family<_TierDetailData?, String>((ref, rawTierId) async {
-      final normalizedTier = normalizeMembershipSlug(rawTierId);
-      final client = ref.watch(supabaseClientProvider);
-
-      try {
-        final rows = List<Map<String, dynamic>>.from(
-          await client
-              .from('membership_tiers')
-              .select()
-              .eq('category_slug', normalizedTier)
-              .eq('active', true)
-              .order('sort_order', ascending: true)
-              .limit(1),
-        );
-        if (rows.isNotEmpty) {
-          return _TierDetailData.fromPackage(
-            normalizeMembershipTierRow(rows.first),
-          );
-        }
-      } catch (_) {
-        return null;
-      }
-      return null;
-    });
-
-class TierDetailScreen extends ConsumerWidget {
+class TierDetailScreen extends ConsumerStatefulWidget {
   const TierDetailScreen({required this.tierId, super.key});
 
   final String tierId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final detailAsync = ref.watch(_tierDetailProvider(tierId.toLowerCase()));
-    final detail = detailAsync.valueOrNull ?? _TierDetailData.fallback(tierId);
+  ConsumerState<TierDetailScreen> createState() => _TierDetailScreenState();
+}
+
+class _TierDetailScreenState extends ConsumerState<TierDetailScreen> {
+  late bool _wasOnline;
+
+  @override
+  void initState() {
+    super.initState();
+    _wasOnline = ConnectivityService.isOnline;
+    ConnectivityService.onlineNotifier.addListener(_handleConnectivityChange);
+  }
+
+  @override
+  void dispose() {
+    ConnectivityService.onlineNotifier.removeListener(
+      _handleConnectivityChange,
+    );
+    super.dispose();
+  }
+
+  void _handleConnectivityChange() {
+    final isOnline = ConnectivityService.isOnline;
+    final restored = !_wasOnline && isOnline;
+    _wasOnline = isOnline;
+    if (!mounted) return;
+    setState(() {});
+    if (restored) {
+      unawaited(
+        ref
+            .read(tierDetailProvider(widget.tierId).notifier)
+            .connectionRestored(),
+      );
+    }
+  }
+
+  void _close() {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/membership');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
+    final enabled = ref.watch(tierDetailEnabledProvider);
+    final asyncDetail = ref.watch(tierDetailProvider(widget.tierId));
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
-          detail.title,
+          l10n.tierTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),
         leading: AfriIconButton(
+          key: const ValueKey<String>('tier-detail-back'),
           icon: AfriIcons.back,
-          onTap: () => context.pop(),
+          onTap: _close,
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
       ),
       scrollable: false,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
-        child: Column(
-          children: [
-            GlassCard(
+      constrainContent: true,
+      child: !enabled
+          ? _TierConsequence(
+              title: l10n.tierUnavailableTitle,
+              body: l10n.tierDisabledMessage,
+              actionLabel: l10n.backToMembership.toUpperCase(),
+              onAction: _close,
+            )
+          : asyncDetail.when(
+              loading: () => const Padding(
+                padding: EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriSkeletonList(),
+              ),
+              error: (error, _) => _buildFailure(error),
+              data: (snapshot) {
+                final detail = snapshot.data;
+                if (detail == null) {
+                  return _TierConsequence(
+                    title: l10n.tierNotFoundTitle,
+                    body: l10n.tierNotFoundMessage,
+                    actionLabel: l10n.backToMembership.toUpperCase(),
+                    onAction: _close,
+                  );
+                }
+                return _buildContent(detail, snapshot);
+              },
+            ),
+    );
+  }
+
+  Widget _buildFailure(Object error) {
+    final l10n = context.afriL10n;
+    final failure = TierDetailFailure.fromError(error);
+    return switch (failure.kind) {
+      TierDetailFailureKind.offline => _TierConsequence(
+        title: l10n.tierOfflineTitle,
+        body: l10n.tierOfflineMessage,
+        actionLabel: l10n.backToMembership.toUpperCase(),
+        onAction: _close,
+        offline: true,
+      ),
+      TierDetailFailureKind.permissionDenied => _TierConsequence(
+        title: l10n.tierAccessDeniedTitle,
+        body: l10n.tierAccessDeniedMessage,
+        actionLabel: l10n.backToMembership.toUpperCase(),
+        onAction: _close,
+      ),
+      TierDetailFailureKind.securityTimeout => _TierConsequence(
+        title: l10n.tierTimeoutTitle,
+        body: l10n.tierTimeoutMessage,
+        actionLabel: l10n.tryAgain.toUpperCase(),
+        onAction: () =>
+            ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
+      ),
+      TierDetailFailureKind.conflict => _TierConsequence(
+        title: l10n.tierChangedTitle,
+        body: l10n.tierChangedMessage,
+        actionLabel: l10n.tryAgain.toUpperCase(),
+        onAction: () =>
+            ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
+      ),
+      TierDetailFailureKind.unknown => _TierConsequence(
+        title: l10n.tierUnavailableTitle,
+        body: l10n.tierLoadUnavailableMessage,
+        actionLabel: l10n.tryAgain.toUpperCase(),
+        onAction: () =>
+            ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
+      ),
+    };
+  }
+
+  Widget _buildContent(TierDetailData detail, TierDetailState snapshot) {
+    final l10n = context.afriL10n;
+    return AfriRefreshIndicator(
+      onRefresh: () =>
+          ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          SpacingTokens.spacing6,
+          SpacingTokens.spacing4,
+          SpacingTokens.spacing6,
+          SpacingTokens.spacing12,
+        ),
+        children: [
+          if (_statusFor(snapshot) case final status?) ...[
+            status,
+            const SizedBox(height: SpacingTokens.spacing4),
+          ],
+          Semantics(
+            selected: true,
+            label: l10n.tierSelected(detail.title),
+            child: GlassCard(
               animate: false,
               child: Column(
                 children: [
@@ -83,11 +195,14 @@ class TierDetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
-                    detail.priceLabel,
-                    style: TypographyTokens.headlineLarge().copyWith(
+                    detail.title,
+                    textAlign: TextAlign.center,
+                    style: TypographyTokens.headlineSmall().copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  _TierPriceLabel(label: detail.priceLabel),
                   if (detail.subtitle.isNotEmpty) ...[
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
@@ -99,107 +214,125 @@ class TierDetailScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            if (detail.description.isNotEmpty) ...[
-              const SizedBox(height: SpacingTokens.spacing4),
-              GlassCard(
-                animate: false,
-                child: Text(
-                  detail.description,
-                  style: TypographyTokens.bodyLarge(),
-                ),
+          ),
+          if (detail.description.isNotEmpty) ...[
+            const SizedBox(height: SpacingTokens.spacing4),
+            GlassCard(
+              animate: false,
+              child: Text(
+                detail.description,
+                style: TypographyTokens.bodyLarge(),
               ),
-            ],
-            const SizedBox(height: SpacingTokens.spacing4),
-            _PerkCard(title: 'Tier perks', items: detail.benefits),
-            const SizedBox(height: SpacingTokens.spacing4),
-            _PerkCard(title: 'Membership access', items: detail.accessItems),
+            ),
           ],
-        ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          _PerkCard(title: l10n.tierPerks, items: detail.benefits),
+          const SizedBox(height: SpacingTokens.spacing4),
+          _PerkCard(title: l10n.tierAccess, items: detail.accessItems),
+        ],
       ),
     );
   }
+
+  Widget? _statusFor(TierDetailState snapshot) {
+    final l10n = context.afriL10n;
+    if (!ConnectivityService.isOnline ||
+        snapshot.failure?.kind == TierDetailFailureKind.offline) {
+      return AfriStateBanner(
+        icon: AfriIcons.offline,
+        title: l10n.tierShowingOfficialTitle,
+        subtitle: l10n.tierOfflineStatusMessage,
+        tone: AfriStateBannerTone.warning,
+      );
+    }
+    if (snapshot.phase == TierDetailPhase.syncing) {
+      return AfriStateBanner(
+        icon: AfriIcons.refresh,
+        title: l10n.tierRefreshingTitle,
+        subtitle: l10n.tierRefreshingMessage,
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    return switch (snapshot.failure?.kind) {
+      TierDetailFailureKind.permissionDenied => AfriStateBanner(
+        icon: AfriIcons.warning,
+        title: l10n.tierUpdateDeniedTitle,
+        subtitle: l10n.tierUpdateDeniedMessage,
+        tone: AfriStateBannerTone.danger,
+      ),
+      TierDetailFailureKind.conflict => AfriStateBanner(
+        icon: AfriIcons.warning,
+        title: l10n.tierChangedTitle,
+        subtitle: l10n.tierChangedStatusMessage,
+        tone: AfriStateBannerTone.warning,
+        onTap: () =>
+            ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
+      ),
+      TierDetailFailureKind.securityTimeout => AfriStateBanner(
+        icon: AfriIcons.warning,
+        title: l10n.tierRefreshTimeoutTitle,
+        subtitle: l10n.tierRefreshTimeoutMessage,
+        tone: AfriStateBannerTone.danger,
+        onTap: () =>
+            ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
+      ),
+      TierDetailFailureKind.unknown => AfriStateBanner(
+        icon: AfriIcons.warning,
+        title: l10n.tierOutdatedTitle,
+        subtitle: l10n.tierOutdatedMessage,
+        tone: AfriStateBannerTone.warning,
+        onTap: () =>
+            ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
+      ),
+      _ when snapshot.phase == TierDetailPhase.degraded => AfriStateBanner(
+        icon: AfriIcons.warning,
+        title: l10n.tierShowingOfficialTitle,
+        subtitle: l10n.tierDegradedMessage,
+        tone: AfriStateBannerTone.warning,
+        onTap: () =>
+            ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
+      ),
+      _ => null,
+    };
+  }
 }
 
-class _TierDetailData {
-  const _TierDetailData({
+class _TierConsequence extends StatelessWidget {
+  const _TierConsequence({
     required this.title,
-    required this.subtitle,
-    required this.description,
-    required this.benefits,
-    required this.priceLabel,
-    required this.accessItems,
-    required this.icon,
+    required this.body,
+    required this.actionLabel,
+    required this.onAction,
+    this.offline = false,
   });
 
-  factory _TierDetailData.fromPackage(Map<String, dynamic> json) {
-    final fallback = _TierDetailData.fromOfficialSlug(
-      json['tier']?.toString() ?? '',
-    );
-    final benefits = parseMembershipBenefits(json['benefits']);
-    final amount =
-        (json['annual_price'] as num?)?.toInt() ??
-        (json['price'] as num?)?.toInt() ??
-        0;
-    final billingPeriod = json['billing_period']?.toString() ?? 'annual';
-    final accessItems = <String>[
-      json['seating_access']?.toString() ?? '',
-      json['match_access']?.toString() ?? '',
-      json['source_label']?.toString() ?? '',
-    ].where((entry) => entry.trim().isNotEmpty).toList(growable: false);
-
-    return _TierDetailData(
-      title: (json['title']?.toString().trim().isNotEmpty ?? false)
-          ? json['title'].toString().trim().toUpperCase()
-          : fallback.title,
-      subtitle: json['subtitle']?.toString().trim() ?? fallback.subtitle,
-      description: json['description']?.toString().trim() ?? '',
-      benefits: benefits.isEmpty ? fallback.benefits : benefits,
-      priceLabel: amount <= 0
-          ? fallback.priceLabel
-          : '$amount RWF / $billingPeriod',
-      accessItems: accessItems.isEmpty ? fallback.accessItems : accessItems,
-      icon: fallback.icon,
-    );
-  }
-
-  factory _TierDetailData.fallback(String rawTier) {
-    return _TierDetailData.fromOfficialSlug(rawTier);
-  }
-
-  factory _TierDetailData.fromOfficialSlug(String rawTier) {
-    final normalized = normalizeMembershipSlug(rawTier);
-    final tier = officialMembershipTiers.firstWhere(
-      (entry) => entry.slug == normalized,
-      orElse: () =>
-          officialMembershipTiers.firstWhere((entry) => entry.slug == 'imena'),
-    );
-    return _TierDetailData(
-      title: tier.name.toUpperCase(),
-      subtitle: tier.track,
-      description: tier.summary,
-      benefits: tier.benefits,
-      priceLabel: '${tier.priceRwf} RWF / ${tier.billingPeriod}',
-      accessItems: <String>[
-        if (tier.seatingAccess != null) tier.seatingAccess!,
-        if (tier.matchAccess != null) tier.matchAccess!,
-        'User-provided official Rayon Sports membership category list, 2026-06-27',
-      ],
-      icon: switch (tier.slug) {
-        'gold' => AfriIcons.rank,
-        'silver' => AfriIcons.premium,
-        'bronze' => AfriIcons.verified,
-        _ => AfriIcons.membership,
-      },
-    );
-  }
-
   final String title;
-  final String subtitle;
-  final String description;
-  final List<String> benefits;
-  final String priceLabel;
-  final List<String> accessItems;
-  final IconData icon;
+  final String body;
+  final String actionLabel;
+  final VoidCallback onAction;
+  final bool offline;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        child: offline
+            ? AfriStateView.offline(
+                title: title,
+                message: body,
+                actionLabel: actionLabel,
+                onAction: onAction,
+              )
+            : AfriStateView.empty(
+                title: title,
+                message: body,
+                actionLabel: actionLabel,
+                onAction: onAction,
+              ),
+      ),
+    );
+  }
 }
 
 class _PerkCard extends StatelessWidget {
@@ -226,11 +359,15 @@ class _PerkCard extends StatelessWidget {
             (item) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    AfriIcons.checkGroup,
-                    color: ColorTokens.success,
-                    size: SizeTokens.iconSm,
+                  Padding(
+                    padding: const EdgeInsets.only(top: SpacingTokens.spacing1),
+                    child: Icon(
+                      AfriIcons.checkGroup,
+                      color: ColorTokens.success,
+                      size: SizeTokens.iconSm,
+                    ),
                   ),
                   const SizedBox(width: SpacingTokens.spacing2),
                   Expanded(
@@ -239,6 +376,44 @@ class _PerkCard extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TierPriceLabel extends StatelessWidget {
+  const _TierPriceLabel({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = TypographyTokens.headlineLarge().copyWith(
+      fontWeight: FontWeight.w800,
+    );
+    final parts = label.split(' / ');
+    final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+    if (!usesLargeText || parts.length != 2) {
+      return Text(label, textAlign: TextAlign.center, style: style);
+    }
+    return Semantics(
+      label: label,
+      excludeSemantics: true,
+      child: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(parts.first, maxLines: 1, style: style),
+            ),
+          ),
+          Text(
+            <String>['/', parts.last].join(' '),
+            textAlign: TextAlign.center,
+            style: style,
           ),
         ],
       ),

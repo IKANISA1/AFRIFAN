@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -53,6 +54,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return Container(
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainer,
@@ -109,14 +111,14 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
           const SizedBox(height: SpacingTokens.spacing4),
 
           Text(
-            'CONFIRM CONTRIBUTION',
+            l10n.contributionConfirmTitle.toUpperCase(),
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            'Did you complete the MoMo USSD payment for the ${widget.tierLabel} tier?',
+            l10n.contributionConfirmQuestion(widget.tierLabel),
             textAlign: TextAlign.center,
             style: TypographyTokens.bodyMedium(),
           ),
@@ -133,7 +135,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'SELECTED TIER',
+                      l10n.contributionSelectedTier.toUpperCase(),
                       style: TypographyTokens.labelSmall(
                         ColorTokens.onSurfaceVariant,
                       ),
@@ -157,7 +159,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                     borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                   ),
                   child: Text(
-                    'PENDING VERIFICATION',
+                    l10n.contributionPendingVerification.toUpperCase(),
                     style: TypographyTokens.labelSmall(
                       ColorTokens.clubAccent,
                     ).copyWith(fontWeight: FontWeight.w800),
@@ -174,7 +176,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
             children: [
               Expanded(
                 child: AfriButton(
-                  label: 'Not yet',
+                  label: l10n.contributionNotYet,
                   variant: AfriButtonVariant.outline,
                   onTap: () => context.pop(false),
                 ),
@@ -182,7 +184,9 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: AfriButton(
-                  label: _isConfirming ? 'Confirming…' : 'Yes, I paid',
+                  label: _isConfirming
+                      ? l10n.contributionConfirming
+                      : l10n.contributionYesPaid,
                   onTap: _handleConfirm,
                   isLoading: _isConfirming,
                   enabled: !_isConfirming,
@@ -194,7 +198,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
           const SizedBox(height: SpacingTokens.spacing4),
 
           Text(
-            'CONTRIBUTIONS ARE VERIFIED ANONYMOUSLY VIA FAN ID.',
+            l10n.contributionPrivacy.toUpperCase(),
             textAlign: TextAlign.center,
             style: TypographyTokens.labelSmall(
               ColorTokens.onSurfaceVariant,

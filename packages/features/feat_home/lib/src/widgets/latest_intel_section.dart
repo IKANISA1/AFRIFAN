@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -54,8 +55,7 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
         setState(() {
           _snapshot = const LatestIntelSnapshot(
             status: LatestIntelStatus.error,
-            message:
-                'Latest Intel is temporarily unavailable. Pull to refresh.',
+            notice: LatestIntelNotice.unavailable,
           );
           _isLoading = false;
         });
@@ -65,6 +65,7 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     if (!_isLoading && _snapshot.status == LatestIntelStatus.empty) {
       return const SizedBox.shrink();
     }
@@ -72,7 +73,10 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AfriSectionHeader(title: 'News', subtitle: 'Latest club updates'),
+        AfriSectionHeader(
+          title: l10n.homeNewsTitle,
+          subtitle: l10n.homeLatestUpdates,
+        ),
         const SizedBox(height: SpacingTokens.spacing4),
         SizedBox(
           height: SpacingTokens.spacing20 * 3 + SpacingTokens.spacing5,
@@ -115,7 +119,11 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
             animate: false,
             child: AfriErrorView(
               compact: true,
-              message: _snapshot.message,
+              message: switch (_snapshot.notice) {
+                LatestIntelNotice.unavailable =>
+                  context.afriL10n.homeLatestUnavailable,
+                LatestIntelNotice.unpublished || null => null,
+              },
               onRetry: _loadArticles,
             ),
           ),

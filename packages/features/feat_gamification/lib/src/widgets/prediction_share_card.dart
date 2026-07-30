@@ -76,7 +76,7 @@ class PredictionShareService {
 
   static Future<void> share({
     required PredictionShareData data,
-    required BuildContext context,
+    BuildContext? context,
   }) async {
     unawaited(HapticFeedback.lightImpact());
     await SharePlus.instance.share(
@@ -89,11 +89,11 @@ class PredictionShareService {
 
   static Future<void> copy({
     required PredictionShareData data,
-    required BuildContext context,
+    BuildContext? context,
   }) async {
     unawaited(HapticFeedback.lightImpact());
     await Clipboard.setData(ClipboardData(text: _buildShareText(data)));
-    if (!context.mounted) {
+    if (context == null || !context.mounted) {
       return;
     }
     AfriToast.success(context, 'Share text copied to clipboard.');
@@ -148,11 +148,11 @@ class PredictionShareCard extends StatelessWidget {
 
   final PredictionShareData data;
 
-  Color _statusColor() {
+  Color _statusColor(BuildContext context) {
     return switch (data.status) {
       PredictionStatus.won => ColorTokens.success,
       PredictionStatus.lost => ColorTokens.error,
-      _ => ColorTokens.clubAccent,
+      _ => context.afriSemanticColors.accent,
     };
   }
 
@@ -168,7 +168,10 @@ class PredictionShareCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _statusColor();
+    final color = _statusColor(context);
+    final accent = context.afriSemanticColors.accent;
+    final accessibleAccent = ColorTokens.accessibleMetricColor(accent);
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
 
     return Container(
       decoration: BoxDecoration(
@@ -186,7 +189,11 @@ class PredictionShareCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: SpacingTokens.spacing3,
+            runSpacing: SpacingTokens.spacing2,
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -194,17 +201,18 @@ class PredictionShareCard extends StatelessWidget {
                   vertical: SpacingTokens.spacing1,
                 ),
                 decoration: BoxDecoration(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.12),
+                  color: accent.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
                   data.competitionName.toUpperCase(),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TypographyTokens.labelSmall(
-                    ColorTokens.clubAccent,
+                    accessibleAccent,
                   ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
                 ),
               ),
-              const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: SpacingTokens.spacing3,
@@ -258,26 +266,21 @@ class PredictionShareCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: _ShareMetric(
+          if (largeText)
+            Column(
+              children: [
+                _ShareMetric(
                   label: 'MARKET',
                   value: data.marketName.toUpperCase(),
                 ),
-              ),
-              const SizedBox(width: SpacingTokens.spacing3),
-              Expanded(
-                child: _ShareMetric(
+                const SizedBox(height: SpacingTokens.spacing3),
+                _ShareMetric(
                   label: 'PICK',
                   value: data.selectedOutcome.toUpperCase(),
                   accent: true,
                 ),
-              ),
-              const SizedBox(width: SpacingTokens.spacing3),
-              Expanded(
-                child: _ShareMetric(
+                const SizedBox(height: SpacingTokens.spacing3),
+                _ShareMetric(
                   label: data.status == PredictionStatus.won
                       ? 'EARNED'
                       : 'POTENTIAL',
@@ -286,13 +289,47 @@ class PredictionShareCard extends StatelessWidget {
                       : '+${data.fetPotential}',
                   accent: data.status == PredictionStatus.won,
                 ),
-              ),
-            ],
-          ),
+              ],
+            )
+          else
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: _ShareMetric(
+                    label: 'MARKET',
+                    value: data.marketName.toUpperCase(),
+                  ),
+                ),
+                const SizedBox(width: SpacingTokens.spacing3),
+                Expanded(
+                  child: _ShareMetric(
+                    label: 'PICK',
+                    value: data.selectedOutcome.toUpperCase(),
+                    accent: true,
+                  ),
+                ),
+                const SizedBox(width: SpacingTokens.spacing3),
+                Expanded(
+                  child: _ShareMetric(
+                    label: data.status == PredictionStatus.won
+                        ? 'EARNED'
+                        : 'POTENTIAL',
+                    value: data.status == PredictionStatus.won
+                        ? '+${data.fetEarned}'
+                        : '+${data.fetPotential}',
+                    accent: data.status == PredictionStatus.won,
+                  ),
+                ),
+              ],
+            ),
           const SizedBox(height: SpacingTokens.spacing4),
           Center(
             child: Text(
               '${RuntimeBranding.displayAppName.toUpperCase()} · PLAY. PICK. EARN.',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
               style: TypographyTokens.labelSmall(
                 ColorTokens.onSurfaceVariant,
               ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.2),
@@ -325,7 +362,11 @@ class _ShareMetric extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: TypographyTokens.titleSmall(
-            accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
+            accent
+                ? ColorTokens.accessibleMetricColor(
+                    context.afriSemanticColors.accent,
+                  )
+                : ColorTokens.onSurface,
           ).copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: SpacingTokens.spacing1),

@@ -1,12 +1,18 @@
 # Venue App Architecture
 
-Updated: 2026-07-02
+Updated: 2026-07-30
 
 ## Purpose
 
 The venue app is a venue-scoped operator portal for approved partner venues. It is not a supporter fan portal and it is not the centralized club admin PWA.
 
 The first implementation lives under `apps/rayon_sports/web/src/app/venue` to reuse the existing Next.js app, Supabase client setup, PWA shell, and `DESIGN.md`-governed runtime theme implementation. It can be extracted later only if deployment, auth, or venue operations require a separate app.
+
+Venue capability is a secondary matchday extension of the football-club
+product. It must not determine the supporter app's primary navigation or
+displace Club, football, or Membership. Supporter discovery belongs under a
+contextual “Matchday experiences” or “Places to watch” entry; venue operations
+remain in this portal.
 
 ## Product Boundary
 
@@ -19,6 +25,11 @@ The first implementation lives under `apps/rayon_sports/web/src/app/venue` to re
 | Promotions/FET campaigns | Draft/run approved templates | Approve/disable/export | Earn/receipt | Discovery only | Screen-safe promo |
 | Staff roles | View assigned roles | Assign/revoke | No | No | No |
 | TV code | Display assigned venue code | Pair/disable | Enter/scan | No | Display QR/code |
+
+Game events and promotions use the authoritative club-scoped game and reward
+contracts. A venue may host or display an approved event, but it must not create
+an independent scoring, eligibility, question, reward, or supporter identity
+truth.
 
 ## Feature Flags
 
@@ -78,6 +89,8 @@ The additive migration creates:
 
 ## UAT Gates
 
+- Supporter entry is secondary and contextual to a fixture, Home, Fan Zone, or
+  global search; it is not a primary navigation destination.
 - Venue staff can access only assigned venues.
 - Permission denied state is visible and keyboard reachable.
 - Orders write event rows for every status change.

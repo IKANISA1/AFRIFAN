@@ -158,138 +158,177 @@ function mapSquadRow(row: Record<string, unknown>): SquadPlayer {
       safeString(row.description) ||
       safeString(row.player_summary) ||
       "First-team squad member.",
-    imageUrl: safeString(row.image_url) || null,
+    imageUrl: sanitizeMediaUrl(row.image_url, "/brand-surface.svg"),
   };
 }
 
 // ─── Fetchers ────────────────────────────────────────────
 
-export const getMembershipPackages = cache(
-  async function getMembershipPackages() {
-    const client = getReadOnlySupabase();
-    const activeClub = await getActiveClubReference();
-    if (client == null) return [];
-
-    try {
-      const { data } = await client
-        .from("membership_tiers")
-        .select("*")
-        .eq("club_id", activeClub.numericId)
-        .eq("is_active", true)
-        .order("sort_order", { ascending: true })
-        .limit(6);
-
-      if (!data || data.length == 0) {
-        return [];
-      }
-
-      return data.map((row) => mapMembershipRow(row));
-    } catch (error) {
-      console.error("getMembershipPackages failed", error);
-      return [];
-    }
-  },
-);
-
-export const getFanClubs = cache(async function getFanClubs() {
+async function loadMembershipPackages(): Promise<MembershipPackage[]> {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return [];
 
-  try {
-    const { data } = await client
-      .from("fan_clubs")
-      .select("*")
-      .eq("club_id", activeClub.numericId)
-      .order("member_count", { ascending: false })
-      .limit(12);
+  const { data, error } = await client
+    .from("membership_tiers")
+    .select("*")
+    .eq("club_id", activeClub.numericId)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true })
+    .limit(6);
 
-    if (!data || data.length == 0) {
-      return [];
-    }
+  if (error) throw error;
+  if (!data || data.length === 0) return [];
+  return data.map((row) => mapMembershipRow(row));
+}
 
-    return data.map((row) => mapFanClubRow(row));
-  } catch (error) {
-    console.error("getFanClubs failed", error);
-    return [];
-  }
-});
+export const getMembershipPackagesStrict = cache(
+  async function getMembershipPackagesStrict() {
+    return loadMembershipPackages();
+  },
+);
 
-export const getContributionGroups = cache(
-  async function getContributionGroups() {
-    const client = getReadOnlySupabase();
-    const activeClub = await getActiveClubReference();
-    if (client == null) return [];
-
+export const getMembershipPackages = cache(
+  async function getMembershipPackages() {
     try {
-      const { data } = await client
-        .from("contribution_groups")
-        .select("*")
-        .eq("club_id", activeClub.numericId)
-        .eq("is_active", true)
-        .order("created_at", { ascending: false })
-        .limit(8);
-
-      if (!data || data.length == 0) {
-        return [];
-      }
-
-      return data.map((row) => mapContributionGroupRow(row));
-    } catch (error) {
-      console.error("getContributionGroups failed", error);
+      return await loadMembershipPackages();
+    } catch {
       return [];
     }
   },
 );
 
-export const getStandings = cache(async function getStandings(): Promise<
-  StandingRow[]
-> {
+async function loadFanClubs(): Promise<FanClubItem[]> {
+  const client = getReadOnlySupabase();
+  const activeClub = await getActiveClubReference();
+  if (client == null) return [];
+
+  const { data, error } = await client
+    .from("fan_clubs")
+    .select("*")
+    .eq("club_id", activeClub.numericId)
+    .order("member_count", { ascending: false })
+    .limit(12);
+
+  if (error) throw error;
+  if (!data || data.length === 0) {
+    return [];
+  }
+
+  return data.map((row) => mapFanClubRow(row));
+}
+
+export const getFanClubsStrict = cache(async function getFanClubsStrict() {
+  return loadFanClubs();
+});
+
+export const getFanClubs = cache(async function getFanClubs() {
+  try {
+    return await loadFanClubs();
+  } catch {
+    return [];
+  }
+});
+
+async function loadContributionGroups(): Promise<ContributionGroup[]> {
+  const client = getReadOnlySupabase();
+  const activeClub = await getActiveClubReference();
+  if (client == null) return [];
+
+  const { data, error } = await client
+    .from("contribution_groups")
+    .select("*")
+    .eq("club_id", activeClub.numericId)
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
+    .limit(8);
+
+  if (error) throw error;
+  if (!data || data.length === 0) {
+    return [];
+  }
+
+  return data.map((row) => mapContributionGroupRow(row));
+}
+
+export const getContributionGroupsStrict = cache(
+  async function getContributionGroupsStrict() {
+    return loadContributionGroups();
+  },
+);
+
+export const getContributionGroups = cache(
+  async function getContributionGroups() {
+    try {
+      return await loadContributionGroups();
+    } catch {
+      return [];
+    }
+  },
+);
+
+async function loadStandings(): Promise<StandingRow[]> {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) {
     return [];
   }
 
+  const { data, error } = await client
+    .from("unified_standings")
+    .select("*")
+    .eq("club_id", activeClub.numericId)
+    .order("position", { ascending: true })
+    .limit(24);
+
+  if (error) throw error;
+  if (!data || data.length === 0) return [];
+  return data.map((row, index) => mapStandingRow(row, index, activeClub.slug));
+}
+
+export const getStandingsStrict = cache(async function getStandingsStrict() {
+  return loadStandings();
+});
+
+export const getStandings = cache(async function getStandings(): Promise<
+  StandingRow[]
+> {
   try {
-    const { data } = await client
-      .from("unified_standings")
-      .select("*")
-      .eq("club_id", activeClub.numericId)
-      .order("position", { ascending: true })
-      .limit(24);
+    return await loadStandings();
+  } catch {
+    return [];
+  }
+});
 
-    if (data && data.length >= 6) {
-      return data.map((row, index) =>
-        mapStandingRow(row, index, activeClub.slug),
-      );
-    }
-  } catch {}
+async function loadSquad(): Promise<SquadPlayer[]> {
+  const client = getReadOnlySupabase();
+  const activeClub = await getActiveClubReference();
+  if (client == null) {
+    return [];
+  }
 
-  return [];
+  const { data, error } = await client
+    .from("unified_roster")
+    .select("*")
+    .eq("club_id", activeClub.numericId)
+    .order("number", { ascending: true })
+    .limit(40);
+
+  if (error) throw error;
+  if (!data || data.length === 0) return [];
+  return data.map((row) => mapSquadRow(row));
+}
+
+export const getSquadStrict = cache(async function getSquadStrict() {
+  return loadSquad();
 });
 
 export const getSquad = cache(async function getSquad(): Promise<
   SquadPlayer[]
 > {
-  const client = getReadOnlySupabase();
-  const activeClub = await getActiveClubReference();
-  if (client == null) {
+  try {
+    return await loadSquad();
+  } catch {
     return [];
   }
-
-  try {
-    const { data } = await client
-      .from("unified_roster")
-      .select("*")
-      .eq("club_id", activeClub.numericId)
-      .order("number", { ascending: true })
-      .limit(40);
-
-    if (data && data.length > 0) {
-      return data.map((row) => mapSquadRow(row));
-    }
-  } catch {}
-
-  return [];
 });

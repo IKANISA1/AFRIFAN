@@ -1,369 +1,769 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Layout, Plus, Search, Trash2 } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Edit3, Layout, Plus, Search, Trash2 } from "lucide-react";
+import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPagination } from "@/components/admin/admin-pagination";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
-import { AdminDataGrid } from "@/components/admin/admin-data-grid";
-import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
-import { getAdminContentBlocks, saveAdminContentBlock, deleteAdminContentBlock } from "@/lib/data/admin/content-blocks";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
+import {
+  deleteAdminContentBlock,
+  getAdminContentBlocks,
+  normalizeAdminContentBlockFeatureOptions,
+  normalizeAdminContentBlocks,
+  saveAdminContentBlock,
+  type AdminContentBlockFeatureOption,
+} from "@/lib/data/admin/content-blocks";
 import { getAdminFeatures } from "@/lib/data/admin/features";
-import type { ContentBlock, PlatformFeature } from "@/lib/types";
-import { useHydrated } from "@/lib/use-hydrated";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
+import type { ContentBlock } from "@/lib/types";
 import { useAdminCollection } from "@/lib/use-admin-collection";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
+
+type ContentBlockBundle = {
+  blocks: ContentBlock[];
+  features: AdminContentBlockFeatureOption[];
+};
+
+type ContentBlockForm = {
+  id: string;
+  updatedAt: string;
+  blockKey: string;
+  blockType: string;
+  targetChannel: ContentBlock["targetChannel"];
+  placementKey: string;
+  title: string;
+  subtitle: string;
+  featureId: string;
+  isActive: boolean;
+  sortOrder: number;
+  contentJson: string;
+  metadataJson: string;
+};
+
+const emptyBundle: ContentBlockBundle = { blocks: [], features: [] };
+const bundleIsEmpty = (value: ContentBlockBundle) => value.blocks.length === 0;
+
+const emptyForm: ContentBlockForm = {
+  id: "",
+  updatedAt: "",
+  blockKey: "",
+  blockType: "section",
+  targetChannel: "both",
+  placementKey: "home_mid",
+  title: "",
+  subtitle: "",
+  featureId: "",
+  isActive: true,
+  sortOrder: 0,
+  contentJson: "{}",
+  metadataJson: "{}",
+};
+
+const statusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading placement blocks",
+    detail: "Waiting for the first authenticated composition snapshot.",
+  },
+  ready: {
+    label: "Placement blocks confirmed",
+    detail: "Governed UI composition is current for this workspace.",
+  },
+  empty: {
+    label: "No placement blocks in this scope",
+    detail: "Create the first governed placement block when authorized.",
+  },
+  error: {
+    label: "Placement blocks unavailable",
+    detail: "Confirmed blocks remain visible. Retry when service recovers.",
+  },
+  offline: {
+    label: "Placement workspace is offline",
+    detail: "Confirmed blocks remain visible until connection returns.",
+  },
+  permission_denied: {
+    label: "Placement access denied",
+    detail:
+      "Previously loaded blocks, filters, and the active draft were cleared.",
+  },
+  syncing: {
+    label: "Refreshing placement blocks",
+    detail: "Confirmed blocks remain visible during refresh.",
+  },
+  conflict: {
+    label: "Placement records changed",
+    detail: "Refresh before editing or deleting a placement block.",
+  },
+  security_timeout: {
+    label: "Placement request timed out",
+    detail: "No placement operation or change was confirmed.",
+  },
+};
+
+function normalizeBundle(value: unknown): ContentBlockBundle {
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    return emptyBundle;
+  }
+  const record = value as Record<string, unknown>;
+  return {
+    blocks: normalizeAdminContentBlocks(record.blocks),
+    features: normalizeAdminContentBlockFeatureOptions(record.features),
+  };
+}
+
+function parseJsonObject(value: string) {
+  const parsed = JSON.parse(value) as unknown;
+  if (parsed == null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new Error("Expected a JSON object.");
+  }
+  return parsed as Record<string, unknown>;
+}
+
+function formatJson(value: Record<string, unknown>) {
+  return JSON.stringify(value, null, 2);
+}
 
 export default function AdminContentBlocksPage() {
   const { access, client } = useAdminPortal();
-  const hydrated = useHydrated();
-  const [blocks, setBlocks] = useState<ContentBlock[]>([]);
-  const [features, setFeatures] = useState<PlatformFeature[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const controlsDisabled = !hydrated || client == null;
-
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [editingBlock, setEditingBlock] = useState<Partial<ContentBlock> | null>(null);
+  const [form, setForm] = useState<ContentBlockForm>(emptyForm);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
+
+  const loadBundle = useCallback(
+    async (signal: AbortSignal) => {
+      if (client == null) return emptyBundle;
+      const [blocks, features] = await Promise.all([
+        getAdminContentBlocks(client, access, { signal }),
+        getAdminFeatures(client, access, { signal }),
+      ]);
+      return { blocks, features };
+    },
+    [access, client],
+  );
+
+  const clearDeniedState = useCallback(() => {
+    setDrawerOpen(false);
+    setForm(emptyForm);
+    setInteraction("idle");
+  }, []);
+
+  const {
+    data,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState({
+    enabled: client != null && access.hasAccess,
+    emptyValue: emptyBundle,
+    isEmpty: bundleIsEmpty,
+    load: loadBundle,
+    normalize: normalizeBundle,
+    onPermissionDenied: clearDeniedState,
+    resourceLabel: "placement blocks",
+  });
+
   const blockCollection = useAdminCollection({
-    records: blocks,
+    records: data.blocks,
     getId: (block) => String(block.id),
     getSearchValues: (block) => [
       block.title,
+      block.subtitle,
       block.blockKey,
       block.blockType,
       block.placementKey,
       block.targetChannel,
       block.isActive ? "active" : "disabled",
-      features.find((feature) => feature.id === block.featureId)?.displayName,
+      data.features.find((feature) => feature.id === block.featureId)
+        ?.displayName,
     ],
     getSortValue: (
       block,
-      key: "block" | "placement" | "channel" | "status" | "sortOrder",
+      key: "block" | "placement" | "channel" | "status" | "order",
     ) => {
       switch (key) {
-        case "block": return block.title || block.blockKey;
-        case "placement": return block.placementKey;
-        case "channel": return block.targetChannel;
-        case "status": return block.isActive;
-        case "sortOrder": return block.sortOrder;
+        case "block":
+          return block.title || block.blockKey;
+        case "placement":
+          return block.placementKey;
+        case "channel":
+          return block.targetChannel;
+        case "status":
+          return block.isActive;
+        case "order":
+          return block.sortOrder ?? 0;
       }
     },
-    initialSortKey: "sortOrder" as const,
+    initialSortKey: "order" as const,
     pageSize: 25,
   });
 
-  const loadData = useCallback(async () => {
+  const mutationLocked = status !== "ready" && status !== "empty";
+
+  function beginCreate() {
+    setForm(emptyForm);
+    setDrawerOpen(true);
+    setInteraction("selected");
+  }
+
+  function beginEdit(block: ContentBlock) {
+    setForm({
+      id: block.id ?? "",
+      updatedAt: block.updatedAt ?? "",
+      blockKey: block.blockKey,
+      blockType: block.blockType,
+      targetChannel: block.targetChannel,
+      placementKey: block.placementKey,
+      title: block.title ?? "",
+      subtitle: block.subtitle ?? "",
+      featureId: block.featureId ?? "",
+      isActive: block.isActive,
+      sortOrder: block.sortOrder ?? 0,
+      contentJson: formatJson(block.content),
+      metadataJson: formatJson(block.metadata),
+    });
+    setDrawerOpen(true);
+    setInteraction("selected");
+  }
+
+  function closeDrawer() {
+    setDrawerOpen(false);
+    setForm(emptyForm);
+    setInteraction("idle");
+  }
+
+  async function handleSave(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (client == null) return;
-    setLoading(true);
+
+    let content: Record<string, unknown>;
+    let metadata: Record<string, unknown>;
     try {
-      const [blocksData, featuresData] = await Promise.all([
-        getAdminContentBlocks(client, access),
-        getAdminFeatures(client, access),
-      ]);
-      setBlocks(blocksData);
-      setFeatures(featuresData);
-      setLoadError(null);
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Could not load content blocks.";
-      setLoadError(message);
-      showAdminToast(message, "error");
-    } finally {
-      setLoading(false);
+      content = parseJsonObject(form.contentJson);
+      metadata = parseJsonObject(form.metadataJson);
+    } catch {
+      showAdminToast(
+        "Content and metadata must each be a valid JSON object.",
+        "error",
+      );
+      return;
     }
-  }, [access, client]);
-
-  useEffect(() => {
-    if (client == null || !access.hasAccess) return;
-    loadData().catch(() => {});
-  }, [access.hasAccess, client, loadData]);
-
-  async function handleSave(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!client || !editingBlock) return;
 
     try {
-      await saveAdminContentBlock(client, access, editingBlock);
-      showAdminToast("Block saved.", "success");
-      setDrawerOpen(false);
-      await loadData();
+      await saveAdminContentBlock(client, access, {
+        id: form.id || undefined,
+        updatedAt: form.updatedAt || undefined,
+        blockKey: form.blockKey,
+        blockType: form.blockType,
+        title: form.title || null,
+        subtitle: form.subtitle || null,
+        content,
+        targetChannel: form.targetChannel,
+        placementKey: form.placementKey,
+        featureId: form.featureId || null,
+        isActive: form.isActive,
+        sortOrder: form.sortOrder,
+        metadata,
+      });
+      closeDrawer();
+      await refresh();
+      showAdminToast("Placement block saved.", "success");
     } catch (caught) {
+      const nextStatus = applyFailure(caught);
       if (isAdminMutationConflict(caught)) {
-        await loadData();
+        await refresh();
       }
       showAdminToast(
-        caught instanceof Error ? caught.message : "Failed to save block.",
+        nextStatus === "conflict"
+          ? statusCopy.conflict.label
+          : "Could not confirm the placement change.",
         "error",
       );
     }
   }
 
   async function handleDelete(block: ContentBlock) {
-    if (!client || !confirmAdminDestructiveAction({
-      action: "Delete",
-      subject: "this content block",
-      scope: access.isSuperAdmin
-        ? "Selected platform or club content scope"
-        : `Active club ${access.clubId ?? "not selected"}`,
-      impact: "The governed placement will be removed or disabled for the active club.",
-      undo: "manual_recovery",
-    })) return;
+    if (
+      client == null ||
+      !confirmAdminDestructiveAction({
+        action: "Delete",
+        subject: block.title || block.blockKey,
+        scope: access.isSuperAdmin
+          ? "Selected platform or club content scope"
+          : `Active club ${access.clubId ?? "not selected"}`,
+        impact:
+          "The governed placement will be removed or disabled for the active club.",
+        undo: "manual_recovery",
+      })
+    ) {
+      return;
+    }
+
     try {
       await deleteAdminContentBlock(
         client,
         access,
-        block.id!,
+        block.id ?? "",
         block.updatedAt ?? "",
       );
-      showAdminToast("Block deleted.", "success");
-      await loadData();
+      await refresh();
+      showAdminToast("Placement block deleted.", "success");
     } catch (caught) {
+      const nextStatus = applyFailure(caught);
       if (isAdminMutationConflict(caught)) {
-        await loadData();
+        await refresh();
       }
       showAdminToast(
-        caught instanceof Error ? caught.message : "Failed to delete block.",
+        nextStatus === "conflict"
+          ? statusCopy.conflict.label
+          : "Could not confirm placement deletion.",
         "error",
       );
     }
   }
 
-  function beginEdit(block: ContentBlock) {
-    setEditingBlock(block);
-    setDrawerOpen(true);
-  }
-
-  function beginCreate() {
-    setEditingBlock({
-      blockKey: "",
-      blockType: "section",
-      targetChannel: "both",
-      placementKey: "home_mid",
-      isActive: true,
-      sortOrder: 0,
-      content: {},
-      metadata: {},
-    });
-    setDrawerOpen(true);
-  }
-
   return (
-    <div className="section-grid !gap-6">
+    <section
+      className="admin-cms-content-blocks-state-surface section-grid"
+      data-admin-cms-content-blocks-status={status}
+      data-admin-cms-content-blocks-interaction={interaction}
+      data-admin-cms-content-blocks-refresh-disabled={busy}
+      aria-busy={busy || undefined}
+    >
       <AdminPageHeader
         eyebrow="CMS"
-        title="Placements & Blocks"
+        title="Placements & blocks"
         meta={
           <span className="admin-meta-chip">
-            <Layout size={12} className="inline mr-1" />
-            UI Composition
+            <Layout size={12} className="mr-1 inline" aria-hidden="true" />
+            UI composition
           </span>
         }
         actions={
           <button
+            type="button"
             onClick={beginCreate}
-            disabled={controlsDisabled}
-            className="admin-action-button !bg-club-accent !text-white disabled:opacity-60"
+            disabled={mutationLocked}
+            className="admin-action-button min-h-12 !bg-club-primary !text-white hover:!bg-club-primary-light disabled:opacity-70"
           >
-            <Plus size={16} /> New Block
+            <Plus size={16} aria-hidden="true" /> New block
           </button>
         }
       />
 
+      <AdminResourceStatusBanner
+        status={status}
+        label={statusCopy[status].label}
+        detail={statusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh placement blocks"
+        selected={interaction === "selected"}
+        onRefresh={() => void refresh()}
+        onInteractionChange={setInteraction}
+        className="admin-cms-content-blocks-status"
+      />
+
       <div className="grid gap-4 md:grid-cols-3">
-        <AdminStateCard label="Total Blocks" value={loading ? "..." : blocks.length.toString()} icon={Layout} />
-        <AdminStateCard label="Active" value={loading ? "..." : blocks.filter(b => b.isActive).length.toString()} tone="success" />
-        <AdminStateCard label="Placements" value={loading ? "..." : new Set(blocks.map(b => b.placementKey)).size.toString()} tone="info" />
+        <AdminStateCard
+          label="Total blocks"
+          value={initialLoading ? "…" : String(data.blocks.length)}
+          icon={Layout}
+        />
+        <AdminStateCard
+          label="Active"
+          value={
+            initialLoading
+              ? "…"
+              : String(data.blocks.filter((block) => block.isActive).length)
+          }
+          tone="success"
+        />
+        <AdminStateCard
+          label="Placements"
+          value={
+            initialLoading
+              ? "…"
+              : String(
+                  new Set(data.blocks.map((block) => block.placementKey)).size,
+                )
+          }
+          tone="info"
+        />
       </div>
 
-      {loadError && !loading ? (
-        <AdminErrorState title="Blocks could not be loaded" description={loadError} onRetry={loadData} />
+      {!hasConfirmed && !initialLoading ? (
+        <AdminErrorState
+          title={statusCopy[status].label}
+          description={statusCopy[status].detail}
+          onRetry={
+            status === "permission_denied" ? undefined : () => void refresh()
+          }
+        />
       ) : (
-        <div className="admin-surface">
-          <AdminFilterBar>
-            <label className="admin-search-field">
+        <div className="admin-surface min-w-0">
+          <AdminFilterBar
+            actions={
+              <div className="flex flex-wrap gap-2">
+                {(
+                  ["order", "block", "placement", "channel", "status"] as const
+                ).map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    data-active={blockCollection.sortKey === key}
+                    onClick={() => blockCollection.toggleSort(key)}
+                    className="dashboard-chip min-h-12"
+                    aria-label={`Sort by ${key}`}
+                  >
+                    Sort {key}
+                  </button>
+                ))}
+              </div>
+            }
+          >
+            <label className="admin-search-field min-h-12">
               <Search size={16} aria-hidden="true" />
-              <span className="sr-only">Search content blocks</span>
-              <input type="search" value={blockCollection.query} onChange={(event) => blockCollection.setQuery(event.target.value)} placeholder="Search block, placement, channel, or feature" />
+              <span className="sr-only">Search placement blocks</span>
+              <input
+                type="search"
+                value={blockCollection.query}
+                onChange={(event) =>
+                  blockCollection.setQuery(event.target.value)
+                }
+                placeholder="Search block, placement, channel, state, or feature"
+              />
             </label>
           </AdminFilterBar>
+
           <AdminDataGrid
             caption="Content placement blocks"
-            busy={loading}
+            busy={busy}
             onRowActivate={(rowId) => {
-              const block = blocks.find((item) => String(item.id) === rowId);
-              if (block) beginEdit(block);
+              const block = data.blocks.find(
+                (item) => String(item.id) === rowId,
+              );
+              if (block && !mutationLocked) beginEdit(block);
             }}
             columns={[
-              { key: "block", label: "Block / Type", priority: "primary", sortable: true, sortDirection: blockCollection.sortDirectionFor("block"), onSort: () => blockCollection.toggleSort("block") },
-              { key: "placement", label: "Placement", priority: "primary", sortable: true, sortDirection: blockCollection.sortDirectionFor("placement"), onSort: () => blockCollection.toggleSort("placement") },
-              { key: "channel", label: "Channel", priority: "secondary", sortable: true, sortDirection: blockCollection.sortDirectionFor("channel"), onSort: () => blockCollection.toggleSort("channel") },
-              { key: "feature", label: "Linked Feature", priority: "secondary" },
-              { key: "status", label: "State", priority: "primary", sortable: true, sortDirection: blockCollection.sortDirectionFor("status"), onSort: () => blockCollection.toggleSort("status") },
-              { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
+              {
+                key: "block",
+                label: "Block / type",
+                priority: "primary",
+              },
+              {
+                key: "placement",
+                label: "Placement",
+                priority: "primary",
+              },
+              {
+                key: "channel",
+                label: "Channel",
+                priority: "secondary",
+              },
+              {
+                key: "feature",
+                label: "Linked feature",
+                priority: "secondary",
+              },
+              { key: "status", label: "State", priority: "primary" },
+              {
+                key: "actions",
+                label: "Actions",
+                priority: "primary",
+                className: "text-right",
+              },
             ]}
           >
             {blockCollection.pageResult.items.length === 0 ? (
-              <tr><td colSpan={6} className="py-8 text-center text-sm text-slate-400">{blockCollection.query ? "No content blocks match the current search." : "No content blocks found."}</td></tr>
-            ) : blockCollection.pageResult.items.map((block) => {
-              const linkedFeature = features.find(f => f.id === block.featureId);
-              return (
-                <tr key={block.id} data-row-id={String(block.id)}>
-                  <td>
-                    <p className="admin-row-title">{block.title || block.blockKey}</p>
-                    <p className="admin-row-meta">{block.blockType}</p>
-                  </td>
-                  <td>
-                    <code className="text-[10px] font-mono bg-white/5 px-1.5 py-0.5 rounded">{block.placementKey}</code>
-                  </td>
-                  <td>
-                    <AdminStatusBadge label={block.targetChannel} tone="neutral" />
-                  </td>
-                  <td>
-                    {linkedFeature ? (
-                      <span className="text-xs text-emerald-400 font-medium">{linkedFeature.displayName}</span>
-                    ) : (
-                      <span className="text-xs text-slate-500">—</span>
-                    )}
-                  </td>
-                  <td>
-                    <AdminStatusBadge label={block.isActive ? "Active" : "Disabled"} tone={block.isActive ? "success" : "danger"} />
-                  </td>
-                  <td className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <button onClick={() => beginEdit(block)} className="admin-action-button">Edit</button>
-                      <button onClick={() => handleDelete(block)} className="admin-action-button admin-action-button-danger"><Trash2 size={14}/></button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+              <tr>
+                <td
+                  colSpan={6}
+                  className="py-8 text-center text-sm text-[var(--admin-text-muted)]"
+                >
+                  {blockCollection.query
+                    ? "No placement blocks match the current search."
+                    : "No placement blocks in this scope."}
+                </td>
+              </tr>
+            ) : (
+              blockCollection.pageResult.items.map((block) => {
+                const linkedFeature = data.features.find(
+                  (feature) => feature.id === block.featureId,
+                );
+                return (
+                  <tr
+                    key={block.id}
+                    data-row-id={String(block.id)}
+                    data-selected={form.id === block.id || undefined}
+                  >
+                    <td>
+                      <p className="admin-row-title">
+                        {block.title || block.blockKey}
+                      </p>
+                      <p className="admin-row-meta">{block.blockType}</p>
+                    </td>
+                    <td>
+                      <code className="break-all rounded bg-white/5 px-1.5 py-0.5 font-mono text-[10px]">
+                        {block.placementKey}
+                      </code>
+                    </td>
+                    <td>
+                      <AdminStatusBadge
+                        label={block.targetChannel}
+                        tone="neutral"
+                      />
+                    </td>
+                    <td>
+                      <span className="text-xs text-[var(--admin-text-muted)]">
+                        {linkedFeature?.displayName ?? "Always show"}
+                      </span>
+                    </td>
+                    <td>
+                      <AdminStatusBadge
+                        label={block.isActive ? "Active" : "Disabled"}
+                        tone={block.isActive ? "success" : "danger"}
+                      />
+                    </td>
+                    <td className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => beginEdit(block)}
+                          disabled={mutationLocked}
+                          aria-label={`Edit placement block ${
+                            block.title || block.blockKey
+                          }`}
+                          className="admin-action-button min-h-12 min-w-12"
+                        >
+                          <Edit3 size={16} aria-hidden="true" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void handleDelete(block)}
+                          disabled={mutationLocked}
+                          aria-label={`Delete placement block ${
+                            block.title || block.blockKey
+                          }`}
+                          className="admin-action-button admin-action-button-danger min-h-12 min-w-12"
+                        >
+                          <Trash2 size={16} aria-hidden="true" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </AdminDataGrid>
-          <AdminPagination page={blockCollection.pageResult} onPageChange={blockCollection.setPage} label="Content blocks" />
+          <AdminPagination
+            page={blockCollection.pageResult}
+            onPageChange={blockCollection.setPage}
+            label="Placement blocks"
+          />
         </div>
       )}
 
       <AdminActionDrawer
         isOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        title={editingBlock?.id ? `Edit Block: ${editingBlock.blockKey}` : "New Content Block"}
+        onClose={closeDrawer}
+        title={form.id ? `Edit block: ${form.blockKey}` : "New content block"}
       >
-        {editingBlock && (
-          <form onSubmit={handleSave} className="space-y-6 p-4">
-            <div className="space-y-4">
-              <label className="grid gap-2 text-sm font-semibold text-white">
-                Block Key (unique)
+        <form onSubmit={handleSave} className="space-y-6 p-4">
+          <fieldset disabled={mutationLocked} className="contents">
+            <div className="grid gap-4">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
+                Block key
                 <input
                   required
-                  value={editingBlock.blockKey}
-                  onChange={e => setEditingBlock({...editingBlock, blockKey: e.target.value})}
+                  maxLength={120}
+                  value={form.blockKey}
+                  onChange={(event) =>
+                    setForm({ ...form, blockKey: event.target.value })
+                  }
                   className="admin-input"
                   placeholder="home_hero_banner"
                 />
               </label>
-              <div className="grid grid-cols-2 gap-4">
-                <label className="grid gap-2 text-sm font-semibold text-white">
-                  Block Type
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
+                  Block type
                   <select
-                    value={editingBlock.blockType}
-                    onChange={e => setEditingBlock({...editingBlock, blockType: e.target.value})}
+                    value={form.blockType}
+                    onChange={(event) =>
+                      setForm({ ...form, blockType: event.target.value })
+                    }
                     className="admin-input"
                   >
                     <option value="section">Section</option>
                     <option value="banner">Banner</option>
-                    <option value="action">Quick Action</option>
-                    <option value="html">HTML / Raw</option>
+                    <option value="action">Quick action</option>
+                    <option value="html">HTML / raw</option>
                   </select>
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-white">
-                  Target Channel
+                <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
+                  Target channel
                   <select
-                    value={editingBlock.targetChannel}
-                    onChange={e => setEditingBlock({
-                      ...editingBlock,
-                      targetChannel: e.target.value as ContentBlock["targetChannel"],
-                    })}
+                    value={form.targetChannel}
+                    onChange={(event) =>
+                      setForm({
+                        ...form,
+                        targetChannel: event.target
+                          .value as ContentBlock["targetChannel"],
+                      })
+                    }
                     className="admin-input"
                   >
                     <option value="both">Both</option>
-                    <option value="web">Web Only</option>
-                    <option value="mobile">Mobile Only</option>
+                    <option value="web">Web only</option>
+                    <option value="mobile">Mobile only</option>
                   </select>
                 </label>
               </div>
-              <label className="grid gap-2 text-sm font-semibold text-white">
-                Placement Key
+              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
+                Placement key
                 <input
                   required
-                  value={editingBlock.placementKey}
-                  onChange={e => setEditingBlock({...editingBlock, placementKey: e.target.value})}
+                  maxLength={120}
+                  value={form.placementKey}
+                  onChange={(event) =>
+                    setForm({ ...form, placementKey: event.target.value })
+                  }
                   className="admin-input"
                   placeholder="home_top, home_mid, sidebar"
                 />
               </label>
-              <label className="grid gap-2 text-sm font-semibold text-white">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
                 Title
                 <input
-                  value={editingBlock.title || ""}
-                  onChange={e => setEditingBlock({...editingBlock, title: e.target.value})}
+                  maxLength={160}
+                  value={form.title}
+                  onChange={(event) =>
+                    setForm({ ...form, title: event.target.value })
+                  }
                   className="admin-input"
                 />
               </label>
-              <label className="grid gap-2 text-sm font-semibold text-white">
-                Linked Feature
-                  <select
-                    value={editingBlock.featureId || ""}
-                    onChange={e => setEditingBlock({
-                      ...editingBlock,
-                      featureId: e.target.value || null,
-                    })}
-                    className="admin-input"
-                  >
-                  <option value="">None (Always Show)</option>
-                  {features.map(f => (
-                    <option key={f.id} value={f.id}>{f.displayName}</option>
+              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
+                Subtitle
+                <input
+                  maxLength={300}
+                  value={form.subtitle}
+                  onChange={(event) =>
+                    setForm({ ...form, subtitle: event.target.value })
+                  }
+                  className="admin-input"
+                />
+              </label>
+              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
+                Linked feature
+                <select
+                  value={form.featureId}
+                  onChange={(event) =>
+                    setForm({ ...form, featureId: event.target.value })
+                  }
+                  className="admin-input"
+                >
+                  <option value="">None (always show)</option>
+                  {data.features.map((feature) => (
+                    <option key={feature.id} value={feature.id}>
+                      {feature.displayName}
+                    </option>
                   ))}
                 </select>
               </label>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
+                Content JSON
+                <textarea
+                  required
+                  rows={7}
+                  maxLength={12_000}
+                  value={form.contentJson}
+                  onChange={(event) =>
+                    setForm({ ...form, contentJson: event.target.value })
+                  }
+                  className="admin-input min-h-40 font-mono text-xs"
+                />
+              </label>
+              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
+                Metadata JSON
+                <textarea
+                  required
+                  rows={4}
+                  maxLength={4_000}
+                  value={form.metadataJson}
+                  onChange={(event) =>
+                    setForm({ ...form, metadataJson: event.target.value })
+                  }
+                  className="admin-input min-h-28 font-mono text-xs"
+                />
+              </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="flex min-h-12 items-center gap-3 text-sm font-semibold text-[var(--admin-text-strong)]">
                   <input
                     type="checkbox"
-                    checked={editingBlock.isActive}
-                    onChange={e => setEditingBlock({...editingBlock, isActive: e.target.checked})}
-                    className="accent-club-accent"
+                    checked={form.isActive}
+                    onChange={(event) =>
+                      setForm({ ...form, isActive: event.target.checked })
+                    }
+                    className="h-5 w-5 accent-club-accent"
                   />
-                  <span className="text-sm font-semibold text-white">Active</span>
+                  Active placement
                 </label>
-                <label className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-white">Sort Order</span>
+                <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
+                  Sort order
                   <input
                     type="number"
-                    value={editingBlock.sortOrder ?? ""}
-                    onChange={e => setEditingBlock({
-                      ...editingBlock,
-                      sortOrder:
-                        e.target.value.length === 0
-                          ? null
-                          : parseInt(e.target.value, 10),
-                    })}
-                    className="admin-input w-20"
+                    min={-100_000}
+                    max={100_000}
+                    value={form.sortOrder}
+                    onChange={(event) =>
+                      setForm({
+                        ...form,
+                        sortOrder: Number(event.target.value),
+                      })
+                    }
+                    className="admin-input"
                   />
                 </label>
               </div>
             </div>
-            <div className="pt-6 border-t border-[var(--admin-border)] flex gap-3">
-               <button type="submit" className="admin-action-button flex-1 !bg-club-accent !text-white">Save Block</button>
-               <button type="button" onClick={() => setDrawerOpen(false)} className="admin-action-button flex-1">Cancel</button>
+            <div className="mt-6 flex flex-wrap gap-3 border-t border-[var(--admin-border)] pt-6">
+              <button
+                type="submit"
+                className="admin-action-button min-h-12 flex-1 !bg-club-primary !text-white hover:!bg-club-primary-light"
+              >
+                Save block
+              </button>
+              <button
+                type="button"
+                onClick={closeDrawer}
+                className="admin-action-button min-h-12 flex-1"
+              >
+                Cancel
+              </button>
             </div>
-          </form>
-        )}
+          </fieldset>
+        </form>
       </AdminActionDrawer>
-    </div>
+    </section>
   );
 }

@@ -20,6 +20,7 @@ void main() {
         modules.map((module) => module.featureKey),
         orderedEquals(<String>[
           'home',
+          'club',
           'live',
           'fanzone',
           'settings',
@@ -37,6 +38,7 @@ void main() {
         modules.map((module) => module.featureKey),
         orderedEquals(<String>[
           'home',
+          'club',
           'live',
           'fanzone',
           'settings',
@@ -73,7 +75,7 @@ void main() {
       modules = AppModuleRegistry.build(const _FakeClubConfig());
     });
 
-    test('home, fanzone, and settings are the only tabs', () {
+    test('registered shell branches include the hidden settings branch', () {
       final tabs = modules
           .where((m) => m.tabRoute != null)
           .map((m) => (path: m.tabRoute!.path, label: m.tabRoute!.label))
@@ -82,8 +84,10 @@ void main() {
         tabs,
         orderedEquals(<({String path, String label})>[
           (path: '/home', label: 'Home'),
+          (path: '/club', label: 'Club'),
           (path: '/fanzone', label: 'Fan Zone'),
           (path: '/settings', label: 'Settings'),
+          (path: '/membership', label: 'Membership'),
         ]),
       );
     });
@@ -92,7 +96,6 @@ void main() {
       for (final featureKey in const <String>[
         'live',
         'onboarding',
-        'membership',
         'contributions',
         'ticketing',
         'fan_clubs',
@@ -126,7 +129,7 @@ void main() {
       );
     });
 
-    test('router tabs stay aligned with the reduced tab surface', () {
+    test('router tabs expose the approved four-tab supporter surface', () {
       final router = AppRouter(
         modules: modules,
         initialLocation: '/home',
@@ -139,14 +142,15 @@ void main() {
         tabs,
         orderedEquals(<({String path, String label})>[
           (path: '/home', label: 'Home'),
+          (path: '/club', label: 'Club'),
           (path: '/fanzone', label: 'Fan Zone'),
-          (path: '/settings', label: 'Settings'),
+          (path: '/membership', label: 'Membership'),
         ]),
       );
     });
 
     test(
-      'default supporter app keeps the approved 15 full-screen surfaces',
+      'default supporter app keeps the approved 26 full-screen surfaces',
       () {
         final decisions = modules
             .expand((module) => module.routePresentationDecisions)
@@ -167,6 +171,17 @@ void main() {
             '/auth/otp',
             '/home',
             '/search',
+            '/club',
+            '/club/team',
+            '/club/news',
+            '/club/news/:articleId',
+            '/club/fixtures',
+            '/club/fixtures/:matchId',
+            '/club/results',
+            '/club/standings',
+            '/club/history',
+            '/club/projects',
+            '/club/projects/:projectId',
             '/fanzone',
             '/fanzone/venue',
             '/fanzone/venue/order',

@@ -1,244 +1,818 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Gift, Pencil, Search, Trash2 } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Gift, Pencil, Search, ShieldCheck, Star, Trash2 } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPagination } from "@/components/admin/admin-pagination";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
+import { AdminSurface } from "@/components/admin/admin-surface";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
-import { cn } from "@/lib/utils";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import {
-  getAdminOffers,
-  saveAdminOffer,
   deleteAdminOffer,
+  getAdminOffers,
+  normalizeAdminOffersWorkspace,
+  saveAdminOffer,
+  type AdminOfferVerificationMode,
+  type AdminOffersWorkspace,
+  type AdminPartnerOffer,
 } from "@/lib/data/admin/offers";
-import type { AdminPartnerOffer } from "@/lib/data/admin/offers";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import { useAdminCollection } from "@/lib/use-admin-collection";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
+import { useHydrated } from "@/lib/use-hydrated";
+import { cn } from "@/lib/utils";
 
-const emptyForm = {
-  id: "",
-  expectedUpdatedAt: "",
-  title: "",
-  description: "",
-  partnerName: "",
-  fetCost: "0",
-  originalValue: "",
-  categoryTag: "reward",
-  imageUrl: "",
-  redeemUrl: "",
-  totalStock: "",
-  isActive: true,
-  startsAt: "",
-  expiresAt: "",
+const emptyWorkspace: AdminOffersWorkspace = {
+  offers: [],
+  catalog: [],
+  partners: [],
 };
 
-export default function AdminOffersPage() {
+const verificationOptions: Array<{
+  value: AdminOfferVerificationMode;
+  label: string;
+}> = [
+  { value: "manual_review", label: "Manual review" },
+  { value: "api_confirmation", label: "API confirmation" },
+  { value: "renewal_confirmation", label: "Renewal confirmation" },
+  { value: "referral_conversion", label: "Referral conversion" },
+  { value: "receipt_scan", label: "Receipt scan" },
+  { value: "geo_checkin", label: "Location check-in" },
+  { value: "social_share", label: "Social share" },
+  { value: "community_savings", label: "Community savings" },
+  { value: "ecommerce_confirmation", label: "Commerce confirmation" },
+  { value: "mobility_confirmation", label: "Mobility confirmation" },
+  { value: "event_qr", label: "Event QR" },
+];
+
+type OfferForm = {
+  id: string;
+  expectedUpdatedAt: string;
+  catalogItemId: string;
+  partnerId: string;
+  subtitle: string;
+  ctaLabel: string;
+  verificationMode: AdminOfferVerificationMode;
+  deeplinkRoute: string;
+  externalUrl: string;
+  isFeatured: boolean;
+  isActive: boolean;
+  sortOrder: string;
+};
+
+const emptyForm: OfferForm = {
+  id: "",
+  expectedUpdatedAt: "",
+  catalogItemId: "",
+  partnerId: "",
+  subtitle: "",
+  ctaLabel: "View details",
+  verificationMode: "manual_review",
+  deeplinkRoute: "",
+  externalUrl: "",
+  isFeatured: false,
+  isActive: true,
+  sortOrder: "0",
+};
+
+const workspaceIsEmpty = (value: AdminOffersWorkspace) =>
+  value.offers.length === 0;
+
+const statusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading partner-offer catalogue",
+    detail: "Waiting for the first authenticated club-scoped snapshot.",
+  },
+  ready: {
+    label: "Partner-offer catalogue confirmed",
+    detail: "The bounded catalogue and its approved source options are current.",
+  },
+  empty: {
+    label: "No partner offers in this scope",
+    detail: "Create an offer only from a confirmed FET item and active partner.",
+  },
+  error: {
+    label: "Partner-offer catalogue unavailable",
+    detail: "Confirmed offers remain visible. Retry when service recovers.",
+  },
+  offline: {
+    label: "Partner-offer workspace is offline",
+    detail: "Confirmed offers remain visible; catalogue changes are locked.",
+  },
+  permission_denied: {
+    label: "Partner-offer access denied",
+    detail: "Offers, options, filters, selection, and the active draft were cleared.",
+  },
+  syncing: {
+    label: "Refreshing partner-offer catalogue",
+    detail: "Confirmed offers remain visible during the bounded refresh.",
+  },
+  conflict: {
+    label: "Partner-offer catalogue changed",
+    detail: "Review the refreshed offer before restarting the change.",
+  },
+  security_timeout: {
+    label: "Partner-offer request timed out",
+    detail: "No catalogue change was confirmed.",
+  },
+};
+
+function offerToForm(offer: AdminPartnerOffer): OfferForm {
+  return {
+    id: offer.id,
+    expectedUpdatedAt: offer.updatedAt,
+    catalogItemId: offer.catalogItemId,
+    partnerId: offer.partnerId,
+    subtitle: offer.subtitle,
+    ctaLabel: offer.ctaLabel,
+    verificationMode: offer.verificationMode,
+    deeplinkRoute: offer.deeplinkRoute ?? "",
+    externalUrl: offer.externalUrl ?? "",
+    isFeatured: offer.isFeatured,
+    isActive: offer.isActive,
+    sortOrder: offer.sortOrder.toString(),
+  };
+}
+
+function OffersWorkspace({
+  workspace,
+  status,
+  onStatusFailure,
+  onRefresh,
+  onInteractionChange,
+}: {
+  workspace: AdminOffersWorkspace;
+  status: AdminResourceStatus;
+  onStatusFailure: (error: unknown) => AdminResourceStatus;
+  onRefresh: () => Promise<void>;
+  onInteractionChange: (interaction: AdminResourceInteraction) => void;
+}) {
   const { access, client } = useAdminPortal();
-  const [offers, setOffers] = useState<AdminPartnerOffer[]>([]);
-  const [form, setForm] = useState(emptyForm);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [form, setForm] = useState<OfferForm>(emptyForm);
+  const [submitting, setSubmitting] = useState(false);
   const offerCollection = useAdminCollection({
-    records: offers,
+    records: workspace.offers,
     getId: (offer) => offer.id,
-    getSearchValues: (offer) => [offer.title, offer.description, offer.partnerName, offer.categoryTag, offer.originalValue, offer.isActive ? "active" : "inactive"],
-    getSortValue: (offer, key: "title" | "partner" | "cost" | "claimed" | "status") => {
+    getSearchValues: (offer) => [
+      offer.code,
+      offer.title,
+      offer.partnerName,
+      offer.partnerCategory,
+      offer.verificationMode,
+      offer.isFeatured ? "featured" : "",
+      offer.isActive ? "active" : "inactive",
+    ],
+    getSortValue: (
+      offer,
+      key: "title" | "partner" | "points" | "order" | "status",
+    ) => {
       switch (key) {
-        case "title": return offer.title;
-        case "partner": return offer.partnerName;
-        case "cost": return offer.fetCost;
-        case "claimed": return offer.claimedCount;
-        case "status": return offer.isActive;
+        case "title":
+          return offer.title;
+        case "partner":
+          return offer.partnerName;
+        case "points":
+          return offer.fetValue;
+        case "order":
+          return offer.sortOrder;
+        case "status":
+          return offer.isActive;
       }
     },
-    initialSortKey: "title" as const,
-    pageSize: 20,
+    initialSortKey: "order" as const,
+    pageSize: 25,
   });
 
-  const load = useCallback(async () => {
-    if (client == null) return;
-    setLoading(true);
-    try {
-      setOffers(await getAdminOffers(client, access));
-      setLoadError(null);
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Could not load offers.";
-      setLoadError(message);
-      showAdminToast(message, "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [access, client]);
+  const mutationLocked =
+    submitting || (status !== "ready" && status !== "empty");
+  const sourceOptionsAvailable =
+    workspace.catalog.length > 0 && workspace.partners.length > 0;
 
-  useEffect(() => {
-    if (client == null || !access.hasAccess) return;
-    load().catch(() => {});
-  }, [access.hasAccess, client, load]);
-
-  function beginEdit(offer: AdminPartnerOffer) {
-    setForm({
-      id: offer.id,
-      expectedUpdatedAt: offer.updatedAt,
-      title: offer.title,
-      description: offer.description,
-      partnerName: offer.partnerName,
-      fetCost: String(offer.fetCost),
-      originalValue: offer.originalValue,
-      categoryTag: offer.categoryTag,
-      imageUrl: offer.imageUrl ?? "",
-      redeemUrl: offer.redeemUrl ?? "",
-      totalStock: offer.totalStock == null ? "" : String(offer.totalStock),
-      isActive: offer.isActive,
-      startsAt: offer.startsAt ?? "",
-      expiresAt: offer.expiresAt ?? "",
-    });
-    showAdminToast(`Editing ${offer.title}.`, "info");
+  function selectOffer(offer: AdminPartnerOffer) {
+    setForm(offerToForm(offer));
+    onInteractionChange("selected");
+    showAdminToast("Partner offer selected for review.", "info");
   }
 
-  async function submitForm(formData: FormData) {
-    if (client == null) return;
-    showAdminToast(form.id ? "Saving offer..." : "Creating offer...", "info");
+  function clearForm() {
+    setForm(emptyForm);
+    onInteractionChange("idle");
+  }
+
+  async function submitOffer() {
+    if (client == null || mutationLocked || !sourceOptionsAvailable) return;
+    const sortOrder = Number(form.sortOrder);
+    if (
+      !form.catalogItemId ||
+      !form.partnerId ||
+      !form.ctaLabel.trim() ||
+      !Number.isInteger(sortOrder) ||
+      sortOrder < 0
+    ) {
+      showAdminToast(
+        "Choose a FET item and partner, add an action label, and use a valid whole-number order.",
+        "error",
+      );
+      return;
+    }
+
+    setSubmitting(true);
+    showAdminToast(
+      form.id ? "Saving partner offer..." : "Creating partner offer...",
+      "info",
+    );
     try {
-      const stockValue = String(formData.get("totalStock") ?? "").trim();
       await saveAdminOffer(client, access, {
         id: form.id || null,
         expectedUpdatedAt: form.expectedUpdatedAt || null,
-        title: String(formData.get("title") ?? ""),
-        description: String(formData.get("description") ?? ""),
-        partnerName: String(formData.get("partnerName") ?? ""),
-        fetCost: Number(formData.get("fetCost") ?? 0),
-        originalValue: String(formData.get("originalValue") ?? ""),
-        categoryTag: String(formData.get("categoryTag") ?? "reward"),
-        imageUrl: String(formData.get("imageUrl") ?? ""),
-        redeemUrl: String(formData.get("redeemUrl") ?? ""),
-        totalStock: stockValue ? Number(stockValue) : null,
-        isActive: formData.get("isActive") === "on",
-        startsAt: String(formData.get("startsAt") ?? "") || null,
-        expiresAt: String(formData.get("expiresAt") ?? "") || null,
+        catalogItemId: form.catalogItemId,
+        partnerId: form.partnerId,
+        subtitle: form.subtitle,
+        ctaLabel: form.ctaLabel,
+        verificationMode: form.verificationMode,
+        deeplinkRoute: form.deeplinkRoute || null,
+        externalUrl: form.externalUrl || null,
+        isFeatured: form.isFeatured,
+        isActive: form.isActive,
+        sortOrder,
       });
-      setForm(emptyForm);
-      await load();
-      showAdminToast("Offer saved.", "success");
+      await onRefresh();
+      clearForm();
+      showAdminToast("Partner offer saved.", "success");
     } catch (caught) {
-      if (isAdminMutationConflict(caught)) {
-        await load();
-      }
-      showAdminToast(caught instanceof Error ? caught.message : "Could not save offer.", "error");
+      onStatusFailure(caught);
+      if (isAdminMutationConflict(caught)) await onRefresh();
+      showAdminToast("Could not confirm the partner-offer change.", "error");
+    } finally {
+      setSubmitting(false);
     }
   }
 
   async function removeOffer(offer: AdminPartnerOffer) {
-    if (client == null) return;
+    if (client == null || mutationLocked) return;
     if (
       !confirmAdminDestructiveAction({
         action: "Delete",
         subject: offer.title,
-        scope: "Platform partner-offer catalogue",
-        impact: "The offer will be permanently removed from supporter redemption surfaces.",
+        scope: `${offer.partnerName} · active club ${access.clubId ?? "not selected"}`,
+        impact:
+          "The linked offer will be permanently removed from supporter partner journeys.",
         undo: "not_available",
       })
     ) {
       return;
     }
+
+    setSubmitting(true);
+    showAdminToast("Removing partner offer...", "info");
     try {
-      await deleteAdminOffer(
-        client,
-        access,
-        offer.id,
-        offer.updatedAt,
-      );
-      await load();
-      showAdminToast(`${offer.title} removed.`, "success");
+      await deleteAdminOffer(client, access, offer.id, offer.updatedAt);
+      await onRefresh();
+      if (form.id === offer.id) clearForm();
+      showAdminToast("Partner offer removed.", "success");
     } catch (caught) {
-      if (isAdminMutationConflict(caught)) {
-        await load();
-      }
-      showAdminToast(caught instanceof Error ? caught.message : "Could not remove offer.", "error");
+      onStatusFailure(caught);
+      if (isAdminMutationConflict(caught)) await onRefresh();
+      showAdminToast("Could not confirm partner-offer removal.", "error");
+    } finally {
+      setSubmitting(false);
     }
   }
 
   return (
-    <div className="section-grid">
-      <AdminPageHeader eyebrow="Engagement" title="Partner Offers" />
+    <div className="admin-offers-content-grid">
+      <AdminSurface
+        title={form.id ? "Review partner offer" : "Create partner offer"}
+      >
+        <p className="text-sm leading-6 text-[var(--admin-zinc-400)]">
+          Link one confirmed FET item to one active partner. Reward definitions
+          remain governed in the FET catalogue.
+        </p>
+        {!sourceOptionsAvailable ? (
+          <p className="admin-offers-source-warning" role="status">
+            An active FET catalogue item and partner are required before an
+            offer can be created.
+          </p>
+        ) : null}
+        <form
+          className="mt-5 grid min-w-0 gap-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void submitOffer();
+          }}
+        >
+          <div className="grid min-w-0 gap-4 md:grid-cols-2">
+            <label className="grid gap-2 text-sm font-semibold">
+              FET catalogue item
+              <select
+                required
+                value={form.catalogItemId}
+                disabled={mutationLocked}
+                onChange={(event) => {
+                  setForm((current) => ({
+                    ...current,
+                    catalogItemId: event.target.value,
+                  }));
+                  onInteractionChange("selected");
+                }}
+                className="dashboard-input"
+              >
+                <option value="">Choose an approved FET item</option>
+                {workspace.catalog.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.code} · {item.itemName} · {item.fetValue} pts
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="grid gap-2 text-sm font-semibold">
+              Active partner
+              <select
+                required
+                value={form.partnerId}
+                disabled={mutationLocked}
+                onChange={(event) => {
+                  setForm((current) => ({
+                    ...current,
+                    partnerId: event.target.value,
+                  }));
+                  onInteractionChange("selected");
+                }}
+                className="dashboard-input"
+              >
+                <option value="">Choose an active partner</option>
+                {workspace.partners.map((partner) => (
+                  <option key={partner.id} value={partner.id}>
+                    {partner.name} · {partner.category}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
 
-      <div className="grid gap-5 md:grid-cols-3">
-        <AdminStateCard label="Total Offers" value={loading ? "..." : offers.length.toString()} helper="In catalogue." icon={Gift} />
-        <AdminStateCard label="Active" value={loading ? "..." : offers.filter((o) => o.isActive).length.toString()} helper="Visible to fans." />
-        <AdminStateCard label="Claimed" value={loading ? "..." : offers.reduce((sum, o) => sum + o.claimedCount, 0).toString()} helper="Total redemptions." />
-      </div>
+          <label className="grid gap-2 text-sm font-semibold">
+            Supporter-facing subtitle
+            <textarea
+              value={form.subtitle}
+              maxLength={500}
+              rows={3}
+              disabled={mutationLocked}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  subtitle: event.target.value,
+                }))
+              }
+              className="dashboard-input min-h-24 resize-y"
+            />
+          </label>
 
-      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-        {/* Form */}
-        <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
-          <div className="flex items-center justify-between gap-3">
-            <p className="font-display text-3xl font-bold uppercase leading-none">{form.id ? "Edit offer" : "New offer"}</p>
-            {form.id ? <button type="button" onClick={() => setForm(emptyForm)} className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8">Clear</button> : null}
+          <div className="grid min-w-0 gap-4 md:grid-cols-2">
+            <label className="grid gap-2 text-sm font-semibold">
+              Action label
+              <input
+                required
+                value={form.ctaLabel}
+                maxLength={80}
+                disabled={mutationLocked}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    ctaLabel: event.target.value,
+                  }))
+                }
+                className="dashboard-input"
+              />
+            </label>
+            <label className="grid gap-2 text-sm font-semibold">
+              Verification mode
+              <select
+                value={form.verificationMode}
+                disabled={mutationLocked}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    verificationMode: event.target
+                      .value as AdminOfferVerificationMode,
+                  }))
+                }
+                className="dashboard-input"
+              >
+                {verificationOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-2 text-sm">Title<input name="title" required value={form.title} onChange={(e) => setForm((c) => ({ ...c, title: e.target.value }))} className="dashboard-input" /></label>
-            <label className="grid gap-2 text-sm">Partner name<input name="partnerName" required value={form.partnerName} onChange={(e) => setForm((c) => ({ ...c, partnerName: e.target.value }))} className="dashboard-input" /></label>
-          </div>
-          <label className="grid gap-2 text-sm">Description<textarea name="description" rows={3} value={form.description} onChange={(e) => setForm((c) => ({ ...c, description: e.target.value }))} className="dashboard-input min-h-20 resize-y" /></label>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <label className="grid gap-2 text-sm">FET cost<input type="number" name="fetCost" value={form.fetCost} onChange={(e) => setForm((c) => ({ ...c, fetCost: e.target.value }))} className="dashboard-input" /></label>
-            <label className="grid gap-2 text-sm">Original value<input name="originalValue" value={form.originalValue} onChange={(e) => setForm((c) => ({ ...c, originalValue: e.target.value }))} className="dashboard-input" placeholder="e.g. 5,000 RWF" /></label>
-            <label className="grid gap-2 text-sm">Category<input name="categoryTag" value={form.categoryTag} onChange={(e) => setForm((c) => ({ ...c, categoryTag: e.target.value }))} className="dashboard-input" /></label>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-2 text-sm">Image URL<input name="imageUrl" value={form.imageUrl} onChange={(e) => setForm((c) => ({ ...c, imageUrl: e.target.value }))} className="dashboard-input" /></label>
-            <label className="grid gap-2 text-sm">Redeem URL<input name="redeemUrl" value={form.redeemUrl} onChange={(e) => setForm((c) => ({ ...c, redeemUrl: e.target.value }))} className="dashboard-input" /></label>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <label className="grid gap-2 text-sm">Total stock<input type="number" name="totalStock" value={form.totalStock} onChange={(e) => setForm((c) => ({ ...c, totalStock: e.target.value }))} className="dashboard-input" placeholder="Unlimited if empty" /></label>
-            <label className="grid gap-2 text-sm">Starts at<input type="date" name="startsAt" value={form.startsAt} onChange={(e) => setForm((c) => ({ ...c, startsAt: e.target.value }))} className="dashboard-input" /></label>
-            <label className="grid gap-2 text-sm">Expires at<input type="date" name="expiresAt" value={form.expiresAt} onChange={(e) => setForm((c) => ({ ...c, expiresAt: e.target.value }))} className="dashboard-input" /></label>
-          </div>
-          <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm"><input type="checkbox" name="isActive" checked={form.isActive} onChange={(e) => setForm((c) => ({ ...c, isActive: e.target.checked }))} />Active (visible to fans)</label>
-          <button type="submit" className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary">{form.id ? "Save offer" : "Add offer"}</button>
-        </form>
 
-        {/* List */}
-        <section className="glass-panel rounded-[32px] p-6">
-          <p className="font-display text-3xl font-bold uppercase leading-none">Catalogue</p>
-          <AdminFilterBar className="mt-5" actions={<div className="flex flex-wrap gap-2">{(["title", "partner", "cost", "claimed", "status"] as const).map((key) => <button key={key} type="button" data-active={offerCollection.sortKey === key} onClick={() => offerCollection.toggleSort(key)} className="dashboard-chip">Sort {key}</button>)}</div>}>
-            <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search partner offers</span><input type="search" value={offerCollection.query} onChange={(event) => offerCollection.setQuery(event.target.value)} placeholder="Search offer, partner, category, or state" /></label>
-          </AdminFilterBar>
-          <div className="mt-5 space-y-3">
-            {loading ? Array.from({ length: 3 }).map((_, i) => <div key={i} className="rounded-[26px] border border-border-soft bg-white/5 p-5"><Skeleton className="skeleton-text h-5 w-2/5" /><Skeleton className="skeleton-text mt-2 h-3 w-full" /></div>) : null}
-            {!loading && loadError ? (
-              <AdminErrorState title="Offers could not be loaded" description={loadError} onRetry={() => { load().catch(() => {}); }} />
+          <div className="grid min-w-0 gap-4 md:grid-cols-2">
+            <label className="grid gap-2 text-sm font-semibold">
+              Internal deep link
+              <input
+                value={form.deeplinkRoute}
+                maxLength={512}
+                placeholder="/fanzone/offers"
+                disabled={mutationLocked}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    deeplinkRoute: event.target.value,
+                  }))
+                }
+                className="dashboard-input"
+              />
+            </label>
+            <label className="grid gap-2 text-sm font-semibold">
+              External HTTPS URL
+              <input
+                type="url"
+                value={form.externalUrl}
+                maxLength={2048}
+                placeholder="https://partner.example/offer"
+                disabled={mutationLocked}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    externalUrl: event.target.value,
+                  }))
+                }
+                className="dashboard-input"
+              />
+            </label>
+          </div>
+
+          <label className="grid gap-2 text-sm font-semibold">
+            Catalogue order
+            <input
+              type="number"
+              min={0}
+              max={1_000_000}
+              step={1}
+              value={form.sortOrder}
+              disabled={mutationLocked}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  sortOrder: event.target.value,
+                }))
+              }
+              className="dashboard-input"
+            />
+          </label>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="admin-offers-check">
+              <input
+                type="checkbox"
+                checked={form.isFeatured}
+                disabled={mutationLocked}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    isFeatured: event.target.checked,
+                  }))
+                }
+              />
+              Featured placement
+            </label>
+            <label className="admin-offers-check">
+              <input
+                type="checkbox"
+                checked={form.isActive}
+                disabled={mutationLocked}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    isActive: event.target.checked,
+                  }))
+                }
+              />
+              Active for supporters
+            </label>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="submit"
+              disabled={mutationLocked || !sourceOptionsAvailable}
+              className="admin-offers-primary"
+            >
+              {submitting
+                ? "Saving…"
+                : form.id
+                  ? "Save partner offer"
+                  : "Create partner offer"}
+            </button>
+            {form.id ? (
+              <button
+                type="button"
+                disabled={mutationLocked}
+                onClick={clearForm}
+                className="admin-offers-secondary"
+              >
+                Clear selection
+              </button>
             ) : null}
-            {!loading && !loadError && offerCollection.pageResult.items.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">{offerCollection.query ? "No partner offers match the current search." : "No partner offers yet. Create one using the form."}</p> : null}
-            {!loading && !loadError && offerCollection.pageResult.items.map((offer) => (
-              <article key={offer.id} className={cn("card-interactive flex items-start gap-4 rounded-[26px] border border-border-soft p-5 transition", offer.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border-soft bg-white/5">
-                  <Gift size={20} className="text-club-accent" />
+          </div>
+        </form>
+      </AdminSurface>
+
+      <AdminSurface
+        title="Partner-offer catalogue"
+      >
+        <p className="text-sm leading-6 text-[var(--admin-zinc-400)]">
+          Strict source-owned reward values and partner identities; no
+          synthetic stock or claim totals.
+        </p>
+        <AdminFilterBar
+          className="mt-5"
+          actions={
+            <div className="flex flex-wrap gap-2">
+              {(
+                ["title", "partner", "points", "order", "status"] as const
+              ).map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  disabled={mutationLocked}
+                  data-active={offerCollection.sortKey === key}
+                  onClick={() => offerCollection.toggleSort(key)}
+                  className="dashboard-chip"
+                >
+                  Sort {key}
+                </button>
+              ))}
+            </div>
+          }
+        >
+          <label className="admin-search-field">
+            <Search size={16} aria-hidden="true" />
+            <span className="sr-only">Search partner offers</span>
+            <input
+              type="search"
+              value={offerCollection.query}
+              disabled={mutationLocked}
+              onChange={(event) =>
+                offerCollection.setQuery(event.target.value)
+              }
+              placeholder="Search offer, partner, verification, or status"
+            />
+          </label>
+        </AdminFilterBar>
+
+        <div className="mt-5 space-y-3">
+          {offerCollection.pageResult.items.length === 0 ? (
+            <p className="admin-offers-empty">
+              {offerCollection.query
+                ? "No partner offers match the current search."
+                : "No partner offers are currently confirmed for this club."}
+            </p>
+          ) : (
+            offerCollection.pageResult.items.map((offer) => (
+              <article
+                key={offer.id}
+                className={cn(
+                  "admin-offer-card",
+                  form.id === offer.id && "admin-offer-card-selected",
+                )}
+              >
+                <div className="admin-offer-icon" aria-hidden="true">
+                  <Gift size={20} />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-display text-2xl font-bold uppercase leading-none">{offer.title}</p>
-                  <p className="mt-1 truncate text-sm text-slate-300">{offer.partnerName} · {offer.categoryTag}</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-club-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white">{offer.fetCost} pts</span>
-                    {offer.originalValue ? <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-slate-300">{offer.originalValue}</span> : null}
-                    <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-slate-400">{offer.claimedCount} claimed</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="admin-offer-code">{offer.code}</p>
+                      <h3 className="admin-offer-title">{offer.title}</h3>
+                    </div>
+                    <span
+                      className={cn(
+                        "admin-offer-status",
+                        offer.isActive
+                          ? "admin-offer-status-active"
+                          : "admin-offer-status-inactive",
+                      )}
+                    >
+                      {offer.isActive ? "Active" : "Inactive"}
+                    </span>
                   </div>
+                  <p className="admin-offer-partner">
+                    {offer.partnerName} · {offer.partnerCategory}
+                  </p>
+                  {offer.subtitle ? (
+                    <p className="admin-offer-subtitle">{offer.subtitle}</p>
+                  ) : null}
+                  <dl className="admin-offer-facts">
+                    <div>
+                      <dt>Reward</dt>
+                      <dd>{offer.fetValue} FET</dd>
+                    </div>
+                    <div>
+                      <dt>Verification</dt>
+                      <dd>{offer.verificationMode.replaceAll("_", " ")}</dd>
+                    </div>
+                    <div>
+                      <dt>Order</dt>
+                      <dd>{offer.sortOrder}</dd>
+                    </div>
+                  </dl>
+                  {offer.isFeatured ? (
+                    <p className="admin-offer-featured">
+                      <Star size={16} aria-hidden="true" />
+                      Featured placement
+                    </p>
+                  ) : null}
                 </div>
-                <div className="flex flex-shrink-0 gap-2">
-                  <button type="button" onClick={() => beginEdit(offer)} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-white/8" aria-label={`Edit ${offer.title}`}><Pencil size={14} aria-hidden="true" /></button>
-                  <button type="button" onClick={() => { removeOffer(offer).catch(() => {}); }} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300" aria-label={`Remove ${offer.title}`}><Trash2 size={14} aria-hidden="true" /></button>
+                <div className="admin-offer-actions">
+                  <button
+                    type="button"
+                    disabled={mutationLocked}
+                    onClick={() => selectOffer(offer)}
+                    className="admin-offer-action"
+                    aria-label={`Edit ${offer.title}`}
+                    title={`Edit ${offer.title}`}
+                  >
+                    <Pencil size={17} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    disabled={mutationLocked}
+                    onClick={() => void removeOffer(offer)}
+                    className="admin-offer-action admin-offer-action-danger"
+                    aria-label={`Delete ${offer.title}`}
+                    title={`Delete ${offer.title}`}
+                  >
+                    <Trash2 size={17} aria-hidden="true" />
+                  </button>
                 </div>
               </article>
+            ))
+          )}
+        </div>
+
+        <AdminPagination
+          page={offerCollection.pageResult}
+          onPageChange={offerCollection.setPage}
+          label="Partner offers"
+        />
+      </AdminSurface>
+    </div>
+  );
+}
+
+export default function AdminOffersPage() {
+  const { access, client } = useAdminPortal();
+  const hydrated = useHydrated();
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
+
+  const loadWorkspace = useCallback(
+    async (signal: AbortSignal) => {
+      if (client == null) return emptyWorkspace;
+      return getAdminOffers(client, access, { signal });
+    },
+    [access, client],
+  );
+
+  const clearDeniedState = useCallback(() => {
+    setInteraction("idle");
+  }, []);
+
+  const {
+    data: workspace,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState({
+    enabled: hydrated && client != null && access.hasAccess,
+    emptyValue: emptyWorkspace,
+    isEmpty: workspaceIsEmpty,
+    load: loadWorkspace,
+    normalize: normalizeAdminOffersWorkspace,
+    onPermissionDenied: clearDeniedState,
+    resourceLabel: "partner-offer catalogue",
+  });
+
+  const mutationLocked = status !== "ready" && status !== "empty";
+  const unrecoveredFailure =
+    !hasConfirmed &&
+    (status === "error" ||
+      status === "offline" ||
+      status === "permission_denied" ||
+      status === "conflict" ||
+      status === "security_timeout");
+  const featuredCount = workspace.offers.filter(
+    (offer) => offer.isFeatured,
+  ).length;
+
+  return (
+    <section
+      className="admin-offers-state-surface section-grid min-w-0 max-w-full"
+      data-admin-offers-status={status}
+      data-admin-offers-interaction={interaction}
+      data-admin-offers-refresh-disabled={busy}
+      data-admin-offers-mutation-disabled={mutationLocked}
+      aria-busy={busy || undefined}
+    >
+      <AdminPageHeader
+        eyebrow="Engagement"
+        title="Partner offers"
+        meta={
+          <span className="admin-meta-chip">
+            Club-scoped FET and partner links
+          </span>
+        }
+      />
+
+      <AdminResourceStatusBanner
+        status={status}
+        label={statusCopy[status].label}
+        detail={statusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh partner-offer catalogue"
+        selected={interaction === "selected"}
+        onRefresh={() => void refresh()}
+        onInteractionChange={setInteraction}
+      />
+
+      <div className="admin-offers-metrics-grid">
+        <AdminStateCard
+          label="Catalogue links"
+          value={initialLoading ? "..." : workspace.offers.length.toString()}
+          helper="Strict club-scoped window, capped at 500."
+          icon={Gift}
+        />
+        <AdminStateCard
+          label="Active"
+          value={
+            initialLoading
+              ? "..."
+              : workspace.offers
+                  .filter((offer) => offer.isActive)
+                  .length.toString()
+          }
+          helper="Currently available to supporter journeys."
+          icon={ShieldCheck}
+        />
+        <AdminStateCard
+          label="Featured"
+          value={initialLoading ? "..." : featuredCount.toString()}
+          helper="Approved priority placements."
+          icon={Star}
+        />
+      </div>
+
+      {unrecoveredFailure ? (
+        <AdminErrorState
+          title={statusCopy[status].label}
+          description={statusCopy[status].detail}
+          onRetry={
+            status === "permission_denied" ? undefined : () => void refresh()
+          }
+          retryLabel="Retry partner-offer catalogue"
+        />
+      ) : initialLoading ? (
+        <AdminSurface title="Partner-offer workspace">
+          <div className="grid gap-4 xl:grid-cols-2">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-4"
+              >
+                <Skeleton className="skeleton-text h-5 w-1/3" />
+                <Skeleton className="skeleton-text mt-3 h-24 w-full" />
+              </div>
             ))}
           </div>
-          <AdminPagination page={offerCollection.pageResult} onPageChange={offerCollection.setPage} label="Partner offers" />
-        </section>
-      </div>
-    </div>
+        </AdminSurface>
+      ) : (
+        <OffersWorkspace
+          workspace={workspace}
+          status={status}
+          onStatusFailure={applyFailure}
+          onRefresh={refresh}
+          onInteractionChange={setInteraction}
+        />
+      )}
+    </section>
   );
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     Widget brandMark = AfriBrandMark(
       size: 180,
       borderRadius: ShapeTokens.chromeRadius,
-      semanticLabel: '${RuntimeBranding.displayAppName} loading',
+      semanticLabel: context.afriL10n.splashLoadingSemantic(
+        RuntimeBranding.displayAppName,
+      ),
     );
 
     if (!reduceMotion) {

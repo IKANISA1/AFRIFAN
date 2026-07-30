@@ -107,9 +107,9 @@ export function GlobalNav({
       </div>
 
       {/* Main Nav */}
-      <nav className="page-shell flex h-16 items-center justify-between gap-8 px-4 lg:h-20 lg:px-6">
-        <Link href="/" className="flex shrink-0 items-center gap-3">
-          <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-white/20 bg-white lg:h-12 lg:w-12">
+      <nav className="page-shell flex h-16 items-center justify-between gap-[16px] px-[16px] lg:h-20 lg:px-[24px]">
+        <Link href="/" className="flex shrink-0 items-center gap-[12px]">
+          <div className="relative h-[40px] w-[40px] overflow-hidden rounded-full border-2 border-white/20 bg-white lg:h-[48px] lg:w-[48px]">
             <Image
               src={logoUrl}
               alt={club.clubName}
@@ -165,7 +165,7 @@ export function GlobalNav({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-[12px]">
           <button
             type="button"
             aria-label="Search site"
@@ -175,7 +175,7 @@ export function GlobalNav({
           </button>
           <Link
             href={resolveFanAppHref()}
-            className="flex items-center gap-2 rounded-full bg-[var(--club-accent)] px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95"
+            className="flex min-w-0 items-center gap-[8px] rounded-full bg-[var(--club-accent)] px-[20px] py-[10px] text-xs font-bold uppercase tracking-wider text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95"
           >
             <User size={16} />
             <span className="hidden sm:inline">Fan Portal</span>
@@ -184,7 +184,7 @@ export function GlobalNav({
           <button
             type="button"
             aria-label="Open menu"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white xl:hidden"
+            className="site-menu-trigger flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-white/10 text-white xl:hidden"
           >
             <Menu size={20} />
           </button>

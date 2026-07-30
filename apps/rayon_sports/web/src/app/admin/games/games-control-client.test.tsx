@@ -40,7 +40,8 @@ function renderSubject() {
         similarPromptCount: 3,
         hasSimilarPrompt: true,
         duplicateRiskLevel: "exact",
-        normalizedPromptSignature: "which verified fact belongs to rayon sports",
+        normalizedPromptSignature:
+          "which verified fact belongs to rayon sports",
         sourceTitle: "Rayon source",
         sourceUrl: null,
         sourceTrustTier: "official",
@@ -150,7 +151,9 @@ describe("GamesControlClient", () => {
     fireEvent.change(screen.getByLabelText(/tv device id/i), {
       target: { value: "00000000-0000-4000-8000-000000000099" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /revoke tv credential/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /revoke tv credential/i }),
+    );
 
     await waitFor(() => {
       expect(actionClient.revokeTvDevice).toHaveBeenCalledWith({
@@ -205,8 +208,9 @@ describe("GamesControlClient", () => {
         offset: 0,
       });
     });
-    expect(screen.getByText("Which verified fact belongs to Rayon Sports?"))
-      .toBeInTheDocument();
+    expect(
+      screen.getByText("Which verified fact belongs to Rayon Sports?"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Exact duplicate (2)")).toBeInTheDocument();
     expect(screen.getByText(/official/)).toBeInTheDocument();
     expect(screen.getByText(/risk: exact/)).toBeInTheDocument();
@@ -296,9 +300,12 @@ describe("GamesControlClient", () => {
         entityType: "game_session",
       });
     });
-    expect(screen.getAllByText("game_session_created").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("game_session_created").length).toBeGreaterThan(
+      0,
+    );
     expect(screen.getByText("Audit detail")).toBeInTheDocument();
-    expect(screen.getByText("Actor admin-1")).toBeInTheDocument();
+    expect(screen.queryByText("Actor admin-1")).not.toBeInTheDocument();
+    expect(screen.getByText("System")).toBeInTheDocument();
     expect(screen.getByText(/question_count/)).toBeInTheDocument();
     expect(screen.getByText(/tv_device_id/)).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent(
@@ -377,7 +384,7 @@ describe("GamesControlClient", () => {
     );
   });
 
-  it("shows recoverable errors from game actions", async () => {
+  it("shows controlled recoverable errors without rendering provider diagnostics", async () => {
     const actionClient = {
       createSession: vi.fn().mockResolvedValue({
         sessionId: "session-1",
@@ -408,7 +415,9 @@ describe("GamesControlClient", () => {
         questionCount: 20,
       }),
       listAuditLog: vi.fn().mockResolvedValue([]),
-      openQuestion: vi.fn().mockRejectedValue(new Error("Club admin required.")),
+      openQuestion: vi
+        .fn()
+        .mockRejectedValue(new Error("Club admin required.")),
       revealQuestion: vi.fn().mockResolvedValue({ success: true }),
       advanceQuestion: vi.fn().mockResolvedValue({
         sessionId: "session-1",
@@ -441,8 +450,11 @@ describe("GamesControlClient", () => {
 
     await waitFor(() => {
       expect(screen.getByRole("status")).toHaveTextContent(
-        "Club admin required.",
+        "Game control action failed.",
       );
     });
+    expect(screen.getByRole("status")).not.toHaveTextContent(
+      "Club admin required.",
+    );
   });
 });

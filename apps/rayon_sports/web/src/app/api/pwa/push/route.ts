@@ -1,7 +1,11 @@
 import webpush from "web-push";
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getActiveClubReference } from "@/lib/club-context";
+import {
+  controlledApiFailureResponse,
+  controlledApiJson,
+  withControlledApiTimeout,
+} from "@/lib/controlled-api-response";
 import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
@@ -33,9 +37,6 @@ type UnsubscribeBody = {
 type TestBody = {
   action: "test";
   subscription: PushSubscriptionPayload;
-  title?: string;
-  body?: string;
-  url?: string;
 };
 
 type PushBody = SubscribeBody | UnsubscribeBody | TestBody;
@@ -79,10 +80,21 @@ function isSubscriptionPayload(
 
   const entry = value as Record<string, unknown>;
   const keys = entry.keys as Record<string, unknown> | undefined;
+  let endpoint: URL;
+  try {
+    endpoint = new URL(typeof entry.endpoint === "string" ? entry.endpoint : "");
+  } catch {
+    return false;
+  }
   return (
-    typeof entry.endpoint === "string" &&
+    endpoint.protocol === "https:" &&
+    endpoint.toString().length <= 2_048 &&
     typeof keys?.auth === "string" &&
-    typeof keys?.p256dh === "string"
+    keys.auth.length >= 8 &&
+    keys.auth.length <= 512 &&
+    typeof keys?.p256dh === "string" &&
+    keys.p256dh.length >= 32 &&
+    keys.p256dh.length <= 512
   );
 }
 
@@ -123,165 +135,185 @@ export async function POST(request: NextRequest) {
 
   const body = (await request.json().catch(() => ({}))) as Partial<PushBody>;
   if (!body.action) {
-    return NextResponse.json(
-      { error: "Push action is required." },
-      { status: 400 },
+    return controlledApiJson(
+      {
+        code: "PWA_PUSH_EMPTY",
+        error: "Push action is required.",
+      },
+      400,
     );
   }
 
   const adminClient = getAdminSupabase();
-  const pushSubscriptions =
-    adminClient == null
-      ? null
-      : (adminClient as unknown as {
-          from: (table: "web_push_subscriptions") => WebPushSubscriptionsTable;
-        }).from("web_push_subscriptions");
-  const serverClient = await getServerSupabase();
-  const {
-    data: { user },
-  } = serverClient
-    ? await serverClient.auth.getUser()
-    : { data: { user: null } };
-  const club = await getActiveClubReference();
-
-  if (body.action === "subscribe") {
-    if (!isSubscriptionPayload(body.subscription)) {
-      return NextResponse.json(
-        { error: "A valid push subscription is required." },
-        { status: 400 },
-      );
-    }
-
-    if (adminClient == null) {
-      return NextResponse.json(
-        { error: "Server admin client is not configured." },
-        { status: 503 },
-      );
-    }
-
-    if (pushSubscriptions == null) {
-      return NextResponse.json(
-        { error: "Server admin client is not configured." },
-        { status: 503 },
-      );
-    }
-
-    const result = await pushSubscriptions.upsert(
-      {
-        club_id: club.slug,
-        user_id: user?.id ?? null,
-        session_id: request.cookies.get("sb-access-token")?.value ?? null,
-        surface: body.surface ?? "site",
-        endpoint: body.subscription.endpoint,
-        p256dh: body.subscription.keys.p256dh,
-        auth: body.subscription.keys.auth,
-        path: body.path ?? request.nextUrl.pathname,
-        language_code:
-          request.headers.get("accept-language")?.split(",")[0] ?? null,
-        user_agent: request.headers.get("user-agent"),
-        disabled_at: null,
-        last_seen_at: new Date().toISOString(),
-      },
-      {
-        onConflict: "endpoint",
-      },
+  if (adminClient == null) {
+    return controlledApiFailureResponse(
+      new Error("Push storage is unavailable."),
+      "PWA_PUSH",
     );
-
-    if (result.error) {
-      return NextResponse.json(
-        { error: result.error.message },
-        { status: 500 },
-      );
-    }
-
-    return NextResponse.json({ success: true });
   }
+  const pushSubscriptions = (adminClient as unknown as {
+    from: (table: "web_push_subscriptions") => WebPushSubscriptionsTable;
+  }).from("web_push_subscriptions");
 
-  if (body.action === "unsubscribe") {
-    if (!body.endpoint?.trim()) {
-      return NextResponse.json(
-        { error: "Push endpoint is required." },
-        { status: 400 },
-      );
-    }
+  try {
+    const serverClient = await withControlledApiTimeout(getServerSupabase());
+    const {
+      data: { user },
+    } = serverClient
+      ? await withControlledApiTimeout(serverClient.auth.getUser())
+      : { data: { user: null } };
+    const club = await withControlledApiTimeout(getActiveClubReference());
 
-    if (adminClient == null) {
-      return NextResponse.json({ success: true, stored: false });
-    }
-
-    if (pushSubscriptions == null) {
-      return NextResponse.json({ success: true, stored: false });
-    }
-
-    const result = await pushSubscriptions
-      .update({
-        disabled_at: new Date().toISOString(),
-      })
-      .eq("endpoint", body.endpoint.trim());
-
-    if (result.error) {
-      return NextResponse.json(
-        { error: result.error.message },
-        { status: 500 },
-      );
-    }
-
-    return NextResponse.json({ success: true });
-  }
-
-  if (body.action === "test") {
-    if (!isSubscriptionPayload(body.subscription)) {
-      return NextResponse.json(
-        { error: "A valid push subscription is required." },
-        { status: 400 },
-      );
-    }
-
-    const vapid = resolveVapidConfig();
-    if (!vapid.publicKey || !vapid.privateKey) {
-      return NextResponse.json(
-        { success: false, reason: "missing-vapid-config" },
-        { status: 202 },
-      );
-    }
-
-    try {
-      await webpush.sendNotification(
-        {
-          endpoint: body.subscription.endpoint,
-          keys: {
-            auth: body.subscription.keys.auth,
-            p256dh: body.subscription.keys.p256dh,
+    if (body.action === "subscribe") {
+      if (!isSubscriptionPayload(body.subscription)) {
+        return controlledApiJson(
+          {
+            code: "PWA_PUSH_EMPTY",
+            error: "A valid push subscription is required.",
           },
-        },
-        JSON.stringify({
-          title: body.title ?? "Official club alerts enabled",
-          body:
-            body.body ??
-            "You will now receive timely match, membership, and supporter updates.",
-          url: body.url ?? "/supporters",
-          icon: "/brand-mark.svg",
-          badge: "/brand-mark.svg",
-          tag: "africlub-test-alert",
-          requireInteraction: false,
-          actions: [
-            { action: "open", title: "Open app" },
-            { action: "dismiss", title: "Dismiss" },
-          ],
-          badgeCount: 1,
-        }),
+          400,
+        );
+      }
+
+      const result = await withControlledApiTimeout(
+        pushSubscriptions.upsert(
+          {
+            club_id: club.slug,
+            user_id: user?.id ?? null,
+            // Never persist the Supabase access-token cookie as a session ID.
+            session_id: null,
+            surface:
+              typeof body.surface === "string"
+                ? body.surface.trim().slice(0, 32) || "site"
+                : "site",
+            endpoint: body.subscription.endpoint,
+            p256dh: body.subscription.keys.p256dh,
+            auth: body.subscription.keys.auth,
+            path:
+              typeof body.path === "string" && body.path.startsWith("/")
+                ? body.path.slice(0, 512)
+                : request.nextUrl.pathname,
+            language_code:
+              request.headers.get("accept-language")?.split(",")[0]?.slice(0, 32) ??
+              null,
+            user_agent:
+              request.headers.get("user-agent")?.slice(0, 512) ?? null,
+            disabled_at: null,
+            last_seen_at: new Date().toISOString(),
+          },
+          {
+            onConflict: "endpoint",
+          },
+        ),
       );
-      return NextResponse.json({ success: true });
-    } catch (error) {
-      return NextResponse.json(
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      return controlledApiJson(
         {
-          error:
-            error instanceof Error ? error.message : "Push delivery failed.",
+          code: "PWA_PUSH_SUBSCRIBED",
+          success: true,
         },
-        { status: 500 },
+        201,
       );
     }
-  }
 
-  return NextResponse.json({ error: "Unknown push action." }, { status: 400 });
+    if (body.action === "unsubscribe") {
+      if (!body.endpoint?.trim()) {
+        return controlledApiJson(
+          {
+            code: "PWA_PUSH_EMPTY",
+            error: "Push endpoint is required.",
+          },
+          400,
+        );
+      }
+
+      const result = await withControlledApiTimeout(
+        pushSubscriptions
+          .update({
+            disabled_at: new Date().toISOString(),
+          })
+          .eq("endpoint", body.endpoint.trim()),
+      );
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      return controlledApiJson({
+        code: "PWA_PUSH_UNSUBSCRIBED",
+        success: true,
+      });
+    }
+
+    if (body.action === "test") {
+      if (!isSubscriptionPayload(body.subscription)) {
+        return controlledApiJson(
+          {
+            code: "PWA_PUSH_EMPTY",
+            error: "A valid push subscription is required.",
+          },
+          400,
+        );
+      }
+
+      const vapid = resolveVapidConfig();
+      if (!vapid.publicKey || !vapid.privateKey) {
+        return controlledApiJson(
+          {
+            code: "PWA_PUSH_SYNCING",
+            success: false,
+            retryable: true,
+            reason: "Push delivery is not configured yet.",
+          },
+          202,
+        );
+      }
+
+      await withControlledApiTimeout(
+        webpush.sendNotification(
+          {
+            endpoint: body.subscription.endpoint,
+            keys: {
+              auth: body.subscription.keys.auth,
+              p256dh: body.subscription.keys.p256dh,
+            },
+          },
+          JSON.stringify({
+            title: "Official club alerts",
+            body:
+            "You will now receive timely match, membership, and supporter updates.",
+            url: "/supporters",
+            icon: "/brand-mark.svg",
+            badge: "/brand-mark.svg",
+            tag: "africlub-test-alert",
+            requireInteraction: false,
+            actions: [
+              { action: "open", title: "Open app" },
+              { action: "dismiss", title: "Dismiss" },
+            ],
+            badgeCount: 1,
+          }),
+        ),
+      );
+
+      return controlledApiJson({
+        code: "PWA_PUSH_DELIVERED",
+        success: true,
+      });
+    }
+
+    return controlledApiJson(
+      {
+        code: "PWA_PUSH_EMPTY",
+        error: "Unknown push action.",
+      },
+      400,
+    );
+  } catch (error) {
+    return controlledApiFailureResponse(error, "PWA_PUSH");
+  }
 }

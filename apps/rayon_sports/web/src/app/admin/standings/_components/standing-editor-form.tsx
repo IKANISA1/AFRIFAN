@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { Dispatch, SetStateAction } from "react";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { saveAdminStandingRow } from "@/lib/data/admin/standings";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
@@ -13,6 +13,8 @@ interface StandingEditorFormProps {
   access: AdminAccess;
   onSaved: () => Promise<void>;
   onConflict: () => Promise<void>;
+  onFailure?: (error: unknown) => void;
+  onCancel?: () => void;
 }
 
 export function StandingEditorForm({
@@ -22,6 +24,8 @@ export function StandingEditorForm({
   access,
   onSaved,
   onConflict,
+  onFailure,
+  onCancel,
 }: StandingEditorFormProps) {
   async function submitForm(formData: FormData) {
     if (client == null) return;
@@ -49,9 +53,11 @@ export function StandingEditorForm({
     } catch (caught) {
       if (isAdminMutationConflict(caught)) {
         await onConflict();
+        return;
       }
+      onFailure?.(caught);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not save standing.",
+        "Could not confirm the standings change.",
         "error",
       );
     }
@@ -63,15 +69,29 @@ export function StandingEditorForm({
         <p className="font-display text-3xl font-bold uppercase leading-none">
           {form.id ? "Edit row" : "New row"}
         </p>
-        {form.id ? (
-          <button
-            type="button"
-            onClick={() => setForm(emptyForm)}
-            className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
-          >
-            Clear
-          </button>
-        ) : null}
+        <div className="flex items-center gap-2">
+          {onCancel ? (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+            >
+              Close
+            </button>
+          ) : null}
+          {form.id ? (
+            <button
+              type="button"
+              onClick={() => {
+                setForm(emptyForm);
+                showAdminToast("Form cleared.", "info");
+              }}
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+            >
+              Clear
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -176,7 +196,7 @@ export function StandingEditorForm({
 
       <button
         type="submit"
-        className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+        className="min-h-12 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
       >
         {form.id ? "Save row" : "Add row"}
       </button>

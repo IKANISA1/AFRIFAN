@@ -168,7 +168,7 @@ async function safeMaybeCount(
   return error ? 0 : (count ?? 0);
 }
 
-export async function getApprovedPublicVenues(
+async function loadApprovedPublicVenues(
   client: SupabaseClient | null = getReadOnlySupabase(),
 ): Promise<PublicVenueProfile[]> {
   if (client == null) {
@@ -183,11 +183,26 @@ export async function getApprovedPublicVenues(
     .order("display_name", { ascending: true })
     .limit(12);
 
-  if (response.error || !Array.isArray(response.data)) {
-    return fallbackVenueProfiles;
-  }
+  if (response.error) throw response.error;
+  if (!Array.isArray(response.data)) return [];
 
   return response.data.map((row) => mapVenue(row as Record<string, unknown>));
+}
+
+export async function getApprovedPublicVenuesStrict(
+  client: SupabaseClient | null = getReadOnlySupabase(),
+): Promise<PublicVenueProfile[]> {
+  return loadApprovedPublicVenues(client);
+}
+
+export async function getApprovedPublicVenues(
+  client: SupabaseClient | null = getReadOnlySupabase(),
+): Promise<PublicVenueProfile[]> {
+  try {
+    return await loadApprovedPublicVenues(client);
+  } catch {
+    return fallbackVenueProfiles;
+  }
 }
 
 export async function getVenuePortalSnapshot(

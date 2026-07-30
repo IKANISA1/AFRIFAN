@@ -1,16 +1,18 @@
 import 'dart:async';
 
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-/// Admin screen for viewing prediction fixtures, entering match results,
-/// and triggering one-click settlement via `prediction_admin_settle`.
+import '../admin_settlement_controller.dart';
+
+/// Bounded, role-gated prediction settlement workspace.
 class FixtureSettlementScreen extends ConsumerStatefulWidget {
-  const FixtureSettlementScreen({super.key});
+  const FixtureSettlementScreen({this.firstActionFocusNode, super.key});
+
+  final FocusNode? firstActionFocusNode;
 
   @override
   ConsumerState<FixtureSettlementScreen> createState() =>
@@ -19,131 +21,74 @@ class FixtureSettlementScreen extends ConsumerStatefulWidget {
 
 class _FixtureSettlementScreenState
     extends ConsumerState<FixtureSettlementScreen> {
-  List<Map<String, dynamic>> _fixtures = const <Map<String, dynamic>>[];
-  bool _isLoading = true;
-  String? _error;
   String _statusFilter = 'scheduled';
 
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_loadFixtures());
+  List<AdminSettlementFixture> _filtered(AdminSettlementSnapshot snapshot) {
+    if (_statusFilter == 'all') return snapshot.fixtures;
+    return snapshot.fixtures
+        .where((fixture) => fixture.status == _statusFilter)
+        .toList(growable: false);
   }
 
-  Future<void> _loadFixtures() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final client = ref.read(supabaseClientProvider);
-      final baseQuery = client.schema('football').from('fixtures').select('''
-            id, status, stage_name, group_name,
-            kickoff_at, venue_city, venue_country,
-            home_score, away_score,
-            home_team:teams!fixtures_home_team_id_fkey(id, name, short_name),
-            away_team:teams!fixtures_away_team_id_fkey(id, name, short_name),
-            competition:competitions!fixtures_competition_id_fkey(name, short_name)
-          ''');
-
-      final filteredQuery = _statusFilter != 'all'
-          ? baseQuery.eq('status', _statusFilter)
-          : baseQuery;
-
-      final rows = await filteredQuery
-          .order('kickoff_at', ascending: true)
-          .limit(100);
-      if (!mounted) return;
-      setState(() {
-        _fixtures = List<Map<String, dynamic>>.from(rows);
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _settleFixture(Map<String, dynamic> fixture) async {
-    final result = await showAfriBottomSheet<Map<String, dynamic>>(
+  Future<void> _openSettlement(AdminSettlementFixture fixture) async {
+    final draft = await showAfriBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
-      builder: (ctx) => _SettlementSheet(fixture: fixture),
+      builder: (_) => _SettlementSheet(fixture: fixture),
     );
+    if (draft == null || !mounted) return;
 
-    if (result == null) return;
-
-    if (!mounted) return;
-
-    // Show loading
-    unawaited(
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (ctx) => const AfriLoadingIndicator(),
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AfriAlertDialog(
+        title: const Text('SETTLE THIS FIXTURE?'),
+        content: Text(
+          '${fixture.homeTeam.name} ${draft['home_score']} – '
+          '${draft['away_score']} ${fixture.awayTeam.name}\n\n'
+          'This grades prediction markets and may trigger supporter rewards. '
+          'Confirm only from the official result.',
+        ),
+        actions: [
+          AfriTextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('CANCEL'),
+          ),
+          AfriTextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('SETTLE'),
+          ),
+        ],
       ),
     );
+    if (confirmed != true || !mounted) return;
 
     try {
-      final params = <String, dynamic>{
-        'p_fixture_id': fixture['id'],
-        'p_home_score': result['home_score'],
-        'p_away_score': result['away_score'],
-        'p_status': result['status'],
-      };
-      if (result['ht_home_score'] != null) {
-        params['p_ht_home_score'] = result['ht_home_score'];
-        params['p_ht_away_score'] = result['ht_away_score'];
-      }
-
-      final rpcResult = await SafeRpc.call(
-        'prediction_admin_settle',
-        params: params,
-        tag: 'AdminSettle',
-        maxAttempts: 1, // Don't retry writes.
-      );
-
-      if (!mounted) return;
-      context.pop(); // close loading
-
-      if (!rpcResult.isSuccess || rpcResult.data is! Map) {
-        if (!mounted) return;
-        AfriToast.error(
-          context,
-          'Settlement failed: ${rpcResult.error ?? 'Unexpected response'}',
-        );
-        return;
-      }
-
-      final responseMap = Map<String, dynamic>.from(rpcResult.data as Map);
-      final settlementData =
-          responseMap['settlement'] as Map<String, dynamic>? ?? {};
-      final marketsProcessed =
-          (responseMap['markets_settled'] as num?)?.toInt() ?? 0;
-      final totalWon = (settlementData['total_won'] as num?)?.toInt() ?? 0;
-      final totalLost = (settlementData['total_lost'] as num?)?.toInt() ?? 0;
-
-      await _loadFixtures();
-
-      if (!mounted) return;
+      final receipt = await ref
+          .read(adminSettlementProvider.notifier)
+          .settle(draft);
+      if (!mounted || receipt == null) return;
       AfriToast.success(
         context,
-        'Settled! $marketsProcessed markets • '
-        '$totalWon won • $totalLost lost',
+        'Settled ${receipt.score} • ${receipt.marketsSettled} markets • '
+        '${receipt.totalWon} won • ${receipt.totalLost} lost',
       );
-    } catch (e) {
+    } on FormatException {
       if (!mounted) return;
-      context.pop(); // close loading
-      AfriToast.error(context, 'Settlement failed: $e');
+      AfriToast.error(context, 'Review the official result and try again.');
+    } catch (_) {
+      if (!mounted) return;
+      AfriToast.error(context, 'Fixture settlement was not confirmed.');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final enabled = ref.watch(adminSettlementEnabledProvider);
+    final settlement = ref.watch(adminSettlementProvider);
+    final snapshot = settlement.valueOrNull;
+    final denied =
+        snapshot?.failure?.kind == AdminSettlementFailureKind.permissionDenied;
+
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
@@ -157,247 +102,332 @@ class _FixtureSettlementScreenState
       ),
       scrollable: false,
       constrainContent: true,
-      child: _isLoading
-          ? const Padding(
-              padding: EdgeInsets.all(SpacingTokens.spacing6),
-              child: AfriSkeletonList(),
-            )
-          : _error != null
-          ? _buildError()
-          : AfriRefreshIndicator(
-              onRefresh: _loadFixtures,
-              child: ListView(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                children: [
-                  _buildFilterChips(),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  if (_fixtures.isEmpty)
-                    _buildEmpty()
-                  else
-                    ..._fixtures.map(_buildFixtureCard),
-                ],
+      child: !enabled
+          ? _disabled()
+          : denied
+          ? _unavailable(
+              const AdminSettlementFailure(
+                AdminSettlementFailureKind.permissionDenied,
               ),
-            ),
+            )
+          : settlement.isLoading && snapshot == null
+          ? Padding(
+              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriStateView.loading(
+                key: const ValueKey<String>('admin-settlement-state-loading'),
+                title: 'Loading settlement workspace',
+                message: 'Checking controlled fixture information.',
+              ),
+            )
+          : settlement.hasError && snapshot == null
+          ? _unavailable(AdminSettlementFailure.fromError(settlement.error!))
+          : _content(settlement),
     );
   }
 
-  Widget _buildFilterChips() {
+  Widget _content(AsyncValue<AdminSettlementSnapshot> settlement) {
+    final snapshot = settlement.requireValue;
+    final controlsEnabled = snapshot.actionsEnabled && !settlement.isLoading;
+    final fixtures = _filtered(snapshot);
     const filters = <String, String>{
       'scheduled': 'SCHEDULED',
       'finished': 'FINISHED',
       'all': 'ALL',
     };
-    return Wrap(
-      spacing: SpacingTokens.spacing2,
-      runSpacing: SpacingTokens.spacing2,
-      children: filters.entries
-          .map(
-            (e) => AfriChoiceChip(
-              selected: _statusFilter == e.key,
-              label: Text(e.value),
-              onSelected: (_) {
-                setState(() => _statusFilter = e.key);
-                unawaited(_loadFixtures());
-              },
+
+    return AfriRefreshIndicator(
+      onRefresh: ref.read(adminSettlementProvider.notifier).refresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        children: [
+          if (_statusBanner(settlement) case final banner?) ...[
+            banner,
+            const SizedBox(height: SpacingTokens.spacing4),
+          ],
+          GlassCard(
+            animate: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'OFFICIAL RESULT CONTROL',
+                  style: TypographyTokens.labelLarge(),
+                ),
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  'Settlement grades prediction markets and may trigger rewards. '
+                  'Use only an official, confirmed final score.',
+                  style: TypographyTokens.bodyMedium(),
+                ),
+              ],
             ),
-          )
-          .toList(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Wrap(
+            spacing: SpacingTokens.spacing2,
+            runSpacing: SpacingTokens.spacing2,
+            children: filters.entries
+                .map(
+                  (entry) => AfriChoiceChip(
+                    selected: _statusFilter == entry.key,
+                    label: Text(entry.value),
+                    onSelected: controlsEnabled
+                        ? (_) => setState(() => _statusFilter = entry.key)
+                        : null,
+                  ),
+                )
+                .toList(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          if (fixtures.isEmpty)
+            AfriStateView.empty(
+              key: const ValueKey<String>('admin-settlement-state-empty'),
+              title: 'No fixtures in this view',
+              message:
+                  'Switch filters or wait for controlled fixture information.',
+              compact: true,
+            )
+          else
+            ...fixtures.indexed.map(
+              (entry) => _fixtureCard(
+                entry.$2,
+                controlsEnabled: controlsEnabled,
+                focusNode: entry.$1 == 0 ? widget.firstActionFocusNode : null,
+              ),
+            ),
+        ],
+      ),
     );
   }
 
-  Widget _buildFixtureCard(Map<String, dynamic> fixture) {
-    final homeTeam = fixture['home_team'] as Map<String, dynamic>? ?? {};
-    final awayTeam = fixture['away_team'] as Map<String, dynamic>? ?? {};
-    final competition = fixture['competition'] as Map<String, dynamic>? ?? {};
-    final status = fixture['status']?.toString() ?? 'scheduled';
-    final kickoff = DateTime.tryParse(fixture['kickoff_at']?.toString() ?? '');
-    final homeScore = (fixture['home_score'] as num?)?.toInt();
-    final awayScore = (fixture['away_score'] as num?)?.toInt();
-    final isSettled = status == 'finished' || status == 'cancelled';
+  Widget _fixtureCard(
+    AdminSettlementFixture fixture, {
+    required bool controlsEnabled,
+    FocusNode? focusNode,
+  }) {
+    final enabled = controlsEnabled && fixture.canSettle;
+    final score = fixture.homeScore == null
+        ? 'VS'
+        : '${fixture.homeScore} – ${fixture.awayScore}';
+    final detail = <String>[
+      DateFormat('dd MMM yyyy, HH:mm').format(fixture.kickoffAt.toLocal()),
+      if (fixture.venueCity != null) fixture.venueCity!,
+      if (fixture.stageName != null) fixture.stageName!,
+      if (fixture.groupName != null) fixture.groupName!,
+    ].join(' • ');
 
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
-      child: GlassCard(
-        animate: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Competition + status
-            Row(
+      child: AfriPressFeedback(
+        key: ValueKey<String>('admin-settlement-fixture-${fixture.id}'),
+        focusNode: focusNode,
+        enabled: enabled,
+        onTap: enabled ? () => unawaited(_openSettlement(fixture)) : null,
+        semanticsLabel:
+            '${fixture.homeTeam.name} $score ${fixture.awayTeam.name}',
+        semanticsHint: enabled
+            ? 'Open official result confirmation'
+            : 'Settlement unavailable',
+        builder: (context, state) => DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: ShapeTokens.cardRadius,
+            border: Border.all(
+              color: state.isFocused
+                  ? ColorTokens.primaryContainer
+                  : state.isPressed
+                  ? ColorTokens.primaryContainer
+                  : ColorTokens.transparent,
+              width: state.isFocused || state.isPressed ? 2 : 0,
+            ),
+          ),
+          child: GlassCard(
+            animate: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    competition['short_name']?.toString() ??
-                        competition['name']?.toString() ??
-                        '',
-                    style: TypographyTokens.labelSmall(),
-                  ),
-                ),
-                _StatusChip(status: status),
-              ],
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-
-            // Teams + Score
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    homeTeam['name']?.toString() ?? 'TBD',
-                    style: TypographyTokens.titleLarge().copyWith(
-                      color: ColorTokens.onSurface,
-                    ),
-                  ),
-                ),
-                if (homeScore != null && awayScore != null)
-                  Text(
-                    '$homeScore - $awayScore',
-                    style: TypographyTokens.headlineMedium().copyWith(
-                      color: ColorTokens.clubAccent,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                else
-                  Text(
-                    'vs',
-                    style: TypographyTokens.titleMedium().copyWith(
-                      color: ColorTokens.onSurfaceVariant,
-                    ),
-                  ),
-                Expanded(
-                  child: Text(
-                    awayTeam['name']?.toString() ?? 'TBD',
-                    textAlign: TextAlign.end,
-                    style: TypographyTokens.titleLarge().copyWith(
-                      color: ColorTokens.onSurface,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-
-            // Date + Venue
-            Text(
-              '${kickoff != null ? DateFormat('dd MMM yyyy, HH:mm').format(kickoff.toLocal()) : 'Date TBD'}'
-              '${fixture['venue_city'] != null ? '  •  ${fixture['venue_city']}' : ''}',
-              style: TypographyTokens.bodyMedium(),
-            ),
-
-            if (fixture['stage_name'] != null || fixture['group_name'] != null)
-              Padding(
-                padding: const EdgeInsets.only(top: SpacingTokens.spacing1),
-                child: Text(
-                  [
-                    fixture['stage_name'],
-                    fixture['group_name'],
-                  ].where((v) => v != null).join('  •  '),
-                  style: TypographyTokens.bodySmall(),
-                ),
-              ),
-
-            const SizedBox(height: SpacingTokens.spacing3),
-
-            // Settle button
-            if (!isSettled)
-              Align(
-                alignment: Alignment.centerRight,
-                child: AfriButton(
-                  label: 'Enter result',
-                  onTap: () => _settleFixture(fixture),
-                  fullWidth: false,
-                ),
-              )
-            else
-              Align(
-                alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      AfriIcons.statusSuccess,
-                      size: 16,
-                      color: ColorTokens.success,
+                    Expanded(
+                      child: Text(
+                        fixture.competition.shortName,
+                        style: TypographyTokens.labelSmall(),
+                      ),
                     ),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Text(
-                      'SETTLED',
-                      style: TypographyTokens.labelSmall().copyWith(
-                        color: ColorTokens.success,
+                    _StatusChip(status: fixture.status),
+                  ],
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        fixture.homeTeam.name,
+                        style: TypographyTokens.titleMedium(
+                          ColorTokens.onSurface,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: SpacingTokens.spacing2,
+                      ),
+                      child: Text(
+                        score,
+                        style: TypographyTokens.titleLarge(
+                          ColorTokens.onSurface,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        fixture.awayTeam.name,
+                        textAlign: TextAlign.end,
+                        style: TypographyTokens.titleMedium(
+                          ColorTokens.onSurface,
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ),
-          ],
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(detail, style: TypographyTokens.bodySmall()),
+                const SizedBox(height: SpacingTokens.spacing3),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: fixture.canSettle
+                      ? Text(
+                          controlsEnabled
+                              ? 'ENTER OFFICIAL RESULT'
+                              : 'SETTLEMENT PAUSED',
+                          style: TypographyTokens.labelMedium(
+                            controlsEnabled
+                                ? ColorTokens.onSurface
+                                : ColorTokens.onSurfaceVariant,
+                          ),
+                        )
+                      : Text(
+                          fixture.status == 'finished'
+                              ? 'SETTLED'
+                              : 'NOT SETTLEABLE',
+                          style: TypographyTokens.labelMedium(
+                            fixture.status == 'finished'
+                                ? ColorTokens.success
+                                : ColorTokens.onSurfaceVariant,
+                          ),
+                        ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildEmpty() {
+  Widget _disabled() {
     return Padding(
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      child: GlassCard(
-        animate: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              AfriIcons.score,
-              size: 48,
-              color: ColorTokens.onSurfaceVariant,
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              'Adjust fixture filters',
-              style: TypographyTokens.headlineMedium().copyWith(
-                color: ColorTokens.onSurface,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(
-              'Switch filters or wait for fixtures to be added.',
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyMedium(),
-            ),
-          ],
-        ),
+      child: AfriStateView.empty(
+        key: const ValueKey<String>('admin-settlement-state-disabled'),
+        title: 'Settlement management unavailable',
+        message: 'Settlement controls are disabled for this controlled build.',
+        icon: AfriIcons.lock,
+        actionLabel: 'Back to admin',
+        onAction: () => context.pop(),
       ),
     );
   }
 
-  Widget _buildError() {
+  Widget _unavailable(AdminSettlementFailure failure) {
+    void retry() =>
+        unawaited(ref.read(adminSettlementProvider.notifier).refresh());
+    final view = switch (failure.kind) {
+      AdminSettlementFailureKind.offline => AfriStateView.offline(
+        key: const ValueKey<String>('admin-settlement-state-offline'),
+        title: 'Settlement workspace offline',
+        message: 'Reconnect before loading private fixture information.',
+        actionLabel: 'Try again',
+        onAction: retry,
+      ),
+      AdminSettlementFailureKind.permissionDenied => AfriStateView.error(
+        key: const ValueKey<String>('admin-settlement-state-permission-denied'),
+        title: 'Settlement access unavailable',
+        message: 'This account cannot view or settle prediction fixtures.',
+        actionLabel: 'Back to admin',
+        onAction: () => context.pop(),
+      ),
+      AdminSettlementFailureKind.conflict => AfriStateView.error(
+        key: const ValueKey<String>('admin-settlement-state-conflict'),
+        title: 'Fixture result changed',
+        message: 'Refresh before confirming another settlement.',
+        actionLabel: 'Refresh',
+        onAction: retry,
+      ),
+      AdminSettlementFailureKind.securityTimeout => AfriStateView.error(
+        key: const ValueKey<String>('admin-settlement-state-security-timeout'),
+        title: 'Security check timed out',
+        message: 'No fixture information was shown. Check your connection.',
+        actionLabel: 'Retry',
+        onAction: retry,
+      ),
+      AdminSettlementFailureKind.unknown => AfriStateView.error(
+        key: const ValueKey<String>('admin-settlement-state-error'),
+        title: 'Settlement workspace unavailable',
+        message: 'Private fixture information remains hidden. Try again.',
+        actionLabel: 'Try again',
+        onAction: retry,
+      ),
+    };
     return Padding(
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      child: GlassCard(
-        animate: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(AfriIcons.statusError, size: 48, color: ColorTokens.error),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              'Failed to load fixtures',
-              style: TypographyTokens.headlineMedium().copyWith(
-                color: ColorTokens.onSurface,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing5),
-            AfriButton(label: 'Retry', fullWidth: true, onTap: _loadFixtures),
-          ],
-        ),
-      ),
+      child: view,
+    );
+  }
+
+  Widget? _statusBanner(AsyncValue<AdminSettlementSnapshot> settlement) {
+    final snapshot = settlement.valueOrNull;
+    if (snapshot == null) return null;
+    if (settlement.isLoading || snapshot.isMutating) {
+      return const AfriStateBanner(
+        key: ValueKey<String>('admin-settlement-state-syncing'),
+        icon: AfriIcons.refresh,
+        title: 'Checking fixture results',
+        subtitle:
+            'Showing the last confirmed state while current data is checked.',
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    final failure = snapshot.failure;
+    if (snapshot.phase != AdminSettlementPhase.degraded || failure == null) {
+      return null;
+    }
+    return AfriStateBanner(
+      key: ValueKey<String>('admin-settlement-state-${failure.kind.name}'),
+      icon: failure.kind == AdminSettlementFailureKind.offline
+          ? AfriIcons.offline
+          : AfriIcons.statusWarning,
+      title: switch (failure.kind) {
+        AdminSettlementFailureKind.conflict => 'Fixture result changed',
+        AdminSettlementFailureKind.securityTimeout =>
+          'Security check timed out',
+        AdminSettlementFailureKind.offline => 'Settlement workspace offline',
+        _ => 'Settlement workspace unavailable',
+      },
+      subtitle: snapshot.mutationOutcomeUnconfirmed
+          ? 'The last settlement is unconfirmed. Controls stay paused until refresh succeeds.'
+          : 'Last confirmed fixture information remains visible. Controls are paused.',
+      tone: AfriStateBannerTone.warning,
     );
   }
 }
 
-// ── Settlement Bottom Sheet ──
-
 class _SettlementSheet extends StatefulWidget {
   const _SettlementSheet({required this.fixture});
 
-  final Map<String, dynamic> fixture;
+  final AdminSettlementFixture fixture;
 
   @override
   State<_SettlementSheet> createState() => _SettlementSheetState();
@@ -406,242 +436,178 @@ class _SettlementSheet extends StatefulWidget {
 class _SettlementSheetState extends State<_SettlementSheet> {
   final _homeScoreController = TextEditingController(text: '0');
   final _awayScoreController = TextEditingController(text: '0');
-  final _htHomeScoreController = TextEditingController();
-  final _htAwayScoreController = TextEditingController();
-  String _status = 'finished';
-  bool _showHtScore = false;
+  final _halfTimeHomeController = TextEditingController();
+  final _halfTimeAwayController = TextEditingController();
+  bool _showHalfTime = false;
+  String? _validationMessage;
 
   @override
   void dispose() {
     _homeScoreController.dispose();
     _awayScoreController.dispose();
-    _htHomeScoreController.dispose();
-    _htAwayScoreController.dispose();
+    _halfTimeHomeController.dispose();
+    _halfTimeAwayController.dispose();
     super.dispose();
   }
 
   void _submit() {
-    final homeScore = int.tryParse(_homeScoreController.text) ?? 0;
-    final awayScore = int.tryParse(_awayScoreController.text) ?? 0;
-    final htHome = int.tryParse(_htHomeScoreController.text);
-    final htAway = int.tryParse(_htAwayScoreController.text);
-
+    final home = int.tryParse(_homeScoreController.text.trim());
+    final away = int.tryParse(_awayScoreController.text.trim());
+    final halfHome = int.tryParse(_halfTimeHomeController.text.trim());
+    final halfAway = int.tryParse(_halfTimeAwayController.text.trim());
+    if (home == null ||
+        away == null ||
+        home < 0 ||
+        away < 0 ||
+        home > 99 ||
+        away > 99) {
+      setState(() => _validationMessage = 'Enter final scores from 0 to 99.');
+      return;
+    }
+    if (_showHalfTime &&
+        (halfHome == null ||
+            halfAway == null ||
+            halfHome < 0 ||
+            halfAway < 0 ||
+            halfHome > home ||
+            halfAway > away)) {
+      setState(
+        () => _validationMessage =
+            'Enter both half-time scores without exceeding the final score.',
+      );
+      return;
+    }
     context.pop(<String, dynamic>{
-      'home_score': homeScore,
-      'away_score': awayScore,
-      'status': _status,
-      if (htHome != null && htAway != null) ...{
-        'ht_home_score': htHome,
-        'ht_away_score': htAway,
-      },
+      'fixture_id': widget.fixture.id,
+      'home_score': home,
+      'away_score': away,
+      if (_showHalfTime) 'half_time_home_score': halfHome,
+      if (_showHalfTime) 'half_time_away_score': halfAway,
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final homeTeam = widget.fixture['home_team'] as Map<String, dynamic>? ?? {};
-    final awayTeam = widget.fixture['away_team'] as Map<String, dynamic>? ?? {};
-
-    return Padding(
-      padding: EdgeInsets.only(
-        left: SpacingTokens.spacing6,
-        right: SpacingTokens.spacing6,
-        top: SpacingTokens.spacing6,
-        bottom:
-            MediaQuery.of(context).viewInsets.bottom + SpacingTokens.spacing6,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(ShapeTokens.radiusSm / 4),
-              ),
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          left: SpacingTokens.spacing6,
+          right: SpacingTokens.spacing6,
+          top: SpacingTokens.spacing6,
+          bottom:
+              MediaQuery.of(context).viewInsets.bottom + SpacingTokens.spacing6,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('ENTER OFFICIAL RESULT', style: TypographyTokens.titleLarge()),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(
+              '${widget.fixture.homeTeam.name} vs '
+              '${widget.fixture.awayTeam.name}',
+              style: TypographyTokens.bodyLarge(),
             ),
-          ),
-          const SizedBox(height: SpacingTokens.spacing5),
-          Text(
-            'ENTER RESULT',
-            style: TypographyTokens.titleLarge().copyWith(letterSpacing: 1.5),
-          ),
-          const SizedBox(height: SpacingTokens.spacing2),
-          Text(
-            '${homeTeam['name'] ?? 'Home'} vs ${awayTeam['name'] ?? 'Away'}',
-            style: TypographyTokens.bodyLarge(),
-          ),
-          const SizedBox(height: SpacingTokens.spacing6),
-
-          // Score inputs
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(
-                      homeTeam['short_name']?.toString() ?? 'HOME',
-                      style: TypographyTokens.labelSmall().copyWith(
-                        letterSpacing: 1,
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing2),
-                    AfriInputField(
-                      controller: _homeScoreController,
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      style: TypographyTokens.displaySmall(
-                        ColorTokens.clubAccent,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing4,
-                ),
-                child: Text(
-                  '—',
-                  style: TypographyTokens.headlineLarge().copyWith(
-                    color: ColorTokens.onSurfaceVariant,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(
-                      awayTeam['short_name']?.toString() ?? 'AWAY',
-                      style: TypographyTokens.labelSmall().copyWith(
-                        letterSpacing: 1,
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing2),
-                    AfriInputField(
-                      controller: _awayScoreController,
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      style: TypographyTokens.displaySmall(
-                        ColorTokens.clubAccent,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-
-          // Half-time score toggle
-          AfriPressFeedback(
-            onTap: () => setState(() => _showHtScore = !_showHtScore),
-            selected: _showHtScore,
-            tooltip: 'Toggle half-time score',
-            semanticsLabel: 'Half-time score',
-            semanticsHint: _showHtScore
-                ? 'Hide half-time score fields'
-                : 'Show half-time score fields',
-            child: Row(
-              children: [
-                Icon(
-                  _showHtScore ? AfriIcons.up : AfriIcons.down,
-                  size: 20,
-                  color: ColorTokens.onSurfaceVariant,
-                ),
-                const SizedBox(width: SpacingTokens.spacing2),
-                Text(
-                  'HALF-TIME SCORE (optional)',
-                  style: TypographyTokens.labelSmall().copyWith(
-                    letterSpacing: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (_showHtScore) ...[
-            const SizedBox(height: SpacingTokens.spacing3),
+            const SizedBox(height: SpacingTokens.spacing5),
             Row(
               children: [
                 Expanded(
                   child: AfriInputField(
-                    controller: _htHomeScoreController,
+                    controller: _homeScoreController,
+                    label: widget.fixture.homeTeam.shortName,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
-                    style: TypographyTokens.titleLarge(),
-                    hint: 'HT',
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: SpacingTokens.spacing3,
-                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing3,
-                  ),
-                  child: Text(
-                    '—',
-                    style: TypographyTokens.titleLarge().copyWith(
-                      color: ColorTokens.onSurfaceVariant,
-                    ),
-                  ),
-                ),
+                const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
                   child: AfriInputField(
-                    controller: _htAwayScoreController,
+                    controller: _awayScoreController,
+                    label: widget.fixture.awayTeam.shortName,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
-                    style: TypographyTokens.titleLarge(),
-                    hint: 'HT',
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: SpacingTokens.spacing3,
-                    ),
                   ),
                 ),
               ],
             ),
-          ],
-          const SizedBox(height: SpacingTokens.spacing5),
-
-          // Status selector
-          Text(
-            'STATUS',
-            style: TypographyTokens.labelSmall().copyWith(letterSpacing: 1),
-          ),
-          const SizedBox(height: SpacingTokens.spacing2),
-          Wrap(
-            spacing: SpacingTokens.spacing2,
-            children: ['finished', 'cancelled', 'postponed']
-                .map(
-                  (s) => AfriChoiceChip(
-                    selected: _status == s,
-                    label: Text(s.toUpperCase()),
-                    onSelected: (_) => setState(() => _status = s),
+            const SizedBox(height: SpacingTokens.spacing4),
+            AfriPressFeedback(
+              key: const ValueKey<String>('admin-settlement-half-time-toggle'),
+              onTap: () => setState(() {
+                _showHalfTime = !_showHalfTime;
+                _validationMessage = null;
+              }),
+              selected: _showHalfTime,
+              semanticsLabel: 'Half-time score',
+              semanticsHint: _showHalfTime
+                  ? 'Hide half-time score fields'
+                  : 'Show half-time score fields',
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: SpacingTokens.spacing3,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      _showHalfTime ? AfriIcons.up : AfriIcons.down,
+                      color: ColorTokens.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    Text(
+                      'HALF-TIME SCORE (OPTIONAL)',
+                      style: TypographyTokens.labelMedium(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (_showHalfTime) ...[
+              const SizedBox(height: SpacingTokens.spacing3),
+              Row(
+                children: [
+                  Expanded(
+                    child: AfriInputField(
+                      controller: _halfTimeHomeController,
+                      label: '${widget.fixture.homeTeam.shortName} HT',
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: SpacingTokens.spacing6),
-
-          // Settle button
-          AfriButton(
-            label: _status == 'finished'
-                ? 'Settle & grade predictions'
-                : 'Update status',
-            fullWidth: true,
-            onTap: _submit,
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-        ],
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: AfriInputField(
+                      controller: _halfTimeAwayController,
+                      label: '${widget.fixture.awayTeam.shortName} HT',
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            if (_validationMessage != null) ...[
+              const SizedBox(height: SpacingTokens.spacing3),
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  _validationMessage!,
+                  style: TypographyTokens.bodyMedium(ColorTokens.error),
+                ),
+              ),
+            ],
+            const SizedBox(height: SpacingTokens.spacing5),
+            AfriButton(
+              key: const ValueKey<String>('admin-settlement-review-result'),
+              label: 'Review settlement',
+              fullWidth: true,
+              onTap: _submit,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-// ── Status Chip ──
 
 class _StatusChip extends StatelessWidget {
   const _StatusChip({required this.status});
@@ -652,24 +618,23 @@ class _StatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = switch (status) {
       'finished' => ColorTokens.success,
-      'scheduled' => ColorTokens.clubAccent,
-      'cancelled' => ColorTokens.error,
-      'postponed' => ColorTokens.error,
+      'scheduled' || 'live' => ColorTokens.onSurface,
+      'cancelled' || 'postponed' => ColorTokens.error,
       _ => ColorTokens.onSurfaceVariant,
     };
-
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
         vertical: SpacingTokens.spacing1,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: ColorTokens.surfaceContainer,
         borderRadius: ShapeTokens.buttonRadius,
+        border: Border.all(color: color.withValues(alpha: 0.7)),
       ),
       child: Text(
         status.toUpperCase(),
-        style: TypographyTokens.labelSmall().copyWith(color: color),
+        style: TypographyTokens.labelSmall(color),
       ),
     );
   }

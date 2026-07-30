@@ -9,9 +9,15 @@ interface BrandPreviewProps {
   form: SettingsForm | null;
   setForm: Dispatch<SetStateAction<SettingsForm | null>>;
   loading: boolean;
+  canEdit: boolean;
 }
 
-export function BrandPreview({ form, setForm, loading }: BrandPreviewProps) {
+export function BrandPreview({
+  form,
+  setForm,
+  loading,
+  canEdit,
+}: BrandPreviewProps) {
   function toggleFlag(flag: string) {
     setForm((current) => {
       if (!current) return current;
@@ -99,7 +105,12 @@ export function BrandPreview({ form, setForm, loading }: BrandPreviewProps) {
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {Object.entries(form.featureFlags).map(([flag, enabled]) => (
                 <label key={flag} className="flex items-center gap-3 rounded-[20px] border border-border-soft bg-black/10 px-4 py-3 text-sm">
-                  <input type="checkbox" checked={enabled} onChange={() => toggleFlag(flag)} />
+                  <input
+                    type="checkbox"
+                    checked={enabled}
+                    disabled={!canEdit}
+                    onChange={() => toggleFlag(flag)}
+                  />
                   <span className="flex-1 capitalize text-slate-200">{flag.replaceAll("_", " ")}</span>
                 </label>
               ))}

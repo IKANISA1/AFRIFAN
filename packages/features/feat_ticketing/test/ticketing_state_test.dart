@@ -3,6 +3,8 @@ import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
+import 'package:feat_ticketing/src/providers/e_ticket_provider.dart';
+import 'package:feat_ticketing/src/providers/ticket_detail_provider.dart';
 import 'package:feat_ticketing/src/screens/e_ticket_qr_screen.dart';
 import 'package:feat_ticketing/src/screens/interactive_seat_map_screen.dart';
 import 'package:feat_ticketing/src/screens/match_detail_screen.dart';
@@ -394,8 +396,18 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(home: InteractiveSeatMapScreen(matchId: 'match-1')),
+      ProviderScope(
+        overrides: [
+          ticketDetailGatewayProvider.overrideWithValue(
+            _StaticTicketDetailGateway(_match),
+          ),
+        ],
+        child: const MaterialApp(
+          home: InteractiveSeatMapScreen(matchId: 'match-1'),
+        ),
+      ),
     );
+    await tester.pumpAndSettle();
 
     expect(find.text('VIP Gold'), findsOneWidget);
     expect(find.text('East Stand'), findsOneWidget);
@@ -423,8 +435,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          myTicketProvider('ticket-1').overrideWith(
-            (ref) async => _activeTicket,
+          eTicketGatewayProvider.overrideWithValue(
+            _StaticETicketGateway(_activeTicket),
           ),
         ],
         child: const MaterialApp(
@@ -497,6 +509,24 @@ void main() {
       },
     );
   }
+}
+
+class _StaticETicketGateway implements ETicketGateway {
+  const _StaticETicketGateway(this.ticket);
+
+  final ClubTicket ticket;
+
+  @override
+  Future<ClubTicket?> load(String ticketId) async => ticket;
+}
+
+class _StaticTicketDetailGateway implements TicketDetailGateway {
+  const _StaticTicketDetailGateway(this.match);
+
+  final ClubMatch match;
+
+  @override
+  Future<ClubMatch?> load(String matchId) async => match;
 }
 
 const _compactGoldenProfiles =

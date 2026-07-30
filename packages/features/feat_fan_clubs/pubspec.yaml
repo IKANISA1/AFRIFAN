@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  core_l10n:
+    path: ../../core/core_l10n
   core_theme:
     path: ../../core/core_theme
   core_network:
@@ -23,5 +25,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  test_support:
+    path: ../test_support
 
 resolution: workspace

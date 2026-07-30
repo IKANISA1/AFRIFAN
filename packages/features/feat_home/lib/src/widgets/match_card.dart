@@ -10,6 +10,7 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -136,8 +137,8 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
                 haptic: slide.route != null,
                 scaleEnd: 0.99,
                 opacityEnd: 0.98,
-                semanticsLabel: 'Open match details',
-                tooltip: 'Open match details',
+                semanticsLabel: context.afriL10n.homeOpenMatchDetails,
+                tooltip: context.afriL10n.homeOpenMatchDetails,
                 excludeChildSemantics: false,
                 child: _HeroSlide(slide: slide, accentColor: _heroAccent),
               );

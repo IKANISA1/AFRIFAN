@@ -11,8 +11,10 @@ interface FetEditorFormProps {
   setForm: Dispatch<SetStateAction<FetForm>>;
   client: SupabaseClient | null;
   access: AdminAccess;
+  disabled: boolean;
   onSaved: () => Promise<void>;
   onConflict: () => Promise<void>;
+  onFailure: (error: unknown) => void;
 }
 
 export function FetEditorForm({
@@ -20,13 +22,18 @@ export function FetEditorForm({
   setForm,
   client,
   access,
+  disabled,
   onSaved,
   onConflict,
+  onFailure,
 }: FetEditorFormProps) {
   async function submitForm(formData: FormData) {
     if (client == null) return;
 
-    showAdminToast(form.id ? "Saving FET item..." : "Creating FET item...", "info");
+    showAdminToast(
+      form.id ? "Saving FET item..." : "Creating FET item...",
+      "info",
+    );
     try {
       await saveAdminFanEngagementToken(client, access, {
         id: form.id || null,
@@ -51,20 +58,20 @@ export function FetEditorForm({
       await onSaved();
       showAdminToast("FET catalog entry saved.", "success");
     } catch (caught) {
+      onFailure(caught);
       if (isAdminMutationConflict(caught)) {
         await onConflict();
       }
-      showAdminToast(
-        caught instanceof Error
-          ? caught.message
-          : "Could not save FET catalog entry.",
-        "error",
-      );
+      showAdminToast("Could not save the reward definition.", "error");
     }
   }
 
   return (
-    <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
+    <form
+      action={submitForm}
+      data-mutation-disabled={disabled || undefined}
+      className="glass-panel grid min-w-0 gap-4 rounded-[32px] p-6"
+    >
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-bold uppercase leading-none">
           {form.id ? "Edit FET" : "New FET"}
@@ -72,8 +79,9 @@ export function FetEditorForm({
         {form.id ? (
           <button
             type="button"
+            disabled={disabled}
             onClick={() => setForm(emptyFetForm)}
-            className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+            className="admin-action-button"
           >
             Clear
           </button>
@@ -265,7 +273,7 @@ export function FetEditorForm({
         />
       </label>
 
-      <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm">
+      <label className="flex items-center gap-3 rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-3 text-sm">
         <input
           type="checkbox"
           name="isActive"
@@ -282,7 +290,8 @@ export function FetEditorForm({
 
       <button
         type="submit"
-        className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+        disabled={disabled}
+        className="ui-button ui-button-primary"
       >
         {form.id ? "Save FET item" : "Create FET item"}
       </button>

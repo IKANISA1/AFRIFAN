@@ -6,7 +6,10 @@ import {
 } from "@/lib/admin-club-scope";
 import { resolveAdminAccess } from "@/lib/data/admin/access";
 import { enforceFeatureState } from "@/lib/server-feature-guard";
-import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
+import {
+  rejectInsecureMutation,
+  rejectRateLimitedRequest,
+} from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
 import { AdminMutationConflictError } from "@/lib/data/admin/helpers";
@@ -32,7 +35,68 @@ type AdminRouteOptions = {
   mutationLimit?: number;
   mutationWindowMs?: number;
   destructiveActionId?: string;
+  operationTimeoutMs?: number;
 };
+
+const adminApiOperationTimeoutMs = 12_000;
+
+class AdminApiOperationTimeoutError extends Error {
+  constructor() {
+    super("Admin operation timed out.");
+    this.name = "AdminApiOperationTimeoutError";
+  }
+}
+
+export class AdminApiValidationError extends Error {
+  readonly code: string;
+
+  constructor(message: string, code = "ADMIN_REQUEST_EMPTY") {
+    super(message);
+    this.name = "AdminApiValidationError";
+    this.code = code;
+  }
+}
+
+export class AdminApiAuthorizationError extends Error {
+  readonly code: string;
+
+  constructor(message = "Admin access denied.", code = "ADMIN_ACCESS_DENIED") {
+    super(message);
+    this.name = "AdminApiAuthorizationError";
+    this.code = code;
+  }
+}
+
+function adminJsonResponse(body: unknown, status = 200) {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      "Cache-Control": "no-store",
+    },
+  });
+}
+
+async function withAdminApiOperationTimeout<T>(
+  operation: T,
+  timeoutMs: number,
+): Promise<Awaited<T>> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  try {
+    return await Promise.race<Awaited<T>>([
+      Promise.resolve(operation),
+      new Promise<Awaited<T>>((_resolve, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(new AdminApiOperationTimeoutError());
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timeoutId != null) {
+      clearTimeout(timeoutId);
+    }
+  }
+}
 
 function getRequestedClubId(request: NextRequest) {
   return getRequestedAdminClubId(
@@ -46,6 +110,9 @@ export async function handleAdminApiRoute<T>(
   handler: AdminRouteHandler<T>,
   options: AdminRouteOptions = {},
 ) {
+  const operationTimeoutMs =
+    options.operationTimeoutMs ?? adminApiOperationTimeoutMs;
+
   try {
     const method = request.method.toUpperCase();
     if (method !== "GET") {
@@ -54,75 +121,103 @@ export async function handleAdminApiRoute<T>(
         return rejectedOrigin;
       }
 
-      const rejectedLimit = await rejectRateLimitedRequest(
-        request,
-        options.rateLimitKey ?? `admin:${request.nextUrl.pathname}`,
-        options.mutationLimit ?? 30,
-        options.mutationWindowMs ?? 60_000,
+      const rejectedLimit = await withAdminApiOperationTimeout(
+        rejectRateLimitedRequest(
+          request,
+          options.rateLimitKey ?? `admin:${request.nextUrl.pathname}`,
+          options.mutationLimit ?? 30,
+          options.mutationWindowMs ?? 60_000,
+        ),
+        operationTimeoutMs,
       );
       if (rejectedLimit) {
         return rejectedLimit;
       }
     }
 
-    const serverClient = await getServerSupabase();
+    const serverClient = await withAdminApiOperationTimeout(
+      getServerSupabase(),
+      operationTimeoutMs,
+    );
     if (serverClient == null) {
-      return NextResponse.json(
-        { error: "Server Supabase is not configured." },
-        { status: 500 },
+      return adminJsonResponse(
+        {
+          code: "ADMIN_REQUEST_FAILED",
+          error: "Admin request failed.",
+          retryable: true,
+          change_confirmed: false,
+        },
+        500,
       );
     }
 
     const {
       data: { user },
       error: authError,
-    } = await serverClient.auth.getUser();
+    } = await withAdminApiOperationTimeout(
+      serverClient.auth.getUser(),
+      operationTimeoutMs,
+    );
 
     if (authError || user == null) {
-      return NextResponse.json(
-        { error: "Admin authentication is required." },
-        { status: 401 },
+      return adminJsonResponse(
+        {
+          code: "ADMIN_AUTHENTICATION_REQUIRED",
+          error: "Admin authentication is required.",
+        },
+        401,
       );
     }
 
-    const access = await resolveAdminAccess(serverClient, user, {
-      requestedClubId: getRequestedClubId(request),
-    });
+    const access = await withAdminApiOperationTimeout(
+      resolveAdminAccess(serverClient, user, {
+        requestedClubId: getRequestedClubId(request),
+      }),
+      operationTimeoutMs,
+    );
     if (!access.hasAccess) {
-      return NextResponse.json(
-        { error: "Admin access denied." },
-        { status: 403 },
+      return adminJsonResponse(
+        {
+          code: "ADMIN_ACCESS_DENIED",
+          error: "Admin access denied.",
+        },
+        403,
       );
     }
 
     if (options.featureGuard) {
-      const featureState = await enforceFeatureState(
-        options.featureGuard.featureKey,
-        options.featureGuard.channel ?? "web",
-        options.featureGuard.mode ?? "action",
-        {
-          clubId: access.clubId,
-          isAuthenticated: access.isAuthenticated,
-          roles: access.role ? [access.role] : [],
-        },
+      const featureState = await withAdminApiOperationTimeout(
+        enforceFeatureState(
+          options.featureGuard.featureKey,
+          options.featureGuard.channel ?? "web",
+          options.featureGuard.mode ?? "action",
+          {
+            clubId: access.clubId,
+            isAuthenticated: access.isAuthenticated,
+            roles: access.role ? [access.role] : [],
+          },
+        ),
+        operationTimeoutMs,
       );
 
       if (!featureState.allowed) {
-        return NextResponse.json(
+        return adminJsonResponse(
           {
             code: "FEATURE_DISABLED",
-            error:
-              featureState.error ?? "Feature disabled or unavailable.",
+            error: featureState.error ?? "Feature disabled or unavailable.",
           },
-          { status: 403 },
+          403,
         );
       }
     }
 
     if (options.requireSuperAdmin && !access.isSuperAdmin) {
-      return NextResponse.json(
-        { error: "Platform admin access is required." },
-        { status: 403 },
+      return adminJsonResponse(
+        {
+          code: "ADMIN_ACCESS_DENIED",
+          error: "Platform admin access is required.",
+        },
+        403,
       );
     }
 
@@ -131,46 +226,108 @@ export async function handleAdminApiRoute<T>(
         options.destructiveActionId,
       );
       if (contract == null) {
-        return NextResponse.json(
-          { error: "Unknown destructive action contract." },
-          { status: 500 },
+        return adminJsonResponse(
+          {
+            code: "ADMIN_REQUEST_FAILED",
+            error: "Admin request failed.",
+            retryable: false,
+            change_confirmed: false,
+          },
+          500,
         );
       }
       const permission = getAdminDestructivePermission(access, contract);
       if (!permission.allowed) {
-        return NextResponse.json(
-          { error: permission.reason },
-          { status: 403 },
+        return adminJsonResponse(
+          {
+            code: "ADMIN_ACCESS_DENIED",
+            error: permission.reason,
+          },
+          403,
         );
       }
     }
 
     const adminClient = getAdminSupabase();
     if (adminClient == null) {
-      return NextResponse.json(
-        { error: "Server admin client is not configured." },
-        { status: 500 },
+      return adminJsonResponse(
+        {
+          code: "ADMIN_REQUEST_FAILED",
+          error: "Admin request failed.",
+          retryable: true,
+          change_confirmed: false,
+        },
+        500,
       );
     }
 
-    const data = await handler(adminClient, access, serverClient);
-    return NextResponse.json({ data });
+    const data = await withAdminApiOperationTimeout(
+      handler(adminClient, access, serverClient),
+      operationTimeoutMs,
+    );
+    if (Array.isArray(data) && data.length === 0) {
+      return adminJsonResponse({
+        code: "ADMIN_RESOURCE_EMPTY",
+        state: "empty",
+        data: [],
+      });
+    }
+    return adminJsonResponse({ data });
   } catch (error) {
-    if (error instanceof AdminMutationConflictError) {
-      return NextResponse.json(
+    if (error instanceof AdminApiOperationTimeoutError) {
+      return adminJsonResponse(
         {
-          code: "STALE_RECORD",
-          error: error.message,
+          code: "ADMIN_OPERATION_TIMEOUT",
+          error:
+            "The admin operation timed out. Check current data before retrying.",
+          retryable: true,
+          change_confirmed: false,
         },
-        { status: 409 },
+        504,
       );
     }
-    return NextResponse.json(
+    if (error instanceof AdminMutationConflictError) {
+      return adminJsonResponse(
+        {
+          code: "STALE_RECORD",
+          error:
+            "This record changed after it was loaded. Refresh the latest data before retrying.",
+          retryable: true,
+          change_confirmed: false,
+        },
+        409,
+      );
+    }
+    if (error instanceof AdminApiValidationError) {
+      return adminJsonResponse(
+        {
+          code: error.code,
+          error: error.message,
+          retryable: false,
+          change_confirmed: false,
+        },
+        400,
+      );
+    }
+    if (error instanceof AdminApiAuthorizationError) {
+      return adminJsonResponse(
+        {
+          code: error.code,
+          error: error.message,
+          retryable: false,
+          change_confirmed: false,
+        },
+        403,
+      );
+    }
+    return adminJsonResponse(
       {
-        error:
-          error instanceof Error ? error.message : "Admin request failed.",
+        code: "ADMIN_REQUEST_FAILED",
+        error: "Admin request failed.",
+        retryable: true,
+        change_confirmed: false,
       },
-      { status: 500 },
+      500,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ class FanClubsListScreen extends ConsumerStatefulWidget {
 }
 
 class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
+  static const _allFilter = '__all__';
+
   final _searchController = TextEditingController();
   final Set<String> _joinedClubIds = <String>{};
   final Set<String> _pendingClubIds = <String>{};
@@ -26,7 +29,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
   List<Map<String, dynamic>> _clubs = const <Map<String, dynamic>>[];
   bool _isLoading = true;
   String? _error;
-  String _activeFilter = 'ALL';
+  String _activeFilter = _allFilter;
 
   @override
   void initState() {
@@ -62,7 +65,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
         _clubs = loadedClubs;
         _joinedClubIds.clear();
         if (!availableFilters.contains(_activeFilter)) {
-          _activeFilter = 'ALL';
+          _activeFilter = _allFilter;
         }
         _isLoading = false;
       });
@@ -70,7 +73,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Could not load fan clubs right now.';
+        _error = context.afriL10n.fanClubsLoadError;
       });
     }
   }
@@ -113,14 +116,11 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
     }
 
     unawaited(HapticFeedback.lightImpact());
-    AfriToast.info(
-      context,
-      'Request sent for admin review. You are not joined until the club approves it.',
-    );
+    AfriToast.info(context, context.afriL10n.fanClubReviewRequestSent);
   }
 
   List<String> _buildFilters(List<Map<String, dynamic>> clubs) {
-    final filters = <String>['ALL'];
+    final filters = <String>[_allFilter];
     final seen = <String>{'all'};
 
     for (final club in clubs) {
@@ -145,7 +145,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
           final name = club['name']?.toString().toLowerCase() ?? '';
           final normalizedFilter = _activeFilter.trim().toLowerCase();
           final matchesFilter =
-              normalizedFilter == 'all' || region == normalizedFilter;
+              normalizedFilter == _allFilter || region == normalizedFilter;
           final matchesQuery =
               query.isEmpty ||
               name.contains(query) ||
@@ -193,7 +193,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                       AfriIconButton(
                         icon: AfriIcons.back,
                         onTap: () => context.pop(),
-                        tooltip: 'Back',
+                        tooltip: context.afriL10n.authBack,
                       ),
                       const SizedBox(width: SpacingTokens.spacing2),
                       Expanded(
@@ -201,13 +201,13 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'THE COMMUNITY',
+                              context.afriL10n.fanClubsCommunityEyebrow,
                               style: TypographyTokens.labelLarge(
                                 ColorTokens.onSurfaceVariant,
                               ).copyWith(fontWeight: FontWeight.w700),
                             ),
                             Text(
-                              'FAN CLUBS',
+                              context.afriL10n.fanClubsTitle,
                               style: TypographyTokens.displaySmall(primary),
                             ),
                           ],
@@ -222,7 +222,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                   padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                   child: AfriInputField(
                     controller: _searchController,
-                    hint: 'Search clubs or locations',
+                    hint: context.afriL10n.fanClubsSearchHint,
                     prefixIcon: AfriIcons.search,
                     onChanged: (_) => setState(() {}),
                   ),
@@ -262,7 +262,11 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                               ),
                               child: AfriChoiceChip(
                                 selected: selected,
-                                label: Text(filter),
+                                label: Text(
+                                  filter == _allFilter
+                                      ? context.afriL10n.searchCategoryAll
+                                      : filter,
+                                ),
                                 onSelected: (_) =>
                                     setState(() => _activeFilter = filter),
                               ),

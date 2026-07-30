@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -39,13 +40,13 @@ class StatsRow extends StatelessWidget {
     return AfriStatRow(
       stats: [
         AfriStat(
-          label: 'FET',
+          label: context.afriL10n.homeFetLabel,
           value: _formatFet(globalFet),
           icon: AfriIcons.earn,
           onTap: onFetTap,
         ),
         AfriStat(
-          label: 'Rank',
+          label: context.afriL10n.homeRankLabel,
           value: '#${fanRank.toString().padLeft(3, '0')}',
           icon: AfriIcons.rank,
           accentColor: ColorTokens.clubAccent,

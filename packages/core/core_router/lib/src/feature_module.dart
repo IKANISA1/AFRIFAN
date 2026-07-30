@@ -15,13 +15,30 @@ String _normalizeFeatureKey(String value) {
 /// The only feature modules allowed to render in the mobile bottom nav.
 const List<String> primaryBottomTabFeatureOrder = <String>[
   'home',
+  'club',
   'fanzone',
-  'settings',
+  'membership',
 ];
 
 const Set<String> primaryBottomTabFeatureKeys = <String>{
   'home',
+  'club',
   'fanzone',
+  'membership',
+};
+
+/// All modules hosted by the indexed shell.
+///
+/// Settings remains a shell branch so existing nested account routes retain
+/// their navigation stack, but it is intentionally omitted from
+/// [primaryBottomTabFeatureKeys] and reached through profile/account actions.
+const List<String> shellBranchFeatureOrder = <String>[
+  ...primaryBottomTabFeatureOrder,
+  'settings',
+];
+
+const Set<String> shellBranchFeatureKeys = <String>{
+  ...primaryBottomTabFeatureKeys,
   'settings',
 };
 
@@ -31,6 +48,14 @@ int primaryBottomTabOrderForFeature(String featureKey) {
     return index;
   }
   return primaryBottomTabFeatureOrder.length;
+}
+
+int shellBranchOrderForFeature(String featureKey) {
+  final index = shellBranchFeatureOrder.indexOf(featureKey);
+  if (index >= 0) {
+    return index;
+  }
+  return shellBranchFeatureOrder.length;
 }
 
 /// Abstract interface for feature modules.

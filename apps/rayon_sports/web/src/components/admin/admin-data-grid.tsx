@@ -8,6 +8,7 @@ import {
   type ReactElement,
   type HTMLAttributes,
   type KeyboardEvent,
+  type MouseEvent,
   type TdHTMLAttributes,
 } from "react";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
@@ -64,9 +65,11 @@ export function AdminDataGrid({
         return cell;
       }
 
-      const colSpan = typeof cell.props.colSpan === "number" ? cell.props.colSpan : 1;
+      const colSpan =
+        typeof cell.props.colSpan === "number" ? cell.props.colSpan : 1;
       return cloneElement(cell as ReactElement<TableCellProps>, {
-        "data-column-label": colSpan > 1 ? undefined : columns[index]?.label ?? "",
+        "data-column-label":
+          colSpan > 1 ? undefined : (columns[index]?.label ?? ""),
         className: cn(
           cell.props.className,
           "admin-table-cell",
@@ -77,7 +80,32 @@ export function AdminDataGrid({
 
     const rowId = row.props["data-row-id"];
     const isInteractive = onRowActivate != null && typeof rowId === "string";
+    const originalClick = row.props.onClick;
     const originalKeyDown = row.props.onKeyDown;
+    const handleClick = isInteractive
+      ? (event: MouseEvent<HTMLTableRowElement>) => {
+          originalClick?.(event);
+          if (event.defaultPrevented) {
+            return;
+          }
+
+          const target = event.target;
+          const interactiveDescendant =
+            target instanceof Element
+              ? target.closest(
+                  "a, button, input, select, textarea, summary, [role='button'], [role='link']",
+                )
+              : null;
+          if (
+            interactiveDescendant &&
+            interactiveDescendant !== event.currentTarget
+          ) {
+            return;
+          }
+
+          onRowActivate(rowId);
+        }
+      : originalClick;
     const handleKeyDown = isInteractive
       ? (event: KeyboardEvent<HTMLTableRowElement>) => {
           originalKeyDown?.(event);
@@ -96,6 +124,7 @@ export function AdminDataGrid({
       className: cn(row.props.className, "admin-table-row"),
       children: decoratedCells,
       tabIndex: isInteractive ? (row.props.tabIndex ?? 0) : row.props.tabIndex,
+      onClick: handleClick,
       onKeyDown: handleKeyDown,
     });
   });
@@ -118,33 +147,33 @@ export function AdminDataGrid({
                     ? ArrowDown
                     : ArrowUpDown;
               return (
-              <th
-                key={column.key}
-                className={column.className}
-                scope="col"
-                data-column-priority={column.priority ?? "secondary"}
-                aria-sort={column.sortable ? sortDirection : undefined}
-              >
-                {column.sortable && column.onSort ? (
-                  <button
-                    type="button"
-                    className="admin-sort-button"
-                    onClick={column.onSort}
-                    aria-label={`Sort by ${column.label}${
-                      sortDirection === "ascending"
-                        ? ", currently ascending"
-                        : sortDirection === "descending"
-                          ? ", currently descending"
-                          : ""
-                    }`}
-                  >
-                    <span>{column.label}</span>
-                    <SortIcon size={15} aria-hidden="true" />
-                  </button>
-                ) : (
-                  column.label
-                )}
-              </th>
+                <th
+                  key={column.key}
+                  className={column.className}
+                  scope="col"
+                  data-column-priority={column.priority ?? "secondary"}
+                  aria-sort={column.sortable ? sortDirection : undefined}
+                >
+                  {column.sortable && column.onSort ? (
+                    <button
+                      type="button"
+                      className="admin-sort-button"
+                      onClick={column.onSort}
+                      aria-label={`Sort by ${column.label}${
+                        sortDirection === "ascending"
+                          ? ", currently ascending"
+                          : sortDirection === "descending"
+                            ? ", currently descending"
+                            : ""
+                      }`}
+                    >
+                      <span>{column.label}</span>
+                      <SortIcon size={15} aria-hidden="true" />
+                    </button>
+                  ) : (
+                    column.label
+                  )}
+                </th>
               );
             })}
           </tr>

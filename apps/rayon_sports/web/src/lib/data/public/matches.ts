@@ -66,27 +66,66 @@ function mapMatchRow(
   };
 }
 
-export const getMatches = cache(async function getMatches() {
+async function loadMatches() {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return [];
 
-  try {
-    const { data } = await client
-      .from("unified_matches")
-      .select("*")
-      .eq("club_id", activeClub.numericId)
-      .order("match_date", { ascending: true })
-      .limit(20);
+  const { data, error } = await client
+    .from("unified_matches")
+    .select("*")
+    .eq("club_id", activeClub.numericId)
+    .order("match_date", { ascending: true })
+    .limit(20);
 
-    if (!data || data.length == 0) return [];
-    return data.map((row) => mapMatchRow(row, activeClub.shortName));
+  if (error) {
+    throw error;
+  }
+  if (!data || data.length == 0) return [];
+  return data.map((row) => mapMatchRow(row, activeClub.shortName));
+}
+
+async function loadMatchById(matchId: string) {
+  const client = getReadOnlySupabase();
+  const activeClub = await getActiveClubReference();
+  if (client == null) return null;
+
+  const { data, error } = await client
+    .from("unified_matches")
+    .select("*")
+    .eq("club_id", activeClub.numericId)
+    .eq("id", matchId)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+  if (data == null) return null;
+  return mapMatchRow(data, activeClub.shortName);
+}
+
+export const getMatchesStrict = cache(async function getMatchesStrict() {
+  return loadMatches();
+});
+
+export const getMatches = cache(async function getMatches() {
+  try {
+    return await loadMatches();
   } catch {
     return [];
   }
 });
 
 export const getMatchById = cache(async function getMatchById(matchId: string) {
-  const matches = await getMatches();
-  return matches.find((match) => match.id === matchId) ?? null;
+  try {
+    return await loadMatchById(matchId);
+  } catch {
+    return null;
+  }
 });
+
+export const getMatchByIdStrict = cache(
+  async function getMatchByIdStrict(matchId: string) {
+    return loadMatchById(matchId);
+  },
+);

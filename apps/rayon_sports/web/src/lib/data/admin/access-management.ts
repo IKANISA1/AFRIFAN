@@ -98,13 +98,14 @@ function mapRoleAssignment(
 export async function getAdminRoleAssignments(
   client: SupabaseClient,
   access: AdminAccess,
-  options: { activeOnly?: boolean } = {},
+  options: { activeOnly?: boolean; signal?: AbortSignal } = {},
 ): Promise<AdminRoleAssignment[]> {
   if (typeof window !== "undefined") {
     return requestAdminApi<AdminRoleAssignment[]>("access", {
       query: {
         active_only: options.activeOnly ?? true,
       },
+      signal: options.signal,
     });
   }
 

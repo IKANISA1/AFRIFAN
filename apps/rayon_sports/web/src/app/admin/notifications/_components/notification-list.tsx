@@ -10,6 +10,7 @@ import { AdminSurface } from "@/components/admin/admin-surface";
 import { ProgressBar } from "@/components/progress-bar";
 import { Skeleton } from "@/components/skeleton";
 import type { AdminNotificationContext, AdminNotificationRecord } from "@/lib/types";
+import type { AdminResourceInteraction } from "@/components/admin/admin-resource-status-banner";
 import { useAdminCollection } from "@/lib/use-admin-collection";
 
 function notificationTone(status: string) {
@@ -37,10 +38,14 @@ export function NotificationList({
   context,
   loading,
   onRefresh,
+  disabled = false,
+  onInteractionChange,
 }: {
   context: AdminNotificationContext;
   loading: boolean;
   onRefresh: () => void;
+  disabled?: boolean;
+  onInteractionChange?: (interaction: AdminResourceInteraction) => void;
 }) {
   const notificationCollection = useAdminCollection({
     records: context.history,
@@ -79,13 +84,16 @@ export function NotificationList({
         <button
           type="button"
           onClick={onRefresh}
+          disabled={disabled}
+          onFocus={() => onInteractionChange?.("focused")}
+          onBlur={() => onInteractionChange?.("idle")}
           className="admin-action-button"
         >
           Refresh
         </button>
       }
       toolbar={
-        <AdminFilterBar><label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search notification delivery queue</span><input type="search" value={notificationCollection.query} onChange={(event) => notificationCollection.setQuery(event.target.value)} placeholder="Search message, audience, delivery, or status" /></label></AdminFilterBar>
+        <AdminFilterBar><label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search notification delivery queue</span><input type="search" value={notificationCollection.query} onChange={(event) => notificationCollection.setQuery(event.target.value)} placeholder="Search message, audience, delivery, or status" disabled={disabled} /></label></AdminFilterBar>
       }
       flush
     >
@@ -134,11 +142,11 @@ export function NotificationList({
                       ) : null}
                     </td>
                     <td>
-                      <p className="text-sm font-medium text-white">{audienceLabel(item)}</p>
+                      <p className="text-sm font-medium text-[var(--admin-text-strong)]">{audienceLabel(item)}</p>
                       <p className="admin-row-meta">{item.audienceType.replaceAll("_", " ")}</p>
                     </td>
                     <td>
-                      <p className="text-sm font-medium text-white">
+                      <p className="text-sm font-medium text-[var(--admin-text-strong)]">
                         {item.deliveryMode === "schedule" ? "Scheduled" : "Immediate"}
                       </p>
                       <p className="admin-row-meta">
@@ -157,7 +165,7 @@ export function NotificationList({
                       />
                     </td>
                     <td className="min-w-[180px]">
-                      <p className="text-sm font-medium text-white">
+                      <p className="text-sm font-medium text-[var(--admin-text-strong)]">
                         {item.sentCount} / {total}
                       </p>
                       {total > 0 ? (
@@ -167,7 +175,7 @@ export function NotificationList({
                       ) : null}
                     </td>
                     <td>
-                      <p className="text-sm font-medium text-white">{item.failedCount}</p>
+                      <p className="text-sm font-medium text-[var(--admin-text-strong)]">{item.failedCount}</p>
                       <p className="admin-row-meta">
                         {item.failedCount > 0 ? "needs review" : "clear"}
                       </p>

@@ -20,6 +20,14 @@ class RbacResolver {
   final Future<dynamic> Function(String userId)? _adminAssignmentsLoader;
   final Map<String, dynamic> Function()? _appMetadataLoader;
 
+  /// Columns defined by the governed `admin_role_assignments` schema.
+  ///
+  /// Keep this explicit so client queries cannot silently drift back to the
+  /// retired `assigned_by` / `created_at` names.
+  static const String adminAssignmentsProjection =
+      'id, user_id, role, club_id, partner_scope_id, granted_by, '
+      'granted_at, is_active';
+
   /// Resolve admin workspace access for a user.
   ///
   /// Returns [AdminWorkspaceAccess.none] if the user has no admin roles,
@@ -60,9 +68,7 @@ class RbacResolver {
 
     return SupabaseClientFactory.client
         .from('admin_role_assignments')
-        .select(
-          'id, user_id, role, club_id, assigned_by, created_at, is_active',
-        )
+        .select(adminAssignmentsProjection)
         .eq('user_id', userId)
         .eq('is_active', true);
   }
@@ -81,25 +87,31 @@ class RbacResolver {
         }
 
         final role = AdminRole.fromString(row['role']?.toString());
+        if (role == null) {
+          AfriLogger.warn(tag, 'Ignoring an unsupported admin role.');
+          continue;
+        }
+        final scopeId = row['partner_scope_id'] ?? row['club_id'];
         assignments.add(<String, dynamic>{
           'id': row['id'],
           'user_id': row['user_id'],
           'role': switch (role) {
             AdminRole.admin => 'admin',
             AdminRole.bank => 'bank',
-            AdminRole.partner || null => 'partner',
+            AdminRole.partner => 'partner',
           },
           'club_id': row['club_id'],
-          'partner_scope_id': row['club_id']?.toString(),
-          'granted_by': row['assigned_by'],
-          'created_at': row['created_at'],
+          'partner_scope_id': scopeId?.toString(),
+          'granted_by': row['granted_by'],
+          'granted_at': row['granted_at'],
           'is_active': row['is_active'],
         });
       }
     }
 
     if (assignments.isEmpty) {
-      final metadata = _appMetadataLoader?.call() ??
+      final metadata =
+          _appMetadataLoader?.call() ??
           SupabaseClientFactory.client.auth.currentUser?.appMetadata ??
           const <String, dynamic>{};
       return AdminWorkspaceAccess.fromAppMetadata(metadata);

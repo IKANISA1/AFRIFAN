@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_home/src/screens/discovery_search_screen.dart';
 import 'package:feat_home/src/search/discovery_search.dart';
@@ -67,6 +68,28 @@ void main() {
         ),
         isTrue,
       );
+    });
+
+    test('localizes the searchable catalog for EN, FR, and RW', () async {
+      for (final testCase in <({String locale, String query, String title})>[
+        (locale: 'en', query: 'tickets', title: 'Match tickets'),
+        (locale: 'fr', query: 'billets', title: 'Billets de match'),
+        (locale: 'rw', query: 'amatike', title: 'Amatike y’umukino'),
+      ]) {
+        final response = await repository.search(
+          DiscoverySearchQuery(
+            text: testCase.query,
+            category: DiscoveryCategory.commerce,
+            localeName: testCase.locale,
+          ),
+        );
+
+        expect(
+          response.results.map((result) => result.title),
+          contains(testCase.title),
+          reason: 'Search catalog did not resolve ${testCase.locale}.',
+        );
+      }
     });
   });
 
@@ -369,6 +392,58 @@ void main() {
     });
 
     testWidgets(
+      'renders localized EN, FR, and RW Search at compact 200 percent text',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 760);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = 2;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+        for (final testCase
+            in <
+              ({Locale locale, String title, String query, String resultTitle})
+            >[
+              (
+                locale: const Locale('en'),
+                title: 'Search',
+                query: 'tickets',
+                resultTitle: 'Match tickets',
+              ),
+              (
+                locale: const Locale('fr'),
+                title: 'Chercher',
+                query: 'billets',
+                resultTitle: 'Billets de match',
+              ),
+              (
+                locale: const Locale('rw'),
+                title: 'Shakisha',
+                query: 'amatike',
+                resultTitle: 'Amatike y’umukino',
+              ),
+            ]) {
+          await tester.pumpWidget(
+            _buildSearchApp(appCopyLocale: testCase.locale),
+          );
+          await tester.pumpAndSettle();
+
+          expect(find.text(testCase.title.toUpperCase()), findsOneWidget);
+          await tester.enterText(
+            find.byKey(const ValueKey<String>('discovery-search-input')),
+            testCase.query,
+          );
+          await tester.pump(const Duration(milliseconds: 300));
+          await tester.pumpAndSettle();
+
+          expect(find.text(testCase.resultTitle), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        }
+      },
+    );
+
+    testWidgets(
       'keyboard-open search keeps input, clear, error, and retry reachable',
       (tester) async {
         tester.view.physicalSize = const Size(393, 852);
@@ -471,6 +546,47 @@ void main() {
         matchesGoldenFile('goldens/search_${profile.id}.png'),
       );
     });
+  }
+
+  for (final testCase in <({String id, Locale locale, String expectedTitle})>[
+    (id: 'en', locale: const Locale('en'), expectedTitle: 'SEARCH'),
+    (id: 'fr', locale: const Locale('fr'), expectedTitle: 'CHERCHER'),
+    (id: 'rw', locale: const Locale('rw'), expectedTitle: 'SHAKISHA'),
+  ]) {
+    testWidgets(
+      'golden localized Search ${testCase.id} at compact 200 percent text',
+      (tester) async {
+        TypographyTokens.debugUseFallbackFonts = true;
+        addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
+        EditableText.debugDeterministicCursor = true;
+        addTearDown(() => EditableText.debugDeterministicCursor = false);
+        ColorTokens.setBrightness(Brightness.dark);
+        addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
+        _setGoldenSurface(tester, const Size(320, 760));
+        tester.platformDispatcher.textScaleFactorTestValue = 2;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+        await tester.pumpWidget(
+          _buildSearchApp(
+            appCopyLocale: testCase.locale,
+            goldenKey: const ValueKey<String>('search-localized-golden'),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        expect(find.text(testCase.expectedTitle), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await expectLater(
+          find.byKey(const ValueKey<String>('search-localized-golden')),
+          matchesGoldenFile(
+            'goldens/search_locale_${testCase.id}_large_text_dark_320x760.png',
+          ),
+        );
+      },
+    );
   }
 
   for (final state in const <String>['loading', 'empty', 'error', 'offline']) {
@@ -755,6 +871,7 @@ Widget _buildSearchApp({
   DiscoverySearchRepository? repository,
   Duration? searchTimeout,
   Brightness brightness = Brightness.dark,
+  Locale appCopyLocale = const Locale('en'),
   Key? goldenKey,
 }) {
   final router = GoRouter(
@@ -794,6 +911,10 @@ Widget _buildSearchApp({
     child: MaterialApp.router(
       theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
       routerConfig: router,
+      builder: (context, child) => AfriLocalizationsScope(
+        locale: appCopyLocale,
+        child: child ?? const SizedBox.shrink(),
+      ),
     ),
   );
 }

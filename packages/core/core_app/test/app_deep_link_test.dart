@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_app/core_app.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_router/core_router.dart';
@@ -146,6 +148,55 @@ void main() {
         expect(find.byType(_FakeGroupStatementScreen), findsNothing);
       },
     );
+
+    testWidgets(
+      'pushes a valid warm deep link received while the app is running',
+      (tester) async {
+        tester.view.physicalSize = const Size(390, 844);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        final links = StreamController<Uri>();
+        addTearDown(links.close);
+
+        await tester.pumpWidget(
+          AfriClubApp(
+            config: config,
+            modules: <FeatureModule>[
+              _HomeModule(),
+              _OnboardingModule(),
+              _ClubModule(),
+            ],
+            authRepository: FakeAuthRepository(
+              restoreResult: const UserProfile(
+                id: 'user-warm-link',
+                clubId: '1',
+                publicUserId: '654321',
+              ),
+            ),
+            initialLocation: '/home',
+            deepLinkParser: DeepLinkParser(customScheme: 'gikundiro'),
+            deepLinkService: FakeDeepLinkService(stream: links.stream),
+          ),
+        );
+
+        await tester.pump();
+        await tester.pumpAndSettle();
+        expect(find.byType(_FakeHomeScreen), findsOneWidget);
+
+        links.add(Uri.parse('gikundiro://club/news'));
+        await tester.pump();
+        await tester.pumpAndSettle();
+
+        expect(find.byType(_FakeClubNewsScreen), findsOneWidget);
+        expect(
+          tester
+              .widget<AfriClubBottomNav>(find.byType(AfriClubBottomNav))
+              .currentIndex,
+          1,
+        );
+      },
+    );
   });
 }
 
@@ -161,6 +212,34 @@ class _FakeHomeScreen extends StatelessWidget {
   const _FakeHomeScreen();
   @override
   Widget build(BuildContext context) => const Scaffold(body: Text('Home'));
+}
+
+class _FakeClubNewsScreen extends StatelessWidget {
+  const _FakeClubNewsScreen();
+
+  @override
+  Widget build(BuildContext context) => const Scaffold(body: Text('Club news'));
+}
+
+class _ClubModule extends FeatureModule {
+  @override
+  String get featureKey => 'club';
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+    path: '/club',
+    label: 'Club',
+    icon: AfriIcons.stadium,
+    builder: (context, state) => const Scaffold(body: Text('Club')),
+  );
+
+  @override
+  List<RouteBase> get routes => <RouteBase>[
+    GoRoute(
+      path: 'news',
+      builder: (context, state) => const _FakeClubNewsScreen(),
+    ),
+  ];
 }
 
 class _ContributionsModule extends FeatureModule {

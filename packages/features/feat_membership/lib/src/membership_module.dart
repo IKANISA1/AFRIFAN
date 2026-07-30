@@ -1,31 +1,44 @@
 import 'package:core_router/core_router.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/membership_screen.dart';
 import 'screens/tier_detail_screen.dart';
 
-/// Membership feature module — non-tab module with standalone routes.
+/// Membership feature module — the supporter identity and revenue tab.
 class MembershipModule extends FeatureModule {
+  static const String _moduleName = 'Membership';
+
   @override
   String get featureKey => 'membership';
 
   @override
-  TabRoute? get tabRoute => null; // Not a tab — Settings tab is in SettingsModule
+  bool isEnabled(Map<String, bool> featureFlags) => true;
+
+  @override
+  bool isEnabledForConfig({
+    Map<String, bool> featureFlags = const <String, bool>{},
+    Map<String, dynamic>? configSnapshot,
+  }) => true;
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+    path: '/membership',
+    label: _moduleName,
+    icon: AfriIcons.membership,
+    activeIcon: AfriIcons.membership,
+    builder: (context, state) => const MembershipScreen(),
+  );
 
   @override
   List<RouteBase> get routes => [
     GoRoute(
-      path: '/membership',
-      name: 'membership',
-      builder: (context, state) => const MembershipScreen(),
-    ),
-    GoRoute(
-      path: '/membership/fans',
+      path: 'fans',
       name: 'membership-fans',
       redirect: (_, __) => '/fanzone?section=supporters',
     ),
     GoRoute(
-      path: '/membership/tier/:tierId',
+      path: 'tier/:tierId',
       pageBuilder: (context, state) => afriSheetPage(
         state,
         TierDetailScreen(tierId: state.pathParameters['tierId'] ?? 'imena'),

@@ -69,7 +69,7 @@ void main() {
     await tester.tap(find.text('Open contribution'));
     await tester.pumpAndSettle();
     final amountChip = find.ancestor(
-      of: find.text('+10000'),
+      of: find.text('+10K'),
       matching: find.byType(AfriChoiceChip),
     );
     await tester.ensureVisible(amountChip);
@@ -86,7 +86,7 @@ void main() {
 
     final selectedAmount = tester.widget<AfriChoiceChip>(
       find.ancestor(
-        of: find.text('+10000'),
+        of: find.text('+10K'),
         matching: find.byType(AfriChoiceChip),
       ),
     );
@@ -128,7 +128,7 @@ void main() {
       await tester.tap(find.text('Open contribution'));
       await tester.pumpAndSettle();
       final amountChip = find.ancestor(
-        of: find.text('+10000'),
+        of: find.text('+10K'),
         matching: find.byType(AfriChoiceChip),
       );
       await tester.ensureVisible(amountChip);
@@ -167,7 +167,7 @@ void main() {
       await tester.tap(find.text('Open contribution'));
       await tester.pumpAndSettle();
       final amountChip = find.ancestor(
-        of: find.text('+10000'),
+        of: find.text('+10K'),
         matching: find.byType(AfriChoiceChip),
       );
       await tester.ensureVisible(amountChip);
@@ -216,7 +216,7 @@ void main() {
         await tester.tap(find.text('Open contribution'));
         await tester.pumpAndSettle();
         final amountChip = find.ancestor(
-          of: find.text('+10000'),
+          of: find.text('+10K'),
           matching: find.byType(AfriChoiceChip),
         );
         await tester.ensureVisible(amountChip);

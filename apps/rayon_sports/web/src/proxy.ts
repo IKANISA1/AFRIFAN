@@ -5,6 +5,7 @@ import {
   getRequestedAdminClubId,
 } from "@/lib/admin-club-scope";
 import {
+  canonicalRecoveryPath,
   isAdminHostname,
   mapAdminSubdomainPath,
   resolveRoutingHostname,
@@ -43,6 +44,13 @@ export function proxy(request: NextRequest) {
     });
     return response;
   };
+
+  const recoveryPath = canonicalRecoveryPath(pathname);
+  if (recoveryPath != null) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = recoveryPath;
+    return applyAdminScopeCookie(NextResponse.redirect(redirectUrl, 308));
+  }
 
   if (!isAdminHostname(hostname)) {
     return applyAdminScopeCookie(NextResponse.next());

@@ -474,6 +474,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('SET'), findsOneWidget);
 
+      await tester.ensureVisible(find.text('Refunded'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Refunded'));
       await tester.pumpAndSettle();
       expect(find.text('REF'), findsOneWidget);

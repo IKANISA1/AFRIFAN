@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/controllers/challenge_controller.dart';
 import 'package:feat_gamification/src/models/challenge_models.dart';
-import 'package:feat_gamification/src/prediction_providers.dart';
 import 'package:feat_gamification/src/screens/challenge_feed_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -3,7 +3,10 @@ import {
   deriveAdminAccess,
   formatAdminRoleLabel,
 } from "@/lib/data/admin";
-import { adminClubIdOrNull, requireAdminClubId } from "@/lib/data/admin/helpers";
+import {
+  adminClubIdOrNull,
+  requireAdminClubId,
+} from "@/lib/data/admin/helpers";
 
 describe("admin data helpers", () => {
   it("grants club access when assignment matches the active club", () => {
@@ -186,11 +189,13 @@ describe("admin data helpers", () => {
       monthlyTotal: 550000,
     });
 
-  expect(headers).toContain("Name");
-  expect(headers).toContain("Total (RWF)");
-  expect(rows.length).toBe(1);
-  expect(rows[0][0]).toBe("Blue Wall Fund");
-  expect(rows[0][1]).toBe("project");
-  expect(rows[0][2]).toBe(550000);
-});
+    expect(headers).toContain("Name");
+    expect(headers).toContain("Currency");
+    expect(headers).toContain("Total");
+    expect(rows.length).toBe(1);
+    expect(rows[0][0]).toBe("Blue Wall Fund");
+    expect(rows[0][1]).toBe("project");
+    expect(rows[0][2]).toBe("RWF");
+    expect(rows[0][3]).toBe(550000);
+  });
 });

@@ -1,12 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useState, type FormEvent } from "react";
 import { Pencil, Search, ShoppingBag, Trash2 } from "lucide-react";
-import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminImageField } from "@/components/admin/admin-image-field";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPagination } from "@/components/admin/admin-pagination";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -15,13 +18,16 @@ import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import { cn, formatCurrency } from "@/lib/utils";
 import {
   getAdminProducts,
+  normalizeAdminShopProducts,
   saveAdminProduct,
   deleteAdminProduct,
 } from "@/lib/data/admin/shop";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import type { AdminShopProduct } from "@/lib/types";
 import { useHydrated } from "@/lib/use-hydrated";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import { useAdminCollection } from "@/lib/use-admin-collection";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
 
 const emptyForm = {
   id: "",
@@ -38,36 +44,102 @@ const emptyForm = {
   sortOrder: "0",
 };
 
+const emptyProducts: AdminShopProduct[] = [];
+const productsAreEmpty = (products: AdminShopProduct[]) =>
+  products.length === 0;
+
+const statusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading shop catalogue",
+    detail: "Waiting for the first authenticated, club-scoped snapshot.",
+  },
+  ready: {
+    label: "Shop catalogue confirmed",
+    detail: "The latest bounded product catalogue is ready for review.",
+  },
+  empty: {
+    label: "No products in this club",
+    detail: "The club catalogue is confirmed and ready for its first product.",
+  },
+  error: {
+    label: "Shop catalogue unavailable",
+    detail: "Confirmed products remain visible. Retry when the service recovers.",
+  },
+  offline: {
+    label: "Shop catalogue is offline",
+    detail: "Confirmed products remain visible while refresh is unavailable.",
+  },
+  permission_denied: {
+    label: "Shop access denied",
+    detail:
+      "Products, filters, pagination, and editor content were cleared for privacy.",
+  },
+  syncing: {
+    label: "Refreshing shop catalogue",
+    detail: "Confirmed products remain visible during the bounded refresh.",
+  },
+  conflict: {
+    label: "Shop catalogue changed",
+    detail: "Review the retained snapshot, then refresh before making changes.",
+  },
+  security_timeout: {
+    label: "Shop request timed out",
+    detail: "No new snapshot was confirmed. Retry from the retained catalogue.",
+  },
+};
+
 export default function AdminShopPage() {
   const { access, activeClub, client } = useAdminPortal();
   const hydrated = useHydrated();
-  const [products, setProducts] = useState<AdminShopProduct[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [filter, setFilter] = useState("ALL");
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const formDisabled = !hydrated || client == null || loading;
+  const [saving, setSaving] = useState(false);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
 
-  const load = useCallback(async () => {
-    if (client == null) return;
-    setLoading(true);
-    try {
-      setProducts(await getAdminProducts(client, access));
-      setLoadError(null);
-    } catch (caught) {
-      const message =
-        caught instanceof Error ? caught.message : "Could not load products.";
-      setLoadError(message);
-      showAdminToast(message, "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [access, client]);
+  const clearPrivateState = useCallback(() => {
+    setForm(emptyForm);
+    setFilter("ALL");
+    setInteraction("idle");
+  }, []);
+  const loadProducts = useCallback(
+    async (signal: AbortSignal) => {
+      if (client == null) return emptyProducts;
+      return getAdminProducts(client, access, { signal });
+    },
+    [access, client],
+  );
+  const {
+    data: products,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState<AdminShopProduct[]>({
+    enabled: hydrated && client != null && access.hasAccess,
+    emptyValue: emptyProducts,
+    isEmpty: productsAreEmpty,
+    load: loadProducts,
+    normalize: normalizeAdminShopProducts,
+    onPermissionDenied: clearPrivateState,
+    resourceLabel: "shop catalogue",
+  });
 
-  useEffect(() => {
-    if (client == null || !access.hasAccess) return;
-    load().catch(() => {});
-  }, [access.hasAccess, client, load]);
+  const canEdit = access.isSuperAdmin || access.role === "club_admin";
+  const mutationLocked =
+    saving || busy || !canEdit || (status !== "ready" && status !== "empty");
+  const unrecoveredFailure =
+    !hasConfirmed &&
+    (status === "error" ||
+      status === "offline" ||
+      status === "permission_denied" ||
+      status === "conflict" ||
+      status === "security_timeout");
 
   function beginEdit(product: AdminShopProduct) {
     setForm({
@@ -88,7 +160,8 @@ export default function AdminShopPage() {
   }
 
   async function submitForm(formData: FormData) {
-    if (client == null) return;
+    if (client == null || mutationLocked) return;
+    setSaving(true);
     showAdminToast(form.id ? "Saving product..." : "Creating product...", "info");
     try {
       await saveAdminProduct(client, access, {
@@ -106,13 +179,16 @@ export default function AdminShopPage() {
         sortOrder: Number(formData.get("sortOrder") ?? 0),
       });
       setForm(emptyForm);
-      await load();
+      await refresh();
       showAdminToast("Product saved.", "success");
     } catch (caught) {
       if (isAdminMutationConflict(caught)) {
-        await load();
+        await refresh();
       }
-      showAdminToast(caught instanceof Error ? caught.message : "Could not save product.", "error");
+      const nextStatus = applyFailure(caught);
+      showAdminToast(statusCopy[nextStatus].label, "error");
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -123,7 +199,7 @@ export default function AdminShopPage() {
   }
 
   async function removeProduct(product: AdminShopProduct) {
-    if (client == null) return;
+    if (client == null || mutationLocked) return;
     if (
       !confirmAdminDestructiveAction({
         action: "Remove",
@@ -135,6 +211,7 @@ export default function AdminShopPage() {
     ) {
       return;
     }
+    setSaving(true);
     try {
       await deleteAdminProduct(
         client,
@@ -142,13 +219,16 @@ export default function AdminShopPage() {
         product.id,
         product.updatedAt,
       );
-      await load();
+      await refresh();
       showAdminToast(`${product.name} removed.`, "success");
     } catch (caught) {
       if (isAdminMutationConflict(caught)) {
-        await load();
+        await refresh();
       }
-      showAdminToast(caught instanceof Error ? caught.message : "Could not remove product.", "error");
+      const nextStatus = applyFailure(caught);
+      showAdminToast(statusCopy[nextStatus].label, "error");
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -172,18 +252,47 @@ export default function AdminShopPage() {
   });
 
   return (
-    <div className="section-grid">
+    <div
+      className="section-grid"
+      data-admin-shop-status={status}
+      data-admin-shop-interaction={interaction}
+    >
       <AdminPageHeader
         eyebrow="Retail"
         title="Shop"
       />
+      <AdminResourceStatusBanner
+        status={status}
+        label={statusCopy[status].label}
+        detail={statusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh catalogue"
+        onRefresh={() => void refresh()}
+        onInteractionChange={setInteraction}
+      />
       <div className="grid gap-5 md:grid-cols-3">
-        <AdminStateCard label="Products" value={loading ? "..." : products.length.toString()} helper="In catalogue." icon={ShoppingBag} />
-        <AdminStateCard label="Active" value={loading ? "..." : products.filter((p) => p.isActive).length.toString()} helper="Visible in shop." />
-        <AdminStateCard label="Categories" value={loading ? "..." : categories.length.toString()} helper="Product groups." />
+        <AdminStateCard label="Products" value={hasConfirmed ? products.length.toString() : "—"} helper={hasConfirmed ? "In catalogue." : "Awaiting confirmation."} icon={ShoppingBag} />
+        <AdminStateCard label="Active" value={hasConfirmed ? products.filter((p) => p.isActive).length.toString() : "—"} helper={hasConfirmed ? "Visible in shop." : "Awaiting confirmation."} />
+        <AdminStateCard label="Categories" value={hasConfirmed ? categories.length.toString() : "—"} helper={hasConfirmed ? "Product groups." : "Awaiting confirmation."} />
       </div>
-      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+      {initialLoading ? (
+        <div className="grid gap-5 xl:grid-cols-2" aria-label="Loading shop workspace">
+          {Array.from({ length: 2 }).map((_, index) => (
+            <div key={index} className="glass-panel rounded-[32px] p-6">
+              <Skeleton className="skeleton-text h-7 w-2/5" />
+              <Skeleton className="skeleton-text mt-5 h-52 w-full" />
+            </div>
+          ))}
+        </div>
+      ) : null}
+      {!initialLoading && !unrecoveredFailure ? (
+      <div
+        className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]"
+        data-admin-shop-state-surface
+      >
         <form onSubmit={handleSubmit} className="glass-panel grid gap-4 rounded-[32px] p-6">
+          <fieldset disabled={mutationLocked} className="contents">
           <div className="flex items-center justify-between gap-3">
             <p className="font-display text-3xl font-bold uppercase leading-none">{form.id ? "Edit product" : "New product"}</p>
             {form.id ? <button type="button" onClick={() => setForm(emptyForm)} className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8">Clear</button> : null}
@@ -213,11 +322,12 @@ export default function AdminShopPage() {
           <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm"><input type="checkbox" name="isActive" checked={form.isActive} onChange={(e) => setForm((c) => ({ ...c, isActive: e.target.checked }))} />Active in shop</label>
           <button
             type="submit"
-            disabled={formDisabled}
+            disabled={mutationLocked}
             className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
           >
-            {form.id ? "Save product" : "Add product"}
+            {saving ? "Saving…" : form.id ? "Save product" : "Add product"}
           </button>
+          </fieldset>
         </form>
         <section className="glass-panel rounded-[32px] p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -230,18 +340,8 @@ export default function AdminShopPage() {
             <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search shop catalogue</span><input type="search" value={productCollection.query} onChange={(event) => productCollection.setQuery(event.target.value)} placeholder="Search product, category, collection, size, or state" /></label>
           </AdminFilterBar>
           <div className="mt-5 space-y-3">
-            {loading ? Array.from({ length: 3 }).map((_, i) => <div key={i} className="rounded-[26px] border border-border-soft bg-white/5 p-5"><Skeleton className="skeleton-text h-5 w-2/5" /><Skeleton className="skeleton-text mt-2 h-3 w-full" /></div>) : null}
-            {!loading && loadError ? (
-              <AdminErrorState
-                title="Catalogue could not be loaded"
-                description={loadError}
-                onRetry={() => {
-                  load().catch(() => {});
-                }}
-              />
-            ) : null}
-            {!loading && !loadError && productCollection.pageResult.items.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">{productCollection.query ? "No products match the current search and category." : "No products found."}</p> : null}
-            {!loading && !loadError && productCollection.pageResult.items.map((product) => (
+            {productCollection.pageResult.items.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">{productCollection.query ? "No products match the current search and category." : "No products found."}</p> : null}
+            {productCollection.pageResult.items.map((product) => (
               <article key={product.id} className={cn("card-interactive flex items-start gap-4 rounded-[26px] border border-border-soft p-5 transition", product.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
                 {product.imageUrl ? (
                   <div className="hidden sm:block h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-border-soft">
@@ -259,8 +359,8 @@ export default function AdminShopPage() {
                   </div>
                 </div>
                 <div className="flex flex-shrink-0 gap-2">
-                  <button type="button" onClick={() => beginEdit(product)} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-white/8" aria-label={`Edit ${product.name}`}><Pencil size={14} aria-hidden="true" /></button>
-                  <button type="button" onClick={() => { removeProduct(product).catch(() => {}); }} className="rounded-full border border-border-soft p-2.5 text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300" aria-label={`Remove ${product.name}`}><Trash2 size={14} aria-hidden="true" /></button>
+                  <button type="button" disabled={mutationLocked} onClick={() => beginEdit(product)} className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-slate-100 transition hover:bg-white/8 disabled:cursor-not-allowed disabled:opacity-60" aria-label={`Edit ${product.name}`}><Pencil size={16} aria-hidden="true" /></button>
+                  <button type="button" disabled={mutationLocked} onClick={() => { removeProduct(product).catch(() => {}); }} className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300 disabled:cursor-not-allowed disabled:opacity-60" aria-label={`Remove ${product.name}`}><Trash2 size={16} aria-hidden="true" /></button>
                 </div>
               </article>
             ))}
@@ -268,6 +368,7 @@ export default function AdminShopPage() {
           <AdminPagination page={productCollection.pageResult} onPageChange={productCollection.setPage} label="Shop catalogue" />
         </section>
       </div>
+      ) : null}
     </div>
   );
 }

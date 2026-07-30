@@ -4,7 +4,7 @@ import { emptyVenueGovernanceSnapshot } from "@/lib/data/venue";
 import { VenueGovernancePanel } from "./venue-governance-panel";
 
 describe("VenueGovernancePanel", () => {
-  it("renders venue admin governance controls and export affordance", () => {
+  it("renders venue governance gates without fake action controls", () => {
     render(<VenueGovernancePanel snapshot={emptyVenueGovernanceSnapshot} />);
 
     expect(screen.getByText("Onboarding approvals")).toBeInTheDocument();
@@ -14,22 +14,13 @@ describe("VenueGovernancePanel", () => {
     expect(screen.getByText("Audit detail")).toBeInTheDocument();
     expect(screen.getByText("Compliance flags")).toBeInTheDocument();
 
-    expect(
-      screen.getByRole("button", { name: "Approve profile" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Assign staff" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Approve campaign" }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Disable" })).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Prepare reversal" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "View audit" }),
-    ).toBeInTheDocument();
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(screen.getByText("Next gate: Approve profile")).toBeInTheDocument();
+    expect(screen.getByText("Next gate: Assign staff")).toBeInTheDocument();
+    expect(screen.getByText("Next gate: Approve campaign")).toBeInTheDocument();
+    expect(screen.getByText("Next gate: Disable")).toBeInTheDocument();
+    expect(screen.getByText("Next gate: Prepare reversal")).toBeInTheDocument();
+    expect(screen.getByText("Next gate: View audit")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /export csv/i })).toHaveAttribute(
       "download",
       "rayon-venue-fet-export.csv",

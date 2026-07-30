@@ -3,7 +3,7 @@ part of '../../screens/competition_manager_screen.dart';
 class _CompetitionFormSheet extends StatefulWidget {
   const _CompetitionFormSheet({this.existing});
 
-  final Map<String, dynamic>? existing;
+  final AdminCompetitionItem? existing;
 
   @override
   State<_CompetitionFormSheet> createState() => _CompetitionFormSheetState();
@@ -24,27 +24,17 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
   @override
   void initState() {
     super.initState();
-    final e = widget.existing;
-    _nameCtl = TextEditingController(text: e?['name']?.toString() ?? '');
-    _shortNameCtl = TextEditingController(
-      text: e?['short_name']?.toString() ?? '',
-    );
-    _slugCtl = TextEditingController(text: e?['slug']?.toString() ?? '');
-    _organizerCtl = TextEditingController(
-      text: e?['organizer']?.toString() ?? '',
-    );
-    _countryCodeCtl = TextEditingController(
-      text: e?['country_code']?.toString() ?? '',
-    );
-    _countryNameCtl = TextEditingController(
-      text: e?['country_name']?.toString() ?? '',
-    );
-    _formatNotesCtl = TextEditingController(
-      text: e?['format_notes']?.toString() ?? '',
-    );
-    _kind = e?['competition_kind']?.toString() ?? 'league';
-    _region = e?['region']?.toString() ?? 'africa';
-    _isActive = e?['is_active'] != false;
+    final existing = widget.existing;
+    _nameCtl = TextEditingController(text: existing?.name ?? '');
+    _shortNameCtl = TextEditingController(text: existing?.shortName ?? '');
+    _slugCtl = TextEditingController(text: existing?.slug ?? '');
+    _organizerCtl = TextEditingController(text: existing?.organizer ?? '');
+    _countryCodeCtl = TextEditingController(text: existing?.countryCode ?? '');
+    _countryNameCtl = TextEditingController(text: existing?.countryName ?? '');
+    _formatNotesCtl = TextEditingController(text: existing?.formatNotes ?? '');
+    _kind = existing?.kind ?? 'league';
+    _region = existing?.region ?? 'africa';
+    _isActive = existing?.isActive ?? true;
   }
 
   @override
@@ -62,165 +52,144 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
   void _submit() {
     final name = _nameCtl.text.trim();
     final shortName = _shortNameCtl.text.trim();
-    final slug = _slugCtl.text.trim();
-    if (name.isEmpty || shortName.isEmpty || slug.isEmpty) {
-      AfriToast.error(context, 'Name, short name, and slug required.');
+    final slug = _slugCtl.text.trim().toLowerCase();
+    final countryCode = _countryCodeCtl.text.trim().toUpperCase();
+    final organizer = _organizerCtl.text.trim();
+    final countryName = _countryNameCtl.text.trim();
+    final formatNotes = _formatNotesCtl.text.trim();
+    if (name.isEmpty ||
+        name.length > 120 ||
+        shortName.isEmpty ||
+        shortName.length > 32 ||
+        !RegExp(r'^[a-z0-9]+(?:-[a-z0-9]+)*$').hasMatch(slug) ||
+        (countryCode.isNotEmpty &&
+            !RegExp(r'^[A-Z]{2,3}$').hasMatch(countryCode)) ||
+        organizer.length > 100 ||
+        countryName.length > 80 ||
+        formatNotes.length > 240) {
+      AfriToast.error(
+        context,
+        'Check the required names, slug, and country code.',
+      );
       return;
     }
-
-    final data = <String, dynamic>{
+    context.pop(<String, dynamic>{
       'name': name,
       'short_name': shortName,
       'slug': slug,
       'competition_kind': _kind,
       'region': _region,
-      'organizer': _organizerCtl.text.trim().isEmpty
-          ? null
-          : _organizerCtl.text.trim(),
-      'country_code': _countryCodeCtl.text.trim().isEmpty
-          ? null
-          : _countryCodeCtl.text.trim(),
-      'country_name': _countryNameCtl.text.trim().isEmpty
-          ? null
-          : _countryNameCtl.text.trim(),
-      'format_notes': _formatNotesCtl.text.trim(),
+      'organizer': _nullable(organizer),
+      'country_code': countryCode.isEmpty ? null : countryCode,
+      'country_name': _nullable(countryName),
+      'format_notes': _nullable(formatNotes),
       'is_active': _isActive,
-    };
+    });
+  }
 
-    context.pop(data);
+  String? _nullable(String value) {
+    final normalized = value.trim();
+    if (normalized.isEmpty) return null;
+    return normalized;
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEditing = widget.existing != null;
-
-    return Padding(
-      padding: EdgeInsets.only(
-        left: SpacingTokens.spacing6,
-        right: SpacingTokens.spacing6,
-        top: SpacingTokens.spacing6,
-        bottom:
-            MediaQuery.of(context).viewInsets.bottom + SpacingTokens.spacing6,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Drag handle
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(ShapeTokens.radiusSm / 4),
+    final editing = widget.existing != null;
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: SpacingTokens.spacing6,
+          right: SpacingTokens.spacing6,
+          top: SpacingTokens.spacing6,
+          bottom:
+              MediaQuery.viewInsetsOf(context).bottom + SpacingTokens.spacing6,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _SheetHandle(),
+              const SizedBox(height: SpacingTokens.spacing5),
+              Text(
+                editing ? 'EDIT COMPETITION' : 'ADD COMPETITION',
+                style: TypographyTokens.titleLarge().copyWith(
+                  letterSpacing: 1.5,
                 ),
               ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing5),
-            Text(
-              isEditing ? 'EDIT COMPETITION' : 'ADD COMPETITION',
-              style: TypographyTokens.titleLarge().copyWith(letterSpacing: 1.5),
-            ),
-            const SizedBox(height: SpacingTokens.spacing5),
-
-            _buildField('Name', _nameCtl),
-            _buildField('Short Name', _shortNameCtl),
-            _buildField('Slug', _slugCtl, hint: 'e.g. my-new-league'),
-            _buildField('Organizer', _organizerCtl, hint: 'Optional'),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildField(
-                    'Country Code',
-                    _countryCodeCtl,
-                    hint: 'RW',
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: _buildField(
-                    'Country Name',
-                    _countryNameCtl,
-                    hint: 'Rwanda',
-                  ),
-                ),
-              ],
-            ),
-            _buildField('Format Notes', _formatNotesCtl, hint: 'Optional'),
-
-            const SizedBox(height: SpacingTokens.spacing4),
-
-            // Kind selector
-            Text(
-              'KIND',
-              style: TypographyTokens.labelSmall().copyWith(letterSpacing: 1),
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Wrap(
-              spacing: SpacingTokens.spacing2,
-              children: ['league', 'cup', 'tournament'].map((k) {
-                return AfriChoiceChip(
-                  selected: _kind == k,
-                  label: Text(k.toUpperCase()),
-                  onSelected: (_) => setState(() => _kind = k),
-                );
-              }).toList(),
-            ),
-
-            const SizedBox(height: SpacingTokens.spacing4),
-
-            // Region selector
-            Text(
-              'REGION',
-              style: TypographyTokens.labelSmall().copyWith(letterSpacing: 1),
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Wrap(
-              spacing: SpacingTokens.spacing2,
-              children: ['africa', 'europe', 'international', 'global'].map((
-                r,
-              ) {
-                return AfriChoiceChip(
-                  selected: _region == r,
-                  label: Text(r.toUpperCase()),
-                  onSelected: (_) => setState(() => _region = r),
-                );
-              }).toList(),
-            ),
-
-            const SizedBox(height: SpacingTokens.spacing4),
-
-            // Active toggle
-            AfriSwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text('ACTIVE', style: TypographyTokens.titleMedium()),
-              subtitle: Text(
-                _isActive
-                    ? 'Visible to fans in the prediction engine'
-                    : 'Hidden from the prediction engine',
-                style: TypographyTokens.bodySmall(),
+              const SizedBox(height: SpacingTokens.spacing5),
+              _field('Name', _nameCtl),
+              _field('Short Name', _shortNameCtl),
+              _field('Slug', _slugCtl, hint: 'e.g. national-league'),
+              _field('Organizer', _organizerCtl, hint: 'Optional'),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final largeText =
+                      MediaQuery.textScalerOf(context).scale(1) >= 1.8;
+                  final fields = <Widget>[
+                    _field('Country Code', _countryCodeCtl, hint: 'RW'),
+                    _field('Country Name', _countryNameCtl, hint: 'Rwanda'),
+                  ];
+                  if (largeText || constraints.maxWidth < 320) {
+                    return Column(children: fields);
+                  }
+                  return Row(
+                    children: [
+                      Expanded(child: fields[0]),
+                      const SizedBox(width: SpacingTokens.spacing3),
+                      Expanded(child: fields[1]),
+                    ],
+                  );
+                },
               ),
-              value: _isActive,
-              onChanged: (v) => setState(() => _isActive = v),
-            ),
-
-            const SizedBox(height: SpacingTokens.spacing5),
-
-            AfriButton(
-              label: isEditing ? 'Save changes' : 'Create competition',
-              fullWidth: true,
-              onTap: _submit,
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-          ],
+              _field('Format Notes', _formatNotesCtl, hint: 'Optional'),
+              const SizedBox(height: SpacingTokens.spacing3),
+              _selector(
+                label: 'KIND',
+                values: const <String>['league', 'cup', 'tournament'],
+                selected: _kind,
+                onSelected: (value) => setState(() => _kind = value),
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              _selector(
+                label: 'REGION',
+                values: const <String>[
+                  'africa',
+                  'europe',
+                  'international',
+                  'global',
+                ],
+                selected: _region,
+                onSelected: (value) => setState(() => _region = value),
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              AfriSwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text('ACTIVE', style: TypographyTokens.titleMedium()),
+                subtitle: Text(
+                  _isActive
+                      ? 'Available to configured prediction journeys'
+                      : 'Unavailable to prediction journeys',
+                  style: TypographyTokens.bodySmall(),
+                ),
+                value: _isActive,
+                onChanged: (value) => setState(() => _isActive = value),
+              ),
+              const SizedBox(height: SpacingTokens.spacing5),
+              AfriButton(
+                label: editing ? 'Save changes' : 'Create competition',
+                fullWidth: true,
+                onTap: _submit,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildField(
+  Widget _field(
     String label,
     TextEditingController controller, {
     String? hint,
@@ -230,232 +199,235 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
       child: AfriInputField(controller: controller, label: label, hint: hint),
     );
   }
-}
 
-// ── Season Manager Bottom Sheet ──
-
-class _SeasonManagerSheet extends StatefulWidget {
-  const _SeasonManagerSheet({
-    required this.competitionId,
-    required this.competitionName,
-    required this.supabaseClient,
-  });
-
-  final String competitionId;
-  final String competitionName;
-  final dynamic supabaseClient;
-
-  @override
-  State<_SeasonManagerSheet> createState() => _SeasonManagerSheetState();
-}
-
-class _SeasonManagerSheetState extends State<_SeasonManagerSheet> {
-  List<Map<String, dynamic>> _seasons = const [];
-  bool _isLoading = true;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_loadSeasons());
-  }
-
-  Future<void> _loadSeasons() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final client = widget.supabaseClient as SupabaseClient;
-      final rows = await client
-          .schema('football')
-          .from('seasons')
-          .select()
-          .eq('competition_id', widget.competitionId)
-          .order('year_start', ascending: false);
-
-      if (!mounted) return;
-      setState(() {
-        _seasons = List<Map<String, dynamic>>.from(rows);
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _addSeason() async {
-    final result = await showDialog<Map<String, dynamic>>(
-      context: context,
-      builder: (ctx) => _SeasonFormDialog(competitionId: widget.competitionId),
-    );
-
-    if (result == null) return;
-
-    try {
-      final client = widget.supabaseClient as SupabaseClient;
-      await client.schema('football').from('seasons').insert(result);
-      await _loadSeasons();
-
-      if (!mounted) return;
-      AfriToast.success(context, 'Season created');
-    } catch (e) {
-      if (!mounted) return;
-      AfriToast.error(context, 'Failed: $e');
-    }
-  }
-
-  Future<void> _toggleSeasonActive(Map<String, dynamic> season) async {
-    final id = season['id']?.toString();
-    final active = season['is_active'] == true;
-    if (id == null) return;
-
-    try {
-      final client = widget.supabaseClient as SupabaseClient;
-      await client
-          .schema('football')
-          .from('seasons')
-          .update({'is_active': !active})
-          .eq('id', id);
-      await _loadSeasons();
-    } catch (e) {
-      if (!mounted) return;
-      AfriToast.error(context, 'Failed: $e');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.4,
-      maxChildSize: 0.9,
-      expand: false,
-      builder: (ctx, scrollController) {
-        return Padding(
-          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(
-                      ShapeTokens.radiusSm / 4,
-                    ),
-                  ),
+  Widget _selector({
+    required String label,
+    required List<String> values,
+    required String selected,
+    required ValueChanged<String> onSelected,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TypographyTokens.labelSmall()),
+        const SizedBox(height: SpacingTokens.spacing2),
+        Wrap(
+          spacing: SpacingTokens.spacing2,
+          runSpacing: SpacingTokens.spacing2,
+          children: values
+              .map(
+                (value) => AfriChoiceChip(
+                  selected: selected == value,
+                  label: Text(value.toUpperCase()),
+                  onSelected: (_) => onSelected(value),
                 ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing5),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'SEASONS',
-                          style: TypographyTokens.titleLarge().copyWith(
-                            letterSpacing: 1.5,
+              )
+              .toList(growable: false),
+        ),
+      ],
+    );
+  }
+}
+
+class _SeasonManagerSheet extends ConsumerWidget {
+  const _SeasonManagerSheet({required this.competition});
+
+  final AdminCompetitionItem competition;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final value = ref.watch(adminCompetitionsProvider);
+    final snapshot = value.valueOrNull;
+    final seasons =
+        snapshot?.seasons
+            .where((season) => season.competitionId == competition.id)
+            .toList(growable: false) ??
+        const <AdminCompetitionSeason>[];
+    final enabled = snapshot?.actionsEnabled == true && !value.isLoading;
+    return DraggableScrollableSheet(
+      initialChildSize: 0.68,
+      minChildSize: 0.46,
+      maxChildSize: 0.92,
+      expand: false,
+      builder: (context, scrollController) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(SpacingTokens.spacing6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _SheetHandle(),
+                const SizedBox(height: SpacingTokens.spacing5),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'SEASONS',
+                            style: TypographyTokens.titleLarge().copyWith(
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                          Text(
+                            competition.name,
+                            style: TypographyTokens.bodyMedium(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    AfriIconButton(
+                      icon: AfriIcons.add,
+                      onTap: enabled ? () => _addSeason(context, ref) : null,
+                      tooltip: enabled
+                          ? 'Add season'
+                          : 'Season actions unavailable',
+                    ),
+                  ],
+                ),
+                const SizedBox(height: SpacingTokens.spacing4),
+                Expanded(
+                  child: value.isLoading && snapshot == null
+                      ? const AfriSkeletonList()
+                      : seasons.isEmpty
+                      ? AfriStateView.empty(
+                          title: 'No seasons configured',
+                          message:
+                              'Add the first controlled season when access is available.',
+                          compact: true,
+                        )
+                      : ListView.separated(
+                          controller: scrollController,
+                          itemCount: seasons.length,
+                          separatorBuilder: (_, _) =>
+                              const SizedBox(height: SpacingTokens.spacing3),
+                          itemBuilder: (_, index) => _SeasonRow(
+                            season: seasons[index],
+                            enabled: enabled,
+                            onToggle: () => _confirmSeasonToggle(
+                              context,
+                              ref,
+                              seasons[index],
+                            ),
                           ),
                         ),
-                        Text(
-                          widget.competitionName,
-                          style: TypographyTokens.bodyMedium(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  AfriIconButton(
-                    icon: AfriIcons.add,
-                    onTap: _addSeason,
-                    tooltip: 'Add season',
-                  ),
-                ],
-              ),
-              const SizedBox(height: SpacingTokens.spacing4),
-
-              // Content
-              Expanded(
-                child: _isLoading
-                    ? const AfriSkeletonList()
-                    : _error != null
-                    ? Center(
-                        child: Text(
-                          'Error: $_error',
-                          style: TypographyTokens.bodyMedium(),
-                        ),
-                      )
-                    : _seasons.isEmpty
-                    ? const SizedBox.shrink()
-                    : ListView.separated(
-                        controller: scrollController,
-                        itemCount: _seasons.length,
-                        separatorBuilder: (_, __) =>
-                            const SizedBox(height: SpacingTokens.spacing3),
-                        itemBuilder: (ctx, i) => _buildSeasonRow(_seasons[i]),
-                      ),
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  Widget _buildSeasonRow(Map<String, dynamic> season) {
-    final isActive = season['is_active'] == true;
-    final status = season['status']?.toString() ?? 'planned';
+  Future<void> _addSeason(BuildContext context, WidgetRef ref) async {
+    final payload = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (_) => _SeasonFormDialog(competitionId: competition.id),
+    );
+    if (payload == null || !context.mounted) return;
+    final saved = await ref
+        .read(adminCompetitionsProvider.notifier)
+        .createSeason(payload);
+    if (context.mounted && saved) AfriToast.success(context, 'Season created');
+  }
 
+  Future<void> _confirmSeasonToggle(
+    BuildContext context,
+    WidgetRef ref,
+    AdminCompetitionSeason season,
+  ) async {
+    final activating = !season.isActive;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AfriAlertDialog(
+        title: Text(activating ? 'ACTIVATE SEASON?' : 'DEACTIVATE SEASON?'),
+        content: Text(
+          '${season.label} will be ${activating ? 'available' : 'unavailable'} to configured competition journeys.',
+        ),
+        actions: [
+          AfriTextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('CANCEL'),
+          ),
+          AfriTextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(activating ? 'ACTIVATE' : 'DEACTIVATE'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    final saved = await ref
+        .read(adminCompetitionsProvider.notifier)
+        .setSeasonActive(season.id, activating);
+    if (context.mounted && saved) {
+      AfriToast.success(
+        context,
+        activating ? 'Season activated' : 'Season deactivated',
+      );
+    }
+  }
+}
+
+class _SeasonRow extends StatelessWidget {
+  const _SeasonRow({
+    required this.season,
+    required this.enabled,
+    required this.onToggle,
+  });
+
+  final AdminCompetitionSeason season;
+  final bool enabled;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
     return GlassCard(
       animate: false,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  season['label']?.toString() ?? '',
+                  season.label,
                   style: TypographyTokens.titleMedium().copyWith(
                     color: ColorTokens.onSurface,
                   ),
                 ),
-                const SizedBox(height: SpacingTokens.spacing1),
-                Row(
+                const SizedBox(height: SpacingTokens.spacing2),
+                Wrap(
+                  spacing: SpacingTokens.spacing2,
+                  runSpacing: SpacingTokens.spacing2,
                   children: [
-                    _StatusBadge(isActive: isActive),
-                    const SizedBox(width: SpacingTokens.spacing2),
+                    _StatusBadge(isActive: season.isActive),
                     _InfoChip(
                       icon: AfriIcons.statusPending,
-                      label: status.toUpperCase(),
+                      label: season.status.toUpperCase(),
                     ),
                   ],
                 ),
               ],
             ),
           ),
+          const SizedBox(width: SpacingTokens.spacing2),
           AfriIconButton(
-            icon: isActive ? AfriIcons.visibilityOff : AfriIcons.visibility,
-            onTap: () => _toggleSeasonActive(season),
-            tooltip: isActive ? 'Deactivate' : 'Activate',
+            icon: season.isActive
+                ? AfriIcons.visibilityOff
+                : AfriIcons.visibility,
+            onTap: enabled ? onToggle : null,
+            tooltip: season.isActive ? 'Deactivate season' : 'Activate season',
           ),
         ],
       ),
     );
   }
 }
-
-// ── Season Form Dialog ──
 
 class _SeasonFormDialog extends StatefulWidget {
   const _SeasonFormDialog({required this.competitionId});
@@ -483,16 +455,27 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
   }
 
   void _submit() {
-    if (_slugCtl.text.trim().isEmpty || _labelCtl.text.trim().isEmpty) {
+    final slug = _slugCtl.text.trim().toLowerCase();
+    final label = _labelCtl.text.trim();
+    final start = int.tryParse(_yearStartCtl.text.trim());
+    final end = int.tryParse(_yearEndCtl.text.trim());
+    final yearsValid =
+        (start == null || (start >= 1900 && start <= 2200)) &&
+        (end == null || (end >= 1900 && end <= 2200)) &&
+        (start == null || end == null || end >= start);
+    if (!RegExp(r'^[a-z0-9]+(?:-[a-z0-9]+)*$').hasMatch(slug) ||
+        label.isEmpty ||
+        label.length > 64 ||
+        !yearsValid) {
+      AfriToast.error(context, 'Check the season slug, label, and years.');
       return;
     }
-
     context.pop(<String, dynamic>{
       'competition_id': widget.competitionId,
-      'slug': _slugCtl.text.trim(),
-      'label': _labelCtl.text.trim(),
-      'year_start': int.tryParse(_yearStartCtl.text.trim()),
-      'year_end': int.tryParse(_yearEndCtl.text.trim()),
+      'slug': slug,
+      'label': label,
+      'year_start': start,
+      'year_end': end,
       'status': _status,
       'is_active': true,
     });
@@ -512,7 +495,7 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
             AfriInputField(
               controller: _slugCtl,
               label: 'Slug',
-              hint: 'e.g. my-league-2026',
+              hint: 'e.g. league-2026',
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             AfriInputField(
@@ -521,35 +504,54 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
               hint: 'e.g. 2025/2026',
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            Row(
-              children: [
-                Expanded(
-                  child: AfriInputField(
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final largeText =
+                    MediaQuery.textScalerOf(context).scale(1) >= 1.8;
+                final fields = <Widget>[
+                  AfriInputField(
                     controller: _yearStartCtl,
                     keyboardType: TextInputType.number,
                     label: 'Year Start',
                   ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: AfriInputField(
+                  AfriInputField(
                     controller: _yearEndCtl,
                     keyboardType: TextInputType.number,
                     label: 'Year End',
                   ),
-                ),
-              ],
+                ];
+                if (largeText || constraints.maxWidth < 320) {
+                  return Column(
+                    children: [
+                      fields[0],
+                      const SizedBox(height: SpacingTokens.spacing3),
+                      fields[1],
+                    ],
+                  );
+                }
+                return Row(
+                  children: [
+                    Expanded(child: fields[0]),
+                    const SizedBox(width: SpacingTokens.spacing3),
+                    Expanded(child: fields[1]),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Wrap(
               spacing: SpacingTokens.spacing2,
-              children: ['planned', 'active', 'finished', 'archived'].map((s) {
-                return AfriChoiceChip(
-                  selected: _status == s,
-                  label: Text(s.toUpperCase()),
-                  onSelected: (_) => setState(() => _status = s),
-                );
-              }).toList(),
+              runSpacing: SpacingTokens.spacing2,
+              children:
+                  const <String>['planned', 'active', 'finished', 'archived']
+                      .map(
+                        (status) => AfriChoiceChip(
+                          selected: _status == status,
+                          label: Text(status.toUpperCase()),
+                          onSelected: (_) => setState(() => _status = status),
+                        ),
+                      )
+                      .toList(growable: false),
             ),
           ],
         ),
@@ -565,7 +567,23 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
   }
 }
 
-// ── Shared Widgets ──
+class _SheetHandle extends StatelessWidget {
+  const _SheetHandle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 40,
+        height: 4,
+        decoration: BoxDecoration(
+          color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusSm / 4),
+        ),
+      ),
+    );
+  }
+}
 
 class _StatusBadge extends StatelessWidget {
   const _StatusBadge({required this.isActive});
@@ -614,7 +632,7 @@ class _InfoChip extends StatelessWidget {
         children: [
           Icon(icon, size: 12, color: ColorTokens.onSurfaceVariant),
           const SizedBox(width: SpacingTokens.spacing1),
-          Text(label, style: TypographyTokens.labelSmall()),
+          Flexible(child: Text(label, style: TypographyTokens.labelSmall())),
         ],
       ),
     );

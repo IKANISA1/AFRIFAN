@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { createDemoTvSessionState, resolveTvSessionId } from "@/lib/game-runtime";
+import {
+  createDemoTvSessionState,
+  createTvSessionPlaceholder,
+  resolveTvSessionId,
+} from "@/lib/game-runtime";
 import { TvDisplayClient } from "./tv-display-client";
 
 export const metadata: Metadata = {
@@ -28,7 +32,11 @@ export default async function TvDisplayPage({
   const venueRewardLabel = typeof params.fet === "string" ? params.fet : null;
   return (
     <TvDisplayClient
-      initialState={createDemoTvSessionState()}
+      initialState={
+        sessionId
+          ? createTvSessionPlaceholder(sessionId)
+          : createDemoTvSessionState()
+      }
       sessionId={sessionId}
       venueCheckin={
         venueCode

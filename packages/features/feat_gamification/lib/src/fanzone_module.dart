@@ -264,7 +264,7 @@ class FanzoneModule extends FeatureModule {
       path: '/fanzone/fixtures',
       presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/fanzone',
+      targetPath: '/fanzone?section=league',
       rationale: 'Fixture browsing belongs to the Fan Zone hub.',
     ),
     RoutePresentationDecision(

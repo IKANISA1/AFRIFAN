@@ -77,6 +77,7 @@ export interface AdminPortalInitialState {
   access: AdminAccess;
   clubOptions: AdminClubScopeOption[];
   error: string | null;
+  controlledEvidence?: boolean;
 }
 
 export interface AdminDashboardMetrics {

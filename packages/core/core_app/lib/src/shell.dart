@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -28,7 +28,6 @@ class AppShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final featureService = ref.watch(featureConfigServiceProvider);
     final tabModules =
         modules
             .where(
@@ -42,30 +41,14 @@ class AppShell extends ConsumerWidget {
               left.featureKey,
             ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
           );
-    final visibleEntries = tabModules.asMap().entries.where((entry) {
-      final feature = featureService.getFeature(entry.value.featureKey);
-      if (!featureService.hasConfig || feature == null) {
-        return true;
-      }
-      return featureService.shouldShowInNav(entry.value.featureKey);
-    }).toList();
-
-    final resolvedEntries = visibleEntries.isNotEmpty
-        ? visibleEntries
-        : tabModules.asMap().entries.toList();
+    // The primary supporter hierarchy is a governed product contract.
+    // Runtime feature configuration may control content inside these tabs,
+    // but cannot remove or reorder the navigation anchors themselves.
+    final resolvedEntries = tabModules.asMap().entries.toList();
     final currentVisibleIndex = resolvedEntries.indexWhere(
       (entry) => entry.key == shell.currentIndex,
     );
-    if (currentVisibleIndex < 0 &&
-        resolvedEntries.isNotEmpty &&
-        shell.currentIndex != resolvedEntries.first.key) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!context.mounted) {
-          return;
-        }
-        shell.goBranch(resolvedEntries.first.key);
-      });
-    }
+    final isHiddenShellBranch = currentVisibleIndex < 0;
     final selectedIndex = currentVisibleIndex >= 0 ? currentVisibleIndex : 0;
 
     // In release/profile builds, wrap each tab's content in an error boundary
@@ -90,7 +73,11 @@ class AppShell extends ConsumerWidget {
           (entry) => AfriClubNavItem(
             icon: entry.value.tabRoute!.icon,
             activeIcon: entry.value.tabRoute!.activeIcon,
-            label: entry.value.tabRoute!.label,
+            label: localizedPrimaryLabel(
+              context.afriL10n,
+              entry.value.featureKey,
+              entry.value.tabRoute!.label,
+            ),
           ),
         )
         .toList();
@@ -109,6 +96,15 @@ class AppShell extends ConsumerWidget {
         builder: (context, constraints) {
           final usesSideRail =
               constraints.maxWidth >= AfriResponsive.sideRailMinWidth;
+          if (isHiddenShellBranch) {
+            return Scaffold(
+              backgroundColor: ColorTokens.background,
+              body: AfriShellNavigationScope(
+                usesBottomNavigation: false,
+                child: body,
+              ),
+            );
+          }
           if (usesSideRail) {
             return Scaffold(
               backgroundColor: ColorTokens.background,
@@ -158,4 +154,19 @@ class AppShell extends ConsumerWidget {
       ),
     );
   }
+}
+
+@visibleForTesting
+String localizedPrimaryLabel(
+  AfriLocalizations l10n,
+  String featureKey,
+  String fallback,
+) {
+  return switch (featureKey) {
+    'home' => l10n.navHome,
+    'club' => l10n.navClub,
+    'fanzone' => l10n.navFanZone,
+    'membership' => l10n.navMembership,
+    _ => fallback,
+  };
 }

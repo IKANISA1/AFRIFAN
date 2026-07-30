@@ -4,10 +4,13 @@ import { useCallback, useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
-import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPagination } from "@/components/admin/admin-pagination";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
@@ -18,8 +21,11 @@ import {
   allocateAdminSmsManualReview,
   getAdminSmsManualReviewWorkspace,
   getAdminSmsSnapshot,
+  normalizeAdminSmsManualReviewWorkspace,
+  normalizeAdminSmsSnapshot,
   rejectAdminSmsManualReview,
 } from "@/lib/data/admin/sms";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import { cn } from "@/lib/utils";
 import type {
   AdminPendingPaymentIntent,
@@ -27,10 +33,84 @@ import type {
   AdminSmsSnapshot,
 } from "@/lib/types";
 import { useAdminCollection } from "@/lib/use-admin-collection";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
+import { useHydrated } from "@/lib/use-hydrated";
 
 const emptySnapshot: AdminSmsSnapshot = {
   metrics: {},
   syncRuns: [],
+};
+const emptyManualWorkspace = {
+  reviews: [] as AdminSmsManualReview[],
+  pendingIntents: [] as AdminPendingPaymentIntent[],
+};
+const emptyMonitorWorkspace = {
+  snapshot: emptySnapshot,
+  manualWorkspace: emptyManualWorkspace,
+};
+
+type SmsMonitorWorkspace = typeof emptyMonitorWorkspace;
+
+const monitorWorkspaceIsEmpty = (workspace: SmsMonitorWorkspace) =>
+  workspace.snapshot.syncRuns.length === 0 &&
+  Object.keys(workspace.snapshot.metrics).length === 0 &&
+  workspace.manualWorkspace.reviews.length === 0 &&
+  workspace.manualWorkspace.pendingIntents.length === 0;
+
+function normalizeMonitorWorkspace(value: unknown): SmsMonitorWorkspace {
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("SMS monitor workspace is invalid.");
+  }
+  const workspace = value as Record<string, unknown>;
+  return {
+    snapshot: normalizeAdminSmsSnapshot(workspace.snapshot),
+    manualWorkspace: normalizeAdminSmsManualReviewWorkspace(
+      workspace.manualWorkspace,
+    ),
+  };
+}
+
+const statusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading SMS monitor",
+    detail: "Waiting for the first authenticated, club-scoped snapshot.",
+  },
+  ready: {
+    label: "SMS monitor confirmed",
+    detail: "The latest bounded pipeline and review data are ready.",
+  },
+  empty: {
+    label: "No SMS activity in this club",
+    detail: "The pipeline snapshot is confirmed with no current activity.",
+  },
+  error: {
+    label: "SMS monitoring unavailable",
+    detail: "Confirmed data remain visible. Retry when the service recovers.",
+  },
+  offline: {
+    label: "SMS monitoring is offline",
+    detail: "Confirmed data remain visible while refresh is unavailable.",
+  },
+  permission_denied: {
+    label: "SMS monitoring access denied",
+    detail:
+      "Metrics, runs, reviews, filters, selections, and drawer content were cleared for privacy.",
+  },
+  syncing: {
+    label: "Refreshing SMS monitor",
+    detail: "Confirmed data remain visible during the bounded refresh.",
+  },
+  conflict: {
+    label: "SMS monitoring data changed",
+    detail: "Review the retained snapshot, then refresh before acting.",
+  },
+  security_timeout: {
+    label: "SMS monitoring request timed out",
+    detail: "No new snapshot was confirmed. Retry from the retained data.",
+  },
 };
 
 const pipelineSteps = [
@@ -42,15 +122,53 @@ const pipelineSteps = [
 
 export default function AdminSmsMonitorPage() {
   const { access, client } = useAdminPortal();
-  const [snapshot, setSnapshot] = useState(emptySnapshot);
-  const [manualReviews, setManualReviews] = useState<AdminSmsManualReview[]>([]);
-  const [pendingIntents, setPendingIntents] = useState<AdminPendingPaymentIntent[]>([]);
+  const hydrated = useHydrated();
   const [intentSelections, setIntentSelections] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [busyReviewId, setBusyReviewId] = useState<string | null>(null);
   const [detailReview, setDetailReview] =
     useState<AdminSmsManualReview | null>(null);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
+
+  const clearPrivateState = useCallback(() => {
+    setIntentSelections({});
+    setBusyReviewId(null);
+    setDetailReview(null);
+    setInteraction("idle");
+  }, []);
+  const loadMonitorWorkspace = useCallback(
+    async (signal: AbortSignal) => {
+      if (client == null) return emptyMonitorWorkspace;
+      const [snapshot, manualWorkspace] = await Promise.all([
+        getAdminSmsSnapshot(client, access, { signal }),
+        access.isSuperAdmin
+          ? getAdminSmsManualReviewWorkspace(client, access, { signal })
+          : Promise.resolve(emptyManualWorkspace),
+      ]);
+      return { snapshot, manualWorkspace };
+    },
+    [access, client],
+  );
+  const {
+    data: monitorWorkspace,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState<SmsMonitorWorkspace>({
+    enabled: hydrated && client != null && access.hasAccess,
+    emptyValue: emptyMonitorWorkspace,
+    isEmpty: monitorWorkspaceIsEmpty,
+    load: loadMonitorWorkspace,
+    normalize: normalizeMonitorWorkspace,
+    onPermissionDenied: clearPrivateState,
+    resourceLabel: "SMS monitor",
+  });
+  const snapshot = monitorWorkspace.snapshot;
+  const manualReviews = monitorWorkspace.manualWorkspace.reviews;
+  const pendingIntents = monitorWorkspace.manualWorkspace.pendingIntents;
 
   const runCollection = useAdminCollection({
     records: snapshot.syncRuns,
@@ -116,69 +234,59 @@ export default function AdminSmsMonitorPage() {
     pageSize: 20,
   });
 
-  const loadSnapshot = useCallback(async () => {
-    if (client == null) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const [nextSnapshot, manualWorkspace] = await Promise.all([
-        getAdminSmsSnapshot(client, access),
-        access.isSuperAdmin
-          ? getAdminSmsManualReviewWorkspace(client, access)
-          : Promise.resolve({ reviews: [], pendingIntents: [] }),
-      ]);
-      setSnapshot(nextSnapshot);
-      setManualReviews(manualWorkspace.reviews);
-      setPendingIntents(manualWorkspace.pendingIntents);
-      setIntentSelections((current) => {
-        const next = { ...current };
-        for (const review of manualWorkspace.reviews) {
-          const currentSelection = current[review.reviewId];
-          if (currentSelection) {
-            next[review.reviewId] = currentSelection;
-            continue;
-          }
-          const firstMatch = manualWorkspace.pendingIntents.find(
-            (intent) =>
-              intent.expectedAmount === review.amount &&
-              intent.currency === review.currency &&
-              (review.userId == null || intent.userId === review.userId),
-          );
-          if (firstMatch) {
-            next[review.reviewId] = firstMatch.id;
-          }
+  useEffect(() => {
+    if (!hasConfirmed) return;
+    setIntentSelections((current) => {
+      const next: Record<string, string> = {};
+      for (const review of manualReviews) {
+        const currentSelection = current[review.reviewId];
+        if (currentSelection) {
+          next[review.reviewId] = currentSelection;
+          continue;
         }
-        return next;
-      });
-      setLoadError(null);
-    } catch (caught) {
-      const message =
-        caught instanceof Error
-          ? caught.message
-          : "Could not load SMS pipeline health.";
-      setLoadError(message);
-      showAdminToast(
-        message,
-        "error",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [access, client]);
+        const firstMatch = pendingIntents.find(
+          (intent) =>
+            intent.expectedAmount === review.amount &&
+            intent.currency === review.currency &&
+            (review.userId == null || intent.userId === review.userId),
+        );
+        if (firstMatch) next[review.reviewId] = firstMatch.id;
+      }
+      return next;
+    });
+  }, [hasConfirmed, manualReviews, pendingIntents]);
 
   useEffect(() => {
-    if (client == null || !access.hasAccess) {
-      return;
+    if (status === "permission_denied") {
+      runCollection.setQuery("");
+      reviewCollection.setQuery("");
     }
-    loadSnapshot().catch(() => {});
-  }, [access.hasAccess, client, loadSnapshot]);
+  }, [reviewCollection, runCollection, status]);
 
-  const metricEntries = Object.entries(snapshot.metrics);
+  const canManageReviews = access.isSuperAdmin;
+  const mutationLocked =
+    busy ||
+    busyReviewId != null ||
+    !canManageReviews ||
+    (status !== "ready" && status !== "empty");
+  const unrecoveredFailure =
+    !hasConfirmed &&
+    (status === "error" ||
+      status === "offline" ||
+      status === "permission_denied" ||
+      status === "conflict" ||
+      status === "security_timeout");
+
+  const metricEntries: Array<[string, number | null]> = hasConfirmed
+    ? Object.entries(snapshot.metrics)
+    : [
+        ["SMS captured", null],
+        ["SMS parsed", null],
+        ["Ledger entries", null],
+      ];
 
   async function handleAllocate(review: AdminSmsManualReview) {
-    if (client == null) {
+    if (client == null || mutationLocked) {
       return;
     }
     const intentId = intentSelections[review.reviewId];
@@ -193,23 +301,19 @@ export default function AdminSmsMonitorPage() {
         reviewId: review.reviewId,
         intentId,
       });
-      await loadSnapshot();
+      await refresh();
       setDetailReview(null);
       showAdminToast("Manual review allocated.", "success");
     } catch (caught) {
-      showAdminToast(
-        caught instanceof Error
-          ? caught.message
-          : "Could not allocate the manual review.",
-        "error",
-      );
+      const nextStatus = applyFailure(caught);
+      showAdminToast(statusCopy[nextStatus].label, "error");
     } finally {
       setBusyReviewId(null);
     }
   }
 
   async function handleReject(review: AdminSmsManualReview) {
-    if (client == null) {
+    if (client == null || mutationLocked) {
       return;
     }
     if (
@@ -229,16 +333,12 @@ export default function AdminSmsMonitorPage() {
       await rejectAdminSmsManualReview(client, access, {
         reviewId: review.reviewId,
       });
-      await loadSnapshot();
+      await refresh();
       setDetailReview(null);
       showAdminToast("Manual review rejected.", "success");
     } catch (caught) {
-      showAdminToast(
-        caught instanceof Error
-          ? caught.message
-          : "Could not reject the manual review.",
-        "error",
-      );
+      const nextStatus = applyFailure(caught);
+      showAdminToast(statusCopy[nextStatus].label, "error");
     } finally {
       setBusyReviewId(null);
     }
@@ -254,47 +354,56 @@ export default function AdminSmsMonitorPage() {
   }
 
   return (
-    <div className="section-grid">
+    <div
+      className="section-grid"
+      data-admin-sms-status={status}
+      data-admin-sms-interaction={interaction}
+    >
       <AdminPageHeader
         eyebrow="SMS pipeline"
         title="MoMo SMS ingestion health"
       />
 
-      {loadError && !loading ? (
-        <AdminErrorState
-          title="SMS monitoring data could not be loaded"
-          description={loadError}
-          onRetry={() => {
-            loadSnapshot().catch(() => {});
-          }}
-        />
-      ) : null}
+      <AdminResourceStatusBanner
+        status={status}
+        label={statusCopy[status].label}
+        detail={statusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh SMS monitor"
+        onRefresh={() => void refresh()}
+        onInteractionChange={setInteraction}
+      />
 
       <div className="grid gap-5 md:grid-cols-3">
-        {metricEntries.length === 0 && loading ? (
-          <>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <AdminStateCard
-                key={i}
-                label="Pipeline"
-                value="..."
-                helper="Loading metrics."
-              />
-            ))}
-          </>
-        ) : null}
         {metricEntries.map(([label, value]) => (
           <AdminStateCard
             key={label}
             label={label}
-            value={value.toString()}
-            helper="Pipeline metric."
+            value={value == null ? "—" : value.toString()}
+            helper={
+              hasConfirmed ? "Confirmed pipeline metric." : "Awaiting confirmation."
+            }
           />
         ))}
       </div>
 
-      {!loadError ? (
-      <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
+      {initialLoading ? (
+        <div className="grid gap-5 lg:grid-cols-2" aria-label="Loading SMS workspace">
+          {Array.from({ length: 2 }).map((_, index) => (
+            <div key={index} className="glass-panel rounded-[32px] p-6">
+              <Skeleton className="skeleton-text h-7 w-2/5" />
+              <Skeleton className="skeleton-text mt-5 h-52 w-full" />
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      {!initialLoading && !unrecoveredFailure ? (
+      <section
+        className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]"
+        data-admin-sms-state-surface
+      >
         <article className="glass-panel rounded-[32px] p-6">
           <p className="font-display text-3xl font-bold uppercase leading-none">
             Pipeline flow
@@ -337,8 +446,9 @@ export default function AdminSmsMonitorPage() {
             </p>
             <button
               type="button"
-              onClick={() => loadSnapshot().catch(() => {})}
-              className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+              disabled={busy}
+              onClick={() => void refresh()}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Refresh
             </button>
@@ -358,7 +468,7 @@ export default function AdminSmsMonitorPage() {
             </AdminFilterBar>
             <AdminDataGrid
               caption="SMS synchronization runs"
-              busy={loading}
+              busy={busy}
               columns={[
                 { key: "status", label: "Status", priority: "primary", sortable: true, sortDirection: runCollection.sortDirectionFor("status"), onSort: () => runCollection.toggleSort("status") },
                 { key: "trigger", label: "Trigger", priority: "primary", sortable: true, sortDirection: runCollection.sortDirectionFor("trigger"), onSort: () => runCollection.toggleSort("trigger") },
@@ -367,11 +477,7 @@ export default function AdminSmsMonitorPage() {
                 { key: "started", label: "Started", priority: "primary", sortable: true, sortDirection: runCollection.sortDirectionFor("startedAt"), onSort: () => runCollection.toggleSort("startedAt") },
               ]}
             >
-              {loading ? (
-                Array.from({ length: 3 }).map((_, index) => (
-                  <tr key={index}><td colSpan={5}><Skeleton className="skeleton-text h-6 w-full" /></td></tr>
-                ))
-              ) : runCollection.pageResult.items.length === 0 ? (
+              {runCollection.pageResult.items.length === 0 ? (
                 <tr><td colSpan={5} className="py-8 text-center text-sm text-slate-400">{runCollection.query ? "No sync runs match the current search." : "No sync runs have been recorded yet."}</td></tr>
               ) : (
                 runCollection.pageResult.items.map((run) => (
@@ -391,8 +497,11 @@ export default function AdminSmsMonitorPage() {
       </section>
       ) : null}
 
-      {access.isSuperAdmin ? (
-        <section className="glass-panel rounded-[32px] p-6">
+      {access.isSuperAdmin && !initialLoading && !unrecoveredFailure ? (
+        <section
+          className="glass-panel rounded-[32px] p-6"
+          data-admin-sms-review-surface
+        >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-club-accent">
@@ -420,7 +529,7 @@ export default function AdminSmsMonitorPage() {
             </AdminFilterBar>
             <AdminDataGrid
               caption="Pending manual SMS allocation reviews"
-              busy={loading}
+              busy={busy}
               onRowActivate={(rowId) => setDetailReview(manualReviews.find((review) => review.reviewId === rowId) ?? null)}
               columns={[
                 { key: "kind", label: "Review", priority: "primary", sortable: true, sortDirection: reviewCollection.sortDirectionFor("kind"), onSort: () => reviewCollection.toggleSort("kind") },
@@ -430,9 +539,7 @@ export default function AdminSmsMonitorPage() {
                 { key: "updated", label: "Updated", priority: "secondary", sortable: true, sortDirection: reviewCollection.sortDirectionFor("updatedAt"), onSort: () => reviewCollection.toggleSort("updatedAt") },
               ]}
             >
-              {loading ? (
-                Array.from({ length: 3 }).map((_, index) => <tr key={index}><td colSpan={5}><Skeleton className="skeleton-text h-6 w-full" /></td></tr>)
-              ) : reviewCollection.pageResult.items.length === 0 ? (
+              {reviewCollection.pageResult.items.length === 0 ? (
                 <tr><td colSpan={5} className="py-8 text-center text-sm text-slate-400">{reviewCollection.query ? "No manual reviews match the current search." : "No manual SMS reviews are waiting for action."}</td></tr>
               ) : (
                 reviewCollection.pageResult.items.map((review) => (
@@ -461,14 +568,14 @@ export default function AdminSmsMonitorPage() {
             </dl>
             <label className="grid gap-2 text-slate-300">
               Matching pending intent
-              <select value={intentSelections[detailReview.reviewId] ?? ""} onChange={(event) => setIntentSelections((current) => ({ ...current, [detailReview.reviewId]: event.target.value }))} className="admin-input" disabled={busyReviewId === detailReview.reviewId}>
+              <select value={intentSelections[detailReview.reviewId] ?? ""} onChange={(event) => setIntentSelections((current) => ({ ...current, [detailReview.reviewId]: event.target.value }))} className="admin-input" disabled={mutationLocked}>
                 <option value="">Choose a payment intent</option>
                 {matchingIntents(detailReview).map((intent) => <option key={intent.id} value={intent.id}>{intent.userName} • {intent.expectedAmount.toLocaleString()} {intent.currency} • {intent.summaryLabel}</option>)}
               </select>
             </label>
             <div className="flex flex-wrap gap-3">
-              <button type="button" onClick={() => handleAllocate(detailReview).catch(() => {})} disabled={busyReviewId === detailReview.reviewId || matchingIntents(detailReview).length === 0 || !intentSelections[detailReview.reviewId]} className="admin-button admin-button-primary disabled:opacity-60">{busyReviewId === detailReview.reviewId ? "Working…" : "Allocate"}</button>
-              <button type="button" onClick={() => handleReject(detailReview).catch(() => {})} disabled={busyReviewId === detailReview.reviewId} className="admin-button admin-button-secondary !text-rose-200 disabled:opacity-60">Reject</button>
+              <button type="button" onClick={() => handleAllocate(detailReview).catch(() => {})} disabled={mutationLocked || matchingIntents(detailReview).length === 0 || !intentSelections[detailReview.reviewId]} className="admin-button admin-button-primary disabled:opacity-60">{busyReviewId === detailReview.reviewId ? "Working…" : "Allocate"}</button>
+              <button type="button" onClick={() => handleReject(detailReview).catch(() => {})} disabled={mutationLocked} className="admin-button admin-button-secondary !text-rose-200 disabled:opacity-60">Reject</button>
             </div>
           </div>
         ) : null}

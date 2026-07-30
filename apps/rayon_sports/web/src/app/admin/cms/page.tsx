@@ -1,57 +1,111 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import {
   deleteAdminArticle,
   getAdminArticles,
+  normalizeAdminArticles,
   saveAdminArticle,
 } from "@/lib/data/admin/cms";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import type { AdminNewsArticle } from "@/lib/types";
-import { emptyArticleForm } from "./_components/cms-state";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
 import { CMSContentEditor } from "./_components/cms-content-editor";
 import { CMSContentList } from "./_components/cms-content-list";
-import { isAdminMutationConflict } from "@/lib/data/admin/http";
+import { emptyArticleForm } from "./_components/cms-state";
+
+const emptyArticles: AdminNewsArticle[] = [];
+const articlesAreEmpty = (articles: AdminNewsArticle[]) => articles.length === 0;
+
+const cmsStatusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading publishing operations",
+    detail: "Waiting for the first authenticated article snapshot.",
+  },
+  ready: {
+    label: "Publishing operations confirmed",
+    detail: "Article drafts and publication states are current.",
+  },
+  empty: {
+    label: "No articles in this scope",
+    detail: "Use the editor to prepare the first controlled story.",
+  },
+  error: {
+    label: "Publishing operations unavailable",
+    detail: "Confirmed articles remain visible. Retry when service recovers.",
+  },
+  offline: {
+    label: "Publishing workspace is offline",
+    detail: "Confirmed articles remain visible until connection returns.",
+  },
+  permission_denied: {
+    label: "Publishing access denied",
+    detail: "Previously loaded article data and the active draft were cleared.",
+  },
+  syncing: {
+    label: "Refreshing publishing operations",
+    detail: "Confirmed articles remain visible during refresh.",
+  },
+  conflict: {
+    label: "Article records changed",
+    detail: "Refresh before editing, publishing, featuring, or deleting.",
+  },
+  security_timeout: {
+    label: "Publishing request timed out",
+    detail: "No article operation or change was confirmed.",
+  },
+};
 
 export default function AdminCmsPage() {
   const { access, client } = useAdminPortal();
-  const [articles, setArticles] = useState<AdminNewsArticle[]>([]);
   const [form, setForm] = useState(emptyArticleForm);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
 
-  const loadArticles = useCallback(async () => {
-    if (client == null) {
-      return;
-    }
+  const loadArticles = useCallback(
+    (signal: AbortSignal) => {
+      if (client == null) {
+        return Promise.resolve([]);
+      }
+      return getAdminArticles(client, access, { signal });
+    },
+    [access, client],
+  );
+  const handlePermissionDenied = useCallback(() => {
+    setForm(emptyArticleForm);
+    setInteraction("idle");
+  }, []);
 
-    setLoading(true);
-    try {
-      setArticles(await getAdminArticles(client, access));
-      setLoadError(null);
-    } catch (caught) {
-      const message =
-        caught instanceof Error ? caught.message : "Could not load articles.";
-      setLoadError(message);
-      showAdminToast(
-        message,
-        "error",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [access, client]);
-
-  useEffect(() => {
-    if (client == null || !access.hasAccess) {
-      return;
-    }
-    loadArticles().catch(() => {});
-  }, [access.hasAccess, client, loadArticles]);
+  const {
+    data: articles,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState({
+    enabled: client != null && access.hasAccess,
+    emptyValue: emptyArticles,
+    isEmpty: articlesAreEmpty,
+    load: loadArticles,
+    normalize: normalizeAdminArticles,
+    onPermissionDenied: handlePermissionDenied,
+    resourceLabel: "Publishing operations",
+  });
 
   function beginEdit(article: AdminNewsArticle) {
     setForm({
@@ -66,14 +120,12 @@ export default function AdminCmsPage() {
       isPublished: article.isPublished,
       isFeatured: article.isFeatured,
     });
+    setInteraction("selected");
     showAdminToast(`Editing "${article.title}".`, "info");
   }
 
   async function submitForm(formData: FormData) {
-    if (client == null) {
-      return;
-    }
-
+    if (client == null) return;
     showAdminToast(form.id ? "Saving article..." : "Creating article...", "info");
 
     try {
@@ -90,23 +142,28 @@ export default function AdminCmsPage() {
         isFeatured: formData.get("isFeatured") === "on",
       });
       setForm(emptyArticleForm);
-      await loadArticles();
+      setInteraction("idle");
+      await refresh();
       showAdminToast("Article saved.", "success");
     } catch (caught) {
+      const nextStatus = applyFailure(caught);
       if (isAdminMutationConflict(caught)) {
-        await loadArticles();
+        await refresh();
       }
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not save article.",
+        nextStatus === "conflict"
+          ? cmsStatusCopy.conflict.label
+          : "Could not confirm the article change.",
         "error",
       );
     }
   }
 
-  async function toggleArticle(article: AdminNewsArticle, field: "isPublished" | "isFeatured") {
-    if (client == null) {
-      return;
-    }
+  async function toggleArticle(
+    article: AdminNewsArticle,
+    field: "isPublished" | "isFeatured",
+  ) {
+    if (client == null) return;
 
     try {
       await saveAdminArticle(client, access, {
@@ -123,28 +180,32 @@ export default function AdminCmsPage() {
         isFeatured:
           field === "isFeatured" ? !article.isFeatured : article.isFeatured,
       });
-      await loadArticles();
-      const action = field === "isPublished"
-        ? (article.isPublished ? "Unpublished" : "Published")
-        : (article.isFeatured ? "Unfeatured" : "Featured");
+      await refresh();
+      const action =
+        field === "isPublished"
+          ? article.isPublished
+            ? "Unpublished"
+            : "Published"
+          : article.isFeatured
+            ? "Unfeatured"
+            : "Featured";
       showAdminToast(`${action} "${article.title}".`, "success");
     } catch (caught) {
+      const nextStatus = applyFailure(caught);
       if (isAdminMutationConflict(caught)) {
-        await loadArticles();
+        await refresh();
       }
       showAdminToast(
-        caught instanceof Error
-          ? caught.message
-          : "Could not update article state.",
+        nextStatus === "conflict"
+          ? cmsStatusCopy.conflict.label
+          : "Could not confirm the article state change.",
         "error",
       );
     }
   }
 
   async function removeArticle(article: AdminNewsArticle) {
-    if (client == null) {
-      return;
-    }
+    if (client == null) return;
     if (
       !confirmAdminDestructiveAction({
         action: "Delete",
@@ -158,60 +219,82 @@ export default function AdminCmsPage() {
     }
 
     try {
-      await deleteAdminArticle(
-        client,
-        access,
-        article.id,
-        article.updatedAt,
-      );
-      await loadArticles();
+      await deleteAdminArticle(client, access, article.id, article.updatedAt);
+      await refresh();
       showAdminToast(`Removed "${article.title}".`, "success");
     } catch (caught) {
+      const nextStatus = applyFailure(caught);
       if (isAdminMutationConflict(caught)) {
-        await loadArticles();
+        await refresh();
       }
       showAdminToast(
-        caught instanceof Error
-          ? caught.message
-          : "Could not remove article.",
+        nextStatus === "conflict"
+          ? cmsStatusCopy.conflict.label
+          : "Could not confirm article deletion.",
         "error",
       );
     }
   }
 
+  const mutationLocked =
+    busy ||
+    status === "permission_denied" ||
+    (!hasConfirmed && status !== "empty" && status !== "ready");
+
   return (
-    <div className="section-grid">
-      <AdminPageHeader
-        eyebrow="Publishing"
-        title="Content"
+    <section
+      className="admin-cms-state-surface section-grid"
+      data-admin-cms-status={status}
+      data-admin-cms-interaction={interaction}
+      data-admin-cms-refresh-disabled={busy}
+      aria-busy={busy || undefined}
+    >
+      <AdminPageHeader eyebrow="Publishing" title="Content" />
+
+      <AdminResourceStatusBanner
+        status={status}
+        label={cmsStatusCopy[status].label}
+        detail={cmsStatusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh publishing"
+        selected={interaction === "selected"}
+        onRefresh={() => void refresh()}
+        onInteractionChange={setInteraction}
+        className="admin-cms-status"
       />
 
-      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-        <CMSContentEditor
-          form={form}
-          setForm={setForm}
-          onSubmit={submitForm}
+      {!hasConfirmed && !initialLoading ? (
+        <AdminErrorState
+          title={cmsStatusCopy[status].label}
+          description={cmsStatusCopy[status].detail}
+          onRetry={
+            status === "permission_denied" ? undefined : () => void refresh()
+          }
         />
-
-        {loadError && !loading ? (
-          <AdminErrorState
-            title="Articles could not be loaded"
-            description={loadError}
-            onRetry={() => {
-              loadArticles().catch(() => {});
-            }}
+      ) : (
+        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+          <CMSContentEditor
+            form={form}
+            setForm={setForm}
+            onSubmit={submitForm}
+            disabled={mutationLocked}
+            onClear={() => setInteraction("idle")}
           />
-        ) : (
           <CMSContentList
             articles={articles}
-            loading={loading}
-            onRefresh={() => loadArticles().catch(() => {})}
+            loading={initialLoading}
+            busy={busy}
+            mutationLocked={mutationLocked}
+            onRefresh={() => void refresh()}
             onBeginEdit={beginEdit}
-            onToggleField={(article, field) => toggleArticle(article, field).catch(() => {})}
-            onRemove={(article) => removeArticle(article).catch(() => {})}
+            onToggleField={(article, field) =>
+              void toggleArticle(article, field)
+            }
+            onRemove={(article) => void removeArticle(article)}
           />
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </section>
   );
 }

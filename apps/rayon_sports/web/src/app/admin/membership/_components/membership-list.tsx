@@ -16,6 +16,7 @@ interface MembershipListProps {
   packages: AdminMembershipPackage[];
   currencyCode: string;
   loading: boolean;
+  mutationDisabled: boolean;
   onEdit: (pkg: AdminMembershipPackage) => void;
   onDelete: (pkg: AdminMembershipPackage) => Promise<void>;
 }
@@ -30,6 +31,7 @@ export function MembershipList({
   packages,
   currencyCode,
   loading,
+  mutationDisabled,
   onEdit,
   onDelete,
 }: MembershipListProps) {
@@ -135,6 +137,7 @@ export function MembershipList({
                       <button
                         type="button"
                         onClick={() => onEdit(pkg)}
+                        disabled={mutationDisabled}
                         className="admin-action-button"
                       >
                         <PencilLine size={13} />
@@ -145,6 +148,7 @@ export function MembershipList({
                         onClick={() => {
                           onDelete(pkg).catch(() => {});
                         }}
+                        disabled={mutationDisabled}
                         className="admin-action-button admin-action-button-danger"
                       >
                         <Trash2 size={13} />

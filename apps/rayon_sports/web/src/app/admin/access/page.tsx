@@ -1,7 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Search, Trash2, ShieldCheck, UserPlus, Users } from "lucide-react";
+import {
+  type PointerEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  RefreshCw,
+  Search,
+  Trash2,
+  ShieldCheck,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPagination } from "@/components/admin/admin-pagination";
@@ -14,6 +28,11 @@ import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
+import {
+  resolveAdminResourceFailure,
+  type AdminResourceStatus,
+  withAdminResourceTimeout,
+} from "@/lib/admin-resource-state";
 import {
   assignAdminRole,
   findAdminUserCandidate,
@@ -28,6 +47,124 @@ import type {
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useAdminCollection } from "@/lib/use-admin-collection";
+
+type AdminAccessInteraction = "idle" | "focused" | "pressed" | "selected";
+
+const accessStatusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading access assignments",
+    detail: "Waiting for the first authenticated platform access snapshot.",
+  },
+  ready: {
+    label: "Access assignments confirmed",
+    detail: "Authorized roles and scopes are current.",
+  },
+  empty: {
+    label: "No access assignments",
+    detail: "No administrator assignments exist in the selected view.",
+  },
+  error: {
+    label: "Access assignments unavailable",
+    detail: "Confirmed assignments remain visible. Retry when service recovers.",
+  },
+  offline: {
+    label: "Access workspace is offline",
+    detail: "Confirmed assignments remain visible until connection returns.",
+  },
+  permission_denied: {
+    label: "Access management denied",
+    detail: "Previously loaded administrator data has been cleared.",
+  },
+  syncing: {
+    label: "Refreshing access assignments",
+    detail: "Confirmed assignments remain visible during refresh.",
+  },
+  conflict: {
+    label: "Access assignments changed",
+    detail: "Refresh before acting on the current role assignments.",
+  },
+  security_timeout: {
+    label: "Access request timed out",
+    detail: "No access operation or change was confirmed.",
+  },
+};
+
+const assignableRoles = new Set<AdminAssignableRole>([
+  "super_admin",
+  "admin",
+  "club_admin",
+  "club_moderator",
+]);
+
+function normalizedText(
+  value: unknown,
+  maxLength: number,
+  fallback = "",
+) {
+  if (typeof value !== "string") {
+    return fallback;
+  }
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : fallback;
+}
+
+function nullableText(value: unknown, maxLength: number) {
+  return normalizedText(value, maxLength) || null;
+}
+
+export function normalizeAdminRoleAssignments(
+  value: unknown,
+): AdminRoleAssignment[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 500).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const id = normalizedText(record.id, 128);
+    const userId = normalizedText(record.userId, 128);
+    const userName = normalizedText(record.userName, 120);
+    const role = normalizedText(record.role, 40) as AdminAssignableRole;
+    const grantedAt = normalizedText(record.grantedAt, 64);
+
+    if (
+      !id ||
+      !userId ||
+      !userName ||
+      !assignableRoles.has(role) ||
+      !grantedAt ||
+      !Number.isFinite(Date.parse(grantedAt))
+    ) {
+      return [];
+    }
+
+    return [{
+      id,
+      userId,
+      userName,
+      userPhone: nullableText(record.userPhone, 40),
+      userEmail: nullableText(record.userEmail, 254),
+      publicUserId: nullableText(record.publicUserId, 128),
+      role,
+      clubId: nullableText(record.clubId, 128),
+      clubName: nullableText(record.clubName, 120),
+      partnerScopeId: nullableText(record.partnerScopeId, 128),
+      partnerName: nullableText(record.partnerName, 120),
+      grantedBy: nullableText(record.grantedBy, 128),
+      grantedByName: nullableText(record.grantedByName, 120),
+      grantedAt,
+      revokedAt: nullableText(record.revokedAt, 64),
+      isActive: record.isActive === true,
+      notes: nullableText(record.notes, 500),
+    }];
+  });
+}
 
 const roleOptions: Array<{
   value: AdminAssignableRole;
@@ -58,12 +195,17 @@ export default function AdminAccessPage() {
   const [role, setRole] = useState<AdminAssignableRole>("club_admin");
   const [clubId, setClubId] = useState(activeClub?.id ?? clubOptions[0]?.id ?? "");
   const [showInactive, setShowInactive] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [status, setStatus] = useState<AdminResourceStatus>("loading");
+  const [hasConfirmed, setHasConfirmed] = useState(false);
+  const [interaction, setInteraction] =
+    useState<AdminAccessInteraction>("idle");
   const [busyAction, setBusyAction] = useState<"lookup" | "assign" | "revoke" | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [detailAssignment, setDetailAssignment] =
     useState<AdminRoleAssignment | null>(null);
+  const hasConfirmedRef = useRef(false);
+  const activeController = useRef<AbortController | null>(null);
+  const mounted = useRef(true);
 
   const assignmentCollection = useAdminCollection({
     records: assignments,
@@ -101,19 +243,68 @@ export default function AdminAccessPage() {
 
   const loadAssignments = useCallback(async () => {
     if (client == null) return;
-    setLoading(true);
+
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      setStatus("offline");
+      return;
+    }
+
+    activeController.current?.abort();
+    const controller = new AbortController();
+    activeController.current = controller;
+    setStatus(hasConfirmedRef.current ? "syncing" : "loading");
+
     try {
-      const nextAssignments = await getAdminRoleAssignments(client, access, {
-        activeOnly: !showInactive,
+      const response = await withAdminResourceTimeout({
+        operation: getAdminRoleAssignments(client, access, {
+          activeOnly: !showInactive,
+          signal: controller.signal,
+        }),
+        controller,
+        resourceLabel: "Access assignments",
       });
+      if (!mounted.current) {
+        return;
+      }
+      const nextAssignments = normalizeAdminRoleAssignments(response);
       setAssignments(nextAssignments);
-      setLoadError(null);
+      setHasConfirmed(true);
+      hasConfirmedRef.current = true;
+      setDetailAssignment((current) =>
+        current != null &&
+        nextAssignments.some((assignment) => assignment.id === current.id)
+          ? current
+          : null,
+      );
+      setStatus(nextAssignments.length === 0 ? "empty" : "ready");
     } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Could not load admin role assignments.";
-      setLoadError(message);
-      showAdminToast(message, "error");
+      if (
+        caught instanceof DOMException &&
+        caught.name === "AbortError" &&
+        activeController.current !== controller
+      ) {
+        return;
+      }
+      if (!mounted.current) {
+        return;
+      }
+      const nextStatus = resolveAdminResourceFailure(
+        caught,
+        typeof navigator === "undefined" ? true : navigator.onLine,
+      );
+      if (nextStatus === "permission_denied") {
+        setAssignments([]);
+        setHasConfirmed(false);
+        hasConfirmedRef.current = false;
+        setDetailAssignment(null);
+        setDrawerOpen(false);
+      }
+      setStatus(nextStatus);
+      showAdminToast(accessStatusCopy[nextStatus].label, "error");
     } finally {
-      setLoading(false);
+      if (activeController.current === controller) {
+        activeController.current = null;
+      }
     }
   }, [access, client, showInactive]);
 
@@ -123,7 +314,19 @@ export default function AdminAccessPage() {
 
   useEffect(() => {
     if (client == null || !access.hasAccess || !access.isSuperAdmin) return;
-    loadAssignments().catch(() => {});
+    mounted.current = true;
+    void loadAssignments();
+
+    const markOffline = () => setStatus("offline");
+    const recoverOnline = () => void loadAssignments();
+    window.addEventListener("offline", markOffline);
+    window.addEventListener("online", recoverOnline);
+    return () => {
+      mounted.current = false;
+      activeController.current?.abort();
+      window.removeEventListener("offline", markOffline);
+      window.removeEventListener("online", recoverOnline);
+    };
   }, [access.hasAccess, access.isSuperAdmin, client, loadAssignments]);
 
   const summary = useMemo(() => {
@@ -140,6 +343,15 @@ export default function AdminAccessPage() {
     };
   }, [assignments]);
 
+  const busy = status === "loading" || status === "syncing";
+  const initialLoading = status === "loading" && !hasConfirmed;
+  const statusCopy = accessStatusCopy[status];
+
+  const setPointerPressed = (event: PointerEvent<HTMLButtonElement>) => {
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    setInteraction("pressed");
+  };
+
   async function handleLookup() {
     if (client == null) return;
     setBusyAction("lookup");
@@ -149,7 +361,17 @@ export default function AdminAccessPage() {
       showAdminToast(`Loaded ${nextCandidate.fullName}.`, "success");
     } catch (caught) {
       setCandidate(null);
-      showAdminToast(caught instanceof Error ? caught.message : "Could not find that user.", "error");
+      const nextStatus = resolveAdminResourceFailure(
+        caught,
+        typeof navigator === "undefined" ? true : navigator.onLine,
+      );
+      setStatus(nextStatus);
+      showAdminToast(
+        nextStatus === "permission_denied"
+          ? accessStatusCopy.permission_denied.label
+          : "Could not find a matching registered user.",
+        "error",
+      );
     } finally {
       setBusyAction(null);
     }
@@ -172,7 +394,17 @@ export default function AdminAccessPage() {
       setDrawerOpen(false);
       await loadAssignments();
     } catch (caught) {
-      showAdminToast(caught instanceof Error ? caught.message : "Could not save admin assignment.", "error");
+      const nextStatus = resolveAdminResourceFailure(
+        caught,
+        typeof navigator === "undefined" ? true : navigator.onLine,
+      );
+      setStatus(nextStatus);
+      showAdminToast(
+        nextStatus === "conflict"
+          ? accessStatusCopy.conflict.label
+          : "Could not confirm the admin assignment.",
+        "error",
+      );
     } finally {
       setBusyAction(null);
     }
@@ -196,7 +428,17 @@ export default function AdminAccessPage() {
       showAdminToast("Admin assignment revoked.", "success");
       await loadAssignments();
     } catch (caught) {
-      showAdminToast(caught instanceof Error ? caught.message : "Could not revoke admin assignment.", "error");
+      const nextStatus = resolveAdminResourceFailure(
+        caught,
+        typeof navigator === "undefined" ? true : navigator.onLine,
+      );
+      setStatus(nextStatus);
+      showAdminToast(
+        nextStatus === "conflict"
+          ? accessStatusCopy.conflict.label
+          : "Could not confirm the access revocation.",
+        "error",
+      );
     } finally {
       setBusyAction(null);
     }
@@ -204,7 +446,11 @@ export default function AdminAccessPage() {
 
   if (!access.isSuperAdmin) {
     return (
-      <div className="section-grid">
+      <div
+        className="admin-access-state-surface section-grid"
+        data-admin-access-status="permission_denied"
+        role="alert"
+      >
         <AdminPageHeader eyebrow="Access" title="Admin access management" />
         <AdminErrorState title="Platform admin access is required" description="Only platform administrators can add or revoke admin assignments." />
       </div>
@@ -212,7 +458,13 @@ export default function AdminAccessPage() {
   }
 
   return (
-    <div className="section-grid !gap-6">
+    <section
+      className="admin-access-state-surface section-grid !gap-6"
+      data-admin-access-status={status}
+      data-admin-access-interaction={interaction}
+      data-admin-access-refresh-disabled={busy}
+      aria-busy={busy || undefined}
+    >
       <AdminPageHeader
         eyebrow="Governance"
         title="Role management"
@@ -230,7 +482,8 @@ export default function AdminAccessPage() {
         actions={
           <button
             onClick={() => setDrawerOpen(true)}
-            className="admin-action-button !bg-club-accent !text-white"
+            disabled={busy || status === "permission_denied"}
+            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-zinc-950)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-zinc-800)] disabled:!text-[var(--admin-text-strong)]"
           >
             <UserPlus size={16} />
             <span>Grant access</span>
@@ -238,12 +491,80 @@ export default function AdminAccessPage() {
         }
       />
 
+      <div
+        className={cn(
+          "admin-access-status rounded-2xl border px-4 py-3",
+          status === "permission_denied" ||
+            status === "error" ||
+            status === "security_timeout"
+            ? "border-rose-500/30 bg-rose-500/10"
+            : status === "offline" || status === "conflict"
+              ? "border-amber-400/30 bg-amber-400/10"
+              : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)]",
+        )}
+        role={
+          status === "error" ||
+          status === "permission_denied" ||
+          status === "security_timeout"
+            ? "alert"
+            : "status"
+        }
+        aria-live={
+          status === "error" ||
+          status === "permission_denied" ||
+          status === "security_timeout"
+            ? "assertive"
+            : "polite"
+        }
+      >
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="min-w-0">
+            <p className="font-bold text-[var(--admin-text-strong)]">
+              {statusCopy.label}
+            </p>
+            <p className="mt-1 text-sm leading-6 text-[var(--admin-zinc-400)]">
+              {statusCopy.detail}
+            </p>
+          </div>
+          <button
+            type="button"
+            disabled={busy || status === "permission_denied"}
+            onClick={() => void loadAssignments()}
+            onFocus={() => setInteraction("focused")}
+            onBlur={() =>
+              setInteraction(detailAssignment == null ? "idle" : "selected")
+            }
+            onPointerDown={setPointerPressed}
+            onPointerUp={() =>
+              setInteraction(detailAssignment == null ? "idle" : "selected")
+            }
+            onPointerCancel={() =>
+              setInteraction(detailAssignment == null ? "idle" : "selected")
+            }
+            className="admin-access-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-bold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
+          >
+            <RefreshCw
+              size={17}
+              aria-hidden="true"
+              className={busy ? "animate-spin motion-reduce:animate-none" : ""}
+            />
+            {status === "error" ||
+            status === "offline" ||
+            status === "conflict" ||
+            status === "security_timeout"
+              ? "Try again"
+              : "Refresh assignments"}
+          </button>
+        </div>
+      </div>
+
       <KPISummaryRibbon>
-        <KPITile label="Platform admins" value={loading ? "..." : summary.platform.toString()} icon={ShieldCheck} />
-        <KPITile label="Club-scoped" value={loading ? "..." : summary.clubScoped.toString()} icon={Users} />
-        <KPITile label="Clubs touched" value={loading ? "..." : summary.clubsTouched.toString()} />
+        <KPITile label="Platform admins" value={initialLoading ? "..." : summary.platform.toString()} icon={ShieldCheck} />
+        <KPITile label="Club-scoped" value={initialLoading ? "..." : summary.clubScoped.toString()} icon={Users} />
+        <KPITile label="Clubs touched" value={initialLoading ? "..." : summary.clubsTouched.toString()} />
       </KPISummaryRibbon>
 
+      {hasConfirmed || initialLoading ? (
       <div className="admin-surface">
         <AdminFilterBar
           actions={
@@ -265,16 +586,13 @@ export default function AdminAccessPage() {
           </label>
         </AdminFilterBar>
 
-        {loadError && !loading ? (
-          <div className="p-8">
-            <AdminErrorState title="Could not load assignments" description={loadError} onRetry={() => { loadAssignments().catch(() => {}); }} />
-          </div>
-        ) : null}
-
         <AdminDataGrid
           caption="Administrator role assignments"
-          busy={loading}
-          onRowActivate={(rowId) => setDetailAssignment(assignments.find((assignment) => assignment.id === rowId) ?? null)}
+          busy={busy}
+          onRowActivate={(rowId) => {
+            setDetailAssignment(assignments.find((assignment) => assignment.id === rowId) ?? null);
+            setInteraction("selected");
+          }}
           columns={[
             { key: "user", label: "User / Administrator", priority: "primary", sortable: true, sortDirection: assignmentCollection.sortDirectionFor("user"), onSort: () => assignmentCollection.toggleSort("user") },
             { key: "role", label: "Permission Role", priority: "primary", sortable: true, sortDirection: assignmentCollection.sortDirectionFor("role"), onSort: () => assignmentCollection.toggleSort("role") },
@@ -283,7 +601,7 @@ export default function AdminAccessPage() {
             { key: "actions", label: "Actions", priority: "primary", className: "w-24" },
           ]}
         >
-          {loading ? (
+          {initialLoading ? (
             Array.from({ length: 5 }).map((_, i) => (
               <tr key={i}>
                 <td colSpan={5} className="p-4">
@@ -349,6 +667,17 @@ export default function AdminAccessPage() {
         </AdminDataGrid>
         <AdminPagination page={assignmentCollection.pageResult} onPageChange={assignmentCollection.setPage} label="Administrator assignments" />
       </div>
+      ) : (
+        <AdminErrorState
+          title={statusCopy.label}
+          description={statusCopy.detail}
+          onRetry={
+            status === "permission_denied"
+              ? undefined
+              : () => void loadAssignments()
+          }
+        />
+      )}
 
       <AdminActionDrawer
         isOpen={drawerOpen}
@@ -359,7 +688,7 @@ export default function AdminAccessPage() {
             <button
               onClick={() => handleAssign().catch(() => {})}
               disabled={busyAction != null || candidate == null || (selectedRole.requiresClub && !clubId)}
-              className="admin-action-button flex-1 !bg-club-accent !text-white"
+              className="admin-action-button flex-1 !bg-[var(--admin-accent)] !text-[var(--admin-zinc-950)]"
             >
               {busyAction === "assign" ? "Granting access..." : "Confirm access"}
             </button>
@@ -462,6 +791,6 @@ export default function AdminAccessPage() {
           </dl>
         ) : null}
       </AdminActionDrawer>
-    </div>
+    </section>
   );
 }

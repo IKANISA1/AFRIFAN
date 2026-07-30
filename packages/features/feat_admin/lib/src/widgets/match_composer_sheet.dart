@@ -1,32 +1,42 @@
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+
+import '../admin_matches_controller.dart';
+
+typedef MatchSaveCallback =
+    Future<bool> Function(Map<String, dynamic> values, {String? matchId});
 
 /// Shows match creation/editing form as a modal bottom sheet.
 ///
 /// Returns `true` if the match was saved successfully, `null` otherwise.
 Future<bool?> showMatchComposerSheet(
   BuildContext context, {
-  required WidgetRef ref,
-  Map<String, dynamic>? existing,
+  required MatchSaveCallback onSave,
+  AdminMatchItem? existing,
   String? partnerId,
 }) {
   return showAfriBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
-    builder: (context) =>
-        _MatchComposerSheet(ref: ref, existing: existing, partnerId: partnerId),
+    builder: (context) => _MatchComposerSheet(
+      onSave: onSave,
+      existing: existing,
+      partnerId: partnerId,
+    ),
   );
 }
 
 class _MatchComposerSheet extends StatefulWidget {
-  const _MatchComposerSheet({required this.ref, this.existing, this.partnerId});
+  const _MatchComposerSheet({
+    required this.onSave,
+    this.existing,
+    this.partnerId,
+  });
 
-  final WidgetRef ref;
-  final Map<String, dynamic>? existing;
+  final MatchSaveCallback onSave;
+  final AdminMatchItem? existing;
   final String? partnerId;
 
   @override
@@ -51,62 +61,50 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
   late bool _isOnSale;
   late String _matchStatus;
   String? _errorText;
+  bool _saving = false;
 
-  Map<String, dynamic>? get _existing => widget.existing;
+  AdminMatchItem? get _existing => widget.existing;
 
   @override
   void initState() {
     super.initState();
     _homeController = TextEditingController(
-      text:
-          _existing?['home_team']?.toString() ??
-          RuntimeBranding.displayHomeTeamName,
+      text: _existing?.homeTeam ?? RuntimeBranding.displayHomeTeamName,
     );
-    _awayController = TextEditingController(
-      text: _existing?['away_team']?.toString() ?? '',
-    );
+    _awayController = TextEditingController(text: _existing?.awayTeam ?? '');
     _competitionController = TextEditingController(
-      text:
-          _existing?['competition']?.toString() ??
-          RuntimeBranding.displayCompetitionName,
+      text: _existing?.competition ?? RuntimeBranding.displayCompetitionName,
     );
     _venueController = TextEditingController(
-      text:
-          _existing?['venue']?.toString() ??
-          RuntimeBranding.displayHomeVenueName,
+      text: _existing?.venue ?? RuntimeBranding.displayHomeVenueName,
     );
     _generalController = TextEditingController(
-      text: '${(_existing?['ticket_general_price'] as num?)?.toInt() ?? 3000}',
+      text: '${_existing?.generalPrice ?? 3000}',
     );
     _vipController = TextEditingController(
-      text: '${(_existing?['ticket_vip_price'] as num?)?.toInt() ?? 30000}',
+      text: '${_existing?.vipPrice ?? 30000}',
     );
     _capacityController = TextEditingController(
-      text: '${(_existing?['capacity'] as num?)?.toInt() ?? 18000}',
+      text: '${_existing?.capacity ?? 18000}',
     );
     _homeScoreController = TextEditingController(
-      text: '${(_existing?['home_score'] as num?)?.toInt() ?? 0}',
+      text: '${_existing?.homeScore ?? 0}',
     );
     _awayScoreController = TextEditingController(
-      text: '${(_existing?['away_score'] as num?)?.toInt() ?? 0}',
+      text: '${_existing?.awayScore ?? 0}',
     );
     _liveMinuteController = TextEditingController(
-      text: '${(_existing?['live_minute'] as num?)?.toInt() ?? 0}',
+      text: '${_existing?.liveMinute ?? 0}',
     );
-    _summaryController = TextEditingController(
-      text: _existing?['match_summary']?.toString() ?? '',
-    );
+    _summaryController = TextEditingController(text: _existing?.summary ?? '');
 
     _selectedDate =
-        DateTime.tryParse(_existing?['match_date']?.toString() ?? '') ??
-        DateTime.now().add(const Duration(days: 7));
+        _existing?.matchDate ?? DateTime.now().add(const Duration(days: 7));
     _selectedTime =
-        _parseTime(_existing?['kickoff_time']?.toString()) ??
+        _parseTime(_existing?.kickoffTime) ??
         const TimeOfDay(hour: 15, minute: 30);
-    _isOnSale = _existing?['is_on_sale'] == true;
-    _matchStatus =
-        _existing?['match_status']?.toString().trim().toLowerCase() ??
-        'scheduled';
+    _isOnSale = _existing?.isOnSale ?? false;
+    _matchStatus = _existing?.status ?? 'scheduled';
   }
 
   @override
@@ -144,46 +142,56 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
   }
 
   Future<void> _save() async {
-    final awayTeam = _awayController.text.trim();
-    if (awayTeam.isEmpty) {
-      setState(() => _errorText = 'Add the away team first.');
-      return;
-    }
+    if (_saving) return;
+    setState(() {
+      _saving = true;
+      _errorText = null;
+    });
 
     try {
       final payload = <String, dynamic>{
-        'partner_id': _existing?['partner_id'] ?? widget.partnerId,
+        'partner_id': _existing?.partnerId ?? widget.partnerId,
         'home_team': _homeController.text.trim(),
-        'away_team': awayTeam,
+        'away_team': _awayController.text.trim(),
         'competition': _competitionController.text.trim(),
         'venue': _venueController.text.trim(),
         'match_date': DateFormat('yyyy-MM-dd').format(_selectedDate),
         'kickoff_time':
             '${_selectedTime.hour.toString().padLeft(2, '0')}:${_selectedTime.minute.toString().padLeft(2, '0')}:00',
         'is_on_sale': _isOnSale,
-        'ticket_general_price':
-            int.tryParse(_generalController.text.trim()) ?? 0,
-        'ticket_vip_price': int.tryParse(_vipController.text.trim()) ?? 0,
-        'capacity': int.tryParse(_capacityController.text.trim()) ?? 0,
+        'ticket_general_price': int.tryParse(_generalController.text.trim()),
+        'ticket_vip_price': int.tryParse(_vipController.text.trim()),
+        'capacity': int.tryParse(_capacityController.text.trim()),
         'match_status': _matchStatus,
-        'home_score': int.tryParse(_homeScoreController.text.trim()) ?? 0,
-        'away_score': int.tryParse(_awayScoreController.text.trim()) ?? 0,
-        'live_minute': int.tryParse(_liveMinuteController.text.trim()) ?? 0,
+        'home_score': int.tryParse(_homeScoreController.text.trim()),
+        'away_score': int.tryParse(_awayScoreController.text.trim()),
+        'live_minute': int.tryParse(_liveMinuteController.text.trim()),
         'match_summary': _summaryController.text.trim(),
       };
 
-      final client = widget.ref.read(supabaseClientProvider);
-
-      if (_existing == null) {
-        await client.from('matches').insert(payload);
-      } else {
-        await client.from('matches').update(payload).eq('id', _existing!['id']);
-      }
-
+      final saved = await widget.onSave(payload, matchId: _existing?.id);
       if (!mounted) return;
-      context.pop(true);
-    } catch (error) {
-      setState(() => _errorText = error.toString());
+      if (saved) {
+        context.pop(true);
+        return;
+      }
+      setState(() {
+        _saving = false;
+        _errorText =
+            'The match was not saved. Review the confirmed workspace state.';
+      });
+    } on FormatException {
+      if (!mounted) return;
+      setState(() {
+        _saving = false;
+        _errorText = 'Review every match field and enter valid values.';
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _saving = false;
+        _errorText = 'The match was not saved. Try again after refreshing.';
+      });
     }
   }
 
@@ -214,148 +222,161 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
             MediaQuery.of(context).padding.bottom +
             SpacingTokens.spacing5,
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              _existing == null ? 'CREATE MATCH' : 'UPDATE MATCH',
-              style: TypographyTokens.headlineMedium().copyWith(
-                color: ColorTokens.onSurface,
+      child: IgnorePointer(
+        ignoring: _saving,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _existing == null ? 'CREATE MATCH' : 'UPDATE MATCH',
+                style: TypographyTokens.headlineMedium().copyWith(
+                  color: ColorTokens.onSurface,
+                ),
               ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            AfriInputField(controller: _homeController, label: 'Home Team'),
-            const SizedBox(height: SpacingTokens.spacing3),
-            AfriInputField(controller: _awayController, label: 'Away Team'),
-            const SizedBox(height: SpacingTokens.spacing3),
-            AfriInputField(
-              controller: _competitionController,
-              label: 'Competition',
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            AfriInputField(controller: _venueController, label: 'Venue'),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Row(
-              children: [
-                Expanded(
-                  child: AfriOutlinedButton(
-                    onPressed: _pickDate,
-                    child: Text(
-                      DateFormat('dd MMM yyyy').format(_selectedDate),
+              const SizedBox(height: SpacingTokens.spacing4),
+              AfriInputField(controller: _homeController, label: 'Home Team'),
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriInputField(controller: _awayController, label: 'Away Team'),
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriInputField(
+                controller: _competitionController,
+                label: 'Competition',
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriInputField(controller: _venueController, label: 'Venue'),
+              const SizedBox(height: SpacingTokens.spacing4),
+              Row(
+                children: [
+                  Expanded(
+                    child: AfriOutlinedButton(
+                      onPressed: _pickDate,
+                      child: Text(
+                        DateFormat('dd MMM yyyy').format(_selectedDate),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: AfriOutlinedButton(
-                    onPressed: _pickTime,
-                    child: Text(_selectedTime.format(context)),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: AfriOutlinedButton(
+                      onPressed: _pickTime,
+                      child: Text(_selectedTime.format(context)),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              Row(
+                children: [
+                  Expanded(
+                    child: AfriInputField(
+                      controller: _generalController,
+                      keyboardType: TextInputType.number,
+                      label: 'General $currencySymbol',
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: AfriInputField(
+                      controller: _vipController,
+                      keyboardType: TextInputType.number,
+                      label: 'VIP $currencySymbol',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriInputField(
+                controller: _capacityController,
+                keyboardType: TextInputType.number,
+                label: 'Capacity',
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriSwitchListTile(
+                value: _isOnSale,
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Tickets on sale'),
+                onChanged: (value) => setState(() => _isOnSale = value),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriDropdownField<String>(
+                initialValue: _matchStatus,
+                label: 'Match status',
+                items: const [
+                  DropdownMenuItem(
+                    value: 'scheduled',
+                    child: Text('Scheduled'),
+                  ),
+                  DropdownMenuItem(value: 'live', child: Text('Live')),
+                  DropdownMenuItem(value: 'halftime', child: Text('Half-time')),
+                  DropdownMenuItem(value: 'fulltime', child: Text('Full-time')),
+                  DropdownMenuItem(
+                    value: 'postponed',
+                    child: Text('Postponed'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'cancelled',
+                    child: Text('Cancelled'),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) setState(() => _matchStatus = value);
+                },
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              Row(
+                children: [
+                  Expanded(
+                    child: AfriInputField(
+                      controller: _homeScoreController,
+                      keyboardType: TextInputType.number,
+                      label: 'Home score',
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: AfriInputField(
+                      controller: _awayScoreController,
+                      keyboardType: TextInputType.number,
+                      label: 'Away score',
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: AfriInputField(
+                      controller: _liveMinuteController,
+                      keyboardType: TextInputType.number,
+                      label: 'Live minute',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriInputField(
+                controller: _summaryController,
+                minLines: 2,
+                maxLines: 4,
+                label: 'Match summary / live note',
+              ),
+              if (_errorText != null) ...[
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  _errorText!,
+                  style: TypographyTokens.bodySmall().copyWith(
+                    color: ColorTokens.error,
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            Row(
-              children: [
-                Expanded(
-                  child: AfriInputField(
-                    controller: _generalController,
-                    keyboardType: TextInputType.number,
-                    label: 'General $currencySymbol',
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: AfriInputField(
-                    controller: _vipController,
-                    keyboardType: TextInputType.number,
-                    label: 'VIP $currencySymbol',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            AfriInputField(
-              controller: _capacityController,
-              keyboardType: TextInputType.number,
-              label: 'Capacity',
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            AfriSwitchListTile(
-              value: _isOnSale,
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Tickets on sale'),
-              onChanged: (value) => setState(() => _isOnSale = value),
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            AfriDropdownField<String>(
-              initialValue: _matchStatus,
-              label: 'Match status',
-              items: const [
-                DropdownMenuItem(value: 'scheduled', child: Text('Scheduled')),
-                DropdownMenuItem(value: 'live', child: Text('Live')),
-                DropdownMenuItem(value: 'halftime', child: Text('Half-time')),
-                DropdownMenuItem(value: 'fulltime', child: Text('Full-time')),
-                DropdownMenuItem(value: 'postponed', child: Text('Postponed')),
-                DropdownMenuItem(value: 'cancelled', child: Text('Cancelled')),
-              ],
-              onChanged: (value) {
-                if (value != null) setState(() => _matchStatus = value);
-              },
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            Row(
-              children: [
-                Expanded(
-                  child: AfriInputField(
-                    controller: _homeScoreController,
-                    keyboardType: TextInputType.number,
-                    label: 'Home score',
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: AfriInputField(
-                    controller: _awayScoreController,
-                    keyboardType: TextInputType.number,
-                    label: 'Away score',
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: AfriInputField(
-                    controller: _liveMinuteController,
-                    keyboardType: TextInputType.number,
-                    label: 'Live minute',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            AfriInputField(
-              controller: _summaryController,
-              minLines: 2,
-              maxLines: 4,
-              label: 'Match summary / live note',
-            ),
-            if (_errorText != null) ...[
-              const SizedBox(height: SpacingTokens.spacing2),
-              Text(
-                _errorText!,
-                style: TypographyTokens.bodySmall().copyWith(
-                  color: ColorTokens.error,
-                ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              AfriButton(
+                label: _existing == null ? 'Save match' : 'Update match',
+                fullWidth: true,
+                isLoading: _saving,
+                onTap: _save,
               ),
             ],
-            const SizedBox(height: SpacingTokens.spacing4),
-            AfriButton(
-              label: _existing == null ? 'Save match' : 'Update match',
-              fullWidth: true,
-              onTap: _save,
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -10,34 +10,42 @@ import '../widgets/match_card.dart';
 
 enum HomeFeedStatus { success, degraded, empty, error }
 
-const String homeFeedLocalFallbackMessage =
-    'Live club data is temporarily unavailable. Try again shortly.';
+enum HomeFeedNotice {
+  liveUnavailable,
+  savedContent,
+  offlineShortcuts,
+  partialUnavailable,
+  partialShortcutsUnavailable,
+  matchdayPending,
+}
+
+enum LatestIntelNotice { unpublished, unavailable }
 
 const List<HomeQuickAction> homeFeedLocalFallbackActions = <HomeQuickAction>[
   HomeQuickAction(
     actionKey: 'tickets',
-    title: 'Tickets',
+    title: '',
     route: '/tickets',
     iconKey: 'tickets',
     sortOrder: 10,
   ),
   HomeQuickAction(
     actionKey: 'membership',
-    title: 'Join Gikundiro',
+    title: '',
     route: '/membership',
     iconKey: 'membership',
     sortOrder: 20,
   ),
   HomeQuickAction(
     actionKey: 'fan_zone',
-    title: 'Fan Zone',
+    title: '',
     route: '/fanzone?section=supporters',
     iconKey: 'members',
     sortOrder: 30,
   ),
   HomeQuickAction(
     actionKey: 'shop',
-    title: 'Shop',
+    title: '',
     route: '/shop',
     iconKey: 'shop',
     sortOrder: 40,
@@ -90,7 +98,7 @@ class HomeFeedSnapshot {
     this.userFet = 0,
     this.fanRank = 0,
     this.status = HomeFeedStatus.empty,
-    this.message,
+    this.notice,
     this.showFixturePlaceholder = false,
   });
 
@@ -102,7 +110,7 @@ class HomeFeedSnapshot {
   final int userFet;
   final int fanRank;
   final HomeFeedStatus status;
-  final String? message;
+  final HomeFeedNotice? notice;
   final bool showFixturePlaceholder;
 
   bool get hasStats => userFet > 0 || fanRank > 0;
@@ -119,7 +127,7 @@ class HomeFeedSnapshot {
     int? userFet,
     int? fanRank,
     HomeFeedStatus? status,
-    String? message,
+    HomeFeedNotice? notice,
     bool? showFixturePlaceholder,
   }) {
     return HomeFeedSnapshot(
@@ -129,7 +137,7 @@ class HomeFeedSnapshot {
       userFet: userFet ?? this.userFet,
       fanRank: fanRank ?? this.fanRank,
       status: status ?? this.status,
-      message: message ?? this.message,
+      notice: notice ?? this.notice,
       showFixturePlaceholder:
           showFixturePlaceholder ?? this.showFixturePlaceholder,
     );
@@ -139,7 +147,7 @@ class HomeFeedSnapshot {
 HomeFeedSnapshot localHomeFeedFallbackSnapshot() {
   return const HomeFeedSnapshot(
     status: HomeFeedStatus.degraded,
-    message: homeFeedLocalFallbackMessage,
+    notice: HomeFeedNotice.liveUnavailable,
     quickActions: homeFeedLocalFallbackActions,
     showFixturePlaceholder: true,
   );
@@ -159,19 +167,19 @@ class LatestIntelSnapshot {
   const LatestIntelSnapshot({
     this.articles = const <Map<String, dynamic>>[],
     this.status = LatestIntelStatus.empty,
-    this.message,
+    this.notice,
   });
 
   final List<Map<String, dynamic>> articles;
   final LatestIntelStatus status;
-  final String? message;
+  final LatestIntelNotice? notice;
 }
 
 @visibleForTesting
 LatestIntelSnapshot localLatestIntelFallbackSnapshot() {
   return const LatestIntelSnapshot(
     status: LatestIntelStatus.empty,
-    message: 'Club updates will appear when published.',
+    notice: LatestIntelNotice.unpublished,
   );
 }
 
@@ -281,7 +289,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     if (membershipsError != null && matchesError != null) {
       return HomeFeedSnapshot(
         status: HomeFeedStatus.error,
-        message: 'Live club data is temporarily unavailable. Pull to refresh.',
+        notice: HomeFeedNotice.liveUnavailable,
         quickActions: quickActions,
       );
     }
@@ -350,9 +358,9 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         userFet: userFet,
         fanRank: fanRank,
         status: HomeFeedStatus.degraded,
-        message: quickActionsError == null
-            ? 'Some live club data is temporarily unavailable. Pull to refresh.'
-            : 'Some live club data is temporarily unavailable. Home shortcuts are unavailable.',
+        notice: quickActionsError == null
+            ? HomeFeedNotice.partialUnavailable
+            : HomeFeedNotice.partialShortcutsUnavailable,
         showFixturePlaceholder: matchesError == null && heroSlides.isEmpty,
       );
     }
@@ -363,7 +371,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         fanRank == 0) {
       return const HomeFeedSnapshot(
         status: HomeFeedStatus.empty,
-        message: 'Matchday data will appear when published.',
+        notice: HomeFeedNotice.matchdayPending,
         showFixturePlaceholder: true,
       );
     }
@@ -660,7 +668,7 @@ class SupabaseLatestIntelRepository implements LatestIntelRepository {
       if (articles.isEmpty) {
         return const LatestIntelSnapshot(
           status: LatestIntelStatus.empty,
-          message: 'Club updates will appear when published.',
+          notice: LatestIntelNotice.unpublished,
         );
       }
 
@@ -677,7 +685,7 @@ class SupabaseLatestIntelRepository implements LatestIntelRepository {
       );
       return const LatestIntelSnapshot(
         status: LatestIntelStatus.error,
-        message: 'Latest Intel is temporarily unavailable. Pull to refresh.',
+        notice: LatestIntelNotice.unavailable,
       );
     }
   }

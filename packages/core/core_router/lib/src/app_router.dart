@@ -1,8 +1,8 @@
-import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'feature_module.dart';
+import 'route_recovery_screens.dart';
 
 /// App router factory — builds GoRouter from registered feature modules.
 class AppRouter {
@@ -58,15 +58,21 @@ class AppRouter {
     observers: observers,
     errorBuilder:
         errorBuilder ??
-        (context, state) => _RouterErrorScreen(
-          error: state.error,
+        (context, state) => RouteRecoveryScreen(
+          kind: RouteRecoveryKind.routerError,
           fallbackLocation: initialLocation,
+          visualState: RouteRecoveryScreen.classifyRouterError(state.error),
+          requestedPath: state.uri.path,
         ),
     routes: [
       GoRoute(
         path: '/feature-unavailable',
-        builder: (context, state) =>
-            _FeatureUnavailableScreen(fallbackLocation: initialLocation),
+        builder: (context, state) => RouteRecoveryScreen(
+          kind: RouteRecoveryKind.featureUnavailable,
+          fallbackLocation: initialLocation,
+          visualState: RouteRecoveryVisualState.disabled,
+          requestedPath: state.uri.queryParameters['from'],
+        ),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => shellBuilder(context, shell),
@@ -84,13 +90,13 @@ class AppRouter {
             .where(
               (module) =>
                   module.tabRoute != null &&
-                  primaryBottomTabFeatureKeys.contains(module.featureKey),
+                  shellBranchFeatureKeys.contains(module.featureKey),
             )
             .toList()
           ..sort(
-            (left, right) => primaryBottomTabOrderForFeature(
+            (left, right) => shellBranchOrderForFeature(
               left.featureKey,
-            ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+            ).compareTo(shellBranchOrderForFeature(right.featureKey)),
           );
 
     return tabModules.map((module) {
@@ -173,71 +179,6 @@ class AppRouter {
 
     throw StateError(
       'AppRouter requires at least one tab route or absolute standalone route.',
-    );
-  }
-}
-
-class _FeatureUnavailableScreen extends StatelessWidget {
-  const _FeatureUnavailableScreen({required this.fallbackLocation});
-
-  final String fallbackLocation;
-
-  @override
-  Widget build(BuildContext context) {
-    return AfriScreenScaffold(
-      backgroundColor: ColorTokens.background,
-      showAppBar: false,
-      scrollable: false,
-      constrainContent: true,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-          child: AfriDeepLinkRecovery(
-            state: AfriDeepLinkRecoveryState.unavailable,
-            onAction: () => context.go(fallbackLocation),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _RouterErrorScreen extends StatelessWidget {
-  const _RouterErrorScreen({
-    required this.error,
-    required this.fallbackLocation,
-  });
-
-  final Exception? error;
-  final String fallbackLocation;
-
-  @override
-  Widget build(BuildContext context) {
-    final errorMessage =
-        error?.toString() ?? 'The requested route is unavailable.';
-    final normalizedError = errorMessage.toLowerCase();
-    final isOffline =
-        normalizedError.contains('offline') ||
-        normalizedError.contains('network') ||
-        normalizedError.contains('socket');
-    return AfriScreenScaffold(
-      backgroundColor: ColorTokens.background,
-      showAppBar: false,
-      scrollable: false,
-      constrainContent: true,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-          child: AfriDeepLinkRecovery(
-            state: isOffline
-                ? AfriDeepLinkRecoveryState.offline
-                : AfriDeepLinkRecoveryState.error,
-            message: errorMessage,
-            actionLabel: 'Go home',
-            onAction: () => context.go(fallbackLocation),
-          ),
-        ),
-      ),
     );
   }
 }

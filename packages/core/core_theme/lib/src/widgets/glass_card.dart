@@ -28,6 +28,7 @@ class GlassCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool animate;
   final String? semanticsLabel;
+  final FocusNode? focusNode;
 
   const GlassCard({
     super.key,
@@ -40,6 +41,7 @@ class GlassCard extends StatelessWidget {
     this.onTap,
     this.animate = true,
     this.semanticsLabel,
+    this.focusNode,
   });
 
   @override
@@ -56,6 +58,7 @@ class GlassCard extends StatelessWidget {
             )
           : AfriPressFeedback(
               onTap: onTap,
+              focusNode: focusNode,
               semanticsLabel: semanticsLabel,
               tooltip: semanticsLabel,
               excludeChildSemantics: semanticsLabel != null,

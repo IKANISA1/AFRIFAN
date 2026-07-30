@@ -407,39 +407,43 @@ class PartnerPoolOutcomeOption extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isSelected ? ColorTokens.clubAccent : ColorTokens.ghostBorder;
 
-    return AfriPressFeedback(
-      onTap: onTap,
-      tooltip: outcome.label,
-      semanticsLabel: outcome.label,
-      builder: (context, state) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(SpacingTokens.spacing4),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? ColorTokens.clubAccent.withValues(alpha: 0.14)
-              : ColorTokens.surfaceContainerLow,
-          border: BorderTokens.all(color: color),
-          borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              isSelected ? AfriIcons.check : AfriIcons.predict,
-              color: isSelected
-                  ? ColorTokens.clubAccent
-                  : ColorTokens.onSurfaceVariant,
-              size: SpacingTokens.spacing5,
-            ),
-            const SizedBox(width: SpacingTokens.spacing3),
-            Expanded(
-              child: Text(
-                outcome.label,
-                style: TypographyTokens.titleSmall(
-                  isSelected ? ColorTokens.clubAccent : ColorTokens.onSurface,
+    return Semantics(
+      selected: isSelected,
+      label: isSelected ? 'Selected ${outcome.label}' : outcome.label,
+      child: AfriPressFeedback(
+        onTap: onTap,
+        tooltip: outcome.label,
+        semanticsLabel: outcome.label,
+        builder: (context, state) => Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(SpacingTokens.spacing4),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? ColorTokens.clubAccent.withValues(alpha: 0.14)
+                : ColorTokens.surfaceContainerLow,
+            border: BorderTokens.all(color: color),
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                isSelected ? AfriIcons.check : AfriIcons.predict,
+                color: isSelected
+                    ? ColorTokens.clubAccent
+                    : ColorTokens.onSurfaceVariant,
+                size: SpacingTokens.spacing5,
+              ),
+              const SizedBox(width: SpacingTokens.spacing3),
+              Expanded(
+                child: Text(
+                  outcome.label,
+                  style: TypographyTokens.titleSmall(
+                    isSelected ? ColorTokens.clubAccent : ColorTokens.onSurface,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

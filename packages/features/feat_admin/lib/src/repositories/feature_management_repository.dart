@@ -121,9 +121,11 @@ class ManagedPlatformFeature {
     final channels = rawChannels is List
         ? rawChannels
               .whereType<Map>()
-              .map((entry) => ManagedFeatureChannelConfig.fromJson(
-                    entry.cast<String, dynamic>(),
-                  ))
+              .map(
+                (entry) => ManagedFeatureChannelConfig.fromJson(
+                  entry.cast<String, dynamic>(),
+                ),
+              )
               .toList(growable: false)
         : const <ManagedFeatureChannelConfig>[];
 
@@ -131,10 +133,14 @@ class ManagedPlatformFeature {
     if (rawRules is List && rawRules.isNotEmpty) {
       final first = rawRules.first;
       if (first is Map) {
-        rules = ManagedFeatureRuleConfig.fromJson(first.cast<String, dynamic>());
+        rules = ManagedFeatureRuleConfig.fromJson(
+          first.cast<String, dynamic>(),
+        );
       }
     } else if (rawRules is Map) {
-      rules = ManagedFeatureRuleConfig.fromJson(rawRules.cast<String, dynamic>());
+      rules = ManagedFeatureRuleConfig.fromJson(
+        rawRules.cast<String, dynamic>(),
+      );
     }
 
     return ManagedPlatformFeature(
@@ -154,8 +160,8 @@ class ManagedPlatformFeature {
 
 class FeatureManagementRepository {
   FeatureManagementRepository({required SupabaseClient client})
-      : _client = client,
-        _scopeResolver = ClubScopeResolver(client: client);
+    : _client = client,
+      _scopeResolver = ClubScopeResolver(client: client);
 
   final SupabaseClient _client;
   final ClubScopeResolver _scopeResolver;
@@ -167,9 +173,10 @@ class FeatureManagementRepository {
     final result = await SafeRpc.query<List<ManagedPlatformFeature>>(
       () async {
         final rows = await _listFeatureRows(scopedClubId);
-        return _resolveScopedFeatures(rows, scopedClubId)
-            .map(ManagedPlatformFeature.fromJson)
-            .toList(growable: false);
+        return _resolveScopedFeatures(
+          rows,
+          scopedClubId,
+        ).map(ManagedPlatformFeature.fromJson).toList(growable: false);
       },
       tag: _tag,
       description: 'Load feature registry',
@@ -182,10 +189,7 @@ class FeatureManagementRepository {
     int? clubId,
   }) async {
     final scopedClubId = clubId ?? _scopeResolver.currentClubId;
-    final rows = await _listFeatureRows(
-      scopedClubId,
-      featureKey: featureKey,
-    );
+    final rows = await _listFeatureRows(scopedClubId, featureKey: featureKey);
     final resolved = _resolveScopedFeatures(rows, scopedClubId);
     if (resolved.isEmpty) {
       return null;
@@ -198,11 +202,9 @@ class FeatureManagementRepository {
     bool isEnabled, {
     int? clubId,
   }) {
-    return _updateFeatureRow(
-      featureId,
-      <String, dynamic>{'is_enabled': isEnabled},
-      clubId: clubId,
-    );
+    return _updateFeatureRow(featureId, <String, dynamic>{
+      'is_enabled': isEnabled,
+    }, clubId: clubId);
   }
 
   Future<bool> updateFeatureVisibility(
@@ -210,11 +212,9 @@ class FeatureManagementRepository {
     String visibility, {
     int? clubId,
   }) {
-    return _updateFeatureRow(
-      featureId,
-      <String, dynamic>{'visibility_state': visibility},
-      clubId: clubId,
-    );
+    return _updateFeatureRow(featureId, <String, dynamic>{
+      'visibility_state': visibility,
+    }, clubId: clubId);
   }
 
   Future<bool> updateChannelConfig(
@@ -279,10 +279,7 @@ class FeatureManagementRepository {
           clubId: scopedClubId,
         );
         final currentRule = await _loadRulesByFeatureId(targetId);
-        final payload = <String, dynamic>{
-          'feature_id': targetId,
-          ...data,
-        };
+        final payload = <String, dynamic>{'feature_id': targetId, ...data};
 
         if ((currentRule?.id ?? '').isNotEmpty) {
           await _client
@@ -303,24 +300,23 @@ class FeatureManagementRepository {
 
   Future<List<ContentBlock>> loadContentBlocks({int? clubId}) async {
     final scopedClubId = clubId ?? _scopeResolver.currentClubId;
-    final result = await SafeRpc.query<List<ContentBlock>>(
-      () async {
-        var query = _client.from('platform_content_blocks').select();
-        if (scopedClubId != null) {
-          query = query.or('club_id.eq.$scopedClubId,club_id.is.null');
-        } else {
-          query = query.isFilter('club_id', null);
-        }
-        final rows = List<Map<String, dynamic>>.from(
-          (await query.order('placement_key').order('sort_order') as List)
-              .map((row) => Map<String, dynamic>.from(row as Map)),
-        );
-        return _resolveScopedContentBlocks(rows, scopedClubId)
-            .map(ContentBlock.fromJson)
-            .toList(growable: false);
-      },
-      tag: _tag,
-    );
+    final result = await SafeRpc.query<List<ContentBlock>>(() async {
+      var query = _client.from('platform_content_blocks').select();
+      if (scopedClubId != null) {
+        query = query.or('club_id.eq.$scopedClubId,club_id.is.null');
+      } else {
+        query = query.isFilter('club_id', null);
+      }
+      final rows = List<Map<String, dynamic>>.from(
+        (await query.order('placement_key').order('sort_order') as List).map(
+          (row) => Map<String, dynamic>.from(row as Map),
+        ),
+      );
+      return _resolveScopedContentBlocks(
+        rows,
+        scopedClubId,
+      ).map(ContentBlock.fromJson).toList(growable: false);
+    }, tag: _tag);
     return result.requireData;
   }
 
@@ -330,21 +326,18 @@ class FeatureManagementRepository {
     int? clubId,
   }) async {
     final scopedClubId = clubId ?? _scopeResolver.currentClubId;
-    final result = await SafeRpc.query<bool>(
-      () async {
-        final source = await _getContentBlockRowById(id);
-        final targetId = await _ensureScopedContentBlockTarget(
-          source,
-          clubId: scopedClubId,
-        );
-        await _client
-            .from('platform_content_blocks')
-            .update(<String, dynamic>{'is_active': isActive})
-            .eq('id', targetId);
-        return true;
-      },
-      tag: _tag,
-    );
+    final result = await SafeRpc.query<bool>(() async {
+      final source = await _getContentBlockRowById(id);
+      final targetId = await _ensureScopedContentBlockTarget(
+        source,
+        clubId: scopedClubId,
+      );
+      await _client
+          .from('platform_content_blocks')
+          .update(<String, dynamic>{'is_active': isActive})
+          .eq('id', targetId);
+      return true;
+    }, tag: _tag);
     return result.isSuccess;
   }
 
@@ -432,28 +425,30 @@ class FeatureManagementRepository {
       grouped.putIfAbsent(key, () => <Map<String, dynamic>>[]).add(row);
     }
 
-    final resolved = grouped.values.map((variants) {
-      if (clubId == null) {
-        return variants.firstWhere(
-          (row) => row['club_id'] == null,
-          orElse: () => variants.first,
-        );
-      }
+    final resolved = grouped.values
+        .map((variants) {
+          if (clubId == null) {
+            return variants.firstWhere(
+              (row) => row['club_id'] == null,
+              orElse: () => variants.first,
+            );
+          }
 
-      for (final row in variants) {
-        if (_asInt(row['club_id']) == clubId) {
-          return row;
-        }
-      }
+          for (final row in variants) {
+            if (_asInt(row['club_id']) == clubId) {
+              return row;
+            }
+          }
 
-      for (final row in variants) {
-        if (row['club_id'] == null) {
-          return row;
-        }
-      }
+          for (final row in variants) {
+            if (row['club_id'] == null) {
+              return row;
+            }
+          }
 
-      return variants.first;
-    }).toList(growable: false);
+          return variants.first;
+        })
+        .toList(growable: false);
 
     resolved.sort((left, right) {
       final leftCategory = left['category']?.toString() ?? '';
@@ -540,7 +535,8 @@ class FeatureManagementRepository {
           'category': source['category'],
           'club_id': clubId,
           'is_enabled': source['is_enabled'] as bool? ?? true,
-          'visibility_state': source['visibility_state']?.toString() ?? 'visible',
+          'visibility_state':
+              source['visibility_state']?.toString() ?? 'visible',
         })
         .select('id')
         .single();
@@ -552,22 +548,26 @@ class FeatureManagementRepository {
 
     final sourceChannels = _rawChildRows(source['channels']);
     if (sourceChannels.isNotEmpty) {
-      await _client.from('platform_feature_channels').insert(
-        sourceChannels
-            .map((channel) => <String, dynamic>{
-                  'feature_id': targetId,
-                  'channel': channel['channel'],
-                  'is_enabled': channel['is_enabled'] as bool? ?? true,
-                  'is_visible': channel['is_visible'] as bool? ?? true,
-                  'show_in_navigation':
-                      channel['show_in_navigation'] as bool? ?? false,
-                  'show_on_home': channel['show_on_home'] as bool? ?? false,
-                  'sort_order': (channel['sort_order'] as num?)?.toInt(),
-                  'route_key': channel['route_key'],
-                  'placement_key': channel['placement_key'],
-                })
-            .toList(growable: false),
-      );
+      await _client
+          .from('platform_feature_channels')
+          .insert(
+            sourceChannels
+                .map(
+                  (channel) => <String, dynamic>{
+                    'feature_id': targetId,
+                    'channel': channel['channel'],
+                    'is_enabled': channel['is_enabled'] as bool? ?? true,
+                    'is_visible': channel['is_visible'] as bool? ?? true,
+                    'show_in_navigation':
+                        channel['show_in_navigation'] as bool? ?? false,
+                    'show_on_home': channel['show_on_home'] as bool? ?? false,
+                    'sort_order': (channel['sort_order'] as num?)?.toInt(),
+                    'route_key': channel['route_key'],
+                    'placement_key': channel['placement_key'],
+                  },
+                )
+                .toList(growable: false),
+          );
     }
 
     final sourceRules = _rawChildRows(source['rules']);
@@ -611,7 +611,9 @@ class FeatureManagementRepository {
     ).map(ManagedFeatureChannelConfig.fromJson).toList(growable: false);
   }
 
-  Future<ManagedFeatureRuleConfig?> _loadRulesByFeatureId(String featureId) async {
+  Future<ManagedFeatureRuleConfig?> _loadRulesByFeatureId(
+    String featureId,
+  ) async {
     final row = await _client
         .from('platform_feature_rules')
         .select('''
@@ -700,28 +702,30 @@ class FeatureManagementRepository {
       grouped.putIfAbsent(key, () => <Map<String, dynamic>>[]).add(row);
     }
 
-    final resolved = grouped.values.map((variants) {
-      if (clubId == null) {
-        return variants.firstWhere(
-          (row) => row['club_id'] == null,
-          orElse: () => variants.first,
-        );
-      }
+    final resolved = grouped.values
+        .map((variants) {
+          if (clubId == null) {
+            return variants.firstWhere(
+              (row) => row['club_id'] == null,
+              orElse: () => variants.first,
+            );
+          }
 
-      for (final row in variants) {
-        if (_asInt(row['club_id']) == clubId) {
-          return row;
-        }
-      }
+          for (final row in variants) {
+            if (_asInt(row['club_id']) == clubId) {
+              return row;
+            }
+          }
 
-      for (final row in variants) {
-        if (row['club_id'] == null) {
-          return row;
-        }
-      }
+          for (final row in variants) {
+            if (row['club_id'] == null) {
+              return row;
+            }
+          }
 
-      return variants.first;
-    }).toList(growable: false);
+          return variants.first;
+        })
+        .toList(growable: false);
 
     resolved.sort((left, right) {
       final placementCompare = (left['placement_key']?.toString() ?? '')

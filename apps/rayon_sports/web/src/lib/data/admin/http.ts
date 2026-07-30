@@ -7,6 +7,7 @@ type AdminApiOptions = {
   method?: AdminApiMethod;
   body?: unknown;
   query?: Record<string, string | number | boolean | null | undefined>;
+  signal?: AbortSignal;
 };
 
 export class AdminApiError extends Error {
@@ -61,6 +62,7 @@ export async function requestAdminApi<T>(
       options.body === undefined ? undefined : JSON.stringify(options.body),
     credentials: "same-origin",
     cache: "no-store",
+    signal: options.signal,
   }).catch(async (error) => {
     if ((options.method ?? "GET") === "GET") {
       throw error;
@@ -79,6 +81,7 @@ export async function requestAdminApi<T>(
         options.body === undefined ? undefined : JSON.stringify(options.body),
       credentials: "same-origin",
       cache: "no-store",
+      signal: options.signal,
     });
   });
 

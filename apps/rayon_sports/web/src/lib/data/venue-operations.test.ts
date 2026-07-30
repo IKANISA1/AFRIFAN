@@ -75,14 +75,28 @@ function scopedRow(overrides: Record<string, unknown>) {
 afterEach(() => vi.restoreAllMocks());
 
 describe("venue access resolution", () => {
-  it("distinguishes configuration and authentication failures", async () => {
+  it("distinguishes configuration, signed-out, and authentication-service failures", async () => {
     vi.mocked(getServerSupabase).mockResolvedValueOnce(null);
     await expect(resolveVenueAccess()).resolves.toEqual({ status: "not_configured" });
 
     vi.mocked(getServerSupabase).mockResolvedValueOnce({
-      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: { message: "expired" } }) },
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }) },
     } as unknown as SupabaseClient);
     await expect(resolveVenueAccess()).resolves.toEqual({ status: "signed_out" });
+
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.mocked(getServerSupabase).mockResolvedValueOnce({
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: { message: "unavailable" } }) },
+    } as unknown as SupabaseClient);
+    await expect(resolveVenueAccess()).resolves.toMatchObject({
+      status: "service_error",
+    });
+    expect(error).toHaveBeenCalledWith(
+      "Venue authentication lookup failed",
+      expect.objectContaining({
+        correlationId: expect.stringMatching(/^venue-/),
+      }),
+    );
   });
 
   it("returns a correlation id for membership service errors", async () => {
@@ -158,9 +172,9 @@ describe("venue operations", () => {
   });
 
   it.each([
-    ["Campaigns", [{ error: { message: "campaign denied" } }, { error: null }, { error: null }]],
-    ["Orders", [{ error: null }, { error: { message: "order denied" } }, { error: null }]],
-    ["Check-ins", [{ error: null }, { error: null }, { error: { message: "checkin denied" } }]],
+    ["Campaigns query failed", [{ error: { message: "campaign denied" } }, { error: null }, { error: null }]],
+    ["Orders query failed", [{ error: null }, { error: { message: "order denied" } }, { error: null }]],
+    ["Check-ins query failed", [{ error: null }, { error: null }, { error: { message: "checkin denied" } }]],
   ] as const)("surfaces %s overview errors", async (label, results) => {
     await expect(getVenueOverview(client(...results).supabase, access)).rejects.toThrow(label);
   });
@@ -175,25 +189,25 @@ describe("venue operations", () => {
   });
 
   it("maps order rows and rejects a cross-venue row", async () => {
-    const row = scopedRow({ id: "order-1", status: "ready", total_amount: "2500", currency_code: "RWF", payment_status: "paid", age_gate_confirmed: true, created_at: "2026-07-18T12:00:00Z" });
+    const row = scopedRow({ id: "33333333-3333-4333-8333-333333333333", status: "ready", total_amount: "2500", currency_code: "RWF", payment_status: "paid", age_gate_confirmed: true, created_at: "2026-07-18T12:00:00Z" });
     await expect(getVenueOrders(client({ data: [row], error: null }).supabase, access)).resolves.toEqual([
-      expect.objectContaining({ id: "order-1", totalAmount: 2500, ageGateConfirmed: true }),
+      expect.objectContaining({ id: "33333333-3333-4333-8333-333333333333", totalAmount: 2500, ageGateConfirmed: true }),
     ]);
     await expect(getVenueOrders(client({ data: [{ ...row, venue_id: "other" }], error: null }).supabase, access)).rejects.toThrow("Venue scope mismatch");
   });
 
   it("maps menu, check-in, and staff rows", async () => {
-    const menu = scopedRow({ id: "drink-1", item_name: "Water", description: null, price_amount: "1000", currency_code: "RWF", is_active: true, is_alcohol: false, sort_order: 2 });
-    const checkin = scopedRow({ id: "checkin-1", status: "approved", location_verification_status: "verified", fet_awarded: "5", checked_in_at: "2026-07-18T12:00:00Z", review_reason: null });
-    const staff = scopedRow({ id: "staff-1", user_id: "user-2", role: "staff", granted_at: "2026-07-18T12:00:00Z" });
+    const menu = scopedRow({ id: "33333333-3333-4333-8333-333333333333", item_name: "Water", description: null, price_amount: "1000", currency_code: "RWF", is_active: true, is_alcohol: false, sort_order: 2 });
+    const checkin = scopedRow({ id: "44444444-4444-4444-8444-444444444444", status: "approved", location_verification_status: "verified", fet_awarded: "5", checked_in_at: "2026-07-18T12:00:00Z", review_reason: null });
+    const staff = scopedRow({ id: "55555555-5555-4555-8555-555555555555", user_id: "66666666-6666-4666-8666-666666666666", role: "staff", granted_at: "2026-07-18T12:00:00Z" });
     await expect(getVenueMenu(client({ data: [menu], error: null }).supabase, access)).resolves.toEqual([expect.objectContaining({ name: "Water", priceAmount: 1000, isAlcohol: false })]);
     await expect(getVenueCheckins(client({ data: [checkin], error: null }).supabase, access)).resolves.toEqual([expect.objectContaining({ locationStatus: "verified", fetAwarded: 5 })]);
-    await expect(getVenueStaff(client({ data: [staff], error: null }).supabase, access)).resolves.toEqual([expect.objectContaining({ userId: "user-2", role: "staff" })]);
+    await expect(getVenueStaff(client({ data: [staff], error: null }).supabase, access)).resolves.toEqual([expect.objectContaining({ isCurrentUser: false, role: "staff" })]);
   });
 
   it("maps launchable campaigns and exhausted campaigns", async () => {
-    const active = scopedRow({ id: "campaign-1", campaign_name: "Matchday", status: "approved", starts_at: "2026-01-01T00:00:00Z", ends_at: "2027-01-01T00:00:00Z", fet_award_per_checkin: 5, fet_budget: 100, awarded_fet: 20, require_location: true });
-    const exhausted = { ...active, id: "campaign-2", awarded_fet: 100 };
+    const active = scopedRow({ id: "33333333-3333-4333-8333-333333333333", campaign_name: "Matchday", status: "approved", starts_at: "2026-01-01T00:00:00Z", ends_at: "2027-01-01T00:00:00Z", fet_award_per_checkin: 5, fet_budget: 100, awarded_fet: 20, require_location: true });
+    const exhausted = { ...active, id: "44444444-4444-4444-8444-444444444444", awarded_fet: 100 };
     await expect(getVenueCampaigns(client({ data: [active, exhausted], error: null }).supabase, access)).resolves.toEqual([
       expect.objectContaining({ name: "Matchday", isLaunchable: true, requireLocation: true }),
       expect.objectContaining({ isLaunchable: false }),
@@ -204,11 +218,103 @@ describe("venue operations", () => {
     await expect(getVenueTvCode(client({ data: null, error: null }).supabase, access)).resolves.toBeNull();
     const row = scopedRow({ status: "active", expires_at: "2026-07-18T13:00:00Z", rotates_at: "2026-07-18T12:05:00Z", venue_checkin_campaigns: { campaign_name: "Matchday" } });
     await expect(getVenueTvCode(client({ data: row, error: null }).supabase, access)).resolves.toEqual(expect.objectContaining({ campaignName: "Matchday" }));
-    await expect(getVenueTvCode(client({ error: { message: "denied" } }).supabase, access)).rejects.toThrow("TV code: denied");
+    await expect(getVenueTvCode(client({ error: { message: "denied" } }).supabase, access)).rejects.toThrow("TV code query failed");
   });
 
-  it("surfaces list errors and treats a non-array response as empty", async () => {
-    await expect(getVenueOrders(client({ data: null, error: { message: "offline" } }).supabase, access)).rejects.toThrow("Orders: offline");
-    await expect(getVenueMenu(client({ data: { unexpected: true }, error: null }).supabase, access)).resolves.toEqual([]);
+  it("surfaces list errors and rejects malformed collection responses", async () => {
+    await expect(getVenueOrders(client({ data: null, error: { message: "offline" } }).supabase, access)).rejects.toThrow("Orders query failed");
+    await expect(getVenueMenu(client({ data: { unexpected: true }, error: null }).supabase, access)).rejects.toThrow("Menu response is invalid");
+  });
+
+  it("rejects malformed, duplicate, and oversized operational records", async () => {
+    const order = scopedRow({
+      id: "33333333-3333-4333-8333-333333333333",
+      status: "ready",
+      total_amount: 2500,
+      currency_code: "RWF",
+      payment_status: "paid",
+      age_gate_confirmed: true,
+      created_at: "2026-07-18T12:00:00Z",
+    });
+    await expect(
+      getVenueOrders(
+        client({ data: [{ ...order, status: "invented" }], error: null })
+          .supabase,
+        access,
+      ),
+    ).rejects.toThrow("Order status is invalid");
+    await expect(
+      getVenueOrders(client({ data: [order, order], error: null }).supabase, access),
+    ).rejects.toThrow("Orders contains duplicate records");
+    await expect(
+      getVenueOrders(
+        client({
+          data: Array.from({ length: 101 }, (_value, index) => ({
+            ...order,
+            id: `33333333-3333-4333-8333-${String(index).padStart(12, "0")}`,
+          })),
+          error: null,
+        }).supabase,
+        access,
+      ),
+    ).rejects.toThrow("Orders response is invalid");
+  });
+
+  it("rejects invalid campaign lifecycles and active menus above the limit", async () => {
+    const campaign = scopedRow({
+      id: "33333333-3333-4333-8333-333333333333",
+      campaign_name: "Matchday",
+      status: "approved",
+      starts_at: "2027-01-01T00:00:00Z",
+      ends_at: "2026-01-01T00:00:00Z",
+      fet_award_per_checkin: 5,
+      fet_budget: 100,
+      awarded_fet: 20,
+      require_location: true,
+    });
+    await expect(
+      getVenueCampaigns(
+        client({ data: [campaign], error: null }).supabase,
+        access,
+      ),
+    ).rejects.toThrow("Campaign lifecycle is invalid");
+
+    const menu = Array.from({ length: 11 }, (_value, index) =>
+      scopedRow({
+        id: `33333333-3333-4333-8333-${String(index).padStart(12, "0")}`,
+        item_name: `Drink ${index + 1}`,
+        description: "",
+        price_amount: 1000,
+        currency_code: "RWF",
+        is_active: true,
+        is_alcohol: false,
+        sort_order: index,
+      }),
+    );
+    await expect(
+      getVenueMenu(client({ data: menu, error: null }).supabase, access),
+    ).rejects.toThrow("Menu exceeds the active-item limit");
+  });
+
+  it("omits staff identifiers and retains only current-user truth", async () => {
+    const current = scopedRow({
+      id: "33333333-3333-4333-8333-333333333333",
+      user_id: access.userId,
+      role: "manager",
+      granted_at: "2026-07-18T12:00:00Z",
+      private_note: "must not cross the DTO boundary",
+    });
+    const [member] = await getVenueStaff(
+      client({ data: [current], error: null }).supabase,
+      access,
+    );
+    expect(member).toEqual({
+      id: "33333333-3333-4333-8333-333333333333",
+      role: "manager",
+      grantedAt: "2026-07-18T12:00:00Z",
+      isCurrentUser: true,
+    });
+    expect(member).not.toHaveProperty("userId");
+    expect(member).not.toHaveProperty("private_note");
   });
 });

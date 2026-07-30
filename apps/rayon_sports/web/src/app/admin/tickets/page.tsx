@@ -3,11 +3,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CheckCircle2, Clock, Eye, Search, Ticket } from "lucide-react";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
-import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminPagination } from "@/components/admin/admin-pagination";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminSelectionBar } from "@/components/admin/admin-selection-bar";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -17,10 +20,12 @@ import {
   canAdminTransitionTicketStatus,
   getAdminTicketBulkEligibility,
   getAdminTicketOrders,
+  normalizeAdminTicketOrders,
   updateTicketStatus,
   type AdminTicketOrder,
   type AdminTicketStatusAction,
 } from "@/lib/data/admin/tickets";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import {
   filterAdminRecords,
   paginateAdminRecords,
@@ -31,6 +36,9 @@ import {
   type AdminSortDirection,
 } from "@/lib/admin-collection";
 import { formatCurrency } from "@/lib/utils";
+import { isAdminMutationConflict } from "@/lib/data/admin/http";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
+import { useHydrated } from "@/lib/use-hydrated";
 
 type TicketSortKey = "supporter" | "match" | "amount" | "status" | "purchasedAt";
 
@@ -40,6 +48,8 @@ interface PendingTicketAction {
 }
 
 const pageSize = 25;
+const emptyOrders: AdminTicketOrder[] = [];
+const ordersAreEmpty = (orders: AdminTicketOrder[]) => orders.length === 0;
 
 const statusActionLabels: Record<AdminTicketStatusAction, string> = {
   valid: "Validate",
@@ -47,11 +57,52 @@ const statusActionLabels: Record<AdminTicketStatusAction, string> = {
   cancelled: "Cancel",
 };
 
+const statusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading ticket operations",
+    detail: "Waiting for the first authenticated, club-scoped snapshot.",
+  },
+  ready: {
+    label: "Ticket operations confirmed",
+    detail: "The latest bounded ticket queue is ready for review.",
+  },
+  empty: {
+    label: "No tickets in this club",
+    detail: "The club-scoped ticket queue is confirmed and empty.",
+  },
+  error: {
+    label: "Ticket operations unavailable",
+    detail: "Confirmed orders remain visible. Retry when the service recovers.",
+  },
+  offline: {
+    label: "Ticket operations are offline",
+    detail: "Confirmed orders remain visible while refresh is unavailable.",
+  },
+  permission_denied: {
+    label: "Ticket access denied",
+    detail:
+      "Orders, supporter details, filters, selections, and drawers were cleared for privacy.",
+  },
+  syncing: {
+    label: "Refreshing ticket operations",
+    detail: "Confirmed orders remain visible during the bounded refresh.",
+  },
+  conflict: {
+    label: "Ticket operations changed",
+    detail: "Review the retained queue, then refresh before acting.",
+  },
+  security_timeout: {
+    label: "Ticket request timed out",
+    detail: "No new snapshot was confirmed. Retry from the retained queue.",
+  },
+};
+
 export default function AdminTicketsPage() {
   const { access, activeClub, client } = useAdminPortal();
-  const [orders, setOrders] = useState<AdminTicketOrder[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const hydrated = useHydrated();
   const [filter, setFilter] = useState("");
   const [sortKey, setSortKey] = useState<TicketSortKey>("purchasedAt");
   const [sortDirection, setSortDirection] =
@@ -63,27 +114,52 @@ export default function AdminTicketsPage() {
   const [pendingAction, setPendingAction] =
     useState<PendingTicketAction | null>(null);
   const [mutating, setMutating] = useState(false);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
   const selectPageRef = useRef<HTMLInputElement | null>(null);
 
-  const loadOrders = useCallback(async () => {
-    if (client == null) return;
-    setLoading(true);
-    try {
-      setOrders(await getAdminTicketOrders(client, access));
-      setLoadError(null);
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Could not load ticket orders.";
-      setLoadError(message);
-      showAdminToast(message, "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [access, client]);
-
-  useEffect(() => {
-    if (client == null || !access.hasAccess) return;
-    loadOrders().catch(() => {});
-  }, [access.hasAccess, client, loadOrders]);
+  const clearPrivateState = useCallback(() => {
+    setFilter("");
+    setPage(1);
+    setSelectedIds(new Set());
+    setDetailOrder(null);
+    setReviewOpen(false);
+    setPendingAction(null);
+    setInteraction("idle");
+  }, []);
+  const loadOrders = useCallback(
+    async (signal: AbortSignal) => {
+      if (client == null) return emptyOrders;
+      return getAdminTicketOrders(client, access, { signal });
+    },
+    [access, client],
+  );
+  const {
+    data: orders,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState<AdminTicketOrder[]>({
+    enabled: hydrated && client != null && access.hasAccess,
+    emptyValue: emptyOrders,
+    isEmpty: ordersAreEmpty,
+    load: loadOrders,
+    normalize: normalizeAdminTicketOrders,
+    onPermissionDenied: clearPrivateState,
+    resourceLabel: "ticket operations",
+  });
+  const mutationLocked =
+    mutating || busy || (status !== "ready" && status !== "empty");
+  const unrecoveredFailure =
+    !hasConfirmed &&
+    (status === "error" ||
+      status === "offline" ||
+      status === "permission_denied" ||
+      status === "conflict" ||
+      status === "security_timeout");
 
   useEffect(() => {
     const availableIds = new Set(orders.map((order) => order.id));
@@ -91,7 +167,7 @@ export default function AdminTicketsPage() {
   }, [orders]);
 
   async function confirmStatusUpdate() {
-    if (!client || pendingAction == null) return;
+    if (!client || pendingAction == null || mutationLocked) return;
     setMutating(true);
     try {
       if (pendingAction.orders.length === 1) {
@@ -117,9 +193,13 @@ export default function AdminTicketsPage() {
       );
       setPendingAction(null);
       setSelectedIds(new Set());
-      await loadOrders();
-    } catch (e) {
-      showAdminToast(e instanceof Error ? e.message : "Status update failed", "error");
+      await refresh();
+    } catch (error) {
+      if (isAdminMutationConflict(error)) {
+        await refresh();
+      }
+      const nextStatus = applyFailure(error);
+      showAdminToast(statusCopy[nextStatus].label, "error");
     } finally {
       setMutating(false);
     }
@@ -201,6 +281,7 @@ export default function AdminTicketsPage() {
     actionOrders: AdminTicketOrder[],
     status: AdminTicketStatusAction,
   ) {
+    if (mutationLocked) return;
     const eligibility = getAdminTicketBulkEligibility(access, actionOrders, status);
     if (!eligibility.allowed) {
       showAdminToast(
@@ -216,38 +297,60 @@ export default function AdminTicketsPage() {
   }
 
   return (
-    <div className="section-grid !gap-6">
+    <div
+      className="section-grid !gap-6"
+      data-admin-tickets-status={status}
+      data-admin-tickets-interaction={interaction}
+    >
       <AdminPageHeader
         eyebrow="Supporter programs"
         title="Ticket operations"
       />
 
+      <AdminResourceStatusBanner
+        status={status}
+        label={statusCopy[status].label}
+        detail={statusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh ticket operations"
+        onRefresh={() => void refresh()}
+        onInteractionChange={setInteraction}
+      />
+
       <div className="grid gap-4 md:grid-cols-4">
         <AdminStateCard
           label="Total Tickets"
-          value={loading ? "..." : orders.length.toString()}
+          value={hasConfirmed ? orders.length.toString() : "—"}
           icon={Ticket}
         />
         <AdminStateCard
           label="Pending"
-          value={loading ? "..." : orders.filter(o => o.status === "pending").length.toString()}
+          value={hasConfirmed ? orders.filter(o => o.status === "pending").length.toString() : "—"}
           tone={orders.some(o => o.status === "pending") ? "warning" : "neutral"}
           icon={Clock}
         />
         <AdminStateCard
           label="Validated"
-          value={loading ? "..." : orders.filter(o => o.status === "valid").length.toString()}
+          value={hasConfirmed ? orders.filter(o => o.status === "valid").length.toString() : "—"}
           tone="success"
           icon={CheckCircle2}
         />
         <AdminStateCard
           label="Used"
-          value={loading ? "..." : orders.filter(o => o.status === "used").length.toString()}
+          value={hasConfirmed ? orders.filter(o => o.status === "used").length.toString() : "—"}
           tone="info"
         />
       </div>
 
-      <div className="flex flex-col gap-4">
+      {initialLoading ? (
+        <div className="admin-surface p-6" aria-label="Loading ticket operations">
+          <div className="h-64 animate-pulse rounded-2xl bg-white/5 motion-reduce:animate-none" />
+        </div>
+      ) : null}
+
+      {!initialLoading && !unrecoveredFailure ? (
+      <div className="flex flex-col gap-4" data-admin-tickets-state-surface>
         <div className="relative max-w-md">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-zinc-500)]" />
           <input
@@ -263,6 +366,7 @@ export default function AdminTicketsPage() {
           />
         </div>
 
+        {!mutationLocked ? (
         <AdminSelectionBar
           selectedCount={selectedIds.size}
           scopeLabel={`${selectedOnPage} selected on this page; scope is the active club only.`}
@@ -270,18 +374,12 @@ export default function AdminTicketsPage() {
           onReview={() => setReviewOpen(true)}
           reviewLabel="Review ticket actions"
         />
+        ) : null}
 
-        {loadError && !loading ? (
-          <AdminErrorState
-            title="Ticket orders could not be loaded"
-            description={loadError}
-            onRetry={() => { loadOrders().catch(() => {}); }}
-          />
-        ) : (
           <div className="admin-surface">
             <AdminDataGrid
               caption="Ticket operations queue"
-              busy={loading || mutating}
+              busy={busy || mutating}
               onRowActivate={(rowId) => {
                 const order = orders.find((candidate) => candidate.id === rowId);
                 if (order) setDetailOrder(order);
@@ -337,13 +435,7 @@ export default function AdminTicketsPage() {
                 },
               ]}
             >
-              {loading ? (
-                <tr>
-                  <td colSpan={8} className="p-12 text-center text-sm text-[var(--admin-zinc-500)]">
-                    Loading ticket orders…
-                  </td>
-                </tr>
-              ) : orderPage.items.length === 0 ? (
+              {orderPage.items.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="p-12 text-center text-sm text-[var(--admin-zinc-500)]">
                     {filter
@@ -380,6 +472,7 @@ export default function AdminTicketsPage() {
                           type="checkbox"
                           className="h-5 w-5 accent-[var(--club-accent)]"
                           checked={selected}
+                          disabled={mutationLocked}
                           onChange={(event) =>
                             commitSelection(
                               toggleAdminSelection(
@@ -439,6 +532,7 @@ export default function AdminTicketsPage() {
                           {canValidate ? (
                             <button
                               type="button"
+                              disabled={mutationLocked}
                               onClick={() => queueStatusAction([order], "valid")}
                               className="admin-action-button !bg-emerald-500/10 !text-emerald-400"
                             >
@@ -448,6 +542,7 @@ export default function AdminTicketsPage() {
                           {canMarkUsed ? (
                             <button
                               type="button"
+                              disabled={mutationLocked}
                               onClick={() => queueStatusAction([order], "used")}
                               className="admin-action-button !bg-blue-500/10 !text-blue-400"
                             >
@@ -457,6 +552,7 @@ export default function AdminTicketsPage() {
                           {canCancel ? (
                             <button
                               type="button"
+                              disabled={mutationLocked}
                               onClick={() => queueStatusAction([order], "cancelled")}
                               className="admin-action-button !bg-rose-500/10 !text-rose-400"
                             >
@@ -480,7 +576,7 @@ export default function AdminTicketsPage() {
                   aria-checked={
                     selectedOnPage > 0 && !allPageSelected ? "mixed" : allPageSelected
                   }
-                  disabled={pageIds.length === 0}
+                  disabled={mutationLocked || pageIds.length === 0}
                   onChange={(event) =>
                     commitSelection(
                       setAdminPageSelection(
@@ -500,8 +596,8 @@ export default function AdminTicketsPage() {
               label="Ticket orders"
             />
           </div>
-        )}
       </div>
+      ) : null}
 
       <AdminActionDrawer
         open={detailOrder != null}
@@ -574,7 +670,7 @@ export default function AdminTicketsPage() {
                       ? "admin-action-button-danger"
                       : "!bg-[var(--admin-zinc-800)]"
                   }`}
-                  disabled={!eligibility.allowed}
+                  disabled={mutationLocked || !eligibility.allowed}
                   onClick={() => queueStatusAction(selectedOrders, status)}
                   title={
                     eligibility.allowed
@@ -603,7 +699,7 @@ export default function AdminTicketsPage() {
                 type="button"
                 className="admin-action-button flex-1"
                 onClick={() => setPendingAction(null)}
-                disabled={mutating}
+                disabled={mutationLocked}
               >
                 Go back
               </button>
@@ -617,7 +713,7 @@ export default function AdminTicketsPage() {
                 onClick={() => {
                   confirmStatusUpdate().catch(() => {});
                 }}
-                disabled={mutating}
+                disabled={mutationLocked}
               >
                 {mutating ? "Applying…" : `Confirm ${statusActionLabels[pendingAction.status]}`}
               </button>

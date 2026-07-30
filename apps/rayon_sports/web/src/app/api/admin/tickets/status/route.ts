@@ -1,5 +1,8 @@
 import { NextRequest } from "next/server";
-import { handleAdminApiRoute } from "@/lib/admin-api-handler";
+import {
+  AdminApiValidationError,
+  handleAdminApiRoute,
+} from "@/lib/admin-api-handler";
 import {
   isAdminTicketStatusAction,
   updateTicketStatus,
@@ -19,7 +22,10 @@ export async function POST(request: NextRequest) {
       const status = String(body.status ?? "").trim();
 
       if (!ticketId || !isAdminTicketStatusAction(status)) {
-        throw new Error("Both ticketId and status are required.");
+        throw new AdminApiValidationError(
+          "Both ticket id and status are required.",
+          "ADMIN_TICKET_STATUS_EMPTY",
+        );
       }
 
       await updateTicketStatus(client, access, ticketId, status);

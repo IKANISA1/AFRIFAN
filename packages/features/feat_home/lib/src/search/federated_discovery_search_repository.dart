@@ -125,6 +125,7 @@ final class SupabaseSupporterDiscoverySource
       return const <DiscoveryResult>[];
     }
 
+    final l10n = query.l10n;
     final scope = await scopeResolver.requireResolved();
     var request = client
         .from('fan_memberships')
@@ -144,7 +145,7 @@ final class SupabaseSupporterDiscoverySource
           (name) => DiscoveryResult(
             id: 'public-supporter:${name.toLowerCase()}',
             title: name,
-            description: 'Public supporter profile in the club registry.',
+            description: l10n.searchPublicSupporterDescription,
             category: DiscoveryCategory.supporters,
             destination:
                 '/membership/fans?search=${Uri.encodeQueryComponent(query.text.trim())}',
@@ -167,6 +168,7 @@ final class SupabaseFixtureDiscoverySource
       return const <DiscoveryResult>[];
     }
 
+    final l10n = query.l10n;
     final scope = await scopeResolver.requireResolved();
     var request = client
         .from('unified_matches')
@@ -190,16 +192,19 @@ final class SupabaseFixtureDiscoverySource
         .take(SupabaseDiscoverySearchSource.sourceLimit)
         .map((row) {
           final id = row['id']?.toString() ?? '';
-          final home = row['home_team']?.toString() ?? 'Home';
-          final away = row['away_team']?.toString() ?? 'Away';
-          final competition = row['competition']?.toString() ?? 'Club fixture';
+          final home =
+              row['home_team']?.toString() ?? l10n.searchHomeTeamFallback;
+          final away =
+              row['away_team']?.toString() ?? l10n.searchAwayTeamFallback;
+          final competition =
+              row['competition']?.toString() ?? l10n.searchClubFixtureFallback;
           final onSale = row['is_on_sale'] == true;
           return DiscoveryResult(
             id: 'fixture:$id',
-            title: '$home vs $away',
+            title: l10n.searchMatchTitle(home, away),
             description: onSale
-                ? '$competition fixture with ticket sales available.'
-                : '$competition fixture.',
+                ? l10n.searchFixtureOnSaleDescription(competition)
+                : l10n.searchFixtureDescription(competition),
             category: DiscoveryCategory.fixtures,
             destination: '/fanzone/match/$id',
             icon: AfriIcons.fixture,
@@ -222,6 +227,7 @@ final class SupabaseCommerceDiscoverySource
       return const <DiscoveryResult>[];
     }
 
+    final l10n = query.l10n;
     final scope = await scopeResolver.requireResolved();
     var request = client
         .from('shop_products')
@@ -244,12 +250,14 @@ final class SupabaseCommerceDiscoverySource
         .take(SupabaseDiscoverySearchSource.sourceLimit)
         .map((row) {
           final id = row['id']?.toString() ?? '';
-          final name = row['name']?.toString() ?? 'Club product';
-          final category = row['category']?.toString() ?? 'Merchandise';
+          final name =
+              row['name']?.toString() ?? l10n.searchClubProductFallback;
+          final category =
+              row['category']?.toString() ?? l10n.searchMerchandiseFallback;
           return DiscoveryResult(
             id: 'product:$id',
             title: name,
-            description: 'Official club shop item in $category.',
+            description: l10n.searchProductDescription(category),
             category: DiscoveryCategory.commerce,
             destination: '/shop/product/$id',
             icon: AfriIcons.shop,

@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -22,19 +23,6 @@ class ContributorLeaderboard extends StatelessWidget {
 
   final List<ContributorEntry> entries;
 
-  String _formatPoints(int pts) {
-    if (pts >= 1000) {
-      final str = pts.toString();
-      final buf = StringBuffer();
-      for (var i = 0; i < str.length; i++) {
-        if (i > 0 && (str.length - i) % 3 == 0) buf.write(',');
-        buf.write(str[i]);
-      }
-      return buf.toString();
-    }
-    return pts.toString();
-  }
-
   @override
   Widget build(BuildContext context) {
     if (entries.isEmpty) return const SizedBox.shrink();
@@ -42,9 +30,9 @@ class ContributorLeaderboard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AfriSectionHeader(
-          title: 'Supporters',
-          subtitle: 'Top active ',
+        AfriSectionHeader(
+          title: context.afriL10n.homeSupportersTitle,
+          subtitle: context.afriL10n.homeSupportersSubtitle,
           padding: EdgeInsets.zero,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
@@ -53,7 +41,7 @@ class ContributorLeaderboard extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
             child: _ContributorRow(
               data: entry,
-              pointsLabel: '${_formatPoints(entry.points)} pts',
+              pointsLabel: context.afriL10n.homePoints(entry.points),
             ),
           ),
         ),

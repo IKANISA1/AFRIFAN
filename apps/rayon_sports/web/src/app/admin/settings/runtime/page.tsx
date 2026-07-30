@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Database,
   FileText,
@@ -13,11 +13,14 @@ import {
   SlidersHorizontal,
   Trash2,
 } from "lucide-react";
-import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPagination } from "@/components/admin/admin-pagination";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
@@ -32,6 +35,7 @@ import {
   deleteAdminSiteSearchItem,
   deleteAdminVenueGovernanceControl,
   getAdminRuntimeRegistrySnapshot,
+  normalizeAdminRuntimeRegistrySnapshot,
   saveAdminPlatformOptionSet,
   saveAdminPlatformOptionValue,
   saveAdminPlatformRoute,
@@ -40,6 +44,7 @@ import {
   saveAdminSiteSearchItem,
   saveAdminVenueGovernanceControl,
 } from "@/lib/data/admin/runtime-registries";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import type {
   AdminAccess,
   AdminPlatformOptionSet,
@@ -54,6 +59,8 @@ import type {
 import { cn } from "@/lib/utils";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import { useAdminCollection } from "@/lib/use-admin-collection";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
+import { useHydrated } from "@/lib/use-hydrated";
 
 type RuntimeResourceKey =
   | "routes"
@@ -237,7 +244,11 @@ const runtimeResources: RuntimeResourceDefinition[] = [
 ];
 
 function cleanRecord(record: EditableRuntimeRecord | Record<string, unknown>) {
-  const { createdAt: _createdAt, updatedAt, ...editable } = record as Record<string, unknown>;
+  const {
+    createdAt: _createdAt,
+    updatedAt,
+    ...editable
+  } = record as Record<string, unknown>;
   return {
     ...editable,
     expectedUpdatedAt: updatedAt,
@@ -271,22 +282,111 @@ function parseEditorJson(value: string) {
   return parsed as Record<string, unknown>;
 }
 
+const emptySnapshot: AdminRuntimeRegistrySnapshot = {
+  routes: [],
+  optionSets: [],
+  optionValues: [],
+  runtimeCopy: [],
+  navigation: [],
+  search: [],
+  venueControls: [],
+};
+
+const runtimeSnapshotIsEmpty = (snapshot: AdminRuntimeRegistrySnapshot) =>
+  runtimeResources.every((resource) => resource.rows(snapshot).length === 0);
+
+const statusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading runtime registries",
+    detail: "Waiting for the first authenticated, scope-confirmed snapshot.",
+  },
+  ready: {
+    label: "Runtime registries confirmed",
+    detail: "The latest bounded controls are ready for review.",
+  },
+  empty: {
+    label: "No runtime records in this scope",
+    detail: "The seven governed collections are confirmed empty.",
+  },
+  error: {
+    label: "Runtime registries unavailable",
+    detail:
+      "Confirmed records remain visible. Retry when the service recovers.",
+  },
+  offline: {
+    label: "Runtime registries are offline",
+    detail: "Confirmed records remain visible while refresh is unavailable.",
+  },
+  permission_denied: {
+    label: "Runtime registry access denied",
+    detail:
+      "Records, filters, pagination, and editor content were cleared for privacy.",
+  },
+  syncing: {
+    label: "Refreshing runtime registries",
+    detail: "Confirmed records remain visible during the bounded refresh.",
+  },
+  conflict: {
+    label: "Runtime registry changed",
+    detail: "Review the retained snapshot, then refresh before making changes.",
+  },
+  security_timeout: {
+    label: "Runtime registry request timed out",
+    detail: "No new snapshot was confirmed. Retry from the retained records.",
+  },
+};
+
 export default function AdminRuntimeSettingsPage() {
   const { access, client } = useAdminPortal();
-  const [snapshot, setSnapshot] = useState<AdminRuntimeRegistrySnapshot | null>(null);
+  const hydrated = useHydrated();
   const [activeKey, setActiveKey] = useState<RuntimeResourceKey>("routes");
   const [editorValue, setEditorValue] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [editorError, setEditorError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
+  const clearPrivateStateRef = useRef<() => void>(() => {});
 
   const activeResource = useMemo(
-    () => runtimeResources.find((resource) => resource.key === activeKey) ?? runtimeResources[0],
+    () =>
+      runtimeResources.find((resource) => resource.key === activeKey) ??
+      runtimeResources[0],
     [activeKey],
   );
 
+  const loadSnapshot = useCallback(
+    async (signal: AbortSignal) => {
+      if (client == null) return emptySnapshot;
+      return getAdminRuntimeRegistrySnapshot(client, access, { signal });
+    },
+    [access, client],
+  );
+  const clearPrivateState = useCallback(() => {
+    clearPrivateStateRef.current();
+  }, []);
+  const {
+    data: snapshot,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+    applyFailure,
+  } = useAdminResourceState<AdminRuntimeRegistrySnapshot>({
+    enabled: hydrated && client != null && access.hasAccess,
+    emptyValue: emptySnapshot,
+    isEmpty: runtimeSnapshotIsEmpty,
+    load: loadSnapshot,
+    normalize: normalizeAdminRuntimeRegistrySnapshot,
+    onPermissionDenied: clearPrivateState,
+    resourceLabel: "runtime registries",
+  });
+
   const activeRows = useMemo(
-    () => (snapshot == null ? [] : activeResource.rows(snapshot)),
+    () => activeResource.rows(snapshot),
     [activeResource, snapshot],
   );
   const rowCollection = useAdminCollection({
@@ -299,141 +399,170 @@ export default function AdminRuntimeSettingsPage() {
       record.isActive ? "active" : "inactive",
       JSON.stringify(record.metadata ?? {}),
     ],
-    getSortValue: (
-      record,
-      key: "title" | "subtitle" | "scope" | "status",
-    ) => {
+    getSortValue: (record, key: "title" | "subtitle" | "scope" | "status") => {
       switch (key) {
-        case "title": return recordTitle(record);
-        case "subtitle": return recordSubtitle(record);
-        case "scope": return "scope" in record ? record.scope : "";
-        case "status": return record.isActive;
+        case "title":
+          return recordTitle(record);
+        case "subtitle":
+          return recordSubtitle(record);
+        case "scope":
+          return "scope" in record ? record.scope : "";
+        case "status":
+          return record.isActive;
       }
     },
     initialSortKey: "title" as const,
     pageSize: 25,
   });
 
-  const load = useCallback(async () => {
-    if (client == null) return;
-    setLoading(true);
-    try {
-      const nextSnapshot = await getAdminRuntimeRegistrySnapshot(client, access);
-      setSnapshot(nextSnapshot);
-      setLoadError(null);
-    } catch (caught) {
-      if (isAdminMutationConflict(caught)) {
-        await load();
-      }
-      const message =
-        caught instanceof Error ? caught.message : "Could not load runtime registries.";
-      setLoadError(message);
-      showAdminToast(message, "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [access, client]);
+  clearPrivateStateRef.current = () => {
+    setActiveKey("routes");
+    setEditorValue("");
+    setEditorError(null);
+    rowCollection.setQuery("");
+    rowCollection.setPage(1);
+    setInteraction("idle");
+  };
 
   useEffect(() => {
-    if (client == null || !access.hasAccess) return;
-    load().catch(() => {});
-  }, [access.hasAccess, client, load]);
-
-  useEffect(() => {
-    setEditorValue(
-      JSON.stringify(activeResource.emptyDraft(access), null, 2),
-    );
+    setEditorValue(JSON.stringify(activeResource.emptyDraft(access), null, 2));
+    setEditorError(null);
   }, [access, activeResource]);
 
+  const canEdit = access.isSuperAdmin || access.role === "club_admin";
+  const mutationLocked =
+    saving || busy || !canEdit || (status !== "ready" && status !== "empty");
+  const unrecoveredFailure =
+    !hasConfirmed &&
+    (status === "error" ||
+      status === "offline" ||
+      status === "permission_denied" ||
+      status === "conflict" ||
+      status === "security_timeout");
+
+  async function handleMutationFailure(error: unknown) {
+    const nextStatus = applyFailure(error);
+    if (isAdminMutationConflict(error) || nextStatus === "conflict") {
+      await refresh();
+    }
+    showAdminToast(statusCopy[nextStatus].label, "error");
+  }
+
   async function saveEditorRecord() {
-    if (client == null || saving) return;
+    if (client == null || mutationLocked) return;
+    let parsed: Record<string, unknown>;
+    try {
+      parsed = parseEditorJson(editorValue);
+      setEditorError(null);
+    } catch {
+      setEditorError("Enter one valid JSON object before saving.");
+      return;
+    }
     setSaving(true);
     try {
-      const parsed = parseEditorJson(editorValue);
       await activeResource.save(client, access, parsed as never);
       showAdminToast(`${activeResource.label} record saved.`, "success");
-      await load();
-    } catch (caught) {
-      showAdminToast(
-        caught instanceof Error ? caught.message : "Could not save runtime record.",
-        "error",
-      );
+      await refresh();
+    } catch (error) {
+      await handleMutationFailure(error);
     } finally {
       setSaving(false);
     }
   }
 
   async function deleteEditorRecord() {
-    if (client == null || saving) return;
+    if (client == null || mutationLocked) return;
+    let parsed: Record<string, unknown>;
     try {
-      const parsed = parseEditorJson(editorValue);
-      const id = typeof parsed.id === "string" ? parsed.id.trim() : "";
-      const expectedUpdatedAt =
-        typeof parsed.expectedUpdatedAt === "string"
-          ? parsed.expectedUpdatedAt.trim()
-          : "";
-      if (!id) {
-        throw new Error("Record id is required for delete.");
-      }
-      if (!confirmAdminDestructiveAction({
+      parsed = parseEditorJson(editorValue);
+      setEditorError(null);
+    } catch {
+      setEditorError("Enter one valid JSON object before deleting.");
+      return;
+    }
+    const id = typeof parsed.id === "string" ? parsed.id.trim() : "";
+    const expectedUpdatedAt =
+      typeof parsed.expectedUpdatedAt === "string"
+        ? parsed.expectedUpdatedAt.trim()
+        : "";
+    if (!id || !expectedUpdatedAt) {
+      setEditorError(
+        "Select a confirmed record with an id and loaded version before deleting.",
+      );
+      return;
+    }
+    if (
+      !confirmAdminDestructiveAction({
         action: "Delete",
         subject: `${activeResource.label} record ${id}`,
         scope: access.isSuperAdmin
           ? "Selected platform or club runtime scope"
           : `Active club ${access.clubId ?? "not selected"}`,
-        impact: "The runtime registry record will stop governing the connected app surfaces.",
+        impact:
+          "The runtime registry record will stop governing the connected app surfaces.",
         undo: "not_available",
-      })) {
-        return;
-      }
-      setSaving(true);
-      await activeResource.delete(
-        client,
-        access,
-        id,
-        expectedUpdatedAt,
-      );
+      })
+    ) {
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await activeResource.delete(client, access, id, expectedUpdatedAt);
       showAdminToast(`${activeResource.label} record deleted.`, "success");
-      setEditorValue(JSON.stringify(activeResource.emptyDraft(access), null, 2));
-      await load();
-    } catch (caught) {
-      if (isAdminMutationConflict(caught)) {
-        await load();
-      }
-      showAdminToast(
-        caught instanceof Error ? caught.message : "Could not delete runtime record.",
-        "error",
+      setEditorValue(
+        JSON.stringify(activeResource.emptyDraft(access), null, 2),
       );
+      await refresh();
+    } catch (error) {
+      await handleMutationFailure(error);
     } finally {
       setSaving(false);
     }
   }
 
-  const totalRecords = snapshot == null
-    ? 0
-    : runtimeResources.reduce(
-        (total, resource) => total + resource.rows(snapshot).length,
-        0,
-      );
-  const activeRecords = snapshot == null
-    ? 0
-    : runtimeResources.reduce(
-        (total, resource) =>
-          total + resource.rows(snapshot).filter((row) => row.isActive).length,
-        0,
-      );
+  const totalRecords = runtimeResources.reduce(
+    (total, resource) => total + resource.rows(snapshot).length,
+    0,
+  );
+  const activeRecords = runtimeResources.reduce(
+    (total, resource) =>
+      total + resource.rows(snapshot).filter((row) => row.isActive).length,
+    0,
+  );
 
   return (
-    <div className="section-grid">
+    <div
+      className="admin-runtime-state-surface section-grid min-w-0 max-w-full"
+      data-admin-runtime-status={status}
+      data-admin-runtime-interaction={interaction}
+      data-admin-runtime-refresh-disabled={busy}
+      data-admin-runtime-mutation-locked={mutationLocked}
+      aria-busy={busy || undefined}
+    >
       <AdminPageHeader
         eyebrow="Configuration"
-        title="Runtime Registries"
+        title="Runtime registries"
         meta={
           <span className="admin-meta-chip">
-            <Database size={12} className="mr-1 inline" />
-            Supabase managed
+            <Database size={12} className="mr-1 inline" aria-hidden="true" />7
+            registries · 500 records each
           </span>
         }
+      />
+
+      <AdminResourceStatusBanner
+        status={status}
+        label={statusCopy[status].label}
+        detail={statusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh runtime registries"
+        selected={interaction === "selected"}
+        onRefresh={() => {
+          void refresh();
+        }}
+        onInteractionChange={setInteraction}
       />
 
       <div className="grid gap-5 md:grid-cols-3">
@@ -444,13 +573,17 @@ export default function AdminRuntimeSettingsPage() {
         />
         <AdminStateCard
           label="Records"
-          value={loading ? "..." : totalRecords.toString()}
+          value={hasConfirmed ? totalRecords.toString() : "—"}
           icon={ListTree}
+          helper={
+            hasConfirmed ? "Confirmed bounded records" : "Awaiting confirmation"
+          }
         />
         <AdminStateCard
           label="Active"
-          value={loading ? "..." : activeRecords.toString()}
+          value={hasConfirmed ? activeRecords.toString() : "—"}
           icon={ShieldCheck}
+          helper="Active in the resolved scope"
         />
       </div>
 
@@ -461,57 +594,99 @@ export default function AdminRuntimeSettingsPage() {
             <button
               key={resource.key}
               type="button"
-              onClick={() => setActiveKey(resource.key)}
+              disabled={busy && !hasConfirmed}
+              aria-pressed={activeKey === resource.key}
+              onFocus={() => setInteraction("focused")}
+              onBlur={() =>
+                setInteraction(activeKey === resource.key ? "selected" : "idle")
+              }
+              onClick={() => {
+                setActiveKey(resource.key);
+                setInteraction("selected");
+              }}
               className={cn(
-                "flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition",
+                "flex min-h-12 items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-60",
                 activeKey === resource.key
                   ? "bg-club-primary text-white"
                   : "border border-border-soft bg-white/5 text-slate-300 hover:bg-white/8",
               )}
             >
-              <Icon size={16} />
+              <Icon size={16} aria-hidden="true" />
               {resource.label}
             </button>
           );
         })}
       </div>
 
-      {loadError && !loading ? (
-        <AdminErrorState
-          title="Runtime registries could not be loaded"
-          description={loadError}
-          onRetry={() => {
-            load().catch(() => {});
-          }}
-        />
-      ) : (
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(420px,0.8fr)]">
-          <section className="admin-surface">
+      {!unrecoveredFailure ? (
+        <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(420px,0.8fr)]">
+          <section className="admin-surface min-w-0">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <h2 className="admin-section-title">{activeResource.label}</h2>
                 <p className="admin-row-meta">
-                  {loading ? "Loading" : `${activeRows.length} records`}
+                  {hasConfirmed
+                    ? `${activeRows.length} confirmed records`
+                    : "Awaiting confirmation"}
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() =>
-                  setEditorValue(
-                    JSON.stringify(activeResource.emptyDraft(access), null, 2),
-                  )
-                }
-                className="admin-secondary-button"
-              >
-                New
-              </button>
+              {canEdit ? (
+                <button
+                  type="button"
+                  disabled={mutationLocked}
+                  onClick={() => {
+                    setEditorValue(
+                      JSON.stringify(
+                        activeResource.emptyDraft(access),
+                        null,
+                        2,
+                      ),
+                    );
+                    setEditorError(null);
+                    setInteraction("selected");
+                  }}
+                  className="admin-secondary-button min-h-12 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  New record
+                </button>
+              ) : null}
             </div>
             <AdminFilterBar>
-              <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search {activeResource.label}</span><input type="search" value={rowCollection.query} onChange={(event) => rowCollection.setQuery(event.target.value)} placeholder={`Search ${activeResource.label.toLowerCase()}, scope, or state`} /></label>
-              {(["title", "subtitle", "scope", "status"] as const).map((key) => <button key={key} type="button" data-active={rowCollection.sortKey === key} onClick={() => rowCollection.toggleSort(key)} className="dashboard-chip">Sort {key}</button>)}
+              <label className="admin-search-field">
+                <Search size={16} aria-hidden="true" />
+                <span className="sr-only">Search {activeResource.label}</span>
+                <input
+                  type="search"
+                  value={rowCollection.query}
+                  disabled={busy && !hasConfirmed}
+                  onFocus={() => setInteraction("focused")}
+                  onBlur={() =>
+                    setInteraction(rowCollection.query ? "selected" : "idle")
+                  }
+                  onChange={(event) => {
+                    rowCollection.setQuery(event.target.value);
+                    setInteraction(event.target.value ? "selected" : "focused");
+                  }}
+                  placeholder={`Search ${activeResource.label.toLowerCase()}, scope, or state`}
+                />
+              </label>
+              {(["title", "subtitle", "scope", "status"] as const).map(
+                (key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    disabled={busy && !hasConfirmed}
+                    data-active={rowCollection.sortKey === key}
+                    onClick={() => rowCollection.toggleSort(key)}
+                    className="dashboard-chip min-h-12 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Sort {key}
+                  </button>
+                ),
+              )}
             </AdminFilterBar>
 
-            {loading ? (
+            {initialLoading ? (
               <div className="space-y-3">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <div
@@ -525,16 +700,26 @@ export default function AdminRuntimeSettingsPage() {
             ) : (
               <div className="divide-y divide-border-soft overflow-hidden rounded-[22px] border border-border-soft">
                 {rowCollection.pageResult.items.length === 0 ? (
-                  <div className="p-5 text-sm text-slate-300">{rowCollection.query ? "No records match the current search." : "No records."}</div>
+                  <div className="p-5 text-sm text-slate-300">
+                    {rowCollection.query
+                      ? "No records match the current search."
+                      : "No records are available in this collection."}
+                  </div>
                 ) : (
                   rowCollection.pageResult.items.map((record) => (
                     <button
                       key={record.id}
                       type="button"
-                      onClick={() =>
-                        setEditorValue(JSON.stringify(cleanRecord(record), null, 2))
-                      }
-                      className="grid w-full gap-3 bg-white/[0.03] p-4 text-left transition hover:bg-white/[0.07] md:grid-cols-[minmax(0,1fr)_auto_auto]"
+                      onFocus={() => setInteraction("focused")}
+                      onBlur={() => setInteraction("selected")}
+                      onClick={() => {
+                        setEditorValue(
+                          JSON.stringify(cleanRecord(record), null, 2),
+                        );
+                        setEditorError(null);
+                        setInteraction("selected");
+                      }}
+                      className="grid min-h-12 w-full gap-3 bg-white/[0.03] p-4 text-left transition hover:bg-white/[0.07] motion-reduce:transition-none md:grid-cols-[minmax(0,1fr)_auto_auto]"
                     >
                       <div className="min-w-0">
                         <p className="admin-row-title">{recordTitle(record)}</p>
@@ -557,49 +742,85 @@ export default function AdminRuntimeSettingsPage() {
                 )}
               </div>
             )}
-            <AdminPagination page={rowCollection.pageResult} onPageChange={rowCollection.setPage} label={activeResource.label} />
-          </section>
-
-          <section className="admin-surface">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div>
-                <h2 className="admin-section-title">Record</h2>
-                <p className="admin-row-meta">{activeResource.label}</p>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    deleteEditorRecord().catch(() => {});
-                  }}
-                  disabled={saving}
-                  className="admin-icon-button text-red-300 hover:text-red-100"
-                  aria-label="Delete record"
-                >
-                  <Trash2 size={16} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    saveEditorRecord().catch(() => {});
-                  }}
-                  disabled={saving}
-                  className="admin-primary-button"
-                >
-                  <Save size={16} />
-                  Save
-                </button>
-              </div>
-            </div>
-            <textarea
-              value={editorValue}
-              onChange={(event) => setEditorValue(event.target.value)}
-              spellCheck={false}
-              className="min-h-[520px] w-full resize-y rounded-[22px] border border-border-soft bg-slate-950/80 p-4 font-mono text-sm leading-6 text-slate-100 outline-none transition focus:border-club-accent"
+            <AdminPagination
+              page={rowCollection.pageResult}
+              onPageChange={rowCollection.setPage}
+              label={activeResource.label}
             />
           </section>
+
+          <section className="admin-surface min-w-0">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h2 className="admin-section-title">
+                  Structured record editor
+                </h2>
+                <p className="admin-row-meta">
+                  {canEdit
+                    ? `${activeResource.label} · bounded fields only`
+                    : `${activeResource.label} · read-only`}
+                </p>
+              </div>
+              {canEdit ? (
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void deleteEditorRecord();
+                    }}
+                    disabled={mutationLocked}
+                    className="admin-icon-button min-h-12 min-w-12 text-red-300 hover:text-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    aria-label="Delete selected runtime record"
+                  >
+                    <Trash2 size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void saveEditorRecord();
+                    }}
+                    disabled={mutationLocked}
+                    className="admin-primary-button min-h-12 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <Save size={16} aria-hidden="true" />
+                    {saving ? "Saving…" : "Save record"}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+            <p className="mb-3 text-sm leading-6 text-[var(--admin-zinc-400)]">
+              Use one JSON object. Sensitive-key metadata and records outside
+              the active scope are rejected.
+            </p>
+            <textarea
+              value={editorValue}
+              disabled={!canEdit || saving}
+              aria-label={`${activeResource.label} structured record`}
+              aria-invalid={editorError != null}
+              aria-describedby={
+                editorError ? "runtime-editor-error" : undefined
+              }
+              onFocus={() => setInteraction("focused")}
+              onBlur={() => setInteraction("selected")}
+              onChange={(event) => {
+                setEditorValue(event.target.value);
+                setEditorError(null);
+              }}
+              spellCheck={false}
+              className="min-h-[520px] w-full resize-y rounded-[22px] border border-border-soft bg-slate-950/80 p-4 font-mono text-sm leading-6 text-slate-100 outline-none transition focus:border-club-accent disabled:cursor-not-allowed disabled:opacity-70 motion-reduce:transition-none"
+            />
+            {editorError ? (
+              <p
+                id="runtime-editor-error"
+                role="alert"
+                className="mt-3 text-sm font-semibold text-rose-400"
+              >
+                {editorError}
+              </p>
+            ) : null}
+          </section>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -1,8 +1,15 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { serverSupabaseConfig } from "@/lib/config";
 import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
 import type { GameActionBody } from "@/lib/game-runtime";
+import {
+  edgeFunctionFailureResponse,
+  edgeFunctionConfigurationResponse,
+  edgeFunctionEmptyResponse,
+  edgeFunctionOperationTimeoutMs,
+  proxyEdgeFunctionRequest,
+  withEdgeFunctionOperationTimeout,
+} from "@/lib/edge-function-proxy";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +19,7 @@ type GameActionRouteDependencies = {
   rejectRateLimitedRequest: typeof rejectRateLimitedRequest;
   supabaseUrl: string;
   supabaseAnonKey: string;
+  operationTimeoutMs: number;
 };
 
 const allowedActions = new Set([
@@ -50,6 +58,7 @@ function defaultDependencies(): GameActionRouteDependencies {
     rejectRateLimitedRequest,
     supabaseUrl: serverSupabaseConfig.url,
     supabaseAnonKey: serverSupabaseConfig.anonKey,
+    operationTimeoutMs: edgeFunctionOperationTimeoutMs,
   };
 }
 
@@ -233,50 +242,42 @@ export function createGameSessionActionRouteHandler(
       return rejectedOrigin;
     }
 
-    const rejectedLimit = await deps.rejectRateLimitedRequest(
-      request,
-      "game-session-action",
-      120,
-      60_000,
-    );
+    let rejectedLimit: Response | null;
+    try {
+      rejectedLimit = await withEdgeFunctionOperationTimeout(
+        deps.rejectRateLimitedRequest(
+          request,
+          "game-session-action",
+          120,
+          60_000,
+        ),
+        deps.operationTimeoutMs,
+      );
+    } catch (error) {
+      return edgeFunctionFailureResponse(error);
+    }
     if (rejectedLimit) {
       return rejectedLimit;
     }
 
     const body = await request.json().catch(() => null);
     if (!isValidBody(body)) {
-      return NextResponse.json(
-        { error: "Invalid game action payload." },
-        { status: 400 },
-      );
+      return edgeFunctionEmptyResponse("Invalid game action payload.");
     }
 
     if (!deps.supabaseUrl || !deps.supabaseAnonKey) {
-      return NextResponse.json(
-        { error: "Supabase server configuration is not available." },
-        { status: 503 },
-      );
+      return edgeFunctionConfigurationResponse();
     }
 
-    const upstream = await deps.fetcher(
-      `${deps.supabaseUrl}/functions/v1/game-session-action`,
-      {
+    return proxyEdgeFunctionRequest({
+      fetcher: deps.fetcher,
+      url: `${deps.supabaseUrl}/functions/v1/game-session-action`,
+      timeoutMs: deps.operationTimeoutMs,
+      init: {
         method: "POST",
         headers: authHeaders(request, deps.supabaseAnonKey),
         body: JSON.stringify(body),
         cache: "no-store",
-      },
-    );
-
-    const responseText = await upstream.text();
-    const contentType =
-      upstream.headers.get("content-type") ?? "application/json";
-
-    return new NextResponse(responseText, {
-      status: upstream.status,
-      headers: {
-        "Content-Type": contentType,
-        "Cache-Control": "no-store",
       },
     });
   };

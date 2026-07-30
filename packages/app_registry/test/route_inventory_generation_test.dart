@@ -8,7 +8,7 @@ import '../tool/generate_route_inventory.dart';
 void main() {
   test('generates a complete multi-surface route inventory', () {
     const configuredOutput = String.fromEnvironment('ROUTE_INVENTORY_OUT_DIR');
-    final workspace = Directory.current.absolute;
+    final workspace = resolveRouteInventoryWorkspace(Directory.current);
     final outputDirectory = Directory(
       configuredOutput.isEmpty
           ? '${workspace.path}/output/route_inventory_test'
@@ -96,6 +96,7 @@ void main() {
         expect(state['evidence_status'], isNot('required'));
         expect(state['test_evidence'], isEmpty);
         expect(state['screenshot_evidence'], isEmpty);
+        expect(state['response_evidence'], isEmpty);
       }
     }
     final redirect = closureRoutes.firstWhere(
@@ -123,6 +124,250 @@ void main() {
       (apiStates['dark']! as Map<String, Object?>)['applicability'],
       'not_applicable',
     );
+    final deterministicAssets = closureRoutes.where(
+      (route) =>
+          route['kind'] == 'http_route' &&
+          route['endpoint_state_contract'] == 'deterministic_asset',
+    );
+    expect(deterministicAssets.map((route) => route['path']).toSet(), <String>{
+      '/brand-mark.svg',
+      '/brand-surface.svg',
+    });
+    for (final asset in deterministicAssets) {
+      final assetStates = asset['states']! as Map<String, Object?>;
+      expect(assetStates, hasLength(routeClosureStates.length));
+      for (final value in assetStates.values) {
+        final state = value! as Map<String, Object?>;
+        expect(state['applicability'], 'not_applicable');
+        expect(state['evidence_status'], 'not_applicable');
+        expect(state['rationale'], contains('Deterministic local asset'));
+      }
+    }
+    final standaloneRecoveryRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] == 'standalone_offline_recovery',
+    );
+    expect(
+      standaloneRecoveryRoutes.map((route) => route['path']).toSet(),
+      <String>{'/offline', '/admin-offline'},
+    );
+    const expectedRecoveryStates = <String>{
+      'offline',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    for (final recoveryRoute in standaloneRecoveryRoutes) {
+      final recoveryStates = recoveryRoute['states']! as Map<String, Object?>;
+      for (final entry in recoveryStates.entries) {
+        final state = entry.value! as Map<String, Object?>;
+        expect(
+          state['applicability'],
+          expectedRecoveryStates.contains(entry.key)
+              ? 'applicable'
+              : 'not_applicable',
+        );
+      }
+    }
+    final shareTargetRoute = closureRoutes.singleWhere(
+      (route) => route['rendered_state_contract'] == 'bounded_share_target',
+    );
+    expect(shareTargetRoute['path'], '/share-target');
+    const expectedShareTargetStates = <String>{
+      'empty',
+      'offline',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    final shareTargetStates =
+        shareTargetRoute['states']! as Map<String, Object?>;
+    for (final entry in shareTargetStates.entries) {
+      final state = entry.value! as Map<String, Object?>;
+      expect(
+        state['applicability'],
+        expectedShareTargetStates.contains(entry.key)
+            ? 'applicable'
+            : 'not_applicable',
+      );
+    }
+    final displayOnlyRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] == 'display_only_live_surface',
+    );
+    expect(displayOnlyRoutes, hasLength(1));
+    final displayOnlyRoute = displayOnlyRoutes.single;
+    expect(displayOnlyRoute['path'], '/tv-display');
+    const expectedDisplayOnlyStates = <String>{
+      'loading',
+      'empty',
+      'error',
+      'offline',
+      'permission_denied',
+      'disabled',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'conflict',
+      'security_timeout',
+    };
+    final displayOnlyStates =
+        displayOnlyRoute['states']! as Map<String, Object?>;
+    for (final entry in displayOnlyStates.entries) {
+      final state = entry.value! as Map<String, Object?>;
+      expect(
+        state['applicability'],
+        expectedDisplayOnlyStates.contains(entry.key)
+            ? 'applicable'
+            : 'not_applicable',
+      );
+      if (!expectedDisplayOnlyStates.contains(entry.key)) {
+        expect(
+          state['rationale'],
+          contains('no focusable, pressable, or selectable controls'),
+        );
+      }
+    }
+    final staticLegalDocumentRoutes = closureRoutes.where(
+      (route) => route['rendered_state_contract'] == 'static_legal_document',
+    );
+    expect(
+      staticLegalDocumentRoutes.map((route) => route['path']).toSet(),
+      <String>{'/privacy', '/terms'},
+    );
+    const expectedStaticLegalDocumentStates = <String>{
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    for (final legalRoute in staticLegalDocumentRoutes) {
+      final legalStates = legalRoute['states']! as Map<String, Object?>;
+      for (final entry in legalStates.entries) {
+        final state = entry.value! as Map<String, Object?>;
+        expect(
+          state['applicability'],
+          expectedStaticLegalDocumentStates.contains(entry.key)
+              ? 'applicable'
+              : 'not_applicable',
+        );
+        if (!expectedStaticLegalDocumentStates.contains(entry.key)) {
+          expect(
+            state['rationale'],
+            contains('always renders governed fallback copy'),
+          );
+        }
+      }
+    }
+    final staticContactRoutes = closureRoutes.where(
+      (route) => route['rendered_state_contract'] == 'static_contact_surface',
+    );
+    expect(staticContactRoutes, hasLength(1));
+    expect(staticContactRoutes.single['path'], '/contact');
+    const expectedStaticContactStates = <String>{
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    final staticContactStates =
+        staticContactRoutes.single['states']! as Map<String, Object?>;
+    for (final entry in staticContactStates.entries) {
+      final state = entry.value! as Map<String, Object?>;
+      expect(
+        state['applicability'],
+        expectedStaticContactStates.contains(entry.key)
+            ? 'applicable'
+            : 'not_applicable',
+      );
+      if (!expectedStaticContactStates.contains(entry.key)) {
+        expect(
+          state['rationale'],
+          contains('always renders governed fallback content'),
+        );
+      }
+    }
+    final controlledSearchRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] == 'controlled_search_surface',
+    );
+    expect(controlledSearchRoutes, hasLength(1));
+    expect(controlledSearchRoutes.single['path'], '/search');
+    final controlledSearchStates =
+        controlledSearchRoutes.single['states']! as Map<String, Object?>;
+    for (final entry in controlledSearchStates.entries) {
+      final state = entry.value! as Map<String, Object?>;
+      expect(state['applicability'], 'applicable');
+      expect(
+        state['rationale'],
+        contains('Controlled search surface must prove every'),
+      );
+    }
+    final controlledHistoryRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] == 'controlled_history_surface',
+    );
+    expect(controlledHistoryRoutes, hasLength(1));
+    expect(controlledHistoryRoutes.single['path'], '/history');
+    final controlledHistoryStates =
+        controlledHistoryRoutes.single['states']! as Map<String, Object?>;
+    for (final entry in controlledHistoryStates.entries) {
+      final state = entry.value! as Map<String, Object?>;
+      expect(state['applicability'], 'applicable');
+      expect(
+        state['rationale'],
+        contains('Controlled history surface must prove every'),
+      );
+    }
+
+    // HTTP endpoints use executable response contracts, not fabricated visual
+    // evidence, while rendered routes continue to require screenshots.
+    final apiEvidenceFile = File(
+      '${blankOutputDirectory.path}/api-response-evidence.json',
+    );
+    final apiErrorCell =
+        '${api['surface']}|${api['path']}|${api['kind']}|error';
+    apiEvidenceFile.writeAsStringSync(
+      '${jsonEncode(<String, Object?>{
+        'schema_version': '1.0',
+        'cells': <String, Object?>{
+          apiErrorCell: <String, Object?>{
+            'test_evidence': <String>['packages/app_registry/test/route_inventory_generation_test.dart'],
+            'response_evidence': <String>['packages/app_registry/test/fixtures/api-error-response.json'],
+            'disposition_note': 'The endpoint error state has executable and response-contract proof.',
+            'owner': 'API reliability QA',
+            'reviewed_at': '2026-07-29',
+          },
+        },
+      })}\n',
+    );
+    final apiClosure = generateRouteStateClosure(
+      routes: routes,
+      workspace: workspace,
+      outputDirectory: blankOutputDirectory,
+      evidenceFile: apiEvidenceFile,
+    );
+    final apiClosureRoutes =
+        apiClosure['routes']! as List<Map<String, Object?>>;
+    final evidencedApi = apiClosureRoutes.firstWhere(
+      (route) => route['route_key'] == api['route_key'],
+    );
+    final evidencedApiStates = evidencedApi['states']! as Map<String, Object?>;
+    expect(
+      (evidencedApiStates['error']! as Map<String, Object?>)['evidence_status'],
+      'evidenced',
+    );
+    expect(apiClosure['response_evidenced_cell_count'], 1);
 
     // An evidence overlay cannot turn a structurally non-applicable cell into
     // a completed requirement, even when its linked files are otherwise valid.

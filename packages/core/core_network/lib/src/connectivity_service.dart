@@ -16,26 +16,49 @@ class ConnectivityService {
   ConnectivityService._();
 
   static final _connectivity = Connectivity();
+  static const bool _qaForceOfflineRequested = bool.fromEnvironment(
+    'AFRICLUB_QA_FORCE_OFFLINE',
+  );
   static bool _lastKnownOnline = true;
   static StreamSubscription<List<ConnectivityResult>>? _subscription;
+
+  /// Whether this non-release build was compiled for deterministic offline QA.
+  ///
+  /// The release-mode guard is deliberate: a production binary cannot enable
+  /// this override, even if the dart define is accidentally supplied.
+  static bool get qaOfflineOverrideActive =>
+      !kReleaseMode && _qaForceOfflineRequested;
 
   /// Current best-known connectivity state.
   ///
   /// Defaults to `true` until proven otherwise — avoids false-negative
   /// blocking on startup.
-  static bool get isOnline => _lastKnownOnline;
+  static bool get isOnline =>
+      qaOfflineOverrideActive ? false : _lastKnownOnline;
 
   /// Reactive stream of online/offline state changes.
   ///
   /// Emits `true` when connectivity is restored, `false` when lost.
   /// Deduplicated — only emits when the boolean value changes.
-  static final ValueNotifier<bool> onlineNotifier = ValueNotifier<bool>(true);
+  static final ValueNotifier<bool> onlineNotifier = ValueNotifier<bool>(
+    !qaOfflineOverrideActive,
+  );
 
   /// Initialize the connectivity listener.
   ///
   /// Should be called once during app startup (in [AppStartupCoordinator]).
   static Future<void> initialize() async {
     if (_subscription != null) return; // Already initialized.
+
+    if (qaOfflineOverrideActive) {
+      _lastKnownOnline = false;
+      onlineNotifier.value = false;
+      AfriLogger.info(
+        'Connectivity',
+        'Offline QA override active for this non-release build.',
+      );
+      return;
+    }
 
     try {
       final results = await _connectivity.checkConnectivity();
@@ -62,8 +85,9 @@ class ConnectivityService {
 
   @visibleForTesting
   static void setOnlineForTest(bool value) {
-    _lastKnownOnline = value;
-    onlineNotifier.value = value;
+    final effectiveValue = qaOfflineOverrideActive ? false : value;
+    _lastKnownOnline = effectiveValue;
+    onlineNotifier.value = effectiveValue;
   }
 
   static void _update(List<ConnectivityResult> results) {

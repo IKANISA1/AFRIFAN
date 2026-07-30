@@ -38,12 +38,121 @@ function mapNewsArticle(row: Record<string, unknown>): AdminNewsArticle {
   };
 }
 
+function boundedText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : null;
+}
+
+function boundedInteger(value: unknown, minimum: number, maximum: number) {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
+}
+
+function boundedImageUrl(value: unknown) {
+  if (value == null || value === "") {
+    return null;
+  }
+  const text = boundedText(value, 2_048);
+  if (text == null) {
+    return null;
+  }
+  if (text.startsWith("/") && !text.startsWith("//")) {
+    return text;
+  }
+  try {
+    const url = new URL(text);
+    return url.protocol === "https:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+export function normalizeAdminArticles(value: unknown): AdminNewsArticle[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 500).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const id = boundedText(record.id, 128);
+    const clubId =
+      record.clubId == null
+        ? null
+        : boundedInteger(record.clubId, 1, 1_000_000_000);
+    const title = boundedText(record.title, 200);
+    const subtitle =
+      record.subtitle == null ? null : boundedText(record.subtitle, 400);
+    const excerpt = boundedText(record.excerpt, 1_000);
+    const body = boundedText(record.body, 12_000);
+    const category = boundedText(record.category, 80);
+    const imageUrl = boundedImageUrl(record.imageUrl);
+    const sortOrder = boundedInteger(record.sortOrder, -10_000, 10_000);
+    const publishedAt =
+      record.publishedAt == null ? null : boundedDate(record.publishedAt);
+    const createdAt = boundedDate(record.createdAt);
+    const updatedAt = boundedDate(record.updatedAt);
+
+    if (
+      id == null ||
+      (record.clubId != null && clubId == null) ||
+      title == null ||
+      (record.subtitle != null && subtitle == null) ||
+      excerpt == null ||
+      body == null ||
+      category == null ||
+      typeof record.isPublished !== "boolean" ||
+      typeof record.isFeatured !== "boolean" ||
+      sortOrder == null ||
+      (record.publishedAt != null && publishedAt == null) ||
+      createdAt == null ||
+      updatedAt == null
+    ) {
+      return [];
+    }
+
+    return [{
+      id,
+      clubId,
+      title,
+      subtitle,
+      excerpt,
+      body,
+      category,
+      imageUrl,
+      isPublished: record.isPublished,
+      isFeatured: record.isFeatured,
+      sortOrder,
+      publishedAt,
+      createdAt,
+      updatedAt,
+    }];
+  });
+}
+
 export async function getAdminArticles(
   client: SupabaseClient,
   access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ) {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminNewsArticle[]>("cms");
+    return requestAdminApi<AdminNewsArticle[]>("cms", {
+      signal: options.signal,
+    });
   }
   const clubId = requireAdminClubId(access, "load articles");
   const table = await resolveNewsTable(client);

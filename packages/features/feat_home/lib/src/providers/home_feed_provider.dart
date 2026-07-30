@@ -88,8 +88,7 @@ class HomeFeedNotifier extends AsyncNotifier<HomeFeedSnapshot> {
         shouldRetainPrevious
             ? previous.copyWith(
                 status: HomeFeedStatus.degraded,
-                message:
-                    'Showing saved Home content. Reconnect and refresh for current club updates.',
+                notice: HomeFeedNotice.savedContent,
               )
             : loaded,
       );
@@ -99,8 +98,7 @@ class HomeFeedNotifier extends AsyncNotifier<HomeFeedSnapshot> {
           ? AsyncData(
               previous.copyWith(
                 status: HomeFeedStatus.degraded,
-                message:
-                    'Showing saved Home content. Reconnect and refresh for current club updates.',
+                notice: HomeFeedNotice.savedContent,
               ),
             )
           : AsyncError(error, stackTrace);
@@ -112,7 +110,7 @@ class HomeFeedNotifier extends AsyncNotifier<HomeFeedSnapshot> {
   Future<HomeFeedSnapshot> _load() async {
     if (!ConnectivityService.isOnline) {
       return localHomeFeedFallbackSnapshot().copyWith(
-        message: 'Connect to refresh Home. Showing saved shortcuts.',
+        notice: HomeFeedNotice.offlineShortcuts,
       );
     }
 
@@ -192,8 +190,7 @@ class HomeFeedNotifier extends AsyncNotifier<HomeFeedSnapshot> {
         state = AsyncData(
           current.copyWith(
             status: HomeFeedStatus.degraded,
-            message:
-                'Showing saved Home content. Reconnect and refresh for current club updates.',
+            notice: HomeFeedNotice.savedContent,
           ),
         );
       }

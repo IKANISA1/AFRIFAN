@@ -34,6 +34,7 @@ if ! command -v ditto >/dev/null 2>&1; then
   exit 2
 fi
 
+bash "$ROOT/tools/scripts/validate_flutter_runtime_pins.sh" --runtime
 bash "$ROOT/tools/scripts/validate_club_release.sh" "$APP_SLUG"
 
 (

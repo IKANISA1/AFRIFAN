@@ -12,6 +12,7 @@ import { useAdminCollection } from "@/lib/use-admin-collection";
 interface FetListProps {
   tokens: AdminFanEngagementToken[];
   loading: boolean;
+  mutationDisabled: boolean;
   onEdit: (token: AdminFanEngagementToken) => void;
   onDelete: (token: AdminFanEngagementToken) => Promise<void>;
   onToggleActive: (token: AdminFanEngagementToken) => Promise<void>;
@@ -20,6 +21,7 @@ interface FetListProps {
 export function FetList({
   tokens,
   loading,
+  mutationDisabled,
   onEdit,
   onDelete,
   onToggleActive,
@@ -27,19 +29,37 @@ export function FetList({
   const tokenCollection = useAdminCollection({
     records: tokens,
     getId: (token) => token.id,
-    getSearchValues: (token) => [token.code, token.itemName, token.description, token.templateScope, token.category, token.triggerCondition, token.activationTiming, token.isActive ? "active" : "inactive"],
-    getSortValue: (token, key: "name" | "code" | "scope" | "category" | "value" | "status") => {
+    getSearchValues: (token) => [
+      token.code,
+      token.itemName,
+      token.description,
+      token.templateScope,
+      token.category,
+      token.triggerCondition,
+      token.activationTiming,
+      token.isActive ? "active" : "inactive",
+    ],
+    getSortValue: (
+      token,
+      key: "name" | "code" | "scope" | "category" | "value" | "status",
+    ) => {
       switch (key) {
-        case "name": return token.itemName;
-        case "code": return token.code;
-        case "scope": return token.templateScope;
-        case "category": return token.category;
-        case "value": return token.fetValue;
-        case "status": return token.isActive;
+        case "name":
+          return token.itemName;
+        case "code":
+          return token.code;
+        case "scope":
+          return token.templateScope;
+        case "category":
+          return token.category;
+        case "value":
+          return token.fetValue;
+        case "status":
+          return token.isActive;
       }
     },
     initialSortKey: "name" as const,
-    pageSize: 20,
+    pageSize: 25,
   });
 
   return (
@@ -47,8 +67,36 @@ export function FetList({
       <p className="font-display text-3xl font-bold uppercase leading-none">
         FET catalog
       </p>
-      <AdminFilterBar className="mt-5" actions={<div className="flex flex-wrap gap-2">{(["name", "code", "scope", "category", "value", "status"] as const).map((key) => <button key={key} type="button" data-active={tokenCollection.sortKey === key} onClick={() => tokenCollection.toggleSort(key)} className="dashboard-chip">Sort {key}</button>)}</div>}>
-        <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search FET catalogue</span><input type="search" value={tokenCollection.query} onChange={(event) => tokenCollection.setQuery(event.target.value)} placeholder="Search item, code, scope, category, or trigger" /></label>
+      <AdminFilterBar
+        className="mt-5"
+        actions={
+          <div className="flex flex-wrap gap-2">
+            {(
+              ["name", "code", "scope", "category", "value", "status"] as const
+            ).map((key) => (
+              <button
+                key={key}
+                type="button"
+                data-active={tokenCollection.sortKey === key}
+                onClick={() => tokenCollection.toggleSort(key)}
+                className="dashboard-chip"
+              >
+                Sort {key}
+              </button>
+            ))}
+          </div>
+        }
+      >
+        <label className="admin-search-field">
+          <Search size={16} aria-hidden="true" />
+          <span className="sr-only">Search FET catalogue</span>
+          <input
+            type="search"
+            value={tokenCollection.query}
+            onChange={(event) => tokenCollection.setQuery(event.target.value)}
+            placeholder="Search item, code, scope, category, or trigger"
+          />
+        </label>
       </AdminFilterBar>
       <div className="mt-5 space-y-3">
         {loading
@@ -64,8 +112,10 @@ export function FetList({
             ))
           : null}
         {!loading && tokenCollection.pageResult.items.length === 0 ? (
-          <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-            {tokenCollection.query ? "No FET items match the current search." : "No FET items configured yet."}
+          <p className="rounded-[24px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-4 text-sm text-[var(--admin-text)]">
+            {tokenCollection.query
+              ? "No FET items match the current search."
+              : "No FET items configured yet."}
           </p>
         ) : null}
         {!loading &&
@@ -73,14 +123,16 @@ export function FetList({
             <article
               key={token.id}
               className={cn(
-                "card-interactive rounded-[26px] border border-border-soft p-5 transition",
-                token.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-65",
+                "card-interactive rounded-[26px] border border-[var(--admin-border)] p-5 transition",
+                token.isActive
+                  ? "bg-[var(--admin-surface)]"
+                  : "bg-[var(--admin-surface-muted)]",
               )}
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-border-soft bg-black/20 px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-300">
+                    <span className="rounded-full border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--admin-text)]">
                       {token.code}
                     </span>
                     <span
@@ -93,14 +145,14 @@ export function FetList({
                         ? "Generic"
                         : "Club specific"}
                     </span>
-                    <span className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300">
+                    <span className="rounded-full border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--admin-text)]">
                       {token.category}
                     </span>
                   </div>
                   <p className="font-display text-2xl font-bold uppercase leading-none">
                     {token.itemName}
                   </p>
-                  <p className="text-sm text-slate-300">
+                  <p className="text-sm text-[var(--admin-text)]">
                     {token.description}
                   </p>
                 </div>
@@ -108,7 +160,7 @@ export function FetList({
                   <p className="font-display text-3xl font-bold text-club-accent">
                     {token.fetValue}
                   </p>
-                  <p className="text-xs uppercase tracking-[0.16em] text-slate-400">
+                  <p className="text-xs uppercase tracking-[0.16em] text-[var(--admin-text-muted)]">
                     FET
                   </p>
                   {token.badgeName ? (
@@ -120,30 +172,30 @@ export function FetList({
               </div>
 
               <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                <div className="rounded-[20px] border border-border-soft bg-white/5 px-4 py-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-slate-400">
+                <div className="rounded-[20px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--admin-text-muted)]">
                     Trigger
                   </p>
-                  <p className="mt-1 text-sm text-slate-200">
+                  <p className="mt-1 text-sm text-[var(--admin-text)]">
                     {token.triggerCondition}
                   </p>
                 </div>
-                <div className="rounded-[20px] border border-border-soft bg-white/5 px-4 py-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-slate-400">
+                <div className="rounded-[20px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--admin-text-muted)]">
                     Activation timing
                   </p>
-                  <p className="mt-1 text-sm text-slate-200">
+                  <p className="mt-1 text-sm text-[var(--admin-text)]">
                     {token.activationTiming}
                   </p>
                 </div>
               </div>
 
               {token.implementationNotes ? (
-                <div className="mt-3 rounded-[20px] border border-border-soft bg-white/5 px-4 py-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-slate-400">
+                <div className="mt-3 rounded-[20px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--admin-text-muted)]">
                     Implementation notes
                   </p>
-                  <p className="mt-1 text-sm text-slate-200">
+                  <p className="mt-1 text-sm text-[var(--admin-text)]">
                     {token.implementationNotes}
                   </p>
                 </div>
@@ -152,17 +204,19 @@ export function FetList({
               <div className="mt-4 flex flex-wrap gap-2">
                 <button
                   type="button"
+                  disabled={mutationDisabled}
                   onClick={() => onEdit(token)}
-                  className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100 transition hover:bg-white/8"
+                  className="admin-action-button"
                 >
                   Edit
                 </button>
                 <button
                   type="button"
+                  disabled={mutationDisabled}
                   onClick={() => {
                     onToggleActive(token).catch(() => {});
                   }}
-                  className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-200 transition hover:border-amber-400/30 hover:bg-amber-500/15"
+                  className="admin-action-button"
                 >
                   <span className="inline-flex items-center gap-1.5">
                     <Power size={12} />
@@ -171,10 +225,11 @@ export function FetList({
                 </button>
                 <button
                   type="button"
+                  disabled={mutationDisabled}
                   onClick={() => {
                     onDelete(token).catch(() => {});
                   }}
-                  className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-200 transition hover:border-rose-400/30 hover:bg-rose-500/15"
+                  className="admin-action-button admin-action-button-danger"
                 >
                   <span className="inline-flex items-center gap-1.5">
                     <Trash2 size={12} />
@@ -185,7 +240,11 @@ export function FetList({
             </article>
           ))}
       </div>
-      <AdminPagination page={tokenCollection.pageResult} onPageChange={tokenCollection.setPage} label="FET catalogue" />
+      <AdminPagination
+        page={tokenCollection.pageResult}
+        onPageChange={tokenCollection.setPage}
+        label="FET catalogue"
+      />
     </section>
   );
 }

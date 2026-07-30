@@ -1,59 +1,131 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Eye, Search, Terminal } from "lucide-react";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
-import { AdminErrorState } from "@/components/admin/admin-error-state";
-import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPagination } from "@/components/admin/admin-pagination";
+import {
+  AdminResourceStatusBanner,
+  type AdminResourceInteraction,
+} from "@/components/admin/admin-resource-status-banner";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
-import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { getAdminAuditLogs, type AdminAuditRecord } from "@/lib/data/admin/audit";
+import { Skeleton } from "@/components/skeleton";
 import {
   filterAdminRecords,
   paginateAdminRecords,
   stableSortAdminRecords,
   type AdminSortDirection,
 } from "@/lib/admin-collection";
-import { Skeleton } from "@/components/skeleton";
+import type { AdminResourceStatus } from "@/lib/admin-resource-state";
+import {
+  getAdminAuditLogs,
+  normalizeAdminAuditLogs,
+  type AdminAuditRecord,
+} from "@/lib/data/admin/audit";
+import { useAdminResourceState } from "@/lib/use-admin-resource-state";
+import { useHydrated } from "@/lib/use-hydrated";
 
 type AuditSortKey = "administrator" | "action" | "target" | "timestamp";
 
 const pageSize = 25;
+const emptyLogs: AdminAuditRecord[] = [];
+const logsAreEmpty = (logs: AdminAuditRecord[]) => logs.length === 0;
+
+const statusCopy: Record<
+  AdminResourceStatus,
+  { label: string; detail: string }
+> = {
+  loading: {
+    label: "Loading audit history",
+    detail: "Waiting for the first authenticated, club-scoped snapshot.",
+  },
+  ready: {
+    label: "Audit history confirmed",
+    detail: "The latest bounded operator records are ready for review.",
+  },
+  empty: {
+    label: "No audit records in this scope",
+    detail: "No governed actions are available for the active club.",
+  },
+  error: {
+    label: "Audit history unavailable",
+    detail: "Confirmed records remain visible. Retry when the service recovers.",
+  },
+  offline: {
+    label: "Audit history is offline",
+    detail: "Confirmed records remain visible while refresh is unavailable.",
+  },
+  permission_denied: {
+    label: "Audit access denied",
+    detail:
+      "Records, filters, pagination, and open details were cleared for privacy.",
+  },
+  syncing: {
+    label: "Refreshing audit history",
+    detail: "Confirmed records remain visible during the bounded refresh.",
+  },
+  conflict: {
+    label: "Audit history changed",
+    detail: "Review the retained snapshot, then refresh the latest records.",
+  },
+  security_timeout: {
+    label: "Audit request timed out",
+    detail: "No new snapshot was confirmed. Retry from the retained history.",
+  },
+};
+
+function formatAuditDate(value: string) {
+  return new Intl.DateTimeFormat("en-RW", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
 
 export default function AdminAuditLogPage() {
   const { access, client } = useAdminPortal();
-  const [logs, setLogs] = useState<AdminAuditRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const hydrated = useHydrated();
   const [filter, setFilter] = useState("");
   const [sortKey, setSortKey] = useState<AuditSortKey>("timestamp");
   const [sortDirection, setSortDirection] =
     useState<AdminSortDirection>("descending");
   const [page, setPage] = useState(1);
   const [detailLog, setDetailLog] = useState<AdminAuditRecord | null>(null);
+  const [interaction, setInteraction] =
+    useState<AdminResourceInteraction>("idle");
 
-  const loadLogs = useCallback(async () => {
-    if (client == null) return;
-    setLoading(true);
-    try {
-      setLogs(await getAdminAuditLogs(client, access));
-      setLoadError(null);
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Could not load audit logs.";
-      setLoadError(message);
-      showAdminToast(message, "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [access, client]);
-
-  useEffect(() => {
-    if (client == null || !access.hasAccess) return;
-    loadLogs().catch(() => {});
-  }, [access.hasAccess, client, loadLogs]);
+  const clearPrivateState = useCallback(() => {
+    setFilter("");
+    setPage(1);
+    setDetailLog(null);
+  }, []);
+  const loadLogs = useCallback(
+    async (signal: AbortSignal) => {
+      if (client == null) return emptyLogs;
+      return getAdminAuditLogs(client, access, { limit: 500, signal });
+    },
+    [access, client],
+  );
+  const {
+    data: logs,
+    status,
+    hasConfirmed,
+    busy,
+    initialLoading,
+    refresh,
+  } = useAdminResourceState<AdminAuditRecord[]>({
+    enabled: hydrated && client != null && access.hasAccess,
+    emptyValue: emptyLogs,
+    isEmpty: logsAreEmpty,
+    load: loadLogs,
+    normalize: normalizeAdminAuditLogs,
+    onPermissionDenied: clearPrivateState,
+    resourceLabel: "audit history",
+  });
 
   const sortedLogs = useMemo(() => {
     const filtered = filterAdminRecords(logs, filter, (log) => [
@@ -62,7 +134,6 @@ export default function AdminAuditLogPage() {
       log.targetTable,
       log.targetId,
       log.notes,
-      JSON.stringify(log.metadata),
     ]);
     return stableSortAdminRecords(
       filtered,
@@ -73,7 +144,7 @@ export default function AdminAuditLogPage() {
           case "action":
             return log.action;
           case "target":
-            return `${log.targetTable ?? ""}:${log.targetId ?? ""}`;
+            return `${log.targetTable}:${log.targetId ?? ""}`;
           case "timestamp":
             return new Date(log.createdAt);
         }
@@ -81,11 +152,17 @@ export default function AdminAuditLogPage() {
       sortDirection,
     );
   }, [filter, logs, sortDirection, sortKey]);
-
   const logPage = useMemo(
     () => paginateAdminRecords(sortedLogs, page, pageSize),
     [page, sortedLogs],
   );
+  const unrecoveredFailure =
+    !hasConfirmed &&
+    (status === "error" ||
+      status === "offline" ||
+      status === "permission_denied" ||
+      status === "conflict" ||
+      status === "security_timeout");
 
   function changeSort(nextSortKey: AuditSortKey) {
     setPage(1);
@@ -99,53 +176,74 @@ export default function AdminAuditLogPage() {
     setSortDirection(nextSortKey === "timestamp" ? "descending" : "ascending");
   }
 
-  function sortDirectionFor(column: AuditSortKey) {
-    return sortKey === column ? sortDirection : "none";
-  }
-
   return (
-    <div className="section-grid !gap-6">
+    <div
+      className="admin-audit-state-surface section-grid min-w-0 max-w-full !gap-6"
+      data-admin-audit-status={status}
+      data-admin-audit-interaction={interaction}
+      data-admin-audit-refresh-disabled={busy}
+      aria-busy={busy || undefined}
+    >
       <AdminPageHeader
         eyebrow="Governance"
         title="Audit logs"
         meta={
           <span className="admin-meta-chip">
-            <Terminal size={12} className="inline mr-1" />
-            Latest 500 actions
+            <Terminal size={12} className="mr-1 inline" aria-hidden="true" />
+            Latest 500 bounded records
           </span>
         }
       />
 
-      <div className="flex flex-col gap-4">
-        <div className="relative max-w-md">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-zinc-500)]" />
-          <input
-            type="search"
-            placeholder="Filter by admin or action..."
-            aria-label="Filter audit logs"
-            value={filter}
-            onChange={(event) => {
-              setFilter(event.target.value);
-              setPage(1);
-            }}
-            className="admin-input !pl-10 w-full"
-          />
-        </div>
+      <AdminResourceStatusBanner
+        status={status}
+        label={statusCopy[status].label}
+        detail={statusCopy[status].detail}
+        busy={busy}
+        permissionLocked={status === "permission_denied"}
+        refreshLabel="Refresh audit history"
+        selected={interaction === "selected"}
+        onRefresh={() => {
+          void refresh();
+        }}
+        onInteractionChange={setInteraction}
+      />
 
-        {loadError && !loading ? (
-          <AdminErrorState
-            title="Audit logs could not be loaded"
-            description={loadError}
-            onRetry={() => { loadLogs().catch(() => {}); }}
-          />
-        ) : (
-          <div className="admin-surface">
+      {!unrecoveredFailure ? (
+        <section className="admin-audit-workspace grid gap-4" aria-label="Audit records">
+          <div className="relative max-w-md">
+            <Search
+              size={16}
+              aria-hidden="true"
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--admin-zinc-500)]"
+            />
+            <input
+              type="search"
+              placeholder="Filter administrator, action, or target"
+              aria-label="Filter audit logs"
+              value={filter}
+              disabled={busy && !hasConfirmed}
+              onFocus={() => setInteraction("focused")}
+              onBlur={() => setInteraction(filter ? "selected" : "idle")}
+              onChange={(event) => {
+                setFilter(event.target.value);
+                setPage(1);
+                setInteraction(event.target.value ? "selected" : "focused");
+              }}
+              className="admin-input min-h-12 w-full !pl-11"
+            />
+          </div>
+
+          <div className="admin-surface min-w-0">
             <AdminDataGrid
               caption="Administrator audit log"
-              busy={loading}
+              busy={busy}
               onRowActivate={(rowId) => {
                 const log = logs.find((candidate) => candidate.id === rowId);
-                if (log) setDetailLog(log);
+                if (log) {
+                  setDetailLog(log);
+                  setInteraction("selected");
+                }
               }}
               columns={[
                 {
@@ -153,7 +251,8 @@ export default function AdminAuditLogPage() {
                   label: "Administrator",
                   priority: "primary",
                   sortable: true,
-                  sortDirection: sortDirectionFor("administrator"),
+                  sortDirection:
+                    sortKey === "administrator" ? sortDirection : "none",
                   onSort: () => changeSort("administrator"),
                 },
                 {
@@ -161,7 +260,7 @@ export default function AdminAuditLogPage() {
                   label: "Action",
                   priority: "primary",
                   sortable: true,
-                  sortDirection: sortDirectionFor("action"),
+                  sortDirection: sortKey === "action" ? sortDirection : "none",
                   onSort: () => changeSort("action"),
                 },
                 {
@@ -169,16 +268,16 @@ export default function AdminAuditLogPage() {
                   label: "Target",
                   priority: "secondary",
                   sortable: true,
-                  sortDirection: sortDirectionFor("target"),
+                  sortDirection: sortKey === "target" ? sortDirection : "none",
                   onSort: () => changeSort("target"),
                 },
-                { key: "details", label: "Details", priority: "tertiary" },
                 {
                   key: "timestamp",
                   label: "Timestamp",
                   priority: "primary",
                   sortable: true,
-                  sortDirection: sortDirectionFor("timestamp"),
+                  sortDirection:
+                    sortKey === "timestamp" ? sortDirection : "none",
                   onSort: () => changeSort("timestamp"),
                 },
                 {
@@ -189,15 +288,20 @@ export default function AdminAuditLogPage() {
                 },
               ]}
             >
-              {loading ? (
-                Array.from({ length: 10 }).map((_, i) => (
-                  <tr key={i}>
-                    <td colSpan={6} className="p-4"><Skeleton className="skeleton-text h-4 w-full" /></td>
+              {initialLoading ? (
+                Array.from({ length: 8 }).map((_, index) => (
+                  <tr key={index}>
+                    <td colSpan={5} className="p-4">
+                      <Skeleton className="skeleton-text h-4 w-full" />
+                    </td>
                   </tr>
                 ))
               ) : logPage.items.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-12 text-center text-sm text-[var(--admin-zinc-500)]">
+                  <td
+                    colSpan={5}
+                    className="p-12 text-center text-sm text-[var(--admin-zinc-500)]"
+                  >
                     {filter
                       ? "No audit records match the current filter."
                       : "No audit records are available for this club."}
@@ -209,43 +313,44 @@ export default function AdminAuditLogPage() {
                     <td>
                       <p className="admin-row-title">{log.userName}</p>
                       <p className="admin-row-meta">
-                        {log.userId ? "Authenticated administrator" : "System action"}
+                        {log.actorKind === "administrator"
+                          ? "Authenticated administrator"
+                          : "System action"}
                       </p>
                     </td>
                     <td>
-                      <AdminStatusBadge 
-                        label={log.action} 
+                      <AdminStatusBadge
+                        label={log.action}
                         tone={
-                          log.action.includes("delete") || log.action.includes("revoke") ? "danger" : 
-                          log.action.includes("update") || log.action.includes("save") ? "info" : 
-                          "neutral"
-                        } 
+                          log.action.includes("delete") ||
+                          log.action.includes("revoke")
+                            ? "danger"
+                            : log.action.includes("update") ||
+                                log.action.includes("save")
+                              ? "info"
+                              : "neutral"
+                        }
                       />
                     </td>
                     <td>
-                      <p className="admin-row-title">{log.targetTable || "Not recorded"}</p>
-                      <p className="admin-row-meta font-mono">
-                        {log.targetId ? "Record available in details" : "No target ID"}
+                      <p className="admin-row-title">{log.targetTable}</p>
+                      <p className="admin-row-meta">
+                        {log.targetId
+                          ? "Record identifier available in details"
+                          : "No target identifier"}
                       </p>
                     </td>
-                    <td>
-                      <div className="max-w-xs truncate text-[10px] font-mono text-[var(--admin-zinc-400)] bg-[var(--admin-zinc-950)] p-1.5 rounded border border-[var(--admin-border)]">
-                        {JSON.stringify(log.metadata)}
-                      </div>
-                    </td>
                     <td className="text-xs text-[var(--admin-zinc-500)]">
-                       {new Date(log.createdAt).toLocaleString("en-RW", {
-                         month: "short",
-                         day: "numeric",
-                         hour: "2-digit",
-                         minute: "2-digit"
-                       })}
+                      {formatAuditDate(log.createdAt)}
                     </td>
                     <td className="text-right">
                       <button
                         type="button"
-                        className="admin-action-button"
-                        onClick={() => setDetailLog(log)}
+                        className="admin-action-button min-h-12"
+                        onClick={() => {
+                          setDetailLog(log);
+                          setInteraction("selected");
+                        }}
                         aria-label={`View audit details for ${log.action}`}
                       >
                         <Eye size={15} aria-hidden="true" />
@@ -256,10 +361,14 @@ export default function AdminAuditLogPage() {
                 ))
               )}
             </AdminDataGrid>
-            <AdminPagination page={logPage} onPageChange={setPage} label="Audit logs" />
+            <AdminPagination
+              page={logPage}
+              onPageChange={setPage}
+              label="Audit logs"
+            />
           </div>
-        )}
-      </div>
+        </section>
+      ) : null}
 
       <AdminActionDrawer
         open={detailLog != null}
@@ -268,18 +377,23 @@ export default function AdminAuditLogPage() {
       >
         {detailLog ? (
           <dl className="grid gap-5 text-sm">
-            <AuditDetail label="Administrator" value={detailLog.userName ?? "System / Unknown"} />
+            <AuditDetail label="Administrator" value={detailLog.userName} />
             <AuditDetail label="Action" value={detailLog.action} />
-            <AuditDetail label="Target table" value={detailLog.targetTable || "Not recorded"} />
-            <AuditDetail label="Target record" value={detailLog.targetId || "Not recorded"} />
+            <AuditDetail label="Target table" value={detailLog.targetTable} />
+            <AuditDetail
+              label="Target record"
+              value={detailLog.targetId ?? "Not recorded"}
+            />
             <AuditDetail
               label="Timestamp"
-              value={new Date(detailLog.createdAt).toLocaleString("en-RW")}
+              value={formatAuditDate(detailLog.createdAt)}
             />
             <AuditJsonDetail label="Previous values" value={detailLog.oldData} />
             <AuditJsonDetail label="New values" value={detailLog.newData} />
             <AuditJsonDetail label="Metadata" value={detailLog.metadata} />
-            {detailLog.notes ? <AuditDetail label="Notes" value={detailLog.notes} /> : null}
+            {detailLog.notes ? (
+              <AuditDetail label="Notes" value={detailLog.notes} />
+            ) : null}
           </dl>
         ) : null}
       </AdminActionDrawer>
@@ -293,7 +407,9 @@ function AuditDetail({ label, value }: { label: string; value: string }) {
       <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--admin-text-muted)]">
         {label}
       </dt>
-      <dd className="mt-1 break-words text-[var(--admin-text-strong)]">{value}</dd>
+      <dd className="mt-1 break-words text-[var(--admin-text-strong)]">
+        {value}
+      </dd>
     </div>
   );
 }

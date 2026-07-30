@@ -128,8 +128,19 @@ const primaryMobileTabs = [
 ];
 
 function resolveNavItem(href: string) {
+  const fallbackLabel =
+    href
+      .split("/")
+      .filter(Boolean)
+      .at(-1)
+      ?.replaceAll("-", " ")
+      .replace(/\b\w/g, (character) => character.toUpperCase()) ??
+    "Admin";
   return (
-    adminNavigation.find((item) => item.href === href) ?? { href, label: href }
+    adminNavigation.find((item) => item.href === href) ?? {
+      href,
+      label: fallbackLabel,
+    }
   );
 }
 
@@ -744,7 +755,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <div className="flex min-h-screen">
         <aside
           className={cn(
-            "hidden shrink-0 xl:block",
+            "admin-desktop-sidebar hidden shrink-0 xl:block",
             sidebarCollapsed ? "w-[64px]" : "w-[260px]",
             "transition-all duration-300 motion-reduce:transition-none"
           )}
@@ -789,7 +800,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   <button
                     type="button"
                     onClick={() => signOut().catch(() => {})}
-                    className="w-full text-left px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:text-rose-400 transition-colors"
+                    className="admin-sign-out w-full text-left px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:text-rose-400 transition-colors"
                   >
                     Sign out
                   </button>
@@ -798,7 +809,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 <button
                   type="button"
                   onClick={() => signOut().catch(() => {})}
-                  className="w-full flex justify-center text-rose-500 hover:text-rose-400"
+                  className="admin-sign-out w-full flex justify-center text-rose-500 hover:text-rose-400"
                   aria-label="Sign out"
                 >
                   <X size={18} />
@@ -863,7 +874,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
           <main
             id="admin-main-content"
-            className="p-4 sm:p-6 lg:p-8"
+            className="p-4 pb-28 sm:p-6 sm:pb-28 lg:p-8 lg:pb-28 xl:pb-8"
             aria-busy={switchingClub || undefined}
           >
             <div className="mx-auto max-w-full">
@@ -999,7 +1010,7 @@ function AdminMobileNav({
             setSheetOpen(false);
             onSignOut();
           }}
-          className="mt-2 w-full rounded-lg border border-rose-500/20 bg-rose-500/5 py-3 text-sm font-bold uppercase tracking-wider text-rose-500"
+          className="admin-sign-out mt-2 w-full rounded-lg border border-rose-500/20 bg-rose-500/5 py-3 text-sm font-bold uppercase tracking-wider text-rose-500"
         >
           Sign out
         </button>

@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:feat_fan_clubs/src/screens/fan_club_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,10 +7,14 @@ void main() {
   Widget buildSubject({
     required bool isActive,
     required Map<String, dynamic>? match,
+    Locale locale = const Locale('en'),
   }) {
-    return MaterialApp(
-      home: Scaffold(
-        body: FanClubMatchdayAgendaSection(isActive: isActive, match: match),
+    return AfriLocalizationsScope(
+      locale: locale,
+      child: MaterialApp(
+        home: Scaffold(
+          body: FanClubMatchdayAgendaSection(isActive: isActive, match: match),
+        ),
       ),
     );
   }
@@ -49,6 +54,23 @@ void main() {
     expect(find.text('Rayon Sports vs APR'), findsOneWidget);
     expect(find.text('Primus League  •  Amahoro Stadium'), findsOneWidget);
     expect(find.text('2026-07-01  •  18:00'), findsOneWidget);
+  });
+
+  testWidgets('matchday agenda renders French and Kinyarwanda task copy', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(isActive: true, match: _match, locale: const Locale('fr')),
+    );
+    expect(find.text('PROGRAMME DU JOUR DE MATCH'), findsOneWidget);
+    expect(find.text('Rayon Sports contre APR'), findsOneWidget);
+
+    await tester.pumpWidget(
+      buildSubject(isActive: true, match: _match, locale: const Locale('rw')),
+    );
+    await tester.pump();
+    expect(find.text('GAHUNDA Y’UMUNSI W’UMUKINO'), findsOneWidget);
+    expect(find.text('Rayon Sports na APR'), findsOneWidget);
   });
 }
 

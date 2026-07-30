@@ -5,198 +5,413 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../admin_providers.dart';
-import '../repositories/feature_management_repository.dart';
+import '../admin_features_controller.dart';
 
-/// Detail screen for editing a single platform feature's channel configs
-/// and scheduling rules.
-class FeatureDetailScreen extends ConsumerStatefulWidget {
-  const FeatureDetailScreen({super.key, required this.featureKey});
+/// Controlled editor for one platform feature and its channel/rule settings.
+class FeatureDetailScreen extends ConsumerWidget {
+  const FeatureDetailScreen({
+    required this.featureKey,
+    this.firstActionFocusNode,
+    super.key,
+  });
 
   final String featureKey;
+  final FocusNode? firstActionFocusNode;
 
   @override
-  ConsumerState<FeatureDetailScreen> createState() =>
-      _FeatureDetailScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final enabled = ref.watch(adminFeaturesEnabledProvider);
+    final detail = ref.watch(adminFeatureDetailProvider(featureKey));
+    final snapshot = detail.valueOrNull;
+    final denied =
+        snapshot?.failure?.kind == AdminFeaturesFailureKind.permissionDenied;
 
-class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
-  ManagedPlatformFeature? _feature;
-  bool _isLoading = true;
-  bool _isSaving = false;
-  String? _error;
-
-  FeatureManagementRepository get _repository =>
-      ref.read(featureManagementRepositoryProvider);
-
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_load());
-  }
-
-  Future<void> _load() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final feature = await _repository.loadFeature(widget.featureKey);
-      if (!mounted) return;
-
-      setState(() {
-        _feature = feature;
-        _isLoading = false;
-        if (feature == null) {
-          _error = 'Feature "${widget.featureKey}" not found.';
-        }
-      });
-    } catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _error = error.toString();
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      showAppBar: false,
-      showBackButton: false,
-      scrollable: false,
-      constrainContent: true,
-      bodyWrapper: (child) => GradientBackground(child: child),
-      child: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            Expanded(
-              child: _isLoading
-                  ? const Padding(
-                      padding: EdgeInsets.all(SpacingTokens.spacing6),
-                      child: AfriSkeletonList(),
-                    )
-                  : _error != null
-                  ? _buildError()
-                  : AfriRefreshIndicator(
-                      onRefresh: _load,
-                      child: _buildContent(),
-                    ),
-            ),
-          ],
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
+        title: Text(
+          snapshot?.feature?.displayName.toUpperCase() ?? 'FEATURE DETAIL',
+          style: TypographyTokens.titleLarge(),
+        ),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
+      scrollable: false,
+      constrainContent: true,
+      child: !enabled
+          ? _disabled(context)
+          : denied
+          ? _unavailable(
+              context,
+              ref,
+              const AdminFeaturesFailure(
+                AdminFeaturesFailureKind.permissionDenied,
+              ),
+            )
+          : detail.isLoading && snapshot == null
+          ? Padding(
+              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriStateView.loading(
+                key: const ValueKey<String>(
+                  'admin-feature-detail-state-loading',
+                ),
+                title: 'Loading feature settings',
+                message: 'Checking controlled channel and access rules.',
+              ),
+            )
+          : detail.hasError && snapshot == null
+          ? _unavailable(
+              context,
+              ref,
+              AdminFeaturesFailure.fromError(detail.error!),
+            )
+          : _content(context, ref, detail),
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      child: Row(
-        children: [
-          AfriIconButton(
-            icon: AfriIcons.chevronLeft,
-            onTap: () => context.pop(),
-            tooltip: 'Back',
-          ),
-          const SizedBox(width: SpacingTokens.spacing3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _feature?.displayName ?? widget.featureKey,
-                  style: TypographyTokens.titleMedium(),
-                ),
-                Text(
-                  widget.featureKey,
-                  style: TypographyTokens.bodySmall().copyWith(
-                    color: ColorTokens.onDarkFaint,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContent() {
-    final feature = _feature;
+  Widget _content(
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue<AdminFeatureDetailSnapshot> detail,
+  ) {
+    final snapshot = detail.requireValue;
+    final feature = snapshot.feature;
+    final controlsEnabled = snapshot.actionsEnabled && !detail.isLoading;
     if (feature == null) {
-      return ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: const [SizedBox(height: 1)],
+      return Padding(
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        child: AfriStateView.empty(
+          key: const ValueKey<String>('admin-feature-detail-state-empty'),
+          title: 'Feature not found',
+          message: 'No confirmed feature matches this controlled route.',
+          actionLabel: 'Back to features',
+          onAction: () => context.pop(),
+        ),
       );
     }
 
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final notifier = ref.read(adminFeatureDetailProvider(featureKey).notifier);
+    return AfriRefreshIndicator(
+      onRefresh: notifier.refresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
         children: [
-          _buildSectionTitle('GLOBAL STATE'),
+          if (_statusBanner(detail) case final banner?) ...[
+            banner,
+            const SizedBox(height: SpacingTokens.spacing4),
+          ],
+          Text(
+            feature.featureKey,
+            style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
+          ),
+          if (feature.description case final description?) ...[
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(description, style: TypographyTokens.bodyMedium()),
+          ],
+          const SizedBox(height: SpacingTokens.spacing5),
+          const _SectionTitle('GLOBAL STATE'),
           const SizedBox(height: SpacingTokens.spacing3),
-          _buildGlobalState(feature),
+          AfriPressFeedback(
+            key: const ValueKey<String>('admin-feature-detail-global-toggle'),
+            onTap: controlsEnabled
+                ? () => unawaited(notifier.setGlobalEnabled(!feature.isEnabled))
+                : null,
+            enabled: controlsEnabled,
+            focusNode: firstActionFocusNode,
+            tooltip: feature.isEnabled
+                ? 'Disable ${feature.displayName}'
+                : 'Enable ${feature.displayName}',
+            semanticsLabel:
+                '${feature.displayName} is ${feature.isEnabled ? 'enabled' : 'disabled'}',
+            semanticsHint: 'Changes the global feature state',
+            child: GlassCard(
+              animate: false,
+              child: Row(
+                children: [
+                  Icon(
+                    feature.isEnabled
+                        ? AfriIcons.statusSuccess
+                        : AfriIcons.lock,
+                    color: feature.isEnabled
+                        ? ColorTokens.success
+                        : ColorTokens.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          feature.isEnabled ? 'Enabled' : 'Disabled',
+                          style: TypographyTokens.titleSmall(),
+                        ),
+                        Text(
+                          feature.isEnabled
+                              ? 'Tap to disable this feature globally'
+                              : 'Tap to enable this feature globally',
+                          style: TypographyTokens.bodySmall().copyWith(
+                            color: ColorTokens.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    AfriIcons.chevronRight,
+                    color: ColorTokens.onSurfaceVariant,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Text('VISIBILITY', style: TypographyTokens.labelSmall()),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Wrap(
+            spacing: SpacingTokens.spacing2,
+            runSpacing: SpacingTokens.spacing2,
+            children: const <String>['visible', 'hidden', 'maintenance']
+                .map(
+                  (visibility) => AfriChoiceChip(
+                    key: ValueKey<String>(
+                      'admin-feature-detail-visibility-$visibility',
+                    ),
+                    selected: feature.visibility == visibility,
+                    label: Text(visibility.toUpperCase()),
+                    onSelected: controlsEnabled
+                        ? (_) => unawaited(notifier.setVisibility(visibility))
+                        : null,
+                  ),
+                )
+                .toList(growable: false),
+          ),
           const SizedBox(height: SpacingTokens.spacing6),
-          _buildSectionTitle('CHANNEL CONFIG'),
+          const _SectionTitle('CHANNEL CONFIG'),
           const SizedBox(height: SpacingTokens.spacing3),
-          if (feature.channels.isNotEmpty)
-            ...feature.channels.map(_buildChannelCard),
+          if (feature.channels.isEmpty)
+            AfriStateView.empty(
+              title: 'No channel overrides',
+              message: 'This feature uses its confirmed global state.',
+              compact: true,
+            )
+          else
+            ...feature.channels.map(
+              (channel) => _ChannelCard(
+                channel: channel,
+                enabled: controlsEnabled,
+                onUpdate: (updates) =>
+                    unawaited(notifier.updateChannel(channel.channel, updates)),
+              ),
+            ),
           const SizedBox(height: SpacingTokens.spacing6),
-          _buildSectionTitle('SCHEDULING'),
+          const _SectionTitle('SCHEDULING'),
           const SizedBox(height: SpacingTokens.spacing3),
-          _buildScheduleCard(feature),
+          _ScheduleCard(
+            rules: feature.rules,
+            enabled: controlsEnabled,
+            onPick: (field, current) =>
+                _pickDateTime(context, current, (value) {
+                  unawaited(
+                    notifier.updateRules(<String, dynamic>{
+                      field: value?.toUtc().toIso8601String(),
+                    }),
+                  );
+                }),
+            onClear: () => unawaited(
+              notifier.updateRules(const <String, dynamic>{
+                'schedule_start_at': null,
+                'schedule_end_at': null,
+              }),
+            ),
+          ),
           const SizedBox(height: SpacingTokens.spacing6),
-          _buildSectionTitle('ACCESS RULES'),
+          const _SectionTitle('ACCESS RULES'),
           const SizedBox(height: SpacingTokens.spacing3),
-          _buildAccessRulesCard(feature),
+          GlassCard(
+            animate: false,
+            child: _ToggleRow(
+              label: 'Authentication required',
+              subtitle: 'Users must sign in before accessing this feature.',
+              value: feature.rules?.authRequired ?? false,
+              enabled: controlsEnabled,
+              onChanged: (value) => unawaited(
+                notifier.updateRules(<String, dynamic>{'auth_required': value}),
+              ),
+            ),
+          ),
           const SizedBox(height: SpacingTokens.spacing8),
         ],
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Future<void> _pickDateTime(
+    BuildContext context,
+    DateTime? initial,
+    ValueChanged<DateTime?> onChanged,
+  ) async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: initial?.toLocal() ?? DateTime.now(),
+      firstDate: DateTime(2024),
+      lastDate: DateTime(2035),
+    );
+    if (date == null || !context.mounted) return;
+    final time = await showTimePicker(
+      context: context,
+      initialTime: initial == null
+          ? TimeOfDay.now()
+          : TimeOfDay.fromDateTime(initial.toLocal()),
+    );
+    if (!context.mounted || time == null) return;
+    onChanged(
+      DateTime(date.year, date.month, date.day, time.hour, time.minute),
+    );
+  }
+
+  Widget _disabled(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: AfriStateView.empty(
+        key: const ValueKey<String>('admin-feature-detail-state-disabled'),
+        title: 'Feature settings unavailable',
+        message: 'Feature editing is disabled for this controlled build.',
+        icon: AfriIcons.lock,
+        actionLabel: 'Back to features',
+        onAction: () => context.pop(),
+      ),
+    );
+  }
+
+  Widget _unavailable(
+    BuildContext context,
+    WidgetRef ref,
+    AdminFeaturesFailure failure,
+  ) {
+    void retry() => unawaited(
+      ref.read(adminFeatureDetailProvider(featureKey).notifier).refresh(),
+    );
+    final view = switch (failure.kind) {
+      AdminFeaturesFailureKind.offline => AfriStateView.offline(
+        key: const ValueKey<String>('admin-feature-detail-state-offline'),
+        title: 'Feature settings offline',
+        message: 'Reconnect before loading private feature configuration.',
+        actionLabel: 'Try again',
+        onAction: retry,
+      ),
+      AdminFeaturesFailureKind.permissionDenied => AfriStateView.error(
+        key: const ValueKey<String>(
+          'admin-feature-detail-state-permission-denied',
+        ),
+        title: 'Feature access unavailable',
+        message: 'This account cannot view or change feature settings.',
+        actionLabel: 'Back to features',
+        onAction: () => context.pop(),
+      ),
+      AdminFeaturesFailureKind.conflict => AfriStateView.error(
+        key: const ValueKey<String>('admin-feature-detail-state-conflict'),
+        title: 'Feature settings changed',
+        message: 'Refresh before making another feature change.',
+        actionLabel: 'Refresh',
+        onAction: retry,
+      ),
+      AdminFeaturesFailureKind.securityTimeout => AfriStateView.error(
+        key: const ValueKey<String>(
+          'admin-feature-detail-state-security-timeout',
+        ),
+        title: 'Security check timed out',
+        message: 'No feature settings were shown. Check your connection.',
+        actionLabel: 'Retry',
+        onAction: retry,
+      ),
+      AdminFeaturesFailureKind.unknown => AfriStateView.error(
+        key: const ValueKey<String>('admin-feature-detail-state-error'),
+        title: 'Feature settings unavailable',
+        message: 'Private feature settings remain hidden. Try again.',
+        actionLabel: 'Try again',
+        onAction: retry,
+      ),
+    };
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: view,
+    );
+  }
+
+  Widget? _statusBanner(AsyncValue<AdminFeatureDetailSnapshot> value) {
+    final snapshot = value.valueOrNull;
+    if (snapshot == null) return null;
+    if (value.isLoading || snapshot.isMutating) {
+      return const AfriStateBanner(
+        key: ValueKey<String>('admin-feature-detail-state-syncing'),
+        icon: AfriIcons.refresh,
+        title: 'Checking feature settings',
+        subtitle:
+            'Showing the last confirmed state while current data is checked.',
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    final failure = snapshot.failure;
+    if (snapshot.phase != AdminFeaturesPhase.degraded || failure == null) {
+      return null;
+    }
+    return AfriStateBanner(
+      key: ValueKey<String>('admin-feature-detail-state-${failure.kind.name}'),
+      icon: failure.kind == AdminFeaturesFailureKind.offline
+          ? AfriIcons.offline
+          : AfriIcons.statusWarning,
+      title: switch (failure.kind) {
+        AdminFeaturesFailureKind.conflict => 'Feature settings changed',
+        AdminFeaturesFailureKind.securityTimeout => 'Security check timed out',
+        AdminFeaturesFailureKind.offline => 'Feature settings offline',
+        _ => 'Feature settings unavailable',
+      },
+      subtitle: snapshot.mutationOutcomeUnconfirmed
+          ? 'The last change is unconfirmed. Controls stay paused until refresh succeeds.'
+          : 'Last confirmed settings remain visible. Controls are paused.',
+      tone: AfriStateBannerTone.warning,
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).brightness == Brightness.dark
+        ? ColorTokens.clubAccent
+        : ColorTokens.onSurface;
     return Text(
       title,
       style: TypographyTokens.titleSmall().copyWith(
-        color: ColorTokens.clubAccent,
+        color: color,
         letterSpacing: 1.5,
       ),
     );
   }
+}
 
-  Widget _buildGlobalState(ManagedPlatformFeature feature) {
-    return GlassCard(
-      animate: false,
-      child: Column(
-        children: [
-          _buildToggleRow(
-            label: 'Enabled',
-            subtitle: 'Global kill switch for this feature',
-            value: feature.isEnabled,
-            onChanged: (value) => _updateGlobalEnabled(value),
-          ),
-          const AfriDivider(color: ColorTokens.onDarkHairline),
-          _buildVisibilityRow(
-            current: feature.visibilityState,
-            onChanged: _updateVisibility,
-          ),
-        ],
-      ),
-    );
-  }
+class _ChannelCard extends StatelessWidget {
+  const _ChannelCard({
+    required this.channel,
+    required this.enabled,
+    required this.onUpdate,
+  });
 
-  Widget _buildChannelCard(ManagedFeatureChannelConfig channel) {
-    final channelName = channel.channel.toUpperCase();
+  final AdminManagedFeatureChannel channel;
+  final bool enabled;
+  final ValueChanged<Map<String, dynamic>> onUpdate;
 
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
       child: GlassCard(
@@ -210,125 +425,139 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                   channel.channel == 'mobile'
                       ? AfriIcons.smartphone
                       : AfriIcons.public,
-                  size: 18,
-                  color: ColorTokens.clubAccent,
+                  color: ColorTokens.onSurface,
                 ),
                 const SizedBox(width: SpacingTokens.spacing2),
                 Text(
-                  channelName,
-                  style: TypographyTokens.titleSmall().copyWith(
-                    letterSpacing: 1.2,
-                  ),
+                  channel.channel.toUpperCase(),
+                  style: TypographyTokens.titleSmall(),
                 ),
               ],
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            _buildToggleRow(
+            _ToggleRow(
               label: 'Enabled',
-              subtitle: 'Feature active on $channelName',
+              subtitle: 'Feature is active on this channel.',
               value: channel.isEnabled,
+              enabled: enabled,
               onChanged: (value) =>
-                  _updateChannel(channel.channel, {'is_enabled': value}),
+                  onUpdate(<String, dynamic>{'is_enabled': value}),
             ),
             const AfriDivider(color: ColorTokens.onDarkHairline),
-            _buildToggleRow(
+            _ToggleRow(
               label: 'Visible',
-              subtitle: 'Available in $channelName',
+              subtitle: 'Feature can be shown on this channel.',
               value: channel.isVisible,
+              enabled: enabled,
               onChanged: (value) =>
-                  _updateChannel(channel.channel, {'is_visible': value}),
+                  onUpdate(<String, dynamic>{'is_visible': value}),
             ),
             const AfriDivider(color: ColorTokens.onDarkHairline),
-            _buildToggleRow(
-              label: 'Show in Navigation',
-              subtitle: channel.channel == 'mobile'
-                  ? 'Bottom navigation tab'
-                  : 'Top navigation menu',
+            _ToggleRow(
+              label: 'Show in navigation',
+              subtitle: 'Include this feature in channel navigation.',
               value: channel.showInNavigation,
-              onChanged: (value) => _updateChannel(channel.channel, {
-                'show_in_navigation': value,
-              }),
+              enabled: enabled,
+              onChanged: (value) =>
+                  onUpdate(<String, dynamic>{'show_in_navigation': value}),
             ),
             const AfriDivider(color: ColorTokens.onDarkHairline),
-            _buildToggleRow(
-              label: 'Show on Home',
-              subtitle: 'Display on home screen',
+            _ToggleRow(
+              label: 'Show on home',
+              subtitle: 'Include this feature on the channel home screen.',
               value: channel.showOnHome,
+              enabled: enabled,
               onChanged: (value) =>
-                  _updateChannel(channel.channel, {'show_on_home': value}),
-            ),
-            const AfriDivider(color: ColorTokens.onDarkHairline),
-            _buildSortOrderRow(
-              current: channel.sortOrder,
-              onChanged: (value) =>
-                  _updateChannel(channel.channel, {'sort_order': value}),
+                  onUpdate(<String, dynamic>{'show_on_home': value}),
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildScheduleCard(ManagedPlatformFeature feature) {
-    final startDate = feature.rules?.scheduleStartAt;
-    final endDate = feature.rules?.scheduleEndAt;
+class _ToggleRow extends StatelessWidget {
+  const _ToggleRow({
+    required this.label,
+    required this.subtitle,
+    required this.value,
+    required this.enabled,
+    required this.onChanged,
+  });
 
+  final String label;
+  final String subtitle;
+  final bool value;
+  final bool enabled;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing1),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: TypographyTokens.bodyMedium()),
+                Text(
+                  subtitle,
+                  style: TypographyTokens.bodySmall().copyWith(
+                    color: ColorTokens.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          AfriSwitch(value: value, onChanged: enabled ? onChanged : null),
+        ],
+      ),
+    );
+  }
+}
+
+class _ScheduleCard extends StatelessWidget {
+  const _ScheduleCard({
+    required this.rules,
+    required this.enabled,
+    required this.onPick,
+    required this.onClear,
+  });
+
+  final AdminManagedFeatureRules? rules;
+  final bool enabled;
+  final void Function(String field, DateTime? current) onPick;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final start = rules?.scheduleStartAt;
+    final end = rules?.scheduleEndAt;
     return GlassCard(
       animate: false,
       child: Column(
         children: [
-          _buildDatePickerRow(
-            label: 'Available From',
-            subtitle: 'Feature becomes active',
-            value: startDate,
-            onChanged: (date) => _updateRules({
-              'schedule_start_at': date?.toUtc().toIso8601String(),
-            }),
+          _dateRow(
+            label: 'Available from',
+            value: start,
+            onTap: enabled ? () => onPick('schedule_start_at', start) : null,
           ),
           const AfriDivider(color: ColorTokens.onDarkHairline),
-          _buildDatePickerRow(
-            label: 'Available Until',
-            subtitle: 'Feature deactivates',
-            value: endDate,
-            onChanged: (date) => _updateRules({
-              'schedule_end_at': date?.toUtc().toIso8601String(),
-            }),
+          _dateRow(
+            label: 'Available until',
+            value: end,
+            onTap: enabled ? () => onPick('schedule_end_at', end) : null,
           ),
-          if (startDate != null || endDate != null) ...[
+          if (start != null || end != null) ...[
             const AfriDivider(color: ColorTokens.onDarkHairline),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: SpacingTokens.spacing2,
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    AfriIcons.statusInfo,
-                    size: 16,
-                    color: ColorTokens.onDarkFaint,
-                  ),
-                  const SizedBox(width: SpacingTokens.spacing2),
-                  Expanded(
-                    child: Text(
-                      _scheduleDescription(startDate, endDate),
-                      style: TypographyTokens.bodySmall().copyWith(
-                        color: ColorTokens.onDarkSubtle,
-                      ),
-                    ),
-                  ),
-                  AfriTextButton(
-                    onPressed: () => _updateRules({
-                      'schedule_start_at': null,
-                      'schedule_end_at': null,
-                    }),
-                    child: Text(
-                      'Clear',
-                      style: TypographyTokens.bodySmall().copyWith(
-                        color: ColorTokens.error,
-                      ),
-                    ),
-                  ),
-                ],
+            Align(
+              alignment: Alignment.centerRight,
+              child: AfriTextButton(
+                onPressed: enabled ? onClear : null,
+                child: const Text('Clear schedule'),
               ),
             ),
           ],
@@ -337,346 +566,34 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
     );
   }
 
-  Widget _buildAccessRulesCard(ManagedPlatformFeature feature) {
-    return GlassCard(
-      animate: false,
-      child: Column(
-        children: [
-          _buildToggleRow(
-            label: 'Auth Required',
-            subtitle: 'User must be signed in to access',
-            value: feature.rules?.authRequired ?? false,
-            onChanged: (value) => _updateRules({'auth_required': value}),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildToggleRow({
+  Widget _dateRow({
     required String label,
-    required String subtitle,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing1),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: TypographyTokens.bodyMedium()),
-                Text(
-                  subtitle,
-                  style: TypographyTokens.bodySmall().copyWith(
-                    color: ColorTokens.onDarkFaint,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          AfriSwitch(value: value, onChanged: _isSaving ? null : onChanged),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildVisibilityRow({
-    required String current,
-    required ValueChanged<String> onChanged,
-  }) {
-    final color = switch (current) {
-      'visible' => ColorTokens.success,
-      'hidden' => ColorTokens.error,
-      'maintenance' => ColorTokens.warning,
-      _ => ColorTokens.onSurfaceVariant,
-    };
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing1),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Visibility', style: TypographyTokens.bodyMedium()),
-                Text(
-                  'Controls feature visibility',
-                  style: TypographyTokens.bodySmall().copyWith(
-                    color: ColorTokens.onDarkFaint,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          AfriPopupMenuButton<String>(
-            onSelected: onChanged,
-            enabled: !_isSaving,
-            tooltip: 'Change visibility',
-            itemBuilder: (_) => const [
-              PopupMenuItem(value: 'visible', child: Text('Visible')),
-              PopupMenuItem(value: 'hidden', child: Text('Hidden')),
-              PopupMenuItem(value: 'maintenance', child: Text('Maintenance')),
-            ],
-            child: AfriChip(
-              label: Text(
-                current.toUpperCase(),
-                style: TypographyTokens.bodySmall().copyWith(color: color),
-              ),
-              side: BorderTokens.side(color: color, opacity: 0.3),
-              backgroundColor: color.withValues(alpha: 0.1),
-              visualDensity: VisualDensity.compact,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSortOrderRow({
-    required int? current,
-    required ValueChanged<int> onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing1),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Sort Order', style: TypographyTokens.bodyMedium()),
-                Text(
-                  'Lower = higher priority in nav/home',
-                  style: TypographyTokens.bodySmall().copyWith(
-                    color: ColorTokens.onDarkFaint,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 80,
-            child: AfriTextFormField(
-              initialValue: current?.toString() ?? '',
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyMedium(),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.spacing2,
-                vertical: SpacingTokens.spacing2,
-              ),
-              onFieldSubmitted: _isSaving
-                  ? null
-                  : (value) {
-                      final parsed = int.tryParse(value);
-                      if (parsed != null) {
-                        onChanged(parsed);
-                      }
-                    },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDatePickerRow({
-    required String label,
-    required String subtitle,
     required DateTime? value,
-    required ValueChanged<DateTime?> onChanged,
+    required VoidCallback? onTap,
   }) {
-    final formatted = value != null
-        ? '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')} '
-              '${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}'
-        : 'Not set';
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing1),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: TypographyTokens.bodyMedium()),
-                Text(
-                  subtitle,
-                  style: TypographyTokens.bodySmall().copyWith(
-                    color: ColorTokens.onDarkFaint,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          AfriPressFeedback(
-            onTap: _isSaving ? null : () => _pickDateTime(value, onChanged),
-            tooltip: 'Set $label',
-            semanticsLabel: '$label: $formatted',
-            semanticsHint: 'Opens date and time picker',
-            child: Container(
-              decoration: BoxDecoration(
-                border: BorderTokens.all(
-                  color: ColorTokens.onDark,
-                  opacity: 0.24,
-                ),
-                borderRadius: ShapeTokens.cardRadius,
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.spacing3,
-                vertical: SpacingTokens.spacing2,
-              ),
-              child: Text(
-                formatted,
-                style: TypographyTokens.bodySmall().copyWith(
-                  color: value != null
-                      ? ColorTokens.clubAccent
-                      : ColorTokens.onDarkFaint,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _pickDateTime(
-    DateTime? initial,
-    ValueChanged<DateTime?> onChanged,
-  ) async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: initial ?? DateTime.now(),
-      firstDate: DateTime(2024),
-      lastDate: DateTime(2030),
-    );
-    if (date == null || !mounted) return;
-
-    final time = await showTimePicker(
-      context: context,
-      initialTime: initial != null
-          ? TimeOfDay.fromDateTime(initial)
-          : TimeOfDay.now(),
-    );
-    if (!mounted) return;
-
-    final combined = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time?.hour ?? 0,
-      time?.minute ?? 0,
-    );
-    onChanged(combined);
-  }
-
-  Future<void> _updateGlobalEnabled(bool value) async {
-    final feature = _feature;
-    if (feature == null) return;
-    await _runSave(
-      () => _repository.updateFeatureGlobalStatus(feature.id, value),
-      errorMessage: 'Failed to update feature.',
-    );
-  }
-
-  Future<void> _updateVisibility(String value) async {
-    final feature = _feature;
-    if (feature == null) return;
-    await _runSave(
-      () => _repository.updateFeatureVisibility(feature.id, value),
-      errorMessage: 'Failed to update feature visibility.',
-    );
-  }
-
-  Future<void> _updateChannel(
-    String channel,
-    Map<String, dynamic> updates,
-  ) async {
-    final feature = _feature;
-    if (feature == null) return;
-    await _runSave(
-      () => _repository.updateChannelConfig(feature.id, channel, updates),
-      errorMessage: 'Failed to update channel config.',
-    );
-  }
-
-  Future<void> _updateRules(Map<String, dynamic> updates) async {
-    final feature = _feature;
-    if (feature == null) return;
-    await _runSave(
-      () => _repository.updateFeatureRules(feature.id, updates),
-      errorMessage: 'Failed to update feature rules.',
-    );
-  }
-
-  Future<void> _runSave(
-    Future<bool> Function() action, {
-    required String errorMessage,
-  }) async {
-    setState(() => _isSaving = true);
-    try {
-      final success = await action();
-      if (!success) {
-        _showError(errorMessage);
-        return;
-      }
-      await _load();
-    } catch (error) {
-      _showError('$errorMessage $error');
-    } finally {
-      if (mounted) {
-        setState(() => _isSaving = false);
-      }
-    }
-  }
-
-  void _showError(String message) {
-    if (!mounted) return;
-    AfriToast.error(context, message);
-  }
-
-  String _scheduleDescription(DateTime? start, DateTime? end) {
-    if (start != null && end != null) {
-      return 'Active from ${_formatDate(start)} to ${_formatDate(end)}';
-    }
-    if (start != null) {
-      return 'Available from ${_formatDate(start)}';
-    }
-    if (end != null) {
-      return 'Available until ${_formatDate(end)}';
-    }
-    return 'Always available';
-  }
-
-  String _formatDate(DateTime value) =>
-      '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
-
-  Widget _buildError() {
-    return Center(
+    final formatted = value == null
+        ? 'Not set'
+        : '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
+    return AfriPressFeedback(
+      onTap: onTap,
+      enabled: onTap != null,
+      tooltip: 'Set $label',
+      semanticsLabel: '$label: $formatted',
+      semanticsHint: 'Opens date and time selection',
       child: Padding(
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing2),
+        child: Row(
           children: [
-            Icon(AfriIcons.statusError, size: 48, color: ColorTokens.error),
-            const SizedBox(height: SpacingTokens.spacing4),
+            Expanded(child: Text(label, style: TypographyTokens.bodyMedium())),
+            const SizedBox(width: SpacingTokens.spacing2),
             Text(
-              'Failed to load feature',
-              style: TypographyTokens.titleMedium(),
+              formatted,
+              style: TypographyTokens.bodySmall().copyWith(
+                color: value == null
+                    ? ColorTokens.onSurfaceVariant
+                    : ColorTokens.onSurface,
+              ),
             ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(
-              _error ?? 'Unknown error',
-              style: TypographyTokens.bodySmall(),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            AfriElevatedButton(onPressed: _load, child: const Text('Retry')),
           ],
         ),
       ),

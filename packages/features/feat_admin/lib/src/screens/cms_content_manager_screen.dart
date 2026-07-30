@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../admin_providers.dart';
+import '../admin_cms_controller.dart';
+import '../repositories/admin_repository.dart';
 part '../widgets/cms/cms_widgets.dart';
 part '../widgets/cms/cms_section_builders.dart';
 
@@ -21,7 +22,9 @@ enum _CmsSection {
 }
 
 class CmsContentManagerScreen extends ConsumerStatefulWidget {
-  const CmsContentManagerScreen({super.key});
+  const CmsContentManagerScreen({this.primaryActionFocusNode, super.key});
+
+  final FocusNode? primaryActionFocusNode;
 
   @override
   ConsumerState<CmsContentManagerScreen> createState() =>
@@ -58,145 +61,76 @@ class _CmsContentManagerScreenState
   ];
 
   _CmsSection _section = _CmsSection.news;
-  List<Map<String, dynamic>> _articles = const <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> _quickActions = const <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> _partners = const <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> _partnerServices = const <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> _predictionCompetitions =
-      const <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> _competitionCatalog =
-      const <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> _contentBlocks = const <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> _platformFeatures = const <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> _auditLogs = const <Map<String, dynamic>>[];
-  bool _isLoading = true;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_loadContent());
-  }
+  AdminCmsSnapshot _snapshot = const AdminCmsSnapshot.empty();
+  bool _cmsLoading = true;
 
   Future<void> _loadContent() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final repo = ref.read(adminRepositoryProvider);
-      final results = await Future.wait<dynamic>([
-        repo.getNewsArticles(),
-        repo.getQuickActions(),
-        repo.getPartners(),
-        repo.getPartnerServices(),
-        repo.getPredictionSupportedCompetitions(),
-        repo.getFootballCompetitions(),
-        repo.getPlatformContentBlocks(),
-        repo.getPlatformFeatures(),
-        repo.getPlatformFeatureAuditLogs(),
-      ]);
-
-      if (!mounted) return;
-      setState(() {
-        _articles = List<Map<String, dynamic>>.from(results[0] as List);
-        _quickActions = List<Map<String, dynamic>>.from(results[1] as List);
-        _partners = List<Map<String, dynamic>>.from(results[2] as List);
-        _partnerServices = List<Map<String, dynamic>>.from(results[3] as List);
-        _predictionCompetitions = List<Map<String, dynamic>>.from(
-          results[4] as List,
-        );
-        _competitionCatalog = List<Map<String, dynamic>>.from(
-          results[5] as List,
-        );
-        _contentBlocks = List<Map<String, dynamic>>.from(results[6] as List);
-        _platformFeatures = List<Map<String, dynamic>>.from(results[7] as List);
-        _auditLogs = List<Map<String, dynamic>>.from(results[8] as List);
-        _isLoading = false;
-      });
-    } catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _error = error.toString();
-      });
-    }
+    await ref.read(adminCmsProvider.notifier).refresh();
   }
 
+  List<Map<String, dynamic>> get _articles => _snapshot.articles;
+  List<Map<String, dynamic>> get _quickActions => _snapshot.quickActions;
+  List<Map<String, dynamic>> get _partners => _snapshot.partners;
+  List<Map<String, dynamic>> get _partnerServices => _snapshot.partnerServices;
+  List<Map<String, dynamic>> get _predictionCompetitions =>
+      _snapshot.predictionCompetitions;
+  List<Map<String, dynamic>> get _competitionCatalog =>
+      _snapshot.competitionCatalog;
+  List<Map<String, dynamic>> get _contentBlocks => _snapshot.contentBlocks;
+  List<Map<String, dynamic>> get _platformFeatures =>
+      _snapshot.platformFeatures;
+  List<Map<String, dynamic>> get _auditLogs => _snapshot.auditLogs;
+  bool get _actionsEnabled => _snapshot.actionsEnabled && !_cmsLoading;
+
   Future<void> _togglePublish(String articleId, bool currentlyPublished) async {
-    try {
-      final repo = ref.read(adminRepositoryProvider);
-      await repo.updateNewsArticle(articleId, {
+    await _runCmsMutation(
+      (repo) => repo.updateNewsArticle(articleId, {
         'is_published': !currentlyPublished,
         if (!currentlyPublished)
           'published_at': DateTime.now().toUtc().toIso8601String(),
-      });
-      await _loadContent();
-    } catch (error) {
-      _showSnack('Failed to update article: $error');
-    }
+      }),
+    );
   }
 
   Future<void> _toggleQuickAction(Map<String, dynamic> action) async {
-    try {
-      await ref.read(adminRepositoryProvider).updateQuickAction(
-        action['id'].toString(),
-        {'is_active': action['is_active'] != true},
-      );
-      await _loadContent();
-    } catch (error) {
-      _showSnack('Failed to update quick action: $error');
-    }
+    await _runCmsMutation(
+      (repo) => repo.updateQuickAction(action['id'].toString(), {
+        'is_active': action['is_active'] != true,
+      }),
+    );
   }
 
   Future<void> _togglePartner(Map<String, dynamic> partner) async {
-    try {
-      await ref.read(adminRepositoryProvider).updatePartner(
-        partner['id'].toString(),
-        {'is_active': partner['is_active'] != true},
-      );
-      await _loadContent();
-    } catch (error) {
-      _showSnack('Failed to update partner: $error');
-    }
+    await _runCmsMutation(
+      (repo) => repo.updatePartner(partner['id'].toString(), {
+        'is_active': partner['is_active'] != true,
+      }),
+    );
   }
 
   Future<void> _togglePartnerService(Map<String, dynamic> service) async {
-    try {
-      await ref.read(adminRepositoryProvider).updatePartnerService(
-        service['id'].toString(),
-        {'is_active': service['is_active'] != true},
-      );
-      await _loadContent();
-    } catch (error) {
-      _showSnack('Failed to update partner service: $error');
-    }
+    await _runCmsMutation(
+      (repo) => repo.updatePartnerService(service['id'].toString(), {
+        'is_active': service['is_active'] != true,
+      }),
+    );
   }
 
   Future<void> _togglePredictionCompetition(Map<String, dynamic> item) async {
-    try {
-      await ref
-          .read(adminRepositoryProvider)
-          .updatePredictionSupportedCompetition(item['support_id'].toString(), {
-            'is_active': item['is_supported'] != true,
-          });
-      await _loadContent();
-    } catch (error) {
-      _showSnack('Failed to update prediction competition: $error');
-    }
+    await _runCmsMutation(
+      (repo) => repo.updatePredictionSupportedCompetition(
+        item['support_id'].toString(),
+        <String, dynamic>{'is_active': item['is_supported'] != true},
+      ),
+    );
   }
 
   Future<void> _toggleContentBlock(Map<String, dynamic> block) async {
-    try {
-      await ref.read(adminRepositoryProvider).updatePlatformContentBlock(
-        block['id'].toString(),
-        {'is_active': block['is_active'] != true},
-      );
-      await _loadContent();
-    } catch (error) {
-      _showSnack('Failed to update content block: $error');
-    }
+    await _runCmsMutation(
+      (repo) => repo.updatePlatformContentBlock(block['id'].toString(), {
+        'is_active': block['is_active'] != true,
+      }),
+    );
   }
 
   void _showContentBlockDialog([Map<String, dynamic>? existing]) {
@@ -367,8 +301,7 @@ class _CmsContentManagerScreenState
                     };
 
                     dialogContext.pop();
-                    try {
-                      final repo = ref.read(adminRepositoryProvider);
+                    await _runCmsMutation((repo) async {
                       if (existing == null) {
                         await repo.createPlatformContentBlock(
                           blockKey: payload['block_key'] as String,
@@ -390,10 +323,7 @@ class _CmsContentManagerScreenState
                           payload,
                         );
                       }
-                      await _loadContent();
-                    } catch (error) {
-                      _showSnack('Failed to save content block: $error');
-                    }
+                    });
                   },
                   child: Text(existing == null ? 'CREATE' : 'SAVE'),
                 ),
@@ -438,17 +368,12 @@ class _CmsContentManagerScreenState
               onPressed: () async {
                 if (titleController.text.trim().isEmpty) return;
                 dialogContext.pop();
-                try {
-                  await ref
-                      .read(adminRepositoryProvider)
-                      .createNewsArticle(
-                        title: titleController.text.trim(),
-                        body: bodyController.text.trim(),
-                      );
-                  await _loadContent();
-                } catch (error) {
-                  _showSnack('Failed to create article: $error');
-                }
+                await _runCmsMutation(
+                  (repo) async => repo.createNewsArticle(
+                    title: titleController.text.trim(),
+                    body: bodyController.text.trim(),
+                  ),
+                );
               },
               child: const Text('CREATE'),
             ),
@@ -591,8 +516,7 @@ class _CmsContentManagerScreenState
                     };
 
                     dialogContext.pop();
-                    try {
-                      final repo = ref.read(adminRepositoryProvider);
+                    await _runCmsMutation((repo) async {
                       if (existing == null) {
                         await repo.createQuickAction(
                           actionKey: actionKey,
@@ -611,10 +535,7 @@ class _CmsContentManagerScreenState
                           payload,
                         );
                       }
-                      await _loadContent();
-                    } catch (error) {
-                      _showSnack('Failed to save quick action: $error');
-                    }
+                    });
                   },
                   child: Text(existing == null ? 'CREATE' : 'SAVE'),
                 ),
@@ -767,8 +688,7 @@ class _CmsContentManagerScreenState
                     };
 
                     dialogContext.pop();
-                    try {
-                      final repo = ref.read(adminRepositoryProvider);
+                    await _runCmsMutation((repo) async {
                       if (existing == null) {
                         await repo.createPartner(
                           name: name,
@@ -788,10 +708,7 @@ class _CmsContentManagerScreenState
                           payload,
                         );
                       }
-                      await _loadContent();
-                    } catch (error) {
-                      _showSnack('Failed to save partner: $error');
-                    }
+                    });
                   },
                   child: Text(existing == null ? 'CREATE' : 'SAVE'),
                 ),
@@ -987,8 +904,7 @@ class _CmsContentManagerScreenState
                     };
 
                     dialogContext.pop();
-                    try {
-                      final repo = ref.read(adminRepositoryProvider);
+                    await _runCmsMutation((repo) async {
                       if (existing == null) {
                         await repo.createPartnerService(
                           partnerId: selectedPartnerId,
@@ -1010,10 +926,7 @@ class _CmsContentManagerScreenState
                           payload,
                         );
                       }
-                      await _loadContent();
-                    } catch (error) {
-                      _showSnack('Failed to save partner service: $error');
-                    }
+                    });
                   },
                   child: Text(existing == null ? 'CREATE' : 'SAVE'),
                 ),
@@ -1027,13 +940,14 @@ class _CmsContentManagerScreenState
 
   void _showPredictionCompetitionDialog([Map<String, dynamic>? existing]) {
     final supportedCompetitionIds = _predictionCompetitions
-        .map((item) => item['id']?.toString())
+        .map((item) => item['competition_id']?.toString())
         .whereType<String>()
         .toSet();
     final availableCompetitions = _competitionCatalog
         .where((item) {
           final id = item['id']?.toString() ?? '';
-          if (existing != null && id == existing['id']?.toString()) {
+          if (existing != null &&
+              id == existing['competition_id']?.toString()) {
             return true;
           }
           return !supportedCompetitionIds.contains(id);
@@ -1048,7 +962,7 @@ class _CmsContentManagerScreenState
     }
 
     var selectedCompetitionId =
-        existing?['id']?.toString() ??
+        existing?['competition_id']?.toString() ??
         availableCompetitions.first['id']?.toString() ??
         '';
     final highlightLabelController = TextEditingController(
@@ -1139,8 +1053,7 @@ class _CmsContentManagerScreenState
                     };
 
                     dialogContext.pop();
-                    try {
-                      final repo = ref.read(adminRepositoryProvider);
+                    await _runCmsMutation((repo) async {
                       if (existing == null) {
                         await repo.createPredictionSupportedCompetition(
                           competitionId: selectedCompetitionId,
@@ -1155,10 +1068,7 @@ class _CmsContentManagerScreenState
                           payload,
                         );
                       }
-                      await _loadContent();
-                    } catch (error) {
-                      _showSnack('Failed to save competition: $error');
-                    }
+                    });
                   },
                   child: Text(existing == null ? 'CREATE' : 'SAVE'),
                 ),
@@ -1170,9 +1080,32 @@ class _CmsContentManagerScreenState
     );
   }
 
-  void _showSnack(String message) {
+  Future<bool> _runCmsMutation(
+    Future<void> Function(AdminRepository repository) mutation,
+  ) async {
+    final success = await ref
+        .read(adminCmsProvider.notifier)
+        .runMutation(mutation);
+    if (!mounted || success) return success;
+    final failure = ref.read(adminCmsProvider).valueOrNull?.failure;
+    final message = switch (failure?.kind) {
+      AdminCmsFailureKind.offline =>
+        'CMS changes need a connection. Nothing was retried.',
+      AdminCmsFailureKind.permissionDenied =>
+        'CMS access is no longer available for this account.',
+      AdminCmsFailureKind.conflict =>
+        'CMS content changed. Refresh before trying another action.',
+      AdminCmsFailureKind.securityTimeout =>
+        'The result is not confirmed. Refresh before trying another action.',
+      _ => 'The CMS change could not be completed. Review and try again.',
+    };
+    _showSnack(message, isError: true);
+    return false;
+  }
+
+  void _showSnack(String message, {bool isError = false}) {
     if (!mounted) return;
-    if (message.startsWith('Failed')) {
+    if (isError) {
       AfriToast.error(context, message);
     } else {
       AfriToast.info(context, message);
@@ -1197,8 +1130,106 @@ class _CmsContentManagerScreenState
     return trimmed.isEmpty ? null : trimmed;
   }
 
+  Widget _unavailable(AdminCmsFailure failure) {
+    final view = switch (failure.kind) {
+      AdminCmsFailureKind.offline => AfriStateView.offline(
+        key: const ValueKey<String>('admin-cms-state-offline'),
+        title: 'Content manager offline',
+        message: 'Reconnect before loading private publishing controls.',
+        actionLabel: 'Try again',
+        onAction: () => unawaited(_loadContent()),
+      ),
+      AdminCmsFailureKind.permissionDenied => AfriStateView.error(
+        key: const ValueKey<String>('admin-cms-state-permission-denied'),
+        title: 'Content access unavailable',
+        message: 'This account cannot view or change club publishing data.',
+        actionLabel: 'Back to admin',
+        onAction: () => context.pop(),
+      ),
+      AdminCmsFailureKind.conflict => AfriStateView.error(
+        key: const ValueKey<String>('admin-cms-state-conflict'),
+        title: 'Content changed',
+        message: 'Refresh the workspace before making another change.',
+        actionLabel: 'Refresh',
+        onAction: () => unawaited(_loadContent()),
+      ),
+      AdminCmsFailureKind.securityTimeout => AfriStateView.error(
+        key: const ValueKey<String>('admin-cms-state-security-timeout'),
+        title: 'Security check timed out',
+        message:
+            'No private content was shown. Check your connection and retry.',
+        actionLabel: 'Retry',
+        onAction: () => unawaited(_loadContent()),
+      ),
+      AdminCmsFailureKind.unknown => AfriStateView.error(
+        key: const ValueKey<String>('admin-cms-state-error'),
+        title: 'Content manager unavailable',
+        message: 'Private publishing data remains hidden. Try again.',
+        actionLabel: 'Try again',
+        onAction: () => unawaited(_loadContent()),
+      ),
+    };
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: view,
+    );
+  }
+
+  Widget? _statusBanner(AsyncValue<AdminCmsSnapshot> cms) {
+    if (_snapshot.isMutating) {
+      return const AfriStateBanner(
+        key: ValueKey<String>('admin-cms-state-syncing'),
+        icon: AfriIcons.refresh,
+        title: 'Saving content',
+        subtitle:
+            'Publishing controls are paused until the result is confirmed.',
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    if (cms.isLoading && cms.valueOrNull != null) {
+      return const AfriStateBanner(
+        key: ValueKey<String>('admin-cms-state-syncing'),
+        icon: AfriIcons.refresh,
+        title: 'Refreshing content',
+        subtitle:
+            'Showing the last confirmed workspace while status is checked.',
+        tone: AfriStateBannerTone.info,
+      );
+    }
+    final failure = _snapshot.failure;
+    if (_snapshot.phase != AdminCmsPhase.degraded || failure == null) {
+      return null;
+    }
+    return AfriStateBanner(
+      key: ValueKey<String>('admin-cms-state-${failure.kind.name}'),
+      icon: failure.kind == AdminCmsFailureKind.offline
+          ? AfriIcons.offline
+          : AfriIcons.statusWarning,
+      title: failure.kind == AdminCmsFailureKind.conflict
+          ? 'Content changed'
+          : failure.kind == AdminCmsFailureKind.securityTimeout
+          ? 'Security check timed out'
+          : failure.kind == AdminCmsFailureKind.offline
+          ? 'Content manager offline'
+          : 'Current refresh unavailable',
+      subtitle: _snapshot.mutationOutcomeUnconfirmed
+          ? 'The last change is not confirmed. Refresh before taking another action.'
+          : 'Showing the last confirmed workspace. Actions are paused until refresh succeeds.',
+      tone: AfriStateBannerTone.warning,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final enabled = ref.watch(adminCmsEnabledProvider);
+    final cms = ref.watch(adminCmsProvider);
+    _cmsLoading = cms.isLoading;
+    if (cms.valueOrNull case final current?) {
+      _snapshot = current;
+    }
+    final permissionDenied =
+        _snapshot.failure?.kind == AdminCmsFailureKind.permissionDenied;
+
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
@@ -1212,22 +1243,57 @@ class _CmsContentManagerScreenState
       ),
       scrollable: false,
       constrainContent: true,
-      child: _isLoading
-          ? const Padding(
-              padding: EdgeInsets.all(SpacingTokens.spacing6),
-              child: AfriSkeletonList(),
+      child: !enabled
+          ? Padding(
+              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriStateView.empty(
+                key: const ValueKey<String>('admin-cms-state-disabled'),
+                title: 'Content manager unavailable',
+                message:
+                    'Publishing controls are disabled for this controlled build.',
+                icon: AfriIcons.lock,
+                actionLabel: 'Back to admin',
+                onAction: () => context.pop(),
+              ),
             )
-          : _error != null
-          ? buildErrorState()
+          : permissionDenied
+          ? _unavailable(
+              const AdminCmsFailure(AdminCmsFailureKind.permissionDenied),
+            )
+          : cms.isLoading && cms.valueOrNull == null
+          ? Padding(
+              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriStateView.loading(
+                key: const ValueKey<String>('admin-cms-state-loading'),
+                title: 'Loading content manager',
+                message: 'Checking current publishing work.',
+              ),
+            )
+          : cms.hasError && cms.valueOrNull == null
+          ? _unavailable(AdminCmsFailure.fromError(cms.error!))
           : AfriRefreshIndicator(
               onRefresh: _loadContent,
               child: ListView(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 children: [
+                  if (_statusBanner(cms) case final banner?) ...[
+                    banner,
+                    const SizedBox(height: SpacingTokens.spacing4),
+                  ],
                   Text(
                     'Manage home shortcuts, partner catalogs, and supported prediction competitions.',
                     style: TypographyTokens.bodyMedium(),
                   ),
+                  if (_snapshot.isEmpty) ...[
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    AfriStateView.empty(
+                      key: const ValueKey<String>('admin-cms-state-empty'),
+                      title: 'No managed content',
+                      message:
+                          'Choose a section to create the first controlled item.',
+                      compact: true,
+                    ),
+                  ],
                   const SizedBox(height: SpacingTokens.spacing4),
                   buildSectionSelector(),
                   const SizedBox(height: SpacingTokens.spacing5),

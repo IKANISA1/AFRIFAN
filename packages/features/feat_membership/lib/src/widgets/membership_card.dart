@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,11 @@ class MembershipCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.afriL10n;
     final profile = ref.watch(currentUserProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
-    final resolvedTier = (tierLabel ?? 'Fan').toUpperCase();
+    final resolvedTier = (tierLabel ?? l10n.membershipFanFallback)
+        .toUpperCase();
     final resolvedFet = fet ?? 0;
     final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
 
@@ -77,7 +80,7 @@ class MembershipCard extends ConsumerWidget {
                           borderRadius: ShapeTokens.chipRadius,
                         ),
                         child: Text(
-                          'PENDING VERIFICATION',
+                          l10n.contributionPendingVerification.toUpperCase(),
                           style: TypographyTokens.labelSmall(
                             ColorTokens.inkBase,
                           ).copyWith(fontWeight: FontWeight.w800),
@@ -85,7 +88,7 @@ class MembershipCard extends ConsumerWidget {
                       )
                     else
                       Text(
-                        'FAN CARD',
+                        l10n.membershipFanCard.toUpperCase(),
                         style: TypographyTokens.labelLarge(
                           ColorTokens.onSurface.withValues(alpha: 0.5),
                         ).copyWith(fontWeight: FontWeight.w600),
@@ -132,8 +135,8 @@ class MembershipCard extends ConsumerWidget {
                     ),
                     Text(
                       resolvedFet <= 0
-                          ? 'REVIEW PENDING'
-                          : '$resolvedFet ACTIVITY',
+                          ? l10n.membershipReviewPendingUpper.toUpperCase()
+                          : l10n.fanRegistryActivity(resolvedFet).toUpperCase(),
                       style: TypographyTokens.titleLarge(
                         ColorTokens.clubAccent,
                       ).copyWith(fontWeight: FontWeight.w700),

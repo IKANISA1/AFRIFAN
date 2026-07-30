@@ -16,13 +16,26 @@ import {
 } from "./helpers";
 
 const fanEngagementTokenTable = "fan_engagement_token_catalog";
+const MAX_FET_RECORDS = 500;
 
-function normalizeTemplateScope(
-  value: unknown,
-): AdminFanEngagementTemplateScope {
-  return safeString(value).toLowerCase() === "club_specific"
-    ? "club_specific"
-    : "generic";
+function boundedText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") return null;
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : null;
+}
+
+function boundedInteger(value: unknown, minimum: number, maximum: number) {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
 }
 
 function normalizeCode(value: unknown) {
@@ -31,31 +44,106 @@ function normalizeCode(value: unknown) {
 
 function mapAdminFanEngagementToken(
   row: Record<string, unknown>,
-): AdminFanEngagementToken {
+): AdminFanEngagementToken | null {
+  const id = boundedText(row.id, 128);
+  const clubValue = row.club_id ?? row.clubId;
+  const clubId =
+    clubValue == null ? null : boundedInteger(clubValue, 1, 2_147_483_647);
+  const code = boundedText(row.code, 4)?.toUpperCase() ?? null;
+  const scopeValue = boundedText(
+    row.template_scope ?? row.templateScope,
+    32,
+  )?.toLowerCase();
+  const category = boundedText(row.category, 80);
+  const itemName = boundedText(row.item_name ?? row.itemName, 160);
+  const fetValue = boundedInteger(row.fet_value ?? row.fetValue, 0, 1_000_000);
+  const triggerCondition = boundedText(
+    row.trigger_condition ?? row.triggerCondition,
+    500,
+  );
+  const activationTiming = boundedText(
+    row.activation_timing ?? row.activationTiming,
+    240,
+  );
+  const description = boundedText(row.description, 2_000);
+  const badgeNameValue = row.badge_name ?? row.badgeName;
+  const badgeName =
+    badgeNameValue == null || badgeNameValue === ""
+      ? ""
+      : boundedText(badgeNameValue, 80);
+  const notesValue = row.implementation_notes ?? row.implementationNotes;
+  const implementationNotes =
+    notesValue == null || notesValue === ""
+      ? null
+      : boundedText(notesValue, 2_000);
+  const sortOrder = boundedInteger(
+    row.sort_order ?? row.sortOrder,
+    0,
+    1_000_000,
+  );
+  const isActiveValue = row.is_active ?? row.isActive;
+  const createdAt = boundedDate(row.created_at ?? row.createdAt);
+  const updatedAt = boundedDate(row.updated_at ?? row.updatedAt);
+
+  if (
+    id == null ||
+    (clubValue != null && clubId == null) ||
+    code == null ||
+    !/^G\d{3}$/.test(code) ||
+    (scopeValue !== "generic" && scopeValue !== "club_specific") ||
+    category == null ||
+    itemName == null ||
+    fetValue == null ||
+    triggerCondition == null ||
+    activationTiming == null ||
+    description == null ||
+    badgeName == null ||
+    implementationNotes === undefined ||
+    sortOrder == null ||
+    typeof isActiveValue !== "boolean" ||
+    createdAt == null ||
+    updatedAt == null
+  ) {
+    return null;
+  }
+
   return {
-    id: toIdString(row.id, crypto.randomUUID()),
-    clubId: typeof row.club_id === "number" ? row.club_id : null,
-    code: normalizeCode(row.code),
-    templateScope: normalizeTemplateScope(row.template_scope),
-    category: safeString(row.category, "General"),
-    itemName: safeString(row.item_name, "Fan engagement reward"),
-    fetValue: safeNumber(row.fet_value, 0),
-    triggerCondition: safeString(
-      row.trigger_condition,
-      "Defined by club operations.",
-    ),
-    activationTiming: safeString(row.activation_timing, "Always on"),
-    description: safeString(row.description),
-    badgeName: safeString(row.badge_name),
-    implementationNotes: safeString(row.implementation_notes) || null,
-    sortOrder: safeNumber(row.sort_order, 0),
-    isActive: row.is_active !== false,
-    createdAt: safeString(row.created_at, new Date().toISOString()),
-    updatedAt: safeString(
-      row.updated_at,
-      safeString(row.created_at, new Date().toISOString()),
-    ),
+    id,
+    clubId,
+    code,
+    templateScope: scopeValue,
+    category,
+    itemName,
+    fetValue,
+    triggerCondition,
+    activationTiming,
+    description,
+    badgeName,
+    implementationNotes,
+    sortOrder,
+    isActive: isActiveValue,
+    createdAt,
+    updatedAt,
   };
+}
+
+export function normalizeAdminFanEngagementTokens(
+  value: unknown,
+): AdminFanEngagementToken[] {
+  if (!Array.isArray(value)) return [];
+  const normalized: AdminFanEngagementToken[] = [];
+  const seen = new Set<string>();
+  for (const entry of value.slice(0, MAX_FET_RECORDS)) {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      continue;
+    }
+    const token = mapAdminFanEngagementToken(entry as Record<string, unknown>);
+    if (token != null && !seen.has(token.id)) {
+      normalized.push(token);
+      seen.add(token.id);
+    }
+  }
+  return normalized;
 }
 
 function buildPayload(
@@ -108,9 +196,13 @@ function buildPayload(
 export async function getAdminFanEngagementTokens(
   client: SupabaseClient,
   access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ): Promise<AdminFanEngagementToken[]> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminFanEngagementToken[]>("gamification");
+    const result = await requestAdminApi<unknown>("gamification", {
+      signal: options.signal,
+    });
+    return normalizeAdminFanEngagementTokens(result);
   }
 
   const clubId = requireAdminClubId(access, "load FET catalog");
@@ -119,17 +211,14 @@ export async function getAdminFanEngagementTokens(
     .select("*")
     .eq("club_id", clubId)
     .order("sort_order", { ascending: true })
-    .order("code", { ascending: true });
+    .order("code", { ascending: true })
+    .limit(MAX_FET_RECORDS);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return Array.isArray(data)
-    ? data.map((row) =>
-        mapAdminFanEngagementToken(row as Record<string, unknown>),
-      )
-    : [];
+  return normalizeAdminFanEngagementTokens(data);
 }
 
 export async function saveAdminFanEngagementToken(

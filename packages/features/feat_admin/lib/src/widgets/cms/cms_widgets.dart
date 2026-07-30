@@ -29,27 +29,47 @@ class _SectionHeader extends StatelessWidget {
     required this.title,
     required this.actionLabel,
     required this.onAction,
+    this.actionFocusNode,
   });
 
   final String title;
   final String actionLabel;
-  final VoidCallback onAction;
+  final VoidCallback? onAction;
+  final FocusNode? actionFocusNode;
 
   @override
   Widget build(BuildContext context) {
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.8;
+    final heading = Text(
+      title.toUpperCase(),
+      style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.1),
+    );
+    final action = AfriTextIconButton(
+      key: ValueKey<String>(
+        'admin-cms-action-${actionLabel.toLowerCase().replaceAll(' ', '-')}',
+      ),
+      onPressed: onAction,
+      icon: const Icon(AfriIcons.add, size: 18),
+      label: Text(actionLabel),
+      focusNode: actionFocusNode,
+      style: AfriTextButton.styleFrom(
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
+      ),
+    );
+    if (largeText) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          heading,
+          const SizedBox(height: SpacingTokens.spacing2),
+          action,
+        ],
+      );
+    }
     return Row(
       children: [
-        Expanded(
-          child: Text(
-            title.toUpperCase(),
-            style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.1),
-          ),
-        ),
-        AfriTextIconButton(
-          onPressed: onAction,
-          icon: const Icon(AfriIcons.add, size: 18),
-          label: Text(actionLabel),
-        ),
+        Expanded(child: heading),
+        action,
       ],
     );
   }
@@ -70,47 +90,62 @@ class _EntityCard extends StatelessWidget {
   final String subtitle;
   final String? body;
   final List<String> tags;
-  final VoidCallback onEdit;
-  final VoidCallback onToggle;
+  final VoidCallback? onEdit;
+  final VoidCallback? onToggle;
   final String toggleLabel;
 
   @override
   Widget build(BuildContext context) {
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.8;
+    final tagList = Wrap(
+      spacing: SpacingTokens.spacing2,
+      runSpacing: SpacingTokens.spacing2,
+      children: tags
+          .map(
+            (tag) => Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing3,
+                vertical: SpacingTokens.spacing1,
+              ),
+              decoration: BoxDecoration(
+                color: ColorTokens.surfaceContainerLow,
+                borderRadius: ShapeTokens.buttonRadius,
+              ),
+              child: Text(tag, style: TypographyTokens.labelSmall()),
+            ),
+          )
+          .toList(),
+    );
     return GlassCard(
       animate: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  title.toUpperCase(),
-                  style: TypographyTokens.titleLarge().copyWith(
-                    color: ColorTokens.onSurface,
+          if (largeText) ...[
+            Text(
+              title.toUpperCase(),
+              style: TypographyTokens.titleLarge().copyWith(
+                color: ColorTokens.onSurface,
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            tagList,
+          ] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    title.toUpperCase(),
+                    style: TypographyTokens.titleLarge().copyWith(
+                      color: ColorTokens.onSurface,
+                    ),
                   ),
                 ),
-              ),
-              Wrap(
-                spacing: SpacingTokens.spacing2,
-                children: tags
-                    .map(
-                      (tag) => Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: SpacingTokens.spacing3,
-                          vertical: SpacingTokens.spacing1,
-                        ),
-                        decoration: BoxDecoration(
-                          color: ColorTokens.surfaceContainerLow,
-                          borderRadius: ShapeTokens.buttonRadius,
-                        ),
-                        child: Text(tag, style: TypographyTokens.labelSmall()),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
-          ),
+                const SizedBox(width: SpacingTokens.spacing2),
+                Flexible(child: tagList),
+              ],
+            ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(subtitle, style: TypographyTokens.bodyMedium()),
           if (body != null && body!.trim().isNotEmpty) ...[
@@ -118,18 +153,26 @@ class _EntityCard extends StatelessWidget {
             Text(body!, style: TypographyTokens.bodyMedium()),
           ],
           const SizedBox(height: SpacingTokens.spacing3),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          Wrap(
+            alignment: WrapAlignment.end,
+            spacing: SpacingTokens.spacing2,
+            runSpacing: SpacingTokens.spacing2,
             children: [
               AfriTextIconButton(
                 onPressed: onEdit,
                 icon: const Icon(AfriIcons.edit, size: 18),
                 label: const Text('EDIT'),
+                style: AfriTextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
               AfriTextIconButton(
                 onPressed: onToggle,
                 icon: const Icon(AfriIcons.toggleOn, size: 18),
                 label: Text(toggleLabel),
+                style: AfriTextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -143,7 +186,7 @@ class _ArticleCard extends StatelessWidget {
   const _ArticleCard({required this.article, required this.onTogglePublish});
 
   final Map<String, dynamic> article;
-  final VoidCallback onTogglePublish;
+  final VoidCallback? onTogglePublish;
 
   @override
   Widget build(BuildContext context) {
@@ -160,36 +203,51 @@ class _ArticleCard extends StatelessWidget {
         ? DateFormat('dd MMM HH:mm').format(publishedAt)
         : 'Not published';
 
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.8;
+    final status = Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing3,
+        vertical: SpacingTokens.spacing1,
+      ),
+      decoration: BoxDecoration(
+        color: isPublished
+            ? ColorTokens.clubAccent.withValues(alpha: 0.15)
+            : ColorTokens.surfaceContainerLow,
+        borderRadius: ShapeTokens.buttonRadius,
+      ),
+      child: Text(statusLabel, style: TypographyTokens.labelSmall()),
+    );
+
     return GlassCard(
       animate: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  title.toUpperCase(),
-                  style: TypographyTokens.titleLarge().copyWith(
-                    color: ColorTokens.onSurface,
+          if (largeText) ...[
+            Text(
+              title.toUpperCase(),
+              style: TypographyTokens.titleLarge().copyWith(
+                color: ColorTokens.onSurface,
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Align(alignment: Alignment.centerLeft, child: status),
+          ] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    title.toUpperCase(),
+                    style: TypographyTokens.titleLarge().copyWith(
+                      color: ColorTokens.onSurface,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing3,
-                  vertical: SpacingTokens.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: isPublished
-                      ? ColorTokens.clubAccent.withValues(alpha: 0.15)
-                      : ColorTokens.surfaceContainerLow,
-                  borderRadius: ShapeTokens.buttonRadius,
-                ),
-                child: Text(statusLabel, style: TypographyTokens.labelSmall()),
-              ),
-            ],
-          ),
+                const SizedBox(width: SpacingTokens.spacing2),
+                status,
+              ],
+            ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             '${category.toUpperCase()}  •  $dateLabel${isFeatured ? '  •  FEATURED' : ''}',
@@ -200,12 +258,18 @@ class _ArticleCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               AfriTextIconButton(
+                key: ValueKey<String>(
+                  'admin-cms-publish-${article['id'] ?? 'unknown'}',
+                ),
                 onPressed: onTogglePublish,
                 icon: Icon(
                   isPublished ? AfriIcons.unpublished : AfriIcons.publish,
                   size: 18,
                 ),
                 label: Text(isPublished ? 'UNPUBLISH' : 'PUBLISH'),
+                style: AfriTextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
             ],
           ),

@@ -50,20 +50,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               imagePath: 'assets/onboarding/rayon_matchday_team.webp',
               title: l10n.onboardingBelongTitle,
               body: l10n.onboardingBelongBody(clubLabel),
-              semanticLabel:
-                  '$clubLabel players applauding supporters after a match',
+              semanticLabel: l10n.onboardingBelongImageSemantic(clubLabel),
             ),
             OnboardingSlideId.know => _WelcomeSlide(
               imagePath: 'assets/onboarding/rayon_players_celebrating.webp',
               title: l10n.onboardingKnowTitle,
               body: l10n.onboardingKnowBody(appLabel),
-              semanticLabel: '$clubLabel players celebrating together',
+              semanticLabel: l10n.onboardingKnowImageSemantic(clubLabel),
             ),
             OnboardingSlideId.live => _WelcomeSlide(
               imagePath: 'assets/onboarding/rayon_new_signing.webp',
               title: l10n.onboardingLiveTitle,
               body: l10n.onboardingLiveBody,
-              semanticLabel: '$clubLabel player portrait',
+              semanticLabel: l10n.onboardingLiveImageSemantic(clubLabel),
             ),
           };
         })
@@ -139,12 +138,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       return;
     }
 
-    final message = switch (nextState) {
-      AuthError() => nextState.message,
-      _ => 'Could not start your anonymous session.',
-    };
-
-    AfriToast.error(context, message);
+    AfriToast.error(
+      context,
+      context.afriL10n.onboardingAnonymousSessionUnavailable,
+    );
   }
 
   String _postAuthDestination() {
@@ -219,6 +216,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       l10n: l10n,
       slideIds: snapshot.slides,
     );
+    final statusMessage = switch (snapshot.notice) {
+      OnboardingContentNotice.offlineSaved =>
+        l10n.onboardingOfflineSavedMessage,
+      OnboardingContentNotice.whatsAppUnavailable =>
+        l10n.onboardingWhatsAppLaterMessage,
+      null => null,
+    };
     final safeCurrentSlide = _currentSlide.clamp(0, slides.length - 1);
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.referenceChromeBlack,
@@ -288,7 +292,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                     borderRadius: BorderRadius.circular(
                                       ShapeTokens.radiusMd,
                                     ),
-                                    semanticLabel: '$clubName identity',
+                                    semanticLabel: l10n
+                                        .onboardingIdentitySemantic(clubName),
                                   ),
                                   const Spacer(),
                                   Semantics(
@@ -318,7 +323,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                     largeText: isLargeText,
                                     isSubmitting: _isSubmitting,
                                     isRefreshing: asyncContent.isRefreshing,
-                                    statusMessage: snapshot.message,
+                                    statusMessage: statusMessage,
                                     statusTone:
                                         snapshot.status ==
                                             OnboardingContentStatus
@@ -393,7 +398,11 @@ class _WelcomeBackground extends StatelessWidget {
         image: rightsApproved ? AssetImage(slide.imagePath) : null,
         width: constraints.maxWidth,
         height: constraints.maxHeight,
-        semanticLabel: '${slide.semanticLabel}. Image ${index + 1} of $count',
+        semanticLabel: context.afriL10n.onboardingImageSemantic(
+          slide.semanticLabel,
+          index + 1,
+          count,
+        ),
         provenanceId: 'onboarding:${slide.imagePath}',
         rightsApproved: rightsApproved,
         fit: BoxFit.cover,
@@ -449,6 +458,7 @@ class _WelcomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -480,10 +490,9 @@ class _WelcomeContent extends StatelessWidget {
           height: compact ? SpacingTokens.spacing3 : SpacingTokens.spacing5,
         ),
         if (isRefreshing) ...[
-          const AfriStateBanner(
-            title: 'Refreshing welcome',
-            subtitle:
-                'Keeping the current welcome and choices visible while updates are checked.',
+          AfriStateBanner(
+            title: l10n.onboardingRefreshingTitle,
+            subtitle: l10n.onboardingRefreshingMessage,
             tone: AfriStateBannerTone.info,
             icon: AfriIcons.refresh,
           ),
@@ -491,8 +500,8 @@ class _WelcomeContent extends StatelessWidget {
         ] else if (statusMessage case final String message) ...[
           AfriStateBanner(
             title: whatsAppSignInAvailable
-                ? 'Welcome status'
-                : 'WhatsApp sign-in unavailable',
+                ? l10n.onboardingStatusTitle
+                : l10n.onboardingWhatsAppUnavailable,
             subtitle: message,
             tone: statusTone,
             icon: whatsAppSignInAvailable
@@ -504,8 +513,8 @@ class _WelcomeContent extends StatelessWidget {
         AfriButton(
           key: const ValueKey<String>('onboarding-whatsapp-action'),
           label: whatsAppSignInAvailable
-              ? context.afriL10n.onboardingContinueWhatsApp
-              : 'WhatsApp sign-in unavailable',
+              ? l10n.onboardingContinueWhatsApp
+              : l10n.onboardingWhatsAppUnavailable,
           icon: AfriIcons.chat,
           fullWidth: true,
           enabled: whatsAppSignInAvailable && !isSubmitting,
@@ -548,48 +557,45 @@ class _OnboardingContentState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final error = state.error;
     final failure = error == null
         ? null
         : OnboardingContentFailure.fromError(error);
     final stateView = isEmpty
         ? AfriStateView.empty(
-            title: 'Welcome content unavailable',
-            message:
-                'There is no welcome content to show yet. Refresh or continue without signing in.',
-            actionLabel: 'Refresh',
+            title: l10n.onboardingContentUnavailableTitle,
+            message: l10n.onboardingContentUnavailableMessage,
+            actionLabel: l10n.onboardingRefresh,
             onAction: onRefresh,
           )
         : failure == null
         ? AfriStateView.loading(
-            title: 'Preparing your welcome',
-            message: 'Loading the latest club welcome and sign-in choices.',
+            title: l10n.onboardingPreparingTitle,
+            message: l10n.onboardingPreparingMessage,
           )
         : switch (failure.kind) {
-            OnboardingContentFailureKind.permissionDenied => AfriStateView.error(
-              title: 'Welcome access unavailable',
-              message:
-                  'This welcome cannot be opened for this account. WhatsApp sign-in and guest access remain available.',
-            ),
+            OnboardingContentFailureKind.permissionDenied =>
+              AfriStateView.error(
+                title: l10n.onboardingAccessUnavailableTitle,
+                message: l10n.onboardingAccessUnavailableMessage,
+              ),
             OnboardingContentFailureKind.conflict => AfriStateView.error(
-              title: 'Welcome changed',
-              message:
-                  'The welcome changed while it was opening. Refresh to load the current version.',
-              actionLabel: 'Refresh',
+              title: l10n.onboardingChangedTitle,
+              message: l10n.onboardingChangedMessage,
+              actionLabel: l10n.onboardingRefresh,
               onAction: onRefresh,
             ),
             OnboardingContentFailureKind.securityTimeout => AfriStateView.error(
-              title: 'Welcome security check timed out',
-              message:
-                  'The welcome could not be verified in time. Check your connection and refresh.',
-              actionLabel: 'Refresh',
+              title: l10n.onboardingSecurityTimeoutTitle,
+              message: l10n.onboardingSecurityTimeoutMessage,
+              actionLabel: l10n.onboardingRefresh,
               onAction: onRefresh,
             ),
             OnboardingContentFailureKind.unknown => AfriStateView.error(
-              title: 'Welcome unavailable',
-              message:
-                  'The welcome could not be loaded safely. Try again or continue without signing in.',
-              actionLabel: 'Try again',
+              title: l10n.onboardingUnavailableTitle,
+              message: l10n.onboardingUnavailableMessage,
+              actionLabel: l10n.tryAgain,
               onAction: onRefresh,
             ),
           };
@@ -618,7 +624,9 @@ class _OnboardingContentState extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                             ShapeTokens.radiusMd,
                           ),
-                          semanticLabel: '$clubName identity',
+                          semanticLabel: l10n.onboardingIdentitySemantic(
+                            clubName,
+                          ),
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing5),

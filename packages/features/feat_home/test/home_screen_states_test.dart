@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_home/src/providers/home_feed_provider.dart';
@@ -11,6 +12,7 @@ import 'package:feat_home/src/widgets/contributor_leaderboard.dart';
 import 'package:feat_home/src/widgets/latest_intel_section.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -62,8 +64,7 @@ void main() {
           homeRepository: const _FakeHomeFeedRepository(
             snapshot: HomeFeedSnapshot(
               status: HomeFeedStatus.error,
-              message:
-                  'Live club data is temporarily unavailable. Pull to refresh.',
+              notice: HomeFeedNotice.liveUnavailable,
             ),
           ),
           latestIntelRepository: const _FakeLatestIntelRepository(
@@ -81,35 +82,35 @@ void main() {
       expect(find.text('NO FIXTURE'), findsNothing);
     });
 
-    testWidgets('renders fallback home actions when CMS blocks are unavailable', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _buildApp(
-          homeRepository: const _FakeHomeFeedRepository(
-            snapshot: HomeFeedSnapshot(
-              status: HomeFeedStatus.error,
-              message:
-                  'Live club data is temporarily unavailable. Pull to refresh.',
+    testWidgets(
+      'renders fallback home actions when CMS blocks are unavailable',
+      (tester) async {
+        await tester.pumpWidget(
+          _buildApp(
+            homeRepository: const _FakeHomeFeedRepository(
+              snapshot: HomeFeedSnapshot(
+                status: HomeFeedStatus.error,
+                notice: HomeFeedNotice.liveUnavailable,
+              ),
             ),
+            latestIntelRepository: const _FakeLatestIntelRepository(
+              LatestIntelSnapshot(status: LatestIntelStatus.empty),
+            ),
+            featureConfigSnapshot: const PlatformConfigSnapshot(),
+            child: const HomeScreen(),
           ),
-          latestIntelRepository: const _FakeLatestIntelRepository(
-            LatestIntelSnapshot(status: LatestIntelStatus.empty),
-          ),
-          featureConfigSnapshot: const PlatformConfigSnapshot(),
-          child: const HomeScreen(),
-        ),
-      );
+        );
 
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump();
 
-      expect(find.textContaining('temporarily unavailable'), findsOneWidget);
-      expect(find.text('Tickets'), findsOneWidget);
-      expect(find.text('Join Gikundiro'), findsOneWidget);
-      expect(find.text('Fan Zone'), findsOneWidget);
-      expect(find.text('Shop'), findsOneWidget);
-    });
+        expect(find.textContaining('temporarily unavailable'), findsOneWidget);
+        expect(find.text('Tickets'), findsOneWidget);
+        expect(find.text('Join Gikundiro'), findsOneWidget);
+        expect(find.text('Fan Zone'), findsOneWidget);
+        expect(find.text('Shop'), findsOneWidget);
+      },
+    );
 
     testWidgets(
       'renders local shortcuts when active club scope is unavailable',
@@ -132,7 +133,12 @@ void main() {
 
         expect(find.byType(AfriErrorView), findsNothing);
         expect(find.textContaining('Could not resolve'), findsNothing);
-        expect(find.text(homeFeedLocalFallbackMessage), findsOneWidget);
+        expect(
+          find.text(
+            'Live club data is temporarily unavailable. Pull to refresh.',
+          ),
+          findsOneWidget,
+        );
         expect(find.text('Matchday'), findsOneWidget);
         expect(find.text('Open Fan Zone'), findsOneWidget);
         expect(find.text('Tickets'), findsOneWidget);
@@ -141,6 +147,43 @@ void main() {
         expect(find.text('Shop'), findsOneWidget);
       },
     );
+
+    testWidgets('renders Home task surfaces in French and Kinyarwanda', (
+      tester,
+    ) async {
+      for (final testCase in <({Locale locale, String ticket, String notice})>[
+        (
+          locale: const Locale('fr'),
+          ticket: 'Billets',
+          notice:
+              'Les données du club sont temporairement indisponibles. Tirez pour actualiser.',
+        ),
+        (
+          locale: const Locale('rw'),
+          ticket: 'Amatike',
+          notice: 'Amakuru ya klabu ntari kuboneka ubu. Kurura hasi uvugurure.',
+        ),
+      ]) {
+        await tester.pumpWidget(
+          _buildApp(
+            homeRepository: _FakeHomeFeedRepository(
+              snapshot: localHomeFeedFallbackSnapshot(),
+            ),
+            latestIntelRepository: const _FakeLatestIntelRepository(
+              LatestIntelSnapshot(status: LatestIntelStatus.empty),
+            ),
+            featureConfigSnapshot: const PlatformConfigSnapshot(),
+            locale: testCase.locale,
+            child: const HomeScreen(),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump();
+
+        expect(find.text(testCase.ticket), findsOneWidget);
+        expect(find.text(testCase.notice), findsOneWidget);
+      }
+    });
 
     testWidgets('matches the redesigned home command center layout', (
       tester,
@@ -279,8 +322,7 @@ void main() {
           homeRepository: const _FakeHomeFeedRepository(
             snapshot: HomeFeedSnapshot(
               status: HomeFeedStatus.error,
-              message:
-                  'Live club data is temporarily unavailable. Pull to refresh.',
+              notice: HomeFeedNotice.liveUnavailable,
             ),
           ),
           latestIntelRepository: const _FakeLatestIntelRepository(
@@ -448,8 +490,7 @@ void main() {
           latestIntelRepository: const _FakeLatestIntelRepository(
             LatestIntelSnapshot(
               status: LatestIntelStatus.error,
-              message:
-                  'Latest Intel is temporarily unavailable. Pull to refresh.',
+              notice: LatestIntelNotice.unavailable,
             ),
           ),
           child: const Scaffold(body: LatestIntelSection()),
@@ -531,7 +572,7 @@ void main() {
       homeRepository: const _FakeHomeFeedRepository(
         snapshot: HomeFeedSnapshot(
           status: HomeFeedStatus.error,
-          message: 'Live club data is temporarily unavailable.',
+          notice: HomeFeedNotice.liveUnavailable,
         ),
       ),
     );
@@ -855,6 +896,7 @@ Widget _buildApp({
   PlatformConfigSnapshot featureConfigSnapshot = _testFeatureConfigSnapshot,
   Brightness brightness = Brightness.dark,
   bool highContrast = false,
+  Locale locale = const Locale('en'),
   List<Override> overrides = const [],
 }) {
   return ProviderScope(
@@ -868,20 +910,31 @@ Widget _buildApp({
       ),
       ...overrides,
     ],
-    child: MaterialApp(
-      builder: (context, child) {
-        final mediaQuery = MediaQuery.of(context);
-        return MediaQuery(
-          data: mediaQuery.copyWith(disableAnimations: true),
-          child: child!,
-        );
-      },
-      theme: ClubTheme.from(
-        ClubConfig.fallback(),
-        brightness: brightness,
-        highContrast: highContrast,
+    child: AfriLocalizationsScope(
+      locale: locale,
+      child: MaterialApp(
+        locale: locale.languageCode == 'rw' ? const Locale('en') : locale,
+        localizationsDelegates: const [
+          AfriLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AfriLocalizations.supportedLocales,
+        builder: (context, child) {
+          final mediaQuery = MediaQuery.of(context);
+          return MediaQuery(
+            data: mediaQuery.copyWith(disableAnimations: true),
+            child: child!,
+          );
+        },
+        theme: ClubTheme.from(
+          ClubConfig.fallback(),
+          brightness: brightness,
+          highContrast: highContrast,
+        ),
+        home: child,
       ),
-      home: child,
     ),
   );
 }

@@ -26,6 +26,65 @@ function mapDistribution(value: unknown): ContentDistribution {
     : "both";
 }
 
+function boundedText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : null;
+}
+
+function boundedOptionalText(value: unknown, maxLength: number) {
+  if (value == null || value === "") {
+    return "";
+  }
+  return boundedText(value, maxLength);
+}
+
+function boundedInteger(value: unknown, minimum: number, maximum: number) {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
+}
+
+function boundedImageUrl(value: unknown) {
+  if (value == null || value === "") {
+    return null;
+  }
+  const text = boundedText(value, 2_048);
+  if (text == null) {
+    return null;
+  }
+  if (text.startsWith("/") && !text.startsWith("//")) {
+    return text;
+  }
+  try {
+    const url = new URL(text);
+    return url.protocol === "https:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+function boundedInternalRoute(value: unknown) {
+  const route = boundedText(value, 512);
+  return route != null && route.startsWith("/") && !route.startsWith("//")
+    ? route
+    : null;
+}
+
+function boundedDistribution(value: unknown): ContentDistribution | null {
+  return value === "web" || value === "app" || value === "both" ? value : null;
+}
+
 // ─── Home Banners ────────────────────────────────────────
 
 function mapBanner(row: Record<string, unknown>): HomeBanner {
@@ -44,10 +103,75 @@ function mapBanner(row: Record<string, unknown>): HomeBanner {
   };
 }
 
+export function normalizeAdminBanners(value: unknown): HomeBanner[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 500).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const id = boundedText(record.id, 128);
+    const title = boundedText(record.title, 200);
+    const subtitle = boundedOptionalText(record.subtitle, 400);
+    const badgeLabel = boundedOptionalText(record.badgeLabel, 40);
+    const ctaLabel = boundedOptionalText(record.ctaLabel, 80);
+    const route = boundedInternalRoute(record.route);
+    const imageUrl = boundedImageUrl(record.imageUrl);
+    const sortOrder = boundedInteger(record.sortOrder, -10_000, 10_000);
+    const updatedAt = boundedDate(record.updatedAt);
+    const distribution =
+      record.distribution === "web" ||
+      record.distribution === "app" ||
+      record.distribution === "both"
+        ? record.distribution
+        : null;
+
+    if (
+      id == null ||
+      title == null ||
+      subtitle == null ||
+      badgeLabel == null ||
+      ctaLabel == null ||
+      route == null ||
+      sortOrder == null ||
+      typeof record.isActive !== "boolean" ||
+      distribution == null ||
+      updatedAt == null
+    ) {
+      return [];
+    }
+
+    return [
+      {
+        id,
+        title,
+        subtitle,
+        badgeLabel,
+        ctaLabel,
+        route,
+        imageUrl,
+        sortOrder,
+        isActive: record.isActive,
+        distribution,
+        updatedAt,
+      },
+    ];
+  });
+}
+
 export async function getAdminBanners(
   client: SupabaseClient,
   _access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<HomeBanner[]>("cms-banners", {
+      signal: options.signal,
+    });
+  }
   const clubId = requireAdminClubId(_access, "load home banners");
   const { data, error } = await client
     .from("home_banners")
@@ -76,6 +200,12 @@ export async function saveAdminBanner(
     distribution?: "web" | "app" | "both";
   },
 ) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<string>("cms-banners", {
+      method: "POST",
+      body: input,
+    });
+  }
   const clubId = requireAdminClubId(_access, "save home banners");
   const payload: Record<string, unknown> = {
     club_id: clubId,
@@ -116,6 +246,13 @@ export async function deleteAdminBanner(
   bannerId: string,
   expectedUpdatedAt: string,
 ) {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("cms-banners", {
+      method: "DELETE",
+      query: { id: bannerId, expected_updated_at: expectedUpdatedAt },
+    });
+    return;
+  }
   const clubId = requireAdminClubId(_access, "delete home banners");
   await deleteAdminRecordWithAuditIfUnchanged(
     client,
@@ -163,14 +300,117 @@ function mapContentType(row: Record<string, unknown>): CmsContentType {
   };
 }
 
+export function normalizeAdminContentTypes(value: unknown): CmsContentType[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 100).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const contentType = boundedText(record.contentType, 160);
+    const label = boundedText(record.label, 200);
+    const description =
+      record.description == null
+        ? null
+        : boundedOptionalText(record.description, 500);
+    const defaultDistribution = boundedDistribution(record.defaultDistribution);
+    const sortOrder = boundedInteger(record.sortOrder, -10_000, 10_000);
+
+    if (
+      contentType == null ||
+      label == null ||
+      (record.description != null && description == null) ||
+      defaultDistribution == null ||
+      sortOrder == null ||
+      typeof record.isActive !== "boolean"
+    ) {
+      return [];
+    }
+
+    return {
+      contentType,
+      label,
+      description,
+      defaultDistribution,
+      sortOrder,
+      isActive: record.isActive,
+    };
+  });
+}
+
+export function normalizeAdminContentBlocks(value: unknown): CmsContent[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 500).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const id = boundedText(record.id, 128);
+    const contentType = boundedText(record.contentType, 160);
+    const title = boundedText(record.title, 200);
+    const subtitle = boundedOptionalText(record.subtitle, 400);
+    const body = boundedOptionalText(record.body, 12_000);
+    const rationale = boundedOptionalText(record.rationale, 1_000);
+    const iconEmoji = boundedOptionalText(record.iconEmoji, 32);
+    const ctaAction = boundedOptionalText(record.ctaAction, 512);
+    const ctaLabel = boundedOptionalText(record.ctaLabel, 80);
+    const sortOrder = boundedInteger(record.sortOrder, -10_000, 10_000);
+    const distribution = boundedDistribution(record.distribution);
+    const updatedAt = boundedDate(record.updatedAt);
+
+    if (
+      id == null ||
+      contentType == null ||
+      title == null ||
+      subtitle == null ||
+      body == null ||
+      rationale == null ||
+      iconEmoji == null ||
+      ctaAction == null ||
+      ctaLabel == null ||
+      sortOrder == null ||
+      distribution == null ||
+      updatedAt == null ||
+      typeof record.isActive !== "boolean"
+    ) {
+      return [];
+    }
+
+    return {
+      id,
+      contentType,
+      title,
+      subtitle,
+      body,
+      rationale,
+      iconEmoji,
+      ctaAction,
+      ctaLabel,
+      sortOrder,
+      isActive: record.isActive,
+      distribution,
+      updatedAt,
+    };
+  });
+}
+
 export async function getAdminContentTypes(
   client: SupabaseClient,
   _access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ): Promise<CmsContentType[]> {
   void _access;
 
   if (typeof window !== "undefined") {
-    return requestAdminApi<CmsContentType[]>("cms-content-types");
+    return requestAdminApi<CmsContentType[]>("cms-content-types", {
+      signal: options.signal,
+    });
   }
 
   const { data, error } = await client.rpc("get_platform_content_types", {
@@ -186,9 +426,12 @@ export async function getAdminContentTypes(
 export async function getAdminContentBlocks(
   client: SupabaseClient,
   _access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ) {
   if (typeof window !== "undefined") {
-    return requestAdminApi<CmsContent[]>("cms-content");
+    return requestAdminApi<CmsContent[]>("cms-content", {
+      signal: options.signal,
+    });
   }
 
   const clubId = requireAdminClubId(_access, "load CMS content blocks");
@@ -309,12 +552,54 @@ function mapConfig(row: Record<string, unknown>): AppConfigEntry {
   };
 }
 
+export function normalizeAdminAppConfig(value: unknown): AppConfigEntry[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.slice(0, 500).flatMap((entry) => {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      return [];
+    }
+    const record = entry as Record<string, unknown>;
+    const id = boundedText(record.id, 128);
+    const key = boundedText(record.key, 160);
+    const configValue = boundedOptionalText(record.value, 4_000);
+    const description = boundedOptionalText(record.description, 500);
+    const country = boundedOptionalText(record.country, 32);
+    const updatedAt = boundedDate(record.updatedAt);
+
+    if (
+      id == null ||
+      key == null ||
+      configValue == null ||
+      description == null ||
+      country == null ||
+      updatedAt == null
+    ) {
+      return [];
+    }
+
+    return {
+      id,
+      key,
+      value: configValue,
+      description,
+      country,
+      updatedAt,
+    };
+  });
+}
+
 export async function getAdminAppConfig(
   client: SupabaseClient,
   _access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ) {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AppConfigEntry[]>("cms-config");
+    return requestAdminApi<AppConfigEntry[]>("cms-config", {
+      signal: options.signal,
+    });
   }
 
   const clubId = requireAdminClubId(_access, "load app configuration");

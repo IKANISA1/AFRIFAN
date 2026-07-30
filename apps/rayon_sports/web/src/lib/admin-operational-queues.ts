@@ -35,7 +35,7 @@ export const adminOperationalQueues: readonly AdminOperationalQueueContract[] = 
     id: "dashboard.activity",
     route: "/admin",
     label: "Recent admin activity",
-    sourceFile: "src/app/admin/page.tsx",
+    sourceFile: "src/components/admin/admin-dashboard-surface.tsx",
     rendering: "list",
     selection: readOnlySelection,
     details: "inline",

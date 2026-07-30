@@ -50,23 +50,36 @@ function mapNewsRow(row: Record<string, unknown>): NewsArticle {
   };
 }
 
-export const getNewsArticles = cache(async function getNewsArticles() {
+async function loadNewsArticles() {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return [];
 
-  try {
-    const table = await resolveAccessibleTable(client, newsTableCandidates);
-    const { data } = await client
-      .from(table)
-      .select("*")
-      .eq("club_id", activeClub.numericId)
-      .eq("is_published", true)
-      .order("published_at", { ascending: false })
-      .limit(12);
+  const table = await resolveAccessibleTable(client, newsTableCandidates);
+  const { data, error } = await client
+    .from(table)
+    .select("*")
+    .eq("club_id", activeClub.numericId)
+    .eq("is_published", true)
+    .order("published_at", { ascending: false })
+    .limit(24);
 
-    if (!data || data.length == 0) return [];
-    return data.map((row) => mapNewsRow(row));
+  if (error) {
+    throw error;
+  }
+  if (!data || data.length == 0) {
+    return [];
+  }
+  return data.map((row) => mapNewsRow(row));
+}
+
+export const getNewsArticlesStrict = cache(async function getNewsArticlesStrict() {
+  return loadNewsArticles();
+});
+
+export const getNewsArticles = cache(async function getNewsArticles() {
+  try {
+    return await loadNewsArticles();
   } catch {
     return [];
   }
@@ -78,3 +91,10 @@ export const getNewsArticleById = cache(async function getNewsArticleById(
   const articles = await getNewsArticles();
   return articles.find((article) => article.id === articleId) ?? null;
 });
+
+export const getNewsArticleByIdStrict = cache(
+  async function getNewsArticleByIdStrict(articleId: string) {
+    const articles = await getNewsArticlesStrict();
+    return articles.find((article) => article.id === articleId) ?? null;
+  },
+);

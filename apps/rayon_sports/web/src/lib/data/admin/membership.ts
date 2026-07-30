@@ -7,7 +7,7 @@ import type {
   AdminMembershipPackage,
   MembershipTierSlug,
 } from "@/lib/types";
-import { safeNumber, safeString, toIdString } from "@/lib/utils";
+import { safeNumber } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
   deleteAdminRecordWithAuditIfUnchanged,
@@ -16,30 +16,99 @@ import {
   requireAdminClubId,
 } from "./helpers";
 
-function mapAdminMembershipPackage(row: Record<string, unknown>): AdminMembershipPackage {
-  const title = safeString(row.title, "Membership tier");
-  const description = safeString(row.description, "Priority access and supporter benefits.");
-  const tier = normalizeMembershipTier(safeString(row.tier));
+const MAX_MEMBERSHIP_PACKAGES = 100;
+
+function boundedText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") return null;
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : null;
+}
+
+function boundedInteger(value: unknown, minimum: number, maximum: number) {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedAmount(value: unknown, maximum: number) {
+  return typeof value === "number" &&
+    Number.isFinite(value) &&
+    value >= 0 &&
+    value <= maximum
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
+}
+
+function mapAdminMembershipPackage(
+  row: Record<string, unknown>,
+): AdminMembershipPackage | null {
+  const id = boundedText(row.id, 128);
+  const clubValue = row.club_id ?? row.clubId;
+  const clubId =
+    clubValue == null ? null : boundedInteger(clubValue, 1, 2_147_483_647);
+  const tier = normalizeMembershipTier(row.tier);
+  const title = boundedText(row.title, 160);
+  const description = boundedText(row.description, 2_000);
+  const sortOrder = boundedInteger(
+    row.sort_order ?? row.sortOrder,
+    0,
+    1_000_000,
+  );
+  const annualPrice = boundedAmount(
+    row.annual_price ?? row.annualPrice ?? row.price,
+    1_000_000_000,
+  );
+  const rawPerks = row.benefits ?? row.perks;
+  const perks =
+    Array.isArray(rawPerks) && rawPerks.length <= 20
+      ? rawPerks.map((entry) => boundedText(entry, 240))
+      : null;
+  const isActive = row.is_active ?? row.isActive;
+  const createdAt = boundedDate(row.created_at ?? row.createdAt);
+  const updatedAt = boundedDate(row.updated_at ?? row.updatedAt);
+
+  if (
+    id == null ||
+    (clubValue != null && clubId == null) ||
+    tier == null ||
+    title == null ||
+    description == null ||
+    sortOrder == null ||
+    annualPrice == null ||
+    perks == null ||
+    perks.some((item) => item == null) ||
+    typeof isActive !== "boolean" ||
+    createdAt == null ||
+    updatedAt == null
+  ) {
+    return null;
+  }
+
   return {
-    id: toIdString(row.id, crypto.randomUUID()),
-    clubId: typeof row.club_id === "number" ? row.club_id : null,
+    id,
+    clubId,
     tier,
     title,
     description,
-    sortOrder: safeNumber(row.sort_order, 0),
-    annualPrice: safeNumber(row.annual_price, safeNumber(row.price, 0)),
-    perks: Array.isArray(row.benefits)
-      ? row.benefits.map((entry) => safeString(entry)).filter(Boolean)
-      : Array.isArray(row.perks)
-        ? row.perks.map((entry) => safeString(entry)).filter(Boolean)
-        : description.split(/[.;]/).map((item) => item.trim()).filter((item) => item.length > 2).slice(0, 4),
-    isActive: row.is_active !== false,
-    createdAt: safeString(row.created_at, new Date().toISOString()),
-    updatedAt: safeString(row.updated_at, new Date(0).toISOString()),
+    sortOrder,
+    annualPrice,
+    perks: perks as string[],
+    isActive,
+    createdAt,
+    updatedAt,
   };
 }
 
-function normalizeMembershipTier(value: string): MembershipTierSlug {
+function normalizeMembershipTier(value: unknown): MembershipTierSlug | null {
+  if (typeof value !== "string") return null;
   switch (value.trim().toLowerCase()) {
     case "ingenzi-imanzi":
     case "ingenzi_imanzi":
@@ -57,27 +126,51 @@ function normalizeMembershipTier(value: string): MembershipTierSlug {
     case "gold":
       return "gold";
     default:
-      return "imena";
+      return null;
   }
+}
+
+export function normalizeAdminMembershipPackages(
+  value: unknown,
+): AdminMembershipPackage[] {
+  if (!Array.isArray(value)) return [];
+  const packages: AdminMembershipPackage[] = [];
+  const seen = new Set<string>();
+  for (const entry of value.slice(0, MAX_MEMBERSHIP_PACKAGES)) {
+    if (entry == null || typeof entry !== "object" || Array.isArray(entry)) {
+      continue;
+    }
+    const membershipPackage = mapAdminMembershipPackage(
+      entry as Record<string, unknown>,
+    );
+    if (membershipPackage != null && !seen.has(membershipPackage.id)) {
+      packages.push(membershipPackage);
+      seen.add(membershipPackage.id);
+    }
+  }
+  return packages;
 }
 
 export async function getAdminMembershipPackages(
   client: SupabaseClient,
   access: AdminAccess,
+  options: { signal?: AbortSignal } = {},
 ): Promise<AdminMembershipPackage[]> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminMembershipPackage[]>("membership");
+    const result = await requestAdminApi<unknown>("membership", {
+      signal: options.signal,
+    });
+    return normalizeAdminMembershipPackages(result);
   }
   const clubId = requireAdminClubId(access, "load membership packages");
   const { data, error } = await client
     .from(membershipTable)
     .select("*")
     .eq("club_id", clubId)
-    .order("sort_order", { ascending: true });
+    .order("sort_order", { ascending: true })
+    .limit(MAX_MEMBERSHIP_PACKAGES);
   if (error) throw new Error(error.message);
-  return Array.isArray(data)
-    ? data.map((row) => mapAdminMembershipPackage(row as Record<string, unknown>))
-    : [];
+  return normalizeAdminMembershipPackages(data);
 }
 
 export async function saveAdminMembershipPackage(

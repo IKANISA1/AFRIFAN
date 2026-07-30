@@ -19,45 +19,61 @@ class SeatTypeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AfriPressFeedback(
-      onTap: onTap,
-      builder: (context, state) => AfriSurfaceCard(
-        padding: const EdgeInsets.all(SpacingTokens.spacing4),
-        child: AnimatedContainer(
-          duration: AfriMotion.quick,
-          decoration: BoxDecoration(
-            color: selected
-                ? ColorTokens.clubPrimary.withValues(alpha: 0.1)
-                : ColorTokens.transparent,
-            borderRadius: ShapeTokens.cardRadius,
-            border: BorderTokens.all(
-              color:
-                  selected ? ColorTokens.clubPrimary : ColorTokens.transparent,
+    final stackContent = MediaQuery.textScalerOf(context).scale(16) >= 28;
+    final description = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: TypographyTokens.labelLarge()),
+        const SizedBox(height: SpacingTokens.spacing1),
+        Text(subtitle, style: TypographyTokens.bodyMedium()),
+      ],
+    );
+    final price = Text(
+      amount,
+      style: TypographyTokens.headlineMedium().copyWith(
+        color: selected ? ColorTokens.clubPrimary : ColorTokens.clubAccent,
+      ),
+    );
+
+    return Semantics(
+      button: true,
+      selected: selected,
+      label:
+          selected ? 'Selected ticket access $title' : 'Ticket access $title',
+      child: AfriPressFeedback(
+        onTap: onTap,
+        builder: (context, state) => AfriSurfaceCard(
+          padding: const EdgeInsets.all(SpacingTokens.spacing4),
+          child: AnimatedContainer(
+            duration: AfriMotion.quick,
+            decoration: BoxDecoration(
+              color: selected
+                  ? ColorTokens.clubPrimary.withValues(alpha: 0.1)
+                  : ColorTokens.transparent,
+              borderRadius: ShapeTokens.cardRadius,
+              border: BorderTokens.all(
+                color: selected
+                    ? ColorTokens.clubPrimary
+                    : ColorTokens.transparent,
+              ),
             ),
-          ),
-          padding: const EdgeInsets.all(SpacingTokens.spacing2),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: TypographyTokens.labelLarge()),
-                    const SizedBox(height: SpacingTokens.spacing1),
-                    Text(subtitle, style: TypographyTokens.bodyMedium()),
-                  ],
-                ),
-              ),
-              const SizedBox(width: SpacingTokens.spacing4),
-              Text(
-                amount,
-                style: TypographyTokens.headlineMedium().copyWith(
-                  color: selected
-                      ? ColorTokens.clubPrimary
-                      : ColorTokens.clubAccent,
-                ),
-              ),
-            ],
+            padding: const EdgeInsets.all(SpacingTokens.spacing2),
+            child: stackContent
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      description,
+                      const SizedBox(height: SpacingTokens.spacing3),
+                      price,
+                    ],
+                  )
+                : Row(
+                    children: [
+                      Expanded(child: description),
+                      const SizedBox(width: SpacingTokens.spacing4),
+                      price,
+                    ],
+                  ),
           ),
         ),
       ),

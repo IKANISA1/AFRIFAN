@@ -1,79 +1,317 @@
 /**
- * Admin settings — club profile management.
+ * Admin settings — strict, club-scoped profile management.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { fallbackClubProfile } from "@/lib/content";
-import type { AdminAccess, AdminClubScopeOption, ClubProfile } from "@/lib/types";
+import type {
+  AdminAccess,
+  AdminClubScopeOption,
+  ClubProfile,
+  FeatureFlags,
+} from "@/lib/types";
 import {
   isValidHexColor,
   normalizeHexColorInput,
-  safeNumber,
-  safeString,
 } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
-  adminClubIdOrNull,
   clubTable,
-  mutateRecordWithVariants,
+  mutateRecordWithVariantsIfUnchanged,
   requireAdminClubId,
 } from "./helpers";
 
-function mapAdminClubProfile(row: Record<string, unknown>): ClubProfile {
-  const resolvedShortName = safeString(
-    row.club_name,
-    safeString(row.nickname_brand_identity, fallbackClubProfile.shortName),
+const MAX_CLUB_SCOPE_OPTIONS = 500;
+const MAX_FEATURE_FLAGS = 50;
+const profileProjection = [
+  "id",
+  "club_name",
+  "club_slug",
+  "nickname_brand_identity",
+  "country_iso_code",
+  "league",
+  "region",
+  "currency_code",
+  "currency_symbol",
+  "default_language",
+  "supported_languages",
+  "official_contact",
+  "facebook_url",
+  "x_twitter_url",
+  "instagram_url",
+  "tiktok_url",
+  "official_logo_url",
+  "primary_color_hex",
+  "secondary_color_hex",
+  "accent_color_hex",
+  "feature_flags",
+  "updated_at",
+].join(", ");
+
+export interface AdminClubProfile extends ClubProfile {
+  updatedAt: string;
+}
+
+export interface AdminClubProfileInput extends ClubProfile {
+  expectedUpdatedAt: string;
+}
+
+function boundedText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") return null;
+  const text = value.trim();
+  return text.length > 0 && text.length <= maxLength ? text : null;
+}
+
+function nullableText(value: unknown, maxLength: number) {
+  if (value == null || value === "") return null;
+  return boundedText(value, maxLength) ?? undefined;
+}
+
+function positiveInteger(value: unknown) {
+  return typeof value === "number" &&
+    Number.isSafeInteger(value) &&
+    value > 0
+    ? value
+    : null;
+}
+
+function boundedDate(value: unknown) {
+  const text = boundedText(value, 64);
+  return text != null && Number.isFinite(Date.parse(text)) ? text : null;
+}
+
+function normalizeHttpsUrl(value: unknown) {
+  const text = nullableText(value, 2_048);
+  if (text == null || text === undefined) return text;
+  try {
+    const url = new URL(text);
+    return url.protocol === "https:" &&
+      url.username === "" &&
+      url.password === "" &&
+      url.hash === ""
+      ? url.toString()
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function normalizeFeatureFlags(value: unknown): FeatureFlags | null {
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const entries = Object.entries(value);
+  if (entries.length > MAX_FEATURE_FLAGS) {
+    return null;
+  }
+
+  const flags: FeatureFlags = {};
+  for (const [key, enabled] of entries) {
+    if (
+      !/^[a-z][a-z0-9_]{0,63}$/.test(key) ||
+      typeof enabled !== "boolean"
+    ) {
+      return null;
+    }
+    flags[key] = enabled;
+  }
+  return flags;
+}
+
+function normalizeLanguageList(value: unknown) {
+  if (!Array.isArray(value) || value.length === 0 || value.length > 10) {
+    return null;
+  }
+
+  const languages = value.map((entry) =>
+    typeof entry === "string" ? entry.trim().toLowerCase() : "",
   );
+  if (
+    languages.some((entry) => !/^[a-z]{2,3}(?:-[a-z0-9]{2,8})?$/.test(entry))
+  ) {
+    return null;
+  }
+  return [...new Set(languages)];
+}
+
+export function normalizeAdminClubProfile(
+  value: unknown,
+): AdminClubProfile | null {
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const row = value as Record<string, unknown>;
+  const id = positiveInteger(row.id);
+  const clubName = boundedText(row.clubName ?? row.club_name, 160);
+  const clubSlug = boundedText(row.clubSlug ?? row.club_slug, 160);
+  const nickname = boundedText(
+    row.nickname ?? row.nickname_brand_identity,
+    120,
+  );
+  const shortName =
+    boundedText(row.shortName ?? row.short_name, 80) ?? nickname;
+  const countryCode = boundedText(
+    row.countryCode ?? row.country_iso_code,
+    2,
+  )?.toUpperCase();
+  const league =
+    nullableText(row.league, 160);
+  const region =
+    nullableText(row.region, 160);
+  const currencyCode = boundedText(
+    row.currencyCode ?? row.currency_code,
+    3,
+  )?.toUpperCase();
+  const currencySymbol = boundedText(
+    row.currencySymbol ?? row.currency_symbol,
+    12,
+  );
+  const defaultLanguage = boundedText(
+    row.defaultLanguage ?? row.default_language,
+    16,
+  )?.toLowerCase();
+  const supportedLanguages = normalizeLanguageList(
+    row.supportedLanguages ?? row.supported_languages,
+  );
+  const officialContact =
+    nullableText(row.officialContact ?? row.official_contact, 500);
+  const facebookUrl = normalizeHttpsUrl(row.facebookUrl ?? row.facebook_url);
+  const xUrl = normalizeHttpsUrl(row.xUrl ?? row.x_twitter_url);
+  const instagramUrl = normalizeHttpsUrl(
+    row.instagramUrl ?? row.instagram_url,
+  );
+  const tiktokUrl = normalizeHttpsUrl(row.tiktokUrl ?? row.tiktok_url);
+  const officialLogoUrl = normalizeHttpsUrl(
+    row.officialLogoUrl ?? row.official_logo_url,
+  );
+  const primaryColorHex = normalizeHexColorInput(
+    boundedText(row.primaryColorHex ?? row.primary_color_hex, 7) ?? "",
+  );
+  const secondaryColorHex = normalizeHexColorInput(
+    boundedText(row.secondaryColorHex ?? row.secondary_color_hex, 7) ?? "",
+  );
+  const accentColorHex = normalizeHexColorInput(
+    boundedText(row.accentColorHex ?? row.accent_color_hex, 7) ?? "",
+  );
+  const featureFlags = normalizeFeatureFlags(
+    row.featureFlags ?? row.feature_flags,
+  );
+  const updatedAt = boundedDate(row.updatedAt ?? row.updated_at);
+
+  if (
+    id == null ||
+    clubName == null ||
+    clubSlug == null ||
+    !/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/.test(clubSlug) ||
+    shortName == null ||
+    nickname == null ||
+    countryCode == null ||
+    !/^[A-Z]{2}$/.test(countryCode) ||
+    league === undefined ||
+    region === undefined ||
+    currencyCode == null ||
+    !/^[A-Z]{3}$/.test(currencyCode) ||
+    currencySymbol == null ||
+    defaultLanguage == null ||
+    supportedLanguages == null ||
+    !supportedLanguages.includes(defaultLanguage) ||
+    officialContact === undefined ||
+    facebookUrl === undefined ||
+    xUrl === undefined ||
+    instagramUrl === undefined ||
+    tiktokUrl === undefined ||
+    officialLogoUrl === undefined ||
+    !isValidHexColor(primaryColorHex) ||
+    !isValidHexColor(secondaryColorHex) ||
+    !isValidHexColor(accentColorHex) ||
+    featureFlags == null ||
+    updatedAt == null
+  ) {
+    return null;
+  }
 
   return {
-    id: safeNumber(row.id, fallbackClubProfile.id),
-    clubName: safeString(row.club_name, fallbackClubProfile.clubName),
-    clubSlug: safeString(row.club_slug, fallbackClubProfile.clubSlug),
-    shortName: resolvedShortName,
-    nickname: safeString(row.nickname_brand_identity, fallbackClubProfile.nickname),
-    countryCode: safeString(row.country_iso_code, fallbackClubProfile.countryCode),
-    league: safeString(row.league, fallbackClubProfile.league),
-    region: safeString(row.region, fallbackClubProfile.region),
-    currencyCode: safeString(row.currency_code, fallbackClubProfile.currencyCode),
-    currencySymbol: safeString(row.currency_symbol, fallbackClubProfile.currencySymbol),
-    defaultLanguage: safeString(row.default_language, fallbackClubProfile.defaultLanguage),
-    supportedLanguages: Array.isArray(row.supported_languages)
-      ? row.supported_languages.map((entry) => safeString(entry)).filter(Boolean)
-      : fallbackClubProfile.supportedLanguages,
-    officialContact: safeString(row.official_contact, fallbackClubProfile.officialContact),
-    facebookUrl: safeString(row.facebook_url) || null,
-    xUrl: safeString(row.x_twitter_url) || null,
-    instagramUrl: safeString(row.instagram_url) || null,
-    tiktokUrl: safeString(row.tiktok_url) || null,
-    officialLogoUrl: safeString(row.official_logo_url) || null,
-    primaryColorHex: safeString(row.primary_color_hex, fallbackClubProfile.primaryColorHex),
-    secondaryColorHex: safeString(row.secondary_color_hex, fallbackClubProfile.secondaryColorHex),
-    accentColorHex: safeString(row.accent_color_hex, fallbackClubProfile.accentColorHex),
-    featureFlags:
-      typeof row.feature_flags === "object" && row.feature_flags != null
-        ? (row.feature_flags as Record<string, boolean>)
-        : fallbackClubProfile.featureFlags,
+    id,
+    clubName,
+    clubSlug,
+    shortName,
+    nickname,
+    countryCode,
+    league: league ?? "",
+    region: region ?? "",
+    currencyCode,
+    currencySymbol,
+    defaultLanguage,
+    supportedLanguages,
+    officialContact: officialContact ?? "",
+    facebookUrl,
+    xUrl,
+    instagramUrl,
+    tiktokUrl,
+    officialLogoUrl,
+    primaryColorHex,
+    secondaryColorHex,
+    accentColorHex,
+    featureFlags,
+    updatedAt,
   };
 }
 
-function mapAdminClubScopeOption(
-  row: Record<string, unknown>,
-): AdminClubScopeOption {
-  const resolvedShortName = safeString(
-    row.club_name,
-    safeString(row.nickname_brand_identity, fallbackClubProfile.shortName),
+function normalizeAdminClubScopeOption(
+  value: unknown,
+): AdminClubScopeOption | null {
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  const row = value as Record<string, unknown>;
+  const id = positiveInteger(row.id);
+  const clubName = boundedText(row.clubName ?? row.club_name, 160);
+  const shortName =
+    boundedText(row.shortName ?? row.short_name, 80) ??
+    boundedText(row.nickname_brand_identity, 120);
+  const clubSlug = boundedText(row.clubSlug ?? row.club_slug, 160);
+  const currencyCode = boundedText(
+    row.currencyCode ?? row.currency_code,
+    3,
+  )?.toUpperCase();
+  const currencySymbol = boundedText(
+    row.currencySymbol ?? row.currency_symbol,
+    12,
   );
-
+  if (
+    id == null ||
+    clubName == null ||
+    shortName == null ||
+    clubSlug == null ||
+    !/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/.test(clubSlug) ||
+    currencyCode == null ||
+    !/^[A-Z]{3}$/.test(currencyCode) ||
+    currencySymbol == null
+  ) {
+    return null;
+  }
   return {
-    id: safeNumber(row.id, fallbackClubProfile.id).toString(),
-    clubName: safeString(row.club_name, fallbackClubProfile.clubName),
-    shortName: resolvedShortName,
-    clubSlug: safeString(row.club_slug, fallbackClubProfile.clubSlug),
-    currencyCode: safeString(row.currency_code, fallbackClubProfile.currencyCode),
-    currencySymbol: safeString(
-      row.currency_symbol,
-      fallbackClubProfile.currencySymbol,
-    ),
+    id: id.toString(),
+    clubName,
+    shortName,
+    clubSlug,
+    currencyCode,
+    currencySymbol,
   };
+}
+
+function normalizeAdminClubScopeOptions(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  const options: AdminClubScopeOption[] = [];
+  const seen = new Set<string>();
+  for (const entry of value.slice(0, MAX_CLUB_SCOPE_OPTIONS)) {
+    const option = normalizeAdminClubScopeOption(entry);
+    if (option != null && !seen.has(option.id)) {
+      options.push(option);
+      seen.add(option.id);
+    }
+  }
+  return options;
 }
 
 export async function getAdminClubScopeOptions(
@@ -81,7 +319,9 @@ export async function getAdminClubScopeOptions(
   access: AdminAccess,
 ): Promise<AdminClubScopeOption[]> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<AdminClubScopeOption[]>("club-scope");
+    return normalizeAdminClubScopeOptions(
+      await requestAdminApi<unknown>("club-scope"),
+    );
   }
 
   let query = client
@@ -89,76 +329,83 @@ export async function getAdminClubScopeOptions(
     .select(
       "id, club_name, nickname_brand_identity, club_slug, currency_code, currency_symbol",
     )
-    .order("club_name", { ascending: true });
+    .order("club_name", { ascending: true })
+    .limit(MAX_CLUB_SCOPE_OPTIONS);
 
-  if (!access.isSuperAdmin && access.availableClubIds.length > 0) {
+  if (!access.isSuperAdmin) {
     const allowedIds = access.availableClubIds
-      .map((value) => safeNumber(value, Number.NaN))
-      .filter(Number.isFinite);
+      .map((value) => Number(value))
+      .filter(
+        (value) => Number.isSafeInteger(value) && value > 0,
+      );
+    if (allowedIds.length === 0) {
+      return [];
+    }
     query = query.in("id", allowedIds);
   }
 
   const { data, error } = await query;
-
   if (error) {
     throw new Error(error.message);
   }
-
-  const options = (data ?? []).map((row) =>
-    mapAdminClubScopeOption(row as Record<string, unknown>),
-  );
-
-  if (options.length > 0) {
-    return options;
-  }
-
-  const currentClubId = adminClubIdOrNull(access);
-  if (currentClubId == null) {
-    return [];
-  }
-
-  return [
-    {
-      id: currentClubId.toString(),
-      clubName: fallbackClubProfile.clubName,
-      shortName: fallbackClubProfile.shortName,
-      clubSlug: fallbackClubProfile.clubSlug,
-      currencyCode: fallbackClubProfile.currencyCode,
-      currencySymbol: fallbackClubProfile.currencySymbol,
-    },
-  ];
+  return normalizeAdminClubScopeOptions(data);
 }
 
 export async function getAdminClubProfile(
   client: SupabaseClient,
   access: AdminAccess,
-): Promise<ClubProfile> {
+  options: { signal?: AbortSignal } = {},
+): Promise<AdminClubProfile | null> {
   if (typeof window !== "undefined") {
-    return requestAdminApi<ClubProfile>("settings");
+    const response = await requestAdminApi<unknown>("settings", {
+      signal: options.signal,
+    });
+    if (response == null) {
+      return null;
+    }
+    const profile = normalizeAdminClubProfile(response);
+    if (profile == null) {
+      throw new Error("The club settings response was invalid.");
+    }
+    return profile;
   }
+
   const clubId = requireAdminClubId(access, "load club settings");
   const { data, error } = await client
     .from(clubTable)
-    .select("*")
+    .select(profileProjection)
     .eq("id", clubId)
     .maybeSingle();
 
   if (error) {
     throw new Error(error.message);
   }
+  if (data == null) {
+    return null;
+  }
 
-  return data
-    ? mapAdminClubProfile(data as Record<string, unknown>)
-    : {
-        ...fallbackClubProfile,
-        id: clubId,
-      };
+  const profile = normalizeAdminClubProfile(data);
+  if (profile == null) {
+    throw new Error("The stored club settings failed validation.");
+  }
+  return profile;
+}
+
+function requireProfileInput(input: AdminClubProfileInput) {
+  const profile = normalizeAdminClubProfile({
+    ...input,
+    updatedAt: input.expectedUpdatedAt,
+  });
+  if (profile == null) {
+    throw new Error("Review the club settings and correct invalid values.");
+  }
+  return profile;
 }
 
 export async function saveAdminClubProfile(
   client: SupabaseClient,
   access: AdminAccess,
-  input: ClubProfile,
+  input: AdminClubProfileInput,
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<string>("settings", {
@@ -166,82 +413,64 @@ export async function saveAdminClubProfile(
       body: input,
     });
   }
-  const clubId =
-    safeNumber(input.id, Number.NaN) > 0
-      ? safeNumber(input.id, Number.NaN)
-      : requireAdminClubId(access, "save club settings");
-  const clubSlug = safeString(input.clubSlug);
-  if (!clubSlug) {
-    throw new Error("Club slug is required to save club settings.");
+  if (!access.isSuperAdmin && access.role !== "club_admin") {
+    throw new Error("Club admin access is required to update settings.");
   }
 
-  const primaryColorHex = normalizeHexColorInput(input.primaryColorHex);
-  const secondaryColorHex = normalizeHexColorInput(input.secondaryColorHex);
-  const accentColorHex = normalizeHexColorInput(input.accentColorHex);
-
-  if (!isValidHexColor(primaryColorHex)) {
-    throw new Error("Primary team color must be a valid hex value like #1A7A4E.");
+  const clubId = requireAdminClubId(access, "save club settings");
+  const profile = requireProfileInput(input);
+  if (profile.id !== clubId) {
+    throw new Error("Club settings can only be changed in the active scope.");
   }
 
-  if (!isValidHexColor(secondaryColorHex)) {
-    throw new Error("Secondary team color must be a valid hex value like #0E2B55.");
+  const existing = await client
+    .from(clubTable)
+    .select("id, club_slug")
+    .eq("id", clubId)
+    .maybeSingle();
+  if (existing.error) {
+    throw new Error(existing.error.message);
   }
-
-  if (!isValidHexColor(accentColorHex)) {
-    throw new Error("Accent team color must be a valid hex value like #F7B500.");
+  if (existing.data == null) {
+    throw new Error("The selected club settings record no longer exists.");
+  }
+  if (existing.data.club_slug !== profile.clubSlug) {
+    throw new Error("The locked club scope changed. Reload settings.");
   }
 
   const payload = {
-    club_name: input.clubName.trim(),
-    club_slug: clubSlug,
-    short_name: input.shortName.trim(),
-    nickname_brand_identity: input.nickname.trim(),
-    country_iso_code: input.countryCode.trim(),
-    league: input.league.trim(),
-    region: input.region.trim(),
-    currency_code: input.currencyCode.trim(),
-    currency_symbol: input.currencySymbol.trim(),
-    default_language: input.defaultLanguage.trim(),
-    supported_languages: input.supportedLanguages,
-    official_contact: input.officialContact.trim(),
-    facebook_url: safeString(input.facebookUrl) || null,
-    x_twitter_url: safeString(input.xUrl) || null,
-    instagram_url: safeString(input.instagramUrl) || null,
-    tiktok_url: safeString(input.tiktokUrl) || null,
-    official_logo_url: safeString(input.officialLogoUrl) || null,
-    primary_color_hex: primaryColorHex,
-    secondary_color_hex: secondaryColorHex,
-    accent_color_hex: accentColorHex,
-    feature_flags: input.featureFlags,
+    club_name: profile.clubName,
+    club_slug: profile.clubSlug,
+    short_name: profile.shortName,
+    nickname_brand_identity: profile.nickname,
+    country_iso_code: profile.countryCode,
+    league: profile.league || null,
+    region: profile.region || null,
+    currency_code: profile.currencyCode,
+    currency_symbol: profile.currencySymbol,
+    default_language: profile.defaultLanguage,
+    supported_languages: profile.supportedLanguages,
+    official_contact: profile.officialContact || null,
+    facebook_url: profile.facebookUrl,
+    x_twitter_url: profile.xUrl,
+    instagram_url: profile.instagramUrl,
+    tiktok_url: profile.tiktokUrl,
+    official_logo_url: profile.officialLogoUrl,
+    primary_color_hex: profile.primaryColorHex,
+    secondary_color_hex: profile.secondaryColorHex,
+    accent_color_hex: profile.accentColorHex,
+    feature_flags: profile.featureFlags,
   };
   const payloadWithoutShortName = Object.fromEntries(
     Object.entries(payload).filter(([key]) => key !== "short_name"),
   ) as Record<string, unknown>;
 
-  const existing = await client
-    .from(clubTable)
-    .select("id")
-    .eq("id", clubId)
-    .maybeSingle();
-
-  if (existing.error) {
-    throw new Error(existing.error.message);
-  }
-
-  const existingId =
-    typeof existing.data?.id === "number"
-      ? existing.data.id.toString()
-      : null;
-  const payloadVariants = existingId
-    ? [payload, payloadWithoutShortName]
-    : [
-        { id: clubId, ...payload },
-        { id: clubId, ...payloadWithoutShortName },
-        payload,
-        payloadWithoutShortName,
-      ];
-
-  return mutateRecordWithVariants(client, clubTable, existingId, payloadVariants, {
-    id: clubId,
-  });
+  return mutateRecordWithVariantsIfUnchanged(
+    client,
+    clubTable,
+    clubId.toString(),
+    profile.updatedAt,
+    [payload, payloadWithoutShortName],
+    { id: clubId },
+  );
 }

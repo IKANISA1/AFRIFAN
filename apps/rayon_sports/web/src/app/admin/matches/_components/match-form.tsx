@@ -17,6 +17,7 @@ interface MatchFormProps {
   access: AdminAccess;
   onSaved: () => Promise<void>;
   onConflict: () => Promise<void>;
+  onFailure?: (error: unknown) => void;
   onCancel?: () => void;
 }
 
@@ -28,6 +29,7 @@ export function MatchForm({
   access,
   onSaved,
   onConflict,
+  onFailure,
   onCancel,
 }: MatchFormProps) {
   async function submitForm(formData: FormData) {
@@ -68,9 +70,11 @@ export function MatchForm({
     } catch (caught) {
       if (isAdminMutationConflict(caught)) {
         await onConflict();
+        return;
       }
+      onFailure?.(caught);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not save match.",
+        "Could not confirm the fixture change.",
         "error",
       );
     }
@@ -96,7 +100,7 @@ export function MatchForm({
             <button
               type="button"
               onClick={onCancel}
-              className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
             >
               Close
             </button>
@@ -105,7 +109,7 @@ export function MatchForm({
             <button
               type="button"
               onClick={() => setForm(emptyForm)}
-              className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
             >
               Clear
             </button>
@@ -240,7 +244,7 @@ export function MatchForm({
       </div>
       <button
         type="submit"
-        className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+        className="min-h-12 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
       >
         {form.id ? "Save fixture" : "Create fixture"}
       </button>

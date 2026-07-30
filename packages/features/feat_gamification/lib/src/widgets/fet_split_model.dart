@@ -18,7 +18,11 @@ class FetSplitModel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: SpacingTokens.spacing3,
+            runSpacing: SpacingTokens.spacing2,
             children: [
               Text(
                 'Points share',
@@ -26,7 +30,6 @@ class FetSplitModel extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: SpacingTokens.spacing2,
