@@ -31,6 +31,9 @@ const fileFacts = (file) => {
 
 const route = read(routePath);
 const design = read(designPath);
+const externalPreflight = read(externalPreflightPath);
+const exactHeadRun = externalPreflight.github_actions.exact_head_run;
+const exactHeadRunSummary = `exact-HEAD GitHub Actions run ${exactHeadRun.id} for ${exactHeadRun.head_sha} ended in ${exactHeadRun.conclusion} with ${exactHeadRun.job_count} jobs and ${exactHeadRun.log_available ? "available" : "no"} logs`;
 const closure = route.state_closure;
 if (
   closure.open_cell_count !== 0 ||
@@ -61,7 +64,7 @@ const incompleteUpdates = {
   "MOB-09":
     "Settings recovery, destructive behavior and the corrected compact-overflow presentation have local source, test and admitted browser evidence. Physical-device and assistive-technology proof remains open.",
   "EVID-03":
-    "One thousand three hundred seventy-nine deterministic Flutter/native-TV exact-pixel baselines remain hash-governed, and all applicable web routes now have admitted exact-current screenshot or response evidence. Local visual review, source freshness, privacy scanning and artifact retention controls pass. Actual execution of the golden and route-evidence contracts on the pinned CI runtime remains open because exact-HEAD GitHub Actions run 30530007393 ended in startup_failure with zero jobs and no logs.",
+    `One thousand three hundred seventy-nine deterministic Flutter/native-TV exact-pixel baselines remain hash-governed, and all applicable web routes now have admitted exact-current screenshot or response evidence. Local visual review, source freshness, privacy scanning and artifact retention controls pass. Actual execution of the golden and route-evidence contracts on the pinned CI runtime remains open because ${exactHeadRunSummary}.`,
   "EVID-04":
     "All 176 routes retain governed screenshot or response evidence. The final sixteen Admin PWA/Venue bundles and the native-TV remote/context checkpoint passed controlled visual/accessibility review and admission. Accountable human design approval for the final product surfaces remains open and has not been inferred.",
   "ADMIN-09":
@@ -70,7 +73,7 @@ const incompleteUpdates = {
 
 const retainedTaskUpdates = {
   "GOV-06":
-    "The controlled Flutter runtime is reconciled at 3.44.4 across local configuration and release tooling. The exact-HEAD GitHub Actions run 30530007393 ended in startup_failure with zero jobs and no logs, so it is not pinned-runtime execution evidence. Dirty-change ownership, a reviewed clean candidate, and actual CI execution remain open.",
+    `The controlled Flutter runtime is reconciled at 3.44.4 across local configuration and release tooling. Commit ${externalPreflight.candidate.git_head} is pushed to origin/main as the reviewed implementation candidate; the primary worktree retains only the explicitly preserved unrelated melos.yaml deletion and four local agent-history files. ${exactHeadRunSummary}, so it is not pinned-runtime execution evidence. Actual CI execution remains open.`,
   "A11Y-02":
     "The native-TV AVD now provides exact directional focus, center, Menu overlay and focus-restoration evidence, while automated semantics tests remain green. The current device preflight still found the paired iPhone 12 Pro unavailable and no attached Android or native-TV device. Current iOS VoiceOver and Android TalkBack or TV screen-reader traversal recordings on physical devices remain absent; emulator and automated semantics evidence do not close this task.",
   "EVID-06":
@@ -78,7 +81,7 @@ const retainedTaskUpdates = {
   "EVID-07":
     "All 136 admitted local evidence bundles have exact provenance sidecars covering 1,367 artifacts, including the reviewed native-TV remote/context and generic mobile pairing-link checkpoint; 1,379 golden baselines remain separately hash-governed. Clean-candidate and pinned-CI execution remain separate under GOV-06 and EVID-08.",
   "EVID-08":
-    "CI configuration generates and validates route, archetype and component ledgers, source compliance, all 1,379 golden digests, interaction differentiation, endpoint contracts, evidence provenance, privacy patterns and platform builds. The latest verified exact-HEAD GitHub Actions run ended in startup_failure with zero jobs and no logs, so no pinned-runtime job executed. The current local set has 136 admitted bundles, zero pending bundles, 2,137 admitted route cells and zero open cells, including exact-current native-TV remote/context and iOS generic-link registration evidence. Actual pinned-runtime CI execution and every external release gate remain open.",
+    `CI configuration generates and validates route, archetype and component ledgers, source compliance, all 1,379 golden digests, interaction differentiation, endpoint contracts, evidence provenance, privacy patterns and platform builds. ${exactHeadRunSummary}, so no pinned-runtime job executed. The current local set has 136 admitted bundles, zero pending bundles, 2,137 admitted route cells and zero open cells, including exact-current native-TV remote/context and iOS generic-link registration evidence. Actual pinned-runtime CI execution and every external release gate remain open.`,
   "TV-04":
     "Automated native-TV focus and remote contracts pass. EV-249 now proves exact-current Android TV AVD cold launch, D-pad up/down reachability, center renewal, dedicated Menu context behavior, localized retry/close actions and focus restoration from Android UI hierarchies and screenshots. Product-scope-dependent rows/details/overlays and physical TV/remote, overscan and screen-reader proof remain open, so TV-04 remains verified incomplete.",
   "TV-05":
@@ -86,7 +89,7 @@ const retainedTaskUpdates = {
   "TV-09":
     "The current preflight found no attached Android or native-TV device. Production signing credentials, a signed AAB and certificate fingerprint, managed-track/store processing, representative-hardware soak, crash/ANR dashboard evidence, device inventory/revocation drill, and operations-owner sign-off remain absent.",
   "REL-01":
-    "Release configuration, runtime pins, validation contracts, provenance controls and current local platform-build evidence exist. The checkout remains dirty and unsealed, the exact-HEAD GitHub Actions run ended in startup_failure with zero jobs, and no reviewed clean candidate or reproducible pinned-CI result exists. REL-01 therefore remains verified incomplete.",
+    `Release configuration, runtime pins, validation contracts, provenance controls and current local platform-build evidence exist, and reviewed implementation candidate ${externalPreflight.candidate.git_head} is verified on origin/main. The primary worktree retains explicitly preserved unrelated local changes, and ${exactHeadRunSummary}; no reproducible pinned-CI result exists. REL-01 therefore remains verified incomplete.`,
   "REL-02":
     "An exact-current production-flavor Android AAB dry-run passes with a destroyed ephemeral self-signed key, and three release-readiness integration journeys pass on an Android API 36 emulator. REL-02 is verified incomplete because the artifact is not production-signed or store-processed and complete physical-Android runtime, TalkBack, permissions, deep links, offline/retry, destructive-flow, performance and live-backend proof is absent.",
   "REL-03":
@@ -195,6 +198,15 @@ for (const task of validation.tasks) {
         ]),
       ];
     }
+    if (["GOV-06", "EVID-03", "EVID-08", "REL-01"].includes(task.id)) {
+      task.evidence = [
+        ...new Set([
+          ...(task.evidence ?? []),
+          "EV-250",
+          "output/implementation_goal_20260724/external-execution-preflight-20260802.json",
+        ]),
+      ];
+    }
     if (["REL-07", "REL-08"].includes(task.id)) {
       task.evidence = [
         ...new Set([
@@ -252,9 +264,9 @@ validation.current_checkpoint = {
     venue_portal: 0,
     web_api: 0,
   },
-  latest_evidence: "EV-249",
-  latest_decision: "DEC-241",
-  latest_issue: "ISS-232",
+  latest_evidence: "EV-250",
+  latest_decision: "DEC-242",
+  latest_issue: "ISS-233",
   affected_remaining_task_ids: remainingIds,
   latest_local_route_closure:
     "all 176 routes remain governed; all 2,137 applicable cells are admitted, 679 are explicitly N/A, zero cells are open and closure_complete=true",
@@ -293,8 +305,9 @@ validation.current_checkpoint = {
   external_execution_preflight: {
     path: externalPreflightPath,
     ...fileFacts(externalPreflightPath),
-    github_actions_exact_head_run: 30530007393,
-    github_actions_conclusion: "startup_failure_no_jobs_or_logs",
+    github_actions_exact_head_run: exactHeadRun.id,
+    github_actions_exact_head_sha: exactHeadRun.head_sha,
+    github_actions_conclusion: `${exactHeadRun.conclusion}_${exactHeadRun.job_count}_jobs_${exactHeadRun.log_available ? "logs_available" : "no_logs"}`,
     paired_ios_device_state: "unavailable",
     attached_android_device_count: 0,
     attached_native_tv_device_count: 0,
