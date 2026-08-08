@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -45,19 +46,24 @@ class _PredictionDetailScreenState
         .read(predictionDetailProvider(widget.predictionId).notifier)
         .cancel();
     if (!mounted || !outcome.isSuccess) return;
-    AfriToast.success(context, 'Pick cancelled.');
+    AfriToast.success(context, context.afriL10n.gamePredictionPickCancelled);
   }
 
   Future<void> _copySummary(PredictionDetail detail) async {
+    final l10n = context.afriL10n;
     final score = detail.hasScoreline
         ? '${detail.homeScore}-${detail.awayScore}'
-        : 'pending';
-    final summary =
-        '${detail.homeTeam} vs ${detail.awayTeam} · ${detail.marketName} · '
-        '${detail.selectedOutcome} · $score';
+        : l10n.gamePredictionScorePending;
+    final summary = l10n.gamePredictionSummaryClipboard(
+      detail.homeTeam,
+      detail.awayTeam,
+      detail.marketName,
+      detail.selectedOutcome,
+      score,
+    );
     await Clipboard.setData(ClipboardData(text: summary));
     if (!mounted) return;
-    AfriToast.success(context, 'Activity summary copied to clipboard.');
+    AfriToast.success(context, l10n.gamePredictionSummaryCopied);
   }
 
   Color _statusColor(PredictionDetail detail) {
@@ -70,45 +76,50 @@ class _PredictionDetailScreenState
     };
   }
 
-  String _statusLabel(PredictionDetail detail) {
+  String _statusLabel(AfriLocalizations l10n, PredictionDetail detail) {
     return switch (detail.status) {
-      PredictionStatus.won => 'WON',
-      PredictionStatus.lost => 'LOST',
-      PredictionStatus.cancelled => 'CANCELLED',
-      PredictionStatus.void_ => 'VOID',
-      _ => 'PENDING',
+      PredictionStatus.won => l10n.gamePredictionStatusWon,
+      PredictionStatus.lost => l10n.gamePredictionStatusLost,
+      PredictionStatus.cancelled => l10n.gamePredictionStatusCancelled,
+      PredictionStatus.void_ => l10n.gamePredictionStatusVoid,
+      _ => l10n.gamePredictionStatusPending,
     };
   }
 
-  String _formatDateTime(DateTime? value) {
-    if (value == null) return 'TBD';
+  String _formatDateTime(BuildContext context, DateTime? value) {
+    if (value == null) return context.afriL10n.gamePredictionDateTbd;
     final local = value.toLocal();
-    final hh = local.hour.toString().padLeft(2, '0');
-    final mm = local.minute.toString().padLeft(2, '0');
-    return '${local.day}/${local.month}/${local.year} • $hh:$mm';
+    final date = '${local.day}/${local.month}/${local.year}';
+    final time =
+        '${local.hour.toString().padLeft(2, '0')}:'
+        '${local.minute.toString().padLeft(2, '0')}';
+    return context.afriL10n.gamePredictionDateTime(date, time);
   }
 
-  String _settlementMessage(PredictionDetail detail) {
+  String _settlementMessage(AfriLocalizations l10n, PredictionDetail detail) {
     if (detail.isWon) {
-      return 'This pick settled successfully and credited ${detail.fetEarned} points.';
+      return l10n.gamePredictionWonSettlement(detail.fetEarned);
     }
     if (detail.isLost) {
       return detail.correctOutcome == null || detail.correctOutcome!.isEmpty
-          ? 'This pick did not settle in your favour.'
-          : 'Official outcome: ${detail.correctOutcome!.toUpperCase()}.';
+          ? l10n.gamePredictionLostSettlement
+          : l10n.gamePredictionOfficialOutcomeMessage(
+              detail.correctOutcome!.toUpperCase(),
+            );
     }
     if (detail.status == PredictionStatus.cancelled) {
-      return 'This pick was cancelled before the fixture locked.';
+      return l10n.gamePredictionCancelledSettlement;
     }
     if (detail.status == PredictionStatus.void_) {
-      return 'This pick was voided and no points were awarded.';
+      return l10n.gamePredictionVoidSettlement;
     }
-    return 'This pick is locked and will settle when official results arrive.';
+    return l10n.gamePredictionPendingSettlement;
   }
 
   Widget _buildFailureView(Object error, bool isOnline) {
     final failure = PredictionDetailFailure.fromError(error);
     final content = _PredictionDetailFailureContent.fromFailure(
+      context.afriL10n,
       failure,
       isOnline,
     );
@@ -123,13 +134,13 @@ class _PredictionDetailScreenState
       PredictionDetailFailureKind.offline => AfriStateView.offline(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? context.afriL10n.gameRefresh : null,
         onAction: onAction,
       ),
       _ => AfriStateView.error(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? context.afriL10n.gameRefresh : null,
         onAction: onAction,
       ),
     };
@@ -146,6 +157,7 @@ class _PredictionDetailScreenState
 
     return ConnectivityBuilder(
       builder: (context, isOnline) {
+        final l10n = context.afriL10n;
         final previousOnline = _lastOnline;
         _lastOnline = isOnline;
         if (previousOnline == false && isOnline) {
@@ -186,7 +198,7 @@ class _PredictionDetailScreenState
                       child: AfriIconButton(
                         icon: AfriIcons.back,
                         onTap: _leaveDetail,
-                        tooltip: 'Back',
+                        tooltip: l10n.gameBack,
                       ),
                     ),
                     Expanded(
@@ -202,11 +214,10 @@ class _PredictionDetailScreenState
                     padding: const EdgeInsets.all(SpacingTokens.spacing6),
                     child: Center(
                       child: AfriStateView.empty(
-                        title: 'Activity not found',
-                        message:
-                            'This pick may have ended, been removed, or no longer be available to your account.',
+                        title: l10n.gamePredictionActivityNotFound,
+                        message: l10n.gamePredictionActivityNotFoundDescription,
                         icon: AfriIcons.versus,
-                        actionLabel: 'Back to predictions',
+                        actionLabel: l10n.gamePredictionBackToPredictions,
                         onAction: _leaveDetail,
                       ),
                     ),
@@ -239,19 +250,18 @@ class _PredictionDetailScreenState
                               title:
                                   routeState.mutation ==
                                       PredictionDetailMutation.cancelling
-                                  ? 'Cancelling pick'
-                                  : 'Refreshing activity',
-                              subtitle:
-                                  'Keeping the confirmed pick visible while the latest status is checked.',
+                                  ? l10n.gamePredictionCancellingPick
+                                  : l10n.gamePredictionRefreshingActivity,
+                              subtitle: l10n.gamePredictionConfirmedPickVisible,
                               tone: AfriStateBannerTone.info,
                               compact: true,
                             ),
                           ),
                         ),
                       if (!configuredActionsEnabled)
-                        const SliverToBoxAdapter(
+                        SliverToBoxAdapter(
                           child: Padding(
-                            padding: EdgeInsets.fromLTRB(
+                            padding: const EdgeInsets.fromLTRB(
                               SpacingTokens.spacing6,
                               SpacingTokens.spacing4,
                               SpacingTokens.spacing6,
@@ -259,18 +269,17 @@ class _PredictionDetailScreenState
                             ),
                             child: AfriStateBanner(
                               icon: AfriIcons.lock,
-                              title: 'Activity actions unavailable',
-                              subtitle:
-                                  'You can review this pick, but cancellation is disabled for this build.',
+                              title: l10n.gamePredictionActionsUnavailable,
+                              subtitle: l10n.gamePredictionCancellationDisabled,
                               tone: AfriStateBannerTone.warning,
                               compact: true,
                             ),
                           ),
                         )
                       else if (!isOnline)
-                        const SliverToBoxAdapter(
+                        SliverToBoxAdapter(
                           child: Padding(
-                            padding: EdgeInsets.fromLTRB(
+                            padding: const EdgeInsets.fromLTRB(
                               SpacingTokens.spacing6,
                               SpacingTokens.spacing4,
                               SpacingTokens.spacing6,
@@ -278,9 +287,9 @@ class _PredictionDetailScreenState
                             ),
                             child: AfriStateBanner(
                               icon: AfriIcons.offline,
-                              title: 'Showing saved activity',
+                              title: l10n.gamePredictionShowingSavedActivity,
                               subtitle:
-                                  'Reconnect and refresh before cancelling this pick.',
+                                  l10n.gamePredictionReconnectBeforeCancelling,
                               tone: AfriStateBannerTone.warning,
                               compact: true,
                             ),
@@ -327,12 +336,12 @@ class _PredictionDetailScreenState
                               AfriIconButton(
                                 icon: AfriIcons.back,
                                 onTap: _leaveDetail,
-                                tooltip: 'Back',
+                                tooltip: l10n.gameBack,
                               ),
                               const SizedBox(width: SpacingTokens.spacing2),
                               Expanded(
                                 child: Text(
-                                  'ACTIVITY DETAIL',
+                                  l10n.gamePredictionActivityDetailTitle,
                                   style: TypographyTokens.headlineSmall()
                                       .copyWith(
                                         fontWeight: FontWeight.w700,
@@ -374,7 +383,7 @@ class _PredictionDetailScreenState
                                         ),
                                       ),
                                       child: Text(
-                                        _statusLabel(detail),
+                                        _statusLabel(l10n, detail),
                                         style: TypographyTokens.labelSmall(
                                           _statusColor(detail),
                                         ),
@@ -384,7 +393,10 @@ class _PredictionDetailScreenState
                                 ),
                                 const SizedBox(height: SpacingTokens.spacing4),
                                 Text(
-                                  '${detail.homeTeamShort.toUpperCase()}  •  ${detail.awayTeamShort.toUpperCase()}',
+                                  l10n.gamePredictionShortTeams(
+                                    detail.homeTeamShort.toUpperCase(),
+                                    detail.awayTeamShort.toUpperCase(),
+                                  ),
                                   textAlign: TextAlign.center,
                                   style: TypographyTokens.titleLarge().copyWith(
                                     fontWeight: FontWeight.w800,
@@ -394,7 +406,10 @@ class _PredictionDetailScreenState
                                 Text(
                                   detail.hasScoreline
                                       ? '${detail.homeScore} - ${detail.awayScore}'
-                                      : _formatDateTime(detail.kickoffAt),
+                                      : _formatDateTime(
+                                          context,
+                                          detail.kickoffAt,
+                                        ),
                                   style: TypographyTokens.metricValue(
                                     detail.hasScoreline
                                         ? ColorTokens.onSurface
@@ -405,7 +420,7 @@ class _PredictionDetailScreenState
                                 Text(
                                   detail.venueName?.trim().isNotEmpty == true
                                       ? detail.venueName!.toUpperCase()
-                                      : 'VENUE TBC',
+                                      : l10n.gamePredictionVenueTbc,
                                   style: TypographyTokens.bodySmall(),
                                 ),
                               ],
@@ -423,7 +438,7 @@ class _PredictionDetailScreenState
                               ? Column(
                                   children: [
                                     _DetailMetric(
-                                      label: 'PICK TYPE',
+                                      label: l10n.gamePredictionPickType,
                                       value:
                                           (detail.marketShortName.isEmpty
                                                   ? detail.marketName
@@ -434,7 +449,7 @@ class _PredictionDetailScreenState
                                       height: SpacingTokens.spacing3,
                                     ),
                                     _DetailMetric(
-                                      label: 'SELECTION',
+                                      label: l10n.gamePredictionSelection,
                                       value: detail.selectedOutcome
                                           .toUpperCase(),
                                       accent: true,
@@ -445,11 +460,15 @@ class _PredictionDetailScreenState
                                     ),
                                     _DetailMetric(
                                       label: detail.isWon
-                                          ? 'EARNED'
-                                          : 'POTENTIAL',
+                                          ? l10n.gamePredictionEarned
+                                          : l10n.gamePredictionPotential,
                                       value: detail.isWon
-                                          ? '+${detail.fetEarned}'
-                                          : '+${detail.fetPotential}',
+                                          ? l10n.gamePredictionPositiveValue(
+                                              detail.fetEarned,
+                                            )
+                                          : l10n.gamePredictionPositiveValue(
+                                              detail.fetPotential,
+                                            ),
                                       accent: true,
                                     ),
                                   ],
@@ -462,7 +481,7 @@ class _PredictionDetailScreenState
                                       children: [
                                         Expanded(
                                           child: _DetailMetric(
-                                            label: 'PICK TYPE',
+                                            label: l10n.gamePredictionPickType,
                                             value:
                                                 (detail.marketShortName.isEmpty
                                                         ? detail.marketName
@@ -476,7 +495,7 @@ class _PredictionDetailScreenState
                                         ),
                                         Expanded(
                                           child: _DetailMetric(
-                                            label: 'SELECTION',
+                                            label: l10n.gamePredictionSelection,
                                             value: detail.selectedOutcome
                                                 .toUpperCase(),
                                             accent: true,
@@ -490,11 +509,15 @@ class _PredictionDetailScreenState
                                     ),
                                     _DetailMetric(
                                       label: detail.isWon
-                                          ? 'EARNED'
-                                          : 'POTENTIAL',
+                                          ? l10n.gamePredictionEarned
+                                          : l10n.gamePredictionPotential,
                                       value: detail.isWon
-                                          ? '+${detail.fetEarned}'
-                                          : '+${detail.fetPotential}',
+                                          ? l10n.gamePredictionPositiveValue(
+                                              detail.fetEarned,
+                                            )
+                                          : l10n.gamePredictionPositiveValue(
+                                              detail.fetPotential,
+                                            ),
                                       accent: true,
                                     ),
                                   ],
@@ -510,33 +533,42 @@ class _PredictionDetailScreenState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'SETTLEMENT',
+                                  l10n.gamePredictionSettlement,
                                   style: TypographyTokens.labelMedium(
                                     ColorTokens.onSurfaceVariant,
                                   ),
                                 ),
                                 const SizedBox(height: SpacingTokens.spacing2),
                                 Text(
-                                  _settlementMessage(detail),
+                                  _settlementMessage(l10n, detail),
                                   style: TypographyTokens.bodyMedium(),
                                 ),
                                 const SizedBox(height: SpacingTokens.spacing4),
                                 _TimelineRow(
-                                  label: 'Placed',
-                                  value: _formatDateTime(detail.placedAt),
+                                  label: l10n.gamePredictionPlaced,
+                                  value: _formatDateTime(
+                                    context,
+                                    detail.placedAt,
+                                  ),
                                 ),
                                 const SizedBox(height: SpacingTokens.spacing2),
                                 _TimelineRow(
-                                  label: 'Kickoff',
-                                  value: _formatDateTime(detail.kickoffAt),
+                                  label: l10n.gamePredictionKickoff,
+                                  value: _formatDateTime(
+                                    context,
+                                    detail.kickoffAt,
+                                  ),
                                 ),
                                 if (detail.settledAt != null) ...[
                                   const SizedBox(
                                     height: SpacingTokens.spacing2,
                                   ),
                                   _TimelineRow(
-                                    label: 'Settled',
-                                    value: _formatDateTime(detail.settledAt),
+                                    label: l10n.gamePredictionSettled,
+                                    value: _formatDateTime(
+                                      context,
+                                      detail.settledAt,
+                                    ),
                                   ),
                                 ],
                                 if ((detail.correctOutcome ?? '')
@@ -546,7 +578,7 @@ class _PredictionDetailScreenState
                                     height: SpacingTokens.spacing2,
                                   ),
                                   _TimelineRow(
-                                    label: 'Official outcome',
+                                    label: l10n.gamePredictionOfficialOutcome,
                                     value: detail.correctOutcome!.toUpperCase(),
                                   ),
                                 ],
@@ -583,7 +615,7 @@ class _PredictionDetailScreenState
                                   key: const ValueKey<String>(
                                     'prediction-detail-cancel-action',
                                   ),
-                                  label: 'CANCEL PICK',
+                                  label: l10n.gamePredictionCancelPick,
                                   variant: AfriButtonVariant.secondary,
                                   enabled: actionsEnabled,
                                   isLoading:
@@ -595,14 +627,14 @@ class _PredictionDetailScreenState
                                 const SizedBox(height: SpacingTokens.spacing3),
                               AfriButton(
                                 label: detail.isSettled
-                                    ? 'COPY RESULT'
-                                    : 'COPY SUMMARY',
+                                    ? l10n.gamePredictionCopyResult
+                                    : l10n.gamePredictionCopySummary,
                                 variant: AfriButtonVariant.secondary,
                                 onTap: () => _copySummary(detail),
                               ),
                               const SizedBox(height: SpacingTokens.spacing3),
                               AfriButton(
-                                label: 'SHARE CARD',
+                                label: l10n.gamePredictionShareCard,
                                 variant: AfriButtonVariant.secondary,
                                 onTap: () => PredictionShareService.share(
                                   data: PredictionShareData.fromDetail(detail),
@@ -614,7 +646,7 @@ class _PredictionDetailScreenState
                                 key: const ValueKey<String>(
                                   'prediction-detail-browse-action',
                                 ),
-                                label: 'BROWSE FIXTURES',
+                                label: l10n.gamePredictionBrowseFixtures,
                                 focusNode: widget.browseFocusNode,
                                 onTap: () => context.go('/fanzone/fixtures'),
                               ),
@@ -645,7 +677,12 @@ class _RetainedPredictionFailureBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = _PredictionDetailFailureContent.fromFailure(failure, true);
+    final l10n = context.afriL10n;
+    final content = _PredictionDetailFailureContent.fromFailure(
+      l10n,
+      failure,
+      true,
+    );
     return Column(
       children: [
         AfriStateBanner(
@@ -663,7 +700,7 @@ class _RetainedPredictionFailureBanner extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
             key: const ValueKey<String>('prediction-detail-refresh-action'),
-            label: 'REFRESH ACTIVITY',
+            label: l10n.gamePredictionRefreshActivity,
             icon: AfriIcons.refresh,
             variant: AfriButtonVariant.outline,
             labelMaxLines: 2,
@@ -687,40 +724,40 @@ class _PredictionDetailFailureContent {
   final bool canRefresh;
 
   factory _PredictionDetailFailureContent.fromFailure(
+    AfriLocalizations l10n,
     PredictionDetailFailure failure,
     bool isOnline,
   ) {
     return switch (failure.kind) {
       PredictionDetailFailureKind.offline => _PredictionDetailFailureContent(
-        title: isOnline ? 'Connection restored' : 'Activity details offline',
+        title: isOnline
+            ? l10n.gamePredictionConnectionRestored
+            : l10n.gamePredictionDetailsOffline,
         message: isOnline
-            ? 'Refresh to confirm the current pick before cancelling it.'
-            : 'Reconnect to confirm the current pick before cancelling it.',
+            ? l10n.gamePredictionRefreshBeforeCancelling
+            : l10n.gamePredictionReconnectToConfirm,
         canRefresh: isOnline,
       ),
       PredictionDetailFailureKind.permissionDenied =>
-        const _PredictionDetailFailureContent(
-          title: 'Activity access unavailable',
-          message:
-              'Your current account cannot review or change this activity.',
+        _PredictionDetailFailureContent(
+          title: l10n.gamePredictionAccessUnavailable,
+          message: l10n.gamePredictionAccessUnavailableDescription,
           canRefresh: false,
         ),
       PredictionDetailFailureKind.conflict => _PredictionDetailFailureContent(
-        title: 'Activity data changed',
-        message: 'Refresh before reviewing the result or cancelling this pick.',
+        title: l10n.gamePredictionDataChanged,
+        message: l10n.gamePredictionDataChangedDescription,
         canRefresh: isOnline,
       ),
       PredictionDetailFailureKind.securityTimeout =>
         _PredictionDetailFailureContent(
-          title: 'Activity security check timed out',
-          message:
-              'No cancellation was confirmed. Refresh before trying again.',
+          title: l10n.gamePredictionSecurityTimeout,
+          message: l10n.gamePredictionSecurityTimeoutDescription,
           canRefresh: isOnline,
         ),
       PredictionDetailFailureKind.unknown => _PredictionDetailFailureContent(
-        title: 'Activity unavailable',
-        message:
-            'The latest pick details could not be confirmed. Refresh to try again.',
+        title: l10n.gamePredictionUnavailable,
+        message: l10n.gamePredictionUnavailableDescription,
         canRefresh: isOnline,
       ),
     };
@@ -742,9 +779,12 @@ class _DetailMetric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return Semantics(
       selected: selected,
-      label: selected ? 'Selected $label $value' : '$label $value',
+      label: selected
+          ? l10n.gamePredictionSelectedMetricSemantics(label, value)
+          : l10n.gamePredictionMetricSemantics(label, value),
       child: GlassCard(
         animate: false,
         child: Column(

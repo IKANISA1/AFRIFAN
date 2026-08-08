@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -173,7 +174,7 @@ class _MarketSelectorContentState
                 ),
               ),
               Text(
-                '${allMarkets.length} pick types',
+                context.afriL10n.gamePickTypeCount(allMarkets.length),
                 style: TypographyTokens.labelSmall(
                   ColorTokens.onSurfaceVariant,
                 ),
@@ -189,7 +190,7 @@ class _MarketSelectorContentState
           child: AfriInputField(
             controller: _searchController,
             onChanged: (value) => setState(() => _query = value),
-            hint: 'Search pick types',
+            hint: context.afriL10n.gameSearchPickTypes,
             prefixIcon: AfriIcons.search,
           ),
         ),
@@ -257,7 +258,7 @@ class _MarketSelectorContentState
                             ),
                           ),
                           child: Text(
-                            '$count',
+                            count.toString(),
                             style: TypographyTokens.metricLabel(
                               isSelected
                                   ? ColorTokens.clubAccent
@@ -303,7 +304,7 @@ class _MarketSelectorContentState
                   ),
                 ),
                 Text(
-                  '${markets.length} ${markets.length == 1 ? 'pick type' : 'pick types'}',
+                  context.afriL10n.gamePickTypeCount(markets.length),
                   style: TypographyTokens.bodySmall(
                     ColorTokens.onSurfaceVariant,
                   ),
@@ -319,7 +320,7 @@ class _MarketSelectorContentState
                     child: _query.isEmpty
                         ? const SizedBox.shrink()
                         : AfriButton(
-                            label: 'Clear search',
+                            label: context.afriL10n.gameClearSearch,
                             icon: AfriIcons.filter,
                             variant: AfriButtonVariant.secondary,
                             onTap: () {
@@ -357,8 +358,11 @@ class _MarketSelectorContentState
           ),
           child: AfriButton(
             label: slip.items.isEmpty
-                ? 'Add picks to unlock round'
-                : 'Open Round · ${slip.items.length} picks · ${slip.totalPotential} pts',
+                ? context.afriL10n.gameAddPicksToUnlock
+                : context.afriL10n.gameOpenRoundSummary(
+                    slip.items.length,
+                    slip.totalPotential,
+                  ),
             icon: AfriIcons.myPicks,
             enabled: slip.items.isNotEmpty,
             onTap: () => context.pop(),
@@ -424,7 +428,7 @@ class _SheetMarketCard extends ConsumerWidget {
                       ),
                     ),
                     child: Text(
-                      '+${market.fetValue} pts',
+                      context.afriL10n.gamePoints(market.fetValue),
                       style: TypographyTokens.labelSmall(
                         ColorTokens.clubAccent,
                       ),
@@ -450,7 +454,7 @@ class _SheetMarketCard extends ConsumerWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           if (market.isLocked)
             Text(
-              'Live only',
+              context.afriL10n.gameLiveOnly,
               style: TypographyTokens.labelMedium(ColorTokens.warning),
             )
           else
@@ -483,7 +487,9 @@ class _SheetMarketCard extends ConsumerWidget {
                             );
                         AfriToast.success(
                           context,
-                          '${outcome.label} added to your round.',
+                          context.afriL10n.gameOutcomeAddedToRound(
+                            outcome.label,
+                          ),
                         );
                       },
                     );

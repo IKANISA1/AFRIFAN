@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -19,6 +20,7 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.afriL10n;
     final profile = ref.watch(currentUserProvider);
     final asyncContent = ref.watch(settingsRouteContentProvider);
     final content = asyncContent.valueOrNull;
@@ -32,7 +34,10 @@ class SettingsScreen extends ConsumerWidget {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Settings', style: TypographyTokens.headlineSmall()),
+        title: Text(
+          l10n.settingsTitle,
+          style: TypographyTokens.headlineSmall(),
+        ),
       ),
       scrollable: false,
       constrainContent: true,
@@ -48,6 +53,7 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           if (_buildRouteStateBanner(
                 asyncContent,
+                l10n: l10n,
                 onRefresh: () =>
                     ref.read(settingsRouteContentProvider.notifier).refresh(),
               )
@@ -64,7 +70,7 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     AfriAvatar(
                       semanticLabel: alias,
-                      initials: 'Supporter',
+                      initials: l10n.settingsRoleSupporter,
                       size: SizeTokens.avatarMd,
                     ),
                     const SizedBox(width: SpacingTokens.spacing4),
@@ -76,8 +82,8 @@ class SettingsScreen extends ConsumerWidget {
                           const SizedBox(height: SpacingTokens.spacing1),
                           AfriStatusChip(
                             label: profile?.isAdmin == true
-                                ? 'Admin'
-                                : 'Supporter',
+                                ? l10n.settingsRoleAdmin
+                                : l10n.settingsRoleSupporter,
                             tone: AfriStatusTone.live,
                           ),
                         ],
@@ -88,7 +94,7 @@ class SettingsScreen extends ConsumerWidget {
                 const SizedBox(height: SpacingTokens.spacing5),
                 AfriButton(
                   key: const ValueKey<String>('settings-membership-action'),
-                  label: 'Membership details',
+                  label: l10n.settingsMembershipDetails,
                   labelMaxLines: 2,
                   onTap: () => context.push('/membership'),
                   variant: AfriButtonVariant.primary,
@@ -99,36 +105,49 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: SpacingTokens.spacing8),
 
           // ── Account ──
-          _buildMinimalistSection('Account', [
+          _buildMinimalistSection(l10n.settingsSectionAccount, [
             AfriListRow(
               key: const ValueKey<String>('settings-edit-profile-action'),
               icon: AfriIcons.profile,
-              title: 'Edit profile',
+              title: l10n.settingsEditProfile,
               onTap: () => context.push('/settings/edit-profile'),
             ),
           ]),
 
           const SizedBox(height: SpacingTokens.spacing6),
 
+          // ── Game operations ──
+          _buildMinimalistSection(l10n.settingsSectionGamesAndTvs, [
+            AfriListRow(
+              key: const ValueKey<String>('settings-game-operations-action'),
+              icon: AfriIcons.live,
+              title: l10n.gameOperationsTitle,
+              subtitle: l10n.gameOperationsSubtitle,
+              onTap: () => context.push('/game-operations'),
+            ),
+          ]),
+
+          const SizedBox(height: SpacingTokens.spacing6),
+
           // ── Preferences ──
-          _buildMinimalistSection('Preferences', [
+          _buildMinimalistSection(l10n.settingsSectionPreferences, [
             AfriListRow(
               key: const ValueKey<String>('settings-appearance-action'),
               icon: AfriIcons.appearance,
-              title: 'Appearance',
-              subtitle: _themeModeLabel(themeMode),
+              title: l10n.settingsAppearance,
+              subtitle: _themeModeLabel(l10n, themeMode),
               onTap: () => _showAppearanceSheet(context, ref, themeMode),
             ),
             AfriListRow(
               key: const ValueKey<String>('settings-notifications-action'),
               icon: AfriIcons.notifications,
-              title: 'Notifications',
+              title: l10n.settingsNotifications,
               onTap: () => context.push('/settings/notifications'),
             ),
             AfriListRow(
               key: const ValueKey<String>('settings-privacy-action'),
               icon: AfriIcons.privacy,
-              title: 'Privacy',
+              title: l10n.settingsPrivacy,
               onTap: () => context.push('/settings/privacy'),
             ),
           ]),
@@ -136,12 +155,12 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: SpacingTokens.spacing6),
 
           // ── Support ──
-          _buildMinimalistSection('Support', [
+          _buildMinimalistSection(l10n.settingsSectionSupport, [
             AfriListRow(
               key: const ValueKey<String>('settings-support-action'),
               icon: AfriIcons.help,
-              title: 'Help & support',
-              subtitle: _supportSubtitle(asyncContent, content),
+              title: l10n.settingsHelpSupport,
+              subtitle: _supportSubtitle(l10n, asyncContent, content),
               enabled: _supportAvailable(content),
               onTap: _supportAvailable(content)
                   ? () => _openWhatsApp(context, supportWhatsApp)
@@ -154,7 +173,7 @@ class SettingsScreen extends ConsumerWidget {
           // ── Account actions ──
           AfriButton(
             key: const ValueKey<String>('settings-sign-out-action'),
-            label: 'Sign out',
+            label: l10n.settingsSignOut,
             onTap: () async {
               final confirmed = await showSignOutConfirmationSheet(context);
               if (!confirmed) return;
@@ -172,17 +191,18 @@ class SettingsScreen extends ConsumerWidget {
 
   Widget? _buildRouteStateBanner(
     AsyncValue<SettingsRouteContentSnapshot> asyncContent, {
+    required AfriLocalizations l10n,
     required VoidCallback onRefresh,
   }) {
     final content = asyncContent.valueOrNull;
     if (asyncContent.isRefreshing && content != null) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('settings-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('settings-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Refreshing settings',
-        subtitle: 'Current account and appearance settings stay available.',
+        title: l10n.settingsRefreshingTitle,
+        subtitle: l10n.settingsRefreshingMessage,
         tone: AfriStateBannerTone.info,
-        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
+        trailing: const AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
 
@@ -191,8 +211,8 @@ class SettingsScreen extends ConsumerWidget {
         return AfriStateBanner(
           key: const ValueKey<String>('settings-state-offline'),
           icon: AfriIcons.offline,
-          title: 'Offline settings',
-          subtitle: content.message,
+          title: l10n.settingsOfflineTitle,
+          subtitle: l10n.settingsOfflineMessage,
           tone: AfriStateBannerTone.warning,
         );
       }
@@ -200,8 +220,8 @@ class SettingsScreen extends ConsumerWidget {
         return AfriStateBanner(
           key: const ValueKey<String>('settings-state-disabled'),
           icon: AfriIcons.help,
-          title: 'Help and support unavailable',
-          subtitle: content.message,
+          title: l10n.settingsHelpUnavailableTitle,
+          subtitle: content.message ?? l10n.settingsHelpUnavailableTitle,
           tone: AfriStateBannerTone.neutral,
         );
       }
@@ -209,8 +229,8 @@ class SettingsScreen extends ConsumerWidget {
         return AfriStateBanner(
           key: const ValueKey<String>('settings-state-empty'),
           icon: AfriIcons.help,
-          title: 'Support contact unavailable',
-          subtitle: 'Other settings still work. Refresh to check again.',
+          title: l10n.settingsSupportContactUnavailableTitle,
+          subtitle: l10n.settingsSupportContactUnavailableMessage,
           onTap: onRefresh,
           tone: AfriStateBannerTone.neutral,
         );
@@ -219,13 +239,13 @@ class SettingsScreen extends ConsumerWidget {
     }
 
     if (asyncContent.isLoading) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('settings-state-loading'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('settings-state-loading'),
         icon: AfriIcons.settings,
-        title: 'Loading settings',
-        subtitle: 'Checking support availability.',
+        title: l10n.settingsLoadingTitle,
+        subtitle: l10n.settingsLoadingMessage,
         tone: AfriStateBannerTone.info,
-        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
+        trailing: const AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
 
@@ -236,34 +256,34 @@ class SettingsScreen extends ConsumerWidget {
           ),
     );
     return switch (failure.kind) {
-      SettingsRouteContentFailureKind.permissionDenied => const AfriStateBanner(
-        key: ValueKey<String>('settings-state-permission-denied'),
+      SettingsRouteContentFailureKind.permissionDenied => AfriStateBanner(
+        key: const ValueKey<String>('settings-state-permission-denied'),
         icon: AfriIcons.lock,
-        title: 'Settings access limited',
-        subtitle: 'Support could not be verified. Other settings still work.',
+        title: l10n.settingsAccessLimitedTitle,
+        subtitle: l10n.settingsAccessLimitedMessage,
         tone: AfriStateBannerTone.warning,
       ),
       SettingsRouteContentFailureKind.conflict => AfriStateBanner(
         key: const ValueKey<String>('settings-state-conflict'),
         icon: AfriIcons.refresh,
-        title: 'Settings changed',
-        subtitle: 'Refresh to load the current support settings.',
+        title: l10n.settingsChangedTitle,
+        subtitle: l10n.settingsChangedMessage,
         onTap: onRefresh,
         tone: AfriStateBannerTone.warning,
       ),
       SettingsRouteContentFailureKind.securityTimeout => AfriStateBanner(
         key: const ValueKey<String>('settings-state-security-timeout'),
         icon: AfriIcons.lock,
-        title: 'Settings security check timed out',
-        subtitle: 'Check your connection and refresh.',
+        title: l10n.settingsSecurityTimeoutTitle,
+        subtitle: l10n.settingsSecurityTimeoutMessage,
         onTap: onRefresh,
         tone: AfriStateBannerTone.warning,
       ),
       SettingsRouteContentFailureKind.unknown => AfriStateBanner(
         key: const ValueKey<String>('settings-state-error'),
         icon: AfriIcons.statusError,
-        title: 'Could not load support settings',
-        subtitle: 'Account and appearance settings remain available.',
+        title: l10n.settingsSupportLoadFailedTitle,
+        subtitle: l10n.settingsSupportLoadFailedMessage,
         onTap: onRefresh,
         tone: AfriStateBannerTone.danger,
       ),
@@ -271,16 +291,21 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   String? _supportSubtitle(
+    AfriLocalizations l10n,
     AsyncValue<SettingsRouteContentSnapshot> asyncContent,
     SettingsRouteContentSnapshot? content,
   ) {
-    if (asyncContent.isLoading && content == null) return 'Checking…';
+    if (asyncContent.isLoading && content == null) return l10n.settingsChecking;
     if (content?.status == SettingsRouteContentStatus.localFallback) {
-      return 'Connection required';
+      return l10n.settingsConnectionRequired;
     }
-    if (content != null && !content.supportEnabled) return 'Unavailable';
-    if (content?.isEmpty == true) return 'Not configured';
-    if (asyncContent.hasError && content == null) return 'Status unavailable';
+    if (content != null && !content.supportEnabled) {
+      return l10n.settingsUnavailable;
+    }
+    if (content?.isEmpty == true) return l10n.settingsNotConfigured;
+    if (asyncContent.hasError && content == null) {
+      return l10n.settingsStatusUnavailable;
+    }
     return null;
   }
 
@@ -305,11 +330,11 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  String _themeModeLabel(ThemeMode mode) {
+  String _themeModeLabel(AfriLocalizations l10n, ThemeMode mode) {
     return switch (mode) {
-      ThemeMode.system => 'Use device setting',
-      ThemeMode.light => 'Light',
-      ThemeMode.dark => 'Dark',
+      ThemeMode.system => l10n.settingsThemeUseDevice,
+      ThemeMode.light => l10n.settingsThemeLight,
+      ThemeMode.dark => l10n.settingsThemeDark,
     };
   }
 
@@ -318,6 +343,7 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     ThemeMode selectedMode,
   ) async {
+    final l10n = context.afriL10n;
     final selectedIndex = switch (selectedMode) {
       ThemeMode.system => 0,
       ThemeMode.light => 1,
@@ -330,18 +356,18 @@ class SettingsScreen extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Appearance', style: TypographyTokens.titleLarge()),
+          Text(l10n.settingsAppearance, style: TypographyTokens.titleLarge()),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            'Choose a theme or follow your device setting.',
+            l10n.settingsAppearanceMessage,
             style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           AfriSegmentedControl(
-            items: const [
-              AfriSegment(label: 'System'),
-              AfriSegment(label: 'Light'),
-              AfriSegment(label: 'Dark'),
+            items: [
+              AfriSegment(label: l10n.settingsThemeSystem),
+              AfriSegment(label: l10n.settingsThemeLight),
+              AfriSegment(label: l10n.settingsThemeDark),
             ],
             selectedIndex: selectedIndex,
             onChanged: (index) {
@@ -373,19 +399,20 @@ class SettingsScreen extends ConsumerWidget {
     String? supportWhatsApp,
   ) async {
     final phone = supportWhatsApp?.trim() ?? '';
+    final l10n = context.afriL10n;
     if (phone.isEmpty) {
-      AfriToast.error(context, 'Support contact is not configured.');
+      AfriToast.error(context, l10n.settingsSupportNotConfigured);
       return;
     }
 
     unawaited(FirebaseAnalyticsService.logSupportAccess(channel: 'whatsapp'));
     final uri = Uri.parse(
-      'https://wa.me/${phone.replaceAll('+', '')}?text=${Uri.encodeComponent('Hi, I need help with ${ClubConfigScope.maybeOf(context)?.appName ?? RuntimeBranding.displayAppName}.')}',
+      'https://wa.me/${phone.replaceAll('+', '')}?text=${Uri.encodeComponent(l10n.settingsSupportGreeting(ClubConfigScope.maybeOf(context)?.appName ?? RuntimeBranding.displayAppName))}',
     );
     await launchExternalUri(
       context,
       uri,
-      failureMessage: 'Could not open WhatsApp.',
+      failureMessage: l10n.settingsWhatsAppFailed,
     );
   }
 }

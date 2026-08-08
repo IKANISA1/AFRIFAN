@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { emptyVenueGovernanceSnapshot } from "@/lib/data/venue";
 import { VenueGovernancePanel } from "./venue-governance-panel";
 
@@ -34,5 +34,24 @@ describe("VenueGovernancePanel", () => {
     expect(screen.getByText("Alcohol age gate")).toBeInTheDocument();
     expect(screen.getByText("Review required")).toBeInTheDocument();
     expect(screen.getByText("Blocked")).toBeInTheDocument();
+  });
+
+  it("reports the export interaction states to the route surface", () => {
+    const onInteractionChange = vi.fn();
+    render(
+      <VenueGovernancePanel
+        snapshot={emptyVenueGovernanceSnapshot}
+        onInteractionChange={onInteractionChange}
+      />,
+    );
+
+    const exportLink = screen.getByRole("link", { name: /export csv/i });
+    fireEvent.focus(exportLink);
+    fireEvent.pointerDown(exportLink);
+    fireEvent.click(exportLink);
+
+    expect(onInteractionChange).toHaveBeenNthCalledWith(1, "focused");
+    expect(onInteractionChange).toHaveBeenNthCalledWith(2, "pressed");
+    expect(onInteractionChange).toHaveBeenNthCalledWith(3, "selected");
   });
 });

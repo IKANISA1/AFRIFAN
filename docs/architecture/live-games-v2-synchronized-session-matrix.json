@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-QA-03",
+  "status": "preflight_complete_execution_evidence_open",
+  "criterion_complete": false,
+  "required_clauses": [
+    "authorized_shared_backend",
+    "two_independent_phones",
+    "native_tv_target",
+    "single_session_correlation",
+    "synchronized_phase_version_sequence",
+    "measured_network_timing_loss_recovery",
+    "exact_build_logs_and_video",
+    "privacy_accessibility_approvals"
+  ],
+  "clauses": [
+    {
+      "id": "authorized_shared_backend",
+      "status": "open_external_evidence",
+      "assertion": "An authorized shared backend with the exact candidate migration, club scope, monitoring and rollback controls must host the synchronized session."
+    },
+    {
+      "id": "two_independent_phones",
+      "status": "open_external_evidence",
+      "assertion": "Two independently connected physical phones must join the same session; the current preflight found no available physical phone and one paired iPhone that was unavailable."
+    },
+    {
+      "id": "native_tv_target",
+      "status": "open_external_evidence",
+      "assertion": "A physical native-TV target must render the same session; an Android TV emulator does not satisfy this clause."
+    },
+    {
+      "id": "single_session_correlation",
+      "status": "open_external_evidence",
+      "assertion": "Privacy-safe logs from both phones, native TV, Admin and backend must correlate one club-scoped session and exact candidate build set."
+    },
+    {
+      "id": "synchronized_phase_version_sequence",
+      "status": "open_external_evidence",
+      "assertion": "All participating surfaces must demonstrate the same authoritative phase, session version, question version and ordered event sequence through the required journey."
+    },
+    {
+      "id": "measured_network_timing_loss_recovery",
+      "status": "open_external_evidence",
+      "assertion": "The real session must record server-correlated timing, latency, connection loss, reconnect, stale-event rejection and recovery without inferring network behavior from deterministic tests."
+    },
+    {
+      "id": "exact_build_logs_and_video",
+      "status": "open_external_evidence",
+      "assertion": "Timestamped privacy-safe device and backend logs plus continuous video must identify the exact builds, devices and complete synchronized journey."
+    },
+    {
+      "id": "privacy_accessibility_approvals",
+      "status": "open_protected_approval",
+      "assertion": "Named privacy, accessibility, QA, operations and release owners must accept the physical-session evidence and any retained risks."
+    }
+  ],
+  "preflight_evidence": {
+    "captured_at": "2026-08-01T20:00:55Z",
+    "checkpoint": "output/implementation_goal_20260724/live_games_v2_qa03_execution_preflight_20260801/live-games-v2-qa03-execution-preflight.json",
+    "available_physical_ios_count": 0,
+    "paired_physical_ios_inventory_count": 1,
+    "paired_physical_ios_state": "unavailable",
+    "physical_android_count": 0,
+    "physical_native_tv_count": 0,
+    "ios_simulators_available": 2,
+    "android_tv_emulator_available": true
+  },
+  "environment_boundary": {
+    "preflight_complete": true,
+    "authorized_shared_backend_claimed": false,
+    "two_available_physical_phones_claimed": false,
+    "physical_native_tv_claimed": false,
+    "single_session_correlation_claimed": false,
+    "synchronized_phase_version_sequence_claimed": false,
+    "network_timing_and_recovery_claimed": false,
+    "exact_build_logs_and_video_claimed": false,
+    "privacy_accessibility_approvals_claimed": false,
+    "release_claimed": false
+  }
+}

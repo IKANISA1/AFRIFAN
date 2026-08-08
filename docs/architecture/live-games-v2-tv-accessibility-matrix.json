@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-QA-05",
+  "status": "local_deterministic_and_native_emulator_subset_passed_external_evidence_open",
+  "criterion_complete": false,
+  "required_clauses": [
+    "resolution_layout_720_1080_4k",
+    "overscan_safe_area",
+    "long_copy_locales",
+    "text_scaling_200_percent",
+    "light_and_dark_themes",
+    "focus_and_dpad",
+    "reduced_motion",
+    "screen_reader_semantics",
+    "automated_privacy_boundary",
+    "native_current_resolution_captures",
+    "physical_tv_assistive_technology",
+    "burn_in_soak",
+    "accountable_privacy_review"
+  ],
+  "clauses": [
+    {
+      "id": "resolution_layout_720_1080_4k",
+      "status": "passed_local_deterministic",
+      "assertion": "The native-TV Flutter surface renders the current live-game state at 1280x720, 1920x1080, and 3840x2160 without framework overflow or lost primary content.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "GAME-QA-05 scales the live game at"
+        }
+      ]
+    },
+    {
+      "id": "overscan_safe_area",
+      "status": "passed_local_deterministic",
+      "assertion": "Brand and primary action bounds remain inside the simulated overscan-safe view padding.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "GAME-QA-05 keeps actions inside an overscan safe area"
+        }
+      ]
+    },
+    {
+      "id": "long_copy_locales",
+      "status": "passed_local_deterministic",
+      "assertion": "Synthetic long-copy projections render under EN, FR, and RW locale scopes without framework overflow.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "long copy reflows at 200 percent"
+        }
+      ]
+    },
+    {
+      "id": "text_scaling_200_percent",
+      "status": "passed_local_deterministic",
+      "assertion": "Exact 200-percent text scaling preserves readable hierarchy and moves long content into a vertical scroll surface without overlap.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "long copy reflows at 200 percent"
+        },
+        {
+          "path": "apps/rayon_sports_tv/test/tv_route_states_test.dart",
+          "name": "GAME-QA-05 golden long copy at 200 percent"
+        }
+      ]
+    },
+    {
+      "id": "light_and_dark_themes",
+      "status": "passed_local_deterministic",
+      "assertion": "The current live-game surface renders under both governed theme brightnesses without framework exceptions.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "theme renders the current game"
+        }
+      ]
+    },
+    {
+      "id": "focus_and_dpad",
+      "status": "passed_local_deterministic",
+      "assertion": "Arrow navigation, select, Escape, Go Back, and Context Menu remote mappings remain operable in the TV focus scope.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "GAME-QA-05 D-pad select and back actions are operable"
+        }
+      ]
+    },
+    {
+      "id": "reduced_motion",
+      "status": "passed_local_deterministic",
+      "assertion": "Disable-animation and accessible-navigation preferences reach the TV surface.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "GAME-QA-05 reduced motion reaches the TV surface"
+        }
+      ]
+    },
+    {
+      "id": "screen_reader_semantics",
+      "status": "passed_local_deterministic",
+      "assertion": "The TV surface exposes useful privacy-safe semantics for the current game and available options.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "GAME-QA-05 exposes privacy-safe screen-reader semantics"
+        }
+      ]
+    },
+    {
+      "id": "automated_privacy_boundary",
+      "status": "passed_local_deterministic",
+      "assertion": "Automated widget assertions reject sensitive projection fields and scan rendered semantics for prohibited private values.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "rejects sensitive values anywhere in a TV projection"
+        },
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "GAME-QA-05 exposes privacy-safe screen-reader semantics"
+        }
+      ]
+    },
+    {
+      "id": "native_current_resolution_captures",
+      "status": "passed_current_native_emulator",
+      "assertion": "The current Android TV APK renders its real isolated-backend pairing journey in native API 36 emulators at 1920x1080 and 3840x2160; this is native emulator evidence, not physical-TV proof.",
+      "tests": []
+    },
+    {
+      "id": "physical_tv_assistive_technology",
+      "status": "open_external_evidence",
+      "assertion": "Physical overscan, remote-control, and screen-reader execution on the exact TV target remain required.",
+      "tests": []
+    },
+    {
+      "id": "burn_in_soak",
+      "status": "open_external_evidence",
+      "assertion": "A governed four-hour burn-in, thermal, crash, and ANR soak remains required on the target TV hardware.",
+      "tests": []
+    },
+    {
+      "id": "accountable_privacy_review",
+      "status": "open_protected_approval",
+      "assertion": "Automated privacy checks and Codex visual inspection do not replace accountable human privacy approval.",
+      "tests": []
+    }
+  ],
+  "deterministic_golden_evidence": [
+    "apps/rayon_sports_tv/test/goldens/tv_v2_pairing_challenge_rw_1280x720.png",
+    "apps/rayon_sports_tv/test/goldens/tv_v2_question_en_1280x720.png",
+    "apps/rayon_sports_tv/test/goldens/tv_v2_reveal_fr_1280x720.png",
+    "apps/rayon_sports_tv/test/goldens/tv_v2_offline_retained_rw_1280x720.png",
+    "apps/rayon_sports_tv/test/goldens/tv_v2_empty_en_1280x720.png",
+    "apps/rayon_sports_tv/test/goldens/tv_v2_completed_large_text_rw_1280x720.png",
+    "apps/rayon_sports_tv/test/goldens/tv_v2_question_long_copy_rw_200_percent_1280x720.png"
+  ],
+  "native_current_resolution_evidence": [
+    {
+      "path": "output/implementation_goal_20260724/live_games_v2_qa05_native_resolution_checkpoint_20260801/native-tv-pairing-1920x1080.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "275cc7db17f80782b1bc7a9c6f74de899eb384d9bd5cf3a890cd66da1f0ef367",
+      "runtime": "Android TV API 36 ARM64 emulator"
+    },
+    {
+      "path": "output/implementation_goal_20260724/live_games_v2_qa05_native_resolution_checkpoint_20260801/native-tv-pairing-3840x2160.png",
+      "width": 3840,
+      "height": 2160,
+      "sha256": "a39008291791495c1a4c565809cff67feac840e31ca05fc32811147eec01da91",
+      "runtime": "Android TV API 36 ARM64 emulator"
+    }
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "flutter_golden_720p_claimed": true,
+    "native_current_1080p_capture_claimed": true,
+    "native_current_4k_capture_claimed": true,
+    "physical_tv_claimed": false,
+    "physical_overscan_claimed": false,
+    "physical_remote_claimed": false,
+    "physical_screen_reader_claimed": false,
+    "four_hour_burn_in_claimed": false,
+    "accountable_privacy_approval_claimed": false,
+    "shared_or_live_session_claimed": false,
+    "release_claimed": false
+  }
+}

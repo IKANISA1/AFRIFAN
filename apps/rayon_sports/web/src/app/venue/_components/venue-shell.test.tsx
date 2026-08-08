@@ -72,7 +72,11 @@ describe("VenueAccessBoundary", () => {
       </VenueAccessBoundary>,
     );
     expect(screen.getByText("Amahoro Hospitality")).toBeInTheDocument();
-    expect(screen.getByRole("navigation", { name: "Venue operations" })).toBeInTheDocument();
+    const navigation = screen.getByRole("navigation", {
+      name: "Venue operations",
+    });
+    expect(navigation).toHaveClass("grid", "grid-cols-2", "sm:grid-cols-4");
+    expect(navigation).not.toHaveClass("overflow-x-auto");
     expect(screen.getAllByRole("link")).toHaveLength(7);
     expect(screen.getByRole("link", { name: "Today" })).toHaveAttribute(
       "aria-current",

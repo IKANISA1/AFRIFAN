@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,7 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
       children: [
         // ── Notifications Section ──
         Text(
-          'NOTIFICATIONS',
+          context.afriL10n.gameNotificationsUpper,
           style: TypographyTokens.labelSmall(
             ColorTokens.onSurfaceVariant,
           ).copyWith(fontWeight: FontWeight.w700),
@@ -77,21 +78,21 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
             children: [
               _ToggleRow(
                 icon: AfriIcons.notificationsActive,
-                title: 'Match Kick-off Alerts',
+                title: context.afriL10n.gameKickoffAlerts,
                 value: _kickoffAlerts,
                 onChanged: _setKickoffAlerts,
               ),
               const AfriDivider(),
               _ToggleRow(
                 icon: AfriIcons.checkGroup,
-                title: 'Round Results',
+                title: context.afriL10n.gameRoundResults,
                 value: _settlementAlerts,
                 onChanged: _setSettlementAlerts,
               ),
               const AfriDivider(),
               _ToggleRow(
                 icon: AfriIcons.predict,
-                title: 'Friend Challenges',
+                title: context.afriL10n.gameFriendChallenges,
                 value: _challengeAlerts,
                 onChanged: _setChallengeAlerts,
               ),

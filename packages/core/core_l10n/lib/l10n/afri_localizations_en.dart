@@ -481,6 +481,97 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get tvOfflinePhase => 'Offline';
 
   @override
+  String get tvPreparingDisplay => 'Preparing this TV';
+
+  @override
+  String get tvCreatePairingChallenge => 'CREATE PAIRING CODE';
+
+  @override
+  String get tvPairingChallengeDescription =>
+      'On the owner’s phone, open Settings, then Games and TVs. Scan the QR code or enter the one-time code.';
+
+  @override
+  String tvPairingChallengeSemantic(String code) {
+    return 'One-time TV pairing code $code';
+  }
+
+  @override
+  String get tvPairingWaitingOwner => 'Waiting for the owner to claim this TV…';
+
+  @override
+  String tvPairingExpiresAt(String time) {
+    return 'Code expires $time';
+  }
+
+  @override
+  String get tvCreateNewPairingCode => 'CREATE A NEW CODE';
+
+  @override
+  String get tvDisplayPairedNoGame => 'TV paired';
+
+  @override
+  String get tvDisplayPairedNoGameDescription =>
+      'No game is assigned to this TV. It will update automatically.';
+
+  @override
+  String get tvGameScheduledTitle => 'Game scheduled';
+
+  @override
+  String get tvGameLobbyTitle => 'Players are joining';
+
+  @override
+  String get tvGamePausedTitle => 'Game paused';
+
+  @override
+  String get tvGameCancelledTitle => 'Game cancelled';
+
+  @override
+  String get tvGameCompletedTitle => 'Game complete';
+
+  @override
+  String get tvLiveSyncing => 'Syncing latest game state';
+
+  @override
+  String get tvOfflineLastConfirmed => 'Offline · showing last confirmed state';
+
+  @override
+  String tvLiveUpdatedAt(String time) {
+    return 'Live · updated $time';
+  }
+
+  @override
+  String tvQuestionNumber(int number) {
+    return 'Question $number';
+  }
+
+  @override
+  String get tvCorrectAnswer => 'Correct answer';
+
+  @override
+  String tvCorrectAnswerSemantic(String answer) {
+    return 'Correct answer: $answer';
+  }
+
+  @override
+  String tvSecondsRemaining(int seconds) {
+    return '$seconds seconds remaining';
+  }
+
+  @override
+  String get tvLeaderboardEmpty => 'Scores will appear after players answer.';
+
+  @override
+  String get tvRetry => 'RETRY';
+
+  @override
+  String get tvSecureStorageUnavailable =>
+      'Secure TV storage is unavailable. Retry before pairing again.';
+
+  @override
+  String get tvPairingExpired =>
+      'That pairing code expired. Create a new code.';
+
+  @override
   String get membershipTitle => 'Membership';
 
   @override
@@ -1242,6 +1333,42 @@ class AfriLocalizationsEn extends AfriLocalizations {
   @override
   String get clubLinkedRecordLoadMessage =>
       'The linked club record could not be loaded.';
+
+  @override
+  String get clubOfflineTitle => 'Club information offline';
+
+  @override
+  String get clubOfflineMessage =>
+      'Connect to load the latest official club information.';
+
+  @override
+  String get clubAccessDeniedTitle => 'Club information access denied';
+
+  @override
+  String get clubAccessDeniedMessage =>
+      'This account cannot access the requested club information.';
+
+  @override
+  String get clubChangedTitle => 'Club information changed';
+
+  @override
+  String get clubChangedMessage =>
+      'Official club information changed while loading. Refresh to confirm the latest version.';
+
+  @override
+  String get clubSecurityTimeoutTitle =>
+      'Club information security check timed out';
+
+  @override
+  String get clubSecurityTimeoutMessage =>
+      'The club information service did not respond in time. Refresh to try again.';
+
+  @override
+  String get clubRefreshingTitle => 'Refreshing club information';
+
+  @override
+  String get clubRefreshingMessage =>
+      'Keeping the last confirmed club information visible while updates load.';
 
   @override
   String get clubRefresh => 'Refresh';
@@ -2754,7 +2881,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get ticketRefreshingTitle => 'Refreshing ticket';
 
   @override
-  String get ticketAccessChangedTitle => 'Ticket access changed';
+  String get ticketEntryCodeAccessChangedTitle => 'Ticket access changed';
 
   @override
   String get ticketCheckTimedOutTitle => 'Ticket check timed out';
@@ -3215,6 +3342,9 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get ticketFixtureCheckTimedOutTitle => 'Fixture check timed out';
+
+  @override
+  String get ticketAccessChangedTitle => 'Ticket access changed';
 
   @override
   String get ticketSavedFixtureReadOnlyMessage =>
@@ -4084,4 +4214,7789 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get contributionsNotNowUpper => 'NOT NOW';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsRoleAdmin => 'Admin';
+
+  @override
+  String get settingsRoleSupporter => 'Supporter';
+
+  @override
+  String get settingsMembershipDetails => 'Membership details';
+
+  @override
+  String get settingsSectionAccount => 'Account';
+
+  @override
+  String get settingsSectionGamesAndTvs => 'Games and TVs';
+
+  @override
+  String get settingsSectionPreferences => 'Preferences';
+
+  @override
+  String get settingsSectionSupport => 'Support';
+
+  @override
+  String get settingsEditProfile => 'Edit profile';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsPrivacy => 'Privacy';
+
+  @override
+  String get settingsHelpSupport => 'Help & support';
+
+  @override
+  String get settingsSignOut => 'Sign out';
+
+  @override
+  String get settingsRefreshingTitle => 'Refreshing settings';
+
+  @override
+  String get settingsRefreshingMessage =>
+      'Current account and appearance settings stay available.';
+
+  @override
+  String get settingsOfflineTitle => 'Offline settings';
+
+  @override
+  String get settingsOfflineMessage =>
+      'Offline. Account and appearance settings remain available. Reconnect for support.';
+
+  @override
+  String get settingsHelpUnavailableTitle => 'Help and support unavailable';
+
+  @override
+  String get settingsSupportContactUnavailableTitle =>
+      'Support contact unavailable';
+
+  @override
+  String get settingsSupportContactUnavailableMessage =>
+      'Other settings still work. Refresh to check again.';
+
+  @override
+  String get settingsLoadingTitle => 'Loading settings';
+
+  @override
+  String get settingsLoadingMessage => 'Checking support availability.';
+
+  @override
+  String get settingsAccessLimitedTitle => 'Settings access limited';
+
+  @override
+  String get settingsAccessLimitedMessage =>
+      'Support could not be verified. Other settings still work.';
+
+  @override
+  String get settingsChangedTitle => 'Settings changed';
+
+  @override
+  String get settingsChangedMessage =>
+      'Refresh to load the current support settings.';
+
+  @override
+  String get settingsSecurityTimeoutTitle =>
+      'Settings security check timed out';
+
+  @override
+  String get settingsSecurityTimeoutMessage =>
+      'Check your connection and refresh.';
+
+  @override
+  String get settingsSupportLoadFailedTitle =>
+      'Could not load support settings';
+
+  @override
+  String get settingsSupportLoadFailedMessage =>
+      'Account and appearance settings remain available.';
+
+  @override
+  String get settingsChecking => 'Checking…';
+
+  @override
+  String get settingsConnectionRequired => 'Connection required';
+
+  @override
+  String get settingsUnavailable => 'Unavailable';
+
+  @override
+  String get settingsNotConfigured => 'Not configured';
+
+  @override
+  String get settingsStatusUnavailable => 'Status unavailable';
+
+  @override
+  String get settingsThemeUseDevice => 'Use device setting';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get settingsAppearanceMessage =>
+      'Choose a theme or follow your device setting.';
+
+  @override
+  String get settingsThemeSystem => 'System';
+
+  @override
+  String get settingsSupportNotConfigured =>
+      'Support contact is not configured.';
+
+  @override
+  String settingsSupportGreeting(String app) {
+    return 'Hi, I need help with $app.';
+  }
+
+  @override
+  String get settingsWhatsAppFailed => 'Could not open WhatsApp.';
+
+  @override
+  String get settingsDeleteAccountTitle => 'DELETE YOUR ACCOUNT?';
+
+  @override
+  String get settingsDeleteAccountMessage =>
+      'Permanently deletes your profile, FET, badges, and history. Cannot be undone.';
+
+  @override
+  String get settingsDeleteAccountConfirmPrompt => 'TYPE DELETE TO CONFIRM';
+
+  @override
+  String get settingsDeleteAccountConfirmValue => 'DELETE';
+
+  @override
+  String get settingsCancelUpper => 'CANCEL';
+
+  @override
+  String get settingsDeletePermanently => 'Delete permanently';
+
+  @override
+  String get settingsNotificationPermissionTitle => 'STAY IN THE GAME';
+
+  @override
+  String get settingsNotificationPermissionMessage =>
+      'Get notified for matches, contributions, FET milestones, and club news.';
+
+  @override
+  String get settingsMatchAlerts => 'Match alerts before kickoff';
+
+  @override
+  String get settingsContributionUpdates => 'Contribution and ticket updates';
+
+  @override
+  String get settingsFetMilestones => 'FET milestones and challenge drops';
+
+  @override
+  String get settingsEnableNotifications => 'Enable notifications';
+
+  @override
+  String get settingsMaybeLaterUpper => 'MAYBE LATER';
+
+  @override
+  String get settingsSignOutTitle => 'SIGN OUT?';
+
+  @override
+  String get settingsSignOutMessage =>
+      'Your profile and FET are saved. Sign back in anytime.';
+
+  @override
+  String get settingsStay => 'Stay';
+
+  @override
+  String get settingsSignOutOthersTitle => 'SIGN OUT OTHER DEVICES?';
+
+  @override
+  String get settingsSignOutOthersMessage =>
+      'This device stays signed in. Other sessions are revoked.';
+
+  @override
+  String get settingsSignOutOthersAction => 'SIGN OUT OTHERS';
+
+  @override
+  String get settingsCancel => 'Cancel';
+
+  @override
+  String get editProfileUpdated => 'Profile updated.';
+
+  @override
+  String get editProfileServiceUnavailable =>
+      'Profile service is temporarily unavailable.';
+
+  @override
+  String get editProfileLoadingTitle => 'Loading profile';
+
+  @override
+  String get editProfileLoadingMessage => 'Checking your saved profile.';
+
+  @override
+  String get editProfileAccessLimitedTitle => 'Profile access limited';
+
+  @override
+  String get editProfileAccessLimitedMessage =>
+      'Your profile could not be verified. Sign in again.';
+
+  @override
+  String get editProfileSignInAgain => 'Sign in again';
+
+  @override
+  String get editProfileChangedTitle => 'Profile changed';
+
+  @override
+  String get editProfileChangedMessage =>
+      'Refresh to load the current profile before editing.';
+
+  @override
+  String get editProfileRefresh => 'Refresh';
+
+  @override
+  String get editProfileSecurityTimeoutTitle =>
+      'Profile security check timed out';
+
+  @override
+  String get editProfileSecurityTimeoutMessage =>
+      'Check your connection and refresh.';
+
+  @override
+  String get editProfileLoadFailedTitle => 'Could not load profile';
+
+  @override
+  String get editProfileLoadFailedMessage =>
+      'Your profile is still safe. Try again.';
+
+  @override
+  String get editProfileTryAgain => 'Try again';
+
+  @override
+  String get editProfileTitle => 'Profile';
+
+  @override
+  String get editProfileSavingTitle => 'Saving profile';
+
+  @override
+  String get editProfileSavingMessage =>
+      'Your nickname stays visible while the save is confirmed.';
+
+  @override
+  String get editProfileRefreshingTitle => 'Refreshing profile';
+
+  @override
+  String get editProfileRefreshingMessage =>
+      'Your saved profile stays visible.';
+
+  @override
+  String get editProfileEditingUnavailableTitle =>
+      'Profile editing unavailable';
+
+  @override
+  String get editProfileEditingUnavailableMessage =>
+      'Your saved profile stays visible.';
+
+  @override
+  String get editProfileChangedElsewhereTitle => 'Profile changed elsewhere';
+
+  @override
+  String get editProfileChangedElsewhereMessage =>
+      'Latest nickname loaded. Review before saving.';
+
+  @override
+  String get editProfileSaveUnconfirmedTitle => 'Profile save not confirmed';
+
+  @override
+  String get editProfileSaveUnconfirmedMessage =>
+      'Refresh your profile before trying again.';
+
+  @override
+  String get editProfileSaveFailedTitle => 'Profile could not be saved';
+
+  @override
+  String get editProfileSaveFailedMessage =>
+      'Your nickname draft is still here.';
+
+  @override
+  String get editProfileOfflineTitle => 'Offline profile';
+
+  @override
+  String get editProfileOfflineMessage =>
+      'Offline. Your saved profile stays visible. Reconnect to edit.';
+
+  @override
+  String get editProfileUnavailableTitle => 'Profile unavailable';
+
+  @override
+  String get editProfileUnavailableMessage =>
+      'Your profile is unavailable. Sign in again to recover your account.';
+
+  @override
+  String editProfileAlias(String alias) {
+    return '#$alias';
+  }
+
+  @override
+  String get editProfileNicknameLabel => 'Nickname';
+
+  @override
+  String get editProfileNicknameHint => 'Optional supporter nickname';
+
+  @override
+  String get editProfileSaving => 'Saving…';
+
+  @override
+  String get editProfileSaveChanges => 'Save changes';
+
+  @override
+  String get editProfileDeleteAccount => 'Delete account';
+
+  @override
+  String get editProfileDeleteHint =>
+      'Permanently delete this supporter account';
+
+  @override
+  String get editProfileDeleteFailed =>
+      'Account could not be deleted. Try again.';
+
+  @override
+  String get editProfileLanguageEnglish => 'English';
+
+  @override
+  String get editProfileLanguageFrench => 'Français';
+
+  @override
+  String get editProfileLanguageKinyarwanda => 'Kinyarwanda';
+
+  @override
+  String get notificationPreferencesConnectionRestoredReview =>
+      'Connection restored. Review your kept changes, then save.';
+
+  @override
+  String get notificationPreferencesConnectionRestoredRefreshing =>
+      'Connection restored. Refreshing preferences.';
+
+  @override
+  String get notificationPreferencesConnectBeforeChanging =>
+      'Connect before changing notification delivery on this device.';
+
+  @override
+  String get notificationPreferencesDeviceTurnedOff =>
+      'Device notifications were turned off. Save to update your account preference.';
+
+  @override
+  String get notificationPreferencesPermissionGranted =>
+      'Permission granted on this device. Save to enable alerts on your account.';
+
+  @override
+  String get notificationPreferencesBlocked =>
+      'Notifications blocked. Enable in device settings.';
+
+  @override
+  String get notificationPreferencesPermissionPending =>
+      'Notification permission is still pending.';
+
+  @override
+  String get notificationPreferencesPushUnavailable =>
+      'Push unavailable in this build.';
+
+  @override
+  String get notificationPreferencesDraftKeptConnect =>
+      'Your changes are kept. Connect before saving.';
+
+  @override
+  String get notificationPreferencesSaved => 'Notification preferences saved.';
+
+  @override
+  String get notificationPreferencesChangedElsewhereLoading =>
+      'Preferences changed elsewhere. The latest version is loading; review it before saving again.';
+
+  @override
+  String get notificationPreferencesChangeNotPermitted =>
+      'Notification changes are not permitted for this account.';
+
+  @override
+  String get notificationPreferencesChangedRefresh =>
+      'Preferences changed elsewhere. Refresh before saving again.';
+
+  @override
+  String get notificationPreferencesSaveUnconfirmed =>
+      'Notification save was not confirmed. Refresh before trying again.';
+
+  @override
+  String get notificationPreferencesSaveFailedDraftKept =>
+      'Notification preferences could not be saved. Your draft is kept.';
+
+  @override
+  String get notificationPreferencesRefreshing =>
+      'Refreshing notification preferences.';
+
+  @override
+  String get notificationPreferencesLoadingTitle => 'Loading notifications';
+
+  @override
+  String get notificationPreferencesLoadingMessage =>
+      'Checking your saved delivery preference.';
+
+  @override
+  String get notificationPreferencesOfflineTitle => 'Notifications are offline';
+
+  @override
+  String get notificationPreferencesOfflineMessage =>
+      'Connect to load your saved notification preference.';
+
+  @override
+  String get notificationPreferencesUnavailableTitle =>
+      'Notification preferences unavailable';
+
+  @override
+  String get notificationPreferencesUnavailableMessage =>
+      'Sign in to manage notification delivery.';
+
+  @override
+  String get notificationPreferencesAccessLimitedTitle =>
+      'Notification access limited';
+
+  @override
+  String get notificationPreferencesAccessLimitedMessage =>
+      'Your preferences could not be verified. Sign in again.';
+
+  @override
+  String get notificationPreferencesChangedTitle =>
+      'Notification settings changed';
+
+  @override
+  String get notificationPreferencesChangedMessage =>
+      'Refresh to load the current preference before editing.';
+
+  @override
+  String get notificationPreferencesSecurityTimeoutTitle =>
+      'Notification security check timed out';
+
+  @override
+  String get notificationPreferencesSecurityTimeoutMessage =>
+      'Check your connection and refresh.';
+
+  @override
+  String get notificationPreferencesLoadFailedTitle =>
+      'Could not load notification settings.';
+
+  @override
+  String get notificationPreferencesLoadFailedMessage =>
+      'Your saved preference is still safe. Try again.';
+
+  @override
+  String get notificationPreferencesSavingTitle =>
+      'Saving notification preferences';
+
+  @override
+  String get notificationPreferencesSavingMessage =>
+      'Your choices stay visible while the save is confirmed.';
+
+  @override
+  String get notificationPreferencesRefreshingTitle =>
+      'Refreshing notification preferences';
+
+  @override
+  String get notificationPreferencesRefreshingMessage =>
+      'Your saved delivery preference stays visible.';
+
+  @override
+  String get notificationPreferencesEditingUnavailableTitle =>
+      'Notification editing unavailable';
+
+  @override
+  String get notificationPreferencesEditingUnavailableMessage =>
+      'Your saved preference stays visible.';
+
+  @override
+  String get notificationPreferencesChangedElsewhereTitle =>
+      'Notification settings changed elsewhere';
+
+  @override
+  String get notificationPreferencesChangedElsewhereMessage =>
+      'Refresh and review the latest preference.';
+
+  @override
+  String get notificationPreferencesSaveNotConfirmedTitle =>
+      'Notification save not confirmed';
+
+  @override
+  String get notificationPreferencesSaveNotConfirmedMessage =>
+      'Refresh before trying again. Your draft is kept.';
+
+  @override
+  String get notificationPreferencesSaveFailedTitle =>
+      'Notification preferences could not be saved';
+
+  @override
+  String get notificationPreferencesSaveFailedMessage =>
+      'Your draft is still here.';
+
+  @override
+  String get notificationPreferencesSavedSettingsTitle =>
+      'Saved notification settings';
+
+  @override
+  String get notificationPreferencesSavedSettingsMessage =>
+      'Values may be out of date. Reconnect before changing or saving.';
+
+  @override
+  String get notificationPreferencesCheckingPermissionsTitle =>
+      'Checking device permissions';
+
+  @override
+  String get notificationPreferencesCheckingPermissionsMessage =>
+      'Delivery controls will be available after this check.';
+
+  @override
+  String get notificationPreferencesDeviceAlertsUnavailableTitle =>
+      'Device alerts unavailable';
+
+  @override
+  String get notificationPreferencesDeviceAlertsUnavailableMessage =>
+      'Push delivery is not configured in this build.';
+
+  @override
+  String get notificationPreferencesPermissionEnabled =>
+      'System notifications are enabled on this device.';
+
+  @override
+  String get notificationPreferencesPermissionBlocked =>
+      'System notifications are blocked at the device level.';
+
+  @override
+  String get notificationPreferencesPermissionNotRequested =>
+      'Permission not yet requested.';
+
+  @override
+  String get notificationPreferencesPermissionNotConfigured =>
+      'Push not configured in this build.';
+
+  @override
+  String get notificationPreferencesPermissionChecking =>
+      'Checking device notification permissions…';
+
+  @override
+  String get notificationPreferencesTitle => 'NOTIFICATIONS';
+
+  @override
+  String get notificationPreferencesDeliverySection => 'NOTIFICATION DELIVERY';
+
+  @override
+  String get notificationPreferencesAlertsEnabled => 'Alerts enabled.';
+
+  @override
+  String get notificationPreferencesEnableAlertsDescription =>
+      'Enable alerts for matches, receipts & updates.';
+
+  @override
+  String get notificationPreferencesDeviceDelivery => 'Device alert delivery';
+
+  @override
+  String get notificationPreferencesConnectionRequiredUpper =>
+      'CONNECTION REQUIRED';
+
+  @override
+  String get notificationPreferencesDisableAlerts => 'DISABLE ALERTS';
+
+  @override
+  String get notificationPreferencesEnableAlerts => 'ENABLE ALERTS';
+
+  @override
+  String get notificationPreferencesDeliveryModel => 'DELIVERY MODEL';
+
+  @override
+  String notificationPreferencesFullStream(String app) {
+    return 'When alerts are enabled, this release delivers the full $app notification stream available for your account.';
+  }
+
+  @override
+  String get notificationPreferencesPerCategory =>
+      'Per-category tuning is not configurable on this build yet, so this switch controls the entire device delivery state.';
+
+  @override
+  String get notificationPreferencesSave => 'Save';
+
+  @override
+  String get privacySettingsConnectionRestoredReview =>
+      'Connection restored. Review your kept changes, then save.';
+
+  @override
+  String get privacySettingsConnectionRestoredRefreshing =>
+      'Connection restored. Refreshing privacy settings.';
+
+  @override
+  String get privacySettingsChangeReady => 'Privacy change ready to save.';
+
+  @override
+  String get privacySettingsDraftKeptConnect =>
+      'Your changes are kept. Connect before saving.';
+
+  @override
+  String get privacySettingsSaved => 'Privacy settings saved.';
+
+  @override
+  String get privacySettingsChangedElsewhereLoading =>
+      'Privacy settings changed elsewhere. The latest version is loading; review it before saving again.';
+
+  @override
+  String get privacySettingsChangeNotPermitted =>
+      'Privacy changes are not permitted for this account.';
+
+  @override
+  String get privacySettingsChangedRefresh =>
+      'Privacy settings changed elsewhere. Refresh before saving again.';
+
+  @override
+  String get privacySettingsSaveUnconfirmed =>
+      'Privacy save was not confirmed. Refresh before trying again.';
+
+  @override
+  String get privacySettingsSaveFailedDraftKept =>
+      'Privacy settings could not be saved. Your draft is kept.';
+
+  @override
+  String get privacySettingsRefreshing => 'Refreshing privacy settings.';
+
+  @override
+  String get privacySettingsConnectBeforeSigningOut =>
+      'Connect before signing out other devices.';
+
+  @override
+  String get privacySettingsSessionsSignedOut =>
+      'Other sessions were signed out.';
+
+  @override
+  String get privacySettingsSessionsSignOutFailed =>
+      'Could not sign out other devices. Try again.';
+
+  @override
+  String get privacySettingsSessionSecurityTimeout =>
+      'Session security check timed out. Try again.';
+
+  @override
+  String get privacySettingsSmsAccessRequired =>
+      'SMS sync stays off until you grant Android SMS access for MoMo verification.';
+
+  @override
+  String get privacySettingsEnableMomoSmsTitle => 'Enable MoMo SMS sync';
+
+  @override
+  String get privacySettingsMomoSmsDisclosure =>
+      'The app reads only approved Mobile Money verification SMS on this device to match contribution payments. It cannot access other messages.';
+
+  @override
+  String get privacySettingsNotNow => 'Not now';
+
+  @override
+  String get privacySettingsContinue => 'Continue';
+
+  @override
+  String get privacySettingsLoadingTitle => 'Loading privacy settings';
+
+  @override
+  String get privacySettingsLoadingMessage =>
+      'Checking your saved privacy choices.';
+
+  @override
+  String get privacySettingsOfflineTitle => 'Privacy settings are offline';
+
+  @override
+  String get privacySettingsOfflineMessage =>
+      'Connect to load your saved privacy choices.';
+
+  @override
+  String get privacySettingsUnavailableTitle => 'Privacy settings unavailable';
+
+  @override
+  String get privacySettingsUnavailableMessage =>
+      'Sign in to review and manage your privacy choices.';
+
+  @override
+  String get privacySettingsAccessLimitedTitle => 'Privacy access limited';
+
+  @override
+  String get privacySettingsAccessLimitedMessage =>
+      'Your privacy settings could not be verified. Sign in again.';
+
+  @override
+  String get privacySettingsChangedTitle => 'Privacy settings changed';
+
+  @override
+  String get privacySettingsChangedMessage =>
+      'Refresh to load the current choices before editing.';
+
+  @override
+  String get privacySettingsSecurityTimeoutTitle =>
+      'Privacy security check timed out';
+
+  @override
+  String get privacySettingsSecurityTimeoutMessage =>
+      'Check your connection and refresh.';
+
+  @override
+  String get privacySettingsLoadFailedTitle =>
+      'Could not load privacy settings.';
+
+  @override
+  String get privacySettingsLoadFailedMessage =>
+      'Your saved choices are still safe. Try again.';
+
+  @override
+  String get privacySettingsSavingTitle => 'Saving privacy settings';
+
+  @override
+  String get privacySettingsSavingMessage =>
+      'Your choices stay visible while the save is confirmed.';
+
+  @override
+  String get privacySettingsRefreshingTitle => 'Refreshing privacy settings';
+
+  @override
+  String get privacySettingsRefreshingMessage =>
+      'Your saved choices stay visible.';
+
+  @override
+  String get privacySettingsEditingUnavailableTitle =>
+      'Privacy editing unavailable';
+
+  @override
+  String get privacySettingsEditingUnavailableMessage =>
+      'Your saved choices stay visible.';
+
+  @override
+  String get privacySettingsChangedElsewhereTitle =>
+      'Privacy settings changed elsewhere';
+
+  @override
+  String get privacySettingsChangedElsewhereMessage =>
+      'Refresh and review the latest choices.';
+
+  @override
+  String get privacySettingsSaveNotConfirmedTitle =>
+      'Privacy save not confirmed';
+
+  @override
+  String get privacySettingsSaveNotConfirmedMessage =>
+      'Refresh before trying again. Your draft is kept.';
+
+  @override
+  String get privacySettingsSaveFailedTitle =>
+      'Privacy settings could not be saved';
+
+  @override
+  String get privacySettingsSaveFailedMessage => 'Your draft is still here.';
+
+  @override
+  String get privacySettingsSavedSettingsTitle => 'Saved privacy settings';
+
+  @override
+  String get privacySettingsSavedSettingsMessage =>
+      'Values may be out of date. Reconnect before changing or saving.';
+
+  @override
+  String get privacySettingsEditingUnavailableBuildMessage =>
+      'Your saved choices remain visible in this build.';
+
+  @override
+  String get privacySettingsTitle => 'PRIVACY';
+
+  @override
+  String get privacySettingsControls => 'PRIVACY CONTROLS';
+
+  @override
+  String get privacySettingsControlsDescription =>
+      'Choose whether to share coarse, anonymous task events. Queries, contacts, account IDs, codes, messages, and exact payment values are never included.';
+
+  @override
+  String get privacySettingsMomoSmsSync => 'MoMo SMS sync';
+
+  @override
+  String get privacySettingsMomoSmsSyncDescription =>
+      'Match approved Mobile Money verification SMS for faster contribution checks.';
+
+  @override
+  String get privacySettingsShareAnalytics => 'Share anonymous usage analytics';
+
+  @override
+  String get privacySettingsShareAnalyticsDescription =>
+      'Help improve search, tickets, contributions, Fan Zone, and recovery flows.';
+
+  @override
+  String get privacySettingsAnalyticsFailClosed =>
+      'Analytics stays off unless you opt in and the signed release has an approved analytics configuration.';
+
+  @override
+  String get privacySettingsNoChanges => 'No changes to save';
+
+  @override
+  String get privacySettingsSave => 'Save privacy settings';
+
+  @override
+  String get privacySettingsYourData => 'YOUR DATA';
+
+  @override
+  String get privacySettingsExportDescription =>
+      'Request an account export through a configured support channel.';
+
+  @override
+  String get privacySettingsExportAction => 'Request data export';
+
+  @override
+  String privacySettingsExportWhatsAppMessage(String app) {
+    return 'Data export request for $app. Please send me a copy of my account data.';
+  }
+
+  @override
+  String privacySettingsExportEmailSubject(String app) {
+    return '$app data export request';
+  }
+
+  @override
+  String get privacySettingsExportEmailBody =>
+      'Please send me a copy of my account data.';
+
+  @override
+  String get privacySettingsMailFailed => 'Could not open your mail app.';
+
+  @override
+  String get privacySettingsOpenPolicy => 'Open privacy policy';
+
+  @override
+  String get privacySettingsPolicyUnavailable => 'Privacy policy unavailable';
+
+  @override
+  String get privacySettingsPolicyNotAvailableYet =>
+      'Privacy policy is not available yet.';
+
+  @override
+  String get privacySettingsActiveSessions => 'ACTIVE SESSIONS';
+
+  @override
+  String get privacySettingsActiveSessionsDescription =>
+      'Revoke other active sessions linked to your account.';
+
+  @override
+  String get privacySettingsSignOutOtherDevices => 'Sign out other devices';
+
+  @override
+  String get adminLoadingTitle => 'Loading admin workspace';
+
+  @override
+  String get adminLoadingMessage => 'Checking current club operations.';
+
+  @override
+  String get adminClubAdmin => 'CLUB ADMIN';
+
+  @override
+  String get adminExit => 'Exit Admin';
+
+  @override
+  String get adminCommandCenter => 'COMMAND CENTER';
+
+  @override
+  String get adminTotalUsers => 'TOTAL USERS';
+
+  @override
+  String get adminActiveGroups => 'ACTIVE GROUPS';
+
+  @override
+  String get adminTransactionsToday => 'TX TODAY';
+
+  @override
+  String get adminTicketsSold => 'TICKETS SOLD';
+
+  @override
+  String get adminQuickActions => 'QUICK ACTIONS';
+
+  @override
+  String get adminManageCms => 'Manage CMS';
+
+  @override
+  String get adminManageCmsDescription =>
+      'News articles, banners, and content surfaces';
+
+  @override
+  String get adminCreateMatch => 'Create Match';
+
+  @override
+  String get adminCreateMatchDescription =>
+      'Fixture setup, zoning, and ticket controls';
+
+  @override
+  String get adminViewContributions => 'View Contributions';
+
+  @override
+  String get adminViewContributionsDescription =>
+      'Monitor club and community fundraising';
+
+  @override
+  String get adminSendNotification => 'Send Notification';
+
+  @override
+  String get adminSendNotificationDescription =>
+      'Tier, group, and all-fan push delivery';
+
+  @override
+  String get adminSettleFixtures => 'Settle Fixtures';
+
+  @override
+  String get adminSettleFixturesDescription =>
+      'Enter results and grade prediction markets';
+
+  @override
+  String get adminManageCompetitions => 'Manage Competitions';
+
+  @override
+  String get adminManageCompetitionsDescription =>
+      'Add, edit, and toggle supported leagues and cups';
+
+  @override
+  String get adminSmsSyncMonitor => 'SMS Sync Monitor';
+
+  @override
+  String get adminSmsSyncMonitorDescription =>
+      'MoMo SMS ingestion pipeline health';
+
+  @override
+  String get adminFeatureManager => 'Feature Manager';
+
+  @override
+  String get adminFeatureManagerDashboardDescription =>
+      'Toggle features, visibility, and scheduling';
+
+  @override
+  String get adminRecentActivity => 'RECENT ACTIVITY';
+
+  @override
+  String get adminRecentActivityUnavailable => 'Recent activity unavailable';
+
+  @override
+  String get adminRecentActivityUnavailableMessage =>
+      'Dashboard totals are current. Refresh to retry the activity feed.';
+
+  @override
+  String get adminNoRecentActivity => 'No recent activity';
+
+  @override
+  String get adminNoRecentActivityMessage =>
+      'Current totals are confirmed. New club activity will appear here.';
+
+  @override
+  String get adminWorkspaceUnavailable => 'Admin workspace unavailable';
+
+  @override
+  String get adminMobileDisabledMessage =>
+      'Mobile administration is disabled for this controlled build.';
+
+  @override
+  String get adminBackToSettings => 'Back to settings';
+
+  @override
+  String get adminWorkspaceOffline => 'Admin workspace offline';
+
+  @override
+  String get adminWorkspaceOfflineMessage =>
+      'Reconnect before loading private club operations.';
+
+  @override
+  String get adminAccessUnavailable => 'Admin access unavailable';
+
+  @override
+  String get adminAccessUnavailableMessage =>
+      'This account cannot view the current club administration workspace.';
+
+  @override
+  String get adminDataChanged => 'Admin data changed';
+
+  @override
+  String get adminDataChangedMessage =>
+      'Refresh before continuing with current club operations.';
+
+  @override
+  String get adminSecurityTimeout => 'Security check timed out';
+
+  @override
+  String get adminSecurityTimeoutMessage =>
+      'No admin data was shown. Check your connection and retry.';
+
+  @override
+  String get adminPrivateDataHiddenMessage =>
+      'Private club data remains hidden. Try again.';
+
+  @override
+  String get adminRefreshingTitle => 'Refreshing admin workspace';
+
+  @override
+  String get adminRefreshingMessage =>
+      'Showing the last confirmed dashboard while current data is checked.';
+
+  @override
+  String get adminRefreshTimedOut => 'Refresh timed out';
+
+  @override
+  String get adminCurrentRefreshUnavailable => 'Current refresh unavailable';
+
+  @override
+  String get adminLastConfirmedMessage =>
+      'Showing the last confirmed dashboard. Actions are paused until refresh succeeds.';
+
+  @override
+  String get adminAccessRequired => 'ADMIN ACCESS REQUIRED';
+
+  @override
+  String get adminAccessRequiredMessage =>
+      'This workspace is limited to verified club administrators for the active club.';
+
+  @override
+  String get adminChallengesTitle => 'CHALLENGE OPS';
+
+  @override
+  String get adminBack => 'Back';
+
+  @override
+  String get adminChallengesLoadingTitle => 'Loading challenge operations';
+
+  @override
+  String get adminChallengesLoadingMessage =>
+      'Checking current settlement work.';
+
+  @override
+  String get adminChallengesFilterLabel => 'Challenge status filter';
+
+  @override
+  String get adminChallengesFilterAll => 'ALL';
+
+  @override
+  String get adminChallengesFilterOpen => 'OPEN';
+
+  @override
+  String get adminChallengesFilterLocked => 'LOCKED';
+
+  @override
+  String get adminChallengesFilterSettled => 'SETTLED';
+
+  @override
+  String get adminChallengesFilterVoid => 'VOID';
+
+  @override
+  String get adminChallengesEmptyTitle => 'No challenge operations';
+
+  @override
+  String get adminChallengesEmptyAllMessage =>
+      'No challenges are currently queued.';
+
+  @override
+  String adminChallengesEmptyFilteredMessage(String status) {
+    return 'No $status challenges are currently queued.';
+  }
+
+  @override
+  String get adminChallengesRetryTitle => 'Retry settlement?';
+
+  @override
+  String adminChallengesRetryMessage(String home, String away) {
+    return 'Recheck $home vs $away. Do not retry again until the refreshed status is confirmed.';
+  }
+
+  @override
+  String get adminCancelUpper => 'CANCEL';
+
+  @override
+  String get adminRetryUpper => 'RETRY';
+
+  @override
+  String get adminChallengesSettlementPending =>
+      'Settlement remains pending. Review the refreshed status.';
+
+  @override
+  String get adminChallengesSettlementRefreshed =>
+      'Settlement status refreshed.';
+
+  @override
+  String get adminChallengesUnavailable => 'Challenge operations unavailable';
+
+  @override
+  String get adminChallengesDisabledMessage =>
+      'Challenge settlement controls are disabled for this controlled build.';
+
+  @override
+  String get adminBackToAdmin => 'Back to admin';
+
+  @override
+  String get adminChallengesOffline => 'Challenge operations offline';
+
+  @override
+  String get adminChallengesOfflineMessage =>
+      'Reconnect before loading private settlement work.';
+
+  @override
+  String get adminChallengesAccessUnavailable => 'Challenge access unavailable';
+
+  @override
+  String get adminChallengesAccessUnavailableMessage =>
+      'This account cannot view or retry club challenge settlements.';
+
+  @override
+  String get adminChallengesStatusChanged => 'Challenge status changed';
+
+  @override
+  String get adminChallengesStatusChangedMessage =>
+      'Refresh before continuing with settlement work.';
+
+  @override
+  String get adminChallengesSecurityTimeoutMessage =>
+      'No challenge data was shown. Check your connection and retry.';
+
+  @override
+  String get adminChallengesPrivateDataHidden =>
+      'Private settlement data remains hidden. Try again.';
+
+  @override
+  String get adminChallengesRetryingTitle => 'Retrying settlement';
+
+  @override
+  String get adminChallengesRetryingMessage =>
+      'Controls are paused until the current result is confirmed.';
+
+  @override
+  String get adminChallengesRefreshingTitle =>
+      'Refreshing challenge operations';
+
+  @override
+  String get adminChallengesRefreshingMessage =>
+      'Showing the last confirmed list while current status is checked.';
+
+  @override
+  String get adminChallengesOutcomeUnconfirmed =>
+      'The retry outcome is not confirmed. Refresh before taking another action.';
+
+  @override
+  String get adminChallengesLastConfirmedMessage =>
+      'Showing the last confirmed list. Actions are paused until refresh succeeds.';
+
+  @override
+  String get adminChallengesVoidReasonRecorded => 'VOID REASON RECORDED';
+
+  @override
+  String get adminChallengesNoVoidReason => 'NO VOID REASON';
+
+  @override
+  String adminChallengesSettlementMode(String mode) {
+    return 'SETTLEMENT $mode';
+  }
+
+  @override
+  String adminChallengesAuditState(String state) {
+    return 'AUDIT $state';
+  }
+
+  @override
+  String get adminChallengesRetryingAction => 'RETRYING SETTLEMENT';
+
+  @override
+  String get adminChallengesRetryAction => 'RETRY SETTLEMENT';
+
+  @override
+  String get adminChallengesCreator => 'CREATOR';
+
+  @override
+  String get adminChallengesPool => 'POOL';
+
+  @override
+  String get adminChallengesParticipants => 'PARTICIPANTS';
+
+  @override
+  String adminVersus(String home, String away) {
+    return '$home vs $away';
+  }
+
+  @override
+  String adminMetricSemantic(String label, String value) {
+    return '$label $value';
+  }
+
+  @override
+  String get adminSettlementConfirmTitle => 'SETTLE THIS FIXTURE?';
+
+  @override
+  String adminSettlementConfirmMessage(
+    String home,
+    int homeScore,
+    int awayScore,
+    String away,
+  ) {
+    return '$home $homeScore – $awayScore $away\n\nThis grades prediction markets and may trigger supporter rewards. Confirm only from the official result.';
+  }
+
+  @override
+  String get adminSettlementSettleUpper => 'SETTLE';
+
+  @override
+  String adminSettlementReceipt(String score, int markets, int won, int lost) {
+    return 'Settled $score • $markets markets • $won won • $lost lost';
+  }
+
+  @override
+  String get adminSettlementReviewOfficialResult =>
+      'Review the official result and try again.';
+
+  @override
+  String get adminSettlementNotConfirmed =>
+      'Fixture settlement was not confirmed.';
+
+  @override
+  String get adminSettlementTitle => 'SETTLE FIXTURES';
+
+  @override
+  String get adminSettlementLoadingTitle => 'Loading settlement workspace';
+
+  @override
+  String get adminSettlementLoadingMessage =>
+      'Checking controlled fixture information.';
+
+  @override
+  String get adminSettlementFilterScheduled => 'SCHEDULED';
+
+  @override
+  String get adminSettlementFilterFinished => 'FINISHED';
+
+  @override
+  String get adminSettlementFilterAll => 'ALL';
+
+  @override
+  String get adminSettlementControlTitle => 'OFFICIAL RESULT CONTROL';
+
+  @override
+  String get adminSettlementControlMessage =>
+      'Settlement grades prediction markets and may trigger rewards. Use only an official, confirmed final score.';
+
+  @override
+  String get adminSettlementEmptyTitle => 'No fixtures in this view';
+
+  @override
+  String get adminSettlementEmptyMessage =>
+      'Switch filters or wait for controlled fixture information.';
+
+  @override
+  String get adminSettlementVersusShort => 'VS';
+
+  @override
+  String get adminSettlementOpenHint => 'Open official result confirmation';
+
+  @override
+  String get adminSettlementUnavailableHint => 'Settlement unavailable';
+
+  @override
+  String get adminSettlementEnterOfficialResult => 'ENTER OFFICIAL RESULT';
+
+  @override
+  String get adminSettlementPaused => 'SETTLEMENT PAUSED';
+
+  @override
+  String get adminSettlementSettled => 'SETTLED';
+
+  @override
+  String get adminSettlementNotSettleable => 'NOT SETTLEABLE';
+
+  @override
+  String get adminSettlementManagementUnavailable =>
+      'Settlement management unavailable';
+
+  @override
+  String get adminSettlementDisabledMessage =>
+      'Settlement controls are disabled for this controlled build.';
+
+  @override
+  String get adminSettlementWorkspaceOffline => 'Settlement workspace offline';
+
+  @override
+  String get adminSettlementWorkspaceOfflineMessage =>
+      'Reconnect before loading private fixture information.';
+
+  @override
+  String get adminSettlementAccessUnavailable =>
+      'Settlement access unavailable';
+
+  @override
+  String get adminSettlementAccessUnavailableMessage =>
+      'This account cannot view or settle prediction fixtures.';
+
+  @override
+  String get adminSettlementResultChanged => 'Fixture result changed';
+
+  @override
+  String get adminSettlementResultChangedMessage =>
+      'Refresh before confirming another settlement.';
+
+  @override
+  String get adminSettlementSecurityTimeoutMessage =>
+      'No fixture information was shown. Check your connection.';
+
+  @override
+  String get adminSettlementWorkspaceUnavailable =>
+      'Settlement workspace unavailable';
+
+  @override
+  String get adminSettlementPrivateDataHidden =>
+      'Private fixture information remains hidden. Try again.';
+
+  @override
+  String get adminSettlementCheckingResults => 'Checking fixture results';
+
+  @override
+  String get adminSettlementCheckingResultsMessage =>
+      'Showing the last confirmed state while current data is checked.';
+
+  @override
+  String get adminSettlementOutcomeUnconfirmed =>
+      'The last settlement is unconfirmed. Controls stay paused until refresh succeeds.';
+
+  @override
+  String get adminSettlementLastConfirmedMessage =>
+      'Last confirmed fixture information remains visible. Controls are paused.';
+
+  @override
+  String get adminSettlementFinalScoreValidation =>
+      'Enter final scores from 0 to 99.';
+
+  @override
+  String get adminSettlementHalfTimeValidation =>
+      'Enter both half-time scores without exceeding the final score.';
+
+  @override
+  String get adminSettlementHalfTimeScore => 'Half-time score';
+
+  @override
+  String get adminSettlementHideHalfTime => 'Hide half-time score fields';
+
+  @override
+  String get adminSettlementShowHalfTime => 'Show half-time score fields';
+
+  @override
+  String get adminSettlementHalfTimeOptional => 'HALF-TIME SCORE (OPTIONAL)';
+
+  @override
+  String adminSettlementHalfTimeLabel(String team) {
+    return '$team HT';
+  }
+
+  @override
+  String get adminSettlementReviewAction => 'Review settlement';
+
+  @override
+  String get adminStatusFinished => 'FINISHED';
+
+  @override
+  String get adminStatusScheduled => 'SCHEDULED';
+
+  @override
+  String get adminStatusLive => 'LIVE';
+
+  @override
+  String get adminStatusCancelled => 'CANCELLED';
+
+  @override
+  String get adminStatusPostponed => 'POSTPONED';
+
+  @override
+  String adminScore(int home, int away) {
+    return '$home – $away';
+  }
+
+  @override
+  String get adminFeatureDetailTitle => 'FEATURE DETAIL';
+
+  @override
+  String get adminFeatureLoadingTitle => 'Loading feature settings';
+
+  @override
+  String get adminFeatureLoadingMessage =>
+      'Checking controlled channel and access rules.';
+
+  @override
+  String get adminFeatureNotFound => 'Feature not found';
+
+  @override
+  String get adminFeatureNotFoundMessage =>
+      'No confirmed feature matches this controlled route.';
+
+  @override
+  String get adminBackToFeatures => 'Back to features';
+
+  @override
+  String get adminFeatureGlobalState => 'GLOBAL STATE';
+
+  @override
+  String adminFeatureDisableTooltip(String feature) {
+    return 'Disable $feature';
+  }
+
+  @override
+  String adminFeatureEnableTooltip(String feature) {
+    return 'Enable $feature';
+  }
+
+  @override
+  String adminFeatureStateSemantic(String feature, String state) {
+    return '$feature is $state';
+  }
+
+  @override
+  String get adminFeatureChangesGlobalState =>
+      'Changes the global feature state';
+
+  @override
+  String get adminFeatureEnabled => 'Enabled';
+
+  @override
+  String get adminFeatureDisabled => 'Disabled';
+
+  @override
+  String get adminFeatureTapDisable => 'Tap to disable this feature globally';
+
+  @override
+  String get adminFeatureTapEnable => 'Tap to enable this feature globally';
+
+  @override
+  String get adminFeatureVisibility => 'VISIBILITY';
+
+  @override
+  String get adminFeatureVisibilityVisible => 'VISIBLE';
+
+  @override
+  String get adminFeatureVisibilityHidden => 'HIDDEN';
+
+  @override
+  String get adminFeatureVisibilityMaintenance => 'MAINTENANCE';
+
+  @override
+  String get adminFeatureChannelConfig => 'CHANNEL CONFIG';
+
+  @override
+  String get adminFeatureNoChannelOverrides => 'No channel overrides';
+
+  @override
+  String get adminFeatureNoChannelOverridesMessage =>
+      'This feature uses its confirmed global state.';
+
+  @override
+  String get adminFeatureScheduling => 'SCHEDULING';
+
+  @override
+  String get adminFeatureAccessRules => 'ACCESS RULES';
+
+  @override
+  String get adminFeatureAuthRequired => 'Authentication required';
+
+  @override
+  String get adminFeatureAuthRequiredMessage =>
+      'Users must sign in before accessing this feature.';
+
+  @override
+  String get adminFeatureSettingsUnavailable => 'Feature settings unavailable';
+
+  @override
+  String get adminFeatureEditingDisabled =>
+      'Feature editing is disabled for this controlled build.';
+
+  @override
+  String get adminFeatureSettingsOffline => 'Feature settings offline';
+
+  @override
+  String get adminFeatureSettingsOfflineMessage =>
+      'Reconnect before loading private feature configuration.';
+
+  @override
+  String get adminFeatureAccessUnavailable => 'Feature access unavailable';
+
+  @override
+  String get adminFeatureAccessUnavailableMessage =>
+      'This account cannot view or change feature settings.';
+
+  @override
+  String get adminFeatureSettingsChanged => 'Feature settings changed';
+
+  @override
+  String get adminFeatureSettingsChangedMessage =>
+      'Refresh before making another feature change.';
+
+  @override
+  String get adminFeatureSecurityTimeoutMessage =>
+      'No feature settings were shown. Check your connection.';
+
+  @override
+  String get adminFeaturePrivateDataHidden =>
+      'Private feature settings remain hidden. Try again.';
+
+  @override
+  String get adminFeatureCheckingTitle => 'Checking feature settings';
+
+  @override
+  String get adminFeatureCheckingMessage =>
+      'Showing the last confirmed state while current data is checked.';
+
+  @override
+  String get adminFeatureOutcomeUnconfirmed =>
+      'The last change is unconfirmed. Controls stay paused until refresh succeeds.';
+
+  @override
+  String get adminFeatureLastConfirmed =>
+      'Last confirmed settings remain visible. Controls are paused.';
+
+  @override
+  String get adminFeatureChannelMobile => 'MOBILE';
+
+  @override
+  String get adminFeatureChannelWeb => 'WEB';
+
+  @override
+  String get adminFeatureChannelEnabled => 'Enabled';
+
+  @override
+  String get adminFeatureChannelEnabledMessage =>
+      'Feature is active on this channel.';
+
+  @override
+  String get adminFeatureChannelVisible => 'Visible';
+
+  @override
+  String get adminFeatureChannelVisibleMessage =>
+      'Feature can be shown on this channel.';
+
+  @override
+  String get adminFeatureShowInNavigation => 'Show in navigation';
+
+  @override
+  String get adminFeatureShowInNavigationMessage =>
+      'Include this feature in channel navigation.';
+
+  @override
+  String get adminFeatureShowOnHome => 'Show on home';
+
+  @override
+  String get adminFeatureShowOnHomeMessage =>
+      'Include this feature on the channel home screen.';
+
+  @override
+  String get adminFeatureAvailableFrom => 'Available from';
+
+  @override
+  String get adminFeatureAvailableUntil => 'Available until';
+
+  @override
+  String get adminFeatureClearSchedule => 'Clear schedule';
+
+  @override
+  String get adminFeatureNotSet => 'Not set';
+
+  @override
+  String adminFeatureSetTooltip(String label) {
+    return 'Set $label';
+  }
+
+  @override
+  String adminFeatureDateSemantic(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get adminFeatureOpenDateTime => 'Opens date and time selection';
+
+  @override
+  String get adminMatchesTitle => 'MATCHES';
+
+  @override
+  String get adminMatchesLoadingTitle => 'Loading match workspace';
+
+  @override
+  String get adminMatchesLoadingMessage =>
+      'Checking controlled fixture information.';
+
+  @override
+  String get adminMatchesDescription =>
+      'Manage fixtures, sale status, ticket allocation, and live scores from confirmed data.';
+
+  @override
+  String get adminMatchesFixtures => 'FIXTURES';
+
+  @override
+  String get adminMatchesOnSale => 'ON SALE';
+
+  @override
+  String get adminMatchesStatus => 'STATUS';
+
+  @override
+  String get adminMatchesFilterAll => 'ALL';
+
+  @override
+  String get adminMatchesFilterLive => 'LIVE';
+
+  @override
+  String get adminMatchesFilterUpcoming => 'UPCOMING';
+
+  @override
+  String get adminMatchesFilterOnSale => 'ON SALE';
+
+  @override
+  String get adminMatchesFilterCompleted => 'COMPLETED';
+
+  @override
+  String get adminMatchesNoneConfigured => 'No fixtures configured';
+
+  @override
+  String get adminMatchesNoneMatch => 'No fixtures match';
+
+  @override
+  String get adminMatchesNoneConfiguredMessage =>
+      'A confirmed club fixture must exist before this workspace can infer its partner scope.';
+
+  @override
+  String get adminMatchesNoneMatchMessage => 'Choose another status filter.';
+
+  @override
+  String get adminMatchesCreate => 'Create match';
+
+  @override
+  String get adminMatchesCreationPaused =>
+      'Creation stays paused until a confirmed partner scope is available.';
+
+  @override
+  String get adminMatchesCreated => 'Match created successfully.';
+
+  @override
+  String get adminMatchesUpdated => 'Match updated successfully.';
+
+  @override
+  String get adminMatchesManagementUnavailable =>
+      'Match management unavailable';
+
+  @override
+  String get adminMatchesDisabledMessage =>
+      'Match controls are disabled for this controlled build.';
+
+  @override
+  String get adminMatchesWorkspaceOffline => 'Match workspace offline';
+
+  @override
+  String get adminMatchesWorkspaceOfflineMessage =>
+      'Reconnect before loading private fixture information.';
+
+  @override
+  String get adminMatchesAccessUnavailable => 'Match access unavailable';
+
+  @override
+  String get adminMatchesAccessUnavailableMessage =>
+      'This account cannot view or change fixture information.';
+
+  @override
+  String get adminMatchesInformationChanged => 'Fixture information changed';
+
+  @override
+  String get adminMatchesInformationChangedMessage =>
+      'Refresh before making another fixture change.';
+
+  @override
+  String get adminMatchesSecurityTimeoutMessage =>
+      'No fixture information was shown. Check your connection.';
+
+  @override
+  String get adminMatchesWorkspaceUnavailable => 'Match workspace unavailable';
+
+  @override
+  String get adminMatchesPrivateDataHidden =>
+      'Private fixture information remains hidden. Try again.';
+
+  @override
+  String get adminMatchesCheckingTitle => 'Checking fixture information';
+
+  @override
+  String get adminMatchesCheckingMessage =>
+      'Showing the last confirmed state while current data is checked.';
+
+  @override
+  String get adminMatchesOutcomeUnconfirmed =>
+      'The last change is unconfirmed. Controls stay paused until refresh succeeds.';
+
+  @override
+  String get adminMatchesLastConfirmed =>
+      'Last confirmed fixture information remains visible. Controls are paused.';
+
+  @override
+  String adminMatchesOpenTooltip(String home, String away) {
+    return 'Open $home versus $away';
+  }
+
+  @override
+  String adminMatchesFixtureSemantic(String home, String away) {
+    return '$home versus $away fixture';
+  }
+
+  @override
+  String get adminMatchesOpenHint => 'Opens controlled fixture settings';
+
+  @override
+  String adminMatchesCompetitionVenue(String competition, String venue) {
+    return '$competition • $venue';
+  }
+
+  @override
+  String adminMatchesDateKickoff(String date, String time) {
+    return '$date • $time';
+  }
+
+  @override
+  String adminMatchesPrices(String symbol, String general, String vip) {
+    return 'GENERAL $symbol $general • VIP $symbol $vip';
+  }
+
+  @override
+  String adminMatchesScore(int home, int away, String minute) {
+    return 'Score $home-$away$minute';
+  }
+
+  @override
+  String adminMatchesAllocation(int percent, int sold, int capacity) {
+    return '$percent% allocation • $sold / $capacity tickets';
+  }
+
+  @override
+  String get adminMatchesEditOnSale => 'EDIT ON-SALE FIXTURE';
+
+  @override
+  String get adminMatchesEdit => 'EDIT FIXTURE';
+
+  @override
+  String get adminStatusHalfTime => 'HALF-TIME';
+
+  @override
+  String get adminStatusFullTime => 'FULL-TIME';
+
+  @override
+  String get adminStatusUpcoming => 'UPCOMING';
+
+  @override
+  String adminMatchesLiveMinute(int minute) {
+    return ' • $minute\'';
+  }
+
+  @override
+  String get adminMatchSaveNotConfirmed =>
+      'The match was not saved. Review the confirmed workspace state.';
+
+  @override
+  String get adminMatchReviewFields =>
+      'Review every match field and enter valid values.';
+
+  @override
+  String get adminMatchSaveFailedRefresh =>
+      'The match was not saved. Try again after refreshing.';
+
+  @override
+  String get adminMatchCreateTitle => 'CREATE MATCH';
+
+  @override
+  String get adminMatchUpdateTitle => 'UPDATE MATCH';
+
+  @override
+  String get adminMatchHomeTeam => 'Home Team';
+
+  @override
+  String get adminMatchAwayTeam => 'Away Team';
+
+  @override
+  String get adminMatchCompetition => 'Competition';
+
+  @override
+  String get adminMatchVenue => 'Venue';
+
+  @override
+  String adminMatchGeneralPrice(String symbol) {
+    return 'General $symbol';
+  }
+
+  @override
+  String adminMatchVipPrice(String symbol) {
+    return 'VIP $symbol';
+  }
+
+  @override
+  String get adminMatchCapacity => 'Capacity';
+
+  @override
+  String get adminMatchTicketsOnSale => 'Tickets on sale';
+
+  @override
+  String get adminMatchStatus => 'Match status';
+
+  @override
+  String get adminMatchStatusScheduled => 'Scheduled';
+
+  @override
+  String get adminMatchStatusLive => 'Live';
+
+  @override
+  String get adminMatchStatusHalfTime => 'Half-time';
+
+  @override
+  String get adminMatchStatusFullTime => 'Full-time';
+
+  @override
+  String get adminMatchStatusPostponed => 'Postponed';
+
+  @override
+  String get adminMatchStatusCancelled => 'Cancelled';
+
+  @override
+  String get adminMatchHomeScore => 'Home score';
+
+  @override
+  String get adminMatchAwayScore => 'Away score';
+
+  @override
+  String get adminMatchLiveMinute => 'Live minute';
+
+  @override
+  String get adminMatchSummary => 'Match summary / live note';
+
+  @override
+  String get adminMatchSave => 'Save match';
+
+  @override
+  String get adminMatchUpdate => 'Update match';
+
+  @override
+  String get adminFeatureManagerTitle => 'FEATURE MANAGER';
+
+  @override
+  String get adminFeatureRegistryLoading => 'Loading feature registry';
+
+  @override
+  String get adminFeatureRegistryLoadingMessage =>
+      'Checking controlled feature configuration.';
+
+  @override
+  String get adminFeatureManagerDescription =>
+      'Control club-scoped feature availability with confirmed, bounded configuration.';
+
+  @override
+  String get adminFeatureRegistered => 'REGISTERED';
+
+  @override
+  String get adminFeatureEnabledUpper => 'ENABLED';
+
+  @override
+  String get adminFeatureDisabledUpper => 'DISABLED';
+
+  @override
+  String get adminFeatureStatus => 'STATUS';
+
+  @override
+  String get adminFeatureFilterAll => 'ALL';
+
+  @override
+  String get adminFeatureNoneConfigured => 'No features configured';
+
+  @override
+  String get adminFeatureNoneMatch => 'No features match';
+
+  @override
+  String get adminFeatureNoneConfiguredMessage =>
+      'Confirmed feature configuration will appear here.';
+
+  @override
+  String get adminFeatureNoneMatchMessage => 'Choose another status filter.';
+
+  @override
+  String get adminFeatureManagementUnavailable =>
+      'Feature management unavailable';
+
+  @override
+  String get adminFeatureControlsDisabled =>
+      'Feature controls are disabled for this controlled build.';
+
+  @override
+  String get adminFeatureRegistryOffline => 'Feature registry offline';
+
+  @override
+  String get adminFeatureConfigurationAccessMessage =>
+      'This account cannot view or change feature configuration.';
+
+  @override
+  String get adminFeatureConfigurationChanged =>
+      'Feature configuration changed';
+
+  @override
+  String get adminFeatureConfigurationChangedMessage =>
+      'Refresh before making another feature change.';
+
+  @override
+  String get adminFeatureConfigurationSecurityMessage =>
+      'No feature configuration was shown. Check your connection.';
+
+  @override
+  String get adminFeatureRegistryUnavailable => 'Feature registry unavailable';
+
+  @override
+  String get adminFeatureConfigurationHidden =>
+      'Private feature configuration remains hidden. Try again.';
+
+  @override
+  String get adminFeatureConfigurationChecking =>
+      'Checking feature configuration';
+
+  @override
+  String get adminFeatureConfigurationLastConfirmed =>
+      'Last confirmed configuration remains visible. Controls are paused.';
+
+  @override
+  String adminFeatureOpenTooltip(String feature) {
+    return 'Open $feature';
+  }
+
+  @override
+  String adminFeatureSettingsSemantic(String feature) {
+    return '$feature feature settings';
+  }
+
+  @override
+  String get adminFeatureOpenSettingsHint =>
+      'Opens controlled feature settings';
+
+  @override
+  String adminFeatureChangeVisibilityTooltip(String feature) {
+    return 'Change $feature visibility';
+  }
+
+  @override
+  String get adminFeatureChangeVisibility => 'Change visibility';
+
+  @override
+  String get adminCompetitionsTitle => 'COMPETITIONS';
+
+  @override
+  String get adminCompetitionsAdd => 'Add competition';
+
+  @override
+  String get adminCompetitionsActionsUnavailable =>
+      'Competition actions unavailable';
+
+  @override
+  String get adminCompetitionsLoading => 'Loading competitions';
+
+  @override
+  String get adminCompetitionsLoadingMessage =>
+      'Checking the controlled competition workspace.';
+
+  @override
+  String get adminCompetitionsDescription =>
+      'Manage the competitions and seasons available to the prediction engine.';
+
+  @override
+  String get adminCompetitionsNoneConfigured => 'No competitions configured';
+
+  @override
+  String get adminCompetitionsNoneMatch => 'No competitions match';
+
+  @override
+  String get adminCompetitionsNoneConfiguredMessage =>
+      'Create the first controlled competition when access is available.';
+
+  @override
+  String get adminCompetitionsNoneMatchMessage =>
+      'Choose another region or competition kind.';
+
+  @override
+  String get adminCompetitionsManagementUnavailable =>
+      'Competition management unavailable';
+
+  @override
+  String get adminCompetitionsControlsDisabled =>
+      'Competition controls are disabled for this controlled build.';
+
+  @override
+  String get adminCompetitionsOffline => 'Competition workspace offline';
+
+  @override
+  String get adminCompetitionsOfflineMessage =>
+      'Reconnect before loading private competition records.';
+
+  @override
+  String get adminCompetitionsAccessUnavailable =>
+      'Competition access unavailable';
+
+  @override
+  String get adminCompetitionsAccessMessage =>
+      'This account cannot view or change competition configuration.';
+
+  @override
+  String get adminCompetitionsDataChanged => 'Competition data changed';
+
+  @override
+  String get adminCompetitionsDataChangedMessage =>
+      'Refresh before continuing with competition work.';
+
+  @override
+  String get adminCompetitionsSecurityMessage =>
+      'No competition data was shown. Check your connection.';
+
+  @override
+  String get adminCompetitionsWorkspaceUnavailable =>
+      'Competition workspace unavailable';
+
+  @override
+  String get adminCompetitionsHiddenMessage =>
+      'Private competition records remain hidden. Try again.';
+
+  @override
+  String get adminCompetitionsUpdating => 'Updating competition workspace';
+
+  @override
+  String get adminCompetitionsUpdatingMessage =>
+      'Controls are paused until the current result is confirmed.';
+
+  @override
+  String get adminCompetitionsRefreshing => 'Refreshing competitions';
+
+  @override
+  String get adminCompetitionsRefreshingMessage =>
+      'Showing the last confirmed records while current data is checked.';
+
+  @override
+  String get adminCompetitionsCurrentRefreshUnavailable =>
+      'Current refresh unavailable';
+
+  @override
+  String get adminCompetitionsOutcomeUnconfirmed =>
+      'The update outcome is not confirmed. Refresh before taking another action.';
+
+  @override
+  String get adminCompetitionsLastConfirmed =>
+      'Showing the last confirmed records. Actions are paused until refresh succeeds.';
+
+  @override
+  String get adminCompetitionCreated => 'Competition created';
+
+  @override
+  String get adminCompetitionUpdated => 'Competition updated';
+
+  @override
+  String get adminCompetitionActivateQuestion => 'ACTIVATE COMPETITION?';
+
+  @override
+  String get adminCompetitionDeactivateQuestion => 'DEACTIVATE?';
+
+  @override
+  String adminCompetitionActivateMessage(String competition) {
+    return '$competition will become available to configured prediction journeys.';
+  }
+
+  @override
+  String adminCompetitionDeactivateMessage(String competition) {
+    return '$competition will stop being available to configured prediction journeys.';
+  }
+
+  @override
+  String get adminActivateUpper => 'ACTIVATE';
+
+  @override
+  String get adminDeactivateUpper => 'DEACTIVATE';
+
+  @override
+  String get adminCompetitionActivated => 'Competition activated';
+
+  @override
+  String get adminCompetitionDeactivated => 'Competition deactivated';
+
+  @override
+  String get adminCompetitionsTotal => 'TOTAL';
+
+  @override
+  String get adminCompetitionsActive => 'ACTIVE';
+
+  @override
+  String get adminCompetitionsInactive => 'INACTIVE';
+
+  @override
+  String get adminCompetitionFilters => 'Competition filters';
+
+  @override
+  String get adminCompetitionRegion => 'REGION';
+
+  @override
+  String get adminCompetitionKind => 'KIND';
+
+  @override
+  String get adminCompetitionSeasons => 'SEASONS';
+
+  @override
+  String get adminEditUpper => 'EDIT';
+
+  @override
+  String get adminCompetitionFilterAll => 'ALL';
+
+  @override
+  String get adminCompetitionRegionAfrica => 'AFRICA';
+
+  @override
+  String get adminCompetitionRegionEurope => 'EUROPE';
+
+  @override
+  String get adminCompetitionRegionInternational => 'INTL';
+
+  @override
+  String get adminCompetitionRegionGlobal => 'GLOBAL';
+
+  @override
+  String get adminCompetitionKindLeague => 'LEAGUE';
+
+  @override
+  String get adminCompetitionKindCup => 'CUP';
+
+  @override
+  String get adminCompetitionKindTournament => 'TOURNAMENT';
+
+  @override
+  String get adminCompetitionEdit => 'EDIT COMPETITION';
+
+  @override
+  String get adminCompetitionAdd => 'ADD COMPETITION';
+
+  @override
+  String get adminCompetitionName => 'Name';
+
+  @override
+  String get adminCompetitionShortName => 'Short Name';
+
+  @override
+  String get adminCompetitionSlug => 'Slug';
+
+  @override
+  String get adminCompetitionSlugHint => 'e.g. national-league';
+
+  @override
+  String get adminCompetitionOrganizer => 'Organizer';
+
+  @override
+  String get adminOptional => 'Optional';
+
+  @override
+  String get adminCompetitionCountryCode => 'Country Code';
+
+  @override
+  String get adminCompetitionCountryCodeHint => 'RW';
+
+  @override
+  String get adminCompetitionCountryName => 'Country Name';
+
+  @override
+  String get adminCompetitionCountryNameHint => 'Rwanda';
+
+  @override
+  String get adminCompetitionFormatNotes => 'Format Notes';
+
+  @override
+  String get adminCompetitionValidationMessage =>
+      'Check the required names, slug, and country code.';
+
+  @override
+  String get adminCompetitionAvailable =>
+      'Available to configured prediction journeys';
+
+  @override
+  String get adminCompetitionUnavailable =>
+      'Unavailable to prediction journeys';
+
+  @override
+  String get adminSaveChanges => 'Save changes';
+
+  @override
+  String get adminCreateCompetition => 'Create competition';
+
+  @override
+  String get adminSeasonAdd => 'Add season';
+
+  @override
+  String get adminSeasonActionsUnavailable => 'Season actions unavailable';
+
+  @override
+  String get adminSeasonNoneConfigured => 'No seasons configured';
+
+  @override
+  String get adminSeasonNoneConfiguredMessage =>
+      'Add the first controlled season when access is available.';
+
+  @override
+  String get adminSeasonCreated => 'Season created';
+
+  @override
+  String get adminSeasonActivateQuestion => 'ACTIVATE SEASON?';
+
+  @override
+  String get adminSeasonDeactivateQuestion => 'DEACTIVATE SEASON?';
+
+  @override
+  String adminSeasonAvailabilityMessage(String season, String availability) {
+    return '$season will be $availability to configured competition journeys.';
+  }
+
+  @override
+  String get adminAvailable => 'available';
+
+  @override
+  String get adminUnavailable => 'unavailable';
+
+  @override
+  String get adminSeasonActivated => 'Season activated';
+
+  @override
+  String get adminSeasonDeactivated => 'Season deactivated';
+
+  @override
+  String get adminSeasonActivate => 'Activate season';
+
+  @override
+  String get adminSeasonDeactivate => 'Deactivate season';
+
+  @override
+  String get adminSeasonValidationMessage =>
+      'Check the season slug, label, and years.';
+
+  @override
+  String get adminSeasonAddUpper => 'ADD SEASON';
+
+  @override
+  String get adminSeasonSlugHint => 'e.g. league-2026';
+
+  @override
+  String get adminSeasonLabel => 'Label';
+
+  @override
+  String get adminSeasonLabelHint => 'e.g. 2025/2026';
+
+  @override
+  String get adminSeasonYearStart => 'Year Start';
+
+  @override
+  String get adminSeasonYearEnd => 'Year End';
+
+  @override
+  String get adminCreateUpper => 'CREATE';
+
+  @override
+  String get adminSeasonStatusPlanned => 'PLANNED';
+
+  @override
+  String get adminSeasonStatusActive => 'ACTIVE';
+
+  @override
+  String get adminSeasonStatusFinished => 'FINISHED';
+
+  @override
+  String get adminSeasonStatusArchived => 'ARCHIVED';
+
+  @override
+  String get adminNotificationSendTitle => 'SEND NOTIFICATION';
+
+  @override
+  String get adminNotificationLoading => 'Loading notification workspace';
+
+  @override
+  String get adminNotificationLoadingMessage =>
+      'Checking controlled delivery information.';
+
+  @override
+  String get adminNotificationDeliveryStatus => 'DELIVERY STATUS';
+
+  @override
+  String get adminNotificationDeliveryStatusMessage =>
+      'Delivery via Edge Functions. Scheduled sends dispatch on cron.';
+
+  @override
+  String get adminNotificationAudience => 'AUDIENCE';
+
+  @override
+  String get adminNotificationAudienceAllFans => 'ALL FANS';
+
+  @override
+  String get adminNotificationAudienceByTier => 'BY TIER';
+
+  @override
+  String get adminNotificationAudienceByGroup => 'BY GROUP';
+
+  @override
+  String get adminNotificationTierFan => 'FAN';
+
+  @override
+  String get adminNotificationTierBronze => 'BRONZE';
+
+  @override
+  String get adminNotificationTierGold => 'GOLD';
+
+  @override
+  String get adminNotificationTierPlatinum => 'PLATINUM';
+
+  @override
+  String get adminNotificationSelectGroup => 'Select group';
+
+  @override
+  String get adminNotificationTitleLabel => 'Notification title';
+
+  @override
+  String get adminNotificationBodyLabel => 'Message body';
+
+  @override
+  String adminNotificationCharacterCount(int count) {
+    return '$count characters';
+  }
+
+  @override
+  String get adminNotificationImageUrl => 'Optional image URL';
+
+  @override
+  String get adminNotificationSchedule => 'SCHEDULE';
+
+  @override
+  String get adminNotificationSendNow => 'SEND NOW';
+
+  @override
+  String get adminNotificationPickDateTime => 'Pick date & time';
+
+  @override
+  String get adminNotificationScheduleAction => 'Schedule notification';
+
+  @override
+  String get adminNotificationSendAction => 'Send notification';
+
+  @override
+  String get adminNotificationCopyPayload => 'COPY PAYLOAD';
+
+  @override
+  String get adminNotificationSendHistory => 'SEND HISTORY';
+
+  @override
+  String get adminNotificationHistoryEmpty => 'No notification history';
+
+  @override
+  String get adminNotificationHistoryEmptyMessage =>
+      'Confirmed delivery records will appear here after a request.';
+
+  @override
+  String get adminNotificationManagementUnavailable =>
+      'Notification management unavailable';
+
+  @override
+  String get adminNotificationControlsDisabled =>
+      'Notification controls are disabled for this controlled build.';
+
+  @override
+  String get adminNotificationWorkspaceOffline =>
+      'Notification workspace offline';
+
+  @override
+  String get adminNotificationOfflineMessage =>
+      'Reconnect before loading private delivery information.';
+
+  @override
+  String get adminNotificationAccessUnavailable =>
+      'Notification access unavailable';
+
+  @override
+  String get adminNotificationAccessMessage =>
+      'This account cannot view or send notifications.';
+
+  @override
+  String get adminNotificationDataChanged => 'Delivery information changed';
+
+  @override
+  String get adminNotificationDataChangedMessage =>
+      'Refresh before making another notification request.';
+
+  @override
+  String get adminNotificationSecurityMessage =>
+      'No delivery information was shown. Check your connection.';
+
+  @override
+  String get adminNotificationWorkspaceUnavailable =>
+      'Notification workspace unavailable';
+
+  @override
+  String get adminNotificationHiddenMessage =>
+      'Private delivery information remains hidden. Try again.';
+
+  @override
+  String get adminNotificationChecking => 'Checking delivery information';
+
+  @override
+  String get adminNotificationCheckingMessage =>
+      'Showing the last confirmed state while current data is checked.';
+
+  @override
+  String get adminNotificationOutcomeUnconfirmed =>
+      'The last request is unconfirmed. Controls stay paused until refresh succeeds.';
+
+  @override
+  String get adminNotificationLastConfirmed =>
+      'Last confirmed delivery information remains visible. Controls are paused.';
+
+  @override
+  String get adminNotificationValidationTitleBody =>
+      'Add a title and message body first.';
+
+  @override
+  String get adminNotificationValidationTier => 'Choose the target tier first.';
+
+  @override
+  String get adminNotificationValidationGroup =>
+      'Choose the target group first.';
+
+  @override
+  String get adminNotificationValidationSchedule =>
+      'Pick the delivery date and time first.';
+
+  @override
+  String get adminNotificationQueued =>
+      'Notification queued for scheduled delivery.';
+
+  @override
+  String adminNotificationScheduledFor(String date) {
+    return 'Notification scheduled for $date.';
+  }
+
+  @override
+  String adminNotificationSentSummary(int requested, int sent) {
+    return 'Sent to $requested supporters. $sent delivered.';
+  }
+
+  @override
+  String adminNotificationPartialSummary(int sent, int failed) {
+    return 'Partial: $sent delivered, $failed failed.';
+  }
+
+  @override
+  String get adminNotificationDeliveryFailed => 'Notification delivery failed.';
+
+  @override
+  String get adminNotificationRequestRecorded =>
+      'Notification request recorded.';
+
+  @override
+  String adminNotificationHistoryMetrics(int requested, int sent, int failed) {
+    return ' • $requested targets • $sent sent • $failed failed';
+  }
+
+  @override
+  String get adminNotificationFieldsInvalid =>
+      'Review the notification fields and try again.';
+
+  @override
+  String get adminNotificationRequestUnconfirmed =>
+      'Notification request was not confirmed.';
+
+  @override
+  String get adminNotificationPayloadCopied => 'Payload copied to clipboard.';
+
+  @override
+  String get adminNotificationTierNotSelected => 'Tier not selected';
+
+  @override
+  String adminNotificationTierPreview(String tier) {
+    return 'Tier • $tier';
+  }
+
+  @override
+  String get adminNotificationGroupNotSelected => 'Group not selected';
+
+  @override
+  String adminNotificationGroupPreview(String group) {
+    return 'Group • $group';
+  }
+
+  @override
+  String get adminNotificationAllSupporters => 'All supporters';
+
+  @override
+  String get adminNotificationPreview => 'PREVIEW';
+
+  @override
+  String get adminNotificationPreviewBody =>
+      'Your message preview appears here.';
+
+  @override
+  String get adminNotificationStatusScheduled => 'SCHEDULED';
+
+  @override
+  String get adminNotificationStatusSent => 'SENT';
+
+  @override
+  String get adminNotificationStatusPartial => 'PARTIAL';
+
+  @override
+  String get adminNotificationStatusFailed => 'FAILED';
+
+  @override
+  String get adminContributionsTitle => 'CONTRIBUTIONS';
+
+  @override
+  String get adminContributionsLoading => 'Loading contributions';
+
+  @override
+  String get adminContributionsLoadingMessage =>
+      'Checking the controlled contribution monitor.';
+
+  @override
+  String get adminContributionsDescription =>
+      'Review club-scoped group totals without exposing supporter or payment identifiers.';
+
+  @override
+  String get adminContributionsMonthlyTotal => 'TOTAL RECORDED THIS MONTH';
+
+  @override
+  String adminContributionsSummary(int groups, int records) {
+    return '$groups groups • $records bounded records';
+  }
+
+  @override
+  String get adminContributionsNoGroups => 'No contribution groups';
+
+  @override
+  String get adminContributionsNoMatch => 'No groups match';
+
+  @override
+  String get adminContributionsNoGroupsMessage =>
+      'Confirmed club-scoped contribution groups will appear here.';
+
+  @override
+  String get adminContributionsNoMatchMessage =>
+      'Choose another contribution group filter.';
+
+  @override
+  String get adminContributionsExport => 'Export privacy-safe report';
+
+  @override
+  String get adminContributionsReportCopied =>
+      'Privacy-safe contribution report copied.';
+
+  @override
+  String get adminContributionsUnavailable =>
+      'Contribution monitor unavailable';
+
+  @override
+  String get adminContributionsDisabled =>
+      'Contribution monitoring is disabled for this controlled build.';
+
+  @override
+  String get adminContributionsOffline => 'Contribution monitor offline';
+
+  @override
+  String get adminContributionsOfflineMessage =>
+      'Reconnect before loading private contribution records.';
+
+  @override
+  String get adminContributionsAccessUnavailable =>
+      'Contribution access unavailable';
+
+  @override
+  String get adminContributionsAccessMessage =>
+      'This account cannot view private contribution operations.';
+
+  @override
+  String get adminContributionsDataChanged => 'Contribution data changed';
+
+  @override
+  String get adminContributionsDataChangedMessage =>
+      'Refresh before relying on contribution totals.';
+
+  @override
+  String get adminContributionsSecurityMessage =>
+      'No contribution records were shown. Check your connection.';
+
+  @override
+  String get adminContributionsHiddenMessage =>
+      'Private contribution records remain hidden. Try again.';
+
+  @override
+  String get adminContributionsRefreshing => 'Refreshing contributions';
+
+  @override
+  String get adminContributionsRefreshingMessage =>
+      'Showing the last confirmed totals while current data is checked.';
+
+  @override
+  String get adminContributionsLastConfirmed =>
+      'Last confirmed totals remain visible. Controls are paused until refresh succeeds.';
+
+  @override
+  String get adminContributionsGroupType => 'GROUP TYPE';
+
+  @override
+  String get adminContributionsSort => 'SORT';
+
+  @override
+  String get adminContributionsFilterAll => 'ALL';
+
+  @override
+  String get adminContributionsTeamProjects => 'TEAM PROJECTS';
+
+  @override
+  String get adminContributionsCommunity => 'COMMUNITY';
+
+  @override
+  String get adminContributionsRecent => 'RECENT';
+
+  @override
+  String get adminContributionsTotal => 'TOTAL';
+
+  @override
+  String get adminContributionsClosed => 'CLOSED';
+
+  @override
+  String get adminContributionsActive => 'ACTIVE';
+
+  @override
+  String get adminContributionsTeamProject => 'TEAM PROJECT';
+
+  @override
+  String adminContributionsRecordMembers(int records, int members) {
+    return '$records bounded records • $members registered members';
+  }
+
+  @override
+  String get adminContributionsActivityPending => 'Payment activity pending';
+
+  @override
+  String adminContributionsLastActivity(String date) {
+    return 'Last activity $date';
+  }
+
+  @override
+  String get adminSmsTitle => 'SMS OPERATIONS';
+
+  @override
+  String get adminSmsLoading => 'Loading SMS operations';
+
+  @override
+  String get adminSmsLoadingMessage =>
+      'Checking controlled pipeline health information.';
+
+  @override
+  String get adminSmsNoHistory => 'No SMS operations history';
+
+  @override
+  String get adminSmsNoHistoryMessage =>
+      'No controlled health signals or synchronization runs are available yet.';
+
+  @override
+  String get adminSmsControlledHealth => 'CONTROLLED HEALTH VIEW';
+
+  @override
+  String get adminSmsControlledHealthMessage =>
+      'Review device synchronization, message checks, contribution matching, sender drift, retries, and privacy cleanup without displaying message bodies or supporter identifiers.';
+
+  @override
+  String get adminSmsPipelineHealth => 'PIPELINE HEALTH';
+
+  @override
+  String get adminSmsRecentSync => 'RECENT DEVICE SYNCHRONIZATION';
+
+  @override
+  String get adminSmsNoRecentRuns => 'No recent synchronization runs';
+
+  @override
+  String get adminSmsNoRecentRunsMessage =>
+      'The health summary remains available above.';
+
+  @override
+  String adminSmsMetricSemantics(String label, String status) {
+    return '$label, $status';
+  }
+
+  @override
+  String get adminSmsCollapseDetails => 'Collapse health details';
+
+  @override
+  String get adminSmsExpandDetails => 'Expand health details';
+
+  @override
+  String adminSmsLastSignal(String date) {
+    return 'Last confirmed signal $date';
+  }
+
+  @override
+  String get adminSmsUnavailable => 'SMS operations unavailable';
+
+  @override
+  String get adminSmsDisabled =>
+      'SMS operations monitoring is disabled for this build.';
+
+  @override
+  String get adminSmsOffline => 'SMS operations offline';
+
+  @override
+  String get adminSmsOfflineMessage =>
+      'Reconnect before loading private operational information.';
+
+  @override
+  String get adminSmsAccessUnavailable => 'SMS operations access unavailable';
+
+  @override
+  String get adminSmsAccessMessage =>
+      'Platform administrator access is required for this view.';
+
+  @override
+  String get adminSmsChanged => 'SMS operations changed';
+
+  @override
+  String get adminSmsChangedMessage =>
+      'Refresh before using this operational information.';
+
+  @override
+  String get adminSmsSecurityMessage =>
+      'No operational information was shown. Check your connection.';
+
+  @override
+  String get adminSmsHiddenMessage =>
+      'Private operational information remains hidden. Try again.';
+
+  @override
+  String get adminSmsChecking => 'Checking SMS operations';
+
+  @override
+  String get adminSmsCheckingMessage =>
+      'Showing the last confirmed state while current data is checked.';
+
+  @override
+  String get adminSmsLastConfirmed =>
+      'Last confirmed operational information remains visible. Controls are paused.';
+
+  @override
+  String get adminSmsStatusHealthy => 'HEALTHY';
+
+  @override
+  String get adminSmsStatusSucceeded => 'SUCCEEDED';
+
+  @override
+  String get adminSmsStatusDegraded => 'DEGRADED';
+
+  @override
+  String get adminSmsStatusRunning => 'RUNNING';
+
+  @override
+  String get adminSmsStatusRateLimited => 'RATE LIMITED';
+
+  @override
+  String get adminSmsStatusFailing => 'FAILING';
+
+  @override
+  String get adminSmsStatusFailed => 'FAILED';
+
+  @override
+  String get adminSmsTriggerInitial => 'INITIAL HISTORY';
+
+  @override
+  String get adminSmsTriggerManual => 'MANUAL';
+
+  @override
+  String get adminSmsTriggerControlled => 'CONTROLLED';
+
+  @override
+  String adminSmsRunTitle(String status, String trigger) {
+    return '$status • $trigger';
+  }
+
+  @override
+  String adminSmsRunMetrics(int scanned, int uploaded, int duplicates) {
+    return '$scanned scanned • $uploaded uploaded • $duplicates duplicates';
+  }
+
+  @override
+  String get adminCmsTitle => 'CONTENT MANAGER';
+
+  @override
+  String get adminCmsDescription =>
+      'Manage home shortcuts, partner catalogs, and supported prediction competitions.';
+
+  @override
+  String get adminCmsLoading => 'Loading content manager';
+
+  @override
+  String get adminCmsLoadingMessage => 'Checking current publishing work.';
+
+  @override
+  String get adminCmsNoContent => 'No managed content';
+
+  @override
+  String get adminCmsNoContentMessage =>
+      'Choose a section to create the first controlled item.';
+
+  @override
+  String get adminCmsUnavailable => 'Content manager unavailable';
+
+  @override
+  String get adminCmsDisabled =>
+      'Publishing controls are disabled for this controlled build.';
+
+  @override
+  String get adminCmsOffline => 'Content manager offline';
+
+  @override
+  String get adminCmsOfflineMessage =>
+      'Reconnect before loading private publishing controls.';
+
+  @override
+  String get adminCmsAccessUnavailable => 'Content access unavailable';
+
+  @override
+  String get adminCmsAccessMessage =>
+      'This account cannot view or change club publishing data.';
+
+  @override
+  String get adminCmsChanged => 'Content changed';
+
+  @override
+  String get adminCmsChangedMessage =>
+      'Refresh the workspace before making another change.';
+
+  @override
+  String get adminCmsSecurityMessage =>
+      'No private content was shown. Check your connection and retry.';
+
+  @override
+  String get adminCmsHiddenMessage =>
+      'Private publishing data remains hidden. Try again.';
+
+  @override
+  String get adminCmsSaving => 'Saving content';
+
+  @override
+  String get adminCmsSavingMessage =>
+      'Publishing controls are paused until the result is confirmed.';
+
+  @override
+  String get adminCmsRefreshing => 'Refreshing content';
+
+  @override
+  String get adminCmsRefreshingMessage =>
+      'Showing the last confirmed workspace while status is checked.';
+
+  @override
+  String get adminCmsCurrentRefreshUnavailable => 'Current refresh unavailable';
+
+  @override
+  String get adminCmsOutcomeUnconfirmed =>
+      'The last change is not confirmed. Refresh before taking another action.';
+
+  @override
+  String get adminCmsLastConfirmed =>
+      'Showing the last confirmed workspace. Actions are paused until refresh succeeds.';
+
+  @override
+  String get adminCmsChangeOffline =>
+      'CMS changes need a connection. Nothing was retried.';
+
+  @override
+  String get adminCmsChangeAccess =>
+      'CMS access is no longer available for this account.';
+
+  @override
+  String get adminCmsChangeConflict =>
+      'CMS content changed. Refresh before trying another action.';
+
+  @override
+  String get adminCmsChangeUnconfirmed =>
+      'The result is not confirmed. Refresh before trying another action.';
+
+  @override
+  String get adminCmsChangeFailed =>
+      'The CMS change could not be completed. Review and try again.';
+
+  @override
+  String get adminCmsAddContentBlock => 'ADD CONTENT BLOCK';
+
+  @override
+  String get adminCmsEditContentBlock => 'EDIT CONTENT BLOCK';
+
+  @override
+  String get adminCmsBlockKey => 'Block key (e.g. home_hero_1)';
+
+  @override
+  String get adminCmsBlockType => 'Block type (e.g. banner)';
+
+  @override
+  String get adminCmsTargetChannel => 'Target Channel';
+
+  @override
+  String get adminCmsPlacementKey => 'Placement Key';
+
+  @override
+  String get adminCmsTitleField => 'Title';
+
+  @override
+  String get adminCmsSubtitleField => 'Subtitle';
+
+  @override
+  String get adminCmsContentComponent => 'Content Component Name';
+
+  @override
+  String get adminCmsFeatureField => 'Feature';
+
+  @override
+  String get adminCmsNone => 'None';
+
+  @override
+  String get adminCmsSortOrder => 'Sort order';
+
+  @override
+  String get adminCmsActive => 'Active';
+
+  @override
+  String get adminCmsCreate => 'CREATE';
+
+  @override
+  String get adminCmsSave => 'SAVE';
+
+  @override
+  String get adminCmsNewArticle => 'NEW ARTICLE';
+
+  @override
+  String get adminCmsArticleTitle => 'Article title';
+
+  @override
+  String get adminCmsArticleBody => 'Article body';
+
+  @override
+  String get adminCmsAddQuickAction => 'ADD QUICK ACTION';
+
+  @override
+  String get adminCmsEditQuickAction => 'EDIT QUICK ACTION';
+
+  @override
+  String get adminCmsActionKey => 'Action key';
+
+  @override
+  String get adminCmsRoute => 'Route';
+
+  @override
+  String get adminCmsIconKey => 'Icon key';
+
+  @override
+  String get adminCmsEmoji => 'Emoji';
+
+  @override
+  String get adminCmsCountry => 'Country';
+
+  @override
+  String get adminCmsAddPartner => 'ADD PARTNER';
+
+  @override
+  String get adminCmsEditPartner => 'EDIT PARTNER';
+
+  @override
+  String get adminCmsName => 'Name';
+
+  @override
+  String get adminCmsSlug => 'Slug';
+
+  @override
+  String get adminCmsCategory => 'Category';
+
+  @override
+  String get adminCmsDescriptionField => 'Description';
+
+  @override
+  String get adminCmsGamificationLinked => 'Linked to gamification';
+
+  @override
+  String get adminCmsCreatePartnerFirst => 'Create a partner first.';
+
+  @override
+  String get adminCmsAddPartnerService => 'ADD PARTNER SERVICE';
+
+  @override
+  String get adminCmsEditPartnerService => 'EDIT PARTNER SERVICE';
+
+  @override
+  String get adminCmsPartner => 'Partner';
+
+  @override
+  String get adminCmsServiceSlug => 'Service slug';
+
+  @override
+  String get adminCmsCtaLabel => 'CTA label';
+
+  @override
+  String get adminCmsCtaAction => 'CTA action';
+
+  @override
+  String get adminCmsAllCompetitionsAdded =>
+      'All active competitions are already in the prediction catalog.';
+
+  @override
+  String get adminCmsAddPredictionCompetition => 'ADD PREDICTION COMPETITION';
+
+  @override
+  String get adminCmsEditPredictionCompetition => 'EDIT PREDICTION COMPETITION';
+
+  @override
+  String get adminCmsCompetition => 'Competition';
+
+  @override
+  String get adminCmsHighlightLabel => 'Highlight label';
+
+  @override
+  String get adminCmsChannelMobile => 'Mobile';
+
+  @override
+  String get adminCmsChannelWeb => 'Web';
+
+  @override
+  String get adminCmsChannelBoth => 'Mobile and web';
+
+  @override
+  String get adminCmsCategoryOrganization => 'Organization';
+
+  @override
+  String get adminCmsCategoryBank => 'Bank';
+
+  @override
+  String get adminCmsCategoryFootball => 'Football';
+
+  @override
+  String get adminCmsCategoryGeneral => 'General';
+
+  @override
+  String get adminCmsCategoryCommunity => 'Community';
+
+  @override
+  String get adminCmsCategoryInsurance => 'Insurance';
+
+  @override
+  String get adminCmsCategoryMobility => 'Mobility';
+
+  @override
+  String get adminCmsSectionNews => 'News';
+
+  @override
+  String get adminCmsSectionQuickActions => 'Quick Actions';
+
+  @override
+  String get adminCmsSectionPartners => 'Partners';
+
+  @override
+  String get adminCmsSectionServices => 'Services';
+
+  @override
+  String get adminCmsSectionPredictions => 'Predictions';
+
+  @override
+  String get adminCmsSectionPlacements => 'Placements';
+
+  @override
+  String get adminCmsSectionAuditLogs => 'Audit Logs';
+
+  @override
+  String get adminCmsNewsArticles => 'News Articles';
+
+  @override
+  String get adminCmsAddArticle => 'ADD ARTICLE';
+
+  @override
+  String get adminCmsHomeQuickActions => 'Home Quick Actions';
+
+  @override
+  String get adminCmsAddAction => 'ADD ACTION';
+
+  @override
+  String get adminCmsPartners => 'Partners';
+
+  @override
+  String get adminCmsAddPartnerAction => 'ADD PARTNER';
+
+  @override
+  String get adminCmsPartnerServices => 'Partner Services';
+
+  @override
+  String get adminCmsAddService => 'ADD SERVICE';
+
+  @override
+  String get adminCmsPredictionCompetitions => 'Prediction Competitions';
+
+  @override
+  String get adminCmsAddCompetition => 'ADD COMPETITION';
+
+  @override
+  String get adminCmsContentBlocks => 'Platform Content Blocks';
+
+  @override
+  String get adminCmsAddBlock => 'ADD BLOCK';
+
+  @override
+  String get adminCmsAuditLogs => 'FEATURE MANAGEMENT AUDIT LOGS';
+
+  @override
+  String get adminCmsQuickActionFallback => 'Quick action';
+
+  @override
+  String get adminCmsServiceFallback => 'Service';
+
+  @override
+  String get adminCmsCompetitionFallback => 'Competition';
+
+  @override
+  String get adminCmsContentBlockFallback => 'Content block';
+
+  @override
+  String get adminCmsActiveUpper => 'ACTIVE';
+
+  @override
+  String get adminCmsInactiveUpper => 'INACTIVE';
+
+  @override
+  String get adminCmsGamificationUpper => 'GAMIFICATION';
+
+  @override
+  String get adminCmsDirectUpper => 'DIRECT';
+
+  @override
+  String get adminCmsStandardUpper => 'STANDARD';
+
+  @override
+  String get adminCmsDeactivate => 'DEACTIVATE';
+
+  @override
+  String get adminCmsActivate => 'ACTIVATE';
+
+  @override
+  String get adminCmsCtaPending => 'CTA pending';
+
+  @override
+  String get adminCmsNotAvailable => 'n/a';
+
+  @override
+  String adminCmsCompetitionSummary(String kind, int count) {
+    return '$kind • $count fixtures';
+  }
+
+  @override
+  String get adminCmsCatalog => 'CATALOG';
+
+  @override
+  String get adminCmsSupported => 'SUPPORTED';
+
+  @override
+  String get adminCmsUnknown => 'unknown';
+
+  @override
+  String get adminCmsUnknownFeature => 'Unknown Feature';
+
+  @override
+  String get adminCmsUnknownDate => 'Unknown date';
+
+  @override
+  String get adminCmsActionFallback => 'ACTION';
+
+  @override
+  String adminCmsFeatureName(String feature) {
+    return 'Feature: $feature';
+  }
+
+  @override
+  String get adminCmsActorWithheld =>
+      'Actor details are withheld in the mobile workspace.';
+
+  @override
+  String get adminCmsEdit => 'EDIT';
+
+  @override
+  String get adminCmsUntitled => 'Untitled';
+
+  @override
+  String get adminCmsNewsFallback => 'News';
+
+  @override
+  String get adminCmsLive => 'LIVE';
+
+  @override
+  String get adminCmsDraft => 'DRAFT';
+
+  @override
+  String get adminCmsNotPublished => 'Not published';
+
+  @override
+  String get adminCmsFeatured => 'FEATURED';
+
+  @override
+  String adminCmsArticleMeta(String category, String date, String featured) {
+    return '$category • $date$featured';
+  }
+
+  @override
+  String get adminCmsUnpublish => 'UNPUBLISH';
+
+  @override
+  String get adminCmsPublish => 'PUBLISH';
+
+  @override
+  String adminCmsPair(String first, String second) {
+    return '$first • $second';
+  }
+
+  @override
+  String get gameCommunityPicks => 'COMMUNITY PICKS';
+
+  @override
+  String get gameFetProgress => 'FET progress';
+
+  @override
+  String get gameFet => 'FET';
+
+  @override
+  String get gameLevelUp => 'LEVEL UP!';
+
+  @override
+  String get gameAwesome => 'Awesome';
+
+  @override
+  String get gameKeepGoing => 'Keep going';
+
+  @override
+  String get gameLive => 'LIVE';
+
+  @override
+  String gameOutcomePick(String outcome) {
+    return '$outcome pick';
+  }
+
+  @override
+  String gamePoints(int count) {
+    return '+$count pts';
+  }
+
+  @override
+  String get gameDaysShort => 'DAYS';
+
+  @override
+  String get gameHoursShort => 'HRS';
+
+  @override
+  String get gameMinutesShort => 'MIN';
+
+  @override
+  String get gameSecondsShort => 'SEC';
+
+  @override
+  String get gameDismissNotification => 'Dismiss notification';
+
+  @override
+  String get gamePredictions => 'PREDICTIONS';
+
+  @override
+  String get gameAccuracy => 'ACCURACY';
+
+  @override
+  String get gamePointsEarned => 'POINTS EARNED';
+
+  @override
+  String get gameRank => 'RANK';
+
+  @override
+  String get gameTopScorers => 'TOP SCORERS';
+
+  @override
+  String get gameGoals => 'Goals';
+
+  @override
+  String get gameEntriesClosed => 'ENTRIES CLOSED';
+
+  @override
+  String get gameEntriesCloseIn => 'ENTRIES CLOSE IN';
+
+  @override
+  String gameFetProgressValue(int current, int maximum, String tier) {
+    return '$current of $maximum, $tier tier';
+  }
+
+  @override
+  String gamePickForTeams(String outcome, String home, String away) {
+    return '$outcome pick for $home versus $away';
+  }
+
+  @override
+  String get gameSelectedPick => 'Selected pick';
+
+  @override
+  String get gameAddPickToRound => 'Add pick to round';
+
+  @override
+  String gameNotificationSemantics(String title, String message) {
+    return 'Notification: $title. $message';
+  }
+
+  @override
+  String get gameDismissNotificationHint => 'Tap or swipe up to dismiss';
+
+  @override
+  String get gameClubContextRequired => 'Club context is required.';
+
+  @override
+  String get gameUnexpectedResponse => 'Unexpected response from server.';
+
+  @override
+  String get gameBack => 'Back';
+
+  @override
+  String get gameRetry => 'Retry';
+
+  @override
+  String get gameOpenPredictionAlert => 'OPEN';
+
+  @override
+  String get gameBadgesTitle => 'YOUR BADGES';
+
+  @override
+  String get gameBadgesUnavailable => 'Badges unavailable';
+
+  @override
+  String get gameBadgesTemporarilyUnavailable =>
+      'Badges are temporarily unavailable.';
+
+  @override
+  String gameBadgeSemantics(String name) {
+    return '$name badge';
+  }
+
+  @override
+  String get gameOpenBadgeDetails => 'Open badge details';
+
+  @override
+  String get gamePredictionAlertsTitle => 'PREDICTION ALERTS';
+
+  @override
+  String get gameAlertsUnavailable => 'Alerts unavailable';
+
+  @override
+  String get gamePredictionAlertsTemporarilyUnavailable =>
+      'Prediction alerts are temporarily unavailable.';
+
+  @override
+  String gamePredictionAlertSemantics(
+    String title,
+    String message,
+    String date,
+    String reward,
+  ) {
+    return 'Prediction alert, $title, $message, $date$reward';
+  }
+
+  @override
+  String gameRewardPointsSemantics(int count) {
+    return ', reward $count points';
+  }
+
+  @override
+  String get gameJustNow => 'Just now';
+
+  @override
+  String get gameStreakTitle => 'YOUR STREAK';
+
+  @override
+  String gameStreakDays(int count) {
+    return '$count DAYS';
+  }
+
+  @override
+  String get gameStreakActive => 'Streak active.';
+
+  @override
+  String get gameCurrent => 'CURRENT';
+
+  @override
+  String get gameBest => 'BEST';
+
+  @override
+  String get gameNextBonus => 'NEXT BONUS';
+
+  @override
+  String gameWins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count wins',
+      one: '1 win',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameStreakDaySemantics(int day, String wins) {
+    return 'Streak day $day: $wins';
+  }
+
+  @override
+  String get gameVerifyToPredict => 'VERIFY TO PREDICT';
+
+  @override
+  String get gameMakePicks => 'Make Picks';
+
+  @override
+  String get gameMakePicksDescription => 'Pick matches across all leagues';
+
+  @override
+  String get gameEarnPoints => 'Earn Points';
+
+  @override
+  String get gameEarnPointsDescription => 'Earn points for correct picks';
+
+  @override
+  String get gameClimbLeaderboards => 'Climb Leaderboards';
+
+  @override
+  String get gameClimbLeaderboardsDescription =>
+      'Compete against friends and fans';
+
+  @override
+  String get gameVerifyNow => 'Verify now';
+
+  @override
+  String get gameJustBrowsing => 'Just browsing';
+
+  @override
+  String get gameOffersTitle => 'Offers';
+
+  @override
+  String get gameOffersUnavailable => 'Offers unavailable';
+
+  @override
+  String get gameOffersTemporarilyUnavailable =>
+      'Partner offers are temporarily unavailable.';
+
+  @override
+  String get gameWaysToEarn => 'Ways to earn';
+
+  @override
+  String get gameWaysToEarnDescription =>
+      'Join campaigns and activations to earn points.';
+
+  @override
+  String get gameBalance => 'Balance';
+
+  @override
+  String get gameAvailable => 'Available';
+
+  @override
+  String gameActiveOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active offers',
+      one: '1 active offer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameFeatured => 'Featured';
+
+  @override
+  String get gameMatchDay => 'Match Day';
+
+  @override
+  String get gameAlwaysOn => 'Always On';
+
+  @override
+  String get gameReward => 'Reward';
+
+  @override
+  String get gameActivation => 'Activation';
+
+  @override
+  String get gameVerification => 'Verification';
+
+  @override
+  String get gameCondition => 'Condition';
+
+  @override
+  String get gameClose => 'Close';
+
+  @override
+  String get gameDetails => 'Details';
+
+  @override
+  String gamePointBalance(int count) {
+    return '$count pts';
+  }
+
+  @override
+  String gameFormattedPoints(String amount) {
+    return '$amount pts';
+  }
+
+  @override
+  String get gameVerificationApi => 'Partner API confirmation';
+
+  @override
+  String get gameVerificationRenewal => 'Renewal confirmation';
+
+  @override
+  String get gameVerificationReferral => 'Referral conversion';
+
+  @override
+  String get gameVerificationReceipt => 'Receipt or POS scan';
+
+  @override
+  String get gameVerificationGeo => 'GPS or venue check-in';
+
+  @override
+  String get gameVerificationSocial => 'Social post verification';
+
+  @override
+  String get gameVerificationSavings => 'Savings milestone confirmation';
+
+  @override
+  String get gameVerificationEcommerce => 'Store purchase confirmation';
+
+  @override
+  String get gameVerificationMobility => 'Ride completion confirmation';
+
+  @override
+  String get gameVerificationEventQr => 'Event QR validation';
+
+  @override
+  String get gameVerificationManual => 'Manual partner review';
+
+  @override
+  String get gameSettingsUpper => 'SETTINGS';
+
+  @override
+  String get gamePrivacyUpper => 'PRIVACY';
+
+  @override
+  String get gameCoreGuarantees => 'CORE GUARANTEES';
+
+  @override
+  String get gamePhoneNumberHidden => 'Phone Number Hidden';
+
+  @override
+  String get gamePhoneNumberHiddenDescription =>
+      'Your WhatsApp or phone number is encrypted and stored only on the server. It is never exposed to other users, club administrators, or public leaderboards.';
+
+  @override
+  String get gameAnonymousContributions => 'Anonymous Contributions';
+
+  @override
+  String get gameAnonymousContributionsDescription =>
+      'MoMo contributions to fan clubs are logged using only your Fan ID and amount bracket. Exact amounts and phone numbers are not recorded.';
+
+  @override
+  String get gameVisibilityControls => 'VISIBILITY CONTROLS';
+
+  @override
+  String get gameShowRealName => 'Show Real Name';
+
+  @override
+  String get gameShowRealNameDescription =>
+      'When off, your Fan ID appears on leaderboards instead of your real name.';
+
+  @override
+  String get gameFindableByPhone => 'Findable by Phone';
+
+  @override
+  String get gameFindableByPhoneDescription =>
+      'Allows friends to find you by phone number. Your number stays private.';
+
+  @override
+  String get gamePrivacyFirst => 'Privacy First';
+
+  @override
+  String gamePrivacyFirstDescription(String appName) {
+    return '$appName does not sell, share, or expose your personal data. All identifiers on the platform are anonymized.';
+  }
+
+  @override
+  String get gameRewardsStoreTitle => 'REWARDS STORE';
+
+  @override
+  String get gameRewardsUnavailable => 'Rewards unavailable';
+
+  @override
+  String get gameRewardsTemporarilyUnavailable =>
+      'Rewards are temporarily unavailable.';
+
+  @override
+  String get gameAvailableBalance => 'AVAILABLE BALANCE';
+
+  @override
+  String gameRewardsStoreDescription(String appName) {
+    return 'Redeem $appName rewards without leaving the consolidated wallet flow.';
+  }
+
+  @override
+  String gameRewardMeta(String category, String notes) {
+    return '$category · $notes';
+  }
+
+  @override
+  String gameRedeemCost(String cost) {
+    return 'Redeem $cost';
+  }
+
+  @override
+  String gameNeedCost(String cost) {
+    return 'Need $cost';
+  }
+
+  @override
+  String get gameRewardConfigurationMissing =>
+      'Reward configuration is missing. Try again later.';
+
+  @override
+  String get gameRewardAlreadyRedeemed =>
+      'That reward redemption already completed.';
+
+  @override
+  String gameRewardRedeemed(String reward, String cost) {
+    return 'Redeemed $reward for $cost.';
+  }
+
+  @override
+  String get gameRewardCouldNotRedeem => 'Could not redeem this reward.';
+
+  @override
+  String get gameFriendsTitle => 'Friends';
+
+  @override
+  String get gameSupportersUnavailable => 'Supporters unavailable';
+
+  @override
+  String get gameSupportersTemporarilyUnavailable =>
+      'Supporters are temporarily unavailable.';
+
+  @override
+  String get gameSearchSupporterHint => 'Search supporter alias or ID';
+
+  @override
+  String get gameDone => 'Done.';
+
+  @override
+  String get gameResults => 'Results';
+
+  @override
+  String get gameYourFriends => 'Your friends';
+
+  @override
+  String get gameChallenge => 'Challenge';
+
+  @override
+  String get gameAccept => 'Accept';
+
+  @override
+  String get gamePending => 'Pending';
+
+  @override
+  String get gameAdd => 'Add';
+
+  @override
+  String get gameOnline => 'Online';
+
+  @override
+  String get gameFixturesTitle => 'FIXTURES';
+
+  @override
+  String get gameFixturesUnavailable => 'Fixtures unavailable';
+
+  @override
+  String get gameFixturesCouldNotLoad => 'Could not load fixtures right now.';
+
+  @override
+  String get gameAll => 'All';
+
+  @override
+  String get gameToday => 'Today';
+
+  @override
+  String get gameTomorrow => 'Tomorrow';
+
+  @override
+  String get gameYesterday => 'Yesterday';
+
+  @override
+  String gameRelativeDate(String relative, String date) {
+    return '$relative · $date';
+  }
+
+  @override
+  String gameMatchCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matches',
+      one: '1 match',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameMyActivity => 'MY ACTIVITY';
+
+  @override
+  String gameActiveCount(int count) {
+    return 'ACTIVE ($count)';
+  }
+
+  @override
+  String gameSettledTabCount(int count) {
+    return 'SETTLED ($count)';
+  }
+
+  @override
+  String gameHistoryCount(int count) {
+    return 'HISTORY ($count)';
+  }
+
+  @override
+  String get gameActivityUnavailable => 'Activity unavailable';
+
+  @override
+  String get gameActivityCouldNotLoad =>
+      'Could not load your activity right now.';
+
+  @override
+  String get gameCouldNotCancelPick => 'Could not cancel this pick.';
+
+  @override
+  String get gameWon => 'WON';
+
+  @override
+  String get gameLost => 'LOST';
+
+  @override
+  String get gameCancelled => 'CANCELLED';
+
+  @override
+  String get gameVoid => 'VOID';
+
+  @override
+  String get gamePendingUpper => 'PENDING';
+
+  @override
+  String get gameTbd => 'TBD';
+
+  @override
+  String gameVersusShort(String home, String away) {
+    return '$home vs $away';
+  }
+
+  @override
+  String get gameRound => 'Round';
+
+  @override
+  String gameCompetitionTime(String competition, String time) {
+    return '$competition • $time';
+  }
+
+  @override
+  String get gameCancel => 'Cancel';
+
+  @override
+  String gameActivitySemantics(String home, String away) {
+    return '$home versus $away activity';
+  }
+
+  @override
+  String get gameOpenActivityDetail => 'Open activity detail';
+
+  @override
+  String get gameNotificationsUpper => 'NOTIFICATIONS';
+
+  @override
+  String get gameKickoffAlerts => 'Match Kick-off Alerts';
+
+  @override
+  String get gameRoundResults => 'Round Results';
+
+  @override
+  String get gameFriendChallenges => 'Friend Challenges';
+
+  @override
+  String get gameLineupsUpper => 'LINEUPS';
+
+  @override
+  String get gameSubstitutes => 'SUBS';
+
+  @override
+  String get gameActiveUpper => 'ACTIVE';
+
+  @override
+  String get gameWinRate => 'WIN RATE';
+
+  @override
+  String get gameYouUpper => 'YOU';
+
+  @override
+  String gameWalletSignedPoints(String sign, String amount) {
+    return '$sign$amount pts';
+  }
+
+  @override
+  String gameWalletBalance(String amount) {
+    return 'Bal. $amount pts';
+  }
+
+  @override
+  String get gameVersus => 'VS';
+
+  @override
+  String get gameKickoffSoon => 'Kick-off soon';
+
+  @override
+  String gameJoinedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count joined',
+      one: '1 joined',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameTotalPoolPoints(int count) {
+    return '$count pts total';
+  }
+
+  @override
+  String get gameCreator => 'Creator';
+
+  @override
+  String get gameMyPick => 'My pick';
+
+  @override
+  String get gameOpenUpper => 'OPEN';
+
+  @override
+  String get gameLockedUpper => 'LOCKED';
+
+  @override
+  String get gameSettledUpper => 'SETTLED';
+
+  @override
+  String gameDaysLeft(int count) {
+    return '${count}d left';
+  }
+
+  @override
+  String gameHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String gameMinutesLeft(int count) {
+    return '${count}m left';
+  }
+
+  @override
+  String gameScorePrediction(String label, int home, int away) {
+    return '$label  $home-$away';
+  }
+
+  @override
+  String get gamePointsShare => 'Points share';
+
+  @override
+  String get gamePointsShareDescription =>
+      'Tier rules decide how earned points support you and collective club rewards.';
+
+  @override
+  String gamePersonalPercentage(int count) {
+    return '$count% you';
+  }
+
+  @override
+  String gameClubPercentage(int count) {
+    return '$count% club';
+  }
+
+  @override
+  String gameTierSplit(int personal, int club) {
+    return '$personal/$club';
+  }
+
+  @override
+  String get gamePointsShareExplanation =>
+      'Your points are shared by tier: the personal share stays with you and the club share supports collective rewards.';
+
+  @override
+  String get gameTierSupporter => 'Supporter';
+
+  @override
+  String get gameTierMember => 'Member';
+
+  @override
+  String get gameTierUltra => 'Ultra';
+
+  @override
+  String get gameTierLegend => 'Legend';
+
+  @override
+  String get gameFree => 'Free';
+
+  @override
+  String gameMonthlyPrice(String amount) {
+    return '$amount RWF / month';
+  }
+
+  @override
+  String gameShareTitle(String appName) {
+    return '$appName Pick';
+  }
+
+  @override
+  String get gameShareCopied => 'Share text copied to clipboard.';
+
+  @override
+  String gameShareStatusLine(String status, String home, String away) {
+    return '$status: $home vs $away';
+  }
+
+  @override
+  String gameFinalScore(int home, int away) {
+    return 'Final score: $home-$away';
+  }
+
+  @override
+  String gameMarketSelection(String market, String selection) {
+    return '$market: $selection';
+  }
+
+  @override
+  String gameEarnedShare(int count) {
+    return 'Earned: +$count pts';
+  }
+
+  @override
+  String gamePotentialShare(int count) {
+    return 'Potential: +$count pts';
+  }
+
+  @override
+  String get gameMarketUpper => 'MARKET';
+
+  @override
+  String get gamePickUpper => 'PICK';
+
+  @override
+  String get gameEarnedUpper => 'EARNED';
+
+  @override
+  String get gamePotentialUpper => 'POTENTIAL';
+
+  @override
+  String gameShareTagline(String appName) {
+    return '$appName · PLAY. PICK. EARN.';
+  }
+
+  @override
+  String gamePickTypeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pick types',
+      one: '1 pick type',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameSearchPickTypes => 'Search pick types';
+
+  @override
+  String get gameClearSearch => 'Clear search';
+
+  @override
+  String get gameAddPicksToUnlock => 'Add picks to unlock round';
+
+  @override
+  String gameOpenRoundSummary(int count, int points) {
+    return 'Open Round · $count picks · $points pts';
+  }
+
+  @override
+  String get gameLiveOnly => 'Live only';
+
+  @override
+  String gameOutcomeAddedToRound(String outcome) {
+    return '$outcome added to your round.';
+  }
+
+  @override
+  String get gameMarkets => 'Markets';
+
+  @override
+  String gameMarketCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count markets',
+      one: '1 market',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameStatsNotAvailableYet => 'Stats not yet available';
+
+  @override
+  String get gameLiveStatsUpdating =>
+      'Live stats update automatically during the match.';
+
+  @override
+  String get gameLiveMatchDataUpdating =>
+      'Live match-center data is updating for this fixture.';
+
+  @override
+  String get gameStructuredMatchStats =>
+      'Structured match-center statistics for this fixture.';
+
+  @override
+  String get gameTotalGoals => 'Total Goals';
+
+  @override
+  String get gameFinalMatchStats => 'Final match statistics.';
+
+  @override
+  String gameFixtureMarketTitle(String home, String away, String market) {
+    return '$home vs $away · $market';
+  }
+
+  @override
+  String get gamePickTypeLocked => 'Pick type locked for this fixture state.';
+
+  @override
+  String get gameLeaderboardTitle => 'Leaderboard';
+
+  @override
+  String get gameFetRanking => 'FET Ranking';
+
+  @override
+  String get gameSupporters => 'Supporters';
+
+  @override
+  String get gameAllTime => 'All time';
+
+  @override
+  String get gameWeekly => 'Weekly';
+
+  @override
+  String get gameMonthly => 'Monthly';
+
+  @override
+  String get gameLeaderboardUnavailable => 'Leaderboard unavailable';
+
+  @override
+  String get gameLeaderboardTemporarilyUnavailable =>
+      'Leaderboard is temporarily unavailable.';
+
+  @override
+  String get gameRankingsUnavailable => 'Rankings unavailable';
+
+  @override
+  String get gameSupporterRankingsTemporarilyUnavailable =>
+      'Supporter rankings are temporarily unavailable.';
+
+  @override
+  String get gameNotSignedIn => 'NOT SIGNED IN';
+
+  @override
+  String get gameTierFan => 'FAN';
+
+  @override
+  String get gameDisplayNameOn => 'Display Name On';
+
+  @override
+  String get gameAliasOnly => 'Alias Only';
+
+  @override
+  String gameDisplayNameOnDescription(String name) {
+    return 'Leaderboards can show $name instead of only your Fan ID.';
+  }
+
+  @override
+  String get gameAliasOnlyDescription =>
+      'Leaderboards show your Fan ID or alias instead of your real name.';
+
+  @override
+  String get gamePhoneHidden => 'Phone Hidden';
+
+  @override
+  String get gamePhoneHiddenDescription =>
+      'Your phone number stays on the server and is never shown to other supporters or club administrators.';
+
+  @override
+  String get gamePhoneDiscoveryOn => 'Phone Discovery On';
+
+  @override
+  String get gamePhoneDiscoveryOff => 'Phone Discovery Off';
+
+  @override
+  String get gamePhoneDiscoveryOnDescription =>
+      'Friends who already know your phone number can find your profile.';
+
+  @override
+  String get gamePhoneDiscoveryOffDescription =>
+      'Phone-based discovery is currently disabled on your profile.';
+
+  @override
+  String get gameVerified => 'Verified';
+
+  @override
+  String get gameVerificationPending => 'Verification Pending';
+
+  @override
+  String gameVerifiedDescription(String appName) {
+    return 'Your phone identity is verified for $appName earning and social flows.';
+  }
+
+  @override
+  String gameVerificationPendingDescription(String appName) {
+    return 'Verify your phone to unlock the full $appName social experience.';
+  }
+
+  @override
+  String get gameFanIdPersistentRule =>
+      'Your Fan ID comes from your profile and remains the same when you return.';
+
+  @override
+  String gameDisplayNameVisibleRule(String name) {
+    return 'Your display name “$name” can appear on leaderboards until you turn that off.';
+  }
+
+  @override
+  String get gameRealNameHiddenRule =>
+      'Your real name stays hidden on leaderboards until you explicitly enable display-name visibility.';
+
+  @override
+  String get gamePhoneEncryptedRule =>
+      'Your phone number is encrypted and stored only on the server.';
+
+  @override
+  String get gamePhoneDiscoveryEnabledRule =>
+      'Phone-based friend discovery is enabled on your account right now.';
+
+  @override
+  String get gamePhoneDiscoveryDisabledRule =>
+      'Phone-based friend discovery is disabled on your account right now.';
+
+  @override
+  String gamePhoneVerifiedRule(String appName) {
+    return 'Your phone identity is verified for $appName features and rewards.';
+  }
+
+  @override
+  String gamePhonePendingRule(String appName) {
+    return 'Phone verification is still pending for your $appName profile.';
+  }
+
+  @override
+  String gameTeamLinkedRule(String team) {
+    return 'Your profile is linked to $team for personalization.';
+  }
+
+  @override
+  String get gameLinkTeamRule =>
+      'You can link a favorite team from onboarding or profile setup for personalization.';
+
+  @override
+  String get gameDeleteAccountRule =>
+      'Deleting your account removes your personal data and Fan ID mapping from the active profile.';
+
+  @override
+  String get gameFanIdTitle => 'FAN ID';
+
+  @override
+  String get gameYourFanId => 'YOUR FAN ID';
+
+  @override
+  String get gameAliasOnlyProfile => 'Alias-only profile';
+
+  @override
+  String get gameFanIdCopied => 'Fan ID copied to clipboard.';
+
+  @override
+  String get gameCopyToClipboard => 'Copy to clipboard';
+
+  @override
+  String get gamePrivacyBadges => 'PRIVACY BADGES';
+
+  @override
+  String get gameIdentityRules => 'IDENTITY RULES';
+
+  @override
+  String get gameIdentityRulesDescription =>
+      'How your Fan ID works based on your current profile settings.';
+
+  @override
+  String get gameStandingsTitle => 'STANDINGS';
+
+  @override
+  String get gameCompetitionNotFound => 'Competition not found.';
+
+  @override
+  String get gameStandingsTemporarilyUnavailable =>
+      'Standings are temporarily unavailable.';
+
+  @override
+  String get gameStandingsUnavailable => 'Standings unavailable';
+
+  @override
+  String get gamePositionShort => 'POS';
+
+  @override
+  String get gameTeamUpper => 'TEAM';
+
+  @override
+  String get gamePointsShort => 'PTS';
+
+  @override
+  String get gamePointsUpper => 'POINTS';
+
+  @override
+  String gameStandingRecord(
+    int played,
+    int goalsFor,
+    int goalsAgainst,
+    int difference,
+  ) {
+    return '${played}P · $goalsFor:$goalsAgainst · GD $difference';
+  }
+
+  @override
+  String get gameHeadToHead => 'HEAD TO HEAD';
+
+  @override
+  String gameHeadToHeadEmpty(String home, String away) {
+    return 'Historical head-to-head records between $home and $away will appear here.';
+  }
+
+  @override
+  String get gameWinDistribution => 'WIN DISTRIBUTION';
+
+  @override
+  String get gameDraws => 'DRAWS';
+
+  @override
+  String gameTeamGoals(String team) {
+    return '$team GOALS';
+  }
+
+  @override
+  String get gameRecentEncounters => 'RECENT ENCOUNTERS';
+
+  @override
+  String gameScore(int home, int away) {
+    return '$home - $away';
+  }
+
+  @override
+  String get gameTokenHistoryTitle => 'TOKEN HISTORY';
+
+  @override
+  String get gameTokenHistoryTemporarilyUnavailable =>
+      'Token history is temporarily unavailable.';
+
+  @override
+  String get gameHistoryUnavailable => 'History unavailable';
+
+  @override
+  String get gameEarned => 'Earned';
+
+  @override
+  String get gameSpent => 'Spent';
+
+  @override
+  String get gameAllUpper => 'ALL';
+
+  @override
+  String get gameEarnedUpperFilter => 'EARNED';
+
+  @override
+  String get gameSpentUpper => 'SPENT';
+
+  @override
+  String get gameCredit => 'Credit';
+
+  @override
+  String get gameDebit => 'Debit';
+
+  @override
+  String get gameLedgerUpdate => 'Ledger update';
+
+  @override
+  String gameTransactionSemantics(
+    String direction,
+    String headline,
+    String detail,
+    int amount,
+    int balance,
+    String date,
+  ) {
+    return '$direction transaction, $headline, $detail, $amount points, balance $balance points, $date';
+  }
+
+  @override
+  String get gameUnknownTime => 'Unknown time';
+
+  @override
+  String get gameClubFanZoneTitle => 'CLUB FAN ZONE';
+
+  @override
+  String get gameClubFanZoneTemporarilyUnavailable =>
+      'Club fan zone is temporarily unavailable.';
+
+  @override
+  String get gameFanZoneUnavailable => 'Fan zone unavailable';
+
+  @override
+  String get gameSupporterPulse => 'SUPPORTER PULSE';
+
+  @override
+  String get gameSupporterPulseDescription =>
+      'Real supporter momentum around active competitions, fixture picks, and top clubs.';
+
+  @override
+  String get gameTopClubs => 'TOP CLUBS';
+
+  @override
+  String gameRankHash(int rank) {
+    return '#$rank';
+  }
+
+  @override
+  String get gameSupporterLeans => 'SUPPORTER LEANS';
+
+  @override
+  String gameSupporterLeansEmpty(String appName) {
+    return 'Community pick distribution will appear once this competition has active $appName predictions.';
+  }
+
+  @override
+  String gamePair(String first, String second) {
+    return '$first · $second';
+  }
+
+  @override
+  String gameSupporterLeanPercentage(String percentage) {
+    return '$percentage% of supporters currently lean this way.';
+  }
+
+  @override
+  String get gameLeagueHubTitle => 'LEAGUE HUB';
+
+  @override
+  String get gameLeagueDataTemporarilyUnavailable =>
+      'League data is temporarily unavailable.';
+
+  @override
+  String get gameLeagueUnavailable => 'League unavailable';
+
+  @override
+  String get gameCompetition => 'COMPETITION';
+
+  @override
+  String get gameRegion => 'Region';
+
+  @override
+  String get gameLeague => 'League';
+
+  @override
+  String get gameTeams => 'Teams';
+
+  @override
+  String get gameFixtures => 'Fixtures';
+
+  @override
+  String get gameLeader => 'Leader';
+
+  @override
+  String get gameTopTable => 'TOP TABLE';
+
+  @override
+  String get gameFullStandings => 'Full standings';
+
+  @override
+  String gameLeagueStandingRecord(int played, int won, int drawn, int lost) {
+    return '${played}P · ${won}W ${drawn}D ${lost}L';
+  }
+
+  @override
+  String get gameEntrySubmitted => 'Entry submitted';
+
+  @override
+  String get gameBonusEntryLive => 'Your bonus entry is now live.';
+
+  @override
+  String get gameCouldNotSubmitBonus =>
+      'Could not submit the bonus entry right now.';
+
+  @override
+  String get gameKickoffTbd => 'Kick-off TBD';
+
+  @override
+  String get gameBonusRound => 'Bonus Round';
+
+  @override
+  String get gameSubmitting => 'Submitting…';
+
+  @override
+  String get gameEntriesClosedSentence => 'Entries closed';
+
+  @override
+  String get gameSubmitEntry => 'Submit entry';
+
+  @override
+  String get gameBonusRoundActivationPending =>
+      'Bonus round activation is pending.';
+
+  @override
+  String get gameBonusRoundTemporarilyUnavailable =>
+      'Bonus round is temporarily unavailable.';
+
+  @override
+  String get gameBonusRoundUnavailable => 'Bonus round unavailable';
+
+  @override
+  String get gamePointsPool => 'Points pool';
+
+  @override
+  String get gamePickAllFeatured =>
+      'Pick every featured fixture before the round locks.';
+
+  @override
+  String gamePicksComplete(int selected, int total) {
+    return '$selected of $total picks complete';
+  }
+
+  @override
+  String gameEntriesRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count entries remaining',
+      one: '1 entry remaining',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameLeaders => 'Leaders';
+
+  @override
+  String get gameSocialHub => 'Social Hub';
+
+  @override
+  String get gameClub => 'Club';
+
+  @override
+  String get gameSearchYourFriends => 'Search your friends';
+
+  @override
+  String get gameBrowse => 'Browse';
+
+  @override
+  String get gameViewAll => 'View all';
+
+  @override
+  String get gameClubStandingsTemporarilyUnavailable =>
+      'Club standings are temporarily unavailable.';
+
+  @override
+  String get gameClubStandingsUnavailable => 'Club standings unavailable';
+
+  @override
+  String get gameClubStanding => 'Club standing';
+
+  @override
+  String get gameUnranked => 'Unranked';
+
+  @override
+  String get gameEarnPointsForClubTable =>
+      'Earn points to appear in the club table.';
+
+  @override
+  String gamePointsEarnedSoFar(int count) {
+    return '$count pts earned so far.';
+  }
+
+  @override
+  String gameNameYou(String name) {
+    return '$name (You)';
+  }
+
+  @override
+  String get gameChallengeFlowTemporarilyUnavailable =>
+      'Challenge flow is temporarily unavailable.';
+
+  @override
+  String gameHeadToHeadMessage(String appName, String home, String away) {
+    return '$appName head-to-head on $home vs $away';
+  }
+
+  @override
+  String get gameChallengeSent => 'Challenge sent';
+
+  @override
+  String get gameChallengeWaiting =>
+      'Your challenge is waiting for a response.';
+
+  @override
+  String get gameCouldNotSendChallenge =>
+      'Could not send the challenge right now.';
+
+  @override
+  String get gameSending => 'Sending…';
+
+  @override
+  String get gameSendChallenge => 'Send challenge';
+
+  @override
+  String get gameChallengeUnavailable => 'Challenge unavailable';
+
+  @override
+  String get gameSupporter => 'Supporter';
+
+  @override
+  String get gameAddFriendsBeforeChallenge =>
+      'Add friends before sending a challenge.';
+
+  @override
+  String get gameFindFriends => 'Find friends';
+
+  @override
+  String get gameFixture => 'Fixture';
+
+  @override
+  String get gamePick => 'Pick';
+
+  @override
+  String get gameSelected => 'Selected';
+
+  @override
+  String get gameChoose => 'Choose';
+
+  @override
+  String get gameTeamNotFound => 'Team not found.';
+
+  @override
+  String get gameTeamProfileTemporarilyUnavailable =>
+      'Team profile is temporarily unavailable.';
+
+  @override
+  String get gameSupporterActivityActiveClubOnly =>
+      'Supporter activity is only available for the active club.';
+
+  @override
+  String get gameSupporterRoutingCurrentClubOnly =>
+      'Supporter registry and contribution routing are available for the current app club only.';
+
+  @override
+  String get gameContributionRouteNotPublished =>
+      'This club has not published an active contribution route yet.';
+
+  @override
+  String get gameClubSupporterDataUnavailable =>
+      'Club supporter data is temporarily unavailable.';
+
+  @override
+  String get gameContributionsActiveClubOnly =>
+      'Contributions are available only for the active club.';
+
+  @override
+  String get gameContributionRouteUnavailable =>
+      'Contribution route unavailable.';
+
+  @override
+  String get gameCouldNotOpenDialer => 'Could not open the phone dialer.';
+
+  @override
+  String get gameDialerLaunchFailed => 'Dialer launch failed.';
+
+  @override
+  String get gameEnterContributionAmount => 'Enter contribution amount';
+
+  @override
+  String gamePaymentRouteDescription(String recipient, String provider) {
+    return 'You will pay $recipient via $provider.';
+  }
+
+  @override
+  String gameAmountCurrency(String currency) {
+    return 'Amount ($currency)';
+  }
+
+  @override
+  String get gameDialNow => 'Dial now';
+
+  @override
+  String get gameEnterValidAmount => 'Enter a valid amount.';
+
+  @override
+  String get gameTeamProfileTitle => 'TEAM PROFILE';
+
+  @override
+  String get gameTeamUnavailable => 'Team unavailable';
+
+  @override
+  String gameFoundedYear(int year) {
+    return 'Founded $year';
+  }
+
+  @override
+  String get gameTable => 'Table';
+
+  @override
+  String get gameSquad => 'Squad';
+
+  @override
+  String get gameOverview => 'Overview';
+
+  @override
+  String get gameMembers => 'Members';
+
+  @override
+  String get gameContribute => 'Contribute';
+
+  @override
+  String get gameAbout => 'About';
+
+  @override
+  String get gameLeaguePosition => 'LEAGUE POSITION';
+
+  @override
+  String get gamePlayedShort => 'P';
+
+  @override
+  String get gameWonShort => 'W';
+
+  @override
+  String get gameDrawnShort => 'D';
+
+  @override
+  String get gameLostShort => 'L';
+
+  @override
+  String get gameGoalDifferenceShort => 'GD';
+
+  @override
+  String get gameMomoContributionRoute => 'MOMO CONTRIBUTION ROUTE';
+
+  @override
+  String gameUseProviderForClub(String provider, String club) {
+    return 'Use $provider to contribute to $club.';
+  }
+
+  @override
+  String get gameThisClub => 'this club';
+
+  @override
+  String get gameSupporterRegistryCurrentClubOnly =>
+      'Supporter registry is available only for the current app club.';
+
+  @override
+  String get gameMembersUnavailable => 'Members unavailable';
+
+  @override
+  String get gameClubMembers => 'CLUB MEMBERS';
+
+  @override
+  String get gameTierGold => 'Gold';
+
+  @override
+  String get gameTierSilver => 'Silver';
+
+  @override
+  String get gameTierBronze => 'Bronze';
+
+  @override
+  String get gameTierImena => 'Imena';
+
+  @override
+  String get gameTopContributors => 'TOP CONTRIBUTORS';
+
+  @override
+  String get gameMomoContribution => 'MOMO CONTRIBUTION';
+
+  @override
+  String gameUseProviderInCountry(String provider, String country) {
+    return 'Use $provider in $country to contribute to this club.';
+  }
+
+  @override
+  String get gameEnterAmount => 'Enter amount';
+
+  @override
+  String gameEnterAmountDescription(String provider) {
+    return 'Choose how much you want to send through $provider.';
+  }
+
+  @override
+  String get gameConfirmInDialer => 'Confirm in dialer';
+
+  @override
+  String gameConfirmInDialerDescription(String code) {
+    return 'We will open the mobile money dialer for code $code.';
+  }
+
+  @override
+  String get gameReconciliation => 'Reconciliation';
+
+  @override
+  String get gameReconciliationDescription =>
+      'Your contribution is matched back to your club activity once payment is confirmed.';
+
+  @override
+  String get gameOpeningDialer => 'Opening dialer…';
+
+  @override
+  String get gameEnterAmountAndDial => 'Enter amount & dial';
+
+  @override
+  String gameAboutTeam(String team) {
+    return 'ABOUT $team';
+  }
+
+  @override
+  String get gameThisClubUpper => 'THIS CLUB';
+
+  @override
+  String get gameLocation => 'Location';
+
+  @override
+  String get gameCountry => 'Country';
+
+  @override
+  String get gameFounded => 'Founded';
+
+  @override
+  String get gameType => 'Type';
+
+  @override
+  String get gameAffiliatedClub => 'Affiliated Club';
+
+  @override
+  String get gameSelectedLeaderboardPeriod => 'Selected leaderboard period';
+
+  @override
+  String get gameSelectPeriod => 'Select period';
+
+  @override
+  String gameRankLabel(String rank) {
+    return '#$rank';
+  }
+
+  @override
+  String get gameRankPending => 'Rank pending';
+
+  @override
+  String gameAccuracyWins(String accuracy, int wins) {
+    String _temp0 = intl.Intl.pluralLogic(
+      wins,
+      locale: localeName,
+      other: '$wins wins',
+      one: '1 win',
+    );
+    return '$accuracy% accuracy · $_temp0';
+  }
+
+  @override
+  String gameSettledCount(int count) {
+    return '$count settled';
+  }
+
+  @override
+  String gameTierAlias(String tier, String alias) {
+    return '$tier tier · $alias';
+  }
+
+  @override
+  String gamePodiumRank(int rank) {
+    return 'Podium rank $rank';
+  }
+
+  @override
+  String get gamePickRound => 'Pick round';
+
+  @override
+  String gameActivePicks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count picks active',
+      one: '1 pick active',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameEarnUpToPoints(int count) {
+    return 'Earn up to $count pts';
+  }
+
+  @override
+  String get gamePickRoundEmpty => 'Pick round is empty';
+
+  @override
+  String get gamePickRoundEmptyDescription =>
+      'Add picks from any fixture and lock them in from here.';
+
+  @override
+  String get gamePickRoundUpper => 'PICK ROUND';
+
+  @override
+  String get gameAcca => 'Acca';
+
+  @override
+  String gamePotentialPoints(int count) {
+    return 'Potential points: $count pts';
+  }
+
+  @override
+  String get gameLockInPicks => 'Lock In Picks';
+
+  @override
+  String get gameSomeSelectionsFailed =>
+      'Some selections could not be submitted.';
+
+  @override
+  String get gameCouldNotSubmitPicks => 'Could not submit your picks.';
+
+  @override
+  String get gameConfirmPicks => 'CONFIRM PICKS';
+
+  @override
+  String gameLockingCombo(int count) {
+    return 'You are locking $count picks as a combo.';
+  }
+
+  @override
+  String gameLockingPicks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'You are locking $count picks.',
+      one: 'You are locking 1 pick.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameOutcomePotential(String outcome, int count) {
+    return '$outcome · +$count pts';
+  }
+
+  @override
+  String get gameTotalPotential => 'TOTAL POTENTIAL';
+
+  @override
+  String get gameGoBack => 'GO BACK';
+
+  @override
+  String gamePredictionsLocked(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Predictions Locked',
+      one: 'Prediction Locked',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameRoundId(String id) {
+    return 'Round ID: $id';
+  }
+
+  @override
+  String get gameShareUpper => 'SHARE';
+
+  @override
+  String get gameCopyUpper => 'COPY';
+
+  @override
+  String get gameViewMyPredictions => 'VIEW MY PREDICTIONS';
+
+  @override
+  String get gameKeepBrowsing => 'KEEP BROWSING';
+
+  @override
+  String get gameRemovePick => 'Remove pick';
+
+  @override
+  String get gameFans => 'Fans';
+
+  @override
+  String get gameWallet => 'Wallet';
+
+  @override
+  String get gameMore => 'More';
+
+  @override
+  String get gameRoundUpper => 'ROUND';
+
+  @override
+  String gameAccuracyRounds(String accuracy, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rounds',
+      one: '1 round',
+    );
+    return '$accuracy% · $_temp0';
+  }
+
+  @override
+  String gamePointsRound(int count) {
+    return '$count points round';
+  }
+
+  @override
+  String get gamePointsRoundLabel => 'points round';
+
+  @override
+  String gamePointEntry(int count) {
+    return '$count point entry';
+  }
+
+  @override
+  String gameFansCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fans',
+      one: '1 fan',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameChooseWdw => 'Choose W/D/W';
+
+  @override
+  String get gameJoinRound => 'Join round';
+
+  @override
+  String gameSelectedOutcome(String outcome) {
+    return 'Selected $outcome';
+  }
+
+  @override
+  String get gameChallengesTitle => 'CHALLENGES';
+
+  @override
+  String get gameChallengesTemporarilyUnavailable =>
+      'Challenges are temporarily unavailable.';
+
+  @override
+  String get gameChallengesUnavailable => 'Challenges unavailable';
+
+  @override
+  String get gameDaily => 'DAILY';
+
+  @override
+  String get gameWeeklyUpper => 'WEEKLY';
+
+  @override
+  String get gameSeasonal => 'SEASONAL';
+
+  @override
+  String get gameCompleted => 'Completed';
+
+  @override
+  String get gameChallengesRequireProfile =>
+      'Challenges appear once your supporter profile is active.';
+
+  @override
+  String get gameWhatIsFet => 'WHAT IS FET?';
+
+  @override
+  String get gameWhatIsFetBody =>
+      'FET (Fan Engagement Tokens) are your supporter currency. Earn them by engaging with your club—attending matches, completing challenges, making predictions, and supporting the community.';
+
+  @override
+  String get gameHowPredictionsWork => 'HOW PREDICTIONS WORK';
+
+  @override
+  String get gameHowPredictionsWorkBody =>
+      'Browse upcoming fixtures, choose pick types such as Match Result, Goals, and Scorers, then lock in picks before kick-off. Correct picks earn points based on difficulty.';
+
+  @override
+  String get gameEarnLevelRedeem => 'EARN, LEVEL UP & REDEEM';
+
+  @override
+  String get gameEarnLevelRedeemBody =>
+      'Your points balance grows as you engage. Climb the leaderboard, unlock membership tiers, and redeem rewards from the club store. Every action counts.';
+
+  @override
+  String get gameBackUpper => 'BACK';
+
+  @override
+  String get gameGetStarted => 'GET STARTED';
+
+  @override
+  String get gameNext => 'NEXT';
+
+  @override
+  String get gameMyChallenges => 'MY CHALLENGES';
+
+  @override
+  String get gameOpen => 'Open';
+
+  @override
+  String get gameLocked => 'Locked';
+
+  @override
+  String get gameSettled => 'Settled';
+
+  @override
+  String get gameRefunded => 'Refunded';
+
+  @override
+  String get gameLoadingChallenges => 'Loading your challenges';
+
+  @override
+  String get gameLoadingChallengesDescription =>
+      'Checking the pools you created or joined for this status.';
+
+  @override
+  String get gameRefresh => 'Refresh';
+
+  @override
+  String get gameRefreshingChallengeHistory => 'Refreshing challenge history';
+
+  @override
+  String get gameRefreshingChallengeHistoryDescription =>
+      'Keeping your confirmed pools visible while the latest status is checked.';
+
+  @override
+  String get gameChallengeHistoryReadOnly => 'Challenge history is read-only';
+
+  @override
+  String get gameChallengeHistoryReadOnlyDescription =>
+      'Your confirmed pools remain visible, but opening challenge details is disabled for this build.';
+
+  @override
+  String get gameShowingSavedChallengeHistory =>
+      'Showing saved challenge history';
+
+  @override
+  String get gameShowingSavedChallengeHistoryDescription =>
+      'Reconnect and refresh before opening a pool or checking a newer status.';
+
+  @override
+  String get gameRefreshHistory => 'REFRESH HISTORY';
+
+  @override
+  String gameNoFilteredChallenges(String filter) {
+    return 'No $filter challenges';
+  }
+
+  @override
+  String get gameCreateChallenge => 'Create challenge';
+
+  @override
+  String gameChallengeCardSemantics(String home, String away, String summary) {
+    return '$home versus $away. $summary. Open challenge details.';
+  }
+
+  @override
+  String get gameOpensChallenge => 'Opens this challenge';
+
+  @override
+  String get gameChallengeDetailsUnavailable =>
+      'Challenge details are unavailable';
+
+  @override
+  String gameTeamsVersusMultiline(String home, String away) {
+    return '$home\nversus\n$away';
+  }
+
+  @override
+  String get gameConnectionRestored => 'Connection restored';
+
+  @override
+  String get gameChallengeHistoryOffline => 'Challenge history offline';
+
+  @override
+  String get gameRefreshLatestChallengeStatus =>
+      'Refresh to check the latest status of your challenges.';
+
+  @override
+  String get gameReconnectChallengePools =>
+      'Reconnect to load the pools you created or joined.';
+
+  @override
+  String get gameChallengeHistoryUnavailable => 'Challenge history unavailable';
+
+  @override
+  String get gameChallengeHistoryPermissionDenied =>
+      'Your current club access does not allow this challenge history.';
+
+  @override
+  String get gameChallengeHistoryChanged => 'Challenge history changed';
+
+  @override
+  String get gameChallengeHistoryChangedDescription =>
+      'Refresh and review the latest pool status before opening a challenge.';
+
+  @override
+  String get gameChallengeHistoryTimedOut =>
+      'Challenge history check timed out';
+
+  @override
+  String get gameChallengeHistoryTimedOutDescription =>
+      'No status was confirmed. Refresh before opening a challenge.';
+
+  @override
+  String get gameChallengeHistoryTryAgain =>
+      'Refresh and try again when your challenge history is ready.';
+
+  @override
+  String get gameOpenChallengesEmpty =>
+      'Create or join a pool to see an active exact-score challenge here.';
+
+  @override
+  String get gameLockedChallengesEmpty =>
+      'No joined challenge is currently waiting for a final score.';
+
+  @override
+  String get gameSettledChallengesEmpty =>
+      'Completed challenge results and points will appear here.';
+
+  @override
+  String get gameRefundedChallengesEmpty =>
+      'Cancelled or refunded challenges will appear here.';
+
+  @override
+  String gameEarnedPoints(int count) {
+    return 'Earned $count pts';
+  }
+
+  @override
+  String get gameNoResultCredit => 'No result credit';
+
+  @override
+  String gameReturnedPoints(int count) {
+    return 'Returned $count pts';
+  }
+
+  @override
+  String gameMyPickScore(int home, int away) {
+    return 'My pick $home-$away';
+  }
+
+  @override
+  String get gameMoreOptions => 'More options';
+
+  @override
+  String get gameConnectToFanZone => 'Connect to load Fan Zone.';
+
+  @override
+  String get gameOpeningFanZone => 'Opening Fan Zone';
+
+  @override
+  String get gameRefreshingFanZone => 'Refreshing Fan Zone';
+
+  @override
+  String get gameRefreshingFanZoneDescription =>
+      'Keeping your current points, rounds, and picks visible while updates load.';
+
+  @override
+  String get gameMatchdayRounds => 'Matchday rounds';
+
+  @override
+  String get gameNoMatchdayRounds => 'No matchday rounds';
+
+  @override
+  String get gameTvGame => 'TV game';
+
+  @override
+  String get gameReviewJoinedRounds =>
+      'Review joined rounds, cards, and results';
+
+  @override
+  String get gameEnterTvCode => 'Enter TV code';
+
+  @override
+  String get gameVenueCheckIn => 'Venue check-in';
+
+  @override
+  String get gameVenueOrder => 'Venue order';
+
+  @override
+  String get gameVenueOrderDescription =>
+      'Order approved drinks and track pickup status';
+
+  @override
+  String get gameLiveNow => 'Live Now';
+
+  @override
+  String get gameThisWeek => 'This Week';
+
+  @override
+  String get gamePointsBalanceTitle => 'Points balance';
+
+  @override
+  String get gamePointsBalanceDescription =>
+      'Balance, earning, rewards, and activity';
+
+  @override
+  String get gameActivity => 'Activity';
+
+  @override
+  String get gameOpenPointsActivity => 'Open recent points movement';
+
+  @override
+  String get gameSupporterClubs => 'Supporter clubs';
+
+  @override
+  String get gameSupporterClubsDescription =>
+      'Fan clubs, chapters, and community groups';
+
+  @override
+  String get gameMemberFans => 'Member fans';
+
+  @override
+  String get gameMemberFansDescription =>
+      'Open the supporter registry as a sheet';
+
+  @override
+  String get gameSupportClubDescription =>
+      'Projects and supporter contribution groups';
+
+  @override
+  String get gameRedeemRewards => 'Redeem rewards';
+
+  @override
+  String get gameRedeemRewardsDescription =>
+      'Use points for rewards and partner offers';
+
+  @override
+  String get gameAchievements => 'Achievements';
+
+  @override
+  String get gameAchievementsDescription => 'Badges and streak status';
+
+  @override
+  String get gameShareCard => 'Share card';
+
+  @override
+  String get gameShareCardDescription => 'Create a supporter card to share';
+
+  @override
+  String get gameConnectBeforeJoiningRound =>
+      'Connect before joining this round.';
+
+  @override
+  String get gamePoolEntryFailed => 'Pool entry could not be recorded.';
+
+  @override
+  String gameOutcomeJoined(String outcome) {
+    return '$outcome joined.';
+  }
+
+  @override
+  String gamePartnerSponsorsRound(String partner) {
+    return '$partner sponsors this matchday round. Pick once before the round locks.';
+  }
+
+  @override
+  String get gameProjects => 'Projects';
+
+  @override
+  String get gameProjectsDescription => 'Club initiatives and campaign needs';
+
+  @override
+  String get gameGroups => 'Groups';
+
+  @override
+  String get gameGroupsDescription => 'Join supporter contribution groups';
+
+  @override
+  String get gameQrSheetDescription =>
+      'QR display and sharing stay inside this sheet.';
+
+  @override
+  String get gameFanIdQrDisplay => 'Fan ID and QR display';
+
+  @override
+  String get gameQr => 'QR';
+
+  @override
+  String get gameBadgesEarnedDescription =>
+      'Earned from picks, attendance, and support actions';
+
+  @override
+  String get gameStartStreak => 'Join your next round to start a streak';
+
+  @override
+  String gameActivePlayDays(int count) {
+    return '$count active play days';
+  }
+
+  @override
+  String gameActionUnavailable(String description) {
+    return '$description. Unavailable.';
+  }
+
+  @override
+  String get gameFanZoneAccessUnavailable => 'Fan Zone access not available';
+
+  @override
+  String get gameFanZoneAccessUnavailableDescription =>
+      'Your account cannot open Fan Zone right now. Contact support if this should be available.';
+
+  @override
+  String get gameFanZoneChanged => 'Fan Zone changed';
+
+  @override
+  String get gameFanZoneChangedDescription =>
+      'Fan Zone data changed while you were viewing it. Refresh to load the current version.';
+
+  @override
+  String get gameFanZoneSecurityTimedOut => 'Fan Zone security check timed out';
+
+  @override
+  String get gameFanZoneSecurityTimedOutDescription =>
+      'We could not confirm current Fan Zone access. Refresh before continuing.';
+
+  @override
+  String get gameFanZoneTemporarilyUnavailable =>
+      'Fan Zone is temporarily unavailable.';
+
+  @override
+  String get gameSavedFanZoneContent =>
+      'Showing saved Fan Zone content. Reconnect and refresh for current fixtures and balances.';
+
+  @override
+  String get gamePickSectionLabel => 'Pick';
+
+  @override
+  String get gamePicksLabel => 'Picks';
+
+  @override
+  String get gameRewardsLabel => 'Rewards';
+
+  @override
+  String get gameStreakLabel => 'Streak';
+
+  @override
+  String get gameBadgesLabel => 'Badges';
+
+  @override
+  String get gamePointsLabel => 'Points';
+
+  @override
+  String get gameAccuracyLabel => 'Accuracy';
+
+  @override
+  String get gameFanZoneUnavailableTitle => 'Fan Zone unavailable';
+
+  @override
+  String get venueOrderConfirmedToast =>
+      'Order confirmed by the venue service. Pay only at the venue.';
+
+  @override
+  String get venueOrderingUnavailable => 'Venue ordering unavailable';
+
+  @override
+  String get venueFeatureDisabled =>
+      'This governed feature is disabled for the current club or build.';
+
+  @override
+  String get venueBackToFanZone => 'BACK TO FAN ZONE';
+
+  @override
+  String get venueOrderAccessDenied => 'Venue order access denied';
+
+  @override
+  String get venueOrderAccessDeniedBody =>
+      'This account cannot use the supporter venue-order route.';
+
+  @override
+  String get venueOrderAccessDeniedLoadBody =>
+      'This account cannot load the supporter venue-order route.';
+
+  @override
+  String get venueCheckInBeforeOrdering => 'Check in before ordering';
+
+  @override
+  String get venueCheckInRequiredBody =>
+      'A confirmed venue check-in is required before the approved drinks menu can be loaded.';
+
+  @override
+  String get venueCheckInFirst => 'CHECK IN FIRST';
+
+  @override
+  String get venueNoDrinksAvailable => 'No drinks available';
+
+  @override
+  String get venueNoDrinksBody =>
+      'The checked-in venue has no approved active drinks right now.';
+
+  @override
+  String get venueRefreshMenu => 'REFRESH MENU';
+
+  @override
+  String get venueMenuUnavailableOffline => 'Venue menu unavailable offline';
+
+  @override
+  String get venueMenuOfflineBody =>
+      'Reconnect before loading the venue menu. No order is queued offline.';
+
+  @override
+  String get venueTryAgain => 'TRY AGAIN';
+
+  @override
+  String get venueMenuCheckTimedOut => 'Venue menu check timed out';
+
+  @override
+  String get venueMenuCheckTimedOutBody =>
+      'The app could not establish a safe order context in time. Try one bounded refresh.';
+
+  @override
+  String get venueMenuUnavailableBody =>
+      'The checked-in venue and approved menu could not be loaded safely.';
+
+  @override
+  String get venueOrderHero => 'Order drinks at this venue';
+
+  @override
+  String get venueOrderHeroBody =>
+      'Choose from the approved drinks-only menu. Staff queue actions remain in the venue portal.';
+
+  @override
+  String get venueApprovedDrinks => 'Approved drinks';
+
+  @override
+  String get venueOrderReview => 'Order review';
+
+  @override
+  String venueOrderReviewValue(int count, String total) {
+    return '$count items, $total';
+  }
+
+  @override
+  String get venueLegalAgeConfirmation => 'Legal age confirmation';
+
+  @override
+  String get venueNotSelected => 'Not selected';
+
+  @override
+  String get venueAgeConfirmationRequired => 'Age confirmation required';
+
+  @override
+  String get venueAgeConfirmationBody =>
+      'Confirm only if you meet the venueʼs legal age requirement. Venue staff may still verify eligibility.';
+
+  @override
+  String get venueRemoveConfirmation => 'REMOVE CONFIRMATION';
+
+  @override
+  String get venueConfirmLegalAge => 'CONFIRM LEGAL AGE';
+
+  @override
+  String get venuePayAtVenue => 'Pay at the venue';
+
+  @override
+  String get venuePaymentDisclaimer =>
+      'This app creates the drinks order only. It does not take payment or claim that payment succeeded.';
+
+  @override
+  String get venueCreatingOrderUpper => 'CREATING ORDER';
+
+  @override
+  String get venueOrderConfirmedUpper => 'ORDER CONFIRMED';
+
+  @override
+  String get venueReviewCreateOrder => 'REVIEW AND CREATE ORDER';
+
+  @override
+  String get venueOrderProtections => 'Order protections';
+
+  @override
+  String get venueDuplicateSubmission => 'Duplicate submission';
+
+  @override
+  String get venueDuplicateSubmissionBody => 'One idempotency key per attempt';
+
+  @override
+  String get venueOfflineBehavior => 'Offline behavior';
+
+  @override
+  String get venueOfflineBehaviorBody => 'No queued or automatic replay';
+
+  @override
+  String get venueStaffControls => 'Staff controls';
+
+  @override
+  String get venueStaffControlsBody => 'Venue portal only';
+
+  @override
+  String venueItemsSelected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items selected',
+      one: '1 item selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get venueShowingSavedMenu => 'Showing saved venue menu';
+
+  @override
+  String get venueShowingSavedMenuBody =>
+      'Reconnect before creating the order. Nothing is queued or replayed offline.';
+
+  @override
+  String get venueCreatingOrder => 'Creating venue order';
+
+  @override
+  String get venueCreatingOrderBody =>
+      'Wait for server confirmation. Do not repeat this order attempt.';
+
+  @override
+  String get venueOrderCreated => 'Order created';
+
+  @override
+  String venueOrderCreatedSummary(String status, String total) {
+    return '$status · $total. Payment remains external at the venue.';
+  }
+
+  @override
+  String get venueChooseDrink => 'Choose at least one drink';
+
+  @override
+  String get venueChooseDrinkBody =>
+      'The order cannot be created with an empty selection.';
+
+  @override
+  String get venueCheckInRequired => 'Check-in required';
+
+  @override
+  String get venueCheckInRejectedBody =>
+      'The venue did not accept this check-in for ordering. Check in again before retrying.';
+
+  @override
+  String get venueAgeSubmitBody =>
+      'Confirm legal age before submitting an alcohol item.';
+
+  @override
+  String get venueDrinkChanged => 'A selected drink changed';
+
+  @override
+  String get venueDrinkChangedBody =>
+      'Refresh the approved menu before retrying.';
+
+  @override
+  String get venueOrderAttemptPaused => 'Order attempt paused';
+
+  @override
+  String get venueOrderAttemptPausedBody =>
+      'Another request may be active. Check the latest order before retrying.';
+
+  @override
+  String get venueOrderConfirmationUncertain => 'Order confirmation uncertain';
+
+  @override
+  String get venueOrderConfirmationUncertainBody =>
+      'Do not resubmit. Check the latest venue order before dismissing.';
+
+  @override
+  String get venueOrderNotConfirmed => 'Order not confirmed';
+
+  @override
+  String get venueOrderNotConfirmedBody =>
+      'The server did not confirm this order. Dismiss the warning before retrying.';
+
+  @override
+  String venueLatestOrder(String status) {
+    return 'Latest order: $status';
+  }
+
+  @override
+  String venueLatestOrderSummary(String total, String payment) {
+    return '$total · $payment.';
+  }
+
+  @override
+  String get venueReadyToOrder => 'Ready to order';
+
+  @override
+  String get venueReadyToOrderBody =>
+      'Choose approved drinks, review the total, then create once.';
+
+  @override
+  String venueRemoveItem(String item) {
+    return 'Remove $item';
+  }
+
+  @override
+  String venueAddItem(String item) {
+    return 'Add $item';
+  }
+
+  @override
+  String venueDrinkSemantics(int count, String price) {
+    return '$count selected, $price each';
+  }
+
+  @override
+  String get venueAgeRestricted => 'Age restricted';
+
+  @override
+  String get venueWaitingForVenue => 'Waiting for venue';
+
+  @override
+  String get venueAccepted => 'Accepted';
+
+  @override
+  String get venuePreparing => 'Preparing';
+
+  @override
+  String get venueReadyForPickup => 'Ready for pickup';
+
+  @override
+  String get venueServed => 'Served';
+
+  @override
+  String get venueStatusPending => 'Status pending';
+
+  @override
+  String get venuePaidAtVenue => 'Paid at venue';
+
+  @override
+  String get venuePaymentWaived => 'Payment waived';
+
+  @override
+  String get venueRefundedExternally => 'Refunded externally';
+
+  @override
+  String get venuePaymentPending => 'Payment pending at venue';
+
+  @override
+  String get venueCheckinTitle => 'Venue check-in';
+
+  @override
+  String get venueCheckinUnavailable => 'Venue check-in unavailable';
+
+  @override
+  String get venueCheckinAccessDenied => 'Check-in access denied';
+
+  @override
+  String get venueCheckinAccessDeniedBody =>
+      'This account cannot use the supporter check-in route.';
+
+  @override
+  String get venueCheckinSafeStateBody =>
+      'The route could not establish a safe check-in state.';
+
+  @override
+  String get venueCheckinHero => 'Check in at an approved venue';
+
+  @override
+  String get venueCheckinHeroBody =>
+      'Enter the rotating TV or QR code after you arrive. Supporter check-in never exposes staff or admin controls.';
+
+  @override
+  String get venueCheckinCodeLabel => 'Venue code';
+
+  @override
+  String get venueCheckinInputLabel => 'TV or QR code';
+
+  @override
+  String get venueCheckinInputHint => 'Enter at least 4 characters';
+
+  @override
+  String get venueCheckinCheckingCodeUpper => 'CHECKING CODE';
+
+  @override
+  String get venueCheckinActionUpper => 'CHECK IN';
+
+  @override
+  String get venueCheckinLocationConsentSemantics => 'Location review consent';
+
+  @override
+  String get venueCheckinOptionalLocationReview => 'Optional location review';
+
+  @override
+  String get venueCheckinConsentMarkedBody =>
+      'Consent is marked for this attempt. This build still sends no coordinates; location-required campaigns remain pending review.';
+
+  @override
+  String get venueCheckinNoLocationBody =>
+      'Precise location is not collected in this build. You may mark consent, but location-required campaigns remain pending review.';
+
+  @override
+  String get venueCheckinRemoveConsentUpper => 'REMOVE CONSENT';
+
+  @override
+  String get venueCheckinMarkConsentUpper => 'MARK CONSENT';
+
+  @override
+  String get venueCheckinPrivacyBoundary => 'Privacy boundary';
+
+  @override
+  String get venueCheckinPrivacyBoundaryBody =>
+      'Raw rotating codes are hashed before submission and are not persisted by the app. No precise location is collected.';
+
+  @override
+  String get venueCheckinPausedOffline => 'Check-in paused offline';
+
+  @override
+  String get venueCheckinPausedOfflineBody =>
+      'Reconnect before submitting. No check-in is queued or replayed.';
+
+  @override
+  String get venueCheckinCheckingCode => 'Checking venue code';
+
+  @override
+  String get venueCheckinCheckingCodeBody =>
+      'Wait for the server result. Do not repeat this check-in.';
+
+  @override
+  String get venueCheckinPendingReview => 'Check-in pending review';
+
+  @override
+  String get venueCheckinConfirmed => 'Check-in confirmed';
+
+  @override
+  String get venueCheckinPendingReviewBody =>
+      'The venue code was accepted, but a governed location or campaign check still needs review.';
+
+  @override
+  String venueCheckinFetRecorded(int count) {
+    return '+$count FET recorded for this check-in.';
+  }
+
+  @override
+  String get venueCheckinConfirmedNoReward =>
+      'The venue accepted this check-in. No reward was promised.';
+
+  @override
+  String get venueCheckinReady => 'Ready for venue check-in';
+
+  @override
+  String get venueCheckinReadyBody =>
+      'Use the current code only after you arrive on site.';
+
+  @override
+  String get venueCheckinInvalidCode => 'Code not accepted';
+
+  @override
+  String get venueCheckinInvalidCodeBody =>
+      'Enter the current TV or QR code shown at the venue.';
+
+  @override
+  String get venueCheckinExpiredCode => 'Venue code expired';
+
+  @override
+  String get venueCheckinExpiredCodeBody =>
+      'Ask the venue display for the current rotating code.';
+
+  @override
+  String get venueCheckinAlreadyCheckedIn => 'Already checked in';
+
+  @override
+  String get venueCheckinAlreadyCheckedInBody =>
+      'The server found an existing check-in. No duplicate reward was created.';
+
+  @override
+  String get venueCheckinCampaignUnavailable => 'Check-in campaign unavailable';
+
+  @override
+  String get venueCheckinCampaignUnavailableBody =>
+      'The campaign is paused, inactive, or has reached its governed budget.';
+
+  @override
+  String get venueCheckinConflict => 'Check-in conflict';
+
+  @override
+  String get venueCheckinConflictBody =>
+      'Another attempt may already be active. Confirm the venue state before retrying.';
+
+  @override
+  String get venueCheckinConfirmationUncertain =>
+      'Check-in confirmation uncertain';
+
+  @override
+  String get venueCheckinConfirmationUncertainBody =>
+      'Do not repeat the code yet. Check your venue activity, then dismiss this warning.';
+
+  @override
+  String get venueCheckinUnavailableShort => 'Check-in unavailable';
+
+  @override
+  String get venueCheckinUnavailableBody =>
+      'The server did not confirm the attempt. Dismiss this warning before retrying.';
+
+  @override
+  String get challengeConfirmTitle => 'CONFIRM CHALLENGE';
+
+  @override
+  String challengeConfirmPoints(int count) {
+    return 'CONFIRM $count pts';
+  }
+
+  @override
+  String get challengeCreateTitle => 'CREATE CHALLENGE';
+
+  @override
+  String get challengeFindingFixtures => 'Finding upcoming fixtures';
+
+  @override
+  String get challengeFindingFixturesBody =>
+      'Checking the matches that are still open for exact-score challenges.';
+
+  @override
+  String get challengeNoFixtures => 'No fixtures available';
+
+  @override
+  String get challengeNoFixturesBody =>
+      'There are no upcoming matches open for a new challenge yet.';
+
+  @override
+  String get challengeRefreshFixtures => 'Refresh fixtures';
+
+  @override
+  String get challengeCreating => 'Creating challenge';
+
+  @override
+  String get challengeCreatingBody =>
+      'Keeping your fixture, score, and entry points visible while confirmation is pending.';
+
+  @override
+  String get challengeCreationUnavailable => 'Challenge creation unavailable';
+
+  @override
+  String get challengeCreationDisabledBody =>
+      'You can review the form, but creating a pool is disabled for this build.';
+
+  @override
+  String get challengeShowingSavedFixtures => 'Showing saved fixtures';
+
+  @override
+  String get challengeShowingSavedFixturesBody =>
+      'Reconnect and refresh before changing the score or creating a challenge.';
+
+  @override
+  String get challengeRefreshFixturesUpper => 'REFRESH FIXTURES';
+
+  @override
+  String get challengeExactScore => 'Exact score';
+
+  @override
+  String challengeSelectedScore(int home, int away) {
+    return 'Selected exact score $home to $away';
+  }
+
+  @override
+  String get challengeVersusUpper => 'VERSUS';
+
+  @override
+  String get challengeEntryPoints => 'Entry points';
+
+  @override
+  String get challengeEntryOptionsUnavailable =>
+      'Challenge entry options are not available yet.';
+
+  @override
+  String challengeStakePoints(int count) {
+    return '$count pts';
+  }
+
+  @override
+  String get challengeCheckingBalance => 'Checking your points balance.';
+
+  @override
+  String get challengeBalanceUnavailable =>
+      'Your points balance is unavailable. Refresh before creating this challenge.';
+
+  @override
+  String get challengeBalanceInsufficient =>
+      'Your current points balance does not cover this entry.';
+
+  @override
+  String get challengeCreatingUpper => 'CREATING CHALLENGE';
+
+  @override
+  String get challengeCreationOffline => 'Challenge creation offline';
+
+  @override
+  String get challengeRefreshLatestFixtures =>
+      'Refresh to check the latest fixtures before creating a challenge.';
+
+  @override
+  String get challengeReconnectFixtures =>
+      'Reconnect to load the fixtures available for a new challenge.';
+
+  @override
+  String get challengeAccessDeniedBody =>
+      'Your current club access does not allow a new challenge.';
+
+  @override
+  String get challengeDetailsChanged => 'Challenge details changed';
+
+  @override
+  String get challengeDetailsChangedBody =>
+      'Refresh the fixtures and review your choice before trying again.';
+
+  @override
+  String get challengeSecurityTimedOut => 'Challenge security check timed out';
+
+  @override
+  String get challengeSecurityTimedOutBody =>
+      'No challenge was confirmed. Refresh before trying again.';
+
+  @override
+  String get challengeTryAgainBody =>
+      'Refresh and try again when the fixtures are available.';
+
+  @override
+  String challengePreviewSemantics(
+    String homeTeam,
+    String awayTeam,
+    int homeScore,
+    int awayScore,
+    int stake,
+    int balance,
+  ) {
+    return 'Challenge preview. $homeTeam versus $awayTeam. Your pick $homeScore to $awayScore. Entry $stake points. Balance $balance points.';
+  }
+
+  @override
+  String get challengePreview => 'CHALLENGE PREVIEW';
+
+  @override
+  String get challengeYourPick => 'Your pick';
+
+  @override
+  String challengeBalancePoints(int count) {
+    return 'Balance $count pts';
+  }
+
+  @override
+  String get challengeLocksAtKickoff => 'Locks at kickoff';
+
+  @override
+  String challengeFixtureOption(String home, String away, String competition) {
+    return '$home vs $away • $competition';
+  }
+
+  @override
+  String challengeDecrease(String label) {
+    return 'Decrease $label';
+  }
+
+  @override
+  String challengeIncrease(String label) {
+    return 'Increase $label';
+  }
+
+  @override
+  String get tvControllerTitle => 'Game Controller';
+
+  @override
+  String get tvControllerUnavailable => 'Game controller unavailable';
+
+  @override
+  String get tvControllerUnavailableBody =>
+      'Live game control is not enabled for this build or club.';
+
+  @override
+  String get tvLiveSessionNotFound => 'Live session not found';
+
+  @override
+  String get tvLiveSessionNotFoundBody =>
+      'This game link is unavailable or no longer active.';
+
+  @override
+  String get tvLiveAccessDenied => 'Live session access denied';
+
+  @override
+  String get tvLiveAccessDeniedBody =>
+      'This account cannot open the requested game controller.';
+
+  @override
+  String get tvControllerOffline => 'Controller offline';
+
+  @override
+  String get tvControllerOfflineBody =>
+      'Reconnect to load the live session. Answers are never queued offline.';
+
+  @override
+  String get tvSessionCheckTimedOut => 'Session check timed out';
+
+  @override
+  String get tvSessionCheckTimedOutBody =>
+      'The controller could not confirm a safe live state. Try one bounded refresh.';
+
+  @override
+  String get tvControllerLoadUnavailable => 'Controller unavailable';
+
+  @override
+  String get tvControllerLoadUnavailableBody =>
+      'The live session could not be loaded. No private session details were shown.';
+
+  @override
+  String get tvLastConfirmedOffline =>
+      'Last confirmed state is shown. Answers and joins stay blocked and are never queued.';
+
+  @override
+  String get tvConfirmingMembership => 'Confirming membership';
+
+  @override
+  String get tvConfirmingAnswer => 'Confirming answer';
+
+  @override
+  String get tvWaitingForServer =>
+      'Waiting for the live server. Do not close or repeat this action.';
+
+  @override
+  String get tvLiveStateChanged => 'Live state changed';
+
+  @override
+  String get tvLiveStateChangedBody =>
+      'Refresh the controller before joining or choosing another answer.';
+
+  @override
+  String get tvRefreshUpper => 'REFRESH';
+
+  @override
+  String get tvConfirmationUncertain => 'Confirmation uncertain';
+
+  @override
+  String get tvConfirmationUncertainBody =>
+      'The server did not confirm the last action. It remains blocked until an authoritative refresh resolves it.';
+
+  @override
+  String get tvLiveUpdateUnavailable => 'Live update unavailable';
+
+  @override
+  String get tvLiveUpdateUnavailableBody =>
+      'The last confirmed state is preserved. Refresh before continuing.';
+
+  @override
+  String get tvUsingLastConfirmed => 'Using last confirmed state';
+
+  @override
+  String get tvUsingLastConfirmedBody =>
+      'Live controls stay blocked until the session is refreshed.';
+
+  @override
+  String tvCurrentSession(String code) {
+    return 'Current live session $code';
+  }
+
+  @override
+  String get tvLiveSessionUpper => 'LIVE SESSION';
+
+  @override
+  String get tvAnswerPad => 'Answer pad';
+
+  @override
+  String get tvWaitingForChoices =>
+      'Waiting for the host to publish answer choices on the TV.';
+
+  @override
+  String get tvChooseOnce =>
+      'Choose once. The server confirms the first accepted answer.';
+
+  @override
+  String get tvConfirmedStateUnlocks =>
+      'Only confirmed server state can unlock another answer.';
+
+  @override
+  String get tvJoinSessionUpper => 'JOIN THIS SESSION';
+
+  @override
+  String get tvConfirmLeaderboardName =>
+      'Confirm the name shown on the TV leaderboard.';
+
+  @override
+  String get tvDisplayName => 'Display name';
+
+  @override
+  String get tvDisplayNameHelper => '2 to 48 characters';
+
+  @override
+  String get tvJoinSession => 'Join session';
+
+  @override
+  String tvAnswerSemantics(String answer) {
+    return 'Answer $answer';
+  }
+
+  @override
+  String get tvSubmitAnswer => 'Submit answer';
+
+  @override
+  String get tvAnswerLocked => 'Answer locked';
+
+  @override
+  String get tvTeamStandings => 'Team standings';
+
+  @override
+  String get tvStandingsEmpty =>
+      'Standings appear after the TV host opens the round.';
+
+  @override
+  String get tvPhaseJoin => 'Join';
+
+  @override
+  String get tvPhaseWaiting => 'Waiting';
+
+  @override
+  String get tvPhaseAnswering => 'Answering';
+
+  @override
+  String get tvPhaseReveal => 'Reveal';
+
+  @override
+  String get tvPhaseStandings => 'Standings';
+
+  @override
+  String get tvPhaseReconnecting => 'Reconnecting';
+
+  @override
+  String get walletRewardsUnavailable => 'Rewards unavailable';
+
+  @override
+  String get walletDisabledBody =>
+      'Points and reward activity are disabled for this build.';
+
+  @override
+  String get walletNoActivity => 'No points activity yet';
+
+  @override
+  String get walletNoActivityBody =>
+      'Your confirmed points balance and reward activity will appear here.';
+
+  @override
+  String get walletOffline => 'Rewards offline';
+
+  @override
+  String get walletOfflineBody =>
+      'Reconnect to load your confirmed points balance. Nothing is queued offline.';
+
+  @override
+  String get walletAccessDenied => 'Rewards access denied';
+
+  @override
+  String get walletAccessDeniedBody =>
+      'This account cannot open the private points ledger.';
+
+  @override
+  String get walletCheckTimedOut => 'Points check timed out';
+
+  @override
+  String get walletCheckTimedOutBody =>
+      'The app could not confirm your private points ledger in time. Try one bounded refresh.';
+
+  @override
+  String get walletUnavailableBody =>
+      'Your points ledger could not be loaded. No private activity details were shown.';
+
+  @override
+  String walletBalanceValue(String points) {
+    return '$points pts';
+  }
+
+  @override
+  String get walletUsed => 'Used';
+
+  @override
+  String walletHistoricalPoints(String points) {
+    return '$points points come from earlier rewards before activity history was enabled.';
+  }
+
+  @override
+  String get walletEarn => 'Earn';
+
+  @override
+  String get walletEarnBody =>
+      'Earn points from partner initiatives and promotions.';
+
+  @override
+  String get walletUseBody =>
+      'Use points in rewards, matchday activities, and fan-zone challenges.';
+
+  @override
+  String get walletRewardsBody =>
+      'Use points for matchday perks and partner rewards.';
+
+  @override
+  String get walletRewardsEmptyBody =>
+      'Available rewards appear here when the club or partners publish them.';
+
+  @override
+  String get walletActivityEmptyBody =>
+      'Points activity appears after partner rewards or matchday actions.';
+
+  @override
+  String get walletShowingSaved => 'Showing saved points';
+
+  @override
+  String get walletShowingSavedBody =>
+      'Reconnect for the latest balance and activity. No action is queued offline.';
+
+  @override
+  String get walletRefreshing => 'Refreshing points';
+
+  @override
+  String get walletRefreshingBody =>
+      'The confirmed balance stays visible while the latest ledger loads.';
+
+  @override
+  String get walletChangedElsewhere => 'Points changed elsewhere';
+
+  @override
+  String get walletChangedElsewhereBody =>
+      'The saved balance stays visible. Refresh to confirm the latest ledger.';
+
+  @override
+  String get walletRefreshTimedOut => 'Points refresh timed out';
+
+  @override
+  String get walletRefreshTimedOutBody =>
+      'The saved balance is still shown. Try one bounded refresh.';
+
+  @override
+  String get walletMayBeOutdated => 'Points may be out of date';
+
+  @override
+  String get walletMayBeOutdatedBody =>
+      'The last confirmed balance stays visible while service is unavailable.';
+
+  @override
+  String get walletSavedUntilRefresh =>
+      'The last confirmed balance stays visible until refresh succeeds.';
+
+  @override
+  String get feedChallengeTitle => 'CHALLENGE';
+
+  @override
+  String get feedDescription =>
+      'Exact-score pools for real fixtures. Create one, join once, and settle automatically from the official final score.';
+
+  @override
+  String get feedCreateNew => 'CREATE A NEW CHALLENGE';
+
+  @override
+  String get feedOpening => 'Opening challenges';
+
+  @override
+  String get feedOpeningBody =>
+      'Checking current fixtures, pools, and your joined challenges.';
+
+  @override
+  String get feedRefreshing => 'Refreshing challenges';
+
+  @override
+  String get feedRefreshingBody =>
+      'Keeping current fixtures, pools, and joined challenges visible.';
+
+  @override
+  String get feedActionsUnavailable => 'Challenge actions unavailable';
+
+  @override
+  String get feedActionsUnavailableBody =>
+      'You can review current pools, but creating and joining are disabled for this build.';
+
+  @override
+  String get feedShowingSaved => 'Showing saved challenges';
+
+  @override
+  String get feedShowingSavedBody =>
+      'Reconnect before creating or joining a pool.';
+
+  @override
+  String get feedUpdatesPaused => 'Live challenge updates paused';
+
+  @override
+  String get feedEmpty => 'No challenges available';
+
+  @override
+  String get feedEmptyBody =>
+      'New exact-score pools will appear when eligible fixtures open.';
+
+  @override
+  String get feedFeatured => 'Featured / Popular Challenges';
+
+  @override
+  String get feedSeeAll => 'See all';
+
+  @override
+  String get feedOpenChallenges => 'Open Challenges';
+
+  @override
+  String get feedEndingSoon => 'Ending Soon';
+
+  @override
+  String get feedEndingSoonAction => 'Ending soon';
+
+  @override
+  String get feedMyChallenges => 'My Challenges';
+
+  @override
+  String get feedSettledChallenges => 'Settled Challenges';
+
+  @override
+  String get feedResults => 'Results';
+
+  @override
+  String get feedNoFilterMatches => 'Nothing matches this filter';
+
+  @override
+  String get feedNoFilterMatchesBody =>
+      'Try another view or create a new pool.';
+
+  @override
+  String get feedAll => 'All';
+
+  @override
+  String get feedHighPool => 'High Pool';
+
+  @override
+  String get feedMostParticipants => 'Most Participants';
+
+  @override
+  String get feedMyJoined => 'My Joined';
+
+  @override
+  String get feedChallengesOffline => 'Challenges unavailable offline';
+
+  @override
+  String get feedChallengesOfflineBody =>
+      'Reconnect to load current fixtures and challenge pools.';
+
+  @override
+  String get feedAccessUnavailable => 'Challenge access unavailable';
+
+  @override
+  String get feedAccessUnavailableBody =>
+      'Your access does not currently allow these challenge pools.';
+
+  @override
+  String get feedDataChanged => 'Challenge data changed';
+
+  @override
+  String get feedDataChangedBody =>
+      'Refresh before reviewing or joining the latest pools.';
+
+  @override
+  String get feedSecurityTimedOutBody =>
+      'No challenge action was completed. Refresh before trying again.';
+
+  @override
+  String get feedUnavailable => 'Challenge feed unavailable';
+
+  @override
+  String get feedUnavailableBody =>
+      'Current challenge pools could not be loaded safely.';
+
+  @override
+  String get detailTitle => 'CHALLENGE DETAIL';
+
+  @override
+  String get detailOpening => 'Opening challenge';
+
+  @override
+  String get detailOpeningBody =>
+      'Checking the current pool, entries, and official result status.';
+
+  @override
+  String get detailNotFound => 'Challenge not found';
+
+  @override
+  String get detailNotFoundBody =>
+      'This pool may have ended, been removed, or no longer be available to your club.';
+
+  @override
+  String get detailBack => 'Back to challenges';
+
+  @override
+  String get detailPendingBody =>
+      'Keeping the current pool and score choice visible while confirmation is pending.';
+
+  @override
+  String get detailActionsUnavailableBody =>
+      'You can review this pool, but joining and cancellation are disabled for this build.';
+
+  @override
+  String get detailShowingSaved => 'Showing saved challenge';
+
+  @override
+  String get detailShowingSavedBody =>
+      'Reconnect and refresh before joining, changing a score, or cancelling this pool.';
+
+  @override
+  String get detailRefreshUpper => 'REFRESH CHALLENGE';
+
+  @override
+  String get detailMyPickUpper => 'MY PICK';
+
+  @override
+  String get detailMyEntry => 'My entry';
+
+  @override
+  String get detailJoinUpper => 'JOIN THIS CHALLENGE';
+
+  @override
+  String get detailPickScoreBody =>
+      'Pick the exact score before the fixture locks.';
+
+  @override
+  String get detailResults => 'RESULTS';
+
+  @override
+  String get detailOfficialScore => 'Official score';
+
+  @override
+  String get detailWinners => 'Winners';
+
+  @override
+  String get detailLosers => 'Losers';
+
+  @override
+  String get detailPointsPerWinner => 'Points / winner';
+
+  @override
+  String get detailEntries => 'ENTRIES';
+
+  @override
+  String get detailEntryCancelled => 'Entry cancelled';
+
+  @override
+  String get detailWaitingResult => 'Waiting for official result review.';
+
+  @override
+  String detailScoreSemantics(String label, int value) {
+    return '$label score $value';
+  }
+
+  @override
+  String get detailAccessUnavailable => 'Challenge access unavailable';
+
+  @override
+  String get detailAccessUnavailableBody =>
+      'Your current account cannot review or change this challenge.';
+
+  @override
+  String get detailDataChangedBody =>
+      'Refresh before reviewing entries or changing this challenge.';
+
+  @override
+  String get detailSecurityTimedOutBody =>
+      'No challenge action was confirmed. Refresh before trying again.';
+
+  @override
+  String get detailUnavailable => 'Challenge unavailable';
+
+  @override
+  String get detailUnavailableBody =>
+      'The latest pool details could not be confirmed. Refresh to try again.';
+
+  @override
+  String get detailJoinedSuccess => 'Challenge joined successfully.';
+
+  @override
+  String get detailCancelledSuccess => 'Challenge cancelled.';
+
+  @override
+  String get detailJoining => 'Joining challenge';
+
+  @override
+  String get detailCancelling => 'Cancelling challenge';
+
+  @override
+  String get detailRefreshing => 'Refreshing challenge';
+
+  @override
+  String get detailJoiningUpper => 'JOINING CHALLENGE';
+
+  @override
+  String detailJoinWithPoints(int count) {
+    return 'JOIN WITH $count pts';
+  }
+
+  @override
+  String get detailCancellingUpper => 'CANCELLING CHALLENGE';
+
+  @override
+  String get detailCancelUpper => 'CANCEL CHALLENGE';
+
+  @override
+  String get detailConnectionRestored => 'Connection restored';
+
+  @override
+  String get detailOffline => 'Challenge details offline';
+
+  @override
+  String get detailRefreshBeforeAction =>
+      'Refresh to check the current pool before joining or cancelling.';
+
+  @override
+  String get detailReconnectBeforeAction =>
+      'Reconnect to check the current pool before joining or cancelling.';
+
+  @override
+  String get detailEntryActive => 'ACTIVE';
+
+  @override
+  String get detailEntryWinner => 'WINNER';
+
+  @override
+  String get detailEntryLoser => 'LOSER';
+
+  @override
+  String get detailEntryRefunded => 'REFUNDED';
+
+  @override
+  String get detailEntryCancelledStatus => 'CANCELLED';
+
+  @override
+  String get gameShareOptionsClosed =>
+      'Share options closed. Confirm the destination before publishing.';
+
+  @override
+  String get gameShareActionsUnavailable => 'Share actions unavailable';
+
+  @override
+  String get gameShareActionsUnavailableDescription =>
+      'You can return to Fan Zone, but sharing is disabled for this build.';
+
+  @override
+  String get gameBackToFanZoneUpper => 'BACK TO FAN ZONE';
+
+  @override
+  String get gamePredictionAccessDenied => 'Prediction access denied';
+
+  @override
+  String get gamePredictionAccessDeniedDescription =>
+      'This account cannot open prediction history for sharing.';
+
+  @override
+  String get gameMakePickFirst => 'Make a pick first';
+
+  @override
+  String get gameShareCardsUnlock =>
+      'Share cards unlock after a matchday pick.';
+
+  @override
+  String get gameBackToPicksUpper => 'BACK TO PICKS';
+
+  @override
+  String get gameShareCardsOffline => 'Share cards offline';
+
+  @override
+  String get gameShareCardsOfflineDescription =>
+      'Reconnect to load your confirmed prediction history. Nothing is queued offline.';
+
+  @override
+  String get gameHistoryCheckTimedOut => 'History check timed out';
+
+  @override
+  String get gameHistoryCheckTimedOutDescription =>
+      'The app could not confirm a safe prediction history in time. Try one bounded refresh.';
+
+  @override
+  String get gameTryAgainUpper => 'TRY AGAIN';
+
+  @override
+  String get gameShareCardsUnavailable => 'Share cards unavailable';
+
+  @override
+  String get gameShareCardsUnavailableDescription =>
+      'Prediction history could not be loaded. No private activity details were shown.';
+
+  @override
+  String get gameShowingSavedShareCard => 'Showing saved share card';
+
+  @override
+  String get gameShowingSavedShareCardDescription =>
+      'Reconnect before sharing or copying. No action is queued offline.';
+
+  @override
+  String get gameCopyingShareText => 'Copying share text';
+
+  @override
+  String get gameOpeningShareOptions => 'Opening share options';
+
+  @override
+  String get gameShareAwaitPlatformConfirmation =>
+      'Wait for the platform confirmation. Do not repeat this action.';
+
+  @override
+  String get gameShareActionPaused => 'Share action paused';
+
+  @override
+  String get gameShareActionPausedDescription =>
+      'Another action was already active. Check the current platform view before continuing.';
+
+  @override
+  String get gameShareConfirmationUncertain => 'Share confirmation uncertain';
+
+  @override
+  String get gameShareConfirmationUncertainDescription =>
+      'Check the share sheet or clipboard, then dismiss this warning before trying again.';
+
+  @override
+  String get gameShareActionUnavailable => 'Share action unavailable';
+
+  @override
+  String get gameShareActionUnavailableDescription =>
+      'The platform did not complete the action. Dismiss this warning before retrying.';
+
+  @override
+  String get gameUsingSavedPredictionHistory =>
+      'Using saved prediction history';
+
+  @override
+  String get gameUsingSavedPredictionHistoryDescription =>
+      'Refresh the route before opening another platform share action.';
+
+  @override
+  String get gameBackToPicks => 'Back to picks';
+
+  @override
+  String get gameChoosePick => 'Choose pick';
+
+  @override
+  String gameSharePredictionSemantics(
+    String home,
+    String away,
+    String market,
+    String outcome,
+  ) {
+    return '$home versus $away, $market, $outcome';
+  }
+
+  @override
+  String gameShareMarketSelection(String market, String selection) {
+    return '$market · $selection';
+  }
+
+  @override
+  String get gameCurrentlySelectedShareCard => 'Currently selected share card';
+
+  @override
+  String get gameSelectThisShareCard => 'Select this share card';
+
+  @override
+  String get gamePredictionPickCancelled => 'Pick cancelled.';
+
+  @override
+  String get gamePredictionSummaryCopied =>
+      'Activity summary copied to clipboard.';
+
+  @override
+  String get gamePredictionScorePending => 'pending';
+
+  @override
+  String gamePredictionSummaryClipboard(
+    String home,
+    String away,
+    String market,
+    String outcome,
+    String score,
+  ) {
+    return '$home vs $away · $market · $outcome · $score';
+  }
+
+  @override
+  String get gamePredictionStatusWon => 'WON';
+
+  @override
+  String get gamePredictionStatusLost => 'LOST';
+
+  @override
+  String get gamePredictionStatusCancelled => 'CANCELLED';
+
+  @override
+  String get gamePredictionStatusVoid => 'VOID';
+
+  @override
+  String get gamePredictionStatusPending => 'PENDING';
+
+  @override
+  String get gamePredictionDateTbd => 'TBD';
+
+  @override
+  String gamePredictionDateTime(String date, String time) {
+    return '$date • $time';
+  }
+
+  @override
+  String gamePredictionWonSettlement(int count) {
+    return 'This pick settled successfully and credited $count points.';
+  }
+
+  @override
+  String get gamePredictionLostSettlement =>
+      'This pick did not settle in your favour.';
+
+  @override
+  String gamePredictionOfficialOutcomeMessage(String outcome) {
+    return 'Official outcome: $outcome.';
+  }
+
+  @override
+  String get gamePredictionCancelledSettlement =>
+      'This pick was cancelled before the fixture locked.';
+
+  @override
+  String get gamePredictionVoidSettlement =>
+      'This pick was voided and no points were awarded.';
+
+  @override
+  String get gamePredictionPendingSettlement =>
+      'This pick is locked and will settle when official results arrive.';
+
+  @override
+  String get gamePredictionActivityNotFound => 'Activity not found';
+
+  @override
+  String get gamePredictionActivityNotFoundDescription =>
+      'This pick may have ended, been removed, or no longer be available to your account.';
+
+  @override
+  String get gamePredictionBackToPredictions => 'Back to predictions';
+
+  @override
+  String get gamePredictionCancellingPick => 'Cancelling pick';
+
+  @override
+  String get gamePredictionRefreshingActivity => 'Refreshing activity';
+
+  @override
+  String get gamePredictionConfirmedPickVisible =>
+      'Keeping the confirmed pick visible while the latest status is checked.';
+
+  @override
+  String get gamePredictionActionsUnavailable => 'Activity actions unavailable';
+
+  @override
+  String get gamePredictionCancellationDisabled =>
+      'You can review this pick, but cancellation is disabled for this build.';
+
+  @override
+  String get gamePredictionShowingSavedActivity => 'Showing saved activity';
+
+  @override
+  String get gamePredictionReconnectBeforeCancelling =>
+      'Reconnect and refresh before cancelling this pick.';
+
+  @override
+  String get gamePredictionActivityDetailTitle => 'ACTIVITY DETAIL';
+
+  @override
+  String gamePredictionShortTeams(String home, String away) {
+    return '$home  •  $away';
+  }
+
+  @override
+  String get gamePredictionVenueTbc => 'VENUE TBC';
+
+  @override
+  String get gamePredictionPickType => 'PICK TYPE';
+
+  @override
+  String get gamePredictionSelection => 'SELECTION';
+
+  @override
+  String get gamePredictionEarned => 'EARNED';
+
+  @override
+  String get gamePredictionPotential => 'POTENTIAL';
+
+  @override
+  String gamePredictionPositiveValue(int count) {
+    return '+$count';
+  }
+
+  @override
+  String get gamePredictionSettlement => 'SETTLEMENT';
+
+  @override
+  String get gamePredictionPlaced => 'Placed';
+
+  @override
+  String get gamePredictionKickoff => 'Kickoff';
+
+  @override
+  String get gamePredictionSettled => 'Settled';
+
+  @override
+  String get gamePredictionOfficialOutcome => 'Official outcome';
+
+  @override
+  String get gamePredictionCancelPick => 'CANCEL PICK';
+
+  @override
+  String get gamePredictionCopyResult => 'COPY RESULT';
+
+  @override
+  String get gamePredictionCopySummary => 'COPY SUMMARY';
+
+  @override
+  String get gamePredictionShareCard => 'SHARE CARD';
+
+  @override
+  String get gamePredictionBrowseFixtures => 'BROWSE FIXTURES';
+
+  @override
+  String get gamePredictionRefreshActivity => 'REFRESH ACTIVITY';
+
+  @override
+  String get gamePredictionConnectionRestored => 'Connection restored';
+
+  @override
+  String get gamePredictionDetailsOffline => 'Activity details offline';
+
+  @override
+  String get gamePredictionRefreshBeforeCancelling =>
+      'Refresh to confirm the current pick before cancelling it.';
+
+  @override
+  String get gamePredictionReconnectToConfirm =>
+      'Reconnect to confirm the current pick before cancelling it.';
+
+  @override
+  String get gamePredictionAccessUnavailable => 'Activity access unavailable';
+
+  @override
+  String get gamePredictionAccessUnavailableDescription =>
+      'Your current account cannot review or change this activity.';
+
+  @override
+  String get gamePredictionDataChanged => 'Activity data changed';
+
+  @override
+  String get gamePredictionDataChangedDescription =>
+      'Refresh before reviewing the result or cancelling this pick.';
+
+  @override
+  String get gamePredictionSecurityTimeout =>
+      'Activity security check timed out';
+
+  @override
+  String get gamePredictionSecurityTimeoutDescription =>
+      'No cancellation was confirmed. Refresh before trying again.';
+
+  @override
+  String get gamePredictionUnavailable => 'Activity unavailable';
+
+  @override
+  String get gamePredictionUnavailableDescription =>
+      'The latest pick details could not be confirmed. Refresh to try again.';
+
+  @override
+  String gamePredictionSelectedMetricSemantics(String label, String value) {
+    return 'Selected $label $value';
+  }
+
+  @override
+  String gamePredictionMetricSemantics(String label, String value) {
+    return '$label $value';
+  }
+
+  @override
+  String get gameMatchTitle => 'Match';
+
+  @override
+  String get gameBackToFanZoneTitleCase => 'Back to Fan Zone';
+
+  @override
+  String get gameMatchNotFound => 'Match not found';
+
+  @override
+  String get gameMatchNotFoundDescription =>
+      'This fixture may have ended, been removed, or no longer be available.';
+
+  @override
+  String get gameWeekdayMon => 'MON';
+
+  @override
+  String get gameWeekdayTue => 'TUE';
+
+  @override
+  String get gameWeekdayWed => 'WED';
+
+  @override
+  String get gameWeekdayThu => 'THU';
+
+  @override
+  String get gameWeekdayFri => 'FRI';
+
+  @override
+  String get gameWeekdaySat => 'SAT';
+
+  @override
+  String get gameWeekdaySun => 'SUN';
+
+  @override
+  String get gameMonthJan => 'JAN';
+
+  @override
+  String get gameMonthFeb => 'FEB';
+
+  @override
+  String get gameMonthMar => 'MAR';
+
+  @override
+  String get gameMonthApr => 'APR';
+
+  @override
+  String get gameMonthMay => 'MAY';
+
+  @override
+  String get gameMonthJun => 'JUN';
+
+  @override
+  String get gameMonthJul => 'JUL';
+
+  @override
+  String get gameMonthAug => 'AUG';
+
+  @override
+  String get gameMonthSep => 'SEP';
+
+  @override
+  String get gameMonthOct => 'OCT';
+
+  @override
+  String get gameMonthNov => 'NOV';
+
+  @override
+  String get gameMonthDec => 'DEC';
+
+  @override
+  String gameMatchKickoffDateTime(
+    String weekday,
+    int day,
+    String month,
+    String time,
+  ) {
+    return '$weekday $day $month · $time';
+  }
+
+  @override
+  String get gamePoolsTab => 'Pools';
+
+  @override
+  String get gameStatsTab => 'Stats';
+
+  @override
+  String get gameH2hTab => 'H2H';
+
+  @override
+  String get gameLineupsTab => 'Lineups';
+
+  @override
+  String gameMatchTeamsVs(String home, String away) {
+    return '$home vs $away';
+  }
+
+  @override
+  String get gamePartnerPoolsTooltip => 'Partner pools';
+
+  @override
+  String get gameJoiningPartnerPool => 'Joining partner pool';
+
+  @override
+  String get gameRefreshingMatch => 'Refreshing match';
+
+  @override
+  String get gameConfirmedMatchVisible =>
+      'Keeping the confirmed match visible while the latest state is checked.';
+
+  @override
+  String get gameMatchActionsUnavailable => 'Match actions unavailable';
+
+  @override
+  String get gameMatchActionsUnavailableDescription =>
+      'You can review this match, but joining partner pools is disabled for this build.';
+
+  @override
+  String get gameShowingSavedMatch => 'Showing saved match';
+
+  @override
+  String get gameReconnectBeforePartnerPool =>
+      'Reconnect and refresh before joining a partner pool.';
+
+  @override
+  String get gameVsUpper => 'VS';
+
+  @override
+  String get gamePartnerOutcomeHomeWin => 'Home win';
+
+  @override
+  String get gamePartnerOutcomeDraw => 'Draw';
+
+  @override
+  String get gamePartnerOutcomeAwayWin => 'Away win';
+
+  @override
+  String get gamePartnerOutcomeUnknown => 'Unknown';
+
+  @override
+  String get gamePartnerEarnRequired => 'Partner earn required';
+
+  @override
+  String get gamePromotionEarnRequired => 'Promotion earn required';
+
+  @override
+  String get gameOpenToAllFans => 'Open to all fans';
+
+  @override
+  String get gamePoolJoinOffline =>
+      'Reconnect and refresh before joining this pool.';
+
+  @override
+  String get gamePoolJoinPermissionDenied =>
+      'Your account cannot join this partner pool.';
+
+  @override
+  String get gamePoolJoinConflict =>
+      'This pool changed or locked. Refresh before trying again.';
+
+  @override
+  String get gamePoolJoinTimeout =>
+      'No entry was confirmed. Refresh before trying again.';
+
+  @override
+  String get gamePoolJoinUnavailable => 'Pool entry could not be confirmed.';
+
+  @override
+  String get gameRefreshMatch => 'REFRESH MATCH';
+
+  @override
+  String get gameMatchConnectionRestored => 'Connection restored';
+
+  @override
+  String get gameMatchDetailsOffline => 'Match details offline';
+
+  @override
+  String get gameRefreshBeforeJoiningPool =>
+      'Refresh to confirm the current match before joining a pool.';
+
+  @override
+  String get gameReconnectBeforeJoiningPool =>
+      'Reconnect to confirm the current match before joining a pool.';
+
+  @override
+  String get gameMatchAccessUnavailable => 'Match access unavailable';
+
+  @override
+  String get gameMatchAccessUnavailableDescription =>
+      'Your current account cannot review this match.';
+
+  @override
+  String get gameMatchDataChanged => 'Match data changed';
+
+  @override
+  String get gameMatchDataChangedDescription =>
+      'Refresh before joining a pool or reviewing current status.';
+
+  @override
+  String get gameMatchSecurityTimeout => 'Match security check timed out';
+
+  @override
+  String get gameMatchSecurityTimeoutDescription =>
+      'No pool entry was confirmed. Refresh before trying again.';
+
+  @override
+  String get gameMatchUnavailable => 'Match unavailable';
+
+  @override
+  String get gameMatchUnavailableDescription =>
+      'The latest match details could not be confirmed. Refresh to try again.';
+
+  @override
+  String get gamePartnerWdwPools => 'Partner WDW Pools';
+
+  @override
+  String get gameNoPartnerPool => 'No partner pool for this match';
+
+  @override
+  String get gameNoPartnerPoolDescription =>
+      'Football predictions open only when a partner creates a fixed-entry WDW pool for this fixture.';
+
+  @override
+  String get gameViewFanZone => 'View Fan Zone';
+
+  @override
+  String gamePartnerPoolsOnly(String home, String away) {
+    return '$home vs $away uses partner-funded WDW pools only.';
+  }
+
+  @override
+  String get gameLiveGamesTitle => 'Live games';
+
+  @override
+  String get gameLiveGamesSubtitle =>
+      'Eligible club games appear here automatically.';
+
+  @override
+  String get gameLiveGamesConnectionRequired =>
+      'Live games require a connection';
+
+  @override
+  String get gamePlayingAs => 'Playing as';
+
+  @override
+  String gamePlayingAsAlias(String alias) {
+    return 'Playing as $alias';
+  }
+
+  @override
+  String get gameDiscoveringSessions => 'Finding your games';
+
+  @override
+  String get gameDiscoveringSessionsDescription =>
+      'Checking club membership and invitations.';
+
+  @override
+  String get gameNoEligibleSessions => 'No eligible games yet';
+
+  @override
+  String get gameNoEligibleSessionsDescription =>
+      'Scheduled and live club games will appear here when your account is eligible.';
+
+  @override
+  String get gameDiscoveryUnavailable => 'Games could not be refreshed';
+
+  @override
+  String get gameDiscoveryUnavailableDescription =>
+      'Your last confirmed game list is kept where available. Try again when connected.';
+
+  @override
+  String get gameDiscoveryRefreshing => 'Refreshing live games';
+
+  @override
+  String get gameDiscoveryRefreshingDescription =>
+      'Your last confirmed list stays visible while we check for updates.';
+
+  @override
+  String get gameDiscoveryConflict => 'Game list changed';
+
+  @override
+  String get gameDiscoveryConflictDescription =>
+      'The club game list changed while you were viewing it. Refresh before opening a game.';
+
+  @override
+  String get gameLiveSessionConflict => 'Game session changed';
+
+  @override
+  String get gameLiveSessionConflictDescription =>
+      'The confirmed game identity changed. Refresh before continuing.';
+
+  @override
+  String get gameLiveSessionTimeout => 'Secure refresh timed out';
+
+  @override
+  String get gameLiveSessionTimeoutDescription =>
+      'We could not confirm the latest game state in time. Refresh before taking another action.';
+
+  @override
+  String get gameNotEligible => 'Game not available';
+
+  @override
+  String get gameNotEligibleDescription =>
+      'This account is not eligible for the requested game.';
+
+  @override
+  String get gameLiveAccessDeniedV2 => 'Live game access unavailable';
+
+  @override
+  String get gameLiveAccessDeniedV2Description =>
+      'Your current account cannot open this club game.';
+
+  @override
+  String get gameReconnect => 'RECONNECT';
+
+  @override
+  String get gameScheduled => 'SCHEDULED';
+
+  @override
+  String get gameScheduledDescription =>
+      'This game will open automatically when the organizer starts it. Return at the scheduled time.';
+
+  @override
+  String get gameOpenGame => 'OPEN GAME';
+
+  @override
+  String get gameStartsAt => 'Starts';
+
+  @override
+  String get gamePhaseEndsAt => 'Ends';
+
+  @override
+  String get gameLobbyTitle => 'You are in the lobby';
+
+  @override
+  String get gameLobbyDescription =>
+      'Stay here. The organizer will open the first question.';
+
+  @override
+  String get gamePausedTitle => 'Game paused';
+
+  @override
+  String get gamePausedDescription =>
+      'Your confirmed progress is safe. Wait for the organizer to continue.';
+
+  @override
+  String get gameQuestionTitle => 'Current question';
+
+  @override
+  String get gameChooseAnswer =>
+      'Choose one answer. Your first confirmed answer is final.';
+
+  @override
+  String get gameAnswerSubmitting => 'Confirming your answer';
+
+  @override
+  String get gameAnswerConfirmed => 'Answer confirmed';
+
+  @override
+  String get gameAnswerUncertain => 'Answer confirmation pending';
+
+  @override
+  String get gameAnswerUncertainDescription =>
+      'Do not submit again. Refresh to confirm the authoritative result.';
+
+  @override
+  String get gameRevealTitle => 'Answer reveal';
+
+  @override
+  String get gameCorrectAnswer => 'Correct answer';
+
+  @override
+  String get gameNoScores => 'Scores will appear after confirmed answers.';
+
+  @override
+  String get gameCompletedTitle => 'Game complete';
+
+  @override
+  String get gameCompletedDescription => 'Final scores are shown below.';
+
+  @override
+  String get gameCancelledTitle => 'Game cancelled';
+
+  @override
+  String get gameCancelledDescription =>
+      'The organizer closed this game. No further answers can be submitted.';
+
+  @override
+  String get gameSyncing => 'Synchronizing live game';
+
+  @override
+  String get gameUsingLastConfirmed => 'Showing the last confirmed game state.';
+
+  @override
+  String gameLastConfirmedAt(String time) {
+    return 'Last update $time';
+  }
+
+  @override
+  String get gameBackToGames => 'BACK TO GAMES';
+
+  @override
+  String get gameSelectedAnswer => 'Selected answer';
+
+  @override
+  String gameSelectedAnswerSemantics(String answer) {
+    return '$answer, selected answer';
+  }
+
+  @override
+  String gameLeaderboardRank(int rank) {
+    return '$rank.';
+  }
+
+  @override
+  String get gameOperationsTitle => 'Game operations';
+
+  @override
+  String get gameOperationsSubtitle =>
+      'Manage your TVs and the live games assigned to you.';
+
+  @override
+  String get gameOperationsOffline => 'Game operations offline';
+
+  @override
+  String get gameOperationsOfflineDescription =>
+      'Reconnect to refresh the latest owner-authorized state. No pairing or management action is queued offline.';
+
+  @override
+  String get gameOrganizerOperationsOfflineDescription =>
+      'Reconnect to refresh the latest organizer-authorized state. No planning or live-control action is queued offline.';
+
+  @override
+  String get gameMyTvsTitle => 'My TVs';
+
+  @override
+  String get gameMyTvsSubtitle =>
+      'Pair, rename, monitor, or revoke only the TV installations you own.';
+
+  @override
+  String get gameAddTv => 'PAIR A TV';
+
+  @override
+  String get gameNoTvs => 'No paired TVs';
+
+  @override
+  String get gameNoTvsDescription =>
+      'Open AFRICLUB TV to show a pairing challenge, then add it here.';
+
+  @override
+  String get gameTvHealth => 'Health';
+
+  @override
+  String get gameTvStatus => 'Pairing status';
+
+  @override
+  String get gameTvAssignedGame => 'Assigned game';
+
+  @override
+  String get gameTvUnassigned => 'Not assigned';
+
+  @override
+  String get gameTvLastSeen => 'Last seen';
+
+  @override
+  String get gameTvAppVersion => 'App version';
+
+  @override
+  String get gameTvCapabilities => 'Capabilities';
+
+  @override
+  String get gameTvNotReported => 'Not reported';
+
+  @override
+  String get gameTvCapabilityEnabled => 'Enabled';
+
+  @override
+  String get gameTvCapabilityDisabled => 'Disabled';
+
+  @override
+  String gameTvAssignedSessionValue(String title, String phase) {
+    return '$title · $phase';
+  }
+
+  @override
+  String get gameTvInventoryStale =>
+      'Showing the last confirmed TV inventory. Refresh before managing a display.';
+
+  @override
+  String get gameTvInventoryLoading => 'Loading your TV inventory';
+
+  @override
+  String get gameTvInventoryRefreshing =>
+      'Refreshing the TV inventory. Pairing is paused until the latest owner scope is confirmed.';
+
+  @override
+  String get gameTvHealthOnline => 'Online';
+
+  @override
+  String get gameTvHealthOffline => 'Offline';
+
+  @override
+  String get gameTvHealthUnknown => 'Not reported';
+
+  @override
+  String get gameTvHealthRevoked => 'Revoked';
+
+  @override
+  String get gameTvStatusPaired => 'Paired';
+
+  @override
+  String get gameTvStatusPending => 'Pending';
+
+  @override
+  String get gameTvStatusDisabled => 'Disabled';
+
+  @override
+  String get gameTvScopeHome => 'Home';
+
+  @override
+  String get gameTvScopeVenue => 'Venue';
+
+  @override
+  String get gamePairTvTitle => 'Pair a TV';
+
+  @override
+  String get gamePairTvDescription =>
+      'Enter the challenge shown by AFRICLUB TV. The challenge expires quickly and can be used once.';
+
+  @override
+  String get gameTvChallenge => 'Pairing challenge';
+
+  @override
+  String get gameTvChallengeHint => '8-character challenge';
+
+  @override
+  String get gameTvName => 'TV name';
+
+  @override
+  String get gameTvNameHint => 'For example, Living room';
+
+  @override
+  String get gameTvScope => 'TV location';
+
+  @override
+  String get gameTvAuthorizedScope => 'Authorized location';
+
+  @override
+  String get gameNoAuthorizedTvScopes =>
+      'No authorized home or venue location is available for this TV.';
+
+  @override
+  String get gameTvVenueId => 'Venue identifier';
+
+  @override
+  String get gamePairTvAction => 'PAIR THIS TV';
+
+  @override
+  String get gameTvPairingSuccess => 'TV paired';
+
+  @override
+  String get gameTvPairingSuccessDescription =>
+      'The TV is now in your owner-scoped inventory.';
+
+  @override
+  String get gameTvFormInvalid =>
+      'Check the pairing challenge, TV name, and location before continuing.';
+
+  @override
+  String get gameTvDetailsTitle => 'TV details';
+
+  @override
+  String get gameSaveTv => 'SAVE CHANGES';
+
+  @override
+  String get gameSaveTvConfirmTitle => 'Save TV changes?';
+
+  @override
+  String get gameSaveTvConfirmDescription =>
+      'Confirm the new name and authorized location. This change is recorded in the audit trail.';
+
+  @override
+  String get gameSaveTvConfirmAction => 'SAVE TV';
+
+  @override
+  String get gameIssueNewPairing => 'CREATE NEW PAIRING CHALLENGE';
+
+  @override
+  String get gamePairingChallengeCreated => 'New pairing challenge';
+
+  @override
+  String get gameRecoverTvTitle => 'Recover a TV';
+
+  @override
+  String get gameRecoverTvDescription =>
+      'On the TV, choose New pairing code. Enter or scan that fresh 8-character challenge here to rotate the device credential.';
+
+  @override
+  String get gameRecoverTvCodeInstruction =>
+      'Use a fresh code shown on this TV. Recovery invalidates the previous device credential and is audited.';
+
+  @override
+  String get gameRecoverTvAction => 'RECOVER TV';
+
+  @override
+  String get gameRecoverTvConfirmTitle => 'Recover this TV?';
+
+  @override
+  String gameRecoverTvConfirmDescription(String name) {
+    return 'Recover $name with this fresh challenge? The previous device credential will stop working.';
+  }
+
+  @override
+  String get gameRecoverTvConfirmAction => 'ROTATE CREDENTIAL';
+
+  @override
+  String get gameTvRecoveryUnavailable =>
+      'This TV is not in your current authorized inventory. Refresh and try again.';
+
+  @override
+  String get gameRevokeTv => 'REVOKE TV ACCESS';
+
+  @override
+  String get gameRevokeTvConfirmTitle => 'Revoke this TV?';
+
+  @override
+  String get gameRevokeTvConfirmDescription =>
+      'This immediately removes active game assignments and invalidates the TV credential.';
+
+  @override
+  String get gameRevokeTvConfirmAction => 'REVOKE ACCESS';
+
+  @override
+  String get gameManagedGamesTitle => 'Games I manage';
+
+  @override
+  String get gameManagedGamesSubtitle =>
+      'Plan approved question packs and control only sessions assigned to you.';
+
+  @override
+  String get gameManagedGamesLoading => 'Loading your assigned games';
+
+  @override
+  String get gameManagedGamesRefreshing =>
+      'Refreshing assigned games. Planning and live control are paused until your latest organizer scope is confirmed.';
+
+  @override
+  String get gameManagedGamesStale =>
+      'Showing the last confirmed assigned games. Refresh before planning or controlling a session.';
+
+  @override
+  String get gameNoManagedGames => 'No assigned games';
+
+  @override
+  String get gameNoManagedGamesDescription =>
+      'A club administrator can assign an existing session, or an authorized organizer can plan one.';
+
+  @override
+  String get gamePlanGame => 'PLAN A GAME';
+
+  @override
+  String get gameSessionPlannerTitle => 'Plan a game';
+
+  @override
+  String get gameQuestionPack => 'Question pack';
+
+  @override
+  String get gameSelectQuestionPack => 'Select an approved 20-question pack';
+
+  @override
+  String get gameEligibility => 'Who can join';
+
+  @override
+  String get gameEligibilityClubMembership => 'Eligible club members';
+
+  @override
+  String get gameEligibilityInvitationOnly => 'Invited supporters only';
+
+  @override
+  String get gameEligibilityHomeOwner => 'Owners of assigned home TVs';
+
+  @override
+  String get gameEligibilityVenue => 'Authorized venue staff';
+
+  @override
+  String get gameScheduleStart => 'Scheduled start';
+
+  @override
+  String get gameChooseScheduleStart => 'CHOOSE START TIME';
+
+  @override
+  String get gameSelectedDisplays => 'TV assignments';
+
+  @override
+  String get gameNoAssignableDisplays => 'No available TVs for this account.';
+
+  @override
+  String get gameSelectedInvitees => 'Supporter invitations';
+
+  @override
+  String get gameInviteesRequiredDescription =>
+      'Select at least one eligible supporter. Only selected Fan IDs can discover this game.';
+
+  @override
+  String get gameInviteesOptionalDescription =>
+      'Optional: selected Fan IDs can discover this game even when they are outside the main eligibility scope.';
+
+  @override
+  String get gameNoInviteesDescription =>
+      'No active club supporters are available to invite.';
+
+  @override
+  String get gameCreateSession => 'CREATE SCHEDULED GAME';
+
+  @override
+  String get gamePlannerFormInvalid =>
+      'Check the question pack, eligibility, invitations, start time, and TV assignments before continuing.';
+
+  @override
+  String get gamePlannerNoPacks => 'No approved packs';
+
+  @override
+  String get gamePlannerNoPacksDescription =>
+      'A club administrator must publish a complete 20-question pack before a session can be planned.';
+
+  @override
+  String get gameLiveControlTitle => 'Live game control';
+
+  @override
+  String get gameParticipantCount => 'Participants';
+
+  @override
+  String get gameDisplayCount => 'Assigned TVs';
+
+  @override
+  String get gameEventSequence => 'Event sequence';
+
+  @override
+  String get gameCurrentQuestionControl => 'Current question';
+
+  @override
+  String get gameNoCurrentQuestion => 'No question is currently selected.';
+
+  @override
+  String get gameControlActions => 'Allowed actions';
+
+  @override
+  String get gameNoControlActions =>
+      'No lifecycle action is currently available.';
+
+  @override
+  String get gameNextAction => 'Next game action';
+
+  @override
+  String get gameValidateSessionAction => 'VALIDATE GAME';
+
+  @override
+  String get gamePublishSessionAction => 'PUBLISH GAME';
+
+  @override
+  String get gameScheduleSessionAction => 'SCHEDULE GAME';
+
+  @override
+  String get gameOpenLobbyAction => 'OPEN LOBBY';
+
+  @override
+  String get gameOpenQuestionAction => 'OPEN QUESTION';
+
+  @override
+  String get gameRevealAnswerAction => 'REVEAL ANSWER';
+
+  @override
+  String get gameCompleteSessionAction => 'COMPLETE GAME';
+
+  @override
+  String get gameExceptionActions => 'Exception controls';
+
+  @override
+  String get gamePauseAction => 'PAUSE GAME';
+
+  @override
+  String get gameResumeAction => 'RESUME GAME';
+
+  @override
+  String get gameSkipQuestionAction => 'SKIP QUESTION';
+
+  @override
+  String get gameEndEarlyAction => 'END GAME EARLY';
+
+  @override
+  String get gameCancelSessionAction => 'CANCEL SESSION';
+
+  @override
+  String get gameExceptionConfirmTitle => 'Confirm exception action';
+
+  @override
+  String get gameExceptionConfirmDescription =>
+      'This changes the normal game flow and is recorded in the audit trail.';
+
+  @override
+  String get gameExceptionReason => 'Reason';
+
+  @override
+  String get gameExceptionReasonHint =>
+      'Explain why this exception is required';
+
+  @override
+  String get gameExceptionReasonInvalid =>
+      'Enter a reason between 3 and 234 characters.';
+
+  @override
+  String get gameConfirmAction => 'CONFIRM ACTION';
+
+  @override
+  String get gameOperationsUnavailable => 'Game operations unavailable';
+
+  @override
+  String get gameOperationsUnavailableDescription =>
+      'The latest authorized state could not be confirmed. Refresh before taking another action.';
+
+  @override
+  String get gameOperationsAccessDenied => 'Game operations access denied';
+
+  @override
+  String get gameOperationsAccessDeniedDescription =>
+      'This account is not an owner, assigned organizer, venue operator, or club administrator for this item.';
+
+  @override
+  String get gameOperationConflict => 'Game state changed';
+
+  @override
+  String get gameOperationConflictDescription =>
+      'Refresh the authoritative state before trying another operation.';
+
+  @override
+  String get gameOperationTimeout => 'Game operation not confirmed';
+
+  @override
+  String get gameOperationTimeoutDescription =>
+      'The operation took too long to confirm. Refresh the authoritative state before trying it again.';
+
+  @override
+  String get gamePhaseDraft => 'Draft';
+
+  @override
+  String get gamePhaseValidated => 'Validated';
+
+  @override
+  String get gamePhasePublished => 'Published';
+
+  @override
+  String get gamePhaseScheduled => 'Scheduled';
+
+  @override
+  String get gamePhaseLobby => 'Lobby open';
+
+  @override
+  String get gamePhaseQuestionOpen => 'Question open';
+
+  @override
+  String get gamePhaseReveal => 'Reveal answer';
+
+  @override
+  String get gamePhasePaused => 'Paused';
+
+  @override
+  String get gamePhaseCompleted => 'Completed';
+
+  @override
+  String get gamePhaseCancelled => 'Cancelled';
+
+  @override
+  String get tvRemoteMenuTitle => 'Display controls';
+
+  @override
+  String get tvRemoteMenuDescription =>
+      'Use the directional pad to move focus, Select to activate, Back to close, and Menu to open these controls.';
+
+  @override
+  String get tvRemoteMenuRetry => 'Refresh display';
+
+  @override
+  String get tvRemoteMenuClose => 'Close controls';
 }

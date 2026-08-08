@@ -35,6 +35,10 @@ fi
 
 bash "$ROOT/tools/scripts/validate_ios_release_contract.sh" "$APP_SLUG"
 
+if [ "$APP_SLUG" = "rayon_sports" ]; then
+  bash "$ROOT/tools/scripts/validate_store_privacy_contract.sh"
+fi
+
 python3 - "$PRODUCTION_JSON" "$APP_DIR" <<'PY'
 import json
 import pathlib

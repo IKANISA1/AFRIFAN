@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "contract_id": "africlub_live_games_v2",
-  "status": "proposed_pending_owner_decisions",
+  "status": "approved_core_product_contract_rollout_decision_open",
   "goal_id": "africlub_live_games_v2_full_implementation_20260730",
   "design_authority": "DESIGN.md",
   "roles": [
@@ -133,7 +133,8 @@
       "revocable",
       "rotatable",
       "device_scoped",
-      "projection_only"
+      "projection_only",
+      "realtime_identity_bound"
     ],
     "participant_uses_pairing_challenge": false
   },
@@ -151,7 +152,13 @@
   "projections": {
     "discovery": {
       "join_key": "session_id",
-      "sources": ["club_membership", "invitation", "deep_link"],
+      "sources": [
+        "club_membership",
+        "invitation",
+        "home_owner",
+        "venue",
+        "deep_link"
+      ],
       "discoverable_phases": [
         "scheduled",
         "activated_lobby",
@@ -213,7 +220,8 @@
         "assigned_displays",
         "display_freshness",
         "participant_count",
-        "current_question_control"
+        "current_question_control",
+        "question_controls"
       ],
       "forbidden_fields": [
         "device_credential",
@@ -278,7 +286,9 @@
       "timeout",
       "manual_retry"
     ],
-    "polling_role": "bounded_recovery_fallback"
+    "polling_role": "bounded_recovery_fallback",
+    "native_tv_identity": "anonymous_auth_bound_to_device_credential",
+    "native_tv_event_scope": "actively_assigned_sessions_only"
   },
   "service_levels": {
     "normal_propagation_p95_ms": 2000,
@@ -288,6 +298,450 @@
     "pre_reveal_answer_leak_allowed": 0,
     "participant_tv_code_dependency_allowed": 0,
     "personal_data_on_tv_allowed": 0
+  },
+  "resolved_product_decisions": {
+    "DEC-01": {
+      "status": "approved",
+      "decision": "one_session_may_target_multiple_explicitly_assigned_displays"
+    },
+    "DEC-02": {
+      "status": "approved",
+      "decision": "home_displays_are_owner_or_invitation_scoped_never_implicitly_club_wide"
+    },
+    "DEC-03": {
+      "status": "approved",
+      "decision": "venue_managers_operate_assigned_displays_and_need_explicit_organizer_grant_for_game_control"
+    },
+    "DEC-04": {
+      "status": "approved",
+      "decision": "participant_identity_is_the_authenticated_africlub_account_projected_through_a_session_safe_public_alias"
+    },
+    "DEC-05": {
+      "status": "approved",
+      "decision": "synchronized_structured_prediction_and_reviewed_trivia_state_only_no_video_pipeline_inferred"
+    }
+  },
+  "open_rollout_decisions": {
+    "DEC-06": "retire_legacy_participant_code_and_web_tv_compatibility_only_after_measured_reversible_replacement_proof"
+  },
+  "quality_contract": {
+    "GAME-QA-01": {
+      "status": "local_source_and_isolated_database_contract_passed",
+      "required_areas": [
+        "projection_serialization_and_sanitization",
+        "role_and_action_matrices",
+        "rls_and_relation_grants",
+        "lifecycle_preconditions",
+        "idempotency",
+        "ordering_and_version_rejection",
+        "authoritative_deadlines",
+        "append_only_audit_events",
+        "no_premature_answer_exposure"
+      ],
+      "pgtap_contract": "supabase/tests/live_games_v2_contract.sql",
+      "pgtap_checks_passed": 80,
+      "static_validator": "tools/scripts/validate_live_games_v2_contract.mjs",
+      "shared_or_live_environment_claimed": false
+    },
+    "GAME-QA-02": {
+      "status": "local_deterministic_cross_client_render_contract_passed",
+      "fixture": "docs/architecture/live-games-v2-cross-client-fixtures.json",
+      "required_states": [
+        "lobby",
+        "open",
+        "reveal",
+        "next",
+        "completion",
+        "cancellation"
+      ],
+      "required_surfaces": [
+        "participant_mobile",
+        "organizer_mobile",
+        "native_tv",
+        "admin"
+      ],
+      "focused_tests_passed": 62,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-QA-03": {
+      "status": "preflight_complete_execution_evidence_open",
+      "matrix": "docs/architecture/live-games-v2-synchronized-session-matrix.json",
+      "required_clauses": [
+        "authorized_shared_backend",
+        "two_independent_phones",
+        "native_tv_target",
+        "single_session_correlation",
+        "synchronized_phase_version_sequence",
+        "measured_network_timing_loss_recovery",
+        "exact_build_logs_and_video",
+        "privacy_accessibility_approvals"
+      ],
+      "criterion_complete": false,
+      "preflight_complete": true,
+      "available_physical_ios_count": 0,
+      "paired_physical_ios_inventory_count": 1,
+      "physical_android_count": 0,
+      "physical_native_tv_count": 0,
+      "authorized_shared_backend_claimed": false,
+      "synchronized_session_claimed": false,
+      "network_timing_claimed": false,
+      "video_and_correlated_logs_claimed": false,
+      "named_approvals_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-QA-04": {
+      "status": "local_deterministic_resilience_contract_passed",
+      "matrix": "docs/architecture/live-games-v2-resilience-matrix.json",
+      "required_scenarios": [
+        "interruption",
+        "late_join",
+        "app_resume",
+        "tv_restart",
+        "duplicate_tap",
+        "stale_or_out_of_order_event",
+        "clock_skew",
+        "role_revocation",
+        "device_revocation",
+        "partial_failure",
+        "recovery"
+      ],
+      "focused_tests_passed": 86,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "network_timing_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-QA-05": {
+      "status": "local_deterministic_and_native_emulator_subset_passed_external_evidence_open",
+      "matrix": "docs/architecture/live-games-v2-tv-accessibility-matrix.json",
+      "required_clauses": [
+        "resolution_layout_720_1080_4k",
+        "overscan_safe_area",
+        "long_copy_locales",
+        "text_scaling_200_percent",
+        "light_and_dark_themes",
+        "focus_and_dpad",
+        "reduced_motion",
+        "screen_reader_semantics",
+        "automated_privacy_boundary",
+        "native_current_resolution_captures",
+        "physical_tv_assistive_technology",
+        "burn_in_soak",
+        "accountable_privacy_review"
+      ],
+      "focused_tests_passed": 55,
+      "criterion_complete": false,
+      "native_current_1080p_capture_claimed": true,
+      "native_current_4k_capture_claimed": true,
+      "physical_tv_claimed": false,
+      "four_hour_burn_in_claimed": false,
+      "accountable_privacy_approval_claimed": false,
+      "shared_or_live_session_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-QA-06": {
+      "status": "exact_current_dirty_local_build_subset_passed_external_release_evidence_open",
+      "matrix": "docs/architecture/live-games-v2-exact-candidate-matrix.json",
+      "required_clauses": [
+        "clean_controlled_candidate_and_pinned_ci",
+        "mobile_ios_release_build",
+        "mobile_android_release_aab",
+        "native_tv_release_apk",
+        "web_typecheck_lint_tests_and_build",
+        "physical_device_uat",
+        "production_signing_and_store_processing",
+        "authorized_backend_migration_and_rollback",
+        "named_accountable_approvals"
+      ],
+      "local_build_clauses_passed": 4,
+      "physical_ios_install_and_launch_partial": true,
+      "criterion_complete": false,
+      "clean_candidate_claimed": false,
+      "pinned_ci_claimed": false,
+      "full_physical_uat_claimed": false,
+      "production_signing_claimed": false,
+      "store_processing_claimed": false,
+      "authorized_target_migration_and_rollback_claimed": false,
+      "named_approvals_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-MOB-05": {
+      "status": "local_source_visual_and_accessibility_contract_passed",
+      "matrix": "docs/architecture/live-games-v2-participant-layout-matrix.json",
+      "required_clauses": [
+        "safe_area_full_screen_no_bottom_nav",
+        "compact_layout",
+        "keyboard_inset",
+        "text_scaling_200_percent",
+        "light_dark",
+        "reduced_motion",
+        "permission_denial",
+        "offline_retention",
+        "reconnect_last_update",
+        "timeout",
+        "exact_visual_evidence"
+      ],
+      "focused_tests_passed": 37,
+      "governed_goldens": 4,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "physical_assistive_technology_claimed": false,
+      "network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-MOB-04": {
+      "status": "local_deterministic_reconnect_and_lifecycle_recovery_passed",
+      "matrix": "docs/architecture/live-games-v2-participant-recovery-matrix.json",
+      "required_clauses": [
+        "network_change",
+        "missed_event",
+        "foreground_resume",
+        "session_version_conflict",
+        "retained_safe_state",
+        "reconnect_last_update",
+        "privacy_safe_recovery"
+      ],
+      "focused_tests_passed": 67,
+      "governed_goldens": 1,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-MOB-03": {
+      "status": "local_authoritative_participant_synchronization_passed",
+      "matrix": "docs/architecture/live-games-v2-participant-sync-matrix.json",
+      "required_clauses": [
+        "authorized_club_session_subscription",
+        "invalidation_hint_only",
+        "authoritative_versioned_projection_fetch",
+        "stale_and_out_of_order_rejection",
+        "server_deadline_authority",
+        "client_scoring_and_phase_advance_prohibited",
+        "subscription_close_recovery_and_cleanup"
+      ],
+      "focused_tests_passed": 68,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "real_network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-MOB-01": {
+      "status": "local_code_free_eligible_game_discovery_passed",
+      "matrix": "docs/architecture/live-games-v2-participant-discovery-matrix.json",
+      "required_clauses": [
+        "code_free_authoritative_feed",
+        "governed_eligibility_sources",
+        "live_and_scheduled_separation",
+        "validated_deep_link",
+        "validated_push_notification",
+        "ineligible_stale_and_private_data_rejection",
+        "legacy_join_excluded_from_participant_entry"
+      ],
+      "focused_tests_passed": 69,
+      "isolated_database_contract_checks_passed": 77,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "platform_notification_delivery_claimed": false,
+      "real_network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-MOB-02": {
+      "status": "local_participant_tv_code_retirement_passed",
+      "matrix": "docs/architecture/live-games-v2-participant-code-retirement-matrix.json",
+      "required_clauses": [
+        "fan_zone_live_games_identity",
+        "participant_join_source_removed",
+        "session_id_only_participant_action",
+        "code_free_participant_routes",
+        "retired_participant_localization",
+        "owner_my_tvs_pairing_preserved",
+        "pairing_excluded_from_participant_data"
+      ],
+      "focused_flutter_tests_passed": 98,
+      "focused_web_tests_passed": 42,
+      "source_files_removed": 11,
+      "governed_fanzone_goldens": 20,
+      "changed_goldens_reviewed": 4,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "platform_notification_delivery_claimed": false,
+      "real_network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-ORG-01": {
+      "status": "local_organizer_planning_and_control_passed",
+      "matrix": "docs/architecture/live-games-v2-organizer-planning-matrix.json",
+      "required_clauses": [
+        "role_gated_managed_games",
+        "approved_pack_selection",
+        "bounded_schedule",
+        "eligibility_and_invitations",
+        "approved_display_assignment",
+        "activation_and_start",
+        "authoritative_supervision",
+        "governed_completion"
+      ],
+      "focused_flutter_tests_passed": 36,
+      "isolated_database_contract_checks_passed": 80,
+      "governed_goldens": 1,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "real_network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-ORG-02": {
+      "status": "local_guarded_organizer_operations_passed",
+      "matrix": "docs/architecture/live-games-v2-organizer-guarded-operations-matrix.json",
+      "required_clauses": [
+        "single_normal_next_transition",
+        "separated_exception_controls",
+        "reasoned_skip",
+        "reasoned_early_end",
+        "pause_resume_authority",
+        "stale_duplicate_lockout",
+        "audit_backed_recovery"
+      ],
+      "focused_flutter_tests_passed": 45,
+      "isolated_database_contract_checks_passed": 80,
+      "governed_goldens": 1,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "real_network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-OWN-01": {
+      "status": "local_owner_inventory_contract_passed",
+      "matrix": "docs/architecture/live-games-v2-owner-inventory-matrix.json",
+      "required_clauses": [
+        "role_scoped_inventory",
+        "complete_display_projection",
+        "connection_health_and_last_seen",
+        "capabilities_and_app_version",
+        "assigned_session_context",
+        "safe_empty_denied_offline",
+        "private_pairing_credential_exclusion"
+      ],
+      "focused_flutter_tests_passed": 49,
+      "isolated_database_contract_checks_passed": 80,
+      "governed_goldens": 1,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "real_network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-OWN-02": {
+      "status": "local_owner_pairing_and_management_contract_passed",
+      "matrix": "docs/architecture/live-games-v2-owner-management-matrix.json",
+      "required_clauses": [
+        "qr_or_manual_bootstrap_entry",
+        "authorized_named_scope_selection",
+        "confirmed_audited_rename_and_move",
+        "confirmed_audited_revocation",
+        "bootstrap_credential_recovery",
+        "idempotent_uncertain_mutation_lockout",
+        "privacy_safe_pairing_material_boundary"
+      ],
+      "focused_flutter_tests_passed": 57,
+      "isolated_database_contract_checks_passed": 80,
+      "governed_goldens": 1,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_device_claimed": false,
+      "real_network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-TV-02": {
+      "status": "local_isolated_realtime_network_contract_passed",
+      "matrix": "docs/architecture/live-games-v2-tv-realtime-matrix.json",
+      "required_clauses": [
+        "credential_bound_auth_identity",
+        "assigned_session_subscription",
+        "privacy_safe_invalidation_only",
+        "ordered_event_delivery_and_authoritative_refresh",
+        "unbound_identity_rls_filtering",
+        "revocation_stops_delivery",
+        "channel_failure_snapshot_recovery_and_bounded_polling"
+      ],
+      "focused_flutter_tests_passed": 58,
+      "isolated_database_contract_checks_passed": 80,
+      "isolated_network_events_received": 5,
+      "isolated_network_local_p95_ms": 542,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_tv_claimed": false,
+      "real_network_timing_claimed": false,
+      "packet_loss_or_wan_soak_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "production_signing_or_store_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-TV-01": {
+      "status": "local_native_tv_projection_contract_passed",
+      "matrix": "docs/architecture/live-games-v2-tv-projection-matrix.json",
+      "required_clauses": [
+        "paired_empty_and_scheduled",
+        "lobby_projection",
+        "current_question_choices_and_countdown",
+        "reveal_and_public_result",
+        "privacy_safe_live_standings",
+        "completion_and_final_standings",
+        "cancellation_and_pause",
+        "retained_offline_and_reconnect",
+        "strict_authoritative_projection_boundary"
+      ],
+      "focused_flutter_tests_passed": 58,
+      "isolated_database_contract_checks_passed": 80,
+      "governed_goldens": 5,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_tv_claimed": false,
+      "real_network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "production_signing_or_store_claimed": false,
+      "release_claimed": false
+    },
+    "GAME-TV-03": {
+      "status": "local_native_tv_pairing_only_contract_passed",
+      "matrix": "docs/architecture/live-games-v2-tv-pairing-matrix.json",
+      "required_clauses": [
+        "generated_short_lived_challenge",
+        "validated_owner_deep_link_qr",
+        "no_tv_secret_input_or_participant_discovery",
+        "pending_until_authenticated_owner_claim",
+        "single_use_secure_credential_exchange",
+        "pairing_material_removed_after_binding",
+        "revocation_and_recovery"
+      ],
+      "focused_flutter_tests_passed": 56,
+      "isolated_database_contract_checks_passed": 80,
+      "governed_goldens": 1,
+      "criterion_complete": true,
+      "shared_or_live_session_claimed": false,
+      "physical_tv_claimed": false,
+      "real_network_timing_claimed": false,
+      "accountable_human_approval_claimed": false,
+      "release_claimed": false
+    }
   },
   "required_owner_decisions": [
     "DEC-01",

@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-MOB-03",
+  "status": "local_authoritative_participant_synchronization_passed",
+  "criterion_complete": true,
+  "required_clauses": [
+    "authorized_club_session_subscription",
+    "invalidation_hint_only",
+    "authoritative_versioned_projection_fetch",
+    "stale_and_out_of_order_rejection",
+    "server_deadline_authority",
+    "client_scoring_and_phase_advance_prohibited",
+    "subscription_close_recovery_and_cleanup"
+  ],
+  "clauses": [
+    {
+      "id": "authorized_club_session_subscription",
+      "assertion": "The participant gateway rejects invalid club or session identities and subscribes to the exact authorized club-session topic; database RLS limits a participant to a joined session.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_repository_test.dart", "name": "GAME-MOB-03 rejects invalid subscription identities"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_repository_test.dart", "name": "GAME-MOB-03 subscribes to one club session and recovers unexpected close"},
+        {"path": "supabase/tests/live_games_v2_contract.sql", "name": "a participant subscribes only to invalidation events for their joined session"}
+      ]
+    },
+    {
+      "id": "invalidation_hint_only",
+      "assertion": "Realtime events are privacy-safe version hints that trigger a projection refresh and never become authoritative participant state.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "reconciles after a newer invalidation hint"},
+        {"path": "supabase/tests/live_games_v2_contract.sql", "name": "runtime events are club-scoped privacy-safe hints that require snapshot reconciliation"}
+      ]
+    },
+    {
+      "id": "authoritative_versioned_projection_fetch",
+      "assertion": "Initial load and every accepted invalidation fetch the server-authoritative participant projection carrying session and event versions.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "loads an initial authoritative snapshot"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "reconciles after a newer invalidation hint"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_answer_controller_test.dart", "name": "submits expected versions and accepts an authoritative response"}
+      ]
+    },
+    {
+      "id": "stale_and_out_of_order_rejection",
+      "assertion": "Scope, session version, and event sequence are compared before adoption so stale, duplicate, wrong-session, and out-of-order hints or projections cannot roll state backward.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_reconciler_test.dart", "name": "accepts only a newer snapshot"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_reconciler_test.dart", "name": "ignores duplicate, stale, and wrong-scope hints"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_answer_controller_test.dart", "name": "keeps a newer Realtime answer confirmation over a stale response"}
+      ]
+    },
+    {
+      "id": "server_deadline_authority",
+      "assertion": "Recovery scheduling derives its deadline delta from the projection server time and phase deadline, not the device wall clock.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "GAME-QA-04 clock skew uses authoritative server-time deadline delta"}
+      ]
+    },
+    {
+      "id": "client_scoring_and_phase_advance_prohibited",
+      "assertion": "The participant client can fetch a projection and submit a versioned answer only; it contains no scoring, settlement, or lifecycle-transition RPC ownership.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_answer_controller_test.dart", "name": "submits expected versions and accepts an authoritative response"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_answer_controller_test.dart", "name": "rejects a stale mutation response as a contract failure"}
+      ]
+    },
+    {
+      "id": "subscription_close_recovery_and_cleanup",
+      "assertion": "Channel error, timeout, or unexpected close produces a sanitized recovery signal; cancellation removes the channel and suppresses teardown noise.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_repository_test.dart", "name": "GAME-MOB-03 subscribes to one club session and recovers unexpected close"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "recovers from a Realtime channel error with a fresh snapshot"}
+      ]
+    }
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "isolated_database_contract_present": true,
+    "shared_or_live_session_claimed": false,
+    "physical_device_claimed": false,
+    "real_network_timing_claimed": false,
+    "accountable_human_approval_claimed": false,
+    "release_claimed": false
+  }
+}

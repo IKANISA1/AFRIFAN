@@ -40,7 +40,8 @@ import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import { useAdminResourceState } from "@/lib/use-admin-resource-state";
 import { useHydrated } from "@/lib/use-hydrated";
 
-type TicketSortKey = "supporter" | "match" | "amount" | "status" | "purchasedAt";
+type TicketSortKey =
+  "supporter" | "match" | "amount" | "status" | "purchasedAt";
 
 interface PendingTicketAction {
   orders: AdminTicketOrder[];
@@ -244,7 +245,8 @@ export default function AdminTicketsPage() {
   );
   const pageIds = orderPage.items.map((order) => order.id);
   const selectedOnPage = pageIds.filter((id) => selectedIds.has(id)).length;
-  const allPageSelected = pageIds.length > 0 && selectedOnPage === pageIds.length;
+  const allPageSelected =
+    pageIds.length > 0 && selectedOnPage === pageIds.length;
 
   useEffect(() => {
     if (selectPageRef.current) {
@@ -255,7 +257,10 @@ export default function AdminTicketsPage() {
 
   function commitSelection(next: Set<string>) {
     if (next.size > 100) {
-      showAdminToast("A single reviewed bulk action is limited to 100 tickets.", "error");
+      showAdminToast(
+        "A single reviewed bulk action is limited to 100 tickets.",
+        "error",
+      );
       return;
     }
     setSelectedIds(next);
@@ -270,7 +275,9 @@ export default function AdminTicketsPage() {
       return;
     }
     setSortKey(nextSortKey);
-    setSortDirection(nextSortKey === "purchasedAt" ? "descending" : "ascending");
+    setSortDirection(
+      nextSortKey === "purchasedAt" ? "descending" : "ascending",
+    );
   }
 
   function sortDirectionFor(column: TicketSortKey) {
@@ -282,7 +289,11 @@ export default function AdminTicketsPage() {
     status: AdminTicketStatusAction,
   ) {
     if (mutationLocked) return;
-    const eligibility = getAdminTicketBulkEligibility(access, actionOrders, status);
+    const eligibility = getAdminTicketBulkEligibility(
+      access,
+      actionOrders,
+      status,
+    );
     if (!eligibility.allowed) {
       showAdminToast(
         `${eligibility.blocked} selected ${
@@ -298,14 +309,11 @@ export default function AdminTicketsPage() {
 
   return (
     <div
-      className="section-grid !gap-6"
+      className="admin-tickets-state-surface section-grid min-w-0 w-full max-w-full overflow-x-hidden !gap-6"
       data-admin-tickets-status={status}
       data-admin-tickets-interaction={interaction}
     >
-      <AdminPageHeader
-        eyebrow="Supporter programs"
-        title="Ticket operations"
-      />
+      <AdminPageHeader eyebrow="Supporter programs" title="Ticket operations" />
 
       <AdminResourceStatusBanner
         status={status}
@@ -326,62 +334,84 @@ export default function AdminTicketsPage() {
         />
         <AdminStateCard
           label="Pending"
-          value={hasConfirmed ? orders.filter(o => o.status === "pending").length.toString() : "—"}
-          tone={orders.some(o => o.status === "pending") ? "warning" : "neutral"}
+          value={
+            hasConfirmed
+              ? orders.filter((o) => o.status === "pending").length.toString()
+              : "—"
+          }
+          tone={
+            orders.some((o) => o.status === "pending") ? "warning" : "neutral"
+          }
           icon={Clock}
         />
         <AdminStateCard
           label="Validated"
-          value={hasConfirmed ? orders.filter(o => o.status === "valid").length.toString() : "—"}
+          value={
+            hasConfirmed
+              ? orders.filter((o) => o.status === "valid").length.toString()
+              : "—"
+          }
           tone="success"
           icon={CheckCircle2}
         />
         <AdminStateCard
           label="Used"
-          value={hasConfirmed ? orders.filter(o => o.status === "used").length.toString() : "—"}
+          value={
+            hasConfirmed
+              ? orders.filter((o) => o.status === "used").length.toString()
+              : "—"
+          }
           tone="info"
         />
       </div>
 
       {initialLoading ? (
-        <div className="admin-surface p-6" aria-label="Loading ticket operations">
+        <div
+          className="admin-surface p-6"
+          aria-label="Loading ticket operations"
+        >
           <div className="h-64 animate-pulse rounded-2xl bg-white/5 motion-reduce:animate-none" />
         </div>
       ) : null}
 
       {!initialLoading && !unrecoveredFailure ? (
-      <div className="flex flex-col gap-4" data-admin-tickets-state-surface>
-        <div className="relative max-w-md">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-zinc-500)]" />
-          <input
-            type="search"
-            placeholder="Search by fan, match, or MoMo ref..."
-            aria-label="Search ticket orders"
-            value={filter}
-            onChange={(event) => {
-              setFilter(event.target.value);
-              setPage(1);
-            }}
-            className="admin-input !pl-10 w-full"
-          />
-        </div>
+        <div className="flex flex-col gap-4" data-admin-tickets-state-surface>
+          <div className="relative max-w-md">
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-zinc-500)]"
+            />
+            <input
+              type="search"
+              placeholder="Search by fan, match, or MoMo ref..."
+              aria-label="Search ticket orders"
+              value={filter}
+              onChange={(event) => {
+                setFilter(event.target.value);
+                setPage(1);
+              }}
+              className="admin-input !pl-10 w-full"
+            />
+          </div>
 
-        {!mutationLocked ? (
-        <AdminSelectionBar
-          selectedCount={selectedIds.size}
-          scopeLabel={`${selectedOnPage} selected on this page; scope is the active club only.`}
-          onClear={() => setSelectedIds(new Set())}
-          onReview={() => setReviewOpen(true)}
-          reviewLabel="Review ticket actions"
-        />
-        ) : null}
+          {!mutationLocked ? (
+            <AdminSelectionBar
+              selectedCount={selectedIds.size}
+              scopeLabel={`${selectedOnPage} selected on this page; scope is the active club only.`}
+              onClear={() => setSelectedIds(new Set())}
+              onReview={() => setReviewOpen(true)}
+              reviewLabel="Review ticket actions"
+            />
+          ) : null}
 
           <div className="admin-surface">
             <AdminDataGrid
               caption="Ticket operations queue"
               busy={busy || mutating}
               onRowActivate={(rowId) => {
-                const order = orders.find((candidate) => candidate.id === rowId);
+                const order = orders.find(
+                  (candidate) => candidate.id === rowId,
+                );
                 if (order) setDetailOrder(order);
               }}
               columns={[
@@ -437,7 +467,10 @@ export default function AdminTicketsPage() {
             >
               {orderPage.items.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-12 text-center text-sm text-[var(--admin-zinc-500)]">
+                  <td
+                    colSpan={8}
+                    className="p-12 text-center text-sm text-[var(--admin-zinc-500)]"
+                  >
                     {filter
                       ? "No ticket orders match the current search."
                       : "No ticket orders are waiting in this club queue."}
@@ -490,33 +523,50 @@ export default function AdminTicketsPage() {
                         <p className="admin-row-meta">{order.userPhone}</p>
                       </td>
                       <td>
-                        <p className="text-sm font-medium text-white">{order.matchTitle}</p>
+                        <p className="text-sm font-medium text-white">
+                          {order.matchTitle}
+                        </p>
                         <p className="admin-row-meta">Fixture venue</p>
                       </td>
                       <td>
                         <AdminStatusBadge
                           label={order.seatType}
-                          tone={order.seatType.toLowerCase().includes("vip") ? "accent" : "neutral"}
+                          tone={
+                            order.seatType.toLowerCase().includes("vip")
+                              ? "accent"
+                              : "neutral"
+                          }
                         />
                       </td>
                       <td>
                         <p className="text-sm font-medium text-white">
-                          {formatCurrency(order.amountPaid, activeClub?.currencyCode ?? "USD")}
+                          {formatCurrency(
+                            order.amountPaid,
+                            activeClub?.currencyCode ?? "USD",
+                          )}
                         </p>
-                        <p className="admin-row-meta">{order.momoReference || "—"}</p>
+                        <p className="admin-row-meta">
+                          {order.momoReference || "—"}
+                        </p>
                       </td>
                       <td>
                         <AdminStatusBadge
                           label={order.status}
                           tone={
-                            order.status === "valid" ? "success" :
-                            order.status === "used" ? "info" :
-                            order.status === "pending" ? "warning" : "danger"
+                            order.status === "valid"
+                              ? "success"
+                              : order.status === "used"
+                                ? "info"
+                                : order.status === "pending"
+                                  ? "warning"
+                                  : "danger"
                           }
                         />
                       </td>
                       <td className="text-xs text-[var(--admin-zinc-500)]">
-                        {new Date(order.purchasedAt).toLocaleDateString("en-RW")}
+                        {new Date(order.purchasedAt).toLocaleDateString(
+                          "en-RW",
+                        )}
                       </td>
                       <td className="text-right">
                         <div className="flex flex-wrap justify-end gap-2">
@@ -533,7 +583,9 @@ export default function AdminTicketsPage() {
                             <button
                               type="button"
                               disabled={mutationLocked}
-                              onClick={() => queueStatusAction([order], "valid")}
+                              onClick={() =>
+                                queueStatusAction([order], "valid")
+                              }
                               className="admin-action-button !bg-emerald-500/10 !text-emerald-400"
                             >
                               Validate
@@ -553,7 +605,9 @@ export default function AdminTicketsPage() {
                             <button
                               type="button"
                               disabled={mutationLocked}
-                              onClick={() => queueStatusAction([order], "cancelled")}
+                              onClick={() =>
+                                queueStatusAction([order], "cancelled")
+                              }
                               className="admin-action-button !bg-rose-500/10 !text-rose-400"
                             >
                               Cancel
@@ -574,7 +628,9 @@ export default function AdminTicketsPage() {
                   className="h-5 w-5 accent-[var(--club-accent)]"
                   checked={allPageSelected}
                   aria-checked={
-                    selectedOnPage > 0 && !allPageSelected ? "mixed" : allPageSelected
+                    selectedOnPage > 0 && !allPageSelected
+                      ? "mixed"
+                      : allPageSelected
                   }
                   disabled={mutationLocked || pageIds.length === 0}
                   onChange={(event) =>
@@ -596,7 +652,7 @@ export default function AdminTicketsPage() {
               label="Ticket orders"
             />
           </div>
-      </div>
+        </div>
       ) : null}
 
       <AdminActionDrawer
@@ -606,9 +662,18 @@ export default function AdminTicketsPage() {
       >
         {detailOrder ? (
           <dl className="grid gap-5 text-sm">
-            <TicketDetail label="Supporter" value={detailOrder.userName ?? "Unknown"} />
-            <TicketDetail label="Phone" value={detailOrder.userPhone ?? "Not available"} />
-            <TicketDetail label="Match" value={detailOrder.matchTitle ?? "Not available"} />
+            <TicketDetail
+              label="Supporter"
+              value={detailOrder.userName ?? "Unknown"}
+            />
+            <TicketDetail
+              label="Phone"
+              value={detailOrder.userPhone ?? "Not available"}
+            />
+            <TicketDetail
+              label="Match"
+              value={detailOrder.matchTitle ?? "Not available"}
+            />
             <TicketDetail label="Seat type" value={detailOrder.seatType} />
             <TicketDetail
               label="Amount paid"
@@ -647,11 +712,13 @@ export default function AdminTicketsPage() {
         <div className="space-y-5">
           <div className="rounded-xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-4">
             <p className="admin-row-title">
-              {selectedOrders.length} {selectedOrders.length === 1 ? "ticket" : "tickets"}
+              {selectedOrders.length}{" "}
+              {selectedOrders.length === 1 ? "ticket" : "tickets"}
             </p>
             <p className="admin-row-copy">
-              Scope: active club only. Current role: {access.role ?? "unassigned"}.
-              No record changes until you choose an action and confirm it.
+              Scope: active club only. Current role:{" "}
+              {access.role ?? "unassigned"}. No record changes until you choose
+              an action and confirm it.
             </p>
           </div>
           <div className="space-y-2" aria-label="Bulk ticket actions">
@@ -715,7 +782,9 @@ export default function AdminTicketsPage() {
                 }}
                 disabled={mutationLocked}
               >
-                {mutating ? "Applying…" : `Confirm ${statusActionLabels[pendingAction.status]}`}
+                {mutating
+                  ? "Applying…"
+                  : `Confirm ${statusActionLabels[pendingAction.status]}`}
               </button>
             </div>
           ) : null
@@ -724,7 +793,8 @@ export default function AdminTicketsPage() {
         {pendingAction ? (
           <div className="space-y-4">
             <p className="admin-row-copy">
-              You are about to {statusActionLabels[pendingAction.status].toLowerCase()}{" "}
+              You are about to{" "}
+              {statusActionLabels[pendingAction.status].toLowerCase()}{" "}
               {pendingAction.orders.length}{" "}
               {pendingAction.orders.length === 1 ? "ticket" : "tickets"} in the
               active club.
@@ -732,16 +802,17 @@ export default function AdminTicketsPage() {
             <div className="rounded-xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-4">
               <p className="admin-row-title">Safety check</p>
               <p className="admin-row-copy">
-                The server will re-check role, club scope, record count, and every
-                current status. Any stale or invalid record rolls back the full
-                operation. A separate immutable audit record is written for each
-                ticket.
+                The server will re-check role, club scope, record count, and
+                every current status. Any stale or invalid record rolls back the
+                full operation. A separate immutable audit record is written for
+                each ticket.
               </p>
             </div>
             {pendingAction.status === "cancelled" ? (
               <p className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
-                Cancellation is destructive and cannot be undone from this queue.
-                Confirm only after checking the supporter and payment details.
+                Cancellation is destructive and cannot be undone from this
+                queue. Confirm only after checking the supporter and payment
+                details.
               </p>
             ) : null}
           </div>
@@ -757,7 +828,9 @@ function TicketDetail({ label, value }: { label: string; value: string }) {
       <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--admin-text-muted)]">
         {label}
       </dt>
-      <dd className="mt-1 break-words text-[var(--admin-text-strong)]">{value}</dd>
+      <dd className="mt-1 break-words text-[var(--admin-text-strong)]">
+        {value}
+      </dd>
     </div>
   );
 }

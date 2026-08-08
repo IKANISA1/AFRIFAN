@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../game_result_copy.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 
@@ -67,7 +69,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
       );
       if (!mounted) return;
       setState(() {
-        _error = 'Could not load your activity right now.';
+        _error = context.afriL10n.gameActivityCouldNotLoad;
         _isLoading = false;
       });
     }
@@ -84,7 +86,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'MY ACTIVITY',
+          context.afriL10n.gameMyActivity,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -93,14 +95,14 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
         bottom: AfriTabBar.line(
           controller: _tabController,
           tabs: [
-            Tab(text: 'ACTIVE (${_active.length})'),
-            Tab(text: 'SETTLED (${_settled.length})'),
-            Tab(text: 'HISTORY (${_history.length})'),
+            Tab(text: context.afriL10n.gameActiveCount(_active.length)),
+            Tab(text: context.afriL10n.gameSettledTabCount(_settled.length)),
+            Tab(text: context.afriL10n.gameHistoryCount(_history.length)),
           ],
         ),
       ),
@@ -116,9 +118,9 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Activity unavailable',
+                  title: context.afriL10n.gameActivityUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _loadData,
                 ),
               ),
@@ -164,7 +166,10 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         return;
       }
 
-      AfriToast.error(context, result.message);
+      AfriToast.error(
+        context,
+        context.localizeGameResultMessage(result.message),
+      );
     } catch (error, stackTrace) {
       AfriLogger.warn(
         'MyPredictionsScreen',
@@ -173,7 +178,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         stackTrace,
       );
       if (!mounted) return;
-      AfriToast.error(context, 'Could not cancel this pick.');
+      AfriToast.error(context, context.afriL10n.gameCouldNotCancelPick);
     }
   }
 }
@@ -243,22 +248,22 @@ class _PredictionCard extends StatelessWidget {
     };
   }
 
-  String _statusLabel() {
+  String _statusLabel(BuildContext context) {
     return switch (prediction.status) {
-      PredictionStatus.won => 'WON',
-      PredictionStatus.lost => 'LOST',
-      PredictionStatus.cancelled => 'CANCELLED',
-      PredictionStatus.void_ => 'VOID',
-      _ => 'PENDING',
+      PredictionStatus.won => context.afriL10n.gameWon,
+      PredictionStatus.lost => context.afriL10n.gameLost,
+      PredictionStatus.cancelled => context.afriL10n.gameCancelled,
+      PredictionStatus.void_ => context.afriL10n.gameVoid,
+      _ => context.afriL10n.gamePendingUpper,
     };
   }
 
-  String _formatTime(DateTime? value) {
-    if (value == null) return 'TBD';
+  String _formatTime(BuildContext context, DateTime? value) {
+    if (value == null) return context.afriL10n.gameTbd;
     final local = value.toLocal();
-    final hour = local.hour.toString().padLeft(2, '0');
-    final minute = local.minute.toString().padLeft(2, '0');
-    return '${local.day}/${local.month}/${local.year} • $hour:$minute';
+    final materialL10n = MaterialLocalizations.of(context);
+    return '${materialL10n.formatShortDate(local)} • '
+        '${materialL10n.formatTimeOfDay(TimeOfDay.fromDateTime(local))}';
   }
 
   @override
@@ -271,7 +276,10 @@ class _PredictionCard extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                '${prediction.homeTeamShort.toUpperCase()} vs ${prediction.awayTeamShort.toUpperCase()}',
+                context.afriL10n.gameVersusShort(
+                  prediction.homeTeamShort.toUpperCase(),
+                  prediction.awayTeamShort.toUpperCase(),
+                ),
                 style: TypographyTokens.titleMedium().copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -287,7 +295,7 @@ class _PredictionCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
               ),
               child: Text(
-                _statusLabel(),
+                _statusLabel(context),
                 style: TypographyTokens.labelSmall(color),
               ),
             ),
@@ -310,12 +318,15 @@ class _PredictionCard extends StatelessWidget {
                   : '+${prediction.fetPotential} pts',
             ),
             if ((prediction.slipId ?? '').isNotEmpty)
-              const _PredictionChip(label: 'Round'),
+              _PredictionChip(label: context.afriL10n.gameRound),
           ],
         ),
         const SizedBox(height: SpacingTokens.spacing2),
         Text(
-          '${prediction.competitionName} • ${_formatTime(prediction.placedAt)}',
+          context.afriL10n.gameCompetitionTime(
+            prediction.competitionName,
+            _formatTime(context, prediction.placedAt),
+          ),
           style: TypographyTokens.bodySmall(),
         ),
         if (onCancel != null) ...[
@@ -323,7 +334,7 @@ class _PredictionCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: AfriButton(
-              label: 'Cancel',
+              label: context.afriL10n.gameCancel,
               icon: AfriIcons.close,
               variant: AfriButtonVariant.secondary,
               onTap: onCancel!,
@@ -341,9 +352,11 @@ class _PredictionCard extends StatelessWidget {
 
     return AfriPressFeedback(
       onTap: onTap!,
-      semanticsLabel:
-          '${prediction.homeTeam} versus ${prediction.awayTeam} activity',
-      tooltip: 'Open activity detail',
+      semanticsLabel: context.afriL10n.gameActivitySemantics(
+        prediction.homeTeam,
+        prediction.awayTeam,
+      ),
+      tooltip: context.afriL10n.gameOpenActivityDetail,
       excludeChildSemantics: true,
       builder: (context, state) => AnimatedScale(
         scale: state.isPressed ? 0.99 : 1,

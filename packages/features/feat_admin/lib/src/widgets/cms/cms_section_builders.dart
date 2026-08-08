@@ -35,13 +35,13 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
 
   String sectionLabel(_CmsSection section) {
     return switch (section) {
-      _CmsSection.news => 'News',
-      _CmsSection.quickActions => 'Quick Actions',
-      _CmsSection.partners => 'Partners',
-      _CmsSection.services => 'Services',
-      _CmsSection.competitions => 'Predictions',
-      _CmsSection.placements => 'Placements',
-      _CmsSection.auditLogs => 'Audit Logs',
+      _CmsSection.news => context.afriL10n.adminCmsSectionNews,
+      _CmsSection.quickActions => context.afriL10n.adminCmsSectionQuickActions,
+      _CmsSection.partners => context.afriL10n.adminCmsSectionPartners,
+      _CmsSection.services => context.afriL10n.adminCmsSectionServices,
+      _CmsSection.competitions => context.afriL10n.adminCmsSectionPredictions,
+      _CmsSection.placements => context.afriL10n.adminCmsSectionPlacements,
+      _CmsSection.auditLogs => context.afriL10n.adminCmsSectionAuditLogs,
     };
   }
 
@@ -52,8 +52,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(
-          title: 'News Articles',
-          actionLabel: 'ADD ARTICLE',
+          title: context.afriL10n.adminCmsNewsArticles,
+          actionLabel: context.afriL10n.adminCmsAddArticle,
           onAction: _actionsEnabled ? _showCreateArticleDialog : null,
           actionFocusNode: widget.primaryActionFocusNode,
         ),
@@ -84,8 +84,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(
-          title: 'Home Quick Actions',
-          actionLabel: 'ADD ACTION',
+          title: context.afriL10n.adminCmsHomeQuickActions,
+          actionLabel: context.afriL10n.adminCmsAddAction,
           onAction: _actionsEnabled ? _showQuickActionDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
@@ -94,12 +94,18 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
             (action) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               child: _EntityCard(
-                title: action['title']?.toString() ?? 'Quick action',
-                subtitle:
-                    '${action['route']?.toString() ?? '/'} • ${_countryLabel(action['country'])}',
+                title:
+                    action['title']?.toString() ??
+                    context.afriL10n.adminCmsQuickActionFallback,
+                subtitle: context.afriL10n.adminCmsPair(
+                  action['route']?.toString() ?? '/',
+                  _countryLabel(action['country']),
+                ),
                 tags: <String>[
                   (action['icon_key']?.toString() ?? 'icon').toUpperCase(),
-                  action['is_active'] == true ? 'ACTIVE' : 'INACTIVE',
+                  action['is_active'] == true
+                      ? context.afriL10n.adminCmsActiveUpper
+                      : context.afriL10n.adminCmsInactiveUpper,
                 ],
                 onEdit: _actionsEnabled
                     ? () => _showQuickActionDialog(action)
@@ -108,8 +114,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                     ? () => _toggleQuickAction(action)
                     : null,
                 toggleLabel: action['is_active'] == true
-                    ? 'DEACTIVATE'
-                    : 'ACTIVATE',
+                    ? context.afriL10n.adminCmsDeactivate
+                    : context.afriL10n.adminCmsActivate,
               ),
             ),
           ),
@@ -124,8 +130,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(
-          title: 'Partners',
-          actionLabel: 'ADD PARTNER',
+          title: context.afriL10n.adminCmsPartners,
+          actionLabel: context.afriL10n.adminCmsAddPartnerAction,
           onAction: _actionsEnabled ? _showPartnerDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
@@ -134,15 +140,24 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
             (partner) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               child: _EntityCard(
-                title: partner['name']?.toString() ?? 'Partner',
-                subtitle:
-                    '${partner['category']?.toString() ?? 'organization'} • ${partner['country']?.toString() ?? 'RW'}',
+                title:
+                    partner['name']?.toString() ??
+                    context.afriL10n.adminCmsPartner,
+                subtitle: context.afriL10n.adminCmsPair(
+                  _cmsCategoryLabel(
+                    context,
+                    partner['category']?.toString() ?? 'organization',
+                  ),
+                  partner['country']?.toString() ?? 'RW',
+                ),
                 body: partner['subtitle']?.toString(),
                 tags: <String>[
                   partner['gamification_enabled'] == true
-                      ? 'GAMIFICATION'
-                      : 'DIRECT',
-                  partner['is_active'] == true ? 'ACTIVE' : 'INACTIVE',
+                      ? context.afriL10n.adminCmsGamificationUpper
+                      : context.afriL10n.adminCmsDirectUpper,
+                  partner['is_active'] == true
+                      ? context.afriL10n.adminCmsActiveUpper
+                      : context.afriL10n.adminCmsInactiveUpper,
                 ],
                 onEdit: _actionsEnabled
                     ? () => _showPartnerDialog(partner)
@@ -151,8 +166,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                     ? () => _togglePartner(partner)
                     : null,
                 toggleLabel: partner['is_active'] == true
-                    ? 'DEACTIVATE'
-                    : 'ACTIVATE',
+                    ? context.afriL10n.adminCmsDeactivate
+                    : context.afriL10n.adminCmsActivate,
               ),
             ),
           ),
@@ -167,8 +182,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(
-          title: 'Partner Services',
-          actionLabel: 'ADD SERVICE',
+          title: context.afriL10n.adminCmsPartnerServices,
+          actionLabel: context.afriL10n.adminCmsAddService,
           onAction: _actionsEnabled ? _showPartnerServiceDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
@@ -177,17 +192,27 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
             (service) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               child: _EntityCard(
-                title: service['title']?.toString() ?? 'Service',
-                subtitle:
-                    '${(service['partner'] as Map?)?['name'] ?? 'Partner'} • ${service['category']?.toString() ?? 'general'}',
+                title:
+                    service['title']?.toString() ??
+                    context.afriL10n.adminCmsServiceFallback,
+                subtitle: context.afriL10n.adminCmsPair(
+                  (service['partner'] as Map?)?['name']?.toString() ??
+                      context.afriL10n.adminCmsPartner,
+                  _cmsCategoryLabel(
+                    context,
+                    service['category']?.toString() ?? 'general',
+                  ),
+                ),
                 body:
-                    '${service['cta_label']?.toString() ?? 'CTA pending'} → ${service['cta_action']?.toString() ?? 'n/a'}',
+                    '${service['cta_label']?.toString() ?? context.afriL10n.adminCmsCtaPending} → ${service['cta_action']?.toString() ?? context.afriL10n.adminCmsNotAvailable}',
                 tags: <String>[
                   _countryLabel(service['country']),
                   service['gamification_enabled'] == true
-                      ? 'GAMIFICATION'
-                      : 'STANDARD',
-                  service['is_active'] == true ? 'ACTIVE' : 'INACTIVE',
+                      ? context.afriL10n.adminCmsGamificationUpper
+                      : context.afriL10n.adminCmsStandardUpper,
+                  service['is_active'] == true
+                      ? context.afriL10n.adminCmsActiveUpper
+                      : context.afriL10n.adminCmsInactiveUpper,
                 ],
                 onEdit: _actionsEnabled
                     ? () => _showPartnerServiceDialog(service)
@@ -196,8 +221,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                     ? () => _togglePartnerService(service)
                     : null,
                 toggleLabel: service['is_active'] == true
-                    ? 'DEACTIVATE'
-                    : 'ACTIVATE',
+                    ? context.afriL10n.adminCmsDeactivate
+                    : context.afriL10n.adminCmsActivate,
               ),
             ),
           ),
@@ -212,8 +237,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(
-          title: 'Prediction Competitions',
-          actionLabel: 'ADD COMPETITION',
+          title: context.afriL10n.adminCmsPredictionCompetitions,
+          actionLabel: context.afriL10n.adminCmsAddCompetition,
           onAction: _actionsEnabled ? _showPredictionCompetitionDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
@@ -222,16 +247,21 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
             (competition) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               child: _EntityCard(
-                title: competition['name']?.toString() ?? 'Competition',
-                subtitle:
-                    '${competition['competition_kind']?.toString() ?? 'competition'} • fixtures ${(competition['fixture_count'] as num?)?.toInt() ?? 0}',
+                title:
+                    competition['name']?.toString() ??
+                    context.afriL10n.adminCmsCompetitionFallback,
+                subtitle: context.afriL10n.adminCmsCompetitionSummary(
+                  competition['competition_kind']?.toString() ??
+                      context.afriL10n.adminCmsCompetitionFallback,
+                  (competition['fixture_count'] as num?)?.toInt() ?? 0,
+                ),
                 body: competition['format_notes']?.toString(),
                 tags: <String>[
                   competition['highlight_label']?.toString().toUpperCase() ??
-                      'CATALOG',
+                      context.afriL10n.adminCmsCatalog,
                   competition['is_supported'] == true
-                      ? 'SUPPORTED'
-                      : 'INACTIVE',
+                      ? context.afriL10n.adminCmsSupported
+                      : context.afriL10n.adminCmsInactiveUpper,
                 ],
                 onEdit: _actionsEnabled
                     ? () => _showPredictionCompetitionDialog(competition)
@@ -240,8 +270,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                     ? () => _togglePredictionCompetition(competition)
                     : null,
                 toggleLabel: competition['is_supported'] == true
-                    ? 'DEACTIVATE'
-                    : 'ACTIVATE',
+                    ? context.afriL10n.adminCmsDeactivate
+                    : context.afriL10n.adminCmsActivate,
               ),
             ),
           ),
@@ -256,8 +286,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(
-          title: 'Platform Content Blocks',
-          actionLabel: 'ADD BLOCK',
+          title: context.afriL10n.adminCmsContentBlocks,
+          actionLabel: context.afriL10n.adminCmsAddBlock,
           onAction: _actionsEnabled ? _showContentBlockDialog : null,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
@@ -266,14 +296,24 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
             (block) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               child: _EntityCard(
-                title: block['block_key']?.toString() ?? 'Content block',
-                subtitle:
-                    '${block['placement_key']?.toString() ?? 'unknown'} • ${block['target_channel']?.toString() ?? 'both'}',
+                title:
+                    block['block_key']?.toString() ??
+                    context.afriL10n.adminCmsContentBlockFallback,
+                subtitle: context.afriL10n.adminCmsPair(
+                  block['placement_key']?.toString() ??
+                      context.afriL10n.adminCmsUnknown,
+                  _cmsChannelLabel(
+                    context,
+                    block['target_channel']?.toString() ?? 'both',
+                  ),
+                ),
                 body:
                     '${block['title']?.toString() ?? ''}\n${(block['content'] as Map?)?['component'] ?? ''}',
                 tags: <String>[
                   (block['block_type']?.toString() ?? 'banner').toUpperCase(),
-                  block['is_active'] == true ? 'ACTIVE' : 'INACTIVE',
+                  block['is_active'] == true
+                      ? context.afriL10n.adminCmsActiveUpper
+                      : context.afriL10n.adminCmsInactiveUpper,
                 ],
                 onEdit: _actionsEnabled
                     ? () => _showContentBlockDialog(block)
@@ -282,8 +322,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                     ? () => _toggleContentBlock(block)
                     : null,
                 toggleLabel: block['is_active'] == true
-                    ? 'DEACTIVATE'
-                    : 'ACTIVATE',
+                    ? context.afriL10n.adminCmsDeactivate
+                    : context.afriL10n.adminCmsActivate,
               ),
             ),
           ),
@@ -298,7 +338,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'FEATURE MANAGEMENT AUDIT LOGS',
+          context.afriL10n.adminCmsAuditLogs,
           style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.1),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
@@ -308,13 +348,23 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
             final featureName =
                 feature?['display_name'] ??
                 feature?['feature_key'] ??
-                'Unknown Feature';
+                context.afriL10n.adminCmsUnknownFeature;
             final timestamp = DateTime.tryParse(
               log['created_at']?.toString() ?? '',
             );
-            final dateStr = timestamp != null
-                ? DateFormat('dd MMM, HH:mm').format(timestamp)
-                : 'Unknown date';
+            final localTimestamp = timestamp?.toLocal();
+            final materialL10n = MaterialLocalizations.of(context);
+            final dateStr = localTimestamp == null
+                ? context.afriL10n.adminCmsUnknownDate
+                : context.afriL10n.adminCmsPair(
+                    materialL10n.formatShortDate(localTimestamp),
+                    materialL10n.formatTimeOfDay(
+                      TimeOfDay.fromDateTime(localTimestamp),
+                      alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(
+                        context,
+                      ),
+                    ),
+                  );
 
             return Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -327,7 +377,8 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                       children: [
                         Expanded(
                           child: Text(
-                            log['action']?.toString().toUpperCase() ?? 'ACTION',
+                            log['action']?.toString().toUpperCase() ??
+                                context.afriL10n.adminCmsActionFallback,
                             style: TypographyTokens.labelLarge().copyWith(
                               color: ColorTokens.clubAccent,
                             ),
@@ -338,12 +389,14 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
-                      'Feature: $featureName',
+                      context.afriL10n.adminCmsFeatureName(
+                        featureName.toString(),
+                      ),
                       style: TypographyTokens.titleMedium(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
-                      'Actor details are withheld in the mobile workspace.',
+                      context.afriL10n.adminCmsActorWithheld,
                       style: TypographyTokens.bodySmall(),
                     ),
                     if (log['notes'] != null) ...[

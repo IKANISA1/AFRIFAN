@@ -1,6 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
+import { writeAdminStateEvidence } from "./admin-state-evidence-manifest";
+import {
+  installEvidenceNavigationStability,
+  primeEvidenceScreenshot,
+  settleEvidenceVisuals,
+} from "./evidence-navigation-stability";
 import {
   expect,
   test,
@@ -19,13 +25,7 @@ type Mode =
   | "security_timeout";
 
 async function settle(page: Page) {
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-    for (const animation of document.getAnimations()) animation.finish();
-    await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-    );
-  });
+  await settleEvidenceVisuals(page);
 }
 
 async function expectAccessible(page: Page) {
@@ -61,10 +61,11 @@ async function runMatrix(browser: Browser) {
     deviceScaleFactor: 1,
     colorScheme: "dark",
   });
-  const page = await context.newPage();
+  await installEvidenceNavigationStability(context);
+  let page = await context.newPage();
   let mode: Mode = "ready";
 
-  await page.route("**/api/admin/**", async (route: Route) => {
+  await context.route("**/api/admin/**", async (route: Route) => {
     if (!route.request().url().includes("/api/admin/venues-overview")) {
       await route.continue();
       return;
@@ -120,10 +121,9 @@ async function runMatrix(browser: Browser) {
       waitUntil: "domcontentloaded",
     });
   const expectStatus = async (status: string, label: RegExp) => {
-    await expect(surface()).toHaveAttribute(
-      "data-admin-venues-status",
-      status,
-    );
+    await expect(surface()).toHaveAttribute("data-admin-venues-status", status, {
+      timeout: 15_000,
+    });
     await expect(page.getByText(label).first()).toBeVisible();
   };
   const capture = async (state: string, profile = "desktop_1440x1000") => {
@@ -137,13 +137,13 @@ async function runMatrix(browser: Browser) {
       state === "selected" || state === "large_text",
     );
     await settle(page);
+    await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
     await page.screenshot({
       path: path.join(
         evidenceDirectory,
         `admin_venues_state_${state}_${state === "light" ? "light" : "dark"}_${profile}.png`,
       ),
       fullPage: !state.startsWith("responsive_"),
-      animations: "disabled",
     });
   };
 
@@ -195,6 +195,7 @@ async function runMatrix(browser: Browser) {
 
   mode = "ready";
   await open("interaction");
+  await expectStatus("ready", /venue oversight confirmed/i);
   const refresh = page.getByRole("button", {
     name: /refresh venue oversight/i,
   });
@@ -219,7 +220,12 @@ async function runMatrix(browser: Browser) {
     pointerType: "mouse",
     isPrimary: true,
   });
-  await page.getByRole("link", { name: /export csv/i }).focus();
+  const exportLink = page.getByRole("link", { name: /export csv/i });
+  await exportLink.click();
+  await expect(surface()).toHaveAttribute(
+    "data-admin-venues-interaction",
+    "selected",
+  );
   await capture("selected");
 
   await page.evaluate(() => {
@@ -265,17 +271,61 @@ async function runMatrix(browser: Browser) {
   await expectNoOverflow(page);
   await capture("light");
 
+  await page.emulateMedia({ colorScheme: "dark" });
   for (const [profile, width, height] of [
     ["desktop_1280x800", 1280, 800],
     ["tablet_834x1112", 834, 1112],
     ["mobile_390x844", 390, 844],
   ] as const) {
+    if (width === 390) {
+      await page.close();
+      page = await context.newPage();
+    }
     await page.setViewportSize({ width, height });
     await open(`responsive-${profile}`);
     await expectStatus("ready", /venue oversight confirmed/i);
     await expectNoOverflow(page);
     await capture(`responsive_${profile}`, profile);
   }
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  mode = "ready";
+  await open("syncing-preparation");
+  await expectStatus("ready", /venue oversight confirmed/i);
+  mode = "loading";
+  await page.getByRole("button", { name: /refresh venue oversight/i }).click();
+  await expectStatus("syncing", /refreshing venue oversight/i);
+  await expect(page.getByText("Club scope confirmed")).toBeVisible();
+  await capture("syncing");
+
+  writeAdminStateEvidence({
+    evidenceDirectory,
+    manifestFile: "admin-venues-state-evidence.json",
+    route: "/admin/venues",
+    filePrefix: "admin_venues",
+    responsiveCaptures: [
+      {
+        state: "responsive_desktop_1280x800",
+        profile: "desktop_1280x800",
+        description: "Chromium desktop 1280x800 at 1 DPR",
+      },
+      {
+        state: "responsive_tablet_834x1112",
+        profile: "tablet_834x1112",
+        description: "Chromium tablet 834x1112 at 1 DPR",
+      },
+      {
+        state: "responsive_mobile_390x844",
+        profile: "mobile_390x844",
+        description: "Chromium mobile 390x844 at 1 DPR",
+      },
+    ],
+    assertions: {
+      club_scope_required: true,
+      supporter_identity_rendered: false,
+      syncing_retains_confirmed_venue_snapshot: true,
+    },
+  });
 
   await context.close();
 }

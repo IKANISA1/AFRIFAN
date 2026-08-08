@@ -161,7 +161,7 @@ class _EntityCard extends StatelessWidget {
               AfriTextIconButton(
                 onPressed: onEdit,
                 icon: const Icon(AfriIcons.edit, size: 18),
-                label: const Text('EDIT'),
+                label: Text(context.afriL10n.adminCmsEdit),
                 style: AfriTextButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.onSurface,
                 ),
@@ -190,18 +190,33 @@ class _ArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = article['title']?.toString() ?? 'Untitled';
-    final category = article['category']?.toString() ?? 'News';
+    final title =
+        article['title']?.toString() ?? context.afriL10n.adminCmsUntitled;
+    final category =
+        article['category']?.toString() ??
+        context.afriL10n.adminCmsNewsFallback;
     final isPublished = article['is_published'] == true;
     final isFeatured = article['is_featured'] == true;
     final publishedAt = DateTime.tryParse(
       article['published_at']?.toString() ?? '',
     );
+    final materialL10n = MaterialLocalizations.of(context);
 
-    final statusLabel = isPublished ? 'LIVE' : 'DRAFT';
-    final dateLabel = publishedAt != null
-        ? DateFormat('dd MMM HH:mm').format(publishedAt)
-        : 'Not published';
+    final statusLabel = isPublished
+        ? context.afriL10n.adminCmsLive
+        : context.afriL10n.adminCmsDraft;
+    final localPublishedAt = publishedAt?.toLocal();
+    final dateLabel = localPublishedAt == null
+        ? context.afriL10n.adminCmsNotPublished
+        : context.afriL10n.adminCmsPair(
+            materialL10n.formatShortDate(localPublishedAt),
+            materialL10n.formatTimeOfDay(
+              TimeOfDay.fromDateTime(localPublishedAt),
+              alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(
+                context,
+              ),
+            ),
+          );
 
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.8;
     final status = Container(
@@ -250,7 +265,11 @@ class _ArticleCard extends StatelessWidget {
             ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            '${category.toUpperCase()}  •  $dateLabel${isFeatured ? '  •  FEATURED' : ''}',
+            context.afriL10n.adminCmsArticleMeta(
+              category.toUpperCase(),
+              dateLabel,
+              isFeatured ? '  •  ${context.afriL10n.adminCmsFeatured}' : '',
+            ),
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -266,7 +285,11 @@ class _ArticleCard extends StatelessWidget {
                   isPublished ? AfriIcons.unpublished : AfriIcons.publish,
                   size: 18,
                 ),
-                label: Text(isPublished ? 'UNPUBLISH' : 'PUBLISH'),
+                label: Text(
+                  isPublished
+                      ? context.afriL10n.adminCmsUnpublish
+                      : context.afriL10n.adminCmsPublish,
+                ),
                 style: AfriTextButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.onSurface,
                 ),

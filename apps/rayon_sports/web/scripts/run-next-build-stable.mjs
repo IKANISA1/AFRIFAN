@@ -1,4 +1,4 @@
-import { rmSync } from "node:fs";
+import { existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -22,6 +22,15 @@ function cleanBuildOutputs() {
 
 function isTransientBuildRace(output) {
   return transientBuildPatterns.some((pattern) => output.includes(pattern));
+}
+
+function hasCompleteProductionArtifacts() {
+  return [
+    ".next/BUILD_ID",
+    ".next/static",
+    ".next/server/app",
+    ".next/standalone/server.js",
+  ].every((entry) => existsSync(resolve(root, entry)));
 }
 
 for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
@@ -54,7 +63,19 @@ for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
   }
 
   if ((result.status ?? 1) === 0) {
-    process.exit(0);
+    if (hasCompleteProductionArtifacts()) {
+      process.exit(0);
+    }
+    if (attempt === maxAttempts) {
+      console.error(
+        "[build] Next.js exited successfully without a complete production artifact set.",
+      );
+      process.exit(1);
+    }
+    console.warn(
+      `[build] Retrying after incomplete Next.js production artifacts on attempt ${attempt}.`,
+    );
+    continue;
   }
 
   const combinedOutput = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;

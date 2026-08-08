@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,11 +26,14 @@ class FeatureManagerScreen extends ConsumerWidget {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('FEATURE MANAGER', style: TypographyTokens.titleLarge()),
+        title: Text(
+          context.afriL10n.adminFeatureManagerTitle,
+          style: TypographyTokens.titleLarge(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
       ),
       scrollable: false,
@@ -49,8 +53,8 @@ class FeatureManagerScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-features-state-loading'),
-                title: 'Loading feature registry',
-                message: 'Checking controlled feature configuration.',
+                title: context.afriL10n.adminFeatureRegistryLoading,
+                message: context.afriL10n.adminFeatureRegistryLoadingMessage,
               ),
             )
           : features.hasError && snapshot == null
@@ -81,12 +85,12 @@ class FeatureManagerScreen extends ConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         children: [
-          if (_statusBanner(features) case final banner?) ...[
+          if (_statusBanner(context, features) case final banner?) ...[
             banner,
             const SizedBox(height: SpacingTokens.spacing4),
           ],
           Text(
-            'Control club-scoped feature availability with confirmed, bounded configuration.',
+            context.afriL10n.adminFeatureManagerDescription,
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -97,12 +101,12 @@ class FeatureManagerScreen extends ConsumerWidget {
               runSpacing: SpacingTokens.spacing3,
               children: [
                 _Metric(
-                  label: 'REGISTERED',
+                  label: context.afriL10n.adminFeatureRegistered,
                   value: '${snapshot.features.length}',
                   color: metricColor,
                 ),
                 _Metric(
-                  label: 'ENABLED',
+                  label: context.afriL10n.adminFeatureEnabledUpper,
                   value: '${snapshot.enabledCount}',
                   color: metricColor,
                 ),
@@ -110,7 +114,10 @@ class FeatureManagerScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
-          Text('STATUS', style: TypographyTokens.labelSmall()),
+          Text(
+            context.afriL10n.adminFeatureStatus,
+            style: TypographyTokens.labelSmall(),
+          ),
           const SizedBox(height: SpacingTokens.spacing2),
           Wrap(
             spacing: SpacingTokens.spacing2,
@@ -119,7 +126,7 @@ class FeatureManagerScreen extends ConsumerWidget {
                 .map(
                   (filter) => AfriChoiceChip(
                     selected: snapshot.filter == filter,
-                    label: Text(filter.label),
+                    label: Text(_filterLabel(context, filter)),
                     onSelected: controlsEnabled
                         ? (_) => ref
                               .read(adminFeaturesProvider.notifier)
@@ -134,11 +141,11 @@ class FeatureManagerScreen extends ConsumerWidget {
             AfriStateView.empty(
               key: const ValueKey<String>('admin-features-state-empty'),
               title: snapshot.features.isEmpty
-                  ? 'No features configured'
-                  : 'No features match',
+                  ? context.afriL10n.adminFeatureNoneConfigured
+                  : context.afriL10n.adminFeatureNoneMatch,
               message: snapshot.features.isEmpty
-                  ? 'Confirmed feature configuration will appear here.'
-                  : 'Choose another status filter.',
+                  ? context.afriL10n.adminFeatureNoneConfiguredMessage
+                  : context.afriL10n.adminFeatureNoneMatchMessage,
               compact: true,
             )
           else
@@ -171,10 +178,10 @@ class FeatureManagerScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-features-state-disabled'),
-        title: 'Feature management unavailable',
-        message: 'Feature controls are disabled for this controlled build.',
+        title: context.afriL10n.adminFeatureManagementUnavailable,
+        message: context.afriL10n.adminFeatureControlsDisabled,
         icon: AfriIcons.lock,
-        actionLabel: 'Back to admin',
+        actionLabel: context.afriL10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
     );
@@ -185,42 +192,43 @@ class FeatureManagerScreen extends ConsumerWidget {
     WidgetRef ref,
     AdminFeaturesFailure failure,
   ) {
+    final l10n = context.afriL10n;
     void retry() =>
         unawaited(ref.read(adminFeaturesProvider.notifier).refresh());
     final view = switch (failure.kind) {
       AdminFeaturesFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-features-state-offline'),
-        title: 'Feature registry offline',
-        message: 'Reconnect before loading private feature configuration.',
-        actionLabel: 'Try again',
+        title: l10n.adminFeatureRegistryOffline,
+        message: l10n.adminFeatureSettingsOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
       AdminFeaturesFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>('admin-features-state-permission-denied'),
-        title: 'Feature access unavailable',
-        message: 'This account cannot view or change feature configuration.',
-        actionLabel: 'Back to admin',
+        title: l10n.adminFeatureAccessUnavailable,
+        message: l10n.adminFeatureConfigurationAccessMessage,
+        actionLabel: l10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
       AdminFeaturesFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-features-state-conflict'),
-        title: 'Feature configuration changed',
-        message: 'Refresh before making another feature change.',
-        actionLabel: 'Refresh',
+        title: l10n.adminFeatureConfigurationChanged,
+        message: l10n.adminFeatureConfigurationChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: retry,
       ),
       AdminFeaturesFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>('admin-features-state-security-timeout'),
-        title: 'Security check timed out',
-        message: 'No feature configuration was shown. Check your connection.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminFeatureConfigurationSecurityMessage,
+        actionLabel: l10n.retry,
         onAction: retry,
       ),
       AdminFeaturesFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-features-state-error'),
-        title: 'Feature registry unavailable',
-        message: 'Private feature configuration remains hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminFeatureRegistryUnavailable,
+        message: l10n.adminFeatureConfigurationHidden,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
     };
@@ -230,16 +238,19 @@ class FeatureManagerScreen extends ConsumerWidget {
     );
   }
 
-  Widget? _statusBanner(AsyncValue<AdminFeaturesSnapshot> value) {
+  Widget? _statusBanner(
+    BuildContext context,
+    AsyncValue<AdminFeaturesSnapshot> value,
+  ) {
+    final l10n = context.afriL10n;
     final snapshot = value.valueOrNull;
     if (snapshot == null) return null;
     if (value.isLoading || snapshot.isMutating) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-features-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-features-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Checking feature configuration',
-        subtitle:
-            'Showing the last confirmed state while current data is checked.',
+        title: l10n.adminFeatureConfigurationChecking,
+        subtitle: l10n.adminFeatureCheckingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -253,14 +264,15 @@ class FeatureManagerScreen extends ConsumerWidget {
           ? AfriIcons.offline
           : AfriIcons.statusWarning,
       title: switch (failure.kind) {
-        AdminFeaturesFailureKind.conflict => 'Feature configuration changed',
-        AdminFeaturesFailureKind.securityTimeout => 'Security check timed out',
-        AdminFeaturesFailureKind.offline => 'Feature registry offline',
-        _ => 'Feature registry unavailable',
+        AdminFeaturesFailureKind.conflict =>
+          l10n.adminFeatureConfigurationChanged,
+        AdminFeaturesFailureKind.securityTimeout => l10n.adminSecurityTimeout,
+        AdminFeaturesFailureKind.offline => l10n.adminFeatureRegistryOffline,
+        _ => l10n.adminFeatureRegistryUnavailable,
       },
       subtitle: snapshot.mutationOutcomeUnconfirmed
-          ? 'The last change is unconfirmed. Controls stay paused until refresh succeeds.'
-          : 'Last confirmed configuration remains visible. Controls are paused.',
+          ? l10n.adminFeatureOutcomeUnconfirmed
+          : l10n.adminFeatureConfigurationLastConfirmed,
       tone: AfriStateBannerTone.warning,
     );
   }
@@ -323,9 +335,11 @@ class _FeatureCard extends StatelessWidget {
         onTap: enabled ? onOpen : null,
         focusNode: focusNode,
         enabled: enabled,
-        tooltip: 'Open ${feature.displayName}',
-        semanticsLabel: '${feature.displayName} feature settings',
-        semanticsHint: 'Opens controlled feature settings',
+        tooltip: context.afriL10n.adminFeatureOpenTooltip(feature.displayName),
+        semanticsLabel: context.afriL10n.adminFeatureSettingsSemantic(
+          feature.displayName,
+        ),
+        semanticsHint: context.afriL10n.adminFeatureOpenSettingsHint,
         child: GlassCard(
           animate: false,
           child: Column(
@@ -365,7 +379,7 @@ class _FeatureCard extends StatelessWidget {
                 children: [
                   AfriChip(
                     label: Text(
-                      feature.visibility.toUpperCase(),
+                      _visibilityLabel(context, feature.visibility),
                       style: TypographyTokens.labelSmall(visibilityColor),
                     ),
                     backgroundColor: visibilityColor.withValues(alpha: 0.12),
@@ -376,18 +390,33 @@ class _FeatureCard extends StatelessWidget {
                   ),
                   AfriPopupMenuButton<String>(
                     enabled: enabled,
-                    tooltip: 'Change ${feature.displayName} visibility',
+                    tooltip: context.afriL10n
+                        .adminFeatureChangeVisibilityTooltip(
+                          feature.displayName,
+                        ),
                     onSelected: onVisibility,
-                    itemBuilder: (_) => const [
-                      PopupMenuItem(value: 'visible', child: Text('Visible')),
-                      PopupMenuItem(value: 'hidden', child: Text('Hidden')),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 'visible',
+                        child: Text(
+                          context.afriL10n.adminFeatureVisibilityVisible,
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'hidden',
+                        child: Text(
+                          context.afriL10n.adminFeatureVisibilityHidden,
+                        ),
+                      ),
                       PopupMenuItem(
                         value: 'maintenance',
-                        child: Text('Maintenance'),
+                        child: Text(
+                          context.afriL10n.adminFeatureVisibilityMaintenance,
+                        ),
                       ),
                     ],
                     child: Text(
-                      'Change visibility',
+                      context.afriL10n.adminFeatureChangeVisibility,
                       style: TypographyTokens.labelMedium(
                         enabled
                             ? ColorTokens.onSurface
@@ -403,4 +432,23 @@ class _FeatureCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _filterLabel(BuildContext context, AdminFeatureStatusFilter filter) {
+  final l10n = context.afriL10n;
+  return switch (filter) {
+    AdminFeatureStatusFilter.all => l10n.adminFeatureFilterAll,
+    AdminFeatureStatusFilter.enabled => l10n.adminFeatureEnabledUpper,
+    AdminFeatureStatusFilter.disabled => l10n.adminFeatureDisabledUpper,
+  };
+}
+
+String _visibilityLabel(BuildContext context, String visibility) {
+  final l10n = context.afriL10n;
+  return switch (visibility) {
+    'visible' => l10n.adminFeatureVisibilityVisible,
+    'hidden' => l10n.adminFeatureVisibilityHidden,
+    'maintenance' => l10n.adminFeatureVisibilityMaintenance,
+    _ => visibility.toUpperCase(),
+  };
 }

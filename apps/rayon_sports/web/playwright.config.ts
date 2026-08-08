@@ -18,6 +18,9 @@ export default defineConfig({
       use: {
         browserName: "chromium",
         ...devices["Pixel 7"],
+        launchOptions: {
+          args: ["--disable-features=ViewTransitionOnNavigation"],
+        },
       },
     },
     {

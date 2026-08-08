@@ -7,6 +7,33 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ParticipantLiveGameSynchronizer', () {
+    test(
+      'GAME-QA-04 late join adopts the current phase without replaying history',
+      () async {
+        final gateway = _Gateway()
+          ..projections.add(
+            _projection(
+              sessionVersion: 9,
+              eventSequence: 27,
+              phase: LiveGamePhase.reveal,
+            ),
+          );
+        final synchronizer = _synchronizer(gateway);
+        addTearDown(synchronizer.dispose);
+
+        await synchronizer.start();
+
+        expect(synchronizer.state.status, LiveGameSyncStatus.ready);
+        expect(
+          synchronizer.state.projection?.version.phase,
+          LiveGamePhase.reveal,
+        );
+        expect(synchronizer.state.projection?.version.sessionVersion, 9);
+        expect(synchronizer.state.projection?.version.eventSequence, 27);
+        expect(gateway.fetchCalls, 1);
+      },
+    );
+
     test('loads an initial authoritative snapshot', () async {
       final gateway = _Gateway()..projections.add(_projection());
       final synchronizer = _synchronizer(gateway);
@@ -123,6 +150,158 @@ void main() {
     });
 
     test(
+      'recovers from a Realtime channel error with a fresh snapshot',
+      () async {
+        final gateway = _Gateway()
+          ..projections.addAll(<ParticipantGameProjection>[
+            _projection(),
+            _projection(sessionVersion: 5, eventSequence: 1),
+          ]);
+        final synchronizer = _synchronizer(gateway);
+        addTearDown(synchronizer.dispose);
+        await synchronizer.start();
+
+        gateway.hints.addError(StateError('channel unavailable'));
+        await _drainEvents();
+
+        expect(gateway.fetchCalls, 2);
+        expect(synchronizer.state.status, LiveGameSyncStatus.ready);
+        expect(synchronizer.state.projection?.version.sessionVersion, 5);
+      },
+    );
+
+    test(
+      'recovers a completely missed event with a bounded snapshot refresh',
+      () async {
+        final gateway = _Gateway()
+          ..projections.addAll(<ParticipantGameProjection>[
+            _projection(),
+            _projection(sessionVersion: 5, eventSequence: 1),
+          ]);
+        final synchronizer = _synchronizer(
+          gateway,
+          missedEventRecoveryInterval: const Duration(milliseconds: 20),
+        );
+        addTearDown(synchronizer.dispose);
+
+        await synchronizer.start();
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+
+        expect(gateway.fetchCalls, greaterThanOrEqualTo(2));
+        expect(synchronizer.state.status, LiveGameSyncStatus.ready);
+        expect(synchronizer.state.projection?.version.sessionVersion, 5);
+      },
+    );
+
+    test(
+      'GAME-QA-04 clock skew uses authoritative server-time deadline delta',
+      () async {
+        final serverTime = DateTime.utc(2035, 1, 1, 12);
+        final gateway = _Gateway()
+          ..projections.addAll(<ParticipantGameProjection>[
+            _projection(
+              serverTime: serverTime,
+              phaseDeadline: serverTime.subtract(
+                const Duration(milliseconds: 990),
+              ),
+            ),
+            _projection(
+              sessionVersion: 5,
+              eventSequence: 13,
+              serverTime: serverTime.add(const Duration(seconds: 1)),
+              phaseDeadline: serverTime.add(const Duration(seconds: 15)),
+            ),
+          ]);
+        final synchronizer = _synchronizer(
+          gateway,
+          missedEventRecoveryInterval: const Duration(seconds: 10),
+        );
+        addTearDown(synchronizer.dispose);
+
+        await synchronizer.start();
+        await Future<void>.delayed(const Duration(milliseconds: 40));
+
+        expect(gateway.fetchCalls, 2);
+        expect(synchronizer.state.projection?.version.sessionVersion, 5);
+      },
+    );
+
+    test(
+      'GAME-QA-04 partial refresh failure retains state then recovers',
+      () async {
+        final confirmed = _projection();
+        final recovered = _projection(sessionVersion: 5, eventSequence: 13);
+        final gateway = _Gateway()..projections.add(confirmed);
+        final synchronizer = _synchronizer(gateway);
+        addTearDown(synchronizer.dispose);
+        await synchronizer.start();
+
+        gateway.fetchError = StateError('transient partial failure');
+        await synchronizer.refresh();
+
+        expect(synchronizer.state.status, LiveGameSyncStatus.failure);
+        expect(synchronizer.state.projection, same(confirmed));
+
+        gateway.fetchError = null;
+        gateway.projections.add(recovered);
+        await synchronizer.refresh();
+
+        expect(synchronizer.state.status, LiveGameSyncStatus.ready);
+        expect(synchronizer.state.projection, same(recovered));
+      },
+    );
+
+    test('stops missed-event recovery for a terminal projection', () async {
+      final gateway = _Gateway()
+        ..projections.add(_projection(phase: LiveGamePhase.completed));
+      final synchronizer = _synchronizer(
+        gateway,
+        missedEventRecoveryInterval: const Duration(milliseconds: 5),
+      );
+      addTearDown(synchronizer.dispose);
+
+      await synchronizer.start();
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+
+      expect(gateway.fetchCalls, 1);
+      expect(
+        synchronizer.state.projection?.version.phase,
+        LiveGamePhase.completed,
+      );
+    });
+
+    test(
+      'pauses missed-event recovery offline and resumes on reconnect',
+      () async {
+        final gateway = _Gateway()
+          ..projections.addAll(<ParticipantGameProjection>[
+            _projection(),
+            _projection(sessionVersion: 5, eventSequence: 1),
+            _projection(sessionVersion: 6, eventSequence: 2),
+          ]);
+        final synchronizer = _synchronizer(
+          gateway,
+          missedEventRecoveryInterval: const Duration(milliseconds: 15),
+        );
+        addTearDown(synchronizer.dispose);
+        await synchronizer.start();
+
+        synchronizer.markOffline();
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+        expect(gateway.fetchCalls, 1);
+        expect(synchronizer.state.status, LiveGameSyncStatus.offline);
+
+        await synchronizer.reconnect();
+        expect(gateway.fetchCalls, 2);
+        expect(synchronizer.state.projection?.version.sessionVersion, 5);
+
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+        expect(gateway.fetchCalls, greaterThanOrEqualTo(3));
+        expect(synchronizer.state.projection?.version.sessionVersion, 6);
+      },
+    );
+
+    test(
       'fails closed when a snapshot is outside the expected scope',
       () async {
         final gateway = _Gateway()
@@ -174,12 +353,16 @@ void main() {
   });
 }
 
-ParticipantLiveGameSynchronizer _synchronizer(_Gateway gateway) {
+ParticipantLiveGameSynchronizer _synchronizer(
+  _Gateway gateway, {
+  Duration missedEventRecoveryInterval = const Duration(seconds: 30),
+}) {
   addTearDown(gateway.dispose);
   return ParticipantLiveGameSynchronizer(
     gateway: gateway,
     expectedClubId: 'club-1',
     sessionId: 'session-1',
+    missedEventRecoveryInterval: missedEventRecoveryInterval,
   );
 }
 
@@ -221,15 +404,22 @@ ParticipantGameProjection _projection({
   String sessionId = 'session-1',
   int sessionVersion = 4,
   int eventSequence = 12,
+  LiveGamePhase phase = LiveGamePhase.questionOpen,
+  DateTime? serverTime,
+  DateTime? phaseDeadline,
 }) {
+  final authoritativeTime = serverTime ?? DateTime.utc(2026, 7, 30, 7, 20);
   return ParticipantGameProjection.fromJson(<String, Object?>{
     'club_id': 'club-1',
     'session_id': sessionId,
-    'phase': 'question_open',
+    'phase': phase.wireValue,
     'session_version': sessionVersion,
     'event_sequence': eventSequence,
-    'server_time': '2026-07-30T07:20:00Z',
-    'phase_deadline': '2026-07-30T07:20:15Z',
+    'server_time': authoritativeTime.toIso8601String(),
+    'phase_deadline': phase == LiveGamePhase.questionOpen
+        ? (phaseDeadline ?? authoritativeTime.add(const Duration(seconds: 15)))
+              .toIso8601String()
+        : null,
     'question_version': 2,
     'freshness': <String, Object?>{
       'state': 'current',
@@ -238,15 +428,19 @@ ParticipantGameProjection _projection({
     'eligibility': true,
     'public_alias': '240731',
     'answer_state': 'not_answered',
-    'allowed_actions': <String>['submit_answer'],
-    'question': <String, Object?>{
-      'id': 'question-2',
-      'prompt': 'Sanitized question?',
-      'options': <Map<String, String>>[
-        <String, String>{'key': 'a', 'label': 'First'},
-        <String, String>{'key': 'b', 'label': 'Second'},
-      ],
-    },
+    'allowed_actions': phase == LiveGamePhase.questionOpen
+        ? <String>['submit_answer']
+        : const <String>[],
+    'question': phase == LiveGamePhase.questionOpen
+        ? <String, Object?>{
+            'id': 'question-2',
+            'prompt': 'Sanitized question?',
+            'options': <Map<String, String>>[
+              <String, String>{'key': 'a', 'label': 'First'},
+              <String, String>{'key': 'b', 'label': 'Second'},
+            ],
+          }
+        : null,
     'leader_summary': const <Map<String, Object?>>[],
   }, expectedClubId: 'club-1');
 }

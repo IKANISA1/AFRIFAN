@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
@@ -56,6 +57,9 @@ class AfriAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: elevation == null ? 0 : 0,
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
+      systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: Colors.transparent,
+      ),
       foregroundColor: ColorTokens.chromeForeground,
       iconTheme: IconThemeData(color: ColorTokens.chromeForeground),
       titleSpacing: leading == null ? SpacingTokens.spacing5 : 0,

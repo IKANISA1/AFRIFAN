@@ -23,6 +23,33 @@ void main() {
       await expectLater(CrashlyticsService.setUserId('user123'), completes);
     });
 
+    test('diagnostic messages reject identifiers and bucket counts', () {
+      expect(
+        CrashlyticsService.sanitizeDiagnosticMessage(
+          'momo_sms: manual scanned=428 uploaded=12',
+        ),
+        'momo_sms: manual scanned=# uploaded=#',
+      );
+      expect(
+        CrashlyticsService.sanitizeDiagnosticMessage(
+          'user_id=68f04526-df12-4ec0-847b-af8df86bf432',
+        ),
+        isNull,
+      );
+      expect(
+        CrashlyticsService.sanitizeDiagnosticMessage(
+          'contact support@example.com',
+        ),
+        isNull,
+      );
+      expect(
+        CrashlyticsService.sanitizeDiagnosticMessage(
+          'https://example.com/private/path',
+        ),
+        isNull,
+      );
+    });
+
     test('log does not throw when not initialized', () async {
       await expectLater(CrashlyticsService.log('test message'), completes);
     });

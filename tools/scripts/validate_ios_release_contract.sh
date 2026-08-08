@@ -8,6 +8,7 @@ APP_DIR="$ROOT/apps/$APP_SLUG"
 IOS_DIR="$APP_DIR/ios"
 INFO_PLIST="$IOS_DIR/Runner/Info.plist"
 ENTITLEMENTS_PLIST="$IOS_DIR/Runner/Runner.entitlements"
+PRIVACY_MANIFEST="$IOS_DIR/Runner/PrivacyInfo.xcprivacy"
 GOOGLE_SERVICE_INFO_PLIST="$IOS_DIR/Runner/GoogleService-Info.plist"
 LAUNCH_SCREEN_STORYBOARD="$IOS_DIR/Runner/Base.lproj/LaunchScreen.storyboard"
 PODFILE="$IOS_DIR/Podfile"
@@ -25,6 +26,7 @@ fi
 python3 - \
   "$INFO_PLIST" \
   "$ENTITLEMENTS_PLIST" \
+  "$PRIVACY_MANIFEST" \
   "$GOOGLE_SERVICE_INFO_PLIST" \
   "$LAUNCH_SCREEN_STORYBOARD" \
   "$PODFILE" \
@@ -40,18 +42,20 @@ import sys
 
 info_path = pathlib.Path(sys.argv[1])
 entitlements_path = pathlib.Path(sys.argv[2])
-google_service_path = pathlib.Path(sys.argv[3])
-launch_screen_path = pathlib.Path(sys.argv[4])
-podfile_path = pathlib.Path(sys.argv[5])
-framework_info_path = pathlib.Path(sys.argv[6])
-xcode_project_path = pathlib.Path(sys.argv[7])
-runner_scheme_path = pathlib.Path(sys.argv[8])
-generated_package_path = pathlib.Path(sys.argv[9])
-required_ios_version = sys.argv[10]
+privacy_manifest_path = pathlib.Path(sys.argv[3])
+google_service_path = pathlib.Path(sys.argv[4])
+launch_screen_path = pathlib.Path(sys.argv[5])
+podfile_path = pathlib.Path(sys.argv[6])
+framework_info_path = pathlib.Path(sys.argv[7])
+xcode_project_path = pathlib.Path(sys.argv[8])
+runner_scheme_path = pathlib.Path(sys.argv[9])
+generated_package_path = pathlib.Path(sys.argv[10])
+required_ios_version = sys.argv[11]
 
 for path, label in (
     (info_path, "Info.plist"),
     (entitlements_path, "Runner.entitlements"),
+    (privacy_manifest_path, "PrivacyInfo.xcprivacy"),
     (google_service_path, "GoogleService-Info.plist"),
     (launch_screen_path, "LaunchScreen.storyboard"),
     (podfile_path, "Podfile"),
@@ -71,6 +75,60 @@ try:
     entitlements = plistlib.loads(entitlements_path.read_bytes())
 except Exception as exc:
     raise SystemExit(f"Invalid Runner.entitlements: {exc}") from exc
+
+try:
+    privacy_manifest = plistlib.loads(privacy_manifest_path.read_bytes())
+except Exception as exc:
+    raise SystemExit(f"Invalid PrivacyInfo.xcprivacy: {exc}") from exc
+
+if privacy_manifest.get("NSPrivacyTracking") is not False:
+    raise SystemExit("PrivacyInfo.xcprivacy must explicitly disable tracking.")
+if privacy_manifest.get("NSPrivacyTrackingDomains") != []:
+    raise SystemExit(
+        "PrivacyInfo.xcprivacy must not declare tracking domains while tracking is disabled."
+    )
+if privacy_manifest.get("NSPrivacyAccessedAPITypes") != []:
+    raise SystemExit(
+        "The Runner target must not claim required-reason APIs used only by bundled SDKs; each SDK owns its manifest."
+    )
+
+expected_data_types = {
+    "NSPrivacyCollectedDataTypeName",
+    "NSPrivacyCollectedDataTypePhoneNumber",
+    "NSPrivacyCollectedDataTypeUserID",
+    "NSPrivacyCollectedDataTypeDeviceID",
+    "NSPrivacyCollectedDataTypePurchaseHistory",
+    "NSPrivacyCollectedDataTypeOtherFinancialInfo",
+    "NSPrivacyCollectedDataTypeGameplayContent",
+    "NSPrivacyCollectedDataTypeProductInteraction",
+    "NSPrivacyCollectedDataTypeCrashData",
+    "NSPrivacyCollectedDataTypePerformanceData",
+}
+data_entries = privacy_manifest.get("NSPrivacyCollectedDataTypes")
+if not isinstance(data_entries, list):
+    raise SystemExit("PrivacyInfo.xcprivacy must declare collected data types.")
+actual_data_types = {
+    entry.get("NSPrivacyCollectedDataType")
+    for entry in data_entries
+    if isinstance(entry, dict)
+}
+if actual_data_types != expected_data_types:
+    missing = sorted(expected_data_types - actual_data_types)
+    unexpected = sorted(actual_data_types - expected_data_types)
+    raise SystemExit(
+        "PrivacyInfo.xcprivacy data-type mismatch; "
+        f"missing={missing}, unexpected={unexpected}."
+    )
+for entry in data_entries:
+    if not isinstance(entry, dict):
+        raise SystemExit("PrivacyInfo.xcprivacy data entries must be dictionaries.")
+    if entry.get("NSPrivacyCollectedDataTypeTracking") is not False:
+        raise SystemExit("No declared data type may be used for tracking.")
+    if not isinstance(entry.get("NSPrivacyCollectedDataTypeLinked"), bool):
+        raise SystemExit("Every declared data type must state whether it is linked.")
+    purposes = entry.get("NSPrivacyCollectedDataTypePurposes")
+    if not isinstance(purposes, list) or not purposes:
+        raise SystemExit("Every declared data type must have a collection purpose.")
 
 try:
     google_service = plistlib.loads(google_service_path.read_bytes())
@@ -144,6 +202,10 @@ if not framework_minimum or version_tuple(framework_minimum) < required_version:
     )
 
 xcode_project = xcode_project_path.read_text()
+if "PrivacyInfo.xcprivacy in Resources" not in xcode_project:
+    raise SystemExit(
+        "Runner.xcodeproj must include PrivacyInfo.xcprivacy in the app resources phase."
+    )
 deployment_targets = re.findall(
     r"IPHONEOS_DEPLOYMENT_TARGET\s*=\s*([0-9.]+);", xcode_project
 )

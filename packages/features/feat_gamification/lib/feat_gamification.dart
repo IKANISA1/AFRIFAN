@@ -3,8 +3,6 @@ library;
 
 export 'src/challenge_module.dart';
 export 'src/fanzone_module.dart';
-export 'src/game_session_providers.dart';
-export 'src/models/game_session_models.dart';
 export 'src/notification_providers.dart';
 export 'src/screens/club_fan_zone_screen.dart';
 export 'src/screens/fan_id_screen.dart';

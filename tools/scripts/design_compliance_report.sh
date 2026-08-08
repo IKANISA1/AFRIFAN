@@ -5,6 +5,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SOURCE_DESIGN="${SOURCE_DESIGN:-/Volumes/PRO-G40/DESIGN/DESIGN.md}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 OUT_DIR="${OUT_DIR:-$ROOT/output/design_compliance/$STAMP}"
 REPORT="$OUT_DIR/report.md"
 VALIDATION="$OUT_DIR/VALIDATION.json"
@@ -520,6 +521,16 @@ if [ "$violation_count" != "0" ]; then
   status="fail"
 fi
 
+route_evidence_complete="false"
+if [ "$route_inventory_status" = "pass" ] &&
+  [ "$route_state_closure_status" = "pass" ] &&
+  [ "$screen_archetype_coverage_status" = "pass" ] &&
+  [ "$component_inventory_status" = "pass" ] &&
+  jq -e '.closure_complete == true and .open_cell_count == 0' \
+    "$ROUTE_STATE_CLOSURE_JSON" >/dev/null; then
+  route_evidence_complete="true"
+fi
+
 {
   printf '# AFRICLUB DESIGN.md Compliance Report\n\n'
   printf '%s\n' "- Generated: \`$STAMP\`"
@@ -534,7 +545,11 @@ fi
   printf '%s\n\n' "- Source DESIGN.md SHA-256: \`$source_design_sha\`"
   printf '%s\n' "- Automated source-compliance status: \`$status\`"
   printf '%s\n' "- Design-complete conclusion: \`false\`"
-  printf '%s\n\n' "- Route evidence closure: \`incomplete until every required cell links current proof\`"
+  if [ "$route_evidence_complete" = "true" ]; then
+    printf '%s\n\n' "- Route evidence closure: \`complete for the governed local ledger; external human, device, approval, and release gates remain separate\`"
+  else
+    printf '%s\n\n' "- Route evidence closure: \`incomplete until every required cell links current proof\`"
+  fi
   printf '## Evidence Matrix\n\n'
   printf 'See `%s`.\n\n' "$MATRIX"
   printf '## Violations\n\n'
@@ -556,17 +571,18 @@ python3 - "$VALIDATION" "$status" "$violation_count" "$warning_count" "$REPORT" 
   "$ROUTE_INVENTORY_JSON" "$route_inventory_status" "$ROUTE_STATE_CLOSURE_JSON" \
   "$route_state_closure_status" "$SCREEN_ARCHETYPE_COVERAGE_JSON" \
   "$screen_archetype_coverage_status" "$COMPONENT_INVENTORY_JSON" \
-  "$component_inventory_status" <<'PY'
+  "$component_inventory_status" "$route_evidence_complete" "$GENERATED_AT" <<'PY'
 import json
 import pathlib
 import sys
 
 path = pathlib.Path(sys.argv[1])
 payload = {
+    "generated_at": sys.argv[20],
     "scope": "automated_source_compliance_only",
     "status": sys.argv[2],
     "design_complete": False,
-    "route_evidence_complete": False,
+    "route_evidence_complete": sys.argv[19] == "true",
     "violation_count": int(sys.argv[3]),
     "warning_count": int(sys.argv[4]),
     "report": sys.argv[5],

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -82,7 +83,9 @@ class _JackpotCountdownTimerState extends State<JackpotCountdownTimer> {
           child: Column(
             children: [
               Text(
-                isExpired ? 'ENTRIES CLOSED' : 'ENTRIES CLOSE IN',
+                isExpired
+                    ? context.afriL10n.gameEntriesClosed
+                    : context.afriL10n.gameEntriesCloseIn,
                 style: TypographyTokens.metricLabel(
                   ColorTokens.onSurfaceVariant,
                 ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 2),
@@ -91,15 +94,21 @@ class _JackpotCountdownTimerState extends State<JackpotCountdownTimer> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _TimeUnit(value: days, label: 'DAYS'),
+                  _TimeUnit(value: days, label: context.afriL10n.gameDaysShort),
                   _Separator(),
-                  _TimeUnit(value: hours, label: 'HRS'),
+                  _TimeUnit(
+                    value: hours,
+                    label: context.afriL10n.gameHoursShort,
+                  ),
                   _Separator(),
-                  _TimeUnit(value: minutes, label: 'MIN'),
+                  _TimeUnit(
+                    value: minutes,
+                    label: context.afriL10n.gameMinutesShort,
+                  ),
                   _Separator(),
                   _TimeUnit(
                     value: seconds,
-                    label: 'SEC',
+                    label: context.afriL10n.gameSecondsShort,
                     highlight: !isExpired,
                   ),
                 ],

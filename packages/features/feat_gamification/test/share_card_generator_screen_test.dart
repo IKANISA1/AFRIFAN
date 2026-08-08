@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
 import 'package:feat_gamification/src/screens/share_card_generator_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,16 +14,20 @@ void main() {
     required List<UserPrediction> history,
     required UserPrediction? selected,
     void Function(UserPrediction prediction)? onSelected,
+    Locale appCopyLocale = const Locale('en'),
   }) {
     return MaterialApp(
       home: Scaffold(
-        body: ShareCardGeneratorContent(
-          history: history,
-          selected: selected,
-          onRefresh: () async {},
-          onSelected: onSelected ?? (_) {},
-          onShare: (_) async {},
-          onCopy: (_) async {},
+        body: AfriLocalizationsScope(
+          locale: appCopyLocale,
+          child: ShareCardGeneratorContent(
+            history: history,
+            selected: selected,
+            onRefresh: () async {},
+            onSelected: onSelected ?? (_) {},
+            onShare: (_) async {},
+            onCopy: (_) async {},
+          ),
         ),
       ),
     );
@@ -41,6 +46,34 @@ void main() {
       expect(find.text('Back to picks'), findsOneWidget);
     },
   );
+
+  testWidgets('localizes the empty task in French and Kinyarwanda', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        history: const <UserPrediction>[],
+        selected: null,
+        appCopyLocale: const Locale('fr'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Faites d’abord un pronostic'), findsOneWidget);
+    expect(find.text('Retour aux pronostics'), findsOneWidget);
+
+    await tester.pumpWidget(
+      buildSubject(
+        history: const <UserPrediction>[],
+        selected: null,
+        appCopyLocale: const Locale('rw'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Banza uhitemo'), findsOneWidget);
+    expect(find.text('Subira ku byo wahisemo'), findsOneWidget);
+  });
 
   testWidgets(
     'renders share card and prediction selector when history exists',

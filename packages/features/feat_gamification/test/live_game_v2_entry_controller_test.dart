@@ -72,7 +72,13 @@ void main() {
       'deep-link opening waits for auto-started discovery authority',
       () async {
         final pending = Completer<ParticipantGameDiscoveryFeed>();
-        final discovery = _DiscoveryGateway()..pendingFeed = pending;
+        final discovery = _DiscoveryGateway()
+          ..pendingFeed = pending
+          ..targetedFeeds['session-live'] = _feed(
+            sessions: <ParticipantGameDiscoveryItem>[
+              _liveItem(source: ParticipantDiscoverySource.deepLink),
+            ],
+          );
         final runtimes = _RuntimeFactory();
         final controller = ParticipantGameEntryController(
           discoveryGateway: discovery,
@@ -81,12 +87,16 @@ void main() {
         );
         addTearDown(controller.dispose);
 
-        final opening = controller.openEligibleSession('session-live');
+        final opening = controller.openEligibleSession(
+          'session-live',
+          reauthorizeDeepLink: true,
+        );
         pending.complete(_feed());
 
         expect(await opening, isTrue);
         expect(controller.state.status, ParticipantGameEntryStatus.live);
-        expect(discovery.fetchCalls, 1);
+        expect(discovery.fetchCalls, 2);
+        expect(discovery.requestedSessionIds, <String?>[null, 'session-live']);
       },
     );
 
@@ -240,12 +250,22 @@ void main() {
 class _DiscoveryGateway implements ParticipantDiscoveryGateway {
   final List<ParticipantGameDiscoveryFeed> feeds =
       <ParticipantGameDiscoveryFeed>[];
+  final Map<String, ParticipantGameDiscoveryFeed> targetedFeeds =
+      <String, ParticipantGameDiscoveryFeed>{};
   Completer<ParticipantGameDiscoveryFeed>? pendingFeed;
+  final List<String?> requestedSessionIds = <String?>[];
   int fetchCalls = 0;
 
   @override
-  Future<ParticipantGameDiscoveryFeed> fetchEligibleSessions() async {
+  Future<ParticipantGameDiscoveryFeed> fetchEligibleSessions({
+    String? sessionId,
+  }) async {
     fetchCalls += 1;
+    requestedSessionIds.add(sessionId);
+    if (sessionId != null) {
+      final targeted = targetedFeeds[sessionId];
+      if (targeted != null) return targeted;
+    }
     final pending = pendingFeed;
     if (pending != null) return pending.future;
     if (feeds.isEmpty) {

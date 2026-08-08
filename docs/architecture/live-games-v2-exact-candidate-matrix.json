@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-QA-06",
+  "status": "exact_current_dirty_local_build_subset_passed_external_release_evidence_open",
+  "criterion_complete": false,
+  "required_clauses": [
+    "clean_controlled_candidate_and_pinned_ci",
+    "mobile_ios_release_build",
+    "mobile_android_release_aab",
+    "native_tv_release_apk",
+    "web_typecheck_lint_tests_and_build",
+    "physical_device_uat",
+    "production_signing_and_store_processing",
+    "authorized_backend_migration_and_rollback",
+    "named_accountable_approvals"
+  ],
+  "clauses": [
+    {
+      "id": "clean_controlled_candidate_and_pinned_ci",
+      "status": "open_external_evidence",
+      "assertion": "The current checkout is dirty and the exact build set has not been reproduced by pinned CI from a sealed candidate."
+    },
+    {
+      "id": "mobile_ios_release_build",
+      "status": "passed_exact_current_local_dry_run",
+      "assertion": "The current Rayon mobile source passes its iOS 15.5 release contract and produces an unsigned release Runner.app package for device architecture.",
+      "evidence": "output/implementation_goal_20260724/live_games_v2_qa06_local_build_checkpoint_20260801/live-games-v2-qa06-local-build-checkpoint.json"
+    },
+    {
+      "id": "mobile_android_release_aab",
+      "status": "passed_exact_current_local_dry_run",
+      "assertion": "The current Rayon mobile source produces a release AAB with a generated ephemeral dry-run key; no production key or Play processing is inferred.",
+      "evidence": "output/implementation_goal_20260724/live_games_v2_qa06_local_build_checkpoint_20260801/live-games-v2-qa06-local-build-checkpoint.json"
+    },
+    {
+      "id": "native_tv_release_apk",
+      "status": "passed_exact_current_local_dry_run",
+      "assertion": "The current native-TV source produces a minified release APK with a generated ephemeral dry-run key; production TV configuration and signing remain external.",
+      "evidence": "output/implementation_goal_20260724/live_games_v2_qa06_local_build_checkpoint_20260801/live-games-v2-qa06-local-build-checkpoint.json"
+    },
+    {
+      "id": "web_typecheck_lint_tests_and_build",
+      "status": "passed_exact_current_local_dry_run",
+      "assertion": "The current consumer/Admin/Venue web source passes typecheck, zero-warning lint, all 111 test files and 933 tests, and the Next.js production build.",
+      "evidence": "output/implementation_goal_20260724/live_games_v2_qa06_local_build_checkpoint_20260801/live-games-v2-qa06-local-build-checkpoint.json"
+    },
+    {
+      "id": "physical_device_uat",
+      "status": "partial_physical_ios_install_and_launch",
+      "assertion": "The development-signed current iOS release build installs and launches on the exact paired iPhone 12 Pro, but full journeys, assistive technology, a second phone and a physical TV remain required.",
+      "evidence": "output/implementation_goal_20260724/live_games_v2_qa06_local_build_checkpoint_20260801/live-games-v2-qa06-local-build-checkpoint.json"
+    },
+    {
+      "id": "production_signing_and_store_processing",
+      "status": "open_external_evidence",
+      "assertion": "Apple Distribution, production Android upload keys, TestFlight/App Store Connect and Play/TV store processing remain required."
+    },
+    {
+      "id": "authorized_backend_migration_and_rollback",
+      "status": "open_external_evidence",
+      "assertion": "Isolated full-chain pgTAP evidence does not replace authorized target migration, rollback rehearsal, monitoring and approval."
+    },
+    {
+      "id": "named_accountable_approvals",
+      "status": "open_protected_approval",
+      "assertion": "Named product, security, privacy, accessibility, QA, operations and release approvals remain required."
+    }
+  ],
+  "environment_boundary": {
+    "dirty_working_candidate": true,
+    "pinned_ci_claimed": false,
+    "ios_unsigned_release_build_claimed": true,
+    "android_ephemeral_signed_aab_claimed": true,
+    "native_tv_ephemeral_signed_apk_claimed": true,
+    "web_production_build_claimed": true,
+    "physical_ios_install_and_launch_claimed": true,
+    "full_physical_uat_claimed": false,
+    "production_signing_claimed": false,
+    "store_processing_claimed": false,
+    "authorized_target_migration_and_rollback_claimed": false,
+    "named_approvals_claimed": false,
+    "release_claimed": false
+  }
+}

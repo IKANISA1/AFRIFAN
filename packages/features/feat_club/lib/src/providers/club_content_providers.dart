@@ -1,37 +1,109 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/club_content_models.dart';
 import '../repositories/club_content_gateway.dart';
 
+enum ClubContentFailureKind {
+  offline,
+  permissionDenied,
+  conflict,
+  securityTimeout,
+  unknown,
+}
+
+class ClubContentFailure implements Exception {
+  const ClubContentFailure(this.kind);
+
+  final ClubContentFailureKind kind;
+
+  factory ClubContentFailure.fromError(Object error, {required bool isOnline}) {
+    if (!isOnline) {
+      return const ClubContentFailure(ClubContentFailureKind.offline);
+    }
+    if (error is TimeoutException) {
+      return const ClubContentFailure(ClubContentFailureKind.securityTimeout);
+    }
+    final normalized = error.toString().toLowerCase();
+    if (normalized.contains('permission') ||
+        normalized.contains('forbidden') ||
+        normalized.contains('not authorized') ||
+        normalized.contains('rls')) {
+      return const ClubContentFailure(ClubContentFailureKind.permissionDenied);
+    }
+    if (normalized.contains('conflict') ||
+        normalized.contains('stale') ||
+        normalized.contains('revision') ||
+        normalized.contains('version')) {
+      return const ClubContentFailure(ClubContentFailureKind.conflict);
+    }
+    return const ClubContentFailure(ClubContentFailureKind.unknown);
+  }
+
+  @override
+  String toString() => 'ClubContentFailure(${kind.name})';
+}
+
 final clubContentGatewayProvider = Provider<ClubContentGateway>(
   (ref) => SupabaseClubContentGateway(ref.watch(supabaseClientProvider)),
 );
 
+/// Maximum time a Club projection may remain in its loading state.
+///
+/// Club information is read-only and retryable, so a bounded failure is safer
+/// than leaving supporters on an indefinite skeleton when the data service is
+/// unreachable.
+final clubContentLoadTimeoutProvider = Provider<Duration>(
+  (_) => const Duration(seconds: 12),
+);
+
 final clubOverviewProvider = FutureProvider<ClubOverview?>(
-  (ref) => ref.watch(clubContentGatewayProvider).loadOverview(),
+  (ref) => ref
+      .watch(clubContentGatewayProvider)
+      .loadOverview()
+      .timeout(ref.watch(clubContentLoadTimeoutProvider)),
 );
 
 final clubNewsProvider = FutureProvider<List<ClubNewsItem>>(
-  (ref) => ref.watch(clubContentGatewayProvider).loadNews(),
+  (ref) => ref
+      .watch(clubContentGatewayProvider)
+      .loadNews()
+      .timeout(ref.watch(clubContentLoadTimeoutProvider)),
 );
 
 final clubSquadProvider = FutureProvider<List<ClubSquadMember>>(
-  (ref) => ref.watch(clubContentGatewayProvider).loadSquad(),
+  (ref) => ref
+      .watch(clubContentGatewayProvider)
+      .loadSquad()
+      .timeout(ref.watch(clubContentLoadTimeoutProvider)),
 );
 
 final clubMatchesProvider = FutureProvider<List<ClubFixtureItem>>(
-  (ref) => ref.watch(clubContentGatewayProvider).loadMatches(),
+  (ref) => ref
+      .watch(clubContentGatewayProvider)
+      .loadMatches()
+      .timeout(ref.watch(clubContentLoadTimeoutProvider)),
 );
 
 final clubStandingsProvider = FutureProvider<List<ClubStandingItem>>(
-  (ref) => ref.watch(clubContentGatewayProvider).loadStandings(),
+  (ref) => ref
+      .watch(clubContentGatewayProvider)
+      .loadStandings()
+      .timeout(ref.watch(clubContentLoadTimeoutProvider)),
 );
 
 final clubHistoryProvider = FutureProvider<List<ClubHistoryItem>>(
-  (ref) => ref.watch(clubContentGatewayProvider).loadHistory(),
+  (ref) => ref
+      .watch(clubContentGatewayProvider)
+      .loadHistory()
+      .timeout(ref.watch(clubContentLoadTimeoutProvider)),
 );
 
 final clubProjectsProvider = FutureProvider<List<ClubProjectItem>>(
-  (ref) => ref.watch(clubContentGatewayProvider).loadProjects(),
+  (ref) => ref
+      .watch(clubContentGatewayProvider)
+      .loadProjects()
+      .timeout(ref.watch(clubContentLoadTimeoutProvider)),
 );

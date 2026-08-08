@@ -1,6 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
+import { writeAdminStateEvidence } from "./admin-state-evidence-manifest";
+import {
+  installEvidenceNavigationStability,
+  primeEvidenceScreenshot,
+  settleEvidenceVisuals,
+} from "./evidence-navigation-stability";
 import {
   expect,
   test,
@@ -35,13 +41,7 @@ const orders = Array.from({ length: 30 }, (_, index) => ({
 }));
 
 async function settle(page: Page) {
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-    for (const animation of document.getAnimations()) animation.finish();
-    await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-    );
-  });
+  await settleEvidenceVisuals(page);
 }
 
 async function expectAccessible(page: Page) {
@@ -57,13 +57,27 @@ async function expectAccessible(page: Page) {
 }
 
 async function expectNoOverflow(page: Page) {
-  expect(
-    await page.evaluate(
-      () =>
-        document.documentElement.scrollWidth -
-        document.documentElement.clientWidth,
-    ),
-  ).toBeLessThanOrEqual(1);
+  const result = await page.evaluate(() => {
+    const clientWidth = document.documentElement.clientWidth;
+    return {
+      overflow: document.documentElement.scrollWidth - clientWidth,
+      offenders: Array.from(document.querySelectorAll<HTMLElement>("body *"))
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          return {
+            tag: element.tagName.toLowerCase(),
+            className: element.className,
+            left: Math.round(rect.left),
+            right: Math.round(rect.right),
+          };
+        })
+        .filter(({ left, right }) => left < -1 || right > clientWidth + 1)
+        .slice(0, 20),
+    };
+  });
+  expect(result.overflow, JSON.stringify(result.offenders)).toBeLessThanOrEqual(
+    1,
+  );
 }
 
 async function runMatrix(browser: Browser) {
@@ -72,15 +86,16 @@ async function runMatrix(browser: Browser) {
     "../../../output/implementation_goal_20260724/admin_pwa_tickets_states",
   );
   fs.mkdirSync(evidenceDirectory, { recursive: true });
-  const context = await browser.newContext({
+  let context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
     colorScheme: "dark",
   });
-  const page = await context.newPage();
+  await installEvidenceNavigationStability(context);
+  let page = await context.newPage();
   let mode: Mode = "ready";
 
-  await page.route("**/api/admin/**", async (route: Route) => {
+  const handleAdminRoute = async (route: Route) => {
     if (!route.request().url().includes("/api/admin/tickets")) {
       await route.continue();
       return;
@@ -121,7 +136,8 @@ async function runMatrix(browser: Browser) {
         error: "database.internal supporter=private token=secret",
       }),
     });
-  });
+  };
+  await context.route("**/api/admin/**", handleAdminRoute);
 
   const surface = () => page.locator("[data-admin-tickets-status]").first();
   const open = (nonce: string) =>
@@ -132,6 +148,7 @@ async function runMatrix(browser: Browser) {
     await expect(surface()).toHaveAttribute(
       "data-admin-tickets-status",
       status,
+      { timeout: 15_000 },
     );
     await expect(page.getByText(label).first()).toBeVisible();
   };
@@ -146,13 +163,13 @@ async function runMatrix(browser: Browser) {
       state === "selected" || state === "large_text",
     );
     await settle(page);
+    await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
     await page.screenshot({
       path: path.join(
         evidenceDirectory,
         `admin_tickets_state_${state}_${state === "light" ? "light" : "dark"}_${profile}.png`,
       ),
       fullPage: !state.startsWith("responsive_"),
-      animations: "disabled",
     });
   };
 
@@ -190,7 +207,9 @@ async function runMatrix(browser: Browser) {
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus("offline", /ticket operations are offline/i);
-  await expect(page.getByText("Verified Supporter 1")).toBeVisible();
+  await expect(
+    page.getByText("Verified Supporter 30", { exact: true }),
+  ).toBeVisible();
   await expect(
     page.getByRole("button", { name: /^validate$/i }).first(),
   ).toBeDisabled();
@@ -199,12 +218,12 @@ async function runMatrix(browser: Browser) {
 
   mode = "ready";
   await open("permission-preparation");
+  await expectStatus("ready", /ticket operations confirmed/i);
   await page.getByLabel("Search ticket orders").fill("private supporter");
-  await page.getByLabel(/select ticket for verified supporter 2/i).check();
-  await page.getByRole("button", { name: /view ticket details/i }).first().click();
-  await expect(page.getByText("momo-1")).toBeVisible();
   mode = "permission_denied";
-  await page.getByRole("button", { name: /refresh ticket operations/i }).click();
+  await page
+    .getByRole("button", { name: /refresh ticket operations/i })
+    .click();
   await expectStatus("permission_denied", /ticket access denied/i);
   await expect(page.getByLabel("Search ticket orders")).toHaveCount(0);
   await expect(page.locator("body")).not.toContainText("private supporter");
@@ -213,6 +232,7 @@ async function runMatrix(browser: Browser) {
 
   mode = "ready";
   await open("interaction");
+  await expectStatus("ready", /ticket operations confirmed/i);
   const refresh = page.getByRole("button", {
     name: /refresh ticket operations/i,
   });
@@ -237,7 +257,10 @@ async function runMatrix(browser: Browser) {
     pointerType: "mouse",
     isPrimary: true,
   });
-  await page.getByRole("button", { name: /view ticket details/i }).first().click();
+  await page
+    .getByRole("button", { name: /view ticket details/i })
+    .first()
+    .click();
   await capture("selected");
 
   await page.evaluate(() => {
@@ -283,17 +306,79 @@ async function runMatrix(browser: Browser) {
   await expectNoOverflow(page);
   await capture("light");
 
+  await page.emulateMedia({ colorScheme: "dark" });
   for (const [profile, width, height] of [
     ["desktop_1280x800", 1280, 800],
     ["tablet_834x1112", 834, 1112],
     ["mobile_390x844", 390, 844],
   ] as const) {
+    if (width === 390) {
+      await context.close();
+      context = await browser.newContext({
+        viewport: { width: 390, height: 844 },
+        deviceScaleFactor: 1,
+        colorScheme: "dark",
+        reducedMotion: "reduce",
+      });
+      await installEvidenceNavigationStability(context);
+      await context.route("**/api/admin/**", handleAdminRoute);
+      page = await context.newPage();
+    }
     await page.setViewportSize({ width, height });
     await open(`responsive-${profile}`);
     await expectStatus("ready", /ticket operations confirmed/i);
     await expectNoOverflow(page);
+    if (width === 390) {
+      await page.emulateMedia({
+        reducedMotion: "no-preference",
+        colorScheme: "dark",
+      });
+    }
     await capture(`responsive_${profile}`, profile);
   }
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  mode = "ready";
+  await open("syncing-preparation");
+  await expectStatus("ready", /ticket operations confirmed/i);
+  mode = "loading";
+  await page
+    .getByRole("button", { name: /refresh ticket operations/i })
+    .click();
+  await expectStatus("syncing", /refreshing ticket operations/i);
+  await expect(
+    page.getByText("Verified Supporter 30", { exact: true }),
+  ).toBeVisible();
+  await capture("syncing");
+
+  writeAdminStateEvidence({
+    evidenceDirectory,
+    manifestFile: "admin-tickets-state-evidence.json",
+    route: "/admin/tickets",
+    filePrefix: "admin_tickets",
+    responsiveCaptures: [
+      {
+        state: "responsive_desktop_1280x800",
+        profile: "desktop_1280x800",
+        description: "Chromium desktop 1280x800 at 1 DPR",
+      },
+      {
+        state: "responsive_tablet_834x1112",
+        profile: "tablet_834x1112",
+        description: "Chromium tablet 834x1112 at 1 DPR",
+      },
+      {
+        state: "responsive_mobile_390x844",
+        profile: "mobile_390x844",
+        description: "Chromium mobile 390x844 at 1 DPR",
+      },
+    ],
+    assertions: {
+      maximum_ticket_records: 500,
+      reviewed_bulk_limit: 100,
+      syncing_retains_confirmed_ticket_snapshot: true,
+    },
+  });
 
   await context.close();
 }

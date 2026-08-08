@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fanzone_slip_providers.dart';
+import '../game_result_copy.dart';
 import '../models/fanzone_slip_models.dart';
 import '../models/prediction_models.dart';
 import '../widgets/confetti_overlay.dart';
@@ -33,8 +35,8 @@ class PredictionSlipBar extends ConsumerWidget {
       ),
       child: AfriPressFeedback(
         onTap: onTap,
-        semanticsLabel: 'Pick round',
-        tooltip: 'Pick round',
+        semanticsLabel: context.afriL10n.gamePickRound,
+        tooltip: context.afriL10n.gamePickRound,
         excludeChildSemantics: true,
         builder: (context, state) => AfriSurfaceCard(
           padding: const EdgeInsets.symmetric(
@@ -65,13 +67,11 @@ class PredictionSlipBar extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      slip.items.length == 1
-                          ? '1 pick active'
-                          : '${slip.items.length} picks active',
+                      context.afriL10n.gameActivePicks(slip.items.length),
                       style: TypographyTokens.titleSmall(),
                     ),
                     Text(
-                      'Earn up to ${slip.totalPotential} pts',
+                      context.afriL10n.gameEarnUpToPoints(slip.totalPotential),
                       style: TypographyTokens.bodySmall(),
                     ),
                   ],
@@ -132,12 +132,12 @@ class _PredictionSlipSheet extends ConsumerWidget {
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               Text(
-                'Pick round is empty',
+                context.afriL10n.gamePickRoundEmpty,
                 style: TypographyTokens.titleMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                'Add picks from any fixture and lock them in from here.',
+                context.afriL10n.gamePickRoundEmptyDescription,
                 textAlign: TextAlign.center,
                 style: TypographyTokens.bodySmall(),
               ),
@@ -157,7 +157,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  'PICK ROUND',
+                  context.afriL10n.gamePickRoundUpper,
                   style: TypographyTokens.headlineSmall().copyWith(
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.4,
@@ -169,7 +169,10 @@ class _PredictionSlipSheet extends ConsumerWidget {
                 onChanged: controller.toggleAcca,
               ),
               const SizedBox(width: SpacingTokens.spacing2),
-              Text('Acca', style: TypographyTokens.bodySmall()),
+              Text(
+                context.afriL10n.gameAcca,
+                style: TypographyTokens.bodySmall(),
+              ),
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -185,14 +188,16 @@ class _PredictionSlipSheet extends ConsumerWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            'Potential points: ${slip.totalPotential} pts',
+            context.afriL10n.gamePotentialPoints(slip.totalPotential),
             style: TypographyTokens.titleLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           AfriButton(
-            label: slip.isSubmitting ? 'Submitting...' : 'Lock In Picks',
+            label: slip.isSubmitting
+                ? context.afriL10n.gameSubmitting
+                : context.afriL10n.gameLockInPicks,
             icon: AfriIcons.verified,
             enabled: !slip.isSubmitting,
             onTap: () async {
@@ -237,16 +242,20 @@ class _PredictionSlipSheet extends ConsumerWidget {
                   AfriToast.error(
                     hostContext,
                     result.messages.isNotEmpty
-                        ? result.messages.first
-                        : 'Some selections could not be submitted.',
+                        ? hostContext.localizeGameResultMessage(
+                            result.messages.first,
+                          )
+                        : hostContext.afriL10n.gameSomeSelectionsFailed,
                   );
                 }
               } else if (hostContext.mounted) {
                 AfriToast.error(
                   hostContext,
                   result.messages.isNotEmpty
-                      ? result.messages.first
-                      : 'Could not submit your picks.',
+                      ? hostContext.localizeGameResultMessage(
+                          result.messages.first,
+                        )
+                      : hostContext.afriL10n.gameCouldNotSubmitPicks,
                 );
               }
             },
@@ -276,7 +285,7 @@ Future<bool> _showPreSubmitConfirmation(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'CONFIRM PICKS',
+            context.afriL10n.gameConfirmPicks,
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 1.4,
@@ -285,10 +294,8 @@ Future<bool> _showPreSubmitConfirmation(
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             accaMode && items.length > 1
-                ? 'You are locking ${items.length} picks as a combo.'
-                : items.length == 1
-                ? 'You are locking 1 pick.'
-                : 'You are locking ${items.length} picks.',
+                ? context.afriL10n.gameLockingCombo(items.length)
+                : context.afriL10n.gameLockingPicks(items.length),
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -315,7 +322,10 @@ Future<bool> _showPreSubmitConfirmation(
                         ),
                         const Spacer(),
                         Text(
-                          '${item.outcomeLabel}  ·  +${item.fetPotential} pts',
+                          context.afriL10n.gameOutcomePotential(
+                            item.outcomeLabel,
+                            item.fetPotential,
+                          ),
                           style: TypographyTokens.labelSmall(
                             ColorTokens.clubAccent,
                           ),
@@ -336,14 +346,14 @@ Future<bool> _showPreSubmitConfirmation(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'TOTAL POTENTIAL',
+                        context.afriL10n.gameTotalPotential,
                         style: TypographyTokens.labelSmall(
                           ColorTokens.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing1),
                       Text(
-                        '+$totalPotential pts',
+                        context.afriL10n.gamePoints(totalPotential),
                         style: TypographyTokens.metricValue(
                           ColorTokens.clubAccent,
                         ),
@@ -356,13 +366,13 @@ Future<bool> _showPreSubmitConfirmation(
           ),
           const SizedBox(height: SpacingTokens.spacing5),
           AfriButton(
-            label: 'CONFIRM PICKS',
+            label: context.afriL10n.gameConfirmPicks,
             icon: AfriIcons.verified,
             onTap: () => context.pop(true),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
-            label: 'GO BACK',
+            label: context.afriL10n.gameGoBack,
             variant: AfriButtonVariant.secondary,
             onTap: () => context.pop(false),
           ),
@@ -396,9 +406,9 @@ class _ShareCardModalSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final headline = result.submittedCount == 1
-        ? 'Prediction Locked'
-        : '${result.submittedCount} Predictions Locked';
+    final headline = context.afriL10n.gamePredictionsLocked(
+      result.submittedCount,
+    );
 
     // Build share data from the first slip item.
     final first = slipItems.isNotEmpty ? slipItems.first : null;
@@ -438,13 +448,13 @@ class _ShareCardModalSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  'Potential points: ${result.totalPotential} pts',
+                  context.afriL10n.gamePotentialPoints(result.totalPotential),
                   style: TypographyTokens.bodyLarge(),
                 ),
                 if ((result.slipId ?? '').isNotEmpty) ...[
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(
-                    'Round ID: ${result.slipId}',
+                    context.afriL10n.gameRoundId(result.slipId!),
                     style: TypographyTokens.bodySmall(),
                   ),
                 ],
@@ -499,7 +509,7 @@ class _ShareCardModalSheet extends StatelessWidget {
                         ),
                       );
                     },
-                    label: 'SHARE',
+                    label: context.afriL10n.gameShareUpper,
                     icon: AfriIcons.share,
                   ),
                 ),
@@ -529,7 +539,7 @@ class _ShareCardModalSheet extends StatelessWidget {
                         ),
                       );
                     },
-                    label: 'COPY',
+                    label: context.afriL10n.gameCopyUpper,
                     icon: AfriIcons.copy,
                     variant: AfriButtonVariant.secondary,
                   ),
@@ -538,7 +548,7 @@ class _ShareCardModalSheet extends StatelessWidget {
             ),
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
-            label: 'VIEW MY PREDICTIONS',
+            label: context.afriL10n.gameViewMyPredictions,
             icon: AfriIcons.myPicks,
             variant: AfriButtonVariant.secondary,
             onTap: () {
@@ -549,7 +559,7 @@ class _ShareCardModalSheet extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
-            label: 'KEEP BROWSING',
+            label: context.afriL10n.gameKeepBrowsing,
             variant: AfriButtonVariant.secondary,
             onTap: () => context.pop(),
           ),
@@ -608,7 +618,9 @@ class _SlipRow extends StatelessWidget {
                   runSpacing: SpacingTokens.spacing2,
                   children: [
                     _SlipChip(label: item.outcomeLabel),
-                    _SlipChip(label: '+${item.fetPotential} pts'),
+                    _SlipChip(
+                      label: context.afriL10n.gamePoints(item.fetPotential),
+                    ),
                   ],
                 ),
               ],
@@ -617,7 +629,7 @@ class _SlipRow extends StatelessWidget {
           AfriIconButton(
             icon: AfriIcons.close,
             onTap: onRemove,
-            tooltip: 'Remove pick',
+            tooltip: context.afriL10n.gameRemovePick,
           ),
         ],
       ),

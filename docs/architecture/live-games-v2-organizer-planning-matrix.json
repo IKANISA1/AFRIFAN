@@ -1,0 +1,152 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-ORG-01",
+  "status": "local_organizer_planning_and_control_passed",
+  "criterion_complete": true,
+  "required_clauses": [
+    "role_gated_managed_games",
+    "approved_pack_selection",
+    "bounded_schedule",
+    "eligibility_and_invitations",
+    "approved_display_assignment",
+    "activation_and_start",
+    "authoritative_supervision",
+    "governed_completion"
+  ],
+  "clauses": [
+    {
+      "id": "role_gated_managed_games",
+      "assertion": "Only a club-scoped organizer or administrator can load the managed-games inventory, planner, and session controls; every unauthorized path fails closed.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_module_test.dart",
+          "name": "module registers owner and organizer route families"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "organizer access denial renders a fail-closed state"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "a club member without a planning role cannot create a managed game"
+        }
+      ]
+    },
+    {
+      "id": "approved_pack_selection",
+      "assertion": "The planner exposes only published packs containing exactly 20 reviewed questions and creates against the selected approved pack.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "planner creates against governed pack and schedule"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "an organizer cannot schedule an incomplete question pack"
+        }
+      ]
+    },
+    {
+      "id": "bounded_schedule",
+      "assertion": "The organizer submits a validated future schedule through one idempotent server-owned planning mutation.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "planner creates against governed pack and schedule"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "planner retry preserves the original operation intent"
+        }
+      ]
+    },
+    {
+      "id": "eligibility_and_invitations",
+      "assertion": "Eligibility is selected from governed scopes; invitation-only sessions require one or more active, verified, unexpired club supporters selected through privacy-safe six-digit Fan IDs.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "organizer plans invitation-only game with an approved pack and Fan ID"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "planner binds invitation-only access to selected supporter identities"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "an organizer creates one audited invitation-only session for an active Fan ID"
+        }
+      ]
+    },
+    {
+      "id": "approved_display_assignment",
+      "assertion": "Only paired, same-club displays within the organizer's authorized home or venue scope are selectable and active assignments are unavailable.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_models_test.dart",
+          "name": "planner marks actively assigned displays unavailable"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "planner options expose complete packs, authorized credential-free displays, and one active privacy-safe Fan-ID invitee"
+        }
+      ]
+    },
+    {
+      "id": "activation_and_start",
+      "assertion": "The live-control surface exposes only the server-authorized activation and question-start transitions for the current versioned lifecycle state.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "live control submits only a visible allowed transition"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "live control allows only server-authorized transitions"
+        }
+      ]
+    },
+    {
+      "id": "authoritative_supervision",
+      "assertion": "The organizer supervises the authoritative session phase, participant count, question, assigned displays, versions, sequence, and server timing without answer-bearing content.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_models_test.dart",
+          "name": "organizer projection rejects correct-answer material"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "GAME-QA-02 organizer renders ${state.id} authoritative state"
+        }
+      ]
+    },
+    {
+      "id": "governed_completion",
+      "assertion": "Completion and early-end actions remain versioned, reasoned, audited, idempotent, and limited to server-advertised transitions.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "live retry preserves idempotency key and phase deadline"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "reasoned early end completes the session"
+        }
+      ]
+    }
+  ],
+  "deterministic_golden_evidence": [
+    "packages/features/feat_game_operations/test/goldens/game_operations_planner_invitation_selected_dark_390x844.png"
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "static_source_contract": true,
+    "isolated_database_contract_executed": true,
+    "current_visual_comparison": true,
+    "shared_or_live_session_claimed": false,
+    "physical_device_claimed": false,
+    "real_network_timing_claimed": false,
+    "accountable_human_approval_claimed": false,
+    "release_claimed": false
+  }
+}

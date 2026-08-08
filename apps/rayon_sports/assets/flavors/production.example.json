@@ -11,6 +11,7 @@
   "APP_SUPPORT_EMAIL": "support@example.com",
   "APP_WEBSITE_URL": "https://example.com",
   "APP_DEEP_LINK_SCHEME": "exampleapp",
+  "APP_DEEP_LINK_SCHEME_ALIASES": "africlub",
   "APP_PRIVACY_URL": "https://example.com/privacy",
   "APP_TERMS_URL": "https://example.com/terms",
   "SUPABASE_URL": "https://your-project.supabase.co",

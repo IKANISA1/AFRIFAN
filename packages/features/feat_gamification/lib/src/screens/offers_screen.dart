@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Partner offers are temporarily unavailable.';
+        _error = context.afriL10n.gameOffersTemporarilyUnavailable;
       });
     }
   }
@@ -93,23 +94,29 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                   Text(offer.description, style: TypographyTokens.bodyMedium()),
                   const SizedBox(height: SpacingTokens.spacing4),
                   _OfferMetaRow(
-                    label: 'Reward',
-                    value: '+${offer.fetValue} pts',
+                    label: sheetContext.afriL10n.gameReward,
+                    value: sheetContext.afriL10n.gamePoints(offer.fetValue),
                   ),
                   _OfferMetaRow(
-                    label: 'Activation',
+                    label: sheetContext.afriL10n.gameActivation,
                     value: offer.activationTiming,
                   ),
                   _OfferMetaRow(
-                    label: 'Verification',
-                    value: _verificationLabel(offer.verificationMode),
+                    label: sheetContext.afriL10n.gameVerification,
+                    value: _verificationLabel(
+                      sheetContext,
+                      offer.verificationMode,
+                    ),
                   ),
                   _OfferMetaRow(
-                    label: 'Condition',
+                    label: sheetContext.afriL10n.gameCondition,
                     value: offer.triggerCondition,
                   ),
                   const SizedBox(height: SpacingTokens.spacing5),
-                  AfriButton(label: 'Close', onTap: () => sheetContext.pop()),
+                  AfriButton(
+                    label: sheetContext.afriL10n.gameClose,
+                    onTap: () => sheetContext.pop(),
+                  ),
                 ],
               ),
             ),
@@ -135,11 +142,14 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Offers', style: TypographyTokens.headlineSmall()),
+        title: Text(
+          context.afriL10n.gameOffersTitle,
+          style: TypographyTokens.headlineSmall(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -154,9 +164,9 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Offers unavailable',
+                  title: context.afriL10n.gameOffersUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -181,10 +191,10 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const AfriSectionHeader(
-                            title: 'Ways to earn',
+                          AfriSectionHeader(
+                            title: context.afriL10n.gameWaysToEarn,
                             subtitle:
-                                'Join campaigns and activations to earn points.',
+                                context.afriL10n.gameWaysToEarnDescription,
                             padding: EdgeInsets.zero,
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
@@ -192,17 +202,21 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                             children: [
                               Expanded(
                                 child: AfriMetricTile(
-                                  label: 'Balance',
-                                  value: '${_wallet?.balance ?? 0} pts',
+                                  label: context.afriL10n.gameBalance,
+                                  value: context.afriL10n.gamePointBalance(
+                                    _wallet?.balance ?? 0,
+                                  ),
                                   accentColor: ColorTokens.clubAccent,
                                 ),
                               ),
                               const SizedBox(width: SpacingTokens.spacing3),
                               Expanded(
                                 child: AfriMetricTile(
-                                  label: 'Available',
-                                  value: '${_offers.length}',
-                                  meta: 'active offers',
+                                  label: context.afriL10n.gameAvailable,
+                                  value: _offers.length.toString(),
+                                  meta: context.afriL10n.gameActiveOffers(
+                                    _offers.length,
+                                  ),
                                 ),
                               ),
                             ],
@@ -215,15 +229,24 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                     const SliverToBoxAdapter(child: SizedBox.shrink())
                   else ...[
                     if (featured.isNotEmpty) ...[
-                      _buildSectionHeader('Featured', featured.length),
+                      _buildSectionHeader(
+                        context.afriL10n.gameFeatured,
+                        featured.length,
+                      ),
                       _buildOfferSliver(featured),
                     ],
                     if (matchDay.isNotEmpty) ...[
-                      _buildSectionHeader('Match Day', matchDay.length),
+                      _buildSectionHeader(
+                        context.afriL10n.gameMatchDay,
+                        matchDay.length,
+                      ),
                       _buildOfferSliver(matchDay),
                     ],
                     if (alwaysOn.isNotEmpty) ...[
-                      _buildSectionHeader('Always On', alwaysOn.length),
+                      _buildSectionHeader(
+                        context.afriL10n.gameAlwaysOn,
+                        alwaysOn.length,
+                      ),
                       _buildOfferSliver(alwaysOn),
                     ],
                   ],
@@ -249,7 +272,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
         child: AfriSectionHeader(
           title: title,
           trailing: Text(
-            '$count',
+            count.toString(),
             style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
           ),
         ),
@@ -301,7 +324,7 @@ class _OfferCard extends StatelessWidget {
                 ),
               ),
               AfriStatusChip(
-                label: '+${offer.fetValue} pts',
+                label: context.afriL10n.gamePoints(offer.fetValue),
                 tone: AfriStatusTone.live,
               ),
             ],
@@ -326,7 +349,9 @@ class _OfferCard extends StatelessWidget {
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               AfriButton(
-                label: offer.hasDeepLink ? offer.ctaLabel : 'Details',
+                label: offer.hasDeepLink
+                    ? offer.ctaLabel
+                    : context.afriL10n.gameDetails,
                 onTap: onTap,
                 fullWidth: false,
                 variant: offer.hasDeepLink
@@ -356,9 +381,10 @@ class _OfferMetaRow extends StatelessWidget {
           style: TypographyTokens.bodySmall(),
           children: [
             TextSpan(
-              text: '$label: ',
+              text: label,
               style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
             ),
+            const TextSpan(text: ': '),
             TextSpan(text: value),
           ],
         ),
@@ -367,18 +393,18 @@ class _OfferMetaRow extends StatelessWidget {
   }
 }
 
-String _verificationLabel(String verificationMode) {
+String _verificationLabel(BuildContext context, String verificationMode) {
   return switch (verificationMode) {
-    'api_confirmation' => 'Partner API confirmation',
-    'renewal_confirmation' => 'Renewal confirmation',
-    'referral_conversion' => 'Referral conversion',
-    'receipt_scan' => 'Receipt or POS scan',
-    'geo_checkin' => 'GPS or venue check-in',
-    'social_share' => 'Social post verification',
-    'community_savings' => 'Savings milestone confirmation',
-    'ecommerce_confirmation' => 'Store purchase confirmation',
-    'mobility_confirmation' => 'Ride completion confirmation',
-    'event_qr' => 'Event QR validation',
-    _ => 'Manual partner review',
+    'api_confirmation' => context.afriL10n.gameVerificationApi,
+    'renewal_confirmation' => context.afriL10n.gameVerificationRenewal,
+    'referral_conversion' => context.afriL10n.gameVerificationReferral,
+    'receipt_scan' => context.afriL10n.gameVerificationReceipt,
+    'geo_checkin' => context.afriL10n.gameVerificationGeo,
+    'social_share' => context.afriL10n.gameVerificationSocial,
+    'community_savings' => context.afriL10n.gameVerificationSavings,
+    'ecommerce_confirmation' => context.afriL10n.gameVerificationEcommerce,
+    'mobility_confirmation' => context.afriL10n.gameVerificationMobility,
+    'event_qr' => context.afriL10n.gameVerificationEventQr,
+    _ => context.afriL10n.gameVerificationManual,
   };
 }

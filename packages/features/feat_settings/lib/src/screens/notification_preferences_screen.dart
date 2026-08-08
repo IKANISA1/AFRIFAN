@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +104,7 @@ class _NotificationPreferencesScreenState
     if (_draftEdited) {
       setState(() {
         _localStatusMessage =
-            'Connection restored. Review your kept changes, then save.';
+            context.afriL10n.notificationPreferencesConnectionRestoredReview;
       });
       return;
     }
@@ -111,7 +112,8 @@ class _NotificationPreferencesScreenState
     setState(() {
       _draft = null;
       _draftUserId = null;
-      _localStatusMessage = 'Connection restored. Refreshing preferences.';
+      _localStatusMessage =
+          context.afriL10n.notificationPreferencesConnectionRestoredRefreshing;
     });
     ref.invalidate(notificationSettingsProvider);
   }
@@ -166,7 +168,7 @@ class _NotificationPreferencesScreenState
     }
     if (!ConnectivityService.isOnline) {
       _showMessage(
-        'Connect before changing notification delivery on this device.',
+        context.afriL10n.notificationPreferencesConnectBeforeChanging,
       );
       return;
     }
@@ -187,7 +189,7 @@ class _NotificationPreferencesScreenState
         _draft = settings.copyWith(pushEnabled: false);
         _draftEdited = true;
         _localStatusMessage =
-            'Device notifications were turned off. Save to update your account preference.';
+            context.afriL10n.notificationPreferencesDeviceTurnedOff;
       });
       await _refreshPermissionStatus();
       return;
@@ -216,17 +218,17 @@ class _NotificationPreferencesScreenState
           _draft = settings.copyWith(pushEnabled: true);
           _draftEdited = true;
           _localStatusMessage =
-              'Permission granted on this device. Save to enable alerts on your account.';
+              context.afriL10n.notificationPreferencesPermissionGranted;
         });
         break;
       case PushPermissionStatus.denied:
-        _showMessage('Notifications blocked. Enable in device settings.');
+        _showMessage(context.afriL10n.notificationPreferencesBlocked);
         break;
       case PushPermissionStatus.notDetermined:
-        _showMessage('Notification permission is still pending.');
+        _showMessage(context.afriL10n.notificationPreferencesPermissionPending);
         break;
       case PushPermissionStatus.unavailable:
-        _showMessage('Push unavailable in this build.');
+        _showMessage(context.afriL10n.notificationPreferencesPushUnavailable);
         break;
     }
 
@@ -236,7 +238,7 @@ class _NotificationPreferencesScreenState
   Future<void> _saveSettings(UserNotificationSettings settings) async {
     if (_isSaving || _saveBlocked) return;
     if (!ConnectivityService.isOnline) {
-      _showMessage('Your changes are kept. Connect before saving.');
+      _showMessage(context.afriL10n.notificationPreferencesDraftKeptConnect);
       return;
     }
 
@@ -269,7 +271,7 @@ class _NotificationPreferencesScreenState
         _localStatusMessage = null;
         _saveBlocked = false;
       });
-      _showMessage('Notification preferences saved.');
+      _showMessage(context.afriL10n.notificationPreferencesSaved);
     } catch (error) {
       final failure = NotificationPreferencesFailure.fromError(error);
       if (failure.kind == NotificationPreferencesFailureKind.conflict) {
@@ -280,7 +282,7 @@ class _NotificationPreferencesScreenState
           _draftUserId = null;
           _operationFailure = failure;
           _localStatusMessage =
-              'Preferences changed elsewhere. The latest version is loading; review it before saving again.';
+              context.afriL10n.notificationPreferencesChangedElsewhereLoading;
         });
         unawaited(
           FirebaseAnalyticsService.logErrorRecovery(
@@ -309,13 +311,13 @@ class _NotificationPreferencesScreenState
       _saveBlocked = blocksSave;
       _localStatusMessage = switch (failure.kind) {
         NotificationPreferencesFailureKind.permissionDenied =>
-          'Notification changes are not permitted for this account.',
+          context.afriL10n.notificationPreferencesChangeNotPermitted,
         NotificationPreferencesFailureKind.conflict =>
-          'Preferences changed elsewhere. Refresh before saving again.',
+          context.afriL10n.notificationPreferencesChangedRefresh,
         NotificationPreferencesFailureKind.securityTimeout =>
-          'Notification save was not confirmed. Refresh before trying again.',
+          context.afriL10n.notificationPreferencesSaveUnconfirmed,
         NotificationPreferencesFailureKind.unknown =>
-          'Notification preferences could not be saved. Your draft is kept.',
+          context.afriL10n.notificationPreferencesSaveFailedDraftKept,
       };
     });
     _showMessage(_localStatusMessage!);
@@ -329,7 +331,7 @@ class _NotificationPreferencesScreenState
       _draftEdited = false;
       _saveBlocked = false;
       _operationFailure = null;
-      _localStatusMessage = 'Refreshing notification preferences.';
+      _localStatusMessage = context.afriL10n.notificationPreferencesRefreshing;
     });
     ref.invalidate(notificationSettingsProvider);
   }
@@ -343,27 +345,28 @@ class _NotificationPreferencesScreenState
     AsyncValue<UserNotificationSettings?> asyncSettings,
     bool isOnline,
   ) {
+    final l10n = context.afriL10n;
     if (asyncSettings.isLoading) {
       return AfriStateView.loading(
         key: const ValueKey<String>('notifications-state-loading'),
-        title: 'Loading notifications',
-        message: 'Checking your saved delivery preference.',
+        title: l10n.notificationPreferencesLoadingTitle,
+        message: l10n.notificationPreferencesLoadingMessage,
       );
     }
 
     if (!isOnline) {
       return AfriStateView.offline(
         key: const ValueKey<String>('notifications-state-offline'),
-        title: 'Notifications are offline',
-        message: 'Connect to load your saved notification preference.',
+        title: l10n.notificationPreferencesOfflineTitle,
+        message: l10n.notificationPreferencesOfflineMessage,
       );
     }
 
     if (!asyncSettings.hasError) {
       return AfriStateView.empty(
         key: const ValueKey<String>('notifications-state-empty'),
-        title: 'Notification preferences unavailable',
-        message: 'Sign in to manage notification delivery.',
+        title: l10n.notificationPreferencesUnavailableTitle,
+        message: l10n.notificationPreferencesUnavailableMessage,
         icon: AfriIcons.notifications,
       );
     }
@@ -375,30 +378,30 @@ class _NotificationPreferencesScreenState
       NotificationPreferencesFailureKind.permissionDenied =>
         AfriStateView.error(
           key: const ValueKey<String>('notifications-state-permission-denied'),
-          title: 'Notification access limited',
-          message: 'Your preferences could not be verified. Sign in again.',
-          actionLabel: 'Retry',
+          title: l10n.notificationPreferencesAccessLimitedTitle,
+          message: l10n.notificationPreferencesAccessLimitedMessage,
+          actionLabel: l10n.retry,
           onAction: _recoverSettings,
         ),
       NotificationPreferencesFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('notifications-state-conflict'),
-        title: 'Notification settings changed',
-        message: 'Refresh to load the current preference before editing.',
-        actionLabel: 'Refresh',
+        title: l10n.notificationPreferencesChangedTitle,
+        message: l10n.notificationPreferencesChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: _recoverSettings,
       ),
       NotificationPreferencesFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>('notifications-state-security-timeout'),
-        title: 'Notification security check timed out',
-        message: 'Check your connection and refresh.',
-        actionLabel: 'Refresh',
+        title: l10n.notificationPreferencesSecurityTimeoutTitle,
+        message: l10n.notificationPreferencesSecurityTimeoutMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: _recoverSettings,
       ),
       NotificationPreferencesFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('notifications-state-error'),
-        title: 'Could not load notification settings.',
-        message: 'Your saved preference is still safe. Try again.',
-        actionLabel: 'Retry',
+        title: l10n.notificationPreferencesLoadFailedTitle,
+        message: l10n.notificationPreferencesLoadFailedMessage,
+        actionLabel: l10n.retry,
         onAction: _recoverSettings,
       ),
     };
@@ -408,41 +411,43 @@ class _NotificationPreferencesScreenState
     AsyncValue<UserNotificationSettings?> asyncSettings,
     bool isOnline,
   ) {
+    final l10n = context.afriL10n;
     if (_isSaving) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('notifications-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('notifications-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Saving notification preferences',
-        subtitle: 'Your choices stay visible while the save is confirmed.',
+        title: l10n.notificationPreferencesSavingTitle,
+        subtitle: l10n.notificationPreferencesSavingMessage,
         tone: AfriStateBannerTone.info,
-        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
+        trailing: const AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
     if (asyncSettings.isRefreshing) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('notifications-state-refreshing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('notifications-state-refreshing'),
         icon: AfriIcons.refresh,
-        title: 'Refreshing notification preferences',
-        subtitle: 'Your saved delivery preference stays visible.',
+        title: l10n.notificationPreferencesRefreshingTitle,
+        subtitle: l10n.notificationPreferencesRefreshingMessage,
         tone: AfriStateBannerTone.info,
-        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
+        trailing: const AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
     if (_operationFailure != null) {
       return switch (_operationFailure!.kind) {
-        NotificationPreferencesFailureKind.permissionDenied =>
-          const AfriStateBanner(
-            key: ValueKey<String>('notifications-state-save-permission-denied'),
-            icon: AfriIcons.lock,
-            title: 'Notification editing unavailable',
-            subtitle: 'Your saved preference stays visible.',
-            tone: AfriStateBannerTone.warning,
+        NotificationPreferencesFailureKind.permissionDenied => AfriStateBanner(
+          key: const ValueKey<String>(
+            'notifications-state-save-permission-denied',
           ),
+          icon: AfriIcons.lock,
+          title: l10n.notificationPreferencesEditingUnavailableTitle,
+          subtitle: l10n.notificationPreferencesEditingUnavailableMessage,
+          tone: AfriStateBannerTone.warning,
+        ),
         NotificationPreferencesFailureKind.conflict => AfriStateBanner(
           key: const ValueKey<String>('notifications-state-save-conflict'),
           icon: AfriIcons.refresh,
-          title: 'Notification settings changed elsewhere',
-          subtitle: 'Refresh and review the latest preference.',
+          title: l10n.notificationPreferencesChangedElsewhereTitle,
+          subtitle: l10n.notificationPreferencesChangedElsewhereMessage,
           onTap: _recoverSettings,
           tone: AfriStateBannerTone.warning,
         ),
@@ -451,46 +456,45 @@ class _NotificationPreferencesScreenState
             'notifications-state-save-security-timeout',
           ),
           icon: AfriIcons.lock,
-          title: 'Notification save not confirmed',
-          subtitle: 'Refresh before trying again. Your draft is kept.',
+          title: l10n.notificationPreferencesSaveNotConfirmedTitle,
+          subtitle: l10n.notificationPreferencesSaveNotConfirmedMessage,
           onTap: _recoverSettings,
           tone: AfriStateBannerTone.warning,
         ),
-        NotificationPreferencesFailureKind.unknown => const AfriStateBanner(
-          key: ValueKey<String>('notifications-state-save-error'),
+        NotificationPreferencesFailureKind.unknown => AfriStateBanner(
+          key: const ValueKey<String>('notifications-state-save-error'),
           icon: AfriIcons.statusError,
-          title: 'Notification preferences could not be saved',
-          subtitle: 'Your draft is still here.',
+          title: l10n.notificationPreferencesSaveFailedTitle,
+          subtitle: l10n.notificationPreferencesSaveFailedMessage,
           tone: AfriStateBannerTone.danger,
         ),
       };
     }
     if (!isOnline) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('notifications-state-offline'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('notifications-state-offline'),
         icon: AfriIcons.offline,
-        title: 'Saved notification settings',
-        subtitle:
-            'Values may be out of date. Reconnect before changing or saving.',
+        title: l10n.notificationPreferencesSavedSettingsTitle,
+        subtitle: l10n.notificationPreferencesSavedSettingsMessage,
         tone: AfriStateBannerTone.warning,
       );
     }
     if (_permissionStatus == null) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('notifications-state-permission-check'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('notifications-state-permission-check'),
         icon: AfriIcons.notifications,
-        title: 'Checking device permissions',
-        subtitle: 'Delivery controls will be available after this check.',
+        title: l10n.notificationPreferencesCheckingPermissionsTitle,
+        subtitle: l10n.notificationPreferencesCheckingPermissionsMessage,
         tone: AfriStateBannerTone.info,
-        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
+        trailing: const AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
     if (_permissionStatus == PushPermissionStatus.unavailable) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('notifications-state-disabled'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('notifications-state-disabled'),
         icon: AfriIcons.notifications,
-        title: 'Device alerts unavailable',
-        subtitle: 'Push delivery is not configured in this build.',
+        title: l10n.notificationPreferencesDeviceAlertsUnavailableTitle,
+        subtitle: l10n.notificationPreferencesDeviceAlertsUnavailableMessage,
         tone: AfriStateBannerTone.neutral,
       );
     }
@@ -499,6 +503,7 @@ class _NotificationPreferencesScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final appName =
         ClubConfigScope.maybeOf(context)?.appName ??
         RuntimeBranding.displayAppName;
@@ -512,12 +517,14 @@ class _NotificationPreferencesScreenState
     final permissionStatus = _permissionStatus;
     final permissionCopy = switch (permissionStatus) {
       PushPermissionStatus.authorized || PushPermissionStatus.provisional =>
-        'System notifications are enabled on this device.',
+        l10n.notificationPreferencesPermissionEnabled,
       PushPermissionStatus.denied =>
-        'System notifications are blocked at the device level.',
-      PushPermissionStatus.notDetermined => 'Permission not yet requested.',
-      PushPermissionStatus.unavailable => 'Push not configured in this build.',
-      null => 'Checking device notification permissions…',
+        l10n.notificationPreferencesPermissionBlocked,
+      PushPermissionStatus.notDetermined =>
+        l10n.notificationPreferencesPermissionNotRequested,
+      PushPermissionStatus.unavailable =>
+        l10n.notificationPreferencesPermissionNotConfigured,
+      null => l10n.notificationPreferencesPermissionChecking,
     };
 
     return SettingsBackGuard(
@@ -525,7 +532,7 @@ class _NotificationPreferencesScreenState
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
           title: Text(
-            'NOTIFICATIONS',
+            l10n.notificationPreferencesTitle,
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -560,14 +567,14 @@ class _NotificationPreferencesScreenState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'NOTIFICATION DELIVERY',
+                            l10n.notificationPreferencesDeliverySection,
                             style: TypographyTokens.labelSmall(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
                             settings.pushEnabled
-                                ? 'Alerts enabled.'
-                                : 'Enable alerts for matches, receipts & updates.',
+                                ? l10n.notificationPreferencesAlertsEnabled
+                                : l10n.notificationPreferencesEnableAlertsDescription,
                             style: TypographyTokens.bodyMedium(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
@@ -587,16 +594,16 @@ class _NotificationPreferencesScreenState
                           const SizedBox(height: SpacingTokens.spacing4),
                           Semantics(
                             toggled: settings.pushEnabled,
-                            label: 'Device alert delivery',
+                            label: l10n.notificationPreferencesDeviceDelivery,
                             child: AfriButton(
                               key: const ValueKey<String>(
                                 'notifications-delivery-action',
                               ),
                               label: !isOnline
-                                  ? 'CONNECTION REQUIRED'
+                                  ? l10n.notificationPreferencesConnectionRequiredUpper
                                   : settings.pushEnabled
-                                  ? 'DISABLE ALERTS'
-                                  : 'ENABLE ALERTS',
+                                  ? l10n.notificationPreferencesDisableAlerts
+                                  : l10n.notificationPreferencesEnableAlerts,
                               variant: AfriButtonVariant.outline,
                               fullWidth: true,
                               labelMaxLines: 2,
@@ -621,17 +628,17 @@ class _NotificationPreferencesScreenState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'DELIVERY MODEL',
+                            l10n.notificationPreferencesDeliveryModel,
                             style: TypographyTokens.labelSmall(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
-                            'When alerts are enabled, this release delivers the full $appName notification stream available for your account.',
+                            l10n.notificationPreferencesFullStream(appName),
                             style: TypographyTokens.bodyMedium(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
-                            'Per-category tuning is not configurable on this build yet, so this switch controls the entire device delivery state.',
+                            l10n.notificationPreferencesPerCategory,
                             style: TypographyTokens.bodySmall(
                               ColorTokens.onSurfaceVariant,
                             ),
@@ -643,10 +650,10 @@ class _NotificationPreferencesScreenState
                     AfriButton(
                       key: const ValueKey<String>('notifications-save-action'),
                       label: !isOnline
-                          ? 'Connection required'
+                          ? l10n.settingsConnectionRequired
                           : _isSaving
-                          ? 'Saving…'
-                          : 'Save',
+                          ? l10n.editProfileSaving
+                          : l10n.notificationPreferencesSave,
                       fullWidth: true,
                       isLoading: _isSaving,
                       onTap: () => _saveSettings(settings),

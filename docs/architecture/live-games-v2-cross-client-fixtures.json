@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-QA-02",
+  "session_id": "session-live",
+  "session_title": "Rayon matchday challenge",
+  "states": [
+    {
+      "id": "lobby",
+      "phase": "activated_lobby",
+      "session_version": 1,
+      "question_version": 0,
+      "event_sequence": 1,
+      "question_ordinal": null,
+      "question_prompt": null,
+      "correct_option_key": null,
+      "participant_submit_enabled": false,
+      "participant_render_text": "You are in the lobby",
+      "organizer_render_text": "Lobby open",
+      "tv_render_text": "Players are joining",
+      "admin_render_text": "Open lobby"
+    },
+    {
+      "id": "open",
+      "phase": "question_open",
+      "session_version": 2,
+      "question_version": 1,
+      "event_sequence": 2,
+      "question_ordinal": 1,
+      "question_prompt": "Who scored first?",
+      "correct_option_key": null,
+      "participant_submit_enabled": true,
+      "participant_render_text": "Who scored first?",
+      "organizer_render_text": "Question open",
+      "tv_render_text": "Who scored first?",
+      "admin_render_text": "Open question"
+    },
+    {
+      "id": "reveal",
+      "phase": "reveal",
+      "session_version": 3,
+      "question_version": 1,
+      "event_sequence": 3,
+      "question_ordinal": 1,
+      "question_prompt": "Who scored first?",
+      "correct_option_key": "a",
+      "participant_submit_enabled": false,
+      "participant_render_text": "Correct answer: Player A",
+      "organizer_render_text": "Reveal answer",
+      "tv_render_text": "Answer reveal",
+      "admin_render_text": "Reveal answer"
+    },
+    {
+      "id": "next",
+      "phase": "question_open",
+      "session_version": 4,
+      "question_version": 2,
+      "event_sequence": 4,
+      "question_ordinal": 2,
+      "question_prompt": "Which year was the club founded?",
+      "correct_option_key": null,
+      "participant_submit_enabled": true,
+      "participant_render_text": "Which year was the club founded?",
+      "organizer_render_text": "Question open",
+      "tv_render_text": "Which year was the club founded?",
+      "admin_render_text": "Open question"
+    },
+    {
+      "id": "completion",
+      "phase": "completed",
+      "session_version": 5,
+      "question_version": 2,
+      "event_sequence": 5,
+      "question_ordinal": 2,
+      "question_prompt": "Which year was the club founded?",
+      "correct_option_key": "b",
+      "participant_submit_enabled": false,
+      "participant_render_text": "Game complete",
+      "organizer_render_text": "Completed",
+      "tv_render_text": "Game complete",
+      "admin_render_text": "Complete session"
+    },
+    {
+      "id": "cancellation",
+      "phase": "cancelled",
+      "session_version": 6,
+      "question_version": 2,
+      "event_sequence": 6,
+      "question_ordinal": null,
+      "question_prompt": null,
+      "correct_option_key": null,
+      "participant_submit_enabled": false,
+      "participant_render_text": "Game cancelled",
+      "organizer_render_text": "Cancelled",
+      "tv_render_text": "Game cancelled",
+      "admin_render_text": "Cancel session"
+    }
+  ],
+  "surface_rules": {
+    "participant_mobile": "Safe public alias, eligibility and answer state; submit only while question_open; correct answer only at reveal or completion.",
+    "organizer_mobile": "Authoritative controls, participant aggregate and assigned displays; never include correct-answer material.",
+    "native_tv": "Assigned-display projection and privacy-safe leaderboard; correct answer only at reveal or completion.",
+    "admin": "Role-scoped controls, aggregates and participant/TV previews; no private participant identity or pre-reveal correct answer."
+  },
+  "environment_boundary": {
+    "deterministic_local_fixture": true,
+    "shared_or_live_session_claimed": false,
+    "physical_device_claimed": false,
+    "release_claimed": false
+  }
+}

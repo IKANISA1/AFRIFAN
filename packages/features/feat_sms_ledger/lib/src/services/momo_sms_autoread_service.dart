@@ -164,7 +164,7 @@ class MomoSmsAutoreadService {
       _isListening = true;
       _activeUserId = session.user.id;
       await _crashlytics?.log(
-        'momo_sms: Android SMS autoread active for ${session.user.id}',
+        'momo_sms: Android SMS autoread active',
       );
     }
 

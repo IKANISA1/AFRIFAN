@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -179,7 +180,7 @@ class FixturesCalendarCell extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
-            '${date.day}',
+            date.day.toString(),
             style:
                 TypographyTokens.titleLarge(
                   isSelected
@@ -242,18 +243,18 @@ class PredictionOverviewRow extends StatelessWidget {
     return Row(
       children: [
         PredictionOverviewMetric(
-          label: 'ACTIVE',
-          value: '${dashboard.activeCount}',
+          label: context.afriL10n.gameActiveUpper,
+          value: dashboard.activeCount.toString(),
           accent: dashboard.activeCount > 0,
         ),
         const SizedBox(width: SpacingTokens.spacing3),
         PredictionOverviewMetric(
-          label: 'WIN RATE',
+          label: context.afriL10n.gameWinRate,
           value: '${dashboard.winRate.toStringAsFixed(0)}%',
         ),
         const SizedBox(width: SpacingTokens.spacing3),
         PredictionOverviewMetric(
-          label: 'FET',
+          label: context.afriL10n.gameFet,
           value: '+${dashboard.totalFetEarned}',
           accent: dashboard.totalFetEarned > 0,
         ),

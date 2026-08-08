@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -177,20 +178,19 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
       }
       setState(() {
         _saving = false;
-        _errorText =
-            'The match was not saved. Review the confirmed workspace state.';
+        _errorText = context.afriL10n.adminMatchSaveNotConfirmed;
       });
     } on FormatException {
       if (!mounted) return;
       setState(() {
         _saving = false;
-        _errorText = 'Review every match field and enter valid values.';
+        _errorText = context.afriL10n.adminMatchReviewFields;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _saving = false;
-        _errorText = 'The match was not saved. Try again after refreshing.';
+        _errorText = context.afriL10n.adminMatchSaveFailedRefresh;
       });
     }
   }
@@ -230,22 +230,33 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _existing == null ? 'CREATE MATCH' : 'UPDATE MATCH',
+                _existing == null
+                    ? context.afriL10n.adminMatchCreateTitle
+                    : context.afriL10n.adminMatchUpdateTitle,
                 style: TypographyTokens.headlineMedium().copyWith(
                   color: ColorTokens.onSurface,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              AfriInputField(controller: _homeController, label: 'Home Team'),
+              AfriInputField(
+                controller: _homeController,
+                label: context.afriL10n.adminMatchHomeTeam,
+              ),
               const SizedBox(height: SpacingTokens.spacing3),
-              AfriInputField(controller: _awayController, label: 'Away Team'),
+              AfriInputField(
+                controller: _awayController,
+                label: context.afriL10n.adminMatchAwayTeam,
+              ),
               const SizedBox(height: SpacingTokens.spacing3),
               AfriInputField(
                 controller: _competitionController,
-                label: 'Competition',
+                label: context.afriL10n.adminMatchCompetition,
               ),
               const SizedBox(height: SpacingTokens.spacing3),
-              AfriInputField(controller: _venueController, label: 'Venue'),
+              AfriInputField(
+                controller: _venueController,
+                label: context.afriL10n.adminMatchVenue,
+              ),
               const SizedBox(height: SpacingTokens.spacing4),
               Row(
                 children: [
@@ -253,7 +264,10 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                     child: AfriOutlinedButton(
                       onPressed: _pickDate,
                       child: Text(
-                        DateFormat('dd MMM yyyy').format(_selectedDate),
+                        DateFormat(
+                          'dd MMM yyyy',
+                          context.afriL10n.localeName,
+                        ).format(_selectedDate),
                       ),
                     ),
                   ),
@@ -273,7 +287,9 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                     child: AfriInputField(
                       controller: _generalController,
                       keyboardType: TextInputType.number,
-                      label: 'General $currencySymbol',
+                      label: context.afriL10n.adminMatchGeneralPrice(
+                        currencySymbol,
+                      ),
                     ),
                   ),
                   const SizedBox(width: SpacingTokens.spacing3),
@@ -281,7 +297,9 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                     child: AfriInputField(
                       controller: _vipController,
                       keyboardType: TextInputType.number,
-                      label: 'VIP $currencySymbol',
+                      label: context.afriL10n.adminMatchVipPrice(
+                        currencySymbol,
+                      ),
                     ),
                   ),
                 ],
@@ -290,34 +308,43 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
               AfriInputField(
                 controller: _capacityController,
                 keyboardType: TextInputType.number,
-                label: 'Capacity',
+                label: context.afriL10n.adminMatchCapacity,
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               AfriSwitchListTile(
                 value: _isOnSale,
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Tickets on sale'),
+                title: Text(context.afriL10n.adminMatchTicketsOnSale),
                 onChanged: (value) => setState(() => _isOnSale = value),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               AfriDropdownField<String>(
                 initialValue: _matchStatus,
-                label: 'Match status',
-                items: const [
+                label: context.afriL10n.adminMatchStatus,
+                items: [
                   DropdownMenuItem(
                     value: 'scheduled',
-                    child: Text('Scheduled'),
+                    child: Text(context.afriL10n.adminMatchStatusScheduled),
                   ),
-                  DropdownMenuItem(value: 'live', child: Text('Live')),
-                  DropdownMenuItem(value: 'halftime', child: Text('Half-time')),
-                  DropdownMenuItem(value: 'fulltime', child: Text('Full-time')),
+                  DropdownMenuItem(
+                    value: 'live',
+                    child: Text(context.afriL10n.adminMatchStatusLive),
+                  ),
+                  DropdownMenuItem(
+                    value: 'halftime',
+                    child: Text(context.afriL10n.adminMatchStatusHalfTime),
+                  ),
+                  DropdownMenuItem(
+                    value: 'fulltime',
+                    child: Text(context.afriL10n.adminMatchStatusFullTime),
+                  ),
                   DropdownMenuItem(
                     value: 'postponed',
-                    child: Text('Postponed'),
+                    child: Text(context.afriL10n.adminMatchStatusPostponed),
                   ),
                   DropdownMenuItem(
                     value: 'cancelled',
-                    child: Text('Cancelled'),
+                    child: Text(context.afriL10n.adminMatchStatusCancelled),
                   ),
                 ],
                 onChanged: (value) {
@@ -331,7 +358,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                     child: AfriInputField(
                       controller: _homeScoreController,
                       keyboardType: TextInputType.number,
-                      label: 'Home score',
+                      label: context.afriL10n.adminMatchHomeScore,
                     ),
                   ),
                   const SizedBox(width: SpacingTokens.spacing3),
@@ -339,7 +366,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                     child: AfriInputField(
                       controller: _awayScoreController,
                       keyboardType: TextInputType.number,
-                      label: 'Away score',
+                      label: context.afriL10n.adminMatchAwayScore,
                     ),
                   ),
                   const SizedBox(width: SpacingTokens.spacing3),
@@ -347,7 +374,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                     child: AfriInputField(
                       controller: _liveMinuteController,
                       keyboardType: TextInputType.number,
-                      label: 'Live minute',
+                      label: context.afriL10n.adminMatchLiveMinute,
                     ),
                   ),
                 ],
@@ -357,7 +384,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                 controller: _summaryController,
                 minLines: 2,
                 maxLines: 4,
-                label: 'Match summary / live note',
+                label: context.afriL10n.adminMatchSummary,
               ),
               if (_errorText != null) ...[
                 const SizedBox(height: SpacingTokens.spacing2),
@@ -370,7 +397,9 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
               ],
               const SizedBox(height: SpacingTokens.spacing4),
               AfriButton(
-                label: _existing == null ? 'Save match' : 'Update match',
+                label: _existing == null
+                    ? context.afriL10n.adminMatchSave
+                    : context.afriL10n.adminMatchUpdate,
                 fullWidth: true,
                 isLoading: _saving,
                 onTap: _save,

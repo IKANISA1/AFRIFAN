@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -111,7 +112,7 @@ class InlineMatchCard extends ConsumerWidget {
                       const Spacer(),
                       if (isLive) ...[
                         AfriInfoChip(
-                          label: 'LIVE',
+                          label: context.afriL10n.gameLive,
                           color: ColorTokens.clubAccent,
                         ),
                       ],
@@ -259,10 +260,15 @@ class _InlinePredictionGrid extends ConsumerWidget {
                     );
               },
               selected: isSelected,
-              tooltip: '${outcome.label} pick',
-              semanticsLabel:
-                  '${outcome.label} pick for ${fixture.homeTeamShort} versus ${fixture.awayTeamShort}',
-              semanticsHint: isSelected ? 'Selected pick' : 'Add pick to round',
+              tooltip: context.afriL10n.gameOutcomePick(outcome.label),
+              semanticsLabel: context.afriL10n.gamePickForTeams(
+                outcome.label,
+                fixture.homeTeamShort,
+                fixture.awayTeamShort,
+              ),
+              semanticsHint: isSelected
+                  ? context.afriL10n.gameSelectedPick
+                  : context.afriL10n.gameAddPickToRound,
               excludeChildSemantics: true,
               child: AnimatedContainer(
                 duration: AfriMotion.standard,
@@ -300,7 +306,7 @@ class _InlinePredictionGrid extends ConsumerWidget {
                     ),
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
-                      '+${market.fetValue} pts',
+                      context.afriL10n.gamePoints(market.fetValue),
                       style: TypographyTokens.labelSmall(
                         ColorTokens.clubAccent,
                       ).copyWith(fontWeight: FontWeight.w700),

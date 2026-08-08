@@ -52,8 +52,10 @@ class MatchPredictTabBody extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       children: [
         AfriSectionCard(
-          title: 'Markets',
-          trailingLabel: markets.isEmpty ? null : '${markets.length} markets',
+          title: context.afriL10n.gameMarkets,
+          trailingLabel: markets.isEmpty
+              ? null
+              : context.afriL10n.gameMarketCount(markets.length),
           onTrailingTap: markets.isEmpty
               ? null
               : () {
@@ -126,7 +128,7 @@ class MatchStatsTabBody extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing8),
           AfriEmptyView(
             compact: true,
-            title: 'Stats not yet available',
+            title: context.afriL10n.gameStatsNotAvailableYet,
             message: context.afriL10n.fanZoneStatsEmpty,
             icon: AfriIcons.chart,
           ),
@@ -142,7 +144,7 @@ class MatchStatsTabBody extends StatelessWidget {
                 const SizedBox(width: SpacingTokens.spacing2),
                 Expanded(
                   child: Text(
-                    'Live stats update automatically during the match.',
+                    context.afriL10n.gameLiveStatsUpdating,
                     style: TypographyTokens.bodySmall(),
                   ),
                 ),
@@ -176,8 +178,8 @@ class MatchStatsTabBody extends StatelessWidget {
                 Expanded(
                   child: Text(
                     fixture.isLive
-                        ? 'Live match-center data is updating for this fixture.'
-                        : 'Structured match-center statistics for this fixture.',
+                        ? context.afriL10n.gameLiveMatchDataUpdating
+                        : context.afriL10n.gameStructuredMatchStats,
                     style: TypographyTokens.bodySmall(),
                   ),
                 ),
@@ -194,18 +196,18 @@ class MatchStatsTabBody extends StatelessWidget {
 
     final liveStats = <MatchStatRow>[
       MatchStatRow(
-        label: 'Goals',
+        label: context.afriL10n.gameGoals,
         leftValue: homeGoals.toDouble(),
         rightValue: awayGoals.toDouble(),
-        leftDisplay: '$homeGoals',
-        rightDisplay: '$awayGoals',
+        leftDisplay: homeGoals.toString(),
+        rightDisplay: awayGoals.toString(),
       ),
       MatchStatRow(
-        label: 'Total Goals',
+        label: context.afriL10n.gameTotalGoals,
         leftValue: totalGoals.toDouble(),
         rightValue: totalGoals.toDouble(),
-        leftDisplay: '$totalGoals',
-        rightDisplay: '$totalGoals',
+        leftDisplay: totalGoals.toString(),
+        rightDisplay: totalGoals.toString(),
       ),
     ];
 
@@ -231,8 +233,8 @@ class MatchStatsTabBody extends StatelessWidget {
               Expanded(
                 child: Text(
                   fixture.isLive
-                      ? 'Live stats update automatically during the match.'
-                      : 'Final match statistics.',
+                      ? context.afriL10n.gameLiveStatsUpdating
+                      : context.afriL10n.gameFinalMatchStats,
                   style: TypographyTokens.bodySmall(),
                 ),
               ),
@@ -314,7 +316,11 @@ class MatchMarketCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${fixture.homeTeamShort} vs ${fixture.awayTeamShort} · ${market.marketName}',
+                      context.afriL10n.gameFixtureMarketTitle(
+                        fixture.homeTeamShort,
+                        fixture.awayTeamShort,
+                        market.marketName,
+                      ),
                       style: TypographyTokens.titleMedium(),
                     ),
                     if (market.description.isNotEmpty) ...[
@@ -329,7 +335,7 @@ class MatchMarketCard extends ConsumerWidget {
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               Text(
-                '+${market.fetValue} pts',
+                context.afriL10n.gamePoints(market.fetValue),
                 style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
               ),
             ],
@@ -337,7 +343,7 @@ class MatchMarketCard extends ConsumerWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           if (market.isLocked)
             Text(
-              'Pick type locked for this fixture state.',
+              context.afriL10n.gamePickTypeLocked,
               style: TypographyTokens.bodySmall(),
             )
           else
@@ -368,7 +374,9 @@ class MatchMarketCard extends ConsumerWidget {
                             );
                         AfriToast.success(
                           context,
-                          '${outcome.label} added to your round.',
+                          context.afriL10n.gameOutcomeAddedToRound(
+                            outcome.label,
+                          ),
                         );
                       },
                     );

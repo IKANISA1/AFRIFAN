@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,9 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
         _competition = results[0] as CompetitionCatalogItem?;
         _standings = results[1]! as List<LeagueStandingEntry>;
         _isLoading = false;
-        _error = _competition == null ? 'Competition not found.' : null;
+        _error = _competition == null
+            ? context.afriL10n.gameCompetitionNotFound
+            : null;
       });
     } catch (error, stackTrace) {
       AfriLogger.warn(
@@ -59,7 +62,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Standings are temporarily unavailable.';
+        _error = context.afriL10n.gameStandingsTemporarilyUnavailable;
       });
     }
   }
@@ -80,7 +83,8 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          _competition?.shortName.toUpperCase() ?? 'STANDINGS',
+          _competition?.shortName.toUpperCase() ??
+              context.afriL10n.gameStandingsTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
@@ -89,7 +93,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -104,9 +108,9 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Standings unavailable',
+                  title: context.afriL10n.gameStandingsUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -123,23 +127,26 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                   AfriSurfaceCard(
                     child: Row(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           width: SpacingTokens.spacing8,
-                          child: Text('POS'),
+                          child: Text(context.afriL10n.gamePositionShort),
                         ),
                         Expanded(
                           child: Text(
-                            'TEAM',
+                            context.afriL10n.gameTeamUpper,
                             style: TypographyTokens.labelMedium(
                               ColorTokens.onSurfaceVariant,
                             ),
                           ),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           width:
                               SpacingTokens.spacing10 +
                               (SpacingTokens.spacing1 / 2),
-                          child: Text('PTS', textAlign: TextAlign.right),
+                          child: Text(
+                            context.afriL10n.gamePointsShort,
+                            textAlign: TextAlign.right,
+                          ),
                         ),
                       ],
                     ),
@@ -162,7 +169,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                                   SizedBox(
                                     width: SpacingTokens.spacing8,
                                     child: Text(
-                                      '${entry.position}',
+                                      entry.position.toString(),
                                       style: TypographyTokens.titleLarge(
                                         entry.position <= 3
                                             ? ColorTokens.clubAccent
@@ -183,7 +190,12 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                                           height: SpacingTokens.spacing1 / 2,
                                         ),
                                         Text(
-                                          '${entry.played}P · ${entry.goalsFor}:${entry.goalsAgainst} · GD ${entry.goalDifference}',
+                                          context.afriL10n.gameStandingRecord(
+                                            entry.played,
+                                            entry.goalsFor,
+                                            entry.goalsAgainst,
+                                            entry.goalDifference,
+                                          ),
                                           style: TypographyTokens.bodySmall(),
                                         ),
                                       ],
@@ -191,7 +203,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                                   ),
                                   const SizedBox(width: SpacingTokens.spacing3),
                                   Text(
-                                    '${entry.points}',
+                                    entry.points.toString(),
                                     style: TypographyTokens.titleLarge()
                                         .copyWith(fontWeight: FontWeight.w900),
                                   ),

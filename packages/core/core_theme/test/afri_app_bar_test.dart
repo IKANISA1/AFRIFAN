@@ -24,7 +24,13 @@ void main() {
     );
 
     final title = tester.widget<Text>(find.text('Membership'));
+    final appBar = tester.widget<AppBar>(find.byType(AppBar));
     expect(title.style?.color, ColorTokens.chromeForeground);
+    expect(
+      appBar.systemOverlayStyle?.statusBarIconBrightness,
+      Brightness.light,
+    );
+    expect(appBar.systemOverlayStyle?.statusBarBrightness, Brightness.dark);
     expect(tester.takeException(), isNull);
   });
 }

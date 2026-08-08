@@ -66,10 +66,11 @@ class CrashlyticsService {
     if (!_isAvailable) return;
 
     try {
+      final safeError = StateError('runtime_failure:${error.runtimeType}');
       await FirebaseCrashlytics.instance.recordError(
-        error,
+        safeError,
         stackTrace,
-        reason: reason,
+        reason: sanitizeDiagnosticMessage(reason),
         fatal: fatal,
       );
     } catch (_) {
@@ -83,19 +84,26 @@ class CrashlyticsService {
   static Future<void> recordFlutterError(FlutterErrorDetails details) async {
     if (!_isAvailable) return;
 
-    try {
-      await FirebaseCrashlytics.instance.recordFlutterFatalError(details);
-    } catch (_) {
-      // Best-effort.
-    }
+    await recordError(
+      StateError('flutter_framework_failure:${details.exception.runtimeType}'),
+      details.stack,
+      reason: 'flutter_framework_error',
+      fatal: true,
+    );
   }
 
-  /// Set the user identifier for crash reports.
+  /// Clears the optional Crashlytics user identifier.
+  ///
+  /// Account or profile identifiers are deliberately never forwarded. The
+  /// method retains its existing signature so authentication call sites can
+  /// close diagnostic identity during sign-out without creating a second
+  /// privacy-sensitive code path during sign-in.
   static Future<void> setUserId(String? userId) async {
     if (!_isAvailable) return;
+    if (userId != null) return;
 
     try {
-      await FirebaseCrashlytics.instance.setUserIdentifier(userId ?? '');
+      await FirebaseCrashlytics.instance.setUserIdentifier('');
     } catch (_) {
       // Best-effort.
     }
@@ -104,13 +112,49 @@ class CrashlyticsService {
   /// Log a diagnostic message that will be attached to the next crash.
   static Future<void> log(String message) async {
     if (!_isAvailable) return;
+    final safeMessage = sanitizeDiagnosticMessage(message);
+    if (safeMessage == null) return;
 
     try {
-      unawaited(FirebaseCrashlytics.instance.log(message));
+      unawaited(FirebaseCrashlytics.instance.log(safeMessage));
     } catch (_) {
       // Best-effort.
     }
   }
 
   static bool get _isAvailable => _initialized && !kIsWeb;
+
+  @visibleForTesting
+  static String? sanitizeDiagnosticMessage(String? value) {
+    final normalized = value?.trim().replaceAll(RegExp(r'\s+'), ' ');
+    if (normalized == null || normalized.isEmpty) return null;
+
+    final lowered = normalized.toLowerCase();
+    const forbiddenFragments = <String>[
+      'access_token',
+      'authorization',
+      'bearer ',
+      'email=',
+      'jwt',
+      'phone=',
+      'refresh_token',
+      'service'
+          '_role',
+      'user_id',
+    ];
+    if (forbiddenFragments.any(lowered.contains) ||
+        normalized.contains('@') ||
+        lowered.contains('http://') ||
+        lowered.contains('https://') ||
+        RegExp(r'\b\+?\d{9,15}\b').hasMatch(normalized) ||
+        RegExp(
+          r'\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b',
+          caseSensitive: false,
+        ).hasMatch(normalized)) {
+      return null;
+    }
+
+    final safe = normalized.replaceAll(RegExp(r'\d+'), '#');
+    return safe.length <= 96 ? safe : safe.substring(0, 96);
+  }
 }

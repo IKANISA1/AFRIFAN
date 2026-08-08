@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,11 +31,14 @@ class CompetitionManagerScreen extends ConsumerWidget {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('COMPETITIONS', style: TypographyTokens.titleLarge()),
+        title: Text(
+          context.afriL10n.adminCompetitionsTitle,
+          style: TypographyTokens.titleLarge(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
         actions: [
           AfriIconButton(
@@ -44,8 +48,8 @@ class CompetitionManagerScreen extends ConsumerWidget {
                 ? () => _openCompetitionForm(context, ref)
                 : null,
             tooltip: controlsEnabled
-                ? 'Add competition'
-                : 'Competition actions unavailable',
+                ? context.afriL10n.adminCompetitionsAdd
+                : context.afriL10n.adminCompetitionsActionsUnavailable,
           ),
         ],
       ),
@@ -66,8 +70,8 @@ class CompetitionManagerScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-competitions-state-loading'),
-                title: 'Loading competitions',
-                message: 'Checking the controlled competition workspace.',
+                title: context.afriL10n.adminCompetitionsLoading,
+                message: context.afriL10n.adminCompetitionsLoadingMessage,
               ),
             )
           : competitions.hasError && snapshot == null
@@ -94,12 +98,12 @@ class CompetitionManagerScreen extends ConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         children: [
-          if (_statusBanner(competitions) case final banner?) ...[
+          if (_statusBanner(context, competitions) case final banner?) ...[
             banner,
             const SizedBox(height: SpacingTokens.spacing4),
           ],
           Text(
-            'Manage the competitions and seasons available to the prediction engine.',
+            context.afriL10n.adminCompetitionsDescription,
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -119,14 +123,14 @@ class CompetitionManagerScreen extends ConsumerWidget {
             AfriStateView.empty(
               key: const ValueKey<String>('admin-competitions-state-empty'),
               title: snapshot.competitions.isEmpty
-                  ? 'No competitions configured'
-                  : 'No competitions match',
+                  ? context.afriL10n.adminCompetitionsNoneConfigured
+                  : context.afriL10n.adminCompetitionsNoneMatch,
               message: snapshot.competitions.isEmpty
-                  ? 'Create the first controlled competition when access is available.'
-                  : 'Choose another region or competition kind.',
+                  ? context.afriL10n.adminCompetitionsNoneConfiguredMessage
+                  : context.afriL10n.adminCompetitionsNoneMatchMessage,
               compact: true,
               actionLabel: snapshot.competitions.isEmpty && controlsEnabled
-                  ? 'Add competition'
+                  ? context.afriL10n.adminCompetitionsAdd
                   : null,
               onAction: snapshot.competitions.isEmpty && controlsEnabled
                   ? () => _openCompetitionForm(context, ref)
@@ -155,10 +159,10 @@ class CompetitionManagerScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-competitions-state-disabled'),
-        title: 'Competition management unavailable',
-        message: 'Competition controls are disabled for this controlled build.',
+        title: context.afriL10n.adminCompetitionsManagementUnavailable,
+        message: context.afriL10n.adminCompetitionsControlsDisabled,
         icon: AfriIcons.lock,
-        actionLabel: 'Back to admin',
+        actionLabel: context.afriL10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
     );
@@ -169,12 +173,13 @@ class CompetitionManagerScreen extends ConsumerWidget {
     WidgetRef ref,
     AdminCompetitionsFailure failure,
   ) {
+    final l10n = context.afriL10n;
     final view = switch (failure.kind) {
       AdminCompetitionsFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-competitions-state-offline'),
-        title: 'Competition workspace offline',
-        message: 'Reconnect before loading private competition records.',
-        actionLabel: 'Try again',
+        title: l10n.adminCompetitionsOffline,
+        message: l10n.adminCompetitionsOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: () =>
             unawaited(ref.read(adminCompetitionsProvider.notifier).refresh()),
       ),
@@ -182,17 +187,16 @@ class CompetitionManagerScreen extends ConsumerWidget {
         key: const ValueKey<String>(
           'admin-competitions-state-permission-denied',
         ),
-        title: 'Competition access unavailable',
-        message:
-            'This account cannot view or change competition configuration.',
-        actionLabel: 'Back to admin',
+        title: l10n.adminCompetitionsAccessUnavailable,
+        message: l10n.adminCompetitionsAccessMessage,
+        actionLabel: l10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
       AdminCompetitionsFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-competitions-state-conflict'),
-        title: 'Competition data changed',
-        message: 'Refresh before continuing with competition work.',
-        actionLabel: 'Refresh',
+        title: l10n.adminCompetitionsDataChanged,
+        message: l10n.adminCompetitionsDataChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: () =>
             unawaited(ref.read(adminCompetitionsProvider.notifier).refresh()),
       ),
@@ -200,17 +204,17 @@ class CompetitionManagerScreen extends ConsumerWidget {
         key: const ValueKey<String>(
           'admin-competitions-state-security-timeout',
         ),
-        title: 'Security check timed out',
-        message: 'No competition data was shown. Check your connection.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminCompetitionsSecurityMessage,
+        actionLabel: l10n.retry,
         onAction: () =>
             unawaited(ref.read(adminCompetitionsProvider.notifier).refresh()),
       ),
       AdminCompetitionsFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-competitions-state-error'),
-        title: 'Competition workspace unavailable',
-        message: 'Private competition records remain hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminCompetitionsWorkspaceUnavailable,
+        message: l10n.adminCompetitionsHiddenMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: () =>
             unawaited(ref.read(adminCompetitionsProvider.notifier).refresh()),
       ),
@@ -221,25 +225,28 @@ class CompetitionManagerScreen extends ConsumerWidget {
     );
   }
 
-  Widget? _statusBanner(AsyncValue<AdminCompetitionsSnapshot> value) {
+  Widget? _statusBanner(
+    BuildContext context,
+    AsyncValue<AdminCompetitionsSnapshot> value,
+  ) {
+    final l10n = context.afriL10n;
     final snapshot = value.valueOrNull;
     if (snapshot == null) return null;
     if (snapshot.isMutating) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-competitions-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-competitions-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Updating competition workspace',
-        subtitle: 'Controls are paused until the current result is confirmed.',
+        title: l10n.adminCompetitionsUpdating,
+        subtitle: l10n.adminCompetitionsUpdatingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
     if (value.isLoading) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-competitions-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-competitions-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Refreshing competitions',
-        subtitle:
-            'Showing the last confirmed records while current data is checked.',
+        title: l10n.adminCompetitionsRefreshing,
+        subtitle: l10n.adminCompetitionsRefreshingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -254,15 +261,15 @@ class CompetitionManagerScreen extends ConsumerWidget {
           ? AfriIcons.offline
           : AfriIcons.statusWarning,
       title: failure.kind == AdminCompetitionsFailureKind.conflict
-          ? 'Competition data changed'
+          ? l10n.adminCompetitionsDataChanged
           : failure.kind == AdminCompetitionsFailureKind.securityTimeout
-          ? 'Security check timed out'
+          ? l10n.adminSecurityTimeout
           : failure.kind == AdminCompetitionsFailureKind.offline
-          ? 'Competition workspace offline'
-          : 'Current refresh unavailable',
+          ? l10n.adminCompetitionsOffline
+          : l10n.adminCompetitionsCurrentRefreshUnavailable,
       subtitle: uncertain
-          ? 'The update outcome is not confirmed. Refresh before taking another action.'
-          : 'Showing the last confirmed records. Actions are paused until refresh succeeds.',
+          ? l10n.adminCompetitionsOutcomeUnconfirmed
+          : l10n.adminCompetitionsLastConfirmed,
       tone: AfriStateBannerTone.warning,
     );
   }
@@ -285,7 +292,9 @@ class CompetitionManagerScreen extends ConsumerWidget {
     if (saved) {
       AfriToast.success(
         context,
-        existing == null ? 'Competition created' : 'Competition updated',
+        existing == null
+            ? context.afriL10n.adminCompetitionCreated
+            : context.afriL10n.adminCompetitionUpdated,
       );
     }
   }
@@ -311,20 +320,32 @@ class CompetitionManagerScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AfriAlertDialog(
-        title: Text(activating ? 'ACTIVATE COMPETITION?' : 'DEACTIVATE?'),
+        title: Text(
+          activating
+              ? context.afriL10n.adminCompetitionActivateQuestion
+              : context.afriL10n.adminCompetitionDeactivateQuestion,
+        ),
         content: Text(
           activating
-              ? '${competition.name} will become available to configured prediction journeys.'
-              : '${competition.name} will stop being available to configured prediction journeys.',
+              ? context.afriL10n.adminCompetitionActivateMessage(
+                  competition.name,
+                )
+              : context.afriL10n.adminCompetitionDeactivateMessage(
+                  competition.name,
+                ),
         ),
         actions: [
           AfriTextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('CANCEL'),
+            child: Text(context.afriL10n.adminCancelUpper),
           ),
           AfriTextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(activating ? 'ACTIVATE' : 'DEACTIVATE'),
+            child: Text(
+              activating
+                  ? context.afriL10n.adminActivateUpper
+                  : context.afriL10n.adminDeactivateUpper,
+            ),
           ),
         ],
       ),
@@ -336,7 +357,9 @@ class CompetitionManagerScreen extends ConsumerWidget {
     if (!context.mounted || !saved) return;
     AfriToast.success(
       context,
-      activating ? 'Competition activated' : 'Competition deactivated',
+      activating
+          ? context.afriL10n.adminCompetitionActivated
+          : context.afriL10n.adminCompetitionDeactivated,
     );
   }
 }
@@ -352,13 +375,13 @@ class _CompetitionStats extends StatelessWidget {
     final cards = <Widget>[
       _StatCard(
         icon: AfriIcons.rank,
-        label: 'TOTAL',
+        label: context.afriL10n.adminCompetitionsTotal,
         value: '$total',
         valueColor: ColorTokens.clubAccent,
       ),
       _StatCard(
         icon: AfriIcons.statusSuccess,
-        label: 'ACTIVE',
+        label: context.afriL10n.adminCompetitionsActive,
         value: '$active',
         valueColor: ColorTokens.success,
       ),
@@ -440,11 +463,14 @@ class _CompetitionFilters extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
-      label: 'Competition filters',
+      label: context.afriL10n.adminCompetitionFilters,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('REGION', style: TypographyTokens.labelSmall()),
+          Text(
+            context.afriL10n.adminCompetitionRegion,
+            style: TypographyTokens.labelSmall(),
+          ),
           const SizedBox(height: SpacingTokens.spacing2),
           Wrap(
             spacing: SpacingTokens.spacing2,
@@ -453,14 +479,17 @@ class _CompetitionFilters extends StatelessWidget {
                 .map(
                   (filter) => AfriChoiceChip(
                     selected: snapshot.regionFilter == filter,
-                    label: Text(filter.label),
+                    label: Text(_regionFilterLabel(context, filter)),
                     onSelected: enabled ? (_) => onRegion(filter) : null,
                   ),
                 )
                 .toList(growable: false),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          Text('KIND', style: TypographyTokens.labelSmall()),
+          Text(
+            context.afriL10n.adminCompetitionKind,
+            style: TypographyTokens.labelSmall(),
+          ),
           const SizedBox(height: SpacingTokens.spacing2),
           Wrap(
             spacing: SpacingTokens.spacing2,
@@ -469,7 +498,7 @@ class _CompetitionFilters extends StatelessWidget {
                 .map(
                   (filter) => AfriChoiceChip(
                     selected: snapshot.kindFilter == filter,
-                    label: Text(filter.label),
+                    label: Text(_kindFilterLabel(context, filter)),
                     onSelected: enabled ? (_) => onKind(filter) : null,
                   ),
                 )
@@ -539,11 +568,11 @@ class _CompetitionCard extends StatelessWidget {
               children: [
                 _InfoChip(
                   icon: AfriIcons.category,
-                  label: item.kind.toUpperCase(),
+                  label: _competitionKindLabel(context, item.kind),
                 ),
                 _InfoChip(
                   icon: AfriIcons.public,
-                  label: item.region.toUpperCase(),
+                  label: _competitionRegionLabel(context, item.region),
                 ),
                 if (item.countryName != null)
                   _InfoChip(
@@ -578,7 +607,7 @@ class _CompetitionCard extends StatelessWidget {
                   focusNode: primaryFocusNode,
                   onPressed: enabled ? onSeasons : null,
                   icon: const Icon(AfriIcons.calendar, size: 16),
-                  label: const Text('SEASONS'),
+                  label: Text(context.afriL10n.adminCompetitionSeasons),
                   style: AfriTextButton.styleFrom(
                     foregroundColor: ColorTokens.onSurface,
                   ),
@@ -586,7 +615,7 @@ class _CompetitionCard extends StatelessWidget {
                 AfriTextIconButton(
                   onPressed: enabled ? onEdit : null,
                   icon: const Icon(AfriIcons.edit, size: 16),
-                  label: const Text('EDIT'),
+                  label: Text(context.afriL10n.adminEditUpper),
                   style: AfriTextButton.styleFrom(
                     foregroundColor: ColorTokens.onSurface,
                   ),
@@ -599,7 +628,11 @@ class _CompetitionCard extends StatelessWidget {
                         : AfriIcons.visibility,
                     size: 16,
                   ),
-                  label: Text(item.isActive ? 'DEACTIVATE' : 'ACTIVATE'),
+                  label: Text(
+                    item.isActive
+                        ? context.afriL10n.adminDeactivateUpper
+                        : context.afriL10n.adminActivateUpper,
+                  ),
                   style: AfriTextButton.styleFrom(
                     foregroundColor: item.isActive
                         ? ColorTokens.error
@@ -613,4 +646,65 @@ class _CompetitionCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _regionFilterLabel(
+  BuildContext context,
+  AdminCompetitionRegionFilter filter,
+) {
+  final l10n = context.afriL10n;
+  return switch (filter) {
+    AdminCompetitionRegionFilter.all => l10n.adminCompetitionFilterAll,
+    AdminCompetitionRegionFilter.africa => l10n.adminCompetitionRegionAfrica,
+    AdminCompetitionRegionFilter.europe => l10n.adminCompetitionRegionEurope,
+    AdminCompetitionRegionFilter.international =>
+      l10n.adminCompetitionRegionInternational,
+    AdminCompetitionRegionFilter.global => l10n.adminCompetitionRegionGlobal,
+  };
+}
+
+String _kindFilterLabel(
+  BuildContext context,
+  AdminCompetitionKindFilter filter,
+) {
+  final l10n = context.afriL10n;
+  return switch (filter) {
+    AdminCompetitionKindFilter.all => l10n.adminCompetitionFilterAll,
+    AdminCompetitionKindFilter.league => l10n.adminCompetitionKindLeague,
+    AdminCompetitionKindFilter.cup => l10n.adminCompetitionKindCup,
+    AdminCompetitionKindFilter.tournament =>
+      l10n.adminCompetitionKindTournament,
+  };
+}
+
+String _competitionKindLabel(BuildContext context, String kind) {
+  final l10n = context.afriL10n;
+  return switch (kind) {
+    'league' => l10n.adminCompetitionKindLeague,
+    'cup' => l10n.adminCompetitionKindCup,
+    'tournament' => l10n.adminCompetitionKindTournament,
+    _ => kind.toUpperCase(),
+  };
+}
+
+String _competitionRegionLabel(BuildContext context, String region) {
+  final l10n = context.afriL10n;
+  return switch (region) {
+    'africa' => l10n.adminCompetitionRegionAfrica,
+    'europe' => l10n.adminCompetitionRegionEurope,
+    'international' => l10n.adminCompetitionRegionInternational,
+    'global' => l10n.adminCompetitionRegionGlobal,
+    _ => region.toUpperCase(),
+  };
+}
+
+String _seasonStatusLabel(BuildContext context, String status) {
+  final l10n = context.afriL10n;
+  return switch (status) {
+    'planned' => l10n.adminSeasonStatusPlanned,
+    'active' => l10n.adminSeasonStatusActive,
+    'finished' => l10n.adminSeasonStatusFinished,
+    'archived' => l10n.adminSeasonStatusArchived,
+    _ => status.toUpperCase(),
+  };
 }

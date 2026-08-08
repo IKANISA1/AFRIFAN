@@ -15,6 +15,7 @@ jq -e '
   all(
     .bundles[];
     (.id | type == "string" and length > 0) and
+    ((.admission_status // "admitted") == "admitted" or .admission_status == "pending") and
     (.directory | type == "string" and startswith("output/implementation_goal_20260724")) and
     ((.artifact_scope // "recursive") == "recursive" or .artifact_scope == "immediate") and
     (.task_ids | type == "array" and length > 0) and
@@ -122,7 +123,12 @@ while IFS= read -r relative_directory; do
     printf 'Evidence artifact inventory mismatch: %s\n' "$relative_directory" >&2
     exit 1
   fi
-done < <(jq -r '.bundles[].directory' "$REGISTRY")
+done < <(
+  jq -r \
+    '.bundles[] | select((.admission_status // "admitted") == "admitted") | .directory' \
+    "$REGISTRY"
+)
 
-printf 'Evidence provenance valid: %s bundles\n' \
-  "$(jq '.bundles | length' "$REGISTRY")"
+printf 'Evidence provenance valid: %s admitted bundles; %s pending bundles\n' \
+  "$(jq '[.bundles[] | select((.admission_status // "admitted") == "admitted")] | length' "$REGISTRY")" \
+  "$(jq '[.bundles[] | select(.admission_status == "pending")] | length' "$REGISTRY")"

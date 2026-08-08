@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -23,7 +24,7 @@ class NotificationPreviewCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'PREVIEW',
+            context.afriL10n.adminNotificationPreview,
             style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -43,12 +44,16 @@ class NotificationPreviewCard extends StatelessWidget {
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  title.isEmpty ? 'Notification title' : title,
+                  title.isEmpty
+                      ? context.afriL10n.adminNotificationTitleLabel
+                      : title,
                   style: TypographyTokens.bodyLarge(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  body.isEmpty ? 'Your message preview appears here.' : body,
+                  body.isEmpty
+                      ? context.afriL10n.adminNotificationPreviewBody
+                      : body,
                   style: TypographyTokens.bodyMedium(),
                 ),
               ],
@@ -81,7 +86,14 @@ class NotificationHistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final datePart = date == null
         ? ''
-        : '  •  ${DateFormat('dd MMM HH:mm').format(date!.toLocal())}';
+        : '  •  ${DateFormat('dd MMM HH:mm', Localizations.localeOf(context).toLanguageTag()).format(date!.toLocal())}';
+    final statusLabel = switch (status) {
+      'scheduled' => context.afriL10n.adminNotificationStatusScheduled,
+      'sent' => context.afriL10n.adminNotificationStatusSent,
+      'partial' => context.afriL10n.adminNotificationStatusPartial,
+      'failed' => context.afriL10n.adminNotificationStatusFailed,
+      _ => status.toUpperCase(),
+    };
 
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -100,7 +112,7 @@ class NotificationHistoryCard extends StatelessWidget {
             Text(body, style: TypographyTokens.bodyMedium()),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              '${status.toUpperCase()}$datePart$metrics',
+              '$statusLabel$datePart$metrics',
               style: TypographyTokens.bodySmall(),
             ),
           ],

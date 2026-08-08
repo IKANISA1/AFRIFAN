@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -80,7 +81,10 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         );
       }
 
-      final clubContext = await _resolveClubContext(team);
+      if (!mounted) {
+        return;
+      }
+      final clubContext = await _resolveClubContext(team, context.afriL10n);
 
       if (!mounted) {
         return;
@@ -96,7 +100,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         _paymentRoute = clubContext.paymentRoute;
         _clubSupportMessage = clubContext.message;
         _isLoading = false;
-        _error = team == null ? 'Team not found.' : null;
+        _error = team == null ? context.afriL10n.gameTeamNotFound : null;
       });
     } catch (error, stackTrace) {
       AfriLogger.warn(
@@ -110,20 +114,21 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
       }
       setState(() {
         _isLoading = false;
-        _error = 'Team profile is temporarily unavailable.';
+        _error = context.afriL10n.gameTeamProfileTemporarilyUnavailable;
       });
     }
   }
 
-  Future<TeamClubContext> _resolveClubContext(TeamCatalogEntry? team) async {
+  Future<TeamClubContext> _resolveClubContext(
+    TeamCatalogEntry? team,
+    AfriLocalizations l10n,
+  ) async {
     final client = ref.read(supabaseClientProvider);
     final resolver = ClubScopeResolver(client: client);
     final scope = await resolver.requireResolved();
     final clubId = scope.clubId;
     if (team == null || clubId == null) {
-      return const TeamClubContext(
-        message: 'Supporter activity is only available for the active club.',
-      );
+      return TeamClubContext(message: l10n.gameSupporterActivityActiveClubOnly);
     }
 
     try {
@@ -141,8 +146,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         return TeamClubContext(
           clubId: clubId,
           isActiveClubTeam: false,
-          message:
-              'Supporter registry and contribution routing are available for the current app club only.',
+          message: l10n.gameSupporterRoutingCurrentClubOnly,
         );
       }
 
@@ -162,7 +166,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                 Map<String, dynamic>.from(routeRows.first),
               ),
         message: routeRows.isEmpty
-            ? 'This club has not published an active contribution route yet.'
+            ? l10n.gameContributionRouteNotPublished
             : null,
       );
     } catch (error, stackTrace) {
@@ -175,7 +179,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
       return TeamClubContext(
         clubId: clubId,
         isActiveClubTeam: false,
-        message: 'Club supporter data is temporarily unavailable.',
+        message: l10n.gameClubSupporterDataUnavailable,
       );
     }
   }
@@ -216,15 +220,17 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
   Future<void> _dialMomoUssd() async {
     if (!_isActiveClubTeam) {
       _showMessage(
-        _clubSupportMessage ??
-            'Contributions are available only for the active club.',
+        _clubSupportMessage ?? context.afriL10n.gameContributionsActiveClubOnly,
       );
       return;
     }
 
     final route = _paymentRoute;
     if (route == null || route.recipientCode.trim().isEmpty) {
-      _showMessage(_clubSupportMessage ?? 'Contribution route unavailable.');
+      _showMessage(
+        _clubSupportMessage ??
+            context.afriL10n.gameContributionRouteUnavailable,
+      );
       return;
     }
 
@@ -232,7 +238,11 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
     if (amount == null || amount <= 0) {
       return;
     }
+    if (!mounted) {
+      return;
+    }
 
+    final l10n = context.afriL10n;
     setState(() => _isDialing = true);
 
     try {
@@ -243,7 +253,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         recipientType: PaymentRecipientType.code,
       );
       if (!launched) {
-        _showMessage('Could not open the phone dialer.');
+        _showMessage(l10n.gameCouldNotOpenDialer);
       }
     } catch (error, stackTrace) {
       AfriLogger.warn(
@@ -252,7 +262,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         error,
         stackTrace,
       );
-      _showMessage('Dialer launch failed.');
+      _showMessage(l10n.gameDialerLaunchFailed);
     } finally {
       if (mounted) {
         setState(() => _isDialing = false);
@@ -265,36 +275,44 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
     final amount = await showDialog<int?>(
       context: context,
       builder: (dialogContext) => AfriAlertDialog(
-        title: const Text('Enter contribution amount'),
+        title: Text(dialogContext.afriL10n.gameEnterContributionAmount),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'You will pay ${route.payToLabel} via ${route.providerLabel}.',
+              dialogContext.afriL10n.gamePaymentRouteDescription(
+                route.payToLabel,
+                route.providerLabel,
+              ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             AfriInputField(
               controller: controller,
               keyboardType: TextInputType.number,
               autofocus: true,
-              label: 'Amount (${route.country.currencyCode})',
+              label: dialogContext.afriL10n.gameAmountCurrency(
+                route.country.currencyCode,
+              ),
             ),
           ],
         ),
         actions: [
           AfriTextButton(
             onPressed: () => dialogContext.pop(),
-            child: const Text('Cancel'),
+            child: Text(dialogContext.afriL10n.gameCancel),
           ),
           AfriButton(
-            label: 'Dial now',
+            label: dialogContext.afriL10n.gameDialNow,
             onTap: () {
               final parsed = int.tryParse(
                 controller.text.replaceAll(RegExp(r'[^0-9]'), ''),
               );
               if (parsed == null || parsed <= 0) {
-                AfriToast.error(dialogContext, 'Enter a valid amount.');
+                AfriToast.error(
+                  dialogContext,
+                  dialogContext.afriL10n.gameEnterValidAmount,
+                );
                 return;
               }
               dialogContext.pop(parsed);
@@ -308,12 +326,14 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
     return amount;
   }
 
-  String _kickoffLabel(DateTime? value) {
+  String _kickoffLabel(BuildContext context, DateTime? value) {
     if (value == null) {
-      return 'TBD';
+      return context.afriL10n.gameTbd;
     }
     final local = value.toLocal();
-    return '${local.day}/${local.month} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+    final materialL10n = MaterialLocalizations.of(context);
+    return '${materialL10n.formatShortDate(local)} • '
+        '${materialL10n.formatTimeOfDay(TimeOfDay.fromDateTime(local))}';
   }
 
   @override
@@ -325,7 +345,8 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          team?.shortName.toUpperCase() ?? 'TEAM PROFILE',
+          team?.shortName.toUpperCase() ??
+              context.afriL10n.gameTeamProfileTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
@@ -334,7 +355,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -349,9 +370,9 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Team unavailable',
+                  title: context.afriL10n.gameTeamUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -368,7 +389,8 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            team?.name.toUpperCase() ?? 'TEAM',
+                            team?.name.toUpperCase() ??
+                                context.afriL10n.gameTeamUpper,
                             style: TypographyTokens.headlineLarge().copyWith(
                               fontWeight: FontWeight.w900,
                               height: TypographyTokens.lineHeightCompact,
@@ -380,7 +402,9 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                                   team?.city,
                                   team?.countryName,
                                   if (team?.foundedYear != null)
-                                    'Founded ${team!.foundedYear}',
+                                    context.afriL10n.gameFoundedYear(
+                                      team!.foundedYear!,
+                                    ),
                                 ]
                                 .whereType<String>()
                                 .where((value) => value.isNotEmpty)
@@ -392,7 +416,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                             children: [
                               Expanded(
                                 child: TeamMetric(
-                                  label: 'Table',
+                                  label: context.afriL10n.gameTable,
                                   value: _tableRow == null
                                       ? '--'
                                       : '#${_tableRow!.position}',
@@ -401,7 +425,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                               const SizedBox(width: SpacingTokens.spacing3),
                               Expanded(
                                 child: TeamMetric(
-                                  label: 'Points',
+                                  label: context.afriL10n.gamePointsShort,
                                   value: _tableRow == null
                                       ? '--'
                                       : '${_tableRow!.points}',
@@ -410,8 +434,8 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                               const SizedBox(width: SpacingTokens.spacing3),
                               Expanded(
                                 child: TeamMetric(
-                                  label: 'Squad',
-                                  value: '${_roster.length}',
+                                  label: context.afriL10n.gameSquad,
+                                  value: _roster.length.toString(),
                                 ),
                               ),
                             ],
@@ -428,12 +452,12 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                     tabBar: AfriTabBar.line(
                       controller: _tabController,
                       isScrollable: true,
-                      tabs: const [
-                        Tab(text: 'Overview'),
-                        Tab(text: 'Members'),
-                        Tab(text: 'Fixtures'),
-                        Tab(text: 'Contribute'),
-                        Tab(text: 'About'),
+                      tabs: [
+                        Tab(text: context.afriL10n.gameOverview),
+                        Tab(text: context.afriL10n.gameMembers),
+                        Tab(text: context.afriL10n.gameFixtures),
+                        Tab(text: context.afriL10n.gameContribute),
+                        Tab(text: context.afriL10n.gameAbout),
                       ],
                     ),
                   ),
@@ -455,7 +479,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                   ),
                   TeamFixturesTab(
                     fixtures: _fixtures,
-                    kickoffLabel: _kickoffLabel,
+                    kickoffLabel: (value) => _kickoffLabel(context, value),
                   ),
                   TeamContributeTab(
                     isDialing: _isDialing,

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:feat_gamification/src/models/challenge_models.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
@@ -395,16 +396,25 @@ Future<void> pumpTestWidget(
   WidgetTester tester, {
   required Widget child,
   List<Override> overrides = const <Override>[],
+  Locale? locale,
+  Size size = const Size(393, 852),
+  double textScaleFactor = 1,
 }) async {
-  tester.view.physicalSize = const Size(393, 852);
+  tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1.0;
+  tester.platformDispatcher.textScaleFactorTestValue = textScaleFactor;
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 
   await tester.pumpWidget(
     ProviderScope(
       overrides: overrides,
-      child: MaterialApp(home: child),
+      child: MaterialApp(
+        home: locale == null
+            ? child
+            : AfriLocalizationsScope(locale: locale, child: child),
+      ),
     ),
   );
   await tester.pumpAndSettle();

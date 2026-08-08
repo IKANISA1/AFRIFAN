@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class TopScorersSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'TOP SCORERS',
+          context.afriL10n.gameTopScorers,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
@@ -84,7 +85,7 @@ class TopScorersSection extends StatelessWidget {
                             ),
                             const SizedBox(width: SpacingTokens.spacing1),
                             Text(
-                              'Goals',
+                              context.afriL10n.gameGoals,
                               style:
                                   TypographyTokens.metricLabel(
                                     ColorTokens.onSurfaceVariant,

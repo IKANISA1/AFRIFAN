@@ -173,6 +173,7 @@ class RoutePresentationDecision {
     required this.recommendation,
     required this.rationale,
     this.targetPath,
+    this.renderedStateContract,
   });
 
   /// Absolute route path or route pattern.
@@ -190,6 +191,11 @@ class RoutePresentationDecision {
 
   /// Why this presentation is the right product decision.
   final String rationale;
+
+  /// Optional route-state applicability contract consumed by generated
+  /// governance ledgers. The value must correspond to a classifier owned by
+  /// the route-inventory generator; it does not itself count as evidence.
+  final String? renderedStateContract;
 }
 
 /// Describes a bottom navigation tab provided by a feature.

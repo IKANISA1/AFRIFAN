@@ -55,7 +55,8 @@ const statusCopy: Record<
   },
   error: {
     label: "Venue oversight unavailable",
-    detail: "Confirmed metrics remain visible. Retry when the service recovers.",
+    detail:
+      "Confirmed metrics remain visible. Retry when the service recovers.",
   },
   offline: {
     label: "Venue oversight is offline",
@@ -147,7 +148,9 @@ export default function AdminVenuesPage() {
           <>
             <AdminStatusBadge label="Feature flagged" tone="info" />
             <AdminStatusBadge
-              label={hasConfirmed ? "Club scope confirmed" : "Scope unconfirmed"}
+              label={
+                hasConfirmed ? "Club scope confirmed" : "Scope unconfirmed"
+              }
               tone={hasConfirmed ? "success" : "warning"}
             />
           </>
@@ -196,7 +199,10 @@ export default function AdminVenuesPage() {
       </section>
 
       {initialLoading ? (
-        <div className="grid gap-4 lg:grid-cols-2" aria-label="Loading venue oversight">
+        <div
+          className="grid gap-4 lg:grid-cols-2"
+          aria-label="Loading venue oversight"
+        >
           {Array.from({ length: 2 }).map((_, index) => (
             <div key={index} className="admin-surface p-6">
               <Skeleton className="skeleton-text h-7 w-2/5" />
@@ -243,7 +249,10 @@ export default function AdminVenuesPage() {
             ))}
           </section>
 
-          <VenueGovernancePanel snapshot={governanceSnapshot} />
+          <VenueGovernancePanel
+            snapshot={governanceSnapshot}
+            onInteractionChange={setInteraction}
+          />
         </div>
       ) : null}
     </div>

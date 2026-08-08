@@ -18,7 +18,9 @@ function getFocusableElements(container: HTMLElement | null) {
     return [];
   }
 
-  return Array.from(container.querySelectorAll<HTMLElement>(focusableSelector)).filter(
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(focusableSelector),
+  ).filter(
     (element) =>
       !element.hasAttribute("disabled") &&
       element.getAttribute("aria-hidden") !== "true" &&
@@ -62,14 +64,18 @@ export function AdminDialogFrame({
     }
 
     lastActiveRef.current =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     const panel = panelRef.current;
     const focusTarget =
-      getFocusableElements(panel).find((element) => element.dataset.autofocus === "true") ??
+      getFocusableElements(panel).find(
+        (element) => element.dataset.autofocus === "true",
+      ) ??
       getFocusableElements(panel)[0] ??
       panel;
     window.requestAnimationFrame(() => {
@@ -151,18 +157,24 @@ export function AdminDialogFrame({
         aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
         className={cn(
-          "relative border-[var(--admin-border)] bg-[var(--admin-surface)] text-[var(--admin-text)] shadow-2xl outline-none",
+          "relative min-w-0 max-w-full overflow-hidden border-[var(--admin-border)] bg-[var(--admin-surface)] text-[var(--admin-text)] shadow-2xl outline-none",
           layoutPanelClassName,
           panelClassName,
         )}
       >
-        <header className="flex items-start justify-between gap-4 border-b border-[var(--admin-border)] px-6 py-4">
-          <div className="space-y-1">
-            <h2 id={titleId} className="text-lg font-semibold text-[var(--admin-text-strong)]">
+        <header className="flex min-w-0 items-start justify-between gap-4 border-b border-[var(--admin-border)] px-6 py-4">
+          <div className="min-w-0 space-y-1">
+            <h2
+              id={titleId}
+              className="text-lg font-semibold text-[var(--admin-text-strong)]"
+            >
               {title}
             </h2>
             {description ? (
-              <p id={descriptionId} className="text-sm text-[var(--admin-text-muted)]">
+              <p
+                id={descriptionId}
+                className="text-sm text-[var(--admin-text-muted)]"
+              >
                 {description}
               </p>
             ) : null}
@@ -178,10 +190,17 @@ export function AdminDialogFrame({
           </button>
         </header>
 
-        <div className={cn("flex-1 overflow-y-auto p-6", bodyClassName)}>{children}</div>
+        <div
+          className={cn(
+            "min-w-0 flex-1 overflow-x-auto overflow-y-auto p-6",
+            bodyClassName,
+          )}
+        >
+          {children}
+        </div>
 
         {footer ? (
-          <footer className="border-t border-[var(--admin-border)] bg-[var(--admin-zinc-950)] px-6 py-4">
+          <footer className="min-w-0 overflow-x-auto border-t border-[var(--admin-border)] bg-[var(--admin-zinc-950)] px-6 py-4">
             {footer}
           </footer>
         ) : null}

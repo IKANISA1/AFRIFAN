@@ -136,7 +136,7 @@ export default function AdminGamesPage() {
         title="Game Control Room"
         meta={
           <span className="admin-meta-chip">
-            Bounded session, moderation, TV, and audit operations
+            Content Studio · Session Planner · Live Control
           </span>
         }
       />

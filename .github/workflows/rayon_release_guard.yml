@@ -32,11 +32,11 @@ jobs:
       - name: Verify controlled Flutter runtime
         run: bash tools/scripts/validate_flutter_runtime_pins.sh --runtime
 
-      - name: Install Melos
-        run: dart pub global activate melos
+      - name: Resolve workspace tooling
+        run: flutter pub get
 
       - name: Install workspace dependencies
-        run: melos bootstrap
+        run: dart run melos bootstrap
 
       - name: Set up Deno
         uses: denoland/setup-deno@v2

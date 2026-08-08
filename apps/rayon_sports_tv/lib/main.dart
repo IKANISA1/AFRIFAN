@@ -4,10 +4,16 @@ import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'src/tv_runtime.dart';
+import 'src/tv_runtime_controller.dart';
+
+export 'src/tv_runtime.dart';
+export 'src/tv_runtime_controller.dart';
 
 const _rayonConfig = RayonSportsConfig();
 const _supabaseUrl = String.fromEnvironment('SUPABASE_URL');
@@ -17,9 +23,6 @@ const _homeVenueName = String.fromEnvironment(
   'HOME_VENUE_NAME',
   defaultValue: 'Home Stadium',
 );
-const _credentialStorageKey = 'africlub_tv_device_credential_v1';
-const _credentialOperationTimeout = Duration(seconds: 10);
-const _tvBackendOperationTimeout = Duration(seconds: 12);
 var _supabaseReady = false;
 
 Future<void> main() async {
@@ -43,80 +46,15 @@ Future<void> main() async {
   runApp(const RayonSportsTvApp());
 }
 
-class TvDisplayState {
-  const TvDisplayState({
-    required this.venueName,
-    required this.sessionCode,
-    required this.expiresAt,
-    required this.fetReward,
-    required this.prompt,
-    required this.phase,
+class RayonSportsTvApp extends StatelessWidget {
+  const RayonSportsTvApp({
+    super.key,
+    this.previewState,
+    this.runtimeController,
   });
 
-  final String venueName;
-  final String sessionCode;
-  final String expiresAt;
-  final int fetReward;
-  final String prompt;
-  final String phase;
-
-  String expiryLabel([DateTime? now]) {
-    final parsed = DateTime.tryParse(expiresAt);
-    if (parsed == null) return expiresAt;
-    final remaining = parsed.difference(now ?? DateTime.now());
-    if (remaining <= Duration.zero) return 'expired';
-    if (remaining.inMinutes < 1) return 'in <1 min';
-    if (remaining.inHours < 1) return 'in ${remaining.inMinutes} min';
-    return 'in ${remaining.inHours}h ${remaining.inMinutes.remainder(60)}m';
-  }
-
-  String localizedExpiryLabel(AfriLocalizations l10n, [DateTime? now]) {
-    final parsed = DateTime.tryParse(expiresAt);
-    if (parsed == null) return expiresAt;
-    final remaining = parsed.difference(now ?? DateTime.now());
-    if (remaining <= Duration.zero) return l10n.tvExpired;
-    if (remaining.inMinutes < 1) return l10n.tvExpiresLessThanOneMinute;
-    if (remaining.inHours < 1) {
-      return l10n.tvExpiresMinutes(remaining.inMinutes);
-    }
-    return l10n.tvExpiresHoursMinutes(
-      remaining.inHours,
-      remaining.inMinutes.remainder(60),
-    );
-  }
-
-  static const unpaired = TvDisplayState(
-    venueName: 'Unpaired TV display',
-    sessionCode: 'PAIR TV',
-    expiresAt: '--',
-    fetReward: 0,
-    prompt: 'Pair this TV display from the admin panel.',
-    phase: 'Offline',
-  );
-
-  factory TvDisplayState.fromRpcPayload(Object? payload) {
-    if (payload is! Map) {
-      return TvDisplayState.unpaired;
-    }
-    final data = Map<String, dynamic>.from(payload);
-    return TvDisplayState(
-      venueName: _stringValue(data['venue_name'], 'Unpaired TV display'),
-      sessionCode: _stringValue(data['session_code'], 'PAIR TV'),
-      expiresAt: _stringValue(data['expires_at'], '--'),
-      fetReward: _intValue(data['fet_reward']),
-      prompt: _stringValue(
-        data['prompt'],
-        'Pair this TV display from the admin panel.',
-      ),
-      phase: _stringValue(data['phase'], 'Offline'),
-    );
-  }
-}
-
-class RayonSportsTvApp extends StatelessWidget {
-  const RayonSportsTvApp({super.key, this.state});
-
-  final TvDisplayState? state;
+  final TvRuntimeState? previewState;
+  final TvRuntimeController? runtimeController;
 
   @override
   Widget build(BuildContext context) {
@@ -133,8 +71,8 @@ class RayonSportsTvApp extends StatelessWidget {
       onGenerateTitle: (_) =>
           lookupAfriLocalizations(appLocale).tvAppTitle(_rayonConfig.appName),
       theme: ClubTheme.from(_rayonConfig),
-      locale: const Locale('en'),
-      supportedLocales: const <Locale>[Locale('en')],
+      locale: appLocale.languageCode == 'rw' ? const Locale('en') : appLocale,
+      supportedLocales: const <Locale>[Locale('en'), Locale('fr')],
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AfriLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -145,252 +83,143 @@ class RayonSportsTvApp extends StatelessWidget {
         locale: appLocale,
         child: child ?? const SizedBox.shrink(),
       ),
-      home: state == null
-          ? const _TvDisplayStateLoader()
-          : RayonSportsTvScreen(state: state!),
+      home: previewState != null
+          ? RayonSportsTvScreen(state: previewState!)
+          : TvRuntimeHost(controller: runtimeController),
     );
   }
 }
 
-class _TvDisplayStateLoader extends StatefulWidget {
-  const _TvDisplayStateLoader();
+class TvRuntimeHost extends StatefulWidget {
+  const TvRuntimeHost({super.key, this.controller});
+
+  final TvRuntimeController? controller;
 
   @override
-  State<_TvDisplayStateLoader> createState() => _TvDisplayStateLoaderState();
+  State<TvRuntimeHost> createState() => _TvRuntimeHostState();
 }
 
-class _TvDisplayStateLoaderState extends State<_TvDisplayStateLoader> {
-  final _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
-  Timer? _refreshTimer;
-  String? _credential;
-  TvDisplayState _displayState = TvDisplayState.unpaired;
-  TvConnectionState _connectionState = TvConnectionState.connecting;
-  DateTime? _lastUpdated;
-  int _failureCount = 0;
+class _TvRuntimeHostState extends State<TvRuntimeHost>
+    with WidgetsBindingObserver {
+  late final TvRuntimeController _controller;
+  late final bool _ownsController;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(_lifecycleObserver);
-    unawaited(_restoreAndRefresh());
+    WidgetsBinding.instance.addObserver(this);
+    _ownsController = widget.controller == null;
+    _controller = widget.controller ?? _createRuntimeController();
+    _controller.addListener(_onChanged);
+    unawaited(_controller.start());
   }
 
-  late final _TvLifecycleObserver _lifecycleObserver = _TvLifecycleObserver(
-    onResume: () => unawaited(_refresh()),
-  );
+  TvRuntimeController _createRuntimeController() {
+    final runtimeConfigurationAvailable = _supabaseReady && _clubId > 0;
+    final gateway = runtimeConfigurationAvailable
+        ? SupabaseTvRuntimeGateway(
+            client: Supabase.instance.client,
+            expectedClubId: _clubId.toString(),
+          )
+        : const _UnavailableTvRuntimeGateway();
+    return TvRuntimeController(
+      gateway: gateway,
+      store: SecureTvCredentialStore(),
+      configurationAvailable: runtimeConfigurationAvailable,
+    );
+  }
+
+  void _onChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_controller.retry());
+    }
+  }
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
-    WidgetsBinding.instance.removeObserver(_lifecycleObserver);
+    WidgetsBinding.instance.removeObserver(this);
+    _controller.removeListener(_onChanged);
+    if (_ownsController) _controller.dispose();
     super.dispose();
-  }
-
-  Future<void> _restoreAndRefresh() async {
-    if (!_supabaseReady) {
-      if (mounted) {
-        setState(
-          () => _connectionState = TvConnectionState.configurationMissing,
-        );
-      }
-      return;
-    }
-    try {
-      _credential = await _storage
-          .read(key: _credentialStorageKey)
-          .timeout(_credentialOperationTimeout);
-    } on TimeoutException {
-      _recordTvEvent('credential_storage_timeout');
-      if (mounted) {
-        setState(() => _connectionState = TvConnectionState.securityTimeout);
-      }
-      return;
-    } catch (_) {
-      _recordTvEvent('credential_storage_unavailable');
-      if (mounted) {
-        setState(() => _connectionState = TvConnectionState.serviceUnavailable);
-      }
-      return;
-    }
-    if ((_credential ?? '').isEmpty) {
-      if (mounted) {
-        setState(() => _connectionState = TvConnectionState.unpaired);
-      }
-      return;
-    }
-    await _refresh();
-  }
-
-  Future<void> _refresh() async {
-    final credential = _credential;
-    if (!_supabaseReady || credential == null || credential.isEmpty) return;
-    _refreshTimer?.cancel();
-    if (mounted) {
-      setState(() => _connectionState = TvConnectionState.connecting);
-    }
-    try {
-      final response = await Supabase.instance.client
-          .rpc(
-            'get_tv_display_state_with_credential',
-            params: <String, dynamic>{'p_device_token': credential},
-          )
-          .timeout(_tvBackendOperationTimeout);
-      final payload = response is Map
-          ? Map<String, dynamic>.from(response)
-          : <String, dynamic>{};
-      final code = payload['code']?.toString();
-      if (code == 'credential_revoked_or_invalid' ||
-          code == 'credential_invalid') {
-        _recordTvEvent('credential_rejected');
-        await _storage
-            .delete(key: _credentialStorageKey)
-            .timeout(_credentialOperationTimeout);
-        _credential = null;
-        if (mounted) {
-          setState(() {
-            _displayState = TvDisplayState.unpaired;
-            _connectionState = TvConnectionState.revoked;
-          });
-        }
-        return;
-      }
-      _failureCount = 0;
-      _recordTvEvent('refresh_success');
-      if (mounted) {
-        setState(() {
-          _displayState = TvDisplayState.fromRpcPayload(payload);
-          _connectionState = TvConnectionState.connected;
-          _lastUpdated = DateTime.now();
-        });
-      }
-      _scheduleRefresh(const Duration(seconds: 20));
-    } on TimeoutException {
-      _failureCount += 1;
-      _recordTvEvent('refresh_timeout', retryAttempt: _failureCount);
-      if (mounted) {
-        setState(() => _connectionState = TvConnectionState.securityTimeout);
-      }
-      _scheduleRefresh(const Duration(seconds: 20));
-    } catch (_) {
-      _failureCount += 1;
-      _recordTvEvent('refresh_failed', retryAttempt: _failureCount);
-      if (mounted) {
-        setState(() => _connectionState = TvConnectionState.serviceUnavailable);
-      }
-      final seconds = (5 * (1 << (_failureCount - 1).clamp(0, 4))).clamp(5, 80);
-      _scheduleRefresh(Duration(seconds: seconds));
-    }
-  }
-
-  void _scheduleRefresh(Duration delay) {
-    _refreshTimer?.cancel();
-    _refreshTimer = Timer(delay, () => unawaited(_refresh()));
-  }
-
-  Future<String?> _pair(String code) async {
-    if (!_supabaseReady) return 'Backend configuration is missing.';
-    final pairingUnavailable = context.afriL10n.tvPairingUnavailable;
-    try {
-      final response = await Supabase.instance.client
-          .rpc(
-            'exchange_tv_pairing_code',
-            params: <String, dynamic>{
-              'p_pairing_code': code.trim().toUpperCase(),
-              'p_club_id': _clubId == 0 ? null : _clubId,
-            },
-          )
-          .timeout(_tvBackendOperationTimeout);
-      final payload = response is Map
-          ? Map<String, dynamic>.from(response)
-          : <String, dynamic>{};
-      final token = payload['device_token']?.toString() ?? '';
-      if (payload['code'] != 'paired' || token.length != 64) {
-        return 'That pairing code is invalid or expired.';
-      }
-      await _storage
-          .write(key: _credentialStorageKey, value: token)
-          .timeout(_credentialOperationTimeout);
-      _credential = token;
-      _recordTvEvent('pairing_success');
-      await _refresh();
-      return null;
-    } on TimeoutException {
-      _recordTvEvent('pairing_timeout');
-      return 'Pairing was not confirmed in time. Check the connection and retry.';
-    } catch (_) {
-      _recordTvEvent('pairing_failed');
-      return pairingUnavailable;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_connectionState == TvConnectionState.unpaired ||
-        _connectionState == TvConnectionState.revoked ||
-        _connectionState == TvConnectionState.configurationMissing) {
-      return TvPairingScreen(state: _connectionState, onPair: _pair);
-    }
     return RayonSportsTvScreen(
-      state: _displayState,
-      connectionState: _connectionState,
-      lastUpdated: _lastUpdated,
-      onRetry: _restoreAndRefresh,
+      state: _controller.state,
+      onRetry: () => unawaited(_controller.retry()),
+      onNewPairingChallenge: () =>
+          unawaited(_controller.renewPairingChallenge()),
     );
   }
 }
 
-enum TvConnectionState {
-  connecting,
-  connected,
-  serviceUnavailable,
-  securityTimeout,
-  unpaired,
-  revoked,
-  configurationMissing,
-}
-
-class _TvLifecycleObserver with WidgetsBindingObserver {
-  _TvLifecycleObserver({required this.onResume});
-  final VoidCallback onResume;
+class _UnavailableTvRuntimeGateway implements TvRuntimeGateway {
+  const _UnavailableTvRuntimeGateway();
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) onResume();
+  Future<void> prepareDeviceIdentity() {
+    throw const TvRuntimeFailure(TvRuntimeFailureKind.unavailable);
   }
-}
 
-String _stringValue(Object? value, String fallback) {
-  final text = value?.toString().trim() ?? '';
-  return text.isEmpty ? fallback : text;
-}
+  @override
+  Future<TvBootstrapChallenge> createPairingChallenge({
+    required String installationNonce,
+  }) {
+    throw const TvRuntimeFailure(TvRuntimeFailureKind.unavailable);
+  }
 
-int _intValue(Object? value) {
-  if (value is int) return value;
-  if (value is num) return value.toInt();
-  return int.tryParse(value?.toString() ?? '') ?? 0;
+  @override
+  Future<TvCredentialExchange> exchangePairingChallenge({
+    required String challenge,
+    required String installationNonce,
+  }) {
+    throw const TvRuntimeFailure(TvRuntimeFailureKind.unavailable);
+  }
+
+  @override
+  Future<TvRealtimeIdentity> bindRealtimeIdentity(String credential) {
+    throw const TvRuntimeFailure(TvRuntimeFailureKind.unavailable);
+  }
+
+  @override
+  Future<TvGameProjection> fetchProjection(String credential) {
+    throw const TvRuntimeFailure(TvRuntimeFailureKind.unavailable);
+  }
+
+  @override
+  Stream<TvRealtimeSignal> watchInvalidations({
+    required String clubId,
+    required String sessionId,
+  }) {
+    return Stream<TvRealtimeSignal>.error(
+      const TvRuntimeFailure(TvRuntimeFailureKind.unavailable),
+    );
+  }
 }
 
 class TvRetryIntent extends Intent {
   const TvRetryIntent();
 }
 
-class TvSubmitPairingIntent extends Intent {
-  const TvSubmitPairingIntent();
-}
-
 class TvBackIntent extends Intent {
   const TvBackIntent();
 }
 
-/// Explicit remote-control contract shared by every native TV state.
+class TvContextMenuIntent extends Intent {
+  const TvContextMenuIntent();
+}
+
 class TvRemoteControlScope extends StatelessWidget {
   const TvRemoteControlScope({
     super.key,
     required this.child,
     this.onRetry,
-    this.onSubmit,
     this.onBack,
   });
 
@@ -416,17 +245,13 @@ class TvRemoteControlScope extends StatelessWidget {
         SingleActivator(LogicalKeyboardKey.browserBack): TvBackIntent(),
         SingleActivator(LogicalKeyboardKey.goBack): TvBackIntent(),
         SingleActivator(LogicalKeyboardKey.gameButtonB): TvBackIntent(),
-        SingleActivator(LogicalKeyboardKey.contextMenu): TvBackIntent(),
+        SingleActivator(LogicalKeyboardKey.contextMenu): TvContextMenuIntent(),
         SingleActivator(LogicalKeyboardKey.keyR): TvRetryIntent(),
         SingleActivator(LogicalKeyboardKey.f5): TvRetryIntent(),
-        SingleActivator(LogicalKeyboardKey.navigateIn): TvSubmitPairingIntent(),
-        SingleActivator(LogicalKeyboardKey.gameButtonX):
-            TvSubmitPairingIntent(),
       };
 
   final Widget child;
   final VoidCallback? onRetry;
-  final VoidCallback? onSubmit;
   final VoidCallback? onBack;
 
   @override
@@ -450,12 +275,6 @@ class TvRemoteControlScope extends StatelessWidget {
                 return null;
               },
             ),
-            TvSubmitPairingIntent: CallbackAction<TvSubmitPairingIntent>(
-              onInvoke: (_) {
-                onSubmit?.call();
-                return null;
-              },
-            ),
             TvBackIntent: CallbackAction<TvBackIntent>(
               onInvoke: (_) {
                 if (onBack != null) {
@@ -463,6 +282,12 @@ class TvRemoteControlScope extends StatelessWidget {
                 } else {
                   unawaited(Navigator.of(remoteContext).maybePop());
                 }
+                return null;
+              },
+            ),
+            TvContextMenuIntent: CallbackAction<TvContextMenuIntent>(
+              onInvoke: (_) {
+                unawaited(_showTvContextMenu(remoteContext, onRetry: onRetry));
                 return null;
               },
             ),
@@ -477,30 +302,689 @@ class TvRemoteControlScope extends StatelessWidget {
   }
 }
 
+Future<void> _showTvContextMenu(
+  BuildContext context, {
+  VoidCallback? onRetry,
+}) async {
+  final l10n = context.afriL10n;
+  await showDialog<void>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      key: const ValueKey<String>('tv-remote-context-menu'),
+      title: Text(l10n.tvRemoteMenuTitle),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 640),
+        child: Text(l10n.tvRemoteMenuDescription),
+      ),
+      actions: [
+        if (onRetry != null)
+          AfriTextButton(
+            key: const ValueKey<String>('tv-remote-context-retry'),
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              onRetry();
+            },
+            child: Text(l10n.tvRemoteMenuRetry),
+          ),
+        AfriButton(
+          key: const ValueKey<String>('tv-remote-context-close'),
+          autofocus: true,
+          label: l10n.tvRemoteMenuClose,
+          onTap: () => Navigator.of(dialogContext).pop(),
+          fullWidth: false,
+        ),
+      ],
+    ),
+  );
+}
+
 class RayonSportsTvScreen extends StatelessWidget {
   const RayonSportsTvScreen({
     super.key,
     required this.state,
-    this.connectionState = TvConnectionState.connected,
-    this.lastUpdated,
+    this.onRetry,
+    this.onNewPairingChallenge,
+  });
+
+  final TvRuntimeState state;
+  final VoidCallback? onRetry;
+  final VoidCallback? onNewPairingChallenge;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.status == TvRuntimeStatus.awaitingOwner &&
+        state.challenge != null) {
+      return TvPairingChallengeScreen(
+        challenge: state.challenge!,
+        onNewPairingChallenge: onNewPairingChallenge ?? onRetry,
+      );
+    }
+    if (state.projection != null && !state.projection!.isEmpty) {
+      return _TvGameProjectionScreen(state: state, onRetry: onRetry);
+    }
+    if (state.status == TvRuntimeStatus.empty && state.projection != null) {
+      return _TvEmptyDisplayScreen(state: state, onRetry: onRetry);
+    }
+    return _TvRuntimeStatusScreen(state: state, onRetry: onRetry);
+  }
+}
+
+class TvPairingChallengeScreen extends StatelessWidget {
+  const TvPairingChallengeScreen({
+    super.key,
+    required this.challenge,
+    this.onNewPairingChallenge,
+  });
+
+  final TvBootstrapChallenge challenge;
+  final VoidCallback? onNewPairingChallenge;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
+    return _TvFrame(
+      statusLabel: l10n.tvPairingWaitingOwner,
+      onRetry: onNewPairingChallenge,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing8,
+          vertical: SpacingTokens.spacing4,
+        ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1040),
+            child: AfriSurfaceCard(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Semantics(
+                      label: l10n.tvPairingChallengeSemantic(
+                        challenge.challenge,
+                      ),
+                      image: true,
+                      child: Container(
+                        padding: const EdgeInsets.all(SpacingTokens.spacing4),
+                        decoration: BoxDecoration(
+                          color: ColorTokens.machineCodeLight,
+                          borderRadius: BorderRadius.circular(
+                            ShapeTokens.radiusLg,
+                          ),
+                        ),
+                        child: QrImageView(
+                          key: const ValueKey<String>('tv-pairing-qr'),
+                          data: challenge.qrPayload,
+                          size: 228,
+                          backgroundColor: ColorTokens.machineCodeLight,
+                          eyeStyle: const QrEyeStyle(
+                            eyeShape: QrEyeShape.square,
+                            color: ColorTokens.machineCodeDark,
+                          ),
+                          dataModuleStyle: const QrDataModuleStyle(
+                            dataModuleShape: QrDataModuleShape.square,
+                            color: ColorTokens.machineCodeDark,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing8),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.tvPairThisDisplay,
+                            style: TypographyTokens.displaySmall().copyWith(
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          Text(
+                            l10n.tvPairingChallengeDescription,
+                            style: TypographyTokens.titleLarge().copyWith(
+                              height: 1.3,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing5),
+                          Semantics(
+                            label: l10n.tvPairingChallengeSemantic(
+                              challenge.challenge,
+                            ),
+                            child: Text(
+                              challenge.challenge,
+                              key: const ValueKey<String>(
+                                'tv-pairing-challenge',
+                              ),
+                              style: TypographyTokens.displayLarge().copyWith(
+                                color: ColorTokens.clubAccent,
+                                fontSize: 72,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 8,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          Wrap(
+                            spacing: SpacingTokens.spacing5,
+                            runSpacing: SpacingTokens.spacing4,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              _StatusPill(
+                                label: l10n.tvPairingExpiresAt(
+                                  _clockTime(challenge.expiresAt),
+                                ),
+                                icon: AfriIcons.timer,
+                              ),
+                              AfriButton(
+                                key: const ValueKey<String>(
+                                  'tv-new-pairing-code',
+                                ),
+                                autofocus: true,
+                                label: l10n.tvCreateNewPairingCode,
+                                onTap: onNewPairingChallenge ?? () {},
+                                enabled: onNewPairingChallenge != null,
+                                icon: AfriIcons.refresh,
+                                fullWidth: false,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TvRuntimeStatusScreen extends StatelessWidget {
+  const _TvRuntimeStatusScreen({required this.state, this.onRetry});
+
+  final TvRuntimeState state;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
+    final (title, message, canRetry) = switch (state.status) {
+      TvRuntimeStatus.configurationMissing => (
+        l10n.tvPreparingDisplay,
+        l10n.tvConfigurationMissing,
+        false,
+      ),
+      TvRuntimeStatus.revoked => (
+        l10n.tvPairThisDisplay,
+        l10n.tvCredentialRevoked,
+        true,
+      ),
+      TvRuntimeStatus.secureStorageFailure => (
+        l10n.gameOperationsUnavailable,
+        l10n.tvSecureStorageUnavailable,
+        true,
+      ),
+      TvRuntimeStatus.securityTimeout => (
+        l10n.tvSessionCheckTimedOut,
+        l10n.tvSessionCheckTimedOutBody,
+        true,
+      ),
+      TvRuntimeStatus.failure
+          when state.failure?.kind == TvRuntimeFailureKind.challengeExpired =>
+        (l10n.tvPairThisDisplay, l10n.tvPairingExpired, true),
+      TvRuntimeStatus.failure => (
+        l10n.gameOperationsUnavailable,
+        l10n.tvPairingUnavailable,
+        true,
+      ),
+      _ => (l10n.tvPreparingDisplay, l10n.tvPairingWaitingOwner, false),
+    };
+    return _TvFrame(
+      statusLabel: title,
+      onRetry: canRetry ? onRetry : null,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 820),
+          child: AfriSurfaceCard(
+            child: Padding(
+              padding: const EdgeInsets.all(SpacingTokens.spacing10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    canRetry ? AfriIcons.statusError : AfriIcons.live,
+                    size: 72,
+                    color: ColorTokens.clubAccent,
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing6),
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TypographyTokens.displaySmall(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: TypographyTokens.titleLarge().copyWith(height: 1.3),
+                  ),
+                  if (canRetry) ...[
+                    const SizedBox(height: SpacingTokens.spacing8),
+                    AfriButton(
+                      key: const ValueKey<String>('tv-runtime-retry'),
+                      autofocus: true,
+                      label: l10n.tvRetry,
+                      onTap: onRetry ?? () {},
+                      enabled: onRetry != null,
+                      icon: AfriIcons.refresh,
+                      fullWidth: false,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TvEmptyDisplayScreen extends StatelessWidget {
+  const _TvEmptyDisplayScreen({required this.state, this.onRetry});
+
+  final TvRuntimeState state;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
+    return _TvFrame(
+      statusLabel: state.lastUpdated == null
+          ? l10n.tvLiveSyncing
+          : l10n.tvLiveUpdatedAt(_clockTime(state.lastUpdated!)),
+      onRetry: onRetry,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 820),
+          child: AfriSurfaceCard(
+            child: Padding(
+              padding: const EdgeInsets.all(SpacingTokens.spacing10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(AfriIcons.live, size: 72, color: ColorTokens.clubAccent),
+                  const SizedBox(height: SpacingTokens.spacing6),
+                  Text(
+                    l10n.tvDisplayPairedNoGame,
+                    textAlign: TextAlign.center,
+                    style: TypographyTokens.displaySmall(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  Text(
+                    l10n.tvDisplayPairedNoGameDescription,
+                    textAlign: TextAlign.center,
+                    style: TypographyTokens.titleLarge().copyWith(height: 1.3),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TvGameProjectionScreen extends StatelessWidget {
+  const _TvGameProjectionScreen({required this.state, this.onRetry});
+
+  final TvRuntimeState state;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final projection = state.projection!;
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+    final statusLabel = switch (state.status) {
+      TvRuntimeStatus.offline || TvRuntimeStatus.securityTimeout =>
+        context.afriL10n.tvOfflineLastConfirmed,
+      TvRuntimeStatus.syncing => context.afriL10n.tvLiveSyncing,
+      _ =>
+        state.lastUpdated == null
+            ? context.afriL10n.tvLiveSyncing
+            : context.afriL10n.tvLiveUpdatedAt(_clockTime(state.lastUpdated!)),
+    };
+
+    final content = largeText
+        ? SingleChildScrollView(
+            padding: const EdgeInsets.all(SpacingTokens.spacing10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _GameStagePanel(projection: projection, reflowed: true),
+                const SizedBox(height: SpacingTokens.spacing8),
+                _LeaderboardPanel(projection: projection, reflowed: true),
+              ],
+            ),
+          )
+        : Padding(
+            padding: const EdgeInsets.all(SpacingTokens.spacing10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: _GameStagePanel(projection: projection),
+                ),
+                const SizedBox(width: SpacingTokens.spacing8),
+                Expanded(
+                  flex: 2,
+                  child: _LeaderboardPanel(projection: projection),
+                ),
+              ],
+            ),
+          );
+
+    return _TvFrame(
+      statusLabel: statusLabel,
+      onRetry:
+          state.status == TvRuntimeStatus.offline ||
+              state.status == TvRuntimeStatus.securityTimeout
+          ? onRetry
+          : null,
+      child: content,
+    );
+  }
+}
+
+class _GameStagePanel extends StatelessWidget {
+  const _GameStagePanel({required this.projection, this.reflowed = false});
+
+  final TvGameProjection projection;
+  final bool reflowed;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
+    final phase = projection.phase ?? 'scheduled';
+    final question = projection.question;
+    final phaseTitle = switch (phase) {
+      'scheduled' => l10n.tvGameScheduledTitle,
+      'activated_lobby' => l10n.tvGameLobbyTitle,
+      'paused' => l10n.tvGamePausedTitle,
+      'completed' => l10n.tvGameCompletedTitle,
+      'cancelled' => l10n.tvGameCancelledTitle,
+      'reveal' => l10n.gameRevealTitle,
+      'question_open' =>
+        question == null
+            ? l10n.gameQuestionTitle
+            : l10n.tvQuestionNumber(question.ordinal),
+      _ => l10n.gameQuestionTitle,
+    };
+
+    return AfriSurfaceCard(
+      padding: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(SpacingTokens.spacing8),
+        child: Column(
+          mainAxisSize: reflowed ? MainAxisSize.min : MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _StatusPill(label: phaseTitle, icon: AfriIcons.timer),
+            const SizedBox(height: SpacingTokens.spacing5),
+            Text(
+              projection.sessionTitle ?? l10n.gameLiveGamesTitle,
+              style: TypographyTokens.displaySmall().copyWith(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing6),
+            if (question != null) ...[
+              Text(
+                question.prompt,
+                style: TypographyTokens.headlineMedium().copyWith(height: 1.2),
+              ),
+              const SizedBox(height: SpacingTokens.spacing6),
+              Wrap(
+                spacing: SpacingTokens.spacing4,
+                runSpacing: SpacingTokens.spacing4,
+                children: question.options
+                    .map(
+                      (option) => _QuestionOptionCard(
+                        option: option,
+                        revealed: phase == 'reveal' || phase == 'completed',
+                        correct: question.correctOptionKey == option.key,
+                      ),
+                    )
+                    .toList(growable: false),
+              ),
+            ] else ...[
+              _PhaseMessage(phase: phase),
+            ],
+            if (projection.phaseDeadline != null &&
+                phase == 'question_open') ...[
+              const SizedBox(height: SpacingTokens.spacing6),
+              _DeadlinePill(deadline: projection.phaseDeadline!),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PhaseMessage extends StatelessWidget {
+  const _PhaseMessage({required this.phase});
+
+  final String phase;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
+    final message = switch (phase) {
+      'scheduled' => l10n.gameScheduledDescription,
+      'activated_lobby' => l10n.gameLobbyDescription,
+      'paused' => l10n.gamePausedDescription,
+      'completed' => l10n.gameCompletedDescription,
+      'cancelled' => l10n.gameCancelledDescription,
+      _ => l10n.gameNoCurrentQuestion,
+    };
+    return Text(
+      message,
+      style: TypographyTokens.titleLarge().copyWith(
+        color: ColorTokens.onSurfaceVariant,
+        height: 1.3,
+      ),
+    );
+  }
+}
+
+class _QuestionOptionCard extends StatelessWidget {
+  const _QuestionOptionCard({
+    required this.option,
+    required this.revealed,
+    required this.correct,
+  });
+
+  final TvQuestionOption option;
+  final bool revealed;
+  final bool correct;
+
+  @override
+  Widget build(BuildContext context) {
+    final highlight = revealed && correct;
+    return Semantics(
+      label: highlight
+          ? context.afriL10n.tvCorrectAnswerSemantic(option.label)
+          : option.label,
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 220),
+        padding: const EdgeInsets.all(SpacingTokens.spacing5),
+        decoration: BoxDecoration(
+          color: highlight
+              ? ColorTokens.clubAccent.withValues(alpha: 0.18)
+              : ColorTokens.surfaceContainerHigh,
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
+          border: Border.all(
+            color: highlight
+                ? ColorTokens.clubAccent
+                : ColorTokens.outlineVariant,
+            width: highlight ? 3 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              option.key.toUpperCase(),
+              style: TypographyTokens.titleLarge().copyWith(
+                color: ColorTokens.clubAccent,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(width: SpacingTokens.spacing4),
+            Flexible(
+              child: Text(option.label, style: TypographyTokens.titleLarge()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LeaderboardPanel extends StatelessWidget {
+  const _LeaderboardPanel({required this.projection, this.reflowed = false});
+
+  final TvGameProjection projection;
+  final bool reflowed;
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = projection.leaderboard.take(8).toList(growable: false);
+    return AfriSurfaceCard(
+      padding: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(SpacingTokens.spacing8),
+        child: Column(
+          mainAxisSize: reflowed ? MainAxisSize.min : MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              context.afriL10n.gameLeaderboardTitle,
+              style: TypographyTokens.displaySmall().copyWith(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing6),
+            if (entries.isEmpty)
+              Text(
+                context.afriL10n.tvLeaderboardEmpty,
+                style: TypographyTokens.titleLarge().copyWith(
+                  color: ColorTokens.onSurfaceVariant,
+                ),
+              )
+            else
+              ...entries.map(
+                (entry) => Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: SpacingTokens.spacing3,
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 54,
+                        child: Text(
+                          '${entry.rank}',
+                          style: TypographyTokens.titleLarge().copyWith(
+                            color: ColorTokens.clubAccent,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          entry.publicAlias,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TypographyTokens.titleLarge(),
+                        ),
+                      ),
+                      const SizedBox(width: SpacingTokens.spacing3),
+                      Text(
+                        '${entry.score}',
+                        style: TypographyTokens.titleLarge().copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DeadlinePill extends StatefulWidget {
+  const _DeadlinePill({required this.deadline});
+
+  final DateTime deadline;
+
+  @override
+  State<_DeadlinePill> createState() => _DeadlinePillState();
+}
+
+class _DeadlinePillState extends State<_DeadlinePill> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final remaining = widget.deadline.difference(DateTime.now().toUtc());
+    final seconds = remaining.isNegative ? 0 : remaining.inSeconds;
+    return _StatusPill(
+      label: context.afriL10n.tvSecondsRemaining(seconds),
+      icon: AfriIcons.timer,
+    );
+  }
+}
+
+class _TvFrame extends StatelessWidget {
+  const _TvFrame({
+    required this.statusLabel,
+    required this.child,
     this.onRetry,
   });
 
-  final TvDisplayState state;
-  final TvConnectionState connectionState;
-  final DateTime? lastUpdated;
+  final String statusLabel;
+  final Widget child;
   final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    final header = _TvHeader(
-      venueName: state.venueName,
-      connectionState: connectionState,
-      lastUpdated: lastUpdated,
-      onRetry: onRetry,
-    );
-
     return TvRemoteControlScope(
       onRetry: onRetry,
       child: AfriScreenScaffold(
@@ -511,453 +995,62 @@ class RayonSportsTvScreen extends StatelessWidget {
         constrainContent: false,
         bodyWrapper: (child) => GradientBackground(child: child),
         child: SafeArea(
-          child: largeText
-              ? SingleChildScrollView(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      header,
-                      const SizedBox(height: SpacingTokens.spacing10),
-                      _SessionPanel(state: state, reflowed: true),
-                      const SizedBox(height: SpacingTokens.spacing10),
-                      _SafetyPanel(state: state, reflowed: true),
-                    ],
-                  ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      header,
-                      const SizedBox(height: SpacingTokens.spacing12),
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: _SessionPanel(state: state),
-                            ),
-                            const SizedBox(width: SpacingTokens.spacing10),
-                            Expanded(
-                              flex: 2,
-                              child: _SafetyPanel(state: state),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TvHeader extends StatelessWidget {
-  const _TvHeader({
-    required this.venueName,
-    required this.connectionState,
-    this.lastUpdated,
-    this.onRetry,
-  });
-
-  final String venueName;
-  final TvConnectionState connectionState;
-  final DateTime? lastUpdated;
-  final VoidCallback? onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.afriL10n;
-    return Row(
-      children: [
-        AfriBrandMark(
-          label: _rayonConfig.clubName,
-          size: 96,
-          semanticLabel: l10n.tvBrandMarkSemantic(_rayonConfig.clubName),
-        ),
-        const SizedBox(width: SpacingTokens.spacing6),
-        Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                l10n.tvAppTitle(_rayonConfig.appName),
-                style: TypographyTokens.displaySmall().copyWith(
-                  fontWeight: FontWeight.w900,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SpacingTokens.spacing10,
+                  SpacingTokens.spacing8,
+                  SpacingTokens.spacing10,
+                  0,
                 ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing2),
-              Text(
-                venueName,
-                style: TypographyTokens.titleLarge().copyWith(
-                  color: ColorTokens.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (connectionState == TvConnectionState.serviceUnavailable ||
-            connectionState == TvConnectionState.securityTimeout)
-          AfriButton(
-            key: const ValueKey<String>('tv-retry-button'),
-            autofocus: true,
-            label: connectionState == TvConnectionState.securityTimeout
-                ? 'Refresh timed out — retry'
-                : context.afriL10n.tvConnectionLostRetry,
-            onTap: onRetry ?? () {},
-            enabled: onRetry != null,
-            icon: AfriIcons.refresh,
-            fullWidth: false,
-          )
-        else
-          _StatusPill(
-            label: lastUpdated == null
-                ? 'Connecting'
-                : 'Live · updated ${_clockTime(lastUpdated!)}',
-            icon: AfriIcons.live,
-          ),
-      ],
-    );
-  }
-}
-
-class TvPairingScreen extends StatefulWidget {
-  const TvPairingScreen({super.key, required this.state, required this.onPair});
-
-  final TvConnectionState state;
-  final Future<String?> Function(String code) onPair;
-
-  @override
-  State<TvPairingScreen> createState() => _TvPairingScreenState();
-}
-
-class _TvPairingScreenState extends State<TvPairingScreen> {
-  final _controller = TextEditingController();
-  final _submitFocusNode = FocusNode(debugLabel: 'TV pair display');
-  late final _codeFocusNode = FocusNode(
-    debugLabel: 'TV pairing code',
-    onKeyEvent: _handleCodeKeyEvent,
-  );
-  bool _submitting = false;
-  String? _error;
-
-  KeyEventResult _handleCodeKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is KeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.arrowDown) {
-      _submitFocusNode.requestFocus();
-      return KeyEventResult.handled;
-    }
-    if (event is KeyDownEvent &&
-        <LogicalKeyboardKey>{
-          LogicalKeyboardKey.escape,
-          LogicalKeyboardKey.browserBack,
-          LogicalKeyboardKey.goBack,
-          LogicalKeyboardKey.gameButtonB,
-          LogicalKeyboardKey.contextMenu,
-        }.contains(event.logicalKey)) {
-      _handleBack();
-      return KeyEventResult.handled;
-    }
-    return KeyEventResult.ignored;
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _codeFocusNode.dispose();
-    _submitFocusNode.dispose();
-    super.dispose();
-  }
-
-  Future<void> _submit() async {
-    if (_controller.text.trim().length < 6 || _submitting) return;
-    setState(() {
-      _submitting = true;
-      _error = null;
-    });
-    final error = await widget.onPair(_controller.text);
-    if (mounted) {
-      setState(() {
-        _submitting = false;
-        _error = error;
-      });
-      if (error != null) {
-        _controller.selection = TextSelection(
-          baseOffset: 0,
-          extentOffset: _controller.text.length,
-        );
-        _codeFocusNode.requestFocus();
-      }
-    }
-  }
-
-  void _handleBack() {
-    if (_controller.text.isEmpty && _error == null) return;
-    setState(() {
-      _controller.clear();
-      _error = null;
-    });
-    _codeFocusNode.requestFocus();
-  }
-
-  void _handleSystemBack(bool didPop, Object? result) {
-    if (didPop) return;
-    _handleBack();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final configurationMissing =
-        widget.state == TvConnectionState.configurationMissing;
-    return PopScope<Object?>(
-      canPop: false,
-      onPopInvokedWithResult: _handleSystemBack,
-      child: TvRemoteControlScope(
-        onSubmit: _submit,
-        onBack: _handleBack,
-        child: AfriScreenScaffold(
-          backgroundColor: ColorTokens.background,
-          showAppBar: false,
-          showBackButton: false,
-          scrollable: false,
-          constrainContent: false,
-          bodyWrapper: (child) => GradientBackground(child: child),
-          child: SafeArea(
-            child: Center(
-              child: SizedBox(
-                width: 720,
-                child: AfriSurfaceCard(
-                  child: Padding(
-                    padding: const EdgeInsets.all(SpacingTokens.spacing8),
-                    child: FocusTraversalGroup(
-                      policy: OrderedTraversalPolicy(),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            context.afriL10n.tvPairThisDisplay,
-                            style: TypographyTokens.displaySmall(),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing4),
-                          Text(
-                            configurationMissing
-                                ? context.afriL10n.tvConfigurationMissing
-                                : widget.state == TvConnectionState.revoked
-                                ? context.afriL10n.tvCredentialRevoked
-                                : context.afriL10n.tvEnterAdminCode,
-                            style: TypographyTokens.titleLarge(),
-                          ),
-                          if (!configurationMissing) ...[
-                            const SizedBox(height: SpacingTokens.spacing6),
-                            FocusTraversalOrder(
-                              order: const NumericFocusOrder(1),
-                              child: AfriInputField(
-                                key: const ValueKey<String>(
-                                  'tv-pairing-code-input',
-                                ),
-                                controller: _controller,
-                                focusNode: _codeFocusNode,
-                                enabled: !_submitting,
-                                autofocus: true,
-                                textCapitalization:
-                                    TextCapitalization.characters,
-                                textInputAction: TextInputAction.done,
-                                maxLength: 12,
-                                onSubmitted: (_) => _submit(),
-                                label: context.afriL10n.tvPairingCodeLabel,
-                                helperText:
-                                    context.afriL10n.tvPairingCodeHelper,
-                                errorText: _error,
-                                autofillHints: const <String>[],
-                                enableSuggestions: false,
-                                autocorrect: false,
-                              ),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing4),
-                            FocusTraversalOrder(
-                              order: const NumericFocusOrder(2),
-                              child: AfriButton(
-                                key: const ValueKey<String>(
-                                  'tv-pairing-submit-button',
-                                ),
-                                label: _submitting
-                                    ? context.afriL10n.tvPairingInProgress
-                                    : context.afriL10n.tvPairDisplayAction,
-                                onTap: _submit,
-                                focusNode: _submitFocusNode,
-                                enabled: !_submitting,
-                                isLoading: _submitting,
-                                icon: AfriIcons.link,
-                              ),
-                            ),
-                          ],
-                        ],
+                child: Row(
+                  children: [
+                    AfriBrandMark(
+                      label: _rayonConfig.clubName,
+                      size: 84,
+                      semanticLabel: context.afriL10n.tvBrandMarkSemantic(
+                        _rayonConfig.clubName,
                       ),
                     ),
-                  ),
+                    const SizedBox(width: SpacingTokens.spacing5),
+                    Expanded(
+                      child: Text(
+                        context.afriL10n.tvAppTitle(_rayonConfig.appName),
+                        maxLines: largeText ? 2 : 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TypographyTokens.displaySmall().copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: largeText ? 480 : double.infinity,
+                      ),
+                      child: _StatusPill(
+                        label: statusLabel,
+                        icon: AfriIcons.live,
+                      ),
+                    ),
+                    if (onRetry != null) ...[
+                      const SizedBox(width: SpacingTokens.spacing4),
+                      AfriButton(
+                        key: const ValueKey<String>('tv-header-retry'),
+                        label: context.afriL10n.tvRetry,
+                        onTap: onRetry!,
+                        icon: AfriIcons.refresh,
+                        fullWidth: false,
+                      ),
+                    ],
+                  ],
                 ),
               ),
-            ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              Expanded(child: child),
+            ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-String _clockTime(DateTime value) {
-  final local = value.toLocal();
-  return '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
-}
-
-void _recordTvEvent(String name, {int? retryAttempt}) {
-  // Screen-safe operational telemetry only: never include pairing codes,
-  // credentials, device identifiers, venue names, or supporter data.
-  debugPrint(
-    '[TV_EVENT] name=$name${retryAttempt == null ? '' : ' retry_attempt=$retryAttempt'}',
-  );
-}
-
-class _SessionPanel extends StatelessWidget {
-  const _SessionPanel({required this.state, this.reflowed = false});
-
-  final TvDisplayState state;
-  final bool reflowed;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.afriL10n;
-    return AfriSurfaceCard(
-      padding: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(SpacingTokens.spacing8),
-        child: Column(
-          mainAxisSize: reflowed ? MainAxisSize.min : MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _StatusPill(
-              label: state.phase.trim().isEmpty || state.phase == 'Offline'
-                  ? l10n.tvOfflinePhase
-                  : state.phase,
-              icon: AfriIcons.timer,
-            ),
-            if (reflowed)
-              const SizedBox(height: SpacingTokens.spacing8)
-            else
-              const Spacer(),
-            Text(
-              l10n.tvSessionCodeInstruction,
-              style: TypographyTokens.headlineSmall().copyWith(
-                color: ColorTokens.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Semantics(
-              label: l10n.tvSessionCodeSemantic(state.sessionCode),
-              child: Text(
-                state.sessionCode,
-                style: TypographyTokens.displayLarge().copyWith(
-                  color: ColorTokens.clubAccent,
-                  fontSize: 86,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0,
-                  height: 1,
-                ),
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing6),
-            Text(
-              state.prompt.trim().isEmpty ||
-                      state.prompt ==
-                          'Pair this TV display from the admin panel.'
-                  ? l10n.tvDefaultPairingPrompt
-                  : state.prompt,
-              style: TypographyTokens.headlineSmall().copyWith(height: 1.18),
-            ),
-            if (reflowed)
-              const SizedBox(height: SpacingTokens.spacing8)
-            else
-              const Spacer(),
-            Wrap(
-              spacing: SpacingTokens.spacing4,
-              runSpacing: SpacingTokens.spacing3,
-              children: [
-                _MetricChip(
-                  icon: AfriIcons.fetToken,
-                  label: l10n.tvFetRewardLabel(state.fetReward),
-                ),
-                _MetricChip(
-                  icon: AfriIcons.statusPending,
-                  label: l10n.tvExpiresLabel(state.localizedExpiryLabel(l10n)),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SafetyPanel extends StatelessWidget {
-  const _SafetyPanel({required this.state, this.reflowed = false});
-
-  final TvDisplayState state;
-  final bool reflowed;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.afriL10n;
-    return AfriSurfaceCard(
-      padding: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(SpacingTokens.spacing8),
-        child: Column(
-          mainAxisSize: reflowed ? MainAxisSize.min : MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              AfriIcons.shield,
-              size: SpacingTokens.spacing12,
-              color: ColorTokens.clubAccent,
-            ),
-            const SizedBox(height: SpacingTokens.spacing6),
-            Text(
-              l10n.tvVenueSessionDetails,
-              style: TypographyTokens.displaySmall().copyWith(
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              context.afriL10n.tvJoinFromFanZone,
-              style: TypographyTokens.titleLarge().copyWith(
-                color: ColorTokens.onSurfaceVariant,
-                height: 1.25,
-              ),
-            ),
-            if (reflowed)
-              const SizedBox(height: SpacingTokens.spacing8)
-            else
-              const Spacer(),
-            _SafetyRow(icon: AfriIcons.lock, label: l10n.tvVenueSessionOnly),
-            const SizedBox(height: SpacingTokens.spacing4),
-            _SafetyRow(
-              icon: AfriIcons.visibilityOff,
-              label: l10n.tvNoSupporterDetails,
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            _SafetyRow(
-              icon: AfriIcons.statusSuccess,
-              label: l10n.tvPairingStatusAndExpiry,
-            ),
-          ],
         ),
       ),
     );
@@ -972,60 +1065,37 @@ class _StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing4,
+        vertical: SpacingTokens.spacing3,
+      ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: ShapeTokens.chipRadius,
-        border: BorderTokens.all(color: ColorTokens.chromeBorder),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
+        border: Border.all(color: ColorTokens.outlineVariant),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: SpacingTokens.spacing4,
-          vertical: SpacingTokens.spacing3,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: ColorTokens.clubAccent,
-              size: AfriIcons.sizeInline,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 22, color: ColorTokens.clubAccent),
+          const SizedBox(width: SpacingTokens.spacing2),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TypographyTokens.labelLarge(),
             ),
-            const SizedBox(width: SpacingTokens.spacing2),
-            Text(label, style: TypographyTokens.labelLarge()),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _MetricChip extends StatelessWidget {
-  const _MetricChip({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return _StatusPill(label: label, icon: icon);
-  }
-}
-
-class _SafetyRow extends StatelessWidget {
-  const _SafetyRow({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: ColorTokens.clubAccent, size: AfriIcons.sizeNav),
-        const SizedBox(width: SpacingTokens.spacing3),
-        Expanded(child: Text(label, style: TypographyTokens.titleLarge())),
-      ],
-    );
-  }
+String _clockTime(DateTime value) {
+  final local = value.toLocal();
+  return '${local.hour.toString().padLeft(2, '0')}:'
+      '${local.minute.toString().padLeft(2, '0')}';
 }

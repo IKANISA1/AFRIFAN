@@ -32,7 +32,6 @@ class ProfileRouteContentSnapshot {
       profile: profile,
       status: ProfileRouteContentStatus.localFallback,
       editingEnabled: false,
-      message: 'Offline. Your saved profile stays visible. Reconnect to edit.',
     );
   }
 
@@ -102,7 +101,7 @@ class ProfileRouteContentFailure implements Exception {
 class ProfileRouteContentRepository {
   const ProfileRouteContentRepository({
     this.editingEnabled = const bool.fromEnvironment(
-      'AFRICLUB_PROFILE_EDIT_ENABLED',
+      'CLUB_PROFILE_EDIT_ENABLED',
       defaultValue: true,
     ),
   });

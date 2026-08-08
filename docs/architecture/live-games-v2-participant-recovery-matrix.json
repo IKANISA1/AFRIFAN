@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-MOB-04",
+  "status": "local_deterministic_reconnect_and_lifecycle_recovery_passed",
+  "criterion_complete": true,
+  "required_clauses": [
+    "network_change",
+    "missed_event",
+    "foreground_resume",
+    "session_version_conflict",
+    "retained_safe_state",
+    "reconnect_last_update",
+    "privacy_safe_recovery"
+  ],
+  "clauses": [
+    {
+      "id": "network_change",
+      "assertion": "Connectivity loss pauses automatic recovery and blocks mutation; restoration refreshes discovery and the active authoritative projection.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_entry_controller_test.dart", "name": "offline and reconnect propagate to discovery and active runtime"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "pauses missed-event recovery offline and resumes on reconnect"}
+      ]
+    },
+    {
+      "id": "missed_event",
+      "assertion": "A bounded recovery timer fetches the current authoritative projection when no Realtime invalidation arrives.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "recovers a completely missed event with a bounded snapshot refresh"}
+      ]
+    },
+    {
+      "id": "foreground_resume",
+      "assertion": "Returning the app to the foreground triggers one authoritative reconnect refresh for the active session.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/participant_live_games_screen_test.dart", "name": "resume resynchronizes the active game projection"}
+      ]
+    },
+    {
+      "id": "session_version_conflict",
+      "assertion": "An uncertain versioned answer remains blocked until an authoritative projection clears uncertainty; stale mutation responses cannot roll state backward.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_answer_controller_test.dart", "name": "timeout retains projection and requires authoritative refresh"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_participant_controller_test.dart", "name": "refresh clears timeout uncertainty from an authoritative snapshot"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_answer_controller_test.dart", "name": "keeps a newer Realtime answer confirmation over a stale response"}
+      ]
+    },
+    {
+      "id": "retained_safe_state",
+      "assertion": "Offline and failed refresh states retain only the last authoritative projection and keep answer actions disabled.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_participant_controller_test.dart", "name": "blocks mutation while offline and retains the last projection"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "GAME-QA-04 partial refresh failure retains state then recovers"}
+      ]
+    },
+    {
+      "id": "reconnect_last_update",
+      "assertion": "The offline participant state renders its localized last-confirmed time and refreshes the projection after connectivity returns.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/participant_live_games_screen_test.dart", "name": "offline state retains the question and blocks answer actions"}
+      ]
+    },
+    {
+      "id": "privacy_safe_recovery",
+      "assertion": "Gateway and channel failures map to controlled failure kinds without exposing private diagnostics, while channel recovery fetches a fresh snapshot.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "recovers from a Realtime channel error with a fresh snapshot"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart", "name": "maps raw gateway failures to a sanitized failure kind"}
+      ]
+    }
+  ],
+  "deterministic_golden_evidence": [
+    "packages/features/feat_gamification/test/goldens/participant_live_game_offline_dark_390x844.png"
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "current_source_golden_claimed": true,
+    "shared_or_live_session_claimed": false,
+    "physical_device_claimed": false,
+    "network_timing_claimed": false,
+    "accountable_human_approval_claimed": false,
+    "release_claimed": false
+  }
+}

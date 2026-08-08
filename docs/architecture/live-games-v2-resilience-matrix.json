@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-QA-04",
+  "required_scenarios": [
+    "interruption",
+    "late_join",
+    "app_resume",
+    "tv_restart",
+    "duplicate_tap",
+    "stale_or_out_of_order_event",
+    "clock_skew",
+    "role_revocation",
+    "device_revocation",
+    "partial_failure",
+    "recovery"
+  ],
+  "scenarios": [
+    {
+      "id": "interruption",
+      "assertion": "An interrupted participant connection retains the last authoritative projection and blocks mutation while offline.",
+      "tests": [
+        {
+          "path": "packages/features/feat_gamification/test/live_game_v2_participant_controller_test.dart",
+          "name": "blocks mutation while offline and retains the last projection"
+        }
+      ]
+    },
+    {
+      "id": "late_join",
+      "assertion": "A participant joining after play has advanced adopts the current authoritative phase and does not replay historical phases.",
+      "tests": [
+        {
+          "path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart",
+          "name": "GAME-QA-04 late join adopts the current phase without replaying history"
+        }
+      ]
+    },
+    {
+      "id": "app_resume",
+      "assertion": "Resuming the participant app requests one fresh authoritative projection before normal interaction continues.",
+      "tests": [
+        {
+          "path": "packages/features/feat_gamification/test/participant_live_games_screen_test.dart",
+          "name": "resume resynchronizes the active game projection"
+        }
+      ]
+    },
+    {
+      "id": "tv_restart",
+      "assertion": "A native-TV process restart restores its device credential and fetches the current projection without issuing another pairing challenge.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "GAME-QA-04 TV restart restores credential and authoritative snapshot"
+        }
+      ]
+    },
+    {
+      "id": "duplicate_tap",
+      "assertion": "Duplicate participant submissions coalesce behind one in-flight idempotent mutation while a conflicting selection fails closed.",
+      "tests": [
+        {
+          "path": "packages/features/feat_gamification/test/live_game_v2_answer_controller_test.dart",
+          "name": "coalesces duplicate submissions while one request is in flight"
+        }
+      ]
+    },
+    {
+      "id": "stale_or_out_of_order_event",
+      "assertion": "Participant and native-TV reconcilers retain the newest accepted projection when stale versions, duplicate versions, older server times, or out-of-order sequences arrive.",
+      "tests": [
+        {
+          "path": "packages/features/feat_gamification/test/live_game_v2_reconciler_test.dart",
+          "name": "accepts only a newer snapshot"
+        },
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "reconciler ignores older server time and event sequence"
+        }
+      ]
+    },
+    {
+      "id": "clock_skew",
+      "assertion": "The participant countdown derives its remaining duration from authoritative server time and the authoritative phase deadline instead of the device wall clock.",
+      "tests": [
+        {
+          "path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart",
+          "name": "GAME-QA-04 clock skew uses authoritative server-time deadline delta"
+        }
+      ]
+    },
+    {
+      "id": "role_revocation",
+      "assertion": "Participant role revocation blocks actions, reports a typed permission failure, and does not turn retained content into fabricated confirmation.",
+      "tests": [
+        {
+          "path": "packages/features/feat_gamification/test/live_game_v2_participant_controller_test.dart",
+          "name": "permission revocation blocks actions without dropping content"
+        }
+      ]
+    },
+    {
+      "id": "device_revocation",
+      "assertion": "Native-TV device revocation deletes the stored credential, clears the projection, and enters a fail-closed revoked state.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "revocation deletes the credential and fails closed"
+        }
+      ]
+    },
+    {
+      "id": "partial_failure",
+      "assertion": "A failed refresh retains only the last authoritative projection and exposes a sanitized failure without enabling stale actions.",
+      "tests": [
+        {
+          "path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart",
+          "name": "GAME-QA-04 partial refresh failure retains state then recovers"
+        }
+      ]
+    },
+    {
+      "id": "recovery",
+      "assertion": "A Realtime channel failure triggers a bounded authoritative snapshot refresh and returns the participant synchronizer to current state.",
+      "tests": [
+        {
+          "path": "packages/features/feat_gamification/test/live_game_v2_synchronizer_test.dart",
+          "name": "recovers from a Realtime channel error with a fresh snapshot"
+        }
+      ]
+    }
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "shared_or_live_session_claimed": false,
+    "physical_device_claimed": false,
+    "network_timing_claimed": false,
+    "release_claimed": false
+  }
+}

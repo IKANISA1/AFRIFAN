@@ -30,6 +30,7 @@ class AfriClubApp extends StatefulWidget {
   final String? initialLocation;
   final DeepLinkParser? deepLinkParser;
   final DeepLinkService? deepLinkService;
+  final Stream<Uri>? notificationRouteStream;
 
   const AfriClubApp({
     super.key,
@@ -41,6 +42,7 @@ class AfriClubApp extends StatefulWidget {
     this.initialLocation,
     this.deepLinkParser,
     this.deepLinkService,
+    this.notificationRouteStream,
   });
 
   @override
@@ -86,6 +88,9 @@ class _AfriClubAppState extends State<AfriClubApp> {
         initialLocation: widget.initialLocation,
         deepLinkParser: widget.deepLinkParser,
         deepLinkService: widget.deepLinkService,
+        notificationRouteStream:
+            widget.notificationRouteStream ??
+            PushNotificationService.openedRoutes,
         frameworkLocaleForLanguageCode: _frameworkLocaleForLanguageCode,
         appLocaleForLanguageCode: _appLocaleForLanguageCode,
       ),
@@ -145,6 +150,7 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
     this.initialLocation,
     this.deepLinkParser,
     this.deepLinkService,
+    this.notificationRouteStream,
   });
 
   final ClubConfig config;
@@ -154,6 +160,7 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
   final String? initialLocation;
   final DeepLinkParser? deepLinkParser;
   final DeepLinkService? deepLinkService;
+  final Stream<Uri>? notificationRouteStream;
   final Locale Function(String? languageCode) frameworkLocaleForLanguageCode;
   final Locale Function(String? languageCode) appLocaleForLanguageCode;
 
@@ -177,6 +184,7 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
   _featureConfigSubscription;
   late final AppRouter _appRouter;
   StreamSubscription<Uri>? _deepLinkSubscription;
+  StreamSubscription<Uri>? _notificationRouteSubscription;
   bool _initialDeepLinkProcessed = false;
   late final int? _normalizedClubId;
 
@@ -224,6 +232,16 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
       );
       unawaited(_applyInitialDeepLink());
     }
+    _notificationRouteSubscription = widget.notificationRouteStream?.listen(
+      _handleNotificationRoute,
+      onError: (Object error, StackTrace stackTrace) {
+        AfriLogger.warn(
+          'AfriClubApp',
+          'Ignoring malformed notification route: $error',
+        );
+        unawaited(CrashlyticsService.recordError(error, stackTrace));
+      },
+    );
 
     WidgetsBinding.instance.addObserver(this);
     _scheduleAuthRestore();
@@ -234,6 +252,7 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     unawaited(_deepLinkSubscription?.cancel());
+    unawaited(_notificationRouteSubscription?.cancel());
     _authSubscription.close();
     _featureConfigSubscription.close();
     _routerRefreshTick.dispose();
@@ -321,9 +340,15 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
     }
 
     final internalUri = parser.toInternalUri(incomingUri);
-    final safeInternalUri = internalUri == null
-        ? null
-        : InternalRouteUriPolicy.validate(internalUri);
+    _navigateToInternalRoute(internalUri);
+  }
+
+  void _handleNotificationRoute(Uri internalUri) {
+    _navigateToInternalRoute(internalUri);
+  }
+
+  void _navigateToInternalRoute(Uri? internalUri) {
+    final safeInternalUri = InternalRouteUriPolicy.validate(internalUri);
     if (safeInternalUri == null) {
       return;
     }

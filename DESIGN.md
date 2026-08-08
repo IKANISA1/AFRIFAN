@@ -27,8 +27,23 @@ This file is grounded in these evidence inputs:
 - Financial actions and high-risk branches were not activated: no transfer, trade, investment, payment, card-detail, security-setting, support-conversation, or offer action was submitted or changed.
 - The former local path `/Users/jeanbosco/Downloads/Revolut10/` is not present. Any earlier notes derived from that pack are historical design context only, not fresh evidence.
 - Current Revolut brand colours below come from Revolut's official Open Banking guidance. They are brand-reference values, not proof of every colour used by the current retail iOS app.
-- Current Rayon screenshots prove the visible installed build only. A clean iOS build still fails because Firebase package products require iOS 15 while the generated target supports iOS 13.
-- Therefore `revolut_live_capture_partial=true`, `revolut_live_capture_complete=false`, `clean_ios_build=false`, and `design_complete=false`. The exact Revolut build/version, submitted or hidden transactional branches, full card detail, motion, accessibility modes, and full state coverage remain open. No document, screenshot count, or local green test may override these gates.
+- Current Rayon screenshots prove the visible installed build only. The audited
+  checkout now produces an unsigned iOS release artifact with bundle
+  `rw.ikanisa.rayonSports`, Firebase project `gen-lang-client-0172279957`, and
+  minimum iOS 15.5 after the generated Swift-package target is refreshed.
+- Static Flutter task copy now has zero pending candidates across 292 scanned
+  production Dart files, with exact 3,183-message EN/FR/RW catalog parity and
+  deterministic compact/200-percent Gamification journeys. This is local
+  source and layout evidence, not named linguistic or approved localized
+  visual review.
+- Therefore `revolut_live_capture_partial=true`,
+  `revolut_live_capture_complete=false`,
+  `unsigned_ios_release_build=true`, `clean_controlled_candidate=false`, and
+  `design_complete=false`. The exact Revolut build/version, submitted or
+  hidden transactional branches, full card detail, motion, physical
+  accessibility modes, authenticated production behavior, clean-candidate CI,
+  distribution signing, stores, and full state coverage remain open. No
+  document, screenshot count, or local green test may override these gates.
 
 Authoritative external references:
 
@@ -136,7 +151,112 @@ Shared rules:
 
 - All surfaces use the same semantic tokens, typography scale, icon roles, motion durations, status taxonomy, and accessibility requirements.
 - Consumer mobile and TV surfaces must never expose admin-only routes, data, permissions, or affordances.
+- Consumer mobile may expose only narrow, non-tab, role-gated `My TVs` owner
+  and `Games I manage` organizer projections. These are not admin routes and
+  must not expose broad publishing, moderation, role assignment, venue-staff,
+  audit-review, or platform controls; the `/admin` route family remains
+  excluded from consumer builds.
+- The organizer planner is football-session-first: approved 20-question pack,
+  schedule, eligibility, supporter invitations, and optional authorized
+  display assignment precede activation and live control. Invitation-only
+  planning uses a privacy-safe display name plus six-digit Fan ID and never
+  contact, account, payment, or credential fields. The selected state keeps
+  the pack and eligibility hierarchy above distinct TV assignment and
+  supporter invitation sections with one primary create action. Lifecycle
+  controls render only server-advertised next actions and retain authoritative
+  phase, version, sequence, and timing rather than client-owned progress.
+- Organizer Live Control presents at most one visually dominant normal next
+  transition. Pause, resume, skip, early-end, and cancellation are a distinct
+  confirmed exception group. Skip and early-end require a bounded reason and
+  use their dedicated versioned, idempotent, audited RPCs; they never pass
+  through ordinary progression. Conflict or timeout keeps every mutation
+  locked until an authoritative refresh, while the last confirmed safe session
+  remains visible. Any in-flight or failed authoritative refresh also locks
+  every organizer action; permission loss clears the protected session rather
+  than retaining it. A definite retryable mutation failure may reuse the same
+  idempotent intent, but never an ambiguous result. Phone metrics must reflow
+  rather than split words.
+- `My TVs` is a narrow owner/manager inventory, not a general Admin surface.
+  Each card exposes only the current club's manageable display name, home or
+  venue scope, server-derived health and last-seen state, app version, bounded
+  scalar capabilities, and safe assigned-session title/phase. Empty and denied
+  states are explicit; a recoverable refresh failure may retain the last
+  confirmed inventory with a warning, but pairing remains disabled until an
+  authoritative refresh succeeds. Device credentials and pairing codes never
+  cross the inventory projection.
+- `My TVs` pairing and management use the challenge created on native TV V2,
+  accepted by validated deep link or manual entry. Home and venue choices are
+  server-authorized, same-club, approved, and named; raw venue identifiers are
+  never user input. Rename or move, credential recovery, and destructive
+  revocation are separate confirmed, idempotent, audited actions. Recovery
+  consumes a fresh TV bootstrap challenge, invalidates the old credential, and
+  requires the TV to exchange for a replacement. Any uncertain outcome locks
+  all management mutations until authoritative refresh; obsolete owner-issued
+  pairing and legacy claim interfaces remain retired.
+- An unpaired native TV generates and displays its own short-lived challenge
+  plus an exact `My TVs` deep-link QR; it never asks for an owner or participant
+  secret. After authenticated owner claim, one secure credential exchange
+  clears pairing material and enters the role-safe projection. Revocation
+  clears credential, subscription, and retained content before any recovery.
+- A paired native TV is the public game projection, not a join-code or private
+  reward-claim surface. It must render paired-empty, scheduled, lobby, current
+  question and choices with server deadline, reveal/public result, contiguous
+  public-alias standings, completion, pause/cancellation, retained-offline, and
+  authoritative reconnect consequences. Only the seven governed lifecycle
+  phases are accepted; missing question/deadline/result data, unknown phases,
+  broken rank order, private identity, balances, claims, orders, credentials,
+  and pre-reveal answers fail closed.
 - Admin surfaces may be denser than mobile, but they must still use the same premium dark shell grammar, concise copy, stable navigation, tokenized panels, and designed states.
+- Admin game operations must separate Content Studio, Session Planner, and
+  Live Control. Routine pack, question, session, organizer, and display work
+  uses authorized named selectors and guarded confirmations; raw identifiers,
+  optimistic versions, deadlines, ordering, and idempotency keys stay internal.
+- Game-content review must keep source/citation fragments, schema/model,
+  AI/human generation, human reviewer, review time, and deterministic QA
+  visible without leaking answers. Every generated or imported question starts
+  `pending_review`; approval fails closed when required provenance or exact/
+  normalized duplicate, ambiguity, answer-consistency, supported-language, or
+  entertainment-policy checks fail. A pack cannot publish until its exact
+  source-backed mobile and TV previews are reviewed; any title, description,
+  or question-order change invalidates that acknowledgement.
+- Current game surfaces synchronize structured prediction and reviewed-trivia
+  state only. A live or prerecorded video programme requires a separately
+  approved product, media-rights, ingest, transcoding, CDN, telemetry,
+  moderation, bandwidth, accessibility, and fallback contract; none is
+  inferred from TV game display or synchronized trivia.
+- Admin Live Control must show authoritative phase, version, one valid next
+  action, identity-free participant and TV projection previews, last
+  refresh/event health, and server-time latency buckets. Offline and restored
+  connections keep mutations locked until authoritative refresh; participant
+  identity, correct answers, and device credentials never appear.
+- The game backend contract is projection-first: owner-scoped displays have
+  bounded capability metadata and explicit session assignments; participant,
+  organizer, admin, and TV variants carry monotonic versions, event sequence,
+  server time, phase deadline, allowed actions, and freshness. Pause/resume,
+  reasoned skip, and reasoned early end are authoritative retry-safe operations,
+  not client-only visual states.
+- Display and event access is least-privilege at both relation-grant and RLS
+  layers. Owners, venue managers, assigned organizers, club admins, and
+  platform admins receive only their governed scope. Realtime messages use
+  `{club_id}:game_session:{session_id}`, contain no private or answer-bearing
+  content, and are refresh hints only; every client must reconcile the typed
+  authoritative projection after an event.
+- One session may target several explicitly assigned displays. Home displays
+  are owner/invitation scoped and never implicitly club-wide. Venue managers
+  operate assigned displays and require an explicit organizer grant to control
+  a game. Participant identity is the authenticated AFRICLUB account projected
+  only through a session-safe public alias.
+- Native TV Realtime uses a dedicated anonymous Auth identity bound to one
+  active revocable device credential. It may read only events for explicitly
+  assigned club/session pairs, clears identity on disable/revoke/rotation, and
+  uses bounded polling only while disconnected or recovering.
+- Controlled local acceptance requires an executable isolated Realtime network
+  check, not only mocked streams or database policy assertions: assigned events
+  must arrive monotonically, unbound identities must receive zero rows through
+  per-event RLS, revocation must stop subsequent delivery, and every event must
+  remain an invalidation hint followed by authoritative projection refresh.
+  Passing this local check does not establish shared/live WAN, physical-TV,
+  approval, signing, store, deployment, or release readiness.
 - A feature is not design-complete until its mobile, TV where applicable, and admin/operator implications are either implemented or explicitly marked not applicable in this file or the product source of truth.
 
 ## AFRICLUB Football-Club-First Product Contract
@@ -876,16 +996,74 @@ The parity gate cannot pass while any of these are true:
   licensed source and allowed-use record;
 - `design_complete=false` in the governed evidence output.
 
-Current 2026-07-30 controlled status:
+Current 2026-08-02 controlled status:
 
-- 158 governed routes.
-- 1,633 fully evidenced applicable state cells.
-- 256 applicable state cells still open.
-- 639 cells explicitly not applicable.
-- `Closure complete: false`.
+- 176 governed routes.
+- 1,881 route-state cells have admitted current evidence.
+- 256 applicable state cells remain open across nine Admin PWA and seven Venue
+  portal routes pending corrected exact-current browser execution and review.
+- 679 cells explicitly not applicable.
+- `Closure complete: false` for the governed local route-state ledger; 117
+  evidence bundles are admitted and 16 are pending.
+- `design_complete=false` because live/authenticated, physical-device and
+  assistive-technology, performance, reference, accountable approval, clean
+  candidate, signing, store, deployment, and release gates remain open.
+- 71 universal components implemented; all 316 applicable component-state
+  cells evidenced and 678 structurally not applicable.
 - `revolut_live_capture_partial=true`.
 - `revolut_live_capture_complete=false`.
-- `clean_ios_build=false`.
+- `unsigned_ios_release_build=true`.
+- `clean_controlled_candidate=false`.
+- Current native-TV evidence includes inspected Android TV API 36 emulator
+  captures of the real isolated-backend pairing journey at exact 1920 x 1080
+  and 3840 x 2160. This passes the native-current-resolution clause only;
+  physical-TV overscan/remote/screen-reader execution, four-hour soak and
+  accountable privacy approval remain open under GAME-QA-05.
+- GAME-QA-03 now records an exact physical synchronized-session preflight:
+  zero available physical phones, one paired but unavailable iPhone 12 Pro,
+  zero physical native-TV targets, and two available iOS simulators. Simulator
+  and emulator evidence cannot close the required two-phone-plus-native-TV
+  journey. Authorized shared-backend execution, correlated logs/video,
+  measured network loss/recovery, physical accessibility and accountable
+  approvals remain open.
+- GAME-QA-06 now records exact-current dirty local build success for unsigned
+  iOS release, ephemeral-signed Android AAB, ephemeral-signed native-TV release
+  APK, and the web production gate, plus exact paired-iPhone install/launch.
+  This does not establish a clean candidate, pinned CI, complete physical UAT/
+  AT, production signing/store, target-backend migration/rollback, approval, or
+  release readiness.
+- The eleven Club routes now close their entire controlled applicability
+  contract: 153/153 applicable cells have executable tests and exact current
+  390 x 844 or 320 x 720 captures; 23 disabled/selected/empty cells are
+  explicitly non-applicable. The governed read-only family distinguishes
+  offline, permission denial, conflict, timeout and unknown failure; retains
+  confirmed content while refreshing; exposes a real refresh action; and
+  passes 194 Club tests. Live content authority, physical-device accessibility,
+  named approval and release remain open.
+- The static role-gated `/game-operations` hub closes all six applicable
+  focus, held-press, 200-percent text, reduced-motion, dark, and light cells;
+  ten data, authorization, disabled, selection, synchronization, conflict, and
+  timeout cells are explicitly non-applicable. The authenticated `/my-tvs`
+  inventory closes all fourteen applicable cells with typed offline recovery,
+  retained-authority lockout, and exact loading/recovery/interaction/theme
+  evidence; selected and conflict are explicitly non-applicable. The organizer
+  inventory likewise closes all fourteen applicable cells with permission
+  clearing and stale-authority lockout. The organizer planner closes all
+  sixteen applicable cells with complete-plan gating, invitee selection,
+  organizer-specific offline recovery, retained-refresh and mutation-
+  uncertainty lockout, exact interaction/theme evidence, and a fully readable
+  200-percent primary action. The live-control route closes all fourteen
+  applicable cells with empty and selected explicitly N/A, imperative normal
+  transition hierarchy, organizer-specific offline recovery, and complete
+  primary/exception lockout during uncertainty. Participant discovery closes
+  15/15 applicable cells with persistent selected explicitly N/A, and the
+  participant live route closes all 16 cells with distinct retained sync,
+  permission, conflict, timeout, disabled-answer, focus, held-press,
+  selected-answer, theme, motion, and 200-percent-text evidence. The final nine
+  Admin PWA and seven Venue portal routes retain all 256 applicable cells as
+  open. Their prior browser artifacts were rejected for incomplete manifests,
+  theme-label drift, and compact navigation clipping; corrected source/specs
+  now require a successful exact-current rerun before atomic admission.
 
 ## Quality Gates
 

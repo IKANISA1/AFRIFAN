@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-TV-03",
+  "status": "local_native_tv_pairing_only_contract_passed",
+  "criterion_complete": true,
+  "required_clauses": [
+    "generated_short_lived_challenge",
+    "validated_owner_deep_link_qr",
+    "no_tv_secret_input_or_participant_discovery",
+    "pending_until_authenticated_owner_claim",
+    "single_use_secure_credential_exchange",
+    "pairing_material_removed_after_binding",
+    "revocation_and_recovery"
+  ],
+  "clauses": [
+    {
+      "id": "generated_short_lived_challenge",
+      "assertion": "A first-run native TV persists an installation nonce and asks the backend to create a hashed single-active eight-character challenge that expires within eight minutes.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "first run persists an installation nonce and creates a challenge"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "unpaired TV challenge is hashed, short-lived, deep-linked, and pending until owner claim"
+        }
+      ]
+    },
+    {
+      "id": "validated_owner_deep_link_qr",
+      "assertion": "The QR contains only the validated africlub My TVs owner-pairing deep link with the exact displayed challenge; alternate schemes, paths, parameters, or mismatched codes fail closed.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "validates owner deep-link pairing payloads and credentials"
+        },
+        {
+          "path": "apps/rayon_sports_tv/test/tv_route_states_test.dart",
+          "name": "golden generated pairing challenge at 720p"
+        }
+      ]
+    },
+    {
+      "id": "no_tv_secret_input_or_participant_discovery",
+      "assertion": "The unpaired TV displays its generated QR and challenge but accepts no secret input; participant discovery and projections contain no pairing code or credential.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "TV shows a generated challenge instead of accepting a secret"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "participant discovery is code-free and source-governed"
+        }
+      ]
+    },
+    {
+      "id": "pending_until_authenticated_owner_claim",
+      "assertion": "Possession of the challenge and installation nonce cannot pair the TV; exchange remains pending until an authenticated authorized owner claims the installation.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "pending owner claim keeps the same challenge"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "unpaired TV challenge is hashed, short-lived, deep-linked, and pending until owner claim"
+        }
+      ]
+    },
+    {
+      "id": "single_use_secure_credential_exchange",
+      "assertion": "After owner claim, the same installation exchanges exactly once for a bounded credential, stores it through secure storage, binds a least-privilege TV identity, and fetches only its role-safe projection.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "owner claim exchanges once, stores credential, and fetches projection"
+        },
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "secure-write retry does not exchange a one-time credential twice"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "TV receives one revocable credential exactly once after owner claim"
+        }
+      ]
+    },
+    {
+      "id": "pairing_material_removed_after_binding",
+      "assertion": "A successful exchange clears the challenge from native-TV runtime state, and owner/participant/TV projections never return the raw credential, pairing code, or challenge.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "owner claim exchanges once, stores credential, and fetches projection"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "owner claim creates a complete scoped inventory item without pairing or credential material"
+        }
+      ]
+    },
+    {
+      "id": "revocation_and_recovery",
+      "assertion": "Revocation clears the local credential, realtime binding, and projection; recovery requires a fresh native-TV bootstrap challenge and issues a replacement credential exactly once.",
+      "tests": [
+        {
+          "path": "apps/rayon_sports_tv/test/tv_app_test.dart",
+          "name": "revocation deletes the credential and fails closed"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "revoking a TV credential clears its Realtime identity and event access"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "owner rename, revocation, and credential recovery are idempotent and audited once"
+        }
+      ]
+    }
+  ],
+  "deterministic_golden_evidence": [
+    "apps/rayon_sports_tv/test/goldens/tv_v2_pairing_challenge_rw_1280x720.png"
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "static_source_contract": true,
+    "isolated_database_contract_executed": true,
+    "current_visual_comparison": true,
+    "shared_or_live_session_claimed": false,
+    "physical_tv_claimed": false,
+    "real_network_timing_claimed": false,
+    "accountable_human_approval_claimed": false,
+    "release_claimed": false
+  }
+}

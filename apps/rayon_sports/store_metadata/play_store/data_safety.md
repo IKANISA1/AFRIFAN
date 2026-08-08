@@ -31,12 +31,25 @@ The app collects and processes user data through Supabase (backend) and local st
 |-----------|-----------|--------|---------|----------|
 | Device/app identifiers | Yes | No | Firebase App Check, notification delivery, auth security | No |
 
+### 5. App Info and Performance
+| Data Type | Collected | Shared | Purpose | Optional |
+|-----------|-----------|--------|---------|----------|
+| Crash logs | Conditional | No | App stability and incident diagnosis | Yes — release configuration and applicable consent must allow collection |
+| Diagnostics / performance | Conditional | No | Startup, network, and runtime reliability | Yes — release configuration and applicable consent must allow collection |
+
+### 6. App Activity
+| Data Type | Collected | Shared | Purpose | Optional |
+|-----------|-----------|--------|---------|----------|
+| Product interaction | Conditional | No | Privacy-filtered feature analytics | Yes — explicit analytics consent and the release gate are both required |
+
 ## Data Usage Purposes
 
 - **App functionality**: Core features rely on anonymous authentication, optional profile data, and purchase history
 - **Account management**: Anonymous account/session continuity and optional MoMo profile linkage
 - **Notifications**: Optional alert delivery for configured releases
 - **Fraud prevention / security**: Device/app attestation for Firebase App Check
+- **Analytics**: Closed-taxonomy, privacy-filtered product interactions only after explicit consent
+- **Developer communications**: Not enabled by analytics or diagnostics collection
 
 ---
 
@@ -48,6 +61,8 @@ The app collects and processes user data through Supabase (backend) and local st
 
 ### User Data Deletion
 - Users can request account deletion via Settings > Delete Account
+- Users who cannot access the app can request deletion through the public
+  `https://gikundiro.com/privacy#account-deletion` pathway
 - Account-linked application data is removed as part of the account deletion flow, subject to lawful retention requirements for transactional records
 
 ### Data Retention
@@ -61,7 +76,7 @@ The app collects and processes user data through Supabase (backend) and local st
 | SDK | Data Collected | Purpose |
 |-----|---------------|---------|
 | Supabase | Auth tokens, user data | Backend / Database |
-| Firebase | App attestation data, messaging token | App Check / Push messaging |
+| Firebase | App attestation data, installation and messaging identifiers, conditional crash/performance diagnostics, and consent-gated privacy-filtered interactions | App Check, push messaging, reliability, and optional analytics |
 
 ---
 
@@ -70,5 +85,6 @@ The app collects and processes user data through Supabase (backend) and local st
 - [x] App does NOT sell user data
 - [x] App encrypts data in transit
 - [x] App provides a way for users to request data deletion
+- [x] App provides both an in-app and public-web deletion request pathway
 - [x] App is not directed to children under 13
 - [x] Repository implementation is designed to follow the User Data Policy; console answers still require release-owner verification

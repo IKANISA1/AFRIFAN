@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -30,8 +31,8 @@ class FetArc extends StatelessWidget {
     final progress = (currentFet / maxFet).clamp(0.0, 1.0);
 
     return Semantics(
-      label: 'FET progress',
-      value: '$currentFet of $maxFet, $tier tier',
+      label: context.afriL10n.gameFetProgress,
+      value: context.afriL10n.gameFetProgressValue(currentFet, maxFet, tier),
       child: ExcludeSemantics(
         child: SizedBox(
           width: SpacingTokens.spacing20 * 2 + SpacingTokens.spacing10,
@@ -64,7 +65,7 @@ class FetArc extends StatelessWidget {
                   ),
                   const SizedBox(height: SpacingTokens.spacing1 / 2),
                   Text(
-                    'FET',
+                    context.afriL10n.gameFet,
                     style: TypographyTokens.labelLarge(
                       supporting,
                     ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 2.0),

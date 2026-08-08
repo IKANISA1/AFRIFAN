@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -29,7 +30,7 @@ class CommunityPredictionBar extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'COMMUNITY PICKS',
+          context.afriL10n.gameCommunityPicks,
           style: TypographyTokens.labelSmall(
             ColorTokens.onSurfaceVariant,
           ).copyWith(fontWeight: FontWeight.w700),

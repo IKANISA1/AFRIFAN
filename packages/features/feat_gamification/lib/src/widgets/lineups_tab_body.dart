@@ -53,7 +53,7 @@ class LineupsTabBody extends StatelessWidget {
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                'LINEUPS',
+                context.afriL10n.gameLineupsUpper,
                 style: TypographyTokens.titleLarge(
                   ColorTokens.onSurfaceVariant,
                 ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
@@ -191,7 +191,7 @@ class _TeamLineup extends StatelessWidget {
         if (subs.isNotEmpty) ...[
           const SizedBox(height: SpacingTokens.spacing3),
           Text(
-            'SUBS',
+            context.afriL10n.gameSubstitutes,
             style: TypographyTokens.labelSmall(
               ColorTokens.onSurfaceVariant,
             ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),

@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -47,14 +48,17 @@ class H2hTabBody extends StatelessWidget {
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                'HEAD TO HEAD',
+                context.afriL10n.gameHeadToHead,
                 style: TypographyTokens.titleLarge(
                   ColorTokens.onSurfaceVariant,
                 ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                'Historical H2H records between $homeTeamShort and $awayTeamShort will appear here.',
+                context.afriL10n.gameHeadToHeadEmpty(
+                  homeTeamShort,
+                  awayTeamShort,
+                ),
                 textAlign: TextAlign.center,
                 style: TypographyTokens.bodySmall(),
               ),
@@ -78,7 +82,7 @@ class H2hTabBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'WIN DISTRIBUTION',
+                    context.afriL10n.gameWinDistribution,
                     style: TypographyTokens.metricLabel(
                       ColorTokens.onSurfaceVariant,
                     ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
@@ -89,11 +93,14 @@ class H2hTabBody extends StatelessWidget {
                     children: [
                       _DistMetric(
                         label: homeTeamShort,
-                        value: '$homeWins',
+                        value: homeWins.toString(),
                         highlight: true,
                       ),
-                      _DistMetric(label: 'DRAWS', value: '$draws'),
-                      _DistMetric(label: awayTeamShort, value: '$away'),
+                      _DistMetric(
+                        label: context.afriL10n.gameDraws,
+                        value: draws.toString(),
+                      ),
+                      _DistMetric(label: awayTeamShort, value: away.toString()),
                     ],
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
@@ -147,14 +154,16 @@ class H2hTabBody extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '${encounters.fold<int>(0, (sum, e) => sum + e.homeScore)}',
+                      encounters
+                          .fold<int>(0, (sum, e) => sum + e.homeScore)
+                          .toString(),
                       style: TypographyTokens.headlineMedium(
                         ColorTokens.clubAccent,
                       ).copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1 / 2),
                     Text(
-                      '$homeTeamShort GOALS',
+                      context.afriL10n.gameTeamGoals(homeTeamShort),
                       style: TypographyTokens.labelSmall(
                         ColorTokens.onSurfaceVariant,
                       ),
@@ -170,14 +179,16 @@ class H2hTabBody extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '${encounters.fold<int>(0, (sum, e) => sum + e.awayScore)}',
+                      encounters
+                          .fold<int>(0, (sum, e) => sum + e.awayScore)
+                          .toString(),
                       style: TypographyTokens.headlineMedium().copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1 / 2),
                     Text(
-                      '$awayTeamShort GOALS',
+                      context.afriL10n.gameTeamGoals(awayTeamShort),
                       style: TypographyTokens.labelSmall(
                         ColorTokens.onSurfaceVariant,
                       ),
@@ -192,7 +203,7 @@ class H2hTabBody extends StatelessWidget {
         const SizedBox(height: SpacingTokens.spacing5),
 
         Text(
-          'RECENT ENCOUNTERS',
+          context.afriL10n.gameRecentEncounters,
           style: TypographyTokens.metricLabel(
             ColorTokens.onSurfaceVariant,
           ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
@@ -224,7 +235,7 @@ class H2hTabBody extends StatelessWidget {
                       borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                     ),
                     child: Text(
-                      '${e.homeScore} - ${e.awayScore}',
+                      context.afriL10n.gameScore(e.homeScore, e.awayScore),
                       style: TypographyTokens.titleMedium().copyWith(
                         fontWeight: FontWeight.w800,
                       ),

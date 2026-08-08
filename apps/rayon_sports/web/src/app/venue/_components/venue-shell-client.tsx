@@ -76,7 +76,7 @@ export function VenueShellClient({
           </div>
           <nav
             aria-label="Venue operations"
-            className="flex max-w-full gap-2 overflow-x-auto pb-1"
+            className="grid w-full max-w-full grid-cols-2 gap-2 sm:grid-cols-4 lg:flex lg:w-auto"
           >
             {navigation.map(([label, href]) => {
               const active = pathname === href;
@@ -85,7 +85,7 @@ export function VenueShellClient({
                   key={href}
                   href={href}
                   aria-current={active ? "page" : undefined}
-                  className={`${active ? ui.buttonSecondary : ui.buttonTertiary} shrink-0 whitespace-nowrap`}
+                  className={`${active ? ui.buttonSecondary : ui.buttonTertiary} w-full justify-center whitespace-nowrap lg:w-auto`}
                 >
                   {label}
                 </Link>

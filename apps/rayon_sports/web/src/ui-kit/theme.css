@@ -1792,8 +1792,11 @@ textarea:focus-visible,
   --admin-success: #10b981;
   --admin-warning: #f59e0b;
   --admin-danger: #ef4444;
+  --admin-danger-text: #ffe4e6;
   --admin-info: #3b82f6;
   --admin-action-primary: #0d63f3;
+  --admin-auth-accent: #25d366;
+  --admin-auth-accent-soft: rgba(37, 211, 102, 0.12);
   min-height: 100vh;
   background: var(--admin-bg-top);
   color: var(--admin-text);
@@ -1953,6 +1956,7 @@ textarea:focus-visible,
   --venue-foreground: #f8fafc;
   --venue-copy: #cbd5e1;
   --venue-muted: #94a3b8;
+  --venue-kicker: #8bb9ff;
   --venue-border: rgba(255, 255, 255, 0.1);
   background: var(--venue-background) !important;
   color: var(--venue-foreground) !important;
@@ -1961,6 +1965,16 @@ textarea:focus-visible,
 .venue-portal .venue-shell-header {
   border-color: var(--venue-border);
   background: var(--venue-shell);
+}
+
+.venue-portal .ui-kicker,
+.venue-access-state .ui-kicker {
+  color: var(--venue-kicker);
+}
+
+.venue-portal .ui-meta,
+.venue-access-state .ui-meta {
+  color: var(--venue-muted);
 }
 
 .venue-portal .text-slate-300,
@@ -1998,6 +2012,7 @@ textarea:focus-visible,
     --venue-foreground: #0f172a;
     --venue-copy: #334155;
     --venue-muted: #52627a;
+    --venue-kicker: #0d63f3;
     --venue-border: rgba(15, 23, 42, 0.16);
   }
 
@@ -2368,6 +2383,143 @@ textarea:focus-visible,
   text-align: left;
   background: rgba(255, 255, 255, 0.03);
   white-space: nowrap;
+}
+
+.admin-settings-related-grid .admin-status-badge {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal;
+}
+
+.admin-settings-state-surface {
+  container-type: inline-size;
+}
+
+@container (max-width: 45rem) {
+  .admin-settings-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admin-settings-workspace,
+  .admin-settings-related-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+:is(
+    .admin-settings-state-surface,
+    .admin-features-state-surface,
+    .admin-shop-state-surface,
+    .admin-sms-state-surface,
+    .admin-tickets-state-surface
+  )
+  > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-features-state-surface {
+  container-type: inline-size;
+}
+
+.admin-shop-state-surface {
+  container-type: inline-size;
+}
+
+.admin-features-state-surface .admin-table-shell {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  contain: inline-size layout paint;
+}
+
+@container (max-width: 45rem) {
+  .admin-features-metrics-grid,
+  .admin-shop-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admin-shop-state-surface [data-admin-shop-state-surface] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-features-state-surface .admin-table-shell {
+    overflow: visible;
+    contain: none;
+  }
+
+  .admin-features-state-surface .admin-table {
+    min-width: 0;
+  }
+
+  .admin-features-state-surface .admin-table thead {
+    display: none;
+  }
+
+  .admin-features-state-surface
+    :is(.admin-table, .admin-table tbody, .admin-table tr, .admin-table td) {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-features-state-surface .admin-table tbody {
+    display: grid;
+    gap: 0.85rem;
+    padding: 0.85rem;
+  }
+
+  .admin-features-state-surface :is(.admin-table tbody tr, .admin-table-row) {
+    display: grid !important;
+    gap: 0.75rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.95rem;
+  }
+
+  .admin-features-state-surface .admin-table-cell {
+    padding: 0 !important;
+    border: 0 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-features-state-surface .admin-table-cell[data-column-label]::before {
+    content: attr(data-column-label);
+    display: block;
+    margin-bottom: 0.32rem;
+    color: var(--admin-text-muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .admin-features-state-surface .admin-pagination {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.admin-sms-state-surface :is(.text-white, .text-slate-100, .text-slate-300) {
+  color: var(--admin-text-strong) !important;
+}
+
+.admin-sms-state-surface :is(.text-slate-400, .text-slate-500) {
+  color: var(--admin-text-muted) !important;
+}
+
+.admin-shop-state-surface
+  :is(.text-slate-300, .text-slate-400, .text-slate-500) {
+  color: var(--admin-text-muted) !important;
+}
+
+.admin-settings-state-surface
+  :is(.text-slate-100, .text-slate-200, .text-slate-300) {
+  color: var(--admin-text-strong) !important;
+}
+
+.admin-settings-state-surface :is(.text-slate-400, .text-slate-500) {
+  color: var(--admin-text-muted) !important;
 }
 
 .admin-sort-button {
@@ -3753,6 +3905,9 @@ textarea:focus-visible,
     --admin-text-muted: #526277;
     --admin-accent: #0d63f3;
     --admin-accent-soft: #dce9ff;
+    --admin-danger-text: #881337;
+    --admin-auth-accent: #087a42;
+    --admin-auth-accent-soft: rgba(8, 122, 66, 0.12);
     --club-accent: #0d63f3;
     --club-accent-light: #206ff4;
     background: linear-gradient(180deg, #f8fafc, #eef4fb);

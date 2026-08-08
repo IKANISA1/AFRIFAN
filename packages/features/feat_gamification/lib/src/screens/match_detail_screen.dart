@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -34,12 +35,10 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
   late final TabController _tabController;
   bool? _lastOnline;
 
-  static const _tabLabels = <String>['Pools', 'Stats', 'H2H', 'Lineups'];
-
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _tabLabels.length, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -76,30 +75,50 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
         .toList(growable: false);
   }
 
-  String _formatKickoff(FixtureSummary fixture) {
+  List<String> _tabLabels(AfriLocalizations l10n) => <String>[
+    l10n.gamePoolsTab,
+    l10n.gameStatsTab,
+    l10n.gameH2hTab,
+    l10n.gameLineupsTab,
+  ];
+
+  String _formatKickoff(AfriLocalizations l10n, FixtureSummary fixture) {
     final kickoff = fixture.kickoffAt;
     if (kickoff == null) {
-      return 'Kickoff TBD';
+      return l10n.gameKickoffTbd;
     }
     final local = kickoff.toLocal();
     final hour = local.hour.toString().padLeft(2, '0');
     final minute = local.minute.toString().padLeft(2, '0');
-    const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-    const monthNames = [
-      'JAN',
-      'FEB',
-      'MAR',
-      'APR',
-      'MAY',
-      'JUN',
-      'JUL',
-      'AUG',
-      'SEP',
-      'OCT',
-      'NOV',
-      'DEC',
+    final dayNames = [
+      l10n.gameWeekdayMon,
+      l10n.gameWeekdayTue,
+      l10n.gameWeekdayWed,
+      l10n.gameWeekdayThu,
+      l10n.gameWeekdayFri,
+      l10n.gameWeekdaySat,
+      l10n.gameWeekdaySun,
     ];
-    return '${dayNames[local.weekday - 1]} ${local.day} ${monthNames[local.month - 1]} · $hour:$minute';
+    final monthNames = [
+      l10n.gameMonthJan,
+      l10n.gameMonthFeb,
+      l10n.gameMonthMar,
+      l10n.gameMonthApr,
+      l10n.gameMonthMay,
+      l10n.gameMonthJun,
+      l10n.gameMonthJul,
+      l10n.gameMonthAug,
+      l10n.gameMonthSep,
+      l10n.gameMonthOct,
+      l10n.gameMonthNov,
+      l10n.gameMonthDec,
+    ];
+    return l10n.gameMatchKickoffDateTime(
+      dayNames[local.weekday - 1],
+      local.day,
+      monthNames[local.month - 1],
+      '$hour:$minute',
+    );
   }
 
   @override
@@ -150,6 +169,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
   }
 
   Widget _buildLoading() {
+    final l10n = context.afriL10n;
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
@@ -157,7 +177,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: _leaveDetail,
-          tooltip: 'Back',
+          tooltip: l10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -170,21 +190,26 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
   }
 
   Widget _buildEmpty() {
+    final l10n = context.afriL10n;
     return _buildStateScaffold(
       AfriStateView.empty(
-        title: 'Match not found',
-        message:
-            'This fixture may have ended, been removed, or no longer be available.',
+        title: l10n.gameMatchNotFound,
+        message: l10n.gameMatchNotFoundDescription,
         icon: AfriIcons.versus,
-        actionLabel: 'Back to Fan Zone',
+        actionLabel: l10n.gameBackToFanZoneTitleCase,
         onAction: _leaveDetail,
       ),
     );
   }
 
   Widget _buildFailure(Object error, bool isOnline) {
+    final l10n = context.afriL10n;
     final failure = MatchDetailFailure.fromError(error);
-    final content = _MatchDetailFailureContent.fromFailure(failure, isOnline);
+    final content = _MatchDetailFailureContent.fromFailure(
+      l10n,
+      failure,
+      isOnline,
+    );
     final onAction = content.canRefresh
         ? () => unawaited(
             ref.read(matchDetailProvider(widget.fixtureId).notifier).refresh(),
@@ -194,13 +219,13 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
       MatchDetailFailureKind.offline => AfriStateView.offline(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.gameRefresh : null,
         onAction: onAction,
       ),
       _ => AfriStateView.error(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.gameRefresh : null,
         onAction: onAction,
       ),
     };
@@ -208,6 +233,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
   }
 
   Widget _buildStateScaffold(Widget stateView) {
+    final l10n = context.afriL10n;
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
@@ -215,10 +241,10 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: _leaveDetail,
-          tooltip: 'Back',
+          tooltip: l10n.gameBack,
         ),
         title: Text(
-          'Match',
+          l10n.gameMatchTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1,
@@ -244,6 +270,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
     required bool isOnline,
     required bool isRefreshing,
   }) {
+    final l10n = context.afriL10n;
     final usesAccessibleChrome =
         MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     final matchCenter = routeState.matchCenter;
@@ -283,8 +310,11 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
         backgroundColor: ColorTokens.transparent,
         title: Text(
           usesAccessibleChrome
-              ? 'Match'
-              : '${fixture.homeTeamShort} vs ${fixture.awayTeamShort}',
+              ? l10n.gameMatchTitle
+              : l10n.gameMatchTeamsVs(
+                  fixture.homeTeamShort,
+                  fixture.awayTeamShort,
+                ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style:
@@ -296,7 +326,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: _leaveDetail,
-          tooltip: 'Back',
+          tooltip: l10n.gameBack,
         ),
         actions: usesAccessibleChrome
             ? null
@@ -304,15 +334,15 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                 AfriIconButton(
                   icon: AfriIcons.predict,
                   onTap: () => context.go('/fanzone'),
-                  tooltip: 'Partner pools',
+                  tooltip: l10n.gamePartnerPoolsTooltip,
                 ),
               ],
         bottom: AfriTabBar.line(
           controller: _tabController,
           isScrollable: usesAccessibleChrome,
-          tabs: _tabLabels
-              .map((label) => Tab(text: label))
-              .toList(growable: false),
+          tabs: _tabLabels(
+            l10n,
+          ).map((label) => Tab(text: label)).toList(growable: false),
         ),
       ),
       scrollable: false,
@@ -330,17 +360,16 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
               child: AfriStateBanner(
                 icon: AfriIcons.refresh,
                 title: routeState.mutation == MatchDetailMutation.joiningPool
-                    ? 'Joining partner pool'
-                    : 'Refreshing match',
-                subtitle:
-                    'Keeping the confirmed match visible while the latest state is checked.',
+                    ? l10n.gameJoiningPartnerPool
+                    : l10n.gameRefreshingMatch,
+                subtitle: l10n.gameConfirmedMatchVisible,
                 tone: AfriStateBannerTone.info,
                 compact: true,
               ),
             ),
           if (!configuredActionsEnabled)
-            const Padding(
-              padding: EdgeInsets.fromLTRB(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
                 SpacingTokens.spacing6,
                 SpacingTokens.spacing3,
                 SpacingTokens.spacing6,
@@ -348,16 +377,15 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
               ),
               child: AfriStateBanner(
                 icon: AfriIcons.lock,
-                title: 'Match actions unavailable',
-                subtitle:
-                    'You can review this match, but joining partner pools is disabled for this build.',
+                title: l10n.gameMatchActionsUnavailable,
+                subtitle: l10n.gameMatchActionsUnavailableDescription,
                 tone: AfriStateBannerTone.warning,
                 compact: true,
               ),
             )
           else if (!isOnline)
-            const Padding(
-              padding: EdgeInsets.fromLTRB(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
                 SpacingTokens.spacing6,
                 SpacingTokens.spacing3,
                 SpacingTokens.spacing6,
@@ -365,9 +393,8 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
               ),
               child: AfriStateBanner(
                 icon: AfriIcons.offline,
-                title: 'Showing saved match',
-                subtitle:
-                    'Reconnect and refresh before joining a partner pool.',
+                title: l10n.gameShowingSavedMatch,
+                subtitle: l10n.gameReconnectBeforePartnerPool,
                 tone: AfriStateBannerTone.warning,
                 compact: true,
               ),
@@ -431,7 +458,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                                   fixture.homeScore != null &&
                                   fixture.awayScore != null
                               ? '${fixture.homeScore} - ${fixture.awayScore}'
-                              : 'VS',
+                              : l10n.gameVsUpper,
                           style: TypographyTokens.titleLarge(
                             ColorTokens.clubAccent,
                           ).copyWith(fontWeight: FontWeight.w800),
@@ -448,7 +475,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
-                    _formatKickoff(fixture),
+                    _formatKickoff(l10n, fixture),
                     style: TypographyTokens.bodySmall(
                       ColorTokens.onSurfaceVariant,
                     ),
@@ -476,7 +503,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                       children: [
                         if (fixture.competitionSlug.isNotEmpty)
                           MatchMetaLink(
-                            label: 'League',
+                            label: l10n.gameLeague,
                             onTap: () {
                               unawaited(
                                 context.push(
@@ -550,6 +577,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
   }
 
   Future<void> _showPartnerPoolJoinSheet(PartnerPredictionPool pool) {
+    final l10n = context.afriL10n;
     const outcomes = <PartnerPoolOutcome>[
       PartnerPoolOutcome.homeWin,
       PartnerPoolOutcome.draw,
@@ -586,7 +614,12 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
 
               closeAfriBottomSheet(sheetContext);
               if (!mounted) return;
-              AfriToast.success(context, '${selectedOutcome.label} joined.');
+              AfriToast.success(
+                context,
+                l10n.gameOutcomeJoined(
+                  partnerPoolOutcomeLabel(l10n, selectedOutcome),
+                ),
+              );
             }
 
             return Column(
@@ -596,13 +629,12 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                 Text(pool.title, style: TypographyTokens.sectionTitle()),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  '${pool.partnerName} sponsors this matchday round. '
-                  'Pick once before the round locks.',
+                  l10n.gamePartnerSponsorsRound(pool.partnerName),
                   style: TypographyTokens.bodyMedium(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  pool.eligibilityLabel,
+                  partnerPoolEligibilityLabel(l10n, pool.eligibilityMode),
                   style: TypographyTokens.labelMedium(ColorTokens.clubAccent),
                 ),
                 const SizedBox(height: SpacingTokens.spacing5),
@@ -622,7 +654,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                 const SizedBox(height: SpacingTokens.spacing2),
                 AfriButton(
                   key: const ValueKey<String>('match-detail-join-submit'),
-                  label: 'Join round',
+                  label: l10n.gameJoinRound,
                   icon: AfriIcons.predict,
                   focusNode: widget.joinFocusNode,
                   isLoading: isSubmitting,
@@ -637,16 +669,14 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
   }
 
   String _poolJoinFailureMessage(MatchDetailFailure? failure) {
+    final l10n = context.afriL10n;
     return switch (failure?.kind) {
-      MatchDetailFailureKind.offline =>
-        'Reconnect and refresh before joining this pool.',
+      MatchDetailFailureKind.offline => l10n.gamePoolJoinOffline,
       MatchDetailFailureKind.permissionDenied =>
-        'Your account cannot join this partner pool.',
-      MatchDetailFailureKind.conflict =>
-        'This pool changed or locked. Refresh before trying again.',
-      MatchDetailFailureKind.securityTimeout =>
-        'No entry was confirmed. Refresh before trying again.',
-      _ => 'Pool entry could not be confirmed.',
+        l10n.gamePoolJoinPermissionDenied,
+      MatchDetailFailureKind.conflict => l10n.gamePoolJoinConflict,
+      MatchDetailFailureKind.securityTimeout => l10n.gamePoolJoinTimeout,
+      _ => l10n.gamePoolJoinUnavailable,
     };
   }
 }
@@ -662,7 +692,8 @@ class _RetainedMatchDetailFailureBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = _MatchDetailFailureContent.fromFailure(failure, true);
+    final l10n = context.afriL10n;
+    final content = _MatchDetailFailureContent.fromFailure(l10n, failure, true);
     return Column(
       children: [
         AfriStateBanner(
@@ -680,7 +711,7 @@ class _RetainedMatchDetailFailureBanner extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
             key: const ValueKey<String>('match-detail-refresh-action'),
-            label: 'REFRESH MATCH',
+            label: l10n.gameRefreshMatch,
             icon: AfriIcons.refresh,
             variant: AfriButtonVariant.outline,
             labelMaxLines: 2,
@@ -704,37 +735,38 @@ class _MatchDetailFailureContent {
   final bool canRefresh;
 
   factory _MatchDetailFailureContent.fromFailure(
+    AfriLocalizations l10n,
     MatchDetailFailure failure,
     bool isOnline,
   ) {
     return switch (failure.kind) {
       MatchDetailFailureKind.offline => _MatchDetailFailureContent(
-        title: isOnline ? 'Connection restored' : 'Match details offline',
+        title: isOnline
+            ? l10n.gameMatchConnectionRestored
+            : l10n.gameMatchDetailsOffline,
         message: isOnline
-            ? 'Refresh to confirm the current match before joining a pool.'
-            : 'Reconnect to confirm the current match before joining a pool.',
+            ? l10n.gameRefreshBeforeJoiningPool
+            : l10n.gameReconnectBeforeJoiningPool,
         canRefresh: isOnline,
       ),
-      MatchDetailFailureKind.permissionDenied =>
-        const _MatchDetailFailureContent(
-          title: 'Match access unavailable',
-          message: 'Your current account cannot review this match.',
-          canRefresh: false,
-        ),
+      MatchDetailFailureKind.permissionDenied => _MatchDetailFailureContent(
+        title: l10n.gameMatchAccessUnavailable,
+        message: l10n.gameMatchAccessUnavailableDescription,
+        canRefresh: false,
+      ),
       MatchDetailFailureKind.conflict => _MatchDetailFailureContent(
-        title: 'Match data changed',
-        message: 'Refresh before joining a pool or reviewing current status.',
+        title: l10n.gameMatchDataChanged,
+        message: l10n.gameMatchDataChangedDescription,
         canRefresh: isOnline,
       ),
       MatchDetailFailureKind.securityTimeout => _MatchDetailFailureContent(
-        title: 'Match security check timed out',
-        message: 'No pool entry was confirmed. Refresh before trying again.',
+        title: l10n.gameMatchSecurityTimeout,
+        message: l10n.gameMatchSecurityTimeoutDescription,
         canRefresh: isOnline,
       ),
       MatchDetailFailureKind.unknown => _MatchDetailFailureContent(
-        title: 'Match unavailable',
-        message:
-            'The latest match details could not be confirmed. Refresh to try again.',
+        title: l10n.gameMatchUnavailable,
+        message: l10n.gameMatchUnavailableDescription,
         canRefresh: isOnline,
       ),
     };
@@ -754,20 +786,20 @@ class _MatchPartnerPoolsTabBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return ListView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       children: [
         AfriSectionCard(
-          title: 'Partner WDW Pools',
+          title: l10n.gamePartnerWdwPools,
           child: pools.isEmpty
               ? AfriEmptyView(
                   compact: true,
-                  title: 'No partner pool for this match',
-                  message:
-                      'Football predictions open only when a partner creates a fixed-entry WDW pool for this fixture.',
+                  title: l10n.gameNoPartnerPool,
+                  message: l10n.gameNoPartnerPoolDescription,
                   icon: AfriIcons.predict,
-                  actionLabel: 'View Fan Zone',
+                  actionLabel: l10n.gameViewFanZone,
                   onAction: () => context.go('/fanzone'),
                 )
               : Column(
@@ -798,7 +830,10 @@ class _MatchPartnerPoolsTabBody extends StatelessWidget {
               const SizedBox(width: SpacingTokens.spacing2),
               Expanded(
                 child: Text(
-                  '${fixture.homeTeamShort} vs ${fixture.awayTeamShort} uses partner-funded WDW pools only.',
+                  l10n.gamePartnerPoolsOnly(
+                    fixture.homeTeamShort,
+                    fixture.awayTeamShort,
+                  ),
                   style: TypographyTokens.bodySmall(),
                 ),
               ),

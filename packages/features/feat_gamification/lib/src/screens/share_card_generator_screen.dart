@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -66,16 +67,13 @@ class _ShareCardGeneratorScreenState
         .read(shareCardControllerProvider.notifier)
         .share();
     if (!mounted || !outcome.isSuccess) return;
-    AfriToast.success(
-      context,
-      'Share options closed. Confirm the destination before publishing.',
-    );
+    AfriToast.success(context, context.afriL10n.gameShareOptionsClosed);
   }
 
   Future<void> _copy() async {
     final outcome = await ref.read(shareCardControllerProvider.notifier).copy();
     if (!mounted || !outcome.isSuccess) return;
-    AfriToast.success(context, 'Share text copied to clipboard.');
+    AfriToast.success(context, context.afriL10n.gameShareCopied);
   }
 
   @override
@@ -88,7 +86,7 @@ class _ShareCardGeneratorScreenState
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'Share card',
+          context.afriL10n.gameShareCard,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -97,17 +95,16 @@ class _ShareCardGeneratorScreenState
           key: const ValueKey<String>('share-card-back'),
           icon: AfriIcons.back,
           onTap: _close,
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
       constrainContent: true,
       child: !accessEnabled
           ? _ShareCardConsequence(
-              title: 'Share actions unavailable',
-              body:
-                  'You can return to Fan Zone, but sharing is disabled for this build.',
-              actionLabel: 'BACK TO FAN ZONE',
+              title: context.afriL10n.gameShareActionsUnavailable,
+              body: context.afriL10n.gameShareActionsUnavailableDescription,
+              actionLabel: context.afriL10n.gameBackToFanZoneUpper,
               onAction: _close,
             )
           : asyncState.when(
@@ -128,19 +125,19 @@ class _ShareCardGeneratorScreenState
                 if (state.failure?.kind ==
                     ShareCardFailureKind.permissionDenied) {
                   return _ShareCardConsequence(
-                    title: 'Prediction access denied',
+                    title: context.afriL10n.gamePredictionAccessDenied,
                     body:
-                        'This account cannot open prediction history for sharing.',
-                    actionLabel: 'BACK TO FAN ZONE',
+                        context.afriL10n.gamePredictionAccessDeniedDescription,
+                    actionLabel: context.afriL10n.gameBackToFanZoneUpper,
                     onAction: _close,
                   );
                 }
                 if (state.isEmpty) {
                   return _ShareCardConsequence(
                     key: const ValueKey<String>('share-card-empty'),
-                    title: 'Make a pick first',
-                    body: 'Share cards unlock after a matchday pick.',
-                    actionLabel: 'BACK TO PICKS',
+                    title: context.afriL10n.gameMakePickFirst,
+                    body: context.afriL10n.gameShareCardsUnlock,
+                    actionLabel: context.afriL10n.gameBackToPicksUpper,
                     onAction: () => context.go('/fanzone?section=predictions'),
                   );
                 }
@@ -154,31 +151,28 @@ class _ShareCardGeneratorScreenState
     final failure = ShareCardFailure.fromError(error);
     return switch (failure.kind) {
       ShareCardFailureKind.offline => _ShareCardConsequence(
-        title: 'Share cards offline',
-        body:
-            'Reconnect to load your confirmed prediction history. Nothing is queued offline.',
-        actionLabel: 'BACK TO FAN ZONE',
+        title: context.afriL10n.gameShareCardsOffline,
+        body: context.afriL10n.gameShareCardsOfflineDescription,
+        actionLabel: context.afriL10n.gameBackToFanZoneUpper,
         onAction: _close,
       ),
       ShareCardFailureKind.permissionDenied => _ShareCardConsequence(
-        title: 'Prediction access denied',
-        body: 'This account cannot open prediction history for sharing.',
-        actionLabel: 'BACK TO FAN ZONE',
+        title: context.afriL10n.gamePredictionAccessDenied,
+        body: context.afriL10n.gamePredictionAccessDeniedDescription,
+        actionLabel: context.afriL10n.gameBackToFanZoneUpper,
         onAction: _close,
       ),
       ShareCardFailureKind.securityTimeout => _ShareCardConsequence(
-        title: 'History check timed out',
-        body:
-            'The app could not confirm a safe prediction history in time. Try one bounded refresh.',
-        actionLabel: 'TRY AGAIN',
+        title: context.afriL10n.gameHistoryCheckTimedOut,
+        body: context.afriL10n.gameHistoryCheckTimedOutDescription,
+        actionLabel: context.afriL10n.gameTryAgainUpper,
         onAction: () =>
             ref.read(shareCardControllerProvider.notifier).refresh(),
       ),
       _ => _ShareCardConsequence(
-        title: 'Share cards unavailable',
-        body:
-            'Prediction history could not be loaded. No private activity details were shown.',
-        actionLabel: 'TRY AGAIN',
+        title: context.afriL10n.gameShareCardsUnavailable,
+        body: context.afriL10n.gameShareCardsUnavailableDescription,
+        actionLabel: context.afriL10n.gameTryAgainUpper,
         onAction: () =>
             ref.read(shareCardControllerProvider.notifier).refresh(),
       ),
@@ -191,9 +185,9 @@ class _ShareCardGeneratorScreenState
     if (selected == null) {
       return _ShareCardConsequence(
         key: const ValueKey<String>('share-card-empty'),
-        title: 'Make a pick first',
-        body: 'Share cards unlock after a matchday pick.',
-        actionLabel: 'BACK TO PICKS',
+        title: context.afriL10n.gameMakePickFirst,
+        body: context.afriL10n.gameShareCardsUnlock,
+        actionLabel: context.afriL10n.gameBackToPicksUpper,
         onAction: () => context.go('/fanzone?section=predictions'),
       );
     }
@@ -221,12 +215,12 @@ class _ShareCardGeneratorScreenState
   }
 
   Widget? _statusFor(ShareCardRouteState state, {required bool online}) {
+    final l10n = context.afriL10n;
     if (!online || state.failure?.kind == ShareCardFailureKind.offline) {
-      return const AfriStateBanner(
+      return AfriStateBanner(
         icon: AfriIcons.offline,
-        title: 'Showing saved share card',
-        subtitle:
-            'Reconnect before sharing or copying. No action is queued offline.',
+        title: l10n.gameShowingSavedShareCard,
+        subtitle: l10n.gameShowingSavedShareCardDescription,
         tone: AfriStateBannerTone.warning,
       );
     }
@@ -234,19 +228,17 @@ class _ShareCardGeneratorScreenState
       return AfriStateBanner(
         icon: AfriIcons.refresh,
         title: state.mutation == ShareCardMutation.copying
-            ? 'Copying share text'
-            : 'Opening share options',
-        subtitle:
-            'Wait for the platform confirmation. Do not repeat this action.',
+            ? l10n.gameCopyingShareText
+            : l10n.gameOpeningShareOptions,
+        subtitle: l10n.gameShareAwaitPlatformConfirmation,
         tone: AfriStateBannerTone.info,
       );
     }
     return switch (state.failure?.kind) {
       ShareCardFailureKind.conflict => AfriStateBanner(
         icon: AfriIcons.warning,
-        title: 'Share action paused',
-        subtitle:
-            'Another action was already active. Check the current platform view before continuing.',
+        title: l10n.gameShareActionPaused,
+        subtitle: l10n.gameShareActionPausedDescription,
         tone: AfriStateBannerTone.warning,
         onTap: () => ref
             .read(shareCardControllerProvider.notifier)
@@ -254,9 +246,8 @@ class _ShareCardGeneratorScreenState
       ),
       ShareCardFailureKind.securityTimeout => AfriStateBanner(
         icon: AfriIcons.warning,
-        title: 'Share confirmation uncertain',
-        subtitle:
-            'Check the share sheet or clipboard, then dismiss this warning before trying again.',
+        title: l10n.gameShareConfirmationUncertain,
+        subtitle: l10n.gameShareConfirmationUncertainDescription,
         tone: AfriStateBannerTone.danger,
         onTap: () => ref
             .read(shareCardControllerProvider.notifier)
@@ -264,9 +255,8 @@ class _ShareCardGeneratorScreenState
       ),
       ShareCardFailureKind.unknown => AfriStateBanner(
         icon: AfriIcons.warning,
-        title: 'Share action unavailable',
-        subtitle:
-            'The platform did not complete the action. Dismiss this warning before retrying.',
+        title: l10n.gameShareActionUnavailable,
+        subtitle: l10n.gameShareActionUnavailableDescription,
         tone: AfriStateBannerTone.warning,
         onTap: () => ref
             .read(shareCardControllerProvider.notifier)
@@ -274,9 +264,8 @@ class _ShareCardGeneratorScreenState
       ),
       _ when state.phase == ShareCardPhase.degraded => AfriStateBanner(
         icon: AfriIcons.warning,
-        title: 'Using saved prediction history',
-        subtitle:
-            'Refresh the route before opening another platform share action.',
+        title: l10n.gameUsingSavedPredictionHistory,
+        subtitle: l10n.gameUsingSavedPredictionHistoryDescription,
         tone: AfriStateBannerTone.warning,
         onTap: () => ref.read(shareCardControllerProvider.notifier).refresh(),
       ),
@@ -315,6 +304,7 @@ class ShareCardGeneratorContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final selectedPrediction = selected;
     if (selectedPrediction == null) {
       return Center(
@@ -322,9 +312,9 @@ class ShareCardGeneratorContent extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriStateView.empty(
-            title: 'Make a pick first',
-            message: 'Share cards unlock after a matchday pick.',
-            actionLabel: 'Back to picks',
+            title: l10n.gameMakePickFirst,
+            message: l10n.gameShareCardsUnlock,
+            actionLabel: l10n.gameBackToPicks,
             onAction: () => context.go('/fanzone?section=predictions'),
           ),
         ),
@@ -337,14 +327,14 @@ class ShareCardGeneratorContent extends StatelessWidget {
         key: const ValueKey<String>('share-card-share-action'),
         focusNode: shareFocusNode,
         onTap: () => unawaited(onShare(selectedPrediction)),
-        label: 'SHARE',
+        label: l10n.gameShareUpper,
         enabled: actionsEnabled,
         isLoading: sharing,
       ),
       AfriButton(
         key: const ValueKey<String>('share-card-copy-action'),
         onTap: () => unawaited(onCopy(selectedPrediction)),
-        label: 'COPY',
+        label: l10n.gameCopyUpper,
         enabled: actionsEnabled,
         isLoading: copying,
         variant: AfriButtonVariant.secondary,
@@ -389,7 +379,7 @@ class ShareCardGeneratorContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Choose pick', style: TypographyTokens.titleLarge()),
+                Text(l10n.gameChoosePick, style: TypographyTokens.titleLarge()),
                 const SizedBox(height: SpacingTokens.spacing3),
                 ...history.map((prediction) {
                   final selectedCard = prediction.id == selectedPrediction.id;
@@ -403,12 +393,15 @@ class ShareCardGeneratorContent extends StatelessWidget {
                       ),
                       onTap: () => onSelected(prediction),
                       selected: selectedCard,
-                      semanticsLabel:
-                          '${prediction.homeTeamShort} versus ${prediction.awayTeamShort}, '
-                          '${prediction.marketName}, ${prediction.selectedOutcome}',
+                      semanticsLabel: l10n.gameSharePredictionSemantics(
+                        prediction.homeTeamShort,
+                        prediction.awayTeamShort,
+                        prediction.marketName,
+                        prediction.selectedOutcome,
+                      ),
                       semanticsHint: selectedCard
-                          ? 'Currently selected share card'
-                          : 'Select this share card',
+                          ? l10n.gameCurrentlySelectedShareCard
+                          : l10n.gameSelectThisShareCard,
                       builder: (context, pressState) => GlassCard(
                         animate: false,
                         borderColor: pressState.isFocused
@@ -457,16 +450,23 @@ class _PredictionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '${prediction.homeTeamShort} vs ${prediction.awayTeamShort}',
+          l10n.gameVersusShort(
+            prediction.homeTeamShort,
+            prediction.awayTeamShort,
+          ),
           style: TypographyTokens.titleSmall(),
         ),
         const SizedBox(height: SpacingTokens.spacing1 / 2),
         Text(
-          '${prediction.marketName} · ${prediction.selectedOutcome}',
+          l10n.gameShareMarketSelection(
+            prediction.marketName,
+            prediction.selectedOutcome,
+          ),
           style: TypographyTokens.bodySmall(),
         ),
       ],
@@ -481,6 +481,7 @@ class _SelectionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final accent = context.afriSemanticColors.accent;
     final accessibleAccent = ColorTokens.accessibleMetricColor(accent);
     return Container(
@@ -495,7 +496,7 @@ class _SelectionChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
-        selected ? 'Selected' : 'Open',
+        selected ? l10n.gameSelected : l10n.gameOpen,
         style: TypographyTokens.labelSmall(
           selected ? accessibleAccent : ColorTokens.onSurfaceVariant,
         ),

@@ -30,11 +30,11 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Install Melos
-        run: dart pub global activate melos
+      - name: Resolve workspace tooling
+        run: flutter pub get
 
       - name: Bootstrap workspace
-        run: melos bootstrap
+        run: dart run melos bootstrap
 
       - name: Validate all club release contracts
         run: |
@@ -84,11 +84,11 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Install Melos
-        run: dart pub global activate melos
+      - name: Resolve workspace tooling
+        run: flutter pub get
 
       - name: Bootstrap workspace
-        run: melos bootstrap
+        run: dart run melos bootstrap
 
       - name: Validate all club release contracts
         run: |

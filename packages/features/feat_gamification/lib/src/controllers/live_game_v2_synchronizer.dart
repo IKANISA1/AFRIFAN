@@ -62,15 +62,25 @@ class ParticipantLiveGameSynchronizer {
     required String expectedClubId,
     required String sessionId,
     Duration fetchTimeout = const Duration(seconds: 8),
+    Duration missedEventRecoveryInterval = const Duration(seconds: 30),
   }) : _gateway = gateway,
        _fetchTimeout = fetchTimeout,
+       _missedEventRecoveryInterval = missedEventRecoveryInterval,
        _reconciler = ParticipantProjectionReconciler(
          expectedClubId: expectedClubId,
          sessionId: sessionId,
-       );
+       ) {
+    if (missedEventRecoveryInterval <= Duration.zero) {
+      throw ArgumentError.value(
+        missedEventRecoveryInterval,
+        'missedEventRecoveryInterval',
+      );
+    }
+  }
 
   final ParticipantLiveGameGateway _gateway;
   final Duration _fetchTimeout;
+  final Duration _missedEventRecoveryInterval;
   final ParticipantProjectionReconciler _reconciler;
   final StreamController<ParticipantLiveGameSyncState> _states =
       StreamController<ParticipantLiveGameSyncState>.broadcast(sync: true);
@@ -79,8 +89,10 @@ class ParticipantLiveGameSynchronizer {
       const ParticipantLiveGameSyncState.idle();
   StreamSubscription<LiveGameInvalidationHint>? _hintSubscription;
   Future<void>? _refreshInFlight;
+  Timer? _missedEventRecoveryTimer;
   bool _started = false;
   bool _disposed = false;
+  bool _automaticRecoveryPaused = false;
 
   ParticipantLiveGameSyncState get state => _state;
 
@@ -101,6 +113,7 @@ class ParticipantLiveGameSynchronizer {
             failureKind: LiveGameSyncFailureKind.unavailable,
           ),
         );
+        unawaited(_recoverAfterHintFailure());
       },
     );
     await refresh();
@@ -111,6 +124,8 @@ class ParticipantLiveGameSynchronizer {
     final existing = _refreshInFlight;
     if (existing != null) return existing;
 
+    _missedEventRecoveryTimer?.cancel();
+    _missedEventRecoveryTimer = null;
     final refresh = _performRefresh();
     _refreshInFlight = refresh;
     return refresh;
@@ -118,6 +133,9 @@ class ParticipantLiveGameSynchronizer {
 
   void markOffline() {
     _ensureActive();
+    _automaticRecoveryPaused = true;
+    _missedEventRecoveryTimer?.cancel();
+    _missedEventRecoveryTimer = null;
     _emit(
       ParticipantLiveGameSyncState(
         status: LiveGameSyncStatus.offline,
@@ -128,6 +146,7 @@ class ParticipantLiveGameSynchronizer {
 
   Future<void> reconnect() async {
     _ensureActive();
+    _automaticRecoveryPaused = false;
     _emit(
       ParticipantLiveGameSyncState(
         status: LiveGameSyncStatus.reconnecting,
@@ -140,6 +159,8 @@ class ParticipantLiveGameSynchronizer {
   Future<void> dispose() async {
     if (_disposed) return;
     _disposed = true;
+    _missedEventRecoveryTimer?.cancel();
+    _missedEventRecoveryTimer = null;
     await _hintSubscription?.cancel();
     _hintSubscription = null;
     _state = ParticipantLiveGameSyncState(
@@ -188,6 +209,7 @@ class ParticipantLiveGameSynchronizer {
       _emitFailure(LiveGameSyncFailureKind.unknown);
     } finally {
       _refreshInFlight = null;
+      _scheduleMissedEventRecovery();
     }
   }
 
@@ -195,6 +217,38 @@ class ParticipantLiveGameSynchronizer {
     if (_disposed || !_reconciler.shouldReconcile(hint)) return;
     await refresh();
   }
+
+  Future<void> _recoverAfterHintFailure() async {
+    if (_disposed) return;
+    await refresh();
+  }
+
+  void _scheduleMissedEventRecovery() {
+    _missedEventRecoveryTimer?.cancel();
+    _missedEventRecoveryTimer = null;
+    if (_disposed || _automaticRecoveryPaused) return;
+    final projection = _reconciler.current;
+    if (projection == null || _isTerminal(projection.version.phase)) return;
+
+    var delay = _missedEventRecoveryInterval;
+    final deadline = projection.version.phaseDeadline;
+    if (deadline != null) {
+      final deadlineDelay =
+          deadline.difference(projection.version.serverTime) +
+          const Duration(seconds: 1);
+      if (deadlineDelay > Duration.zero && deadlineDelay < delay) {
+        delay = deadlineDelay;
+      }
+    }
+    _missedEventRecoveryTimer = Timer(delay, () {
+      _missedEventRecoveryTimer = null;
+      if (_disposed || _automaticRecoveryPaused) return;
+      unawaited(refresh());
+    });
+  }
+
+  bool _isTerminal(LiveGamePhase phase) =>
+      phase == LiveGamePhase.completed || phase == LiveGamePhase.cancelled;
 
   void _emitFailure(LiveGameSyncFailureKind kind) {
     if (_disposed) return;

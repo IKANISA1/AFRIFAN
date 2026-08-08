@@ -40,7 +40,7 @@ void main() {
       'onboarding_screen.dart',
     );
     expect(onboarding, contains('AfriGovernedImage('));
-    expect(onboarding, contains('AFRICLUB_ONBOARDING_MEDIA_RIGHTS_APPROVED'));
+    expect(onboarding, contains('CLUB_ONBOARDING_MEDIA_RIGHTS_APPROVED'));
     expect(onboarding, contains('defaultValue: false'));
 
     final ticket = source(

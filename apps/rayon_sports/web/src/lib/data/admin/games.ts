@@ -97,6 +97,19 @@ export function normalizeAdminGameDrafts(
     const risk = boundedText(row["duplicateRiskLevel"], 20);
     const duplicateRiskLevel =
       risk === "normalized" || risk === "exact" ? risk : "none";
+    const sourceTitle = boundedText(row["sourceTitle"], 240) || null;
+    const sourceTrustTier =
+      boundedText(row["sourceTrustTier"], 80) || null;
+    const generationMode =
+      row["generationMode"] === "ai_assisted"
+        ? "ai_assisted"
+        : "human_authored";
+    const qaSource =
+      row["qaChecks"] != null &&
+      typeof row["qaChecks"] === "object" &&
+      !Array.isArray(row["qaChecks"])
+        ? (row["qaChecks"] as Record<string, unknown>)
+        : {};
 
     return [
       {
@@ -119,9 +132,34 @@ export function normalizeAdminGameDrafts(
           row["normalizedPromptSignature"],
           1_000,
         ),
-        sourceTitle: boundedText(row["sourceTitle"], 240) || null,
+        sourceTitle,
         sourceUrl: safeHttpUrl(row["sourceUrl"]),
-        sourceTrustTier: boundedText(row["sourceTrustTier"], 80) || null,
+        sourceTrustTier,
+        citationFragment:
+          boundedText(row["citationFragment"], 500) || null,
+        schemaVersion: boundedText(row["schemaVersion"], 80) || null,
+        generationMode,
+        modelName: boundedText(row["modelName"], 160) || null,
+        reviewedAt: validDate(row["reviewedAt"]) || null,
+        reviewerName: boundedText(row["reviewerName"], 160) || null,
+        qaChecks: {
+          sourcePresent: qaSource["sourcePresent"] === true,
+          citationPresent: qaSource["citationPresent"] === true,
+          sourceTrusted: qaSource["sourceTrusted"] === true,
+          schemaVersionPresent:
+            qaSource["schemaVersionPresent"] === true,
+          modelMetadataPresent:
+            qaSource["modelMetadataPresent"] === true,
+          promptLengthValid: qaSource["promptLengthValid"] === true,
+          exactDuplicateFree: qaSource["exactDuplicateFree"] === true,
+          normalizedDuplicateFree:
+            qaSource["normalizedDuplicateFree"] === true,
+          ambiguitySignalsAbsent:
+            qaSource["ambiguitySignalsAbsent"] === true,
+          answerConsistent: qaSource["answerConsistent"] === true,
+          languageSupported: qaSource["languageSupported"] === true,
+          policyCompliant: qaSource["policyCompliant"] === true,
+        },
         createdAt,
       },
     ];

@@ -61,7 +61,8 @@ void main() {
     final generatedClosure = payload['state_closure']! as Map<String, Object?>;
     expect(generatedClosure['evidenced_cell_count'], greaterThan(0));
     expect(generatedClosure['open_cell_count'], lessThan(1980));
-    expect(generatedClosure['closure_complete'], isFalse);
+    expect(generatedClosure['open_cell_count'], 0);
+    expect(generatedClosure['closure_complete'], isTrue);
 
     // A missing evidence overlay must retain the original fail-closed ledger
     // rather than promoting source discovery to behavioral or visual proof.
@@ -329,6 +330,276 @@ void main() {
         contains('Controlled history surface must prove every'),
       );
     }
+    final controlledClubHubRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] == 'controlled_club_hub_surface',
+    );
+    expect(controlledClubHubRoutes.map((route) => route['path']).toSet(), {
+      '/club',
+    });
+    final controlledClubInformationRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] ==
+          'controlled_club_information_surface',
+    );
+    expect(
+      controlledClubInformationRoutes.map((route) => route['path']).toSet(),
+      <String>{
+        '/club/team',
+        '/club/news',
+        '/club/news/:articleId',
+        '/club/fixtures',
+        '/club/fixtures/:matchId',
+        '/club/results',
+        '/club/standings',
+        '/club/history',
+        '/club/projects',
+        '/club/projects/:projectId',
+      },
+    );
+    const expectedControlledClubHubStates = <String>{
+      'loading',
+      'error',
+      'offline',
+      'permission_denied',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'conflict',
+      'security_timeout',
+    };
+    const expectedControlledClubInformationStates = <String>{
+      ...expectedControlledClubHubStates,
+      'empty',
+    };
+    for (final route in controlledClubHubRoutes) {
+      final states = route['states']! as Map<String, Object?>;
+      for (final entry in states.entries) {
+        expect(
+          (entry.value! as Map<String, Object?>)['applicability'],
+          expectedControlledClubHubStates.contains(entry.key)
+              ? 'applicable'
+              : 'not_applicable',
+        );
+      }
+    }
+    for (final route in controlledClubInformationRoutes) {
+      final states = route['states']! as Map<String, Object?>;
+      for (final entry in states.entries) {
+        expect(
+          (entry.value! as Map<String, Object?>)['applicability'],
+          expectedControlledClubInformationStates.contains(entry.key)
+              ? 'applicable'
+              : 'not_applicable',
+        );
+      }
+    }
+    final controlledParticipantDiscoveryRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] ==
+          'controlled_participant_discovery_surface',
+    );
+    expect(
+      controlledParticipantDiscoveryRoutes
+          .map((route) => route['path'])
+          .toSet(),
+      {'/fanzone/game'},
+    );
+    final participantDiscoveryStates =
+        controlledParticipantDiscoveryRoutes.single['states']!
+            as Map<String, Object?>;
+    for (final entry in participantDiscoveryStates.entries) {
+      expect(
+        (entry.value! as Map<String, Object?>)['applicability'],
+        entry.key == 'selected' ? 'not_applicable' : 'applicable',
+      );
+    }
+    final controlledParticipantLiveRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] ==
+          'controlled_participant_live_surface',
+    );
+    expect(
+      controlledParticipantLiveRoutes.map((route) => route['path']).toSet(),
+      {'/fanzone/game/:sessionId'},
+    );
+    final participantLiveStates =
+        controlledParticipantLiveRoutes.single['states']!
+            as Map<String, Object?>;
+    for (final entry in participantLiveStates.entries) {
+      expect(
+        (entry.value! as Map<String, Object?>)['applicability'],
+        'applicable',
+      );
+    }
+    final staticGameOperationsHubRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] ==
+          'static_game_operations_hub_surface',
+    );
+    expect(
+      staticGameOperationsHubRoutes.map((route) => route['path']).toSet(),
+      {'/game-operations'},
+    );
+    const expectedStaticGameOperationsHubStates = <String>{
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    final gameOperationsHubStates =
+        staticGameOperationsHubRoutes.single['states']! as Map<String, Object?>;
+    for (final entry in gameOperationsHubStates.entries) {
+      expect(
+        (entry.value! as Map<String, Object?>)['applicability'],
+        expectedStaticGameOperationsHubStates.contains(entry.key)
+            ? 'applicable'
+            : 'not_applicable',
+      );
+    }
+    final controlledTvInventoryRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] == 'controlled_tv_inventory_surface',
+    );
+    expect(controlledTvInventoryRoutes.map((route) => route['path']).toSet(), {
+      '/my-tvs',
+    });
+    const expectedControlledTvInventoryStates = <String>{
+      'loading',
+      'empty',
+      'error',
+      'offline',
+      'permission_denied',
+      'disabled',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'security_timeout',
+    };
+    final tvInventoryStates =
+        controlledTvInventoryRoutes.single['states']! as Map<String, Object?>;
+    for (final entry in tvInventoryStates.entries) {
+      expect(
+        (entry.value! as Map<String, Object?>)['applicability'],
+        expectedControlledTvInventoryStates.contains(entry.key)
+            ? 'applicable'
+            : 'not_applicable',
+      );
+    }
+    final controlledOrganizerInventoryRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] ==
+          'controlled_organizer_inventory_surface',
+    );
+    expect(
+      controlledOrganizerInventoryRoutes.map((route) => route['path']).toSet(),
+      {'/game-operations/sessions'},
+    );
+    final organizerInventoryStates =
+        controlledOrganizerInventoryRoutes.single['states']!
+            as Map<String, Object?>;
+    for (final entry in organizerInventoryStates.entries) {
+      expect(
+        (entry.value! as Map<String, Object?>)['applicability'],
+        expectedControlledTvInventoryStates.contains(entry.key)
+            ? 'applicable'
+            : 'not_applicable',
+      );
+    }
+    final controlledOrganizerPlannerRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] ==
+          'controlled_organizer_planner_surface',
+    );
+    expect(
+      controlledOrganizerPlannerRoutes.map((route) => route['path']).toSet(),
+      {'/game-operations/sessions/new'},
+    );
+    final organizerPlannerStates =
+        controlledOrganizerPlannerRoutes.single['states']!
+            as Map<String, Object?>;
+    for (final entry in organizerPlannerStates.entries) {
+      expect(
+        (entry.value! as Map<String, Object?>)['applicability'],
+        'applicable',
+      );
+    }
+    final controlledOrganizerLiveRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] ==
+          'controlled_organizer_live_control_surface',
+    );
+    expect(
+      controlledOrganizerLiveRoutes.map((route) => route['path']).toSet(),
+      {'/game-operations/sessions/:sessionId'},
+    );
+    const expectedControlledOrganizerLiveStates = <String>{
+      'loading',
+      'error',
+      'offline',
+      'permission_denied',
+      'disabled',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'conflict',
+      'security_timeout',
+    };
+    final organizerLiveStates =
+        controlledOrganizerLiveRoutes.single['states']! as Map<String, Object?>;
+    for (final entry in organizerLiveStates.entries) {
+      expect(
+        (entry.value! as Map<String, Object?>)['applicability'],
+        expectedControlledOrganizerLiveStates.contains(entry.key)
+            ? 'applicable'
+            : 'not_applicable',
+      );
+    }
+    final controlledTvPairingRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] == 'controlled_tv_pairing_surface',
+    );
+    expect(controlledTvPairingRoutes.map((route) => route['path']).toSet(), {
+      '/my-tvs/pair',
+    });
+    final tvPairingStates =
+        controlledTvPairingRoutes.single['states']! as Map<String, Object?>;
+    for (final entry in tvPairingStates.entries) {
+      expect(
+        (entry.value! as Map<String, Object?>)['applicability'],
+        'applicable',
+      );
+    }
+    final controlledTvManagementRoutes = closureRoutes.where(
+      (route) =>
+          route['rendered_state_contract'] ==
+          'controlled_tv_management_surface',
+    );
+    expect(controlledTvManagementRoutes.map((route) => route['path']).toSet(), {
+      '/my-tvs/:displayId',
+    });
+    final tvManagementStates =
+        controlledTvManagementRoutes.single['states']! as Map<String, Object?>;
+    for (final entry in tvManagementStates.entries) {
+      expect(
+        (entry.value! as Map<String, Object?>)['applicability'],
+        'applicable',
+      );
+    }
 
     // HTTP endpoints use executable response contracts, not fabricated visual
     // evidence, while rendered routes continue to require screenshots.
@@ -368,6 +639,43 @@ void main() {
       'evidenced',
     );
     expect(apiClosure['response_evidenced_cell_count'], 1);
+
+    // Rejected or superseded evidence may remain registered for audit, but a
+    // pending admission can never close a route-state cell.
+    final pendingEvidenceFile = File(
+      '${blankOutputDirectory.path}/pending-route-state-evidence.json',
+    );
+    pendingEvidenceFile.writeAsStringSync(
+      '${jsonEncode(<String, Object?>{
+        'schema_version': '1.0',
+        'cells': <String, Object?>{},
+        'groups': <Object?>[
+          <String, Object?>{
+            'id': 'pending-api-error',
+            'admission_status': 'pending',
+            'cells': <String>[apiErrorCell],
+            'test_evidence': <String>['packages/app_registry/test/route_inventory_generation_test.dart'],
+            'response_evidence': <String>['packages/app_registry/test/fixtures/api-error-response.json'],
+            'disposition_note': 'Rejected fixture retained without admission.',
+            'owner': 'Route governance test',
+            'reviewed_at': '2026-08-02',
+          },
+        ],
+      })}\n',
+    );
+    final pendingClosure = generateRouteStateClosure(
+      routes: routes,
+      workspace: workspace,
+      outputDirectory: blankOutputDirectory,
+      evidenceFile: pendingEvidenceFile,
+    );
+    final pendingApi = (pendingClosure['routes']! as List<Map<String, Object?>>)
+        .firstWhere((route) => route['route_key'] == api['route_key']);
+    final pendingApiStates = pendingApi['states']! as Map<String, Object?>;
+    expect(
+      (pendingApiStates['error']! as Map<String, Object?>)['evidence_status'],
+      'open',
+    );
 
     // An evidence overlay cannot turn a structurally non-applicable cell into
     // a completed requirement, even when its linked files are otherwise valid.

@@ -16,16 +16,15 @@ import '../providers/fanzone_hub_provider.dart';
 import '../widgets/fanzone_hub_widgets.dart';
 
 enum _FanzoneHubSection {
-  predictions('predictions', 'Pick', AfriIcons.predict),
-  league('league', 'League', AfriIcons.league),
-  wallet('wallet', 'Points', AfriIcons.wallet),
-  supporters('supporters', 'Fans', AfriIcons.groups),
-  rewards('rewards', 'Rewards', AfriIcons.rewards);
+  predictions('predictions', AfriIcons.predict),
+  league('league', AfriIcons.league),
+  wallet('wallet', AfriIcons.wallet),
+  supporters('supporters', AfriIcons.groups),
+  rewards('rewards', AfriIcons.rewards);
 
-  const _FanzoneHubSection(this.value, this.label, this.icon);
+  const _FanzoneHubSection(this.value, this.icon);
 
   final String value;
-  final String label;
   final IconData icon;
 
   static _FanzoneHubSection fromUri(Uri uri) {
@@ -54,18 +53,19 @@ class FanzoneHubScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.afriL10n;
     final asyncHub = ref.watch(fanzoneHubProvider);
     final notifier = ref.read(fanzoneHubProvider.notifier);
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
-        title: Text('Fan Zone', style: TypographyTokens.headlineSmall()),
+        title: Text(l10n.navFanZone, style: TypographyTokens.headlineSmall()),
         actions: [
           AfriIconButton(
             icon: AfriIcons.more,
             onTap: () => _showOverflow(context),
-            tooltip: 'More options',
+            tooltip: l10n.gameMoreOptions,
           ),
         ],
       ),
@@ -76,19 +76,21 @@ class FanzoneHubScreen extends ConsumerWidget {
         value: asyncHub,
         loading: (_) => _buildPendingContent(context, ref),
         error: (_, error, stackTrace) {
-          final failure = _FanzoneFailureContent.fromError(error);
+          final failure = _FanzoneFailureContent.fromError(error, l10n);
           return ConnectivityBuilder(
             builder: (context, isOnline) => Center(
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                 child: AfriStateView.offline(
-                  title: isOnline ? failure.title : 'Fan Zone unavailable',
+                  title: isOnline
+                      ? failure.title
+                      : l10n.gameFanZoneUnavailableTitle,
                   message: isOnline
                       ? failure.message
-                      : 'Connect to load Fan Zone.',
+                      : l10n.gameConnectToFanZone,
                   actionLabel: isOnline
                       ? failure.actionLabel
-                      : 'Connection required',
+                      : l10n.connectionRequired,
                   onAction: isOnline && failure.actionLabel != null
                       ? () => notifier.refresh()
                       : null,
@@ -123,7 +125,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                 0,
               ),
               child: AfriStateView.loading(
-                title: 'Opening Fan Zone',
+                title: context.afriL10n.gameOpeningFanZone,
                 message: context.afriL10n.fanZoneLoading,
                 compact: true,
               ),
@@ -162,6 +164,7 @@ class FanzoneHubScreen extends ConsumerWidget {
     FanzoneHubSnapshot snapshot,
     bool isRefreshing,
   ) {
+    final l10n = context.afriL10n;
     final notifier = ref.read(fanzoneHubProvider.notifier);
     final selectedSection = _FanzoneHubSection.fromUri(
       GoRouterState.of(context).uri,
@@ -178,9 +181,9 @@ class FanzoneHubScreen extends ConsumerWidget {
           ),
           slivers: [
             if (isRefreshing)
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(
+                  padding: const EdgeInsets.fromLTRB(
                     SpacingTokens.screenPadding,
                     SpacingTokens.spacing4,
                     SpacingTokens.screenPadding,
@@ -188,9 +191,8 @@ class FanzoneHubScreen extends ConsumerWidget {
                   ),
                   child: AfriStateBanner(
                     icon: AfriIcons.refresh,
-                    title: 'Refreshing Fan Zone',
-                    subtitle:
-                        'Keeping your current points, rounds, and picks visible while updates load.',
+                    title: l10n.gameRefreshingFanZone,
+                    subtitle: l10n.gameRefreshingFanZoneDescription,
                     tone: AfriStateBannerTone.info,
                     compact: true,
                   ),
@@ -210,8 +212,8 @@ class FanzoneHubScreen extends ConsumerWidget {
                   ),
                   child: AfriStateBanner(
                     icon: AfriIcons.statusWarning,
-                    title: 'Live updates paused',
-                    subtitle: snapshot.message!,
+                    title: l10n.homeUpdatesPausedTitle,
+                    subtitle: _snapshotMessage(l10n, snapshot.message!),
                     tone: AfriStateBannerTone.warning,
                     compact: true,
                   ),
@@ -257,12 +259,12 @@ class FanzoneHubScreen extends ConsumerWidget {
                     0,
                   ),
                   child: AfriSectionCard(
-                    title: 'Matchday rounds',
-                    trailingLabel: 'Picks',
+                    title: l10n.gameMatchdayRounds,
+                    trailingLabel: l10n.gamePicksLabel,
                     onTrailingTap: () => context.push('/fanzone/my'),
                     child: snapshot.partnerPools.isEmpty
                         ? _sectionState(
-                            title: 'No matchday rounds',
+                            title: l10n.gameNoMatchdayRounds,
                             message: context.afriL10n.fanZoneRoundsEmpty,
                           )
                         : Column(
@@ -296,35 +298,34 @@ class FanzoneHubScreen extends ConsumerWidget {
                     0,
                   ),
                   child: AfriSectionCard(
-                    title: 'TV game',
+                    title: l10n.gameMatchdayRounds,
                     child: _HubActionList(
                       actions: [
                         _HubAction(
                           icon: AfriIcons.profile,
-                          title: 'Supporters',
-                          subtitle: 'Review joined rounds, cards, and results',
+                          title: l10n.gameSupporters,
+                          subtitle: l10n.gameReviewJoinedRounds,
                           onTap: () =>
                               context.go('/fanzone?section=supporters'),
                         ),
                         _HubAction(
                           icon: AfriIcons.live,
-                          title: 'Enter TV code',
-                          subtitle: context.afriL10n.fanZoneJoinSession,
+                          title: l10n.gameLiveGamesTitle,
+                          subtitle: l10n.gameLiveGamesSubtitle,
                           onTap: () => context.push('/fanzone/game'),
                         ),
                         _HubAction.featureGated(
                           featureKey: 'venue_checkin',
                           icon: AfriIcons.qrScan,
-                          title: 'Venue check-in',
+                          title: l10n.gameVenueCheckIn,
                           subtitle: context.afriL10n.fanZoneVenueCode,
                           onTap: () => context.push('/fanzone/venue'),
                         ),
                         _HubAction.featureGated(
                           featureKey: 'venue_checkin',
                           icon: AfriIcons.cart,
-                          title: 'Venue order',
-                          subtitle:
-                              'Order approved drinks and track pickup status',
+                          title: l10n.gameVenueOrder,
+                          subtitle: l10n.gameVenueOrderDescription,
                           onTap: () => context.push('/fanzone/venue/order'),
                         ),
                       ],
@@ -346,7 +347,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                       0,
                     ),
                     child: AfriSectionCard(
-                      title: 'Live Now',
+                      title: l10n.gameLiveNow,
                       child: Column(
                         children: snapshot.liveFixtures
                             .map(
@@ -381,7 +382,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                           0,
                         ),
                         child: AfriSectionCard(
-                          title: 'Today',
+                          title: l10n.gameToday,
                           child: Column(
                             children: snapshot.todayFixtures
                                 .map(
@@ -414,7 +415,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                       0,
                     ),
                     child: AfriSectionCard(
-                      title: 'This Week',
+                      title: l10n.gameThisWeek,
                       child: Column(
                         children: snapshot.upcomingFixtures
                             .map(
@@ -447,10 +448,10 @@ class FanzoneHubScreen extends ConsumerWidget {
                     0,
                   ),
                   child: AfriSectionCard(
-                    title: 'Leaderboard',
+                    title: l10n.gameLeaderboardTitle,
                     child: snapshot.leaderboard.isEmpty
                         ? _sectionState(
-                            title: 'Leaderboard unavailable',
+                            title: l10n.gameLeaderboardUnavailable,
                             message: context.afriL10n.fanZoneRankingsEmpty,
                           )
                         : Column(
@@ -480,19 +481,19 @@ class FanzoneHubScreen extends ConsumerWidget {
                     0,
                   ),
                   child: AfriSectionCard(
-                    title: 'Points',
+                    title: l10n.gamePointsLabel,
                     child: _HubActionList(
                       actions: [
                         _HubAction(
                           icon: AfriIcons.earn,
-                          title: 'Points balance',
-                          subtitle: 'Balance, earning, rewards, and activity',
+                          title: l10n.gamePointsBalanceTitle,
+                          subtitle: l10n.gamePointsBalanceDescription,
                           onTap: () => context.push('/fanzone/wallet'),
                         ),
                         _HubAction(
                           icon: AfriIcons.history,
-                          title: 'Activity',
-                          subtitle: 'Open recent points movement',
+                          title: l10n.gameActivity,
+                          subtitle: l10n.gameOpenPointsActivity,
                           onTap: () =>
                               context.push('/fanzone/wallet?section=history'),
                         ),
@@ -512,7 +513,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                     0,
                   ),
                   child: AfriSectionCard(
-                    title: 'Supporters',
+                    title: l10n.gameSupporters,
                     child: Column(
                       children: [
                         _FanIdSummaryCard(
@@ -525,31 +526,28 @@ class FanzoneHubScreen extends ConsumerWidget {
                           actions: [
                             _HubAction(
                               icon: AfriIcons.clubZone,
-                              title: 'Supporter clubs',
-                              subtitle:
-                                  'Fan clubs, chapters, and community groups',
+                              title: l10n.gameSupporterClubs,
+                              subtitle: l10n.gameSupporterClubsDescription,
                               onTap: () => _showSupporterSurfaceSheet(
                                 context,
-                                title: 'Supporter clubs',
+                                title: l10n.gameSupporterClubs,
                                 message: context.afriL10n.fanZoneClubsMoved,
                               ),
                             ),
                             _HubAction(
                               icon: AfriIcons.groups,
-                              title: 'Member fans',
-                              subtitle:
-                                  'Open the supporter registry as a sheet',
+                              title: l10n.gameMemberFans,
+                              subtitle: l10n.gameMemberFansDescription,
                               onTap: () => _showSupporterSurfaceSheet(
                                 context,
-                                title: 'Member fans',
+                                title: l10n.gameMemberFans,
                                 message: context.afriL10n.fanZoneRegistryMoved,
                               ),
                             ),
                             _HubAction(
                               icon: AfriIcons.contribute,
-                              title: 'Support the club',
-                              subtitle:
-                                  'Projects and supporter contribution groups',
+                              title: l10n.searchContributionsTitle,
+                              subtitle: l10n.gameSupportClubDescription,
                               onTap: () => _showSupportTheClubSheet(context),
                             ),
                           ],
@@ -570,7 +568,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                     0,
                   ),
                   child: AfriSectionCard(
-                    title: 'Rewards',
+                    title: l10n.gameRewardsLabel,
                     child: Column(
                       children: [
                         _AchievementRail(
@@ -585,23 +583,22 @@ class FanzoneHubScreen extends ConsumerWidget {
                           actions: [
                             _HubAction(
                               icon: AfriIcons.rewards,
-                              title: 'Redeem rewards',
-                              subtitle:
-                                  'Use points for rewards and partner offers',
+                              title: l10n.gameRedeemRewards,
+                              subtitle: l10n.gameRedeemRewardsDescription,
                               onTap: () =>
                                   context.go('/fanzone?section=wallet'),
                             ),
                             _HubAction(
                               icon: AfriIcons.badge,
-                              title: 'Achievements',
-                              subtitle: 'Badges and streak status',
+                              title: l10n.gameAchievements,
+                              subtitle: l10n.gameAchievementsDescription,
                               onTap: () =>
                                   _showAchievementsSheet(context, snapshot),
                             ),
                             _HubAction(
                               icon: AfriIcons.share,
-                              title: 'Share card',
-                              subtitle: 'Create a supporter card to share',
+                              title: l10n.gameShareCard,
+                              subtitle: l10n.gameShareCardDescription,
                               onTap: () => context.push('/fanzone/share'),
                             ),
                           ],
@@ -632,8 +629,10 @@ class FanzoneHubScreen extends ConsumerWidget {
     return AfriSegmentedControl(
       items: _FanzoneHubSection.values
           .map(
-            (section) =>
-                AfriSegment(label: _sectionLabel(section), icon: section.icon),
+            (section) => AfriSegment(
+              label: _sectionLabel(context, section),
+              icon: section.icon,
+            ),
           )
           .toList(growable: false),
       selectedIndex: _FanzoneHubSection.values.indexOf(selectedSection),
@@ -654,8 +653,15 @@ class FanzoneHubScreen extends ConsumerWidget {
     return values.contains(section.value);
   }
 
-  String _sectionLabel(_FanzoneHubSection section) {
-    return section.label;
+  String _sectionLabel(BuildContext context, _FanzoneHubSection section) {
+    final l10n = context.afriL10n;
+    return switch (section) {
+      _FanzoneHubSection.predictions => l10n.gamePickSectionLabel,
+      _FanzoneHubSection.league => l10n.gameLeague,
+      _FanzoneHubSection.wallet => l10n.gamePointsLabel,
+      _FanzoneHubSection.supporters => l10n.gameFans,
+      _FanzoneHubSection.rewards => l10n.gameRewardsLabel,
+    };
   }
 
   Future<void> _showPartnerPoolJoinSheet(
@@ -683,7 +689,7 @@ class FanzoneHubScreen extends ConsumerWidget {
               if (!ConnectivityService.isOnline) {
                 AfriToast.error(
                   sheetContext,
-                  'Connect before joining this round.',
+                  sheetContext.afriL10n.gameConnectBeforeJoiningRound,
                 );
                 return;
               }
@@ -704,7 +710,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                 setSheetState(() => isSubmitting = false);
                 AfriToast.error(
                   sheetContext,
-                  'Pool entry could not be recorded.',
+                  sheetContext.afriL10n.gamePoolEntryFailed,
                 );
                 return;
               }
@@ -715,7 +721,12 @@ class FanzoneHubScreen extends ConsumerWidget {
               if (!parentContext.mounted) return;
               AfriToast.success(
                 parentContext,
-                '${selectedOutcome.label} joined.',
+                parentContext.afriL10n.gameOutcomeJoined(
+                  partnerPoolOutcomeLabel(
+                    parentContext.afriL10n,
+                    selectedOutcome,
+                  ),
+                ),
               );
             }
 
@@ -726,13 +737,17 @@ class FanzoneHubScreen extends ConsumerWidget {
                 Text(pool.title, style: TypographyTokens.sectionTitle()),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  '${pool.partnerName} sponsors this matchday round. '
-                  'Pick once before the round locks.',
+                  sheetContext.afriL10n.gamePartnerSponsorsRound(
+                    pool.partnerName,
+                  ),
                   style: TypographyTokens.bodyMedium(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  pool.eligibilityLabel,
+                  partnerPoolEligibilityLabel(
+                    parentContext.afriL10n,
+                    pool.eligibilityMode,
+                  ),
                   style: TypographyTokens.labelMedium(ColorTokens.clubAccent),
                 ),
                 const SizedBox(height: SpacingTokens.spacing5),
@@ -752,7 +767,9 @@ class FanzoneHubScreen extends ConsumerWidget {
                 const SizedBox(height: SpacingTokens.spacing2),
                 ConnectivityBuilder(
                   builder: (context, isOnline) => AfriButton(
-                    label: isOnline ? 'Join round' : 'Connection required',
+                    label: isOnline
+                        ? context.afriL10n.gameJoinRound
+                        : context.afriL10n.connectionRequired,
                     icon: AfriIcons.predict,
                     isLoading: isSubmitting,
                     onTap: submit,
@@ -771,31 +788,31 @@ class FanzoneHubScreen extends ConsumerWidget {
     unawaited(
       showAfriActionSheet(
         context: context,
-        title: 'Fan Zone',
+        title: context.afriL10n.navFanZone,
         actions: [
           AfriSheetAction(
             icon: AfriIcons.myPicks,
-            label: 'Picks',
+            label: context.afriL10n.gamePicksLabel,
             onTap: () => context.go('/fanzone?section=predictions'),
           ),
           AfriSheetAction(
             icon: AfriIcons.league,
-            label: 'League',
+            label: context.afriL10n.gameLeague,
             onTap: () => context.go('/fanzone?section=league'),
           ),
           AfriSheetAction(
             icon: AfriIcons.wallet,
-            label: 'Points',
+            label: context.afriL10n.gamePointsLabel,
             onTap: () => context.go('/fanzone?section=wallet'),
           ),
           AfriSheetAction(
             icon: AfriIcons.groups,
-            label: 'Fans',
+            label: context.afriL10n.gameFans,
             onTap: () => context.go('/fanzone?section=supporters'),
           ),
           AfriSheetAction(
             icon: AfriIcons.rewards,
-            label: 'Rewards',
+            label: context.afriL10n.gameRewardsLabel,
             onTap: () => context.go('/fanzone?section=rewards'),
           ),
         ],
@@ -811,7 +828,10 @@ class FanzoneHubScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Support the club', style: TypographyTokens.sectionTitle()),
+            Text(
+              context.afriL10n.searchContributionsTitle,
+              style: TypographyTokens.sectionTitle(),
+            ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               context.afriL10n.fanZoneContributionMode,
@@ -820,15 +840,15 @@ class FanzoneHubScreen extends ConsumerWidget {
             const SizedBox(height: SpacingTokens.spacing5),
             AfriListRow(
               icon: AfriIcons.contribute,
-              title: 'Projects',
-              subtitle: 'Club initiatives and campaign needs',
+              title: context.afriL10n.gameProjects,
+              subtitle: context.afriL10n.gameProjectsDescription,
               onTap: () {},
             ),
             const SizedBox(height: SpacingTokens.listItemGap),
             AfriListRow(
               icon: AfriIcons.groups,
-              title: 'Groups',
-              subtitle: 'Join supporter contribution groups',
+              title: context.afriL10n.gameGroups,
+              subtitle: context.afriL10n.gameGroupsDescription,
               onTap: () {},
             ),
           ],
@@ -845,12 +865,15 @@ class FanzoneHubScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Fan ID', style: TypographyTokens.sectionTitle()),
+            Text(
+              context.afriL10n.gameFanIdTitle,
+              style: TypographyTokens.sectionTitle(),
+            ),
             const SizedBox(height: SpacingTokens.spacing2),
             AfriListRow(
               icon: AfriIcons.qrCode,
               title: fanId,
-              subtitle: 'QR display and sharing stay inside this sheet.',
+              subtitle: context.afriL10n.gameQrSheetDescription,
             ),
           ],
         ),
@@ -897,7 +920,10 @@ class FanzoneHubScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Achievements', style: TypographyTokens.sectionTitle()),
+            Text(
+              context.afriL10n.gameAchievements,
+              style: TypographyTokens.sectionTitle(),
+            ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               context.afriL10n.fanZoneRewardsSummary,
@@ -907,19 +933,19 @@ class FanzoneHubScreen extends ConsumerWidget {
             AfriStatRow(
               stats: [
                 AfriStat(
-                  label: 'Streak',
+                  label: context.afriL10n.gameStreakLabel,
                   value: '$streak',
                   icon: AfriIcons.streak,
                   accentColor: ColorTokens.clubAccent,
                 ),
                 AfriStat(
-                  label: 'Accuracy',
+                  label: context.afriL10n.gameAccuracyLabel,
                   value: '${winRate.toStringAsFixed(0)}%',
                   icon: AfriIcons.predict,
                   accentColor: ColorTokens.success,
                 ),
                 AfriStat(
-                  label: 'Points',
+                  label: context.afriL10n.gamePointsLabel,
                   value: '$balance',
                   icon: AfriIcons.earn,
                   accentColor: ColorTokens.primaryContainer,
@@ -929,17 +955,17 @@ class FanzoneHubScreen extends ConsumerWidget {
             const SizedBox(height: SpacingTokens.spacing5),
             AfriListRow(
               icon: AfriIcons.badge,
-              title: 'Badges',
-              subtitle: 'Earned from picks, attendance, and support actions',
+              title: context.afriL10n.gameBadgesLabel,
+              subtitle: context.afriL10n.gameBadgesEarnedDescription,
               onTap: () {},
             ),
             const SizedBox(height: SpacingTokens.listItemGap),
             AfriListRow(
               icon: AfriIcons.streak,
-              title: 'Streak',
+              title: context.afriL10n.gameStreakLabel,
               subtitle: streak == 0
-                  ? 'Join your next round to start a streak'
-                  : '$streak active play days',
+                  ? context.afriL10n.gameStartStreak
+                  : context.afriL10n.gameActivePlayDays(streak),
               onTap: () {},
             ),
           ],
@@ -968,8 +994,11 @@ class _FanIdSummaryCard extends StatelessWidget {
     return AfriListRow(
       icon: AfriIcons.qrCode,
       title: fanId,
-      subtitle: 'Fan ID and QR display',
-      trailing: const AfriStatusChip(label: 'QR', tone: AfriStatusTone.info),
+      subtitle: context.afriL10n.gameFanIdQrDisplay,
+      trailing: AfriStatusChip(
+        label: context.afriL10n.gameQr,
+        tone: AfriStatusTone.info,
+      ),
       onTap: onTap,
     );
   }
@@ -993,21 +1022,21 @@ class _AchievementRail extends StatelessWidget {
     return AfriStatRow(
       stats: [
         AfriStat(
-          label: 'Streak',
+          label: context.afriL10n.gameStreakLabel,
           value: '$streak',
           icon: AfriIcons.streak,
           accentColor: ColorTokens.clubAccent,
           onTap: onTap,
         ),
         AfriStat(
-          label: 'Accuracy',
+          label: context.afriL10n.gameAccuracyLabel,
           value: '${winRate.toStringAsFixed(0)}%',
           icon: AfriIcons.predict,
           accentColor: ColorTokens.success,
           onTap: onTap,
         ),
         AfriStat(
-          label: 'Points',
+          label: context.afriL10n.gamePointsLabel,
           value: '$balance',
           icon: AfriIcons.earn,
           accentColor: ColorTokens.primaryContainer,
@@ -1067,11 +1096,11 @@ class _HubActionList extends ConsumerWidget {
                 title: action.title,
                 subtitle: enabled
                     ? action.subtitle
-                    : '${action.subtitle}. Unavailable.',
+                    : context.afriL10n.gameActionUnavailable(action.subtitle),
                 trailing: enabled
                     ? null
                     : AfriInfoChip(
-                        label: 'Unavailable',
+                        label: context.afriL10n.settingsUnavailable,
                         color: ColorTokens.warning,
                       ),
                 onTap: enabled ? action.onTap : null,
@@ -1096,32 +1125,40 @@ class _FanzoneFailureContent {
   final String message;
   final String? actionLabel;
 
-  factory _FanzoneFailureContent.fromError(Object error) {
+  factory _FanzoneFailureContent.fromError(
+    Object error,
+    AfriLocalizations l10n,
+  ) {
     final failure = FanzoneHubFailure.fromError(error);
     return switch (failure.kind) {
-      FanzoneHubFailureKind.permissionDenied => const _FanzoneFailureContent(
-        title: 'Fan Zone access not available',
-        message:
-            'Your account cannot open Fan Zone right now. Contact support if this should be available.',
+      FanzoneHubFailureKind.permissionDenied => _FanzoneFailureContent(
+        title: l10n.gameFanZoneAccessUnavailable,
+        message: l10n.gameFanZoneAccessUnavailableDescription,
         actionLabel: null,
       ),
-      FanzoneHubFailureKind.conflict => const _FanzoneFailureContent(
-        title: 'Fan Zone changed',
-        message:
-            'Fan Zone data changed while you were viewing it. Refresh to load the current version.',
-        actionLabel: 'Refresh',
+      FanzoneHubFailureKind.conflict => _FanzoneFailureContent(
+        title: l10n.gameFanZoneChanged,
+        message: l10n.gameFanZoneChangedDescription,
+        actionLabel: l10n.gameRefresh,
       ),
-      FanzoneHubFailureKind.securityTimeout => const _FanzoneFailureContent(
-        title: 'Fan Zone security check timed out',
-        message:
-            'We could not confirm current Fan Zone access. Refresh before continuing.',
-        actionLabel: 'Refresh',
+      FanzoneHubFailureKind.securityTimeout => _FanzoneFailureContent(
+        title: l10n.gameFanZoneSecurityTimedOut,
+        message: l10n.gameFanZoneSecurityTimedOutDescription,
+        actionLabel: l10n.gameRefresh,
       ),
-      FanzoneHubFailureKind.unknown => const _FanzoneFailureContent(
-        title: 'Fan Zone unavailable',
-        message: 'Fan Zone is temporarily unavailable.',
-        actionLabel: 'Retry',
+      FanzoneHubFailureKind.unknown => _FanzoneFailureContent(
+        title: l10n.gameFanZoneUnavailableTitle,
+        message: l10n.gameFanZoneTemporarilyUnavailable,
+        actionLabel: l10n.gameRetry,
       ),
     };
   }
+}
+
+String _snapshotMessage(AfriLocalizations l10n, String message) {
+  return switch (message) {
+    FanzoneHubSnapshotMessage.savedContent => l10n.gameSavedFanZoneContent,
+    FanzoneHubSnapshotMessage.connectionRequired => l10n.gameConnectToFanZone,
+    _ => message,
+  };
 }

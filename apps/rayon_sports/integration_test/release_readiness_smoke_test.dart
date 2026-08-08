@@ -7,6 +7,7 @@ import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:feat_onboarding/src/screens/supporter_phone_auth_screen.dart';
+import 'package:feat_settings/src/support_whatsapp_provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -189,6 +190,7 @@ void main() {
                 languageCode: 'en',
               ),
             ),
+            supportWhatsAppProvider.overrideWith((ref) async => '250788000000'),
           ],
         ),
       );

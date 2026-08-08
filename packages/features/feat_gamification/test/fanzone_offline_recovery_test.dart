@@ -35,7 +35,7 @@ void main() {
     final stale = container.read(fanzoneHubProvider).valueOrNull;
     expect(stale?.dashboard?.totalPredictions, 12);
     expect(stale?.status, FanzoneHubStatus.degraded);
-    expect(stale?.message, contains('Showing saved Fan Zone content'));
+    expect(stale?.message, FanzoneHubSnapshotMessage.savedContent);
 
     ConnectivityService.setOnlineForTest(true);
     await Future<void>.delayed(Duration.zero);

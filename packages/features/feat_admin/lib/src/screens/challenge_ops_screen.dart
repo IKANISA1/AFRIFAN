@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +26,7 @@ class ChallengeOpsScreen extends ConsumerWidget {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'CHALLENGE OPS',
+          context.afriL10n.adminChallengesTitle,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1,
@@ -34,7 +35,7 @@ class ChallengeOpsScreen extends ConsumerWidget {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
       ),
       scrollable: false,
@@ -54,8 +55,8 @@ class ChallengeOpsScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-challenges-state-loading'),
-                title: 'Loading challenge operations',
-                message: 'Checking current settlement work.',
+                title: context.afriL10n.adminChallengesLoadingTitle,
+                message: context.afriL10n.adminChallengesLoadingMessage,
               ),
             )
           : challenges.hasError && challenges.valueOrNull == null
@@ -81,13 +82,13 @@ class ChallengeOpsScreen extends ConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         children: [
-          if (_statusBanner(challenges) case final banner?) ...[
+          if (_statusBanner(context, challenges) case final banner?) ...[
             banner,
             const SizedBox(height: SpacingTokens.spacing4),
           ],
           Semantics(
             container: true,
-            label: 'Challenge status filter',
+            label: context.afriL10n.adminChallengesFilterLabel,
             child: Wrap(
               spacing: SpacingTokens.spacing2,
               runSpacing: SpacingTokens.spacing2,
@@ -95,7 +96,7 @@ class ChallengeOpsScreen extends ConsumerWidget {
                   .map(
                     (filter) => AfriChoiceChip(
                       selected: snapshot.filter == filter,
-                      label: Text(filter.label),
+                      label: Text(_filterLabel(context, filter)),
                       onSelected: controlsEnabled
                           ? (_) => unawaited(
                               ref
@@ -112,10 +113,12 @@ class ChallengeOpsScreen extends ConsumerWidget {
           if (snapshot.items.isEmpty)
             AfriStateView.empty(
               key: const ValueKey<String>('admin-challenges-state-empty'),
-              title: 'No challenge operations',
+              title: context.afriL10n.adminChallengesEmptyTitle,
               message: snapshot.filter == AdminChallengeFilter.all
-                  ? 'No challenges are currently queued.'
-                  : 'No ${snapshot.filter.label.toLowerCase()} challenges are currently queued.',
+                  ? context.afriL10n.adminChallengesEmptyAllMessage
+                  : context.afriL10n.adminChallengesEmptyFilteredMessage(
+                      _filterLabel(context, snapshot.filter).toLowerCase(),
+                    ),
               compact: true,
             )
           else
@@ -140,23 +143,25 @@ class ChallengeOpsScreen extends ConsumerWidget {
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AfriAlertDialog(
-        title: const Text('Retry settlement?'),
-        content: Text(
-          'Recheck ${item.homeTeam} vs ${item.awayTeam}. '
-          'Do not retry again until the refreshed status is confirmed.',
-        ),
-        actions: [
-          AfriTextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('CANCEL'),
+      builder: (dialogContext) {
+        final l10n = dialogContext.afriL10n;
+        return AfriAlertDialog(
+          title: Text(l10n.adminChallengesRetryTitle),
+          content: Text(
+            l10n.adminChallengesRetryMessage(item.homeTeam, item.awayTeam),
           ),
-          AfriTextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('RETRY'),
-          ),
-        ],
-      ),
+          actions: [
+            AfriTextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.adminCancelUpper),
+            ),
+            AfriTextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(l10n.adminRetryUpper),
+            ),
+          ],
+        );
+      },
     );
     if (confirmed != true || !context.mounted) return;
 
@@ -167,10 +172,13 @@ class ChallengeOpsScreen extends ConsumerWidget {
     if (result.status == 'pending') {
       AfriToast.info(
         context,
-        'Settlement remains pending. Review the refreshed status.',
+        context.afriL10n.adminChallengesSettlementPending,
       );
     } else {
-      AfriToast.success(context, 'Settlement status refreshed.');
+      AfriToast.success(
+        context,
+        context.afriL10n.adminChallengesSettlementRefreshed,
+      );
     }
   }
 
@@ -179,11 +187,10 @@ class ChallengeOpsScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-challenges-state-disabled'),
-        title: 'Challenge operations unavailable',
-        message:
-            'Challenge settlement controls are disabled for this controlled build.',
+        title: context.afriL10n.adminChallengesUnavailable,
+        message: context.afriL10n.adminChallengesDisabledMessage,
         icon: AfriIcons.lock,
-        actionLabel: 'Back to admin',
+        actionLabel: context.afriL10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
     );
@@ -194,45 +201,44 @@ class ChallengeOpsScreen extends ConsumerWidget {
     WidgetRef ref,
     AdminChallengesFailure failure,
   ) {
+    final l10n = context.afriL10n;
     final view = switch (failure.kind) {
       AdminChallengesFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-challenges-state-offline'),
-        title: 'Challenge operations offline',
-        message: 'Reconnect before loading private settlement work.',
-        actionLabel: 'Try again',
+        title: l10n.adminChallengesOffline,
+        message: l10n.adminChallengesOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: () =>
             unawaited(ref.read(adminChallengesProvider.notifier).refresh()),
       ),
       AdminChallengesFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>('admin-challenges-state-permission-denied'),
-        title: 'Challenge access unavailable',
-        message:
-            'This account cannot view or retry club challenge settlements.',
-        actionLabel: 'Back to admin',
+        title: l10n.adminChallengesAccessUnavailable,
+        message: l10n.adminChallengesAccessUnavailableMessage,
+        actionLabel: l10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
       AdminChallengesFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-challenges-state-conflict'),
-        title: 'Challenge status changed',
-        message: 'Refresh before continuing with settlement work.',
-        actionLabel: 'Refresh',
+        title: l10n.adminChallengesStatusChanged,
+        message: l10n.adminChallengesStatusChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: () =>
             unawaited(ref.read(adminChallengesProvider.notifier).refresh()),
       ),
       AdminChallengesFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>('admin-challenges-state-security-timeout'),
-        title: 'Security check timed out',
-        message:
-            'No challenge data was shown. Check your connection and retry.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminChallengesSecurityTimeoutMessage,
+        actionLabel: l10n.retry,
         onAction: () =>
             unawaited(ref.read(adminChallengesProvider.notifier).refresh()),
       ),
       AdminChallengesFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-challenges-state-error'),
-        title: 'Challenge operations unavailable',
-        message: 'Private settlement data remains hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminChallengesUnavailable,
+        message: l10n.adminChallengesPrivateDataHidden,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: () =>
             unawaited(ref.read(adminChallengesProvider.notifier).refresh()),
       ),
@@ -243,25 +249,28 @@ class ChallengeOpsScreen extends ConsumerWidget {
     );
   }
 
-  Widget? _statusBanner(AsyncValue<AdminChallengesSnapshot> challenges) {
+  Widget? _statusBanner(
+    BuildContext context,
+    AsyncValue<AdminChallengesSnapshot> challenges,
+  ) {
+    final l10n = context.afriL10n;
     final snapshot = challenges.valueOrNull;
     if (snapshot == null) return null;
     if (snapshot.mutationChallengeId != null) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-challenges-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-challenges-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Retrying settlement',
-        subtitle: 'Controls are paused until the current result is confirmed.',
+        title: l10n.adminChallengesRetryingTitle,
+        subtitle: l10n.adminChallengesRetryingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
     if (challenges.isLoading) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-challenges-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-challenges-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Refreshing challenge operations',
-        subtitle:
-            'Showing the last confirmed list while current status is checked.',
+        title: l10n.adminChallengesRefreshingTitle,
+        subtitle: l10n.adminChallengesRefreshingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -276,15 +285,15 @@ class ChallengeOpsScreen extends ConsumerWidget {
           ? AfriIcons.offline
           : AfriIcons.statusWarning,
       title: failure.kind == AdminChallengesFailureKind.conflict
-          ? 'Challenge status changed'
+          ? l10n.adminChallengesStatusChanged
           : failure.kind == AdminChallengesFailureKind.securityTimeout
-          ? 'Security check timed out'
+          ? l10n.adminSecurityTimeout
           : failure.kind == AdminChallengesFailureKind.offline
-          ? 'Challenge operations offline'
-          : 'Current refresh unavailable',
+          ? l10n.adminChallengesOffline
+          : l10n.adminCurrentRefreshUnavailable,
       subtitle: uncertain
-          ? 'The retry outcome is not confirmed. Refresh before taking another action.'
-          : 'Showing the last confirmed list. Actions are paused until refresh succeeds.',
+          ? l10n.adminChallengesOutcomeUnconfirmed
+          : l10n.adminChallengesLastConfirmedMessage,
       tone: AfriStateBannerTone.warning,
     );
   }
@@ -329,7 +338,7 @@ class _ChallengeCard extends StatelessWidget {
             ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              '${item.homeTeam} vs ${item.awayTeam}',
+              context.afriL10n.adminVersus(item.homeTeam, item.awayTeam),
               style: TypographyTokens.titleMedium().copyWith(
                 fontWeight: FontWeight.w800,
               ),
@@ -343,18 +352,28 @@ class _ChallengeCard extends StatelessWidget {
               children: [
                 _OpsChip(
                   label: item.hasVoidReason
-                      ? 'VOID REASON RECORDED'
-                      : 'NO VOID REASON',
+                      ? context.afriL10n.adminChallengesVoidReasonRecorded
+                      : context.afriL10n.adminChallengesNoVoidReason,
                 ),
-                _OpsChip(label: 'SETTLEMENT ${item.settlementMode}'),
-                _OpsChip(label: 'AUDIT ${item.settlementState}'),
+                _OpsChip(
+                  label: context.afriL10n.adminChallengesSettlementMode(
+                    item.settlementMode,
+                  ),
+                ),
+                _OpsChip(
+                  label: context.afriL10n.adminChallengesAuditState(
+                    item.settlementState,
+                  ),
+                ),
               ],
             ),
             if (item.canRetrySettlement) ...[
               const SizedBox(height: SpacingTokens.spacing3),
               AfriButton(
                 key: ValueKey<String>('admin-challenges-retry-${item.id}'),
-                label: isMutating ? 'RETRYING SETTLEMENT' : 'RETRY SETTLEMENT',
+                label: isMutating
+                    ? context.afriL10n.adminChallengesRetryingAction
+                    : context.afriL10n.adminChallengesRetryAction,
                 labelMaxLines: 2,
                 icon: AfriIcons.refresh,
                 variant: AfriButtonVariant.secondary,
@@ -380,9 +399,18 @@ class _ChallengeMetrics extends StatelessWidget {
   Widget build(BuildContext context) {
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.8;
     final metrics = <Widget>[
-      _Metric(label: 'CREATOR', value: item.creatorName),
-      _Metric(label: 'POOL', value: '${item.totalPoolFet} FET'),
-      _Metric(label: 'PARTICIPANTS', value: '${item.totalParticipants}'),
+      _Metric(
+        label: context.afriL10n.adminChallengesCreator,
+        value: item.creatorName,
+      ),
+      _Metric(
+        label: context.afriL10n.adminChallengesPool,
+        value: '${item.totalPoolFet} FET',
+      ),
+      _Metric(
+        label: context.afriL10n.adminChallengesParticipants,
+        value: '${item.totalParticipants}',
+      ),
     ];
     if (largeText) {
       return Column(
@@ -414,10 +442,10 @@ class _Metric extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: '$label $value',
+      label: context.afriL10n.adminMetricSemantic(label, value),
       child: ExcludeSemantics(
         child: Text(
-          '$label  $value',
+          context.afriL10n.adminMetricSemantic(label, value),
           style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
         ),
       ),
@@ -444,4 +472,15 @@ class _OpsChip extends StatelessWidget {
       child: Text(label.toUpperCase(), style: TypographyTokens.labelSmall()),
     );
   }
+}
+
+String _filterLabel(BuildContext context, AdminChallengeFilter filter) {
+  final l10n = context.afriL10n;
+  return switch (filter) {
+    AdminChallengeFilter.all => l10n.adminChallengesFilterAll,
+    AdminChallengeFilter.open => l10n.adminChallengesFilterOpen,
+    AdminChallengeFilter.locked => l10n.adminChallengesFilterLocked,
+    AdminChallengeFilter.settled => l10n.adminChallengesFilterSettled,
+    AdminChallengeFilter.voided => l10n.adminChallengesFilterVoid,
+  };
 }

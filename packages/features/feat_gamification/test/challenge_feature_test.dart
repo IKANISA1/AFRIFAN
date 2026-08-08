@@ -1,4 +1,5 @@
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/fet_providers.dart';
 import 'package:feat_gamification/src/models/challenge_models.dart';
@@ -383,6 +384,56 @@ void main() {
       expect(challengeRepository.lastJoinRequest?['awayScore'], 0);
       expect(find.text('Challenge joined successfully.'), findsOneWidget);
     });
+
+    for (final locale in const <Locale>[
+      Locale('en'),
+      Locale('fr'),
+      Locale('rw'),
+    ]) {
+      testWidgets(
+        '${locale.languageCode} detail task copy fits at 320px and 200 percent',
+        (tester) async {
+          final l10n = lookupAfriLocalizations(locale);
+          final challenge = buildChallenge(
+            id: 'localized-detail',
+            permissions: const ChallengePermissions(canJoin: true),
+          );
+          final challengeRepository = FakeChallengeRepository()
+            ..detailsById['localized-detail'] = buildDetail(
+              challenge: challenge,
+              entries: <ChallengeEntry>[
+                buildEntry(
+                  challengeId: 'localized-detail',
+                  userId: challenge.creatorUserId,
+                  userName: challenge.creatorDisplayName,
+                ),
+              ],
+            );
+
+          await pumpTestWidget(
+            tester,
+            child: const ChallengeDetailScreen(id: 'localized-detail'),
+            overrides: <Override>[
+              challengeRepositoryProvider.overrideWithValue(
+                challengeRepository,
+              ),
+            ],
+            locale: locale,
+            size: const Size(320, 760),
+            textScaleFactor: 2,
+          );
+
+          expect(find.text(l10n.detailTitle), findsOneWidget);
+          await _scrollTo(tester, find.text(l10n.detailJoinUpper));
+          expect(find.text(l10n.detailPickScoreBody), findsOneWidget);
+          expect(
+            find.text(l10n.detailJoinWithPoints(challenge.stakeFet)),
+            findsOneWidget,
+          );
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
 
     testWidgets('my challenges screen switches across status tabs', (
       tester,

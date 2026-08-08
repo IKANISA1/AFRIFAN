@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +68,7 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final enabled = ref.watch(venueCheckinAccessEnabledProvider);
     final asyncState = ref.watch(venueCheckinControllerProvider);
     return AfriScreenScaffold(
@@ -74,7 +76,7 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'Venue check-in',
+          l10n.venueCheckinTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -87,17 +89,16 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: _close,
-          tooltip: 'Back',
+          tooltip: l10n.gameBack,
         ),
       ),
       scrollable: false,
       constrainContent: true,
       child: !enabled
           ? _Consequence(
-              title: 'Venue check-in unavailable',
-              body:
-                  'This governed feature is disabled for the current club or build.',
-              actionLabel: 'BACK TO FAN ZONE',
+              title: l10n.venueCheckinUnavailable,
+              body: l10n.venueFeatureDisabled,
+              actionLabel: l10n.venueBackToFanZone,
               onAction: _close,
             )
           : asyncState.when(
@@ -114,25 +115,27 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
   }
 
   Widget _initialFailure(Object error) {
+    final l10n = context.afriL10n;
     final failure = VenueCheckinFailure.fromError(error);
     return _Consequence(
       title: failure.kind == VenueCheckinFailureKind.permissionDenied
-          ? 'Check-in access denied'
-          : 'Venue check-in unavailable',
+          ? l10n.venueCheckinAccessDenied
+          : l10n.venueCheckinUnavailable,
       body: failure.kind == VenueCheckinFailureKind.permissionDenied
-          ? 'This account cannot use the supporter check-in route.'
-          : 'The route could not establish a safe check-in state.',
-      actionLabel: 'BACK TO FAN ZONE',
+          ? l10n.venueCheckinAccessDeniedBody
+          : l10n.venueCheckinSafeStateBody,
+      actionLabel: l10n.venueBackToFanZone,
       onAction: _close,
     );
   }
 
   Widget _content(VenueCheckinRouteState state) {
+    final l10n = context.afriL10n;
     if (state.failure?.kind == VenueCheckinFailureKind.permissionDenied) {
       return _Consequence(
-        title: 'Check-in access denied',
-        body: 'This account cannot use the supporter check-in route.',
-        actionLabel: 'BACK TO FAN ZONE',
+        title: l10n.venueCheckinAccessDenied,
+        body: l10n.venueCheckinAccessDeniedBody,
+        actionLabel: l10n.venueBackToFanZone,
         onAction: _close,
       );
     }
@@ -156,7 +159,7 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                'Check in at an approved venue',
+                l10n.venueCheckinHero,
                 style: TypographyTokens.headlineLarge().copyWith(
                   fontWeight: FontWeight.w900,
                   height: TypographyTokens.lineHeightCompact,
@@ -164,7 +167,7 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               Text(
-                'Enter the rotating TV or QR code after you arrive. Supporter check-in never exposes staff or admin controls.',
+                l10n.venueCheckinHeroBody,
                 style: TypographyTokens.bodyMedium(),
               ),
             ],
@@ -180,12 +183,15 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Venue code', style: TypographyTokens.titleLarge()),
+              Text(
+                l10n.venueCheckinCodeLabel,
+                style: TypographyTokens.titleLarge(),
+              ),
               const SizedBox(height: SpacingTokens.spacing3),
               AfriInputField(
                 controller: _codeController,
-                label: 'TV or QR code',
-                hint: 'Enter at least 4 characters',
+                label: l10n.venueCheckinInputLabel,
+                hint: l10n.venueCheckinInputHint,
                 enabled: actionsEnabled,
                 keyboardType: TextInputType.visiblePassword,
                 textCapitalization: TextCapitalization.characters,
@@ -199,8 +205,8 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
                 key: const ValueKey<String>('venue-checkin-submit'),
                 focusNode: widget.checkinFocusNode,
                 label: state.phase == VenueCheckinPhase.syncing
-                    ? 'CHECKING CODE'
-                    : 'CHECK IN',
+                    ? l10n.venueCheckinCheckingCodeUpper
+                    : l10n.venueCheckinActionUpper,
                 icon: AfriIcons.qrCode,
                 enabled: actionsEnabled,
                 isLoading: state.phase == VenueCheckinPhase.syncing,
@@ -212,29 +218,31 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
         const SizedBox(height: SpacingTokens.sectionGap),
         Semantics(
           selected: state.locationConsent,
-          label: 'Location review consent',
-          value: state.locationConsent ? 'Selected' : 'Not selected',
+          label: l10n.venueCheckinLocationConsentSemantics,
+          value: state.locationConsent
+              ? l10n.gameSelected
+              : l10n.venueNotSelected,
           child: AfriSurfaceCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Optional location review',
+                  l10n.venueCheckinOptionalLocationReview,
                   style: TypographyTokens.titleLarge(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
                   state.locationConsent
-                      ? 'Consent is marked for this attempt. This build still sends no coordinates; location-required campaigns remain pending review.'
-                      : 'Precise location is not collected in this build. You may mark consent, but location-required campaigns remain pending review.',
+                      ? l10n.venueCheckinConsentMarkedBody
+                      : l10n.venueCheckinNoLocationBody,
                   style: TypographyTokens.bodyMedium(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 AfriButton(
                   key: const ValueKey<String>('venue-location-consent'),
                   label: state.locationConsent
-                      ? 'REMOVE CONSENT'
-                      : 'MARK CONSENT',
+                      ? l10n.venueCheckinRemoveConsentUpper
+                      : l10n.venueCheckinMarkConsentUpper,
                   icon: AfriIcons.location,
                   variant: AfriButtonVariant.secondary,
                   enabled:
@@ -249,11 +257,10 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
           ),
         ),
         const SizedBox(height: SpacingTokens.sectionGap),
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.privacy,
-          title: 'Privacy boundary',
-          subtitle:
-              'Raw rotating codes are hashed before submission and are not persisted by the app. No precise location is collected.',
+          title: l10n.venueCheckinPrivacyBoundary,
+          subtitle: l10n.venueCheckinPrivacyBoundaryBody,
           tone: AfriStateBannerTone.neutral,
         ),
       ],
@@ -261,12 +268,12 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
   }
 
   Widget? _statusFor(VenueCheckinRouteState state, {required bool online}) {
+    final l10n = context.afriL10n;
     if (!online || state.failure?.kind == VenueCheckinFailureKind.offline) {
       return AfriStateBanner(
         icon: AfriIcons.offline,
-        title: 'Check-in paused offline',
-        subtitle:
-            'Reconnect before submitting. No check-in is queued or replayed.',
+        title: l10n.venueCheckinPausedOffline,
+        subtitle: l10n.venueCheckinPausedOfflineBody,
         tone: AfriStateBannerTone.warning,
         onTap: state.failure == null
             ? null
@@ -276,10 +283,10 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
       );
     }
     if (state.phase == VenueCheckinPhase.syncing) {
-      return const AfriStateBanner(
+      return AfriStateBanner(
         icon: AfriIcons.refresh,
-        title: 'Checking venue code',
-        subtitle: 'Wait for the server result. Do not repeat this check-in.',
+        title: l10n.venueCheckinCheckingCode,
+        subtitle: l10n.venueCheckinCheckingCodeBody,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -287,52 +294,54 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
       final pending = state.result!.status == 'pending_review';
       return AfriStateBanner(
         icon: pending ? AfriIcons.statusInfo : AfriIcons.statusSuccess,
-        title: pending ? 'Check-in pending review' : 'Check-in confirmed',
+        title: pending
+            ? l10n.venueCheckinPendingReview
+            : l10n.venueCheckinConfirmed,
         subtitle: pending
-            ? 'The venue code was accepted, but a governed location or campaign check still needs review.'
+            ? l10n.venueCheckinPendingReviewBody
             : state.result!.fetAwarded > 0
-            ? '+${state.result!.fetAwarded} FET recorded for this check-in.'
-            : 'The venue accepted this check-in. No reward was promised.',
+            ? l10n.venueCheckinFetRecorded(state.result!.fetAwarded)
+            : l10n.venueCheckinConfirmedNoReward,
         tone: pending ? AfriStateBannerTone.info : AfriStateBannerTone.success,
       );
     }
     final failure = state.failure;
     if (failure == null) {
-      return const AfriStateBanner(
+      return AfriStateBanner(
         icon: AfriIcons.qrCode,
-        title: 'Ready for venue check-in',
-        subtitle: 'Use the current code only after you arrive on site.',
+        title: l10n.venueCheckinReady,
+        subtitle: l10n.venueCheckinReadyBody,
         tone: AfriStateBannerTone.neutral,
       );
     }
     final content = switch (failure.kind) {
       VenueCheckinFailureKind.invalidCode => (
-        'Code not accepted',
-        'Enter the current TV or QR code shown at the venue.',
+        l10n.venueCheckinInvalidCode,
+        l10n.venueCheckinInvalidCodeBody,
       ),
       VenueCheckinFailureKind.expiredCode => (
-        'Venue code expired',
-        'Ask the venue display for the current rotating code.',
+        l10n.venueCheckinExpiredCode,
+        l10n.venueCheckinExpiredCodeBody,
       ),
       VenueCheckinFailureKind.alreadyCheckedIn => (
-        'Already checked in',
-        'The server found an existing check-in. No duplicate reward was created.',
+        l10n.venueCheckinAlreadyCheckedIn,
+        l10n.venueCheckinAlreadyCheckedInBody,
       ),
       VenueCheckinFailureKind.campaignUnavailable => (
-        'Check-in campaign unavailable',
-        'The campaign is paused, inactive, or has reached its governed budget.',
+        l10n.venueCheckinCampaignUnavailable,
+        l10n.venueCheckinCampaignUnavailableBody,
       ),
       VenueCheckinFailureKind.conflict => (
-        'Check-in conflict',
-        'Another attempt may already be active. Confirm the venue state before retrying.',
+        l10n.venueCheckinConflict,
+        l10n.venueCheckinConflictBody,
       ),
       VenueCheckinFailureKind.securityTimeout => (
-        'Check-in confirmation uncertain',
-        'Do not repeat the code yet. Check your venue activity, then dismiss this warning.',
+        l10n.venueCheckinConfirmationUncertain,
+        l10n.venueCheckinConfirmationUncertainBody,
       ),
       _ => (
-        'Check-in unavailable',
-        'The server did not confirm the attempt. Dismiss this warning before retrying.',
+        l10n.venueCheckinUnavailableShort,
+        l10n.venueCheckinUnavailableBody,
       ),
     };
     return AfriStateBanner(

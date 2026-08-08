@@ -18,6 +18,7 @@ It assumes the product UI is already approved and frozen for release. This check
 - `flutter test apps/rayon_sports/test`
 - `flutter test apps/rayon_sports/integration_test`
 - `bash tools/scripts/validate_club_release.sh rayon_sports`
+- `bash tools/scripts/validate_store_privacy_contract.sh`
 - Android dry run: `bash tools/scripts/dry_run_android_release.sh rayon_sports`
 - iOS dry run on macOS: `bash tools/scripts/dry_run_ios_release.sh rayon_sports`
 
@@ -104,6 +105,9 @@ framework, CocoaPods fallback, and generated Flutter Swift package aligned.
      `FlutterGeneratedPluginSwiftPackage` all target iOS 15.5 or later
    - push capability is enabled in the provisioning profile
    - App Attest entitlement is present
+   - `PrivacyInfo.xcprivacy` is bundled in the Runner resources
+   - the Xcode-generated privacy report is reconciled to the exact signed
+     archive and its embedded SDK privacy manifests
 6. Upload archive to App Store Connect / TestFlight.
 7. Verify on physical devices:
    - first launch
@@ -126,6 +130,11 @@ Platform references:
 - support email is monitored
 - Play/App Store descriptions match actual functionality
 - data safety / privacy answers match the implemented app behavior
+- the public account-deletion route is deployed and verified
+- the signed archive privacy report is reconciled with the Apple working
+  declaration before App Store Connect answers are entered
+- Play Console Data safety and account-deletion answers are recorded from the
+  exact release candidate
 
 ## 7. Localization limitation
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -52,7 +53,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
     if (profile == null || profile.id.isEmpty) {
       if (!mounted) return;
       setState(() {
-        _fanId = 'NOT SIGNED IN';
+        _fanId = '';
         _isLoading = false;
       });
       return;
@@ -135,63 +136,70 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
     });
   }
 
-  List<_PrivacyBadgeData> get _privacyBadges {
+  List<_PrivacyBadgeData> _privacyBadges(BuildContext context) {
     return <_PrivacyBadgeData>[
       _PrivacyBadgeData(
         icon: _showRealName && (_displayName?.isNotEmpty ?? false)
             ? AfriIcons.badge
             : AfriIcons.visibilityOff,
         label: _showRealName && (_displayName?.isNotEmpty ?? false)
-            ? 'Display Name On'
-            : 'Alias Only',
+            ? context.afriL10n.gameDisplayNameOn
+            : context.afriL10n.gameAliasOnly,
         description: _showRealName && (_displayName?.isNotEmpty ?? false)
-            ? 'Leaderboards can show ${_displayName!} instead of only your Fan ID.'
-            : 'Leaderboards show your Fan ID or alias instead of your real name.',
+            ? context.afriL10n.gameDisplayNameOnDescription(_displayName!)
+            : context.afriL10n.gameAliasOnlyDescription,
       ),
-      const _PrivacyBadgeData(
+      _PrivacyBadgeData(
         icon: AfriIcons.phone,
-        label: 'Phone Hidden',
-        description:
-            'Your phone number stays server-side and is never shown to other supporters or club admins.',
+        label: context.afriL10n.gamePhoneHidden,
+        description: context.afriL10n.gamePhoneHiddenDescription,
       ),
       _PrivacyBadgeData(
         icon: _findableByPhone ? AfriIcons.friend : AfriIcons.profile,
-        label: _findableByPhone ? 'Phone Discovery On' : 'Phone Discovery Off',
+        label: _findableByPhone
+            ? context.afriL10n.gamePhoneDiscoveryOn
+            : context.afriL10n.gamePhoneDiscoveryOff,
         description: _findableByPhone
-            ? 'Friends who already know your phone number can find your profile.'
-            : 'Phone-based discovery is currently disabled on your profile.',
+            ? context.afriL10n.gamePhoneDiscoveryOnDescription
+            : context.afriL10n.gamePhoneDiscoveryOffDescription,
       ),
       _PrivacyBadgeData(
         icon: _isVerified ? AfriIcons.verified : AfriIcons.statusPending,
-        label: _isVerified ? 'Verified' : 'Verification Pending',
+        label: _isVerified
+            ? context.afriL10n.gameVerified
+            : context.afriL10n.gameVerificationPending,
         description: _isVerified
-            ? 'Your phone identity is verified for ${RuntimeBranding.displayAppName} earning and social flows.'
-            : 'Verify your phone to unlock the full ${RuntimeBranding.displayAppName} social experience.',
+            ? context.afriL10n.gameVerifiedDescription(
+                RuntimeBranding.displayAppName,
+              )
+            : context.afriL10n.gameVerificationPendingDescription(
+                RuntimeBranding.displayAppName,
+              ),
       ),
     ];
   }
 
-  List<String> get _identityRules {
+  List<String> _identityRules(BuildContext context) {
     return <String>[
-      'Your Fan ID comes from your profile and remains the same when you return.',
+      context.afriL10n.gameFanIdPersistentRule,
       if (_showRealName && (_displayName?.isNotEmpty ?? false))
-        'Your display name "$_displayName" can appear on leaderboards until you turn that off.'
+        context.afriL10n.gameDisplayNameVisibleRule(_displayName!)
       else
-        'Your real name stays hidden on leaderboards until you explicitly enable display-name visibility.',
-      'Your phone number is encrypted and stored server-side only.',
+        context.afriL10n.gameRealNameHiddenRule,
+      context.afriL10n.gamePhoneEncryptedRule,
       if (_findableByPhone)
-        'Phone-based friend discovery is enabled on your account right now.'
+        context.afriL10n.gamePhoneDiscoveryEnabledRule
       else
-        'Phone-based friend discovery is disabled on your account right now.',
+        context.afriL10n.gamePhoneDiscoveryDisabledRule,
       if (_isVerified)
-        'Your phone identity is verified for ${RuntimeBranding.displayAppName} features and rewards.'
+        context.afriL10n.gamePhoneVerifiedRule(RuntimeBranding.displayAppName)
       else
-        'Phone verification is still pending for your ${RuntimeBranding.displayAppName} profile.',
+        context.afriL10n.gamePhonePendingRule(RuntimeBranding.displayAppName),
       if (_favoriteTeamSlug != null)
-        'Your profile is linked to ${_humanizeSlug(_favoriteTeamSlug!)} for personalization.'
+        context.afriL10n.gameTeamLinkedRule(_humanizeSlug(_favoriteTeamSlug!))
       else
-        'You can link a favorite team from onboarding or profile setup for personalization.',
-      'Deleting your account removes your personal data and Fan ID mapping from the active profile.',
+        context.afriL10n.gameLinkTeamRule,
+      context.afriL10n.gameDeleteAccountRule,
     ];
   }
 
@@ -202,7 +210,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'FAN ID',
+          context.afriL10n.gameFanIdTitle,
           style: TypographyTokens.headlineMedium().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -211,7 +219,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -266,7 +274,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                               .fadeIn(duration: 400.ms),
                           const SizedBox(height: SpacingTokens.spacing4),
                           Text(
-                            'YOUR FAN ID',
+                            context.afriL10n.gameYourFanId,
                             style:
                                 TypographyTokens.metricLabel(
                                   ColorTokens.onSurfaceVariant,
@@ -277,7 +285,9 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
-                            _fanId,
+                            _fanId.isEmpty
+                                ? context.afriL10n.gameNotSignedIn
+                                : _fanId,
                             style: TypographyTokens.displaySmall().copyWith(
                               fontWeight: FontWeight.w900,
                               letterSpacing: 4,
@@ -298,7 +308,9 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                               ),
                             ),
                             child: Text(
-                              _tier.toUpperCase(),
+                              _tier.toUpperCase() == 'FAN'
+                                  ? context.afriL10n.gameTierFan
+                                  : _tier.toUpperCase(),
                               style: TypographyTokens.labelSmall(
                                 ColorTokens.clubAccent,
                               ),
@@ -309,7 +321,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                             Text(
                               _showRealName
                                   ? _displayName!
-                                  : 'Alias-only profile',
+                                  : context.afriL10n.gameAliasOnlyProfile,
                               style: TypographyTokens.bodyMedium(),
                             ),
                           ],
@@ -322,7 +334,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                               unawaited(HapticFeedback.mediumImpact());
                               AfriToast.success(
                                 context,
-                                'Fan ID copied to clipboard.',
+                                context.afriL10n.gameFanIdCopied,
                               );
                             },
                             builder: (context, state) => Container(
@@ -346,7 +358,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                   ),
                                   const SizedBox(width: SpacingTokens.spacing2),
                                   Text(
-                                    'Copy to clipboard',
+                                    context.afriL10n.gameCopyToClipboard,
                                     style: TypographyTokens.labelSmall(
                                       ColorTokens.clubAccent,
                                     ),
@@ -367,7 +379,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'PRIVACY BADGES',
+                            context.afriL10n.gamePrivacyBadges,
                             style: TypographyTokens.titleMedium().copyWith(
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.2,
@@ -377,7 +389,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                           Wrap(
                             spacing: SpacingTokens.spacing2,
                             runSpacing: SpacingTokens.spacing2,
-                            children: _privacyBadges
+                            children: _privacyBadges(context)
                                 .map(
                                   (badge) => _PrivacyBadge(
                                     icon: badge.icon,
@@ -399,7 +411,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'IDENTITY RULES',
+                            context.afriL10n.gameIdentityRules,
                             style: TypographyTokens.titleMedium().copyWith(
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.2,
@@ -407,11 +419,11 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
-                            'How your Fan ID works based on your current profile settings.',
+                            context.afriL10n.gameIdentityRulesDescription,
                             style: TypographyTokens.bodySmall(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
-                          ..._identityRules.asMap().entries.map(
+                          ..._identityRules(context).asMap().entries.map(
                             (entry) => Padding(
                               padding: const EdgeInsets.only(
                                 bottom: SpacingTokens.spacing3,
@@ -520,7 +532,7 @@ class _IdentityRuleRow extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            '$index',
+            index.toString(),
             style: TypographyTokens.labelMedium(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w800),

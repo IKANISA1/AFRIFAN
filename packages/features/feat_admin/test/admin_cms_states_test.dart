@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_admin/feat_admin.dart';
@@ -121,6 +122,26 @@ void main() {
     expect(find.text('UNPUBLISH'), findsOneWidget);
     expect(find.text('ADD ARTICLE'), findsOneWidget);
   });
+
+  for (final localeCase in <(Locale, String, String)>[
+    (const Locale('fr'), 'GESTIONNAIRE DE CONTENU', 'RETIRER'),
+    (const Locale('rw'), 'AHAGENZURIRWA IBIRIMO', 'KURAHO'),
+  ]) {
+    testWidgets(
+      'renders CMS article dates and actions in ${localeCase.$1.languageCode}',
+      (tester) async {
+        await _pumpCms(
+          tester,
+          gateway: _CmsGateway(<Object>[_workspace]),
+          appCopyLocale: localeCase.$1,
+        );
+
+        expect(find.text(localeCase.$2), findsOneWidget);
+        expect(find.text(localeCase.$3), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 
   testWidgets('syncing retains confirmed content and pauses actions', (
     tester,
@@ -303,6 +324,7 @@ Future<ProviderContainer> _pumpCms(
   bool reduceMotion = false,
   double textScale = 1,
   Brightness brightness = Brightness.dark,
+  Locale appCopyLocale = const Locale('en'),
   FocusNode? primaryActionFocusNode,
 }) async {
   tester.view.physicalSize = _goldenViewport;
@@ -345,23 +367,26 @@ Future<ProviderContainer> _pumpCms(
           container = ProviderScope.containerOf(context);
           return ClubConfigScope(
             config: ClubConfig.fallback(),
-            child: MaterialApp.router(
-              debugShowCheckedModeBanner: false,
-              builder: (context, child) {
-                final mediaQuery = MediaQuery.of(context);
-                return MediaQuery(
-                  data: mediaQuery.copyWith(
-                    disableAnimations: reduceMotion,
-                    accessibleNavigation: reduceMotion,
-                  ),
-                  child: child!,
-                );
-              },
-              theme: ClubTheme.from(
-                ClubConfig.fallback(),
-                brightness: brightness,
+            child: AfriLocalizationsScope(
+              locale: appCopyLocale,
+              child: MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                builder: (context, child) {
+                  final mediaQuery = MediaQuery.of(context);
+                  return MediaQuery(
+                    data: mediaQuery.copyWith(
+                      disableAnimations: reduceMotion,
+                      accessibleNavigation: reduceMotion,
+                    ),
+                    child: child!,
+                  );
+                },
+                theme: ClubTheme.from(
+                  ClubConfig.fallback(),
+                  brightness: brightness,
+                ),
+                routerConfig: router,
               ),
-              routerConfig: router,
             ),
           );
         },

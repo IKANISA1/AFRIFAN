@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -69,20 +70,22 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
 
   Future<void> _loadChallenges() async {
     try {
-      final context = await ref
+      final experience = await ref
           .read(fetRepositoryProvider)
           .loadExperienceContext();
+      if (!mounted) return;
+      final l10n = context.afriL10n;
       final daily = <_ChallengeData>[];
       final weekly = <_ChallengeData>[];
       final seasonal = <_ChallengeData>[];
 
-      for (final item in context.catalog) {
+      for (final item in experience.catalog) {
         final challenge = _ChallengeData(
           title: item.itemName,
-          reward: '+${item.fetValue} pts',
-          progress: context.earnedCodes.contains(item.code) ? 1 : 0,
-          progressLabel: context.earnedCodes.contains(item.code)
-              ? 'Completed'
+          reward: l10n.gamePoints(item.fetValue),
+          progress: experience.earnedCodes.contains(item.code) ? 1 : 0,
+          progressLabel: experience.earnedCodes.contains(item.code)
+              ? l10n.gameCompleted
               : item.triggerCondition,
         );
         switch (item.challengeBucket) {
@@ -116,19 +119,20 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Challenges are temporarily unavailable.';
+        _error = context.afriL10n.gameChallengesTemporarilyUnavailable;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'CHALLENGES',
+          l10n.gameChallengesTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -137,14 +141,14 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: l10n.gameBack,
         ),
         bottom: AfriTabBar.line(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'DAILY'),
-            Tab(text: 'WEEKLY'),
-            Tab(text: 'SEASONAL'),
+          tabs: [
+            Tab(text: l10n.gameDaily),
+            Tab(text: l10n.gameWeeklyUpper),
+            Tab(text: l10n.gameSeasonal),
           ],
         ),
       ),
@@ -160,9 +164,9 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Challenges unavailable',
+                  title: l10n.gameChallengesUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: l10n.gameRetry,
                   onAction: _loadChallenges,
                 ),
               ),
@@ -186,7 +190,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
           child: GlassCard(
             animate: false,
             child: Text(
-              'Challenges appear once your supporter profile is active.',
+              context.afriL10n.gameChallengesRequireProfile,
               style: TypographyTokens.bodyMedium(),
               textAlign: TextAlign.center,
             ),
@@ -271,37 +275,28 @@ class _FetTutorialSheet extends StatefulWidget {
 class _FetTutorialSheetState extends State<_FetTutorialSheet> {
   int _currentStep = 0;
 
-  static const _steps = <_TutorialStep>[
-    _TutorialStep(
-      icon: AfriIcons.fetToken,
-      title: 'WHAT IS FET?',
-      body:
-          'FET (Fan Engagement Tokens) are your supporter currency. '
-          'Earn them by engaging with your club — attending matches, '
-          'completing challenges, making predictions, and supporting the community.',
-    ),
-    _TutorialStep(
-      icon: AfriIcons.versus,
-      title: 'HOW PREDICTIONS WORK',
-      body:
-          'Browse upcoming fixtures, choose pick types like Match Result, '
-          'Goals, and Scorers, then lock in picks before kickoff. '
-          'Correct picks earn points based on difficulty.',
-    ),
-    _TutorialStep(
-      icon: AfriIcons.wallet,
-      title: 'EARN, LEVEL UP & REDEEM',
-      body:
-          'Your points balance grows as you engage. Climb the leaderboard, '
-          'unlock membership tiers, and redeem rewards '
-          'from the club store. Every action counts.',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final step = _steps[_currentStep];
-    final isLast = _currentStep == _steps.length - 1;
+    final l10n = context.afriL10n;
+    final steps = <_TutorialStep>[
+      _TutorialStep(
+        icon: AfriIcons.fetToken,
+        title: l10n.gameWhatIsFet,
+        body: l10n.gameWhatIsFetBody,
+      ),
+      _TutorialStep(
+        icon: AfriIcons.versus,
+        title: l10n.gameHowPredictionsWork,
+        body: l10n.gameHowPredictionsWorkBody,
+      ),
+      _TutorialStep(
+        icon: AfriIcons.wallet,
+        title: l10n.gameEarnLevelRedeem,
+        body: l10n.gameEarnLevelRedeemBody,
+      ),
+    ];
+    final step = steps[_currentStep];
+    final isLast = _currentStep == steps.length - 1;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
@@ -311,7 +306,7 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
           // Step indicator
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(_steps.length, (index) {
+            children: List.generate(steps.length, (index) {
               return AnimatedContainer(
                 duration: AfriMotion.standard,
                 width: index == _currentStep
@@ -365,7 +360,7 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
               if (_currentStep > 0)
                 Expanded(
                   child: AfriButton(
-                    label: 'BACK',
+                    label: l10n.gameBackUpper,
                     variant: AfriButtonVariant.secondary,
                     onTap: () => setState(() => _currentStep--),
                   ),
@@ -374,7 +369,7 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
                 const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: AfriButton(
-                  label: isLast ? 'GET STARTED' : 'NEXT',
+                  label: isLast ? l10n.gameGetStarted : l10n.gameNext,
                   onTap: () {
                     if (isLast) {
                       context.pop();

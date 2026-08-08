@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -18,7 +19,7 @@ Future<void> showXpLevelUpModal(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'LEVEL UP!',
+              context.afriL10n.gameLevelUp,
               style: TypographyTokens.displayMedium().copyWith(
                 fontWeight: FontWeight.w900,
               ),
@@ -40,7 +41,7 @@ Future<void> showXpLevelUpModal(
             ],
             const SizedBox(height: SpacingTokens.spacing4),
             AfriButton(
-              label: 'Awesome',
+              label: context.afriL10n.gameAwesome,
               fullWidth: true,
               onTap: () => context.pop(),
             ),
@@ -92,7 +93,7 @@ Future<void> showBadgeEarnedModal(
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             AfriButton(
-              label: 'Keep going',
+              label: context.afriL10n.gameKeepGoing,
               fullWidth: true,
               onTap: () => context.pop(),
             ),

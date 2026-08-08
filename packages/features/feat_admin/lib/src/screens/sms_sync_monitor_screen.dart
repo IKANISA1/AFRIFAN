@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,11 +35,14 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('SMS OPERATIONS', style: TypographyTokens.titleLarge()),
+        title: Text(
+          context.afriL10n.adminSmsTitle,
+          style: TypographyTokens.titleLarge(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
       ),
       scrollable: false,
@@ -56,8 +60,8 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-sms-state-loading'),
-                title: 'Loading SMS operations',
-                message: 'Checking controlled pipeline health information.',
+                title: context.afriL10n.adminSmsLoading,
+                message: context.afriL10n.adminSmsLoadingMessage,
               ),
             )
           : monitor.hasError && snapshot == null
@@ -82,9 +86,8 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
             ],
             AfriStateView.empty(
               key: const ValueKey<String>('admin-sms-state-empty'),
-              title: 'No SMS operations history',
-              message:
-                  'No controlled health signals or synchronization runs are available yet.',
+              title: context.afriL10n.adminSmsNoHistory,
+              message: context.afriL10n.adminSmsNoHistoryMessage,
               compact: true,
             ),
           ],
@@ -108,21 +111,22 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'CONTROLLED HEALTH VIEW',
+                  context.afriL10n.adminSmsControlledHealth,
                   style: TypographyTokens.labelLarge(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  'Review device synchronization, message checks, contribution '
-                  'matching, sender drift, retries, and privacy cleanup without '
-                  'displaying message bodies or supporter identifiers.',
+                  context.afriL10n.adminSmsControlledHealthMessage,
                   style: TypographyTokens.bodyMedium(),
                 ),
               ],
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing5),
-          Text('PIPELINE HEALTH', style: TypographyTokens.titleMedium()),
+          Text(
+            context.afriL10n.adminSmsPipelineHealth,
+            style: TypographyTokens.titleMedium(),
+          ),
           const SizedBox(height: SpacingTokens.spacing3),
           ...snapshot.metrics.indexed.map(
             (entry) => _metricCard(
@@ -133,14 +137,14 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
           ),
           const SizedBox(height: SpacingTokens.spacing5),
           Text(
-            'RECENT DEVICE SYNCHRONIZATION',
+            context.afriL10n.adminSmsRecentSync,
             style: TypographyTokens.titleMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           if (snapshot.runs.isEmpty)
             AfriStateView.empty(
-              title: 'No recent synchronization runs',
-              message: 'The health summary remains available above.',
+              title: context.afriL10n.adminSmsNoRecentRuns,
+              message: context.afriL10n.adminSmsNoRecentRunsMessage,
               compact: true,
             )
           else
@@ -183,10 +187,13 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
                 _selectedMetricKey = selected ? null : metric.key;
               })
             : null,
-        semanticsLabel: '${metric.label}, ${metric.status}',
+        semanticsLabel: context.afriL10n.adminSmsMetricSemantics(
+          metric.label,
+          _smsStatusLabel(context, metric.status),
+        ),
         semanticsHint: selected
-            ? 'Collapse health details'
-            : 'Expand health details',
+            ? context.afriL10n.adminSmsCollapseDetails
+            : context.afriL10n.adminSmsExpandDetails,
         builder: (context, state) => DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: ShapeTokens.cardRadius,
@@ -212,7 +219,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
                       ),
                     ),
                     _StatusChip(
-                      label: metric.status.replaceAll('_', ' ').toUpperCase(),
+                      label: _smsStatusLabel(context, metric.status),
                       color: statusColor,
                     ),
                   ],
@@ -242,7 +249,12 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
                   if (metric.lastSignalAt != null) ...[
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
-                      'Last confirmed signal ${DateFormat('dd MMM yyyy, HH:mm').format(metric.lastSignalAt!.toLocal())}',
+                      context.afriL10n.adminSmsLastSignal(
+                        DateFormat(
+                          'dd MMM yyyy, HH:mm',
+                          Localizations.localeOf(context).toLanguageTag(),
+                        ).format(metric.lastSignalAt!.toLocal()),
+                      ),
                       style: TypographyTokens.bodySmall(),
                     ),
                   ],
@@ -260,52 +272,53 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-sms-state-disabled'),
-        title: 'SMS operations unavailable',
-        message: 'SMS operations monitoring is disabled for this build.',
+        title: context.afriL10n.adminSmsUnavailable,
+        message: context.afriL10n.adminSmsDisabled,
         icon: AfriIcons.lock,
-        actionLabel: 'Back to admin',
+        actionLabel: context.afriL10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
     );
   }
 
   Widget _unavailable(AdminSmsMonitorFailure failure) {
+    final l10n = context.afriL10n;
     void retry() =>
         unawaited(ref.read(adminSmsMonitorProvider.notifier).refresh());
     final view = switch (failure.kind) {
       AdminSmsMonitorFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-sms-state-offline'),
-        title: 'SMS operations offline',
-        message: 'Reconnect before loading private operational information.',
-        actionLabel: 'Try again',
+        title: l10n.adminSmsOffline,
+        message: l10n.adminSmsOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
       AdminSmsMonitorFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>('admin-sms-state-permission-denied'),
-        title: 'SMS operations access unavailable',
-        message: 'Platform administrator access is required for this view.',
-        actionLabel: 'Back to admin',
+        title: l10n.adminSmsAccessUnavailable,
+        message: l10n.adminSmsAccessMessage,
+        actionLabel: l10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
       AdminSmsMonitorFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-sms-state-conflict'),
-        title: 'SMS operations changed',
-        message: 'Refresh before using this operational information.',
-        actionLabel: 'Refresh',
+        title: l10n.adminSmsChanged,
+        message: l10n.adminSmsChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: retry,
       ),
       AdminSmsMonitorFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>('admin-sms-state-security-timeout'),
-        title: 'Security check timed out',
-        message: 'No operational information was shown. Check your connection.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminSmsSecurityMessage,
+        actionLabel: l10n.retry,
         onAction: retry,
       ),
       AdminSmsMonitorFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-sms-state-error'),
-        title: 'SMS operations unavailable',
-        message: 'Private operational information remains hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminSmsUnavailable,
+        message: l10n.adminSmsHiddenMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
     };
@@ -319,12 +332,11 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
     final snapshot = monitor.valueOrNull;
     if (snapshot == null) return null;
     if (monitor.isLoading) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-sms-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-sms-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Checking SMS operations',
-        subtitle:
-            'Showing the last confirmed state while current data is checked.',
+        title: context.afriL10n.adminSmsChecking,
+        subtitle: context.afriL10n.adminSmsCheckingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -338,14 +350,13 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
           ? AfriIcons.offline
           : AfriIcons.statusWarning,
       title: switch (failure.kind) {
-        AdminSmsMonitorFailureKind.conflict => 'SMS operations changed',
+        AdminSmsMonitorFailureKind.conflict => context.afriL10n.adminSmsChanged,
         AdminSmsMonitorFailureKind.securityTimeout =>
-          'Security check timed out',
-        AdminSmsMonitorFailureKind.offline => 'SMS operations offline',
-        _ => 'SMS operations unavailable',
+          context.afriL10n.adminSecurityTimeout,
+        AdminSmsMonitorFailureKind.offline => context.afriL10n.adminSmsOffline,
+        _ => context.afriL10n.adminSmsUnavailable,
       },
-      subtitle:
-          'Last confirmed operational information remains visible. Controls are paused.',
+      subtitle: context.afriL10n.adminSmsLastConfirmed,
       tone: AfriStateBannerTone.warning,
     );
   }
@@ -387,9 +398,9 @@ class _SyncRunRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusColor = _statusColor(run.status);
     final triggerLabel = switch (run.trigger) {
-      'initial_permission_grant' => 'INITIAL HISTORY',
-      'manual' => 'MANUAL',
-      _ => 'CONTROLLED',
+      'initial_permission_grant' => context.afriL10n.adminSmsTriggerInitial,
+      'manual' => context.afriL10n.adminSmsTriggerManual,
+      _ => context.afriL10n.adminSmsTriggerControlled,
     };
     return Container(
       width: double.infinity,
@@ -416,20 +427,26 @@ class _SyncRunRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${run.status.replaceAll('_', ' ').toUpperCase()} • $triggerLabel',
+                  context.afriL10n.adminSmsRunTitle(
+                    _smsStatusLabel(context, run.status),
+                    triggerLabel,
+                  ),
                   style: TypographyTokens.bodyLarge(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing1),
                 Text(
-                  '${run.scannedMessages} scanned • '
-                  '${run.uploadedMessages} uploaded • '
-                  '${run.duplicateMessages} duplicates',
+                  context.afriL10n.adminSmsRunMetrics(
+                    run.scannedMessages,
+                    run.uploadedMessages,
+                    run.duplicateMessages,
+                  ),
                   style: TypographyTokens.bodySmall(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing1),
                 Text(
                   DateFormat(
                     'dd MMM yyyy, HH:mm',
+                    Localizations.localeOf(context).toLanguageTag(),
                   ).format(run.startedAt.toLocal()),
                   style: TypographyTokens.bodySmall(),
                 ),
@@ -474,5 +491,19 @@ Color _statusColor(String status) {
     'degraded' || 'running' || 'rate_limited' => ColorTokens.warning,
     'failing' || 'failed' => ColorTokens.error,
     _ => ColorTokens.onSurfaceVariant,
+  };
+}
+
+String _smsStatusLabel(BuildContext context, String status) {
+  final l10n = context.afriL10n;
+  return switch (status) {
+    'healthy' => l10n.adminSmsStatusHealthy,
+    'succeeded' => l10n.adminSmsStatusSucceeded,
+    'degraded' => l10n.adminSmsStatusDegraded,
+    'running' => l10n.adminSmsStatusRunning,
+    'rate_limited' => l10n.adminSmsStatusRateLimited,
+    'failing' => l10n.adminSmsStatusFailing,
+    'failed' => l10n.adminSmsStatusFailed,
+    _ => status.replaceAll('_', ' ').toUpperCase(),
   };
 }

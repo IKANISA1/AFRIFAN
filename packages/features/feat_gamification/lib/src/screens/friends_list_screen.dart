@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
+import '../game_result_copy.dart';
 import '../models/fet_models.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
@@ -65,7 +67,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Supporters are temporarily unavailable.';
+        _error = context.afriL10n.gameSupportersTemporarilyUnavailable;
       });
     }
   }
@@ -177,7 +179,9 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
 
     AfriToast.info(
       context,
-      result.message.isNotEmpty ? result.message : 'Done.',
+      result.message.isNotEmpty
+          ? context.localizeGameResultMessage(result.message)
+          : context.afriL10n.gameDone,
     );
     unawaited(_refreshVisibleData());
   }
@@ -192,7 +196,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'Friends',
+          context.afriL10n.gameFriendsTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
@@ -201,7 +205,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -216,9 +220,9 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Supporters unavailable',
+                  title: context.afriL10n.gameSupportersUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -234,7 +238,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                 children: [
                   AfriInputField(
                     controller: _controller,
-                    hint: 'Search supporter alias or ID',
+                    hint: context.afriL10n.gameSearchSupporterHint,
                     prefixIcon: AfriIcons.search,
                     onChanged: (_) {},
                   ),
@@ -276,7 +280,9 @@ class FriendSupportersSection extends StatelessWidget {
     }
 
     return AfriSectionCard(
-      title: searchMode ? 'Results' : 'Your friends',
+      title: searchMode
+          ? context.afriL10n.gameResults
+          : context.afriL10n.gameYourFriends,
       child: Column(
         children: supporters
             .asMap()
@@ -288,11 +294,11 @@ class FriendSupportersSection extends StatelessWidget {
                   if (entry.key > 0) const AfriDivider(),
                   _SupporterRow(
                     name: supporter.displayName,
-                    details: _supporterDetails(supporter),
+                    details: _supporterDetails(context, supporter),
                     isOnline: supporter.isOnline,
                     actionLabel: searchMode
-                        ? _actionLabel(supporter)
-                        : 'Challenge',
+                        ? _actionLabel(context, supporter)
+                        : context.afriL10n.gameChallenge,
                     actionEnabled: !supporter.hasPendingOutgoing,
                     onAction: () => onAction(supporter),
                   ),
@@ -304,24 +310,24 @@ class FriendSupportersSection extends StatelessWidget {
     );
   }
 
-  String _actionLabel(FetFriendProfile supporter) {
+  String _actionLabel(BuildContext context, FetFriendProfile supporter) {
     if (supporter.isFriend) {
-      return 'Challenge';
+      return context.afriL10n.gameChallenge;
     }
     if (supporter.hasPendingIncoming) {
-      return 'Accept';
+      return context.afriL10n.gameAccept;
     }
     if (supporter.hasPendingOutgoing) {
-      return 'Pending';
+      return context.afriL10n.gamePending;
     }
-    return 'Add';
+    return context.afriL10n.gameAdd;
   }
 
-  String _supporterDetails(FetFriendProfile supporter) {
+  String _supporterDetails(BuildContext context, FetFriendProfile supporter) {
     final parts = <String>[
       if (supporter.publicUserId != null) '#${supporter.publicUserId}',
       supporter.tier.toUpperCase(),
-      '${supporter.balance} pts',
+      context.afriL10n.gamePointBalance(supporter.balance),
     ];
     return parts.join(' · ');
   }
@@ -362,7 +368,7 @@ class _SupporterRow extends StatelessWidget {
           ),
           if (isOnline) ...[
             Text(
-              'Online',
+              context.afriL10n.gameOnline,
               style: TypographyTokens.labelSmall(ColorTokens.success),
             ),
             const SizedBox(width: SpacingTokens.spacing3),

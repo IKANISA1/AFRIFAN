@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
@@ -303,6 +304,52 @@ void main() {
     );
   });
 
+  for (final localeCase
+      in const <({Locale locale, String title, String browse})>[
+        (
+          locale: Locale('en'),
+          title: 'ACTIVITY DETAIL',
+          browse: 'BROWSE FIXTURES',
+        ),
+        (
+          locale: Locale('fr'),
+          title: 'DÉTAIL DE L’ACTIVITÉ',
+          browse: 'PARCOURIR LES MATCHS',
+        ),
+        (
+          locale: Locale('rw'),
+          title: 'IBISOBANURO BY’IGIKORWA',
+          browse: 'REBA IMIKINO',
+        ),
+      ]) {
+    testWidgets(
+      'Prediction detail ${localeCase.locale.languageCode} reflows at 200 percent',
+      (tester) async {
+        final controller = _ControlledPredictionDetailController(
+          AsyncData<PredictionDetailState>(
+            PredictionDetailState(detail: _pendingDetail()),
+          ),
+        );
+        await _pumpRoute(
+          tester,
+          controller: controller,
+          capture: false,
+          size: const Size(320, 760),
+          textScale: 2,
+          locale: localeCase.locale,
+        );
+
+        expect(find.text(localeCase.title), findsOneWidget);
+        final action = find.byKey(
+          const ValueKey<String>('prediction-detail-browse-action'),
+        );
+        await tester.scrollUntilVisible(action, 220);
+        expect(find.text(localeCase.browse), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets('golden Prediction detail reduced-motion state', (tester) async {
     await _pumpState(
       tester,
@@ -410,6 +457,7 @@ Future<void> _pumpState(
   double textScale = 1,
   bool reducedMotion = false,
   FocusNode? browseFocusNode,
+  Locale locale = const Locale('en'),
   bool settle = true,
   Future<void> Function(WidgetTester tester)? beforeCapture,
 }) async {
@@ -424,6 +472,7 @@ Future<void> _pumpState(
     textScale: textScale,
     reducedMotion: reducedMotion,
     browseFocusNode: browseFocusNode,
+    locale: locale,
     settle: settle,
     beforeCapture: beforeCapture,
     goldenPath: _goldenPaths[id]!,
@@ -440,6 +489,7 @@ Future<void> _pumpRoute(
   double textScale = 1,
   bool reducedMotion = false,
   FocusNode? browseFocusNode,
+  Locale locale = const Locale('en'),
   bool settle = true,
   Future<void> Function(WidgetTester tester)? beforeCapture,
   String? goldenPath,
@@ -491,12 +541,15 @@ Future<void> _pumpRoute(
         theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
         builder: (context, child) {
           final media = MediaQuery.of(context);
-          return MediaQuery(
-            data: media.copyWith(
-              textScaler: TextScaler.linear(textScale),
-              disableAnimations: reducedMotion,
+          return AfriLocalizationsScope(
+            locale: locale,
+            child: MediaQuery(
+              data: media.copyWith(
+                textScaler: TextScaler.linear(textScale),
+                disableAnimations: reducedMotion,
+              ),
+              child: child!,
             ),
-            child: child!,
           );
         },
         routerConfig: router,

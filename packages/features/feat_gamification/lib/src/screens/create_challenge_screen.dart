@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'CONFIRM CHALLENGE',
+                  context.afriL10n.challengeConfirmTitle,
                   style: TypographyTokens.titleMedium().copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -67,7 +68,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                   key: const ValueKey<String>(
                     'challenge-create-confirm-action',
                   ),
-                  label: 'CONFIRM $stakeFet pts',
+                  label: context.afriL10n.challengeConfirmPoints(stakeFet),
                   icon: AfriIcons.checkGroup,
                   labelMaxLines: 2,
                   onTap: () => context.pop(true),
@@ -99,6 +100,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final createAsync = ref.watch(challengeCreateProvider);
     final walletAsync = ref.watch(fetWalletProvider);
     final configuredActionsEnabled = ref.watch(
@@ -120,7 +122,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
           backgroundColor: ColorTokens.background,
           appBar: AfriAppBar(
             title: Text(
-              'CREATE CHALLENGE',
+              l10n.challengeCreateTitle,
               style: TypographyTokens.titleLarge(
                 ColorTokens.chromeForeground,
               ).copyWith(fontWeight: FontWeight.w700),
@@ -132,9 +134,8 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
             loading: () => Padding(
               padding: const EdgeInsets.all(SpacingTokens.screenPadding),
               child: AfriStateView.loading(
-                title: 'Finding upcoming fixtures',
-                message:
-                    'Checking the matches that are still open for exact-score challenges.',
+                title: l10n.challengeFindingFixtures,
+                message: l10n.challengeFindingFixturesBody,
               ),
             ),
             error: (error, _) => Padding(
@@ -148,11 +149,12 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                   padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                   children: [
                     AfriStateView.empty(
-                      title: 'No fixtures available',
-                      message:
-                          'There are no upcoming matches open for a new challenge yet.',
+                      title: l10n.challengeNoFixtures,
+                      message: l10n.challengeNoFixturesBody,
                       icon: AfriIcons.versus,
-                      actionLabel: isOnline ? 'Refresh fixtures' : null,
+                      actionLabel: isOnline
+                          ? l10n.challengeRefreshFixtures
+                          : null,
                       onAction: isOnline
                           ? () => ref
                                 .read(challengeCreateProvider.notifier)
@@ -178,8 +180,9 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
   }
 
   Widget _buildFailureView(Object error, bool isOnline) {
+    final l10n = context.afriL10n;
     final failure = ChallengeCreateFailure.fromError(error);
-    final content = _CreateFailureContent.fromFailure(failure, isOnline);
+    final content = _CreateFailureContent.fromFailure(failure, isOnline, l10n);
     final onAction = content.canRefresh
         ? () => unawaited(ref.read(challengeCreateProvider.notifier).refresh())
         : null;
@@ -187,13 +190,13 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
       ChallengeCreateFailureKind.offline => AfriStateView.offline(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.gameRefresh : null,
         onAction: onAction,
       ),
       _ => AfriStateView.error(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.gameRefresh : null,
         onAction: onAction,
       ),
     };
@@ -206,6 +209,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
     required bool configuredActionsEnabled,
     required bool isRefreshing,
   }) {
+    final l10n = context.afriL10n;
     final fixtures = state.fixtures;
     final selectedFixture = fixtures
         .where((fixture) => fixture.id == _selectedFixtureId)
@@ -240,32 +244,29 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
         padding: const EdgeInsets.all(SpacingTokens.screenPadding),
         children: [
           if (isRefreshing || isSubmitting) ...[
-            const AfriStateBanner(
+            AfriStateBanner(
               icon: AfriIcons.refresh,
-              title: 'Creating challenge',
-              subtitle:
-                  'Keeping your fixture, score, and entry points visible while confirmation is pending.',
+              title: l10n.challengeCreating,
+              subtitle: l10n.challengeCreatingBody,
               tone: AfriStateBannerTone.info,
               compact: true,
             ),
             const SizedBox(height: SpacingTokens.spacing4),
           ],
           if (!configuredActionsEnabled) ...[
-            const AfriStateBanner(
+            AfriStateBanner(
               icon: AfriIcons.lock,
-              title: 'Challenge creation unavailable',
-              subtitle:
-                  'You can review the form, but creating a pool is disabled for this build.',
+              title: l10n.challengeCreationUnavailable,
+              subtitle: l10n.challengeCreationDisabledBody,
               tone: AfriStateBannerTone.warning,
               compact: true,
             ),
             const SizedBox(height: SpacingTokens.spacing4),
           ] else if (!isOnline) ...[
-            const AfriStateBanner(
+            AfriStateBanner(
               icon: AfriIcons.offline,
-              title: 'Showing saved fixtures',
-              subtitle:
-                  'Reconnect and refresh before changing the score or creating a challenge.',
+              title: l10n.challengeShowingSavedFixtures,
+              subtitle: l10n.challengeShowingSavedFixturesBody,
               tone: AfriStateBannerTone.warning,
               compact: true,
             ),
@@ -277,7 +278,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
               const SizedBox(height: SpacingTokens.spacing3),
               AfriButton(
                 key: const ValueKey<String>('challenge-create-refresh-action'),
-                label: 'REFRESH FIXTURES',
+                label: l10n.challengeRefreshFixturesUpper,
                 icon: AfriIcons.refresh,
                 variant: AfriButtonVariant.outline,
                 labelMaxLines: 2,
@@ -288,7 +289,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
             const SizedBox(height: SpacingTokens.spacing4),
           ],
           Text(
-            'Fixture',
+            l10n.gameFixture,
             style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
@@ -301,13 +302,13 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
           ),
           const SizedBox(height: SpacingTokens.sectionGap),
           Text(
-            'Exact score',
+            l10n.challengeExactScore,
             style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Semantics(
             selected: true,
-            label: 'Selected exact score $_homeScore to $_awayScore',
+            label: l10n.challengeSelectedScore(_homeScore, _awayScore),
             child: largeText
                 ? Column(
                     children: [
@@ -320,7 +321,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                       ),
                       const SizedBox(height: SpacingTokens.spacing3),
                       Text(
-                        'VERSUS',
+                        l10n.challengeVersusUpper,
                         style: TypographyTokens.labelSmall(
                           ColorTokens.clubAccent,
                         ).copyWith(fontWeight: FontWeight.w800),
@@ -377,13 +378,13 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
           ),
           const SizedBox(height: SpacingTokens.sectionGap),
           Text(
-            'Entry points',
+            l10n.challengeEntryPoints,
             style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           if (stakeOptions.isEmpty)
             Text(
-              'Challenge entry options are not available yet.',
+              l10n.challengeEntryOptionsUnavailable,
               style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
             )
           else
@@ -393,7 +394,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
               children: stakeOptions.map((amount) {
                 return AfriChoiceChip(
                   selected: selectedStakeFet == amount,
-                  label: Text('$amount pts'),
+                  label: Text(l10n.challengeStakePoints(amount)),
                   onSelected: actionsEnabled
                       ? (_) => setState(() => _stakeFet = amount)
                       : null,
@@ -411,23 +412,25 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
           const SizedBox(height: SpacingTokens.spacing4),
           if (walletAsync.isLoading)
             Text(
-              'Checking your points balance.',
+              l10n.challengeCheckingBalance,
               style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
             )
           else if (walletAsync.hasError)
             Text(
-              'Your points balance is unavailable. Refresh before creating this challenge.',
+              l10n.challengeBalanceUnavailable,
               style: TypographyTokens.labelSmall(ColorTokens.error),
             )
           else if (!hasBalance)
             Text(
-              'Your current points balance does not cover this entry.',
+              l10n.challengeBalanceInsufficient,
               style: TypographyTokens.labelSmall(ColorTokens.error),
             ),
           const SizedBox(height: SpacingTokens.spacing4),
           AfriButton(
             key: const ValueKey<String>('challenge-create-action'),
-            label: isSubmitting ? 'CREATING CHALLENGE' : 'CREATE CHALLENGE',
+            label: isSubmitting
+                ? l10n.challengeCreatingUpper
+                : l10n.challengeCreateTitle,
             icon: AfriIcons.versus,
             isLoading: isSubmitting,
             enabled: actionsEnabled && hasBalance && !isSubmitting,
@@ -459,35 +462,36 @@ class _CreateFailureContent {
   factory _CreateFailureContent.fromFailure(
     ChallengeCreateFailure failure,
     bool isOnline,
+    AfriLocalizations l10n,
   ) {
     return switch (failure.kind) {
       ChallengeCreateFailureKind.offline => _CreateFailureContent(
-        title: isOnline ? 'Connection restored' : 'Challenge creation offline',
+        title: isOnline
+            ? l10n.gameConnectionRestored
+            : l10n.challengeCreationOffline,
         message: isOnline
-            ? 'Refresh to check the latest fixtures before creating a challenge.'
-            : 'Reconnect to load the fixtures available for a new challenge.',
+            ? l10n.challengeRefreshLatestFixtures
+            : l10n.challengeReconnectFixtures,
         canRefresh: isOnline,
       ),
-      ChallengeCreateFailureKind.permissionDenied =>
-        const _CreateFailureContent(
-          title: 'Challenge creation unavailable',
-          message: 'Your current club access does not allow a new challenge.',
-          canRefresh: false,
-        ),
-      ChallengeCreateFailureKind.conflict => const _CreateFailureContent(
-        title: 'Challenge details changed',
-        message:
-            'Refresh the fixtures and review your choice before trying again.',
+      ChallengeCreateFailureKind.permissionDenied => _CreateFailureContent(
+        title: l10n.challengeCreationUnavailable,
+        message: l10n.challengeAccessDeniedBody,
+        canRefresh: false,
+      ),
+      ChallengeCreateFailureKind.conflict => _CreateFailureContent(
+        title: l10n.challengeDetailsChanged,
+        message: l10n.challengeDetailsChangedBody,
         canRefresh: true,
       ),
-      ChallengeCreateFailureKind.securityTimeout => const _CreateFailureContent(
-        title: 'Challenge security check timed out',
-        message: 'No challenge was confirmed. Refresh before trying again.',
+      ChallengeCreateFailureKind.securityTimeout => _CreateFailureContent(
+        title: l10n.challengeSecurityTimedOut,
+        message: l10n.challengeSecurityTimedOutBody,
         canRefresh: true,
       ),
-      ChallengeCreateFailureKind.unknown => const _CreateFailureContent(
-        title: 'Challenge creation unavailable',
-        message: 'Refresh and try again when the fixtures are available.',
+      ChallengeCreateFailureKind.unknown => _CreateFailureContent(
+        title: l10n.challengeCreationUnavailable,
+        message: l10n.challengeTryAgainBody,
         canRefresh: true,
       ),
     };
@@ -501,7 +505,11 @@ class _RetainedCreateFailureBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = _CreateFailureContent.fromFailure(failure, true);
+    final content = _CreateFailureContent.fromFailure(
+      failure,
+      true,
+      context.afriL10n,
+    );
     return AfriStateBanner(
       icon: failure.kind == ChallengeCreateFailureKind.permissionDenied
           ? AfriIcons.lock
@@ -531,27 +539,35 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     if (largeText) {
       return Semantics(
-        label:
-            'Challenge preview. ${fixture.homeTeamName} versus '
-            '${fixture.awayTeamName}. Your pick $homeScore to $awayScore. '
-            'Entry $stakeFet points. Balance $balance points.',
+        label: l10n.challengePreviewSemantics(
+          fixture.homeTeamName,
+          fixture.awayTeamName,
+          homeScore,
+          awayScore,
+          stakeFet,
+          balance,
+        ),
         child: GlassCard(
           animate: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'CHALLENGE PREVIEW',
+                l10n.challengePreview,
                 style: TypographyTokens.labelSmall(
                   ColorTokens.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                '${fixture.homeTeamName}\nversus\n${fixture.awayTeamName}',
+                l10n.gameTeamsVersusMultiline(
+                  fixture.homeTeamName,
+                  fixture.awayTeamName,
+                ),
                 style: TypographyTokens.titleMedium().copyWith(
                   fontWeight: FontWeight.w800,
                 ),
@@ -572,11 +588,11 @@ class _SummaryCard extends StatelessWidget {
                   ScorePredictionPill(
                     homeScore: homeScore,
                     awayScore: awayScore,
-                    label: 'Your pick',
+                    label: l10n.challengeYourPick,
                     accent: ColorTokens.clubAccent,
                   ),
-                  _MetaChip(label: 'Balance $balance pts'),
-                  const _MetaChip(label: 'Locks at kickoff'),
+                  _MetaChip(label: l10n.challengeBalancePoints(balance)),
+                  _MetaChip(label: l10n.challengeLocksAtKickoff),
                 ],
               ),
             ],
@@ -617,11 +633,11 @@ class _SummaryCard extends StatelessWidget {
             ScorePredictionPill(
               homeScore: homeScore,
               awayScore: awayScore,
-              label: 'Your pick',
+              label: l10n.challengeYourPick,
               accent: ColorTokens.clubAccent,
             ),
-            _MetaChip(label: 'Balance $balance pts'),
-            const _MetaChip(label: 'Locks at kickoff'),
+            _MetaChip(label: l10n.challengeBalancePoints(balance)),
+            _MetaChip(label: l10n.challengeLocksAtKickoff),
           ],
         ),
       ],
@@ -682,7 +698,11 @@ class _FixtureDropdown extends StatelessWidget {
             return DropdownMenuItem<FixtureSummary>(
               value: fixture,
               child: Text(
-                '${fixture.homeTeamShort} vs ${fixture.awayTeamShort} • ${fixture.competitionName}',
+                context.afriL10n.challengeFixtureOption(
+                  fixture.homeTeamShort,
+                  fixture.awayTeamShort,
+                  fixture.competitionName,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TypographyTokens.bodyMedium(),
@@ -721,7 +741,7 @@ class _ScoreCounter extends StatelessWidget {
             AfriIconButton(
               icon: AfriIcons.remove,
               onTap: enabled && value > 0 ? () => onChanged(value - 1) : null,
-              tooltip: 'Decrease $label',
+              tooltip: context.afriL10n.challengeDecrease(label),
             ),
             Text(
               '$value',
@@ -732,7 +752,7 @@ class _ScoreCounter extends StatelessWidget {
             AfriIconButton(
               icon: AfriIcons.add,
               onTap: enabled && value < 20 ? () => onChanged(value + 1) : null,
-              tooltip: 'Increase $label',
+              tooltip: context.afriL10n.challengeIncrease(label),
             ),
           ],
         ),

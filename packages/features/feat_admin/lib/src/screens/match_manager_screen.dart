@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,11 +28,14 @@ class MatchManagerScreen extends ConsumerWidget {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('MATCHES', style: TypographyTokens.titleLarge()),
+        title: Text(
+          context.afriL10n.adminMatchesTitle,
+          style: TypographyTokens.titleLarge(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
       ),
       scrollable: false,
@@ -51,8 +55,8 @@ class MatchManagerScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-matches-state-loading'),
-                title: 'Loading match workspace',
-                message: 'Checking controlled fixture information.',
+                title: context.afriL10n.adminMatchesLoadingTitle,
+                message: context.afriL10n.adminMatchesLoadingMessage,
               ),
             )
           : matches.hasError && snapshot == null
@@ -74,7 +78,7 @@ class MatchManagerScreen extends ConsumerWidget {
     final visible = snapshot.visibleMatches;
     final controlsEnabled = snapshot.actionsEnabled && !matches.isLoading;
     final canCreate = controlsEnabled && snapshot.partnerId != null;
-    final currency = NumberFormat.decimalPattern();
+    final currency = NumberFormat.decimalPattern(context.afriL10n.localeName);
     final currencySymbol = context.afriCurrencySymbol;
     final metricColor = Theme.of(context).brightness == Brightness.dark
         ? ColorTokens.clubAccent
@@ -86,12 +90,12 @@ class MatchManagerScreen extends ConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         children: [
-          if (_statusBanner(matches) case final banner?) ...[
+          if (_statusBanner(context, matches) case final banner?) ...[
             banner,
             const SizedBox(height: SpacingTokens.spacing4),
           ],
           Text(
-            'Manage fixtures, sale status, ticket allocation, and live scores from confirmed data.',
+            context.afriL10n.adminMatchesDescription,
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -102,12 +106,12 @@ class MatchManagerScreen extends ConsumerWidget {
               runSpacing: SpacingTokens.spacing3,
               children: [
                 _Metric(
-                  label: 'FIXTURES',
+                  label: context.afriL10n.adminMatchesFixtures,
                   value: '${snapshot.matches.length}',
                   color: metricColor,
                 ),
                 _Metric(
-                  label: 'ON SALE',
+                  label: context.afriL10n.adminMatchesOnSale,
                   value:
                       '${snapshot.matches.where((match) => match.isOnSale).length}',
                   color: metricColor,
@@ -116,7 +120,10 @@ class MatchManagerScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
-          Text('STATUS', style: TypographyTokens.labelSmall()),
+          Text(
+            context.afriL10n.adminMatchesStatus,
+            style: TypographyTokens.labelSmall(),
+          ),
           const SizedBox(height: SpacingTokens.spacing2),
           Wrap(
             spacing: SpacingTokens.spacing2,
@@ -125,7 +132,7 @@ class MatchManagerScreen extends ConsumerWidget {
                 .map(
                   (filter) => AfriChoiceChip(
                     selected: snapshot.filter == filter,
-                    label: Text(filter.label),
+                    label: Text(_filterLabel(context, filter)),
                     onSelected: controlsEnabled
                         ? (_) => ref
                               .read(adminMatchesProvider.notifier)
@@ -140,11 +147,11 @@ class MatchManagerScreen extends ConsumerWidget {
             AfriStateView.empty(
               key: const ValueKey<String>('admin-matches-state-empty'),
               title: snapshot.matches.isEmpty
-                  ? 'No fixtures configured'
-                  : 'No fixtures match',
+                  ? context.afriL10n.adminMatchesNoneConfigured
+                  : context.afriL10n.adminMatchesNoneMatch,
               message: snapshot.matches.isEmpty
-                  ? 'A confirmed club fixture must exist before this workspace can infer its partner scope.'
-                  : 'Choose another status filter.',
+                  ? context.afriL10n.adminMatchesNoneConfiguredMessage
+                  : context.afriL10n.adminMatchesNoneMatchMessage,
               compact: true,
             )
           else
@@ -162,7 +169,7 @@ class MatchManagerScreen extends ConsumerWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
             key: const ValueKey<String>('admin-matches-create'),
-            label: 'Create match',
+            label: context.afriL10n.adminMatchesCreate,
             fullWidth: true,
             enabled: canCreate,
             onTap: () => unawaited(_openComposer(context, ref, snapshot, null)),
@@ -170,7 +177,7 @@ class MatchManagerScreen extends ConsumerWidget {
           if (snapshot.matches.isEmpty) ...[
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              'Creation stays paused until a confirmed partner scope is available.',
+              context.afriL10n.adminMatchesCreationPaused,
               textAlign: TextAlign.center,
               style: TypographyTokens.bodySmall().copyWith(
                 color: ColorTokens.onSurfaceVariant,
@@ -201,8 +208,8 @@ class MatchManagerScreen extends ConsumerWidget {
     AfriToast.success(
       context,
       existing == null
-          ? 'Match created successfully.'
-          : 'Match updated successfully.',
+          ? context.afriL10n.adminMatchesCreated
+          : context.afriL10n.adminMatchesUpdated,
     );
   }
 
@@ -211,10 +218,10 @@ class MatchManagerScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-matches-state-disabled'),
-        title: 'Match management unavailable',
-        message: 'Match controls are disabled for this controlled build.',
+        title: context.afriL10n.adminMatchesManagementUnavailable,
+        message: context.afriL10n.adminMatchesDisabledMessage,
         icon: AfriIcons.lock,
-        actionLabel: 'Back to admin',
+        actionLabel: context.afriL10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
     );
@@ -225,42 +232,43 @@ class MatchManagerScreen extends ConsumerWidget {
     WidgetRef ref,
     AdminMatchesFailure failure,
   ) {
+    final l10n = context.afriL10n;
     void retry() =>
         unawaited(ref.read(adminMatchesProvider.notifier).refresh());
     final view = switch (failure.kind) {
       AdminMatchesFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-matches-state-offline'),
-        title: 'Match workspace offline',
-        message: 'Reconnect before loading private fixture information.',
-        actionLabel: 'Try again',
+        title: l10n.adminMatchesWorkspaceOffline,
+        message: l10n.adminMatchesWorkspaceOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
       AdminMatchesFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>('admin-matches-state-permission-denied'),
-        title: 'Match access unavailable',
-        message: 'This account cannot view or change fixture information.',
-        actionLabel: 'Back to admin',
+        title: l10n.adminMatchesAccessUnavailable,
+        message: l10n.adminMatchesAccessUnavailableMessage,
+        actionLabel: l10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
       AdminMatchesFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-matches-state-conflict'),
-        title: 'Fixture information changed',
-        message: 'Refresh before making another fixture change.',
-        actionLabel: 'Refresh',
+        title: l10n.adminMatchesInformationChanged,
+        message: l10n.adminMatchesInformationChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: retry,
       ),
       AdminMatchesFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>('admin-matches-state-security-timeout'),
-        title: 'Security check timed out',
-        message: 'No fixture information was shown. Check your connection.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminMatchesSecurityTimeoutMessage,
+        actionLabel: l10n.retry,
         onAction: retry,
       ),
       AdminMatchesFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-matches-state-error'),
-        title: 'Match workspace unavailable',
-        message: 'Private fixture information remains hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminMatchesWorkspaceUnavailable,
+        message: l10n.adminMatchesPrivateDataHidden,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
     };
@@ -270,16 +278,19 @@ class MatchManagerScreen extends ConsumerWidget {
     );
   }
 
-  Widget? _statusBanner(AsyncValue<AdminMatchesSnapshot> value) {
+  Widget? _statusBanner(
+    BuildContext context,
+    AsyncValue<AdminMatchesSnapshot> value,
+  ) {
+    final l10n = context.afriL10n;
     final snapshot = value.valueOrNull;
     if (snapshot == null) return null;
     if (value.isLoading || snapshot.isMutating) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-matches-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-matches-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Checking fixture information',
-        subtitle:
-            'Showing the last confirmed state while current data is checked.',
+        title: l10n.adminMatchesCheckingTitle,
+        subtitle: l10n.adminMatchesCheckingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -293,14 +304,14 @@ class MatchManagerScreen extends ConsumerWidget {
           ? AfriIcons.offline
           : AfriIcons.statusWarning,
       title: switch (failure.kind) {
-        AdminMatchesFailureKind.conflict => 'Fixture information changed',
-        AdminMatchesFailureKind.securityTimeout => 'Security check timed out',
-        AdminMatchesFailureKind.offline => 'Match workspace offline',
-        _ => 'Match workspace unavailable',
+        AdminMatchesFailureKind.conflict => l10n.adminMatchesInformationChanged,
+        AdminMatchesFailureKind.securityTimeout => l10n.adminSecurityTimeout,
+        AdminMatchesFailureKind.offline => l10n.adminMatchesWorkspaceOffline,
+        _ => l10n.adminMatchesWorkspaceUnavailable,
       },
       subtitle: snapshot.mutationOutcomeUnconfirmed
-          ? 'The last change is unconfirmed. Controls stay paused until refresh succeeds.'
-          : 'Last confirmed fixture information remains visible. Controls are paused.',
+          ? l10n.adminMatchesOutcomeUnconfirmed
+          : l10n.adminMatchesLastConfirmed,
       tone: AfriStateBannerTone.warning,
     );
   }
@@ -352,7 +363,7 @@ class _MatchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final liveMinuteLabel = match.isLive && match.liveMinute > 0
-        ? "  •  ${match.liveMinute}'"
+        ? context.afriL10n.adminMatchesLiveMinute(match.liveMinute)
         : '';
     final statusColor = switch (match.status) {
       'live' => ColorTokens.success,
@@ -368,9 +379,15 @@ class _MatchCard extends StatelessWidget {
         onTap: enabled ? onOpen : null,
         focusNode: focusNode,
         enabled: enabled,
-        tooltip: 'Open ${match.homeTeam} versus ${match.awayTeam}',
-        semanticsLabel: '${match.homeTeam} versus ${match.awayTeam} fixture',
-        semanticsHint: 'Opens controlled fixture settings',
+        tooltip: context.afriL10n.adminMatchesOpenTooltip(
+          match.homeTeam,
+          match.awayTeam,
+        ),
+        semanticsLabel: context.afriL10n.adminMatchesFixtureSemantic(
+          match.homeTeam,
+          match.awayTeam,
+        ),
+        semanticsHint: context.afriL10n.adminMatchesOpenHint,
         child: GlassCard(
           animate: false,
           child: Column(
@@ -381,42 +398,64 @@ class _MatchCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      '${match.homeTeam} vs ${match.awayTeam}'.toUpperCase(),
+                      context.afriL10n
+                          .adminVersus(match.homeTeam, match.awayTeam)
+                          .toUpperCase(),
                       style: TypographyTokens.titleLarge().copyWith(
                         color: ColorTokens.onSurface,
                       ),
                     ),
                   ),
                   const SizedBox(width: SpacingTokens.spacing2),
-                  _MatchChip(label: match.statusLabel, color: statusColor),
+                  _MatchChip(
+                    label: _statusLabel(context, match.status),
+                    color: statusColor,
+                  ),
                 ],
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                '${match.competition}  •  ${match.venue}',
+                context.afriL10n.adminMatchesCompetitionVenue(
+                  match.competition,
+                  match.venue,
+                ),
                 style: TypographyTokens.bodyMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                '${DateFormat('dd MMM yyyy').format(match.matchDate)}'
-                '  •  ${_formatKickoff(match.kickoffTime)}',
+                context.afriL10n.adminMatchesDateKickoff(
+                  MaterialLocalizations.of(context).formatShortDate(
+                    match.matchDate,
+                  ),
+                  _formatKickoff(match.kickoffTime),
+                ),
                 style: TypographyTokens.bodyMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               Text(
-                'GENERAL $currencySymbol ${currency.format(match.generalPrice)}'
-                '  •  VIP $currencySymbol ${currency.format(match.vipPrice)}',
+                context.afriL10n.adminMatchesPrices(
+                  currencySymbol,
+                  currency.format(match.generalPrice),
+                  currency.format(match.vipPrice),
+                ),
                 style: TypographyTokens.bodyMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                'Score ${match.homeScore}-${match.awayScore}$liveMinuteLabel',
+                context.afriL10n.adminMatchesScore(
+                  match.homeScore,
+                  match.awayScore,
+                  liveMinuteLabel,
+                ),
                 style: TypographyTokens.bodyMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                '${match.soldPercent}% allocation  •  '
-                '${match.soldCount} / ${match.capacity} tickets',
+                context.afriL10n.adminMatchesAllocation(
+                  match.soldPercent,
+                  match.soldCount,
+                  match.capacity,
+                ),
                 style: TypographyTokens.bodyMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
@@ -431,7 +470,9 @@ class _MatchCard extends StatelessWidget {
                         : ColorTokens.onSurfaceVariant,
                   ),
                   label: Text(
-                    match.isOnSale ? 'EDIT ON-SALE FIXTURE' : 'EDIT FIXTURE',
+                    match.isOnSale
+                        ? context.afriL10n.adminMatchesEditOnSale
+                        : context.afriL10n.adminMatchesEdit,
                     style: TypographyTokens.labelLarge(
                       enabled
                           ? ColorTokens.onSurface
@@ -473,4 +514,27 @@ class _MatchChip extends StatelessWidget {
       child: Text(label, style: TypographyTokens.labelSmall()),
     );
   }
+}
+
+String _filterLabel(BuildContext context, AdminMatchFilter filter) {
+  final l10n = context.afriL10n;
+  return switch (filter) {
+    AdminMatchFilter.all => l10n.adminMatchesFilterAll,
+    AdminMatchFilter.live => l10n.adminMatchesFilterLive,
+    AdminMatchFilter.upcoming => l10n.adminMatchesFilterUpcoming,
+    AdminMatchFilter.onSale => l10n.adminMatchesFilterOnSale,
+    AdminMatchFilter.completed => l10n.adminMatchesFilterCompleted,
+  };
+}
+
+String _statusLabel(BuildContext context, String status) {
+  final l10n = context.afriL10n;
+  return switch (status) {
+    'live' => l10n.adminStatusLive,
+    'halftime' => l10n.adminStatusHalfTime,
+    'fulltime' => l10n.adminStatusFullTime,
+    'postponed' => l10n.adminStatusPostponed,
+    'cancelled' => l10n.adminStatusCancelled,
+    _ => l10n.adminStatusUpcoming,
+  };
 }

@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-OWN-01",
+  "status": "local_owner_inventory_contract_passed",
+  "criterion_complete": true,
+  "required_clauses": [
+    "role_scoped_inventory",
+    "complete_display_projection",
+    "connection_health_and_last_seen",
+    "capabilities_and_app_version",
+    "assigned_session_context",
+    "safe_empty_denied_offline",
+    "private_pairing_credential_exclusion"
+  ],
+  "clauses": [
+    {
+      "id": "role_scoped_inventory",
+      "assertion": "My TVs lists only installations the authenticated owner or authorized manager can manage in the active club scope.",
+      "tests": [
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "a display owner can read and inventory only their authorized installation"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_models_test.dart",
+          "name": "cross-club projections fail closed"
+        }
+      ]
+    },
+    {
+      "id": "complete_display_projection",
+      "assertion": "Each inventory item retains its display identity, name, home or venue scope, pairing status, health, and safe operational metadata.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "owner inventory shows governed display operations data"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "owner claim creates a complete scoped inventory item without pairing or credential material"
+        }
+      ]
+    },
+    {
+      "id": "connection_health_and_last_seen",
+      "assertion": "The owner can distinguish connection health and a localized last-seen time without the client inventing online state.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "owner inventory shows governed display operations data"
+        }
+      ]
+    },
+    {
+      "id": "capabilities_and_app_version",
+      "assertion": "App version and a bounded scalar-only capability projection are parsed and rendered while nested or unsafe capability material fails closed.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_models_test.dart",
+          "name": "owner inventory validates club identity and parses only safe fields"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_models_test.dart",
+          "name": "credential and pairing material are rejected by client models"
+        }
+      ]
+    },
+    {
+      "id": "assigned_session_context",
+      "assertion": "The backend assigned-session object is preserved as safe session id, bounded title, and localized lifecycle phase instead of reading a nonexistent flat field.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_models_test.dart",
+          "name": "owner inventory validates club identity and parses only safe fields"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "owner inventory shows governed display operations data"
+        }
+      ]
+    },
+    {
+      "id": "safe_empty_denied_offline",
+      "assertion": "Empty and denied states are explicit; a failed refresh may retain the last confirmed inventory with a warning, but pairing stays disabled until authoritative recovery.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "owner inventory retains safe state and disables pairing offline"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "owner inventory renders empty and denied states safely"
+        }
+      ]
+    },
+    {
+      "id": "private_pairing_credential_exclusion",
+      "assertion": "Inventory projections and client models exclude device credentials and pairing codes; pairing remains a separate owner-only challenge workflow.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_models_test.dart",
+          "name": "credential and pairing material are rejected by client models"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "owner claim creates a complete scoped inventory item without pairing or credential material"
+        }
+      ]
+    }
+  ],
+  "deterministic_golden_evidence": [
+    "packages/features/feat_game_operations/test/goldens/game_operations_owner_inventory_dark_390x844.png"
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "static_source_contract": true,
+    "isolated_database_contract_executed": true,
+    "current_visual_comparison": true,
+    "shared_or_live_session_claimed": false,
+    "physical_device_claimed": false,
+    "real_network_timing_claimed": false,
+    "accountable_human_approval_claimed": false,
+    "release_claimed": false
+  }
+}

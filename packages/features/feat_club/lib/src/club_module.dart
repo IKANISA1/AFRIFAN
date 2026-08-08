@@ -107,6 +107,7 @@ class ClubModule extends FeatureModule {
           recommendation: 'keep as the official club hub',
           rationale:
               'Club identity and football information require one canonical consumer branch.',
+          renderedStateContract: 'controlled_club_hub_surface',
         ),
         RoutePresentationDecision(
           path: '/club/team',
@@ -114,6 +115,7 @@ class ClubModule extends FeatureModule {
           recommendation: 'keep',
           targetPath: '/club',
           rationale: 'The published first-team squad is core club information.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
         RoutePresentationDecision(
           path: '/club/news',
@@ -122,6 +124,7 @@ class ClubModule extends FeatureModule {
           targetPath: '/club',
           rationale:
               'Published club reporting belongs in the official club branch.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
         RoutePresentationDecision(
           path: '/club/news/:articleId',
@@ -130,6 +133,7 @@ class ClubModule extends FeatureModule {
           targetPath: '/club/news',
           rationale:
               'Canonical article deep links must restore the same club record.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
         RoutePresentationDecision(
           path: '/club/fixtures',
@@ -137,6 +141,7 @@ class ClubModule extends FeatureModule {
           recommendation: 'keep',
           targetPath: '/club',
           rationale: 'Upcoming fixtures are a primary football task.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
         RoutePresentationDecision(
           path: '/club/fixtures/:matchId',
@@ -145,6 +150,7 @@ class ClubModule extends FeatureModule {
           targetPath: '/club/fixtures',
           rationale:
               'Fixture deep links must preserve club scope and truthful ticket availability.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
         RoutePresentationDecision(
           path: '/club/results',
@@ -152,6 +158,7 @@ class ClubModule extends FeatureModule {
           recommendation: 'keep',
           targetPath: '/club',
           rationale: 'Published results are a primary football record.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
         RoutePresentationDecision(
           path: '/club/standings',
@@ -159,6 +166,7 @@ class ClubModule extends FeatureModule {
           recommendation: 'keep',
           targetPath: '/club',
           rationale: 'Standings belong beside fixtures and results.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
         RoutePresentationDecision(
           path: '/club/history',
@@ -167,6 +175,7 @@ class ClubModule extends FeatureModule {
           targetPath: '/club',
           rationale:
               'Reviewed club history belongs in the official club record.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
         RoutePresentationDecision(
           path: '/club/projects',
@@ -175,6 +184,7 @@ class ClubModule extends FeatureModule {
           targetPath: '/club',
           rationale:
               'Approved club projects require a first-class discovery route.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
         RoutePresentationDecision(
           path: '/club/projects/:projectId',
@@ -183,6 +193,7 @@ class ClubModule extends FeatureModule {
           targetPath: '/club/projects',
           rationale:
               'Project detail explains governed progress before contribution actions.',
+          renderedStateContract: 'controlled_club_information_surface',
         ),
       ];
 }

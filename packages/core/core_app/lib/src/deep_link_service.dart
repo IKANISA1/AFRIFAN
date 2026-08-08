@@ -65,28 +65,44 @@ abstract final class InternalRouteUriPolicy {
 
 /// Normalizes inbound app/universal links into in-app router destinations.
 class DeepLinkParser {
-  DeepLinkParser({Uri? websiteUri, String? customScheme})
-    : websiteUri = websiteUri == null ? null : _normalizeWebsiteUri(websiteUri),
-      customScheme = customScheme?.trim().toLowerCase() ?? '';
+  DeepLinkParser({
+    Uri? websiteUri,
+    String? customScheme,
+    Iterable<String> additionalCustomSchemes = const <String>[],
+  }) : websiteUri = websiteUri == null
+           ? null
+           : _normalizeWebsiteUri(websiteUri),
+       customSchemes = <String>{
+         if (customScheme?.trim().isNotEmpty ?? false)
+           customScheme!.trim().toLowerCase(),
+         ...additionalCustomSchemes
+             .map((scheme) => scheme.trim().toLowerCase())
+             .where((scheme) => scheme.isNotEmpty),
+       };
 
   factory DeepLinkParser.fromEnvironment() {
     final website = Uri.tryParse(
       const String.fromEnvironment('APP_WEBSITE_URL', defaultValue: '').trim(),
     );
+    final additionalSchemes = const String.fromEnvironment(
+      'APP_DEEP_LINK_SCHEME_ALIASES',
+      defaultValue: '',
+    ).split(',');
     return DeepLinkParser(
       websiteUri: website,
       customScheme: const String.fromEnvironment(
         'APP_DEEP_LINK_SCHEME',
         defaultValue: '',
       ),
+      additionalCustomSchemes: additionalSchemes,
     );
   }
 
   final Uri? websiteUri;
-  final String customScheme;
+  final Set<String> customSchemes;
 
   bool get isEnabled =>
-      (websiteUri?.host.trim().isNotEmpty ?? false) || customScheme.isNotEmpty;
+      (websiteUri?.host.trim().isNotEmpty ?? false) || customSchemes.isNotEmpty;
 
   Uri? toInternalUri(Uri incoming) {
     if (!isEnabled) {
@@ -104,7 +120,7 @@ class DeepLinkParser {
       );
     }
 
-    if (customScheme.isNotEmpty && normalizedIncomingScheme == customScheme) {
+    if (customSchemes.contains(normalizedIncomingScheme)) {
       final path = _customSchemePath(incoming);
       if (path == null) {
         return null;

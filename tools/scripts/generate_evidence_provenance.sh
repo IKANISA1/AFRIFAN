@@ -78,4 +78,9 @@ while IFS= read -r bundle; do
     }' >"$manifest_path"
 
   printf 'Generated provenance: %s\n' "$manifest_path"
-done < <(jq -c '.bundles[]' "$REGISTRY")
+done < <(
+  jq -c \
+    '[.bundles[] | select((.admission_status // "admitted") == "admitted")]
+    | sort_by((.artifact_scope // "recursive") == "immediate")[]' \
+    "$REGISTRY"
+)

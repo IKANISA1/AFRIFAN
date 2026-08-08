@@ -24,6 +24,8 @@ dependencies:
     path: ../features/feat_membership
   feat_gamification:
     path: ../features/feat_gamification
+  feat_game_operations:
+    path: ../features/feat_game_operations
   feat_contributions:
     path: ../features/feat_contributions
   feat_shop:

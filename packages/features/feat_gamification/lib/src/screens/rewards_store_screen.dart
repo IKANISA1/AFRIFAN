@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
+import '../game_result_copy.dart';
 import '../models/fet_models.dart';
 import '../models/reward_store_content.dart';
 
@@ -59,7 +61,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Rewards are temporarily unavailable.';
+        _error = context.afriL10n.gameRewardsTemporarilyUnavailable;
       });
     }
   }
@@ -78,21 +80,21 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
       final fetRepository = ref.read(fetRepositoryProvider);
       final String snackbarMessage;
       if (option.id.isEmpty) {
-        throw Exception('Reward configuration is missing. Try again later.');
+        throw StateError('reward_configuration_missing');
       }
       final result = await fetRepository.redeemReward(
         rewardItemId: option.id,
         note: '${RuntimeBranding.displayAppName} reward: ${option.reward}',
         idempotencyKey: 'reward-${option.id}',
       );
-      snackbarMessage = result.message.isNotEmpty
-          ? result.message
-          : result.alreadyProcessed
-          ? 'That reward redemption already completed.'
-          : 'Redeemed ${option.reward} for ${option.cost}.';
       if (!mounted) {
         return;
       }
+      snackbarMessage = result.message.isNotEmpty
+          ? context.localizeGameResultMessage(result.message)
+          : result.alreadyProcessed
+          ? context.afriL10n.gameRewardAlreadyRedeemed
+          : context.afriL10n.gameRewardRedeemed(option.reward, option.cost);
       await _load();
       if (!mounted) {
         return;
@@ -104,9 +106,9 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
       }
       AfriToast.error(
         context,
-        error is Exception
-            ? error.toString().replaceFirst('Exception: ', '')
-            : 'Could not redeem this reward.',
+        error is StateError && error.message == 'reward_configuration_missing'
+            ? context.afriL10n.gameRewardConfigurationMissing
+            : context.afriL10n.gameRewardCouldNotRedeem,
       );
     } finally {
       if (mounted) {
@@ -127,7 +129,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'REWARDS STORE',
+          context.afriL10n.gameRewardsStoreTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
@@ -136,7 +138,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -151,9 +153,9 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Rewards unavailable',
+                  title: context.afriL10n.gameRewardsUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -172,21 +174,25 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'AVAILABLE BALANCE',
+                          context.afriL10n.gameAvailableBalance,
                           style: TypographyTokens.labelSmall(
                             ColorTokens.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          '${wallet?.balance ?? 0} pts',
+                          context.afriL10n.gamePointBalance(
+                            wallet?.balance ?? 0,
+                          ),
                           style: TypographyTokens.displaySmall(
                             ColorTokens.clubAccent,
                           ).copyWith(fontWeight: FontWeight.w900),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          'Redeem ${RuntimeBranding.displayAppName} rewards without leaving the consolidated wallet flow.',
+                          context.afriL10n.gameRewardsStoreDescription(
+                            RuntimeBranding.displayAppName,
+                          ),
                           style: TypographyTokens.bodyMedium(),
                         ),
                       ],
@@ -241,7 +247,10 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                             ),
                             const SizedBox(height: SpacingTokens.spacing2),
                             Text(
-                              '${option.category} · ${option.notes}',
+                              context.afriL10n.gameRewardMeta(
+                                option.category,
+                                option.notes,
+                              ),
                               style: TypographyTokens.bodySmall(),
                             ),
                             const SizedBox(height: SpacingTokens.spacing4),
@@ -250,8 +259,8 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                                   ? () => _redeem(option)
                                   : () {},
                               label: affordable
-                                  ? 'Redeem ${option.cost}'
-                                  : 'Need ${option.cost}',
+                                  ? context.afriL10n.gameRedeemCost(option.cost)
+                                  : context.afriL10n.gameNeedCost(option.cost),
                               enabled: affordable && !_isSubmitting,
                               isLoading: _isSubmitting,
                             ),

@@ -149,20 +149,22 @@ export default function AdminSettingsPage() {
   }, [hasConfirmed, profile]);
 
   const enabledFlags = useMemo(
-    () => (form == null
-      ? null
-      : Object.values(form.featureFlags).filter(Boolean).length),
+    () =>
+      form == null
+        ? null
+        : Object.values(form.featureFlags).filter(Boolean).length,
     [form],
   );
   const languageCount = useMemo(
-    () => (form == null
-      ? null
-      : new Set(
-          form.supportedLanguagesText
-            .split(",")
-            .map((item) => item.trim().toLowerCase())
-            .filter(Boolean),
-        ).size),
+    () =>
+      form == null
+        ? null
+        : new Set(
+            form.supportedLanguagesText
+              .split(",")
+              .map((item) => item.trim().toLowerCase())
+              .filter(Boolean),
+          ).size,
     [form],
   );
   const canSave = access.isSuperAdmin || access.role === "club_admin";
@@ -199,7 +201,7 @@ export default function AdminSettingsPage() {
 
   return (
     <div
-      className="admin-settings-state-surface section-grid min-w-0 max-w-full !gap-6"
+      className="admin-settings-state-surface section-grid min-w-0 w-full max-w-full overflow-x-hidden !gap-6"
       data-admin-settings-status={status}
       data-admin-settings-interaction={interaction}
       data-admin-settings-refresh-disabled={busy}
@@ -233,26 +235,38 @@ export default function AdminSettingsPage() {
       <div className="admin-settings-metrics-grid grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <AdminStateCard
           label="Enabled features"
-          value={initialLoading || enabledFlags == null ? "—" : enabledFlags.toString()}
+          value={
+            initialLoading || enabledFlags == null
+              ? "—"
+              : enabledFlags.toString()
+          }
           helper="From the stored club profile."
           icon={ShieldCheck}
         />
         <AdminStateCard
           label="Languages"
-          value={initialLoading || languageCount == null ? "—" : languageCount.toString()}
+          value={
+            initialLoading || languageCount == null
+              ? "—"
+              : languageCount.toString()
+          }
           helper="Unique configured language codes."
           icon={Languages}
         />
         <AdminStateCard
           label="Edit scope"
           value={canSave ? "Write" : "Read only"}
-          helper={access.isSuperAdmin ? "Platform administrator." : "Role controlled."}
+          helper={
+            access.isSuperAdmin ? "Platform administrator." : "Role controlled."
+          }
           icon={Settings2}
           tone={canSave ? "accent" : "neutral"}
         />
         <AdminStateCard
           label="Profile version"
-          value={profile == null ? "—" : formatProfileVersion(profile.updatedAt)}
+          value={
+            profile == null ? "—" : formatProfileVersion(profile.updatedAt)
+          }
           helper="Last confirmed database update."
           icon={Clock3}
         />
@@ -274,8 +288,8 @@ export default function AdminSettingsPage() {
           className={cn(
             "relative flex min-h-12 items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transition-none",
             activeTab === "organization"
-              ? "text-white"
-              : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]",
+              ? "text-[var(--admin-text-strong)]"
+              : "text-[var(--admin-text-muted)] hover:text-[var(--admin-text-strong)]",
           )}
         >
           <Building2 size={14} aria-hidden="true" />
@@ -298,8 +312,8 @@ export default function AdminSettingsPage() {
           className={cn(
             "relative flex min-h-12 items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transition-none",
             activeTab === "infrastructure"
-              ? "text-white"
-              : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]",
+              ? "text-[var(--admin-text-strong)]"
+              : "text-[var(--admin-text-muted)] hover:text-[var(--admin-text-strong)]",
           )}
         >
           <Cpu size={14} aria-hidden="true" />
@@ -367,9 +381,9 @@ export default function AdminSettingsPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="glass-panel group min-h-48 rounded-[28px] p-6 transition hover:-translate-y-0.5 hover:border-club-accent/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transform-none motion-reduce:transition-none"
+                className="glass-panel group min-h-48 min-w-0 overflow-hidden rounded-[28px] p-6 transition hover:-translate-y-0.5 hover:border-club-accent/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transform-none motion-reduce:transition-none"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex min-w-0 flex-wrap items-start justify-between gap-4">
                   <span className="rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-3 text-club-accent">
                     <Icon size={20} aria-hidden="true" />
                   </span>

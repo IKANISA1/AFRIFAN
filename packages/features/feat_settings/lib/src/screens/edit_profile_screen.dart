@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -89,7 +90,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       return;
     }
 
-    _showMessage('Profile updated.');
+    _showMessage(context.afriL10n.editProfileUpdated);
     context.go('/settings');
   }
 
@@ -129,7 +130,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         failure.kind == ProfileRouteContentFailureKind.securityTimeout;
     final fieldError = switch (failure.kind) {
       ProfileRouteContentFailureKind.unknown =>
-        'Profile service is temporarily unavailable.',
+        context.afriL10n.editProfileServiceUnavailable,
       _ => null,
     };
     setState(() {
@@ -186,13 +187,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     BuildContext context,
     AsyncValue<ProfileRouteContentSnapshot> asyncContent,
   ) {
+    final l10n = context.afriL10n;
     if (asyncContent.isLoading) {
       return _buildProfileShell(
         context,
         child: AfriStateView.loading(
           key: const ValueKey<String>('profile-state-loading'),
-          title: 'Loading profile',
-          message: 'Checking your saved profile.',
+          title: l10n.editProfileLoadingTitle,
+          message: l10n.editProfileLoadingMessage,
         ),
       );
     }
@@ -206,34 +208,34 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final state = switch (failure.kind) {
       ProfileRouteContentFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>('profile-state-permission-denied'),
-        title: 'Profile access limited',
-        message: 'Your profile could not be verified. Sign in again.',
-        actionLabel: 'Sign in again',
+        title: l10n.editProfileAccessLimitedTitle,
+        message: l10n.editProfileAccessLimitedMessage,
+        actionLabel: l10n.editProfileSignInAgain,
         onAction: () => context.go(
           '/auth/phone?from=${Uri.encodeComponent('/settings/edit-profile')}',
         ),
       ),
       ProfileRouteContentFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('profile-state-conflict'),
-        title: 'Profile changed',
-        message: 'Refresh to load the current profile before editing.',
-        actionLabel: 'Refresh',
+        title: l10n.editProfileChangedTitle,
+        message: l10n.editProfileChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: () =>
             unawaited(ref.read(profileRouteContentProvider.notifier).refresh()),
       ),
       ProfileRouteContentFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>('profile-state-security-timeout'),
-        title: 'Profile security check timed out',
-        message: 'Check your connection and refresh.',
-        actionLabel: 'Refresh',
+        title: l10n.editProfileSecurityTimeoutTitle,
+        message: l10n.editProfileSecurityTimeoutMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: () =>
             unawaited(ref.read(profileRouteContentProvider.notifier).refresh()),
       ),
       ProfileRouteContentFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('profile-state-error'),
-        title: 'Could not load profile',
-        message: 'Your profile is still safe. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.editProfileLoadFailedTitle,
+        message: l10n.editProfileLoadFailedMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: () =>
             unawaited(ref.read(profileRouteContentProvider.notifier).refresh()),
       ),
@@ -242,11 +244,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildProfileShell(BuildContext context, {required Widget child}) {
+    final l10n = context.afriL10n;
     return SettingsBackGuard(
       child: AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
-          title: Text('Profile', style: TypographyTokens.headlineSmall()),
+          title: Text(
+            l10n.editProfileTitle,
+            style: TypographyTokens.headlineSmall(),
+          ),
           leading: AfriIconButton(
             icon: AfriIcons.back,
             onTap: () => closeSettingsChild(context),
@@ -264,57 +270,57 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     AsyncValue<ProfileRouteContentSnapshot> asyncContent,
     ProfileRouteContentSnapshot content,
   ) {
+    final l10n = context.afriL10n;
     if (_isBusy) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('profile-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('profile-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Saving profile',
-        subtitle: 'Your nickname stays visible while the save is confirmed.',
+        title: l10n.editProfileSavingTitle,
+        subtitle: l10n.editProfileSavingMessage,
         tone: AfriStateBannerTone.info,
-        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
+        trailing: const AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
     if (asyncContent.isRefreshing) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('profile-state-refreshing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('profile-state-refreshing'),
         icon: AfriIcons.refresh,
-        title: 'Refreshing profile',
-        subtitle: 'Your saved profile stays visible.',
+        title: l10n.editProfileRefreshingTitle,
+        subtitle: l10n.editProfileRefreshingMessage,
         tone: AfriStateBannerTone.info,
-        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
+        trailing: const AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
     if (_operationFailure != null) {
       return switch (_operationFailure!.kind) {
-        ProfileRouteContentFailureKind.permissionDenied =>
-          const AfriStateBanner(
-            key: ValueKey<String>('profile-state-save-permission-denied'),
-            icon: AfriIcons.lock,
-            title: 'Profile editing unavailable',
-            subtitle: 'Your saved profile stays visible.',
-            tone: AfriStateBannerTone.warning,
-          ),
+        ProfileRouteContentFailureKind.permissionDenied => AfriStateBanner(
+          key: const ValueKey<String>('profile-state-save-permission-denied'),
+          icon: AfriIcons.lock,
+          title: l10n.editProfileEditingUnavailableTitle,
+          subtitle: l10n.editProfileEditingUnavailableMessage,
+          tone: AfriStateBannerTone.warning,
+        ),
         ProfileRouteContentFailureKind.conflict => AfriStateBanner(
           key: const ValueKey<String>('profile-state-save-conflict'),
           icon: AfriIcons.refresh,
-          title: 'Profile changed elsewhere',
-          subtitle: 'Latest nickname loaded. Review before saving.',
+          title: l10n.editProfileChangedElsewhereTitle,
+          subtitle: l10n.editProfileChangedElsewhereMessage,
           onTap: _recoverProfile,
           tone: AfriStateBannerTone.warning,
         ),
         ProfileRouteContentFailureKind.securityTimeout => AfriStateBanner(
           key: const ValueKey<String>('profile-state-save-security-timeout'),
           icon: AfriIcons.lock,
-          title: 'Profile save not confirmed',
-          subtitle: 'Refresh your profile before trying again.',
+          title: l10n.editProfileSaveUnconfirmedTitle,
+          subtitle: l10n.editProfileSaveUnconfirmedMessage,
           onTap: _recoverProfile,
           tone: AfriStateBannerTone.warning,
         ),
-        ProfileRouteContentFailureKind.unknown => const AfriStateBanner(
-          key: ValueKey<String>('profile-state-save-error'),
+        ProfileRouteContentFailureKind.unknown => AfriStateBanner(
+          key: const ValueKey<String>('profile-state-save-error'),
           icon: AfriIcons.statusError,
-          title: 'Profile could not be saved',
-          subtitle: 'Your nickname draft is still here.',
+          title: l10n.editProfileSaveFailedTitle,
+          subtitle: l10n.editProfileSaveFailedMessage,
           tone: AfriStateBannerTone.danger,
         ),
       };
@@ -323,8 +329,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       return AfriStateBanner(
         key: const ValueKey<String>('profile-state-offline'),
         icon: AfriIcons.offline,
-        title: 'Offline profile',
-        subtitle: content.message,
+        title: l10n.editProfileOfflineTitle,
+        subtitle: l10n.editProfileOfflineMessage,
         tone: AfriStateBannerTone.warning,
       );
     }
@@ -332,8 +338,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       return AfriStateBanner(
         key: const ValueKey<String>('profile-state-disabled'),
         icon: AfriIcons.profile,
-        title: 'Profile editing unavailable',
-        subtitle: content.message,
+        title: l10n.editProfileEditingUnavailableTitle,
+        subtitle: content.message ?? l10n.editProfileEditingUnavailableMessage,
         tone: AfriStateBannerTone.neutral,
       );
     }
@@ -342,6 +348,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final asyncContent = ref.watch(profileRouteContentProvider);
     final content = asyncContent.valueOrNull;
     final profile = content?.profile;
@@ -353,10 +360,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         context,
         child: AfriEmptyView(
           key: const ValueKey('profile-unavailable'),
-          title: 'Profile unavailable',
-          message:
-              'Your profile is unavailable. Sign in again to recover your account.',
-          actionLabel: 'Sign in again',
+          title: l10n.editProfileUnavailableTitle,
+          message: l10n.editProfileUnavailableMessage,
+          actionLabel: l10n.editProfileSignInAgain,
           onAction: () => context.go(
             '/auth/phone?from=${Uri.encodeComponent('/settings/edit-profile')}',
           ),
@@ -366,7 +372,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final alias = AliasGenerator.format(
       profile.publicUserId ?? AliasGenerator.generate(),
     );
-    final languageLabel = _languageLabel(profile.languageCode);
+    final languageLabel = _languageLabel(l10n, profile.languageCode);
     final isOffline = content.status == ProfileRouteContentStatus.localFallback;
     final editingAvailable =
         content.editingEnabled &&
@@ -382,7 +388,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       child: AfriScreenScaffold(
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
-          title: Text('Profile', style: TypographyTokens.headlineSmall()),
+          title: Text(
+            l10n.editProfileTitle,
+            style: TypographyTokens.headlineSmall(),
+          ),
           leading: AfriIconButton(
             icon: AfriIcons.back,
             onTap: () => closeSettingsChild(context),
@@ -404,7 +413,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 children: [
                   AfriAvatar(
                     semanticLabel: alias,
-                    initials: 'Supporter',
+                    initials: l10n.settingsRoleSupporter,
                     size: SizeTokens.avatarLg,
                   ),
                   const SizedBox(width: SpacingTokens.spacing4),
@@ -413,7 +422,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '#$alias',
+                          l10n.editProfileAlias(alias),
                           style: TypographyTokens.headlineSmall(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing1),
@@ -432,8 +441,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             const SizedBox(height: SpacingTokens.spacing4),
             AfriInputField(
               key: const ValueKey<String>('profile-nickname-field'),
-              label: 'Nickname',
-              hint: 'Optional supporter nickname',
+              label: l10n.editProfileNicknameLabel,
+              hint: l10n.editProfileNicknameHint,
               controller: _nicknameController,
               focusNode: _nicknameFocusNode,
               enabled: canEdit,
@@ -449,7 +458,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             const SizedBox(height: SpacingTokens.spacing6),
             AfriButton(
               key: const ValueKey<String>('profile-save-action'),
-              label: _isBusy ? 'Saving…' : 'Save changes',
+              label: _isBusy
+                  ? l10n.editProfileSaving
+                  : l10n.editProfileSaveChanges,
               onTap: _saveProfile,
               isLoading: _isBusy,
               enabled: canEdit,
@@ -475,17 +486,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         if (!context.mounted) return;
                         setState(() => _isBusy = false);
                         if (error != null) {
-                          _showMessage(
-                            'Account could not be deleted. Try again.',
-                          );
+                          _showMessage(l10n.editProfileDeleteFailed);
                           return;
                         }
                         context.go('/onboarding');
                       },
                 enabled: canDelete,
-                tooltip: 'Delete account',
-                semanticsLabel: 'Delete account',
-                semanticsHint: 'Permanently delete this supporter account',
+                tooltip: l10n.editProfileDeleteAccount,
+                semanticsLabel: l10n.editProfileDeleteAccount,
+                semanticsHint: l10n.editProfileDeleteHint,
                 child: Row(
                   children: [
                     Icon(
@@ -496,7 +505,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     const SizedBox(width: SpacingTokens.spacing3),
                     Expanded(
                       child: Text(
-                        'Delete account',
+                        l10n.editProfileDeleteAccount,
                         style: TypographyTokens.bodyMedium().copyWith(
                           color: ColorTokens.error,
                         ),
@@ -513,11 +522,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 }
 
-String _languageLabel(String? languageCode) {
+String _languageLabel(AfriLocalizations l10n, String? languageCode) {
   return switch ((languageCode ?? 'en').trim().toLowerCase()) {
-    'fr' => 'Français',
-    'rw' => 'English (Kinyarwanda soon)',
-    _ => 'English',
+    'fr' => l10n.editProfileLanguageFrench,
+    'rw' => l10n.editProfileLanguageKinyarwanda,
+    _ => l10n.editProfileLanguageEnglish,
   };
 }
 

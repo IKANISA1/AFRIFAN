@@ -91,6 +91,53 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('gives titled non-scroll content the remaining route height', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AfriScreenScaffold(
+          title: 'Club news',
+          showBackButton: false,
+          scrollable: false,
+          child: ColoredBox(
+            key: ValueKey('remaining-route-body'),
+            color: Colors.blue,
+          ),
+        ),
+      ),
+    );
+
+    final bodySize = tester.getSize(
+      find.byKey(const ValueKey('remaining-route-body')),
+    );
+    expect(bodySize.height, greaterThan(0));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('matches light route chrome to dark status-bar icons', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ClubTheme.from(
+          ClubConfig.fallback(),
+          brightness: Brightness.light,
+        ),
+        home: const AfriScreenScaffold(
+          title: 'Team',
+          showBackButton: false,
+          child: Text('Content'),
+        ),
+      ),
+    );
+
+    final appBar = tester.widget<AppBar>(find.byType(AppBar));
+    expect(appBar.systemOverlayStyle?.statusBarIconBrightness, Brightness.dark);
+    expect(appBar.systemOverlayStyle?.statusBarBrightness, Brightness.light);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('caps constrained content on tablet width', (tester) async {
     tester.view.physicalSize = const Size(1200, 900);
     tester.view.devicePixelRatio = 1;

@@ -11,6 +11,7 @@ import {
   type AdminResourceInteraction,
 } from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
+import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
@@ -66,7 +67,8 @@ const statusCopy: Record<
   },
   error: {
     label: "Shop catalogue unavailable",
-    detail: "Confirmed products remain visible. Retry when the service recovers.",
+    detail:
+      "Confirmed products remain visible. Retry when the service recovers.",
   },
   offline: {
     label: "Shop catalogue is offline",
@@ -162,7 +164,10 @@ export default function AdminShopPage() {
   async function submitForm(formData: FormData) {
     if (client == null || mutationLocked) return;
     setSaving(true);
-    showAdminToast(form.id ? "Saving product..." : "Creating product...", "info");
+    showAdminToast(
+      form.id ? "Saving product..." : "Creating product...",
+      "info",
+    );
     try {
       await saveAdminProduct(client, access, {
         id: form.id || null,
@@ -173,7 +178,10 @@ export default function AdminShopPage() {
         category: String(formData.get("category") ?? "Merch"),
         price: Number(formData.get("price") ?? 0),
         imageUrl: String(formData.get("imageUrl") ?? ""),
-        sizes: String(formData.get("sizes") ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+        sizes: String(formData.get("sizes") ?? "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
         isActive: formData.get("isActive") === "on",
         collection: String(formData.get("collection") ?? ""),
         sortOrder: Number(formData.get("sortOrder") ?? 0),
@@ -213,12 +221,7 @@ export default function AdminShopPage() {
     }
     setSaving(true);
     try {
-      await deleteAdminProduct(
-        client,
-        access,
-        product.id,
-        product.updatedAt,
-      );
+      await deleteAdminProduct(client, access, product.id, product.updatedAt);
       await refresh();
       showAdminToast(`${product.name} removed.`, "success");
     } catch (caught) {
@@ -233,18 +236,36 @@ export default function AdminShopPage() {
   }
 
   const categories = Array.from(new Set(products.map((p) => p.category)));
-  const filtered = products.filter((p) => filter === "ALL" || p.category === filter);
+  const filtered = products.filter(
+    (p) => filter === "ALL" || p.category === filter,
+  );
   const productCollection = useAdminCollection({
     records: filtered,
     getId: (product) => product.id,
-    getSearchValues: (product) => [product.name, product.subtitle, product.description, product.category, product.collection, product.sizes.join(" "), product.isActive ? "active" : "inactive"],
-    getSortValue: (product, key: "name" | "category" | "price" | "status" | "order") => {
+    getSearchValues: (product) => [
+      product.name,
+      product.subtitle,
+      product.description,
+      product.category,
+      product.collection,
+      product.sizes.join(" "),
+      product.isActive ? "active" : "inactive",
+    ],
+    getSortValue: (
+      product,
+      key: "name" | "category" | "price" | "status" | "order",
+    ) => {
       switch (key) {
-        case "name": return product.name;
-        case "category": return product.category;
-        case "price": return product.price;
-        case "status": return product.isActive;
-        case "order": return product.sortOrder;
+        case "name":
+          return product.name;
+        case "category":
+          return product.category;
+        case "price":
+          return product.price;
+        case "status":
+          return product.isActive;
+        case "order":
+          return product.sortOrder;
       }
     },
     initialSortKey: "order" as const,
@@ -253,14 +274,11 @@ export default function AdminShopPage() {
 
   return (
     <div
-      className="section-grid"
+      className="admin-shop-state-surface section-grid min-w-0 w-full max-w-full overflow-x-hidden"
       data-admin-shop-status={status}
       data-admin-shop-interaction={interaction}
     >
-      <AdminPageHeader
-        eyebrow="Retail"
-        title="Shop"
-      />
+      <AdminPageHeader eyebrow="Retail" title="Shop" />
       <AdminResourceStatusBanner
         status={status}
         label={statusCopy[status].label}
@@ -271,13 +289,33 @@ export default function AdminShopPage() {
         onRefresh={() => void refresh()}
         onInteractionChange={setInteraction}
       />
-      <div className="grid gap-5 md:grid-cols-3">
-        <AdminStateCard label="Products" value={hasConfirmed ? products.length.toString() : "—"} helper={hasConfirmed ? "In catalogue." : "Awaiting confirmation."} icon={ShoppingBag} />
-        <AdminStateCard label="Active" value={hasConfirmed ? products.filter((p) => p.isActive).length.toString() : "—"} helper={hasConfirmed ? "Visible in shop." : "Awaiting confirmation."} />
-        <AdminStateCard label="Categories" value={hasConfirmed ? categories.length.toString() : "—"} helper={hasConfirmed ? "Product groups." : "Awaiting confirmation."} />
+      <div className="admin-shop-metrics-grid grid gap-5 md:grid-cols-3">
+        <AdminStateCard
+          label="Products"
+          value={hasConfirmed ? products.length.toString() : "—"}
+          helper={hasConfirmed ? "In catalogue." : "Awaiting confirmation."}
+          icon={ShoppingBag}
+        />
+        <AdminStateCard
+          label="Active"
+          value={
+            hasConfirmed
+              ? products.filter((p) => p.isActive).length.toString()
+              : "—"
+          }
+          helper={hasConfirmed ? "Visible in shop." : "Awaiting confirmation."}
+        />
+        <AdminStateCard
+          label="Categories"
+          value={hasConfirmed ? categories.length.toString() : "—"}
+          helper={hasConfirmed ? "Product groups." : "Awaiting confirmation."}
+        />
       </div>
       {initialLoading ? (
-        <div className="grid gap-5 xl:grid-cols-2" aria-label="Loading shop workspace">
+        <div
+          className="grid gap-5 xl:grid-cols-2"
+          aria-label="Loading shop workspace"
+        >
           {Array.from({ length: 2 }).map((_, index) => (
             <div key={index} className="glass-panel rounded-[32px] p-6">
               <Skeleton className="skeleton-text h-7 w-2/5" />
@@ -287,87 +325,298 @@ export default function AdminShopPage() {
         </div>
       ) : null}
       {!initialLoading && !unrecoveredFailure ? (
-      <div
-        className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]"
-        data-admin-shop-state-surface
-      >
-        <form onSubmit={handleSubmit} className="glass-panel grid gap-4 rounded-[32px] p-6">
-          <fieldset disabled={mutationLocked} className="contents">
-          <div className="flex items-center justify-between gap-3">
-            <p className="font-display text-3xl font-bold uppercase leading-none">{form.id ? "Edit product" : "New product"}</p>
-            {form.id ? <button type="button" onClick={() => setForm(emptyForm)} className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8">Clear</button> : null}
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-2 text-sm">Name<input name="name" required value={form.name} onChange={(e) => setForm((c) => ({ ...c, name: e.target.value }))} className="dashboard-input" /></label>
-            <label className="grid gap-2 text-sm">Category<input name="category" value={form.category} onChange={(e) => setForm((c) => ({ ...c, category: e.target.value }))} className="dashboard-input" /></label>
-          </div>
-          <label className="grid gap-2 text-sm">Subtitle<input name="subtitle" value={form.subtitle} onChange={(e) => setForm((c) => ({ ...c, subtitle: e.target.value }))} className="dashboard-input" /></label>
-            <label className="grid gap-2 text-sm">Description<textarea name="description" rows={3} value={form.description} onChange={(e) => setForm((c) => ({ ...c, description: e.target.value }))} className="dashboard-input min-h-20 resize-y" /></label>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <label className="grid gap-2 text-sm">Price ({activeClub?.currencyCode ?? "USD"})<input type="number" name="price" value={form.price} onChange={(e) => setForm((c) => ({ ...c, price: e.target.value }))} className="dashboard-input" /></label>
-            <label className="grid gap-2 text-sm">Sort order<input type="number" name="sortOrder" value={form.sortOrder} onChange={(e) => setForm((c) => ({ ...c, sortOrder: e.target.value }))} className="dashboard-input" /></label>
-            <label className="grid gap-2 text-sm">Collection<input name="collection" value={form.collection} onChange={(e) => setForm((c) => ({ ...c, collection: e.target.value }))} className="dashboard-input" /></label>
-          </div>
-          <label className="grid gap-2 text-sm">Sizes (comma separated)<input name="sizes" value={form.sizes} onChange={(e) => setForm((c) => ({ ...c, sizes: e.target.value }))} className="dashboard-input" /></label>
-          <AdminImageField
-            label="Product image"
-            name="imageUrl"
-            value={form.imageUrl}
-            onChange={(nextValue) => setForm((current) => ({ ...current, imageUrl: nextValue }))}
-            mediaKind="shop_product"
-            subject={form.name}
-            previewAlt="Product preview"
-            promptPlaceholder="Example: Premium studio product shot of the new home jersey on a clean dark background, bold blue and white club colors, catalogue lighting."
-          />
-          <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm"><input type="checkbox" name="isActive" checked={form.isActive} onChange={(e) => setForm((c) => ({ ...c, isActive: e.target.checked }))} />Active in shop</label>
-          <button
-            type="submit"
-            disabled={mutationLocked}
-            className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+        <div
+          className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]"
+          data-admin-shop-state-surface
+        >
+          <form
+            onSubmit={handleSubmit}
+            className="glass-panel grid self-start content-start gap-4 rounded-[32px] p-6"
           >
-            {saving ? "Saving…" : form.id ? "Save product" : "Add product"}
-          </button>
-          </fieldset>
-        </form>
-        <section className="glass-panel rounded-[32px] p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="font-display text-3xl font-bold uppercase leading-none">Catalogue</p>
-            <div className="flex flex-wrap gap-2">
-              {["ALL", ...categories].map((item) => <button key={item} type="button" data-active={filter === item} onClick={() => setFilter(item)} className="dashboard-chip">{item}</button>)}
-            </div>
-          </div>
-          <AdminFilterBar className="mt-5" actions={<div className="flex flex-wrap gap-2">{(["order", "name", "category", "price", "status"] as const).map((key) => <button key={key} type="button" data-active={productCollection.sortKey === key} onClick={() => productCollection.toggleSort(key)} className="dashboard-chip">Sort {key}</button>)}</div>}>
-            <label className="admin-search-field"><Search size={16} aria-hidden="true" /><span className="sr-only">Search shop catalogue</span><input type="search" value={productCollection.query} onChange={(event) => productCollection.setQuery(event.target.value)} placeholder="Search product, category, collection, size, or state" /></label>
-          </AdminFilterBar>
-          <div className="mt-5 space-y-3">
-            {productCollection.pageResult.items.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">{productCollection.query ? "No products match the current search and category." : "No products found."}</p> : null}
-            {productCollection.pageResult.items.map((product) => (
-              <article key={product.id} className={cn("card-interactive flex items-start gap-4 rounded-[26px] border border-border-soft p-5 transition", product.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
-                {product.imageUrl ? (
-                  <div className="hidden sm:block h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-border-soft">
-                    {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs that are not suitable for next/image allowlisting. */}
-                    <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
-                  </div>
+            <fieldset disabled={mutationLocked} className="contents">
+              <div className="flex items-center justify-between gap-3">
+                <p className="font-display text-3xl font-bold uppercase leading-none">
+                  {form.id ? "Edit product" : "New product"}
+                </p>
+                {form.id ? (
+                  <button
+                    type="button"
+                    onClick={() => setForm(emptyForm)}
+                    className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+                  >
+                    Clear
+                  </button>
                 ) : null}
-                <div className="flex-1 min-w-0">
-                  <p className="font-display text-2xl font-bold uppercase leading-none">{product.name}</p>
-                  <p className="mt-1 truncate text-sm text-slate-300">{product.subtitle}</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-club-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white">{formatCurrency(product.price, activeClub?.currencyCode)}</span>
-                    <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-slate-300">{product.category}</span>
-                    {product.sizes.map((s) => <span key={s} className="rounded-full border border-border-soft px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-slate-400">{s}</span>)}
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-2 text-sm">
+                  Name
+                  <input
+                    name="name"
+                    required
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm((c) => ({ ...c, name: e.target.value }))
+                    }
+                    className="dashboard-input"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm">
+                  Category
+                  <input
+                    name="category"
+                    value={form.category}
+                    onChange={(e) =>
+                      setForm((c) => ({ ...c, category: e.target.value }))
+                    }
+                    className="dashboard-input"
+                  />
+                </label>
+              </div>
+              <label className="grid gap-2 text-sm">
+                Subtitle
+                <input
+                  name="subtitle"
+                  value={form.subtitle}
+                  onChange={(e) =>
+                    setForm((c) => ({ ...c, subtitle: e.target.value }))
+                  }
+                  className="dashboard-input"
+                />
+              </label>
+              <label className="grid gap-2 text-sm">
+                Description
+                <textarea
+                  name="description"
+                  rows={3}
+                  value={form.description}
+                  onChange={(e) =>
+                    setForm((c) => ({ ...c, description: e.target.value }))
+                  }
+                  className="dashboard-input min-h-20 resize-y"
+                />
+              </label>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <label className="grid gap-2 text-sm">
+                  Price ({activeClub?.currencyCode ?? "USD"})
+                  <input
+                    type="number"
+                    name="price"
+                    value={form.price}
+                    onChange={(e) =>
+                      setForm((c) => ({ ...c, price: e.target.value }))
+                    }
+                    className="dashboard-input"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm">
+                  Sort order
+                  <input
+                    type="number"
+                    name="sortOrder"
+                    value={form.sortOrder}
+                    onChange={(e) =>
+                      setForm((c) => ({ ...c, sortOrder: e.target.value }))
+                    }
+                    className="dashboard-input"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm">
+                  Collection
+                  <input
+                    name="collection"
+                    value={form.collection}
+                    onChange={(e) =>
+                      setForm((c) => ({ ...c, collection: e.target.value }))
+                    }
+                    className="dashboard-input"
+                  />
+                </label>
+              </div>
+              <label className="grid gap-2 text-sm">
+                Sizes (comma separated)
+                <input
+                  name="sizes"
+                  value={form.sizes}
+                  onChange={(e) =>
+                    setForm((c) => ({ ...c, sizes: e.target.value }))
+                  }
+                  className="dashboard-input"
+                />
+              </label>
+              <AdminImageField
+                label="Product image"
+                name="imageUrl"
+                value={form.imageUrl}
+                onChange={(nextValue) =>
+                  setForm((current) => ({ ...current, imageUrl: nextValue }))
+                }
+                mediaKind="shop_product"
+                subject={form.name}
+                previewAlt="Product preview"
+                promptPlaceholder="Example: Premium studio product shot of the new home jersey on a clean dark background, bold blue and white club colors, catalogue lighting."
+              />
+              <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm">
+                <input
+                  type="checkbox"
+                  name="isActive"
+                  checked={form.isActive}
+                  onChange={(e) =>
+                    setForm((c) => ({ ...c, isActive: e.target.checked }))
+                  }
+                />
+                Active in shop
+              </label>
+              <button
+                type="submit"
+                disabled={mutationLocked}
+                className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+              >
+                {saving ? "Saving…" : form.id ? "Save product" : "Add product"}
+              </button>
+            </fieldset>
+          </form>
+          <section className="glass-panel rounded-[32px] p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="font-display text-3xl font-bold uppercase leading-none">
+                Catalogue
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["ALL", ...categories].map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    data-active={filter === item}
+                    onClick={() => setFilter(item)}
+                    className="dashboard-chip"
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <AdminFilterBar
+              className="mt-5"
+              actions={
+                <div className="flex flex-wrap gap-2">
+                  {(
+                    ["order", "name", "category", "price", "status"] as const
+                  ).map((key) => (
+                    <button
+                      key={key}
+                      type="button"
+                      data-active={productCollection.sortKey === key}
+                      onClick={() => productCollection.toggleSort(key)}
+                      className="dashboard-chip"
+                    >
+                      Sort {key}
+                    </button>
+                  ))}
+                </div>
+              }
+            >
+              <label className="admin-search-field">
+                <Search size={16} aria-hidden="true" />
+                <span className="sr-only">Search shop catalogue</span>
+                <input
+                  type="search"
+                  value={productCollection.query}
+                  onChange={(event) =>
+                    productCollection.setQuery(event.target.value)
+                  }
+                  placeholder="Search product, category, collection, size, or state"
+                />
+              </label>
+            </AdminFilterBar>
+            <div className="mt-5 space-y-3">
+              {productCollection.pageResult.items.length === 0 ? (
+                <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
+                  {productCollection.query
+                    ? "No products match the current search and category."
+                    : "No products found."}
+                </p>
+              ) : null}
+              {productCollection.pageResult.items.map((product) => (
+                <article
+                  key={product.id}
+                  className={cn(
+                    "card-interactive flex items-start gap-4 rounded-[26px] border border-border-soft p-5 transition",
+                    product.isActive ? "bg-white/5" : "bg-white/[0.02]",
+                  )}
+                >
+                  {product.imageUrl ? (
+                    <div className="hidden sm:block h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-border-soft">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs that are not suitable for next/image allowlisting. */}
+                      <img
+                        src={product.imageUrl}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ) : null}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-display text-2xl font-bold uppercase leading-none">
+                      {product.name}
+                    </p>
+                    <p className="mt-1 truncate text-sm text-slate-300">
+                      {product.subtitle}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <AdminStatusBadge
+                        label={product.isActive ? "Active" : "Inactive"}
+                        tone={product.isActive ? "success" : "neutral"}
+                      />
+                      <span className="rounded-full bg-club-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white">
+                        {formatCurrency(
+                          product.price,
+                          activeClub?.currencyCode,
+                        )}
+                      </span>
+                      <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-slate-300">
+                        {product.category}
+                      </span>
+                      {product.sizes.map((s) => (
+                        <span
+                          key={s}
+                          className="rounded-full border border-border-soft px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-slate-400"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-shrink-0 gap-2">
-                  <button type="button" disabled={mutationLocked} onClick={() => beginEdit(product)} className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-slate-100 transition hover:bg-white/8 disabled:cursor-not-allowed disabled:opacity-60" aria-label={`Edit ${product.name}`}><Pencil size={16} aria-hidden="true" /></button>
-                  <button type="button" disabled={mutationLocked} onClick={() => { removeProduct(product).catch(() => {}); }} className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300 disabled:cursor-not-allowed disabled:opacity-60" aria-label={`Remove ${product.name}`}><Trash2 size={16} aria-hidden="true" /></button>
-                </div>
-              </article>
-            ))}
-          </div>
-          <AdminPagination page={productCollection.pageResult} onPageChange={productCollection.setPage} label="Shop catalogue" />
-        </section>
-      </div>
+                  <div className="flex flex-shrink-0 gap-2">
+                    <button
+                      type="button"
+                      disabled={mutationLocked}
+                      onClick={() => beginEdit(product)}
+                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-slate-100 transition hover:bg-white/8 disabled:cursor-not-allowed disabled:opacity-60"
+                      aria-label={`Edit ${product.name}`}
+                    >
+                      <Pencil size={16} aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={mutationLocked}
+                      onClick={() => {
+                        removeProduct(product).catch(() => {});
+                      }}
+                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300 disabled:cursor-not-allowed disabled:opacity-60"
+                      aria-label={`Remove ${product.name}`}
+                    >
+                      <Trash2 size={16} aria-hidden="true" />
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <AdminPagination
+              page={productCollection.pageResult}
+              onPageChange={productCollection.setPage}
+              label="Shop catalogue"
+            />
+          </section>
+        </div>
       ) : null}
     </div>
   );

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
+import '../game_result_copy.dart';
 import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
@@ -111,7 +113,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Challenge flow is temporarily unavailable.';
+        _error = context.afriL10n.gameChallengeFlowTemporarilyUnavailable;
       });
     }
   }
@@ -137,8 +139,11 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
           opponentUserId: supporter.userId,
           fixtureMarketId: fixture.market.fixtureMarketId,
           selectedOutcome: outcome,
-          message:
-              '${RuntimeBranding.displayAppName} head-to-head on ${fixture.fixture.homeTeamShort} vs ${fixture.fixture.awayTeamShort}',
+          message: context.afriL10n.gameHeadToHeadMessage(
+            RuntimeBranding.displayAppName,
+            fixture.fixture.homeTeamShort,
+            fixture.fixture.awayTeamShort,
+          ),
         );
 
     if (!mounted) {
@@ -149,16 +154,16 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
       await showDialog<void>(
         context: context,
         builder: (context) => AfriAlertDialog(
-          title: const Text('Challenge sent'),
+          title: Text(context.afriL10n.gameChallengeSent),
           content: Text(
             result.message.isEmpty
-                ? 'Your challenge is waiting for a response.'
-                : result.message,
+                ? context.afriL10n.gameChallengeWaiting
+                : context.localizeGameResultMessage(result.message),
           ),
           actions: [
             AfriTextButton(
               onPressed: () => context.pop(),
-              child: const Text('Close'),
+              child: Text(context.afriL10n.gameClose),
             ),
           ],
         ),
@@ -167,8 +172,8 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
       AfriToast.error(
         context,
         result.message.isEmpty
-            ? 'Could not send the challenge right now.'
-            : result.message,
+            ? context.afriL10n.gameCouldNotSendChallenge
+            : context.localizeGameResultMessage(result.message),
       );
     }
 
@@ -186,7 +191,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'Challenge',
+          context.afriL10n.gameChallenge,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
@@ -195,7 +200,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       bottomNavigationBar: SafeArea(
@@ -215,7 +220,9 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                     !_isSubmitting
                 ? _sendChallenge
                 : () {},
-            label: _isSubmitting ? 'Sending...' : 'Send challenge',
+            label: _isSubmitting
+                ? context.afriL10n.gameSending
+                : context.afriL10n.gameSendChallenge,
             enabled:
                 _selectedSupporter != null &&
                 _selectedFixture != null &&
@@ -237,9 +244,9 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Challenge unavailable',
+                  title: context.afriL10n.gameChallengeUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -255,18 +262,18 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                 children: [
                   if (_friends.isEmpty)
                     AfriSectionCard(
-                      title: 'Supporter',
+                      title: context.afriL10n.gameSupporter,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Add friends before sending a challenge.',
+                            context.afriL10n.gameAddFriendsBeforeChallenge,
                             style: TypographyTokens.bodyMedium(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
                           AfriButton(
                             onTap: () => context.push('/fanzone'),
-                            label: 'Find friends',
+                            label: context.afriL10n.gameFindFriends,
                             variant: AfriButtonVariant.secondary,
                           ),
                         ],
@@ -274,7 +281,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                     )
                   else
                     AfriSectionCard(
-                      title: 'Supporter',
+                      title: context.afriL10n.gameSupporter,
                       child: Wrap(
                         spacing: SpacingTokens.spacing2,
                         runSpacing: SpacingTokens.spacing2,
@@ -301,7 +308,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                     ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   AfriSectionCard(
-                    title: 'Fixture',
+                    title: context.afriL10n.gameFixture,
                     child: _fixtures.isEmpty
                         ? const SizedBox.shrink()
                         : Column(
@@ -322,6 +329,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                                         competitionLabel:
                                             fixture.fixture.competitionName,
                                         kickoffLabel: _kickoffLabel(
+                                          context,
                                           fixture.fixture.kickoffAt,
                                         ),
                                         isSelected: isSelected,
@@ -341,7 +349,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                   if (_selectedFixture != null) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriSectionCard(
-                      title: 'Pick',
+                      title: context.afriL10n.gamePick,
                       child: Wrap(
                         spacing: SpacingTokens.spacing2,
                         runSpacing: SpacingTokens.spacing2,
@@ -367,12 +375,14 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
     );
   }
 
-  String _kickoffLabel(DateTime? value) {
+  String _kickoffLabel(BuildContext context, DateTime? value) {
     if (value == null) {
-      return 'Kickoff TBD';
+      return context.afriL10n.gameKickoffTbd;
     }
     final local = value.toLocal();
-    return '${local.day}/${local.month} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+    final materialL10n = MaterialLocalizations.of(context);
+    return '${materialL10n.formatShortDate(local)} • '
+        '${materialL10n.formatTimeOfDay(TimeOfDay.fromDateTime(local))}';
   }
 }
 
@@ -449,14 +459,16 @@ class _FixtureRow extends StatelessWidget {
                   Text(fixtureLabel, style: TypographyTokens.titleSmall()),
                   const SizedBox(height: SpacingTokens.spacing1 / 2),
                   Text(
-                    '$competitionLabel · $kickoffLabel',
+                    context.afriL10n.gamePair(competitionLabel, kickoffLabel),
                     style: TypographyTokens.bodySmall(),
                   ),
                 ],
               ),
             ),
             Text(
-              isSelected ? 'Selected' : 'Choose',
+              isSelected
+                  ? context.afriL10n.gameSelected
+                  : context.afriL10n.gameChoose,
               style: TypographyTokens.labelSmall(
                 isSelected
                     ? ColorTokens.clubAccent

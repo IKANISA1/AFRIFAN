@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,7 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final challengesAsync = ref.watch(myChallengesProvider);
     final configuredActionsEnabled = ref.watch(
       myChallengesActionsEnabledProvider,
@@ -75,7 +77,7 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
           appBar: AfriAppBar(
             backgroundColor: ColorTokens.transparent,
             title: Text(
-              'MY CHALLENGES',
+              l10n.gameMyChallenges,
               style: TypographyTokens.titleLarge(
                 ColorTokens.chromeForeground,
               ).copyWith(fontWeight: FontWeight.w700),
@@ -83,16 +85,16 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
             leading: AfriIconButton(
               icon: AfriIcons.back,
               onTap: () => context.pop(),
-              tooltip: 'Back',
+              tooltip: l10n.gameBack,
             ),
             bottom: AfriTabBar.line(
               controller: _tabController,
               isScrollable: true,
-              tabs: const [
-                Tab(text: 'Open'),
-                Tab(text: 'Locked'),
-                Tab(text: 'Settled'),
-                Tab(text: 'Refunded'),
+              tabs: [
+                Tab(text: l10n.gameOpen),
+                Tab(text: l10n.gameLocked),
+                Tab(text: l10n.gameSettled),
+                Tab(text: l10n.gameRefunded),
               ],
             ),
           ),
@@ -106,9 +108,8 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
                 padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                 children: [
                   AfriStateView.loading(
-                    title: 'Loading your challenges',
-                    message:
-                        'Checking the pools you created or joined for this status.',
+                    title: l10n.gameLoadingChallenges,
+                    message: l10n.gameLoadingChallengesDescription,
                   ),
                 ],
               ),
@@ -131,19 +132,24 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
 
   Widget _buildFailureView(Object error, bool isOnline) {
     final failure = MyChallengesFailure.fromError(error);
-    final content = _MyChallengesFailureContent.fromFailure(failure, isOnline);
+    final l10n = context.afriL10n;
+    final content = _MyChallengesFailureContent.fromFailure(
+      failure,
+      isOnline,
+      l10n,
+    );
     final onAction = content.canRefresh ? () => unawaited(_refresh()) : null;
     return switch (failure.kind) {
       MyChallengesFailureKind.offline => AfriStateView.offline(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.gameRefresh : null,
         onAction: onAction,
       ),
       _ => AfriStateView.error(
         title: content.title,
         message: content.message,
-        actionLabel: content.canRefresh ? 'Refresh' : null,
+        actionLabel: content.canRefresh ? l10n.gameRefresh : null,
         onAction: onAction,
       ),
     };
@@ -154,6 +160,7 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
     required bool isOnline,
     required bool configuredActionsEnabled,
   }) {
+    final l10n = context.afriL10n;
     final actionsEnabled =
         configuredActionsEnabled && isOnline && !state.actionsBlocked;
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
@@ -161,33 +168,30 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
 
     if (state.phase == MyChallengesPhase.syncing) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.refresh,
-          title: 'Refreshing challenge history',
-          subtitle:
-              'Keeping your confirmed pools visible while the latest status is checked.',
+          title: l10n.gameRefreshingChallengeHistory,
+          subtitle: l10n.gameRefreshingChallengeHistoryDescription,
           tone: AfriStateBannerTone.info,
           compact: true,
         ),
       );
     } else if (!configuredActionsEnabled) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.lock,
-          title: 'Challenge history is read-only',
-          subtitle:
-              'Your confirmed pools remain visible, but opening challenge details is disabled for this build.',
+          title: l10n.gameChallengeHistoryReadOnly,
+          subtitle: l10n.gameChallengeHistoryReadOnlyDescription,
           tone: AfriStateBannerTone.warning,
           compact: true,
         ),
       );
     } else if (!isOnline) {
       children.add(
-        const AfriStateBanner(
+        AfriStateBanner(
           icon: AfriIcons.offline,
-          title: 'Showing saved challenge history',
-          subtitle:
-              'Reconnect and refresh before opening a pool or checking a newer status.',
+          title: l10n.gameShowingSavedChallengeHistory,
+          subtitle: l10n.gameShowingSavedChallengeHistoryDescription,
           tone: AfriStateBannerTone.warning,
           compact: true,
         ),
@@ -199,7 +203,7 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
         children.add(
           AfriButton(
             key: const ValueKey<String>('my-challenges-refresh-action'),
-            label: 'REFRESH HISTORY',
+            label: l10n.gameRefreshHistory,
             icon: AfriIcons.refresh,
             variant: AfriButtonVariant.outline,
             labelMaxLines: 2,
@@ -216,11 +220,13 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
     if (state.items.isEmpty) {
       children.add(
         AfriStateView.empty(
-          title: 'No ${state.filter.label.toLowerCase()} challenges',
-          message: _emptyMessage(state.filter),
+          title: l10n.gameNoFilteredChallenges(
+            _filterLabel(context, state.filter).toLowerCase(),
+          ),
+          message: _emptyMessage(context, state.filter),
           icon: AfriIcons.versus,
           actionLabel: state.filter == MyChallengeFilter.open && actionsEnabled
-              ? 'Create challenge'
+              ? l10n.gameCreateChallenge
               : null,
           onAction: state.filter == MyChallengeFilter.open && actionsEnabled
               ? () => context.push('/challenge/create')
@@ -256,7 +262,7 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
                             left: SpacingTokens.spacing2,
                           ),
                           child: Text(
-                            _summaryFor(challenge),
+                            _summaryFor(context, challenge),
                             style: TypographyTokens.labelSmall(
                               ColorTokens.onSurfaceVariant,
                             ),
@@ -302,12 +308,14 @@ class _LargeTextChallengeHistoryCard extends StatelessWidget {
     return AfriSurfaceCard(
       enabled: enabled,
       focusNode: focusNode,
-      semanticsLabel:
-          '${fixture.homeTeamName} versus ${fixture.awayTeamName}. '
-          '${_summaryFor(challenge)}. Open challenge details.',
+      semanticsLabel: context.afriL10n.gameChallengeCardSemantics(
+        fixture.homeTeamName,
+        fixture.awayTeamName,
+        _summaryFor(context, challenge),
+      ),
       semanticsHint: enabled
-          ? 'Opens this challenge'
-          : 'Challenge details are unavailable',
+          ? context.afriL10n.gameOpensChallenge
+          : context.afriL10n.gameChallengeDetailsUnavailable,
       onTap: () => context.push('/challenge/${challenge.id}'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,7 +326,10 @@ class _LargeTextChallengeHistoryCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            '${fixture.homeTeamName}\nversus\n${fixture.awayTeamName}',
+            context.afriL10n.gameTeamsVersusMultiline(
+              fixture.homeTeamName,
+              fixture.awayTeamName,
+            ),
             style: TypographyTokens.titleMedium().copyWith(
               fontWeight: FontWeight.w800,
             ),
@@ -334,13 +345,16 @@ class _LargeTextChallengeHistoryCard extends StatelessWidget {
                 ScorePredictionPill(
                   homeScore: entry.predictedHomeScore,
                   awayScore: entry.predictedAwayScore,
-                  label: 'My pick',
+                  label: context.afriL10n.gameMyPick,
                   accent: ColorTokens.clubAccent,
                 ),
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          Text(_summaryFor(challenge), style: TypographyTokens.bodyMedium()),
+          Text(
+            _summaryFor(context, challenge),
+            style: TypographyTokens.bodyMedium(),
+          ),
         ],
       ),
     );
@@ -361,38 +375,36 @@ class _MyChallengesFailureContent {
   factory _MyChallengesFailureContent.fromFailure(
     MyChallengesFailure failure,
     bool isOnline,
+    AfriLocalizations l10n,
   ) {
     return switch (failure.kind) {
       MyChallengesFailureKind.offline => _MyChallengesFailureContent(
-        title: isOnline ? 'Connection restored' : 'Challenge history offline',
+        title: isOnline
+            ? l10n.gameConnectionRestored
+            : l10n.gameChallengeHistoryOffline,
         message: isOnline
-            ? 'Refresh to check the latest status of your challenges.'
-            : 'Reconnect to load the pools you created or joined.',
+            ? l10n.gameRefreshLatestChallengeStatus
+            : l10n.gameReconnectChallengePools,
         canRefresh: isOnline,
       ),
-      MyChallengesFailureKind.permissionDenied =>
-        const _MyChallengesFailureContent(
-          title: 'Challenge history unavailable',
-          message:
-              'Your current club access does not allow this challenge history.',
-          canRefresh: false,
-        ),
-      MyChallengesFailureKind.conflict => const _MyChallengesFailureContent(
-        title: 'Challenge history changed',
-        message:
-            'Refresh and review the latest pool status before opening a challenge.',
+      MyChallengesFailureKind.permissionDenied => _MyChallengesFailureContent(
+        title: l10n.gameChallengeHistoryUnavailable,
+        message: l10n.gameChallengeHistoryPermissionDenied,
+        canRefresh: false,
+      ),
+      MyChallengesFailureKind.conflict => _MyChallengesFailureContent(
+        title: l10n.gameChallengeHistoryChanged,
+        message: l10n.gameChallengeHistoryChangedDescription,
         canRefresh: true,
       ),
-      MyChallengesFailureKind.securityTimeout =>
-        const _MyChallengesFailureContent(
-          title: 'Challenge history check timed out',
-          message:
-              'No status was confirmed. Refresh before opening a challenge.',
-          canRefresh: true,
-        ),
-      MyChallengesFailureKind.unknown => const _MyChallengesFailureContent(
-        title: 'Challenge history unavailable',
-        message: 'Refresh and try again when your challenge history is ready.',
+      MyChallengesFailureKind.securityTimeout => _MyChallengesFailureContent(
+        title: l10n.gameChallengeHistoryTimedOut,
+        message: l10n.gameChallengeHistoryTimedOutDescription,
+        canRefresh: true,
+      ),
+      MyChallengesFailureKind.unknown => _MyChallengesFailureContent(
+        title: l10n.gameChallengeHistoryUnavailable,
+        message: l10n.gameChallengeHistoryTryAgain,
         canRefresh: true,
       ),
     };
@@ -406,7 +418,11 @@ class _RetainedMyChallengesFailure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = _MyChallengesFailureContent.fromFailure(failure, true);
+    final content = _MyChallengesFailureContent.fromFailure(
+      failure,
+      true,
+      context.afriL10n,
+    );
     return AfriStateBanner(
       icon: failure.kind == MyChallengesFailureKind.permissionDenied
           ? AfriIcons.lock
@@ -419,31 +435,41 @@ class _RetainedMyChallengesFailure extends StatelessWidget {
   }
 }
 
-String _emptyMessage(MyChallengeFilter filter) {
+String _filterLabel(BuildContext context, MyChallengeFilter filter) {
+  final l10n = context.afriL10n;
   return switch (filter) {
-    MyChallengeFilter.open =>
-      'Create or join a pool to see an active exact-score challenge here.',
-    MyChallengeFilter.locked =>
-      'No joined challenge is currently waiting for a final score.',
-    MyChallengeFilter.settled =>
-      'Completed challenge results and points will appear here.',
-    MyChallengeFilter.refunded =>
-      'Cancelled or refunded challenges will appear here.',
+    MyChallengeFilter.open => l10n.gameOpen,
+    MyChallengeFilter.locked => l10n.gameLocked,
+    MyChallengeFilter.settled => l10n.gameSettled,
+    MyChallengeFilter.refunded => l10n.gameRefunded,
   };
 }
 
-String _summaryFor(Challenge challenge) {
+String _emptyMessage(BuildContext context, MyChallengeFilter filter) {
+  final l10n = context.afriL10n;
+  return switch (filter) {
+    MyChallengeFilter.open => l10n.gameOpenChallengesEmpty,
+    MyChallengeFilter.locked => l10n.gameLockedChallengesEmpty,
+    MyChallengeFilter.settled => l10n.gameSettledChallengesEmpty,
+    MyChallengeFilter.refunded => l10n.gameRefundedChallengesEmpty,
+  };
+}
+
+String _summaryFor(BuildContext context, Challenge challenge) {
+  final l10n = context.afriL10n;
   final entry = challenge.myEntry;
   if (entry == null) {
-    return '${challenge.totalPoolFet} pts total';
+    return l10n.gameTotalPoolPoints(challenge.totalPoolFet);
   }
 
   return switch (entry.status) {
-    ChallengeEntryStatus.winner => 'Earned ${entry.payoutFet} pts',
-    ChallengeEntryStatus.loser => 'No result credit',
-    ChallengeEntryStatus.refunded => 'Returned ${entry.payoutFet} pts',
-    ChallengeEntryStatus.cancelled => 'Cancelled',
-    ChallengeEntryStatus.active =>
-      'My pick ${entry.predictedHomeScore}-${entry.predictedAwayScore}',
+    ChallengeEntryStatus.winner => l10n.gameEarnedPoints(entry.payoutFet),
+    ChallengeEntryStatus.loser => l10n.gameNoResultCredit,
+    ChallengeEntryStatus.refunded => l10n.gameReturnedPoints(entry.payoutFet),
+    ChallengeEntryStatus.cancelled => l10n.gameCancelled,
+    ChallengeEntryStatus.active => l10n.gameMyPickScore(
+      entry.predictedHomeScore,
+      entry.predictedAwayScore,
+    ),
   };
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final feedAsync = ref.watch(challengeFeedProvider);
     final configuredActionsEnabled = ref.watch(
       challengeFeedActionsEnabledProvider,
@@ -69,7 +71,7 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                   floating: true,
                   backgroundColor: ColorTokens.transparent,
                   title: Text(
-                    'CHALLENGE',
+                    l10n.feedChallengeTitle,
                     style: TypographyTokens.headlineSmall(
                       ColorTokens.chromeForeground,
                     ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
@@ -80,14 +82,14 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                       onTap: actionsEnabled
                           ? () => unawaited(context.push('/challenge/my'))
                           : null,
-                      tooltip: 'My challenges',
+                      tooltip: l10n.gameMyChallenges,
                     ),
                     AfriIconButton(
                       icon: AfriIcons.add,
                       onTap: actionsEnabled
                           ? () => unawaited(context.push('/challenge/create'))
                           : null,
-                      tooltip: 'Create challenge',
+                      tooltip: l10n.gameCreateChallenge,
                     ),
                   ],
                 ),
@@ -103,7 +105,7 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Exact-score pools for real fixtures. Create one, join once, and settle automatically from the official final score.',
+                          l10n.feedDescription,
                           style: TypographyTokens.bodyMedium(
                             ColorTokens.onSurfaceVariant,
                           ),
@@ -115,7 +117,7 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                           children: _ChallengeFeedFilter.values.map((filter) {
                             return AfriChoiceChip(
                               selected: _selectedFilter == filter,
-                              label: Text(_labelForFilter(filter)),
+                              label: Text(_labelForFilter(context, filter)),
                               onSelected: (_) =>
                                   setState(() => _selectedFilter = filter),
                             );
@@ -126,7 +128,7 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                           key: const ValueKey<String>(
                             'challenge-create-action',
                           ),
-                          label: 'CREATE A NEW CHALLENGE',
+                          label: l10n.feedCreateNew,
                           icon: AfriIcons.versus,
                           variant: AfriButtonVariant.accent,
                           enabled: actionsEnabled,
@@ -146,9 +148,8 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                         SpacingTokens.screenPadding,
                       ),
                       child: AfriStateView.loading(
-                        title: 'Opening challenges',
-                        message:
-                            'Checking current fixtures, pools, and your joined challenges.',
+                        title: l10n.feedOpening,
+                        message: l10n.feedOpeningBody,
                       ),
                     ),
                   ),
@@ -166,9 +167,9 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                     return SliverMainAxisGroup(
                       slivers: [
                         if (feedAsync.isRefreshing)
-                          const SliverToBoxAdapter(
+                          SliverToBoxAdapter(
                             child: Padding(
-                              padding: EdgeInsets.fromLTRB(
+                              padding: const EdgeInsets.fromLTRB(
                                 SpacingTokens.screenPadding,
                                 SpacingTokens.spacing4,
                                 SpacingTokens.screenPadding,
@@ -176,18 +177,17 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                               ),
                               child: AfriStateBanner(
                                 icon: AfriIcons.refresh,
-                                title: 'Refreshing challenges',
-                                subtitle:
-                                    'Keeping current fixtures, pools, and joined challenges visible.',
+                                title: l10n.feedRefreshing,
+                                subtitle: l10n.feedRefreshingBody,
                                 tone: AfriStateBannerTone.info,
                                 compact: true,
                               ),
                             ),
                           ),
                         if (!configuredActionsEnabled)
-                          const SliverToBoxAdapter(
+                          SliverToBoxAdapter(
                             child: Padding(
-                              padding: EdgeInsets.fromLTRB(
+                              padding: const EdgeInsets.fromLTRB(
                                 SpacingTokens.screenPadding,
                                 SpacingTokens.spacing4,
                                 SpacingTokens.screenPadding,
@@ -195,18 +195,17 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                               ),
                               child: AfriStateBanner(
                                 icon: AfriIcons.lock,
-                                title: 'Challenge actions unavailable',
-                                subtitle:
-                                    'You can review current pools, but creating and joining are disabled for this build.',
+                                title: l10n.feedActionsUnavailable,
+                                subtitle: l10n.feedActionsUnavailableBody,
                                 tone: AfriStateBannerTone.warning,
                                 compact: true,
                               ),
                             ),
                           )
                         else if (!isOnline)
-                          const SliverToBoxAdapter(
+                          SliverToBoxAdapter(
                             child: Padding(
-                              padding: EdgeInsets.fromLTRB(
+                              padding: const EdgeInsets.fromLTRB(
                                 SpacingTokens.screenPadding,
                                 SpacingTokens.spacing4,
                                 SpacingTokens.screenPadding,
@@ -214,9 +213,8 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                               ),
                               child: AfriStateBanner(
                                 icon: AfriIcons.offline,
-                                title: 'Showing saved challenges',
-                                subtitle:
-                                    'Reconnect before creating or joining a pool.',
+                                title: l10n.feedShowingSaved,
+                                subtitle: l10n.feedShowingSavedBody,
                                 tone: AfriStateBannerTone.warning,
                                 compact: true,
                               ),
@@ -234,7 +232,7 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                               ),
                               child: AfriStateBanner(
                                 icon: AfriIcons.statusWarning,
-                                title: 'Live challenge updates paused',
+                                title: l10n.feedUpdatesPaused,
                                 subtitle: feed.message!,
                                 tone: AfriStateBannerTone.warning,
                                 compact: true,
@@ -244,17 +242,16 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                         if (_selectedFilter != _ChallengeFeedFilter.all)
                           _buildFilteredList(filtered, actionsEnabled)
                         else if (feed.isEmpty)
-                          const SliverFillRemaining(
-                            key: ValueKey<String>('challenge-feed-empty'),
+                          SliverFillRemaining(
+                            key: const ValueKey<String>('challenge-feed-empty'),
                             hasScrollBody: false,
                             child: Padding(
-                              padding: EdgeInsets.all(
+                              padding: const EdgeInsets.all(
                                 SpacingTokens.screenPadding,
                               ),
                               child: AfriEmptyView(
-                                title: 'No challenges available',
-                                message:
-                                    'New exact-score pools will appear when eligible fixtures open.',
+                                title: l10n.feedEmpty,
+                                message: l10n.feedEmptyBody,
                                 icon: AfriIcons.versus,
                               ),
                             ),
@@ -275,7 +272,11 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
 
   Widget _buildFailureView(Object error, bool isOnline) {
     final failure = ChallengeFeedFailure.fromError(error);
-    final content = _ChallengeFailureContent.fromFailure(failure, isOnline);
+    final content = _ChallengeFailureContent.fromFailure(
+      failure,
+      isOnline,
+      context.afriL10n,
+    );
     return AfriStateView.offline(
       title: content.title,
       message: content.message,
@@ -298,8 +299,8 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
         delegate: SliverChildListDelegate([
           if (feed.featured.isNotEmpty) ...[
             _SectionHeader(
-              title: 'Featured / Popular Challenges',
-              actionLabel: 'See all',
+              title: context.afriL10n.feedFeatured,
+              actionLabel: context.afriL10n.feedSeeAll,
               onAction: () => setState(
                 () => _selectedFilter = _ChallengeFeedFilter.highPool,
               ),
@@ -318,8 +319,8 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
           ],
           if (feed.open.isNotEmpty) ...[
             _SectionHeader(
-              title: 'Open Challenges',
-              actionLabel: 'Ending soon',
+              title: context.afriL10n.feedOpenChallenges,
+              actionLabel: context.afriL10n.feedEndingSoonAction,
               onAction: () => setState(
                 () => _selectedFilter = _ChallengeFeedFilter.endingSoon,
               ),
@@ -342,8 +343,8 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
           ],
           if (feed.mine.isNotEmpty) ...[
             _SectionHeader(
-              title: 'My Challenges',
-              actionLabel: 'Open',
+              title: context.afriL10n.feedMyChallenges,
+              actionLabel: context.afriL10n.gameOpen,
               onAction: actionsEnabled
                   ? () => context.push('/challenge/my')
                   : null,
@@ -366,8 +367,8 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
           ],
           if (feed.settled.isNotEmpty) ...[
             _SectionHeader(
-              title: 'Settled Challenges',
-              actionLabel: 'Results',
+              title: context.afriL10n.feedSettledChallenges,
+              actionLabel: context.afriL10n.feedResults,
               onAction: () => setState(
                 () => _selectedFilter = _ChallengeFeedFilter.settled,
               ),
@@ -404,10 +405,10 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
             SpacingTokens.spacing8,
           ),
           child: filtered.isEmpty
-              ? const AfriEmptyView(
+              ? AfriEmptyView(
                   compact: true,
-                  title: 'Nothing matches this filter',
-                  message: 'Try another view or create a new pool.',
+                  title: context.afriL10n.feedNoFilterMatches,
+                  message: context.afriL10n.feedNoFilterMatchesBody,
                   icon: AfriIcons.filter,
                 )
               : Column(
@@ -462,15 +463,16 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
     }
   }
 
-  String _labelForFilter(_ChallengeFeedFilter filter) {
+  String _labelForFilter(BuildContext context, _ChallengeFeedFilter filter) {
+    final l10n = context.afriL10n;
     return switch (filter) {
-      _ChallengeFeedFilter.all => 'All',
-      _ChallengeFeedFilter.open => 'Open',
-      _ChallengeFeedFilter.highPool => 'High Pool',
-      _ChallengeFeedFilter.mostParticipants => 'Most Participants',
-      _ChallengeFeedFilter.endingSoon => 'Ending Soon',
-      _ChallengeFeedFilter.myJoined => 'My Joined',
-      _ChallengeFeedFilter.settled => 'Settled',
+      _ChallengeFeedFilter.all => l10n.feedAll,
+      _ChallengeFeedFilter.open => l10n.gameOpen,
+      _ChallengeFeedFilter.highPool => l10n.feedHighPool,
+      _ChallengeFeedFilter.mostParticipants => l10n.feedMostParticipants,
+      _ChallengeFeedFilter.endingSoon => l10n.feedEndingSoon,
+      _ChallengeFeedFilter.myJoined => l10n.feedMyJoined,
+      _ChallengeFeedFilter.settled => l10n.gameSettled,
     };
   }
 }
@@ -524,40 +526,37 @@ class _ChallengeFailureContent {
   factory _ChallengeFailureContent.fromFailure(
     ChallengeFeedFailure failure,
     bool isOnline,
+    AfriLocalizations l10n,
   ) {
     if (!isOnline || failure.kind == ChallengeFeedFailureKind.offline) {
-      return const _ChallengeFailureContent(
-        title: 'Challenges unavailable offline',
-        message: 'Reconnect to load current fixtures and challenge pools.',
+      return _ChallengeFailureContent(
+        title: l10n.feedChallengesOffline,
+        message: l10n.feedChallengesOfflineBody,
       );
     }
     return switch (failure.kind) {
-      ChallengeFeedFailureKind.permissionDenied =>
-        const _ChallengeFailureContent(
-          title: 'Challenge access unavailable',
-          message:
-              'Your access does not currently allow these challenge pools.',
-        ),
-      ChallengeFeedFailureKind.conflict => const _ChallengeFailureContent(
-        title: 'Challenge data changed',
-        message: 'Refresh before reviewing or joining the latest pools.',
-        actionLabel: 'Refresh',
+      ChallengeFeedFailureKind.permissionDenied => _ChallengeFailureContent(
+        title: l10n.feedAccessUnavailable,
+        message: l10n.feedAccessUnavailableBody,
       ),
-      ChallengeFeedFailureKind.securityTimeout =>
-        const _ChallengeFailureContent(
-          title: 'Challenge security check timed out',
-          message:
-              'No challenge action was completed. Refresh before trying again.',
-          actionLabel: 'Refresh',
-        ),
-      ChallengeFeedFailureKind.unknown => const _ChallengeFailureContent(
-        title: 'Challenge feed unavailable',
-        message: 'Current challenge pools could not be loaded safely.',
-        actionLabel: 'Retry',
+      ChallengeFeedFailureKind.conflict => _ChallengeFailureContent(
+        title: l10n.feedDataChanged,
+        message: l10n.feedDataChangedBody,
+        actionLabel: l10n.gameRefresh,
       ),
-      ChallengeFeedFailureKind.offline => const _ChallengeFailureContent(
-        title: 'Challenges unavailable offline',
-        message: 'Reconnect to load current fixtures and challenge pools.',
+      ChallengeFeedFailureKind.securityTimeout => _ChallengeFailureContent(
+        title: l10n.challengeSecurityTimedOut,
+        message: l10n.feedSecurityTimedOutBody,
+        actionLabel: l10n.gameRefresh,
+      ),
+      ChallengeFeedFailureKind.unknown => _ChallengeFailureContent(
+        title: l10n.feedUnavailable,
+        message: l10n.feedUnavailableBody,
+        actionLabel: l10n.gameRetry,
+      ),
+      ChallengeFeedFailureKind.offline => _ChallengeFailureContent(
+        title: l10n.feedChallengesOffline,
+        message: l10n.feedChallengesOfflineBody,
       ),
     };
   }

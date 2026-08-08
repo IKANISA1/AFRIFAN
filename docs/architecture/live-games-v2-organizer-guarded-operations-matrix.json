@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-ORG-02",
+  "status": "local_guarded_organizer_operations_passed",
+  "criterion_complete": true,
+  "required_clauses": [
+    "single_normal_next_transition",
+    "separated_exception_controls",
+    "reasoned_skip",
+    "reasoned_early_end",
+    "pause_resume_authority",
+    "stale_duplicate_lockout",
+    "audit_backed_recovery"
+  ],
+  "clauses": [
+    {
+      "id": "single_normal_next_transition",
+      "assertion": "The organizer sees at most one server-advertised normal lifecycle transition for the authoritative phase and cannot route skip or early-end through that ordinary transition path.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "live control separates one next action from exceptions"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "live control allows only server-authorized transitions"
+        }
+      ]
+    },
+    {
+      "id": "separated_exception_controls",
+      "assertion": "Pause, resume, skip, early-end, and cancellation remain visually and behaviorally separate from normal progression and require confirmation before mutation.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "live control separates one next action from exceptions"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "paused live control exposes resume only as an exception"
+        }
+      ]
+    },
+    {
+      "id": "reasoned_skip",
+      "assertion": "Skip requires a bounded reason and a different next question, calls the dedicated versioned idempotent RPC, closes the current question, and opens the selected next question.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "live skip uses the reasoned exception gateway, never transition"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "live skip requires a bounded reason and uses skip RPC"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "reasoned skip closes the current question, opens a different question, and is idempotent"
+        }
+      ]
+    },
+    {
+      "id": "reasoned_early_end",
+      "assertion": "Early-end requires a bounded reason, uses its dedicated versioned idempotent RPC, and completes the session with one attributable audit event.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "live early-end retry preserves its reason and idempotency key"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "reasoned early end completes the session with one attributable audit event"
+        }
+      ]
+    },
+    {
+      "id": "pause_resume_authority",
+      "assertion": "Pause records the exact authoritative active phase and resume restores only that phase while the client presents resume as an exception rather than a normal advance.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "paused live control exposes resume only as an exception"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "pause records the exact authoritative phase required for safe resume"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "resume restores the exact pre-pause phase and clears recovery metadata"
+        }
+      ]
+    },
+    {
+      "id": "stale_duplicate_lockout",
+      "assertion": "A mutation is single-flight, retries reuse one intent, and conflict or timeout disables every further action until an authoritative projection refresh succeeds.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "live conflict blocks every action until authoritative refresh"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "live timeout blocks transitions until authoritative refresh"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "an organizer transition is versioned, idempotent, evented, and audited once"
+        }
+      ]
+    },
+    {
+      "id": "audit_backed_recovery",
+      "assertion": "After an uncertain or stale result the client retains the last confirmed safe session, exposes refresh recovery, and resumes controls only from the newly fetched authoritative projection while backend actions remain audited.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "live conflict blocks every action until authoritative refresh"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "live timeout blocks transitions until authoritative refresh"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "lifecycle transition is versioned, idempotent, evented, and audited"
+        }
+      ]
+    }
+  ],
+  "deterministic_golden_evidence": [
+    "packages/features/feat_game_operations/test/goldens/game_operations_guarded_live_controls_dark_390x844.png"
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "static_source_contract": true,
+    "isolated_database_contract_executed": true,
+    "current_visual_comparison": true,
+    "shared_or_live_session_claimed": false,
+    "physical_device_claimed": false,
+    "real_network_timing_claimed": false,
+    "accountable_human_approval_claimed": false,
+    "release_claimed": false
+  }
+}

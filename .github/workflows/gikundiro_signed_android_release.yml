@@ -34,9 +34,9 @@ jobs:
       - name: Install Melos and bootstrap workspace
         working-directory: .
         run: |
-          dart pub global activate melos
+          flutter pub get
           cd ../..
-          melos bootstrap
+          dart run melos bootstrap
 
       - name: Validate signing secrets
         run: |

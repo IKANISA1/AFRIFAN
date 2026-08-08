@@ -166,6 +166,7 @@ class AfriStateView extends StatelessWidget {
     final colors = context.afriSemanticColors;
     final theme = Theme.of(context);
     final accentColor = _accentColor(colors);
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
 
     final content = Container(
       width: double.infinity,
@@ -248,19 +249,25 @@ class AfriStateView extends StatelessWidget {
       ),
     );
 
+    final centeredContent = Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 0 : 4,
+        vertical: compact ? 0 : 12,
+      ),
+      child: content,
+    );
+
     return Semantics(
       label: '$title. $message',
       liveRegion: tone == AfriStateTone.error || tone == AfriStateTone.offline,
       child: center
-          ? Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: compact ? 0 : 4,
-                  vertical: compact ? 0 : 12,
-                ),
-                child: content,
-              ),
-            )
+          ? largeText
+                ? SingleChildScrollView(
+                    primary: false,
+                    physics: const ClampingScrollPhysics(),
+                    child: centeredContent,
+                  )
+                : Center(child: centeredContent)
           : content,
     );
   }

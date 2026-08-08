@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +12,18 @@ import '../admin_contributions_controller.dart';
 
 /// Privacy-minimized, bounded monitoring for contribution groups and totals.
 class ContributionsMonitorScreen extends ConsumerWidget {
-  const ContributionsMonitorScreen({this.firstActionFocusNode, super.key});
+  const ContributionsMonitorScreen({
+    this.firstActionFocusNode,
+    this.referenceTime,
+    super.key,
+  });
 
   final FocusNode? firstActionFocusNode;
+
+  /// Fixed only by deterministic state tests; production uses the current UTC
+  /// month so the monitoring total rolls over at the correct boundary.
+  @visibleForTesting
+  final DateTime? referenceTime;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,11 +38,14 @@ class ContributionsMonitorScreen extends ConsumerWidget {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('CONTRIBUTIONS', style: TypographyTokens.titleLarge()),
+        title: Text(
+          context.afriL10n.adminContributionsTitle,
+          style: TypographyTokens.titleLarge(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
       ),
       scrollable: false,
@@ -54,8 +67,8 @@ class ContributionsMonitorScreen extends ConsumerWidget {
                 key: const ValueKey<String>(
                   'admin-contributions-state-loading',
                 ),
-                title: 'Loading contributions',
-                message: 'Checking the controlled contribution monitor.',
+                title: context.afriL10n.adminContributionsLoading,
+                message: context.afriL10n.adminContributionsLoadingMessage,
               ),
             )
           : contributions.hasError && snapshot == null
@@ -77,7 +90,8 @@ class ContributionsMonitorScreen extends ConsumerWidget {
     final visible = snapshot.visibleGroups;
     final controlsEnabled =
         snapshot.controlsEnabled && !contributions.isLoading;
-    final currency = NumberFormat.decimalPattern();
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final currency = NumberFormat.decimalPattern(locale);
     final currencySymbol = context.afriCurrencySymbol;
     final metricColor = Theme.of(context).brightness == Brightness.dark
         ? ColorTokens.clubAccent
@@ -89,12 +103,12 @@ class ContributionsMonitorScreen extends ConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         children: [
-          if (_statusBanner(contributions) case final banner?) ...[
+          if (_statusBanner(context, contributions) case final banner?) ...[
             banner,
             const SizedBox(height: SpacingTokens.spacing4),
           ],
           Text(
-            'Review club-scoped group totals without exposing supporter or payment identifiers.',
+            context.afriL10n.adminContributionsDescription,
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -104,17 +118,20 @@ class ContributionsMonitorScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'TOTAL RECORDED THIS MONTH',
+                  context.afriL10n.adminContributionsMonthlyTotal,
                   style: TypographyTokens.labelSmall(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  '$currencySymbol ${currency.format(snapshot.monthlyTotalAt(DateTime.now().toUtc()))}',
+                  '$currencySymbol ${currency.format(snapshot.monthlyTotalAt(referenceTime ?? DateTime.now().toUtc()))}',
                   style: TypographyTokens.displayMedium(metricColor),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  '${snapshot.groups.length} groups • ${snapshot.contributions.length} bounded records',
+                  context.afriL10n.adminContributionsSummary(
+                    snapshot.groups.length,
+                    snapshot.contributions.length,
+                  ),
                   style: TypographyTokens.bodyMedium(),
                 ),
               ],
@@ -134,11 +151,11 @@ class ContributionsMonitorScreen extends ConsumerWidget {
             AfriStateView.empty(
               key: const ValueKey<String>('admin-contributions-state-empty'),
               title: snapshot.groups.isEmpty
-                  ? 'No contribution groups'
-                  : 'No groups match',
+                  ? context.afriL10n.adminContributionsNoGroups
+                  : context.afriL10n.adminContributionsNoMatch,
               message: snapshot.groups.isEmpty
-                  ? 'Confirmed club-scoped contribution groups will appear here.'
-                  : 'Choose another contribution group filter.',
+                  ? context.afriL10n.adminContributionsNoGroupsMessage
+                  : context.afriL10n.adminContributionsNoMatchMessage,
               compact: true,
             )
           else
@@ -158,7 +175,7 @@ class ContributionsMonitorScreen extends ConsumerWidget {
             child: AfriTextIconButton(
               key: const ValueKey<String>('admin-contributions-export'),
               icon: const Icon(AfriIcons.copy),
-              label: const Text('Export privacy-safe report'),
+              label: Text(context.afriL10n.adminContributionsExport),
               focusNode: firstActionFocusNode,
               style: AfriTextButton.styleFrom(
                 foregroundColor: ColorTokens.onSurface,
@@ -194,7 +211,7 @@ class ContributionsMonitorScreen extends ConsumerWidget {
     ];
     await Clipboard.setData(ClipboardData(text: rows.join('\n')));
     if (!context.mounted) return;
-    AfriToast.success(context, 'Privacy-safe contribution report copied.');
+    AfriToast.success(context, context.afriL10n.adminContributionsReportCopied);
   }
 
   static String _csvCell(String value) =>
@@ -205,11 +222,10 @@ class ContributionsMonitorScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-contributions-state-disabled'),
-        title: 'Contribution monitor unavailable',
-        message:
-            'Contribution monitoring is disabled for this controlled build.',
+        title: context.afriL10n.adminContributionsUnavailable,
+        message: context.afriL10n.adminContributionsDisabled,
         icon: AfriIcons.lock,
-        actionLabel: 'Back to admin',
+        actionLabel: context.afriL10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
     );
@@ -220,46 +236,47 @@ class ContributionsMonitorScreen extends ConsumerWidget {
     WidgetRef ref,
     AdminContributionsFailure failure,
   ) {
+    final l10n = context.afriL10n;
     void retry() =>
         unawaited(ref.read(adminContributionsProvider.notifier).refresh());
     final view = switch (failure.kind) {
       AdminContributionsFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-contributions-state-offline'),
-        title: 'Contribution monitor offline',
-        message: 'Reconnect before loading private contribution records.',
-        actionLabel: 'Try again',
+        title: l10n.adminContributionsOffline,
+        message: l10n.adminContributionsOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
       AdminContributionsFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>(
           'admin-contributions-state-permission-denied',
         ),
-        title: 'Contribution access unavailable',
-        message: 'This account cannot view private contribution operations.',
-        actionLabel: 'Back to admin',
+        title: l10n.adminContributionsAccessUnavailable,
+        message: l10n.adminContributionsAccessMessage,
+        actionLabel: l10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
       AdminContributionsFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-contributions-state-conflict'),
-        title: 'Contribution data changed',
-        message: 'Refresh before relying on contribution totals.',
-        actionLabel: 'Refresh',
+        title: l10n.adminContributionsDataChanged,
+        message: l10n.adminContributionsDataChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: retry,
       ),
       AdminContributionsFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>(
           'admin-contributions-state-security-timeout',
         ),
-        title: 'Security check timed out',
-        message: 'No contribution records were shown. Check your connection.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminContributionsSecurityMessage,
+        actionLabel: l10n.retry,
         onAction: retry,
       ),
       AdminContributionsFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-contributions-state-error'),
-        title: 'Contribution monitor unavailable',
-        message: 'Private contribution records remain hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminContributionsUnavailable,
+        message: l10n.adminContributionsHiddenMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
     };
@@ -269,16 +286,18 @@ class ContributionsMonitorScreen extends ConsumerWidget {
     );
   }
 
-  Widget? _statusBanner(AsyncValue<AdminContributionsSnapshot> value) {
+  Widget? _statusBanner(
+    BuildContext context,
+    AsyncValue<AdminContributionsSnapshot> value,
+  ) {
     final snapshot = value.valueOrNull;
     if (snapshot == null) return null;
     if (value.isLoading) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-contributions-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-contributions-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Refreshing contributions',
-        subtitle:
-            'Showing the last confirmed totals while current data is checked.',
+        title: context.afriL10n.adminContributionsRefreshing,
+        subtitle: context.afriL10n.adminContributionsRefreshingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -292,14 +311,15 @@ class ContributionsMonitorScreen extends ConsumerWidget {
           ? AfriIcons.offline
           : AfriIcons.statusWarning,
       title: switch (failure.kind) {
-        AdminContributionsFailureKind.conflict => 'Contribution data changed',
+        AdminContributionsFailureKind.conflict =>
+          context.afriL10n.adminContributionsDataChanged,
         AdminContributionsFailureKind.securityTimeout =>
-          'Security check timed out',
-        AdminContributionsFailureKind.offline => 'Contribution monitor offline',
-        _ => 'Contribution monitor unavailable',
+          context.afriL10n.adminSecurityTimeout,
+        AdminContributionsFailureKind.offline =>
+          context.afriL10n.adminContributionsOffline,
+        _ => context.afriL10n.adminContributionsUnavailable,
       },
-      subtitle:
-          'Last confirmed totals remain visible. Controls are paused until refresh succeeds.',
+      subtitle: context.afriL10n.adminContributionsLastConfirmed,
       tone: AfriStateBannerTone.warning,
     );
   }
@@ -325,7 +345,10 @@ class _ContributionFilters extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('GROUP TYPE', style: TypographyTokens.labelSmall()),
+          Text(
+            context.afriL10n.adminContributionsGroupType,
+            style: TypographyTokens.labelSmall(),
+          ),
           const SizedBox(height: SpacingTokens.spacing2),
           Wrap(
             spacing: SpacingTokens.spacing2,
@@ -334,14 +357,17 @@ class _ContributionFilters extends StatelessWidget {
                 .map(
                   (filter) => AfriChoiceChip(
                     selected: snapshot.filter == filter,
-                    label: Text(filter.label),
+                    label: Text(_contributionFilterLabel(context, filter)),
                     onSelected: enabled ? (_) => onFilter(filter) : null,
                   ),
                 )
                 .toList(growable: false),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          Text('SORT', style: TypographyTokens.labelSmall()),
+          Text(
+            context.afriL10n.adminContributionsSort,
+            style: TypographyTokens.labelSmall(),
+          ),
           const SizedBox(height: SpacingTokens.spacing2),
           Wrap(
             spacing: SpacingTokens.spacing2,
@@ -350,7 +376,7 @@ class _ContributionFilters extends StatelessWidget {
                 .map(
                   (sort) => AfriChoiceChip(
                     selected: snapshot.sort == sort,
-                    label: Text(sort.label),
+                    label: Text(_contributionSortLabel(context, sort)),
                     onSelected: enabled ? (_) => onSort(sort) : null,
                   ),
                 )
@@ -400,14 +426,18 @@ class _ContributionGroupCard extends StatelessWidget {
                   ),
                 ),
                 _StateChip(
-                  label: item.isClosed ? 'CLOSED' : 'ACTIVE',
+                  label: item.isClosed
+                      ? context.afriL10n.adminContributionsClosed
+                      : context.afriL10n.adminContributionsActive,
                   active: !item.isClosed,
                 ),
               ],
             ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              item.type == 'project' ? 'TEAM PROJECT' : 'COMMUNITY',
+              item.type == 'project'
+                  ? context.afriL10n.adminContributionsTeamProject
+                  : context.afriL10n.adminContributionsCommunity,
               style: TypographyTokens.bodyMedium(),
             ),
             const SizedBox(height: SpacingTokens.spacing2),
@@ -420,14 +450,22 @@ class _ContributionGroupCard extends StatelessWidget {
             ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              '$recordCount bounded records • ${item.memberCount} registered members',
+              context.afriL10n.adminContributionsRecordMembers(
+                recordCount,
+                item.memberCount,
+              ),
               style: TypographyTokens.bodyMedium(),
             ),
             const SizedBox(height: SpacingTokens.spacing1),
             Text(
               lastActivity == null
-                  ? 'Payment activity pending'
-                  : 'Last activity ${DateFormat('dd MMM HH:mm').format(lastActivity!.toLocal())}',
+                  ? context.afriL10n.adminContributionsActivityPending
+                  : context.afriL10n.adminContributionsLastActivity(
+                      DateFormat(
+                        'dd MMM HH:mm',
+                        Localizations.localeOf(context).toLanguageTag(),
+                      ).format(lastActivity!.toLocal()),
+                    ),
               style: TypographyTokens.bodySmall(),
             ),
           ],
@@ -435,6 +473,29 @@ class _ContributionGroupCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _contributionFilterLabel(
+  BuildContext context,
+  AdminContributionGroupFilter filter,
+) {
+  final l10n = context.afriL10n;
+  return switch (filter) {
+    AdminContributionGroupFilter.all => l10n.adminContributionsFilterAll,
+    AdminContributionGroupFilter.projects =>
+      l10n.adminContributionsTeamProjects,
+    AdminContributionGroupFilter.community => l10n.adminContributionsCommunity,
+  };
+}
+
+String _contributionSortLabel(
+  BuildContext context,
+  AdminContributionSort sort,
+) {
+  return switch (sort) {
+    AdminContributionSort.recent => context.afriL10n.adminContributionsRecent,
+    AdminContributionSort.total => context.afriL10n.adminContributionsTotal,
+  };
 }
 
 class _StateChip extends StatelessWidget {

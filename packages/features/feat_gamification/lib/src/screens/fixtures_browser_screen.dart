@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,12 @@ import '../widgets/fixtures_browser_widgets.dart';
 class FixturesBrowserScreen extends ConsumerStatefulWidget {
   const FixturesBrowserScreen({
     super.key,
-    this.title = 'FIXTURES',
+    this.title,
     this.showBackButton = false,
     this.statusFilter,
   });
 
-  final String title;
+  final String? title;
   final bool showBackButton;
   final String? statusFilter;
 
@@ -97,7 +98,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
       );
       if (!mounted) return;
       setState(() {
-        _error = 'Could not load fixtures right now.';
+        _error = context.afriL10n.gameFixturesCouldNotLoad;
         _isLoading = false;
       });
     }
@@ -123,7 +124,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
     return grouped;
   }
 
-  String _selectedDateLabel() {
+  String _selectedDateLabel(BuildContext context) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final sel = DateTime(
@@ -133,28 +134,26 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
     );
     final diff = sel.difference(today).inDays;
 
-    const monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    final dateStr = MaterialLocalizations.of(context).formatMediumDate(sel);
 
-    final dateStr =
-        '${dayNames[sel.weekday - 1]}, ${monthNames[sel.month - 1]} ${sel.day}';
-
-    if (diff == 0) return 'Today · $dateStr';
-    if (diff == 1) return 'Tomorrow · $dateStr';
-    if (diff == -1) return 'Yesterday · $dateStr';
+    if (diff == 0) {
+      return context.afriL10n.gameRelativeDate(
+        context.afriL10n.gameToday,
+        dateStr,
+      );
+    }
+    if (diff == 1) {
+      return context.afriL10n.gameRelativeDate(
+        context.afriL10n.gameTomorrow,
+        dateStr,
+      );
+    }
+    if (diff == -1) {
+      return context.afriL10n.gameRelativeDate(
+        context.afriL10n.gameYesterday,
+        dateStr,
+      );
+    }
     return dateStr;
   }
 
@@ -164,19 +163,22 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(widget.title, style: TypographyTokens.headlineSmall()),
+        title: Text(
+          widget.title ?? context.afriL10n.gameFixturesTitle,
+          style: TypographyTokens.headlineSmall(),
+        ),
         leading: widget.showBackButton
             ? AfriIconButton(
                 icon: AfriIcons.back,
                 onTap: () => context.pop(),
-                tooltip: 'Back',
+                tooltip: context.afriL10n.gameBack,
               )
             : null,
         actions: [
           AfriIconButton(
             icon: AfriIcons.myPicks,
             onTap: () => unawaited(context.push('/fanzone/my')),
-            tooltip: 'Predictions',
+            tooltip: context.afriL10n.gamePredictions,
           ),
         ],
       ),
@@ -221,13 +223,12 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                   const SizedBox(width: SpacingTokens.spacing2),
                   Expanded(
                     child: Text(
-                      _selectedDateLabel(),
+                      _selectedDateLabel(context),
                       style: TypographyTokens.titleSmall(),
                     ),
                   ),
                   AfriStatusChip(
-                    label:
-                        '${_fixtures.length} ${_fixtures.length == 1 ? 'match' : 'matches'}',
+                    label: context.afriL10n.gameMatchCount(_fixtures.length),
                     tone: AfriStatusTone.live,
                   ),
                 ],
@@ -249,7 +250,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return CompetitionFilterChip(
-                          label: 'All',
+                          label: context.afriL10n.gameAll,
                           isSelected: _selectedCompetition == null,
                           onTap: () => _onFilterChanged(null),
                         );
@@ -285,9 +286,9 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriStateView.offline(
-            title: 'Fixtures unavailable',
+            title: context.afriL10n.gameFixturesUnavailable,
             message: _error!,
-            actionLabel: 'Retry',
+            actionLabel: context.afriL10n.gameRetry,
             onAction: _loadData,
           ),
         ),

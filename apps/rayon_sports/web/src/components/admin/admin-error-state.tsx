@@ -17,19 +17,28 @@ export function AdminErrorState({
   className,
 }: AdminErrorStateProps) {
   return (
-    <div className={cn("admin-empty-state rounded-[28px] border border-rose-400/20 bg-rose-500/10", className)}>
-      <div className="flex h-11 w-11 items-center justify-center rounded-full border border-rose-400/30 bg-rose-500/10 text-rose-200">
+    <div
+      className={cn(
+        "admin-empty-state rounded-[28px] border border-rose-400/30 bg-rose-500/10",
+        className,
+      )}
+    >
+      <div className="flex h-11 w-11 items-center justify-center rounded-full border border-rose-400/40 bg-rose-500/10 text-[var(--admin-danger-text)]">
         <AlertTriangle size={18} />
       </div>
-      <p className="admin-empty-title mt-4 text-rose-100">{title}</p>
+      <p className="admin-empty-title mt-4 text-[var(--admin-danger-text)]">
+        {title}
+      </p>
       {description ? (
-        <p className="admin-empty-copy text-rose-100/80">{description}</p>
+        <p className="admin-empty-copy text-[var(--admin-text)]">
+          {description}
+        </p>
       ) : null}
       {onRetry ? (
         <button
           type="button"
           onClick={onRetry}
-          className="mt-4 rounded-full border border-rose-400/30 px-4 py-2 text-sm font-semibold text-rose-100 transition hover:bg-rose-500/10"
+          className="mt-4 min-h-12 rounded-full border border-rose-400/50 px-5 py-3 text-sm font-semibold text-[var(--admin-danger-text)] transition hover:bg-rose-500/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--admin-danger)] motion-reduce:transition-none"
         >
           {retryLabel}
         </button>

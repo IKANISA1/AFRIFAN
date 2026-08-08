@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/models/partner_pool_models.dart';
@@ -311,6 +312,32 @@ void main() {
     );
   });
 
+  for (final localeCase
+      in const <({Locale locale, String title, String stats})>[
+        (locale: Locale('fr'), title: 'Match', stats: 'Stats'),
+        (locale: Locale('rw'), title: 'Umukino', stats: 'Imibare'),
+      ]) {
+    testWidgets(
+      'Match detail ${localeCase.locale.languageCode} reflows at 200 percent',
+      (tester) async {
+        await _pumpRoute(
+          tester,
+          controller: _ControlledMatchDetailController(
+            AsyncData<MatchDetailState>(_readyState()),
+          ),
+          capture: false,
+          size: const Size(320, 720),
+          textScale: 2,
+          locale: localeCase.locale,
+        );
+
+        expect(find.text(localeCase.title), findsOneWidget);
+        expect(find.text(localeCase.stats), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets('golden Match detail reduced-motion state', (tester) async {
     await _pumpState(
       tester,
@@ -404,6 +431,7 @@ Future<void> _pumpState(
   Size size = const Size(390, 844),
   double textScale = 1,
   bool reducedMotion = false,
+  Locale locale = const Locale('en'),
   FocusNode? joinFocusNode,
   bool settle = true,
   Future<void> Function(WidgetTester tester)? beforeCapture,
@@ -418,6 +446,7 @@ Future<void> _pumpState(
     size: size,
     textScale: textScale,
     reducedMotion: reducedMotion,
+    locale: locale,
     joinFocusNode: joinFocusNode,
     settle: settle,
     beforeCapture: beforeCapture,
@@ -434,6 +463,7 @@ Future<void> _pumpRoute(
   Size size = const Size(390, 844),
   double textScale = 1,
   bool reducedMotion = false,
+  Locale locale = const Locale('en'),
   FocusNode? joinFocusNode,
   bool settle = true,
   Future<void> Function(WidgetTester tester)? beforeCapture,
@@ -486,12 +516,15 @@ Future<void> _pumpRoute(
         theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
         builder: (context, child) {
           final media = MediaQuery.of(context);
-          return MediaQuery(
-            data: media.copyWith(
-              textScaler: TextScaler.linear(textScale),
-              disableAnimations: reducedMotion,
+          return AfriLocalizationsScope(
+            locale: locale,
+            child: MediaQuery(
+              data: media.copyWith(
+                textScaler: TextScaler.linear(textScale),
+                disableAnimations: reducedMotion,
+              ),
+              child: child!,
             ),
-            child: child!,
           );
         },
         routerConfig: router,

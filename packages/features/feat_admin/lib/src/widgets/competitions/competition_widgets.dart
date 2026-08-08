@@ -69,7 +69,7 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
         formatNotes.length > 240) {
       AfriToast.error(
         context,
-        'Check the required names, slug, and country code.',
+        context.afriL10n.adminCompetitionValidationMessage,
       );
       return;
     }
@@ -113,23 +113,41 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
               const _SheetHandle(),
               const SizedBox(height: SpacingTokens.spacing5),
               Text(
-                editing ? 'EDIT COMPETITION' : 'ADD COMPETITION',
+                editing
+                    ? context.afriL10n.adminCompetitionEdit
+                    : context.afriL10n.adminCompetitionAdd,
                 style: TypographyTokens.titleLarge().copyWith(
                   letterSpacing: 1.5,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing5),
-              _field('Name', _nameCtl),
-              _field('Short Name', _shortNameCtl),
-              _field('Slug', _slugCtl, hint: 'e.g. national-league'),
-              _field('Organizer', _organizerCtl, hint: 'Optional'),
+              _field(context.afriL10n.adminCompetitionName, _nameCtl),
+              _field(context.afriL10n.adminCompetitionShortName, _shortNameCtl),
+              _field(
+                context.afriL10n.adminCompetitionSlug,
+                _slugCtl,
+                hint: context.afriL10n.adminCompetitionSlugHint,
+              ),
+              _field(
+                context.afriL10n.adminCompetitionOrganizer,
+                _organizerCtl,
+                hint: context.afriL10n.adminOptional,
+              ),
               LayoutBuilder(
                 builder: (context, constraints) {
                   final largeText =
                       MediaQuery.textScalerOf(context).scale(1) >= 1.8;
                   final fields = <Widget>[
-                    _field('Country Code', _countryCodeCtl, hint: 'RW'),
-                    _field('Country Name', _countryNameCtl, hint: 'Rwanda'),
+                    _field(
+                      context.afriL10n.adminCompetitionCountryCode,
+                      _countryCodeCtl,
+                      hint: context.afriL10n.adminCompetitionCountryCodeHint,
+                    ),
+                    _field(
+                      context.afriL10n.adminCompetitionCountryName,
+                      _countryNameCtl,
+                      hint: context.afriL10n.adminCompetitionCountryNameHint,
+                    ),
                   ];
                   if (largeText || constraints.maxWidth < 320) {
                     return Column(children: fields);
@@ -143,17 +161,21 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
                   );
                 },
               ),
-              _field('Format Notes', _formatNotesCtl, hint: 'Optional'),
+              _field(
+                context.afriL10n.adminCompetitionFormatNotes,
+                _formatNotesCtl,
+                hint: context.afriL10n.adminOptional,
+              ),
               const SizedBox(height: SpacingTokens.spacing3),
               _selector(
-                label: 'KIND',
+                label: context.afriL10n.adminCompetitionKind,
                 values: const <String>['league', 'cup', 'tournament'],
                 selected: _kind,
                 onSelected: (value) => setState(() => _kind = value),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               _selector(
-                label: 'REGION',
+                label: context.afriL10n.adminCompetitionRegion,
                 values: const <String>[
                   'africa',
                   'europe',
@@ -166,11 +188,14 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
               const SizedBox(height: SpacingTokens.spacing4),
               AfriSwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text('ACTIVE', style: TypographyTokens.titleMedium()),
+                title: Text(
+                  context.afriL10n.adminCompetitionsActive,
+                  style: TypographyTokens.titleMedium(),
+                ),
                 subtitle: Text(
                   _isActive
-                      ? 'Available to configured prediction journeys'
-                      : 'Unavailable to prediction journeys',
+                      ? context.afriL10n.adminCompetitionAvailable
+                      : context.afriL10n.adminCompetitionUnavailable,
                   style: TypographyTokens.bodySmall(),
                 ),
                 value: _isActive,
@@ -178,7 +203,9 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
               ),
               const SizedBox(height: SpacingTokens.spacing5),
               AfriButton(
-                label: editing ? 'Save changes' : 'Create competition',
+                label: editing
+                    ? context.afriL10n.adminSaveChanges
+                    : context.afriL10n.adminCreateCompetition,
                 fullWidth: true,
                 onTap: _submit,
               ),
@@ -218,7 +245,11 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
               .map(
                 (value) => AfriChoiceChip(
                   selected: selected == value,
-                  label: Text(value.toUpperCase()),
+                  label: Text(
+                    label == context.afriL10n.adminCompetitionKind
+                        ? _competitionKindLabel(context, value)
+                        : _competitionRegionLabel(context, value),
+                  ),
                   onSelected: (_) => onSelected(value),
                 ),
               )
@@ -266,7 +297,7 @@ class _SeasonManagerSheet extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'SEASONS',
+                            context.afriL10n.adminCompetitionSeasons,
                             style: TypographyTokens.titleLarge().copyWith(
                               letterSpacing: 1.5,
                             ),
@@ -282,8 +313,8 @@ class _SeasonManagerSheet extends ConsumerWidget {
                       icon: AfriIcons.add,
                       onTap: enabled ? () => _addSeason(context, ref) : null,
                       tooltip: enabled
-                          ? 'Add season'
-                          : 'Season actions unavailable',
+                          ? context.afriL10n.adminSeasonAdd
+                          : context.afriL10n.adminSeasonActionsUnavailable,
                     ),
                   ],
                 ),
@@ -293,9 +324,9 @@ class _SeasonManagerSheet extends ConsumerWidget {
                       ? const AfriSkeletonList()
                       : seasons.isEmpty
                       ? AfriStateView.empty(
-                          title: 'No seasons configured',
+                          title: context.afriL10n.adminSeasonNoneConfigured,
                           message:
-                              'Add the first controlled season when access is available.',
+                              context.afriL10n.adminSeasonNoneConfiguredMessage,
                           compact: true,
                         )
                       : ListView.separated(
@@ -331,7 +362,9 @@ class _SeasonManagerSheet extends ConsumerWidget {
     final saved = await ref
         .read(adminCompetitionsProvider.notifier)
         .createSeason(payload);
-    if (context.mounted && saved) AfriToast.success(context, 'Season created');
+    if (context.mounted && saved) {
+      AfriToast.success(context, context.afriL10n.adminSeasonCreated);
+    }
   }
 
   Future<void> _confirmSeasonToggle(
@@ -343,18 +376,31 @@ class _SeasonManagerSheet extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AfriAlertDialog(
-        title: Text(activating ? 'ACTIVATE SEASON?' : 'DEACTIVATE SEASON?'),
+        title: Text(
+          activating
+              ? context.afriL10n.adminSeasonActivateQuestion
+              : context.afriL10n.adminSeasonDeactivateQuestion,
+        ),
         content: Text(
-          '${season.label} will be ${activating ? 'available' : 'unavailable'} to configured competition journeys.',
+          context.afriL10n.adminSeasonAvailabilityMessage(
+            season.label,
+            activating
+                ? context.afriL10n.adminAvailable
+                : context.afriL10n.adminUnavailable,
+          ),
         ),
         actions: [
           AfriTextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('CANCEL'),
+            child: Text(context.afriL10n.adminCancelUpper),
           ),
           AfriTextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(activating ? 'ACTIVATE' : 'DEACTIVATE'),
+            child: Text(
+              activating
+                  ? context.afriL10n.adminActivateUpper
+                  : context.afriL10n.adminDeactivateUpper,
+            ),
           ),
         ],
       ),
@@ -366,7 +412,9 @@ class _SeasonManagerSheet extends ConsumerWidget {
     if (context.mounted && saved) {
       AfriToast.success(
         context,
-        activating ? 'Season activated' : 'Season deactivated',
+        activating
+            ? context.afriL10n.adminSeasonActivated
+            : context.afriL10n.adminSeasonDeactivated,
       );
     }
   }
@@ -408,7 +456,7 @@ class _SeasonRow extends StatelessWidget {
                     _StatusBadge(isActive: season.isActive),
                     _InfoChip(
                       icon: AfriIcons.statusPending,
-                      label: season.status.toUpperCase(),
+                      label: _seasonStatusLabel(context, season.status),
                     ),
                   ],
                 ),
@@ -421,7 +469,9 @@ class _SeasonRow extends StatelessWidget {
                 ? AfriIcons.visibilityOff
                 : AfriIcons.visibility,
             onTap: enabled ? onToggle : null,
-            tooltip: season.isActive ? 'Deactivate season' : 'Activate season',
+            tooltip: season.isActive
+                ? context.afriL10n.adminSeasonDeactivate
+                : context.afriL10n.adminSeasonActivate,
           ),
         ],
       ),
@@ -467,7 +517,7 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
         label.isEmpty ||
         label.length > 64 ||
         !yearsValid) {
-      AfriToast.error(context, 'Check the season slug, label, and years.');
+      AfriToast.error(context, context.afriL10n.adminSeasonValidationMessage);
       return;
     }
     context.pop(<String, dynamic>{
@@ -485,7 +535,7 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
   Widget build(BuildContext context) {
     return AfriAlertDialog(
       title: Text(
-        'ADD SEASON',
+        context.afriL10n.adminSeasonAddUpper,
         style: TypographyTokens.titleLarge().copyWith(letterSpacing: 1.5),
       ),
       content: SingleChildScrollView(
@@ -494,14 +544,14 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
           children: [
             AfriInputField(
               controller: _slugCtl,
-              label: 'Slug',
-              hint: 'e.g. league-2026',
+              label: context.afriL10n.adminCompetitionSlug,
+              hint: context.afriL10n.adminSeasonSlugHint,
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             AfriInputField(
               controller: _labelCtl,
-              label: 'Label',
-              hint: 'e.g. 2025/2026',
+              label: context.afriL10n.adminSeasonLabel,
+              hint: context.afriL10n.adminSeasonLabelHint,
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             LayoutBuilder(
@@ -512,12 +562,12 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
                   AfriInputField(
                     controller: _yearStartCtl,
                     keyboardType: TextInputType.number,
-                    label: 'Year Start',
+                    label: context.afriL10n.adminSeasonYearStart,
                   ),
                   AfriInputField(
                     controller: _yearEndCtl,
                     keyboardType: TextInputType.number,
-                    label: 'Year End',
+                    label: context.afriL10n.adminSeasonYearEnd,
                   ),
                 ];
                 if (largeText || constraints.maxWidth < 320) {
@@ -547,7 +597,7 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
                       .map(
                         (status) => AfriChoiceChip(
                           selected: _status == status,
-                          label: Text(status.toUpperCase()),
+                          label: Text(_seasonStatusLabel(context, status)),
                           onSelected: (_) => setState(() => _status = status),
                         ),
                       )
@@ -559,9 +609,12 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
       actions: [
         AfriTextButton(
           onPressed: () => context.pop(),
-          child: const Text('CANCEL'),
+          child: Text(context.afriL10n.adminCancelUpper),
         ),
-        AfriTextButton(onPressed: _submit, child: const Text('CREATE')),
+        AfriTextButton(
+          onPressed: _submit,
+          child: Text(context.afriL10n.adminCreateUpper),
+        ),
       ],
     );
   }
@@ -603,7 +656,9 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: ShapeTokens.buttonRadius,
       ),
       child: Text(
-        isActive ? 'ACTIVE' : 'INACTIVE',
+        isActive
+            ? context.afriL10n.adminCompetitionsActive
+            : context.afriL10n.adminCompetitionsInactive,
         style: TypographyTokens.labelSmall().copyWith(color: color),
       ),
     );

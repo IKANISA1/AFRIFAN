@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
       setState(() {
         _badges = const <PredictionBadge>[];
         _isLoading = false;
-        _error = 'Badges are temporarily unavailable.';
+        _error = context.afriL10n.gameBadgesTemporarilyUnavailable;
       });
     }
   }
@@ -63,7 +64,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'YOUR BADGES',
+          context.afriL10n.gameBadgesTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -72,7 +73,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -87,9 +88,9 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Badges unavailable',
+                  title: context.afriL10n.gameBadgesUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _loadBadges,
                 ),
               ),
@@ -132,8 +133,10 @@ class BadgesGrid extends StatelessWidget {
           return AfriPressFeedback(
             onTap: () => onBadgeTap(badge),
             tooltip: badge.badgeName,
-            semanticsLabel: '${badge.badgeName} badge',
-            semanticsHint: 'Open badge details',
+            semanticsLabel: context.afriL10n.gameBadgeSemantics(
+              badge.badgeName,
+            ),
+            semanticsHint: context.afriL10n.gameOpenBadgeDetails,
             excludeChildSemantics: true,
             child: Container(
               decoration: BoxDecoration(

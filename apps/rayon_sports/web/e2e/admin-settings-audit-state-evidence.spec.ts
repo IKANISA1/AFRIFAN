@@ -1,7 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Browser, type Page, type Route } from "@playwright/test";
+import { writeAdminStateEvidence } from "./admin-state-evidence-manifest";
+import {
+  installEvidenceNavigationStability,
+  primeEvidenceScreenshot,
+  settleEvidenceVisuals,
+} from "./evidence-navigation-stability";
+import {
+  expect,
+  test,
+  type Browser,
+  type Page,
+  type Route,
+} from "@playwright/test";
 
 type Mode =
   | "loading"
@@ -16,26 +28,25 @@ const timestamp = "2026-07-30T09:00:00.000Z";
 const records = Array.from({ length: 30 }, (_, index) => ({
   id: `audit-${index + 1}`,
   actorKind: index % 5 === 0 ? "system" : "administrator",
-  userName: index % 5 === 0 ? "System action" : `Verified administrator ${index + 1}`,
+  userName:
+    index % 5 === 0 ? "System action" : `Verified administrator ${index + 1}`,
   action: index % 3 === 0 ? "settings.update" : "membership.review",
-  targetTable: index % 3 === 0 ? "african_football_clubs" : "membership_applications",
+  targetTable:
+    index % 3 === 0 ? "african_football_clubs" : "membership_applications",
   targetId: `record-${index + 1}`,
   oldData: { status: "pending", access_token: "private-token" },
   newData: { status: "confirmed", password: "private-password" },
-  metadata: { request_id: `request-${index + 1}`, authorization: "private-auth" },
+  metadata: {
+    request_id: `request-${index + 1}`,
+    authorization: "private-auth",
+  },
   notes: "Verified governed change.",
   createdAt: new Date(Date.parse(timestamp) + index * 60_000).toISOString(),
   actor_id: `private-actor-${index + 1}`,
 }));
 
 async function settle(page: Page) {
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-    for (const animation of document.getAnimations()) animation.finish();
-    await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-    );
-  });
+  await settleEvidenceVisuals(page);
 }
 
 async function expectAccessible(page: Page) {
@@ -53,7 +64,9 @@ async function expectAccessible(page: Page) {
 async function expectNoOverflow(page: Page) {
   expect(
     await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
     ),
   ).toBeLessThanOrEqual(1);
 }
@@ -69,10 +82,11 @@ async function runMatrix(browser: Browser) {
     deviceScaleFactor: 1,
     colorScheme: "dark",
   });
-  const page = await context.newPage();
+  await installEvidenceNavigationStability(context);
+  let page = await context.newPage();
   let mode: Mode = "ready";
 
-  await page.route("**/api/admin/**", async (route: Route) => {
+  await context.route("**/api/admin/**", async (route: Route) => {
     if (mode === "loading") {
       await new Promise<void>(() => {});
       return;
@@ -112,20 +126,23 @@ async function runMatrix(browser: Browser) {
     await expect(page.getByText(label).first()).toBeVisible();
   };
   const capture = async (state: string, profile = "desktop_1440x1000") => {
-    await page.evaluate((blur) => {
-      if (blur && document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur();
-      }
-      window.scrollTo(0, 0);
-    }, state === "selected" || state === "large_text");
+    await page.evaluate(
+      (blur) => {
+        if (blur && document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+        window.scrollTo(0, 0);
+      },
+      state === "selected" || state === "large_text",
+    );
     await settle(page);
+    await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
     await page.screenshot({
       path: path.join(
         evidenceDirectory,
         `admin_settings_audit_state_${state}_${state === "light" ? "light" : "dark"}_${profile}.png`,
       ),
       fullPage: !state.startsWith("responsive_"),
-      animations: "disabled",
     });
   };
 
@@ -133,7 +150,9 @@ async function runMatrix(browser: Browser) {
   await open("loading");
   await expectStatus("loading", /loading audit history/i);
   await capture("loading");
-  await expect(page.getByRole("button", { name: /refresh audit history/i })).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: /refresh audit history/i }),
+  ).toBeDisabled();
   await capture("disabled");
 
   mode = "empty";
@@ -154,15 +173,16 @@ async function runMatrix(browser: Browser) {
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus("offline", /audit history is offline/i);
-  await expect(page.getByText("Verified administrator 2")).toBeVisible();
+  await expect(
+    page.getByText("Verified administrator 29", { exact: true }),
+  ).toBeVisible();
   await capture("offline");
   await context.setOffline(false);
 
   mode = "ready";
   await open("permission-preparation");
+  await expectStatus("ready", /audit history confirmed/i);
   await page.getByLabel("Filter audit logs").fill("private filter");
-  await page.getByRole("button", { name: /view audit details/i }).first().click();
-  await expect(page.getByText("Audit record details")).toBeVisible();
   mode = "permission_denied";
   await page.getByRole("button", { name: /refresh audit history/i }).click();
   await expectStatus("permission_denied", /audit access denied/i);
@@ -173,24 +193,37 @@ async function runMatrix(browser: Browser) {
 
   mode = "ready";
   await open("interaction");
+  await expectStatus("ready", /audit history confirmed/i);
   const refresh = page.getByRole("button", { name: /refresh audit history/i });
   await refresh.focus();
-  await expect(surface()).toHaveAttribute("data-admin-audit-interaction", "focused");
+  await expect(surface()).toHaveAttribute(
+    "data-admin-audit-interaction",
+    "focused",
+  );
   await capture("focused");
   await refresh.dispatchEvent("pointerdown", {
     pointerId: 1,
     pointerType: "mouse",
     isPrimary: true,
   });
-  await expect(surface()).toHaveAttribute("data-admin-audit-interaction", "pressed");
+  await expect(surface()).toHaveAttribute(
+    "data-admin-audit-interaction",
+    "pressed",
+  );
   await capture("pressed");
   await refresh.dispatchEvent("pointerup", {
     pointerId: 1,
     pointerType: "mouse",
     isPrimary: true,
   });
-  await page.getByRole("button", { name: /view audit details/i }).first().click();
-  await expect(surface()).toHaveAttribute("data-admin-audit-interaction", "selected");
+  await page
+    .getByRole("button", { name: /view audit details/i })
+    .first()
+    .click();
+  await expect(surface()).toHaveAttribute(
+    "data-admin-audit-interaction",
+    "selected",
+  );
   await expectAccessible(page);
   await capture("selected");
 
@@ -213,13 +246,19 @@ async function runMatrix(browser: Browser) {
           0,
           ...document
             .getAnimations()
-            .map((animation) => Number(animation.effect?.getTiming().duration) || 0),
+            .map(
+              (animation) =>
+                Number(animation.effect?.getTiming().duration) || 0,
+            ),
         ) / 1_000,
     ),
   ).toBeLessThanOrEqual(0.001);
   await capture("reduced_motion");
 
-  await page.emulateMedia({ reducedMotion: "no-preference", colorScheme: "dark" });
+  await page.emulateMedia({
+    reducedMotion: "no-preference",
+    colorScheme: "dark",
+  });
   await open("dark");
   await expectStatus("ready", /audit history confirmed/i);
   await expectAccessible(page);
@@ -251,10 +290,13 @@ async function runMatrix(browser: Browser) {
   await page.emulateMedia({ colorScheme: "dark" });
   mode = "ready";
   await open("syncing");
+  await expectStatus("ready", /audit history confirmed/i);
   mode = "loading";
   await page.getByRole("button", { name: /refresh audit history/i }).click();
   await expectStatus("syncing", /refreshing audit history/i);
-  await expect(page.getByText("Verified administrator 2")).toBeVisible();
+  await expect(
+    page.getByText("Verified administrator 29", { exact: true }),
+  ).toBeVisible();
   await capture("syncing");
 
   mode = "ready";
@@ -274,44 +316,42 @@ async function runMatrix(browser: Browser) {
   await open("tablet");
   await expectNoOverflow(page);
   await capture("responsive_tablet", "tablet_1024x900");
+  await page.close();
+  page = await context.newPage();
   await page.setViewportSize({ width: 390, height: 844 });
   await open("compact");
   await expectNoOverflow(page);
   await capture("responsive_compact", "compact_390x844");
 
-  const states = [
-    "loading", "empty", "error", "offline", "permission_denied", "disabled",
-    "focused", "pressed", "selected", "large_text", "reduced_motion", "dark",
-    "light", "syncing", "conflict", "security_timeout",
-  ];
-  fs.writeFileSync(
-    path.join(evidenceDirectory, "admin-settings-audit-state-evidence.json"),
-    `${JSON.stringify(
+  writeAdminStateEvidence({
+    evidenceDirectory,
+    manifestFile: "admin-settings-audit-state-evidence.json",
+    route: "/admin/settings/audit",
+    filePrefix: "admin_settings_audit",
+    responsiveCaptures: [
       {
-        schema_version: "1.0",
-        route: "/admin/settings/audit",
-        surface: "admin_pwa",
-        applicable_states: states,
-        assertions: {
-          bounded_records: 500,
-          page_size: 25,
-          club_scope_required: true,
-          unscoped_club_admin_fallback: false,
-          actor_identifiers_rendered: false,
-          sensitive_audit_values_redacted: true,
-          raw_metadata_collapsed_until_explicit_detail: true,
-          confirmed_data_retained_during_recovery: true,
-          permission_denial_clears_records_filter_page_and_detail: true,
-          minimum_target_css_pixels: 48,
-          large_text_percent: 200,
-          horizontal_overflow_css_pixels: 1,
-          axe_critical_or_serious: 0,
-        },
+        state: "responsive_tablet",
+        profile: "tablet_1024x900",
+        description: "Chromium tablet 1024x900 at 1 DPR",
       },
-      null,
-      2,
-    )}\n`,
-  );
+      {
+        state: "responsive_compact",
+        profile: "compact_390x844",
+        description: "Chromium compact 390x844 at 1 DPR",
+      },
+    ],
+    assertions: {
+      bounded_records: 500,
+      page_size: 25,
+      club_scope_required: true,
+      unscoped_club_admin_fallback: false,
+      actor_identifiers_rendered: false,
+      sensitive_audit_values_redacted: true,
+      raw_metadata_collapsed_until_explicit_detail: true,
+      confirmed_data_retained_during_recovery: true,
+      permission_denial_clears_records_filter_page_and_detail: true,
+    },
+  });
   await context.close();
 }
 

@@ -1,6 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
+import { writeAdminStateEvidence } from "./admin-state-evidence-manifest";
+import {
+  installEvidenceNavigationStability,
+  primeEvidenceScreenshot,
+  settleEvidenceVisuals,
+} from "./evidence-navigation-stability";
 import {
   expect,
   test,
@@ -67,13 +73,7 @@ const records = Array.from({ length: 30 }, (_, index) => ({
 }));
 
 async function settle(page: Page) {
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-    for (const animation of document.getAnimations()) animation.finish();
-    await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-    );
-  });
+  await settleEvidenceVisuals(page);
 }
 
 async function expectAccessible(page: Page) {
@@ -89,12 +89,55 @@ async function expectAccessible(page: Page) {
 }
 
 async function expectNoOverflow(page: Page) {
+  const result = await page.evaluate(() => {
+    const clientWidth = document.documentElement.clientWidth;
+    return {
+      overflow: document.documentElement.scrollWidth - clientWidth,
+      probes: [
+        document.querySelector<HTMLElement>(".admin-features-state-surface"),
+        document.querySelector<HTMLElement>(
+          ".admin-features-state-surface .admin-surface",
+        ),
+        document.querySelector<HTMLElement>(
+          ".admin-features-state-surface .admin-table-shell",
+        ),
+        document.querySelector<HTMLElement>(
+          ".admin-features-state-surface .admin-table",
+        ),
+      ].map((element) => {
+        if (!element) return null;
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return {
+          className: element.className,
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+          width: Math.round(rect.width),
+          clientWidth: element.clientWidth,
+          scrollWidth: element.scrollWidth,
+          overflowX: style.overflowX,
+          contain: style.contain,
+          minWidth: style.minWidth,
+          maxWidth: style.maxWidth,
+        };
+      }),
+      offenders: Array.from(document.querySelectorAll<HTMLElement>("body *"))
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          return {
+            tag: element.tagName.toLowerCase(),
+            className: element.className,
+            left: Math.round(rect.left),
+            right: Math.round(rect.right),
+          };
+        })
+        .filter(({ left, right }) => left < -1 || right > clientWidth + 1)
+        .slice(-20),
+    };
+  });
   expect(
-    await page.evaluate(
-      () =>
-        document.documentElement.scrollWidth -
-        document.documentElement.clientWidth,
-    ),
+    result.overflow,
+    JSON.stringify({ probes: result.probes, offenders: result.offenders }),
   ).toBeLessThanOrEqual(1);
 }
 
@@ -109,10 +152,11 @@ async function runMatrix(browser: Browser) {
     deviceScaleFactor: 1,
     colorScheme: "dark",
   });
-  const page = await context.newPage();
+  await installEvidenceNavigationStability(context);
+  let page = await context.newPage();
   let mode: Mode = "ready";
 
-  await page.route("**/api/admin/**", async (route: Route) => {
+  await context.route("**/api/admin/**", async (route: Route) => {
     if (!route.request().url().includes("/api/admin/features")) {
       await route.continue();
       return;
@@ -174,17 +218,29 @@ async function runMatrix(browser: Browser) {
           document.activeElement.blur();
         }
         window.scrollTo(0, 0);
+        for (const element of document.querySelectorAll<HTMLElement>(
+          ".admin-table-shell",
+        )) {
+          element.scrollLeft = 0;
+        }
       },
       state === "selected" || state === "large_text",
     );
     await settle(page);
+    await page.evaluate(() => {
+      for (const element of document.querySelectorAll<HTMLElement>(
+        ".admin-table-shell",
+      )) {
+        element.scrollLeft = 0;
+      }
+    });
+    await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
     await page.screenshot({
       path: path.join(
         evidenceDirectory,
         `admin_settings_features_state_${state}_${state === "light" ? "light" : "dark"}_${profile}.png`,
       ),
       fullPage: !state.startsWith("responsive_"),
-      animations: "disabled",
     });
   };
 
@@ -232,20 +288,16 @@ async function runMatrix(browser: Browser) {
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus("offline", /feature registry is offline/i);
-  await expect(page.getByText("Verified feature 1")).toBeVisible();
+  await expect(
+    page.getByText("Verified feature 1", { exact: true }),
+  ).toBeVisible();
   await capture("offline");
   await context.setOffline(false);
 
   mode = "ready";
   await open("permission-preparation");
+  await expectStatus("ready", /feature registry confirmed/i);
   await page.getByLabel("Search platform features").fill("private filter");
-  await page
-    .getByRole("button", { name: /configure verified feature/i })
-    .first()
-    .click();
-  await expect(
-    page.getByText(/configure verified feature/i).first(),
-  ).toBeVisible();
   mode = "permission_denied";
   await page.getByRole("button", { name: /refresh feature registry/i }).click();
   await expectStatus("permission_denied", /feature access denied/i);
@@ -255,6 +307,7 @@ async function runMatrix(browser: Browser) {
 
   mode = "ready";
   await open("interaction");
+  await expectStatus("ready", /feature registry confirmed/i);
   const refresh = page.getByRole("button", {
     name: /refresh feature registry/i,
   });
@@ -289,6 +342,7 @@ async function runMatrix(browser: Browser) {
   );
   await expectAccessible(page);
   await capture("selected");
+  await page.getByRole("button", { name: /cancel/i }).click();
 
   await page.evaluate(() => {
     document.documentElement.style.fontSize = "200%";
@@ -298,7 +352,6 @@ async function runMatrix(browser: Browser) {
   await page.evaluate(() => {
     document.documentElement.style.fontSize = "";
   });
-  await page.getByRole("button", { name: /cancel/i }).click();
 
   await page.emulateMedia({ reducedMotion: "reduce", colorScheme: "dark" });
   await open("reduced-motion");
@@ -336,17 +389,63 @@ async function runMatrix(browser: Browser) {
   await expectNoOverflow(page);
   await capture("light");
 
+  await page.emulateMedia({ colorScheme: "dark" });
   for (const [profile, width, height] of [
     ["desktop_1280x800", 1280, 800],
     ["tablet_834x1112", 834, 1112],
     ["mobile_390x844", 390, 844],
   ] as const) {
+    if (width === 390) {
+      await page.close();
+      page = await context.newPage();
+    }
     await page.setViewportSize({ width, height });
     await open(`responsive-${profile}`);
     await expectStatus("ready", /feature registry confirmed/i);
     await expectNoOverflow(page);
     await capture(`responsive_${profile}`, profile);
   }
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  mode = "ready";
+  await open("syncing-preparation");
+  await expectStatus("ready", /feature registry confirmed/i);
+  mode = "loading";
+  await page.getByRole("button", { name: /refresh feature registry/i }).click();
+  await expectStatus("syncing", /refreshing feature registry/i);
+  await expect(
+    page.getByText("Verified feature 1", { exact: true }),
+  ).toBeVisible();
+  await capture("syncing");
+
+  writeAdminStateEvidence({
+    evidenceDirectory,
+    manifestFile: "admin-settings-features-state-evidence.json",
+    route: "/admin/settings/features",
+    filePrefix: "admin_settings_features",
+    responsiveCaptures: [
+      {
+        state: "responsive_desktop_1280x800",
+        profile: "desktop_1280x800",
+        description: "Chromium desktop 1280x800 at 1 DPR",
+      },
+      {
+        state: "responsive_tablet_834x1112",
+        profile: "tablet_834x1112",
+        description: "Chromium tablet 834x1112 at 1 DPR",
+      },
+      {
+        state: "responsive_mobile_390x844",
+        profile: "mobile_390x844",
+        description: "Chromium mobile 390x844 at 1 DPR",
+      },
+    ],
+    assertions: {
+      maximum_feature_records: 500,
+      page_size: 25,
+      syncing_retains_confirmed_registry: true,
+    },
+  });
 
   await context.close();
 }

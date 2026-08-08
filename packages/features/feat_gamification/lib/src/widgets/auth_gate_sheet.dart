@@ -91,7 +91,7 @@ class AuthGateSheet extends StatelessWidget {
 
           // Title
           Text(
-            'VERIFY TO PREDICT',
+            context.afriL10n.gameVerifyToPredict,
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w800,
               letterSpacing: 1.4,
@@ -109,29 +109,29 @@ class AuthGateSheet extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing6),
 
           // Benefits list
-          const _BenefitRow(
+          _BenefitRow(
             icon: AfriIcons.statusSuccess,
-            title: 'Make Picks',
-            subtitle: 'Pick matches across all leagues',
+            title: context.afriL10n.gameMakePicks,
+            subtitle: context.afriL10n.gameMakePicksDescription,
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          const _BenefitRow(
+          _BenefitRow(
             icon: AfriIcons.earn,
-            title: 'Earn Points',
-            subtitle: 'Earn points for correct picks',
+            title: context.afriL10n.gameEarnPoints,
+            subtitle: context.afriL10n.gameEarnPointsDescription,
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          const _BenefitRow(
+          _BenefitRow(
             icon: AfriIcons.leaderboard,
-            title: 'Climb Leaderboards',
-            subtitle: 'Compete against friends and fans',
+            title: context.afriL10n.gameClimbLeaderboards,
+            subtitle: context.afriL10n.gameClimbLeaderboardsDescription,
           ),
 
           const SizedBox(height: SpacingTokens.spacing6),
 
           // Verify button
           AfriButton(
-                label: 'Verify now',
+                label: context.afriL10n.gameVerifyNow,
                 onTap: () {
                   context.pop(true);
                   onVerify?.call();
@@ -145,7 +145,7 @@ class AuthGateSheet extends StatelessWidget {
 
           // Browse button
           AfriButton(
-            label: 'Just browsing',
+            label: context.afriL10n.gameJustBrowsing,
             variant: AfriButtonVariant.outline,
             onTap: () {
               context.pop(false);

@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-MOB-01",
+  "status": "local_code_free_eligible_game_discovery_passed",
+  "criterion_complete": true,
+  "required_clauses": [
+    "code_free_authoritative_feed",
+    "governed_eligibility_sources",
+    "live_and_scheduled_separation",
+    "validated_deep_link",
+    "validated_push_notification",
+    "ineligible_stale_and_private_data_rejection",
+    "legacy_join_excluded_from_participant_entry"
+  ],
+  "clauses": [
+    {
+      "id": "code_free_authoritative_feed",
+      "assertion": "Authenticated participants discover eligible sessions from the authoritative club-scoped RPC without entering or receiving a TV, join, or pairing code.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_entry_controller_test.dart", "name": "loads code-free discovery without creating a session runtime"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_discovery_models_test.dart", "name": "parses eligible live and scheduled sessions without a code"},
+        {"path": "supabase/tests/live_games_v2_contract.sql", "name": "member discovery is code-free and returns only a deterministic public alias"}
+      ]
+    },
+    {
+      "id": "governed_eligibility_sources",
+      "assertion": "Club membership, organizer invitation, home-owner display scope, venue display scope, and targeted deep link remain distinct governed discovery sources.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_discovery_models_test.dart", "name": "GAME-MOB-01 preserves governed home and venue discovery sources"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_entry_controller_test.dart", "name": "accepts invitation and deep-link sources only when feed-authorized"},
+        {"path": "supabase/tests/live_games_v2_contract.sql", "name": "participant discovery is code-free and source-governed"}
+      ]
+    },
+    {
+      "id": "live_and_scheduled_separation",
+      "assertion": "The participant route renders eligible live-now and scheduled sessions separately and never starts a live runtime for a scheduled session.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/participant_live_games_screen_test.dart", "name": "discovery is code-free and separates live and scheduled games"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_entry_controller_test.dart", "name": "keeps a scheduled eligible session out of the live runtime"}
+      ]
+    },
+    {
+      "id": "validated_deep_link",
+      "assertion": "A deep-linked session UUID is reauthorized through targeted server discovery before a participant runtime can be created.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_discovery_controller_test.dart", "name": "authorizes a deep-link identity through a targeted fetch"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_entry_controller_test.dart", "name": "deep-link opening waits for auto-started discovery authority"},
+        {"path": "packages/features/feat_gamification/test/participant_live_games_screen_test.dart", "name": "deep link opens the eligible synchronized question"}
+      ]
+    },
+    {
+      "id": "validated_push_notification",
+      "assertion": "Only a live_game payload carrying a valid session UUID can become the internal participant-game route; cold and warm notification opens use the same validated router destination.",
+      "tests": [
+        {"path": "packages/core/core_network/test/push_notification_route_parser_test.dart", "name": "GAME-MOB-01 maps a valid live-game push to code-free discovery"},
+        {"path": "packages/core/core_network/test/push_notification_route_parser_test.dart", "name": "GAME-MOB-01 rejects ungoverned or malformed push destinations"},
+        {"path": "packages/core/core_app/test/app_deep_link_test.dart", "name": "GAME-MOB-01 opens a validated live-game notification destination"}
+      ]
+    },
+    {
+      "id": "ineligible_stale_and_private_data_rejection",
+      "assertion": "Wrong-club, ineligible, duplicate, stale, completed, private-identity, and join-material discovery data fail closed or cannot replace a newer retained feed.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_discovery_models_test.dart", "name": "rejects arbitrary participant identity fields"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_discovery_controller_test.dart", "name": "rejects a typed feed outside the expected club scope"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_discovery_controller_test.dart", "name": "does not roll a discovery feed backward"},
+        {"path": "supabase/tests/live_games_v2_contract.sql", "name": "a suspended member cannot discover a club-membership session"}
+      ]
+    },
+    {
+      "id": "legacy_join_excluded_from_participant_entry",
+      "assertion": "The V2 participant entry surface accepts no code and rejects a legacy TV-code-shaped identity; the legacy participant join source was removed under GAME-MOB-02 while owner display pairing remains a separate V2 one-time challenge.",
+      "tests": [
+        {"path": "packages/features/feat_gamification/test/live_game_v2_entry_controller_test.dart", "name": "loads code-free discovery without creating a session runtime"},
+        {"path": "packages/features/feat_gamification/test/live_game_v2_entry_controller_test.dart", "name": "rejects unknown deep-link identity without creating a runtime"},
+        {"path": "packages/features/feat_gamification/test/fanzone_module_test.dart", "name": "live games are focused standalone routes outside the tab shell"}
+      ]
+    }
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "isolated_database_contract_executed": true,
+    "shared_or_live_session_claimed": false,
+    "physical_device_claimed": false,
+    "platform_notification_delivery_claimed": false,
+    "real_network_timing_claimed": false,
+    "accountable_human_approval_claimed": false,
+    "release_claimed": false
+  }
+}

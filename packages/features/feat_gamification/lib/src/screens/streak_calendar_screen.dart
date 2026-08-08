@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +115,7 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'YOUR STREAK',
+          context.afriL10n.gameStreakTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -123,7 +124,7 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -163,7 +164,7 @@ class StreakCalendarContent extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            '$currentStreak DAYS',
+            context.afriL10n.gameStreakDays(currentStreak),
             style: TypographyTokens.displayLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w900),
@@ -174,7 +175,7 @@ class StreakCalendarContent extends StatelessWidget {
                   key: ValueKey<String>('streak-status-empty'),
                 )
               : Text(
-                  'Streak active.',
+                  context.afriL10n.gameStreakActive,
                   style: TypographyTokens.bodyMedium(),
                   textAlign: TextAlign.center,
                 ),
@@ -193,9 +194,18 @@ class StreakCalendarContent extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _StreakMetric(label: 'CURRENT', value: '$currentStreak'),
-                _StreakMetric(label: 'BEST', value: '$bestStreak'),
-                _StreakMetric(label: 'NEXT BONUS', value: '$nextBonus'),
+                _StreakMetric(
+                  label: context.afriL10n.gameCurrent,
+                  value: '$currentStreak',
+                ),
+                _StreakMetric(
+                  label: context.afriL10n.gameBest,
+                  value: '$bestStreak',
+                ),
+                _StreakMetric(
+                  label: context.afriL10n.gameNextBonus,
+                  value: '$nextBonus',
+                ),
               ],
             ),
           ),
@@ -214,10 +224,10 @@ class _StreakHeatCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final normalized = value == 0 ? 0.08 : (value.clamp(1, 5) / 5);
-    final winsLabel = value == 1 ? '1 win' : '$value wins';
+    final winsLabel = context.afriL10n.gameWins(value);
 
     return Semantics(
-      label: 'Streak day ${index + 1}: $winsLabel',
+      label: context.afriL10n.gameStreakDaySemantics(index + 1, winsLabel),
       child: Container(
         width: SpacingTokens.spacing5,
         height: SpacingTokens.spacing5,

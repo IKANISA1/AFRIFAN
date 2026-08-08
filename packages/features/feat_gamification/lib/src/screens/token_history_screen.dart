@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Token history is temporarily unavailable.';
+        _error = context.afriL10n.gameTokenHistoryTemporarilyUnavailable;
       });
     }
   }
@@ -83,7 +84,7 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'TOKEN HISTORY',
+          context.afriL10n.gameTokenHistoryTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
@@ -92,7 +93,7 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -107,9 +108,9 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'History unavailable',
+                  title: context.afriL10n.gameHistoryUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -128,22 +129,22 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
                       children: [
                         Expanded(
                           child: _HistoryMetric(
-                            label: 'Balance',
-                            value: '${_wallet?.balance ?? 0}',
+                            label: context.afriL10n.gameBalance,
+                            value: (_wallet?.balance ?? 0).toString(),
                           ),
                         ),
                         const SizedBox(width: SpacingTokens.spacing3),
                         Expanded(
                           child: _HistoryMetric(
-                            label: 'Earned',
-                            value: '${_wallet?.lifetimeEarned ?? 0}',
+                            label: context.afriL10n.gameEarned,
+                            value: (_wallet?.lifetimeEarned ?? 0).toString(),
                           ),
                         ),
                         const SizedBox(width: SpacingTokens.spacing3),
                         Expanded(
                           child: _HistoryMetric(
-                            label: 'Spent',
-                            value: '${_wallet?.lifetimeSpent ?? 0}',
+                            label: context.afriL10n.gameSpent,
+                            value: (_wallet?.lifetimeSpent ?? 0).toString(),
                           ),
                         ),
                       ],
@@ -155,17 +156,17 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
                     runSpacing: SpacingTokens.spacing2,
                     children: [
                       _HistoryFilterChip(
-                        label: 'ALL',
+                        label: context.afriL10n.gameAllUpper,
                         selected: _filter == 'all',
                         onTap: () => setState(() => _filter = 'all'),
                       ),
                       _HistoryFilterChip(
-                        label: 'EARNED',
+                        label: context.afriL10n.gameEarnedUpperFilter,
                         selected: _filter == 'credit',
                         onTap: () => setState(() => _filter = 'credit'),
                       ),
                       _HistoryFilterChip(
-                        label: 'SPENT',
+                        label: context.afriL10n.gameSpentUpper,
                         selected: _filter == 'debit',
                         onTap: () => setState(() => _filter = 'debit'),
                       ),
@@ -217,20 +218,26 @@ class _TokenHistoryTransactionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isCredit = transaction.direction == FetWalletEntryDirection.credit;
     final color = isCredit ? ColorTokens.success : ColorTokens.warning;
-    final directionLabel = isCredit ? 'Credit' : 'Debit';
-    final dateLabel = _formatTokenHistoryDate(transaction.createdAt);
+    final directionLabel = isCredit
+        ? context.afriL10n.gameCredit
+        : context.afriL10n.gameDebit;
+    final dateLabel = _formatTokenHistoryDate(context, transaction.createdAt);
     final detail =
         transaction.note ??
         transaction.counterpartyDisplayName ??
         transaction.referenceType ??
-        'Ledger update';
+        context.afriL10n.gameLedgerUpdate;
 
     return Semantics(
       container: true,
-      label:
-          '$directionLabel transaction, ${transaction.headline}, '
-          '$detail, ${transaction.amount} points, '
-          'balance ${transaction.balanceAfter} points, $dateLabel',
+      label: context.afriL10n.gameTransactionSemantics(
+        directionLabel,
+        transaction.headline,
+        detail,
+        transaction.amount,
+        transaction.balanceAfter,
+        dateLabel,
+      ),
       child: ExcludeSemantics(
         child: GlassCard(
           animate: false,
@@ -276,13 +283,18 @@ class _TokenHistoryTransactionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${isCredit ? '+' : '-'}${transaction.amount} pts',
+                    context.afriL10n.gameWalletSignedPoints(
+                      isCredit ? '+' : '-',
+                      transaction.amount.toString(),
+                    ),
                     style: TypographyTokens.titleMedium(
                       color,
                     ).copyWith(fontWeight: FontWeight.w800),
                   ),
                   Text(
-                    'Bal ${transaction.balanceAfter} pts',
+                    context.afriL10n.gameWalletBalance(
+                      transaction.balanceAfter.toString(),
+                    ),
                     style: TypographyTokens.bodySmall(),
                   ),
                 ],
@@ -295,12 +307,14 @@ class _TokenHistoryTransactionCard extends StatelessWidget {
   }
 }
 
-String _formatTokenHistoryDate(DateTime? value) {
+String _formatTokenHistoryDate(BuildContext context, DateTime? value) {
   if (value == null) {
-    return 'Unknown time';
+    return context.afriL10n.gameUnknownTime;
   }
   final local = value.toLocal();
-  return '${local.day}/${local.month}/${local.year} · ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  final materialL10n = MaterialLocalizations.of(context);
+  return '${materialL10n.formatShortDate(local)} · '
+      '${materialL10n.formatTimeOfDay(TimeOfDay.fromDateTime(local))}';
 }
 
 class _HistoryMetric extends StatelessWidget {

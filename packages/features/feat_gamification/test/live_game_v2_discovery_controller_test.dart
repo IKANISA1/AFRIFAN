@@ -22,6 +22,37 @@ void main() {
       expect(gateway.fetchCalls, 1);
     });
 
+    test('authorizes a deep-link identity through a targeted fetch', () async {
+      final gateway = _Gateway()
+        ..feeds.add(_feed(sessions: const <ParticipantGameDiscoveryItem>[]))
+        ..targetedFeeds['session-deep-link'] = _feed(
+          feedVersion: 4,
+          sessions: <ParticipantGameDiscoveryItem>[
+            ParticipantGameDiscoveryItem(
+              clubId: 'club-1',
+              sessionId: 'session-deep-link',
+              title: 'Invited trivia',
+              phase: LiveGamePhase.questionOpen,
+              source: ParticipantDiscoverySource.deepLink,
+              sessionVersion: 4,
+              availableFrom: DateTime.utc(2026, 7, 30, 8),
+              eligible: true,
+            ),
+          ],
+        );
+      final controller = _controller(gateway);
+      addTearDown(controller.dispose);
+      await controller.start();
+
+      final authorized = await controller.authorizeSessionIdentity(
+        'session-deep-link',
+      );
+
+      expect(authorized?.source, ParticipantDiscoverySource.deepLink);
+      expect(controller.state.status, ParticipantDiscoveryStatus.ready);
+      expect(gateway.requestedSessionIds, <String?>[null, 'session-deep-link']);
+    });
+
     test('reports an empty eligible feed without requesting a code', () async {
       final gateway = _Gateway()
         ..feeds.add(_feed(sessions: const <ParticipantGameDiscoveryItem>[]));
@@ -193,16 +224,26 @@ ParticipantDiscoveryController _controller(_Gateway gateway) {
 class _Gateway implements ParticipantDiscoveryGateway {
   final List<ParticipantGameDiscoveryFeed> feeds =
       <ParticipantGameDiscoveryFeed>[];
+  final Map<String, ParticipantGameDiscoveryFeed> targetedFeeds =
+      <String, ParticipantGameDiscoveryFeed>{};
+  final List<String?> requestedSessionIds = <String?>[];
 
   Completer<ParticipantGameDiscoveryFeed>? pendingFeed;
   Object? fetchError;
   int fetchCalls = 0;
 
   @override
-  Future<ParticipantGameDiscoveryFeed> fetchEligibleSessions() async {
+  Future<ParticipantGameDiscoveryFeed> fetchEligibleSessions({
+    String? sessionId,
+  }) async {
     fetchCalls += 1;
+    requestedSessionIds.add(sessionId);
     final error = fetchError;
     if (error != null) throw error;
+    if (sessionId != null) {
+      final targeted = targetedFeeds[sessionId];
+      if (targeted != null) return targeted;
+    }
     final pending = pendingFeed;
     if (pending != null) return pending.future;
     if (feeds.isEmpty) {

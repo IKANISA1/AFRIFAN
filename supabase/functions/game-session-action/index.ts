@@ -19,7 +19,6 @@ type GameAction =
   | "join_session"
   | "submit_answer"
   | "create_session"
-  | "pair_tv_device"
   | "revoke_tv_device"
   | "review_question_draft"
   | "list_question_drafts"
@@ -28,13 +27,16 @@ type GameAction =
   | "open_question"
   | "reveal_question"
   | "advance_question"
-  | "close_session";
+  | "close_session"
+  | "get_planner_options"
+  | "get_managed_sessions"
+  | "create_managed_session"
+  | "transition_managed_session";
 
 type GameActionRequest = {
   action?: GameAction;
   club_id?: number | string;
   session_id?: string;
-  join_code?: string;
   display_name?: string;
   title?: string;
   description?: string;
@@ -46,17 +48,25 @@ type GameActionRequest = {
   search?: string;
   question_ids?: string[];
   template_id?: string;
+  preview_fingerprint?: string;
   limit?: number | string;
   offset?: number | string;
   action_filter?: string;
   entity_type?: string;
   tv_device_id?: string;
   device_label?: string;
-  pairing_code?: string;
   session_question_id?: string;
   session_player_id?: string;
   selected_option_key?: string;
   idempotency_key?: string;
+  scheduled_start_at?: string;
+  eligibility_scope?: string;
+  display_ids?: string[];
+  organizer_user_ids?: string[];
+  requested_phase?: string;
+  expected_session_version?: number | string;
+  phase_deadline?: string;
+  reason?: string;
 };
 
 type Dependencies = {
@@ -76,6 +86,7 @@ const defaultDependencies: Dependencies = {
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const OPTION_KEY_PATTERN = /^[a-z0-9_-]{1,32}$/i;
+const SHA256_PATTERN = /^[0-9a-f]{64}$/;
 
 function requireUuid(value: unknown, field: string): string {
   if (typeof value !== "string" || !UUID_PATTERN.test(value)) {
@@ -161,7 +172,11 @@ function mapRpcError(error: { message?: string; code?: string } | null) {
 
   const message = error.message ?? "Game action failed.";
   const lowerMessage = message.toLowerCase();
-  if (lowerMessage.includes("already answered")) {
+  if (
+    lowerMessage.includes("already answered") ||
+    lowerMessage.includes("version conflict") ||
+    lowerMessage.includes("idempotency conflict")
+  ) {
     return new HttpError(409, message);
   }
   if (
@@ -186,18 +201,51 @@ function mapRpcError(error: { message?: string; code?: string } | null) {
   return new HttpError(500, message);
 }
 
-function optionalJoinCode(value: unknown): string | null {
+function requireIdempotencyKey(value: unknown): string {
+  const key = requireText(value, "idempotency_key", { maxLength: 96 });
+  if (key.length < 8) {
+    throw new HttpError(400, "idempotency_key is invalid.");
+  }
+  return key;
+}
+
+function requireIsoDateTime(value: unknown, field: string): string {
+  const text = requireText(value, field, { maxLength: 64 });
+  if (!Number.isFinite(Date.parse(text))) {
+    throw new HttpError(400, `${field} is invalid.`);
+  }
+  return text;
+}
+
+function optionalIsoDateTime(value: unknown, field: string): string | null {
   if (value == null || value === "") {
     return null;
   }
-  if (typeof value !== "string") {
-    throw new HttpError(400, "join_code is invalid.");
+  return requireIsoDateTime(value, field);
+}
+
+function requireNonNegativeInteger(value: unknown, field: string): number {
+  const parsed =
+    typeof value === "number" ? value : Number.parseInt(`${value}`, 10);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) {
+    throw new HttpError(400, `${field} must be a non-negative integer.`);
   }
-  const trimmed = value.trim();
-  if (!/^[a-z0-9_-]{3,32}$/i.test(trimmed)) {
-    throw new HttpError(400, "join_code is invalid.");
+  return parsed;
+}
+
+function requireUniqueUuidList(
+  value: unknown,
+  field: string,
+  maximum: number,
+): string[] {
+  if (!Array.isArray(value) || value.length > maximum) {
+    throw new HttpError(400, `${field} is invalid.`);
   }
-  return trimmed;
+  const ids = value.map((item) => requireUuid(item, field));
+  if (new Set(ids).size !== ids.length) {
+    throw new HttpError(400, `${field} contains duplicate values.`);
+  }
+  return ids;
 }
 
 function optionalDisplayName(value: unknown): string | null {
@@ -260,6 +308,20 @@ async function callGameRpc<T>(
   return data as T;
 }
 
+async function callPublicGameRpc<T>(
+  client: ReturnType<typeof createUserClient>,
+  name: string,
+  params: Record<string, unknown> = {},
+): Promise<T> {
+  const { data, error } = await client.rpc(name, params);
+
+  if (error) {
+    throw mapRpcError(error);
+  }
+
+  return data as T;
+}
+
 export function createGameSessionActionHandler(
   dependencies: Partial<Dependencies> = {},
 ) {
@@ -284,6 +346,105 @@ export function createGameSessionActionHandler(
         throw new HttpError(400, "action is required.");
       }
 
+      if (
+        action === "get_planner_options" ||
+        action === "get_managed_sessions"
+      ) {
+        await deps.requireAuthenticatedCaller(request);
+        const authorization = getAuthorizationHeader(request);
+        if (authorization == null) {
+          throw new HttpError(401, "Authentication required.");
+        }
+        const userClient = deps.createUserClient(authorization);
+        const result = await callPublicGameRpc<unknown>(
+          userClient,
+          action === "get_planner_options"
+            ? "get_game_planner_options_v2"
+            : "get_managed_game_sessions_v2",
+        );
+        return jsonOk({ success: true, data: result });
+      }
+
+      if (action === "create_managed_session") {
+        await deps.requireAuthenticatedCaller(request);
+        const authorization = getAuthorizationHeader(request);
+        if (authorization == null) {
+          throw new HttpError(401, "Authentication required.");
+        }
+        const userClient = deps.createUserClient(authorization);
+        const result = await callPublicGameRpc<unknown>(
+          userClient,
+          "create_managed_game_session_v2",
+          {
+            p_pack_id: requireUuid(body.pack_id, "pack_id"),
+            p_scheduled_start_at: requireIsoDateTime(
+              body.scheduled_start_at,
+              "scheduled_start_at",
+            ),
+            p_eligibility_scope: requireText(
+              body.eligibility_scope,
+              "eligibility_scope",
+              {
+                maxLength: 32,
+                pattern: /^(club_membership|home_owner|venue)$/,
+              },
+            ),
+            p_display_ids: requireUniqueUuidList(
+              body.display_ids,
+              "display_ids",
+              100,
+            ),
+            p_organizer_user_ids: requireUniqueUuidList(
+              body.organizer_user_ids,
+              "organizer_user_ids",
+              100,
+            ),
+            p_idempotency_key: requireIdempotencyKey(body.idempotency_key),
+          },
+        );
+        return jsonOk({ success: true, data: result });
+      }
+
+      if (action === "transition_managed_session") {
+        await deps.requireAuthenticatedCaller(request);
+        const authorization = getAuthorizationHeader(request);
+        if (authorization == null) {
+          throw new HttpError(401, "Authentication required.");
+        }
+        const userClient = deps.createUserClient(authorization);
+        const result = await callPublicGameRpc<unknown>(
+          userClient,
+          "transition_managed_game_session_v2",
+          {
+            p_session_id: requireUuid(body.session_id, "session_id"),
+            p_requested_phase: requireText(
+              body.requested_phase,
+              "requested_phase",
+              {
+                maxLength: 32,
+                pattern:
+                  /^(scheduled|activated_lobby|question_open|reveal|paused|completed|cancelled)$/,
+              },
+            ),
+            p_expected_session_version: requireNonNegativeInteger(
+              body.expected_session_version,
+              "expected_session_version",
+            ),
+            p_idempotency_key: requireIdempotencyKey(body.idempotency_key),
+            p_session_question_id: optionalUuid(
+              body.session_question_id,
+              "session_question_id",
+            ),
+            p_phase_deadline: optionalIsoDateTime(
+              body.phase_deadline,
+              "phase_deadline",
+            ),
+            p_reason: optionalText(body.reason, "reason", { maxLength: 240 }),
+          },
+        );
+        return jsonOk({ success: true, data: result });
+      }
+
       if (action === "get_tv_state") {
         await deps.requireAuthenticatedCaller(request);
         const sessionId = requireUuid(body.session_id, "session_id");
@@ -304,17 +465,10 @@ export function createGameSessionActionHandler(
         if (authorization == null) {
           throw new HttpError(401, "Authentication required.");
         }
-        const sessionId = body.session_id == null || body.session_id === ""
-          ? null
-          : requireUuid(body.session_id, "session_id");
-        const joinCode = optionalJoinCode(body.join_code);
-        if (sessionId == null && joinCode == null) {
-          throw new HttpError(400, "session_id or join_code is required.");
-        }
+        const sessionId = requireUuid(body.session_id, "session_id");
         const userClient = deps.createUserClient(authorization);
         const result = await callGameRpc<unknown>(userClient, "join_session", {
           p_session_id: sessionId,
-          p_join_code: joinCode,
           p_club_id: body.club_id == null || body.club_id === ""
             ? null
             : requireClubId(body.club_id),
@@ -351,27 +505,6 @@ export function createGameSessionActionHandler(
           p_title: requireText(body.title, "title", { maxLength: 120 }),
           p_pack_id: optionalUuid(body.pack_id, "pack_id"),
           p_tv_device_id: optionalUuid(body.tv_device_id, "tv_device_id"),
-          p_join_code: body.join_code == null || body.join_code === ""
-            ? null
-            : optionalJoinCode(body.join_code),
-        });
-        return jsonOk({ success: true, data: result });
-      }
-
-      if (action === "pair_tv_device") {
-        const clubId = requireClubId(body.club_id);
-        await deps.requireClubAdminCaller(request, clubId);
-        const adminClient = deps.createAdminClient();
-        const result = await callGameRpc<unknown>(adminClient, "admin_pair_tv_device", {
-          p_club_id: clubId,
-          p_device_label: requireText(body.device_label, "device_label", {
-            maxLength: 80,
-          }),
-          p_pairing_code: requireText(body.pairing_code, "pairing_code", {
-            maxLength: 32,
-            pattern: /^[a-z0-9_-]+$/i,
-          }),
-          p_session_id: optionalUuid(body.session_id, "session_id"),
         });
         return jsonOk({ success: true, data: result });
       }
@@ -441,6 +574,21 @@ export function createGameSessionActionHandler(
         const questionIds = body.question_ids.map((id) =>
           requireUuid(id, "question_ids")
         );
+        if (
+          questionIds.length !== 20 ||
+          new Set(questionIds).size !== questionIds.length
+        ) {
+          throw new HttpError(
+            400,
+            "question_ids must contain 20 unique questions.",
+          );
+        }
+        if (
+          typeof body.preview_fingerprint !== "string" ||
+          !SHA256_PATTERN.test(body.preview_fingerprint)
+        ) {
+          throw new HttpError(400, "preview_fingerprint is invalid.");
+        }
         const adminClient = deps.createAdminClient();
         const result = await callGameRpc<unknown>(
           adminClient,
@@ -453,6 +601,7 @@ export function createGameSessionActionHandler(
               ? ""
               : requireText(body.description, "description", { maxLength: 1000 }),
             p_template_id: optionalUuid(body.template_id, "template_id"),
+            p_preview_fingerprint: body.preview_fingerprint,
           },
         );
         return jsonOk({ success: true, data: result });

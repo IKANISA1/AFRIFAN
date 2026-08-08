@@ -208,7 +208,11 @@ export function TvDisplayClient({
   }, [refreshState, sessionId]);
 
   useEffect(() => {
-    if (!sessionId) {
+    if (
+      !sessionId ||
+      !Number.isSafeInteger(state.clubId) ||
+      state.clubId <= 0
+    ) {
       return;
     }
 
@@ -219,11 +223,12 @@ export function TvDisplayClient({
 
     let active = true;
     const activeSessionId = sessionId;
+    const activeClubId = state.clubId;
     const refreshFromRealtime = () => {
       refreshState(activeSessionId, () => active).catch(() => {});
     };
     const channel = supabase
-      .channel(`africlub_game_session:${activeSessionId}`)
+      .channel(`${activeClubId}:game_session:${activeSessionId}`)
       .on(
         "postgres_changes",
         {
@@ -279,7 +284,7 @@ export function TvDisplayClient({
         channel.unsubscribe?.();
       }
     };
-  }, [refreshState, sessionId]);
+  }, [refreshState, sessionId, state.clubId]);
 
   const displayState = sessionId ? state : initialState;
   const displayStatus = sessionId ? status : "demo";

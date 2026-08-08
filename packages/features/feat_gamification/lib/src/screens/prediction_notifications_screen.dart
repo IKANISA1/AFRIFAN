@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,7 @@ class _PredictionNotificationsScreenState
         return;
       }
       setState(() {
-        _error = 'Prediction notifications are temporarily unavailable.';
+        _error = context.afriL10n.gamePredictionAlertsTemporarilyUnavailable;
         _isLoading = false;
       });
     }
@@ -84,7 +85,7 @@ class _PredictionNotificationsScreenState
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'PREDICTION ALERTS',
+          context.afriL10n.gamePredictionAlertsTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
@@ -93,7 +94,7 @@ class _PredictionNotificationsScreenState
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -107,9 +108,9 @@ class _PredictionNotificationsScreenState
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Alerts unavailable',
+                  title: context.afriL10n.gameAlertsUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -177,9 +178,12 @@ class _PredictionNotificationCard extends StatelessWidget {
     final canOpen = openNotification != null;
     final isPositive = notification.earned > 0;
     final accent = isPositive ? ColorTokens.success : ColorTokens.clubAccent;
-    final dateLabel = _formatPredictionNotificationDate(notification.createdAt);
+    final dateLabel = _formatPredictionNotificationDate(
+      context,
+      notification.createdAt,
+    );
     final rewardLabel = isPositive
-        ? ', reward ${notification.earned} points'
+        ? context.afriL10n.gameRewardPointsSemantics(notification.earned)
         : '';
 
     return GlassCard(
@@ -190,9 +194,12 @@ class _PredictionNotificationCard extends StatelessWidget {
           Semantics(
             container: true,
             excludeSemantics: true,
-            label:
-                'Prediction alert, ${notification.title}, '
-                '${notification.body}, $dateLabel$rewardLabel',
+            label: context.afriL10n.gamePredictionAlertSemantics(
+              notification.title,
+              notification.body,
+              dateLabel,
+              rewardLabel,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -248,7 +255,7 @@ class _PredictionNotificationCard extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          '+${notification.earned} pts',
+                          context.afriL10n.gamePoints(notification.earned),
                           style:
                               TypographyTokens.labelMedium(
                                 ColorTokens.success,
@@ -270,7 +277,7 @@ class _PredictionNotificationCard extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: AfriButton(
-                label: 'OPEN',
+                label: context.afriL10n.gameOpenPredictionAlert,
                 fullWidth: false,
                 variant: AfriButtonVariant.secondary,
                 onTap: openNotification,
@@ -283,10 +290,15 @@ class _PredictionNotificationCard extends StatelessWidget {
   }
 }
 
-String _formatPredictionNotificationDate(DateTime? value) {
+String _formatPredictionNotificationDate(
+  BuildContext context,
+  DateTime? value,
+) {
   if (value == null) {
-    return 'Just now';
+    return context.afriL10n.gameJustNow;
   }
   final local = value.toLocal();
-  return '${local.day}/${local.month} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  final materialL10n = MaterialLocalizations.of(context);
+  return '${materialL10n.formatShortDate(local)} • '
+      '${materialL10n.formatTimeOfDay(TimeOfDay.fromDateTime(local))}';
 }

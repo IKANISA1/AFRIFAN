@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,10 +80,13 @@ class PredictionShareService {
     BuildContext? context,
   }) async {
     unawaited(HapticFeedback.lightImpact());
+    final l10n = context == null
+        ? lookupAfriLocalizations(const Locale('en'))
+        : context.afriL10n;
     await SharePlus.instance.share(
       ShareParams(
-        text: _buildShareText(data),
-        title: '${RuntimeBranding.displayAppName} Pick',
+        text: _buildShareText(data, l10n),
+        title: l10n.gameShareTitle(RuntimeBranding.displayAppName),
       ),
     );
   }
@@ -92,34 +96,49 @@ class PredictionShareService {
     BuildContext? context,
   }) async {
     unawaited(HapticFeedback.lightImpact());
-    await Clipboard.setData(ClipboardData(text: _buildShareText(data)));
+    final l10n = context == null
+        ? lookupAfriLocalizations(const Locale('en'))
+        : context.afriL10n;
+    await Clipboard.setData(ClipboardData(text: _buildShareText(data, l10n)));
     if (context == null || !context.mounted) {
       return;
     }
-    AfriToast.success(context, 'Share text copied to clipboard.');
+    AfriToast.success(context, context.afriL10n.gameShareCopied);
   }
 
-  static String _buildShareText(PredictionShareData data) {
+  static String _buildShareText(
+    PredictionShareData data,
+    AfriLocalizations l10n,
+  ) {
     final buffer = StringBuffer();
     final statusLabel = switch (data.status) {
-      PredictionStatus.won => 'Won',
-      PredictionStatus.lost => 'Lost',
-      PredictionStatus.cancelled => 'Cancelled',
-      PredictionStatus.void_ => 'Void',
-      _ => 'Pending',
+      PredictionStatus.won => l10n.gameWon,
+      PredictionStatus.lost => l10n.gameLost,
+      PredictionStatus.cancelled => l10n.gameCancelled,
+      PredictionStatus.void_ => l10n.gameVoid,
+      _ => l10n.gamePendingUpper,
     };
 
     buffer.writeln(
-      '$statusLabel: ${data.homeTeamShort.toUpperCase()} vs ${data.awayTeamShort.toUpperCase()}',
+      l10n.gameShareStatusLine(
+        statusLabel,
+        data.homeTeamShort.toUpperCase(),
+        data.awayTeamShort.toUpperCase(),
+      ),
     );
     if (data.homeScore != null && data.awayScore != null) {
-      buffer.writeln('Final score: ${data.homeScore}-${data.awayScore}');
+      buffer.writeln(l10n.gameFinalScore(data.homeScore!, data.awayScore!));
     }
-    buffer.writeln('${data.marketName}: ${data.selectedOutcome.toUpperCase()}');
+    buffer.writeln(
+      l10n.gameMarketSelection(
+        data.marketName,
+        data.selectedOutcome.toUpperCase(),
+      ),
+    );
     if (data.status == PredictionStatus.won) {
-      buffer.writeln('Earned: +${data.fetEarned} pts');
+      buffer.writeln(l10n.gameEarnedShare(data.fetEarned));
     } else {
-      buffer.writeln('Potential: +${data.fetPotential} pts');
+      buffer.writeln(l10n.gamePotentialShare(data.fetPotential));
     }
     buffer.writeln();
     buffer.writeln(data.competitionName);
@@ -156,13 +175,13 @@ class PredictionShareCard extends StatelessWidget {
     };
   }
 
-  String _statusLabel() {
+  String _statusLabel(BuildContext context) {
     return switch (data.status) {
-      PredictionStatus.won => 'WON',
-      PredictionStatus.lost => 'LOST',
-      PredictionStatus.cancelled => 'CANCELLED',
-      PredictionStatus.void_ => 'VOID',
-      _ => 'PENDING',
+      PredictionStatus.won => context.afriL10n.gameWon,
+      PredictionStatus.lost => context.afriL10n.gameLost,
+      PredictionStatus.cancelled => context.afriL10n.gameCancelled,
+      PredictionStatus.void_ => context.afriL10n.gameVoid,
+      _ => context.afriL10n.gamePendingUpper,
     };
   }
 
@@ -223,7 +242,7 @@ class PredictionShareCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
-                  _statusLabel(),
+                  _statusLabel(context),
                   style: TypographyTokens.labelSmall(
                     color,
                   ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.0),
@@ -270,20 +289,20 @@ class PredictionShareCard extends StatelessWidget {
             Column(
               children: [
                 _ShareMetric(
-                  label: 'MARKET',
+                  label: context.afriL10n.gameMarketUpper,
                   value: data.marketName.toUpperCase(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 _ShareMetric(
-                  label: 'PICK',
+                  label: context.afriL10n.gamePickUpper,
                   value: data.selectedOutcome.toUpperCase(),
                   accent: true,
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 _ShareMetric(
                   label: data.status == PredictionStatus.won
-                      ? 'EARNED'
-                      : 'POTENTIAL',
+                      ? context.afriL10n.gameEarnedUpper
+                      : context.afriL10n.gamePotentialUpper,
                   value: data.status == PredictionStatus.won
                       ? '+${data.fetEarned}'
                       : '+${data.fetPotential}',
@@ -297,14 +316,14 @@ class PredictionShareCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: _ShareMetric(
-                    label: 'MARKET',
+                    label: context.afriL10n.gameMarketUpper,
                     value: data.marketName.toUpperCase(),
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
                   child: _ShareMetric(
-                    label: 'PICK',
+                    label: context.afriL10n.gamePickUpper,
                     value: data.selectedOutcome.toUpperCase(),
                     accent: true,
                   ),
@@ -313,8 +332,8 @@ class PredictionShareCard extends StatelessWidget {
                 Expanded(
                   child: _ShareMetric(
                     label: data.status == PredictionStatus.won
-                        ? 'EARNED'
-                        : 'POTENTIAL',
+                        ? context.afriL10n.gameEarnedUpper
+                        : context.afriL10n.gamePotentialUpper,
                     value: data.status == PredictionStatus.won
                         ? '+${data.fetEarned}'
                         : '+${data.fetPotential}',
@@ -326,7 +345,9 @@ class PredictionShareCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing4),
           Center(
             child: Text(
-              '${RuntimeBranding.displayAppName.toUpperCase()} · PLAY. PICK. EARN.',
+              context.afriL10n.gameShareTagline(
+                RuntimeBranding.displayAppName.toUpperCase(),
+              ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,

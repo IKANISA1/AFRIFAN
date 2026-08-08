@@ -1,6 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
+import { writeAdminStateEvidence } from "./admin-state-evidence-manifest";
+import {
+  installEvidenceNavigationStability,
+  primeEvidenceScreenshot,
+  settleEvidenceVisuals,
+} from "./evidence-navigation-stability";
 import {
   expect,
   test,
@@ -37,13 +43,7 @@ const products = Array.from({ length: 24 }, (_, index) => ({
 }));
 
 async function settle(page: Page) {
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-    for (const animation of document.getAnimations()) animation.finish();
-    await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-    );
-  });
+  await settleEvidenceVisuals(page);
 }
 
 async function expectAccessible(page: Page) {
@@ -59,13 +59,27 @@ async function expectAccessible(page: Page) {
 }
 
 async function expectNoOverflow(page: Page) {
-  expect(
-    await page.evaluate(
-      () =>
-        document.documentElement.scrollWidth -
-        document.documentElement.clientWidth,
-    ),
-  ).toBeLessThanOrEqual(1);
+  const result = await page.evaluate(() => {
+    const clientWidth = document.documentElement.clientWidth;
+    return {
+      overflow: document.documentElement.scrollWidth - clientWidth,
+      offenders: Array.from(document.querySelectorAll<HTMLElement>("body *"))
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          return {
+            tag: element.tagName.toLowerCase(),
+            className: element.className,
+            left: Math.round(rect.left),
+            right: Math.round(rect.right),
+          };
+        })
+        .filter(({ left, right }) => left < -1 || right > clientWidth + 1)
+        .slice(0, 20),
+    };
+  });
+  expect(result.overflow, JSON.stringify(result.offenders)).toBeLessThanOrEqual(
+    1,
+  );
 }
 
 async function runMatrix(browser: Browser) {
@@ -79,10 +93,11 @@ async function runMatrix(browser: Browser) {
     deviceScaleFactor: 1,
     colorScheme: "dark",
   });
-  const page = await context.newPage();
+  await installEvidenceNavigationStability(context);
+  let page = await context.newPage();
   let mode: Mode = "ready";
 
-  await page.route("**/api/admin/**", async (route: Route) => {
+  await context.route("**/api/admin/**", async (route: Route) => {
     if (!route.request().url().includes("/api/admin/shop")) {
       await route.continue();
       return;
@@ -145,13 +160,13 @@ async function runMatrix(browser: Browser) {
       state === "selected" || state === "large_text",
     );
     await settle(page);
+    await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
     await page.screenshot({
       path: path.join(
         evidenceDirectory,
         `admin_shop_state_${state}_${state === "light" ? "light" : "dark"}_${profile}.png`,
       ),
       fullPage: !state.startsWith("responsive_"),
-      animations: "disabled",
     });
   };
 
@@ -189,24 +204,29 @@ async function runMatrix(browser: Browser) {
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus("offline", /shop catalogue is offline/i);
-  await expect(page.getByText("Verified product 1")).toBeVisible();
+  await expect(
+    page.getByText("Verified product 1", { exact: true }),
+  ).toBeVisible();
   await capture("offline");
   await context.setOffline(false);
 
   mode = "ready";
   await open("permission-preparation");
+  await expectStatus("ready", /shop catalogue confirmed/i);
   await page.getByLabel("Search shop catalogue").fill("private filter");
-  await page.getByRole("button", { name: /edit verified product/i }).first().click();
   mode = "permission_denied";
   await page.getByRole("button", { name: /refresh catalogue/i }).click();
   await expectStatus("permission_denied", /shop access denied/i);
   await expect(page.getByLabel("Search shop catalogue")).toHaveCount(0);
   await expect(page.locator("body")).not.toContainText("private filter");
-  await expect(page.getByText("Verified product 1")).toHaveCount(0);
+  await expect(
+    page.getByText("Verified product 1", { exact: true }),
+  ).toHaveCount(0);
   await capture("permission_denied");
 
   mode = "ready";
   await open("interaction");
+  await expectStatus("ready", /shop catalogue confirmed/i);
   const refresh = page.getByRole("button", { name: /refresh catalogue/i });
   await refresh.focus();
   await expect(surface()).toHaveAttribute(
@@ -229,7 +249,10 @@ async function runMatrix(browser: Browser) {
     pointerType: "mouse",
     isPrimary: true,
   });
-  await page.getByRole("button", { name: /edit verified product/i }).first().click();
+  await page
+    .getByRole("button", { name: /edit verified product/i })
+    .first()
+    .click();
   await capture("selected");
 
   await page.evaluate(() => {
@@ -275,17 +298,63 @@ async function runMatrix(browser: Browser) {
   await expectNoOverflow(page);
   await capture("light");
 
+  await page.emulateMedia({ colorScheme: "dark" });
   for (const [profile, width, height] of [
     ["desktop_1280x800", 1280, 800],
     ["tablet_834x1112", 834, 1112],
     ["mobile_390x844", 390, 844],
   ] as const) {
+    if (width === 390) {
+      await page.close();
+      page = await context.newPage();
+    }
     await page.setViewportSize({ width, height });
     await open(`responsive-${profile}`);
     await expectStatus("ready", /shop catalogue confirmed/i);
     await expectNoOverflow(page);
     await capture(`responsive_${profile}`, profile);
   }
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  mode = "ready";
+  await open("syncing-preparation");
+  await expectStatus("ready", /shop catalogue confirmed/i);
+  mode = "loading";
+  await page.getByRole("button", { name: /refresh catalogue/i }).click();
+  await expectStatus("syncing", /refreshing shop catalogue/i);
+  await expect(
+    page.getByText("Verified product 1", { exact: true }),
+  ).toBeVisible();
+  await capture("syncing");
+
+  writeAdminStateEvidence({
+    evidenceDirectory,
+    manifestFile: "admin-shop-state-evidence.json",
+    route: "/admin/shop",
+    filePrefix: "admin_shop",
+    responsiveCaptures: [
+      {
+        state: "responsive_desktop_1280x800",
+        profile: "desktop_1280x800",
+        description: "Chromium desktop 1280x800 at 1 DPR",
+      },
+      {
+        state: "responsive_tablet_834x1112",
+        profile: "tablet_834x1112",
+        description: "Chromium tablet 834x1112 at 1 DPR",
+      },
+      {
+        state: "responsive_mobile_390x844",
+        profile: "mobile_390x844",
+        description: "Chromium mobile 390x844 at 1 DPR",
+      },
+    ],
+    assertions: {
+      maximum_product_records: 500,
+      page_size: 25,
+      syncing_retains_confirmed_catalogue: true,
+    },
+  });
 
   await context.close();
 }

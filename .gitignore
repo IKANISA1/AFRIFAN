@@ -106,3 +106,4 @@ supabase/recovery/*
 **/ios/AuthKey_*.p8
 **/google-services.json
 !**/android/app/google-services.json
+supabase/.temp/

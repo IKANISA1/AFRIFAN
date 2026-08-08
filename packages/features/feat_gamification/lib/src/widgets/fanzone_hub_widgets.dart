@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,19 +31,19 @@ class HubHeroStats extends StatelessWidget {
         AfriStatRow(
           stats: [
             AfriStat(
-              label: 'ACTIVE',
-              value: '${dashboard?.activeCount ?? 0}',
+              label: context.afriL10n.gameActiveUpper,
+              value: (dashboard?.activeCount ?? 0).toString(),
               icon: AfriIcons.live,
               accentColor: ColorTokens.success,
             ),
             AfriStat(
-              label: 'ACCURACY',
+              label: context.afriL10n.gameAccuracy,
               value: '${dashboard?.winRate.toStringAsFixed(0) ?? '0'}%',
               icon: AfriIcons.predict,
             ),
             AfriStat(
-              label: 'POINTS',
-              value: '${wallet?.balance ?? 0}',
+              label: context.afriL10n.gamePointsUpper,
+              value: (wallet?.balance ?? 0).toString(),
               icon: AfriIcons.earn,
               accentColor: ColorTokens.clubAccent,
             ),
@@ -70,21 +71,25 @@ class HubQuickRoutes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryItems = <({String label, IconData icon, String route})>[
-      (label: 'TV Code', icon: AfriIcons.live, route: '/fanzone/game'),
       (
-        label: 'Fans',
+        label: context.afriL10n.gameLiveGamesTitle,
+        icon: AfriIcons.live,
+        route: '/fanzone/game',
+      ),
+      (
+        label: context.afriL10n.gameFans,
         icon: AfriIcons.profile,
         route: '/fanzone?section=supporters',
       ),
       (
-        label: 'League',
+        label: context.afriL10n.gameLeague,
         icon: AfriIcons.league,
         route: '/fanzone?section=league',
       ),
     ];
     final secondaryItems = <({String label, IconData icon, String route})>[
       (
-        label: 'Wallet',
+        label: context.afriL10n.gameWallet,
         icon: AfriIcons.wallet,
         route: '/fanzone?section=wallet',
       ),
@@ -128,7 +133,7 @@ class HubQuickRoutes extends StatelessWidget {
               ),
             ),
             AfriInfoChip(
-              label: 'More',
+              label: context.afriL10n.gameMore,
               icon: AfriIcons.more,
               color: ColorTokens.onSurfaceVariant,
               onTap: onMore,
@@ -159,19 +164,20 @@ class HubFixtureRow extends StatelessWidget {
   final bool isLive;
   final bool showDate;
 
-  String _kickoffTime() {
+  String _kickoffTime(BuildContext context) {
     final kickoff = fixture.kickoffAt;
-    if (kickoff == null) return 'TBD';
+    if (kickoff == null) return context.afriL10n.gameTbd;
     final local = kickoff.toLocal();
-    return '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+    return MaterialLocalizations.of(
+      context,
+    ).formatTimeOfDay(TimeOfDay.fromDateTime(local));
   }
 
-  String _dateLabel() {
+  String _dateLabel(BuildContext context) {
     final kickoff = fixture.kickoffAt;
     if (kickoff == null) return '';
     final local = kickoff.toLocal();
-    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    return '${dayNames[local.weekday - 1]} ${local.day}/${local.month}';
+    return MaterialLocalizations.of(context).formatShortDate(local);
   }
 
   @override
@@ -196,8 +202,14 @@ class HubFixtureRow extends StatelessWidget {
                   const SizedBox(height: SpacingTokens.spacing1),
                   Text(
                     showDate
-                        ? '${fixture.competitionName}  ·  ${_dateLabel()} ${_kickoffTime()}'
-                        : '${fixture.competitionName}  ·  ${_kickoffTime()}',
+                        ? context.afriL10n.gamePair(
+                            fixture.competitionName,
+                            '${_dateLabel(context)} ${_kickoffTime(context)}',
+                          )
+                        : context.afriL10n.gamePair(
+                            fixture.competitionName,
+                            _kickoffTime(context),
+                          ),
                     style: TypographyTokens.bodySmall(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -207,14 +219,19 @@ class HubFixtureRow extends StatelessWidget {
             ),
             if (fixture.homeScore != null && fixture.awayScore != null)
               Text(
-                '${fixture.homeScore} - ${fixture.awayScore}',
+                context.afriL10n.gameScore(
+                  fixture.homeScore!,
+                  fixture.awayScore!,
+                ),
                 style: TypographyTokens.titleLarge().copyWith(
                   fontWeight: FontWeight.w800,
                 ),
               )
             else
               AfriInfoChip(
-                label: isLive ? 'LIVE' : 'ROUND',
+                label: isLive
+                    ? context.afriL10n.gameLive
+                    : context.afriL10n.gameRoundUpper,
                 color: isLive ? ColorTokens.success : ColorTokens.clubAccent,
               ),
           ],
@@ -241,7 +258,7 @@ class HubLeaderboardRow extends StatelessWidget {
         SizedBox(
           width: SpacingTokens.spacing8 + SpacingTokens.spacing1 / 2,
           child: Text(
-            '#${entry.rank}',
+            context.afriL10n.gameRankHash(entry.rank),
             style: TypographyTokens.titleLarge(
               entry.rank == 1 ? ColorTokens.clubAccent : ColorTokens.onSurface,
             ).copyWith(fontWeight: FontWeight.w800),
@@ -254,14 +271,17 @@ class HubLeaderboardRow extends StatelessWidget {
             children: [
               Text(entry.displayName, style: TypographyTokens.titleSmall()),
               Text(
-                '${entry.winRate.toStringAsFixed(0)}% · ${entry.totalSettled} rounds',
+                context.afriL10n.gameAccuracyRounds(
+                  entry.winRate.toStringAsFixed(0),
+                  entry.totalSettled,
+                ),
                 style: TypographyTokens.bodySmall(),
               ),
             ],
           ),
         ),
         Text(
-          '+${entry.totalFetEarned}',
+          context.afriL10n.gamePoints(entry.totalFetEarned),
           style: TypographyTokens.titleLarge(
             ColorTokens.clubAccent,
           ).copyWith(fontWeight: FontWeight.w800),
@@ -311,7 +331,13 @@ class HubPartnerPoolRow extends StatelessWidget {
                   Text(pool.title, style: TypographyTokens.titleSmall()),
                   const SizedBox(height: SpacingTokens.spacing1),
                   Text(
-                    '${pool.partnerName} · ${pool.eligibilityLabel}',
+                    context.afriL10n.gamePair(
+                      pool.partnerName,
+                      partnerPoolEligibilityLabel(
+                        context.afriL10n,
+                        pool.eligibilityMode,
+                      ),
+                    ),
                     style: TypographyTokens.bodySmall(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -324,12 +350,15 @@ class HubPartnerPoolRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${pool.partnerStakeFet}',
+                    pool.partnerStakeFet.toString(),
                     style: TypographyTokens.titleMedium(
                       ColorTokens.clubAccent,
                     ).copyWith(fontWeight: FontWeight.w800),
                   ),
-                  Text('points round', style: TypographyTokens.labelSmall()),
+                  Text(
+                    context.afriL10n.gamePointsRoundLabel,
+                    style: TypographyTokens.labelSmall(),
+                  ),
                 ],
               ),
           ],
@@ -337,7 +366,7 @@ class HubPartnerPoolRow extends StatelessWidget {
         if (usesAccessibleTextLayout) ...[
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            '${pool.partnerStakeFet} points round',
+            context.afriL10n.gamePointsRound(pool.partnerStakeFet),
             style: TypographyTokens.titleMedium(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w800),
@@ -350,22 +379,25 @@ class HubPartnerPoolRow extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             AfriInfoChip(
-              label: '${pool.fanEntryFet} point entry',
+              label: context.afriL10n.gamePointEntry(pool.fanEntryFet),
               color: ColorTokens.info,
             ),
             AfriInfoChip(
-              label: '${pool.totalEntries} fans',
+              label: context.afriL10n.gameFansCount(pool.totalEntries),
               color: ColorTokens.onSurfaceVariant,
             ),
             if (viewerEntry != null)
               AfriInfoChip(
-                label: viewerEntry.selectedOutcome.label,
+                label: partnerPoolOutcomeLabel(
+                  context.afriL10n,
+                  viewerEntry.selectedOutcome,
+                ),
                 icon: AfriIcons.check,
                 color: ColorTokens.success,
               )
             else if (pool.isOpen)
               AfriInfoChip(
-                label: 'Choose W/D/W',
+                label: context.afriL10n.gameChooseWdw,
                 icon: AfriIcons.forward,
                 color: ColorTokens.clubAccent,
                 onTap: onJoin,
@@ -380,7 +412,7 @@ class HubPartnerPoolRow extends StatelessWidget {
         if (!pool.hasJoined && pool.isOpen && onJoin != null) ...[
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
-            label: 'Join round',
+            label: context.afriL10n.gameJoinRound,
             icon: AfriIcons.predict,
             variant: AfriButtonVariant.secondary,
             onTap: onJoin!,
@@ -406,14 +438,15 @@ class PartnerPoolOutcomeOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = isSelected ? ColorTokens.clubAccent : ColorTokens.ghostBorder;
+    final label = partnerPoolOutcomeLabel(context.afriL10n, outcome);
 
     return Semantics(
       selected: isSelected,
-      label: isSelected ? 'Selected ${outcome.label}' : outcome.label,
+      label: isSelected ? context.afriL10n.gameSelectedOutcome(label) : label,
       child: AfriPressFeedback(
         onTap: onTap,
-        tooltip: outcome.label,
-        semanticsLabel: outcome.label,
+        tooltip: label,
+        semanticsLabel: label,
         builder: (context, state) => Container(
           width: double.infinity,
           padding: const EdgeInsets.all(SpacingTokens.spacing4),
@@ -436,7 +469,7 @@ class PartnerPoolOutcomeOption extends StatelessWidget {
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: Text(
-                  outcome.label,
+                  label,
                   style: TypographyTokens.titleSmall(
                     isSelected ? ColorTokens.clubAccent : ColorTokens.onSurface,
                   ),
@@ -498,7 +531,7 @@ class HubChallengeRow extends StatelessWidget {
           ),
         ),
         Text(
-          '+${item.fetValue}',
+          context.afriL10n.gamePoints(item.fetValue),
           style: TypographyTokens.titleMedium(
             ColorTokens.clubAccent,
           ).copyWith(fontWeight: FontWeight.w800),
@@ -506,4 +539,27 @@ class HubChallengeRow extends StatelessWidget {
       ],
     );
   }
+}
+
+String partnerPoolOutcomeLabel(
+  AfriLocalizations l10n,
+  PartnerPoolOutcome outcome,
+) {
+  return switch (outcome) {
+    PartnerPoolOutcome.homeWin => l10n.gamePartnerOutcomeHomeWin,
+    PartnerPoolOutcome.draw => l10n.gamePartnerOutcomeDraw,
+    PartnerPoolOutcome.awayWin => l10n.gamePartnerOutcomeAwayWin,
+    PartnerPoolOutcome.unknown => l10n.gamePartnerOutcomeUnknown,
+  };
+}
+
+String partnerPoolEligibilityLabel(
+  AfriLocalizations l10n,
+  String eligibilityMode,
+) {
+  return switch (eligibilityMode) {
+    'partner_earn_required' => l10n.gamePartnerEarnRequired,
+    'initiative_earn_required' => l10n.gamePromotionEarnRequired,
+    _ => l10n.gameOpenToAllFans,
+  };
 }

@@ -542,7 +542,7 @@ class _RetainedTicketBanner extends StatelessWidget {
         : refreshing
             ? l10n.ticketRefreshingTitle
             : failure?.kind == ETicketFailureKind.permissionDenied
-                ? l10n.ticketAccessChangedTitle
+                ? l10n.ticketEntryCodeAccessChangedTitle
                 : failure?.kind == ETicketFailureKind.conflict
                     ? l10n.ticketChangedTitle
                     : failure?.kind == ETicketFailureKind.securityTimeout

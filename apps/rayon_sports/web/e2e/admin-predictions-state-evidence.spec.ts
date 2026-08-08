@@ -8,6 +8,11 @@ import {
   type Page,
   type Route,
 } from "@playwright/test";
+import {
+  installEvidenceNavigationStability,
+  primeEvidenceScreenshot,
+  settleEvidenceVisuals,
+} from "./evidence-navigation-stability";
 
 type ResponseMode =
   | "loading"
@@ -146,20 +151,7 @@ const workspace = {
 };
 
 async function settleVisuals(page: Page) {
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-    for (const animation of document.getAnimations()) {
-      const endTime = animation.effect?.getComputedTiming().endTime;
-      if (typeof endTime === "number" && Number.isFinite(endTime)) {
-        animation.finish();
-      } else {
-        animation.cancel();
-      }
-    }
-    await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-    );
-  });
+  await settleEvidenceVisuals(page);
 }
 
 async function expectNoSeriousAxeViolations(page: Page) {
@@ -207,10 +199,11 @@ async function runMatrix(browser: Browser) {
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
-  const page = await context.newPage();
+  await installEvidenceNavigationStability(context);
+  let page = await context.newPage();
   let responseMode: ResponseMode = "ready";
 
-  await page.route("**/api/admin/**", async (route: Route) => {
+  await context.route("**/api/admin/**", async (route: Route) => {
     if (route.request().method() !== "GET") {
       const requestUrl = route.request().url();
       const settled = requestUrl.includes("partner-prediction-pool-settlement");
@@ -309,13 +302,13 @@ async function runMatrix(browser: Browser) {
     );
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
     await settleVisuals(page);
+    await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
     await page.screenshot({
       path: path.join(
         evidenceDirectory,
         `admin_predictions_state_${state}_${state === "light" ? "light" : "dark"}_${profile}.png`,
       ),
       fullPage: !state.startsWith("responsive_"),
-      animations: "disabled",
     });
   };
 
@@ -530,6 +523,8 @@ async function runMatrix(browser: Browser) {
   await expectNoHorizontalOverflow(page);
   await capture("responsive_tablet", "tablet_1024x900");
 
+  await page.close();
+  page = await context.newPage();
   await page.setViewportSize({ width: 390, height: 844 });
   await open("compact");
   await expectStatus("ready", /prediction workspace confirmed/i);

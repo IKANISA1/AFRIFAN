@@ -9,6 +9,7 @@ void main() {
     ).readAsStringSync();
 
     expect(infoPlist, contains('<string>gikundiro</string>'));
+    expect(infoPlist, contains('<string>africlub</string>'));
     expect(
       infoPlist,
       contains(
@@ -19,6 +20,15 @@ void main() {
           'Flutter framework deep linking must stay disabled when app_links '
           'owns normalization and safe route validation.',
     );
+  });
+
+  test('Android registers both branded and generic TV pairing links', () {
+    final manifest = File(
+      '${_workspacePrefix()}apps/rayon_sports/android/app/src/main/AndroidManifest.xml',
+    ).readAsStringSync();
+
+    expect(manifest, contains('android:scheme="gikundiro"'));
+    expect(manifest, contains('android:scheme="africlub"'));
   });
 }
 

@@ -25,7 +25,9 @@ void main() {
       config = const _FakeClubConfig();
       modules = <FeatureModule>[
         _FakeHomeModule(),
+        _FakeClubModule(),
         _FakeFanzoneModule(),
+        _FakeMembershipModule(),
         _FakeSettingsModule(),
       ];
       ColorTokens.init(config.colors);
@@ -48,11 +50,15 @@ void main() {
       expect(find.byType(AfriClubBottomNav), findsOneWidget);
       expect(find.byType(NavigationRail), findsNothing);
       expect(find.text('Home'), findsOneWidget);
+      expect(find.text('Club'), findsOneWidget);
       expect(find.text('Fan Zone'), findsOneWidget);
-      expect(find.text('Settings'), findsOneWidget);
+      expect(find.text('Membership'), findsOneWidget);
+      expect(find.text('Settings'), findsNothing);
     });
 
-    testWidgets('navigates between fan zone and settings tabs', (tester) async {
+    testWidgets('navigates between fan zone and membership tabs', (
+      tester,
+    ) async {
       _setMobileSurface(tester);
       await tester.pumpWidget(_buildApp(router));
       await tester.pumpAndSettle();
@@ -61,9 +67,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Fan Zone Screen'), findsOneWidget);
 
-      await tester.tap(find.text('Settings'));
+      await tester.tap(find.text('Membership'));
       await tester.pumpAndSettle();
-      expect(find.text('Settings Screen'), findsOneWidget);
+      expect(find.text('Membership Screen'), findsOneWidget);
     });
 
     testWidgets('matches shell home tab render contract', (tester) async {
@@ -87,16 +93,18 @@ void main() {
       expect(find.byType(AppShell), findsOneWidget);
     });
 
-    testWidgets('matches shell settings tab render contract', (tester) async {
+    testWidgets('keeps settings behind the profile route', (tester) async {
       _setMobileSurface(tester);
 
       await tester.pumpWidget(_buildApp(router));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Settings'));
+      router.router.go('/settings');
       await tester.pumpAndSettle();
 
-      expect(find.byType(AppShell), findsOneWidget);
+      expect(find.text('Settings Screen'), findsOneWidget);
+      expect(find.byType(AfriClubBottomNav), findsNothing);
+      expect(find.byType(NavigationRail), findsNothing);
     });
 
     testWidgets('matches shell at 200 percent text scale', (tester) async {
@@ -126,9 +134,15 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(NavigationRail), findsOneWidget);
         await _selectRailDestination(tester, 1);
-        expect(find.text('Fan Zone Screen'), findsOneWidget);
+        expect(find.text('Club Screen'), findsOneWidget);
         await _selectRailDestination(tester, 2);
+        expect(find.text('Fan Zone Screen'), findsOneWidget);
+        await _selectRailDestination(tester, 3);
+        expect(find.text('Membership Screen'), findsOneWidget);
+        router.router.go('/settings');
+        await tester.pumpAndSettle();
         expect(find.text('Settings Screen'), findsOneWidget);
+        expect(find.byType(NavigationRail), findsNothing);
         expect(tester.takeException(), isNull);
       });
     }
@@ -278,6 +292,21 @@ class _FakeHomeModule extends FeatureModule {
   );
 }
 
+class _FakeClubModule extends FeatureModule {
+  @override
+  String get featureKey => 'club';
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+    path: '/club',
+    label: 'Club',
+    icon: AfriIcons.stadium,
+    activeIcon: AfriIcons.stadium,
+    builder: (context, state) =>
+        const Scaffold(body: Center(child: Text('Club Screen'))),
+  );
+}
+
 class _FakeFanzoneModule extends FeatureModule {
   @override
   String get featureKey => 'fanzone';
@@ -290,6 +319,21 @@ class _FakeFanzoneModule extends FeatureModule {
     activeIcon: AfriIcons.fanzone,
     builder: (context, state) =>
         const Scaffold(body: Center(child: Text('Fan Zone Screen'))),
+  );
+}
+
+class _FakeMembershipModule extends FeatureModule {
+  @override
+  String get featureKey => 'membership';
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+    path: '/membership',
+    label: 'Membership',
+    icon: AfriIcons.membership,
+    activeIcon: AfriIcons.membership,
+    builder: (context, state) =>
+        const Scaffold(body: Center(child: Text('Membership Screen'))),
   );
 }
 

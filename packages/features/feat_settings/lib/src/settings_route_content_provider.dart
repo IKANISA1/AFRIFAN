@@ -34,9 +34,6 @@ class SettingsRouteContentSnapshot {
     return SettingsRouteContentSnapshot(
       supportWhatsApp: fallback.isEmpty ? null : fallback,
       status: SettingsRouteContentStatus.localFallback,
-      message:
-          'Offline. Account and appearance settings remain available. '
-          'Reconnect for support.',
       supportEnabled: false,
     );
   }
@@ -102,7 +99,7 @@ class SettingsRouteContentFailure implements Exception {
 class SettingsRouteContentRepository {
   const SettingsRouteContentRepository({
     this.supportEnabled = const bool.fromEnvironment(
-      'AFRICLUB_SUPPORT_ENABLED',
+      'CLUB_SUPPORT_ENABLED',
       defaultValue: true,
     ),
   });

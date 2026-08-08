@@ -6,6 +6,7 @@ import {
   UserRoundCog,
 } from "lucide-react";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import type { AdminResourceInteraction } from "@/components/admin/admin-resource-status-banner";
 import { AdminSurface } from "@/components/admin/admin-surface";
 import type {
   VenueGovernanceItem,
@@ -15,6 +16,7 @@ import { ui } from "@/ui-kit";
 
 interface VenueGovernancePanelProps {
   snapshot: VenueGovernanceSnapshot;
+  onInteractionChange?: (interaction: AdminResourceInteraction) => void;
 }
 
 const sections: Array<{
@@ -42,7 +44,10 @@ const sections: Array<{
   { key: "complianceFlags", title: "Compliance flags", icon: FileWarning },
 ];
 
-export function VenueGovernancePanel({ snapshot }: VenueGovernancePanelProps) {
+export function VenueGovernancePanel({
+  snapshot,
+  onInteractionChange,
+}: VenueGovernancePanelProps) {
   const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(
     snapshot.exportCsv,
   )}`;
@@ -59,6 +64,10 @@ export function VenueGovernancePanel({ snapshot }: VenueGovernancePanelProps) {
                 className={ui.buttonSecondary}
                 href={csvHref}
                 download="rayon-venue-fet-export.csv"
+                onFocus={() => onInteractionChange?.("focused")}
+                onBlur={() => onInteractionChange?.("idle")}
+                onPointerDown={() => onInteractionChange?.("pressed")}
+                onClick={() => onInteractionChange?.("selected")}
               >
                 <Download size={16} aria-hidden="true" />
                 Export CSV

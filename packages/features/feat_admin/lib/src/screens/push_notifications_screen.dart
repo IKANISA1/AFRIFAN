@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -103,35 +104,47 @@ class _PushNotificationsScreenState
   }
 
   String? _validateComposer() {
+    final l10n = context.afriL10n;
     final title = _titleController.text.trim();
     final body = _bodyController.text.trim();
     if (title.isEmpty || body.isEmpty) {
-      return 'Add a title and message body first.';
+      return l10n.adminNotificationValidationTitleBody;
     }
     if (_audience == 'BY TIER' && _selectedTier == null) {
-      return 'Choose the target tier first.';
+      return l10n.adminNotificationValidationTier;
     }
     if (_audience == 'BY GROUP' && _selectedGroupId == null) {
-      return 'Choose the target group first.';
+      return l10n.adminNotificationValidationGroup;
     }
     if (_scheduleMode == 'SCHEDULE' && _scheduledAt == null) {
-      return 'Pick the delivery date and time first.';
+      return l10n.adminNotificationValidationSchedule;
     }
     return null;
   }
 
   String _formatDeliveryMessage(AdminNotificationDelivery delivery) {
+    final l10n = context.afriL10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
     return switch (delivery.status) {
       'scheduled' =>
         delivery.scheduledAt == null
-            ? 'Notification queued for scheduled delivery.'
-            : 'Notification scheduled for ${DateFormat('dd MMM yyyy • HH:mm').format(delivery.scheduledAt!.toLocal())}.',
-      'sent' =>
-        'Sent to ${delivery.requestedCount} supporters. ${delivery.sentCount} delivered.',
-      'partial' =>
-        'Partial: ${delivery.sentCount} delivered, ${delivery.failedCount} failed.',
-      'failed' => 'Notification delivery failed.',
-      _ => 'Notification request recorded.',
+            ? l10n.adminNotificationQueued
+            : l10n.adminNotificationScheduledFor(
+                DateFormat(
+                  'dd MMM yyyy • HH:mm',
+                  locale,
+                ).format(delivery.scheduledAt!.toLocal()),
+              ),
+      'sent' => l10n.adminNotificationSentSummary(
+        delivery.requestedCount,
+        delivery.sentCount,
+      ),
+      'partial' => l10n.adminNotificationPartialSummary(
+        delivery.sentCount,
+        delivery.failedCount,
+      ),
+      'failed' => l10n.adminNotificationDeliveryFailed,
+      _ => l10n.adminNotificationRequestRecorded,
     };
   }
 
@@ -141,7 +154,11 @@ class _PushNotificationsScreenState
         item.failedCount == 0) {
       return '';
     }
-    return ' • ${item.requestedCount} targets • ${item.sentCount} sent • ${item.failedCount} failed';
+    return context.afriL10n.adminNotificationHistoryMetrics(
+      item.requestedCount,
+      item.sentCount,
+      item.failedCount,
+    );
   }
 
   Widget _choiceLabel(String value, {required bool selected}) {
@@ -151,6 +168,31 @@ class _PushNotificationsScreenState
         selected ? ColorTokens.onDark : ColorTokens.onSurfaceVariant,
       ),
     );
+  }
+
+  String _audienceLabel(String audience) {
+    final l10n = context.afriL10n;
+    return switch (audience) {
+      'BY TIER' => l10n.adminNotificationAudienceByTier,
+      'BY GROUP' => l10n.adminNotificationAudienceByGroup,
+      _ => l10n.adminNotificationAudienceAllFans,
+    };
+  }
+
+  String _tierLabel(String tier) {
+    final l10n = context.afriL10n;
+    return switch (tier) {
+      'BRONZE' => l10n.adminNotificationTierBronze,
+      'GOLD' => l10n.adminNotificationTierGold,
+      'PLATINUM' => l10n.adminNotificationTierPlatinum,
+      _ => l10n.adminNotificationTierFan,
+    };
+  }
+
+  String _scheduleLabel(String mode) {
+    return mode == 'SCHEDULE'
+        ? context.afriL10n.adminNotificationSchedule
+        : context.afriL10n.adminNotificationSendNow;
   }
 
   Future<void> _submitNotification() async {
@@ -172,10 +214,13 @@ class _PushNotificationsScreenState
       }
     } on FormatException {
       if (!mounted) return;
-      AfriToast.error(context, 'Review the notification fields and try again.');
+      AfriToast.error(context, context.afriL10n.adminNotificationFieldsInvalid);
     } catch (_) {
       if (!mounted) return;
-      AfriToast.error(context, 'Notification request was not confirmed.');
+      AfriToast.error(
+        context,
+        context.afriL10n.adminNotificationRequestUnconfirmed,
+      );
     }
   }
 
@@ -192,10 +237,13 @@ class _PushNotificationsScreenState
       ).convert(_buildPayload(snapshot));
       await Clipboard.setData(ClipboardData(text: payload));
       if (!mounted) return;
-      AfriToast.success(context, 'Payload copied to clipboard.');
+      AfriToast.success(
+        context,
+        context.afriL10n.adminNotificationPayloadCopied,
+      );
     } on FormatException {
       if (!mounted) return;
-      AfriToast.error(context, 'Review the notification fields and try again.');
+      AfriToast.error(context, context.afriL10n.adminNotificationFieldsInvalid);
     }
   }
 
@@ -212,11 +260,14 @@ class _PushNotificationsScreenState
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('SEND NOTIFICATION', style: TypographyTokens.titleLarge()),
+        title: Text(
+          context.afriL10n.adminNotificationSendTitle,
+          style: TypographyTokens.titleLarge(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
       ),
       scrollable: false,
@@ -236,8 +287,8 @@ class _PushNotificationsScreenState
                 key: const ValueKey<String>(
                   'admin-notifications-state-loading',
                 ),
-                title: 'Loading notification workspace',
-                message: 'Checking controlled delivery information.',
+                title: context.afriL10n.adminNotificationLoading,
+                message: context.afriL10n.adminNotificationLoadingMessage,
               ),
             )
           : notifications.hasError && snapshot == null
@@ -256,12 +307,16 @@ class _PushNotificationsScreenState
     final selectedGroupName = _selectedGroupName(snapshot.groups);
     final previewAudience = switch (_audience) {
       'BY TIER' =>
-        _selectedTier == null ? 'Tier not selected' : 'Tier • $_selectedTier',
+        _selectedTier == null
+            ? context.afriL10n.adminNotificationTierNotSelected
+            : context.afriL10n.adminNotificationTierPreview(
+                _tierLabel(_selectedTier!),
+              ),
       'BY GROUP' =>
         selectedGroupName == null
-            ? 'Group not selected'
-            : 'Group • ${selectedGroupName.toUpperCase()}',
-      _ => 'All supporters',
+            ? context.afriL10n.adminNotificationGroupNotSelected
+            : context.afriL10n.adminNotificationGroupPreview(selectedGroupName),
+      _ => context.afriL10n.adminNotificationAllSupporters,
     };
 
     return AfriRefreshIndicator(
@@ -279,10 +334,13 @@ class _PushNotificationsScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('DELIVERY STATUS', style: TypographyTokens.labelLarge()),
+                Text(
+                  context.afriL10n.adminNotificationDeliveryStatus,
+                  style: TypographyTokens.labelLarge(),
+                ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  'Delivery via Edge Functions. Scheduled sends dispatch on cron.',
+                  context.afriL10n.adminNotificationDeliveryStatusMessage,
                   style: TypographyTokens.bodyMedium(),
                 ),
               ],
@@ -294,7 +352,10 @@ class _PushNotificationsScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('AUDIENCE', style: TypographyTokens.labelLarge()),
+                Text(
+                  context.afriL10n.adminNotificationAudience,
+                  style: TypographyTokens.labelLarge(),
+                ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Wrap(
                   spacing: SpacingTokens.spacing2,
@@ -304,7 +365,7 @@ class _PushNotificationsScreenState
                         (item) => AfriChoiceChip(
                           selected: _audience == item,
                           label: _choiceLabel(
-                            item,
+                            _audienceLabel(item),
                             selected: _audience == item,
                           ),
                           onSelected: controlsEnabled
@@ -334,7 +395,7 @@ class _PushNotificationsScreenState
                           (tier) => AfriChoiceChip(
                             selected: _selectedTier == tier,
                             label: _choiceLabel(
-                              tier,
+                              _tierLabel(tier),
                               selected: _selectedTier == tier,
                             ),
                             onSelected: controlsEnabled
@@ -349,7 +410,7 @@ class _PushNotificationsScreenState
                   const SizedBox(height: SpacingTokens.spacing4),
                   AfriDropdownField<String>(
                     initialValue: _selectedGroupId,
-                    label: 'Select group',
+                    label: context.afriL10n.adminNotificationSelectGroup,
                     items: snapshot.groups
                         .map(
                           (group) => DropdownMenuItem<String>(
@@ -366,21 +427,23 @@ class _PushNotificationsScreenState
                 const SizedBox(height: SpacingTokens.spacing5),
                 AfriInputField(
                   controller: _titleController,
-                  label: 'Notification title',
+                  label: context.afriL10n.adminNotificationTitleLabel,
                   onChanged: (_) => setState(() {}),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 AfriInputField(
                   controller: _bodyController,
                   maxLines: 2,
-                  label: 'Message body',
-                  helperText: '$charCount characters',
+                  label: context.afriL10n.adminNotificationBodyLabel,
+                  helperText: context.afriL10n.adminNotificationCharacterCount(
+                    charCount,
+                  ),
                   onChanged: (_) => setState(() {}),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 AfriInputField(
                   controller: _imageUrlController,
-                  label: 'Optional image URL',
+                  label: context.afriL10n.adminNotificationImageUrl,
                 ),
               ],
             ),
@@ -391,7 +454,10 @@ class _PushNotificationsScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('SCHEDULE', style: TypographyTokens.labelLarge()),
+                Text(
+                  context.afriL10n.adminNotificationSchedule,
+                  style: TypographyTokens.labelLarge(),
+                ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Wrap(
                   spacing: SpacingTokens.spacing2,
@@ -400,7 +466,7 @@ class _PushNotificationsScreenState
                         (mode) => AfriChoiceChip(
                           selected: _scheduleMode == mode,
                           label: _choiceLabel(
-                            mode,
+                            _scheduleLabel(mode),
                             selected: _scheduleMode == mode,
                           ),
                           onSelected: controlsEnabled
@@ -424,9 +490,10 @@ class _PushNotificationsScreenState
                     icon: const Icon(AfriIcons.statusPending),
                     label: Text(
                       _scheduledAt == null
-                          ? 'Pick date & time'
+                          ? context.afriL10n.adminNotificationPickDateTime
                           : DateFormat(
                               'dd MMM yyyy • HH:mm',
+                              Localizations.localeOf(context).toLanguageTag(),
                             ).format(_scheduledAt!.toLocal()),
                     ),
                     style: AfriOutlinedButton.styleFrom(
@@ -447,8 +514,8 @@ class _PushNotificationsScreenState
           AfriButton(
             key: const ValueKey<String>('admin-notifications-send'),
             label: _scheduleMode == 'SCHEDULE'
-                ? 'Schedule notification'
-                : 'Send notification',
+                ? context.afriL10n.adminNotificationScheduleAction
+                : context.afriL10n.adminNotificationSendAction,
             fullWidth: true,
             isLoading: snapshot.isMutating,
             onTap: _submitNotification,
@@ -461,20 +528,19 @@ class _PushNotificationsScreenState
                 ? () => unawaited(_copyPayload(snapshot))
                 : null,
             icon: const Icon(AfriIcons.copy),
-            label: const Text('COPY PAYLOAD'),
+            label: Text(context.afriL10n.adminNotificationCopyPayload),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
           Text(
-            'SEND HISTORY',
+            context.afriL10n.adminNotificationSendHistory,
             style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           if (snapshot.history.isEmpty)
             AfriStateView.empty(
               key: const ValueKey<String>('admin-notifications-state-empty'),
-              title: 'No notification history',
-              message:
-                  'Confirmed delivery records will appear here after a request.',
+              title: context.afriL10n.adminNotificationHistoryEmpty,
+              message: context.afriL10n.adminNotificationHistoryEmptyMessage,
               compact: true,
             )
           else
@@ -497,57 +563,57 @@ class _PushNotificationsScreenState
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-notifications-state-disabled'),
-        title: 'Notification management unavailable',
-        message:
-            'Notification controls are disabled for this controlled build.',
+        title: context.afriL10n.adminNotificationManagementUnavailable,
+        message: context.afriL10n.adminNotificationControlsDisabled,
         icon: AfriIcons.lock,
-        actionLabel: 'Back to admin',
+        actionLabel: context.afriL10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
     );
   }
 
   Widget _unavailable(AdminNotificationsFailure failure) {
+    final l10n = context.afriL10n;
     void retry() =>
         unawaited(ref.read(adminNotificationsProvider.notifier).refresh());
     final view = switch (failure.kind) {
       AdminNotificationsFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-notifications-state-offline'),
-        title: 'Notification workspace offline',
-        message: 'Reconnect before loading private delivery information.',
-        actionLabel: 'Try again',
+        title: l10n.adminNotificationWorkspaceOffline,
+        message: l10n.adminNotificationOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
       AdminNotificationsFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>(
           'admin-notifications-state-permission-denied',
         ),
-        title: 'Notification access unavailable',
-        message: 'This account cannot view or send notifications.',
-        actionLabel: 'Back to admin',
+        title: l10n.adminNotificationAccessUnavailable,
+        message: l10n.adminNotificationAccessMessage,
+        actionLabel: l10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
       AdminNotificationsFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-notifications-state-conflict'),
-        title: 'Delivery information changed',
-        message: 'Refresh before making another notification request.',
-        actionLabel: 'Refresh',
+        title: l10n.adminNotificationDataChanged,
+        message: l10n.adminNotificationDataChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: retry,
       ),
       AdminNotificationsFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>(
           'admin-notifications-state-security-timeout',
         ),
-        title: 'Security check timed out',
-        message: 'No delivery information was shown. Check your connection.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminNotificationSecurityMessage,
+        actionLabel: l10n.retry,
         onAction: retry,
       ),
       AdminNotificationsFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-notifications-state-error'),
-        title: 'Notification workspace unavailable',
-        message: 'Private delivery information remains hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminNotificationWorkspaceUnavailable,
+        message: l10n.adminNotificationHiddenMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
     };
@@ -561,12 +627,11 @@ class _PushNotificationsScreenState
     final snapshot = notifications.valueOrNull;
     if (snapshot == null) return null;
     if (notifications.isLoading || snapshot.isMutating) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-notifications-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-notifications-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Checking delivery information',
-        subtitle:
-            'Showing the last confirmed state while current data is checked.',
+        title: context.afriL10n.adminNotificationChecking,
+        subtitle: context.afriL10n.adminNotificationCheckingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -581,16 +646,16 @@ class _PushNotificationsScreenState
           : AfriIcons.statusWarning,
       title: switch (failure.kind) {
         AdminNotificationsFailureKind.conflict =>
-          'Delivery information changed',
+          context.afriL10n.adminNotificationDataChanged,
         AdminNotificationsFailureKind.securityTimeout =>
-          'Security check timed out',
+          context.afriL10n.adminSecurityTimeout,
         AdminNotificationsFailureKind.offline =>
-          'Notification workspace offline',
-        _ => 'Notification workspace unavailable',
+          context.afriL10n.adminNotificationWorkspaceOffline,
+        _ => context.afriL10n.adminNotificationWorkspaceUnavailable,
       },
       subtitle: snapshot.mutationOutcomeUnconfirmed
-          ? 'The last request is unconfirmed. Controls stay paused until refresh succeeds.'
-          : 'Last confirmed delivery information remains visible. Controls are paused.',
+          ? context.afriL10n.adminNotificationOutcomeUnconfirmed
+          : context.afriL10n.adminNotificationLastConfirmed,
       tone: AfriStateBannerTone.warning,
     );
   }

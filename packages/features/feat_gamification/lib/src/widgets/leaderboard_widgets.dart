@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,9 @@ class LeaderboardPeriodChip extends StatelessWidget {
       onTap: onTap,
       tooltip: label,
       semanticsLabel: label,
-      semanticsHint: selected ? 'Selected leaderboard period' : 'Select period',
+      semanticsHint: selected
+          ? context.afriL10n.gameSelectedLeaderboardPeriod
+          : context.afriL10n.gameSelectPeriod,
       selected: selected,
       scaleEnd: 0.98,
       child: AnimatedContainer(
@@ -101,7 +104,11 @@ class FetPodiumCard extends StatelessWidget {
           _RankBadge(rank: rank),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry == null ? '--' : '#${entry!.rank.toString().padLeft(2, '0')}',
+            entry == null
+                ? '--'
+                : context.afriL10n.gameRankLabel(
+                    entry!.rank.toString().padLeft(2, '0'),
+                  ),
             style:
                 (featured
                         ? TypographyTokens.headlineLarge(ColorTokens.clubAccent)
@@ -112,7 +119,7 @@ class FetPodiumCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry?.displayName ?? 'Rank pending',
+            entry?.displayName ?? context.afriL10n.gameRankPending,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TypographyTokens.bodyMedium(),
@@ -120,7 +127,9 @@ class FetPodiumCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry == null ? '0 pts' : '+${entry!.totalFetEarned} pts',
+            entry == null
+                ? context.afriL10n.gamePointBalance(0)
+                : context.afriL10n.gamePoints(entry!.totalFetEarned),
             style:
                 (featured
                         ? TypographyTokens.headlineSmall(ColorTokens.clubAccent)
@@ -155,7 +164,9 @@ class FetUserRow extends StatelessWidget {
           SizedBox(
             width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
             child: Text(
-              '#${entry.rank.toString().padLeft(2, '0')}',
+              context.afriL10n.gameRankLabel(
+                entry.rank.toString().padLeft(2, '0'),
+              ),
               style: TypographyTokens.headlineSmall(
                 ColorTokens.clubAccent,
               ).copyWith(fontWeight: FontWeight.w800),
@@ -173,19 +184,25 @@ class FetUserRow extends StatelessWidget {
                       style: TypographyTokens.titleSmall(),
                     ),
                     const SizedBox(width: SpacingTokens.spacing2),
-                    const _LeaderboardBadge(label: 'YOU', selected: true),
+                    _LeaderboardBadge(
+                      label: context.afriL10n.gameYouUpper,
+                      selected: true,
+                    ),
                   ],
                 ),
                 const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
-                  '${entry.winRate.toStringAsFixed(1)}% accuracy · ${entry.wins} wins',
+                  context.afriL10n.gameAccuracyWins(
+                    entry.winRate.toStringAsFixed(1),
+                    entry.wins,
+                  ),
                   style: TypographyTokens.bodySmall(),
                 ),
               ],
             ),
           ),
           Text(
-            '+${entry.totalFetEarned} pts',
+            context.afriL10n.gamePoints(entry.totalFetEarned),
             style: TypographyTokens.titleLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w800),
@@ -223,7 +240,9 @@ class FetListRow extends StatelessWidget {
           SizedBox(
             width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
             child: Text(
-              '#${entry.rank.toString().padLeft(2, '0')}',
+              context.afriL10n.gameRankLabel(
+                entry.rank.toString().padLeft(2, '0'),
+              ),
               style: TypographyTokens.headlineSmall(
                 entry.rank <= 3
                     ? ColorTokens.clubAccent
@@ -247,13 +266,19 @@ class FetListRow extends StatelessWidget {
                     ),
                     if (isMe) ...[
                       const SizedBox(width: SpacingTokens.spacing2),
-                      const _LeaderboardBadge(label: 'YOU', selected: true),
+                      _LeaderboardBadge(
+                        label: context.afriL10n.gameYouUpper,
+                        selected: true,
+                      ),
                     ],
                   ],
                 ),
                 const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
-                  '${entry.winRate.toStringAsFixed(1)}% accuracy · ${entry.wins} wins',
+                  context.afriL10n.gameAccuracyWins(
+                    entry.winRate.toStringAsFixed(1),
+                    entry.wins,
+                  ),
                   style: TypographyTokens.bodySmall(),
                 ),
               ],
@@ -263,13 +288,13 @@ class FetListRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '+${entry.totalFetEarned} pts',
+                context.afriL10n.gamePoints(entry.totalFetEarned),
                 style: TypographyTokens.titleLarge(
                   ColorTokens.clubAccent,
                 ).copyWith(fontWeight: FontWeight.w800),
               ),
               Text(
-                '${entry.totalSettled} settled',
+                context.afriL10n.gameSettledCount(entry.totalSettled),
                 style: TypographyTokens.bodySmall(),
               ),
             ],
@@ -306,7 +331,11 @@ class SupporterPodiumCard extends StatelessWidget {
           _RankBadge(rank: rank),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry == null ? '--' : '#${entry!.rank.toString().padLeft(2, '0')}',
+            entry == null
+                ? '--'
+                : context.afriL10n.gameRankLabel(
+                    entry!.rank.toString().padLeft(2, '0'),
+                  ),
             style:
                 (featured
                         ? TypographyTokens.headlineLarge(ColorTokens.clubAccent)
@@ -317,7 +346,7 @@ class SupporterPodiumCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry?.displayName ?? 'Rank pending',
+            entry?.displayName ?? context.afriL10n.gameRankPending,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TypographyTokens.bodyMedium(),
@@ -326,8 +355,10 @@ class SupporterPodiumCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             entry == null
-                ? '0 pts'
-                : '${formatLeaderboardNumber(entry!.totalFet)} pts',
+                ? context.afriL10n.gamePointBalance(0)
+                : context.afriL10n.gameFormattedPoints(
+                    formatLeaderboardNumber(entry!.totalFet),
+                  ),
             style:
                 (featured
                         ? TypographyTokens.headlineSmall(ColorTokens.clubAccent)
@@ -366,7 +397,9 @@ class SupporterUserRow extends StatelessWidget {
           SizedBox(
             width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
             child: Text(
-              '#${entry.rank.toString().padLeft(2, '0')}',
+              context.afriL10n.gameRankLabel(
+                entry.rank.toString().padLeft(2, '0'),
+              ),
               style: TypographyTokens.headlineSmall(
                 ColorTokens.clubAccent,
               ).copyWith(fontWeight: FontWeight.w800),
@@ -384,19 +417,27 @@ class SupporterUserRow extends StatelessWidget {
                       style: TypographyTokens.titleSmall(),
                     ),
                     const SizedBox(width: SpacingTokens.spacing2),
-                    const _LeaderboardBadge(label: 'YOU', selected: true),
+                    _LeaderboardBadge(
+                      label: context.afriL10n.gameYouUpper,
+                      selected: true,
+                    ),
                   ],
                 ),
                 const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
-                  '${entry.tier.toUpperCase()} tier · ${entry.supporterAlias}',
+                  context.afriL10n.gameTierAlias(
+                    entry.tier.toUpperCase(),
+                    entry.supporterAlias,
+                  ),
                   style: TypographyTokens.bodySmall(),
                 ),
               ],
             ),
           ),
           Text(
-            '${formatLeaderboardNumber(entry.totalFet)} pts',
+            context.afriL10n.gameFormattedPoints(
+              formatLeaderboardNumber(entry.totalFet),
+            ),
             style: TypographyTokens.titleLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w800),
@@ -434,7 +475,9 @@ class SupporterListRow extends StatelessWidget {
           SizedBox(
             width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
             child: Text(
-              '#${entry.rank.toString().padLeft(2, '0')}',
+              context.afriL10n.gameRankLabel(
+                entry.rank.toString().padLeft(2, '0'),
+              ),
               style: TypographyTokens.headlineSmall(
                 entry.rank <= 3
                     ? ColorTokens.clubAccent
@@ -458,20 +501,28 @@ class SupporterListRow extends StatelessWidget {
                     ),
                     if (isMe) ...[
                       const SizedBox(width: SpacingTokens.spacing2),
-                      const _LeaderboardBadge(label: 'YOU', selected: true),
+                      _LeaderboardBadge(
+                        label: context.afriL10n.gameYouUpper,
+                        selected: true,
+                      ),
                     ],
                   ],
                 ),
                 const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
-                  '${entry.tier.toUpperCase()} tier · ${entry.supporterAlias}',
+                  context.afriL10n.gameTierAlias(
+                    entry.tier.toUpperCase(),
+                    entry.supporterAlias,
+                  ),
                   style: TypographyTokens.bodySmall(),
                 ),
               ],
             ),
           ),
           Text(
-            '${formatLeaderboardNumber(entry.totalFet)} pts',
+            context.afriL10n.gameFormattedPoints(
+              formatLeaderboardNumber(entry.totalFet),
+            ),
             style: TypographyTokens.titleLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w800),
@@ -494,7 +545,7 @@ class _RankBadge extends StatelessWidget {
     }
 
     return Semantics(
-      label: 'Podium rank $rank',
+      label: context.afriL10n.gamePodiumRank(rank!),
       image: true,
       child: Icon(
         AfriIcons.rank,

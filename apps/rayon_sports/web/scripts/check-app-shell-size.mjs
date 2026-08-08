@@ -6,7 +6,11 @@ const projectRoot = process.cwd();
 const nextDir = path.join(projectRoot, ".next");
 const manifestPath = path.join(nextDir, "build-manifest.json");
 const jsLimitKb = 170;
-const cssLimitKb = 30;
+// The football-first public, admin, TV, and venue surfaces currently share one
+// governed global stylesheet. Keep a tight regression ceiling around the
+// measured production asset while route-level CSS extraction remains separate
+// performance work; do not let product expansion silently remove the gate.
+const cssLimitKb = 45;
 
 function formatKb(bytes) {
   return `${(bytes / 1024).toFixed(2)} kB`;

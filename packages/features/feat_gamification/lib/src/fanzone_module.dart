@@ -4,9 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import 'screens/fanzone_hub_screen.dart';
 import 'screens/fet_wallet_screen.dart';
-import 'screens/game_session_controller_screen.dart';
-import 'screens/game_session_join_screen.dart';
 import 'screens/match_detail_screen.dart';
+import 'screens/participant_live_games_screen.dart';
 import 'screens/prediction_detail_screen.dart';
 import 'screens/share_card_generator_screen.dart';
 import 'screens/venue_checkin_screen.dart';
@@ -76,27 +75,6 @@ class FanzoneModule extends FeatureModule {
         final predictionId = state.pathParameters['predictionId'] ?? '';
         return '/fanzone/my/$predictionId';
       },
-    ),
-    GoRoute(
-      path: 'game',
-      name: 'fanzone-game-session-entry',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const GameSessionJoinScreen(), fullHeight: true),
-    ),
-    GoRoute(
-      path: 'game/:sessionId',
-      name: 'fanzone-game-session-controller',
-      pageBuilder: (context, state) => afriSheetPage(
-        state,
-        GameSessionControllerScreen(
-          sessionId: state.pathParameters['sessionId'] ?? '',
-          sessionPlayerId:
-              state.uri.queryParameters['session_player_id'] ??
-              state.uri.queryParameters['sessionPlayerId'] ??
-              state.uri.queryParameters['playerId'],
-        ),
-        fullHeight: true,
-      ),
     ),
     GoRoute(
       path: 'venue',
@@ -210,6 +188,26 @@ class FanzoneModule extends FeatureModule {
   ];
 
   @override
+  List<RouteBase> get standaloneRoutes => [
+    GoRoute(
+      path: '/fanzone/game',
+      name: 'fanzone-game-session-entry',
+      pageBuilder: (context, state) =>
+          afriRoutePage(state, const ParticipantLiveGamesScreen()),
+    ),
+    GoRoute(
+      path: '/fanzone/game/:sessionId',
+      name: 'fanzone-game-session-controller',
+      pageBuilder: (context, state) => afriRoutePage(
+        state,
+        ParticipantLiveGamesScreen(
+          initialSessionId: state.pathParameters['sessionId'],
+        ),
+      ),
+    ),
+  ];
+
+  @override
   List<RoutePresentationDecision> get routePresentationDecisions => const [
     RoutePresentationDecision(
       path: '/fanzone',
@@ -219,19 +217,19 @@ class FanzoneModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/fanzone/game',
-      presentation: RoutePresentation.fullHeightSheet,
-      recommendation: 'convert to sheet',
-      targetPath: '/fanzone',
+      presentation: RoutePresentation.fullScreen,
+      renderedStateContract: 'controlled_participant_discovery_surface',
+      recommendation: 'keep',
       rationale:
-          'TV-led game code entry is contextual to Fan Zone and should not increase the primary screen count.',
+          'Eligible-session discovery is a focused authenticated task with no TV-code input or competing bottom navigation.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/game/:sessionId',
-      presentation: RoutePresentation.fullHeightSheet,
-      recommendation: 'convert to sheet',
-      targetPath: '/fanzone',
+      presentation: RoutePresentation.fullScreen,
+      renderedStateContract: 'controlled_participant_live_surface',
+      recommendation: 'keep',
       rationale:
-          'Mobile controller opens from TV pairing/deep links but remains a Fan Zone modal task.',
+          'The synchronized participant game requires a focused full-screen deep-link destination.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/venue',

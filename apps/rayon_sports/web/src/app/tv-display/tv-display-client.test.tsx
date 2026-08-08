@@ -58,18 +58,22 @@ describe("TvDisplayClient", () => {
       supabase as ReturnType<typeof getBrowserSupabase>,
     );
 
+    const activeSessionId = "00000000-0000-4000-8000-000000000001";
     const { unmount } = render(
       <TvDisplayClient
-        initialState={createDemoTvSessionState()}
-        sessionId="00000000-0000-4000-8000-000000000001"
+        initialState={createTvSessionPlaceholder(activeSessionId)}
+        sessionId={activeSessionId}
       />,
     );
 
     await waitFor(() => {
       expect(supabase.channel).toHaveBeenCalledWith(
-        "africlub_game_session:00000000-0000-4000-8000-000000000001",
+        "24:game_session:00000000-0000-4000-8000-000000000001",
       );
     });
+    expect(supabase.channel).not.toHaveBeenCalledWith(
+      "0:game_session:00000000-0000-4000-8000-000000000001",
+    );
     expect(channel.on).toHaveBeenCalledWith(
       "postgres_changes",
       expect.objectContaining({
@@ -225,5 +229,69 @@ describe("TvDisplayClient", () => {
       /offline/i,
     );
     expect(getByText(/modern era/i)).toBeTruthy();
+  });
+
+  it("refreshes the authoritative snapshot after the display reconnects", async () => {
+    const live = createDemoTvSessionState();
+    const getTvState = vi.fn().mockResolvedValue(live);
+    vi.mocked(createGameRuntimeClient).mockReturnValue(
+      { getTvState } as unknown as ReturnType<typeof createGameRuntimeClient>,
+    );
+    vi.mocked(getBrowserSupabase).mockReturnValue(null);
+
+    const { container, getByRole } = render(
+      <TvDisplayClient
+        initialState={createTvSessionPlaceholder(live.sessionId)}
+        sessionId={live.sessionId}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(getByRole("status")).toHaveTextContent(/live session/i);
+    });
+    getTvState.mockClear();
+
+    await act(async () => {
+      window.dispatchEvent(new Event("offline"));
+    });
+    expect(container.querySelector("[data-tv-status]")).toHaveTextContent(
+      /offline/i,
+    );
+
+    await act(async () => {
+      window.dispatchEvent(new Event("online"));
+    });
+
+    await waitFor(() => {
+      expect(getTvState).toHaveBeenCalledWith(live.sessionId);
+      expect(getByRole("status")).toHaveTextContent(/live session/i);
+    });
+  });
+
+  it("renders an authorization failure as a fail-closed alert", async () => {
+    const live = createDemoTvSessionState();
+    const getTvState = vi.fn().mockRejectedValue(
+      new GameRuntimeRequestError(
+        "permission_denied",
+        "Display access denied.",
+        403,
+      ),
+    );
+    vi.mocked(createGameRuntimeClient).mockReturnValue(
+      { getTvState } as unknown as ReturnType<typeof createGameRuntimeClient>,
+    );
+    vi.mocked(getBrowserSupabase).mockReturnValue(null);
+
+    const { getByRole } = render(
+      <TvDisplayClient
+        initialState={createTvSessionPlaceholder(live.sessionId)}
+        sessionId={live.sessionId}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(getByRole("alert")).toHaveTextContent(/display access denied/i);
+    });
+    expect(getByRole("alert")).toHaveTextContent(/verify this screen/i);
   });
 });

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -171,9 +172,12 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
                   onDismissed: (_) => _dismiss(),
                   child: AfriPressFeedback(
                     onTap: _dismiss,
-                    tooltip: 'Dismiss notification',
-                    semanticsLabel: 'Notification: $_title. $_message',
-                    semanticsHint: 'Tap or swipe up to dismiss',
+                    tooltip: context.afriL10n.gameDismissNotification,
+                    semanticsLabel: context.afriL10n.gameNotificationSemantics(
+                      _title,
+                      _message,
+                    ),
+                    semanticsHint: context.afriL10n.gameDismissNotificationHint,
                     child: Material(
                       color: ColorTokens.transparent,
                       child: Container(

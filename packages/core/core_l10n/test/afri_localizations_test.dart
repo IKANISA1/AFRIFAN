@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:core_l10n/core_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -47,6 +50,9 @@ void main() {
         ..._shopMessages(l10n),
         ..._ticketMessages(l10n),
         ..._contributionsMessages(l10n),
+        ..._settingsMessages(l10n),
+        ..._adminMessages(l10n),
+        ..._gameMessages(l10n),
       ];
 
       expect(
@@ -120,6 +126,44 @@ void main() {
       rw.contributionsPaymentConfirmedTitle,
       isNot(en.contributionsPaymentConfirmedTitle),
     );
+    expect(fr.settingsTitle, isNot(en.settingsTitle));
+    expect(rw.settingsTitle, isNot(en.settingsTitle));
+    expect(fr.settingsSectionGamesAndTvs, isNot(en.settingsSectionGamesAndTvs));
+    expect(rw.settingsSectionGamesAndTvs, isNot(en.settingsSectionGamesAndTvs));
+    expect(
+      fr.notificationPreferencesDeliverySection,
+      isNot(en.notificationPreferencesDeliverySection),
+    );
+    expect(
+      rw.notificationPreferencesDeliverySection,
+      isNot(en.notificationPreferencesDeliverySection),
+    );
+    expect(fr.privacySettingsTitle, isNot(en.privacySettingsTitle));
+    expect(rw.privacySettingsTitle, isNot(en.privacySettingsTitle));
+    expect(fr.adminFeatureManagerTitle, isNot(en.adminFeatureManagerTitle));
+    expect(rw.adminFeatureManagerTitle, isNot(en.adminFeatureManagerTitle));
+    expect(fr.adminCompetitionsTitle, isNot(en.adminCompetitionsTitle));
+    expect(rw.adminCompetitionsTitle, isNot(en.adminCompetitionsTitle));
+    expect(fr.adminCmsTitle, isNot(en.adminCmsTitle));
+    expect(rw.adminCmsTitle, isNot(en.adminCmsTitle));
+    expect(fr.gameRewardsStoreTitle, isNot(en.gameRewardsStoreTitle));
+    expect(rw.gameRewardsStoreTitle, isNot(en.gameRewardsStoreTitle));
+    expect(fr.gameLiveGamesTitle, isNot(en.gameLiveGamesTitle));
+    expect(rw.gameLiveGamesTitle, isNot(en.gameLiveGamesTitle));
+    expect(fr.gameNoEligibleSessions, isNot(en.gameNoEligibleSessions));
+    expect(rw.gameNoEligibleSessions, isNot(en.gameNoEligibleSessions));
+    expect(fr.gameScheduledDescription, isNot(en.gameScheduledDescription));
+    expect(rw.gameScheduledDescription, isNot(en.gameScheduledDescription));
+    expect(fr.gamePhaseEndsAt, isNot(en.gamePhaseEndsAt));
+    expect(rw.gamePhaseEndsAt, isNot(en.gamePhaseEndsAt));
+    expect(fr.gameOperationsTitle, isNot(en.gameOperationsTitle));
+    expect(rw.gameOperationsTitle, isNot(en.gameOperationsTitle));
+    expect(fr.gameMyTvsTitle, isNot(en.gameMyTvsTitle));
+    expect(rw.gameMyTvsTitle, isNot(en.gameMyTvsTitle));
+    expect(fr.gamePlannerFormInvalid, isNot(en.gamePlannerFormInvalid));
+    expect(rw.gamePlannerFormInvalid, isNot(en.gamePlannerFormInvalid));
+    expect(fr.gameLiveControlTitle, isNot(en.gameLiveControlTitle));
+    expect(rw.gameLiveControlTitle, isNot(en.gameLiveControlTitle));
     expect(
       rw.onboardingBelongBody('Rayon Sports FC'),
       contains('Rayon Sports FC'),
@@ -152,6 +196,140 @@ void main() {
         everyElement(hasLength(lessThanOrEqualTo(90))),
         reason: '${locale.languageCode} TV copy exceeded 90 characters.',
       );
+    }
+  });
+
+  test('EN, FR, and RW ARB catalogs reject duplicate top-level keys', () {
+    final topLevelKey = RegExp(r'^  "([^"]+)"\s*:', multiLine: true);
+
+    for (final language in const <String>['en', 'fr', 'rw']) {
+      final source = _arbCatalog(language).readAsStringSync();
+      final seen = <String>{};
+      final duplicates = <String>{};
+      for (final match in topLevelKey.allMatches(source)) {
+        final key = match.group(1)!;
+        if (!seen.add(key)) duplicates.add(key);
+      }
+
+      expect(
+        duplicates,
+        isEmpty,
+        reason:
+            'afri_$language.arb must not rely on order-dependent duplicate '
+            'message IDs.',
+      );
+    }
+  });
+
+  test('Settings EN, FR, and RW ARB catalogs have exhaustive key parity', () {
+    final catalogs = <String, Map<String, dynamic>>{
+      for (final language in <String>['en', 'fr', 'rw'])
+        language:
+            jsonDecode(_arbCatalog(language).readAsStringSync())
+                as Map<String, dynamic>,
+    };
+    final settingsKeys = catalogs['en']!.keys
+        .where(
+          (key) =>
+              !key.startsWith('@') &&
+              (key.startsWith('settings') ||
+                  key.startsWith('editProfile') ||
+                  key.startsWith('notificationPreferences') ||
+                  key.startsWith('privacySettings')),
+        )
+        .toSet();
+
+    expect(settingsKeys, isNotEmpty);
+    for (final entry in catalogs.entries) {
+      final localeKeys = entry.value.keys
+          .where((key) => !key.startsWith('@'))
+          .toSet();
+      expect(
+        localeKeys,
+        containsAll(settingsKeys),
+        reason: '${entry.key} must contain every Settings catalog key.',
+      );
+      for (final key in settingsKeys) {
+        expect(
+          entry.value[key],
+          isA<String>().having(
+            (value) => value.trim(),
+            '$key translation',
+            isNotEmpty,
+          ),
+          reason: '${entry.key} must populate $key.',
+        );
+      }
+    }
+  });
+
+  test('Admin EN, FR, and RW ARB catalogs have exhaustive key parity', () {
+    final catalogs = <String, Map<String, dynamic>>{
+      for (final language in <String>['en', 'fr', 'rw'])
+        language:
+            jsonDecode(_arbCatalog(language).readAsStringSync())
+                as Map<String, dynamic>,
+    };
+    final adminKeys = catalogs['en']!.keys
+        .where((key) => !key.startsWith('@') && key.startsWith('admin'))
+        .toSet();
+
+    expect(adminKeys, isNotEmpty);
+    for (final entry in catalogs.entries) {
+      final localeKeys = entry.value.keys
+          .where((key) => !key.startsWith('@'))
+          .toSet();
+      expect(
+        localeKeys,
+        containsAll(adminKeys),
+        reason: '${entry.key} must contain every Admin catalog key.',
+      );
+      for (final key in adminKeys) {
+        expect(
+          entry.value[key],
+          isA<String>().having(
+            (value) => value.trim(),
+            '$key translation',
+            isNotEmpty,
+          ),
+          reason: '${entry.key} must populate $key.',
+        );
+      }
+    }
+  });
+
+  test('Game EN, FR, and RW ARB catalogs have exhaustive key parity', () {
+    final catalogs = <String, Map<String, dynamic>>{
+      for (final language in <String>['en', 'fr', 'rw'])
+        language:
+            jsonDecode(_arbCatalog(language).readAsStringSync())
+                as Map<String, dynamic>,
+    };
+    final gameKeys = catalogs['en']!.keys
+        .where((key) => !key.startsWith('@') && key.startsWith('game'))
+        .toSet();
+
+    expect(gameKeys, isNotEmpty);
+    for (final entry in catalogs.entries) {
+      final localeKeys = entry.value.keys
+          .where((key) => !key.startsWith('@'))
+          .toSet();
+      expect(
+        localeKeys,
+        containsAll(gameKeys),
+        reason: '${entry.key} must contain every Game catalog key.',
+      );
+      for (final key in gameKeys) {
+        expect(
+          entry.value[key],
+          isA<String>().having(
+            (value) => value.trim(),
+            '$key translation',
+            isNotEmpty,
+          ),
+          reason: '${entry.key} must populate $key.',
+        );
+      }
     }
   });
 
@@ -189,6 +367,24 @@ void main() {
       );
       expect(tester.takeException(), isNull);
     },
+  );
+}
+
+File _arbCatalog(String language) {
+  var candidate = Directory.current.absolute;
+  while (candidate.parent.path != candidate.path) {
+    final packageLocal = File('${candidate.path}/lib/l10n/afri_$language.arb');
+    if (packageLocal.existsSync()) return packageLocal;
+
+    final workspaceLocal = File(
+      '${candidate.path}/packages/core/core_l10n/lib/l10n/'
+      'afri_$language.arb',
+    );
+    if (workspaceLocal.existsSync()) return workspaceLocal;
+    candidate = candidate.parent;
+  }
+  throw StateError(
+    'Could not locate the core_l10n ARB catalog from ${Directory.current.path}.',
   );
 }
 
@@ -1268,4 +1464,163 @@ List<String> _clubMessages(AfriLocalizations l10n) => <String>[
   l10n.clubTicketsSubtitle,
   l10n.clubShopTitle,
   l10n.clubShopSubtitle,
+];
+
+List<String> _settingsMessages(AfriLocalizations l10n) => <String>[
+  l10n.settingsTitle,
+  l10n.settingsSectionGamesAndTvs,
+  l10n.settingsEditProfile,
+  l10n.settingsAppearance,
+  l10n.settingsNotifications,
+  l10n.settingsPrivacy,
+  l10n.settingsHelpSupport,
+  l10n.settingsSignOutTitle,
+  l10n.settingsDeleteAccountTitle,
+  l10n.settingsSupportGreeting('AFRICLUB'),
+  l10n.editProfileTitle,
+  l10n.editProfileLoadingTitle,
+  l10n.editProfileNicknameLabel,
+  l10n.editProfileSaveChanges,
+  l10n.editProfileLanguageEnglish,
+  l10n.editProfileLanguageFrench,
+  l10n.editProfileLanguageKinyarwanda,
+  l10n.notificationPreferencesTitle,
+  l10n.notificationPreferencesLoadingTitle,
+  l10n.notificationPreferencesOfflineTitle,
+  l10n.notificationPreferencesDeliverySection,
+  l10n.notificationPreferencesPermissionEnabled,
+  l10n.notificationPreferencesFullStream('AFRICLUB'),
+  l10n.notificationPreferencesPerCategory,
+  l10n.notificationPreferencesSave,
+  l10n.privacySettingsTitle,
+  l10n.privacySettingsLoadingTitle,
+  l10n.privacySettingsOfflineTitle,
+  l10n.privacySettingsControls,
+  l10n.privacySettingsMomoSmsSync,
+  l10n.privacySettingsShareAnalytics,
+  l10n.privacySettingsExportWhatsAppMessage('AFRICLUB'),
+  l10n.privacySettingsExportEmailSubject('AFRICLUB'),
+  l10n.privacySettingsOpenPolicy,
+  l10n.privacySettingsActiveSessions,
+  l10n.privacySettingsSignOutOtherDevices,
+];
+
+List<String> _adminMessages(AfriLocalizations l10n) => <String>[
+  l10n.adminClubAdmin,
+  l10n.adminChallengesTitle,
+  l10n.adminSettlementTitle,
+  l10n.adminMatchesTitle,
+  l10n.adminFeatureManagerTitle,
+  l10n.adminFeatureOpenTooltip('Predictions'),
+  l10n.adminFeatureSettingsSemantic('Predictions'),
+  l10n.adminFeatureChangeVisibilityTooltip('Predictions'),
+  l10n.adminCompetitionsTitle,
+  l10n.adminCompetitionActivateMessage('League'),
+  l10n.adminSeasonAvailabilityMessage('2026', l10n.adminAvailable),
+  l10n.adminNotificationSendTitle,
+  l10n.adminNotificationCharacterCount(12),
+  l10n.adminNotificationScheduledFor('30 Jul 2026'),
+  l10n.adminNotificationSentSummary(10, 9),
+  l10n.adminNotificationHistoryMetrics(10, 9, 1),
+  l10n.adminContributionsTitle,
+  l10n.adminContributionsSummary(2, 8),
+  l10n.adminContributionsRecordMembers(8, 4),
+  l10n.adminContributionsLastActivity('30 Jul 2026'),
+  l10n.adminSmsTitle,
+  l10n.adminSmsMetricSemantics('Pipeline', l10n.adminSmsStatusHealthy),
+  l10n.adminSmsLastSignal('30 Jul 2026'),
+  l10n.adminSmsRunTitle(
+    l10n.adminSmsStatusSucceeded,
+    l10n.adminSmsTriggerManual,
+  ),
+  l10n.adminSmsRunMetrics(10, 9, 1),
+  l10n.adminCmsTitle,
+  l10n.adminCmsCompetitionSummary('League', 4),
+  l10n.adminCmsFeatureName('Predictions'),
+  l10n.adminCmsArticleMeta('NEWS', '30 Jul 2026', l10n.adminCmsFeatured),
+  l10n.adminCmsPair('Mobile', 'Global'),
+];
+
+List<String> _gameMessages(AfriLocalizations l10n) => <String>[
+  l10n.gameVerifyToPredict,
+  l10n.gameMakePicksDescription,
+  l10n.gameBadgesTitle,
+  l10n.gameBadgeSemantics('Legend'),
+  l10n.gamePredictionAlertsTitle,
+  l10n.gamePredictionAlertSemantics(
+    'Points earned',
+    'Your pick won',
+    '30 Jul 2026',
+    l10n.gameRewardPointsSemantics(10),
+  ),
+  l10n.gameStreakDays(3),
+  l10n.gameWins(2),
+  l10n.gameOffersTitle,
+  l10n.gameActiveOffers(2),
+  l10n.gamePrivacyFirstDescription('AFRICLUB'),
+  l10n.gameRewardsStoreTitle,
+  l10n.gameRewardRedeemed('Club jersey', '500 pts'),
+  l10n.gameFriendsTitle,
+  l10n.gameMatchCount(2),
+  l10n.gameMyActivity,
+  l10n.gameActiveCount(2),
+  l10n.gameActivitySemantics('Rayon Sports', 'APR'),
+  l10n.gameLiveGamesTitle,
+  l10n.gameLiveGamesSubtitle,
+  l10n.gamePlayingAs,
+  l10n.gamePlayingAsAlias('Lion 42'),
+  l10n.gameDiscoveringSessions,
+  l10n.gameDiscoveringSessionsDescription,
+  l10n.gameNoEligibleSessions,
+  l10n.gameNoEligibleSessionsDescription,
+  l10n.gameDiscoveryUnavailable,
+  l10n.gameDiscoveryUnavailableDescription,
+  l10n.gameNotEligible,
+  l10n.gameNotEligibleDescription,
+  l10n.gameLiveAccessDeniedV2,
+  l10n.gameLiveAccessDeniedV2Description,
+  l10n.gameReconnect,
+  l10n.gameRefresh,
+  l10n.gameLiveNow,
+  l10n.gameScheduled,
+  l10n.gameScheduledDescription,
+  l10n.gameOpenGame,
+  l10n.gameStartsAt,
+  l10n.gamePhaseEndsAt,
+  l10n.gameLobbyTitle,
+  l10n.gameLobbyDescription,
+  l10n.gamePausedTitle,
+  l10n.gamePausedDescription,
+  l10n.gameQuestionTitle,
+  l10n.gameChooseAnswer,
+  l10n.gameAnswerSubmitting,
+  l10n.gameAnswerConfirmed,
+  l10n.gameAnswerUncertain,
+  l10n.gameAnswerUncertainDescription,
+  l10n.gameRevealTitle,
+  l10n.gameCorrectAnswer,
+  l10n.gameLeaderboardTitle,
+  l10n.gameNoScores,
+  l10n.gameCompletedTitle,
+  l10n.gameCompletedDescription,
+  l10n.gameCancelledTitle,
+  l10n.gameCancelledDescription,
+  l10n.gameSyncing,
+  l10n.gameUsingLastConfirmed,
+  l10n.gameBackToGames,
+  l10n.gameSelectedAnswer,
+  l10n.gameSelectedAnswerSemantics('Sample'),
+  l10n.gameLeaderboardRank(1),
+  l10n.gameOperationsTitle,
+  l10n.gameOperationsSubtitle,
+  l10n.gameMyTvsTitle,
+  l10n.gamePairTvTitle,
+  l10n.gameTvFormInvalid,
+  l10n.gameManagedGamesTitle,
+  l10n.gameSessionPlannerTitle,
+  l10n.gamePlannerFormInvalid,
+  l10n.gameLiveControlTitle,
+  l10n.gameOperationsUnavailable,
+  l10n.gameOperationsAccessDenied,
+  l10n.gameOperationConflict,
 ];

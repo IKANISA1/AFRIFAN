@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class FetSplitModel extends StatelessWidget {
             runSpacing: SpacingTokens.spacing2,
             children: [
               Text(
-                'Points share',
+                context.afriL10n.gamePointsShare,
                 style: TypographyTokens.titleMedium().copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -40,7 +41,7 @@ class FetSplitModel extends StatelessWidget {
                   borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
-                  currentTier,
+                  _tierName(context, currentTier),
                   style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
                 ),
               ),
@@ -48,7 +49,7 @@ class FetSplitModel extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            'Tier rules decide how earned points support you and collective club rewards.',
+            context.afriL10n.gamePointsShareDescription,
             style: TypographyTokens.bodySmall(),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -66,7 +67,7 @@ class FetSplitModel extends StatelessWidget {
                       color: ColorTokens.clubAccent,
                       alignment: Alignment.center,
                       child: Text(
-                        '$personalPct% you',
+                        context.afriL10n.gamePersonalPercentage(personalPct),
                         style: TypographyTokens.metricLabel(
                           ColorTokens.background,
                         ).copyWith(fontWeight: FontWeight.w800),
@@ -80,7 +81,7 @@ class FetSplitModel extends StatelessWidget {
                         color: ColorTokens.primaryContainer,
                         alignment: Alignment.center,
                         child: Text(
-                          '$clubPct% club',
+                          context.afriL10n.gameClubPercentage(clubPct),
                           style: TypographyTokens.metricLabel().copyWith(
                             fontWeight: FontWeight.w800,
                           ),
@@ -131,19 +132,25 @@ class FetSplitModel extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            tier.name,
+                            _tierName(context, tier.slug),
                             style: TypographyTokens.labelMedium(
                               isCurrent
                                   ? ColorTokens.clubAccent
                                   : ColorTokens.onSurface,
                             ).copyWith(fontWeight: FontWeight.w700),
                           ),
-                          Text(tier.price, style: TypographyTokens.bodySmall()),
+                          Text(
+                            _tierPrice(context, tier.slug),
+                            style: TypographyTokens.bodySmall(),
+                          ),
                         ],
                       ),
                     ),
                     Text(
-                      '${tier.personalPct}/${tier.clubPct}',
+                      context.afriL10n.gameTierSplit(
+                        tier.personalPct,
+                        tier.clubPct,
+                      ),
                       style: TypographyTokens.titleSmall(
                         isCurrent
                             ? ColorTokens.clubAccent
@@ -174,7 +181,7 @@ class FetSplitModel extends StatelessWidget {
                 const SizedBox(width: SpacingTokens.spacing2),
                 Expanded(
                   child: Text(
-                    'Your points earn is shared by tier: the personal share stays with you and the club share supports collective rewards.',
+                    context.afriL10n.gamePointsShareExplanation,
                     style: TypographyTokens.bodySmall(),
                   ),
                 ),
@@ -195,22 +202,38 @@ class FetSplitModel extends StatelessWidget {
       _ => (100, 0),
     };
   }
+
+  String _tierName(BuildContext context, String tier) {
+    return switch (tier.toLowerCase()) {
+      'supporter' => context.afriL10n.gameTierSupporter,
+      'member' => context.afriL10n.gameTierMember,
+      'ultra' => context.afriL10n.gameTierUltra,
+      'legend' => context.afriL10n.gameTierLegend,
+      _ => tier,
+    };
+  }
+
+  String _tierPrice(BuildContext context, String tier) {
+    return switch (tier.toLowerCase()) {
+      'supporter' => context.afriL10n.gameFree,
+      'member' => context.afriL10n.gameMonthlyPrice('500'),
+      'ultra' => context.afriL10n.gameMonthlyPrice('1,500'),
+      'legend' => context.afriL10n.gameMonthlyPrice('5,000'),
+      _ => context.afriL10n.gameFree,
+    };
+  }
 }
 
 class _TierInfo {
   const _TierInfo({
     required this.slug,
-    required this.name,
     required this.icon,
-    required this.price,
     required this.personalPct,
     required this.clubPct,
   });
 
   final String slug;
-  final String name;
   final IconData icon;
-  final String price;
   final int personalPct;
   final int clubPct;
 }
@@ -218,33 +241,25 @@ class _TierInfo {
 const List<_TierInfo> _allTiers = [
   _TierInfo(
     slug: 'supporter',
-    name: 'Supporter',
     icon: AfriIcons.fanzone,
-    price: 'Free',
     personalPct: 100,
     clubPct: 0,
   ),
   _TierInfo(
     slug: 'member',
-    name: 'Member',
     icon: AfriIcons.badge,
-    price: '500 RWF / month',
     personalPct: 90,
     clubPct: 10,
   ),
   _TierInfo(
     slug: 'ultra',
-    name: 'Ultra',
     icon: AfriIcons.streak,
-    price: '1,500 RWF / month',
     personalPct: 80,
     clubPct: 20,
   ),
   _TierInfo(
     slug: 'legend',
-    name: 'Legend',
     icon: AfriIcons.premium,
-    price: '5,000 RWF / month',
     personalPct: 65,
     clubPct: 35,
   ),

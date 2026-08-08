@@ -12,7 +12,7 @@ import '../onboarding_content_provider.dart';
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({
     this.mediaRightsApproved = const bool.fromEnvironment(
-      'AFRICLUB_ONBOARDING_MEDIA_RIGHTS_APPROVED',
+      'CLUB_ONBOARDING_MEDIA_RIGHTS_APPROVED',
       defaultValue: false,
     ),
     super.key,

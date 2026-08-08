@@ -26,13 +26,19 @@ function constantTimeEqual(left: Uint8Array, right: Uint8Array): boolean {
   return difference === 0;
 }
 
+function toOwnedArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const owned = new Uint8Array(bytes.byteLength);
+  owned.set(bytes);
+  return owned.buffer;
+}
+
 async function expectedSignature(
   secret: Uint8Array,
   signedPayload: string,
 ): Promise<Uint8Array> {
   const key = await crypto.subtle.importKey(
     "raw",
-    secret,
+    toOwnedArrayBuffer(secret),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"],
@@ -41,7 +47,7 @@ async function expectedSignature(
     await crypto.subtle.sign(
       "HMAC",
       key,
-      new TextEncoder().encode(signedPayload),
+      toOwnedArrayBuffer(new TextEncoder().encode(signedPayload)),
     ),
   );
 }

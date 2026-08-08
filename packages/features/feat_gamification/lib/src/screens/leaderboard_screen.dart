@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -70,11 +71,14 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Leaderboard', style: TypographyTokens.headlineSmall()),
+        title: Text(
+          context.afriL10n.gameLeaderboardTitle,
+          style: TypographyTokens.headlineSmall(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -90,9 +94,9 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
               child: AfriTabBar.segmented(
                 controller: _topTabController,
                 padding: EdgeInsets.zero,
-                tabs: const [
-                  Tab(text: 'FET Ranking'),
-                  Tab(text: 'Supporters'),
+                tabs: [
+                  Tab(text: context.afriL10n.gameFetRanking),
+                  Tab(text: context.afriL10n.gameSupporters),
                 ],
               ),
             ),
@@ -124,19 +128,19 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
           child: Row(
             children: [
               LeaderboardPeriodChip(
-                label: 'All time',
+                label: context.afriL10n.gameAllTime,
                 selected: _fetPeriodIndex == 0,
                 onTap: () => _selectFetPeriod(0),
               ),
               const SizedBox(width: SpacingTokens.spacing2),
               LeaderboardPeriodChip(
-                label: 'Weekly',
+                label: context.afriL10n.gameWeekly,
                 selected: _fetPeriodIndex == 1,
                 onTap: () => _selectFetPeriod(1),
               ),
               const SizedBox(width: SpacingTokens.spacing2),
               LeaderboardPeriodChip(
-                label: 'Monthly',
+                label: context.afriL10n.gameMonthly,
                 selected: _fetPeriodIndex == 2,
                 onTap: () => _selectFetPeriod(2),
               ),
@@ -168,9 +172,9 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriStateView.offline(
-            title: 'Leaderboard unavailable',
-            message: 'Leaderboard is temporarily unavailable.',
-            actionLabel: 'Retry',
+            title: context.afriL10n.gameLeaderboardUnavailable,
+            message: context.afriL10n.gameLeaderboardTemporarilyUnavailable,
+            actionLabel: context.afriL10n.gameRetry,
             onAction: () =>
                 ref.read(fetLeaderboardProvider(period).notifier).refresh(),
           ),
@@ -204,9 +208,10 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriStateView.offline(
-            title: 'Rankings unavailable',
-            message: 'Supporter rankings are temporarily unavailable.',
-            actionLabel: 'Retry',
+            title: context.afriL10n.gameRankingsUnavailable,
+            message:
+                context.afriL10n.gameSupporterRankingsTemporarilyUnavailable,
+            actionLabel: context.afriL10n.gameRetry,
             onAction: () =>
                 ref.read(supporterLeaderboardProvider.notifier).refresh(),
           ),

@@ -34,11 +34,11 @@ jobs:
       - name: Verify active Flutter runtime
         run: bash tools/scripts/validate_flutter_runtime_pins.sh --runtime
 
-      - name: Install Melos
-        run: dart pub global activate melos
+      - name: Resolve workspace tooling
+        run: flutter pub get
 
       - name: Bootstrap workspace
-        run: melos bootstrap
+        run: dart run melos bootstrap
 
       - name: Generate route inventory and validate design source compliance
         env:
@@ -108,10 +108,12 @@ jobs:
           done
 
       - name: Analyze (fatal infos + warnings)
-        run: melos exec -- flutter analyze --fatal-infos --fatal-warnings
+        run: dart run melos exec -- flutter analyze --fatal-infos --fatal-warnings
 
       - name: Run unit & widget tests with coverage
-        run: melos exec --dir-exists="test" -- flutter test --coverage
+        run: >-
+          dart run melos exec --concurrency=1 --dir-exists="test" --
+          bash "$MELOS_ROOT_PATH/tools/scripts/run_package_tests.sh" --coverage
 
       - name: Validate governed golden baselines
         run: bash tools/scripts/validate_golden_contract.sh
@@ -153,48 +155,7 @@ jobs:
         run: flutter test apps/rayon_sports/integration_test
 
       - name: Validate no secrets in source
-        run: |
-          # Check for service_role patterns
-          if grep -rn --include="*.dart" --include="*.json" --include="*.md" \
-            'service_role' . --exclude-dir=build --exclude-dir=node_modules \
-            --exclude-dir=.dart_tool | grep -v '.gitignore' | grep -v 'blueprint.md'; then
-            echo "❌ Service role key reference found in source"
-            exit 1
-          fi
-
-          TRACKED_SIGNING_FILES=$(git ls-files \
-            'apps/*/android/*.jks' \
-            'apps/*/android/*.keystore' \
-            'apps/*/android/keystore.properties' \
-            'apps/*/android/key.properties' \
-            'apps/*/android/app/*.jks' \
-            'apps/*/android/app/*.keystore')
-          if [ -n "$TRACKED_SIGNING_FILES" ]; then
-            echo "❌ Android signing material must not be committed:"
-            echo "$TRACKED_SIGNING_FILES"
-            exit 1
-          fi
-
-          TRACKED_RELEASE_SECRETS=$(git ls-files \
-            'apps/*/android/fastlane/*service-account*.json' \
-            'apps/*/android/fastlane/*.p8' \
-            'apps/*/ios/**/*.p8' \
-            'apps/*/ios/**/*.mobileprovision')
-          if [ -n "$TRACKED_RELEASE_SECRETS" ]; then
-            echo "❌ Mobile release credentials must not be committed:"
-            echo "$TRACKED_RELEASE_SECRETS"
-            exit 1
-          fi
-
-          # Check for committed dev vars (contain Cloudflare/Supabase secrets)
-          TRACKED_DEV_VARS=$(git ls-files 'apps/**/web/.dev.vars' '*/.dev.vars' '.dev.vars' | grep -v '.example$' || true)
-          if [ -n "$TRACKED_DEV_VARS" ]; then
-            echo "❌ .dev.vars files must not be committed (contain secrets):"
-            echo "$TRACKED_DEV_VARS"
-            exit 1
-          fi
-
-          echo "✅ No service role keys found"
+        run: bash tools/scripts/validate_source_secrets.sh
 
   # ──────────────────────────────────────────────
   # Web: TypeCheck + Build
@@ -297,9 +258,9 @@ jobs:
 
       - name: Install Melos & Bootstrap
         run: |
-          dart pub global activate melos
+          flutter pub get
           cd ../..
-          melos bootstrap
+          dart run melos bootstrap
 
       - name: Generate stub flavor overrides
         run: |
@@ -337,9 +298,9 @@ jobs:
 
       - name: Install Melos & Bootstrap
         run: |
-          dart pub global activate melos
+          flutter pub get
           cd ../..
-          melos bootstrap
+          dart run melos bootstrap
 
       - name: Decode signing keystore
         env:
@@ -400,9 +361,9 @@ jobs:
 
       - name: Install Melos & Bootstrap
         run: |
-          dart pub global activate melos
+          flutter pub get
           cd ../..
-          melos bootstrap
+          dart run melos bootstrap
 
       - name: Generate production flavor overrides
         env:

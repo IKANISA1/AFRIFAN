@@ -68,6 +68,8 @@ const defaultDependencies: Dependencies = {
   requireClubAdminCaller,
 };
 
+const QUESTION_DRAFT_SCHEMA_VERSION = "2026-08-01";
+
 const questionDraftSchema = {
   type: "object",
   additionalProperties: false,
@@ -207,10 +209,13 @@ export function createGenerateQuestionDraftsHandler(
           difficulty: draft.difficulty,
           language: draft.language,
           model_name: aiMode ? model : null,
+          schema_version: QUESTION_DRAFT_SCHEMA_VERSION,
           validation_status: "pending_review",
           validation_notes: "Awaiting human review.",
           metadata: {
             generation_mode: aiMode ? "ai_assisted" : "manual_import",
+            schema_version: QUESTION_DRAFT_SCHEMA_VERSION,
+            source_note_count: draftPayload.source_notes.length,
           },
         })))
         .select("id");

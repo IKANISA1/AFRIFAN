@@ -861,6 +861,18 @@ Map<String, _RouteStateEvidence> _loadRouteStateEvidence({
           'Each route-state evidence group requires a non-empty id.',
         );
       }
+      final admissionStatus = rawGroup['admission_status'] ?? 'admitted';
+      if (admissionStatus != 'admitted' && admissionStatus != 'pending') {
+        throw FormatException(
+          'Evidence group "$groupId" has unsupported admission_status '
+          '"$admissionStatus".',
+        );
+      }
+      // Pending groups preserve rejected or superseded artifacts for audit
+      // without allowing those artifacts to close a governed route-state cell.
+      // The registrar changes the status only after its complete preflight has
+      // validated every route in the batch.
+      if (admissionStatus == 'pending') continue;
       if (groupCells is! List<Object?> || groupCells.isEmpty) {
         throw FormatException(
           'Evidence group "$groupId" requires a non-empty cells list.',
@@ -916,6 +928,161 @@ List<String> _readRouteEvidencePaths({
 
 (bool, String) _classifyClosureState(Map<String, Object?> route, String state) {
   final kind = route['kind'] as String;
+  if (route['rendered_state_contract'] ==
+      'controlled_participant_discovery_surface') {
+    final applicable = state != 'selected';
+    return (
+      applicable,
+      applicable
+          ? 'Controlled participant discovery must prove this eligible-session '
+                'content, authorization, recovery, interaction, presentation, '
+                'synchronization, contract-conflict, or bounded-read state.'
+          : 'Participant discovery routes immediately into the selected game '
+                'and therefore has no persistent selected control state.',
+    );
+  }
+  if (route['rendered_state_contract'] ==
+      'controlled_participant_live_surface') {
+    return (
+      true,
+      'Controlled participant live play must prove every governed discovery, '
+          'authoritative game, authorization, recovery, answer-control, '
+          'interaction, presentation, synchronization, conflict, and '
+          'bounded-read state.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'controlled_tv_management_surface') {
+    return (
+      true,
+      'Security-sensitive TV management owns every governed content, data, '
+          'authorization, validation, interaction, presentation, '
+          'synchronization, and bounded-mutation state.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'controlled_tv_pairing_surface') {
+    return (
+      true,
+      'Security-sensitive TV pairing owns every governed form, data, '
+          'authorization, interaction, presentation, synchronization, and '
+          'bounded-mutation state.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'controlled_tv_inventory_surface') {
+    const tvInventoryStates = <String>{
+      'loading',
+      'empty',
+      'error',
+      'offline',
+      'permission_denied',
+      'disabled',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'security_timeout',
+    };
+    final applicable = tvInventoryStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Controlled owner TV inventory must prove this content, recovery, '
+                'interaction, presentation, synchronization, or bounded-read state.'
+          : 'Owner TV inventory has no selected control state and read-only '
+                'inventory refresh does not expose a version-conflict state.',
+    );
+  }
+  if (route['rendered_state_contract'] ==
+      'controlled_organizer_inventory_surface') {
+    const organizerInventoryStates = <String>{
+      'loading',
+      'empty',
+      'error',
+      'offline',
+      'permission_denied',
+      'disabled',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'security_timeout',
+    };
+    final applicable = organizerInventoryStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Controlled organizer session inventory must prove this content, '
+                'authorization, recovery, interaction, presentation, '
+                'synchronization, or bounded-read state.'
+          : 'Organizer session inventory has no selected control state and '
+                'read-only inventory refresh does not expose a version-conflict state.',
+    );
+  }
+  if (route['rendered_state_contract'] ==
+      'controlled_organizer_planner_surface') {
+    return (
+      true,
+      'Controlled organizer planner must prove every governed content, form, '
+          'authorization, validation, interaction, presentation, '
+          'synchronization, conflict, and bounded-create state.',
+    );
+  }
+  if (route['rendered_state_contract'] ==
+      'controlled_organizer_live_control_surface') {
+    const liveControlStates = <String>{
+      'loading',
+      'error',
+      'offline',
+      'permission_denied',
+      'disabled',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'conflict',
+      'security_timeout',
+    };
+    final applicable = liveControlStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Controlled organizer live session must prove this authoritative '
+                'content, authorization, recovery, interaction, presentation, '
+                'synchronization, conflict, or bounded-mutation state.'
+          : 'A canonical live session never has an empty collection or a '
+                'persistent selection control state.',
+    );
+  }
+  if (route['rendered_state_contract'] ==
+      'static_game_operations_hub_surface') {
+    const gameOperationsHubStates = <String>{
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+    };
+    final applicable = gameOperationsHubStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Static game-operations hub must prove this interaction or '
+                'presentation state with current rendered evidence.'
+          : 'Static game-operations hub always renders two governed '
+                'navigation choices and owns no collection, authorization, '
+                'disabled, selection, synchronization, conflict, or bounded '
+                'data operation.',
+    );
+  }
   if (route['rendered_state_contract'] == 'static_contact_surface') {
     const contactStates = <String>{
       'focused',
@@ -950,6 +1117,60 @@ List<String> _readRouteEvidencePaths({
       'Controlled history surface must prove every content, recovery, '
           'interaction, presentation, synchronization, conflict, and bounded '
           'operation state with current rendered evidence.',
+    );
+  }
+  if (route['rendered_state_contract'] == 'controlled_club_hub_surface') {
+    const clubHubStates = <String>{
+      'loading',
+      'error',
+      'offline',
+      'permission_denied',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'conflict',
+      'security_timeout',
+    };
+    final applicable = clubHubStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Controlled Club hub must prove this live identity, recovery, '
+                'interaction, presentation, synchronization, or bounded-operation state.'
+          : 'Controlled Club hub always retains governed fallback identity '
+                'and owns no disabled or selected control state.',
+    );
+  }
+  if (route['rendered_state_contract'] ==
+      'controlled_club_information_surface') {
+    const clubInformationStates = <String>{
+      'loading',
+      'empty',
+      'error',
+      'offline',
+      'permission_denied',
+      'focused',
+      'pressed',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'conflict',
+      'security_timeout',
+    };
+    final applicable = clubInformationStates.contains(state);
+    return (
+      applicable,
+      applicable
+          ? 'Controlled Club information route must prove this content, '
+                'recovery, interaction, presentation, synchronization, or bounded-operation state.'
+          : 'Read-only Club information routes own no disabled or selected '
+                'control state.',
     );
   }
   if (route['rendered_state_contract'] == 'static_legal_document') {
@@ -1148,6 +1369,7 @@ Map<String, Object?> _flutterRouteRecord({
     'presentation': presentation?.presentation.name ?? 'registered route',
     'recommendation': presentation?.recommendation,
     'target_path': presentation?.targetPath,
+    'rendered_state_contract': presentation?.renderedStateContract,
     'source': module,
     'required_state_evidence': <String>[
       'loading',

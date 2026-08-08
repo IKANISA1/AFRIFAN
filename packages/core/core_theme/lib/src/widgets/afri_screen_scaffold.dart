@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../extensions.dart';
@@ -74,6 +75,11 @@ class AfriScreenScaffold extends StatelessWidget {
                 automaticallyImplyLeading: false,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
+                systemOverlayStyle:
+                    (theme.brightness == Brightness.dark
+                            ? SystemUiOverlayStyle.light
+                            : SystemUiOverlayStyle.dark)
+                        .copyWith(statusBarColor: Colors.transparent),
                 leading: showBackButton
                     ? AfriIconButton(
                         icon: AfriIcons.back,
@@ -163,7 +169,7 @@ class _AfriScreenBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing8),
-          child,
+          if (scrollable) child else Expanded(child: child),
         ],
       );
     }

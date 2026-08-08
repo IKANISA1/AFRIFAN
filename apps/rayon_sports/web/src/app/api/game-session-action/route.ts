@@ -1,6 +1,9 @@
 import type { NextRequest } from "next/server";
 import { serverSupabaseConfig } from "@/lib/config";
-import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
+import {
+  rejectInsecureMutation,
+  rejectRateLimitedRequest,
+} from "@/lib/security";
 import type { GameActionBody } from "@/lib/game-runtime";
 import {
   edgeFunctionFailureResponse,
@@ -27,7 +30,6 @@ const allowedActions = new Set([
   "join_session",
   "submit_answer",
   "create_session",
-  "pair_tv_device",
   "revoke_tv_device",
   "review_question_draft",
   "list_question_drafts",
@@ -37,6 +39,10 @@ const allowedActions = new Set([
   "reveal_question",
   "advance_question",
   "close_session",
+  "get_planner_options",
+  "get_managed_sessions",
+  "create_managed_session",
+  "transition_managed_session",
 ]);
 
 const reviewDecisions = new Set(["approved", "rejected", "needs_changes"]);
@@ -49,7 +55,43 @@ const draftStatuses = new Set([
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const optionKeyPattern = /^[a-z0-9_-]{1,32}$/i;
-const joinCodePattern = /^[a-z0-9_-]{3,32}$/i;
+const sha256Pattern = /^[0-9a-f]{64}$/;
+const managedEligibilityScopes = new Set([
+  "club_membership",
+  "home_owner",
+  "venue",
+]);
+const managedSessionPhases = new Set([
+  "scheduled",
+  "activated_lobby",
+  "question_open",
+  "reveal",
+  "paused",
+  "completed",
+  "cancelled",
+]);
+
+function isBoundedText(value: unknown, maximum: number) {
+  return (
+    typeof value === "string" &&
+    value.trim().length > 0 &&
+    value.trim().length <= maximum
+  );
+}
+
+function isIsoDateTime(value: unknown) {
+  return (
+    isBoundedText(value, 64) && Number.isFinite(Date.parse(value as string))
+  );
+}
+
+function isIdempotencyKey(value: unknown) {
+  return (
+    typeof value === "string" &&
+    value.trim().length >= 8 &&
+    value.trim().length <= 96
+  );
+}
 
 function defaultDependencies(): GameActionRouteDependencies {
   return {
@@ -76,19 +118,55 @@ function isValidBody(value: unknown): value is GameActionBody {
     return isUuid(body.session_id);
   }
 
+  if (
+    body.action === "get_planner_options" ||
+    body.action === "get_managed_sessions"
+  ) {
+    return Object.keys(body).every((key) => key === "action");
+  }
+
+  if (body.action === "create_managed_session") {
+    return (
+      isUuid(body.pack_id) &&
+      isIsoDateTime(body.scheduled_start_at) &&
+      managedEligibilityScopes.has(String(body.eligibility_scope)) &&
+      Array.isArray(body.display_ids) &&
+      body.display_ids.length <= 100 &&
+      body.display_ids.every((id) => isUuid(id)) &&
+      new Set(body.display_ids).size === body.display_ids.length &&
+      Array.isArray(body.organizer_user_ids) &&
+      body.organizer_user_ids.length <= 100 &&
+      body.organizer_user_ids.every((id) => isUuid(id)) &&
+      new Set(body.organizer_user_ids).size ===
+        body.organizer_user_ids.length &&
+      isIdempotencyKey(body.idempotency_key)
+    );
+  }
+
+  if (body.action === "transition_managed_session") {
+    return (
+      isUuid(body.session_id) &&
+      managedSessionPhases.has(String(body.requested_phase)) &&
+      typeof body.expected_session_version === "number" &&
+      Number.isSafeInteger(body.expected_session_version) &&
+      body.expected_session_version >= 0 &&
+      isIdempotencyKey(body.idempotency_key) &&
+      (body.session_question_id == null || isUuid(body.session_question_id)) &&
+      (body.phase_deadline == null || isIsoDateTime(body.phase_deadline)) &&
+      (body.reason == null ||
+        (typeof body.reason === "string" && body.reason.trim().length <= 240))
+    );
+  }
+
   if (body.action === "join_session") {
-    const hasSessionId =
-      body.session_id == null || body.session_id === ""
-        ? false
-        : isUuid(body.session_id);
-    const hasJoinCode =
-      typeof body.join_code === "string" && joinCodePattern.test(body.join_code);
     const hasValidClubId =
       body.club_id == null ||
       (typeof body.club_id === "number" && Number.isFinite(body.club_id));
     const hasValidDisplayName =
       body.display_name == null || typeof body.display_name === "string";
-    return (hasSessionId || hasJoinCode) && hasValidClubId && hasValidDisplayName;
+    return (
+      isUuid(body.session_id) && hasValidClubId && hasValidDisplayName
+    );
   }
 
   if (body.action === "submit_answer") {
@@ -112,21 +190,7 @@ function isValidBody(value: unknown): value is GameActionBody {
       typeof body.title === "string" &&
       body.title.trim().length > 0 &&
       (body.pack_id == null || isUuid(body.pack_id)) &&
-      (body.tv_device_id == null || isUuid(body.tv_device_id)) &&
-      (body.join_code == null ||
-        (typeof body.join_code === "string" && joinCodePattern.test(body.join_code)))
-    );
-  }
-
-  if (body.action === "pair_tv_device") {
-    return (
-      typeof body.club_id === "number" &&
-      Number.isFinite(body.club_id) &&
-      typeof body.device_label === "string" &&
-      body.device_label.trim().length > 0 &&
-      typeof body.pairing_code === "string" &&
-      body.pairing_code.trim().length > 0 &&
-      (body.session_id == null || isUuid(body.session_id))
+      (body.tv_device_id == null || isUuid(body.tv_device_id))
     );
   }
 
@@ -174,9 +238,13 @@ function isValidBody(value: unknown): value is GameActionBody {
       typeof body.title === "string" &&
       body.title.trim().length > 0 &&
       Array.isArray(body.question_ids) &&
+      body.question_ids.length === 20 &&
       body.question_ids.every((id) => isUuid(id)) &&
+      new Set(body.question_ids).size === body.question_ids.length &&
       (body.description == null || typeof body.description === "string") &&
-      (body.template_id == null || isUuid(body.template_id))
+      (body.template_id == null || isUuid(body.template_id)) &&
+      typeof body.preview_fingerprint === "string" &&
+      sha256Pattern.test(body.preview_fingerprint)
     );
   }
 

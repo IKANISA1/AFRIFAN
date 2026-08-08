@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -157,14 +158,14 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                     AfriIconButton(
                       icon: AfriIcons.back,
                       onTap: () => context.pop(),
-                      tooltip: 'Back',
+                      tooltip: context.afriL10n.gameBack,
                     ),
                     const SizedBox(width: SpacingTokens.spacing2),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'SETTINGS',
+                          context.afriL10n.gameSettingsUpper,
                           style:
                               TypographyTokens.metricLabel(
                                 ColorTokens.onSurfaceVariant,
@@ -174,7 +175,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                               ),
                         ),
                         Text(
-                          'PRIVACY',
+                          context.afriL10n.gamePrivacyUpper,
                           style: TypographyTokens.headlineSmall().copyWith(
                             fontWeight: FontWeight.w700,
                             letterSpacing: 1.6,
@@ -195,7 +196,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                 delegate: SliverChildListDelegate([
                   // ══════════ Core Guarantees ══════════
                   Text(
-                    'CORE GUARANTEES',
+                    context.afriL10n.gameCoreGuarantees,
                     style: TypographyTokens.metricLabel(
                       ColorTokens.onSurfaceVariant,
                     ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
@@ -204,24 +205,23 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                   AfriSurfaceCard(
                         child: Column(
                           children: [
-                            const _GuaranteeRow(
+                            _GuaranteeRow(
                               icon: AfriIcons.phone,
                               iconColor: ExternalBrandColors.whatsAppGreen,
-                              title: 'Phone Number Hidden',
-                              description:
-                                  'Your WhatsApp/Phone number is encrypted and stored '
-                                  'server-side only. It is never exposed to other users, '
-                                  'club admins, or in public leaderboards.',
+                              title: context.afriL10n.gamePhoneNumberHidden,
+                              description: context
+                                  .afriL10n
+                                  .gamePhoneNumberHiddenDescription,
                             ),
                             const AfriDivider(),
                             _GuaranteeRow(
                               icon: AfriIcons.privacy,
                               iconColor: ColorTokens.clubAccent,
-                              title: 'Anonymous Contributions',
-                              description:
-                                  'MoMo contributions to fan clubs are logged using your '
-                                  'Fan ID and amount bracket only. Exact amounts and '
-                                  'phone numbers are not recorded.',
+                              title:
+                                  context.afriL10n.gameAnonymousContributions,
+                              description: context
+                                  .afriL10n
+                                  .gameAnonymousContributionsDescription,
                             ),
                           ],
                         ),
@@ -234,7 +234,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
 
                   // ══════════ Visibility Controls ══════════
                   Text(
-                    'VISIBILITY CONTROLS',
+                    context.afriL10n.gameVisibilityControls,
                     style: TypographyTokens.metricLabel(
                       ColorTokens.onSurfaceVariant,
                     ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
@@ -247,20 +247,19 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                               icon: _showRealName
                                   ? AfriIcons.visibility
                                   : AfriIcons.visibilityOff,
-                              title: 'Show Real Name',
+                              title: context.afriL10n.gameShowRealName,
                               description:
-                                  'If OFF, your Fan ID is displayed on leaderboards '
-                                  'instead of your real name.',
+                                  context.afriL10n.gameShowRealNameDescription,
                               value: _showRealName,
                               onChanged: _setShowRealName,
                             ),
                             const AfriDivider(),
                             _VisibilityToggle(
                               icon: AfriIcons.search,
-                              title: 'Findable by Phone',
-                              description:
-                                  'Allows friends to find you by phone number. '
-                                  'Your number stays private.',
+                              title: context.afriL10n.gameFindableByPhone,
+                              description: context
+                                  .afriL10n
+                                  .gameFindableByPhoneDescription,
                               value: _findableByPhone,
                               onChanged: _setFindableByPhone,
                             ),
@@ -275,52 +274,57 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
 
                   // ══════════ Privacy Badge ══════════
                   Container(
-                    padding: const EdgeInsets.all(SpacingTokens.spacing5),
-                    decoration: BoxDecoration(
-                      color: ColorTokens.surfaceContainerLow,
-                      borderRadius: ShapeTokens.cardRadius,
-                      border: BorderTokens.ghost(),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: SpacingTokens.spacing12,
-                          height: SpacingTokens.spacing12,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: ColorTokens.success.withValues(alpha: 0.12),
-                          ),
-                          alignment: Alignment.center,
-                          child: Icon(
-                            AfriIcons.lock,
-                            color: ColorTokens.success,
-                            size: SpacingTokens.spacing6,
-                          ),
+                        padding: const EdgeInsets.all(SpacingTokens.spacing5),
+                        decoration: BoxDecoration(
+                          color: ColorTokens.surfaceContainerLow,
+                          borderRadius: ShapeTokens.cardRadius,
+                          border: BorderTokens.ghost(),
                         ),
-                        const SizedBox(width: SpacingTokens.spacing3),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Privacy First',
-                                style: TypographyTokens.titleSmall(),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: SpacingTokens.spacing12,
+                              height: SpacingTokens.spacing12,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: ColorTokens.success.withValues(
+                                  alpha: 0.12,
+                                ),
                               ),
-                              const SizedBox(
-                                height: SpacingTokens.spacing1 / 2,
+                              alignment: Alignment.center,
+                              child: Icon(
+                                AfriIcons.lock,
+                                color: ColorTokens.success,
+                                size: SpacingTokens.spacing6,
                               ),
-                              Text(
-                                '${RuntimeBranding.displayAppName} does not sell, share, or expose '
-                                'your personal data. All identifiers '
-                                'on the platform are anonymised.',
-                                style: TypographyTokens.bodySmall(),
+                            ),
+                            const SizedBox(width: SpacingTokens.spacing3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    context.afriL10n.gamePrivacyFirst,
+                                    style: TypographyTokens.titleSmall(),
+                                  ),
+                                  const SizedBox(
+                                    height: SpacingTokens.spacing1 / 2,
+                                  ),
+                                  Text(
+                                    context.afriL10n
+                                        .gamePrivacyFirstDescription(
+                                          RuntimeBranding.displayAppName,
+                                        ),
+                                    style: TypographyTokens.bodySmall(),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ).afriAnimate(context, delay: 200.ms).fadeIn(duration: 300.ms),
+                      )
+                      .afriAnimate(context, delay: 200.ms)
+                      .fadeIn(duration: 300.ms),
 
                   const SizedBox(height: SpacingTokens.spacing20),
                 ]),

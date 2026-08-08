@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +12,13 @@ import '../widgets/fet_split_model.dart';
 import '../widgets/fet_wallet_widgets.dart';
 
 enum _WalletSection {
-  earn('earn', 'Earn', AfriIcons.rewards),
-  rewards('rewards', 'Rewards', AfriIcons.rewards),
-  activity('history', 'Activity', AfriIcons.history);
+  earn('earn', AfriIcons.rewards),
+  rewards('rewards', AfriIcons.rewards),
+  activity('history', AfriIcons.history);
 
-  const _WalletSection(this.value, this.label, this.icon);
+  const _WalletSection(this.value, this.icon);
 
   final String value;
-  final String label;
   final IconData icon;
 
   static _WalletSection fromUri(Uri uri) {
@@ -92,21 +92,21 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     unawaited(
       showAfriActionSheet(
         context: context,
-        title: 'Rewards',
+        title: context.afriL10n.gameRewardsLabel,
         actions: [
           AfriSheetAction(
             icon: AfriIcons.history,
-            label: 'Activity',
+            label: context.afriL10n.gameActivity,
             onTap: () => context.go('/fanzone/wallet?section=history'),
           ),
           AfriSheetAction(
             icon: AfriIcons.rewards,
-            label: 'Rewards',
+            label: context.afriL10n.gameRewardsLabel,
             onTap: () => context.go('/fanzone/wallet?section=rewards'),
           ),
           AfriSheetAction(
             icon: AfriIcons.refresh,
-            label: 'Refresh',
+            label: context.afriL10n.gameRefresh,
             onTap: () =>
                 unawaited(ref.read(fetWalletRouteProvider.notifier).refresh()),
           ),
@@ -117,6 +117,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final asyncWallet = ref.watch(fetWalletRouteProvider);
     final enabled = ref.watch(fetWalletEnabledProvider);
 
@@ -124,19 +125,22 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Rewards', style: TypographyTokens.headlineSmall()),
+        title: Text(
+          l10n.gameRewardsLabel,
+          style: TypographyTokens.headlineSmall(),
+        ),
         leading: AfriIconButton(
           key: const ValueKey<String>('fet-wallet-back'),
           icon: AfriIcons.back,
           onTap: _close,
-          tooltip: 'Back',
+          tooltip: l10n.gameBack,
         ),
         actions: [
           AfriIconButton(
             key: const ValueKey<String>('fet-wallet-more'),
             icon: AfriIcons.more,
             onTap: enabled ? _showOverflow : null,
-            tooltip: 'More options',
+            tooltip: l10n.gameMoreOptions,
           ),
         ],
       ),
@@ -144,9 +148,9 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       constrainContent: true,
       child: !enabled
           ? _WalletConsequence(
-              title: 'Rewards unavailable',
-              body: 'Points and reward activity are disabled for this build.',
-              actionLabel: 'BACK TO FAN ZONE',
+              title: l10n.walletRewardsUnavailable,
+              body: l10n.walletDisabledBody,
+              actionLabel: l10n.venueBackToFanZone,
               onAction: _close,
             )
           : asyncWallet.when(
@@ -158,10 +162,9 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
               data: (snapshot) => snapshot.isEmpty
                   ? _WalletConsequence(
                       key: const ValueKey<String>('fet-wallet-empty'),
-                      title: 'No points activity yet',
-                      body:
-                          'Your confirmed points balance and reward activity will appear here.',
-                      actionLabel: 'BACK TO FAN ZONE',
+                      title: l10n.walletNoActivity,
+                      body: l10n.walletNoActivityBody,
+                      actionLabel: l10n.venueBackToFanZone,
                       onAction: _close,
                     )
                   : _buildContent(snapshot),
@@ -170,39 +173,38 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
   }
 
   Widget _buildInitialFailure(Object error) {
+    final l10n = context.afriL10n;
     final failure = FetWalletFailure.fromError(error);
     return switch (failure.kind) {
       FetWalletFailureKind.offline => _WalletConsequence(
-        title: 'Rewards offline',
-        body:
-            'Reconnect to load your confirmed points balance. Nothing is queued offline.',
-        actionLabel: 'BACK TO FAN ZONE',
+        title: l10n.walletOffline,
+        body: l10n.walletOfflineBody,
+        actionLabel: l10n.venueBackToFanZone,
         onAction: _close,
       ),
       FetWalletFailureKind.permissionDenied => _WalletConsequence(
-        title: 'Rewards access denied',
-        body: 'This account cannot open the private points ledger.',
-        actionLabel: 'BACK TO FAN ZONE',
+        title: l10n.walletAccessDenied,
+        body: l10n.walletAccessDeniedBody,
+        actionLabel: l10n.venueBackToFanZone,
         onAction: _close,
       ),
       FetWalletFailureKind.securityTimeout => _WalletConsequence(
-        title: 'Points check timed out',
-        body:
-            'The app could not confirm your private points ledger in time. Try one bounded refresh.',
-        actionLabel: 'TRY AGAIN',
+        title: l10n.walletCheckTimedOut,
+        body: l10n.walletCheckTimedOutBody,
+        actionLabel: l10n.venueTryAgain,
         onAction: () => ref.read(fetWalletRouteProvider.notifier).refresh(),
       ),
       _ => _WalletConsequence(
-        title: 'Rewards unavailable',
-        body:
-            'Your points ledger could not be loaded. No private activity details were shown.',
-        actionLabel: 'TRY AGAIN',
+        title: l10n.walletRewardsUnavailable,
+        body: l10n.walletUnavailableBody,
+        actionLabel: l10n.venueTryAgain,
         onAction: () => ref.read(fetWalletRouteProvider.notifier).refresh(),
       ),
     };
   }
 
   Widget _buildContent(FetWalletSnapshot snapshot) {
+    final l10n = context.afriL10n;
     final wallet = snapshot.wallet;
     final transactions = snapshot.transactions;
     final selectedSection = _WalletSection.fromUri(
@@ -231,14 +233,14 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             child: Column(
               children: [
                 Text(
-                  'Points balance',
+                  l10n.gamePointsBalanceTitle,
                   style: TypographyTokens.labelSmall(
                     ColorTokens.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 Text(
-                  '${_formatPoints(wallet?.balance ?? 0)} pts',
+                  l10n.walletBalanceValue(_formatPoints(wallet?.balance ?? 0)),
                   style: TypographyTokens.metricValue(
                     ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
                   ),
@@ -256,15 +258,15 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                   runSpacing: SpacingTokens.spacing4,
                   children: [
                     _buildCompactStat(
-                      'Weekly',
+                      l10n.gameWeekly,
                       '+${_formatPoints(wallet?.weeklyEarned ?? 0)}',
                     ),
                     _buildCompactStat(
-                      'Monthly',
+                      l10n.gameMonthly,
                       '+${_formatPoints(wallet?.monthlyEarned ?? 0)}',
                     ),
                     _buildCompactStat(
-                      'Used',
+                      l10n.walletUsed,
                       _formatPoints(wallet?.lifetimeSpent ?? 0),
                     ),
                   ],
@@ -284,7 +286,9 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                   const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
                     child: Text(
-                      '${_formatPoints(wallet!.historicalBalanceGap)} points come from earlier rewards before activity history was enabled.',
+                      l10n.walletHistoricalPoints(
+                        _formatPoints(wallet!.historicalBalanceGap),
+                      ),
                       style: TypographyTokens.bodySmall(),
                     ),
                   ),
@@ -298,19 +302,19 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           if (selectedSection == _WalletSection.earn) ...[
             FetSplitModel(currentTier: wallet?.tier ?? 'supporter'),
             const SizedBox(height: SpacingTokens.sectionGap),
-            const AfriSectionHeader(title: 'Earn'),
+            AfriSectionHeader(title: l10n.walletEarn),
             const SizedBox(height: SpacingTokens.spacing4),
             AfriSurfaceCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Earn points from partner initiatives and promotions.',
+                    l10n.walletEarnBody,
                     style: TypographyTokens.bodyMedium(),
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(
-                    'Use points in rewards, matchday activities, and fan-zone challenges.',
+                    l10n.walletUseBody,
                     style: TypographyTokens.bodySmall(
                       ColorTokens.onSurfaceVariant,
                     ),
@@ -320,19 +324,19 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             ),
           ],
           if (selectedSection == _WalletSection.rewards) ...[
-            const AfriSectionHeader(title: 'Rewards'),
+            AfriSectionHeader(title: l10n.gameRewardsLabel),
             const SizedBox(height: SpacingTokens.spacing4),
             AfriSurfaceCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Use points for matchday perks and partner rewards.',
+                    l10n.walletRewardsBody,
                     style: TypographyTokens.bodyMedium(),
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(
-                    'Available rewards appear here when the club or partners publish them.',
+                    l10n.walletRewardsEmptyBody,
                     style: TypographyTokens.bodySmall(
                       ColorTokens.onSurfaceVariant,
                     ),
@@ -343,7 +347,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           ],
           if (selectedSection == _WalletSection.activity) ...[
             AfriSectionHeader(
-              title: 'Activity',
+              title: l10n.gameActivity,
               trailing: Text(
                 '${transactions.length}',
                 style: TypographyTokens.labelSmall(
@@ -355,7 +359,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             if (transactions.isEmpty)
               AfriSurfaceCard(
                 child: Text(
-                  'Points activity appears after partner rewards or matchday actions.',
+                  l10n.walletActivityEmptyBody,
                   style: TypographyTokens.bodyMedium(
                     ColorTokens.onSurfaceVariant,
                   ),
@@ -381,54 +385,50 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
   }
 
   Widget? _statusFor(FetWalletSnapshot snapshot) {
+    final l10n = context.afriL10n;
     if (!ConnectivityService.isOnline ||
         snapshot.failure?.kind == FetWalletFailureKind.offline) {
-      return const AfriStateBanner(
+      return AfriStateBanner(
         icon: AfriIcons.offline,
-        title: 'Showing saved points',
-        subtitle:
-            'Reconnect for the latest balance and activity. No action is queued offline.',
+        title: l10n.walletShowingSaved,
+        subtitle: l10n.walletShowingSavedBody,
         tone: AfriStateBannerTone.warning,
       );
     }
     if (snapshot.phase == FetWalletPhase.syncing) {
-      return const AfriStateBanner(
+      return AfriStateBanner(
         icon: AfriIcons.refresh,
-        title: 'Refreshing points',
-        subtitle:
-            'The confirmed balance stays visible while the latest ledger loads.',
+        title: l10n.walletRefreshing,
+        subtitle: l10n.walletRefreshingBody,
         tone: AfriStateBannerTone.info,
       );
     }
     return switch (snapshot.failure?.kind) {
       FetWalletFailureKind.conflict => AfriStateBanner(
         icon: AfriIcons.warning,
-        title: 'Points changed elsewhere',
-        subtitle:
-            'The saved balance stays visible. Refresh to confirm the latest ledger.',
+        title: l10n.walletChangedElsewhere,
+        subtitle: l10n.walletChangedElsewhereBody,
         tone: AfriStateBannerTone.warning,
         onTap: () => ref.read(fetWalletRouteProvider.notifier).refresh(),
       ),
       FetWalletFailureKind.securityTimeout => AfriStateBanner(
         icon: AfriIcons.warning,
-        title: 'Points refresh timed out',
-        subtitle: 'The saved balance is still shown. Try one bounded refresh.',
+        title: l10n.walletRefreshTimedOut,
+        subtitle: l10n.walletRefreshTimedOutBody,
         tone: AfriStateBannerTone.danger,
         onTap: () => ref.read(fetWalletRouteProvider.notifier).refresh(),
       ),
       FetWalletFailureKind.unknown => AfriStateBanner(
         icon: AfriIcons.warning,
-        title: 'Points may be out of date',
-        subtitle:
-            'The last confirmed balance stays visible while service is unavailable.',
+        title: l10n.walletMayBeOutdated,
+        subtitle: l10n.walletMayBeOutdatedBody,
         tone: AfriStateBannerTone.warning,
         onTap: () => ref.read(fetWalletRouteProvider.notifier).refresh(),
       ),
       _ when snapshot.phase == FetWalletPhase.degraded => AfriStateBanner(
         icon: AfriIcons.warning,
-        title: 'Showing saved points',
-        subtitle:
-            'The last confirmed balance stays visible until refresh succeeds.',
+        title: l10n.walletShowingSaved,
+        subtitle: l10n.walletSavedUntilRefresh,
         tone: AfriStateBannerTone.warning,
         onTap: () => ref.read(fetWalletRouteProvider.notifier).refresh(),
       ),
@@ -440,7 +440,14 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     return AfriSegmentedControl(
       items: _WalletSection.values
           .map(
-            (section) => AfriSegment(label: section.label, icon: section.icon),
+            (section) => AfriSegment(
+              label: switch (section) {
+                _WalletSection.earn => context.afriL10n.walletEarn,
+                _WalletSection.rewards => context.afriL10n.gameRewardsLabel,
+                _WalletSection.activity => context.afriL10n.gameActivity,
+              },
+              icon: section.icon,
+            ),
           )
           .toList(growable: false),
       selectedIndex: _WalletSection.values.indexOf(selectedSection),

@@ -178,7 +178,7 @@ class FetRepository {
     if (scope.clubId == null) {
       return const FetFriendActionResult(
         status: 'error',
-        message: 'Club context is required.',
+        message: 'club_context_required',
       );
     }
 
@@ -213,7 +213,7 @@ class FetRepository {
     if (scope.clubId == null) {
       return const FetFriendActionResult(
         status: 'error',
-        message: 'Club context is required.',
+        message: 'club_context_required',
       );
     }
 
@@ -282,7 +282,7 @@ class FetRepository {
     if (scope.clubId == null) {
       return const FetRewardRedemptionResult(
         status: 'error',
-        message: 'Club context is required.',
+        message: 'club_context_required',
       );
     }
 

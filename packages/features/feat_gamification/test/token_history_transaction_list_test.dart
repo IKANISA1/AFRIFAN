@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/screens/token_history_screen.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ void main() {
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
+    final l10n = lookupAfriLocalizations(const Locale('en'));
 
     try {
       const transaction = FetWalletTransaction(
@@ -55,7 +57,10 @@ void main() {
       expect(find.text('Transfer received'), findsOneWidget);
       expect(find.text('Away-day refund'), findsOneWidget);
       expect(find.text('+300 pts'), findsOneWidget);
-      expect(find.text('Bal 1250 pts'), findsOneWidget);
+      expect(
+        find.text(l10n.gameWalletBalance(transaction.balanceAfter.toString())),
+        findsOneWidget,
+      );
       expect(
         find.bySemanticsLabel(
           'Credit transaction, Transfer received, Away-day refund, 300 points, '

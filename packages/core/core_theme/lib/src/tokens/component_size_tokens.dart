@@ -35,6 +35,7 @@ class AfriComponentSizes {
 
   static const double quickActionDiameter = 64;
   static const double listLeading = 40;
+  static const double leaderboardRankWidth = 40;
   static const double stateBannerCompact = 36;
   static const double stateBannerRegular = 42;
   static const double stateViewIconCompact = 30;

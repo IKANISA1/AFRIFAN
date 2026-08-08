@@ -100,7 +100,7 @@ class OnboardingContentFailure implements Exception {
 class OnboardingContentRepository {
   const OnboardingContentRepository({
     this.whatsAppSignInEnabled = const bool.fromEnvironment(
-      'AFRICLUB_WHATSAPP_AUTH_ENABLED',
+      'CLUB_WHATSAPP_AUTH_ENABLED',
       defaultValue: true,
     ),
   });

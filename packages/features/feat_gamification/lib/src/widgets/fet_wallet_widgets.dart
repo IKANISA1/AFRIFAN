@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -131,14 +132,21 @@ class WalletTransactionRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${transaction.direction == FetWalletEntryDirection.debit ? '-' : '+'}${formatFet(transaction.amount)} pts',
+                context.afriL10n.gameWalletSignedPoints(
+                  transaction.direction == FetWalletEntryDirection.debit
+                      ? '-'
+                      : '+',
+                  formatFet(transaction.amount),
+                ),
                 style: TypographyTokens.titleLarge(
                   color,
                 ).copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: SpacingTokens.spacing1),
               Text(
-                'Bal. ${formatFet(transaction.balanceAfter)} pts',
+                context.afriL10n.gameWalletBalance(
+                  formatFet(transaction.balanceAfter),
+                ),
                 style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
               ),
             ],

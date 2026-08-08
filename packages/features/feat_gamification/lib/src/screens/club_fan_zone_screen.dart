@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +113,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Club fan zone is temporarily unavailable.';
+        _error = context.afriL10n.gameClubFanZoneTemporarilyUnavailable;
       });
     }
   }
@@ -124,7 +125,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'CLUB FAN ZONE',
+          context.afriL10n.gameClubFanZoneTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
@@ -133,7 +134,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -147,9 +148,9 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Fan zone unavailable',
+                  title: context.afriL10n.gameFanZoneUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -212,7 +213,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                       children: [
                         Text(
                           _selectedCompetition?.name.toUpperCase() ??
-                              'SUPPORTER PULSE',
+                              context.afriL10n.gameSupporterPulse,
                           style: TypographyTokens.headlineLarge().copyWith(
                             fontWeight: FontWeight.w900,
                             height: TypographyTokens.lineHeightCompact,
@@ -220,7 +221,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         Text(
-                          'Real supporter momentum around active competitions, fixture picks, and top clubs.',
+                          context.afriL10n.gameSupporterPulseDescription,
                           style: TypographyTokens.bodyMedium(),
                         ),
                       ],
@@ -231,7 +232,10 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('TOP CLUBS', style: TypographyTokens.titleLarge()),
+                        Text(
+                          context.afriL10n.gameTopClubs,
+                          style: TypographyTokens.titleLarge(),
+                        ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         ..._standings.map((entry) {
                           return Padding(
@@ -249,7 +253,9 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                     SizedBox(
                                       width: SpacingTokens.spacing7,
                                       child: Text(
-                                        '#${entry.position}',
+                                        context.afriL10n.gameRankHash(
+                                          entry.position,
+                                        ),
                                         style: TypographyTokens.titleSmall()
                                             .copyWith(
                                               fontWeight: FontWeight.w800,
@@ -263,7 +269,9 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                       ),
                                     ),
                                     Text(
-                                      '${entry.points} pts',
+                                      context.afriL10n.gamePointBalance(
+                                        entry.points,
+                                      ),
                                       style: TypographyTokens.titleSmall(
                                         ColorTokens.clubAccent,
                                       ).copyWith(fontWeight: FontWeight.w800),
@@ -283,13 +291,15 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'SUPPORTER LEANS',
+                          context.afriL10n.gameSupporterLeans,
                           style: TypographyTokens.titleLarge(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         if (_pulse.isEmpty)
                           Text(
-                            'Community pick distribution will appear once this competition has active ${RuntimeBranding.displayAppName} predictions.',
+                            context.afriL10n.gameSupporterLeansEmpty(
+                              RuntimeBranding.displayAppName,
+                            ),
                           )
                         else
                           ..._pulse.map((pulse) {
@@ -315,7 +325,10 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                         height: SpacingTokens.spacing1 / 2,
                                       ),
                                       Text(
-                                        '${pulse.marketName.toUpperCase()} · ${pulse.leadingOutcome.toUpperCase()}',
+                                        context.afriL10n.gamePair(
+                                          pulse.marketName.toUpperCase(),
+                                          pulse.leadingOutcome.toUpperCase(),
+                                        ),
                                         style: TypographyTokens.bodySmall(),
                                       ),
                                       const SizedBox(
@@ -340,7 +353,11 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                             (SpacingTokens.spacing1 / 2),
                                       ),
                                       Text(
-                                        '${pulse.leadingPercentage.toStringAsFixed(1)}% of supporters currently lean this way.',
+                                        context.afriL10n
+                                            .gameSupporterLeanPercentage(
+                                              pulse.leadingPercentage
+                                                  .toStringAsFixed(1),
+                                            ),
                                         style: TypographyTokens.bodySmall(),
                                       ),
                                     ],

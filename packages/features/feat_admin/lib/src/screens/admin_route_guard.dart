@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,7 +37,7 @@ class AdminRouteGuard extends ConsumerWidget {
 
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
-                    'ADMIN ACCESS REQUIRED',
+                    context.afriL10n.adminAccessRequired,
                     textAlign: TextAlign.center,
                     style: TypographyTokens.headlineMedium().copyWith(
                       color: ColorTokens.onSurface,
@@ -44,13 +45,13 @@ class AdminRouteGuard extends ConsumerWidget {
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   Text(
-                    'This workspace is limited to verified club administrators for the active club.',
+                    context.afriL10n.adminAccessRequiredMessage,
                     textAlign: TextAlign.center,
                     style: TypographyTokens.bodyMedium(),
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
                   AfriButton(
-                    label: 'Back to settings',
+                    label: context.afriL10n.adminBackToSettings,
                     fullWidth: true,
                     onTap: () => context.go('/settings'),
                   ),

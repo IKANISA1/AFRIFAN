@@ -3,22 +3,26 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createGameSessionActionRouteHandler } from "./route";
 
 function request(body: unknown, headers: Record<string, string> = {}) {
-  return new NextRequest("https://admin.gikundiro.com/api/game-session-action", {
-    method: "POST",
-    headers: {
-      origin: "https://admin.gikundiro.com",
-      "content-type": "application/json",
-      ...headers,
+  return new NextRequest(
+    "https://admin.gikundiro.com/api/game-session-action",
+    {
+      method: "POST",
+      headers: {
+        origin: "https://admin.gikundiro.com",
+        "content-type": "application/json",
+        ...headers,
+      },
+      body: JSON.stringify(body),
     },
-    body: JSON.stringify(body),
-  });
+  );
 }
 
 const sessionId = "00000000-0000-4000-8000-000000000001";
 const sessionQuestionId = "00000000-0000-4000-8000-000000000101";
 const sessionPlayerId = "00000000-0000-4000-8000-000000000201";
 const draftId = "00000000-0000-4000-8000-000000000301";
-const questionId = "00000000-0000-4000-8000-000000000401";
+const packId = "00000000-0000-4000-8000-000000000501";
+const displayId = "00000000-0000-4000-8000-000000000601";
 
 describe("game session action route", () => {
   afterEach(() => {
@@ -48,11 +52,13 @@ describe("game session action route", () => {
   });
 
   it("forwards valid game actions to the Supabase Edge Function", async () => {
-    const fetcher = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ success: true, data: { ok: true } }), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      }),
+    const fetcher = vi.fn().mockImplementation(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ success: true, data: { ok: true } }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+      ),
     );
     const handler = createGameSessionActionRouteHandler({
       fetcher,
@@ -73,7 +79,10 @@ describe("game session action route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ success: true, data: { ok: true } });
+    expect(await response.json()).toEqual({
+      success: true,
+      data: { ok: true },
+    });
     expect(fetcher).toHaveBeenCalledWith(
       "https://example.supabase.co/functions/v1/game-session-action",
       expect.objectContaining({
@@ -87,7 +96,96 @@ describe("game session action route", () => {
     );
   });
 
-  it("accepts join-session payloads with a join code", async () => {
+  it("accepts authorized planner, managed-session, and versioned transition payloads", async () => {
+    const fetcher = vi.fn().mockImplementation(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ success: true, data: { ok: true } }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+      ),
+    );
+    const handler = createGameSessionActionRouteHandler({
+      fetcher,
+      rejectInsecureMutation: () => null,
+      rejectRateLimitedRequest: async () => null,
+      supabaseUrl: "https://example.supabase.co",
+      supabaseAnonKey: "anon-key",
+    });
+
+    const optionsResponse = await handler(
+      request({ action: "get_planner_options" }),
+    );
+    const sessionsResponse = await handler(
+      request({ action: "get_managed_sessions" }),
+    );
+    const createResponse = await handler(
+      request({
+        action: "create_managed_session",
+        pack_id: packId,
+        scheduled_start_at: "2026-07-31T17:30:00.000Z",
+        eligibility_scope: "club_membership",
+        display_ids: [displayId],
+        organizer_user_ids: [],
+        idempotency_key: "planner-create-001",
+      }),
+    );
+    const transitionResponse = await handler(
+      request({
+        action: "transition_managed_session",
+        session_id: sessionId,
+        requested_phase: "activated_lobby",
+        expected_session_version: 3,
+        idempotency_key: "planner-transition-001",
+      }),
+    );
+
+    expect([
+      optionsResponse.status,
+      sessionsResponse.status,
+      createResponse.status,
+      transitionResponse.status,
+    ]).toEqual([200, 200, 200, 200]);
+    expect(fetcher).toHaveBeenCalledTimes(4);
+  });
+
+  it("rejects duplicate display selectors and weak managed idempotency keys", async () => {
+    const fetcher = vi.fn();
+    const handler = createGameSessionActionRouteHandler({
+      fetcher,
+      rejectInsecureMutation: () => null,
+      rejectRateLimitedRequest: async () => null,
+      supabaseUrl: "https://example.supabase.co",
+      supabaseAnonKey: "anon-key",
+    });
+
+    const duplicateDisplays = await handler(
+      request({
+        action: "create_managed_session",
+        pack_id: packId,
+        scheduled_start_at: "2026-07-31T17:30:00.000Z",
+        eligibility_scope: "venue",
+        display_ids: [displayId, displayId],
+        organizer_user_ids: [],
+        idempotency_key: "planner-create-002",
+      }),
+    );
+    const weakTransition = await handler(
+      request({
+        action: "transition_managed_session",
+        session_id: sessionId,
+        requested_phase: "paused",
+        expected_session_version: 3,
+        idempotency_key: "short",
+      }),
+    );
+
+    expect(duplicateDisplays.status).toBe(400);
+    expect(weakTransition.status).toBe(400);
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  it("accepts join-session payloads only with a session UUID", async () => {
     const fetcher = vi.fn().mockResolvedValue(
       new Response(JSON.stringify({ success: true, data: { ok: true } }), {
         status: 200,
@@ -105,7 +203,7 @@ describe("game session action route", () => {
     const response = await handler(
       request({
         action: "join_session",
-        join_code: "RAYON24",
+        session_id: sessionId,
         display_name: "Supporter",
       }),
     );
@@ -117,19 +215,21 @@ describe("game session action route", () => {
         method: "POST",
         body: JSON.stringify({
           action: "join_session",
-          join_code: "RAYON24",
+          session_id: sessionId,
           display_name: "Supporter",
         }),
       }),
     );
   });
 
-  it("accepts admin session and TV pairing payloads", async () => {
+  it("accepts admin session creation without join or pairing codes", async () => {
     const fetcher = vi.fn().mockImplementation(() =>
-      Promise.resolve(new Response(JSON.stringify({ success: true, data: { ok: true } }), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      })),
+      Promise.resolve(
+        new Response(JSON.stringify({ success: true, data: { ok: true } }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+      ),
     );
     const handler = createGameSessionActionRouteHandler({
       fetcher,
@@ -144,22 +244,40 @@ describe("game session action route", () => {
         action: "create_session",
         club_id: 24,
         title: "Rayon quiz",
-        join_code: "RAYON24",
-      }),
-    );
-    const pairResponse = await handler(
-      request({
-        action: "pair_tv_device",
-        club_id: 24,
-        device_label: "Main TV",
-        pairing_code: "SCREEN24",
-        session_id: sessionId,
       }),
     );
 
     expect(createResponse.status).toBe(200);
-    expect(pairResponse.status).toBe(200);
-    expect(fetcher).toHaveBeenCalledTimes(2);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects retired join-code and admin pairing-code payloads", async () => {
+    const fetcher = vi.fn();
+    const handler = createGameSessionActionRouteHandler({
+      fetcher,
+      rejectInsecureMutation: () => null,
+      rejectRateLimitedRequest: async () => null,
+      supabaseUrl: "https://example.supabase.co",
+      supabaseAnonKey: "anon-key",
+    });
+
+    const joinResponse = await handler(
+      request({
+        action: "join_session",
+        join_code: "RAYON24",
+      }),
+    );
+    const pairingResponse = await handler(
+      request({
+        action: "pair_tv_device",
+        club_id: 24,
+        pairing_code: "SCREEN24",
+      }),
+    );
+
+    expect(joinResponse.status).toBe(400);
+    expect(pairingResponse.status).toBe(400);
+    expect(fetcher).not.toHaveBeenCalled();
   });
 
   it("accepts moderation, pack publishing, and audit payloads", async () => {
@@ -192,7 +310,12 @@ describe("game session action route", () => {
         action: "publish_question_pack",
         club_id: 24,
         title: "Matchday pack",
-        question_ids: [questionId],
+        question_ids: Array.from(
+          { length: 20 },
+          (_, index) =>
+            `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,
+        ),
+        preview_fingerprint: "a".repeat(64),
       }),
     );
     const draftsResponse = await handler(
@@ -221,6 +344,33 @@ describe("game session action route", () => {
     expect(draftsResponse.status).toBe(200);
     expect(auditResponse.status).toBe(200);
     expect(fetcher).toHaveBeenCalledTimes(4);
+  });
+
+  it("rejects pack publication without an exact preview fingerprint", async () => {
+    const fetcher = vi.fn();
+    const handler = createGameSessionActionRouteHandler({
+      fetcher,
+      rejectInsecureMutation: () => null,
+      rejectRateLimitedRequest: async () => null,
+      supabaseUrl: "https://example.supabase.co",
+      supabaseAnonKey: "anon-key",
+    });
+
+    const response = await handler(
+      request({
+        action: "publish_question_pack",
+        club_id: 24,
+        title: "Matchday pack",
+        question_ids: Array.from(
+          { length: 20 },
+          (_, index) =>
+            `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,
+        ),
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(fetcher).not.toHaveBeenCalled();
   });
 
   it("accepts admin host lifecycle payloads", async () => {
@@ -546,9 +696,11 @@ describe("game session action route", () => {
   });
 
   it("sanitizes upstream transport failures", async () => {
-    const fetcher = vi.fn().mockRejectedValue(
-      new Error("service_role=secret-value session=user-private-id"),
-    );
+    const fetcher = vi
+      .fn()
+      .mockRejectedValue(
+        new Error("service_role=secret-value session=user-private-id"),
+      );
     const handler = createGameSessionActionRouteHandler({
       fetcher,
       rejectInsecureMutation: () => null,

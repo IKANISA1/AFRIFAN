@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "contract": "GAME-OWN-02",
+  "status": "local_owner_pairing_and_management_contract_passed",
+  "criterion_complete": true,
+  "required_clauses": [
+    "qr_or_manual_bootstrap_entry",
+    "authorized_named_scope_selection",
+    "confirmed_audited_rename_and_move",
+    "confirmed_audited_revocation",
+    "bootstrap_credential_recovery",
+    "idempotent_uncertain_mutation_lockout",
+    "privacy_safe_pairing_material_boundary"
+  ],
+  "clauses": [
+    {
+      "id": "qr_or_manual_bootstrap_entry",
+      "assertion": "An owner may enter or deep-link the fresh eight-character challenge created on the native TV; the participant journey never accepts that pairing material.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "pairing deep link pre-fills challenge and claims once"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "TV receives one revocable credential exactly once after owner claim"
+        }
+      ]
+    },
+    {
+      "id": "authorized_named_scope_selection",
+      "assertion": "Pairing and management expose only server-authorized, club-scoped home or approved venue choices by human-readable label, never a raw venue identifier.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "new pairing uses named authorized scope without raw venue ID"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_models_test.dart",
+          "name": "owner scope options reject cross-contract identifiers"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "a venue manager can manage only displays scoped to their authorized venue"
+        }
+      ]
+    },
+    {
+      "id": "confirmed_audited_rename_and_move",
+      "assertion": "A rename or authorized scope move requires explicit confirmation, is idempotent, and produces one display-updated audit event.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "owner rename and move require confirmation and named scope"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "owner rename, revocation, and credential recovery are idempotent and audited once"
+        }
+      ]
+    },
+    {
+      "id": "confirmed_audited_revocation",
+      "assertion": "Revoking a TV is visually destructive, requires explicit confirmation, unassigns active games, invalidates its credential, and writes one audit event.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "owner revocation requires confirmation and executes once"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "owner rename, revocation, and credential recovery are idempotent and audited once"
+        }
+      ]
+    },
+    {
+      "id": "bootstrap_credential_recovery",
+      "assertion": "Recovery consumes a fresh challenge generated on the target native TV, rotates the existing display credential, preserves the display identity, and requires the TV to exchange the challenge for the replacement credential.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_screens_test.dart",
+          "name": "owner recovery rotates through confirmed TV bootstrap code"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "display recovery retries one bootstrap challenge intent"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "owner rename, revocation, and credential recovery are idempotent and audited once"
+        }
+      ]
+    },
+    {
+      "id": "idempotent_uncertain_mutation_lockout",
+      "assertion": "Rename, move, revoke, and recovery reuse a stable intent key for retry and lock every owner mutation after an uncertain timeout until authoritative refresh.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "timed-out display recovery locks every owner mutation"
+        },
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_controllers_test.dart",
+          "name": "display update retries reuse one operation idempotency key"
+        }
+      ]
+    },
+    {
+      "id": "privacy_safe_pairing_material_boundary",
+      "assertion": "Owner inventory and management never return a pairing code or credential; recovery returns only a pending-exchange status, and obsolete owner-issued pairing interfaces are absent.",
+      "tests": [
+        {
+          "path": "packages/features/feat_game_operations/test/game_operations_models_test.dart",
+          "name": "credential and pairing material are rejected by client models"
+        },
+        {
+          "path": "supabase/tests/live_games_v2_contract.sql",
+          "name": "owner claim creates a complete scoped inventory item without pairing or credential material"
+        }
+      ]
+    }
+  ],
+  "deterministic_golden_evidence": [
+    "packages/features/feat_game_operations/test/goldens/game_operations_owner_management_dark_390x844.png"
+  ],
+  "environment_boundary": {
+    "deterministic_local_tests": true,
+    "static_source_contract": true,
+    "isolated_database_contract_executed": true,
+    "current_visual_comparison": true,
+    "shared_or_live_session_claimed": false,
+    "physical_device_claimed": false,
+    "real_network_timing_claimed": false,
+    "accountable_human_approval_claimed": false,
+    "release_claimed": false
+  }
+}

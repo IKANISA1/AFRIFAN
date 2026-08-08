@@ -338,6 +338,10 @@ class ColorTokens {
   static const Color onDarkHairline = Color(0x1AFFFFFF);
   static const Color paperSurface = Color(0xFFFFFFFF);
   static const Color inkBase = _inkBase;
+
+  /// High-contrast binary colors reserved for machine-readable QR modules.
+  static const Color machineCodeLight = Color(0xFFFFFFFF);
+  static const Color machineCodeDark = Color(0xFF000000);
   static const Color inkMuted = Color(0x8A09090B);
   static const Color inkSubtle = Color(0x6109090B);
   static const Color inkFaint = Color(0x4209090B);

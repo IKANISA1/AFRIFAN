@@ -382,7 +382,7 @@ export default function AdminFeaturesPage() {
 
   return (
     <div
-      className="admin-features-state-surface section-grid min-w-0 max-w-full !gap-6"
+      className="admin-features-state-surface section-grid min-w-0 w-full max-w-full overflow-x-hidden !gap-6"
       data-admin-features-status={status}
       data-admin-features-interaction={interaction}
       data-admin-features-refresh-disabled={busy}
@@ -414,7 +414,7 @@ export default function AdminFeaturesPage() {
         onInteractionChange={setInteraction}
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="admin-features-metrics-grid grid gap-4 md:grid-cols-3">
         <AdminStateCard
           label="Total features"
           value={metricValue(features.length)}
@@ -1019,7 +1019,7 @@ export default function AdminFeaturesPage() {
                     void saveDraftFeature();
                   }}
                   disabled={mutationLocked}
-                  className="admin-action-button min-h-12 flex-1 !bg-club-accent !text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  className="admin-action-button min-h-12 flex-1 !bg-club-primary !text-white hover:!bg-club-primary-light disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? "Saving…" : "Save feature"}
                 </button>

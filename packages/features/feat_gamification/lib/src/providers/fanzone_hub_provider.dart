@@ -82,6 +82,11 @@ class FanzoneHubSnapshot {
   }
 }
 
+abstract final class FanzoneHubSnapshotMessage {
+  static const savedContent = 'saved_content';
+  static const connectionRequired = 'connection_required';
+}
+
 enum FanzoneHubStatus { ok, degraded, error }
 
 enum FanzoneHubFailureKind {
@@ -170,8 +175,7 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
         shouldRetainPrevious
             ? previous.copyWith(
                 status: FanzoneHubStatus.degraded,
-                message:
-                    'Showing saved Fan Zone content. Reconnect and refresh for current fixtures and balances.',
+                message: FanzoneHubSnapshotMessage.savedContent,
               )
             : loaded,
       );
@@ -180,8 +184,7 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
           ? AsyncData(
               previous.copyWith(
                 status: FanzoneHubStatus.degraded,
-                message:
-                    'Showing saved Fan Zone content. Reconnect and refresh for current fixtures and balances.',
+                message: FanzoneHubSnapshotMessage.savedContent,
               ),
             )
           : AsyncError(error, stackTrace);
@@ -194,7 +197,7 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
     if (!ConnectivityService.isOnline) {
       return const FanzoneHubSnapshot(
         status: FanzoneHubStatus.error,
-        message: 'Connect to load Fan Zone.',
+        message: FanzoneHubSnapshotMessage.connectionRequired,
       );
     }
     final loadOverride = _loadOverride;
@@ -343,8 +346,7 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
         state = AsyncData(
           current.copyWith(
             status: FanzoneHubStatus.degraded,
-            message:
-                'Showing saved Fan Zone content. Reconnect and refresh for current fixtures and balances.',
+            message: FanzoneHubSnapshotMessage.savedContent,
           ),
         );
       }

@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../admin_cms_controller.dart';
 import '../repositories/admin_repository.dart';
@@ -165,7 +165,9 @@ class _CmsContentManagerScreenState
           builder: (context, setDialogState) {
             return AfriAlertDialog(
               title: Text(
-                existing == null ? 'ADD CONTENT BLOCK' : 'EDIT CONTENT BLOCK',
+                existing == null
+                    ? context.afriL10n.adminCmsAddContentBlock
+                    : context.afriL10n.adminCmsEditContentBlock,
                 style: TypographyTokens.titleLarge(),
               ),
               content: SingleChildScrollView(
@@ -174,22 +176,22 @@ class _CmsContentManagerScreenState
                   children: [
                     _DialogTextField(
                       controller: blockKeyController,
-                      hint: 'Block key (e.g. home_hero_1)',
+                      hint: context.afriL10n.adminCmsBlockKey,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: blockTypeController,
-                      hint: 'Block type (e.g. banner)',
+                      hint: context.afriL10n.adminCmsBlockType,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     AfriDropdownField<String>(
                       initialValue: targetChannel,
-                      label: 'Target Channel',
+                      label: context.afriL10n.adminCmsTargetChannel,
                       items: _targetChannels
                           .map(
                             (item) => DropdownMenuItem<String>(
                               value: item,
-                              child: Text(item),
+                              child: Text(_cmsChannelLabel(context, item)),
                             ),
                           )
                           .toList(),
@@ -203,7 +205,7 @@ class _CmsContentManagerScreenState
                       initialValue: _placementKeys.contains(placementKey)
                           ? placementKey
                           : null,
-                      label: 'Placement Key',
+                      label: context.afriL10n.adminCmsPlacementKey,
                       items: _placementKeys
                           .map(
                             (item) => DropdownMenuItem<String>(
@@ -220,26 +222,26 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: titleController,
-                      hint: 'Title',
+                      hint: context.afriL10n.adminCmsTitleField,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: subtitleController,
-                      hint: 'Subtitle',
+                      hint: context.afriL10n.adminCmsSubtitleField,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: contentComponentController,
-                      hint: 'Content Component Name',
+                      hint: context.afriL10n.adminCmsContentComponent,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     AfriDropdownField<String>(
                       initialValue: selectedFeatureId,
-                      label: 'Feature',
+                      label: context.afriL10n.adminCmsFeatureField,
                       items: [
-                        const DropdownMenuItem<String>(
+                        DropdownMenuItem<String>(
                           value: null,
-                          child: Text('None'),
+                          child: Text(context.afriL10n.adminCmsNone),
                         ),
                         ..._platformFeatures.map(
                           (feature) => DropdownMenuItem<String>(
@@ -247,7 +249,7 @@ class _CmsContentManagerScreenState
                             child: Text(
                               feature['display_name']?.toString() ??
                                   feature['feature_key']?.toString() ??
-                                  'Feature',
+                                  context.afriL10n.adminCmsFeatureField,
                             ),
                           ),
                         ),
@@ -259,14 +261,14 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: sortOrderController,
-                      hint: 'Sort order',
+                      hint: context.afriL10n.adminCmsSortOrder,
                       keyboardType: TextInputType.number,
                     ),
                     AfriSwitchListTile(
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
-                      title: const Text('Active'),
+                      title: Text(context.afriL10n.adminCmsActive),
                       contentPadding: EdgeInsets.zero,
                     ),
                   ],
@@ -275,7 +277,7 @@ class _CmsContentManagerScreenState
               actions: [
                 AfriTextButton(
                   onPressed: () => dialogContext.pop(),
-                  child: const Text('CANCEL'),
+                  child: Text(context.afriL10n.adminCancelUpper),
                 ),
                 AfriTextButton(
                   onPressed: () async {
@@ -325,7 +327,11 @@ class _CmsContentManagerScreenState
                       }
                     });
                   },
-                  child: Text(existing == null ? 'CREATE' : 'SAVE'),
+                  child: Text(
+                    existing == null
+                        ? context.afriL10n.adminCmsCreate
+                        : context.afriL10n.adminCmsSave,
+                  ),
                 ),
               ],
             );
@@ -343,26 +349,29 @@ class _CmsContentManagerScreenState
       showDialog<void>(
         context: context,
         builder: (dialogContext) => AfriAlertDialog(
-          title: Text('NEW ARTICLE', style: TypographyTokens.titleLarge()),
+          title: Text(
+            context.afriL10n.adminCmsNewArticle,
+            style: TypographyTokens.titleLarge(),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               AfriInputField(
                 controller: titleController,
-                hint: 'Article title',
+                hint: context.afriL10n.adminCmsArticleTitle,
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               AfriInputField(
                 controller: bodyController,
                 maxLines: 3,
-                hint: 'Article body',
+                hint: context.afriL10n.adminCmsArticleBody,
               ),
             ],
           ),
           actions: [
             AfriTextButton(
               onPressed: () => dialogContext.pop(),
-              child: const Text('CANCEL'),
+              child: Text(context.afriL10n.adminCancelUpper),
             ),
             AfriTextButton(
               onPressed: () async {
@@ -375,7 +384,7 @@ class _CmsContentManagerScreenState
                   ),
                 );
               },
-              child: const Text('CREATE'),
+              child: Text(context.afriL10n.adminCmsCreate),
             ),
           ],
         ),
@@ -415,7 +424,9 @@ class _CmsContentManagerScreenState
           builder: (context, setDialogState) {
             return AfriAlertDialog(
               title: Text(
-                existing == null ? 'ADD QUICK ACTION' : 'EDIT QUICK ACTION',
+                existing == null
+                    ? context.afriL10n.adminCmsAddQuickAction
+                    : context.afriL10n.adminCmsEditQuickAction,
                 style: TypographyTokens.titleLarge(),
               ),
               content: SingleChildScrollView(
@@ -424,43 +435,43 @@ class _CmsContentManagerScreenState
                   children: [
                     _DialogTextField(
                       controller: actionKeyController,
-                      hint: 'Action key',
+                      hint: context.afriL10n.adminCmsActionKey,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: titleController,
-                      hint: 'Title',
+                      hint: context.afriL10n.adminCmsTitleField,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: subtitleController,
-                      hint: 'Subtitle',
+                      hint: context.afriL10n.adminCmsSubtitleField,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: routeController,
-                      hint: 'Route',
+                      hint: context.afriL10n.adminCmsRoute,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: iconKeyController,
-                      hint: 'Icon key',
+                      hint: context.afriL10n.adminCmsIconKey,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: emojiController,
-                      hint: 'Emoji',
+                      hint: context.afriL10n.adminCmsEmoji,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: sortOrderController,
-                      hint: 'Sort order',
+                      hint: context.afriL10n.adminCmsSortOrder,
                       keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     AfriDropdownField<String>(
                       initialValue: selectedCountry,
-                      label: 'Country',
+                      label: context.afriL10n.adminCmsCountry,
                       items: _countryOptions
                           .map(
                             (country) => DropdownMenuItem<String>(
@@ -478,7 +489,7 @@ class _CmsContentManagerScreenState
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
-                      title: const Text('Active'),
+                      title: Text(context.afriL10n.adminCmsActive),
                       contentPadding: EdgeInsets.zero,
                     ),
                   ],
@@ -487,7 +498,7 @@ class _CmsContentManagerScreenState
               actions: [
                 AfriTextButton(
                   onPressed: () => dialogContext.pop(),
-                  child: const Text('CANCEL'),
+                  child: Text(context.afriL10n.adminCancelUpper),
                 ),
                 AfriTextButton(
                   onPressed: () async {
@@ -537,7 +548,11 @@ class _CmsContentManagerScreenState
                       }
                     });
                   },
-                  child: Text(existing == null ? 'CREATE' : 'SAVE'),
+                  child: Text(
+                    existing == null
+                        ? context.afriL10n.adminCmsCreate
+                        : context.afriL10n.adminCmsSave,
+                  ),
                 ),
               ],
             );
@@ -578,25 +593,33 @@ class _CmsContentManagerScreenState
           builder: (context, setDialogState) {
             return AfriAlertDialog(
               title: Text(
-                existing == null ? 'ADD PARTNER' : 'EDIT PARTNER',
+                existing == null
+                    ? context.afriL10n.adminCmsAddPartner
+                    : context.afriL10n.adminCmsEditPartner,
                 style: TypographyTokens.titleLarge(),
               ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _DialogTextField(controller: nameController, hint: 'Name'),
+                    _DialogTextField(
+                      controller: nameController,
+                      hint: context.afriL10n.adminCmsName,
+                    ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    _DialogTextField(controller: slugController, hint: 'Slug'),
+                    _DialogTextField(
+                      controller: slugController,
+                      hint: context.afriL10n.adminCmsSlug,
+                    ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     AfriDropdownField<String>(
                       initialValue: category,
-                      label: 'Category',
+                      label: context.afriL10n.adminCmsCategory,
                       items: _partnerCategories
                           .map(
                             (item) => DropdownMenuItem<String>(
                               value: item,
-                              child: Text(item),
+                              child: Text(_cmsCategoryLabel(context, item)),
                             ),
                           )
                           .toList(),
@@ -608,7 +631,7 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     AfriDropdownField<String>(
                       initialValue: country,
-                      label: 'Country',
+                      label: context.afriL10n.adminCmsCountry,
                       items: _countryOptions
                           .where((item) => item != 'GLOBAL')
                           .map(
@@ -626,37 +649,37 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: subtitleController,
-                      hint: 'Subtitle',
+                      hint: context.afriL10n.adminCmsSubtitleField,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: descriptionController,
-                      hint: 'Description',
+                      hint: context.afriL10n.adminCmsDescriptionField,
                       maxLines: 3,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: emojiController,
-                      hint: 'Emoji',
+                      hint: context.afriL10n.adminCmsEmoji,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: sortOrderController,
-                      hint: 'Sort order',
+                      hint: context.afriL10n.adminCmsSortOrder,
                       keyboardType: TextInputType.number,
                     ),
                     AfriSwitchListTile(
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
-                      title: const Text('Active'),
+                      title: Text(context.afriL10n.adminCmsActive),
                       contentPadding: EdgeInsets.zero,
                     ),
                     AfriSwitchListTile(
                       value: gamificationEnabled,
                       onChanged: (value) =>
                           setDialogState(() => gamificationEnabled = value),
-                      title: const Text('Linked to gamification'),
+                      title: Text(context.afriL10n.adminCmsGamificationLinked),
                       contentPadding: EdgeInsets.zero,
                     ),
                   ],
@@ -665,7 +688,7 @@ class _CmsContentManagerScreenState
               actions: [
                 AfriTextButton(
                   onPressed: () => dialogContext.pop(),
-                  child: const Text('CANCEL'),
+                  child: Text(context.afriL10n.adminCancelUpper),
                 ),
                 AfriTextButton(
                   onPressed: () async {
@@ -710,7 +733,11 @@ class _CmsContentManagerScreenState
                       }
                     });
                   },
-                  child: Text(existing == null ? 'CREATE' : 'SAVE'),
+                  child: Text(
+                    existing == null
+                        ? context.afriL10n.adminCmsCreate
+                        : context.afriL10n.adminCmsSave,
+                  ),
                 ),
               ],
             );
@@ -722,7 +749,7 @@ class _CmsContentManagerScreenState
 
   void _showPartnerServiceDialog([Map<String, dynamic>? existing]) {
     if (_partners.isEmpty) {
-      _showSnack('Create a partner first.');
+      _showSnack(context.afriL10n.adminCmsCreatePartnerFirst);
       return;
     }
 
@@ -763,8 +790,8 @@ class _CmsContentManagerScreenState
             return AfriAlertDialog(
               title: Text(
                 existing == null
-                    ? 'ADD PARTNER SERVICE'
-                    : 'EDIT PARTNER SERVICE',
+                    ? context.afriL10n.adminCmsAddPartnerService
+                    : context.afriL10n.adminCmsEditPartnerService,
                 style: TypographyTokens.titleLarge(),
               ),
               content: SingleChildScrollView(
@@ -773,13 +800,14 @@ class _CmsContentManagerScreenState
                   children: [
                     AfriDropdownField<String>(
                       initialValue: selectedPartnerId,
-                      label: 'Partner',
+                      label: context.afriL10n.adminCmsPartner,
                       items: _partners
                           .map(
                             (partner) => DropdownMenuItem<String>(
                               value: partner['id']?.toString() ?? '',
                               child: Text(
-                                partner['name']?.toString() ?? 'Partner',
+                                partner['name']?.toString() ??
+                                    context.afriL10n.adminCmsPartner,
                               ),
                             ),
                           )
@@ -792,27 +820,27 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: serviceSlugController,
-                      hint: 'Service slug',
+                      hint: context.afriL10n.adminCmsServiceSlug,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: titleController,
-                      hint: 'Title',
+                      hint: context.afriL10n.adminCmsTitleField,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: subtitleController,
-                      hint: 'Subtitle',
+                      hint: context.afriL10n.adminCmsSubtitleField,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     AfriDropdownField<String>(
                       initialValue: category,
-                      label: 'Category',
+                      label: context.afriL10n.adminCmsCategory,
                       items: _serviceCategories
                           .map(
                             (item) => DropdownMenuItem<String>(
                               value: item,
-                              child: Text(item),
+                              child: Text(_cmsCategoryLabel(context, item)),
                             ),
                           )
                           .toList(),
@@ -824,7 +852,7 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     AfriDropdownField<String>(
                       initialValue: country,
-                      label: 'Country',
+                      label: context.afriL10n.adminCmsCountry,
                       items: _countryOptions
                           .map(
                             (item) => DropdownMenuItem<String>(
@@ -841,36 +869,36 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: emojiController,
-                      hint: 'Emoji',
+                      hint: context.afriL10n.adminCmsEmoji,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: ctaLabelController,
-                      hint: 'CTA label',
+                      hint: context.afriL10n.adminCmsCtaLabel,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: ctaActionController,
-                      hint: 'CTA action',
+                      hint: context.afriL10n.adminCmsCtaAction,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: sortOrderController,
-                      hint: 'Sort order',
+                      hint: context.afriL10n.adminCmsSortOrder,
                       keyboardType: TextInputType.number,
                     ),
                     AfriSwitchListTile(
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
-                      title: const Text('Active'),
+                      title: Text(context.afriL10n.adminCmsActive),
                       contentPadding: EdgeInsets.zero,
                     ),
                     AfriSwitchListTile(
                       value: gamificationEnabled,
                       onChanged: (value) =>
                           setDialogState(() => gamificationEnabled = value),
-                      title: const Text('Linked to gamification'),
+                      title: Text(context.afriL10n.adminCmsGamificationLinked),
                       contentPadding: EdgeInsets.zero,
                     ),
                   ],
@@ -879,7 +907,7 @@ class _CmsContentManagerScreenState
               actions: [
                 AfriTextButton(
                   onPressed: () => dialogContext.pop(),
-                  child: const Text('CANCEL'),
+                  child: Text(context.afriL10n.adminCancelUpper),
                 ),
                 AfriTextButton(
                   onPressed: () async {
@@ -928,7 +956,11 @@ class _CmsContentManagerScreenState
                       }
                     });
                   },
-                  child: Text(existing == null ? 'CREATE' : 'SAVE'),
+                  child: Text(
+                    existing == null
+                        ? context.afriL10n.adminCmsCreate
+                        : context.afriL10n.adminCmsSave,
+                  ),
                 ),
               ],
             );
@@ -955,9 +987,7 @@ class _CmsContentManagerScreenState
         .toList(growable: false);
 
     if (existing == null && availableCompetitions.isEmpty) {
-      _showSnack(
-        'All active competitions are already in the prediction catalog.',
-      );
+      _showSnack(context.afriL10n.adminCmsAllCompetitionsAdded);
       return;
     }
 
@@ -981,8 +1011,8 @@ class _CmsContentManagerScreenState
             return AfriAlertDialog(
               title: Text(
                 existing == null
-                    ? 'ADD PREDICTION COMPETITION'
-                    : 'EDIT PREDICTION COMPETITION',
+                    ? context.afriL10n.adminCmsAddPredictionCompetition
+                    : context.afriL10n.adminCmsEditPredictionCompetition,
                 style: TypographyTokens.titleLarge(),
               ),
               content: SingleChildScrollView(
@@ -993,14 +1023,16 @@ class _CmsContentManagerScreenState
                       initialValue: selectedCompetitionId.isEmpty
                           ? null
                           : selectedCompetitionId,
-                      label: 'Competition',
+                      label: context.afriL10n.adminCmsCompetition,
                       items: availableCompetitions
                           .map(
                             (competition) => DropdownMenuItem<String>(
                               value: competition['id']?.toString() ?? '',
                               child: Text(
                                 competition['name']?.toString() ??
-                                    'Competition',
+                                    context
+                                        .afriL10n
+                                        .adminCmsCompetitionFallback,
                               ),
                             ),
                           )
@@ -1017,19 +1049,19 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: highlightLabelController,
-                      hint: 'Highlight label',
+                      hint: context.afriL10n.adminCmsHighlightLabel,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(
                       controller: sortOrderController,
-                      hint: 'Sort order',
+                      hint: context.afriL10n.adminCmsSortOrder,
                       keyboardType: TextInputType.number,
                     ),
                     AfriSwitchListTile(
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
-                      title: const Text('Active'),
+                      title: Text(context.afriL10n.adminCmsActive),
                       contentPadding: EdgeInsets.zero,
                     ),
                   ],
@@ -1038,7 +1070,7 @@ class _CmsContentManagerScreenState
               actions: [
                 AfriTextButton(
                   onPressed: () => dialogContext.pop(),
-                  child: const Text('CANCEL'),
+                  child: Text(context.afriL10n.adminCancelUpper),
                 ),
                 AfriTextButton(
                   onPressed: () async {
@@ -1070,7 +1102,11 @@ class _CmsContentManagerScreenState
                       }
                     });
                   },
-                  child: Text(existing == null ? 'CREATE' : 'SAVE'),
+                  child: Text(
+                    existing == null
+                        ? context.afriL10n.adminCmsCreate
+                        : context.afriL10n.adminCmsSave,
+                  ),
                 ),
               ],
             );
@@ -1089,15 +1125,13 @@ class _CmsContentManagerScreenState
     if (!mounted || success) return success;
     final failure = ref.read(adminCmsProvider).valueOrNull?.failure;
     final message = switch (failure?.kind) {
-      AdminCmsFailureKind.offline =>
-        'CMS changes need a connection. Nothing was retried.',
+      AdminCmsFailureKind.offline => context.afriL10n.adminCmsChangeOffline,
       AdminCmsFailureKind.permissionDenied =>
-        'CMS access is no longer available for this account.',
-      AdminCmsFailureKind.conflict =>
-        'CMS content changed. Refresh before trying another action.',
+        context.afriL10n.adminCmsChangeAccess,
+      AdminCmsFailureKind.conflict => context.afriL10n.adminCmsChangeConflict,
       AdminCmsFailureKind.securityTimeout =>
-        'The result is not confirmed. Refresh before trying another action.',
-      _ => 'The CMS change could not be completed. Review and try again.',
+        context.afriL10n.adminCmsChangeUnconfirmed,
+      _ => context.afriL10n.adminCmsChangeFailed,
     };
     _showSnack(message, isError: true);
     return false;
@@ -1131,41 +1165,41 @@ class _CmsContentManagerScreenState
   }
 
   Widget _unavailable(AdminCmsFailure failure) {
+    final l10n = context.afriL10n;
     final view = switch (failure.kind) {
       AdminCmsFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-cms-state-offline'),
-        title: 'Content manager offline',
-        message: 'Reconnect before loading private publishing controls.',
-        actionLabel: 'Try again',
+        title: l10n.adminCmsOffline,
+        message: l10n.adminCmsOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: () => unawaited(_loadContent()),
       ),
       AdminCmsFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>('admin-cms-state-permission-denied'),
-        title: 'Content access unavailable',
-        message: 'This account cannot view or change club publishing data.',
-        actionLabel: 'Back to admin',
+        title: l10n.adminCmsAccessUnavailable,
+        message: l10n.adminCmsAccessMessage,
+        actionLabel: l10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
       AdminCmsFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-cms-state-conflict'),
-        title: 'Content changed',
-        message: 'Refresh the workspace before making another change.',
-        actionLabel: 'Refresh',
+        title: l10n.adminCmsChanged,
+        message: l10n.adminCmsChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: () => unawaited(_loadContent()),
       ),
       AdminCmsFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>('admin-cms-state-security-timeout'),
-        title: 'Security check timed out',
-        message:
-            'No private content was shown. Check your connection and retry.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminCmsSecurityMessage,
+        actionLabel: l10n.retry,
         onAction: () => unawaited(_loadContent()),
       ),
       AdminCmsFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-cms-state-error'),
-        title: 'Content manager unavailable',
-        message: 'Private publishing data remains hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminCmsUnavailable,
+        message: l10n.adminCmsHiddenMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: () => unawaited(_loadContent()),
       ),
     };
@@ -1177,22 +1211,20 @@ class _CmsContentManagerScreenState
 
   Widget? _statusBanner(AsyncValue<AdminCmsSnapshot> cms) {
     if (_snapshot.isMutating) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-cms-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-cms-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Saving content',
-        subtitle:
-            'Publishing controls are paused until the result is confirmed.',
+        title: context.afriL10n.adminCmsSaving,
+        subtitle: context.afriL10n.adminCmsSavingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
     if (cms.isLoading && cms.valueOrNull != null) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-cms-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-cms-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Refreshing content',
-        subtitle:
-            'Showing the last confirmed workspace while status is checked.',
+        title: context.afriL10n.adminCmsRefreshing,
+        subtitle: context.afriL10n.adminCmsRefreshingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -1206,15 +1238,15 @@ class _CmsContentManagerScreenState
           ? AfriIcons.offline
           : AfriIcons.statusWarning,
       title: failure.kind == AdminCmsFailureKind.conflict
-          ? 'Content changed'
+          ? context.afriL10n.adminCmsChanged
           : failure.kind == AdminCmsFailureKind.securityTimeout
-          ? 'Security check timed out'
+          ? context.afriL10n.adminSecurityTimeout
           : failure.kind == AdminCmsFailureKind.offline
-          ? 'Content manager offline'
-          : 'Current refresh unavailable',
+          ? context.afriL10n.adminCmsOffline
+          : context.afriL10n.adminCmsCurrentRefreshUnavailable,
       subtitle: _snapshot.mutationOutcomeUnconfirmed
-          ? 'The last change is not confirmed. Refresh before taking another action.'
-          : 'Showing the last confirmed workspace. Actions are paused until refresh succeeds.',
+          ? context.afriL10n.adminCmsOutcomeUnconfirmed
+          : context.afriL10n.adminCmsLastConfirmed,
       tone: AfriStateBannerTone.warning,
     );
   }
@@ -1234,11 +1266,14 @@ class _CmsContentManagerScreenState
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('CONTENT MANAGER', style: TypographyTokens.titleLarge()),
+        title: Text(
+          context.afriL10n.adminCmsTitle,
+          style: TypographyTokens.titleLarge(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
       ),
       scrollable: false,
@@ -1248,11 +1283,10 @@ class _CmsContentManagerScreenState
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriStateView.empty(
                 key: const ValueKey<String>('admin-cms-state-disabled'),
-                title: 'Content manager unavailable',
-                message:
-                    'Publishing controls are disabled for this controlled build.',
+                title: context.afriL10n.adminCmsUnavailable,
+                message: context.afriL10n.adminCmsDisabled,
                 icon: AfriIcons.lock,
-                actionLabel: 'Back to admin',
+                actionLabel: context.afriL10n.adminBackToAdmin,
                 onAction: () => context.pop(),
               ),
             )
@@ -1265,8 +1299,8 @@ class _CmsContentManagerScreenState
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-cms-state-loading'),
-                title: 'Loading content manager',
-                message: 'Checking current publishing work.',
+                title: context.afriL10n.adminCmsLoading,
+                message: context.afriL10n.adminCmsLoadingMessage,
               ),
             )
           : cms.hasError && cms.valueOrNull == null
@@ -1281,16 +1315,15 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing4),
                   ],
                   Text(
-                    'Manage home shortcuts, partner catalogs, and supported prediction competitions.',
+                    context.afriL10n.adminCmsDescription,
                     style: TypographyTokens.bodyMedium(),
                   ),
                   if (_snapshot.isEmpty) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriStateView.empty(
                       key: const ValueKey<String>('admin-cms-state-empty'),
-                      title: 'No managed content',
-                      message:
-                          'Choose a section to create the first controlled item.',
+                      title: context.afriL10n.adminCmsNoContent,
+                      message: context.afriL10n.adminCmsNoContentMessage,
                       compact: true,
                     ),
                   ],
@@ -1303,4 +1336,27 @@ class _CmsContentManagerScreenState
             ),
     );
   }
+}
+
+String _cmsChannelLabel(BuildContext context, String channel) {
+  final l10n = context.afriL10n;
+  return switch (channel) {
+    'mobile' => l10n.adminCmsChannelMobile,
+    'web' => l10n.adminCmsChannelWeb,
+    _ => l10n.adminCmsChannelBoth,
+  };
+}
+
+String _cmsCategoryLabel(BuildContext context, String category) {
+  final l10n = context.afriL10n;
+  return switch (category) {
+    'organization' => l10n.adminCmsCategoryOrganization,
+    'bank' => l10n.adminCmsCategoryBank,
+    'football' => l10n.adminCmsCategoryFootball,
+    'general' => l10n.adminCmsCategoryGeneral,
+    'community' => l10n.adminCmsCategoryCommunity,
+    'insurance' => l10n.adminCmsCategoryInsurance,
+    'mobility' => l10n.adminCmsCategoryMobility,
+    _ => category,
+  };
 }

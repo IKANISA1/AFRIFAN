@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_sms_ledger/feat_sms_ledger.dart';
@@ -100,7 +101,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     if (_draftEdited) {
       setState(() {
         _localStatusMessage =
-            'Connection restored. Review your kept changes, then save.';
+            context.afriL10n.privacySettingsConnectionRestoredReview;
       });
       return;
     }
@@ -108,7 +109,8 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     setState(() {
       _draft = null;
       _draftUserId = null;
-      _localStatusMessage = 'Connection restored. Refreshing privacy settings.';
+      _localStatusMessage =
+          context.afriL10n.privacySettingsConnectionRestoredRefreshing;
     });
     ref.invalidate(privacySettingsProvider);
   }
@@ -143,7 +145,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
       _draft = settings.copyWith(analyticsEnabled: value);
       _draftEdited = true;
       _operationFailure = null;
-      _localStatusMessage = 'Privacy change ready to save.';
+      _localStatusMessage = context.afriL10n.privacySettingsChangeReady;
     });
   }
 
@@ -153,14 +155,14 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
       _draft = settings.copyWith(momoSmsAutoreadEnabled: value);
       _draftEdited = true;
       _operationFailure = null;
-      _localStatusMessage = 'Privacy change ready to save.';
+      _localStatusMessage = context.afriL10n.privacySettingsChangeReady;
     });
   }
 
   Future<void> _saveSettings(UserPrivacySettings settings) async {
     if (_isSaving || _saveBlocked || !_draftEdited) return;
     if (!ConnectivityService.isOnline) {
-      _showMessage('Your changes are kept. Connect before saving.');
+      _showMessage(context.afriL10n.privacySettingsDraftKeptConnect);
       return;
     }
 
@@ -192,7 +194,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
         _operationFailure = null;
         _localStatusMessage = null;
       });
-      _showMessage('Privacy settings saved.');
+      _showMessage(context.afriL10n.privacySettingsSaved);
     } catch (error) {
       final failure = PrivacySettingsFailure.fromError(error);
       if (failure.kind == PrivacySettingsFailureKind.conflict) {
@@ -204,7 +206,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
           _draftEdited = false;
           _operationFailure = failure;
           _localStatusMessage =
-              'Privacy settings changed elsewhere. The latest version is loading; review it before saving again.';
+              context.afriL10n.privacySettingsChangedElsewhereLoading;
         });
         unawaited(
           FirebaseAnalyticsService.logErrorRecovery(
@@ -232,13 +234,13 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
       _saveBlocked = blocksSave;
       _localStatusMessage = switch (failure.kind) {
         PrivacySettingsFailureKind.permissionDenied =>
-          'Privacy changes are not permitted for this account.',
+          context.afriL10n.privacySettingsChangeNotPermitted,
         PrivacySettingsFailureKind.conflict =>
-          'Privacy settings changed elsewhere. Refresh before saving again.',
+          context.afriL10n.privacySettingsChangedRefresh,
         PrivacySettingsFailureKind.securityTimeout =>
-          'Privacy save was not confirmed. Refresh before trying again.',
+          context.afriL10n.privacySettingsSaveUnconfirmed,
         PrivacySettingsFailureKind.unknown =>
-          'Privacy settings could not be saved. Your draft is kept.',
+          context.afriL10n.privacySettingsSaveFailedDraftKept,
       };
     });
     _showMessage(_localStatusMessage!);
@@ -252,7 +254,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
       _draftEdited = false;
       _saveBlocked = false;
       _operationFailure = null;
-      _localStatusMessage = 'Refreshing privacy settings.';
+      _localStatusMessage = context.afriL10n.privacySettingsRefreshing;
     });
     ref.invalidate(privacySettingsProvider);
   }
@@ -260,7 +262,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
   Future<void> _signOutOtherDevices() async {
     if (_isSaving || _saveBlocked) return;
     if (!ConnectivityService.isOnline) {
-      _showMessage('Connect before signing out other devices.');
+      _showMessage(context.afriL10n.privacySettingsConnectBeforeSigningOut);
       return;
     }
 
@@ -276,15 +278,15 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
       if (!mounted) return;
       _showMessage(
         error == null
-            ? 'Other sessions were signed out.'
-            : 'Could not sign out other devices. Try again.',
+            ? context.afriL10n.privacySettingsSessionsSignedOut
+            : context.afriL10n.privacySettingsSessionsSignOutFailed,
       );
     } on TimeoutException {
       if (!mounted) return;
-      _showMessage('Session security check timed out. Try again.');
+      _showMessage(context.afriL10n.privacySettingsSessionSecurityTimeout);
     } catch (_) {
       if (!mounted) return;
-      _showMessage('Could not sign out other devices. Try again.');
+      _showMessage(context.afriL10n.privacySettingsSessionsSignOutFailed);
     } finally {
       if (mounted) {
         setState(() => _isSaving = false);
@@ -319,27 +321,24 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     );
     if (!mounted || started) return;
 
-    _showMessage(
-      'SMS sync stays off until you grant Android SMS access for MoMo verification.',
-    );
+    _showMessage(context.afriL10n.privacySettingsSmsAccessRequired);
   }
 
   Future<bool> _showMomoSmsConsentDisclosure() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
+        final l10n = context.afriL10n;
         return AfriAlertDialog(
-          title: const Text('Enable MoMo SMS sync'),
-          content: const Text(
-            'The app reads only approved Mobile Money verification SMS on this device to match contribution payments. It cannot access other messages.',
-          ),
+          title: Text(l10n.privacySettingsEnableMomoSmsTitle),
+          content: Text(l10n.privacySettingsMomoSmsDisclosure),
           actions: [
             AfriTextButton(
               onPressed: () => context.pop(false),
-              child: const Text('Not now'),
+              child: Text(l10n.privacySettingsNotNow),
             ),
             AfriButton(
-              label: 'Continue',
+              label: l10n.privacySettingsContinue,
               onTap: () => context.pop(true),
               fullWidth: false,
             ),
@@ -354,25 +353,26 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     AsyncValue<UserPrivacySettings?> asyncSettings,
     bool isOnline,
   ) {
+    final l10n = context.afriL10n;
     if (asyncSettings.isLoading) {
       return AfriStateView.loading(
         key: const ValueKey<String>('privacy-state-loading'),
-        title: 'Loading privacy settings',
-        message: 'Checking your saved privacy choices.',
+        title: l10n.privacySettingsLoadingTitle,
+        message: l10n.privacySettingsLoadingMessage,
       );
     }
     if (!isOnline) {
       return AfriStateView.offline(
         key: const ValueKey<String>('privacy-state-offline'),
-        title: 'Privacy settings are offline',
-        message: 'Connect to load your saved privacy choices.',
+        title: l10n.privacySettingsOfflineTitle,
+        message: l10n.privacySettingsOfflineMessage,
       );
     }
     if (!asyncSettings.hasError) {
       return AfriStateView.empty(
         key: const ValueKey<String>('privacy-state-empty'),
-        title: 'Privacy settings unavailable',
-        message: 'Sign in to review and manage your privacy choices.',
+        title: l10n.privacySettingsUnavailableTitle,
+        message: l10n.privacySettingsUnavailableMessage,
         icon: AfriIcons.privacy,
       );
     }
@@ -381,30 +381,30 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     return switch (failure.kind) {
       PrivacySettingsFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>('privacy-state-permission-denied'),
-        title: 'Privacy access limited',
-        message: 'Your privacy settings could not be verified. Sign in again.',
-        actionLabel: 'Retry',
+        title: l10n.privacySettingsAccessLimitedTitle,
+        message: l10n.privacySettingsAccessLimitedMessage,
+        actionLabel: l10n.retry,
         onAction: _recoverSettings,
       ),
       PrivacySettingsFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('privacy-state-conflict'),
-        title: 'Privacy settings changed',
-        message: 'Refresh to load the current choices before editing.',
-        actionLabel: 'Refresh',
+        title: l10n.privacySettingsChangedTitle,
+        message: l10n.privacySettingsChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: _recoverSettings,
       ),
       PrivacySettingsFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>('privacy-state-security-timeout'),
-        title: 'Privacy security check timed out',
-        message: 'Check your connection and refresh.',
-        actionLabel: 'Refresh',
+        title: l10n.privacySettingsSecurityTimeoutTitle,
+        message: l10n.privacySettingsSecurityTimeoutMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: _recoverSettings,
       ),
       PrivacySettingsFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('privacy-state-error'),
-        title: 'Could not load privacy settings.',
-        message: 'Your saved choices are still safe. Try again.',
-        actionLabel: 'Retry',
+        title: l10n.privacySettingsLoadFailedTitle,
+        message: l10n.privacySettingsLoadFailedMessage,
+        actionLabel: l10n.retry,
         onAction: _recoverSettings,
       ),
     };
@@ -415,76 +415,76 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     bool isOnline,
     bool editingEnabled,
   ) {
+    final l10n = context.afriL10n;
     if (_isSaving) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('privacy-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('privacy-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Saving privacy settings',
-        subtitle: 'Your choices stay visible while the save is confirmed.',
+        title: l10n.privacySettingsSavingTitle,
+        subtitle: l10n.privacySettingsSavingMessage,
         tone: AfriStateBannerTone.info,
-        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
+        trailing: const AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
     if (asyncSettings.isRefreshing) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('privacy-state-refreshing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('privacy-state-refreshing'),
         icon: AfriIcons.refresh,
-        title: 'Refreshing privacy settings',
-        subtitle: 'Your saved choices stay visible.',
+        title: l10n.privacySettingsRefreshingTitle,
+        subtitle: l10n.privacySettingsRefreshingMessage,
         tone: AfriStateBannerTone.info,
-        trailing: AfriLoadingIndicator(size: SizeTokens.iconMd),
+        trailing: const AfriLoadingIndicator(size: SizeTokens.iconMd),
       );
     }
     if (_operationFailure != null) {
       return switch (_operationFailure!.kind) {
-        PrivacySettingsFailureKind.permissionDenied => const AfriStateBanner(
-          key: ValueKey<String>('privacy-state-save-permission-denied'),
+        PrivacySettingsFailureKind.permissionDenied => AfriStateBanner(
+          key: const ValueKey<String>('privacy-state-save-permission-denied'),
           icon: AfriIcons.lock,
-          title: 'Privacy editing unavailable',
-          subtitle: 'Your saved choices stay visible.',
+          title: l10n.privacySettingsEditingUnavailableTitle,
+          subtitle: l10n.privacySettingsEditingUnavailableMessage,
           tone: AfriStateBannerTone.warning,
         ),
         PrivacySettingsFailureKind.conflict => AfriStateBanner(
           key: const ValueKey<String>('privacy-state-save-conflict'),
           icon: AfriIcons.refresh,
-          title: 'Privacy settings changed elsewhere',
-          subtitle: 'Refresh and review the latest choices.',
+          title: l10n.privacySettingsChangedElsewhereTitle,
+          subtitle: l10n.privacySettingsChangedElsewhereMessage,
           onTap: _recoverSettings,
           tone: AfriStateBannerTone.warning,
         ),
         PrivacySettingsFailureKind.securityTimeout => AfriStateBanner(
           key: const ValueKey<String>('privacy-state-save-security-timeout'),
           icon: AfriIcons.lock,
-          title: 'Privacy save not confirmed',
-          subtitle: 'Refresh before trying again. Your draft is kept.',
+          title: l10n.privacySettingsSaveNotConfirmedTitle,
+          subtitle: l10n.privacySettingsSaveNotConfirmedMessage,
           onTap: _recoverSettings,
           tone: AfriStateBannerTone.warning,
         ),
-        PrivacySettingsFailureKind.unknown => const AfriStateBanner(
-          key: ValueKey<String>('privacy-state-save-error'),
+        PrivacySettingsFailureKind.unknown => AfriStateBanner(
+          key: const ValueKey<String>('privacy-state-save-error'),
           icon: AfriIcons.statusError,
-          title: 'Privacy settings could not be saved',
-          subtitle: 'Your draft is still here.',
+          title: l10n.privacySettingsSaveFailedTitle,
+          subtitle: l10n.privacySettingsSaveFailedMessage,
           tone: AfriStateBannerTone.danger,
         ),
       };
     }
     if (!isOnline) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('privacy-state-offline'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('privacy-state-offline'),
         icon: AfriIcons.offline,
-        title: 'Saved privacy settings',
-        subtitle:
-            'Values may be out of date. Reconnect before changing or saving.',
+        title: l10n.privacySettingsSavedSettingsTitle,
+        subtitle: l10n.privacySettingsSavedSettingsMessage,
         tone: AfriStateBannerTone.warning,
       );
     }
     if (!editingEnabled) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('privacy-state-disabled'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('privacy-state-disabled'),
         icon: AfriIcons.lock,
-        title: 'Privacy editing unavailable',
-        subtitle: 'Your saved choices remain visible in this build.',
+        title: l10n.privacySettingsEditingUnavailableTitle,
+        subtitle: l10n.privacySettingsEditingUnavailableBuildMessage,
         tone: AfriStateBannerTone.neutral,
       );
     }
@@ -493,6 +493,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final appName =
         ClubConfigScope.maybeOf(context)?.appName ??
         RuntimeBranding.displayAppName;
@@ -509,7 +510,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
         backgroundColor: ColorTokens.background,
         appBar: AfriAppBar(
           title: Text(
-            'PRIVACY',
+            l10n.privacySettingsTitle,
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -548,12 +549,12 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'PRIVACY CONTROLS',
+                            l10n.privacySettingsControls,
                             style: TypographyTokens.labelSmall(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
-                            'Choose whether to share coarse, anonymous task events. Queries, contacts, account IDs, codes, messages, and exact payment values are never included.',
+                            l10n.privacySettingsControlsDescription,
                             style: TypographyTokens.bodyMedium(
                               ColorTokens.onSurfaceVariant,
                             ),
@@ -575,9 +576,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                     ? (value) =>
                                           _setMomoSmsAutoread(settings, value)
                                     : null,
-                                title: const Text('MoMo SMS sync'),
-                                subtitle: const Text(
-                                  'Match approved Mobile Money verification SMS for faster contribution checks.',
+                                title: Text(l10n.privacySettingsMomoSmsSync),
+                                subtitle: Text(
+                                  l10n.privacySettingsMomoSmsSyncDescription,
                                 ),
                               ),
                             ),
@@ -595,17 +596,15 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                       !_saveBlocked
                                   ? (value) => _setAnalytics(settings, value)
                                   : null,
-                              title: const Text(
-                                'Share anonymous usage analytics',
-                              ),
-                              subtitle: const Text(
-                                'Help improve search, tickets, contributions, Fan Zone, and recovery flows.',
+                              title: Text(l10n.privacySettingsShareAnalytics),
+                              subtitle: Text(
+                                l10n.privacySettingsShareAnalyticsDescription,
                               ),
                             ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
-                            'Analytics stays off unless you opt in and the signed release has an approved analytics configuration.',
+                            l10n.privacySettingsAnalyticsFailClosed,
                             style: TypographyTokens.bodySmall(
                               ColorTokens.onSurfaceVariant,
                             ),
@@ -626,12 +625,12 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                     AfriButton(
                       key: const ValueKey<String>('privacy-save-action'),
                       label: !isOnline
-                          ? 'Connection required'
+                          ? l10n.settingsConnectionRequired
                           : _isSaving
-                          ? 'Saving…'
+                          ? l10n.editProfileSaving
                           : !_draftEdited
-                          ? 'No changes to save'
-                          : 'Save privacy settings',
+                          ? l10n.privacySettingsNoChanges
+                          : l10n.privacySettingsSave,
                       fullWidth: true,
                       labelMaxLines: 2,
                       isLoading: _isSaving,
@@ -651,12 +650,12 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'YOUR DATA',
+                            l10n.privacySettingsYourData,
                             style: TypographyTokens.labelSmall(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
-                            'Request an account export through a configured support channel.',
+                            l10n.privacySettingsExportDescription,
                             style: TypographyTokens.bodyMedium(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),
@@ -664,26 +663,29 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                             key: const ValueKey<String>(
                               'privacy-export-action',
                             ),
-                            label: 'Request data export',
+                            label: l10n.privacySettingsExportAction,
                             fullWidth: true,
                             variant: AfriButtonVariant.outline,
                             onTap: () async {
                               if (AppLinks.hasSupportWhatsApp) {
                                 await launchWhatsApp(
                                   context,
-                                  message:
-                                      'Data export request for $appName. Please send me a copy of my account data.',
-                                  failureMessage: 'Could not open WhatsApp.',
+                                  message: l10n
+                                      .privacySettingsExportWhatsAppMessage(
+                                        appName,
+                                      ),
+                                  failureMessage: l10n.settingsWhatsAppFailed,
                                 );
                                 return;
                               }
                               await launchMailTo(
                                 context,
                                 email: AppLinks.supportEmail,
-                                subject: '$appName data export request',
-                                body:
-                                    'Please send me a copy of my account data.',
-                                failureMessage: 'Could not open your mail app.',
+                                subject: l10n.privacySettingsExportEmailSubject(
+                                  appName,
+                                ),
+                                body: l10n.privacySettingsExportEmailBody,
+                                failureMessage: l10n.privacySettingsMailFailed,
                               );
                             },
                             enabled:
@@ -696,8 +698,8 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                               'privacy-policy-action',
                             ),
                             label: AppLinks.hasPrivacyPolicy
-                                ? 'Open privacy policy'
-                                : 'Privacy policy unavailable',
+                                ? l10n.privacySettingsOpenPolicy
+                                : l10n.privacySettingsPolicyUnavailable,
                             fullWidth: true,
                             variant: AfriButtonVariant.outline,
                             onTap: () async {
@@ -707,19 +709,19 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                 context,
                                 uri,
                                 failureMessage:
-                                    'Privacy policy is not available yet.',
+                                    l10n.privacySettingsPolicyNotAvailableYet,
                               );
                             },
                             enabled: AppLinks.hasPrivacyPolicy,
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
                           Text(
-                            'ACTIVE SESSIONS',
+                            l10n.privacySettingsActiveSessions,
                             style: TypographyTokens.labelSmall(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
-                            'Revoke other active sessions linked to your account.',
+                            l10n.privacySettingsActiveSessionsDescription,
                             style: TypographyTokens.bodyMedium(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),
@@ -728,8 +730,8 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                               'privacy-sessions-action',
                             ),
                             label: !isOnline
-                                ? 'Connection required'
-                                : 'Sign out other devices',
+                                ? l10n.settingsConnectionRequired
+                                : l10n.privacySettingsSignOutOtherDevices,
                             variant: AfriButtonVariant.outline,
                             fullWidth: true,
                             labelMaxLines: 2,

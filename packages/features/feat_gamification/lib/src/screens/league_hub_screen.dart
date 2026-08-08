@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +77,9 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
         _standings = results[1]! as List<LeagueStandingEntry>;
         _fixtures = results[2]! as List<FixtureSummary>;
         _isLoading = false;
-        _error = _competition == null ? 'Competition not found.' : null;
+        _error = _competition == null
+            ? context.afriL10n.gameCompetitionNotFound
+            : null;
       });
     } catch (error, stackTrace) {
       AfriLogger.warn(
@@ -90,17 +93,19 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'League data is temporarily unavailable.';
+        _error = context.afriL10n.gameLeagueDataTemporarilyUnavailable;
       });
     }
   }
 
-  String _kickoffLabel(DateTime? value) {
+  String _kickoffLabel(BuildContext context, DateTime? value) {
     if (value == null) {
-      return 'TBD';
+      return context.afriL10n.gameTbd;
     }
     final local = value.toLocal();
-    return '${local.day}/${local.month} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+    final materialL10n = MaterialLocalizations.of(context);
+    return '${materialL10n.formatShortDate(local)} • '
+        '${materialL10n.formatTimeOfDay(TimeOfDay.fromDateTime(local))}';
   }
 
   @override
@@ -112,7 +117,8 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          competition?.shortName.toUpperCase() ?? 'LEAGUE HUB',
+          competition?.shortName.toUpperCase() ??
+              context.afriL10n.gameLeagueHubTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
@@ -121,7 +127,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       scrollable: false,
@@ -136,9 +142,9 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'League unavailable',
+                  title: context.afriL10n.gameLeagueUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -199,7 +205,8 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          competition?.name.toUpperCase() ?? 'COMPETITION',
+                          competition?.name.toUpperCase() ??
+                              context.afriL10n.gameCompetition,
                           style: TypographyTokens.headlineLarge().copyWith(
                             fontWeight: FontWeight.w900,
                             height: TypographyTokens.lineHeightCompact,
@@ -207,7 +214,11 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         Text(
-                          '${competition?.region ?? 'Region'} · ${competition?.competitionKind ?? 'League'}',
+                          context.afriL10n.gamePair(
+                            competition?.region ?? context.afriL10n.gameRegion,
+                            competition?.competitionKind ??
+                                context.afriL10n.gameLeague,
+                          ),
                           style: TypographyTokens.bodyMedium(),
                         ),
                         if (competition?.formatNotes != null) ...[
@@ -222,21 +233,21 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                           children: [
                             Expanded(
                               child: _LeagueMetric(
-                                label: 'Teams',
-                                value: '${_standings.length}',
+                                label: context.afriL10n.gameTeams,
+                                value: _standings.length.toString(),
                               ),
                             ),
                             const SizedBox(width: SpacingTokens.spacing3),
                             Expanded(
                               child: _LeagueMetric(
-                                label: 'Fixtures',
-                                value: '${_fixtures.length}',
+                                label: context.afriL10n.gameFixtures,
+                                value: _fixtures.length.toString(),
                               ),
                             ),
                             const SizedBox(width: SpacingTokens.spacing3),
                             Expanded(
                               child: _LeagueMetric(
-                                label: 'Leader',
+                                label: context.afriL10n.gameLeader,
                                 value:
                                     _standings.firstOrNull?.teamShortName ??
                                     '--',
@@ -249,8 +260,8 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   _LeagueSectionCard(
-                    title: 'TOP TABLE',
-                    actionLabel: 'Full standings',
+                    title: context.afriL10n.gameTopTable,
+                    actionLabel: context.afriL10n.gameFullStandings,
                     onAction: competition == null
                         ? null
                         : () => context.push(
@@ -277,7 +288,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   _LeagueSectionCard(
-                    title: 'FIXTURES',
+                    title: context.afriL10n.gameFixturesTitle,
                     child: Column(
                       children: _fixtures
                           .take(6)
@@ -309,7 +320,10 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                                                   SpacingTokens.spacing1 / 2,
                                             ),
                                             Text(
-                                              _kickoffLabel(fixture.kickoffAt),
+                                              _kickoffLabel(
+                                                context,
+                                                fixture.kickoffAt,
+                                              ),
                                               style:
                                                   TypographyTokens.bodySmall(),
                                             ),
@@ -323,7 +337,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                                             ? '${fixture.homeScore}-${fixture.awayScore}'
                                             : fixture.isFinished
                                             ? '${fixture.homeScore ?? 0}-${fixture.awayScore ?? 0}'
-                                            : 'OPEN',
+                                            : context.afriL10n.gameOpenUpper,
                                         style: TypographyTokens.titleMedium(
                                           fixture.isLive
                                               ? ColorTokens.success
@@ -429,7 +443,7 @@ class _LeagueStandingRow extends StatelessWidget {
             SizedBox(
               width: SpacingTokens.spacing7,
               child: Text(
-                '${entry.position}',
+                entry.position.toString(),
                 style: TypographyTokens.titleMedium(
                   entry.position <= 3
                       ? ColorTokens.clubAccent
@@ -445,14 +459,19 @@ class _LeagueStandingRow extends StatelessWidget {
                   Text(entry.teamName, style: TypographyTokens.titleSmall()),
                   const SizedBox(height: SpacingTokens.spacing1 / 2),
                   Text(
-                    '${entry.played}P · ${entry.won}W ${entry.drawn}D ${entry.lost}L',
+                    context.afriL10n.gameLeagueStandingRecord(
+                      entry.played,
+                      entry.won,
+                      entry.drawn,
+                      entry.lost,
+                    ),
                     style: TypographyTokens.bodySmall(),
                   ),
                 ],
               ),
             ),
             Text(
-              '${entry.points} pts',
+              context.afriL10n.gamePointBalance(entry.points),
               style: TypographyTokens.titleMedium().copyWith(
                 fontWeight: FontWeight.w800,
               ),

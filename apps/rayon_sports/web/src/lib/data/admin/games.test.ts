@@ -26,6 +26,26 @@ describe("Admin game operations projections", () => {
         sourceTitle: "Official report",
         sourceUrl: "https://example.com/report#private",
         sourceTrustTier: "official",
+        citationFragment: "Verified club-history fact from the report.",
+        schemaVersion: "2026-08-01",
+        generationMode: "ai_assisted",
+        modelName: "reviewed-model",
+        reviewedAt: "2026-07-29T12:10:00Z",
+        reviewerName: "Authorized Editor",
+        qaChecks: {
+          sourcePresent: true,
+          citationPresent: true,
+          sourceTrusted: true,
+          schemaVersionPresent: true,
+          modelMetadataPresent: true,
+          promptLengthValid: true,
+          exactDuplicateFree: false,
+          normalizedDuplicateFree: false,
+          ambiguitySignalsAbsent: true,
+          answerConsistent: true,
+          languageSupported: true,
+          policyCompliant: true,
+        },
         createdAt: "2026-07-29T12:00:00Z",
         accessToken: "private",
       },
@@ -38,8 +58,45 @@ describe("Admin game operations projections", () => {
       sourceUrl: "https://example.com/report",
       duplicatePromptCount: 2,
       duplicateRiskLevel: "exact",
+      generationMode: "ai_assisted",
+      modelName: "reviewed-model",
+      citationFragment: "Verified club-history fact from the report.",
+      schemaVersion: "2026-08-01",
+      reviewerName: "Authorized Editor",
+      qaChecks: {
+        sourcePresent: true,
+        citationPresent: true,
+        sourceTrusted: true,
+        schemaVersionPresent: true,
+        modelMetadataPresent: true,
+        promptLengthValid: true,
+        exactDuplicateFree: false,
+        normalizedDuplicateFree: false,
+        ambiguitySignalsAbsent: true,
+        answerConsistent: true,
+        languageSupported: true,
+        policyCompliant: true,
+      },
     });
     expect(rows[0]).not.toHaveProperty("accessToken");
+  });
+
+  it("fails every authoritative QA field closed when the server omits checks", () => {
+    const [row] = normalizeAdminGameDrafts([
+      {
+        id: "draft-unverified",
+        prompt: "Which club fact still needs server-side checks?",
+        validationStatus: "pending_review",
+        createdAt: "2026-08-01T10:00:00Z",
+        sourceTitle: "Visible title is not proof",
+        sourceTrustTier: "official",
+      },
+    ]);
+
+    expect(row).toBeDefined();
+    expect(Object.values(row!.qaChecks)).toEqual(
+      Array(Object.keys(row!.qaChecks).length).fill(false),
+    );
   });
 
   it("redacts actors and restricts audit details to operational allow-list fields", () => {

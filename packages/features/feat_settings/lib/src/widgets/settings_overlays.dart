@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +31,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     return AfriDialog(
       child: SingleChildScrollView(
         child: Column(
@@ -51,7 +53,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
                   child: Text(
-                    'DELETE YOUR ACCOUNT?',
+                    l10n.settingsDeleteAccountTitle,
                     style: TypographyTokens.headlineMedium().copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -61,12 +63,12 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
-              'Permanently deletes your profile, FET, badges, and history. Cannot be undone.',
+              l10n.settingsDeleteAccountMessage,
               style: TypographyTokens.bodyMedium(),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
-              'TYPE DELETE TO CONFIRM',
+              l10n.settingsDeleteAccountConfirmPrompt,
               style: TypographyTokens.labelSmall(),
             ),
             const SizedBox(height: SpacingTokens.spacing2),
@@ -74,10 +76,12 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
               controller: _controller,
               onChanged: (value) {
                 setState(
-                  () => _canDelete = value.trim().toUpperCase() == 'DELETE',
+                  () => _canDelete =
+                      value.trim().toUpperCase() ==
+                      l10n.settingsDeleteAccountConfirmValue,
                 );
               },
-              hint: 'DELETE',
+              hint: l10n.settingsDeleteAccountConfirmValue,
             ),
             const SizedBox(height: SpacingTokens.spacing5),
             AfriOutlinedButton(
@@ -88,11 +92,11 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                   SizeTokens.buttonMinHeight,
                 ),
               ),
-              child: const Text('CANCEL'),
+              child: Text(l10n.settingsCancelUpper),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             AfriButton(
-              label: 'Delete permanently',
+              label: l10n.settingsDeletePermanently,
               fullWidth: true,
               onTap: _canDelete ? () => Navigator.of(context).pop(true) : () {},
               enabled: _canDelete,
@@ -110,6 +114,7 @@ Future<bool> showNotificationPermissionModal(BuildContext context) async {
     context: context,
     barrierColor: ColorTokens.scrim,
     builder: (context) {
+      final l10n = context.afriL10n;
       return AfriDialog(
         child: SingleChildScrollView(
           child: Column(
@@ -122,31 +127,31 @@ Future<bool> showNotificationPermissionModal(BuildContext context) async {
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                'STAY IN THE GAME',
+                l10n.settingsNotificationPermissionTitle,
                 style: TypographyTokens.headlineLarge().copyWith(
                   fontWeight: FontWeight.w800,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               Text(
-                'Get notified for matches, contributions, FET milestones, and club news.',
+                l10n.settingsNotificationPermissionMessage,
                 textAlign: TextAlign.center,
                 style: TypographyTokens.bodyMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              const _BenefitRow(label: 'Match alerts before kickoff'),
-              const _BenefitRow(label: 'Contribution and ticket updates'),
-              const _BenefitRow(label: 'FET milestones and challenge drops'),
+              _BenefitRow(label: l10n.settingsMatchAlerts),
+              _BenefitRow(label: l10n.settingsContributionUpdates),
+              _BenefitRow(label: l10n.settingsFetMilestones),
               const SizedBox(height: SpacingTokens.spacing5),
               AfriButton(
-                label: 'Enable notifications',
+                label: l10n.settingsEnableNotifications,
                 fullWidth: true,
                 onTap: () => Navigator.of(context).pop(true),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               AfriTextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('MAYBE LATER'),
+                child: Text(l10n.settingsMaybeLaterUpper),
               ),
             ],
           ),
@@ -162,6 +167,7 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
   final result = await showAfriBottomSheet<bool>(
     context: context,
     builder: (context) {
+      final l10n = context.afriL10n;
       return SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -178,27 +184,27 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
-              'SIGN OUT?',
+              l10n.settingsSignOutTitle,
               style: TypographyTokens.headlineMedium().copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             Text(
-              'Your profile and FET are saved. Sign back in anytime.',
+              l10n.settingsSignOutMessage,
               textAlign: TextAlign.center,
               style: TypographyTokens.bodyMedium(),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
             AfriButton(
-              label: 'Sign out',
+              label: l10n.settingsSignOut,
               fullWidth: true,
               variant: AfriButtonVariant.destructive,
               onTap: () => Navigator.of(context).pop(true),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             AfriButton(
-              label: 'Stay',
+              label: l10n.settingsStay,
               fullWidth: true,
               onTap: () => Navigator.of(context).pop(false),
             ),
@@ -215,6 +221,7 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
   final result = await showAfriBottomSheet<bool>(
     context: context,
     builder: (context) {
+      final l10n = context.afriL10n;
       return SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -231,14 +238,14 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
-              'SIGN OUT OTHER DEVICES?',
+              l10n.settingsSignOutOthersTitle,
               style: TypographyTokens.headlineMedium().copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             Text(
-              'This device stays signed in. Other sessions are revoked.',
+              l10n.settingsSignOutOthersMessage,
               textAlign: TextAlign.center,
               style: TypographyTokens.bodyMedium(),
             ),
@@ -254,11 +261,11 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
                   borderRadius: ShapeTokens.buttonRadius,
                 ),
               ),
-              child: const Text('SIGN OUT OTHERS'),
+              child: Text(l10n.settingsSignOutOthersAction),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             AfriButton(
-              label: 'Cancel',
+              label: l10n.settingsCancel,
               fullWidth: true,
               onTap: () => Navigator.of(context).pop(false),
             ),

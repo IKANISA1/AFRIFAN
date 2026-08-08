@@ -3,6 +3,7 @@ import {
   assertTvPayloadIsSafe,
   buildTvDisplayViewModel,
   createDemoTvSessionState,
+  createGamePackPreviewFingerprint,
   createGameRuntimeClient,
   createTvSessionPlaceholder,
   findTvPayloadLeakKeys,
@@ -12,6 +13,17 @@ import {
 describe("game runtime contract", () => {
   afterEach(() => {
     vi.useRealTimers();
+  });
+
+  it("fingerprints the exact ordered publication preview deterministically", async () => {
+    await expect(
+      createGamePackPreviewFingerprint({
+        title: " Matchday pack ",
+        questionIds: ["00000000-0000-4000-8000-000000000001"],
+      }),
+    ).resolves.toBe(
+      "6d71cbf73f57bd171cad7d4874422a59341cc2d3be53d65b19022495a9b18656",
+    );
   });
 
   it("rejects TV payloads that leak correct-answer fields", () => {
@@ -26,6 +38,27 @@ describe("game runtime contract", () => {
       "currentQuestion.correct_option_key",
     ]);
     expect(() => assertTvPayloadIsSafe(payload)).toThrow(/answer-only field/i);
+  });
+
+  it("rejects a pre-reveal server response containing the correct answer", async () => {
+    const fetcher = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        success: true,
+        data: {
+          ...createDemoTvSessionState(),
+          currentQuestion: {
+            ...createDemoTvSessionState().currentQuestion,
+            correct_option_key: "a",
+          },
+        },
+      }),
+    });
+    const client = createGameRuntimeClient({ fetcher });
+
+    await expect(client.getTvState("session-1")).rejects.toThrow(
+      /answer-only field/i,
+    );
   });
 
   it("builds a display view model from TV-safe state", () => {
@@ -74,7 +107,6 @@ describe("game runtime contract", () => {
           sessionId: "session-1",
           sessionPlayerId: "player-1",
           displayName: "Supporter",
-          joinCode: "RAYON24",
           score: 0,
           teamId: null,
           teamName: null,
@@ -87,7 +119,7 @@ describe("game runtime contract", () => {
     });
 
     await client.joinSession({
-      joinCode: "RAYON24",
+      sessionId: "00000000-0000-4000-8000-000000000001",
       displayName: "Supporter",
     });
 
@@ -98,7 +130,7 @@ describe("game runtime contract", () => {
         credentials: "include",
         body: JSON.stringify({
           action: "join_session",
-          join_code: "RAYON24",
+          session_id: "00000000-0000-4000-8000-000000000001",
           display_name: "Supporter",
         }),
       }),
@@ -156,24 +188,24 @@ describe("game runtime contract", () => {
     [409, "conflict"],
     [504, "security_timeout"],
     [500, "error"],
-  ] as const)("classifies controlled HTTP %s failures as %s", async (
-    status,
-    kind,
-  ) => {
-    const fetcher = vi.fn().mockResolvedValue({
-      ok: false,
-      status,
-      json: async () => ({ error: "Controlled failure." }),
-    });
-    const client = createGameRuntimeClient({ fetcher });
+  ] as const)(
+    "classifies controlled HTTP %s failures as %s",
+    async (status, kind) => {
+      const fetcher = vi.fn().mockResolvedValue({
+        ok: false,
+        status,
+        json: async () => ({ error: "Controlled failure." }),
+      });
+      const client = createGameRuntimeClient({ fetcher });
 
-    await expect(client.getTvState("session-1")).rejects.toMatchObject({
-      name: "GameRuntimeRequestError",
-      kind,
-      status,
-      message: "Controlled failure.",
-    });
-  });
+      await expect(client.getTvState("session-1")).rejects.toMatchObject({
+        name: "GameRuntimeRequestError",
+        kind,
+        status,
+        message: "Controlled failure.",
+      });
+    },
+  );
 
   it("rejects a stalled request at the bounded client deadline", async () => {
     vi.useFakeTimers();
@@ -207,7 +239,7 @@ describe("game runtime contract", () => {
     expect(JSON.stringify(placeholder)).not.toMatch(/modern era|East Stand/i);
   });
 
-  it("posts create-session and pair-TV actions through the game action endpoint", async () => {
+  it("posts create-session without participant or TV pairing codes", async () => {
     const fetcher = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -224,17 +256,9 @@ describe("game runtime contract", () => {
       clubId: 24,
       title: "Rayon quiz",
       packId: "pack-1",
-      joinCode: "RAYON24",
-    });
-    await client.pairTvDevice({
-      clubId: 24,
-      deviceLabel: "Main TV",
-      pairingCode: "SCREEN24",
-      sessionId: "session-1",
     });
 
-    expect(fetcher).toHaveBeenNthCalledWith(
-      1,
+    expect(fetcher).toHaveBeenCalledWith(
       "/api/game-session-action",
       expect.objectContaining({
         body: JSON.stringify({
@@ -242,20 +266,6 @@ describe("game runtime contract", () => {
           club_id: 24,
           title: "Rayon quiz",
           pack_id: "pack-1",
-          join_code: "RAYON24",
-        }),
-      }),
-    );
-    expect(fetcher).toHaveBeenNthCalledWith(
-      2,
-      "/api/game-session-action",
-      expect.objectContaining({
-        body: JSON.stringify({
-          action: "pair_tv_device",
-          club_id: 24,
-          device_label: "Main TV",
-          pairing_code: "SCREEN24",
-          session_id: "session-1",
         }),
       }),
     );
@@ -291,6 +301,8 @@ describe("game runtime contract", () => {
       clubId: 24,
       title: "Matchday pack",
       questionIds: ["00000000-0000-4000-8000-000000000001"],
+      previewFingerprint:
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     });
     await client.listAuditLog({
       clubId: 24,
@@ -336,6 +348,8 @@ describe("game runtime contract", () => {
           club_id: 24,
           title: "Matchday pack",
           question_ids: ["00000000-0000-4000-8000-000000000001"],
+          preview_fingerprint:
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         }),
       }),
     );
@@ -352,6 +366,271 @@ describe("game runtime contract", () => {
           entity_type: "game_session",
         }),
       }),
+    );
+  });
+
+  it("normalizes authorized planner options without exposing answer material", async () => {
+    const fetcher = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        success: true,
+        data: {
+          club_id: "24",
+          server_time: "2026-07-30T15:00:00.000Z",
+          packs: [
+            {
+              pack_id: "00000000-0000-4000-8000-000000000501",
+              title: "Matchday 20",
+              description: "Approved club history round",
+              question_count: 20,
+              published_at: "2026-07-30T14:00:00.000Z",
+            },
+          ],
+          questions: [
+            {
+              question_id: "00000000-0000-4000-8000-000000000401",
+              prompt: "Who scored the winner?",
+              category: "club_history",
+              difficulty: "medium",
+              language: "en",
+              approved_at: "2026-07-30T13:00:00.000Z",
+              source_title: "Official match report",
+              source_url: "https://example.com/report",
+              source_trust_tier: "official",
+            },
+          ],
+          displays: [
+            {
+              display_id: "00000000-0000-4000-8000-000000000601",
+              display_name: "Main stand screen",
+              scope_type: "venue",
+              venue_id: "00000000-0000-4000-8000-000000000701",
+              pairing_status: "paired",
+              health: "online",
+              assigned_session_id: null,
+            },
+          ],
+          organizers: [
+            {
+              user_id: "00000000-0000-4000-8000-000000000801",
+              display_name: "Claire Matchday",
+              venue_id: null,
+            },
+          ],
+          allowed_eligibility_scopes: [
+            "club_membership",
+            "home_owner",
+            "venue",
+          ],
+        },
+      }),
+    });
+    const client = createGameRuntimeClient({ fetcher });
+
+    const result = await client.getPlannerOptions();
+
+    expect(result).toMatchObject({
+      clubId: 24,
+      packs: [{ title: "Matchday 20", questionCount: 20 }],
+      questions: [{ prompt: "Who scored the winner?" }],
+      displays: [{ name: "Main stand screen", health: "online" }],
+      organizers: [{ name: "Claire Matchday" }],
+    });
+    expect(JSON.stringify(result)).not.toMatch(
+      /correct_option_key|correctOptionKey|explanation/,
+    );
+    expect(fetcher).toHaveBeenCalledWith(
+      "/api/game-session-action",
+      expect.objectContaining({
+        body: JSON.stringify({ action: "get_planner_options" }),
+      }),
+    );
+  });
+
+  it("uses role-safe managed session operations with projection versions", async () => {
+    const projection = {
+      club_id: "24",
+      session_id: "00000000-0000-4000-8000-000000000001",
+      session_title: "Rayon matchday quiz",
+      pack_title: "Matchday 20",
+      phase: "scheduled",
+      session_version: 3,
+      question_version: 0,
+      event_sequence: 2,
+      server_time: "2026-07-30T15:00:00.000Z",
+      phase_deadline: null,
+      scheduled_start_at: "2026-07-31T17:30:00.000Z",
+      eligibility_scope: "club_membership",
+      allowed_actions: ["activated_lobby", "cancelled"],
+      participant_count: 0,
+      assigned_displays: [],
+      assigned_organizers: [
+        {
+          display_name: "Current Admin",
+          assigned_at: "2026-07-30T14:58:00.000Z",
+        },
+      ],
+      current_question_control: null,
+      question_controls: [
+        {
+          id: "00000000-0000-4000-8000-000000000101",
+          ordinal: 1,
+          state: "queued",
+          prompt: "First approved question",
+        },
+      ],
+      freshness: { last_event_at: "2026-07-30T14:59:00.000Z" },
+      participant_aggregate: {
+        participant_count: 18,
+        answer_count: 36,
+        average_score: 4.5,
+      },
+      projection_previews: {
+        participant: {
+          phase: "scheduled",
+          session_version: 3,
+          question_version: 0,
+        },
+        tv: {
+          phase: "scheduled",
+          assigned_display_count: 1,
+        },
+      },
+    };
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: {
+            club_id: "24",
+            server_time: "2026-07-30T15:00:00.000Z",
+            can_plan: true,
+            sessions: [projection],
+          },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true, data: projection }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: {
+            ...projection,
+            phase: "activated_lobby",
+            session_version: 4,
+            allowed_actions: ["question_open", "paused", "cancelled"],
+          },
+        }),
+      });
+    const client = createGameRuntimeClient({ fetcher });
+
+    const sessions = await client.getManagedSessions();
+    const created = await client.createManagedSession({
+      packId: "00000000-0000-4000-8000-000000000501",
+      scheduledStartAt: "2026-07-31T17:30:00.000Z",
+      eligibilityScope: "club_membership",
+      displayIds: [],
+      organizerUserIds: ["00000000-0000-4000-8000-000000000801"],
+      idempotencyKey: "planner-create-001",
+    });
+    const transitioned = await client.transitionManagedSession({
+      sessionId: projection.session_id,
+      requestedPhase: "activated_lobby",
+      expectedSessionVersion: 3,
+      idempotencyKey: "planner-transition-001",
+    });
+
+    expect(sessions).toMatchObject({
+      clubId: 24,
+      canPlan: true,
+      sessions: [
+        {
+          sessionVersion: 3,
+          phase: "scheduled",
+          participantAggregate: {
+            participantCount: 18,
+            answerCount: 36,
+            averageScore: 4.5,
+          },
+          projectionPreviews: {
+            participant: {
+              phase: "scheduled",
+              sessionVersion: 3,
+              questionVersion: 0,
+            },
+            tv: { phase: "scheduled", assignedDisplayCount: 1 },
+          },
+        },
+      ],
+    });
+    expect(created.sessionVersion).toBe(3);
+    expect(transitioned).toMatchObject({
+      phase: "activated_lobby",
+      sessionVersion: 4,
+    });
+    expect(fetcher).toHaveBeenNthCalledWith(
+      2,
+      "/api/game-session-action",
+      expect.objectContaining({
+        body: JSON.stringify({
+          action: "create_managed_session",
+          pack_id: "00000000-0000-4000-8000-000000000501",
+          scheduled_start_at: "2026-07-31T17:30:00.000Z",
+          eligibility_scope: "club_membership",
+          display_ids: [],
+          organizer_user_ids: ["00000000-0000-4000-8000-000000000801"],
+          idempotency_key: "planner-create-001",
+        }),
+      }),
+    );
+    expect(fetcher).toHaveBeenNthCalledWith(
+      3,
+      "/api/game-session-action",
+      expect.objectContaining({
+        body: JSON.stringify({
+          action: "transition_managed_session",
+          session_id: projection.session_id,
+          requested_phase: "activated_lobby",
+          expected_session_version: 3,
+          idempotency_key: "planner-transition-001",
+        }),
+      }),
+    );
+  });
+
+  it("fails closed when planner option metadata is malformed", async () => {
+    const fetcher = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        success: true,
+        data: {
+          club_id: "24",
+          server_time: "2026-07-30T15:00:00.000Z",
+          packs: [],
+          questions: [],
+          displays: [
+            {
+              display_id: "display-1",
+              display_name: "Screen",
+              scope_type: "unscoped",
+              pairing_status: "paired",
+              health: "online",
+            },
+          ],
+          organizers: [],
+          allowed_eligibility_scopes: ["club_membership"],
+        },
+      }),
+    });
+    const client = createGameRuntimeClient({ fetcher });
+
+    await expect(client.getPlannerOptions()).rejects.toThrow(
+      "Game display scope is invalid.",
     );
   });
 

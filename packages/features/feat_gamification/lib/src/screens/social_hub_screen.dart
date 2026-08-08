@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class _SocialHubScreenState extends ConsumerState<SocialHubScreen>
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'Social Hub',
+          context.afriL10n.gameSocialHub,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
@@ -50,13 +51,13 @@ class _SocialHubScreenState extends ConsumerState<SocialHubScreen>
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
         bottom: AfriTabBar.line(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Friends'),
-            Tab(text: 'Club'),
+          tabs: [
+            Tab(text: context.afriL10n.gameFriendsTitle),
+            Tab(text: context.afriL10n.gameClub),
           ],
         ),
       ),
@@ -131,7 +132,7 @@ class _FriendsTabState extends ConsumerState<_FriendsTab> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Supporters are temporarily unavailable.';
+        _error = context.afriL10n.gameSupportersTemporarilyUnavailable;
       });
     }
   }
@@ -150,9 +151,9 @@ class _FriendsTabState extends ConsumerState<_FriendsTab> {
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriStateView.offline(
-            title: 'Supporters unavailable',
+            title: context.afriL10n.gameSupportersUnavailable,
             message: _error!,
-            actionLabel: 'Retry',
+            actionLabel: context.afriL10n.gameRetry,
             onAction: _load,
           ),
         ),
@@ -186,7 +187,7 @@ class _FriendsTabState extends ConsumerState<_FriendsTab> {
               Expanded(
                 child: AfriInputField(
                   controller: widget.searchController,
-                  hint: 'Search your friends',
+                  hint: context.afriL10n.gameSearchYourFriends,
                   prefixIcon: AfriIcons.search,
                   onChanged: (_) {},
                 ),
@@ -194,7 +195,7 @@ class _FriendsTabState extends ConsumerState<_FriendsTab> {
               const SizedBox(width: SpacingTokens.spacing3),
               AfriButton(
                 onTap: () => context.push('/fanzone'),
-                label: 'Browse',
+                label: context.afriL10n.gameBrowse,
                 variant: AfriButtonVariant.ghost,
                 fullWidth: false,
               ),
@@ -235,8 +236,8 @@ class SocialHubFriendsSection extends StatelessWidget {
     }
 
     return AfriSectionCard(
-      title: 'Your friends',
-      trailingLabel: 'View all',
+      title: context.afriL10n.gameYourFriends,
+      trailingLabel: context.afriL10n.gameViewAll,
       onTrailingTap: onViewAll,
       child: Column(
         children: friends
@@ -249,7 +250,7 @@ class SocialHubFriendsSection extends StatelessWidget {
                   if (entry.key > 0) const AfriDivider(),
                   _FriendRow(
                     name: friend.displayName,
-                    details: _friendDetails(friend),
+                    details: _friendDetails(context, friend),
                     isOnline: friend.isOnline,
                     onChallenge: () => onChallenge(friend),
                   ),
@@ -261,11 +262,11 @@ class SocialHubFriendsSection extends StatelessWidget {
     );
   }
 
-  String _friendDetails(FetFriendProfile friend) {
+  String _friendDetails(BuildContext context, FetFriendProfile friend) {
     final parts = <String>[
       if (friend.publicUserId != null) '#${friend.publicUserId}',
       friend.tier.toUpperCase(),
-      '${friend.balance} pts',
+      context.afriL10n.gamePointBalance(friend.balance),
     ];
     return parts.join(' · ');
   }
@@ -316,14 +317,14 @@ class _FriendRow extends StatelessWidget {
           ),
           if (isOnline) ...[
             Text(
-              'Online',
+              context.afriL10n.gameOnline,
               style: TypographyTokens.labelSmall(ColorTokens.success),
             ),
             const SizedBox(width: SpacingTokens.spacing3),
           ],
           AfriButton(
             onTap: onChallenge,
-            label: 'Challenge',
+            label: context.afriL10n.gameChallenge,
             variant: AfriButtonVariant.ghost,
             fullWidth: false,
           ),
@@ -381,7 +382,7 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Club standings are temporarily unavailable.';
+        _error = context.afriL10n.gameClubStandingsTemporarilyUnavailable;
       });
     }
   }
@@ -400,9 +401,9 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriStateView.offline(
-            title: 'Club standings unavailable',
+            title: context.afriL10n.gameClubStandingsUnavailable,
             message: _error!,
-            actionLabel: 'Retry',
+            actionLabel: context.afriL10n.gameRetry,
             onAction: _load,
           ),
         ),
@@ -425,14 +426,16 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Club standing',
+                  context.afriL10n.gameClubStanding,
                   style: TypographyTokens.labelSmall(
                     ColorTokens.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  userEntry == null ? 'Unranked' : '#${userEntry.rank}',
+                  userEntry == null
+                      ? context.afriL10n.gameUnranked
+                      : context.afriL10n.gameRankHash(userEntry.rank),
                   style: TypographyTokens.displaySmall(
                     ColorTokens.clubAccent,
                   ).copyWith(fontWeight: FontWeight.w900),
@@ -440,8 +443,10 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
                   userEntry == null
-                      ? 'Earn points to appear in the club table.'
-                      : '${userEntry.totalFet} pts earned so far.',
+                      ? context.afriL10n.gameEarnPointsForClubTable
+                      : context.afriL10n.gamePointsEarnedSoFar(
+                          userEntry.totalFet,
+                        ),
                   style: TypographyTokens.bodyMedium(),
                 ),
               ],
@@ -469,7 +474,7 @@ class SocialHubLeaderboardSection extends StatelessWidget {
     }
 
     return AfriSectionCard(
-      title: 'Leaderboard',
+      title: context.afriL10n.gameLeaderboardTitle,
       child: Column(
         children: fans
             .take(10)
@@ -484,7 +489,7 @@ class SocialHubLeaderboardSection extends StatelessWidget {
                   _FanLeaderboardRow(
                     rank: fan.rank,
                     name: fan.displayName,
-                    points: '${fan.totalFet} pts',
+                    points: context.afriL10n.gamePointBalance(fan.totalFet),
                     isMe: fan.isCurrentUser,
                   ),
                 ],
@@ -522,7 +527,7 @@ class _FanLeaderboardRow extends StatelessWidget {
           SizedBox(
             width: SpacingTokens.spacing8,
             child: Text(
-              '#$rank',
+              context.afriL10n.gameRankHash(rank),
               style: TypographyTokens.titleSmall(
                 rank <= 3
                     ? ColorTokens.clubAccent
@@ -533,7 +538,7 @@ class _FanLeaderboardRow extends StatelessWidget {
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
             child: Text(
-              isMe ? '$name (You)' : name,
+              isMe ? context.afriL10n.gameNameYou(name) : name,
               style: TypographyTokens.titleSmall().copyWith(
                 color: isMe ? ColorTokens.clubAccent : null,
               ),

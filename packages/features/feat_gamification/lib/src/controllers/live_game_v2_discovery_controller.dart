@@ -52,7 +52,9 @@ class ParticipantDiscoveryState {
 }
 
 abstract interface class ParticipantDiscoveryGateway {
-  Future<ParticipantGameDiscoveryFeed> fetchEligibleSessions();
+  Future<ParticipantGameDiscoveryFeed> fetchEligibleSessions({
+    String? sessionId,
+  });
 }
 
 class ParticipantDiscoveryController {
@@ -123,6 +125,65 @@ class ParticipantDiscoveryController {
     return _current?.sessionById(sessionId);
   }
 
+  Future<ParticipantGameDiscoveryItem?> authorizeSessionIdentity(
+    String sessionId,
+  ) async {
+    _ensureActive();
+    final normalizedSessionId = sessionId.trim();
+    if (normalizedSessionId.isEmpty) return null;
+
+    _emit(
+      ParticipantDiscoveryState(
+        status: _current == null
+            ? ParticipantDiscoveryStatus.loading
+            : ParticipantDiscoveryStatus.refreshing,
+        feed: _current,
+      ),
+    );
+
+    try {
+      final targetedFeed = await _gateway
+          .fetchEligibleSessions(sessionId: normalizedSessionId)
+          .timeout(
+            _fetchTimeout,
+            onTimeout: () => throw const ParticipantDiscoveryFailure(
+              ParticipantDiscoveryFailureKind.timeout,
+            ),
+          );
+      _validateFeed(targetedFeed);
+      if (targetedFeed.sessions.any(
+        (session) => session.sessionId != normalizedSessionId,
+      )) {
+        throw const LiveGameContractViolation(
+          'Targeted discovery returned an unrelated session.',
+        );
+      }
+
+      final targetedSession = targetedFeed.sessionById(normalizedSessionId);
+      if (targetedSession != null) {
+        _current = _mergeTargetedFeed(targetedFeed, targetedSession);
+      }
+      _emit(
+        ParticipantDiscoveryState(
+          status: _current == null || _current!.isEmpty
+              ? ParticipantDiscoveryStatus.empty
+              : ParticipantDiscoveryStatus.ready,
+          feed: _current,
+        ),
+      );
+      return _current?.sessionById(normalizedSessionId);
+    } on ParticipantDiscoveryFailure catch (failure) {
+      _emitFailure(failure.kind);
+    } on LiveGameContractViolation {
+      _emitFailure(ParticipantDiscoveryFailureKind.contract);
+    } on TimeoutException {
+      _emitFailure(ParticipantDiscoveryFailureKind.timeout);
+    } catch (_) {
+      _emitFailure(ParticipantDiscoveryFailureKind.unknown);
+    }
+    return null;
+  }
+
   Future<void> dispose() async {
     if (_disposed) return;
     _disposed = true;
@@ -150,15 +211,7 @@ class ParticipantDiscoveryController {
           ParticipantDiscoveryFailureKind.timeout,
         ),
       );
-      final containsUnauthorizedSession = feed.sessions.any(
-        (session) =>
-            session.clubId != _expectedClubId || session.eligible == false,
-      );
-      if (feed.clubId != _expectedClubId || containsUnauthorizedSession) {
-        throw const ParticipantDiscoveryFailure(
-          ParticipantDiscoveryFailureKind.permissionDenied,
-        );
-      }
+      _validateFeed(feed);
       final current = _current;
       if (current == null || feed.isNewerThan(current)) {
         _current = feed;
@@ -182,6 +235,54 @@ class ParticipantDiscoveryController {
     } finally {
       _refreshInFlight = null;
     }
+  }
+
+  void _validateFeed(ParticipantGameDiscoveryFeed feed) {
+    final containsUnauthorizedSession = feed.sessions.any(
+      (session) =>
+          session.clubId != _expectedClubId || session.eligible == false,
+    );
+    if (feed.clubId != _expectedClubId || containsUnauthorizedSession) {
+      throw const ParticipantDiscoveryFailure(
+        ParticipantDiscoveryFailureKind.permissionDenied,
+      );
+    }
+  }
+
+  ParticipantGameDiscoveryFeed _mergeTargetedFeed(
+    ParticipantGameDiscoveryFeed targetedFeed,
+    ParticipantGameDiscoveryItem targetedSession,
+  ) {
+    final current = _current;
+    if (current == null) return targetedFeed;
+    if (current.publicAlias != targetedFeed.publicAlias) {
+      throw const LiveGameContractViolation(
+        'Targeted discovery changed the participant public alias.',
+      );
+    }
+
+    final currentSession = current.sessionById(targetedSession.sessionId);
+    final selected =
+        currentSession != null &&
+            currentSession.sessionVersion > targetedSession.sessionVersion
+        ? currentSession
+        : targetedSession;
+    final sessions =
+        current.sessions
+            .where((session) => session.sessionId != selected.sessionId)
+            .toList(growable: true)
+          ..add(selected);
+    return ParticipantGameDiscoveryFeed(
+      clubId: current.clubId,
+      feedVersion: targetedFeed.feedVersion > current.feedVersion
+          ? targetedFeed.feedVersion
+          : current.feedVersion,
+      serverTime: targetedFeed.serverTime.isAfter(current.serverTime)
+          ? targetedFeed.serverTime
+          : current.serverTime,
+      publicAlias: current.publicAlias,
+      sessions: List<ParticipantGameDiscoveryItem>.unmodifiable(sessions),
+    );
   }
 
   void _emitFailure(ParticipantDiscoveryFailureKind kind) {

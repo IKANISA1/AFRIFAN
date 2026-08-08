@@ -12,6 +12,7 @@ import 'package:test_support/app_font_loader.dart';
 
 const _goldenViewport = Size(390, 844);
 const _goldenViewportId = '390x844';
+final _referenceTime = DateTime.utc(2026, 7, 30, 18);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -304,6 +305,7 @@ Future<ProviderContainer> _pumpContributions(
         path: '/admin/contributions',
         builder: (_, _) => ContributionsMonitorScreen(
           firstActionFocusNode: firstActionFocusNode,
+          referenceTime: _referenceTime,
         ),
       ),
     ],

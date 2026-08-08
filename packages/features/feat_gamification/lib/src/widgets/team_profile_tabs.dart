@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -53,7 +54,7 @@ class TeamOverviewTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'LEAGUE POSITION',
+                  context.afriL10n.gameLeaguePosition,
                   style: TypographyTokens.metricLabel(
                     ColorTokens.onSurfaceVariant,
                   ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
@@ -62,13 +63,34 @@ class TeamOverviewTab extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MiniStat(label: 'Pos', value: '#${tableRow!.position}'),
-                    MiniStat(label: 'P', value: '${tableRow!.played}'),
-                    MiniStat(label: 'W', value: '${tableRow!.won}'),
-                    MiniStat(label: 'D', value: '${tableRow!.drawn}'),
-                    MiniStat(label: 'L', value: '${tableRow!.lost}'),
-                    MiniStat(label: 'GD', value: '${tableRow!.goalDifference}'),
-                    MiniStat(label: 'Pts', value: '${tableRow!.points}'),
+                    MiniStat(
+                      label: context.afriL10n.gamePositionShort,
+                      value: context.afriL10n.gameRankHash(tableRow!.position),
+                    ),
+                    MiniStat(
+                      label: context.afriL10n.gamePlayedShort,
+                      value: tableRow!.played.toString(),
+                    ),
+                    MiniStat(
+                      label: context.afriL10n.gameWonShort,
+                      value: tableRow!.won.toString(),
+                    ),
+                    MiniStat(
+                      label: context.afriL10n.gameDrawnShort,
+                      value: tableRow!.drawn.toString(),
+                    ),
+                    MiniStat(
+                      label: context.afriL10n.gameLostShort,
+                      value: tableRow!.lost.toString(),
+                    ),
+                    MiniStat(
+                      label: context.afriL10n.gameGoalDifferenceShort,
+                      value: tableRow!.goalDifference.toString(),
+                    ),
+                    MiniStat(
+                      label: context.afriL10n.gamePointsShort,
+                      value: tableRow!.points.toString(),
+                    ),
                   ],
                 ),
               ],
@@ -104,7 +126,7 @@ class TeamContributionRouteBanner extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'MOMO CONTRIBUTION ROUTE',
+                context.afriL10n.gameMomoContributionRoute,
                 style: TypographyTokens.labelSmall(
                   ColorTokens.clubAccent,
                 ).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.4),
@@ -120,7 +142,10 @@ class TeamContributionRouteBanner extends StatelessWidget {
               Text(
                 paymentRoute.reconciliationLabel.trim().isNotEmpty
                     ? paymentRoute.reconciliationLabel
-                    : 'Use ${paymentRoute.providerLabel} to contribute to ${team?.name ?? 'this club'}.',
+                    : context.afriL10n.gameUseProviderForClub(
+                        paymentRoute.providerLabel,
+                        team?.name ?? context.afriL10n.gameThisClub,
+                      ),
                 style: TypographyTokens.bodySmall(),
               ),
             ],
@@ -170,8 +195,7 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
       }
       setState(() {
         _isLoading = false;
-        _message =
-            'Supporter registry is available only for the current app club.';
+        _message = context.afriL10n.gameSupporterRegistryCurrentClubOnly;
       });
       return;
     }
@@ -252,7 +276,7 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
       }
       setState(() {
         _isLoading = false;
-        _message = 'Club supporter data is temporarily unavailable.';
+        _message = context.afriL10n.gameClubSupporterDataUnavailable;
       });
     }
   }
@@ -284,7 +308,7 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriEmptyView(
             compact: true,
-            title: 'Members unavailable',
+            title: context.afriL10n.gameMembersUnavailable,
             message: _message!,
           ),
         ),
@@ -324,7 +348,7 @@ class TeamMembersContent extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       children: [
         Text(
-          'CLUB MEMBERS',
+          context.afriL10n.gameClubMembers,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
@@ -341,22 +365,22 @@ class TeamMembersContent extends StatelessWidget {
           children: [
             TierCountCard(
               icon: AfriIcons.premium,
-              label: 'Gold',
+              label: context.afriL10n.gameTierGold,
               count: goldCount,
             ),
             TierCountCard(
               icon: AfriIcons.streak,
-              label: 'Silver',
+              label: context.afriL10n.gameTierSilver,
               count: silverCount,
             ),
             TierCountCard(
               icon: AfriIcons.badge,
-              label: 'Bronze',
+              label: context.afriL10n.gameTierBronze,
               count: bronzeCount,
             ),
             TierCountCard(
               icon: AfriIcons.fanzone,
-              label: 'Imena',
+              label: context.afriL10n.gameTierImena,
               count: imenaCount,
             ),
           ],
@@ -364,7 +388,7 @@ class TeamMembersContent extends StatelessWidget {
         if (contributors.isNotEmpty) ...[
           const SizedBox(height: SpacingTokens.spacing6),
           Text(
-            'TOP CONTRIBUTORS',
+            context.afriL10n.gameTopContributors,
             key: const ValueKey<String>('team-members-contributors-title'),
             style: TypographyTokens.metricLabel(
               ColorTokens.onSurfaceVariant,
@@ -381,7 +405,9 @@ class TeamMembersContent extends StatelessWidget {
                   rank: entry.key + 1,
                   fanId: entry.value.displayLabel,
                   tier: entry.value.tier.toUpperCase(),
-                  fetLabel: '${entry.value.points} pts',
+                  fetLabel: context.afriL10n.gamePointBalance(
+                    entry.value.points,
+                  ),
                   isMe: entry.value.isCurrentUser,
                 ),
               ),
@@ -432,7 +458,10 @@ class TeamFixturesTab extends StatelessWidget {
                         ),
                         const SizedBox(height: SpacingTokens.spacing1 / 2),
                         Text(
-                          '${fixture.competitionName} · ${kickoffLabel(fixture.kickoffAt)}',
+                          context.afriL10n.gamePair(
+                            fixture.competitionName,
+                            kickoffLabel(fixture.kickoffAt),
+                          ),
                           style: TypographyTokens.bodySmall(),
                         ),
                       ],
@@ -443,7 +472,7 @@ class TeamFixturesTab extends StatelessWidget {
                             fixture.homeScore != null &&
                             fixture.awayScore != null
                         ? '${fixture.homeScore}-${fixture.awayScore}'
-                        : 'OPEN',
+                        : context.afriL10n.gameOpenUpper,
                     style: TypographyTokens.titleMedium(
                       fixture.isLive
                           ? ColorTokens.success
@@ -490,7 +519,7 @@ class TeamContributeTab extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       children: [
         Text(
-          'MOMO CONTRIBUTION',
+          context.afriL10n.gameMomoContribution,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
@@ -511,7 +540,10 @@ class TeamContributeTab extends StatelessWidget {
               Text(
                 paymentRoute!.reconciliationLabel.trim().isNotEmpty
                     ? paymentRoute!.reconciliationLabel
-                    : 'Use ${paymentRoute!.providerLabel} in ${paymentRoute!.country.name} to contribute to this club.',
+                    : context.afriL10n.gameUseProviderInCountry(
+                        paymentRoute!.providerLabel,
+                        paymentRoute!.country.name,
+                      ),
                 style: TypographyTokens.bodyMedium(),
               ),
             ],
@@ -525,23 +557,24 @@ class TeamContributeTab extends StatelessWidget {
             children: [
               ContributeStep(
                 stepNumber: 1,
-                title: 'Enter amount',
-                description:
-                    'Choose how much you want to send through ${paymentRoute!.providerLabel}.',
+                title: context.afriL10n.gameEnterAmount,
+                description: context.afriL10n.gameEnterAmountDescription(
+                  paymentRoute!.providerLabel,
+                ),
               ),
               const SizedBox(height: SpacingTokens.spacing5),
               ContributeStep(
                 stepNumber: 2,
-                title: 'Confirm in dialer',
-                description:
-                    'We will open the mobile money dialer for code ${paymentRoute!.recipientCode}.',
+                title: context.afriL10n.gameConfirmInDialer,
+                description: context.afriL10n.gameConfirmInDialerDescription(
+                  paymentRoute!.recipientCode,
+                ),
               ),
               const SizedBox(height: SpacingTokens.spacing5),
-              const ContributeStep(
+              ContributeStep(
                 stepNumber: 3,
-                title: 'Reconciliation',
-                description:
-                    'Your contribution is matched back to your club activity once payment is confirmed.',
+                title: context.afriL10n.gameReconciliation,
+                description: context.afriL10n.gameReconciliationDescription,
               ),
             ],
           ),
@@ -550,7 +583,9 @@ class TeamContributeTab extends StatelessWidget {
         const SizedBox(height: SpacingTokens.spacing5),
 
         AfriButton(
-              label: isDialing ? 'Opening dialer…' : 'Enter amount & dial',
+              label: isDialing
+                  ? context.afriL10n.gameOpeningDialer
+                  : context.afriL10n.gameEnterAmountAndDial,
               onTap: onDial,
               isLoading: isDialing,
               enabled: !isDialing,
@@ -576,7 +611,9 @@ class TeamAboutTab extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       children: [
         Text(
-          'ABOUT ${team?.name.toUpperCase() ?? 'THIS CLUB'}',
+          context.afriL10n.gameAboutTeam(
+            team?.name.toUpperCase() ?? context.afriL10n.gameThisClubUpper,
+          ),
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
@@ -587,14 +624,22 @@ class TeamAboutTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (team?.city != null) TeamInfoRow('Location', team!.city!),
+              if (team?.city != null)
+                TeamInfoRow(context.afriL10n.gameLocation, team!.city!),
               if (team?.countryName != null)
-                TeamInfoRow('Country', team!.countryName!),
+                TeamInfoRow(context.afriL10n.gameCountry, team!.countryName!),
               if (team?.foundedYear != null)
-                TeamInfoRow('Founded', '${team!.foundedYear}'),
-              if (team?.teamType != null) TeamInfoRow('Type', team!.teamType!),
+                TeamInfoRow(
+                  context.afriL10n.gameFounded,
+                  team!.foundedYear.toString(),
+                ),
+              if (team?.teamType != null)
+                TeamInfoRow(context.afriL10n.gameType, team!.teamType!),
               if (team?.sourceClubName != null)
-                TeamInfoRow('Affiliated Club', team!.sourceClubName!),
+                TeamInfoRow(
+                  context.afriL10n.gameAffiliatedClub,
+                  team!.sourceClubName!,
+                ),
             ],
           ),
         ),

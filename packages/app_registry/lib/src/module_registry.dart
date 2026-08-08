@@ -4,6 +4,7 @@ import 'package:feat_admin/feat_admin.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:feat_contributions/feat_contributions.dart';
 import 'package:feat_fan_clubs/feat_fan_clubs.dart';
+import 'package:feat_game_operations/feat_game_operations.dart';
 import 'package:feat_gamification/feat_gamification.dart';
 import 'package:feat_home/feat_home.dart';
 import 'package:feat_live/feat_live.dart';
@@ -66,6 +67,7 @@ abstract final class AppModuleRegistry {
     ClubModule(),
     LiveModule(),
     FanzoneModule(),
+    GameOperationsModule(),
     ChallengeModule(),
     SettingsModule(),
     OnboardingModule(),

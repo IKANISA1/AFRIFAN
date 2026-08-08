@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -93,7 +94,7 @@ class TierCountCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            '$count',
+            count.toString(),
             style: TypographyTokens.metricValue().copyWith(
               fontWeight: FontWeight.w800,
             ),
@@ -141,7 +142,7 @@ class ContributeStep extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            '$stepNumber',
+            stepNumber.toString(),
             style: TypographyTokens.titleLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w800),
@@ -197,7 +198,7 @@ class MemberRow extends StatelessWidget {
             SizedBox(
               width: SpacingTokens.spacing5,
               child: Text(
-                '$rank',
+                rank.toString(),
                 style: TypographyTokens.labelSmall(
                   ColorTokens.onSurfaceVariant,
                 ).copyWith(fontWeight: FontWeight.w700),
@@ -216,7 +217,7 @@ class MemberRow extends StatelessWidget {
                       if (isMe) ...[
                         const SizedBox(width: SpacingTokens.spacing2),
                         AfriInfoChip(
-                          label: 'YOU',
+                          label: context.afriL10n.gameYouUpper,
                           color: ColorTokens.clubAccent,
                         ),
                       ],

@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/controllers/venue_checkin_controller.dart';
@@ -219,14 +220,52 @@ void main() {
           180,
           scrollable: find.byType(Scrollable).first,
         );
-        await tester.drag(
-          find.byType(Scrollable).first,
-          const Offset(0, -32),
-        );
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, -32));
         await tester.pumpAndSettle();
       },
     );
   });
+
+  for (final localeCase
+      in const <({Locale locale, String title, String action})>[
+        (
+          locale: Locale('fr'),
+          title: 'Enregistrement sur place',
+          action: 'S’ENREGISTRER',
+        ),
+        (
+          locale: Locale('rw'),
+          title: 'Kwiyandikisha aho uri',
+          action: 'IYANDIKISHE',
+        ),
+      ]) {
+    testWidgets(
+      'Venue check-in ${localeCase.locale.languageCode} reflows at 200 percent',
+      (tester) async {
+        await _pumpRoute(
+          tester,
+          controller: _Controller(
+            const AsyncData<VenueCheckinRouteState>(VenueCheckinRouteState()),
+          ),
+          size: const Size(320, 760),
+          textScale: 2,
+          locale: localeCase.locale,
+          capture: false,
+        );
+
+        expect(find.text(localeCase.title), findsOneWidget);
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, -600));
+        await tester.pumpAndSettle();
+        final action = find.byKey(
+          const ValueKey<String>('venue-checkin-submit'),
+        );
+        await tester.ensureVisible(action);
+        await tester.pump();
+        expect(find.text(localeCase.action), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 
   testWidgets('golden Venue check-in reduced-motion state', (tester) async {
     await _pumpState(
@@ -324,6 +363,7 @@ Future<void> _pumpState(
   Size size = const Size(390, 844),
   double textScale = 1,
   bool reducedMotion = false,
+  Locale locale = const Locale('en'),
   bool settle = true,
   FocusNode? focusNode,
   Future<void> Function(WidgetTester tester)? check,
@@ -338,6 +378,7 @@ Future<void> _pumpState(
     size: size,
     textScale: textScale,
     reducedMotion: reducedMotion,
+    locale: locale,
     settle: settle,
     focusNode: focusNode,
   );
@@ -358,6 +399,7 @@ Future<void> _pumpRoute(
   Size size = const Size(390, 844),
   double textScale = 1,
   bool reducedMotion = false,
+  Locale locale = const Locale('en'),
   bool settle = true,
   bool capture = true,
   FocusNode? focusNode,
@@ -400,12 +442,15 @@ Future<void> _pumpRoute(
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
           final media = MediaQuery.of(context);
-          return MediaQuery(
-            data: media.copyWith(
-              disableAnimations: reducedMotion,
-              accessibleNavigation: reducedMotion,
+          return AfriLocalizationsScope(
+            locale: locale,
+            child: MediaQuery(
+              data: media.copyWith(
+                disableAnimations: reducedMotion,
+                accessibleNavigation: reducedMotion,
+              ),
+              child: child ?? const SizedBox.shrink(),
             ),
-            child: child ?? const SizedBox.shrink(),
           );
         },
         theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),

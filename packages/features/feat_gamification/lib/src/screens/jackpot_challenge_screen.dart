@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../game_result_copy.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/jackpot_countdown_timer.dart';
@@ -59,7 +61,7 @@ class _JackpotChallengeScreenState
         _leaders = results[1]! as List<PredictionLeaderboardEntry>;
         _isLoading = false;
         _error = round == null || round.fixtures.isEmpty
-            ? 'Bonus round activation is pending.'
+            ? context.afriL10n.gameBonusRoundActivationPending
             : null;
       });
     } catch (error, stackTrace) {
@@ -74,7 +76,7 @@ class _JackpotChallengeScreenState
       }
       setState(() {
         _isLoading = false;
-        _error = 'Bonus round is temporarily unavailable.';
+        _error = context.afriL10n.gameBonusRoundTemporarilyUnavailable;
       });
     }
   }
@@ -125,16 +127,16 @@ class _JackpotChallengeScreenState
         await showDialog<void>(
           context: context,
           builder: (context) => AfriAlertDialog(
-            title: const Text('Entry submitted'),
+            title: Text(context.afriL10n.gameEntrySubmitted),
             content: Text(
               result.message.isEmpty
-                  ? 'Your bonus entry is now live.'
-                  : result.message,
+                  ? context.afriL10n.gameBonusEntryLive
+                  : context.localizeGameResultMessage(result.message),
             ),
             actions: [
               AfriTextButton(
                 onPressed: () => context.pop(),
-                child: const Text('Close'),
+                child: Text(context.afriL10n.gameClose),
               ),
             ],
           ),
@@ -144,8 +146,8 @@ class _JackpotChallengeScreenState
         AfriToast.error(
           context,
           result.message.isEmpty
-              ? 'Could not submit the bonus entry right now.'
-              : result.message,
+              ? context.afriL10n.gameCouldNotSubmitBonus
+              : context.localizeGameResultMessage(result.message),
         );
       }
     } finally {
@@ -157,12 +159,14 @@ class _JackpotChallengeScreenState
     }
   }
 
-  String _kickoffLabel(DateTime? value) {
+  String _kickoffLabel(BuildContext context, DateTime? value) {
     if (value == null) {
-      return 'Kickoff TBD';
+      return context.afriL10n.gameKickoffTbd;
     }
     final local = value.toLocal();
-    return '${local.day}/${local.month} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+    final materialL10n = MaterialLocalizations.of(context);
+    return '${materialL10n.formatShortDate(local)} • '
+        '${materialL10n.formatTimeOfDay(TimeOfDay.fromDateTime(local))}';
   }
 
   @override
@@ -178,7 +182,7 @@ class _JackpotChallengeScreenState
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'Bonus Round',
+          context.afriL10n.gameBonusRound,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
@@ -187,7 +191,7 @@ class _JackpotChallengeScreenState
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.gameBack,
         ),
       ),
       bottomNavigationBar: SafeArea(
@@ -208,10 +212,10 @@ class _JackpotChallengeScreenState
                 ? _submit
                 : () {},
             label: _isSubmitting
-                ? 'Submitting...'
+                ? context.afriL10n.gameSubmitting
                 : round?.canEnter == false
-                ? 'Entries closed'
-                : 'Submit entry',
+                ? context.afriL10n.gameEntriesClosedSentence
+                : context.afriL10n.gameSubmitEntry,
             enabled:
                 fixtureCount > 0 &&
                 _selections.length == fixtureCount &&
@@ -233,9 +237,9 @@ class _JackpotChallengeScreenState
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Bonus round unavailable',
+                  title: context.afriL10n.gameBonusRoundUnavailable,
                   message: _error!,
-                  actionLabel: 'Retry',
+                  actionLabel: context.afriL10n.gameRetry,
                   onAction: _load,
                 ),
               ),
@@ -254,7 +258,7 @@ class _JackpotChallengeScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Points pool',
+                          context.afriL10n.gamePointsPool,
                           style: TypographyTokens.labelSmall(
                             ColorTokens.onSurfaceVariant,
                           ),
@@ -262,8 +266,10 @@ class _JackpotChallengeScreenState
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
                           round == null
-                              ? '0 pts'
-                              : '${_formatFet(round.prizePoolFet)} pts',
+                              ? context.afriL10n.gamePointBalance(0)
+                              : context.afriL10n.gameFormattedPoints(
+                                  _formatFet(round.prizePoolFet),
+                                ),
                           style: TypographyTokens.displaySmall(
                             ColorTokens.clubAccent,
                           ).copyWith(fontWeight: FontWeight.w900),
@@ -272,7 +278,7 @@ class _JackpotChallengeScreenState
                         Text(
                           round?.description.isNotEmpty == true
                               ? round!.description
-                              : 'Pick every featured fixture before the round locks.',
+                              : context.afriL10n.gamePickAllFeatured,
                           style: TypographyTokens.bodyMedium(),
                         ),
                         if (round?.entryDeadlineAt != null) ...[
@@ -296,13 +302,18 @@ class _JackpotChallengeScreenState
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          '${_selections.length} of $fixtureCount picks complete',
+                          context.afriL10n.gamePicksComplete(
+                            _selections.length,
+                            fixtureCount,
+                          ),
                           style: TypographyTokens.bodySmall(),
                         ),
                         if ((round?.remainingEntries ?? 0) > 0) ...[
                           const SizedBox(height: SpacingTokens.spacing1 / 2),
                           Text(
-                            '${round!.remainingEntries} entries remaining',
+                            context.afriL10n.gameEntriesRemaining(
+                              round!.remainingEntries,
+                            ),
                             style: TypographyTokens.bodySmall(),
                           ),
                         ],
@@ -311,7 +322,7 @@ class _JackpotChallengeScreenState
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   AfriSectionCard(
-                    title: 'Fixtures',
+                    title: context.afriL10n.gameFixtures,
                     child: round == null || round.fixtures.isEmpty
                         ? const SizedBox.shrink()
                         : Column(
@@ -327,8 +338,13 @@ class _JackpotChallengeScreenState
                                       if (entry.key > 0) const AfriDivider(),
                                       _JackpotFixtureRow(
                                         fixtureLabel: data.fixtureLabel,
-                                        details:
-                                            '${data.competitionName} · ${_kickoffLabel(data.kickoffAt)}',
+                                        details: context.afriL10n.gamePair(
+                                          data.competitionName,
+                                          _kickoffLabel(
+                                            context,
+                                            data.kickoffAt,
+                                          ),
+                                        ),
                                         selection: selection,
                                         isLocked: !(round.canEnter),
                                         outcomes: data.outcomes,
@@ -351,7 +367,7 @@ class _JackpotChallengeScreenState
                   if (_leaders.isNotEmpty) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriSectionCard(
-                      title: 'Leaders',
+                      title: context.afriL10n.gameLeaders,
                       child: Column(
                         children: _leaders
                             .take(5)
@@ -366,7 +382,9 @@ class _JackpotChallengeScreenState
                                   _LeaderRow(
                                     rank: leader.rank,
                                     name: leader.displayName,
-                                    total: '+${leader.totalFetEarned} pts',
+                                    total: context.afriL10n.gamePoints(
+                                      leader.totalFetEarned,
+                                    ),
                                   ),
                                 ],
                               );
@@ -452,7 +470,7 @@ class _LeaderRow extends StatelessWidget {
           SizedBox(
             width: SpacingTokens.spacing8,
             child: Text(
-              '#$rank',
+              context.afriL10n.gameRankHash(rank),
               style: TypographyTokens.titleSmall().copyWith(
                 fontWeight: FontWeight.w800,
               ),

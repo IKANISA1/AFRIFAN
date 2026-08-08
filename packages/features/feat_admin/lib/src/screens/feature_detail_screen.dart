@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,13 +32,14 @@ class FeatureDetailScreen extends ConsumerWidget {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          snapshot?.feature?.displayName.toUpperCase() ?? 'FEATURE DETAIL',
+          snapshot?.feature?.displayName.toUpperCase() ??
+              context.afriL10n.adminFeatureDetailTitle,
           style: TypographyTokens.titleLarge(),
         ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
       ),
       scrollable: false,
@@ -59,8 +61,8 @@ class FeatureDetailScreen extends ConsumerWidget {
                 key: const ValueKey<String>(
                   'admin-feature-detail-state-loading',
                 ),
-                title: 'Loading feature settings',
-                message: 'Checking controlled channel and access rules.',
+                title: context.afriL10n.adminFeatureLoadingTitle,
+                message: context.afriL10n.adminFeatureLoadingMessage,
               ),
             )
           : detail.hasError && snapshot == null
@@ -86,9 +88,9 @@ class FeatureDetailScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         child: AfriStateView.empty(
           key: const ValueKey<String>('admin-feature-detail-state-empty'),
-          title: 'Feature not found',
-          message: 'No confirmed feature matches this controlled route.',
-          actionLabel: 'Back to features',
+          title: context.afriL10n.adminFeatureNotFound,
+          message: context.afriL10n.adminFeatureNotFoundMessage,
+          actionLabel: context.afriL10n.adminBackToFeatures,
           onAction: () => context.pop(),
         ),
       );
@@ -101,7 +103,7 @@ class FeatureDetailScreen extends ConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         children: [
-          if (_statusBanner(detail) case final banner?) ...[
+          if (_statusBanner(context, detail) case final banner?) ...[
             banner,
             const SizedBox(height: SpacingTokens.spacing4),
           ],
@@ -114,7 +116,7 @@ class FeatureDetailScreen extends ConsumerWidget {
             Text(description, style: TypographyTokens.bodyMedium()),
           ],
           const SizedBox(height: SpacingTokens.spacing5),
-          const _SectionTitle('GLOBAL STATE'),
+          _SectionTitle(context.afriL10n.adminFeatureGlobalState),
           const SizedBox(height: SpacingTokens.spacing3),
           AfriPressFeedback(
             key: const ValueKey<String>('admin-feature-detail-global-toggle'),
@@ -124,11 +126,19 @@ class FeatureDetailScreen extends ConsumerWidget {
             enabled: controlsEnabled,
             focusNode: firstActionFocusNode,
             tooltip: feature.isEnabled
-                ? 'Disable ${feature.displayName}'
-                : 'Enable ${feature.displayName}',
-            semanticsLabel:
-                '${feature.displayName} is ${feature.isEnabled ? 'enabled' : 'disabled'}',
-            semanticsHint: 'Changes the global feature state',
+                ? context.afriL10n.adminFeatureDisableTooltip(
+                    feature.displayName,
+                  )
+                : context.afriL10n.adminFeatureEnableTooltip(
+                    feature.displayName,
+                  ),
+            semanticsLabel: context.afriL10n.adminFeatureStateSemantic(
+              feature.displayName,
+              feature.isEnabled
+                  ? context.afriL10n.adminFeatureEnabled
+                  : context.afriL10n.adminFeatureDisabled,
+            ),
+            semanticsHint: context.afriL10n.adminFeatureChangesGlobalState,
             child: GlassCard(
               animate: false,
               child: Row(
@@ -147,13 +157,15 @@ class FeatureDetailScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          feature.isEnabled ? 'Enabled' : 'Disabled',
+                          feature.isEnabled
+                              ? context.afriL10n.adminFeatureEnabled
+                              : context.afriL10n.adminFeatureDisabled,
                           style: TypographyTokens.titleSmall(),
                         ),
                         Text(
                           feature.isEnabled
-                              ? 'Tap to disable this feature globally'
-                              : 'Tap to enable this feature globally',
+                              ? context.afriL10n.adminFeatureTapDisable
+                              : context.afriL10n.adminFeatureTapEnable,
                           style: TypographyTokens.bodySmall().copyWith(
                             color: ColorTokens.onSurfaceVariant,
                           ),
@@ -170,7 +182,10 @@ class FeatureDetailScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
-          Text('VISIBILITY', style: TypographyTokens.labelSmall()),
+          Text(
+            context.afriL10n.adminFeatureVisibility,
+            style: TypographyTokens.labelSmall(),
+          ),
           const SizedBox(height: SpacingTokens.spacing2),
           Wrap(
             spacing: SpacingTokens.spacing2,
@@ -182,7 +197,7 @@ class FeatureDetailScreen extends ConsumerWidget {
                       'admin-feature-detail-visibility-$visibility',
                     ),
                     selected: feature.visibility == visibility,
-                    label: Text(visibility.toUpperCase()),
+                    label: Text(_visibilityLabel(context, visibility)),
                     onSelected: controlsEnabled
                         ? (_) => unawaited(notifier.setVisibility(visibility))
                         : null,
@@ -191,12 +206,12 @@ class FeatureDetailScreen extends ConsumerWidget {
                 .toList(growable: false),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
-          const _SectionTitle('CHANNEL CONFIG'),
+          _SectionTitle(context.afriL10n.adminFeatureChannelConfig),
           const SizedBox(height: SpacingTokens.spacing3),
           if (feature.channels.isEmpty)
             AfriStateView.empty(
-              title: 'No channel overrides',
-              message: 'This feature uses its confirmed global state.',
+              title: context.afriL10n.adminFeatureNoChannelOverrides,
+              message: context.afriL10n.adminFeatureNoChannelOverridesMessage,
               compact: true,
             )
           else
@@ -209,7 +224,7 @@ class FeatureDetailScreen extends ConsumerWidget {
               ),
             ),
           const SizedBox(height: SpacingTokens.spacing6),
-          const _SectionTitle('SCHEDULING'),
+          _SectionTitle(context.afriL10n.adminFeatureScheduling),
           const SizedBox(height: SpacingTokens.spacing3),
           _ScheduleCard(
             rules: feature.rules,
@@ -230,13 +245,13 @@ class FeatureDetailScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
-          const _SectionTitle('ACCESS RULES'),
+          _SectionTitle(context.afriL10n.adminFeatureAccessRules),
           const SizedBox(height: SpacingTokens.spacing3),
           GlassCard(
             animate: false,
             child: _ToggleRow(
-              label: 'Authentication required',
-              subtitle: 'Users must sign in before accessing this feature.',
+              label: context.afriL10n.adminFeatureAuthRequired,
+              subtitle: context.afriL10n.adminFeatureAuthRequiredMessage,
               value: feature.rules?.authRequired ?? false,
               enabled: controlsEnabled,
               onChanged: (value) => unawaited(
@@ -279,10 +294,10 @@ class FeatureDetailScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-feature-detail-state-disabled'),
-        title: 'Feature settings unavailable',
-        message: 'Feature editing is disabled for this controlled build.',
+        title: context.afriL10n.adminFeatureSettingsUnavailable,
+        message: context.afriL10n.adminFeatureEditingDisabled,
         icon: AfriIcons.lock,
-        actionLabel: 'Back to features',
+        actionLabel: context.afriL10n.adminBackToFeatures,
         onAction: () => context.pop(),
       ),
     );
@@ -293,47 +308,48 @@ class FeatureDetailScreen extends ConsumerWidget {
     WidgetRef ref,
     AdminFeaturesFailure failure,
   ) {
+    final l10n = context.afriL10n;
     void retry() => unawaited(
       ref.read(adminFeatureDetailProvider(featureKey).notifier).refresh(),
     );
     final view = switch (failure.kind) {
       AdminFeaturesFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-feature-detail-state-offline'),
-        title: 'Feature settings offline',
-        message: 'Reconnect before loading private feature configuration.',
-        actionLabel: 'Try again',
+        title: l10n.adminFeatureSettingsOffline,
+        message: l10n.adminFeatureSettingsOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
       AdminFeaturesFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>(
           'admin-feature-detail-state-permission-denied',
         ),
-        title: 'Feature access unavailable',
-        message: 'This account cannot view or change feature settings.',
-        actionLabel: 'Back to features',
+        title: l10n.adminFeatureAccessUnavailable,
+        message: l10n.adminFeatureAccessUnavailableMessage,
+        actionLabel: l10n.adminBackToFeatures,
         onAction: () => context.pop(),
       ),
       AdminFeaturesFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-feature-detail-state-conflict'),
-        title: 'Feature settings changed',
-        message: 'Refresh before making another feature change.',
-        actionLabel: 'Refresh',
+        title: l10n.adminFeatureSettingsChanged,
+        message: l10n.adminFeatureSettingsChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: retry,
       ),
       AdminFeaturesFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>(
           'admin-feature-detail-state-security-timeout',
         ),
-        title: 'Security check timed out',
-        message: 'No feature settings were shown. Check your connection.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminFeatureSecurityTimeoutMessage,
+        actionLabel: l10n.retry,
         onAction: retry,
       ),
       AdminFeaturesFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-feature-detail-state-error'),
-        title: 'Feature settings unavailable',
-        message: 'Private feature settings remain hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminFeatureSettingsUnavailable,
+        message: l10n.adminFeaturePrivateDataHidden,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
     };
@@ -343,16 +359,19 @@ class FeatureDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget? _statusBanner(AsyncValue<AdminFeatureDetailSnapshot> value) {
+  Widget? _statusBanner(
+    BuildContext context,
+    AsyncValue<AdminFeatureDetailSnapshot> value,
+  ) {
+    final l10n = context.afriL10n;
     final snapshot = value.valueOrNull;
     if (snapshot == null) return null;
     if (value.isLoading || snapshot.isMutating) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-feature-detail-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-feature-detail-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Checking feature settings',
-        subtitle:
-            'Showing the last confirmed state while current data is checked.',
+        title: l10n.adminFeatureCheckingTitle,
+        subtitle: l10n.adminFeatureCheckingMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -366,14 +385,14 @@ class FeatureDetailScreen extends ConsumerWidget {
           ? AfriIcons.offline
           : AfriIcons.statusWarning,
       title: switch (failure.kind) {
-        AdminFeaturesFailureKind.conflict => 'Feature settings changed',
-        AdminFeaturesFailureKind.securityTimeout => 'Security check timed out',
-        AdminFeaturesFailureKind.offline => 'Feature settings offline',
-        _ => 'Feature settings unavailable',
+        AdminFeaturesFailureKind.conflict => l10n.adminFeatureSettingsChanged,
+        AdminFeaturesFailureKind.securityTimeout => l10n.adminSecurityTimeout,
+        AdminFeaturesFailureKind.offline => l10n.adminFeatureSettingsOffline,
+        _ => l10n.adminFeatureSettingsUnavailable,
       },
       subtitle: snapshot.mutationOutcomeUnconfirmed
-          ? 'The last change is unconfirmed. Controls stay paused until refresh succeeds.'
-          : 'Last confirmed settings remain visible. Controls are paused.',
+          ? l10n.adminFeatureOutcomeUnconfirmed
+          : l10n.adminFeatureLastConfirmed,
       tone: AfriStateBannerTone.warning,
     );
   }
@@ -429,15 +448,15 @@ class _ChannelCard extends StatelessWidget {
                 ),
                 const SizedBox(width: SpacingTokens.spacing2),
                 Text(
-                  channel.channel.toUpperCase(),
+                  _channelLabel(context, channel.channel),
                   style: TypographyTokens.titleSmall(),
                 ),
               ],
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             _ToggleRow(
-              label: 'Enabled',
-              subtitle: 'Feature is active on this channel.',
+              label: context.afriL10n.adminFeatureChannelEnabled,
+              subtitle: context.afriL10n.adminFeatureChannelEnabledMessage,
               value: channel.isEnabled,
               enabled: enabled,
               onChanged: (value) =>
@@ -445,8 +464,8 @@ class _ChannelCard extends StatelessWidget {
             ),
             const AfriDivider(color: ColorTokens.onDarkHairline),
             _ToggleRow(
-              label: 'Visible',
-              subtitle: 'Feature can be shown on this channel.',
+              label: context.afriL10n.adminFeatureChannelVisible,
+              subtitle: context.afriL10n.adminFeatureChannelVisibleMessage,
               value: channel.isVisible,
               enabled: enabled,
               onChanged: (value) =>
@@ -454,8 +473,8 @@ class _ChannelCard extends StatelessWidget {
             ),
             const AfriDivider(color: ColorTokens.onDarkHairline),
             _ToggleRow(
-              label: 'Show in navigation',
-              subtitle: 'Include this feature in channel navigation.',
+              label: context.afriL10n.adminFeatureShowInNavigation,
+              subtitle: context.afriL10n.adminFeatureShowInNavigationMessage,
               value: channel.showInNavigation,
               enabled: enabled,
               onChanged: (value) =>
@@ -463,8 +482,8 @@ class _ChannelCard extends StatelessWidget {
             ),
             const AfriDivider(color: ColorTokens.onDarkHairline),
             _ToggleRow(
-              label: 'Show on home',
-              subtitle: 'Include this feature on the channel home screen.',
+              label: context.afriL10n.adminFeatureShowOnHome,
+              subtitle: context.afriL10n.adminFeatureShowOnHomeMessage,
               value: channel.showOnHome,
               enabled: enabled,
               onChanged: (value) =>
@@ -541,13 +560,15 @@ class _ScheduleCard extends StatelessWidget {
       child: Column(
         children: [
           _dateRow(
-            label: 'Available from',
+            context: context,
+            label: context.afriL10n.adminFeatureAvailableFrom,
             value: start,
             onTap: enabled ? () => onPick('schedule_start_at', start) : null,
           ),
           const AfriDivider(color: ColorTokens.onDarkHairline),
           _dateRow(
-            label: 'Available until',
+            context: context,
+            label: context.afriL10n.adminFeatureAvailableUntil,
             value: end,
             onTap: enabled ? () => onPick('schedule_end_at', end) : null,
           ),
@@ -557,7 +578,7 @@ class _ScheduleCard extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: AfriTextButton(
                 onPressed: enabled ? onClear : null,
-                child: const Text('Clear schedule'),
+                child: Text(context.afriL10n.adminFeatureClearSchedule),
               ),
             ),
           ],
@@ -567,19 +588,23 @@ class _ScheduleCard extends StatelessWidget {
   }
 
   Widget _dateRow({
+    required BuildContext context,
     required String label,
     required DateTime? value,
     required VoidCallback? onTap,
   }) {
     final formatted = value == null
-        ? 'Not set'
-        : '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
+        ? context.afriL10n.adminFeatureNotSet
+        : MaterialLocalizations.of(context).formatShortDate(value.toLocal());
     return AfriPressFeedback(
       onTap: onTap,
       enabled: onTap != null,
-      tooltip: 'Set $label',
-      semanticsLabel: '$label: $formatted',
-      semanticsHint: 'Opens date and time selection',
+      tooltip: context.afriL10n.adminFeatureSetTooltip(label),
+      semanticsLabel: context.afriL10n.adminFeatureDateSemantic(
+        label,
+        formatted,
+      ),
+      semanticsHint: context.afriL10n.adminFeatureOpenDateTime,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing2),
         child: Row(
@@ -599,4 +624,23 @@ class _ScheduleCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _visibilityLabel(BuildContext context, String visibility) {
+  final l10n = context.afriL10n;
+  return switch (visibility) {
+    'visible' => l10n.adminFeatureVisibilityVisible,
+    'hidden' => l10n.adminFeatureVisibilityHidden,
+    'maintenance' => l10n.adminFeatureVisibilityMaintenance,
+    _ => visibility.toUpperCase(),
+  };
+}
+
+String _channelLabel(BuildContext context, String channel) {
+  final l10n = context.afriL10n;
+  return switch (channel) {
+    'mobile' => l10n.adminFeatureChannelMobile,
+    'web' => l10n.adminFeatureChannelWeb,
+    _ => channel.toUpperCase(),
+  };
 }

@@ -19,6 +19,7 @@ dependencies:
   core_l10n:
     path: ../../packages/core/core_l10n
   flutter_secure_storage: ^9.2.4
+  qr_flutter: ^4.1.0
   supabase_flutter: ^2.12.2
 
 dev_dependencies:

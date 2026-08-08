@@ -60,7 +60,7 @@ extension PredictionRepoPredictions on PredictionRepository {
 
     return const PredictionPlaceResult(
       status: 'error',
-      message: 'Unexpected response from server.',
+      message: 'unexpected_response',
     );
   }
 

@@ -1,5 +1,7 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/edit_profile_screen.dart';
@@ -15,7 +17,7 @@ class SettingsModule extends FeatureModule {
   @override
   TabRoute get tabRoute => TabRoute(
     path: '/settings',
-    label: 'Settings',
+    label: lookupAfriLocalizations(const Locale('en')).settingsTitle,
     icon: AfriIcons.settings,
     activeIcon: AfriIcons.settings,
     builder: (context, state) => const SettingsScreen(),

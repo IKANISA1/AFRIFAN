@@ -11,6 +11,7 @@
   "APP_SUPPORT_EMAIL": "support@ikanisa.com",
   "APP_WEBSITE_URL": "https://gikundiro.com",
   "APP_DEEP_LINK_SCHEME": "gikundiro",
+  "APP_DEEP_LINK_SCHEME_ALIASES": "africlub",
   "APP_PRIVACY_URL": "https://gikundiro.com/privacy",
   "APP_TERMS_URL": "https://gikundiro.com/terms",
   "SUPABASE_URL": "https://mmpbzcdhfvplxplnfucy.supabase.co",

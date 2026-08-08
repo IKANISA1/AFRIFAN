@@ -486,6 +486,99 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get tvOfflinePhase => 'Nta murongo';
 
   @override
+  String get tvPreparingDisplay => 'Turimo gutegura televiziyo';
+
+  @override
+  String get tvCreatePairingChallenge => 'KORA KODE YO GUHUZA';
+
+  @override
+  String get tvPairingChallengeDescription =>
+      'Kuri telefone ya nyirayo, fungura Igenamiterere, ujye ku Mikino na televiziyo. Sikana kode ya QR cyangwa wandikemo kode ikoreshwa rimwe.';
+
+  @override
+  String tvPairingChallengeSemantic(String code) {
+    return 'Kode ya televiziyo ikoreshwa rimwe $code';
+  }
+
+  @override
+  String get tvPairingWaitingOwner =>
+      'Dutegereje ko nyirayo ahuza iyi televiziyo…';
+
+  @override
+  String tvPairingExpiresAt(String time) {
+    return 'Kode irarangira $time';
+  }
+
+  @override
+  String get tvCreateNewPairingCode => 'KORA KODE NSHYA';
+
+  @override
+  String get tvDisplayPairedNoGame => 'Televiziyo yahujwe';
+
+  @override
+  String get tvDisplayPairedNoGameDescription =>
+      'Nta mukino washinzwe iyi televiziyo. Izahita ivugurura amakuru.';
+
+  @override
+  String get tvGameScheduledTitle => 'Umukino warateguwe';
+
+  @override
+  String get tvGameLobbyTitle => 'Abakinnyi barimo kwinjira';
+
+  @override
+  String get tvGamePausedTitle => 'Umukino wahagaze';
+
+  @override
+  String get tvGameCancelledTitle => 'Umukino wahagaritswe';
+
+  @override
+  String get tvGameCompletedTitle => 'Umukino warangiye';
+
+  @override
+  String get tvLiveSyncing => 'Turimo kuvugurura amakuru y’umukino';
+
+  @override
+  String get tvOfflineLastConfirmed =>
+      'Nta murongo · herekanwa amakuru yemejwe bwa nyuma';
+
+  @override
+  String tvLiveUpdatedAt(String time) {
+    return 'Ako kanya · byavuguruwe saa $time';
+  }
+
+  @override
+  String tvQuestionNumber(int number) {
+    return 'Ikibazo cya $number';
+  }
+
+  @override
+  String get tvCorrectAnswer => 'Igisubizo cy’ukuri';
+
+  @override
+  String tvCorrectAnswerSemantic(String answer) {
+    return 'Igisubizo cy’ukuri: $answer';
+  }
+
+  @override
+  String tvSecondsRemaining(int seconds) {
+    return 'Hasigaye amasegonda $seconds';
+  }
+
+  @override
+  String get tvLeaderboardEmpty =>
+      'Amanota azagaragara abakinnyi bamaze gusubiza.';
+
+  @override
+  String get tvRetry => 'ONGERA UGERAGEZE';
+
+  @override
+  String get tvSecureStorageUnavailable =>
+      'Ububiko bwizewe bwa televiziyo ntibuboneka. Ongera ugerageze mbere yo kuyihuza.';
+
+  @override
+  String get tvPairingExpired => 'Kode yo guhuza yarangiye. Kora kode nshya.';
+
+  @override
   String get membershipTitle => 'Ubunyamuryango';
 
   @override
@@ -1254,6 +1347,42 @@ class AfriLocalizationsRw extends AfriLocalizations {
   @override
   String get clubLinkedRecordLoadMessage =>
       'Amakuru y’ikipe ahujwe ntiyapakiwe.';
+
+  @override
+  String get clubOfflineTitle => 'Amakuru ya klabu ntaboneka nta murongo';
+
+  @override
+  String get clubOfflineMessage =>
+      'Jya ku murongo kugira ngo ubone amakuru mashya yemewe ya klabu.';
+
+  @override
+  String get clubAccessDeniedTitle => 'Ntiwemerewe kubona amakuru ya klabu';
+
+  @override
+  String get clubAccessDeniedMessage =>
+      'Iyi konti ntishobora kubona amakuru ya klabu yasabwe.';
+
+  @override
+  String get clubChangedTitle => 'Amakuru ya klabu yahindutse';
+
+  @override
+  String get clubChangedMessage =>
+      'Amakuru yemewe ya klabu yahindutse mu gihe yarimo aza. Vugurura kugira ngo wemeze amakuru mashya.';
+
+  @override
+  String get clubSecurityTimeoutTitle =>
+      'Igihe cyo kugenzura umutekano w’amakuru ya klabu cyarangiye';
+
+  @override
+  String get clubSecurityTimeoutMessage =>
+      'Serivisi y’amakuru ya klabu ntiyasubije ku gihe. Vugurura wongere ugerageze.';
+
+  @override
+  String get clubRefreshingTitle => 'Kuvugurura amakuru ya klabu';
+
+  @override
+  String get clubRefreshingMessage =>
+      'Amakuru ya klabu aheruka kwemezwa akomeza kugaragara mu gihe amakuru mashya aza.';
 
   @override
   String get clubRefresh => 'Vugurura';
@@ -2783,7 +2912,8 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get ticketRefreshingTitle => 'Kuvugurura tike';
 
   @override
-  String get ticketAccessChangedTitle => 'Uburenganzira ku matike bwahindutse';
+  String get ticketEntryCodeAccessChangedTitle =>
+      'Uburenganzira kuri tike bwahindutse';
 
   @override
   String get ticketCheckTimedOutTitle => 'Igenzura rya tike ryarengeje igihe';
@@ -3249,6 +3379,9 @@ class AfriLocalizationsRw extends AfriLocalizations {
   @override
   String get ticketFixtureCheckTimedOutTitle =>
       'Igenzura ry\'umukino ryarengeje igihe';
+
+  @override
+  String get ticketAccessChangedTitle => 'Uburenganzira ku matike bwahindutse';
 
   @override
   String get ticketSavedFixtureReadOnlyMessage =>
@@ -4135,4 +4268,7868 @@ class AfriLocalizationsRw extends AfriLocalizations {
 
   @override
   String get contributionsNotNowUpper => 'SI UBU';
+
+  @override
+  String get settingsTitle => 'Igenamiterere';
+
+  @override
+  String get settingsRoleAdmin => 'Umuyobozi';
+
+  @override
+  String get settingsRoleSupporter => 'Umufana';
+
+  @override
+  String get settingsMembershipDetails => 'Ibisobanuro by’ubunyamuryango';
+
+  @override
+  String get settingsSectionAccount => 'Konti';
+
+  @override
+  String get settingsSectionGamesAndTvs => 'Imikino na televiziyo';
+
+  @override
+  String get settingsSectionPreferences => 'Ibyifuzo';
+
+  @override
+  String get settingsSectionSupport => 'Ubufasha';
+
+  @override
+  String get settingsEditProfile => 'Hindura umwirondoro';
+
+  @override
+  String get settingsAppearance => 'Imigaragarire';
+
+  @override
+  String get settingsNotifications => 'Amatangazo';
+
+  @override
+  String get settingsPrivacy => 'Ubwirinzi bw’amakuru';
+
+  @override
+  String get settingsHelpSupport => 'Ubufasha';
+
+  @override
+  String get settingsSignOut => 'Sohoka';
+
+  @override
+  String get settingsRefreshingTitle => 'Kuvugurura igenamiterere';
+
+  @override
+  String get settingsRefreshingMessage =>
+      'Igenamiterere rya konti n’imigaragarire riracyaboneka.';
+
+  @override
+  String get settingsOfflineTitle => 'Igenamiterere ritari kuri interineti';
+
+  @override
+  String get settingsOfflineMessage =>
+      'Nta interineti. Igenamiterere rya konti n’imigaragarire riracyaboneka. Ongera uhuze kugira ngo ubone ubufasha.';
+
+  @override
+  String get settingsHelpUnavailableTitle => 'Ubufasha ntibuboneka';
+
+  @override
+  String get settingsSupportContactUnavailableTitle =>
+      'Aho wabonera ubufasha ntihaboneka';
+
+  @override
+  String get settingsSupportContactUnavailableMessage =>
+      'Andi magenamiterere aracyakora. Vugurura wongere ugenzure.';
+
+  @override
+  String get settingsLoadingTitle => 'Gufungura igenamiterere';
+
+  @override
+  String get settingsLoadingMessage => 'Kugenzura niba ubufasha buboneka.';
+
+  @override
+  String get settingsAccessLimitedTitle => 'Igenamiterere rifite imipaka';
+
+  @override
+  String get settingsAccessLimitedMessage =>
+      'Ubufasha ntibwashoboye kwemezwa. Andi magenamiterere aracyakora.';
+
+  @override
+  String get settingsChangedTitle => 'Igenamiterere ryahindutse';
+
+  @override
+  String get settingsChangedMessage =>
+      'Vugurura kugira ngo ubone igenamiterere ry’ubufasha rigezweho.';
+
+  @override
+  String get settingsSecurityTimeoutTitle =>
+      'Igenzura ry’umutekano ryarengeje igihe';
+
+  @override
+  String get settingsSecurityTimeoutMessage =>
+      'Reba interineti yawe wongere uvugurure.';
+
+  @override
+  String get settingsSupportLoadFailedTitle =>
+      'Ubufasha ntibwashoboye gufunguka';
+
+  @override
+  String get settingsSupportLoadFailedMessage =>
+      'Igenamiterere rya konti n’imigaragarire riracyaboneka.';
+
+  @override
+  String get settingsChecking => 'Kugenzura…';
+
+  @override
+  String get settingsConnectionRequired => 'Interineti irakenewe';
+
+  @override
+  String get settingsUnavailable => 'Ntibiboneka';
+
+  @override
+  String get settingsNotConfigured => 'Ntibyashyizweho';
+
+  @override
+  String get settingsStatusUnavailable => 'Imiterere ntiboneka';
+
+  @override
+  String get settingsThemeUseDevice => 'Koresha igenamiterere rya telefoni';
+
+  @override
+  String get settingsThemeLight => 'Urumuri';
+
+  @override
+  String get settingsThemeDark => 'Umwijima';
+
+  @override
+  String get settingsAppearanceMessage =>
+      'Hitamo insanganyamatsiko cyangwa ukoreshe igenamiterere rya telefoni.';
+
+  @override
+  String get settingsThemeSystem => 'Sisitemu';
+
+  @override
+  String get settingsSupportNotConfigured =>
+      'Aho wabonera ubufasha ntihashyizweho.';
+
+  @override
+  String settingsSupportGreeting(String app) {
+    return 'Muraho, nkeneye ubufasha kuri $app.';
+  }
+
+  @override
+  String get settingsWhatsAppFailed => 'WhatsApp ntiyashoboye gufunguka.';
+
+  @override
+  String get settingsDeleteAccountTitle => 'USHAKA GUSIBA KONTI YAWE?';
+
+  @override
+  String get settingsDeleteAccountMessage =>
+      'Bisiba burundu umwirondoro, FET, imidari n’amateka byawe. Ntibisubirwaho.';
+
+  @override
+  String get settingsDeleteAccountConfirmPrompt =>
+      'ANDIKA DELETE KUGIRA NGO WEMEZE';
+
+  @override
+  String get settingsDeleteAccountConfirmValue => 'DELETE';
+
+  @override
+  String get settingsCancelUpper => 'REKA';
+
+  @override
+  String get settingsDeletePermanently => 'Siba burundu';
+
+  @override
+  String get settingsNotificationPermissionTitle => 'KOMEZA KUBA MU MUKINO';
+
+  @override
+  String get settingsNotificationPermissionMessage =>
+      'Menyeshwa imikino, inkunga, intambwe za FET n’amakuru y’ikipe.';
+
+  @override
+  String get settingsMatchAlerts => 'Amatangazo mbere y’uko umukino utangira';
+
+  @override
+  String get settingsContributionUpdates => 'Amakuru y’inkunga n’amatike';
+
+  @override
+  String get settingsFetMilestones => 'Intambwe za FET n’ibibazo bishya';
+
+  @override
+  String get settingsEnableNotifications => 'Fungura amatangazo';
+
+  @override
+  String get settingsMaybeLaterUpper => 'NYUMA';
+
+  @override
+  String get settingsSignOutTitle => 'USHAKA GUSOHOKA?';
+
+  @override
+  String get settingsSignOutMessage =>
+      'Umwirondoro na FET byawe byabitswe. Ushobora kongera kwinjira igihe cyose.';
+
+  @override
+  String get settingsStay => 'Guma hano';
+
+  @override
+  String get settingsSignOutOthersTitle => 'USHAKA GUSOHORA IZINDI TELEFONI?';
+
+  @override
+  String get settingsSignOutOthersMessage =>
+      'Iyi telefoni irakomeza kwinjiyemo. Izindi sesiyo zirafungwa.';
+
+  @override
+  String get settingsSignOutOthersAction => 'SOHORA IZINDI';
+
+  @override
+  String get settingsCancel => 'Reka';
+
+  @override
+  String get editProfileUpdated => 'Umwirondoro wavuguruwe.';
+
+  @override
+  String get editProfileServiceUnavailable =>
+      'Serivisi y’umwirondoro ntiboneka by’akanya.';
+
+  @override
+  String get editProfileLoadingTitle => 'Gufungura umwirondoro';
+
+  @override
+  String get editProfileLoadingMessage =>
+      'Kugenzura umwirondoro wawe wabitswe.';
+
+  @override
+  String get editProfileAccessLimitedTitle => 'Umwirondoro ufite imipaka';
+
+  @override
+  String get editProfileAccessLimitedMessage =>
+      'Umwirondoro wawe ntiwashoboye kwemezwa. Ongera winjire.';
+
+  @override
+  String get editProfileSignInAgain => 'Ongera winjire';
+
+  @override
+  String get editProfileChangedTitle => 'Umwirondoro wahindutse';
+
+  @override
+  String get editProfileChangedMessage =>
+      'Vugurura kugira ngo ubone umwirondoro ugezweho mbere yo kuwuhindura.';
+
+  @override
+  String get editProfileRefresh => 'Vugurura';
+
+  @override
+  String get editProfileSecurityTimeoutTitle =>
+      'Igenzura ry’umutekano ryarengeje igihe';
+
+  @override
+  String get editProfileSecurityTimeoutMessage =>
+      'Reba interineti yawe wongere uvugurure.';
+
+  @override
+  String get editProfileLoadFailedTitle => 'Umwirondoro ntiwashoboye gufunguka';
+
+  @override
+  String get editProfileLoadFailedMessage =>
+      'Umwirondoro wawe uracyarinzwe. Ongera ugerageze.';
+
+  @override
+  String get editProfileTryAgain => 'Ongera ugerageze';
+
+  @override
+  String get editProfileTitle => 'Umwirondoro';
+
+  @override
+  String get editProfileSavingTitle => 'Kubika umwirondoro';
+
+  @override
+  String get editProfileSavingMessage =>
+      'Izina ryawe rirakomeza kugaragara mu gihe kubika byemezwa.';
+
+  @override
+  String get editProfileRefreshingTitle => 'Kuvugurura umwirondoro';
+
+  @override
+  String get editProfileRefreshingMessage =>
+      'Umwirondoro wawe wabitswe uracyagaragara.';
+
+  @override
+  String get editProfileEditingUnavailableTitle =>
+      'Guhindura umwirondoro ntibiboneka';
+
+  @override
+  String get editProfileEditingUnavailableMessage =>
+      'Umwirondoro wawe wabitswe uracyagaragara.';
+
+  @override
+  String get editProfileChangedElsewhereTitle =>
+      'Umwirondoro wahinduriwe ahandi';
+
+  @override
+  String get editProfileChangedElsewhereMessage =>
+      'Izina rigezweho ryafunguwe. Risuzume mbere yo kubika.';
+
+  @override
+  String get editProfileSaveUnconfirmedTitle =>
+      'Kubika umwirondoro ntibyemejwe';
+
+  @override
+  String get editProfileSaveUnconfirmedMessage =>
+      'Vugurura umwirondoro mbere yo kongera kugerageza.';
+
+  @override
+  String get editProfileSaveFailedTitle => 'Umwirondoro ntiwashoboye kubikwa';
+
+  @override
+  String get editProfileSaveFailedMessage => 'Izina wanditse riracyahari.';
+
+  @override
+  String get editProfileOfflineTitle => 'Umwirondoro utari kuri interineti';
+
+  @override
+  String get editProfileOfflineMessage =>
+      'Nta interineti. Umwirondoro wawe wabitswe uracyagaragara. Ongera uhuze kugira ngo uwuhindure.';
+
+  @override
+  String get editProfileUnavailableTitle => 'Umwirondoro ntuboneka';
+
+  @override
+  String get editProfileUnavailableMessage =>
+      'Umwirondoro wawe ntuboneka. Ongera winjire kugira ngo ugarure konti.';
+
+  @override
+  String editProfileAlias(String alias) {
+    return '#$alias';
+  }
+
+  @override
+  String get editProfileNicknameLabel => 'Izina ry’umufana';
+
+  @override
+  String get editProfileNicknameHint => 'Izina ry’umufana ritari ngombwa';
+
+  @override
+  String get editProfileSaving => 'Kubika…';
+
+  @override
+  String get editProfileSaveChanges => 'Bika impinduka';
+
+  @override
+  String get editProfileDeleteAccount => 'Siba konti';
+
+  @override
+  String get editProfileDeleteHint => 'Siba burundu iyi konti y’umufana';
+
+  @override
+  String get editProfileDeleteFailed =>
+      'Konti ntiyashoboye gusibwa. Ongera ugerageze.';
+
+  @override
+  String get editProfileLanguageEnglish => 'Icyongereza';
+
+  @override
+  String get editProfileLanguageFrench => 'Igifaransa';
+
+  @override
+  String get editProfileLanguageKinyarwanda => 'Ikinyarwanda';
+
+  @override
+  String get notificationPreferencesConnectionRestoredReview =>
+      'Interineti yagarutse. Suzuma impinduka zabitswe, hanyuma ubike.';
+
+  @override
+  String get notificationPreferencesConnectionRestoredRefreshing =>
+      'Interineti yagarutse. Ibyifuzo biri kuvugururwa.';
+
+  @override
+  String get notificationPreferencesConnectBeforeChanging =>
+      'Banza uhuze interineti mbere yo guhindura uko iki gikoresho cyakira amatangazo.';
+
+  @override
+  String get notificationPreferencesDeviceTurnedOff =>
+      'Amatangazo yo kuri iki gikoresho yahagaritswe. Bika kugira ngo uvugurure icyifuzo cya konti yawe.';
+
+  @override
+  String get notificationPreferencesPermissionGranted =>
+      'Uruhushya rwatanzwe kuri iki gikoresho. Bika kugira ngo amatangazo atangire kuri konti yawe.';
+
+  @override
+  String get notificationPreferencesBlocked =>
+      'Amatangazo yarafunzwe. Yemerere mu igenamiterere ry’igikoresho.';
+
+  @override
+  String get notificationPreferencesPermissionPending =>
+      'Uruhushya rw’amatangazo ntiruremezwa.';
+
+  @override
+  String get notificationPreferencesPushUnavailable =>
+      'Amatangazo ya push ntaboneka muri iyi verisiyo.';
+
+  @override
+  String get notificationPreferencesDraftKeptConnect =>
+      'Impinduka zawe zabitswe. Huza interineti mbere yo kubika.';
+
+  @override
+  String get notificationPreferencesSaved =>
+      'Ibyifuzo by’amatangazo byabitswe.';
+
+  @override
+  String get notificationPreferencesChangedElsewhereLoading =>
+      'Ibyifuzo byahinduriwe ahandi. Verisiyo nshya iri kwinjizwa; yisuzume mbere yo kongera kubika.';
+
+  @override
+  String get notificationPreferencesChangeNotPermitted =>
+      'Iyi konti ntiyemerewe guhindura amatangazo.';
+
+  @override
+  String get notificationPreferencesChangedRefresh =>
+      'Ibyifuzo byahinduriwe ahandi. Banza uvugurure mbere yo kongera kubika.';
+
+  @override
+  String get notificationPreferencesSaveUnconfirmed =>
+      'Kubika amatangazo ntibyemejwe. Vugurura mbere yo kongera kugerageza.';
+
+  @override
+  String get notificationPreferencesSaveFailedDraftKept =>
+      'Ibyifuzo by’amatangazo ntibyashoboye kubikwa. Umushinga wawe wakomeje kubikwa.';
+
+  @override
+  String get notificationPreferencesRefreshing =>
+      'Ibyifuzo by’amatangazo biri kuvugururwa.';
+
+  @override
+  String get notificationPreferencesLoadingTitle => 'Amatangazo ari kwinjizwa';
+
+  @override
+  String get notificationPreferencesLoadingMessage =>
+      'Icyifuzo cyawe cy’uko wakira amatangazo kiri kugenzurwa.';
+
+  @override
+  String get notificationPreferencesOfflineTitle =>
+      'Amatangazo ntari kuri interineti';
+
+  @override
+  String get notificationPreferencesOfflineMessage =>
+      'Huza interineti kugira ngo ubone icyifuzo cyawe cyabitswe.';
+
+  @override
+  String get notificationPreferencesUnavailableTitle =>
+      'Ibyifuzo by’amatangazo ntibiboneka';
+
+  @override
+  String get notificationPreferencesUnavailableMessage =>
+      'Injira kugira ngo ucunge uko wakira amatangazo.';
+
+  @override
+  String get notificationPreferencesAccessLimitedTitle =>
+      'Uburenganzira ku matangazo buragabanyijwe';
+
+  @override
+  String get notificationPreferencesAccessLimitedMessage =>
+      'Ibyifuzo byawe ntibyashoboye kugenzurwa. Ongera winjire.';
+
+  @override
+  String get notificationPreferencesChangedTitle =>
+      'Igenamiterere ry’amatangazo ryahindutse';
+
+  @override
+  String get notificationPreferencesChangedMessage =>
+      'Vugurura kugira ngo ubone icyifuzo kiriho mbere yo kugihindura.';
+
+  @override
+  String get notificationPreferencesSecurityTimeoutTitle =>
+      'Igihe cyo kugenzura umutekano w’amatangazo cyarangiye';
+
+  @override
+  String get notificationPreferencesSecurityTimeoutMessage =>
+      'Genzura interineti hanyuma uvugurure.';
+
+  @override
+  String get notificationPreferencesLoadFailedTitle =>
+      'Igenamiterere ry’amatangazo ntiryashoboye kwinjizwa.';
+
+  @override
+  String get notificationPreferencesLoadFailedMessage =>
+      'Icyifuzo cyawe cyabitswe kiracyarinzwe. Ongera ugerageze.';
+
+  @override
+  String get notificationPreferencesSavingTitle =>
+      'Ibyifuzo by’amatangazo biri kubikwa';
+
+  @override
+  String get notificationPreferencesSavingMessage =>
+      'Amahitamo yawe akomeza kugaragara mu gihe kubika biri kwemezwa.';
+
+  @override
+  String get notificationPreferencesRefreshingTitle =>
+      'Ibyifuzo by’amatangazo biri kuvugururwa';
+
+  @override
+  String get notificationPreferencesRefreshingMessage =>
+      'Icyifuzo cyawe cyabitswe gikomeza kugaragara.';
+
+  @override
+  String get notificationPreferencesEditingUnavailableTitle =>
+      'Guhindura amatangazo ntibiboneka';
+
+  @override
+  String get notificationPreferencesEditingUnavailableMessage =>
+      'Icyifuzo cyawe cyabitswe gikomeza kugaragara.';
+
+  @override
+  String get notificationPreferencesChangedElsewhereTitle =>
+      'Igenamiterere ry’amatangazo ryahinduriwe ahandi';
+
+  @override
+  String get notificationPreferencesChangedElsewhereMessage =>
+      'Vugurura kandi usuzume icyifuzo gishya.';
+
+  @override
+  String get notificationPreferencesSaveNotConfirmedTitle =>
+      'Kubika amatangazo ntibyemejwe';
+
+  @override
+  String get notificationPreferencesSaveNotConfirmedMessage =>
+      'Vugurura mbere yo kongera kugerageza. Umushinga wawe warabitswe.';
+
+  @override
+  String get notificationPreferencesSaveFailedTitle =>
+      'Ibyifuzo by’amatangazo ntibyashoboye kubikwa';
+
+  @override
+  String get notificationPreferencesSaveFailedMessage =>
+      'Umushinga wawe uracyahari.';
+
+  @override
+  String get notificationPreferencesSavedSettingsTitle =>
+      'Igenamiterere ry’amatangazo ryabitswe';
+
+  @override
+  String get notificationPreferencesSavedSettingsMessage =>
+      'Amakuru ashobora kuba ashaje. Ongera uhuze interineti mbere yo guhindura cyangwa kubika.';
+
+  @override
+  String get notificationPreferencesCheckingPermissionsTitle =>
+      'Uruhushya rw’igikoresho ruri kugenzurwa';
+
+  @override
+  String get notificationPreferencesCheckingPermissionsMessage =>
+      'Igenzura ry’uko wakira amatangazo riraboneka nyuma y’iri genzura.';
+
+  @override
+  String get notificationPreferencesDeviceAlertsUnavailableTitle =>
+      'Amatangazo y’igikoresho ntaboneka';
+
+  @override
+  String get notificationPreferencesDeviceAlertsUnavailableMessage =>
+      'Kwakira push ntibyashyizwe muri iyi verisiyo.';
+
+  @override
+  String get notificationPreferencesPermissionEnabled =>
+      'Amatangazo ya sisitemu yemerewe kuri iki gikoresho.';
+
+  @override
+  String get notificationPreferencesPermissionBlocked =>
+      'Amatangazo ya sisitemu yafunzwe kuri iki gikoresho.';
+
+  @override
+  String get notificationPreferencesPermissionNotRequested =>
+      'Uruhushya ntirurasabwa.';
+
+  @override
+  String get notificationPreferencesPermissionNotConfigured =>
+      'Push ntashyizwe muri iyi verisiyo.';
+
+  @override
+  String get notificationPreferencesPermissionChecking =>
+      'Uruhushya rw’amatangazo rw’igikoresho ruri kugenzurwa…';
+
+  @override
+  String get notificationPreferencesTitle => 'AMATANGAZO';
+
+  @override
+  String get notificationPreferencesDeliverySection => 'KWAKIRA AMATANGAZO';
+
+  @override
+  String get notificationPreferencesAlertsEnabled => 'Amatangazo yemerewe.';
+
+  @override
+  String get notificationPreferencesEnableAlertsDescription =>
+      'Emerera amatangazo y’imikino, inyemezabwishyu n’amakuru.';
+
+  @override
+  String get notificationPreferencesDeviceDelivery =>
+      'Kwakira amatangazo ku gikoresho';
+
+  @override
+  String get notificationPreferencesConnectionRequiredUpper =>
+      'INTERINETI IRASABWA';
+
+  @override
+  String get notificationPreferencesDisableAlerts => 'HAGARIKA AMATANGAZO';
+
+  @override
+  String get notificationPreferencesEnableAlerts => 'EMERERA AMATANGAZO';
+
+  @override
+  String get notificationPreferencesDeliveryModel => 'UBURYO BWO KWAKIRA';
+
+  @override
+  String notificationPreferencesFullStream(String app) {
+    return 'Iyo amatangazo yemerewe, iyi verisiyo ikugezaho amatangazo yose ya $app aboneka kuri konti yawe.';
+  }
+
+  @override
+  String get notificationPreferencesPerCategory =>
+      'Guhitamo buri cyiciro ntibirashyirwa muri iyi verisiyo, bityo iri hinduranya rikagenzura amatangazo yose yo kuri iki gikoresho.';
+
+  @override
+  String get notificationPreferencesSave => 'Bika';
+
+  @override
+  String get privacySettingsConnectionRestoredReview =>
+      'Interineti yagarutse. Suzuma impinduka zabitswe, hanyuma ubike.';
+
+  @override
+  String get privacySettingsConnectionRestoredRefreshing =>
+      'Interineti yagarutse. Igenamiterere ry’ibanga riri kuvugururwa.';
+
+  @override
+  String get privacySettingsChangeReady =>
+      'Impinduka y’ibanga yiteguye kubikwa.';
+
+  @override
+  String get privacySettingsDraftKeptConnect =>
+      'Impinduka zawe zabitswe. Huza interineti mbere yo kubika.';
+
+  @override
+  String get privacySettingsSaved => 'Igenamiterere ry’ibanga ryabitswe.';
+
+  @override
+  String get privacySettingsChangedElsewhereLoading =>
+      'Igenamiterere ry’ibanga ryahinduriwe ahandi. Verisiyo nshya iri kwinjizwa; yisuzume mbere yo kongera kubika.';
+
+  @override
+  String get privacySettingsChangeNotPermitted =>
+      'Iyi konti ntiyemerewe guhindura igenamiterere ry’ibanga.';
+
+  @override
+  String get privacySettingsChangedRefresh =>
+      'Igenamiterere ry’ibanga ryahinduriwe ahandi. Banza uvugurure mbere yo kongera kubika.';
+
+  @override
+  String get privacySettingsSaveUnconfirmed =>
+      'Kubika igenamiterere ry’ibanga ntibyemejwe. Vugurura mbere yo kongera kugerageza.';
+
+  @override
+  String get privacySettingsSaveFailedDraftKept =>
+      'Igenamiterere ry’ibanga ntiryashoboye kubikwa. Umushinga wawe wakomeje kubikwa.';
+
+  @override
+  String get privacySettingsRefreshing =>
+      'Igenamiterere ry’ibanga riri kuvugururwa.';
+
+  @override
+  String get privacySettingsConnectBeforeSigningOut =>
+      'Huza interineti mbere yo gusohora ibindi bikoresho.';
+
+  @override
+  String get privacySettingsSessionsSignedOut => 'Izindi sesiyo zasohowe.';
+
+  @override
+  String get privacySettingsSessionsSignOutFailed =>
+      'Ibindi bikoresho ntibyashoboye gusohorwa. Ongera ugerageze.';
+
+  @override
+  String get privacySettingsSessionSecurityTimeout =>
+      'Igihe cyo kugenzura umutekano wa sesiyo cyarangiye. Ongera ugerageze.';
+
+  @override
+  String get privacySettingsSmsAccessRequired =>
+      'Guhuza SMS bikomeza kuzimye kugeza wemereye Android gusoma SMS zo kugenzura MoMo.';
+
+  @override
+  String get privacySettingsEnableMomoSmsTitle => 'Emerera guhuza SMS za MoMo';
+
+  @override
+  String get privacySettingsMomoSmsDisclosure =>
+      'Porogaramu isoma gusa SMS zemewe zo kugenzura Mobile Money kuri iki gikoresho kugira ngo ihuze ubwishyu bw’imisanzu. Ntishobora kubona ubundi butumwa.';
+
+  @override
+  String get privacySettingsNotNow => 'Si ubu';
+
+  @override
+  String get privacySettingsContinue => 'Komeza';
+
+  @override
+  String get privacySettingsLoadingTitle =>
+      'Igenamiterere ry’ibanga riri kwinjizwa';
+
+  @override
+  String get privacySettingsLoadingMessage =>
+      'Amahitamo yawe y’ibanga yabitswe ari kugenzurwa.';
+
+  @override
+  String get privacySettingsOfflineTitle =>
+      'Igenamiterere ry’ibanga ntiri kuri interineti';
+
+  @override
+  String get privacySettingsOfflineMessage =>
+      'Huza interineti kugira ngo ubone amahitamo yawe y’ibanga yabitswe.';
+
+  @override
+  String get privacySettingsUnavailableTitle =>
+      'Igenamiterere ry’ibanga ntiriboneka';
+
+  @override
+  String get privacySettingsUnavailableMessage =>
+      'Injira kugira ngo usuzume kandi ucunge amahitamo yawe y’ibanga.';
+
+  @override
+  String get privacySettingsAccessLimitedTitle =>
+      'Uburenganzira ku ibanga buragabanyijwe';
+
+  @override
+  String get privacySettingsAccessLimitedMessage =>
+      'Igenamiterere ryawe ry’ibanga ntiryashoboye kugenzurwa. Ongera winjire.';
+
+  @override
+  String get privacySettingsChangedTitle =>
+      'Igenamiterere ry’ibanga ryahindutse';
+
+  @override
+  String get privacySettingsChangedMessage =>
+      'Vugurura kugira ngo ubone amahitamo ariho mbere yo kuyahindura.';
+
+  @override
+  String get privacySettingsSecurityTimeoutTitle =>
+      'Igihe cyo kugenzura umutekano w’ibanga cyarangiye';
+
+  @override
+  String get privacySettingsSecurityTimeoutMessage =>
+      'Genzura interineti hanyuma uvugurure.';
+
+  @override
+  String get privacySettingsLoadFailedTitle =>
+      'Igenamiterere ry’ibanga ntiryashoboye kwinjizwa.';
+
+  @override
+  String get privacySettingsLoadFailedMessage =>
+      'Amahitamo yawe yabitswe aracyarinzwe. Ongera ugerageze.';
+
+  @override
+  String get privacySettingsSavingTitle =>
+      'Igenamiterere ry’ibanga riri kubikwa';
+
+  @override
+  String get privacySettingsSavingMessage =>
+      'Amahitamo yawe akomeza kugaragara mu gihe kubika biri kwemezwa.';
+
+  @override
+  String get privacySettingsRefreshingTitle =>
+      'Igenamiterere ry’ibanga riri kuvugururwa';
+
+  @override
+  String get privacySettingsRefreshingMessage =>
+      'Amahitamo yawe yabitswe akomeza kugaragara.';
+
+  @override
+  String get privacySettingsEditingUnavailableTitle =>
+      'Guhindura igenamiterere ry’ibanga ntibiboneka';
+
+  @override
+  String get privacySettingsEditingUnavailableMessage =>
+      'Amahitamo yawe yabitswe akomeza kugaragara.';
+
+  @override
+  String get privacySettingsChangedElsewhereTitle =>
+      'Igenamiterere ry’ibanga ryahinduriwe ahandi';
+
+  @override
+  String get privacySettingsChangedElsewhereMessage =>
+      'Vugurura kandi usuzume amahitamo mashya.';
+
+  @override
+  String get privacySettingsSaveNotConfirmedTitle =>
+      'Kubika igenamiterere ry’ibanga ntibyemejwe';
+
+  @override
+  String get privacySettingsSaveNotConfirmedMessage =>
+      'Vugurura mbere yo kongera kugerageza. Umushinga wawe warabitswe.';
+
+  @override
+  String get privacySettingsSaveFailedTitle =>
+      'Igenamiterere ry’ibanga ntiryashoboye kubikwa';
+
+  @override
+  String get privacySettingsSaveFailedMessage => 'Umushinga wawe uracyahari.';
+
+  @override
+  String get privacySettingsSavedSettingsTitle =>
+      'Igenamiterere ry’ibanga ryabitswe';
+
+  @override
+  String get privacySettingsSavedSettingsMessage =>
+      'Amakuru ashobora kuba ashaje. Ongera uhuze interineti mbere yo guhindura cyangwa kubika.';
+
+  @override
+  String get privacySettingsEditingUnavailableBuildMessage =>
+      'Amahitamo yawe yabitswe akomeza kugaragara muri iyi verisiyo.';
+
+  @override
+  String get privacySettingsTitle => 'IBANGA';
+
+  @override
+  String get privacySettingsControls => 'IGENZURA RY’IBANGA';
+
+  @override
+  String get privacySettingsControlsDescription =>
+      'Hitamo niba ushaka gusangira ibikorwa rusange kandi bitakumenyekanisha. Ibyashakishijwe, abo uvugana na bo, nimero za konti, kode, ubutumwa n’agaciro nyako k’ubwishyu ntibyoherezwa.';
+
+  @override
+  String get privacySettingsMomoSmsSync => 'Guhuza SMS za MoMo';
+
+  @override
+  String get privacySettingsMomoSmsSyncDescription =>
+      'Huza SMS zemewe zo kugenzura Mobile Money kugira ngo imisanzu igenzurwe vuba.';
+
+  @override
+  String get privacySettingsShareAnalytics =>
+      'Sangiza imibare y’imikoreshereze itakumenyekanisha';
+
+  @override
+  String get privacySettingsShareAnalyticsDescription =>
+      'Fasha kunoza gushakisha, amatike, imisanzu, Fan Zone n’inzira zo kugarura serivisi.';
+
+  @override
+  String get privacySettingsAnalyticsFailClosed =>
+      'Imibare ikomeza kuzimye keretse uyemeye kandi verisiyo yashyizweho umukono ifite igenamiterere ryemewe.';
+
+  @override
+  String get privacySettingsNoChanges => 'Nta mpinduka zo kubika';
+
+  @override
+  String get privacySettingsSave => 'Bika igenamiterere ry’ibanga';
+
+  @override
+  String get privacySettingsYourData => 'AMAKURU YAWE';
+
+  @override
+  String get privacySettingsExportDescription =>
+      'Saba kopi y’amakuru ya konti unyuze ku muyoboro w’ubufasha washyizweho.';
+
+  @override
+  String get privacySettingsExportAction => 'Saba kopi y’amakuru';
+
+  @override
+  String privacySettingsExportWhatsAppMessage(String app) {
+    return 'Gusaba kopi y’amakuru ya $app. Nyohereza kopi y’amakuru ya konti yanjye.';
+  }
+
+  @override
+  String privacySettingsExportEmailSubject(String app) {
+    return 'Gusaba kopi y’amakuru ya $app';
+  }
+
+  @override
+  String get privacySettingsExportEmailBody =>
+      'Nyohereza kopi y’amakuru ya konti yanjye.';
+
+  @override
+  String get privacySettingsMailFailed =>
+      'Porogaramu ya imeyili ntiyashoboye gufunguka.';
+
+  @override
+  String get privacySettingsOpenPolicy => 'Fungura politiki y’ibanga';
+
+  @override
+  String get privacySettingsPolicyUnavailable => 'Politiki y’ibanga ntiboneka';
+
+  @override
+  String get privacySettingsPolicyNotAvailableYet =>
+      'Politiki y’ibanga ntiraboneka.';
+
+  @override
+  String get privacySettingsActiveSessions => 'SESIYO ZIKORA';
+
+  @override
+  String get privacySettingsActiveSessionsDescription =>
+      'Hagarika izindi sesiyo zikora zihujwe na konti yawe.';
+
+  @override
+  String get privacySettingsSignOutOtherDevices => 'Sohora ibindi bikoresho';
+
+  @override
+  String get adminLoadingTitle => 'Ahantu h’ubuyobozi hari kwinjizwa';
+
+  @override
+  String get adminLoadingMessage => 'Ibikorwa bya klabu biri kugenzurwa.';
+
+  @override
+  String get adminClubAdmin => 'UBUYOBOZI BWA KLABU';
+
+  @override
+  String get adminExit => 'Sohoka mu buyobozi';
+
+  @override
+  String get adminCommandCenter => 'IKIGO CY’UBUYOBOZI';
+
+  @override
+  String get adminTotalUsers => 'ABAKORESHA BOSE';
+
+  @override
+  String get adminActiveGroups => 'AMATSINDA AKORA';
+
+  @override
+  String get adminTransactionsToday => 'IBIKORWA BY’UYU MUNSI';
+
+  @override
+  String get adminTicketsSold => 'AMATIKE YAGURISHIJWE';
+
+  @override
+  String get adminQuickActions => 'IBIKORWA BYIHUSE';
+
+  @override
+  String get adminManageCms => 'Cunga CMS';
+
+  @override
+  String get adminManageCmsDescription =>
+      'Inkuru, amatangazo n’ahagaragara ibikubiyemo';
+
+  @override
+  String get adminCreateMatch => 'Kora umukino';
+
+  @override
+  String get adminCreateMatchDescription =>
+      'Tegura umukino, uduce n’igenzura ry’amatike';
+
+  @override
+  String get adminViewContributions => 'Reba imisanzu';
+
+  @override
+  String get adminViewContributionsDescription =>
+      'Kurikirana ikusanya ry’amafaranga rya klabu n’amatsinda';
+
+  @override
+  String get adminSendNotification => 'Ohereza itangazo';
+
+  @override
+  String get adminSendNotificationDescription =>
+      'Ohereza push ku byiciro, amatsinda cyangwa abafana bose';
+
+  @override
+  String get adminSettleFixtures => 'Emeza imikino';
+
+  @override
+  String get adminSettleFixturesDescription =>
+      'Andika ibisubizo kandi ugenzure amasoko y’amahitamo';
+
+  @override
+  String get adminManageCompetitions => 'Cunga amarushanwa';
+
+  @override
+  String get adminManageCompetitionsDescription =>
+      'Ongeraho, hindura kandi wemerere shampiyona n’ibikombe';
+
+  @override
+  String get adminSmsSyncMonitor => 'Igenzura ryo guhuza SMS';
+
+  @override
+  String get adminSmsSyncMonitorDescription =>
+      'Ubuzima bw’inzira yo kwakira SMS za MoMo';
+
+  @override
+  String get adminFeatureManager => 'Igenzura ry’ibiranga';
+
+  @override
+  String get adminFeatureManagerDashboardDescription =>
+      'Emerera ibiranga, uko bigaragara n’igihe bikorera';
+
+  @override
+  String get adminRecentActivity => 'IBIKORWA BIHERUKA';
+
+  @override
+  String get adminRecentActivityUnavailable => 'Ibikorwa biheruka ntibiboneka';
+
+  @override
+  String get adminRecentActivityUnavailableMessage =>
+      'Imibare y’ikibaho ni mishya. Vugurura kugira ngo wongere ugerageze urutonde rw’ibikorwa.';
+
+  @override
+  String get adminNoRecentActivity => 'Nta bikorwa biheruka';
+
+  @override
+  String get adminNoRecentActivityMessage =>
+      'Imibare iriho yemejwe. Ibikorwa bishya bya klabu bizagaragara hano.';
+
+  @override
+  String get adminWorkspaceUnavailable => 'Ahantu h’ubuyobozi ntihaboneka';
+
+  @override
+  String get adminMobileDisabledMessage =>
+      'Ubuyobozi bwo kuri telefoni bwahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminBackToSettings => 'Subira mu igenamiterere';
+
+  @override
+  String get adminWorkspaceOffline =>
+      'Ahantu h’ubuyobozi ntihari kuri interineti';
+
+  @override
+  String get adminWorkspaceOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza ibikorwa byihariye bya klabu.';
+
+  @override
+  String get adminAccessUnavailable => 'Uburenganzira bw’ubuyobozi ntibuboneka';
+
+  @override
+  String get adminAccessUnavailableMessage =>
+      'Iyi konti ntishobora kureba ahantu h’ubuyobozi bwa klabu.';
+
+  @override
+  String get adminDataChanged => 'Amakuru y’ubuyobozi yahindutse';
+
+  @override
+  String get adminDataChangedMessage =>
+      'Vugurura mbere yo gukomeza ibikorwa bya klabu.';
+
+  @override
+  String get adminSecurityTimeout => 'Igihe cyo kugenzura umutekano cyarangiye';
+
+  @override
+  String get adminSecurityTimeoutMessage =>
+      'Nta makuru y’ubuyobozi yerekanwe. Genzura interineti wongere ugerageze.';
+
+  @override
+  String get adminPrivateDataHiddenMessage =>
+      'Amakuru yihariye ya klabu akomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminRefreshingTitle => 'Ahantu h’ubuyobozi hari kuvugururwa';
+
+  @override
+  String get adminRefreshingMessage =>
+      'Ikibaho giheruka kwemezwa kiracyagaragara mu gihe amakuru ariho agenzurwa.';
+
+  @override
+  String get adminRefreshTimedOut => 'Igihe cyo kuvugurura cyarangiye';
+
+  @override
+  String get adminCurrentRefreshUnavailable => 'Kuvugurura ntibiboneka ubu';
+
+  @override
+  String get adminLastConfirmedMessage =>
+      'Ikibaho giheruka kwemezwa kiracyagaragara. Ibikorwa byahagaze kugeza kuvugurura bikunze.';
+
+  @override
+  String get adminAccessRequired => 'UBURENGANZIRA BW’UBUYOBOZI BURASABWA';
+
+  @override
+  String get adminAccessRequiredMessage =>
+      'Aha hantu ni ah’abayobozi ba klabu bemejwe gusa kuri klabu ikora.';
+
+  @override
+  String get adminChallengesTitle => 'IBIKORWA BY’IMBOGAMIZI';
+
+  @override
+  String get adminBack => 'Subira inyuma';
+
+  @override
+  String get adminChallengesLoadingTitle =>
+      'Ibikorwa by’imbogamizi biri kwinjizwa';
+
+  @override
+  String get adminChallengesLoadingMessage =>
+      'Imirimo yo kwemeza ibisubizo iri kugenzurwa.';
+
+  @override
+  String get adminChallengesFilterLabel =>
+      'Muyunguruzi w’imiterere y’imbogamizi';
+
+  @override
+  String get adminChallengesFilterAll => 'ZOSE';
+
+  @override
+  String get adminChallengesFilterOpen => 'ZIFUNGUYE';
+
+  @override
+  String get adminChallengesFilterLocked => 'ZIFUNZE';
+
+  @override
+  String get adminChallengesFilterSettled => 'ZEMEJWE';
+
+  @override
+  String get adminChallengesFilterVoid => 'ZAHAGARITSWE';
+
+  @override
+  String get adminChallengesEmptyTitle => 'Nta bikorwa by’imbogamizi';
+
+  @override
+  String get adminChallengesEmptyAllMessage => 'Nta mbogamizi zitegereje ubu.';
+
+  @override
+  String adminChallengesEmptyFilteredMessage(String status) {
+    return 'Nta mbogamizi $status zitegereje ubu.';
+  }
+
+  @override
+  String get adminChallengesRetryTitle => 'Ongera ugerageze kwemeza?';
+
+  @override
+  String adminChallengesRetryMessage(String home, String away) {
+    return 'Ongera ugenzure $home na $away. Ntukongere kugerageza kugeza imiterere ivuguruye yemejwe.';
+  }
+
+  @override
+  String get adminCancelUpper => 'REKA';
+
+  @override
+  String get adminRetryUpper => 'ONGERA UGERAGEZE';
+
+  @override
+  String get adminChallengesSettlementPending =>
+      'Kwemeza biracyategereje. Suzuma imiterere ivuguruye.';
+
+  @override
+  String get adminChallengesSettlementRefreshed =>
+      'Imiterere yo kwemeza yavuguruwe.';
+
+  @override
+  String get adminChallengesUnavailable => 'Ibikorwa by’imbogamizi ntibiboneka';
+
+  @override
+  String get adminChallengesDisabledMessage =>
+      'Igenzura ryo kwemeza imbogamizi ryahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminBackToAdmin => 'Subira mu buyobozi';
+
+  @override
+  String get adminChallengesOffline =>
+      'Ibikorwa by’imbogamizi ntibiri kuri interineti';
+
+  @override
+  String get adminChallengesOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza imirimo yihariye yo kwemeza.';
+
+  @override
+  String get adminChallengesAccessUnavailable =>
+      'Uburenganzira ku mbogamizi ntibuboneka';
+
+  @override
+  String get adminChallengesAccessUnavailableMessage =>
+      'Iyi konti ntishobora kureba cyangwa kongera kugerageza kwemeza imbogamizi za klabu.';
+
+  @override
+  String get adminChallengesStatusChanged =>
+      'Imiterere y’imbogamizi yahindutse';
+
+  @override
+  String get adminChallengesStatusChangedMessage =>
+      'Vugurura mbere yo gukomeza kwemeza.';
+
+  @override
+  String get adminChallengesSecurityTimeoutMessage =>
+      'Nta makuru y’imbogamizi yerekanwe. Genzura interineti wongere ugerageze.';
+
+  @override
+  String get adminChallengesPrivateDataHidden =>
+      'Amakuru yihariye yo kwemeza akomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminChallengesRetryingTitle => 'Kwemeza biri kongera kugeragezwa';
+
+  @override
+  String get adminChallengesRetryingMessage =>
+      'Igenzura ryahagaze kugeza igisubizo kiriho cyemejwe.';
+
+  @override
+  String get adminChallengesRefreshingTitle =>
+      'Ibikorwa by’imbogamizi biri kuvugururwa';
+
+  @override
+  String get adminChallengesRefreshingMessage =>
+      'Urutonde ruheruka kwemezwa ruracyagaragara mu gihe imiterere iriho igenzurwa.';
+
+  @override
+  String get adminChallengesOutcomeUnconfirmed =>
+      'Igisubizo cyo kongera kugerageza nticyemejwe. Vugurura mbere yo gukora ikindi.';
+
+  @override
+  String get adminChallengesLastConfirmedMessage =>
+      'Urutonde ruheruka kwemezwa ruracyagaragara. Ibikorwa byahagaze kugeza kuvugurura bikunze.';
+
+  @override
+  String get adminChallengesVoidReasonRecorded =>
+      'IMPAMVU YO GUHAGARIKA YANDITSWE';
+
+  @override
+  String get adminChallengesNoVoidReason => 'NTA MPAMVU YO GUHAGARIKA';
+
+  @override
+  String adminChallengesSettlementMode(String mode) {
+    return 'KWEMEZA $mode';
+  }
+
+  @override
+  String adminChallengesAuditState(String state) {
+    return 'IGENZURA $state';
+  }
+
+  @override
+  String get adminChallengesRetryingAction => 'KWEMEZA BIRI KONGERWA';
+
+  @override
+  String get adminChallengesRetryAction => 'ONGERA WEMEZE';
+
+  @override
+  String get adminChallengesCreator => 'UWABIKOZE';
+
+  @override
+  String get adminChallengesPool => 'IKIGEGA';
+
+  @override
+  String get adminChallengesParticipants => 'ABITABIRIYE';
+
+  @override
+  String adminVersus(String home, String away) {
+    return '$home na $away';
+  }
+
+  @override
+  String adminMetricSemantic(String label, String value) {
+    return '$label $value';
+  }
+
+  @override
+  String get adminSettlementConfirmTitle => 'EMEZA UYU MUKINO?';
+
+  @override
+  String adminSettlementConfirmMessage(
+    String home,
+    int homeScore,
+    int awayScore,
+    String away,
+  ) {
+    return '$home $homeScore – $awayScore $away\n\nIbi bigenzura amasoko y’amahitamo kandi bishobora gutanga ibihembo. Emeza ukoresheje igisubizo cyemewe gusa.';
+  }
+
+  @override
+  String get adminSettlementSettleUpper => 'EMEZA';
+
+  @override
+  String adminSettlementReceipt(String score, int markets, int won, int lost) {
+    return 'Byemejwe $score • amasoko $markets • $won batsinze • $lost batsinzwe';
+  }
+
+  @override
+  String get adminSettlementReviewOfficialResult =>
+      'Suzuma igisubizo cyemewe wongere ugerageze.';
+
+  @override
+  String get adminSettlementNotConfirmed => 'Kwemeza umukino ntibyemejwe.';
+
+  @override
+  String get adminSettlementTitle => 'EMEZA IMIKINO';
+
+  @override
+  String get adminSettlementLoadingTitle => 'Ahantu ho kwemeza hari kwinjizwa';
+
+  @override
+  String get adminSettlementLoadingMessage =>
+      'Amakuru y’umukino agenzurwa ari kugenzurwa.';
+
+  @override
+  String get adminSettlementFilterScheduled => 'ITEGANYIJWE';
+
+  @override
+  String get adminSettlementFilterFinished => 'YARANGIYE';
+
+  @override
+  String get adminSettlementFilterAll => 'YOSE';
+
+  @override
+  String get adminSettlementControlTitle => 'IGENZURA RY’IGISUBIZO CYEMEWE';
+
+  @override
+  String get adminSettlementControlMessage =>
+      'Kwemeza bigenzura amasoko y’amahitamo kandi bishobora gutanga ibihembo. Koresha gusa amanota ya nyuma yemewe.';
+
+  @override
+  String get adminSettlementEmptyTitle => 'Nta mikino muri uru rutonde';
+
+  @override
+  String get adminSettlementEmptyMessage =>
+      'Hindura muyunguruzi cyangwa utegereze amakuru y’umukino agenzurwa.';
+
+  @override
+  String get adminSettlementVersusShort => 'NA';
+
+  @override
+  String get adminSettlementOpenHint => 'Fungura kwemeza igisubizo cyemewe';
+
+  @override
+  String get adminSettlementUnavailableHint => 'Kwemeza ntibiboneka';
+
+  @override
+  String get adminSettlementEnterOfficialResult => 'ANDIKA IGISUBIZO CYEMEWE';
+
+  @override
+  String get adminSettlementPaused => 'KWEMEZA BYAHAGAZE';
+
+  @override
+  String get adminSettlementSettled => 'BYEMEJWE';
+
+  @override
+  String get adminSettlementNotSettleable => 'NTIBISHOBORA KWEMEZWA';
+
+  @override
+  String get adminSettlementManagementUnavailable =>
+      'Gucunga kwemeza ntibiboneka';
+
+  @override
+  String get adminSettlementDisabledMessage =>
+      'Igenzura ryo kwemeza ryahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminSettlementWorkspaceOffline =>
+      'Ahantu ho kwemeza ntihari kuri interineti';
+
+  @override
+  String get adminSettlementWorkspaceOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza amakuru yihariye y’umukino.';
+
+  @override
+  String get adminSettlementAccessUnavailable =>
+      'Uburenganzira bwo kwemeza ntibuboneka';
+
+  @override
+  String get adminSettlementAccessUnavailableMessage =>
+      'Iyi konti ntishobora kureba cyangwa kwemeza imikino y’amahitamo.';
+
+  @override
+  String get adminSettlementResultChanged => 'Igisubizo cy’umukino cyahindutse';
+
+  @override
+  String get adminSettlementResultChangedMessage =>
+      'Vugurura mbere yo kwemeza undi mukino.';
+
+  @override
+  String get adminSettlementSecurityTimeoutMessage =>
+      'Nta makuru y’umukino yerekanwe. Genzura interineti.';
+
+  @override
+  String get adminSettlementWorkspaceUnavailable =>
+      'Ahantu ho kwemeza ntihaboneka';
+
+  @override
+  String get adminSettlementPrivateDataHidden =>
+      'Amakuru yihariye y’umukino akomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminSettlementCheckingResults =>
+      'Ibisubizo by’imikino biri kugenzurwa';
+
+  @override
+  String get adminSettlementCheckingResultsMessage =>
+      'Imiterere iheruka kwemezwa iracyagaragara mu gihe amakuru ariho agenzurwa.';
+
+  @override
+  String get adminSettlementOutcomeUnconfirmed =>
+      'Kwemeza guheruka ntibyemejwe. Igenzura rikomeza guhagarara kugeza kuvugurura bikunze.';
+
+  @override
+  String get adminSettlementLastConfirmedMessage =>
+      'Amakuru y’umukino aheruka kwemezwa aracyagaragara. Igenzura ryahagaze.';
+
+  @override
+  String get adminSettlementFinalScoreValidation =>
+      'Andika amanota ya nyuma kuva kuri 0 kugeza kuri 99.';
+
+  @override
+  String get adminSettlementHalfTimeValidation =>
+      'Andika amanota yombi yo mu kiruhuko atarenze amanota ya nyuma.';
+
+  @override
+  String get adminSettlementHalfTimeScore => 'Amanota yo mu kiruhuko';
+
+  @override
+  String get adminSettlementHideHalfTime =>
+      'Hisha imyanya y’amanota yo mu kiruhuko';
+
+  @override
+  String get adminSettlementShowHalfTime =>
+      'Erekana imyanya y’amanota yo mu kiruhuko';
+
+  @override
+  String get adminSettlementHalfTimeOptional =>
+      'AMANOTA YO MU KIRUHUKO (SI NGOMBWA)';
+
+  @override
+  String adminSettlementHalfTimeLabel(String team) {
+    return '$team IK';
+  }
+
+  @override
+  String get adminSettlementReviewAction => 'Suzuma kwemeza';
+
+  @override
+  String get adminStatusFinished => 'YARANGIYE';
+
+  @override
+  String get adminStatusScheduled => 'ITEGANYIJWE';
+
+  @override
+  String get adminStatusLive => 'IMBONANKUBONE';
+
+  @override
+  String get adminStatusCancelled => 'YAHAGARITSWE';
+
+  @override
+  String get adminStatusPostponed => 'YASUBITSWE';
+
+  @override
+  String adminScore(int home, int away) {
+    return '$home – $away';
+  }
+
+  @override
+  String get adminFeatureDetailTitle => 'IBIRAMBUYE BY’IKIRANGA';
+
+  @override
+  String get adminFeatureLoadingTitle =>
+      'Igenamiterere ry’ikiranga riri kwinjizwa';
+
+  @override
+  String get adminFeatureLoadingMessage =>
+      'Imiyoboro igenzurwa n’amategeko y’uburenganzira biri kugenzurwa.';
+
+  @override
+  String get adminFeatureNotFound => 'Ikiranga nticyabonetse';
+
+  @override
+  String get adminFeatureNotFoundMessage =>
+      'Nta kiranga cyemejwe gihuye n’iyi nzira igenzurwa.';
+
+  @override
+  String get adminBackToFeatures => 'Subira ku biranga';
+
+  @override
+  String get adminFeatureGlobalState => 'IMITERERE RUSANGE';
+
+  @override
+  String adminFeatureDisableTooltip(String feature) {
+    return 'Hagarika $feature';
+  }
+
+  @override
+  String adminFeatureEnableTooltip(String feature) {
+    return 'Emerera $feature';
+  }
+
+  @override
+  String adminFeatureStateSemantic(String feature, String state) {
+    return '$feature ni $state';
+  }
+
+  @override
+  String get adminFeatureChangesGlobalState =>
+      'Guhindura imiterere rusange y’ikiranga';
+
+  @override
+  String get adminFeatureEnabled => 'Cyemerewe';
+
+  @override
+  String get adminFeatureDisabled => 'Cyahagaritswe';
+
+  @override
+  String get adminFeatureTapDisable =>
+      'Kanda kugira ngo uhagarike iki kiranga hose';
+
+  @override
+  String get adminFeatureTapEnable =>
+      'Kanda kugira ngo wemerere iki kiranga hose';
+
+  @override
+  String get adminFeatureVisibility => 'UKO KIGARAGARA';
+
+  @override
+  String get adminFeatureVisibilityVisible => 'KIRAGARAGARA';
+
+  @override
+  String get adminFeatureVisibilityHidden => 'GIHISHWE';
+
+  @override
+  String get adminFeatureVisibilityMaintenance => 'KIRI GUSANWA';
+
+  @override
+  String get adminFeatureChannelConfig => 'IGENAMITERERE RY’IMIYOBORO';
+
+  @override
+  String get adminFeatureNoChannelOverrides => 'Nta mpinduka z’umuyoboro';
+
+  @override
+  String get adminFeatureNoChannelOverridesMessage =>
+      'Iki kiranga gikoresha imiterere rusange yemejwe.';
+
+  @override
+  String get adminFeatureScheduling => 'GAHUNDA';
+
+  @override
+  String get adminFeatureAccessRules => 'AMATEGEKO Y’UBURENGANZIRA';
+
+  @override
+  String get adminFeatureAuthRequired => 'Kwinjira birasabwa';
+
+  @override
+  String get adminFeatureAuthRequiredMessage =>
+      'Abakoresha bagomba kwinjira mbere yo gukoresha iki kiranga.';
+
+  @override
+  String get adminFeatureSettingsUnavailable =>
+      'Igenamiterere ry’ikiranga ntiriboneka';
+
+  @override
+  String get adminFeatureEditingDisabled =>
+      'Guhindura ibiranga byahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminFeatureSettingsOffline =>
+      'Igenamiterere ry’ikiranga ntiri kuri interineti';
+
+  @override
+  String get adminFeatureSettingsOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza igenamiterere ryihariye.';
+
+  @override
+  String get adminFeatureAccessUnavailable =>
+      'Uburenganzira ku kiranga ntibuboneka';
+
+  @override
+  String get adminFeatureAccessUnavailableMessage =>
+      'Iyi konti ntishobora kureba cyangwa guhindura igenamiterere ry’ikiranga.';
+
+  @override
+  String get adminFeatureSettingsChanged =>
+      'Igenamiterere ry’ikiranga ryahindutse';
+
+  @override
+  String get adminFeatureSettingsChangedMessage =>
+      'Vugurura mbere yo gukora indi mpinduka.';
+
+  @override
+  String get adminFeatureSecurityTimeoutMessage =>
+      'Nta genamiterere ry’ikiranga ryerekanwe. Genzura interineti.';
+
+  @override
+  String get adminFeaturePrivateDataHidden =>
+      'Igenamiterere ryihariye rikomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminFeatureCheckingTitle =>
+      'Igenamiterere ry’ikiranga riri kugenzurwa';
+
+  @override
+  String get adminFeatureCheckingMessage =>
+      'Imiterere iheruka kwemezwa iracyagaragara mu gihe amakuru ariho agenzurwa.';
+
+  @override
+  String get adminFeatureOutcomeUnconfirmed =>
+      'Impinduka iheruka ntiremezwa. Igenzura rikomeza guhagarara kugeza kuvugurura bikunze.';
+
+  @override
+  String get adminFeatureLastConfirmed =>
+      'Igenamiterere riheruka kwemezwa rikomeza kugaragara. Igenzura ryahagaze.';
+
+  @override
+  String get adminFeatureChannelMobile => 'TELEFONI';
+
+  @override
+  String get adminFeatureChannelWeb => 'URUBUGA';
+
+  @override
+  String get adminFeatureChannelEnabled => 'Cyemerewe';
+
+  @override
+  String get adminFeatureChannelEnabledMessage =>
+      'Ikiranga gikora kuri uyu muyoboro.';
+
+  @override
+  String get adminFeatureChannelVisible => 'Kiragaragara';
+
+  @override
+  String get adminFeatureChannelVisibleMessage =>
+      'Ikiranga gishobora kugaragara kuri uyu muyoboro.';
+
+  @override
+  String get adminFeatureShowInNavigation => 'Erekana mu kugendana';
+
+  @override
+  String get adminFeatureShowInNavigationMessage =>
+      'Shyira iki kiranga mu kugendana k’umuyoboro.';
+
+  @override
+  String get adminFeatureShowOnHome => 'Erekana ahabanza';
+
+  @override
+  String get adminFeatureShowOnHomeMessage =>
+      'Shyira iki kiranga ku rupapuro rw’ibanze rw’umuyoboro.';
+
+  @override
+  String get adminFeatureAvailableFrom => 'Kiboneka kuva';
+
+  @override
+  String get adminFeatureAvailableUntil => 'Kiboneka kugeza';
+
+  @override
+  String get adminFeatureClearSchedule => 'Siba gahunda';
+
+  @override
+  String get adminFeatureNotSet => 'Ntibyashyizweho';
+
+  @override
+  String adminFeatureSetTooltip(String label) {
+    return 'Shyiraho $label';
+  }
+
+  @override
+  String adminFeatureDateSemantic(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get adminFeatureOpenDateTime => 'Fungura guhitamo itariki n’isaha';
+
+  @override
+  String get adminMatchesTitle => 'IMIKINO';
+
+  @override
+  String get adminMatchesLoadingTitle => 'Ahantu h’imikino hari kwinjizwa';
+
+  @override
+  String get adminMatchesLoadingMessage =>
+      'Amakuru y’imikino agenzurwa ari kugenzurwa.';
+
+  @override
+  String get adminMatchesDescription =>
+      'Cunga imikino, uko amatike agurishwa, itangwa ry’amatike n’amanota imbonankubone ukoresheje amakuru yemejwe.';
+
+  @override
+  String get adminMatchesFixtures => 'IMIKINO';
+
+  @override
+  String get adminMatchesOnSale => 'IRI KUGURISHWA';
+
+  @override
+  String get adminMatchesStatus => 'IMITERERE';
+
+  @override
+  String get adminMatchesFilterAll => 'YOSE';
+
+  @override
+  String get adminMatchesFilterLive => 'IMBONANKUBONE';
+
+  @override
+  String get adminMatchesFilterUpcoming => 'ITEGANYIJWE';
+
+  @override
+  String get adminMatchesFilterOnSale => 'IRI KUGURISHWA';
+
+  @override
+  String get adminMatchesFilterCompleted => 'YARANGIYE';
+
+  @override
+  String get adminMatchesNoneConfigured => 'Nta mikino yashyizweho';
+
+  @override
+  String get adminMatchesNoneMatch => 'Nta mikino ihuye';
+
+  @override
+  String get adminMatchesNoneConfiguredMessage =>
+      'Umukino wa klabu wemejwe ugomba kubaho mbere y’uko aha hantu hamenya umufatanyabikorwa.';
+
+  @override
+  String get adminMatchesNoneMatchMessage =>
+      'Hitamo indi muyunguruzi y’imiterere.';
+
+  @override
+  String get adminMatchesCreate => 'Kora umukino';
+
+  @override
+  String get adminMatchesCreationPaused =>
+      'Gukora umukino byahagaze kugeza umufatanyabikorwa wemejwe abonetse.';
+
+  @override
+  String get adminMatchesCreated => 'Umukino wakozwe neza.';
+
+  @override
+  String get adminMatchesUpdated => 'Umukino wavuguruwe neza.';
+
+  @override
+  String get adminMatchesManagementUnavailable => 'Gucunga imikino ntibiboneka';
+
+  @override
+  String get adminMatchesDisabledMessage =>
+      'Igenzura ry’imikino ryahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminMatchesWorkspaceOffline =>
+      'Ahantu h’imikino ntihari kuri interineti';
+
+  @override
+  String get adminMatchesWorkspaceOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza amakuru yihariye y’imikino.';
+
+  @override
+  String get adminMatchesAccessUnavailable =>
+      'Uburenganzira ku mikino ntibuboneka';
+
+  @override
+  String get adminMatchesAccessUnavailableMessage =>
+      'Iyi konti ntishobora kureba cyangwa guhindura amakuru y’imikino.';
+
+  @override
+  String get adminMatchesInformationChanged => 'Amakuru y’umukino yahindutse';
+
+  @override
+  String get adminMatchesInformationChangedMessage =>
+      'Vugurura mbere yo gukora indi mpinduka y’umukino.';
+
+  @override
+  String get adminMatchesSecurityTimeoutMessage =>
+      'Nta makuru y’umukino yerekanwe. Genzura interineti.';
+
+  @override
+  String get adminMatchesWorkspaceUnavailable => 'Ahantu h’imikino ntihaboneka';
+
+  @override
+  String get adminMatchesPrivateDataHidden =>
+      'Amakuru yihariye y’umukino akomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminMatchesCheckingTitle => 'Amakuru y’umukino ari kugenzurwa';
+
+  @override
+  String get adminMatchesCheckingMessage =>
+      'Imiterere iheruka kwemezwa iracyagaragara mu gihe amakuru ariho agenzurwa.';
+
+  @override
+  String get adminMatchesOutcomeUnconfirmed =>
+      'Impinduka iheruka ntiremezwa. Igenzura rikomeza guhagarara kugeza kuvugurura bikunze.';
+
+  @override
+  String get adminMatchesLastConfirmed =>
+      'Amakuru y’umukino aheruka kwemezwa aracyagaragara. Igenzura ryahagaze.';
+
+  @override
+  String adminMatchesOpenTooltip(String home, String away) {
+    return 'Fungura $home na $away';
+  }
+
+  @override
+  String adminMatchesFixtureSemantic(String home, String away) {
+    return 'Umukino wa $home na $away';
+  }
+
+  @override
+  String get adminMatchesOpenHint =>
+      'Fungura igenamiterere ry’umukino rigenzurwa';
+
+  @override
+  String adminMatchesCompetitionVenue(String competition, String venue) {
+    return '$competition • $venue';
+  }
+
+  @override
+  String adminMatchesDateKickoff(String date, String time) {
+    return '$date • $time';
+  }
+
+  @override
+  String adminMatchesPrices(String symbol, String general, String vip) {
+    return 'RUSANGE $symbol $general • VIP $symbol $vip';
+  }
+
+  @override
+  String adminMatchesScore(int home, int away, String minute) {
+    return 'Amanota $home-$away$minute';
+  }
+
+  @override
+  String adminMatchesAllocation(int percent, int sold, int capacity) {
+    return '$percent% byatanzwe • amatike $sold / $capacity';
+  }
+
+  @override
+  String get adminMatchesEditOnSale => 'HINDURA UMUKINO URI KUGURISHWA';
+
+  @override
+  String get adminMatchesEdit => 'HINDURA UMUKINO';
+
+  @override
+  String get adminStatusHalfTime => 'IKIRUHUKO';
+
+  @override
+  String get adminStatusFullTime => 'WARANGIYE';
+
+  @override
+  String get adminStatusUpcoming => 'UTEGANYIJWE';
+
+  @override
+  String adminMatchesLiveMinute(int minute) {
+    return ' • umunota $minute';
+  }
+
+  @override
+  String get adminMatchSaveNotConfirmed =>
+      'Umukino ntiwabitswe. Suzuma imiterere yemejwe y’ahantu h’imirimo.';
+
+  @override
+  String get adminMatchReviewFields =>
+      'Suzuma imyanya yose y’umukino kandi wandike agaciro kaboneye.';
+
+  @override
+  String get adminMatchSaveFailedRefresh =>
+      'Umukino ntiwabitswe. Vugurura wongere ugerageze.';
+
+  @override
+  String get adminMatchCreateTitle => 'KORA UMUKINO';
+
+  @override
+  String get adminMatchUpdateTitle => 'VUGURURA UMUKINO';
+
+  @override
+  String get adminMatchHomeTeam => 'Ikipe yo mu rugo';
+
+  @override
+  String get adminMatchAwayTeam => 'Ikipe y’umushyitsi';
+
+  @override
+  String get adminMatchCompetition => 'Irushanwa';
+
+  @override
+  String get adminMatchVenue => 'Ahabera umukino';
+
+  @override
+  String adminMatchGeneralPrice(String symbol) {
+    return 'Rusange $symbol';
+  }
+
+  @override
+  String adminMatchVipPrice(String symbol) {
+    return 'VIP $symbol';
+  }
+
+  @override
+  String get adminMatchCapacity => 'Ubushobozi';
+
+  @override
+  String get adminMatchTicketsOnSale => 'Amatike ari kugurishwa';
+
+  @override
+  String get adminMatchStatus => 'Imiterere y’umukino';
+
+  @override
+  String get adminMatchStatusScheduled => 'Uteganyijwe';
+
+  @override
+  String get adminMatchStatusLive => 'Imbonankubone';
+
+  @override
+  String get adminMatchStatusHalfTime => 'Ikiruhuko';
+
+  @override
+  String get adminMatchStatusFullTime => 'Warangiye';
+
+  @override
+  String get adminMatchStatusPostponed => 'Wasubitswe';
+
+  @override
+  String get adminMatchStatusCancelled => 'Wahagaritswe';
+
+  @override
+  String get adminMatchHomeScore => 'Amanota yo mu rugo';
+
+  @override
+  String get adminMatchAwayScore => 'Amanota y’umushyitsi';
+
+  @override
+  String get adminMatchLiveMinute => 'Umunota w’umukino';
+
+  @override
+  String get adminMatchSummary => 'Incamake y’umukino / amakuru imbonankubone';
+
+  @override
+  String get adminMatchSave => 'Bika umukino';
+
+  @override
+  String get adminMatchUpdate => 'Vugurura umukino';
+
+  @override
+  String get adminFeatureManagerTitle => 'IGENZURA RY’IBIRANGA';
+
+  @override
+  String get adminFeatureRegistryLoading =>
+      'Urutonde rw’ibiranga ruri kwinjizwa';
+
+  @override
+  String get adminFeatureRegistryLoadingMessage =>
+      'Igenamiterere ry’ibiranga rigenzurwa riri kugenzurwa.';
+
+  @override
+  String get adminFeatureManagerDescription =>
+      'Cunga uko ibiranga bya klabu biboneka ukoresheje igenamiterere ryemejwe kandi rigarukira.';
+
+  @override
+  String get adminFeatureRegistered => 'BYANDITSWE';
+
+  @override
+  String get adminFeatureEnabledUpper => 'BYEMEWE';
+
+  @override
+  String get adminFeatureDisabledUpper => 'BYAHAGARITSWE';
+
+  @override
+  String get adminFeatureStatus => 'IMITERERE';
+
+  @override
+  String get adminFeatureFilterAll => 'BYOSE';
+
+  @override
+  String get adminFeatureNoneConfigured => 'Nta biranga byashyizweho';
+
+  @override
+  String get adminFeatureNoneMatch => 'Nta biranga bihuye';
+
+  @override
+  String get adminFeatureNoneConfiguredMessage =>
+      'Igenamiterere ry’ibiranga ryemejwe rizagaragara hano.';
+
+  @override
+  String get adminFeatureNoneMatchMessage =>
+      'Hitamo indi muyunguruzi y’imiterere.';
+
+  @override
+  String get adminFeatureManagementUnavailable =>
+      'Gucunga ibiranga ntibiboneka';
+
+  @override
+  String get adminFeatureControlsDisabled =>
+      'Igenzura ry’ibiranga ryahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminFeatureRegistryOffline =>
+      'Urutonde rw’ibiranga ntiruri kuri interineti';
+
+  @override
+  String get adminFeatureConfigurationAccessMessage =>
+      'Iyi konti ntishobora kureba cyangwa guhindura igenamiterere ry’ibiranga.';
+
+  @override
+  String get adminFeatureConfigurationChanged =>
+      'Igenamiterere ry’ibiranga ryahindutse';
+
+  @override
+  String get adminFeatureConfigurationChangedMessage =>
+      'Vugurura mbere yo gukora indi mpinduka.';
+
+  @override
+  String get adminFeatureConfigurationSecurityMessage =>
+      'Nta genamiterere ry’ibiranga ryerekanwe. Genzura interineti.';
+
+  @override
+  String get adminFeatureRegistryUnavailable =>
+      'Urutonde rw’ibiranga ntiruboneka';
+
+  @override
+  String get adminFeatureConfigurationHidden =>
+      'Igenamiterere ryihariye rikomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminFeatureConfigurationChecking =>
+      'Igenamiterere ry’ibiranga riri kugenzurwa';
+
+  @override
+  String get adminFeatureConfigurationLastConfirmed =>
+      'Igenamiterere riheruka kwemezwa ruracyagaragara. Igenzura ryahagaze.';
+
+  @override
+  String adminFeatureOpenTooltip(String feature) {
+    return 'Fungura $feature';
+  }
+
+  @override
+  String adminFeatureSettingsSemantic(String feature) {
+    return 'Igenamiterere ry’ikiranga $feature';
+  }
+
+  @override
+  String get adminFeatureOpenSettingsHint =>
+      'Fungura igenamiterere ry’ikiranga rigenzurwa';
+
+  @override
+  String adminFeatureChangeVisibilityTooltip(String feature) {
+    return 'Hindura uko $feature kigaragara';
+  }
+
+  @override
+  String get adminFeatureChangeVisibility => 'Hindura uko kigaragara';
+
+  @override
+  String get adminCompetitionsTitle => 'AMARUSHANWA';
+
+  @override
+  String get adminCompetitionsAdd => 'Ongeraho irushanwa';
+
+  @override
+  String get adminCompetitionsActionsUnavailable =>
+      'Ibikorwa by’amarushanwa ntibiboneka';
+
+  @override
+  String get adminCompetitionsLoading => 'Amarushanwa ari kwinjizwa';
+
+  @override
+  String get adminCompetitionsLoadingMessage =>
+      'Ahagenzurirwa amarushanwa hari kugenzurwa.';
+
+  @override
+  String get adminCompetitionsDescription =>
+      'Genzura amarushanwa n’ibihembwe bikoreshwa mu guhanura.';
+
+  @override
+  String get adminCompetitionsNoneConfigured => 'Nta marushanwa yagenwe';
+
+  @override
+  String get adminCompetitionsNoneMatch => 'Nta marushanwa ahuye';
+
+  @override
+  String get adminCompetitionsNoneConfiguredMessage =>
+      'Shyiraho irushanwa rya mbere igihe uburenganzira buboneka.';
+
+  @override
+  String get adminCompetitionsNoneMatchMessage =>
+      'Hitamo akandi karere cyangwa ubwoko bw’irushanwa.';
+
+  @override
+  String get adminCompetitionsManagementUnavailable =>
+      'Kugenzura amarushanwa ntibiboneka';
+
+  @override
+  String get adminCompetitionsControlsDisabled =>
+      'Igenzura ry’amarushanwa ryahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminCompetitionsOffline =>
+      'Ahagenzurirwa amarushanwa ntihari kuri interineti';
+
+  @override
+  String get adminCompetitionsOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza amakuru yihariye y’amarushanwa.';
+
+  @override
+  String get adminCompetitionsAccessUnavailable =>
+      'Uburenganzira ku marushanwa ntibuboneka';
+
+  @override
+  String get adminCompetitionsAccessMessage =>
+      'Iyi konti ntishobora kureba cyangwa guhindura igenamiterere ry’amarushanwa.';
+
+  @override
+  String get adminCompetitionsDataChanged => 'Amakuru y’irushanwa yahindutse';
+
+  @override
+  String get adminCompetitionsDataChangedMessage =>
+      'Vugurura mbere yo gukomeza imirimo y’amarushanwa.';
+
+  @override
+  String get adminCompetitionsSecurityMessage =>
+      'Nta makuru y’irushanwa yagaragajwe. Genzura interineti.';
+
+  @override
+  String get adminCompetitionsWorkspaceUnavailable =>
+      'Ahagenzurirwa amarushanwa ntihaboneka';
+
+  @override
+  String get adminCompetitionsHiddenMessage =>
+      'Amakuru yihariye y’amarushanwa akomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminCompetitionsUpdating =>
+      'Ahagenzurirwa amarushanwa hari kuvugururwa';
+
+  @override
+  String get adminCompetitionsUpdatingMessage =>
+      'Igenzura ryahagaze kugeza igisubizo cyemejwe.';
+
+  @override
+  String get adminCompetitionsRefreshing => 'Amarushanwa ari kuvugururwa';
+
+  @override
+  String get adminCompetitionsRefreshingMessage =>
+      'Amakuru aheruka kwemezwa aracyagaragara mu gihe hari kugenzurwa.';
+
+  @override
+  String get adminCompetitionsCurrentRefreshUnavailable =>
+      'Kuvugurura ubu ntibishoboka';
+
+  @override
+  String get adminCompetitionsOutcomeUnconfirmed =>
+      'Igisubizo cy’ivugurura ntikiramenyekana. Vugurura mbere y’ikindi gikorwa.';
+
+  @override
+  String get adminCompetitionsLastConfirmed =>
+      'Amakuru aheruka kwemezwa aragaragara. Ibikorwa byahagaze kugeza ivugurura rishobotse.';
+
+  @override
+  String get adminCompetitionCreated => 'Irushanwa ryakozwe';
+
+  @override
+  String get adminCompetitionUpdated => 'Irushanwa ryavuguruwe';
+
+  @override
+  String get adminCompetitionActivateQuestion => 'IRUSHANWA RIKORESHE?';
+
+  @override
+  String get adminCompetitionDeactivateQuestion => 'IRUSHANWA RIHAGARARE?';
+
+  @override
+  String adminCompetitionActivateMessage(String competition) {
+    return '$competition rizaboneka mu nzira zateguwe zo guhanura.';
+  }
+
+  @override
+  String adminCompetitionDeactivateMessage(String competition) {
+    return '$competition ntirizongera kuboneka mu nzira zateguwe zo guhanura.';
+  }
+
+  @override
+  String get adminActivateUpper => 'KORA';
+
+  @override
+  String get adminDeactivateUpper => 'HAGARIKA';
+
+  @override
+  String get adminCompetitionActivated => 'Irushanwa ryatangiye gukoreshwa';
+
+  @override
+  String get adminCompetitionDeactivated => 'Irushanwa ryahagaritswe';
+
+  @override
+  String get adminCompetitionsTotal => 'YOSE';
+
+  @override
+  String get adminCompetitionsActive => 'AKORA';
+
+  @override
+  String get adminCompetitionsInactive => 'NTAKORA';
+
+  @override
+  String get adminCompetitionFilters => 'Muyungurura w’amarushanwa';
+
+  @override
+  String get adminCompetitionRegion => 'AKARERE';
+
+  @override
+  String get adminCompetitionKind => 'UBWOKO';
+
+  @override
+  String get adminCompetitionSeasons => 'IBIHEMBWE';
+
+  @override
+  String get adminEditUpper => 'HINDURA';
+
+  @override
+  String get adminCompetitionFilterAll => 'YOSE';
+
+  @override
+  String get adminCompetitionRegionAfrica => 'AFURIKA';
+
+  @override
+  String get adminCompetitionRegionEurope => 'UBURAYI';
+
+  @override
+  String get adminCompetitionRegionInternational => 'MPUZAMAHANGA';
+
+  @override
+  String get adminCompetitionRegionGlobal => 'ISI YOSE';
+
+  @override
+  String get adminCompetitionKindLeague => 'SHAMPIYONA';
+
+  @override
+  String get adminCompetitionKindCup => 'IGIKOMBE';
+
+  @override
+  String get adminCompetitionKindTournament => 'IRUSHANWA';
+
+  @override
+  String get adminCompetitionEdit => 'HINDURA IRUSHANWA';
+
+  @override
+  String get adminCompetitionAdd => 'ONGERAHO IRUSHANWA';
+
+  @override
+  String get adminCompetitionName => 'Izina';
+
+  @override
+  String get adminCompetitionShortName => 'Izina rigufi';
+
+  @override
+  String get adminCompetitionSlug => 'Ikiranga';
+
+  @override
+  String get adminCompetitionSlugHint => 'urugero: shampiyona-y-igihugu';
+
+  @override
+  String get adminCompetitionOrganizer => 'Utegura';
+
+  @override
+  String get adminOptional => 'Si ngombwa';
+
+  @override
+  String get adminCompetitionCountryCode => 'Kode y’igihugu';
+
+  @override
+  String get adminCompetitionCountryCodeHint => 'RW';
+
+  @override
+  String get adminCompetitionCountryName => 'Izina ry’igihugu';
+
+  @override
+  String get adminCompetitionCountryNameHint => 'Rwanda';
+
+  @override
+  String get adminCompetitionFormatNotes => 'Ibisobanuro by’imiterere';
+
+  @override
+  String get adminCompetitionValidationMessage =>
+      'Genzura amazina asabwa, ikiranga na kode y’igihugu.';
+
+  @override
+  String get adminCompetitionAvailable =>
+      'Riboneka mu nzira zateguwe zo guhanura';
+
+  @override
+  String get adminCompetitionUnavailable => 'Ntiriboneka mu nzira zo guhanura';
+
+  @override
+  String get adminSaveChanges => 'Bika impinduka';
+
+  @override
+  String get adminCreateCompetition => 'Kora irushanwa';
+
+  @override
+  String get adminSeasonAdd => 'Ongeraho igihembwe';
+
+  @override
+  String get adminSeasonActionsUnavailable =>
+      'Ibikorwa by’igihembwe ntibiboneka';
+
+  @override
+  String get adminSeasonNoneConfigured => 'Nta bihembwe byagenwe';
+
+  @override
+  String get adminSeasonNoneConfiguredMessage =>
+      'Ongeraho igihembwe cya mbere igihe uburenganzira buboneka.';
+
+  @override
+  String get adminSeasonCreated => 'Igihembwe cyakozwe';
+
+  @override
+  String get adminSeasonActivateQuestion => 'IGIHEMBWE GIKORESHE?';
+
+  @override
+  String get adminSeasonDeactivateQuestion => 'IGIHEMBWE GIHAGARARE?';
+
+  @override
+  String adminSeasonAvailabilityMessage(String season, String availability) {
+    return '$season kizaba $availability mu nzira zateguwe z’amarushanwa.';
+  }
+
+  @override
+  String get adminAvailable => 'kiboneka';
+
+  @override
+  String get adminUnavailable => 'kitaboneka';
+
+  @override
+  String get adminSeasonActivated => 'Igihembwe cyatangiye gukoreshwa';
+
+  @override
+  String get adminSeasonDeactivated => 'Igihembwe cyahagaritswe';
+
+  @override
+  String get adminSeasonActivate => 'Koresha igihembwe';
+
+  @override
+  String get adminSeasonDeactivate => 'Hagarika igihembwe';
+
+  @override
+  String get adminSeasonValidationMessage =>
+      'Genzura ikiranga, izina n’imyaka by’igihembwe.';
+
+  @override
+  String get adminSeasonAddUpper => 'ONGERAHO IGIHEMBWE';
+
+  @override
+  String get adminSeasonSlugHint => 'urugero: shampiyona-2026';
+
+  @override
+  String get adminSeasonLabel => 'Izina';
+
+  @override
+  String get adminSeasonLabelHint => 'urugero: 2025/2026';
+
+  @override
+  String get adminSeasonYearStart => 'Umwaka wo gutangira';
+
+  @override
+  String get adminSeasonYearEnd => 'Umwaka wo kurangira';
+
+  @override
+  String get adminCreateUpper => 'KORA';
+
+  @override
+  String get adminSeasonStatusPlanned => 'CYATEGUWE';
+
+  @override
+  String get adminSeasonStatusActive => 'GIKORA';
+
+  @override
+  String get adminSeasonStatusFinished => 'CYARANGIYE';
+
+  @override
+  String get adminSeasonStatusArchived => 'CYABITSWE';
+
+  @override
+  String get adminNotificationSendTitle => 'OHEREZA UBUTUMWA';
+
+  @override
+  String get adminNotificationLoading =>
+      'Ahagenzurirwa ubutumwa hari kwinjizwa';
+
+  @override
+  String get adminNotificationLoadingMessage =>
+      'Amakuru agenzurwa y’iyohereza ari kugenzurwa.';
+
+  @override
+  String get adminNotificationDeliveryStatus => 'UKO BYOHEREJWE';
+
+  @override
+  String get adminNotificationDeliveryStatusMessage =>
+      'Ubutumwa bwoherezwa na Edge Functions. Ubwateguwe bwoherezwa ku gihe.';
+
+  @override
+  String get adminNotificationAudience => 'ABAKIRA';
+
+  @override
+  String get adminNotificationAudienceAllFans => 'ABAFANA BOSE';
+
+  @override
+  String get adminNotificationAudienceByTier => 'KU RWEGO';
+
+  @override
+  String get adminNotificationAudienceByGroup => 'KU ITSINDA';
+
+  @override
+  String get adminNotificationTierFan => 'UMUFANA';
+
+  @override
+  String get adminNotificationTierBronze => 'UMURINGA';
+
+  @override
+  String get adminNotificationTierGold => 'ZAHABU';
+
+  @override
+  String get adminNotificationTierPlatinum => 'PLATINUM';
+
+  @override
+  String get adminNotificationSelectGroup => 'Hitamo itsinda';
+
+  @override
+  String get adminNotificationTitleLabel => 'Umutwe w’ubutumwa';
+
+  @override
+  String get adminNotificationBodyLabel => 'Ubutumwa';
+
+  @override
+  String adminNotificationCharacterCount(int count) {
+    return 'Inyuguti $count';
+  }
+
+  @override
+  String get adminNotificationImageUrl => 'URL y’ishusho si ngombwa';
+
+  @override
+  String get adminNotificationSchedule => 'TEGANYA';
+
+  @override
+  String get adminNotificationSendNow => 'OHEREZA NONAHA';
+
+  @override
+  String get adminNotificationPickDateTime => 'Hitamo itariki n’isaha';
+
+  @override
+  String get adminNotificationScheduleAction => 'Teganya ubutumwa';
+
+  @override
+  String get adminNotificationSendAction => 'Ohereza ubutumwa';
+
+  @override
+  String get adminNotificationCopyPayload => 'KOPORORA AMAKURU';
+
+  @override
+  String get adminNotificationSendHistory => 'AMATEKA Y’IYOHEREZA';
+
+  @override
+  String get adminNotificationHistoryEmpty => 'Nta mateka y’ubutumwa';
+
+  @override
+  String get adminNotificationHistoryEmptyMessage =>
+      'Amakuru yemejwe y’iyohereza azagaragara hano nyuma y’ubusabe.';
+
+  @override
+  String get adminNotificationManagementUnavailable =>
+      'Kugenzura ubutumwa ntibiboneka';
+
+  @override
+  String get adminNotificationControlsDisabled =>
+      'Igenzura ry’ubutumwa ryahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminNotificationWorkspaceOffline =>
+      'Ahagenzurirwa ubutumwa ntihari kuri interineti';
+
+  @override
+  String get adminNotificationOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza amakuru yihariye y’iyohereza.';
+
+  @override
+  String get adminNotificationAccessUnavailable =>
+      'Uburenganzira ku butumwa ntibuboneka';
+
+  @override
+  String get adminNotificationAccessMessage =>
+      'Iyi konti ntishobora kureba cyangwa kohereza ubutumwa.';
+
+  @override
+  String get adminNotificationDataChanged => 'Amakuru y’iyohereza yahindutse';
+
+  @override
+  String get adminNotificationDataChangedMessage =>
+      'Vugurura mbere y’ubundi busabe bw’ubutumwa.';
+
+  @override
+  String get adminNotificationSecurityMessage =>
+      'Nta makuru y’iyohereza yagaragajwe. Genzura interineti.';
+
+  @override
+  String get adminNotificationWorkspaceUnavailable =>
+      'Ahagenzurirwa ubutumwa ntihaboneka';
+
+  @override
+  String get adminNotificationHiddenMessage =>
+      'Amakuru yihariye y’iyohereza akomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminNotificationChecking => 'Amakuru y’iyohereza ari kugenzurwa';
+
+  @override
+  String get adminNotificationCheckingMessage =>
+      'Amakuru aheruka kwemezwa aracyagaragara mu gihe hari kugenzurwa.';
+
+  @override
+  String get adminNotificationOutcomeUnconfirmed =>
+      'Ubusabe buheruka ntiburamenyekana. Igenzura rirahagaze kugeza ivugurura rishobotse.';
+
+  @override
+  String get adminNotificationLastConfirmed =>
+      'Amakuru aheruka kwemezwa aracyagaragara. Igenzura ryahagaze.';
+
+  @override
+  String get adminNotificationValidationTitleBody =>
+      'Banza wongeremo umutwe n’ubutumwa.';
+
+  @override
+  String get adminNotificationValidationTier =>
+      'Banza uhitemo urwego rugenewe.';
+
+  @override
+  String get adminNotificationValidationGroup =>
+      'Banza uhitemo itsinda rigenewe.';
+
+  @override
+  String get adminNotificationValidationSchedule =>
+      'Banza uhitemo itariki n’isaha yo kohereza.';
+
+  @override
+  String get adminNotificationQueued =>
+      'Ubutumwa bwashyizwe ku murongo wo koherezwa ku gihe.';
+
+  @override
+  String adminNotificationScheduledFor(String date) {
+    return 'Ubutumwa bwateganyijwe $date.';
+  }
+
+  @override
+  String adminNotificationSentSummary(int requested, int sent) {
+    return 'Byoherejwe ku bafana $requested. $sent babwakiriye.';
+  }
+
+  @override
+  String adminNotificationPartialSummary(int sent, int failed) {
+    return 'Bimwe: $sent byageze, $failed byanze.';
+  }
+
+  @override
+  String get adminNotificationDeliveryFailed => 'Kohereza ubutumwa byanze.';
+
+  @override
+  String get adminNotificationRequestRecorded =>
+      'Ubusabe bw’ubutumwa bwanditswe.';
+
+  @override
+  String adminNotificationHistoryMetrics(int requested, int sent, int failed) {
+    return ' • Abagenewe $requested • Byoherejwe $sent • Byanze $failed';
+  }
+
+  @override
+  String get adminNotificationFieldsInvalid =>
+      'Genzura imyanya y’ubutumwa wongere ugerageze.';
+
+  @override
+  String get adminNotificationRequestUnconfirmed =>
+      'Ubusabe bw’ubutumwa ntibwemejwe.';
+
+  @override
+  String get adminNotificationPayloadCopied => 'Amakuru yakoporowe.';
+
+  @override
+  String get adminNotificationTierNotSelected => 'Nta rwego rwahiswemo';
+
+  @override
+  String adminNotificationTierPreview(String tier) {
+    return 'Urwego • $tier';
+  }
+
+  @override
+  String get adminNotificationGroupNotSelected => 'Nta tsinda ryahiswemo';
+
+  @override
+  String adminNotificationGroupPreview(String group) {
+    return 'Itsinda • $group';
+  }
+
+  @override
+  String get adminNotificationAllSupporters => 'Abafana bose';
+
+  @override
+  String get adminNotificationPreview => 'UKO BIZAGARAGARA';
+
+  @override
+  String get adminNotificationPreviewBody =>
+      'Uko ubutumwa buzagaragara biri hano.';
+
+  @override
+  String get adminNotificationStatusScheduled => 'BWATEGANYIJWE';
+
+  @override
+  String get adminNotificationStatusSent => 'BWOHEREJWE';
+
+  @override
+  String get adminNotificationStatusPartial => 'BWAGEZE KURI BAMWE';
+
+  @override
+  String get adminNotificationStatusFailed => 'BWANZE';
+
+  @override
+  String get adminContributionsTitle => 'IMISANZU';
+
+  @override
+  String get adminContributionsLoading => 'Imisanzu iri kwinjizwa';
+
+  @override
+  String get adminContributionsLoadingMessage =>
+      'Ahagenzurirwa imisanzu hari kugenzurwa.';
+
+  @override
+  String get adminContributionsDescription =>
+      'Reba igiteranyo cy’amatsinda ya klabu utagaragaje ibiranga abafana cyangwa ubwishyu.';
+
+  @override
+  String get adminContributionsMonthlyTotal =>
+      'IGITERANYO CYANDITSWE UKU KWEZI';
+
+  @override
+  String adminContributionsSummary(int groups, int records) {
+    return 'Amatsinda $groups • Inyandiko zigenzuwe $records';
+  }
+
+  @override
+  String get adminContributionsNoGroups => 'Nta matsinda y’imisanzu';
+
+  @override
+  String get adminContributionsNoMatch => 'Nta matsinda ahuye';
+
+  @override
+  String get adminContributionsNoGroupsMessage =>
+      'Amatsinda y’imisanzu ya klabu yemejwe azagaragara hano.';
+
+  @override
+  String get adminContributionsNoMatchMessage =>
+      'Hitamo undi muyungurura w’amatsinda y’imisanzu.';
+
+  @override
+  String get adminContributionsExport => 'Sohora raporo irinda amakuru bwite';
+
+  @override
+  String get adminContributionsReportCopied =>
+      'Raporo y’imisanzu irinda amakuru bwite yakoporowe.';
+
+  @override
+  String get adminContributionsUnavailable =>
+      'Ahagenzurirwa imisanzu ntihaboneka';
+
+  @override
+  String get adminContributionsDisabled =>
+      'Kugenzura imisanzu byahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminContributionsOffline =>
+      'Ahagenzurirwa imisanzu ntihari kuri interineti';
+
+  @override
+  String get adminContributionsOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza amakuru yihariye y’imisanzu.';
+
+  @override
+  String get adminContributionsAccessUnavailable =>
+      'Uburenganzira ku misanzu ntibuboneka';
+
+  @override
+  String get adminContributionsAccessMessage =>
+      'Iyi konti ntishobora kureba ibikorwa byihariye by’imisanzu.';
+
+  @override
+  String get adminContributionsDataChanged => 'Amakuru y’imisanzu yahindutse';
+
+  @override
+  String get adminContributionsDataChangedMessage =>
+      'Vugurura mbere yo kwishingikiriza ku giteranyo cy’imisanzu.';
+
+  @override
+  String get adminContributionsSecurityMessage =>
+      'Nta makuru y’imisanzu yagaragajwe. Genzura interineti.';
+
+  @override
+  String get adminContributionsHiddenMessage =>
+      'Amakuru yihariye y’imisanzu akomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminContributionsRefreshing => 'Imisanzu iri kuvugururwa';
+
+  @override
+  String get adminContributionsRefreshingMessage =>
+      'Ibiteranyo biheruka kwemezwa biracyagaragara mu gihe hari kugenzurwa.';
+
+  @override
+  String get adminContributionsLastConfirmed =>
+      'Ibiteranyo biheruka kwemezwa biracyagaragara. Igenzura ryahagaze kugeza ivugurura rishobotse.';
+
+  @override
+  String get adminContributionsGroupType => 'UBWOKO BW’ITSINDA';
+
+  @override
+  String get adminContributionsSort => 'TONDEKA';
+
+  @override
+  String get adminContributionsFilterAll => 'YOSE';
+
+  @override
+  String get adminContributionsTeamProjects => 'IMISHINGA Y’ITSINDA';
+
+  @override
+  String get adminContributionsCommunity => 'UMURYANGO';
+
+  @override
+  String get adminContributionsRecent => 'IBYA VUBA';
+
+  @override
+  String get adminContributionsTotal => 'IGITERANYO';
+
+  @override
+  String get adminContributionsClosed => 'RYAFUNZWE';
+
+  @override
+  String get adminContributionsActive => 'RIKORA';
+
+  @override
+  String get adminContributionsTeamProject => 'UMUSHINGA W’ITSINDA';
+
+  @override
+  String adminContributionsRecordMembers(int records, int members) {
+    return 'Inyandiko zigenzuwe $records • Abanyamuryango banditswe $members';
+  }
+
+  @override
+  String get adminContributionsActivityPending =>
+      'Igikorwa cy’ubwishyu kirategerejwe';
+
+  @override
+  String adminContributionsLastActivity(String date) {
+    return 'Igikorwa giheruka $date';
+  }
+
+  @override
+  String get adminSmsTitle => 'IBIKORWA BYA SMS';
+
+  @override
+  String get adminSmsLoading => 'Ibikorwa bya SMS biri kwinjizwa';
+
+  @override
+  String get adminSmsLoadingMessage =>
+      'Amakuru agenzurwa y’imikorere y’inzira ari kugenzurwa.';
+
+  @override
+  String get adminSmsNoHistory => 'Nta mateka y’ibikorwa bya SMS';
+
+  @override
+  String get adminSmsNoHistoryMessage =>
+      'Nta bimenyetso by’imikorere cyangwa iyoherezanya ryagenzuwe biraboneka.';
+
+  @override
+  String get adminSmsControlledHealth => 'IMIKORERE IGENZURWA';
+
+  @override
+  String get adminSmsControlledHealthMessage =>
+      'Reba iyoherezanya ry’ibikoresho, igenzura ry’ubutumwa, guhuza imisanzu, ihinduka ry’abohereza, kongera kugerageza no gusukura amakuru bwite utagaragaje ubutumwa cyangwa ibiranga abafana.';
+
+  @override
+  String get adminSmsPipelineHealth => 'IMIKORERE Y’INZIRA';
+
+  @override
+  String get adminSmsRecentSync => 'IYOHEREZANYA RYA VUBA RY’IBIKORESHO';
+
+  @override
+  String get adminSmsNoRecentRuns => 'Nta yoherezanya rya vuba';
+
+  @override
+  String get adminSmsNoRecentRunsMessage =>
+      'Incamake y’imikorere iracyaboneka hejuru.';
+
+  @override
+  String adminSmsMetricSemantics(String label, String status) {
+    return '$label, $status';
+  }
+
+  @override
+  String get adminSmsCollapseDetails => 'Hisha ibisobanuro by’imikorere';
+
+  @override
+  String get adminSmsExpandDetails => 'Garagaza ibisobanuro by’imikorere';
+
+  @override
+  String adminSmsLastSignal(String date) {
+    return 'Ikimenyetso giheruka kwemezwa $date';
+  }
+
+  @override
+  String get adminSmsUnavailable => 'Ibikorwa bya SMS ntibiboneka';
+
+  @override
+  String get adminSmsDisabled =>
+      'Kugenzura ibikorwa bya SMS byahagaritswe muri iyi verisiyo.';
+
+  @override
+  String get adminSmsOffline => 'Ibikorwa bya SMS ntibiri kuri interineti';
+
+  @override
+  String get adminSmsOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza amakuru yihariye y’ibikorwa.';
+
+  @override
+  String get adminSmsAccessUnavailable =>
+      'Uburenganzira ku bikorwa bya SMS ntibuboneka';
+
+  @override
+  String get adminSmsAccessMessage =>
+      'Uburenganzira bw’umuyobozi wa pulatifomu burakenewe.';
+
+  @override
+  String get adminSmsChanged => 'Ibikorwa bya SMS byahindutse';
+
+  @override
+  String get adminSmsChangedMessage =>
+      'Vugurura mbere yo gukoresha aya makuru y’ibikorwa.';
+
+  @override
+  String get adminSmsSecurityMessage =>
+      'Nta makuru y’ibikorwa yagaragajwe. Genzura interineti.';
+
+  @override
+  String get adminSmsHiddenMessage =>
+      'Amakuru yihariye y’ibikorwa akomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminSmsChecking => 'Ibikorwa bya SMS biri kugenzurwa';
+
+  @override
+  String get adminSmsCheckingMessage =>
+      'Amakuru aheruka kwemezwa aracyagaragara mu gihe hari kugenzurwa.';
+
+  @override
+  String get adminSmsLastConfirmed =>
+      'Amakuru y’ibikorwa aheruka kwemezwa aracyagaragara. Igenzura ryahagaze.';
+
+  @override
+  String get adminSmsStatusHealthy => 'BIRAKORA NEZA';
+
+  @override
+  String get adminSmsStatusSucceeded => 'BYAGENZE NEZA';
+
+  @override
+  String get adminSmsStatusDegraded => 'BIRAGABANYIRIJWE';
+
+  @override
+  String get adminSmsStatusRunning => 'BIRI GUKORA';
+
+  @override
+  String get adminSmsStatusRateLimited => 'UMUVUDUKO WAGABANYIJWE';
+
+  @override
+  String get adminSmsStatusFailing => 'BIRI KWANGA';
+
+  @override
+  String get adminSmsStatusFailed => 'BYANZE';
+
+  @override
+  String get adminSmsTriggerInitial => 'AMATEKA YA MBERE';
+
+  @override
+  String get adminSmsTriggerManual => 'BYAKOZWE N’UMUNTU';
+
+  @override
+  String get adminSmsTriggerControlled => 'BIGENZURWA';
+
+  @override
+  String adminSmsRunTitle(String status, String trigger) {
+    return '$status • $trigger';
+  }
+
+  @override
+  String adminSmsRunMetrics(int scanned, int uploaded, int duplicates) {
+    return 'Byagenzuwe $scanned • Byoherejwe $uploaded • Ibisubiramo $duplicates';
+  }
+
+  @override
+  String get adminCmsTitle => 'AHAGENZURIRWA IBIRIMO';
+
+  @override
+  String get adminCmsDescription =>
+      'Genzura ibikorwa byihuse byo ku ntangiriro, urutonde rw’abafatanyabikorwa n’amarushanwa yo guhanura yemewe.';
+
+  @override
+  String get adminCmsLoading => 'Ahagenzurirwa ibirimo hari kwinjizwa';
+
+  @override
+  String get adminCmsLoadingMessage =>
+      'Imirimo iriho yo gutangaza iri kugenzurwa.';
+
+  @override
+  String get adminCmsNoContent => 'Nta birimo bigenzurwa';
+
+  @override
+  String get adminCmsNoContentMessage =>
+      'Hitamo igice ukore ikintu cya mbere kigenzurwa.';
+
+  @override
+  String get adminCmsUnavailable => 'Ahagenzurirwa ibirimo ntihaboneka';
+
+  @override
+  String get adminCmsDisabled =>
+      'Igenzura ryo gutangaza ryahagaritswe muri iyi verisiyo igenzurwa.';
+
+  @override
+  String get adminCmsOffline => 'Ahagenzurirwa ibirimo ntihari kuri interineti';
+
+  @override
+  String get adminCmsOfflineMessage =>
+      'Ongera uhuze interineti mbere yo kwinjiza igenzura ryihariye ryo gutangaza.';
+
+  @override
+  String get adminCmsAccessUnavailable => 'Uburenganzira ku birimo ntibuboneka';
+
+  @override
+  String get adminCmsAccessMessage =>
+      'Iyi konti ntishobora kureba cyangwa guhindura amakuru ya klabu yo gutangaza.';
+
+  @override
+  String get adminCmsChanged => 'Ibirimo byahindutse';
+
+  @override
+  String get adminCmsChangedMessage =>
+      'Vugurura ahakorera mbere y’indi mpinduka.';
+
+  @override
+  String get adminCmsSecurityMessage =>
+      'Nta birimo byihariye byagaragajwe. Genzura interineti wongere ugerageze.';
+
+  @override
+  String get adminCmsHiddenMessage =>
+      'Amakuru yihariye yo gutangaza akomeje guhishwa. Ongera ugerageze.';
+
+  @override
+  String get adminCmsSaving => 'Ibirimo biri kubikwa';
+
+  @override
+  String get adminCmsSavingMessage =>
+      'Igenzura ryo gutangaza ryahagaze kugeza igisubizo cyemejwe.';
+
+  @override
+  String get adminCmsRefreshing => 'Ibirimo biri kuvugururwa';
+
+  @override
+  String get adminCmsRefreshingMessage =>
+      'Ahakorera haheruka kwemezwa haracyagaragara mu gihe hari kugenzurwa.';
+
+  @override
+  String get adminCmsCurrentRefreshUnavailable => 'Kuvugurura ubu ntibishoboka';
+
+  @override
+  String get adminCmsOutcomeUnconfirmed =>
+      'Impinduka iheruka ntiyemejwe. Vugurura mbere y’ikindi gikorwa.';
+
+  @override
+  String get adminCmsLastConfirmed =>
+      'Ahakorera haheruka kwemezwa haracyagaragara. Ibikorwa byahagaze kugeza ivugurura rishobotse.';
+
+  @override
+  String get adminCmsChangeOffline =>
+      'Impinduka za CMS zisaba interineti. Nta gikorwa cyongeye kugeragezwa.';
+
+  @override
+  String get adminCmsChangeAccess =>
+      'Uburenganzira kuri CMS ntibukiboneka kuri iyi konti.';
+
+  @override
+  String get adminCmsChangeConflict =>
+      'Ibirimo bya CMS byahindutse. Vugurura mbere y’ikindi gikorwa.';
+
+  @override
+  String get adminCmsChangeUnconfirmed =>
+      'Igisubizo nticyemejwe. Vugurura mbere y’ikindi gikorwa.';
+
+  @override
+  String get adminCmsChangeFailed =>
+      'Impinduka ya CMS ntiyarangiye. Genzura wongere ugerageze.';
+
+  @override
+  String get adminCmsAddContentBlock => 'ONGERAHO IGICE CY’IBIRIMO';
+
+  @override
+  String get adminCmsEditContentBlock => 'HINDURA IGICE CY’IBIRIMO';
+
+  @override
+  String get adminCmsBlockKey => 'Ikiranga igice (urugero: home_hero_1)';
+
+  @override
+  String get adminCmsBlockType => 'Ubwoko bw’igice (urugero: banner)';
+
+  @override
+  String get adminCmsTargetChannel => 'Umuyoboro ugenewe';
+
+  @override
+  String get adminCmsPlacementKey => 'Aho bishyirwa';
+
+  @override
+  String get adminCmsTitleField => 'Umutwe';
+
+  @override
+  String get adminCmsSubtitleField => 'Umutwe wungirije';
+
+  @override
+  String get adminCmsContentComponent => 'Izina ry’igice cy’ibirimo';
+
+  @override
+  String get adminCmsFeatureField => 'Ikiranga';
+
+  @override
+  String get adminCmsNone => 'Nta na kimwe';
+
+  @override
+  String get adminCmsSortOrder => 'Uko bikurikirana';
+
+  @override
+  String get adminCmsActive => 'Gikora';
+
+  @override
+  String get adminCmsCreate => 'KORA';
+
+  @override
+  String get adminCmsSave => 'BIKA';
+
+  @override
+  String get adminCmsNewArticle => 'INKURU NSHYA';
+
+  @override
+  String get adminCmsArticleTitle => 'Umutwe w’inkuru';
+
+  @override
+  String get adminCmsArticleBody => 'Ibirimo by’inkuru';
+
+  @override
+  String get adminCmsAddQuickAction => 'ONGERAHO IGIKORWA CYIHUSE';
+
+  @override
+  String get adminCmsEditQuickAction => 'HINDURA IGIKORWA CYIHUSE';
+
+  @override
+  String get adminCmsActionKey => 'Ikiranga igikorwa';
+
+  @override
+  String get adminCmsRoute => 'Inzira';
+
+  @override
+  String get adminCmsIconKey => 'Ikiranga akamenyetso';
+
+  @override
+  String get adminCmsEmoji => 'Emoji';
+
+  @override
+  String get adminCmsCountry => 'Igihugu';
+
+  @override
+  String get adminCmsAddPartner => 'ONGERAHO UMUFATANYABIKORWA';
+
+  @override
+  String get adminCmsEditPartner => 'HINDURA UMUFATANYABIKORWA';
+
+  @override
+  String get adminCmsName => 'Izina';
+
+  @override
+  String get adminCmsSlug => 'Ikiranga';
+
+  @override
+  String get adminCmsCategory => 'Icyiciro';
+
+  @override
+  String get adminCmsDescriptionField => 'Ibisobanuro';
+
+  @override
+  String get adminCmsGamificationLinked => 'Bihujwe n’imikino';
+
+  @override
+  String get adminCmsCreatePartnerFirst => 'Banza ukore umufatanyabikorwa.';
+
+  @override
+  String get adminCmsAddPartnerService =>
+      'ONGERAHO SERIVISI Y’UMUFATANYABIKORWA';
+
+  @override
+  String get adminCmsEditPartnerService =>
+      'HINDURA SERIVISI Y’UMUFATANYABIKORWA';
+
+  @override
+  String get adminCmsPartner => 'Umufatanyabikorwa';
+
+  @override
+  String get adminCmsServiceSlug => 'Ikiranga serivisi';
+
+  @override
+  String get adminCmsCtaLabel => 'Izina ry’igikorwa';
+
+  @override
+  String get adminCmsCtaAction => 'Igikorwa';
+
+  @override
+  String get adminCmsAllCompetitionsAdded =>
+      'Amarushanwa yose akora yamaze gushyirwa mu rutonde rwo guhanura.';
+
+  @override
+  String get adminCmsAddPredictionCompetition =>
+      'ONGERAHO IRUSHANWA RYO GUHANURA';
+
+  @override
+  String get adminCmsEditPredictionCompetition =>
+      'HINDURA IRUSHANWA RYO GUHANURA';
+
+  @override
+  String get adminCmsCompetition => 'Irushanwa';
+
+  @override
+  String get adminCmsHighlightLabel => 'Izina rishyizwe imbere';
+
+  @override
+  String get adminCmsChannelMobile => 'Telefoni';
+
+  @override
+  String get adminCmsChannelWeb => 'Urubuga';
+
+  @override
+  String get adminCmsChannelBoth => 'Telefoni n’urubuga';
+
+  @override
+  String get adminCmsCategoryOrganization => 'Umuryango';
+
+  @override
+  String get adminCmsCategoryBank => 'Banki';
+
+  @override
+  String get adminCmsCategoryFootball => 'Umupira w’amaguru';
+
+  @override
+  String get adminCmsCategoryGeneral => 'Rusange';
+
+  @override
+  String get adminCmsCategoryCommunity => 'Umuryango mugari';
+
+  @override
+  String get adminCmsCategoryInsurance => 'Ubwishingizi';
+
+  @override
+  String get adminCmsCategoryMobility => 'Ubwikorezi';
+
+  @override
+  String get adminCmsSectionNews => 'Amakuru';
+
+  @override
+  String get adminCmsSectionQuickActions => 'Ibikorwa byihuse';
+
+  @override
+  String get adminCmsSectionPartners => 'Abafatanyabikorwa';
+
+  @override
+  String get adminCmsSectionServices => 'Serivisi';
+
+  @override
+  String get adminCmsSectionPredictions => 'Guhanura';
+
+  @override
+  String get adminCmsSectionPlacements => 'Aho bishyirwa';
+
+  @override
+  String get adminCmsSectionAuditLogs => 'Amateka y’igenzura';
+
+  @override
+  String get adminCmsNewsArticles => 'Inkuru z’amakuru';
+
+  @override
+  String get adminCmsAddArticle => 'ONGERAHO INKURU';
+
+  @override
+  String get adminCmsHomeQuickActions => 'Ibikorwa byihuse byo ku ntangiriro';
+
+  @override
+  String get adminCmsAddAction => 'ONGERAHO IGIKORWA';
+
+  @override
+  String get adminCmsPartners => 'Abafatanyabikorwa';
+
+  @override
+  String get adminCmsAddPartnerAction => 'ONGERAHO UMUFATANYABIKORWA';
+
+  @override
+  String get adminCmsPartnerServices => 'Serivisi z’abafatanyabikorwa';
+
+  @override
+  String get adminCmsAddService => 'ONGERAHO SERIVISI';
+
+  @override
+  String get adminCmsPredictionCompetitions => 'Amarushanwa yo guhanura';
+
+  @override
+  String get adminCmsAddCompetition => 'ONGERAHO IRUSHANWA';
+
+  @override
+  String get adminCmsContentBlocks => 'Ibice by’ibirimo bya pulatifomu';
+
+  @override
+  String get adminCmsAddBlock => 'ONGERAHO IGICE';
+
+  @override
+  String get adminCmsAuditLogs => 'AMATEKA Y’IGENZURA RY’IBIRANGA';
+
+  @override
+  String get adminCmsQuickActionFallback => 'Igikorwa cyihuse';
+
+  @override
+  String get adminCmsServiceFallback => 'Serivisi';
+
+  @override
+  String get adminCmsCompetitionFallback => 'Irushanwa';
+
+  @override
+  String get adminCmsContentBlockFallback => 'Igice cy’ibirimo';
+
+  @override
+  String get adminCmsActiveUpper => 'GIKORA';
+
+  @override
+  String get adminCmsInactiveUpper => 'NTIGIKORA';
+
+  @override
+  String get adminCmsGamificationUpper => 'IMIKINO';
+
+  @override
+  String get adminCmsDirectUpper => 'BITAZIGUYE';
+
+  @override
+  String get adminCmsStandardUpper => 'BISANZWE';
+
+  @override
+  String get adminCmsDeactivate => 'HAGARIKA';
+
+  @override
+  String get adminCmsActivate => 'KORA';
+
+  @override
+  String get adminCmsCtaPending => 'Igikorwa kirategerejwe';
+
+  @override
+  String get adminCmsNotAvailable => 'ntibiboneka';
+
+  @override
+  String adminCmsCompetitionSummary(String kind, int count) {
+    return '$kind • Imikino $count';
+  }
+
+  @override
+  String get adminCmsCatalog => 'URUTONDE';
+
+  @override
+  String get adminCmsSupported => 'RYEMEWE';
+
+  @override
+  String get adminCmsUnknown => 'ntibizwi';
+
+  @override
+  String get adminCmsUnknownFeature => 'Ikiranga kitazwi';
+
+  @override
+  String get adminCmsUnknownDate => 'Itariki itazwi';
+
+  @override
+  String get adminCmsActionFallback => 'IGIKORWA';
+
+  @override
+  String adminCmsFeatureName(String feature) {
+    return 'Ikiranga: $feature';
+  }
+
+  @override
+  String get adminCmsActorWithheld =>
+      'Amakuru y’uwakoze igikorwa arahishwa muri telefoni.';
+
+  @override
+  String get adminCmsEdit => 'HINDURA';
+
+  @override
+  String get adminCmsUntitled => 'Nta mutwe';
+
+  @override
+  String get adminCmsNewsFallback => 'Amakuru';
+
+  @override
+  String get adminCmsLive => 'YATANGAJWE';
+
+  @override
+  String get adminCmsDraft => 'INYANDIKO';
+
+  @override
+  String get adminCmsNotPublished => 'Ntiyatangajwe';
+
+  @override
+  String get adminCmsFeatured => 'YASHYIZWE IMBERE';
+
+  @override
+  String adminCmsArticleMeta(String category, String date, String featured) {
+    return '$category • $date$featured';
+  }
+
+  @override
+  String get adminCmsUnpublish => 'KURAHO';
+
+  @override
+  String get adminCmsPublish => 'TANGAZA';
+
+  @override
+  String adminCmsPair(String first, String second) {
+    return '$first • $second';
+  }
+
+  @override
+  String get gameCommunityPicks => 'AMAHITAMO Y’ABAFANA';
+
+  @override
+  String get gameFetProgress => 'Aho FET igeze';
+
+  @override
+  String get gameFet => 'FET';
+
+  @override
+  String get gameLevelUp => 'URWEGO RUSHYA!';
+
+  @override
+  String get gameAwesome => 'Ni byiza';
+
+  @override
+  String get gameKeepGoing => 'Komeza';
+
+  @override
+  String get gameLive => 'IMBONANKUBONE';
+
+  @override
+  String gameOutcomePick(String outcome) {
+    return 'Guhitamo $outcome';
+  }
+
+  @override
+  String gamePoints(int count) {
+    return '+$count amanota';
+  }
+
+  @override
+  String get gameDaysShort => 'IMINSI';
+
+  @override
+  String get gameHoursShort => 'MAS';
+
+  @override
+  String get gameMinutesShort => 'MIN';
+
+  @override
+  String get gameSecondsShort => 'SEG';
+
+  @override
+  String get gameDismissNotification => 'Funga itangazo';
+
+  @override
+  String get gamePredictions => 'GUHANURA';
+
+  @override
+  String get gameAccuracy => 'UKURI';
+
+  @override
+  String get gamePointsEarned => 'AMANOTA YABONETSE';
+
+  @override
+  String get gameRank => 'UMWANYA';
+
+  @override
+  String get gameTopScorers => 'ABATSINZE IBITEGO BYINSHI';
+
+  @override
+  String get gameGoals => 'Ibitego';
+
+  @override
+  String get gameEntriesClosed => 'KWIYANDIKISHA BYARAFUNZWE';
+
+  @override
+  String get gameEntriesCloseIn => 'KWIYANDIKISHA BIRAFUNGWA MU';
+
+  @override
+  String gameFetProgressValue(int current, int maximum, String tier) {
+    return '$current kuri $maximum, urwego $tier';
+  }
+
+  @override
+  String gamePickForTeams(String outcome, String home, String away) {
+    return 'Guhitamo $outcome kuri $home na $away';
+  }
+
+  @override
+  String get gameSelectedPick => 'Ihitamo ryatoranyijwe';
+
+  @override
+  String get gameAddPickToRound => 'Ongeraho ihitamo muri iki cyiciro';
+
+  @override
+  String gameNotificationSemantics(String title, String message) {
+    return 'Itangazo: $title. $message';
+  }
+
+  @override
+  String get gameDismissNotificationHint =>
+      'Kanda cyangwa uzamure ukuboko kugira ngo urifunge';
+
+  @override
+  String get gameClubContextRequired => 'Amakuru ya klabu arakenewe.';
+
+  @override
+  String get gameUnexpectedResponse =>
+      'Seriveri yasubije mu buryo butateganyijwe.';
+
+  @override
+  String get gameBack => 'Subira inyuma';
+
+  @override
+  String get gameRetry => 'Ongera ugerageze';
+
+  @override
+  String get gameOpenPredictionAlert => 'FUNGURA';
+
+  @override
+  String get gameBadgesTitle => 'IMIDARI YAWE';
+
+  @override
+  String get gameBadgesUnavailable => 'Imidari ntiboneka';
+
+  @override
+  String get gameBadgesTemporarilyUnavailable =>
+      'Imidari ntiboneka muri aka kanya.';
+
+  @override
+  String gameBadgeSemantics(String name) {
+    return 'Umudari $name';
+  }
+
+  @override
+  String get gameOpenBadgeDetails => 'Fungura ibisobanuro by’umudari';
+
+  @override
+  String get gamePredictionAlertsTitle => 'AMATANGAZO YO GUHANURA';
+
+  @override
+  String get gameAlertsUnavailable => 'Amatangazo ntaboneka';
+
+  @override
+  String get gamePredictionAlertsTemporarilyUnavailable =>
+      'Amatangazo yo guhanura ntaboneka muri aka kanya.';
+
+  @override
+  String gamePredictionAlertSemantics(
+    String title,
+    String message,
+    String date,
+    String reward,
+  ) {
+    return 'Itangazo ryo guhanura, $title, $message, $date$reward';
+  }
+
+  @override
+  String gameRewardPointsSemantics(int count) {
+    return ', ibihembo by’amanota $count';
+  }
+
+  @override
+  String get gameJustNow => 'Ubu';
+
+  @override
+  String get gameStreakTitle => 'URUKURIKIRANE RWAWE';
+
+  @override
+  String gameStreakDays(int count) {
+    return 'IMINSI $count';
+  }
+
+  @override
+  String get gameStreakActive => 'Urukurikirane rurakomeje.';
+
+  @override
+  String get gameCurrent => 'URUGEZEHO';
+
+  @override
+  String get gameBest => 'URUSUMBA AYANDI';
+
+  @override
+  String get gameNextBonus => 'IGIHEMBO GIKURIKIRA';
+
+  @override
+  String gameWins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Intsinzi $count',
+      one: 'Intsinzi 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameStreakDaySemantics(int day, String wins) {
+    return 'Umunsi wa $day w’urukurikirane: $wins';
+  }
+
+  @override
+  String get gameVerifyToPredict => 'EMEZA KUGIRA NGO UHANURE';
+
+  @override
+  String get gameMakePicks => 'Hitamo';
+
+  @override
+  String get gameMakePicksDescription => 'Hitamo imikino yo mu marushanwa yose';
+
+  @override
+  String get gameEarnPoints => 'Bona amanota';
+
+  @override
+  String get gameEarnPointsDescription => 'Bona amanota ku mahitamo nyayo';
+
+  @override
+  String get gameClimbLeaderboards => 'Zamuka ku rutonde';
+
+  @override
+  String get gameClimbLeaderboardsDescription => 'Higanwa n’inshuti n’abafana';
+
+  @override
+  String get gameVerifyNow => 'Emeza ubu';
+
+  @override
+  String get gameJustBrowsing => 'Ndareba gusa';
+
+  @override
+  String get gameOffersTitle => 'Amaturo';
+
+  @override
+  String get gameOffersUnavailable => 'Amaturo ntaboneka';
+
+  @override
+  String get gameOffersTemporarilyUnavailable =>
+      'Amaturo y’abafatanyabikorwa ntaboneka muri aka kanya.';
+
+  @override
+  String get gameWaysToEarn => 'Uburyo bwo kubona amanota';
+
+  @override
+  String get gameWaysToEarnDescription =>
+      'Jya mu bikorwa no mu bukangurambaga kugira ngo ubone amanota.';
+
+  @override
+  String get gameBalance => 'Amafaranga asigaye';
+
+  @override
+  String get gameAvailable => 'Aboneka';
+
+  @override
+  String gameActiveOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Amaturo $count akora',
+      one: 'Ituro 1 rikora',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameFeatured => 'Ay’ingenzi';
+
+  @override
+  String get gameMatchDay => 'Umunsi w’umukino';
+
+  @override
+  String get gameAlwaysOn => 'Ahora ahari';
+
+  @override
+  String get gameReward => 'Igihembo';
+
+  @override
+  String get gameActivation => 'Gukoresha';
+
+  @override
+  String get gameVerification => 'Kwemeza';
+
+  @override
+  String get gameCondition => 'Ibisabwa';
+
+  @override
+  String get gameClose => 'Funga';
+
+  @override
+  String get gameDetails => 'Ibisobanuro';
+
+  @override
+  String gamePointBalance(int count) {
+    return 'Amanota $count';
+  }
+
+  @override
+  String gameFormattedPoints(String amount) {
+    return 'Amanota $amount';
+  }
+
+  @override
+  String get gameVerificationApi => 'Kwemezwa na API y’umufatanyabikorwa';
+
+  @override
+  String get gameVerificationRenewal => 'Kwemeza kongera serivisi';
+
+  @override
+  String get gameVerificationReferral => 'Kwemeza uwasabwe';
+
+  @override
+  String get gameVerificationReceipt => 'Gusikana inyemezabwishyu cyangwa POS';
+
+  @override
+  String get gameVerificationGeo => 'Kwemeza GPS cyangwa aho igikorwa kiri';
+
+  @override
+  String get gameVerificationSocial => 'Kwemeza icyatangajwe ku mbuga';
+
+  @override
+  String get gameVerificationSavings => 'Kwemeza intambwe yo kuzigama';
+
+  @override
+  String get gameVerificationEcommerce => 'Kwemeza icyaguzwe mu iduka';
+
+  @override
+  String get gameVerificationMobility => 'Kwemeza ko urugendo rwarangiye';
+
+  @override
+  String get gameVerificationEventQr => 'Kwemeza QR y’igikorwa';
+
+  @override
+  String get gameVerificationManual => 'Kugenzurwa n’umufatanyabikorwa';
+
+  @override
+  String get gameSettingsUpper => 'IGENAMITERERE';
+
+  @override
+  String get gamePrivacyUpper => 'UBUZIMA BWITE';
+
+  @override
+  String get gameCoreGuarantees => 'IBYEMEZO BY’INGENZI';
+
+  @override
+  String get gamePhoneNumberHidden => 'Nomero ya telefoni irahishwa';
+
+  @override
+  String get gamePhoneNumberHiddenDescription =>
+      'Nomero ya WhatsApp cyangwa telefoni yawe irabikwa mu ibanga kuri seriveri gusa. Ntabwo igaragarizwa abandi bakoresha, abayobozi ba klabu cyangwa ku rutonde rusange.';
+
+  @override
+  String get gameAnonymousContributions => 'Imisanzu itagaragaza nyirayo';
+
+  @override
+  String get gameAnonymousContributionsDescription =>
+      'Imisanzu ya MoMo yo mu matsinda y’abafana ibikwa hakoreshejwe Fan ID yawe n’icyiciro cy’amafaranga gusa. Umubare nyawo na nomero ya telefoni ntibibikwa.';
+
+  @override
+  String get gameVisibilityControls => 'KUGENA IBIGARAGARA';
+
+  @override
+  String get gameShowRealName => 'Erekana amazina nyayo';
+
+  @override
+  String get gameShowRealNameDescription =>
+      'Iyo bizimijwe, Fan ID yawe ni yo igaragara ku rutonde aho kugaragaza amazina yawe.';
+
+  @override
+  String get gameFindableByPhone => 'Kuboneka hakoreshejwe telefoni';
+
+  @override
+  String get gameFindableByPhoneDescription =>
+      'Bituma inshuti zikubona zikoresheje nomero ya telefoni. Nomero yawe ikomeza kuba ibanga.';
+
+  @override
+  String get gamePrivacyFirst => 'Ubuzima bwite mbere';
+
+  @override
+  String gamePrivacyFirstDescription(String appName) {
+    return '$appName ntigurisha, ntisangira kandi ntigaragaza amakuru yawe bwite. Ibiranga byose kuri pulatifomu ntibigaragaza nyirabyo.';
+  }
+
+  @override
+  String get gameRewardsStoreTitle => 'IDUKA RY’IBIHEMBO';
+
+  @override
+  String get gameRewardsUnavailable => 'Ibihembo ntibiboneka';
+
+  @override
+  String get gameRewardsTemporarilyUnavailable =>
+      'Ibihembo ntibiboneka muri aka kanya.';
+
+  @override
+  String get gameAvailableBalance => 'AMANOTA ASIGAYE';
+
+  @override
+  String gameRewardsStoreDescription(String appName) {
+    return 'Gurana ibihembo bya $appName utavuye mu gikapo kimwe.';
+  }
+
+  @override
+  String gameRewardMeta(String category, String notes) {
+    return '$category · $notes';
+  }
+
+  @override
+  String gameRedeemCost(String cost) {
+    return 'Gurana $cost';
+  }
+
+  @override
+  String gameNeedCost(String cost) {
+    return 'Bisaba $cost';
+  }
+
+  @override
+  String get gameRewardConfigurationMissing =>
+      'Igenamiterere ry’igihembo ntirihari. Ongera ugerageze nyuma.';
+
+  @override
+  String get gameRewardAlreadyRedeemed => 'Iki gihembo cyamaze kuguranwa.';
+
+  @override
+  String gameRewardRedeemed(String reward, String cost) {
+    return '$reward yaguranwe $cost.';
+  }
+
+  @override
+  String get gameRewardCouldNotRedeem => 'Ntibyashobotse kugurana iki gihembo.';
+
+  @override
+  String get gameFriendsTitle => 'Inshuti';
+
+  @override
+  String get gameSupportersUnavailable => 'Abafana ntibaboneka';
+
+  @override
+  String get gameSupportersTemporarilyUnavailable =>
+      'Abafana ntibaboneka muri aka kanya.';
+
+  @override
+  String get gameSearchSupporterHint => 'Shaka izina cyangwa ID y’umufana';
+
+  @override
+  String get gameDone => 'Byakozwe.';
+
+  @override
+  String get gameResults => 'Ibisubizo';
+
+  @override
+  String get gameYourFriends => 'Inshuti zawe';
+
+  @override
+  String get gameChallenge => 'Higanwa';
+
+  @override
+  String get gameAccept => 'Emera';
+
+  @override
+  String get gamePending => 'Birategerejwe';
+
+  @override
+  String get gameAdd => 'Ongeraho';
+
+  @override
+  String get gameOnline => 'Arahari';
+
+  @override
+  String get gameFixturesTitle => 'IMIKINO';
+
+  @override
+  String get gameFixturesUnavailable => 'Imikino ntiboneka';
+
+  @override
+  String get gameFixturesCouldNotLoad =>
+      'Ntibyashobotse kuzana imikino muri aka kanya.';
+
+  @override
+  String get gameAll => 'Yose';
+
+  @override
+  String get gameToday => 'Uyu munsi';
+
+  @override
+  String get gameTomorrow => 'Ejo';
+
+  @override
+  String get gameYesterday => 'Ejo hashize';
+
+  @override
+  String gameRelativeDate(String relative, String date) {
+    return '$relative · $date';
+  }
+
+  @override
+  String gameMatchCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Imikino $count',
+      one: 'Umukino 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameMyActivity => 'IBIKORWA BYANJYE';
+
+  @override
+  String gameActiveCount(int count) {
+    return 'IBIKORA ($count)';
+  }
+
+  @override
+  String gameSettledTabCount(int count) {
+    return 'IBYARANGIYE ($count)';
+  }
+
+  @override
+  String gameHistoryCount(int count) {
+    return 'AMATEKA ($count)';
+  }
+
+  @override
+  String get gameActivityUnavailable => 'Ibikorwa ntibiboneka';
+
+  @override
+  String get gameActivityCouldNotLoad =>
+      'Ntibyashobotse kuzana ibikorwa byawe muri aka kanya.';
+
+  @override
+  String get gameCouldNotCancelPick => 'Ntibyashobotse guhagarika iri hitamo.';
+
+  @override
+  String get gameWon => 'YATSINZE';
+
+  @override
+  String get gameLost => 'YATSINZWE';
+
+  @override
+  String get gameCancelled => 'YAHAGARITSWE';
+
+  @override
+  String get gameVoid => 'YAVANYWEHO';
+
+  @override
+  String get gamePendingUpper => 'IRATEGEREJWE';
+
+  @override
+  String get gameTbd => 'BIRATEGEREJWE';
+
+  @override
+  String gameVersusShort(String home, String away) {
+    return '$home na $away';
+  }
+
+  @override
+  String get gameRound => 'Icyiciro';
+
+  @override
+  String gameCompetitionTime(String competition, String time) {
+    return '$competition • $time';
+  }
+
+  @override
+  String get gameCancel => 'Hagarika';
+
+  @override
+  String gameActivitySemantics(String home, String away) {
+    return 'Igikorwa cya $home na $away';
+  }
+
+  @override
+  String get gameOpenActivityDetail => 'Fungura ibisobanuro by’igikorwa';
+
+  @override
+  String get gameNotificationsUpper => 'AMATANGAZO';
+
+  @override
+  String get gameKickoffAlerts => 'Amatangazo yo gutangira umukino';
+
+  @override
+  String get gameRoundResults => 'Ibisubizo by’icyiciro';
+
+  @override
+  String get gameFriendChallenges => 'Guhiganwa n’inshuti';
+
+  @override
+  String get gameLineupsUpper => 'ABAKINNYI';
+
+  @override
+  String get gameSubstitutes => 'ABASIMBURA';
+
+  @override
+  String get gameActiveUpper => 'IBIKORA';
+
+  @override
+  String get gameWinRate => 'IGIPIMO CY’INTSINZI';
+
+  @override
+  String get gameYouUpper => 'WOWE';
+
+  @override
+  String gameWalletSignedPoints(String sign, String amount) {
+    return '$sign$amount amanota';
+  }
+
+  @override
+  String gameWalletBalance(String amount) {
+    return 'Asigaye $amount amanota';
+  }
+
+  @override
+  String get gameVersus => 'NA';
+
+  @override
+  String get gameKickoffSoon => 'Umukino uri hafi gutangira';
+
+  @override
+  String gameJoinedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Abantu $count binjiye',
+      one: 'Umuntu 1 yinjiye',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameTotalPoolPoints(int count) {
+    return 'Amanota $count yose';
+  }
+
+  @override
+  String get gameCreator => 'Uwashyizeho';
+
+  @override
+  String get gameMyPick => 'Ihitamo ryanjye';
+
+  @override
+  String get gameOpenUpper => 'IRAFUNGUYE';
+
+  @override
+  String get gameLockedUpper => 'IRAFUNZE';
+
+  @override
+  String get gameSettledUpper => 'YARANGIYE';
+
+  @override
+  String gameDaysLeft(int count) {
+    return 'Hasigaye iminsi $count';
+  }
+
+  @override
+  String gameHoursMinutes(int hours, int minutes) {
+    return 'Amasaha $hours n’iminota $minutes';
+  }
+
+  @override
+  String gameMinutesLeft(int count) {
+    return 'Hasigaye iminota $count';
+  }
+
+  @override
+  String gameScorePrediction(String label, int home, int away) {
+    return '$label  $home-$away';
+  }
+
+  @override
+  String get gamePointsShare => 'Igabana ry’amanota';
+
+  @override
+  String get gamePointsShareDescription =>
+      'Amategeko y’urwego agena uko amanota wabonye agufasha n’uko afasha ibihembo rusange bya klabu.';
+
+  @override
+  String gamePersonalPercentage(int count) {
+    return '$count% ayawe';
+  }
+
+  @override
+  String gameClubPercentage(int count) {
+    return '$count% aya klabu';
+  }
+
+  @override
+  String gameTierSplit(int personal, int club) {
+    return '$personal/$club';
+  }
+
+  @override
+  String get gamePointsShareExplanation =>
+      'Amanota yawe agabanywa hakurikijwe urwego: umugabane wawe uguma kuri wowe, uwa klabu ugafasha ibihembo rusange.';
+
+  @override
+  String get gameTierSupporter => 'Umufana';
+
+  @override
+  String get gameTierMember => 'Umunyamuryango';
+
+  @override
+  String get gameTierUltra => 'Ultra';
+
+  @override
+  String get gameTierLegend => 'Ikirangirire';
+
+  @override
+  String get gameFree => 'Ubuntu';
+
+  @override
+  String gameMonthlyPrice(String amount) {
+    return '$amount RWF / ukwezi';
+  }
+
+  @override
+  String gameShareTitle(String appName) {
+    return 'Ihitamo rya $appName';
+  }
+
+  @override
+  String get gameShareCopied => 'Inyandiko yo gusangiza yashyizwe mu bubiko.';
+
+  @override
+  String gameShareStatusLine(String status, String home, String away) {
+    return '$status: $home na $away';
+  }
+
+  @override
+  String gameFinalScore(int home, int away) {
+    return 'Amanota ya nyuma: $home-$away';
+  }
+
+  @override
+  String gameMarketSelection(String market, String selection) {
+    return '$market: $selection';
+  }
+
+  @override
+  String gameEarnedShare(int count) {
+    return 'Wabonye: +$count amanota';
+  }
+
+  @override
+  String gamePotentialShare(int count) {
+    return 'Ushobora kubona: +$count amanota';
+  }
+
+  @override
+  String get gameMarketUpper => 'UBWOKO';
+
+  @override
+  String get gamePickUpper => 'IHITAMO';
+
+  @override
+  String get gameEarnedUpper => 'WABONYE';
+
+  @override
+  String get gamePotentialUpper => 'ASHOBOKA';
+
+  @override
+  String gameShareTagline(String appName) {
+    return '$appName · KINA. HITAMO. BONA.';
+  }
+
+  @override
+  String gamePickTypeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ubwoko $count bw’amahitamo',
+      one: 'Ubwoko 1 bw’ihitamo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameSearchPickTypes => 'Shaka ubwoko bw’amahitamo';
+
+  @override
+  String get gameClearSearch => 'Siba ibyo washakaga';
+
+  @override
+  String get gameAddPicksToUnlock =>
+      'Ongeraho amahitamo kugira ngo ufungure icyiciro';
+
+  @override
+  String gameOpenRoundSummary(int count, int points) {
+    return 'Fungura icyiciro · Amahitamo $count · Amanota $points';
+  }
+
+  @override
+  String get gameLiveOnly => 'Imbonankubone gusa';
+
+  @override
+  String gameOutcomeAddedToRound(String outcome) {
+    return '$outcome yongewe mu cyiciro cyawe.';
+  }
+
+  @override
+  String get gameMarkets => 'Ubwoko bw’amahitamo';
+
+  @override
+  String gameMarketCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ubwoko $count',
+      one: 'Ubwoko 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameStatsNotAvailableYet => 'Imibare ntiraboneka';
+
+  @override
+  String get gameLiveStatsUpdating =>
+      'Imibare y’imbonankubone yivugurura umukino ukina.';
+
+  @override
+  String get gameLiveMatchDataUpdating =>
+      'Amakuru y’umukino arimo kuvugururwa kuri uyu mukino.';
+
+  @override
+  String get gameStructuredMatchStats => 'Imibare yateguwe y’uyu mukino.';
+
+  @override
+  String get gameTotalGoals => 'Ibitego byose';
+
+  @override
+  String get gameFinalMatchStats => 'Imibare ya nyuma y’umukino.';
+
+  @override
+  String gameFixtureMarketTitle(String home, String away, String market) {
+    return '$home na $away · $market';
+  }
+
+  @override
+  String get gamePickTypeLocked =>
+      'Ubu bwoko bw’ihitamo burafunze kuri uyu mukino.';
+
+  @override
+  String get gameLeaderboardTitle => 'Urutonde';
+
+  @override
+  String get gameFetRanking => 'Urutonde rwa FET';
+
+  @override
+  String get gameSupporters => 'Abafana';
+
+  @override
+  String get gameAllTime => 'Ibihe byose';
+
+  @override
+  String get gameWeekly => 'Buri cyumweru';
+
+  @override
+  String get gameMonthly => 'Buri kwezi';
+
+  @override
+  String get gameLeaderboardUnavailable => 'Urutonde ntiruboneka';
+
+  @override
+  String get gameLeaderboardTemporarilyUnavailable =>
+      'Urutonde ntiruboneka muri aka kanya.';
+
+  @override
+  String get gameRankingsUnavailable => 'Intonde ntiziboneka';
+
+  @override
+  String get gameSupporterRankingsTemporarilyUnavailable =>
+      'Intonde z’abafana ntiziboneka muri aka kanya.';
+
+  @override
+  String get gameNotSignedIn => 'NTIWINJIYE';
+
+  @override
+  String get gameTierFan => 'UMUFANA';
+
+  @override
+  String get gameDisplayNameOn => 'Amazina aragaragara';
+
+  @override
+  String get gameAliasOnly => 'Izina ry’irihimbano gusa';
+
+  @override
+  String gameDisplayNameOnDescription(String name) {
+    return 'Intonde zishobora kwerekana $name aho kwerekana Fan ID gusa.';
+  }
+
+  @override
+  String get gameAliasOnlyDescription =>
+      'Intonde zerekana Fan ID cyangwa izina ry’irihimbano aho kwerekana amazina nyayo.';
+
+  @override
+  String get gamePhoneHidden => 'Telefoni irahishwa';
+
+  @override
+  String get gamePhoneHiddenDescription =>
+      'Nomero ya telefoni yawe iguma kuri seriveri kandi ntigaragarizwa abandi bafana cyangwa abayobozi ba klabu.';
+
+  @override
+  String get gamePhoneDiscoveryOn => 'Gushakwa na telefoni birakora';
+
+  @override
+  String get gamePhoneDiscoveryOff => 'Gushakwa na telefoni birazimye';
+
+  @override
+  String get gamePhoneDiscoveryOnDescription =>
+      'Inshuti zisanzwe zizi nomero yawe zishobora kubona umwirondoro wawe.';
+
+  @override
+  String get gamePhoneDiscoveryOffDescription =>
+      'Gushakwa hakoreshejwe telefoni byazimijwe ku mwirondoro wawe.';
+
+  @override
+  String get gameVerified => 'Byemejwe';
+
+  @override
+  String get gameVerificationPending => 'Kwemeza birategerejwe';
+
+  @override
+  String gameVerifiedDescription(String appName) {
+    return 'Umwirondoro wawe wa telefoni wemejwe ku bikorwa byo kubona amanota no gusabana bya $appName.';
+  }
+
+  @override
+  String gameVerificationPendingDescription(String appName) {
+    return 'Emeza telefoni yawe kugira ngo ufungure ibikorwa byose byo gusabana bya $appName.';
+  }
+
+  @override
+  String get gameFanIdPersistentRule =>
+      'Fan ID yawe iva ku mwirondoro wawe kandi ntihinduka iyo ugarutse.';
+
+  @override
+  String gameDisplayNameVisibleRule(String name) {
+    return 'Amazina agaragara “$name” ashobora kujya ku rutonde kugeza ubizimije.';
+  }
+
+  @override
+  String get gameRealNameHiddenRule =>
+      'Amazina yawe nyayo aguma ahishwe ku rutonde kugeza wemeye ko agaragara.';
+
+  @override
+  String get gamePhoneEncryptedRule =>
+      'Nomero ya telefoni yawe ibikwa mu ibanga kuri seriveri gusa.';
+
+  @override
+  String get gamePhoneDiscoveryEnabledRule =>
+      'Gushaka inshuti hakoreshejwe telefoni birakora kuri konti yawe.';
+
+  @override
+  String get gamePhoneDiscoveryDisabledRule =>
+      'Gushaka inshuti hakoreshejwe telefoni byazimijwe kuri konti yawe.';
+
+  @override
+  String gamePhoneVerifiedRule(String appName) {
+    return 'Umwirondoro wawe wa telefoni wemejwe ku biranga n’ibihembo bya $appName.';
+  }
+
+  @override
+  String gamePhonePendingRule(String appName) {
+    return 'Kwemeza telefoni biracyategerejwe ku mwirondoro wawe wa $appName.';
+  }
+
+  @override
+  String gameTeamLinkedRule(String team) {
+    return 'Umwirondoro wawe uhujwe na $team kugira ngo ibikwerekwa bikubere.';
+  }
+
+  @override
+  String get gameLinkTeamRule =>
+      'Ushobora guhuza ikipe ukunda mu ntangiriro cyangwa mu igenamiterere ry’umwirondoro.';
+
+  @override
+  String get gameDeleteAccountRule =>
+      'Gusiba konti yawe bikuraho amakuru bwite n’ihuriro rya Fan ID ku mwirondoro ukora.';
+
+  @override
+  String get gameFanIdTitle => 'FAN ID';
+
+  @override
+  String get gameYourFanId => 'FAN ID YAWE';
+
+  @override
+  String get gameAliasOnlyProfile => 'Umwirondoro w’izina ry’irihimbano gusa';
+
+  @override
+  String get gameFanIdCopied => 'Fan ID yashyizwe mu bubiko.';
+
+  @override
+  String get gameCopyToClipboard => 'Shyira mu bubiko';
+
+  @override
+  String get gamePrivacyBadges => 'IBIMENYETSO BY’UBUZIMA BWITE';
+
+  @override
+  String get gameIdentityRules => 'AMATEGEKO Y’UMWIRONDORO';
+
+  @override
+  String get gameIdentityRulesDescription =>
+      'Uko Fan ID yawe ikora hakurikijwe igenamiterere ry’umwirondoro wawe.';
+
+  @override
+  String get gameStandingsTitle => 'URUTONDE';
+
+  @override
+  String get gameCompetitionNotFound => 'Irushanwa ntiryabonetse.';
+
+  @override
+  String get gameStandingsTemporarilyUnavailable =>
+      'Urutonde ntiruboneka muri aka kanya.';
+
+  @override
+  String get gameStandingsUnavailable => 'Urutonde ntiruboneka';
+
+  @override
+  String get gamePositionShort => 'UMW';
+
+  @override
+  String get gameTeamUpper => 'IKIPE';
+
+  @override
+  String get gamePointsShort => 'AMN';
+
+  @override
+  String get gamePointsUpper => 'AMANOTA';
+
+  @override
+  String gameStandingRecord(
+    int played,
+    int goalsFor,
+    int goalsAgainst,
+    int difference,
+  ) {
+    return '${played}M · $goalsFor:$goalsAgainst · IB $difference';
+  }
+
+  @override
+  String get gameHeadToHead => 'UKO BAHURANYE';
+
+  @override
+  String gameHeadToHeadEmpty(String home, String away) {
+    return 'Amateka y’imikino ya $home na $away azagaragara hano.';
+  }
+
+  @override
+  String get gameWinDistribution => 'IGABANA RY’INTSINZI';
+
+  @override
+  String get gameDraws => 'BANGANYIJE';
+
+  @override
+  String gameTeamGoals(String team) {
+    return 'IBITEGO BYA $team';
+  }
+
+  @override
+  String get gameRecentEncounters => 'IMIKINO IHERUKA';
+
+  @override
+  String gameScore(int home, int away) {
+    return '$home - $away';
+  }
+
+  @override
+  String get gameTokenHistoryTitle => 'AMATEKA Y’AMANOTA';
+
+  @override
+  String get gameTokenHistoryTemporarilyUnavailable =>
+      'Amateka y’amanota ntaboneka muri aka kanya.';
+
+  @override
+  String get gameHistoryUnavailable => 'Amateka ntaboneka';
+
+  @override
+  String get gameEarned => 'Yabonetse';
+
+  @override
+  String get gameSpent => 'Yakoreshejwe';
+
+  @override
+  String get gameAllUpper => 'BYOSE';
+
+  @override
+  String get gameEarnedUpperFilter => 'YABONETSE';
+
+  @override
+  String get gameSpentUpper => 'YAKORESHEJWE';
+
+  @override
+  String get gameCredit => 'Yinjiye';
+
+  @override
+  String get gameDebit => 'Yasohotse';
+
+  @override
+  String get gameLedgerUpdate => 'Ivugurura ry’igitabo';
+
+  @override
+  String gameTransactionSemantics(
+    String direction,
+    String headline,
+    String detail,
+    int amount,
+    int balance,
+    String date,
+  ) {
+    return 'Igikorwa cya $direction, $headline, $detail, amanota $amount, asigaye $balance, $date';
+  }
+
+  @override
+  String get gameUnknownTime => 'Igihe ntikizwi';
+
+  @override
+  String get gameClubFanZoneTitle => 'AHO ABAFANA BA KLABU BAHURIRA';
+
+  @override
+  String get gameClubFanZoneTemporarilyUnavailable =>
+      'Aho abafana ba klabu bahurira ntihaboneka muri aka kanya.';
+
+  @override
+  String get gameFanZoneUnavailable => 'Aho abafana bahurira ntihaboneka';
+
+  @override
+  String get gameSupporterPulse => 'IMBARAGA Z’ABAFANA';
+
+  @override
+  String get gameSupporterPulseDescription =>
+      'Imbaraga nyazo z’abafana mu marushanwa akora, amahitamo y’imikino n’amakipe ayoboye.';
+
+  @override
+  String get gameTopClubs => 'AMAKIPE AYOBORA';
+
+  @override
+  String gameRankHash(int rank) {
+    return 'Nº $rank';
+  }
+
+  @override
+  String get gameSupporterLeans => 'IBYO ABAFANA BAHITAMO';
+
+  @override
+  String gameSupporterLeansEmpty(String appName) {
+    return 'Igabana ry’amahitamo y’abafana rizagaragara iri rushanwa rimaze kugira guhanura kwa $appName gukora.';
+  }
+
+  @override
+  String gamePair(String first, String second) {
+    return '$first · $second';
+  }
+
+  @override
+  String gameSupporterLeanPercentage(String percentage) {
+    return '$percentage% by’abafana bahitamo gutya ubu.';
+  }
+
+  @override
+  String get gameLeagueHubTitle => 'AMAKURU Y’IRUSHANWA';
+
+  @override
+  String get gameLeagueDataTemporarilyUnavailable =>
+      'Amakuru y’irushanwa ntaboneka muri aka kanya.';
+
+  @override
+  String get gameLeagueUnavailable => 'Irushanwa ntiriboneka';
+
+  @override
+  String get gameCompetition => 'IRUSHANWA';
+
+  @override
+  String get gameRegion => 'Akarere';
+
+  @override
+  String get gameLeague => 'Shampiyona';
+
+  @override
+  String get gameTeams => 'Amakipe';
+
+  @override
+  String get gameFixtures => 'Imikino';
+
+  @override
+  String get gameLeader => 'Iyoboye';
+
+  @override
+  String get gameTopTable => 'ABAYOBOYE URUTONDE';
+
+  @override
+  String get gameFullStandings => 'Urutonde rwose';
+
+  @override
+  String gameLeagueStandingRecord(int played, int won, int drawn, int lost) {
+    return '${played}M · ${won}T ${drawn}B ${lost}Y';
+  }
+
+  @override
+  String get gameEntrySubmitted => 'Ihitamo ryoherejwe';
+
+  @override
+  String get gameBonusEntryLive => 'Ihitamo ryawe ry’inyongera rirakora ubu.';
+
+  @override
+  String get gameCouldNotSubmitBonus =>
+      'Ntibyashobotse kohereza ihitamo ry’inyongera ubu.';
+
+  @override
+  String get gameKickoffTbd => 'Gutangira ntibiragenwa';
+
+  @override
+  String get gameBonusRound => 'Icyiciro cy’inyongera';
+
+  @override
+  String get gameSubmitting => 'Birimo koherezwa…';
+
+  @override
+  String get gameEntriesClosedSentence => 'Amahitamo yarafunzwe';
+
+  @override
+  String get gameSubmitEntry => 'Ohereza ihitamo';
+
+  @override
+  String get gameBonusRoundActivationPending =>
+      'Gufungura icyiciro cy’inyongera birategerejwe.';
+
+  @override
+  String get gameBonusRoundTemporarilyUnavailable =>
+      'Icyiciro cy’inyongera ntikiboneka muri aka kanya.';
+
+  @override
+  String get gameBonusRoundUnavailable => 'Icyiciro cy’inyongera ntikiboneka';
+
+  @override
+  String get gamePointsPool => 'Ikigega cy’amanota';
+
+  @override
+  String get gamePickAllFeatured =>
+      'Hitamo buri mukino w’ingenzi mbere y’uko icyiciro gifungwa.';
+
+  @override
+  String gamePicksComplete(int selected, int total) {
+    return 'Amahitamo $selected kuri $total yarangiye';
+  }
+
+  @override
+  String gameEntriesRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hasigaye amahitamo $count',
+      one: 'Hasigaye ihitamo 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameLeaders => 'Abayoboye';
+
+  @override
+  String get gameSocialHub => 'Aho gusabana';
+
+  @override
+  String get gameClub => 'Klabu';
+
+  @override
+  String get gameSearchYourFriends => 'Shaka inshuti zawe';
+
+  @override
+  String get gameBrowse => 'Shakisha';
+
+  @override
+  String get gameViewAll => 'Reba byose';
+
+  @override
+  String get gameClubStandingsTemporarilyUnavailable =>
+      'Urutonde rwa klabu ntiruboneka muri aka kanya.';
+
+  @override
+  String get gameClubStandingsUnavailable => 'Urutonde rwa klabu ntiruboneka';
+
+  @override
+  String get gameClubStanding => 'Umwanya muri klabu';
+
+  @override
+  String get gameUnranked => 'Nta mwanya';
+
+  @override
+  String get gameEarnPointsForClubTable =>
+      'Bona amanota kugira ngo ugaragare ku rutonde rwa klabu.';
+
+  @override
+  String gamePointsEarnedSoFar(int count) {
+    return 'Amanota $count amaze kuboneka.';
+  }
+
+  @override
+  String gameNameYou(String name) {
+    return '$name (Wowe)';
+  }
+
+  @override
+  String get gameChallengeFlowTemporarilyUnavailable =>
+      'Uburyo bwo guhiganwa ntibuboneka muri aka kanya.';
+
+  @override
+  String gameHeadToHeadMessage(String appName, String home, String away) {
+    return 'Guhangana kwa $appName kuri $home na $away';
+  }
+
+  @override
+  String get gameChallengeSent => 'Guhiganwa byoherejwe';
+
+  @override
+  String get gameChallengeWaiting => 'Guhiganwa kwawe gutegereje igisubizo.';
+
+  @override
+  String get gameCouldNotSendChallenge =>
+      'Ntibyashobotse kohereza uguhiganwa ubu.';
+
+  @override
+  String get gameSending => 'Birimo koherezwa…';
+
+  @override
+  String get gameSendChallenge => 'Ohereza uguhiganwa';
+
+  @override
+  String get gameChallengeUnavailable => 'Guhiganwa ntibiboneka';
+
+  @override
+  String get gameSupporter => 'Umufana';
+
+  @override
+  String get gameAddFriendsBeforeChallenge =>
+      'Ongeraho inshuti mbere yo kohereza uguhiganwa.';
+
+  @override
+  String get gameFindFriends => 'Shaka inshuti';
+
+  @override
+  String get gameFixture => 'Umukino';
+
+  @override
+  String get gamePick => 'Ihitamo';
+
+  @override
+  String get gameSelected => 'Byatoranyijwe';
+
+  @override
+  String get gameChoose => 'Hitamo';
+
+  @override
+  String get gameTeamNotFound => 'Ikipe ntiyabonetse.';
+
+  @override
+  String get gameTeamProfileTemporarilyUnavailable =>
+      'Umwirondoro w’ikipe ntuboneka muri aka kanya.';
+
+  @override
+  String get gameSupporterActivityActiveClubOnly =>
+      'Ibikorwa by’abafana biboneka kuri klabu ikora gusa.';
+
+  @override
+  String get gameSupporterRoutingCurrentClubOnly =>
+      'Urutonde rw’abafana n’inzira z’imisanzu biboneka kuri klabu ikoreshwa na porogaramu gusa.';
+
+  @override
+  String get gameContributionRouteNotPublished =>
+      'Iyi klabu ntiratangaza inzira ikora yo gutanga umusanzu.';
+
+  @override
+  String get gameClubSupporterDataUnavailable =>
+      'Amakuru y’abafana ba klabu ntaboneka muri aka kanya.';
+
+  @override
+  String get gameContributionsActiveClubOnly =>
+      'Imisanzu iboneka kuri klabu ikora gusa.';
+
+  @override
+  String get gameContributionRouteUnavailable => 'Inzira y’umusanzu ntiboneka.';
+
+  @override
+  String get gameCouldNotOpenDialer => 'Ntibyashobotse gufungura ahamagazwa.';
+
+  @override
+  String get gameDialerLaunchFailed => 'Gufungura ahamagazwa byanze.';
+
+  @override
+  String get gameEnterContributionAmount => 'Andika umubare w’umusanzu';
+
+  @override
+  String gamePaymentRouteDescription(String recipient, String provider) {
+    return 'Uri bwishyure $recipient ukoresheje $provider.';
+  }
+
+  @override
+  String gameAmountCurrency(String currency) {
+    return 'Umubare ($currency)';
+  }
+
+  @override
+  String get gameDialNow => 'Hamagara ubu';
+
+  @override
+  String get gameEnterValidAmount => 'Andika umubare wemewe.';
+
+  @override
+  String get gameTeamProfileTitle => 'UMWIRONDORO W’IKIPE';
+
+  @override
+  String get gameTeamUnavailable => 'Ikipe ntiboneka';
+
+  @override
+  String gameFoundedYear(int year) {
+    return 'Yashinzwe mu $year';
+  }
+
+  @override
+  String get gameTable => 'Urutonde';
+
+  @override
+  String get gameSquad => 'Abakinnyi';
+
+  @override
+  String get gameOverview => 'Incamake';
+
+  @override
+  String get gameMembers => 'Abanyamuryango';
+
+  @override
+  String get gameContribute => 'Tanga umusanzu';
+
+  @override
+  String get gameAbout => 'Ibyerekeye';
+
+  @override
+  String get gameLeaguePosition => 'UMWANYA MURI SHAMPIYONA';
+
+  @override
+  String get gamePlayedShort => 'M';
+
+  @override
+  String get gameWonShort => 'T';
+
+  @override
+  String get gameDrawnShort => 'B';
+
+  @override
+  String get gameLostShort => 'Y';
+
+  @override
+  String get gameGoalDifferenceShort => 'IB';
+
+  @override
+  String get gameMomoContributionRoute => 'INZIRA Y’UMUSANZU MOMO';
+
+  @override
+  String gameUseProviderForClub(String provider, String club) {
+    return 'Koresha $provider kugira ngo utange umusanzu kuri $club.';
+  }
+
+  @override
+  String get gameThisClub => 'iyi klabu';
+
+  @override
+  String get gameSupporterRegistryCurrentClubOnly =>
+      'Urutonde rw’abafana ruboneka kuri klabu ikoreshwa na porogaramu gusa.';
+
+  @override
+  String get gameMembersUnavailable => 'Abanyamuryango ntibaboneka';
+
+  @override
+  String get gameClubMembers => 'ABANYAMURYANGO BA KLABU';
+
+  @override
+  String get gameTierGold => 'Zahabu';
+
+  @override
+  String get gameTierSilver => 'Feza';
+
+  @override
+  String get gameTierBronze => 'Umuringa';
+
+  @override
+  String get gameTierImena => 'Imena';
+
+  @override
+  String get gameTopContributors => 'ABATANZE IMISANZU MYINSHI';
+
+  @override
+  String get gameMomoContribution => 'UMUSANZU MOMO';
+
+  @override
+  String gameUseProviderInCountry(String provider, String country) {
+    return 'Koresha $provider muri $country kugira ngo utange umusanzu kuri iyi klabu.';
+  }
+
+  @override
+  String get gameEnterAmount => 'Andika umubare';
+
+  @override
+  String gameEnterAmountDescription(String provider) {
+    return 'Hitamo umubare ushaka kohereza ukoresheje $provider.';
+  }
+
+  @override
+  String get gameConfirmInDialer => 'Emeza aho bahamagara';
+
+  @override
+  String gameConfirmInDialerDescription(String code) {
+    return 'Turafungura ahamagazwa rya mobile money kuri kode $code.';
+  }
+
+  @override
+  String get gameReconciliation => 'Guhuza umusanzu';
+
+  @override
+  String get gameReconciliationDescription =>
+      'Umusanzu wawe uhuzwa n’ibikorwa bya klabu iyo kwishyura byemejwe.';
+
+  @override
+  String get gameOpeningDialer => 'Birimo gufungura ahamagazwa…';
+
+  @override
+  String get gameEnterAmountAndDial => 'Andika umubare maze uhamagare';
+
+  @override
+  String gameAboutTeam(String team) {
+    return 'IBYEREKEYE $team';
+  }
+
+  @override
+  String get gameThisClubUpper => 'IYI KLABU';
+
+  @override
+  String get gameLocation => 'Aho iherereye';
+
+  @override
+  String get gameCountry => 'Igihugu';
+
+  @override
+  String get gameFounded => 'Yashinzwe';
+
+  @override
+  String get gameType => 'Ubwoko';
+
+  @override
+  String get gameAffiliatedClub => 'Klabu ifitanye isano';
+
+  @override
+  String get gameSelectedLeaderboardPeriod => 'Igihe cy’urutonde cyatoranyijwe';
+
+  @override
+  String get gameSelectPeriod => 'Hitamo igihe';
+
+  @override
+  String gameRankLabel(String rank) {
+    return 'Nº $rank';
+  }
+
+  @override
+  String get gameRankPending => 'Umwanya urategerejwe';
+
+  @override
+  String gameAccuracyWins(String accuracy, int wins) {
+    String _temp0 = intl.Intl.pluralLogic(
+      wins,
+      locale: localeName,
+      other: 'Intsinzi $wins',
+      one: 'Intsinzi 1',
+    );
+    return 'Ukuri $accuracy% · $_temp0';
+  }
+
+  @override
+  String gameSettledCount(int count) {
+    return '$count byarangiye';
+  }
+
+  @override
+  String gameTierAlias(String tier, String alias) {
+    return 'Urwego $tier · $alias';
+  }
+
+  @override
+  String gamePodiumRank(int rank) {
+    return 'Umwanya $rank ku ruhimbi';
+  }
+
+  @override
+  String get gamePickRound => 'Icyiciro cy’amahitamo';
+
+  @override
+  String gameActivePicks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Amahitamo $count arakora',
+      one: 'Ihitamo 1 rirakora',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameEarnUpToPoints(int count) {
+    return 'Bona amanota agera kuri $count';
+  }
+
+  @override
+  String get gamePickRoundEmpty => 'Icyiciro cy’amahitamo kirimo ubusa';
+
+  @override
+  String get gamePickRoundEmptyDescription =>
+      'Ongeramo amahitamo avuye ku mukino uwo ari wo wose maze uyemeze hano.';
+
+  @override
+  String get gamePickRoundUpper => 'ICYICIRO CY’AMAHITAMO';
+
+  @override
+  String get gameAcca => 'Urwunge';
+
+  @override
+  String gamePotentialPoints(int count) {
+    return 'Amanota ashoboka: $count';
+  }
+
+  @override
+  String get gameLockInPicks => 'Emeza amahitamo';
+
+  @override
+  String get gameSomeSelectionsFailed => 'Hari amahitamo atashoboye koherezwa.';
+
+  @override
+  String get gameCouldNotSubmitPicks =>
+      'Ntibyashobotse kohereza amahitamo yawe.';
+
+  @override
+  String get gameConfirmPicks => 'EMEZA AMAHITAMO';
+
+  @override
+  String gameLockingCombo(int count) {
+    return 'Uri kwemeza amahitamo $count nk’urwunge.';
+  }
+
+  @override
+  String gameLockingPicks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Uri kwemeza amahitamo $count.',
+      one: 'Uri kwemeza ihitamo 1.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameOutcomePotential(String outcome, int count) {
+    return '$outcome · +$count amanota';
+  }
+
+  @override
+  String get gameTotalPotential => 'AMANOTA YOSE ASHOBOKA';
+
+  @override
+  String get gameGoBack => 'SUBIRA INYUMA';
+
+  @override
+  String gamePredictionsLocked(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Amahanura $count yemejwe',
+      one: 'Ihanura ryemejwe',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameRoundId(String id) {
+    return 'ID y’icyiciro: $id';
+  }
+
+  @override
+  String get gameShareUpper => 'SANGIZA';
+
+  @override
+  String get gameCopyUpper => 'KOPI';
+
+  @override
+  String get gameViewMyPredictions => 'REBA AMAHANURA YANJYE';
+
+  @override
+  String get gameKeepBrowsing => 'KOMEZA GUSHAKISHA';
+
+  @override
+  String get gameRemovePick => 'Kuraho ihitamo';
+
+  @override
+  String get gameFans => 'Abafana';
+
+  @override
+  String get gameWallet => 'Igikapo';
+
+  @override
+  String get gameMore => 'Ibindi';
+
+  @override
+  String get gameRoundUpper => 'ICYICIRO';
+
+  @override
+  String gameAccuracyRounds(String accuracy, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ibyiciro $count',
+      one: 'Icyiciro 1',
+    );
+    return '$accuracy% · $_temp0';
+  }
+
+  @override
+  String gamePointsRound(int count) {
+    return 'Icyiciro cy’amanota $count';
+  }
+
+  @override
+  String get gamePointsRoundLabel => 'amanota y’icyiciro';
+
+  @override
+  String gamePointEntry(int count) {
+    return 'Kwinjira n’inota $count';
+  }
+
+  @override
+  String gameFansCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Abafana $count',
+      one: 'Umufana 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameChooseWdw => 'Hitamo T/B/T';
+
+  @override
+  String get gameJoinRound => 'Injira mu cyiciro';
+
+  @override
+  String gameSelectedOutcome(String outcome) {
+    return '$outcome byatoranyijwe';
+  }
+
+  @override
+  String get gameChallengesTitle => 'GUHIGANWA';
+
+  @override
+  String get gameChallengesTemporarilyUnavailable =>
+      'Guhiganwa ntibiboneka muri aka kanya.';
+
+  @override
+  String get gameChallengesUnavailable => 'Guhiganwa ntibiboneka';
+
+  @override
+  String get gameDaily => 'BURI MUNSI';
+
+  @override
+  String get gameWeeklyUpper => 'BURI CYUMWERU';
+
+  @override
+  String get gameSeasonal => 'BURI GIHEMBWE';
+
+  @override
+  String get gameCompleted => 'Byarangiye';
+
+  @override
+  String get gameChallengesRequireProfile =>
+      'Guhiganwa bigaragara umwirondoro wawe w’umufana umaze gukora.';
+
+  @override
+  String get gameWhatIsFet => 'FET NI IKI?';
+
+  @override
+  String get gameWhatIsFetBody =>
+      'FET ni amanota y’imikoranire y’abafana. Uyabona witabira ibikorwa bya klabu, ujya ku mikino, urangiza uguhiganwa, uhanura kandi ugafasha umuryango.';
+
+  @override
+  String get gameHowPredictionsWork => 'UKO GUHANURA BIKORA';
+
+  @override
+  String get gameHowPredictionsWorkBody =>
+      'Reba imikino iri imbere, hitamo ubwoko bwo guhanura, maze wemeze amahitamo mbere y’umukino. Amahitamo nyayo atanga amanota hakurikijwe uburemere.';
+
+  @override
+  String get gameEarnLevelRedeem => 'BONA, ZAMUKA KANDI UGURANE';
+
+  @override
+  String get gameEarnLevelRedeemBody =>
+      'Amanota yawe yiyongera uko witabira. Zamuka ku rutonde, fungura ibyiciro by’ubunyamuryango kandi ugurane ibihembo mu iduka rya klabu.';
+
+  @override
+  String get gameBackUpper => 'SUBIRA INYUMA';
+
+  @override
+  String get gameGetStarted => 'TANGIRA';
+
+  @override
+  String get gameNext => 'BIKURIKIRA';
+
+  @override
+  String get gameMyChallenges => 'GUHIGANWA KWANJYE';
+
+  @override
+  String get gameOpen => 'Birafunguye';
+
+  @override
+  String get gameLocked => 'Birafunze';
+
+  @override
+  String get gameSettled => 'Byarangiye';
+
+  @override
+  String get gameRefunded => 'Byasubijwe';
+
+  @override
+  String get gameLoadingChallenges => 'Kuzana uguhiganwa kwawe';
+
+  @override
+  String get gameLoadingChallengesDescription =>
+      'Kugenzura ibyuho wakoze cyangwa winjiyemo kuri iyi mimerere.';
+
+  @override
+  String get gameRefresh => 'Vugurura';
+
+  @override
+  String get gameRefreshingChallengeHistory =>
+      'Kuvugurura amateka yo guhiganwa';
+
+  @override
+  String get gameRefreshingChallengeHistoryDescription =>
+      'Ibyuho byemejwe biguma bigaragara mu gihe hagenzurwa imimerere mishya.';
+
+  @override
+  String get gameChallengeHistoryReadOnly =>
+      'Amateka yo guhiganwa ni ayo kureba gusa';
+
+  @override
+  String get gameChallengeHistoryReadOnlyDescription =>
+      'Ibyuho byemejwe biguma bigaragara, ariko gufungura ibisobanuro byazimijwe muri iyi verisiyo.';
+
+  @override
+  String get gameShowingSavedChallengeHistory => 'Kwerekana amateka yabitswe';
+
+  @override
+  String get gameShowingSavedChallengeHistoryDescription =>
+      'Ongera uhuze kandi uvugurure mbere yo gufungura icyuho cyangwa kugenzura imimerere mishya.';
+
+  @override
+  String get gameRefreshHistory => 'VUGURURA AMATEKA';
+
+  @override
+  String gameNoFilteredChallenges(String filter) {
+    return 'Nta guhiganwa $filter';
+  }
+
+  @override
+  String get gameCreateChallenge => 'Shyiraho uguhiganwa';
+
+  @override
+  String gameChallengeCardSemantics(String home, String away, String summary) {
+    return '$home na $away. $summary. Fungura ibisobanuro by’uguhiganwa.';
+  }
+
+  @override
+  String get gameOpensChallenge => 'Fungura uku guhiganwa';
+
+  @override
+  String get gameChallengeDetailsUnavailable =>
+      'Ibisobanuro by’uguhiganwa ntibiboneka';
+
+  @override
+  String gameTeamsVersusMultiline(String home, String away) {
+    return '$home\nna\n$away';
+  }
+
+  @override
+  String get gameConnectionRestored => 'Umuyoboro wagarutse';
+
+  @override
+  String get gameChallengeHistoryOffline => 'Amateka yo guhiganwa nta muyoboro';
+
+  @override
+  String get gameRefreshLatestChallengeStatus =>
+      'Vugurura kugira ngo ugenzure imimerere mishya y’uguhiganwa kwawe.';
+
+  @override
+  String get gameReconnectChallengePools =>
+      'Ongera uhuze kugira ngo uzane ibyuho wakoze cyangwa winjiyemo.';
+
+  @override
+  String get gameChallengeHistoryUnavailable =>
+      'Amateka yo guhiganwa ntaboneka';
+
+  @override
+  String get gameChallengeHistoryPermissionDenied =>
+      'Uburenganzira bwawe kuri klabu ntibwemera aya mateka.';
+
+  @override
+  String get gameChallengeHistoryChanged => 'Amateka yo guhiganwa yahindutse';
+
+  @override
+  String get gameChallengeHistoryChangedDescription =>
+      'Vugurura urebe imimerere mishya mbere yo gufungura uguhiganwa.';
+
+  @override
+  String get gameChallengeHistoryTimedOut =>
+      'Kugenzura amateka byarengeje igihe';
+
+  @override
+  String get gameChallengeHistoryTimedOutDescription =>
+      'Nta mimerere yemejwe. Vugurura mbere yo gufungura uguhiganwa.';
+
+  @override
+  String get gameChallengeHistoryTryAgain =>
+      'Vugurura wongere ugerageze amateka amaze kuboneka.';
+
+  @override
+  String get gameOpenChallengesEmpty =>
+      'Shyiraho cyangwa winjire mu cyuho kugira ngo ubone uguhiganwa kw’amanota nyayo hano.';
+
+  @override
+  String get gameLockedChallengesEmpty =>
+      'Nta guhiganwa winjiyemo gutegereje amanota ya nyuma.';
+
+  @override
+  String get gameSettledChallengesEmpty =>
+      'Ibisubizo n’amanota by’uguhiganwa kwarangiye bizagaragara hano.';
+
+  @override
+  String get gameRefundedChallengesEmpty =>
+      'Uguhiganwa kwahagaritswe cyangwa kwasubijwe kuzagaragara hano.';
+
+  @override
+  String gameEarnedPoints(int count) {
+    return 'Wabonye amanota $count';
+  }
+
+  @override
+  String get gameNoResultCredit => 'Nta manota y’igisubizo';
+
+  @override
+  String gameReturnedPoints(int count) {
+    return 'Hasubijwe amanota $count';
+  }
+
+  @override
+  String gameMyPickScore(int home, int away) {
+    return 'Ihitamo ryanjye $home-$away';
+  }
+
+  @override
+  String get gameMoreOptions => 'Andi mahitamo';
+
+  @override
+  String get gameConnectToFanZone =>
+      'Huza interineti kugira ngo ufungure Fan Zone.';
+
+  @override
+  String get gameOpeningFanZone => 'Gufungura Fan Zone';
+
+  @override
+  String get gameRefreshingFanZone => 'Kuvugurura Fan Zone';
+
+  @override
+  String get gameRefreshingFanZoneDescription =>
+      'Amanota, ibyiciro n’amahitamo byawe birakomeza kugaragara mu gihe amakuru avugururwa.';
+
+  @override
+  String get gameMatchdayRounds => 'Ibyiciro by’umunsi w’umukino';
+
+  @override
+  String get gameNoMatchdayRounds => 'Nta byiciro by’umunsi w’umukino bihari';
+
+  @override
+  String get gameTvGame => 'Umukino wa TV';
+
+  @override
+  String get gameReviewJoinedRounds =>
+      'Reba ibyiciro witabiriye, amakarita n’ibisubizo';
+
+  @override
+  String get gameEnterTvCode => 'Injiza kode ya TV';
+
+  @override
+  String get gameVenueCheckIn => 'Kwiyandikisha aho umukino uri';
+
+  @override
+  String get gameVenueOrder => 'Gutumiza aho umukino uri';
+
+  @override
+  String get gameVenueOrderDescription =>
+      'Tumiza ibinyobwa byemewe kandi ukurikirane aho kubifatira';
+
+  @override
+  String get gameLiveNow => 'Birimo kuba ubu';
+
+  @override
+  String get gameThisWeek => 'Muri iki cyumweru';
+
+  @override
+  String get gamePointsBalanceTitle => 'Amanota usigaranye';
+
+  @override
+  String get gamePointsBalanceDescription =>
+      'Amanota, uko wayabonye, ibihembo n’ibikorwa';
+
+  @override
+  String get gameActivity => 'Ibikorwa';
+
+  @override
+  String get gameOpenPointsActivity => 'Reba uko amanota aheruka guhinduka';
+
+  @override
+  String get gameSupporterClubs => 'Amatsinda y’abafana';
+
+  @override
+  String get gameSupporterClubsDescription =>
+      'Amakipe y’abafana, amashami n’amatsinda y’abaturage';
+
+  @override
+  String get gameMemberFans => 'Abafana b’abanyamuryango';
+
+  @override
+  String get gameMemberFansDescription =>
+      'Fungura urutonde rw’abafana mu rupapuro';
+
+  @override
+  String get gameSupportClubDescription =>
+      'Imishinga n’amatsinda y’inkunga y’abafana';
+
+  @override
+  String get gameRedeemRewards => 'Fata ibihembo';
+
+  @override
+  String get gameRedeemRewardsDescription =>
+      'Koresha amanota ku bihembo n’ibyo abafatanyabikorwa batanga';
+
+  @override
+  String get gameAchievements => 'Ibyagezweho';
+
+  @override
+  String get gameAchievementsDescription => 'Imidari n’iminsi wikurikiranya';
+
+  @override
+  String get gameShareCard => 'Ikarita yo gusangiza';
+
+  @override
+  String get gameShareCardDescription =>
+      'Kora ikarita y’umufana yo gusangiza abandi';
+
+  @override
+  String get gameConnectBeforeJoiningRound =>
+      'Huza interineti mbere yo kwinjira muri iki cyiciro.';
+
+  @override
+  String get gamePoolEntryFailed =>
+      'Kwinjira muri iki cyiciro ntibyashoboye kwandikwa.';
+
+  @override
+  String gameOutcomeJoined(String outcome) {
+    return '$outcome byinjiyemo.';
+  }
+
+  @override
+  String gamePartnerSponsorsRound(String partner) {
+    return '$partner atereye inkunga iki cyiciro. Hitamo rimwe mbere y’uko gifungwa.';
+  }
+
+  @override
+  String get gameProjects => 'Imishinga';
+
+  @override
+  String get gameProjectsDescription =>
+      'Ibikorwa bya kipe n’ibikenewe mu bukangurambaga';
+
+  @override
+  String get gameGroups => 'Amatsinda';
+
+  @override
+  String get gameGroupsDescription => 'Injira mu matsinda y’inkunga y’abafana';
+
+  @override
+  String get gameQrSheetDescription =>
+      'Kwerekana no gusangiza QR biguma muri uru rupapuro.';
+
+  @override
+  String get gameFanIdQrDisplay => 'Fan ID no kwerekana QR';
+
+  @override
+  String get gameQr => 'QR';
+
+  @override
+  String get gameBadgesEarnedDescription =>
+      'Yabonetse mu guhitamo, kwitabira no gushyigikira';
+
+  @override
+  String get gameStartStreak =>
+      'Injira mu cyiciro gikurikira utangire iminsi ikurikirana';
+
+  @override
+  String gameActivePlayDays(int count) {
+    return 'Iminsi $count yo gukina';
+  }
+
+  @override
+  String gameActionUnavailable(String description) {
+    return '$description. Ntibihari.';
+  }
+
+  @override
+  String get gameFanZoneAccessUnavailable =>
+      'Ntabwo wemerewe kugera muri Fan Zone';
+
+  @override
+  String get gameFanZoneAccessUnavailableDescription =>
+      'Konti yawe ntishobora gufungura Fan Zone ubu. Hamagara ubufasha niba wagombye kubyemererwa.';
+
+  @override
+  String get gameFanZoneChanged => 'Fan Zone yahindutse';
+
+  @override
+  String get gameFanZoneChangedDescription =>
+      'Amakuru ya Fan Zone yahindutse uyareba. Vugurura kugira ngo ubone agezweho.';
+
+  @override
+  String get gameFanZoneSecurityTimedOut =>
+      'Kugenzura umutekano wa Fan Zone byarengeje igihe';
+
+  @override
+  String get gameFanZoneSecurityTimedOutDescription =>
+      'Ntitwashoboye kwemeza ko ushobora kugera muri Fan Zone. Vugurura mbere yo gukomeza.';
+
+  @override
+  String get gameFanZoneTemporarilyUnavailable =>
+      'Fan Zone ntiboneka by’agateganyo.';
+
+  @override
+  String get gameSavedFanZoneContent =>
+      'Harerekanwa amakuru yabitswe. Ongera uhuze maze uvugurure kugira ngo ubone imikino n’amanota bigezweho.';
+
+  @override
+  String get gamePickSectionLabel => 'Hitamo';
+
+  @override
+  String get gamePicksLabel => 'Hitamo';
+
+  @override
+  String get gameRewardsLabel => 'Ibihembo';
+
+  @override
+  String get gameStreakLabel => 'Iminsi ikurikirana';
+
+  @override
+  String get gameBadgesLabel => 'Imidari';
+
+  @override
+  String get gamePointsLabel => 'Amanota';
+
+  @override
+  String get gameAccuracyLabel => 'Ukuri';
+
+  @override
+  String get gameFanZoneUnavailableTitle => 'Fan Zone ntiboneka';
+
+  @override
+  String get venueOrderConfirmedToast =>
+      'Aho uri hemeje komande. Wishyure gusa aho uri.';
+
+  @override
+  String get venueOrderingUnavailable => 'Gutumiza aho uri ntibihari';
+
+  @override
+  String get venueFeatureDisabled =>
+      'Iyi serivisi igenzurwa yahagaritswe kuri iyi kipe cyangwa iyi verisiyo.';
+
+  @override
+  String get venueBackToFanZone => 'SUBIRA MURI FAN ZONE';
+
+  @override
+  String get venueOrderAccessDenied => 'Ntiwemerewe gutumiza';
+
+  @override
+  String get venueOrderAccessDeniedBody =>
+      'Iyi konti ntishobora gukoresha inzira yo gutumiza y’abafana.';
+
+  @override
+  String get venueOrderAccessDeniedLoadBody =>
+      'Iyi konti ntishobora gufungura inzira yo gutumiza y’abafana.';
+
+  @override
+  String get venueCheckInBeforeOrdering =>
+      'Banza wiyandikishe mbere yo gutumiza';
+
+  @override
+  String get venueCheckInRequiredBody =>
+      'Kwiyandikisha byemejwe birakenewe mbere yo gufungura urutonde rw’ibinyobwa byemewe.';
+
+  @override
+  String get venueCheckInFirst => 'BANZA WIYANDIKISHE';
+
+  @override
+  String get venueNoDrinksAvailable => 'Nta binyobwa bihari';
+
+  @override
+  String get venueNoDrinksBody =>
+      'Aho wiyandikishije nta binyobwa byemewe bihari ubu.';
+
+  @override
+  String get venueRefreshMenu => 'VUGURURA URUTONDE';
+
+  @override
+  String get venueMenuUnavailableOffline =>
+      'Urutonde ntiruboneka nta interineti';
+
+  @override
+  String get venueMenuOfflineBody =>
+      'Ongera uhuze mbere yo gufungura urutonde. Nta komande ibikwa ngo izoherezwe nyuma.';
+
+  @override
+  String get venueTryAgain => 'ONGERA UGERAGEZE';
+
+  @override
+  String get venueMenuCheckTimedOut => 'Kugenzura urutonde byarengeje igihe';
+
+  @override
+  String get venueMenuCheckTimedOutBody =>
+      'Porogaramu ntiyashoboye gutegura uburyo butekanye bwo gutumiza ku gihe. Vugurura rimwe gusa.';
+
+  @override
+  String get venueMenuUnavailableBody =>
+      'Aho wiyandikishije n’urutonde rwemewe ntibyashoboye gufungurwa mu buryo butekanye.';
+
+  @override
+  String get venueOrderHero => 'Tumiza ibinyobwa aho uri';
+
+  @override
+  String get venueOrderHeroBody =>
+      'Hitamo mu binyobwa byemewe gusa. Ibikorwa by’abakozi biguma ku rubuga rw’aho uri.';
+
+  @override
+  String get venueApprovedDrinks => 'Ibinyobwa byemewe';
+
+  @override
+  String get venueOrderReview => 'Suzuma komande';
+
+  @override
+  String venueOrderReviewValue(int count, String total) {
+    return 'Ibintu $count, $total';
+  }
+
+  @override
+  String get venueLegalAgeConfirmation => 'Kwemeza imyaka yemewe';
+
+  @override
+  String get venueNotSelected => 'Ntibyatoranyijwe';
+
+  @override
+  String get venueAgeConfirmationRequired => 'Ugomba kwemeza imyaka';
+
+  @override
+  String get venueAgeConfirmationBody =>
+      'Emeza gusa niba wujuje imyaka yemewe aho uri. Abakozi bashobora kongera kubigenzura.';
+
+  @override
+  String get venueRemoveConfirmation => 'KURAHO KWEMEZA';
+
+  @override
+  String get venueConfirmLegalAge => 'EMEZA IMYAKA YEMEWE';
+
+  @override
+  String get venuePayAtVenue => 'Ishyura aho uri';
+
+  @override
+  String get venuePaymentDisclaimer =>
+      'Iyi porogaramu ikora komande gusa. Ntiyakira ubwishyu kandi ntiyemeza ko bwakozwe.';
+
+  @override
+  String get venueCreatingOrderUpper => 'KOHEREZA KOMANDE';
+
+  @override
+  String get venueOrderConfirmedUpper => 'KOMANDE YEMEJWE';
+
+  @override
+  String get venueReviewCreateOrder => 'SUZUMA MAZE UTUMIZE';
+
+  @override
+  String get venueOrderProtections => 'Umutekano wa komande';
+
+  @override
+  String get venueDuplicateSubmission => 'Kohereza kabiri';
+
+  @override
+  String get venueDuplicateSubmissionBody =>
+      'Kode imwe yihariye kuri buri kugerageza';
+
+  @override
+  String get venueOfflineBehavior => 'Iyo nta interineti';
+
+  @override
+  String get venueOfflineBehaviorBody =>
+      'Nta kubika cyangwa kongera kohereza byikora';
+
+  @override
+  String get venueStaffControls => 'Igenzura ry’abakozi';
+
+  @override
+  String get venueStaffControlsBody => 'Ku rubuga rw’aho uri gusa';
+
+  @override
+  String venueItemsSelected(int count) {
+    return 'Ibintu $count byatoranyijwe';
+  }
+
+  @override
+  String get venueShowingSavedMenu => 'Harerekanwa urutonde rwabitswe';
+
+  @override
+  String get venueShowingSavedMenuBody =>
+      'Ongera uhuze mbere yo gukora komande. Nta kibikwa cyangwa cyoherezwa nyuma.';
+
+  @override
+  String get venueCreatingOrder => 'Gukora komande';
+
+  @override
+  String get venueCreatingOrderBody =>
+      'Tegereza ko seriveri ibyemeza. Ntukongere kohereza iyi komande.';
+
+  @override
+  String get venueOrderCreated => 'Komande yakozwe';
+
+  @override
+  String venueOrderCreatedSummary(String status, String total) {
+    return '$status · $total. Ubwishyu bukorerwa aho uri.';
+  }
+
+  @override
+  String get venueChooseDrink => 'Hitamo nibura ikinyobwa kimwe';
+
+  @override
+  String get venueChooseDrinkBody =>
+      'Komande ntishobora gukorwa nta kintu cyatoranyijwe.';
+
+  @override
+  String get venueCheckInRequired => 'Kwiyandikisha birakenewe';
+
+  @override
+  String get venueCheckInRejectedBody =>
+      'Aho uri ntihemera ko kwiyandikisha gukoreshwa mu gutumiza. Ongera wiyandikishe mbere yo kugerageza.';
+
+  @override
+  String get venueAgeSubmitBody =>
+      'Emeza imyaka yemewe mbere yo kohereza ikinyobwa kirimo alukolo.';
+
+  @override
+  String get venueDrinkChanged => 'Ikinyobwa wahisemo cyahindutse';
+
+  @override
+  String get venueDrinkChangedBody =>
+      'Vugurura urutonde rwemewe mbere yo kongera kugerageza.';
+
+  @override
+  String get venueOrderAttemptPaused => 'Kugerageza gutumiza byahagaze';
+
+  @override
+  String get venueOrderAttemptPausedBody =>
+      'Hari ikindi gisabwa gishobora kuba kirimo gukorwa. Reba komande iheruka mbere yo kugerageza.';
+
+  @override
+  String get venueOrderConfirmationUncertain => 'Kwemeza komande ntibizwi neza';
+
+  @override
+  String get venueOrderConfirmationUncertainBody =>
+      'Ntukongere kuyohereza. Reba komande iheruka mbere yo gufunga.';
+
+  @override
+  String get venueOrderNotConfirmed => 'Komande ntiyemejwe';
+
+  @override
+  String get venueOrderNotConfirmedBody =>
+      'Seriveri ntiyemeje iyi komande. Funga umuburo mbere yo kongera kugerageza.';
+
+  @override
+  String venueLatestOrder(String status) {
+    return 'Komande iheruka: $status';
+  }
+
+  @override
+  String venueLatestOrderSummary(String total, String payment) {
+    return '$total · $payment.';
+  }
+
+  @override
+  String get venueReadyToOrder => 'Witeguye gutumiza';
+
+  @override
+  String get venueReadyToOrderBody =>
+      'Hitamo ibinyobwa byemewe, suzuma igiteranyo, hanyuma wohereze rimwe.';
+
+  @override
+  String venueRemoveItem(String item) {
+    return 'Kuraho $item';
+  }
+
+  @override
+  String venueAddItem(String item) {
+    return 'Ongeraho $item';
+  }
+
+  @override
+  String venueDrinkSemantics(int count, String price) {
+    return '$count byatoranyijwe, kimwe ni $price';
+  }
+
+  @override
+  String get venueAgeRestricted => 'Kigenewe abafite imyaka yemewe';
+
+  @override
+  String get venueWaitingForVenue => 'Gutegereza aho uri';
+
+  @override
+  String get venueAccepted => 'Yemewe';
+
+  @override
+  String get venuePreparing => 'Irategurwa';
+
+  @override
+  String get venueReadyForPickup => 'Yiteguye gufatwa';
+
+  @override
+  String get venueServed => 'Yatanzwe';
+
+  @override
+  String get venueStatusPending => 'Imiterere irategerejwe';
+
+  @override
+  String get venuePaidAtVenue => 'Yishyuriwe aho uri';
+
+  @override
+  String get venuePaymentWaived => 'Ubwishyu bwakuweho';
+
+  @override
+  String get venueRefundedExternally => 'Yasubijwe ahandi';
+
+  @override
+  String get venuePaymentPending => 'Ubwishyu burategerejwe aho uri';
+
+  @override
+  String get venueCheckinTitle => 'Kwiyandikisha aho uri';
+
+  @override
+  String get venueCheckinUnavailable => 'Kwiyandikisha aho uri ntibihari';
+
+  @override
+  String get venueCheckinAccessDenied => 'Ntiwemerewe kwiyandikisha';
+
+  @override
+  String get venueCheckinAccessDeniedBody =>
+      'Iyi konti ntishobora gukoresha inzira yo kwiyandikisha y’abafana.';
+
+  @override
+  String get venueCheckinSafeStateBody =>
+      'Inzira ntiyashoboye gutegura uburyo butekanye bwo kwiyandikisha.';
+
+  @override
+  String get venueCheckinHero => 'Iyandikishe ahantu hemewe';
+
+  @override
+  String get venueCheckinHeroBody =>
+      'Injiza kode ihinduka ya TV cyangwa QR umaze kuhagera. Kwiyandikisha kw’abafana ntikwerekana igenzura ry’abakozi cyangwa abayobozi.';
+
+  @override
+  String get venueCheckinCodeLabel => 'Kode y’aho uri';
+
+  @override
+  String get venueCheckinInputLabel => 'Kode ya TV cyangwa QR';
+
+  @override
+  String get venueCheckinInputHint => 'Injiza nibura inyuguti 4';
+
+  @override
+  String get venueCheckinCheckingCodeUpper => 'KUGENZURA KODE';
+
+  @override
+  String get venueCheckinActionUpper => 'IYANDIKISHE';
+
+  @override
+  String get venueCheckinLocationConsentSemantics =>
+      'Kwemera ko aho uri hasuzumwa';
+
+  @override
+  String get venueCheckinOptionalLocationReview =>
+      'Gusuzuma aho uri bitari itegeko';
+
+  @override
+  String get venueCheckinConsentMarkedBody =>
+      'Kwemera byashyizwe kuri uku kugerageza. Iyi verisiyo nta biranga aho uri yohereza; kampanye zisaba aho uri ziracyategereje gusuzumwa.';
+
+  @override
+  String get venueCheckinNoLocationBody =>
+      'Aho uri nyakuri ntihakusanywa muri iyi verisiyo. Ushobora kwemera, ariko kampanye zisaba aho uri ziracyategereje gusuzumwa.';
+
+  @override
+  String get venueCheckinRemoveConsentUpper => 'KURAHO KWEMERA';
+
+  @override
+  String get venueCheckinMarkConsentUpper => 'EMERA';
+
+  @override
+  String get venueCheckinPrivacyBoundary => 'Imbibi z’ibanga';
+
+  @override
+  String get venueCheckinPrivacyBoundaryBody =>
+      'Kode zihinduka zihishwa mbere yo koherezwa kandi porogaramu ntizibika. Aho uri nyakuri ntihakusanywa.';
+
+  @override
+  String get venueCheckinPausedOffline =>
+      'Kwiyandikisha byahagaze nta interineti';
+
+  @override
+  String get venueCheckinPausedOfflineBody =>
+      'Ongera uhuze mbere yo kohereza. Nta kwiyandikisha kubikwa cyangwa kongera koherezwa.';
+
+  @override
+  String get venueCheckinCheckingCode => 'Kugenzura kode y’aho uri';
+
+  @override
+  String get venueCheckinCheckingCodeBody =>
+      'Tegereza igisubizo cya seriveri. Ntukongere kwiyandikisha.';
+
+  @override
+  String get venueCheckinPendingReview => 'Kwiyandikisha gutegereje gusuzumwa';
+
+  @override
+  String get venueCheckinConfirmed => 'Kwiyandikisha byemejwe';
+
+  @override
+  String get venueCheckinPendingReviewBody =>
+      'Kode y’aho uri yemewe, ariko igenzura ry’aho uri cyangwa rya kampanye riracyakenewe.';
+
+  @override
+  String venueCheckinFetRecorded(int count) {
+    return 'FET +$count zanditswe kuri uku kwiyandikisha.';
+  }
+
+  @override
+  String get venueCheckinConfirmedNoReward =>
+      'Aho uri hemeje kwiyandikisha. Nta gihembo cyari cyasezeranywe.';
+
+  @override
+  String get venueCheckinReady => 'Witeguye kwiyandikisha aho uri';
+
+  @override
+  String get venueCheckinReadyBody => 'Koresha kode iriho gusa umaze kuhagera.';
+
+  @override
+  String get venueCheckinInvalidCode => 'Kode ntiyemewe';
+
+  @override
+  String get venueCheckinInvalidCodeBody =>
+      'Injiza kode iriho ya TV cyangwa QR yerekanwa aho uri.';
+
+  @override
+  String get venueCheckinExpiredCode => 'Kode y’aho uri yararengeje igihe';
+
+  @override
+  String get venueCheckinExpiredCodeBody =>
+      'Reba kuri ekara y’aho uri kode ihinduka iriho.';
+
+  @override
+  String get venueCheckinAlreadyCheckedIn => 'Wamaze kwiyandikisha';
+
+  @override
+  String get venueCheckinAlreadyCheckedInBody =>
+      'Seriveri yabonye ko wamaze kwiyandikisha. Nta gihembo cyikubye kabiri cyakozwe.';
+
+  @override
+  String get venueCheckinCampaignUnavailable =>
+      'Kampanye yo kwiyandikisha ntiboneka';
+
+  @override
+  String get venueCheckinCampaignUnavailableBody =>
+      'Kampanye yarahagaze, ntikora cyangwa yageze ku ngengo y’imari yagenwe.';
+
+  @override
+  String get venueCheckinConflict => 'Kwiyandikisha kurimo kwivuguruza';
+
+  @override
+  String get venueCheckinConflictBody =>
+      'Hari ukundi kugerageza gushobora kuba gukorwa. Emeza uko aho uri hameze mbere yo kongera kugerageza.';
+
+  @override
+  String get venueCheckinConfirmationUncertain =>
+      'Kwemeza kwiyandikisha ntibizwi neza';
+
+  @override
+  String get venueCheckinConfirmationUncertainBody =>
+      'Ntukongere kode ubu. Reba ibikorwa byawe by’aho uri, hanyuma ufunge uyu muburo.';
+
+  @override
+  String get venueCheckinUnavailableShort => 'Kwiyandikisha ntibihari';
+
+  @override
+  String get venueCheckinUnavailableBody =>
+      'Seriveri ntiyemeje uku kugerageza. Funga umuburo mbere yo kongera kugerageza.';
+
+  @override
+  String get challengeConfirmTitle => 'EMEZA GUHIGANWA';
+
+  @override
+  String challengeConfirmPoints(int count) {
+    return 'EMEZA AMANOTA $count';
+  }
+
+  @override
+  String get challengeCreateTitle => 'KORA GUHIGANWA';
+
+  @override
+  String get challengeFindingFixtures => 'Gushaka imikino iri imbere';
+
+  @override
+  String get challengeFindingFixturesBody =>
+      'Kugenzura imikino ikiri gufungurirwa guhanura igitego nyacyo.';
+
+  @override
+  String get challengeNoFixtures => 'Nta mikino iboneka';
+
+  @override
+  String get challengeNoFixturesBody =>
+      'Nta mikino iri imbere irafungurirwa guhiganwa gushya.';
+
+  @override
+  String get challengeRefreshFixtures => 'Vugurura imikino';
+
+  @override
+  String get challengeCreating => 'Gukora guhiganwa';
+
+  @override
+  String get challengeCreatingBody =>
+      'Umukino, igitego n’amanota wahisemo bikomeza kugaragara mu gihe utegereje kwemezwa.';
+
+  @override
+  String get challengeCreationUnavailable => 'Gukora guhiganwa ntibihari';
+
+  @override
+  String get challengeCreationDisabledBody =>
+      'Ushobora kureba ifishi, ariko gukora itsinda byahagaritswe kuri iyi verisiyo.';
+
+  @override
+  String get challengeShowingSavedFixtures => 'Harerekanwa imikino yabitswe';
+
+  @override
+  String get challengeShowingSavedFixturesBody =>
+      'Ongera uhuze kandi uvugurure mbere yo guhindura igitego cyangwa gukora guhiganwa.';
+
+  @override
+  String get challengeRefreshFixturesUpper => 'VUGURURA IMIKINO';
+
+  @override
+  String get challengeExactScore => 'Igitego nyacyo';
+
+  @override
+  String challengeSelectedScore(int home, int away) {
+    return 'Igitego cyatoranyijwe $home kuri $away';
+  }
+
+  @override
+  String get challengeVersusUpper => 'NA';
+
+  @override
+  String get challengeEntryPoints => 'Amanota yo kwinjira';
+
+  @override
+  String get challengeEntryOptionsUnavailable =>
+      'Amahitamo yo kwinjira mu guhiganwa ntaraboneka.';
+
+  @override
+  String challengeStakePoints(int count) {
+    return 'Amanota $count';
+  }
+
+  @override
+  String get challengeCheckingBalance => 'Kugenzura amanota usigaranye.';
+
+  @override
+  String get challengeBalanceUnavailable =>
+      'Amanota usigaranye ntaboneka. Vugurura mbere yo gukora guhiganwa.';
+
+  @override
+  String get challengeBalanceInsufficient =>
+      'Amanota usigaranye ntahagije kuri uku kwinjira.';
+
+  @override
+  String get challengeCreatingUpper => 'GUKORA GUHIGANWA';
+
+  @override
+  String get challengeCreationOffline => 'Gukora guhiganwa nta interineti';
+
+  @override
+  String get challengeRefreshLatestFixtures =>
+      'Vugurura urebe imikino iheruka mbere yo gukora guhiganwa.';
+
+  @override
+  String get challengeReconnectFixtures =>
+      'Ongera uhuze ufungure imikino iboneka ku guhiganwa gushya.';
+
+  @override
+  String get challengeAccessDeniedBody =>
+      'Uburenganzira ufite kuri kipe ntibukwemerera guhiganwa gushya.';
+
+  @override
+  String get challengeDetailsChanged => 'Amakuru yo guhiganwa yahindutse';
+
+  @override
+  String get challengeDetailsChangedBody =>
+      'Vugurura imikino kandi wongere urebe amahitamo yawe mbere yo kugerageza.';
+
+  @override
+  String get challengeSecurityTimedOut =>
+      'Kugenzura umutekano byarengeje igihe';
+
+  @override
+  String get challengeSecurityTimedOutBody =>
+      'Nta guhiganwa kwemejwe. Vugurura mbere yo kongera kugerageza.';
+
+  @override
+  String get challengeTryAgainBody =>
+      'Vugurura kandi wongere ugerageze imikino ibonetse.';
+
+  @override
+  String challengePreviewSemantics(
+    String homeTeam,
+    String awayTeam,
+    int homeScore,
+    int awayScore,
+    int stake,
+    int balance,
+  ) {
+    return 'Igaragaza ry’irushanwa. $homeTeam na $awayTeam. Wahisemo $homeScore kuri $awayScore. Kwinjira ni amanota $stake. Usigaranye $balance.';
+  }
+
+  @override
+  String get challengePreview => 'IGARAGAZA RY’IRUSHANWA';
+
+  @override
+  String get challengeYourPick => 'Ibyo wahisemo';
+
+  @override
+  String challengeBalancePoints(int count) {
+    return 'Usigaranye amanota $count';
+  }
+
+  @override
+  String get challengeLocksAtKickoff => 'Bifungwa umukino utangiye';
+
+  @override
+  String challengeFixtureOption(String home, String away, String competition) {
+    return '$home na $away • $competition';
+  }
+
+  @override
+  String challengeDecrease(String label) {
+    return 'Gabanya $label';
+  }
+
+  @override
+  String challengeIncrease(String label) {
+    return 'Ongeraho $label';
+  }
+
+  @override
+  String get tvControllerTitle => 'Igenzura ry’umukino';
+
+  @override
+  String get tvControllerUnavailable => 'Igenzura ry’umukino ntiriboneka';
+
+  @override
+  String get tvControllerUnavailableBody =>
+      'Igenzura ry’umukino uri kuba ntiryafunguwe kuri iyi verisiyo cyangwa iyi kipe.';
+
+  @override
+  String get tvLiveSessionNotFound => 'Icyiciro kirimo kuba nticyabonetse';
+
+  @override
+  String get tvLiveSessionNotFoundBody =>
+      'Iyi linki y’umukino ntiboneka cyangwa ntigikora.';
+
+  @override
+  String get tvLiveAccessDenied => 'Ntiwemerewe kugera mu cyiciro';
+
+  @override
+  String get tvLiveAccessDeniedBody =>
+      'Iyi konti ntishobora gufungura igenzura ry’umukino wasabwe.';
+
+  @override
+  String get tvControllerOffline => 'Igenzura nta interineti';
+
+  @override
+  String get tvControllerOfflineBody =>
+      'Ongera uhuze ufungure icyiciro. Ibisubizo ntibibikwa ngo bizoherezwe nyuma.';
+
+  @override
+  String get tvSessionCheckTimedOut => 'Kugenzura icyiciro byarengeje igihe';
+
+  @override
+  String get tvSessionCheckTimedOutBody =>
+      'Igenzura ntiryashoboye kwemeza uko umukino uhagaze mu mutekano. Vugurura rimwe gusa.';
+
+  @override
+  String get tvControllerLoadUnavailable => 'Igenzura ntiriboneka';
+
+  @override
+  String get tvControllerLoadUnavailableBody =>
+      'Icyiciro nticyashoboye gufungurwa. Nta makuru y’ibanga yerekanwe.';
+
+  @override
+  String get tvLastConfirmedOffline =>
+      'Harerekanwa uko byaherukaga kwemezwa. Gusubiza no kwinjira birafunze kandi ntibibikwa.';
+
+  @override
+  String get tvConfirmingMembership => 'Kwemeza kwinjira';
+
+  @override
+  String get tvConfirmingAnswer => 'Kwemeza igisubizo';
+
+  @override
+  String get tvWaitingForServer =>
+      'Tegereza seriveri y’umukino. Ntugafunge cyangwa ngo wongere iki gikorwa.';
+
+  @override
+  String get tvLiveStateChanged => 'Uko umukino uhagaze byahindutse';
+
+  @override
+  String get tvLiveStateChangedBody =>
+      'Vugurura igenzura mbere yo kwinjira cyangwa guhitamo ikindi gisubizo.';
+
+  @override
+  String get tvRefreshUpper => 'VUGURURA';
+
+  @override
+  String get tvConfirmationUncertain => 'Kwemeza ntibizwi neza';
+
+  @override
+  String get tvConfirmationUncertainBody =>
+      'Seriveri ntiyemeje igikorwa giheruka. Kirakomeza gufungwa kugeza amakuru yemewe avuguruwe.';
+
+  @override
+  String get tvLiveUpdateUnavailable => 'Ivugurura ry’umukino ntiriboneka';
+
+  @override
+  String get tvLiveUpdateUnavailableBody =>
+      'Uko byaherukaga kwemezwa birabitswe. Vugurura mbere yo gukomeza.';
+
+  @override
+  String get tvUsingLastConfirmed => 'Gukoresha uko byaherukaga kwemezwa';
+
+  @override
+  String get tvUsingLastConfirmedBody =>
+      'Igenzura rirafunze kugeza icyiciro kivuguruwe.';
+
+  @override
+  String tvCurrentSession(String code) {
+    return 'Icyiciro kirimo kuba $code';
+  }
+
+  @override
+  String get tvLiveSessionUpper => 'ICYICIRO KIRIMO KUBA';
+
+  @override
+  String get tvAnswerPad => 'Ahagenewe ibisubizo';
+
+  @override
+  String get tvWaitingForChoices =>
+      'Gutegereza ko uyoboye ashyira ibisubizo kuri TV.';
+
+  @override
+  String get tvChooseOnce =>
+      'Hitamo rimwe. Seriveri yemeza igisubizo cya mbere yakiriye.';
+
+  @override
+  String get tvConfirmedStateUnlocks =>
+      'Amakuru yemejwe na seriveri gusa ni yo yafungura ikindi gisubizo.';
+
+  @override
+  String get tvJoinSessionUpper => 'INJIRA MURI IKI CYICIRO';
+
+  @override
+  String get tvConfirmLeaderboardName =>
+      'Emeza izina ryerekanwa ku rutonde rwa TV.';
+
+  @override
+  String get tvDisplayName => 'Izina rigaragara';
+
+  @override
+  String get tvDisplayNameHelper => 'Inyuguti 2 kugeza kuri 48';
+
+  @override
+  String get tvJoinSession => 'Injira mu cyiciro';
+
+  @override
+  String tvAnswerSemantics(String answer) {
+    return 'Igisubizo $answer';
+  }
+
+  @override
+  String get tvSubmitAnswer => 'Ohereza igisubizo';
+
+  @override
+  String get tvAnswerLocked => 'Igisubizo kirafunze';
+
+  @override
+  String get tvTeamStandings => 'Urutonde rw’amakipe';
+
+  @override
+  String get tvStandingsEmpty =>
+      'Urutonde rugaragara uyoboye kuri TV afunguye icyiciro.';
+
+  @override
+  String get tvPhaseJoin => 'Kwinjira';
+
+  @override
+  String get tvPhaseWaiting => 'Gutegereza';
+
+  @override
+  String get tvPhaseAnswering => 'Gusubiza';
+
+  @override
+  String get tvPhaseReveal => 'Kwerekana';
+
+  @override
+  String get tvPhaseStandings => 'Urutonde';
+
+  @override
+  String get tvPhaseReconnecting => 'Kongera guhuza';
+
+  @override
+  String get walletRewardsUnavailable => 'Ibihembo ntibiboneka';
+
+  @override
+  String get walletDisabledBody =>
+      'Amanota n’ibikorwa by’ibihembo byahagaritswe kuri iyi verisiyo.';
+
+  @override
+  String get walletNoActivity => 'Nta bikorwa by’amanota birabaho';
+
+  @override
+  String get walletNoActivityBody =>
+      'Amanota yawe yemejwe n’ibikorwa by’ibihembo bizagaragara hano.';
+
+  @override
+  String get walletOffline => 'Ibihembo nta interineti';
+
+  @override
+  String get walletOfflineBody =>
+      'Ongera uhuze ufungure amanota yemejwe. Nta kibikwa ngo kizoherezwe nyuma.';
+
+  @override
+  String get walletAccessDenied => 'Ntiwemerewe kugera ku bihembo';
+
+  @override
+  String get walletAccessDeniedBody =>
+      'Iyi konti ntishobora gufungura igitabo cyihariye cy’amanota.';
+
+  @override
+  String get walletCheckTimedOut => 'Kugenzura amanota byarengeje igihe';
+
+  @override
+  String get walletCheckTimedOutBody =>
+      'Porogaramu ntiyashoboye kwemeza igitabo cyawe cy’amanota ku gihe. Vugurura rimwe gusa.';
+
+  @override
+  String get walletUnavailableBody =>
+      'Igitabo cy’amanota nticyashoboye gufungurwa. Nta bikorwa byihariye byerekanwe.';
+
+  @override
+  String walletBalanceValue(String points) {
+    return 'Amanota $points';
+  }
+
+  @override
+  String get walletUsed => 'Yakoreshejwe';
+
+  @override
+  String walletHistoricalPoints(String points) {
+    return 'Amanota $points yavuye mu bihembo bya mbere amateka y’ibikorwa atarafungurwa.';
+  }
+
+  @override
+  String get walletEarn => 'Kubona';
+
+  @override
+  String get walletEarnBody =>
+      'Bona amanota mu bikorwa no kwamamaza by’abafatanyabikorwa.';
+
+  @override
+  String get walletUseBody =>
+      'Koresha amanota ku bihembo, ibikorwa by’umunsi w’umukino no guhiganwa muri Fan Zone.';
+
+  @override
+  String get walletRewardsBody =>
+      'Koresha amanota ku nyungu z’umunsi w’umukino n’ibihembo by’abafatanyabikorwa.';
+
+  @override
+  String get walletRewardsEmptyBody =>
+      'Ibihembo biboneka bizagaragara hano kipe cyangwa abafatanyabikorwa babishyizeho.';
+
+  @override
+  String get walletActivityEmptyBody =>
+      'Ibikorwa by’amanota bigaragara nyuma y’ibihembo cyangwa ibikorwa by’umukino.';
+
+  @override
+  String get walletShowingSaved => 'Harerekanwa amanota yabitswe';
+
+  @override
+  String get walletShowingSavedBody =>
+      'Ongera uhuze urebe amanota n’ibikorwa bigezweho. Nta gikorwa kibikwa.';
+
+  @override
+  String get walletRefreshing => 'Kuvugurura amanota';
+
+  @override
+  String get walletRefreshingBody =>
+      'Amanota yemejwe akomeza kugaragara mu gihe igitabo kivugururwa.';
+
+  @override
+  String get walletChangedElsewhere => 'Amanota yahindutse ahandi';
+
+  @override
+  String get walletChangedElsewhereBody =>
+      'Amanota yabitswe arakomeza kugaragara. Vugurura wemeze igitabo gishya.';
+
+  @override
+  String get walletRefreshTimedOut => 'Kuvugurura amanota byarengeje igihe';
+
+  @override
+  String get walletRefreshTimedOutBody =>
+      'Amanota yabitswe aracyagaragara. Vugurura rimwe gusa.';
+
+  @override
+  String get walletMayBeOutdated => 'Amanota ashobora kuba atakigezweho';
+
+  @override
+  String get walletMayBeOutdatedBody =>
+      'Amanota aheruka kwemezwa arakomeza kugaragara serivisi itaboneka.';
+
+  @override
+  String get walletSavedUntilRefresh =>
+      'Amanota aheruka kwemezwa arakomeza kugaragara kugeza kuvugurura bikunze.';
+
+  @override
+  String get feedChallengeTitle => 'GUHIGANWA';
+
+  @override
+  String get feedDescription =>
+      'Amatsinda yo guhanura igitego nyacyo ku mikino nyayo. Kora rimwe, winjire rimwe, ibisubizo bishingire ku byemejwe.';
+
+  @override
+  String get feedCreateNew => 'KORA GUHIGANWA GUSHYA';
+
+  @override
+  String get feedOpening => 'Gufungura amarushanwa';
+
+  @override
+  String get feedOpeningBody =>
+      'Kugenzura imikino, amatsinda n’amarushanwa winjiyemo.';
+
+  @override
+  String get feedRefreshing => 'Kuvugurura amarushanwa';
+
+  @override
+  String get feedRefreshingBody =>
+      'Imikino, amatsinda n’amarushanwa winjiyemo bikomeza kugaragara.';
+
+  @override
+  String get feedActionsUnavailable => 'Ibikorwa byo guhiganwa ntibiboneka';
+
+  @override
+  String get feedActionsUnavailableBody =>
+      'Ushobora kureba amatsinda, ariko gukora no kwinjira byahagaritswe kuri iyi verisiyo.';
+
+  @override
+  String get feedShowingSaved => 'Harerekanwa amarushanwa yabitswe';
+
+  @override
+  String get feedShowingSavedBody =>
+      'Ongera uhuze mbere yo gukora cyangwa kwinjira mu itsinda.';
+
+  @override
+  String get feedUpdatesPaused => 'Ivugurura ry’amarushanwa ryahagaze';
+
+  @override
+  String get feedEmpty => 'Nta marushanwa aboneka';
+
+  @override
+  String get feedEmptyBody =>
+      'Amatsinda mashya azagaragara imikino yujuje ibisabwa ifunguwe.';
+
+  @override
+  String get feedFeatured => 'Amarushanwa yihariye / akunzwe';
+
+  @override
+  String get feedSeeAll => 'Reba byose';
+
+  @override
+  String get feedOpenChallenges => 'Amarushanwa afunguye';
+
+  @override
+  String get feedEndingSoon => 'Ari hafi gufungwa';
+
+  @override
+  String get feedEndingSoonAction => 'Ari hafi gufungwa';
+
+  @override
+  String get feedMyChallenges => 'Amarushanwa yanjye';
+
+  @override
+  String get feedSettledChallenges => 'Amarushanwa yarangiye';
+
+  @override
+  String get feedResults => 'Ibisubizo';
+
+  @override
+  String get feedNoFilterMatches => 'Nta bihuye n’iri hitamo';
+
+  @override
+  String get feedNoFilterMatchesBody =>
+      'Gerageza ubundi buryo cyangwa ukore itsinda rishya.';
+
+  @override
+  String get feedAll => 'Byose';
+
+  @override
+  String get feedHighPool => 'Itsinda rifite amanota menshi';
+
+  @override
+  String get feedMostParticipants => 'Abitabiriye benshi';
+
+  @override
+  String get feedMyJoined => 'Ayo ninjiyemo';
+
+  @override
+  String get feedChallengesOffline => 'Amarushanwa ntaboneka nta interineti';
+
+  @override
+  String get feedChallengesOfflineBody =>
+      'Ongera uhuze ufungure imikino n’amatsinda bigezweho.';
+
+  @override
+  String get feedAccessUnavailable => 'Ntiwemerewe kugera ku marushanwa';
+
+  @override
+  String get feedAccessUnavailableBody =>
+      'Uburenganzira bwawe ntibwemerera aya matsinda.';
+
+  @override
+  String get feedDataChanged => 'Amakuru y’amarushanwa yahindutse';
+
+  @override
+  String get feedDataChangedBody =>
+      'Vugurura mbere yo kureba cyangwa kwinjira mu matsinda mashya.';
+
+  @override
+  String get feedSecurityTimedOutBody =>
+      'Nta gikorwa cyakozwe. Vugurura mbere yo kongera kugerageza.';
+
+  @override
+  String get feedUnavailable => 'Urutonde rw’amarushanwa ntiruboneka';
+
+  @override
+  String get feedUnavailableBody =>
+      'Amatsinda ariho ntashoboye gufungurwa mu buryo butekanye.';
+
+  @override
+  String get detailTitle => 'AMAKURU YO GUHIGANWA';
+
+  @override
+  String get detailOpening => 'Gufungura guhiganwa';
+
+  @override
+  String get detailOpeningBody =>
+      'Kugenzura itsinda, abaryinjiyemo n’ibisubizo byemejwe.';
+
+  @override
+  String get detailNotFound => 'Guhiganwa ntikwabonetse';
+
+  @override
+  String get detailNotFoundBody =>
+      'Iri tsinda rishobora kuba ryarangiye, ryakuweho cyangwa ritakiboneka kuri kipe yawe.';
+
+  @override
+  String get detailBack => 'Subira ku marushanwa';
+
+  @override
+  String get detailPendingBody =>
+      'Itsinda n’igitego wahisemo bikomeza kugaragara mu gihe utegereje kwemezwa.';
+
+  @override
+  String get detailActionsUnavailableBody =>
+      'Ushobora kureba iri tsinda, ariko kwinjira no guhagarika byahagaritswe.';
+
+  @override
+  String get detailShowingSaved => 'Harerekanwa guhiganwa kwabitswe';
+
+  @override
+  String get detailShowingSavedBody =>
+      'Ongera uhuze kandi uvugurure mbere yo kwinjira, guhindura igitego cyangwa guhagarika.';
+
+  @override
+  String get detailRefreshUpper => 'VUGURURA GUHIGANWA';
+
+  @override
+  String get detailMyPickUpper => 'IBYO NAHISEMO';
+
+  @override
+  String get detailMyEntry => 'Uko ninjiye';
+
+  @override
+  String get detailJoinUpper => 'INJIRA MURI UKU GUHIGANWA';
+
+  @override
+  String get detailPickScoreBody =>
+      'Hitamo igitego nyacyo mbere y’uko umukino ufungwa.';
+
+  @override
+  String get detailResults => 'IBISUBIZO';
+
+  @override
+  String get detailOfficialScore => 'Igitego cyemejwe';
+
+  @override
+  String get detailWinners => 'Abatsinze';
+
+  @override
+  String get detailLosers => 'Abatsinzwe';
+
+  @override
+  String get detailPointsPerWinner => 'Amanota y’uwatsinze';
+
+  @override
+  String get detailEntries => 'ABINJIYE';
+
+  @override
+  String get detailEntryCancelled => 'Kwinjira byahagaritswe';
+
+  @override
+  String get detailWaitingResult => 'Gutegereza isuzuma ry’ibisubizo byemejwe.';
+
+  @override
+  String detailScoreSemantics(String label, int value) {
+    return 'Igitego cya $label ni $value';
+  }
+
+  @override
+  String get detailAccessUnavailable => 'Ntiwemerewe kugera ku guhiganwa';
+
+  @override
+  String get detailAccessUnavailableBody =>
+      'Konti yawe ntishobora kureba cyangwa guhindura uku guhiganwa.';
+
+  @override
+  String get detailDataChangedBody =>
+      'Vugurura mbere yo kureba abinjiyemo cyangwa guhindura uku guhiganwa.';
+
+  @override
+  String get detailSecurityTimedOutBody =>
+      'Nta gikorwa cyemejwe. Vugurura mbere yo kongera kugerageza.';
+
+  @override
+  String get detailUnavailable => 'Guhiganwa ntikuboneka';
+
+  @override
+  String get detailUnavailableBody =>
+      'Amakuru mashya y’itsinda ntiyashoboye kwemezwa. Vugurura wongere ugerageze.';
+
+  @override
+  String get detailJoinedSuccess => 'Winjiye mu guhiganwa neza.';
+
+  @override
+  String get detailCancelledSuccess => 'Guhiganwa kwahagaritswe.';
+
+  @override
+  String get detailJoining => 'Kwinjira mu guhiganwa';
+
+  @override
+  String get detailCancelling => 'Guhagarika guhiganwa';
+
+  @override
+  String get detailRefreshing => 'Kuvugurura guhiganwa';
+
+  @override
+  String get detailJoiningUpper => 'KWINJIRA BIRAKORWA';
+
+  @override
+  String detailJoinWithPoints(int count) {
+    return 'INJIRA N’AMANOTA $count';
+  }
+
+  @override
+  String get detailCancellingUpper => 'GUHAGARIKA BIRAKORWA';
+
+  @override
+  String get detailCancelUpper => 'HAGARIKA GUHIGANWA';
+
+  @override
+  String get detailConnectionRestored => 'Interineti yongeye kugaruka';
+
+  @override
+  String get detailOffline => 'Amakuru yo guhiganwa nta interineti';
+
+  @override
+  String get detailRefreshBeforeAction =>
+      'Vugurura urebe itsinda rigezweho mbere yo kwinjira cyangwa guhagarika.';
+
+  @override
+  String get detailReconnectBeforeAction =>
+      'Ongera uhuze urebe itsinda rigezweho mbere yo kwinjira cyangwa guhagarika.';
+
+  @override
+  String get detailEntryActive => 'ARACYARIMO';
+
+  @override
+  String get detailEntryWinner => 'UWATSINZE';
+
+  @override
+  String get detailEntryLoser => 'UWATSINZWE';
+
+  @override
+  String get detailEntryRefunded => 'YASUBIJWE';
+
+  @override
+  String get detailEntryCancelledStatus => 'YAHAGARITSWE';
+
+  @override
+  String get gameShareOptionsClosed =>
+      'Amahitamo yo gusangiza yafunzwe. Emeza aho wohereza mbere yo gutangaza.';
+
+  @override
+  String get gameShareActionsUnavailable => 'Gusangiza ntibishoboka';
+
+  @override
+  String get gameShareActionsUnavailableDescription =>
+      'Ushobora gusubira muri Fan Zone, ariko gusangiza ntibikora muri iyi verisiyo.';
+
+  @override
+  String get gameBackToFanZoneUpper => 'SUBIRA MURI FAN ZONE';
+
+  @override
+  String get gamePredictionAccessDenied => 'Ntiwemerewe kureba ibyo wahisemo';
+
+  @override
+  String get gamePredictionAccessDeniedDescription =>
+      'Iyi konti ntishobora gufungura amateka y’ibyo wahisemo kugira ngo bisangizwe.';
+
+  @override
+  String get gameMakePickFirst => 'Banza uhitemo';
+
+  @override
+  String get gameShareCardsUnlock =>
+      'Amakarita yo gusangiza aboneka nyuma yo guhitamo umukino w’umunsi.';
+
+  @override
+  String get gameBackToPicksUpper => 'SUBIRA KU BYO WAHISEMO';
+
+  @override
+  String get gameShareCardsOffline => 'Amakarita yo gusangiza nta interineti';
+
+  @override
+  String get gameShareCardsOfflineDescription =>
+      'Ongera uhuze kugira ngo ubone amateka y’ibyo wahisemo byemejwe. Nta kintu gitegereza koherezwa nta interineti.';
+
+  @override
+  String get gameHistoryCheckTimedOut => 'Kugenzura amateka byarengeje igihe';
+
+  @override
+  String get gameHistoryCheckTimedOutDescription =>
+      'Porogaramu ntiyashoboye kwemeza amateka yizewe y’ibyo wahisemo ku gihe. Gerageza kuvugurura rimwe.';
+
+  @override
+  String get gameTryAgainUpper => 'ONGERA UGERAGEZE';
+
+  @override
+  String get gameShareCardsUnavailable => 'Amakarita yo gusangiza ntaboneka';
+
+  @override
+  String get gameShareCardsUnavailableDescription =>
+      'Amateka y’ibyo wahisemo ntiyashoboye gufunguka. Nta makuru y’ibikorwa byawe yerekanwe.';
+
+  @override
+  String get gameShowingSavedShareCard => 'Harerekanwa ikarita yabitswe';
+
+  @override
+  String get gameShowingSavedShareCardDescription =>
+      'Ongera uhuze mbere yo gusangiza cyangwa gukoporora. Nta gikorwa gitegereza gukorwa nta interineti.';
+
+  @override
+  String get gameCopyingShareText => 'Harakopororwa amagambo yo gusangiza';
+
+  @override
+  String get gameOpeningShareOptions => 'Harafungurwa amahitamo yo gusangiza';
+
+  @override
+  String get gameShareAwaitPlatformConfirmation =>
+      'Tegereza ko urubuga rwemeza. Ntusubiremo iki gikorwa.';
+
+  @override
+  String get gameShareActionPaused => 'Gusangiza byahagaritswe';
+
+  @override
+  String get gameShareActionPausedDescription =>
+      'Hari ikindi gikorwa cyari gisanzwe gikora. Banza urebe aho urubuga rugeze mbere yo gukomeza.';
+
+  @override
+  String get gameShareConfirmationUncertain =>
+      'Kwemeza gusangiza ntibisobanutse';
+
+  @override
+  String get gameShareConfirmationUncertainDescription =>
+      'Reba urupapuro rwo gusangiza cyangwa ububiko bw’ibyakoporowe, hanyuma ufunge iri burira mbere yo kongera kugerageza.';
+
+  @override
+  String get gameShareActionUnavailable => 'Igikorwa cyo gusangiza ntikiboneka';
+
+  @override
+  String get gameShareActionUnavailableDescription =>
+      'Urubuga ntirwarangije igikorwa. Funga iri burira mbere yo kongera kugerageza.';
+
+  @override
+  String get gameUsingSavedPredictionHistory =>
+      'Harakoreshwa amateka yabitswe y’ibyo wahisemo';
+
+  @override
+  String get gameUsingSavedPredictionHistoryDescription =>
+      'Vugurura iyi paji mbere yo gufungura ikindi gikorwa cyo gusangiza.';
+
+  @override
+  String get gameBackToPicks => 'Subira ku byo wahisemo';
+
+  @override
+  String get gameChoosePick => 'Hitamo';
+
+  @override
+  String gameSharePredictionSemantics(
+    String home,
+    String away,
+    String market,
+    String outcome,
+  ) {
+    return '$home na $away, $market, $outcome';
+  }
+
+  @override
+  String gameShareMarketSelection(String market, String selection) {
+    return '$market · $selection';
+  }
+
+  @override
+  String get gameCurrentlySelectedShareCard =>
+      'Ikarita yo gusangiza yatoranyijwe ubu';
+
+  @override
+  String get gameSelectThisShareCard => 'Hitamo iyi karita yo gusangiza';
+
+  @override
+  String get gamePredictionPickCancelled => 'Ihanura ryahagaritswe.';
+
+  @override
+  String get gamePredictionSummaryCopied => 'Incamake y’igikorwa yakoporowe.';
+
+  @override
+  String get gamePredictionScorePending => 'itegerejwe';
+
+  @override
+  String gamePredictionSummaryClipboard(
+    String home,
+    String away,
+    String market,
+    String outcome,
+    String score,
+  ) {
+    return '$home na $away · $market · $outcome · $score';
+  }
+
+  @override
+  String get gamePredictionStatusWon => 'WATSINZE';
+
+  @override
+  String get gamePredictionStatusLost => 'WATSINZWE';
+
+  @override
+  String get gamePredictionStatusCancelled => 'RYAHAGARITSWE';
+
+  @override
+  String get gamePredictionStatusVoid => 'RYATESHEJWE AGACIRO';
+
+  @override
+  String get gamePredictionStatusPending => 'RIRATEGEREJE';
+
+  @override
+  String get gamePredictionDateTbd => 'BIRATEGEREJWE';
+
+  @override
+  String gamePredictionDateTime(String date, String time) {
+    return '$date • $time';
+  }
+
+  @override
+  String gamePredictionWonSettlement(int count) {
+    return 'Iri hanura ryemejwe kandi wongerewe amanota $count.';
+  }
+
+  @override
+  String get gamePredictionLostSettlement =>
+      'Iri hanura ntiryemejwe ku ruhande rwawe.';
+
+  @override
+  String gamePredictionOfficialOutcomeMessage(String outcome) {
+    return 'Igisubizo cyemewe: $outcome.';
+  }
+
+  @override
+  String get gamePredictionCancelledSettlement =>
+      'Iri hanura ryahagaritswe umukino utarafungwa.';
+
+  @override
+  String get gamePredictionVoidSettlement =>
+      'Iri hanura ryateshejwe agaciro kandi nta manota yatanzwe.';
+
+  @override
+  String get gamePredictionPendingSettlement =>
+      'Iri hanura ryarafunzwe kandi rizemezwa ibisubizo byemewe nibiboneka.';
+
+  @override
+  String get gamePredictionActivityNotFound => 'Igikorwa nticyabonetse';
+
+  @override
+  String get gamePredictionActivityNotFoundDescription =>
+      'Iri hanura rishobora kuba ryarangiye, ryarakuweho cyangwa ritakiboneka kuri konti yawe.';
+
+  @override
+  String get gamePredictionBackToPredictions => 'Subira ku ihanura';
+
+  @override
+  String get gamePredictionCancellingPick => 'Guhagarika ihanura';
+
+  @override
+  String get gamePredictionRefreshingActivity => 'Kuvugurura igikorwa';
+
+  @override
+  String get gamePredictionConfirmedPickVisible =>
+      'Ihanura ryemejwe rirakomeza kugaragara mu gihe imiterere mishya igenzurwa.';
+
+  @override
+  String get gamePredictionActionsUnavailable => 'Ibikorwa ntibiboneka';
+
+  @override
+  String get gamePredictionCancellationDisabled =>
+      'Ushobora kureba iri hanura, ariko kurihagarika ntibyemewe muri iyi verisiyo.';
+
+  @override
+  String get gamePredictionShowingSavedActivity =>
+      'Kwerekana igikorwa cyabitswe';
+
+  @override
+  String get gamePredictionReconnectBeforeCancelling =>
+      'Ongera uhuze kandi uvugurure mbere yo guhagarika iri hanura.';
+
+  @override
+  String get gamePredictionActivityDetailTitle => 'IBISOBANURO BY’IGIKORWA';
+
+  @override
+  String gamePredictionShortTeams(String home, String away) {
+    return '$home  •  $away';
+  }
+
+  @override
+  String get gamePredictionVenueTbc => 'AHABERA UMUKINO HARATEGEREJWE';
+
+  @override
+  String get gamePredictionPickType => 'UBWOKO BW’IHANURA';
+
+  @override
+  String get gamePredictionSelection => 'ICYAHISWEMO';
+
+  @override
+  String get gamePredictionEarned => 'YABONETSE';
+
+  @override
+  String get gamePredictionPotential => 'ASHOBOKA';
+
+  @override
+  String gamePredictionPositiveValue(int count) {
+    return '+$count';
+  }
+
+  @override
+  String get gamePredictionSettlement => 'KWEMEZA';
+
+  @override
+  String get gamePredictionPlaced => 'Ryashyizweho';
+
+  @override
+  String get gamePredictionKickoff => 'Gutangira';
+
+  @override
+  String get gamePredictionSettled => 'Ryemejwe';
+
+  @override
+  String get gamePredictionOfficialOutcome => 'Igisubizo cyemewe';
+
+  @override
+  String get gamePredictionCancelPick => 'HAGARIKA IHANURA';
+
+  @override
+  String get gamePredictionCopyResult => 'KOPORORA IGISUBIZO';
+
+  @override
+  String get gamePredictionCopySummary => 'KOPORORA INCAMAKE';
+
+  @override
+  String get gamePredictionShareCard => 'SANGIZA IKARITA';
+
+  @override
+  String get gamePredictionBrowseFixtures => 'REBA IMIKINO';
+
+  @override
+  String get gamePredictionRefreshActivity => 'VUGURURA IGIKORWA';
+
+  @override
+  String get gamePredictionConnectionRestored => 'Umuyoboro wongeye kuboneka';
+
+  @override
+  String get gamePredictionDetailsOffline =>
+      'Ibisobanuro ntibiri kuri interineti';
+
+  @override
+  String get gamePredictionRefreshBeforeCancelling =>
+      'Vugurura kugira ngo wemeze ihanura mbere yo kurihagarika.';
+
+  @override
+  String get gamePredictionReconnectToConfirm =>
+      'Ongera uhuze kugira ngo wemeze ihanura mbere yo kurihagarika.';
+
+  @override
+  String get gamePredictionAccessUnavailable => 'Kugera ku gikorwa ntibiboneka';
+
+  @override
+  String get gamePredictionAccessUnavailableDescription =>
+      'Konti yawe ntishobora kureba cyangwa guhindura iki gikorwa.';
+
+  @override
+  String get gamePredictionDataChanged => 'Amakuru y’igikorwa yarahindutse';
+
+  @override
+  String get gamePredictionDataChangedDescription =>
+      'Vugurura mbere yo kureba igisubizo cyangwa guhagarika iri hanura.';
+
+  @override
+  String get gamePredictionSecurityTimeout =>
+      'Igenzura ry’umutekano ryarengeje igihe';
+
+  @override
+  String get gamePredictionSecurityTimeoutDescription =>
+      'Nta guhagarika kwemejwe. Vugurura mbere yo kongera kugerageza.';
+
+  @override
+  String get gamePredictionUnavailable => 'Igikorwa ntikiboneka';
+
+  @override
+  String get gamePredictionUnavailableDescription =>
+      'Ibisobanuro bishya by’ihanura ntibyemejwe. Vugurura wongere ugerageze.';
+
+  @override
+  String gamePredictionSelectedMetricSemantics(String label, String value) {
+    return '$label $value, byatoranyijwe';
+  }
+
+  @override
+  String gamePredictionMetricSemantics(String label, String value) {
+    return '$label $value';
+  }
+
+  @override
+  String get gameMatchTitle => 'Umukino';
+
+  @override
+  String get gameBackToFanZoneTitleCase => 'Subira muri Fan Zone';
+
+  @override
+  String get gameMatchNotFound => 'Umukino ntiwabonetse';
+
+  @override
+  String get gameMatchNotFoundDescription =>
+      'Uyu mukino ushobora kuba wararangiye, warakuweho cyangwa utakiboneka.';
+
+  @override
+  String get gameWeekdayMon => 'MBE';
+
+  @override
+  String get gameWeekdayTue => 'KAB';
+
+  @override
+  String get gameWeekdayWed => 'GAT';
+
+  @override
+  String get gameWeekdayThu => 'KAN';
+
+  @override
+  String get gameWeekdayFri => 'GAT';
+
+  @override
+  String get gameWeekdaySat => 'GAT';
+
+  @override
+  String get gameWeekdaySun => 'CYA';
+
+  @override
+  String get gameMonthJan => 'MUT';
+
+  @override
+  String get gameMonthFeb => 'GAS';
+
+  @override
+  String get gameMonthMar => 'WER';
+
+  @override
+  String get gameMonthApr => 'MAT';
+
+  @override
+  String get gameMonthMay => 'GIC';
+
+  @override
+  String get gameMonthJun => 'KAM';
+
+  @override
+  String get gameMonthJul => 'NYA';
+
+  @override
+  String get gameMonthAug => 'KAN';
+
+  @override
+  String get gameMonthSep => 'NZE';
+
+  @override
+  String get gameMonthOct => 'UKW';
+
+  @override
+  String get gameMonthNov => 'UGU';
+
+  @override
+  String get gameMonthDec => 'UKU';
+
+  @override
+  String gameMatchKickoffDateTime(
+    String weekday,
+    int day,
+    String month,
+    String time,
+  ) {
+    return '$weekday $day $month · $time';
+  }
+
+  @override
+  String get gamePoolsTab => 'Ibigega';
+
+  @override
+  String get gameStatsTab => 'Imibare';
+
+  @override
+  String get gameH2hTab => 'Guhura';
+
+  @override
+  String get gameLineupsTab => 'Abakinnyi';
+
+  @override
+  String gameMatchTeamsVs(String home, String away) {
+    return '$home na $away';
+  }
+
+  @override
+  String get gamePartnerPoolsTooltip => 'Ibigega by’abafatanyabikorwa';
+
+  @override
+  String get gameJoiningPartnerPool =>
+      'Kwinjira mu kigega cy’umufatanyabikorwa';
+
+  @override
+  String get gameRefreshingMatch => 'Kuvugurura umukino';
+
+  @override
+  String get gameConfirmedMatchVisible =>
+      'Umukino wemejwe urakomeza kugaragara mu gihe imiterere mishya igenzurwa.';
+
+  @override
+  String get gameMatchActionsUnavailable => 'Ibikorwa by’umukino ntibiboneka';
+
+  @override
+  String get gameMatchActionsUnavailableDescription =>
+      'Ushobora kureba uyu mukino, ariko kwinjira mu bigega by’abafatanyabikorwa ntibyemewe muri iyi verisiyo.';
+
+  @override
+  String get gameShowingSavedMatch => 'Kwerekana umukino wabitswe';
+
+  @override
+  String get gameReconnectBeforePartnerPool =>
+      'Ongera uhuze kandi uvugurure mbere yo kwinjira mu kigega cy’umufatanyabikorwa.';
+
+  @override
+  String get gameVsUpper => 'VS';
+
+  @override
+  String get gamePartnerOutcomeHomeWin => 'Abakiriye baratsinda';
+
+  @override
+  String get gamePartnerOutcomeDraw => 'Kunganya';
+
+  @override
+  String get gamePartnerOutcomeAwayWin => 'Abasuye baratsinda';
+
+  @override
+  String get gamePartnerOutcomeUnknown => 'Ntibizwi';
+
+  @override
+  String get gamePartnerEarnRequired =>
+      'Gukorera ku mufatanyabikorwa birakenewe';
+
+  @override
+  String get gamePromotionEarnRequired => 'Gukorera muri poromosiyo birakenewe';
+
+  @override
+  String get gameOpenToAllFans => 'Bifunguye ku bafana bose';
+
+  @override
+  String get gamePoolJoinOffline =>
+      'Ongera uhuze kandi uvugurure mbere yo kwinjira muri iki kigega.';
+
+  @override
+  String get gamePoolJoinPermissionDenied =>
+      'Konti yawe ntishobora kwinjira mu kigega cy’umufatanyabikorwa.';
+
+  @override
+  String get gamePoolJoinConflict =>
+      'Iki kigega cyarahindutse cyangwa cyarafunzwe. Vugurura mbere yo kongera kugerageza.';
+
+  @override
+  String get gamePoolJoinTimeout =>
+      'Nta kwinjira kwemejwe. Vugurura mbere yo kongera kugerageza.';
+
+  @override
+  String get gamePoolJoinUnavailable =>
+      'Kwinjira mu kigega ntikwashoboye kwemezwa.';
+
+  @override
+  String get gameRefreshMatch => 'VUGURURA UMUKINO';
+
+  @override
+  String get gameMatchConnectionRestored => 'Umuyoboro wongeye kuboneka';
+
+  @override
+  String get gameMatchDetailsOffline =>
+      'Ibisobanuro by’umukino ntibiri kuri interineti';
+
+  @override
+  String get gameRefreshBeforeJoiningPool =>
+      'Vugurura kugira ngo wemeze umukino mbere yo kwinjira mu kigega.';
+
+  @override
+  String get gameReconnectBeforeJoiningPool =>
+      'Ongera uhuze kugira ngo wemeze umukino mbere yo kwinjira mu kigega.';
+
+  @override
+  String get gameMatchAccessUnavailable => 'Kugera ku mukino ntibiboneka';
+
+  @override
+  String get gameMatchAccessUnavailableDescription =>
+      'Konti yawe ntishobora kureba uyu mukino.';
+
+  @override
+  String get gameMatchDataChanged => 'Amakuru y’umukino yarahindutse';
+
+  @override
+  String get gameMatchDataChangedDescription =>
+      'Vugurura mbere yo kwinjira mu kigega cyangwa kureba imiterere iriho.';
+
+  @override
+  String get gameMatchSecurityTimeout =>
+      'Igenzura ry’umutekano w’umukino ryarengeje igihe';
+
+  @override
+  String get gameMatchSecurityTimeoutDescription =>
+      'Nta kwinjira mu kigega kwemejwe. Vugurura mbere yo kongera kugerageza.';
+
+  @override
+  String get gameMatchUnavailable => 'Umukino ntuboneka';
+
+  @override
+  String get gameMatchUnavailableDescription =>
+      'Ibisobanuro bishya by’umukino ntibyashoboye kwemezwa. Vugurura wongere ugerageze.';
+
+  @override
+  String get gamePartnerWdwPools => 'Ibigega WDW by’abafatanyabikorwa';
+
+  @override
+  String get gameNoPartnerPool =>
+      'Nta kigega cy’umufatanyabikorwa kuri uyu mukino';
+
+  @override
+  String get gameNoPartnerPoolDescription =>
+      'Guhanura umupira bifunguka gusa iyo umufatanyabikorwa yashyizeho ikigega WDW gifite igiciro gihamye kuri uyu mukino.';
+
+  @override
+  String get gameViewFanZone => 'Reba Fan Zone';
+
+  @override
+  String gamePartnerPoolsOnly(String home, String away) {
+    return '$home na $away bakoresha gusa ibigega WDW byatewe inkunga n’abafatanyabikorwa.';
+  }
+
+  @override
+  String get gameLiveGamesTitle => 'Imikino ya ako kanya';
+
+  @override
+  String get gameLiveGamesSubtitle =>
+      'Imikino y’ikipe wemerewe iboneka hano ubwayo.';
+
+  @override
+  String get gameLiveGamesConnectionRequired =>
+      'Imikino iri kuba ikenera umuyoboro';
+
+  @override
+  String get gamePlayingAs => 'Urakina nka';
+
+  @override
+  String gamePlayingAsAlias(String alias) {
+    return 'Urakina nka $alias';
+  }
+
+  @override
+  String get gameDiscoveringSessions => 'Turimo gushaka imikino yawe';
+
+  @override
+  String get gameDiscoveringSessionsDescription =>
+      'Turimo kugenzura ubunyamuryango bwawe n’ubutumire.';
+
+  @override
+  String get gameNoEligibleSessions => 'Nta mikino wemerewe iraboneka';
+
+  @override
+  String get gameNoEligibleSessionsDescription =>
+      'Imikino yateganyijwe n’iri kuba izagaragara hano konti yawe niyemererwa.';
+
+  @override
+  String get gameDiscoveryUnavailable => 'Imikino ntiyashoboye kuvugururwa';
+
+  @override
+  String get gameDiscoveryUnavailableDescription =>
+      'Urutonde rwa nyuma rwemejwe ruragumaho iyo ruhari. Ongera ugerageze umaze guhuza.';
+
+  @override
+  String get gameDiscoveryRefreshing => 'Turimo kuvugurura imikino iri kuba';
+
+  @override
+  String get gameDiscoveryRefreshingDescription =>
+      'Urutonde rwa nyuma rwemejwe rurakomeza kugaragara mu gihe tureba ibishya.';
+
+  @override
+  String get gameDiscoveryConflict => 'Urutonde rw’imikino rwahindutse';
+
+  @override
+  String get gameDiscoveryConflictDescription =>
+      'Urutonde rw’imikino y’ikipe rwahindutse urureba. Banza uruvugurure mbere yo gufungura umukino.';
+
+  @override
+  String get gameLiveSessionConflict => 'Umukino wahindutse';
+
+  @override
+  String get gameLiveSessionConflictDescription =>
+      'Umwirondoro w’umukino wemejwe wahindutse. Banza uvugurure mbere yo gukomeza.';
+
+  @override
+  String get gameLiveSessionTimeout => 'Ivugurura ryizewe ryarengeje igihe';
+
+  @override
+  String get gameLiveSessionTimeoutDescription =>
+      'Ntitwashoboye kwemeza uko umukino uhagaze mu gihe cyagenwe. Banza uvugurure mbere yo kugira ikindi ukora.';
+
+  @override
+  String get gameNotEligible => 'Uyu mukino ntuboneka';
+
+  @override
+  String get gameNotEligibleDescription =>
+      'Iyi konti ntiyemerewe umukino wasabwe.';
+
+  @override
+  String get gameLiveAccessDeniedV2 => 'Ntushobora kugera ku mukino';
+
+  @override
+  String get gameLiveAccessDeniedV2Description =>
+      'Konti yawe ntishobora gufungura uyu mukino w’ikipe.';
+
+  @override
+  String get gameReconnect => 'ONGERA UHUZE';
+
+  @override
+  String get gameScheduled => 'WATEGANYIJWE';
+
+  @override
+  String get gameScheduledDescription =>
+      'Uyu mukino uzafunguka ubwo uwutegura awutangije. Garuka ku isaha yateganyijwe.';
+
+  @override
+  String get gameOpenGame => 'FUNGURA UMUKINO';
+
+  @override
+  String get gameStartsAt => 'Utangira';
+
+  @override
+  String get gamePhaseEndsAt => 'Urangira';
+
+  @override
+  String get gameLobbyTitle => 'Winjiye aho gutegerereza';
+
+  @override
+  String get gameLobbyDescription =>
+      'Guma hano. Umuyobozi azafungura ikibazo cya mbere.';
+
+  @override
+  String get gamePausedTitle => 'Umukino urahagaze';
+
+  @override
+  String get gamePausedDescription =>
+      'Ibyo wagezeho byemejwe birarinzwe. Tegereza umuyobozi akomeze.';
+
+  @override
+  String get gameQuestionTitle => 'Ikibazo kiriho';
+
+  @override
+  String get gameChooseAnswer =>
+      'Hitamo igisubizo kimwe. Igisubizo cya mbere cyemejwe ni cyo cya nyuma.';
+
+  @override
+  String get gameAnswerSubmitting => 'Turimo kwemeza igisubizo cyawe';
+
+  @override
+  String get gameAnswerConfirmed => 'Igisubizo cyemejwe';
+
+  @override
+  String get gameAnswerUncertain => 'Kwemeza igisubizo birategerejwe';
+
+  @override
+  String get gameAnswerUncertainDescription =>
+      'Ntukongere gusubiza. Vugurura kugira ngo wemeze igisubizo cyemewe.';
+
+  @override
+  String get gameRevealTitle => 'Kwerekana igisubizo';
+
+  @override
+  String get gameCorrectAnswer => 'Igisubizo nyacyo';
+
+  @override
+  String get gameNoScores => 'Amanota azagaragara ibisubizo bimaze kwemezwa.';
+
+  @override
+  String get gameCompletedTitle => 'Umukino urarangiye';
+
+  @override
+  String get gameCompletedDescription => 'Amanota ya nyuma agaragara hasi.';
+
+  @override
+  String get gameCancelledTitle => 'Umukino wahagaritswe';
+
+  @override
+  String get gameCancelledDescription =>
+      'Umuyobozi yafunze uyu mukino. Nta bindi bisubizo byoherezwa.';
+
+  @override
+  String get gameSyncing => 'Turimo guhuza umukino';
+
+  @override
+  String get gameUsingLastConfirmed =>
+      'Harerekanwa uko umukino wari umeze uheruka kwemezwa.';
+
+  @override
+  String gameLastConfirmedAt(String time) {
+    return 'Ivugurura riheruka $time';
+  }
+
+  @override
+  String get gameBackToGames => 'SUBIRA KU MIKINO';
+
+  @override
+  String get gameSelectedAnswer => 'Igisubizo wahisemo';
+
+  @override
+  String gameSelectedAnswerSemantics(String answer) {
+    return '$answer, igisubizo wahisemo';
+  }
+
+  @override
+  String gameLeaderboardRank(int rank) {
+    return '$rank.';
+  }
+
+  @override
+  String get gameOperationsTitle => 'Imicungire y’imikino';
+
+  @override
+  String get gameOperationsSubtitle =>
+      'Cunga televiziyo zawe n’imikino y’ako kanya washinzwe.';
+
+  @override
+  String get gameOperationsOffline =>
+      'Ibikorwa by’imikino ntibiri kuri interineti';
+
+  @override
+  String get gameOperationsOfflineDescription =>
+      'Ongera uhuze interineti uvugurure amakuru mashya nyirayo yemerewe. Nta guhuza cyangwa gucunga televiziyo bibikwa ngo bizoherezwe nyuma.';
+
+  @override
+  String get gameOrganizerOperationsOfflineDescription =>
+      'Ongera uhuze interineti uvugurure amakuru mashya uwateguye umukino yemerewe. Nta gikorwa cyo gutegura cyangwa kugenzura umukino ako kanya kibikwa ngo kizoherezwe nyuma.';
+
+  @override
+  String get gameMyTvsTitle => 'Televiziyo zanjye';
+
+  @override
+  String get gameMyTvsSubtitle =>
+      'Huza, hindura izina, genzura cyangwa uhagarike gusa televiziyo zawe.';
+
+  @override
+  String get gameAddTv => 'HUZA TELEVIZIYO';
+
+  @override
+  String get gameNoTvs => 'Nta televiziyo ihujwe';
+
+  @override
+  String get gameNoTvsDescription =>
+      'Fungura AFRICLUB TV iboneke kode yo kuyihuza, hanyuma uyongere hano.';
+
+  @override
+  String get gameTvHealth => 'Imikorere';
+
+  @override
+  String get gameTvStatus => 'Uko ihujwe';
+
+  @override
+  String get gameTvAssignedGame => 'Umukino yashinzwe';
+
+  @override
+  String get gameTvUnassigned => 'Nta mukino yashinzwe';
+
+  @override
+  String get gameTvLastSeen => 'Igihe iheruka kugaragara';
+
+  @override
+  String get gameTvAppVersion => 'Verisiyo ya porogaramu';
+
+  @override
+  String get gameTvCapabilities => 'Ibyo ishoboye';
+
+  @override
+  String get gameTvNotReported => 'Ntabwo byatangajwe';
+
+  @override
+  String get gameTvCapabilityEnabled => 'Birakora';
+
+  @override
+  String get gameTvCapabilityDisabled => 'Ntibikora';
+
+  @override
+  String gameTvAssignedSessionValue(String title, String phase) {
+    return '$title · $phase';
+  }
+
+  @override
+  String get gameTvInventoryStale =>
+      'Urutonde rwa televiziyo ruheruka kwemezwa ni rwo rwerekanwa. Banza uvugurure mbere yo gucunga televiziyo.';
+
+  @override
+  String get gameTvInventoryLoading =>
+      'Urutonde rwa televiziyo zawe rurimo gufungurwa';
+
+  @override
+  String get gameTvInventoryRefreshing =>
+      'Urutonde rwa televiziyo rurimo kuvugururwa. Guhuza televiziyo birahagarara kugeza hemejwe urwego rushya nyirayo yemerewe.';
+
+  @override
+  String get gameTvHealthOnline => 'Iri ku murongo';
+
+  @override
+  String get gameTvHealthOffline => 'Ntiri ku murongo';
+
+  @override
+  String get gameTvHealthUnknown => 'Nta makuru yatanzwe';
+
+  @override
+  String get gameTvHealthRevoked => 'Yahagaritswe';
+
+  @override
+  String get gameTvStatusPaired => 'Yahujwe';
+
+  @override
+  String get gameTvStatusPending => 'Irategereje';
+
+  @override
+  String get gameTvStatusDisabled => 'Yahagaritswe';
+
+  @override
+  String get gameTvScopeHome => 'Mu rugo';
+
+  @override
+  String get gameTvScopeVenue => 'Ahantu hateranirwa';
+
+  @override
+  String get gamePairTvTitle => 'Huza televiziyo';
+
+  @override
+  String get gamePairTvDescription =>
+      'Andika kode igaragara kuri AFRICLUB TV. Iyo kode imara igihe gito kandi ikoreshwa rimwe.';
+
+  @override
+  String get gameTvChallenge => 'Kode yo guhuza';
+
+  @override
+  String get gameTvChallengeHint => 'Kode y’inyuguti 8';
+
+  @override
+  String get gameTvName => 'Izina rya televiziyo';
+
+  @override
+  String get gameTvNameHint => 'Urugero, Televiziyo yo mu ruganiriro';
+
+  @override
+  String get gameTvScope => 'Aho televiziyo iri';
+
+  @override
+  String get gameTvAuthorizedScope => 'Ahantu wemerewe';
+
+  @override
+  String get gameNoAuthorizedTvScopes =>
+      'Nta rugo cyangwa ahantu hemewe haboneka kuri iyi televiziyo.';
+
+  @override
+  String get gameTvVenueId => 'Ikirango cy’ahantu';
+
+  @override
+  String get gamePairTvAction => 'HUZA IYI TELEVIZIYO';
+
+  @override
+  String get gameTvPairingSuccess => 'Televiziyo yahujwe';
+
+  @override
+  String get gameTvPairingSuccessDescription =>
+      'Televiziyo iri ku rutonde rwawe bwite.';
+
+  @override
+  String get gameTvFormInvalid =>
+      'Banza ugenzure kode, izina n’aho televiziyo iri.';
+
+  @override
+  String get gameTvDetailsTitle => 'Amakuru ya televiziyo';
+
+  @override
+  String get gameSaveTv => 'BIKA IMPINDUKA';
+
+  @override
+  String get gameSaveTvConfirmTitle => 'Ubike impinduka za televiziyo?';
+
+  @override
+  String get gameSaveTvConfirmDescription =>
+      'Emeza izina rishya n’ahantu wemerewe. Iyi mpinduka ibikwa mu nyandiko z’igenzura.';
+
+  @override
+  String get gameSaveTvConfirmAction => 'BIKA TELEVIZIYO';
+
+  @override
+  String get gameIssueNewPairing => 'KORA KODE NSHYA YO GUHUZA';
+
+  @override
+  String get gamePairingChallengeCreated => 'Kode nshya yo guhuza';
+
+  @override
+  String get gameRecoverTvTitle => 'Subizaho televiziyo';
+
+  @override
+  String get gameRecoverTvDescription =>
+      'Kuri televiziyo, hitamo Kode nshya yo guhuza. Andika cyangwa usikane hano kode nshya y’inyuguti 8 kugira ngo uhindure ibanga ry’igikoresho.';
+
+  @override
+  String get gameRecoverTvCodeInstruction =>
+      'Koresha kode nshya iri kuri iyi televiziyo. Kuyisubizaho bihagarika ibanga rya kera kandi bikandikwa mu igenzura.';
+
+  @override
+  String get gameRecoverTvAction => 'SUBIZAHO TELEVIZIYO';
+
+  @override
+  String get gameRecoverTvConfirmTitle => 'Subizaho iyi televiziyo?';
+
+  @override
+  String gameRecoverTvConfirmDescription(String name) {
+    return 'Subizaho $name ukoresheje iyi kode nshya? Ibanga ry’igikoresho rya kera rizahagarara.';
+  }
+
+  @override
+  String get gameRecoverTvConfirmAction => 'HINDURA IBANGA';
+
+  @override
+  String get gameTvRecoveryUnavailable =>
+      'Iyi televiziyo ntiri mu zo wemerewe gucunga ubu. Ongera amakuru maze ugerageze nanone.';
+
+  @override
+  String get gameRevokeTv => 'HAGARIKA UBUSHOBOZI BWA TELEVIZIYO';
+
+  @override
+  String get gameRevokeTvConfirmTitle => 'Uhagarike iyi televiziyo?';
+
+  @override
+  String get gameRevokeTvConfirmDescription =>
+      'Ibi bihita bikuraho imikino yashinzwe kandi bigatesha agaciro uruhushya rwa televiziyo.';
+
+  @override
+  String get gameRevokeTvConfirmAction => 'HAGARIKA UBUSHOBOZI';
+
+  @override
+  String get gameManagedGamesTitle => 'Imikino ncunga';
+
+  @override
+  String get gameManagedGamesSubtitle =>
+      'Tegura ibibazo byemejwe kandi ucunge gusa imikino washinzwe.';
+
+  @override
+  String get gameManagedGamesLoading => 'Gufungura imikino washinzwe';
+
+  @override
+  String get gameManagedGamesRefreshing =>
+      'Kuvugurura imikino washinzwe. Gutegura no kugenzura umukino birahagaritswe kugeza uburenganzira bwawe bwemejwe.';
+
+  @override
+  String get gameManagedGamesStale =>
+      'Harerekanwa imikino washinzwe iheruka kwemezwa. Vugurura mbere yo gutegura cyangwa kugenzura umukino.';
+
+  @override
+  String get gameNoManagedGames => 'Nta mukino washinzwe';
+
+  @override
+  String get gameNoManagedGamesDescription =>
+      'Umuyobozi ashobora kugushinga umukino, cyangwa umutegura wemewe akawutegura.';
+
+  @override
+  String get gamePlanGame => 'TEGURA UMUKINO';
+
+  @override
+  String get gameSessionPlannerTitle => 'Tegura umukino';
+
+  @override
+  String get gameQuestionPack => 'Itsinda ry’ibibazo';
+
+  @override
+  String get gameSelectQuestionPack => 'Hitamo itsinda ryemejwe ry’ibibazo 20';
+
+  @override
+  String get gameEligibility => 'Abemerewe kwinjira';
+
+  @override
+  String get gameEligibilityClubMembership =>
+      'Abanyamuryango b’ikipe bujuje ibisabwa';
+
+  @override
+  String get gameEligibilityInvitationOnly => 'Abafana batumiwe gusa';
+
+  @override
+  String get gameEligibilityHomeOwner =>
+      'Ba nyiri televiziyo zo mu rugo zatoranyijwe';
+
+  @override
+  String get gameEligibilityVenue => 'Abakozi bemewe b’ahantu';
+
+  @override
+  String get gameScheduleStart => 'Igihe cyo gutangira';
+
+  @override
+  String get gameChooseScheduleStart => 'HITAMO IGIHE';
+
+  @override
+  String get gameSelectedDisplays => 'Televiziyo zatoranyijwe';
+
+  @override
+  String get gameNoAssignableDisplays =>
+      'Nta televiziyo iboneka kuri iyi konti.';
+
+  @override
+  String get gameSelectedInvitees => 'Abafana batumiwe';
+
+  @override
+  String get gameInviteesRequiredDescription =>
+      'Hitamo nibura umufana umwe wemerewe. Fan ID zatoranyijwe ni zo gusa zizabona uyu mukino.';
+
+  @override
+  String get gameInviteesOptionalDescription =>
+      'Si ngombwa: Fan ID zatoranyijwe zizabona uyu mukino nubwo zitari mu cyiciro nyamukuru cy’abemerewe.';
+
+  @override
+  String get gameNoInviteesDescription =>
+      'Nta mufana w’iyi kipe ufite konti ikora ushobora gutumirwa.';
+
+  @override
+  String get gameCreateSession => 'KORA UMUKINO WATEGUWE';
+
+  @override
+  String get gamePlannerFormInvalid =>
+      'Banza ugenzure itsinda ry’ibibazo, abemerewe, abatumirwa, igihe cyo gutangira na televiziyo zatoranyijwe.';
+
+  @override
+  String get gamePlannerNoPacks => 'Nta bibazo byemejwe';
+
+  @override
+  String get gamePlannerNoPacksDescription =>
+      'Umuyobozi agomba gutangaza itsinda ryuzuye ry’ibibazo 20 mbere yo gutegura umukino.';
+
+  @override
+  String get gameLiveControlTitle => 'Igenzura ry’umukino w’ako kanya';
+
+  @override
+  String get gameParticipantCount => 'Abakina';
+
+  @override
+  String get gameDisplayCount => 'Televiziyo zatoranyijwe';
+
+  @override
+  String get gameEventSequence => 'Urukurikirane rw’ibikorwa';
+
+  @override
+  String get gameCurrentQuestionControl => 'Ikibazo kiriho';
+
+  @override
+  String get gameNoCurrentQuestion => 'Nta kibazo cyatoranyijwe ubu.';
+
+  @override
+  String get gameControlActions => 'Ibikorwa byemewe';
+
+  @override
+  String get gameNoControlActions => 'Nta gikorwa cy’umukino cyemewe ubu.';
+
+  @override
+  String get gameNextAction => 'Igikorwa gikurikira cy’umukino';
+
+  @override
+  String get gameValidateSessionAction => 'GENZURA UMUKINO';
+
+  @override
+  String get gamePublishSessionAction => 'TANGAZA UMUKINO';
+
+  @override
+  String get gameScheduleSessionAction => 'TEGURA UMUKINO';
+
+  @override
+  String get gameOpenLobbyAction => 'FUNGURA AHO GUTEGEREZA';
+
+  @override
+  String get gameOpenQuestionAction => 'FUNGURA IKIBAZO';
+
+  @override
+  String get gameRevealAnswerAction => 'GARAGAZA IGISUBIZO';
+
+  @override
+  String get gameCompleteSessionAction => 'SOZA UMUKINO';
+
+  @override
+  String get gameExceptionActions => 'Ibikorwa bidasanzwe';
+
+  @override
+  String get gamePauseAction => 'HAGARIKA UMUKINO GATO';
+
+  @override
+  String get gameResumeAction => 'KOMEZA UMUKINO';
+
+  @override
+  String get gameSkipQuestionAction => 'SIMBUKA IKIBAZO';
+
+  @override
+  String get gameEndEarlyAction => 'SOZA UMUKINO MBERE';
+
+  @override
+  String get gameCancelSessionAction => 'HAGARIKA UYU MUKINO';
+
+  @override
+  String get gameExceptionConfirmTitle => 'Emeza igikorwa kidasanzwe';
+
+  @override
+  String get gameExceptionConfirmDescription =>
+      'Iki gikorwa gihindura uko umukino usanzwe ukomeza kandi kibikwa mu nyandiko z’igenzura.';
+
+  @override
+  String get gameExceptionReason => 'Impamvu';
+
+  @override
+  String get gameExceptionReasonHint =>
+      'Sobanura impamvu iki gikorwa kidasanzwe gikenewe';
+
+  @override
+  String get gameExceptionReasonInvalid =>
+      'Andika impamvu ifite inyuguti kuva kuri 3 kugeza kuri 234.';
+
+  @override
+  String get gameConfirmAction => 'EMEZA IGIKORWA';
+
+  @override
+  String get gameOperationsUnavailable => 'Imicungire y’imikino ntiboneka';
+
+  @override
+  String get gameOperationsUnavailableDescription =>
+      'Amakuru mashya yemewe ntiyabashije kwemezwa. Subiramo mbere y’ikindi gikorwa.';
+
+  @override
+  String get gameOperationsAccessDenied => 'Ntiwemerewe gucunga uyu mukino';
+
+  @override
+  String get gameOperationsAccessDeniedDescription =>
+      'Iyi konti si nyiri televiziyo, umutegura washinzwe, umukozi w’ahantu cyangwa umuyobozi w’iki gikorwa.';
+
+  @override
+  String get gameOperationConflict => 'Imiterere y’umukino yahindutse';
+
+  @override
+  String get gameOperationConflictDescription =>
+      'Banza usubiremo amakuru yemewe mbere yo kongera kugerageza.';
+
+  @override
+  String get gameOperationTimeout => 'Igikorwa cy’umukino nticyemejwe';
+
+  @override
+  String get gameOperationTimeoutDescription =>
+      'Igikorwa cyatinze kwemezwa. Banza uvugurure amakuru yemewe mbere yo kongera kukigerageza.';
+
+  @override
+  String get gamePhaseDraft => 'Inyandiko y’ibanze';
+
+  @override
+  String get gamePhaseValidated => 'Byagenzuwe';
+
+  @override
+  String get gamePhasePublished => 'Byatangajwe';
+
+  @override
+  String get gamePhaseScheduled => 'Byateguwe';
+
+  @override
+  String get gamePhaseLobby => 'Aho gutegereza hafunguye';
+
+  @override
+  String get gamePhaseQuestionOpen => 'Ikibazo kirafunguye';
+
+  @override
+  String get gamePhaseReveal => 'Erekana igisubizo';
+
+  @override
+  String get gamePhasePaused => 'Byahagaritswe gato';
+
+  @override
+  String get gamePhaseCompleted => 'Byarangiye';
+
+  @override
+  String get gamePhaseCancelled => 'Byahagaritswe';
+
+  @override
+  String get tvRemoteMenuTitle => 'Amabwiriza ya televiziyo';
+
+  @override
+  String get tvRemoteMenuDescription =>
+      'Koresha utumenyetso tw’icyerekezo kwimura ahatoranyijwe, Kanda OK kugira ngo ukore, Subira inyuma kugira ngo ufunge, cyangwa Menu kugira ngo ufungure aya mabwiriza.';
+
+  @override
+  String get tvRemoteMenuRetry => 'Vugurura televiziyo';
+
+  @override
+  String get tvRemoteMenuClose => 'Funga amabwiriza';
 }

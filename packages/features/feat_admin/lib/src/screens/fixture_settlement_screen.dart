@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../admin_settlement_controller.dart';
 
@@ -40,25 +40,30 @@ class _FixtureSettlementScreenState
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AfriAlertDialog(
-        title: const Text('SETTLE THIS FIXTURE?'),
-        content: Text(
-          '${fixture.homeTeam.name} ${draft['home_score']} – '
-          '${draft['away_score']} ${fixture.awayTeam.name}\n\n'
-          'This grades prediction markets and may trigger supporter rewards. '
-          'Confirm only from the official result.',
-        ),
-        actions: [
-          AfriTextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('CANCEL'),
+      builder: (dialogContext) {
+        final l10n = dialogContext.afriL10n;
+        return AfriAlertDialog(
+          title: Text(l10n.adminSettlementConfirmTitle),
+          content: Text(
+            l10n.adminSettlementConfirmMessage(
+              fixture.homeTeam.name,
+              draft['home_score'] as int,
+              draft['away_score'] as int,
+              fixture.awayTeam.name,
+            ),
           ),
-          AfriTextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('SETTLE'),
-          ),
-        ],
-      ),
+          actions: [
+            AfriTextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.adminCancelUpper),
+            ),
+            AfriTextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(l10n.adminSettlementSettleUpper),
+            ),
+          ],
+        );
+      },
     );
     if (confirmed != true || !mounted) return;
 
@@ -69,15 +74,22 @@ class _FixtureSettlementScreenState
       if (!mounted || receipt == null) return;
       AfriToast.success(
         context,
-        'Settled ${receipt.score} • ${receipt.marketsSettled} markets • '
-        '${receipt.totalWon} won • ${receipt.totalLost} lost',
+        context.afriL10n.adminSettlementReceipt(
+          receipt.score,
+          receipt.marketsSettled,
+          receipt.totalWon,
+          receipt.totalLost,
+        ),
       );
     } on FormatException {
       if (!mounted) return;
-      AfriToast.error(context, 'Review the official result and try again.');
+      AfriToast.error(
+        context,
+        context.afriL10n.adminSettlementReviewOfficialResult,
+      );
     } catch (_) {
       if (!mounted) return;
-      AfriToast.error(context, 'Fixture settlement was not confirmed.');
+      AfriToast.error(context, context.afriL10n.adminSettlementNotConfirmed);
     }
   }
 
@@ -93,11 +105,14 @@ class _FixtureSettlementScreenState
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('SETTLE FIXTURES', style: TypographyTokens.titleLarge()),
+        title: Text(
+          context.afriL10n.adminSettlementTitle,
+          style: TypographyTokens.titleLarge(),
+        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: context.afriL10n.adminBack,
         ),
       ),
       scrollable: false,
@@ -115,8 +130,8 @@ class _FixtureSettlementScreenState
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-settlement-state-loading'),
-                title: 'Loading settlement workspace',
-                message: 'Checking controlled fixture information.',
+                title: context.afriL10n.adminSettlementLoadingTitle,
+                message: context.afriL10n.adminSettlementLoadingMessage,
               ),
             )
           : settlement.hasError && snapshot == null
@@ -129,10 +144,10 @@ class _FixtureSettlementScreenState
     final snapshot = settlement.requireValue;
     final controlsEnabled = snapshot.actionsEnabled && !settlement.isLoading;
     final fixtures = _filtered(snapshot);
-    const filters = <String, String>{
-      'scheduled': 'SCHEDULED',
-      'finished': 'FINISHED',
-      'all': 'ALL',
+    final filters = <String, String>{
+      'scheduled': context.afriL10n.adminSettlementFilterScheduled,
+      'finished': context.afriL10n.adminSettlementFilterFinished,
+      'all': context.afriL10n.adminSettlementFilterAll,
     };
 
     return AfriRefreshIndicator(
@@ -151,13 +166,12 @@ class _FixtureSettlementScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'OFFICIAL RESULT CONTROL',
+                  context.afriL10n.adminSettlementControlTitle,
                   style: TypographyTokens.labelLarge(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  'Settlement grades prediction markets and may trigger rewards. '
-                  'Use only an official, confirmed final score.',
+                  context.afriL10n.adminSettlementControlMessage,
                   style: TypographyTokens.bodyMedium(),
                 ),
               ],
@@ -183,9 +197,8 @@ class _FixtureSettlementScreenState
           if (fixtures.isEmpty)
             AfriStateView.empty(
               key: const ValueKey<String>('admin-settlement-state-empty'),
-              title: 'No fixtures in this view',
-              message:
-                  'Switch filters or wait for controlled fixture information.',
+              title: context.afriL10n.adminSettlementEmptyTitle,
+              message: context.afriL10n.adminSettlementEmptyMessage,
               compact: true,
             )
           else
@@ -207,11 +220,14 @@ class _FixtureSettlementScreenState
     FocusNode? focusNode,
   }) {
     final enabled = controlsEnabled && fixture.canSettle;
+    final localKickoff = fixture.kickoffAt.toLocal();
+    final materialL10n = MaterialLocalizations.of(context);
     final score = fixture.homeScore == null
-        ? 'VS'
-        : '${fixture.homeScore} – ${fixture.awayScore}';
+        ? context.afriL10n.adminSettlementVersusShort
+        : context.afriL10n.adminScore(fixture.homeScore!, fixture.awayScore!);
     final detail = <String>[
-      DateFormat('dd MMM yyyy, HH:mm').format(fixture.kickoffAt.toLocal()),
+      '${materialL10n.formatShortDate(localKickoff)} '
+          '${materialL10n.formatTimeOfDay(TimeOfDay.fromDateTime(localKickoff))}',
       if (fixture.venueCity != null) fixture.venueCity!,
       if (fixture.stageName != null) fixture.stageName!,
       if (fixture.groupName != null) fixture.groupName!,
@@ -224,11 +240,13 @@ class _FixtureSettlementScreenState
         focusNode: focusNode,
         enabled: enabled,
         onTap: enabled ? () => unawaited(_openSettlement(fixture)) : null,
-        semanticsLabel:
-            '${fixture.homeTeam.name} $score ${fixture.awayTeam.name}',
+        semanticsLabel: context.afriL10n.adminMetricSemantic(
+          fixture.homeTeam.name,
+          context.afriL10n.adminMetricSemantic(score, fixture.awayTeam.name),
+        ),
         semanticsHint: enabled
-            ? 'Open official result confirmation'
-            : 'Settlement unavailable',
+            ? context.afriL10n.adminSettlementOpenHint
+            : context.afriL10n.adminSettlementUnavailableHint,
         builder: (context, state) => DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: ShapeTokens.cardRadius,
@@ -300,8 +318,10 @@ class _FixtureSettlementScreenState
                   child: fixture.canSettle
                       ? Text(
                           controlsEnabled
-                              ? 'ENTER OFFICIAL RESULT'
-                              : 'SETTLEMENT PAUSED',
+                              ? context
+                                    .afriL10n
+                                    .adminSettlementEnterOfficialResult
+                              : context.afriL10n.adminSettlementPaused,
                           style: TypographyTokens.labelMedium(
                             controlsEnabled
                                 ? ColorTokens.onSurface
@@ -310,8 +330,8 @@ class _FixtureSettlementScreenState
                         )
                       : Text(
                           fixture.status == 'finished'
-                              ? 'SETTLED'
-                              : 'NOT SETTLEABLE',
+                              ? context.afriL10n.adminSettlementSettled
+                              : context.afriL10n.adminSettlementNotSettleable,
                           style: TypographyTokens.labelMedium(
                             fixture.status == 'finished'
                                 ? ColorTokens.success
@@ -332,52 +352,53 @@ class _FixtureSettlementScreenState
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-settlement-state-disabled'),
-        title: 'Settlement management unavailable',
-        message: 'Settlement controls are disabled for this controlled build.',
+        title: context.afriL10n.adminSettlementManagementUnavailable,
+        message: context.afriL10n.adminSettlementDisabledMessage,
         icon: AfriIcons.lock,
-        actionLabel: 'Back to admin',
+        actionLabel: context.afriL10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
     );
   }
 
   Widget _unavailable(AdminSettlementFailure failure) {
+    final l10n = context.afriL10n;
     void retry() =>
         unawaited(ref.read(adminSettlementProvider.notifier).refresh());
     final view = switch (failure.kind) {
       AdminSettlementFailureKind.offline => AfriStateView.offline(
         key: const ValueKey<String>('admin-settlement-state-offline'),
-        title: 'Settlement workspace offline',
-        message: 'Reconnect before loading private fixture information.',
-        actionLabel: 'Try again',
+        title: l10n.adminSettlementWorkspaceOffline,
+        message: l10n.adminSettlementWorkspaceOfflineMessage,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
       AdminSettlementFailureKind.permissionDenied => AfriStateView.error(
         key: const ValueKey<String>('admin-settlement-state-permission-denied'),
-        title: 'Settlement access unavailable',
-        message: 'This account cannot view or settle prediction fixtures.',
-        actionLabel: 'Back to admin',
+        title: l10n.adminSettlementAccessUnavailable,
+        message: l10n.adminSettlementAccessUnavailableMessage,
+        actionLabel: l10n.adminBackToAdmin,
         onAction: () => context.pop(),
       ),
       AdminSettlementFailureKind.conflict => AfriStateView.error(
         key: const ValueKey<String>('admin-settlement-state-conflict'),
-        title: 'Fixture result changed',
-        message: 'Refresh before confirming another settlement.',
-        actionLabel: 'Refresh',
+        title: l10n.adminSettlementResultChanged,
+        message: l10n.adminSettlementResultChangedMessage,
+        actionLabel: l10n.editProfileRefresh,
         onAction: retry,
       ),
       AdminSettlementFailureKind.securityTimeout => AfriStateView.error(
         key: const ValueKey<String>('admin-settlement-state-security-timeout'),
-        title: 'Security check timed out',
-        message: 'No fixture information was shown. Check your connection.',
-        actionLabel: 'Retry',
+        title: l10n.adminSecurityTimeout,
+        message: l10n.adminSettlementSecurityTimeoutMessage,
+        actionLabel: l10n.retry,
         onAction: retry,
       ),
       AdminSettlementFailureKind.unknown => AfriStateView.error(
         key: const ValueKey<String>('admin-settlement-state-error'),
-        title: 'Settlement workspace unavailable',
-        message: 'Private fixture information remains hidden. Try again.',
-        actionLabel: 'Try again',
+        title: l10n.adminSettlementWorkspaceUnavailable,
+        message: l10n.adminSettlementPrivateDataHidden,
+        actionLabel: l10n.editProfileTryAgain,
         onAction: retry,
       ),
     };
@@ -388,15 +409,15 @@ class _FixtureSettlementScreenState
   }
 
   Widget? _statusBanner(AsyncValue<AdminSettlementSnapshot> settlement) {
+    final l10n = context.afriL10n;
     final snapshot = settlement.valueOrNull;
     if (snapshot == null) return null;
     if (settlement.isLoading || snapshot.isMutating) {
-      return const AfriStateBanner(
-        key: ValueKey<String>('admin-settlement-state-syncing'),
+      return AfriStateBanner(
+        key: const ValueKey<String>('admin-settlement-state-syncing'),
         icon: AfriIcons.refresh,
-        title: 'Checking fixture results',
-        subtitle:
-            'Showing the last confirmed state while current data is checked.',
+        title: l10n.adminSettlementCheckingResults,
+        subtitle: l10n.adminSettlementCheckingResultsMessage,
         tone: AfriStateBannerTone.info,
       );
     }
@@ -410,15 +431,16 @@ class _FixtureSettlementScreenState
           ? AfriIcons.offline
           : AfriIcons.statusWarning,
       title: switch (failure.kind) {
-        AdminSettlementFailureKind.conflict => 'Fixture result changed',
-        AdminSettlementFailureKind.securityTimeout =>
-          'Security check timed out',
-        AdminSettlementFailureKind.offline => 'Settlement workspace offline',
-        _ => 'Settlement workspace unavailable',
+        AdminSettlementFailureKind.conflict =>
+          l10n.adminSettlementResultChanged,
+        AdminSettlementFailureKind.securityTimeout => l10n.adminSecurityTimeout,
+        AdminSettlementFailureKind.offline =>
+          l10n.adminSettlementWorkspaceOffline,
+        _ => l10n.adminSettlementWorkspaceUnavailable,
       },
       subtitle: snapshot.mutationOutcomeUnconfirmed
-          ? 'The last settlement is unconfirmed. Controls stay paused until refresh succeeds.'
-          : 'Last confirmed fixture information remains visible. Controls are paused.',
+          ? l10n.adminSettlementOutcomeUnconfirmed
+          : l10n.adminSettlementLastConfirmedMessage,
       tone: AfriStateBannerTone.warning,
     );
   }
@@ -461,7 +483,10 @@ class _SettlementSheetState extends State<_SettlementSheet> {
         away < 0 ||
         home > 99 ||
         away > 99) {
-      setState(() => _validationMessage = 'Enter final scores from 0 to 99.');
+      setState(
+        () => _validationMessage =
+            context.afriL10n.adminSettlementFinalScoreValidation,
+      );
       return;
     }
     if (_showHalfTime &&
@@ -473,7 +498,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
             halfAway > away)) {
       setState(
         () => _validationMessage =
-            'Enter both half-time scores without exceeding the final score.',
+            context.afriL10n.adminSettlementHalfTimeValidation,
       );
       return;
     }
@@ -501,11 +526,16 @@ class _SettlementSheetState extends State<_SettlementSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('ENTER OFFICIAL RESULT', style: TypographyTokens.titleLarge()),
+            Text(
+              context.afriL10n.adminSettlementEnterOfficialResult,
+              style: TypographyTokens.titleLarge(),
+            ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              '${widget.fixture.homeTeam.name} vs '
-              '${widget.fixture.awayTeam.name}',
+              context.afriL10n.adminVersus(
+                widget.fixture.homeTeam.name,
+                widget.fixture.awayTeam.name,
+              ),
               style: TypographyTokens.bodyLarge(),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
@@ -538,10 +568,10 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                 _validationMessage = null;
               }),
               selected: _showHalfTime,
-              semanticsLabel: 'Half-time score',
+              semanticsLabel: context.afriL10n.adminSettlementHalfTimeScore,
               semanticsHint: _showHalfTime
-                  ? 'Hide half-time score fields'
-                  : 'Show half-time score fields',
+                  ? context.afriL10n.adminSettlementHideHalfTime
+                  : context.afriL10n.adminSettlementShowHalfTime,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: SpacingTokens.spacing3,
@@ -554,7 +584,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                     ),
                     const SizedBox(width: SpacingTokens.spacing2),
                     Text(
-                      'HALF-TIME SCORE (OPTIONAL)',
+                      context.afriL10n.adminSettlementHalfTimeOptional,
                       style: TypographyTokens.labelMedium(),
                     ),
                   ],
@@ -568,7 +598,9 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                   Expanded(
                     child: AfriInputField(
                       controller: _halfTimeHomeController,
-                      label: '${widget.fixture.homeTeam.shortName} HT',
+                      label: context.afriL10n.adminSettlementHalfTimeLabel(
+                        widget.fixture.homeTeam.shortName,
+                      ),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                     ),
@@ -577,7 +609,9 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                   Expanded(
                     child: AfriInputField(
                       controller: _halfTimeAwayController,
-                      label: '${widget.fixture.awayTeam.shortName} HT',
+                      label: context.afriL10n.adminSettlementHalfTimeLabel(
+                        widget.fixture.awayTeam.shortName,
+                      ),
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                     ),
@@ -598,7 +632,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
             const SizedBox(height: SpacingTokens.spacing5),
             AfriButton(
               key: const ValueKey<String>('admin-settlement-review-result'),
-              label: 'Review settlement',
+              label: context.afriL10n.adminSettlementReviewAction,
               fullWidth: true,
               onTap: _submit,
             ),
@@ -636,9 +670,21 @@ class _StatusChip extends StatelessWidget {
         ),
       ),
       child: Text(
-        status.toUpperCase(),
+        _statusLabel(context, status),
         style: TypographyTokens.labelSmall(color),
       ),
     );
   }
+}
+
+String _statusLabel(BuildContext context, String status) {
+  final l10n = context.afriL10n;
+  return switch (status) {
+    'finished' => l10n.adminStatusFinished,
+    'scheduled' => l10n.adminStatusScheduled,
+    'live' => l10n.adminStatusLive,
+    'cancelled' => l10n.adminStatusCancelled,
+    'postponed' => l10n.adminStatusPostponed,
+    _ => status.toUpperCase(),
+  };
 }

@@ -3,12 +3,16 @@ import 'live_game_v2_models.dart';
 enum ParticipantDiscoverySource {
   clubMembership,
   invitation,
+  homeOwner,
+  venue,
   deepLink;
 
   factory ParticipantDiscoverySource.fromWireValue(String value) {
     return switch (value) {
       'club_membership' => ParticipantDiscoverySource.clubMembership,
       'invitation' => ParticipantDiscoverySource.invitation,
+      'home_owner' => ParticipantDiscoverySource.homeOwner,
+      'venue' => ParticipantDiscoverySource.venue,
       'deep_link' => ParticipantDiscoverySource.deepLink,
       _ => throw const LiveGameContractViolation(
         'Unsupported participant discovery source.',

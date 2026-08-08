@@ -24,6 +24,34 @@ void main() {
       expect(_allKeys(_feedJson()), isNot(contains('tv_code')));
     });
 
+    test('GAME-MOB-01 preserves governed home and venue discovery sources', () {
+      final homeJson = _feedJson();
+      final homeSessions = List<Map<String, Object?>>.from(
+        homeJson['sessions']! as List,
+      )..first['source'] = 'home_owner';
+      homeJson['sessions'] = homeSessions;
+      final venueJson = _feedJson();
+      final venueSessions = List<Map<String, Object?>>.from(
+        venueJson['sessions']! as List,
+      )..first['source'] = 'venue';
+      venueJson['sessions'] = venueSessions;
+
+      expect(
+        ParticipantGameDiscoveryFeed.fromJson(
+          homeJson,
+          expectedClubId: 'club-1',
+        ).sessions.first.source,
+        ParticipantDiscoverySource.homeOwner,
+      );
+      expect(
+        ParticipantGameDiscoveryFeed.fromJson(
+          venueJson,
+          expectedClubId: 'club-1',
+        ).sessions.first.source,
+        ParticipantDiscoverySource.venue,
+      );
+    });
+
     test('rejects sessions outside the expected club scope', () {
       final json = _feedJson();
       final sessions = List<Map<String, Object?>>.from(

@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('runtime media migration is fail-closed and provenance constrained', () {
-    final workspace = Directory.current.absolute;
+    final workspace = _findWorkspaceRoot();
     final source = File(
       '${workspace.path}/supabase/migrations/'
       '20260724143000_govern_runtime_media_rights.sql',
@@ -31,4 +31,18 @@ void main() {
       reason: 'Media rights must never opt in by default.',
     );
   });
+}
+
+Directory _findWorkspaceRoot() {
+  var candidate = File.fromUri(Platform.script).parent.absolute;
+  while (candidate.parent.path != candidate.path) {
+    if (File('${candidate.path}/pubspec.yaml').existsSync() &&
+        Directory('${candidate.path}/supabase/migrations').existsSync()) {
+      return candidate;
+    }
+    candidate = candidate.parent;
+  }
+  throw StateError(
+    'Could not locate the AFRICLUB workspace root from ${Platform.script}.',
+  );
 }

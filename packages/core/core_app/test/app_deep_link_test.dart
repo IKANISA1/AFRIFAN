@@ -197,6 +197,49 @@ void main() {
         );
       },
     );
+
+    testWidgets(
+      'GAME-MOB-01 opens a validated live-game notification destination',
+      (tester) async {
+        const sessionId = '99000000-0000-4000-8000-000000000031';
+        final notificationRoutes = StreamController<Uri>();
+        addTearDown(notificationRoutes.close);
+
+        await tester.pumpWidget(
+          AfriClubApp(
+            config: config,
+            modules: <FeatureModule>[
+              _HomeModule(),
+              _OnboardingModule(),
+              _GamesModule(),
+            ],
+            authRepository: FakeAuthRepository(
+              restoreResult: const UserProfile(
+                id: 'user-game-notification',
+                clubId: '1',
+                publicUserId: '654322',
+              ),
+            ),
+            initialLocation: '/home',
+            notificationRouteStream: notificationRoutes.stream,
+          ),
+        );
+
+        await tester.pump();
+        await tester.pumpAndSettle();
+        notificationRoutes.add(Uri.parse('/fanzone/game/$sessionId'));
+        await tester.pump();
+        await tester.pumpAndSettle();
+
+        expect(find.byType(_FakeLiveGameScreen), findsOneWidget);
+        expect(
+          tester
+              .widget<_FakeLiveGameScreen>(find.byType(_FakeLiveGameScreen))
+              .sessionId,
+          sessionId,
+        );
+      },
+    );
   });
 }
 
@@ -219,6 +262,30 @@ class _FakeClubNewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const Scaffold(body: Text('Club news'));
+}
+
+class _FakeLiveGameScreen extends StatelessWidget {
+  const _FakeLiveGameScreen({required this.sessionId});
+
+  final String sessionId;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(body: Text(sessionId));
+}
+
+class _GamesModule extends FeatureModule {
+  @override
+  String get featureKey => 'games';
+
+  @override
+  List<RouteBase> get standaloneRoutes => <RouteBase>[
+    GoRoute(
+      path: '/fanzone/game/:sessionId',
+      builder: (context, state) => _FakeLiveGameScreen(
+        sessionId: state.pathParameters['sessionId'] ?? '',
+      ),
+    ),
+  ];
 }
 
 class _ClubModule extends FeatureModule {

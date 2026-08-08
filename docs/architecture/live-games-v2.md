@@ -1,14 +1,14 @@
 # Live Games V2 Architecture Decision
 
-**Status:** Proposed — product decisions and protected approvals remain open  
+**Status:** Core product contract approved — rollout decision and protected approvals remain open
 **Goal:** `africlub_live_games_v2_full_implementation_20260730`  
 **Design authority:** `DESIGN.md`  
 **Implementation authority:** The controlled goal and task register under
 `output/live_games_v2_goal_20260730/`
 
-This ADR records the proposed system architecture. It does not define visual
+This ADR records the approved core system architecture. It does not define visual
 tokens or UI rules and does not override `DESIGN.md`, `RULES.md`, RLS, or
-accountable owner decisions.
+accountable protected approvals.
 
 ## Context
 
@@ -25,10 +25,10 @@ client models:
 The required product model is one server-authoritative session shared across
 participant mobile, owner/organizer mobile, native TV, and admin.
 
-## Proposed decisions
+## Controlled decisions
 
-These positions remain subject to DEC-01 through DEC-06 in the controlled
-decision log:
+DEC-01 through DEC-05 are resolved by the football-club-first product contract
+and enforced in current source. DEC-06 remains a measured rollout decision:
 
 1. A session may be assigned to multiple authorized TV installations.
 2. A TV installation belongs to an authenticated owner and either a home or
@@ -39,8 +39,8 @@ decision log:
    free-text display name.
 5. “Live streaming” means synchronized trivia state. Video delivery is outside
    this programme.
-6. Legacy participant-code and web-TV compatibility are retired through a
-   measured, reversible rollout.
+6. Legacy participant-code and web-TV compatibility are retired only after a
+   measured, reversible replacement rollout proves adoption and rollback.
 
 ## Domain boundaries
 
@@ -203,6 +203,21 @@ Service targets:
 - Live Control for authoritative state, projections, health, guarded
   transitions, and audit detail.
 
+## Physical synchronized-session acceptance
+
+`GAME-QA-03` is governed by
+`docs/architecture/live-games-v2-synchronized-session-matrix.json`. Closure
+requires one authorized shared-backend session across two independently
+connected physical phones and one physical native-TV target, with correlated
+phase/version/event evidence, measured network loss and recovery, privacy-safe
+exact-build logs and continuous video, physical accessibility execution, and
+named approvals.
+
+The exact 2026-08-01 preflight found zero available physical phones, one paired
+but unavailable iPhone 12 Pro, zero physical native-TV targets, two iOS
+simulators, and no attached Android device. Simulators and emulators are not
+substitutes, so the preflight is complete while the criterion remains open.
+
 ## Compatibility and rollout
 
 Implementation is additive first:
@@ -225,9 +240,9 @@ rollback approval exist.
 - Existing game client contracts must migrate to versioned projections.
 - Owner and organizer mobile capabilities require a narrow repository-rule
   amendment.
-- Current iOS deployment-target incompatibility must be resolved before clean
-  release proof.
+- The iOS 15.5 contract and exact-current local unsigned release build pass;
+  the dirty working candidate, pinned CI, production distribution signing,
+  store processing and full physical UAT remain separate release gates.
 - The goal remains fail-closed until authenticated staging, multi-client,
   physical-device, accessibility, security, performance, signing, deployment,
   and rollback evidence is current.
-

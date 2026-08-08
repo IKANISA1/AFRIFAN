@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -61,14 +62,12 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
         .submit();
     if (!mounted || !accepted) return;
     FocusScope.of(context).unfocus();
-    AfriToast.success(
-      context,
-      'Order confirmed by the venue service. Pay only at the venue.',
-    );
+    AfriToast.success(context, context.afriL10n.venueOrderConfirmedToast);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
     final enabled = ref.watch(venueOrderAccessEnabledProvider);
     final asyncState = ref.watch(venueOrderControllerProvider);
     return AfriScreenScaffold(
@@ -76,7 +75,7 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'Venue order',
+          l10n.gameVenueOrder,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -90,17 +89,16 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
           key: const ValueKey<String>('venue-order-back'),
           icon: AfriIcons.back,
           onTap: _close,
-          tooltip: 'Back',
+          tooltip: l10n.gameBack,
         ),
       ),
       scrollable: false,
       constrainContent: true,
       child: !enabled
           ? _VenueOrderConsequence(
-              title: 'Venue ordering unavailable',
-              body:
-                  'This governed feature is disabled for the current club or build.',
-              actionLabel: 'BACK TO FAN ZONE',
+              title: l10n.venueOrderingUnavailable,
+              body: l10n.venueFeatureDisabled,
+              actionLabel: l10n.venueBackToFanZone,
               onAction: _close,
             )
           : asyncState.when(
@@ -121,30 +119,27 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
                 if (state.failure?.kind ==
                     VenueOrderFailureKind.permissionDenied) {
                   return _VenueOrderConsequence(
-                    title: 'Venue order access denied',
-                    body:
-                        'This account cannot use the supporter venue-order route.',
-                    actionLabel: 'BACK TO FAN ZONE',
+                    title: l10n.venueOrderAccessDenied,
+                    body: l10n.venueOrderAccessDeniedBody,
+                    actionLabel: l10n.venueBackToFanZone,
                     onAction: _close,
                   );
                 }
                 if (!state.context.hasCheckin) {
                   return _VenueOrderConsequence(
                     key: const ValueKey<String>('venue-order-empty'),
-                    title: 'Check in before ordering',
-                    body:
-                        'A confirmed venue check-in is required before the approved drinks menu can be loaded.',
-                    actionLabel: 'CHECK IN FIRST',
+                    title: l10n.venueCheckInBeforeOrdering,
+                    body: l10n.venueCheckInRequiredBody,
+                    actionLabel: l10n.venueCheckInFirst,
                     onAction: () => context.go('/fanzone/venue'),
                   );
                 }
                 if (state.context.menu.isEmpty) {
                   return _VenueOrderConsequence(
                     key: const ValueKey<String>('venue-order-empty'),
-                    title: 'No drinks available',
-                    body:
-                        'The checked-in venue has no approved active drinks right now.',
-                    actionLabel: 'REFRESH MENU',
+                    title: l10n.venueNoDrinksAvailable,
+                    body: l10n.venueNoDrinksBody,
+                    actionLabel: l10n.venueRefreshMenu,
                     onAction: () => ref
                         .read(venueOrderControllerProvider.notifier)
                         .refresh(),
@@ -157,35 +152,33 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
   }
 
   Widget _initialFailure(Object error) {
+    final l10n = context.afriL10n;
     final failure = VenueOrderFailure.fromError(error);
     return switch (failure.kind) {
       VenueOrderFailureKind.permissionDenied => _VenueOrderConsequence(
-        title: 'Venue order access denied',
-        body: 'This account cannot load the supporter venue-order route.',
-        actionLabel: 'BACK TO FAN ZONE',
+        title: l10n.venueOrderAccessDenied,
+        body: l10n.venueOrderAccessDeniedLoadBody,
+        actionLabel: l10n.venueBackToFanZone,
         onAction: _close,
       ),
       VenueOrderFailureKind.offline => _VenueOrderConsequence(
-        title: 'Venue menu unavailable offline',
-        body:
-            'Reconnect before loading the venue menu. No order is queued offline.',
-        actionLabel: 'TRY AGAIN',
+        title: l10n.venueMenuUnavailableOffline,
+        body: l10n.venueMenuOfflineBody,
+        actionLabel: l10n.venueTryAgain,
         onAction: () =>
             ref.read(venueOrderControllerProvider.notifier).refresh(),
       ),
       VenueOrderFailureKind.securityTimeout => _VenueOrderConsequence(
-        title: 'Venue menu check timed out',
-        body:
-            'The app could not establish a safe order context in time. Try one bounded refresh.',
-        actionLabel: 'TRY AGAIN',
+        title: l10n.venueMenuCheckTimedOut,
+        body: l10n.venueMenuCheckTimedOutBody,
+        actionLabel: l10n.venueTryAgain,
         onAction: () =>
             ref.read(venueOrderControllerProvider.notifier).refresh(),
       ),
       _ => _VenueOrderConsequence(
-        title: 'Venue ordering unavailable',
-        body:
-            'The checked-in venue and approved menu could not be loaded safely.',
-        actionLabel: 'TRY AGAIN',
+        title: l10n.venueOrderingUnavailable,
+        body: l10n.venueMenuUnavailableBody,
+        actionLabel: l10n.venueTryAgain,
         onAction: () =>
             ref.read(venueOrderControllerProvider.notifier).refresh(),
       ),
@@ -193,6 +186,7 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
   }
 
   Widget _content(VenueOrderRouteState state) {
+    final l10n = context.afriL10n;
     final online = ConnectivityService.isOnline;
     final actionsEnabled = online && !state.actionsBlocked;
     final controller = ref.read(venueOrderControllerProvider.notifier);
@@ -219,7 +213,7 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
                 ),
                 const SizedBox(height: SpacingTokens.spacing4),
                 Text(
-                  'Order drinks at this venue',
+                  l10n.venueOrderHero,
                   style: TypographyTokens.headlineLarge().copyWith(
                     fontWeight: FontWeight.w900,
                     height: TypographyTokens.lineHeightCompact,
@@ -227,7 +221,7 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 Text(
-                  'Choose from the approved drinks-only menu. Staff queue actions remain in the venue portal.',
+                  l10n.venueOrderHeroBody,
                   style: TypographyTokens.bodyMedium(),
                 ),
               ],
@@ -239,7 +233,7 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
             const SizedBox(height: SpacingTokens.sectionGap),
           ],
           AfriSectionCard(
-            title: 'Approved drinks',
+            title: l10n.venueApprovedDrinks,
             child: Column(
               children: [
                 for (
@@ -272,9 +266,11 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
           const SizedBox(height: SpacingTokens.sectionGap),
           Semantics(
             container: true,
-            label: 'Order review',
-            value:
-                '${state.totalItems} items, ${_money(state.currencyCode, state.totalAmount)}',
+            label: l10n.venueOrderReview,
+            value: l10n.venueOrderReviewValue(
+              state.totalItems,
+              _money(state.currencyCode, state.totalAmount),
+            ),
             child: AfriSurfaceCard(
               child: largeText
                   ? Column(
@@ -298,27 +294,29 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
             const SizedBox(height: SpacingTokens.sectionGap),
             Semantics(
               selected: state.ageGateConfirmed,
-              label: 'Legal age confirmation',
-              value: state.ageGateConfirmed ? 'Selected' : 'Not selected',
+              label: l10n.venueLegalAgeConfirmation,
+              value: state.ageGateConfirmed
+                  ? l10n.gameSelected
+                  : l10n.venueNotSelected,
               child: AfriSurfaceCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Age confirmation required',
+                      l10n.venueAgeConfirmationRequired,
                       style: TypographyTokens.titleLarge(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
-                      'Confirm only if you meet the venueʼs legal age requirement. Venue staff may still verify eligibility.',
+                      l10n.venueAgeConfirmationBody,
                       style: TypographyTokens.bodyMedium(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     AfriButton(
                       key: const ValueKey<String>('venue-order-age-gate'),
                       label: state.ageGateConfirmed
-                          ? 'REMOVE CONFIRMATION'
-                          : 'CONFIRM LEGAL AGE',
+                          ? l10n.venueRemoveConfirmation
+                          : l10n.venueConfirmLegalAge,
                       icon: AfriIcons.shield,
                       variant: AfriButtonVariant.secondary,
                       enabled: actionsEnabled,
@@ -332,11 +330,10 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
             ),
           ],
           const SizedBox(height: SpacingTokens.sectionGap),
-          const AfriStateBanner(
+          AfriStateBanner(
             icon: AfriIcons.statusInfo,
-            title: 'Pay at the venue',
-            subtitle:
-                'This app creates the drinks order only. It does not take payment or claim that payment succeeded.',
+            title: l10n.venuePayAtVenue,
+            subtitle: l10n.venuePaymentDisclaimer,
             tone: AfriStateBannerTone.neutral,
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -344,31 +341,31 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
             key: const ValueKey<String>('venue-order-submit'),
             focusNode: widget.submitFocusNode,
             label: state.phase == VenueOrderPhase.syncing
-                ? 'CREATING ORDER'
+                ? l10n.venueCreatingOrderUpper
                 : state.phase == VenueOrderPhase.confirmed
-                ? 'ORDER CONFIRMED'
-                : 'REVIEW AND CREATE ORDER',
+                ? l10n.venueOrderConfirmedUpper
+                : l10n.venueReviewCreateOrder,
             icon: AfriIcons.cart,
             enabled: actionsEnabled && state.totalItems > 0,
             isLoading: state.phase == VenueOrderPhase.syncing,
             onTap: () => unawaited(_submit()),
           ),
           const SizedBox(height: SpacingTokens.sectionGap),
-          const AfriSectionCard(
-            title: 'Order protections',
+          AfriSectionCard(
+            title: l10n.venueOrderProtections,
             child: Column(
               children: [
                 _ProtectionRow(
-                  label: 'Duplicate submission',
-                  detail: 'One idempotency key per attempt',
+                  label: l10n.venueDuplicateSubmission,
+                  detail: l10n.venueDuplicateSubmissionBody,
                 ),
                 _ProtectionRow(
-                  label: 'Offline behavior',
-                  detail: 'No queued or automatic replay',
+                  label: l10n.venueOfflineBehavior,
+                  detail: l10n.venueOfflineBehaviorBody,
                 ),
                 _ProtectionRow(
-                  label: 'Staff controls',
-                  detail: 'Venue portal only',
+                  label: l10n.venueStaffControls,
+                  detail: l10n.venueStaffControlsBody,
                   last: true,
                 ),
               ],
@@ -380,13 +377,14 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
   }
 
   Widget _receiptTitle(VenueOrderRouteState state) {
+    final l10n = context.afriL10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Order review', style: TypographyTokens.titleLarge()),
+        Text(l10n.venueOrderReview, style: TypographyTokens.titleLarge()),
         const SizedBox(height: SpacingTokens.spacing1),
         Text(
-          '${state.totalItems} item${state.totalItems == 1 ? '' : 's'} selected',
+          l10n.venueItemsSelected(state.totalItems),
           style: TypographyTokens.bodyMedium(),
         ),
       ],
@@ -403,32 +401,31 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
   }
 
   Widget? _statusFor(VenueOrderRouteState state, {required bool online}) {
+    final l10n = context.afriL10n;
     if (!online || state.failure?.kind == VenueOrderFailureKind.offline) {
-      return const AfriStateBanner(
+      return AfriStateBanner(
         icon: AfriIcons.offline,
-        title: 'Showing saved venue menu',
-        subtitle:
-            'Reconnect before creating the order. Nothing is queued or replayed offline.',
+        title: l10n.venueShowingSavedMenu,
+        subtitle: l10n.venueShowingSavedMenuBody,
         tone: AfriStateBannerTone.warning,
       );
     }
     if (state.phase == VenueOrderPhase.syncing) {
-      return const AfriStateBanner(
+      return AfriStateBanner(
         icon: AfriIcons.refresh,
-        title: 'Creating venue order',
-        subtitle:
-            'Wait for server confirmation. Do not repeat this order attempt.',
+        title: l10n.venueCreatingOrder,
+        subtitle: l10n.venueCreatingOrderBody,
         tone: AfriStateBannerTone.info,
       );
     }
     if (state.phase == VenueOrderPhase.confirmed && state.result != null) {
       return AfriStateBanner(
         icon: AfriIcons.statusSuccess,
-        title: 'Order created',
-        subtitle:
-            '${_orderStatusLabel(state.result!.status)} · '
-            '${_money(state.result!.currencyCode, state.result!.totalAmount)}. '
-            'Payment remains external at the venue.',
+        title: l10n.venueOrderCreated,
+        subtitle: l10n.venueOrderCreatedSummary(
+          _orderStatusLabel(l10n, state.result!.status),
+          _money(state.result!.currencyCode, state.result!.totalAmount),
+        ),
         tone: AfriStateBannerTone.success,
       );
     }
@@ -436,33 +433,30 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
     if (failure != null) {
       final content = switch (failure.kind) {
         VenueOrderFailureKind.invalidSelection => (
-          'Choose at least one drink',
-          'The order cannot be created with an empty selection.',
+          l10n.venueChooseDrink,
+          l10n.venueChooseDrinkBody,
         ),
         VenueOrderFailureKind.checkinRequired => (
-          'Check-in required',
-          'The venue did not accept this check-in for ordering. Check in again before retrying.',
+          l10n.venueCheckInRequired,
+          l10n.venueCheckInRejectedBody,
         ),
         VenueOrderFailureKind.ageGateRequired => (
-          'Age confirmation required',
-          'Confirm legal age before submitting an alcohol item.',
+          l10n.venueAgeConfirmationRequired,
+          l10n.venueAgeSubmitBody,
         ),
         VenueOrderFailureKind.itemUnavailable => (
-          'A selected drink changed',
-          'Refresh the approved menu before retrying.',
+          l10n.venueDrinkChanged,
+          l10n.venueDrinkChangedBody,
         ),
         VenueOrderFailureKind.conflict => (
-          'Order attempt paused',
-          'Another request may be active. Check the latest order before retrying.',
+          l10n.venueOrderAttemptPaused,
+          l10n.venueOrderAttemptPausedBody,
         ),
         VenueOrderFailureKind.securityTimeout => (
-          'Order confirmation uncertain',
-          'Do not resubmit. Check the latest venue order before dismissing.',
+          l10n.venueOrderConfirmationUncertain,
+          l10n.venueOrderConfirmationUncertainBody,
         ),
-        _ => (
-          'Order not confirmed',
-          'The server did not confirm this order. Dismiss the warning before retrying.',
-        ),
+        _ => (l10n.venueOrderNotConfirmed, l10n.venueOrderNotConfirmedBody),
       };
       return AfriStateBanner(
         icon: AfriIcons.warning,
@@ -480,17 +474,18 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
     if (latest != null) {
       return AfriStateBanner(
         icon: _orderStatusIcon(latest.status),
-        title: 'Latest order: ${_orderStatusLabel(latest.status)}',
-        subtitle:
-            '${_money(latest.currencyCode, latest.totalAmount)} · '
-            '${_paymentStatusLabel(latest.paymentStatus)}.',
+        title: l10n.venueLatestOrder(_orderStatusLabel(l10n, latest.status)),
+        subtitle: l10n.venueLatestOrderSummary(
+          _money(latest.currencyCode, latest.totalAmount),
+          _paymentStatusLabel(l10n, latest.paymentStatus),
+        ),
         tone: _orderStatusTone(latest.status),
       );
     }
-    return const AfriStateBanner(
+    return AfriStateBanner(
       icon: AfriIcons.cart,
-      title: 'Ready to order',
-      subtitle: 'Choose approved drinks, review the total, then create once.',
+      title: l10n.venueReadyToOrder,
+      subtitle: l10n.venueReadyToOrderBody,
       tone: AfriStateBannerTone.neutral,
     );
   }
@@ -522,7 +517,7 @@ class _VenueDrinkStepper extends StatelessWidget {
           key: ValueKey<String>('venue-order-remove-${item.id}'),
           icon: AfriIcons.remove,
           onTap: enabled ? onRemove : null,
-          tooltip: 'Remove ${item.name}',
+          tooltip: context.afriL10n.venueRemoveItem(item.name),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -534,7 +529,7 @@ class _VenueDrinkStepper extends StatelessWidget {
           key: ValueKey<String>('venue-order-add-${item.id}'),
           icon: AfriIcons.add,
           onTap: enabled && count < 20 ? onAdd : null,
-          tooltip: 'Add ${item.name}',
+          tooltip: context.afriL10n.venueAddItem(item.name),
         ),
       ],
     );
@@ -542,8 +537,10 @@ class _VenueDrinkStepper extends StatelessWidget {
       container: true,
       selected: selected,
       label: item.name,
-      value:
-          '$count selected, ${_money(item.currencyCode, item.priceAmount)} each',
+      value: context.afriL10n.venueDrinkSemantics(
+        count,
+        _money(item.currencyCode, item.priceAmount),
+      ),
       child: GlassCard(
         animate: false,
         borderColor: selected ? context.afriSemanticColors.accent : null,
@@ -587,7 +584,7 @@ class _VenueDrinkStepper extends StatelessWidget {
                 AfriIcons.shield,
                 size: AfriIcons.sizeInline,
                 color: context.afriSemanticColors.warning,
-                semanticLabel: 'Age restricted',
+                semanticLabel: context.afriL10n.venueAgeRestricted,
               ),
             ],
           ],
@@ -691,24 +688,24 @@ String _money(String currencyCode, int amount) {
   return '$currencyCode $digits';
 }
 
-String _orderStatusLabel(String status) {
+String _orderStatusLabel(AfriLocalizations l10n, String status) {
   return switch (status) {
-    'created' => 'Waiting for venue',
-    'accepted' => 'Accepted',
-    'preparing' => 'Preparing',
-    'ready' => 'Ready for pickup',
-    'served' => 'Served',
-    'cancelled' => 'Cancelled',
-    _ => 'Status pending',
+    'created' => l10n.venueWaitingForVenue,
+    'accepted' => l10n.venueAccepted,
+    'preparing' => l10n.venuePreparing,
+    'ready' => l10n.venueReadyForPickup,
+    'served' => l10n.venueServed,
+    'cancelled' => l10n.gameCancelled,
+    _ => l10n.venueStatusPending,
   };
 }
 
-String _paymentStatusLabel(String status) {
+String _paymentStatusLabel(AfriLocalizations l10n, String status) {
   return switch (status) {
-    'externally_paid' => 'Paid at venue',
-    'waived' => 'Payment waived',
-    'refunded' => 'Refunded externally',
-    _ => 'Payment pending at venue',
+    'externally_paid' => l10n.venuePaidAtVenue,
+    'waived' => l10n.venuePaymentWaived,
+    'refunded' => l10n.venueRefundedExternally,
+    _ => l10n.venuePaymentPending,
   };
 }
 

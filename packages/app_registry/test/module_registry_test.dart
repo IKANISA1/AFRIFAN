@@ -23,6 +23,7 @@ void main() {
           'club',
           'live',
           'fanzone',
+          'game_operations',
           'settings',
           'onboarding',
           'membership',
@@ -41,6 +42,7 @@ void main() {
           'club',
           'live',
           'fanzone',
+          'game_operations',
           'settings',
           'onboarding',
           'membership',
@@ -95,6 +97,7 @@ void main() {
     test('non-tab modules stay off the bottom navigation', () {
       for (final featureKey in const <String>[
         'live',
+        'game_operations',
         'onboarding',
         'contributions',
         'ticketing',
@@ -150,7 +153,7 @@ void main() {
     });
 
     test(
-      'default supporter app keeps the approved 26 full-screen surfaces',
+      'default supporter app keeps the approved 35 full-screen surfaces',
       () {
         final decisions = modules
             .expand((module) => module.routePresentationDecisions)
@@ -183,10 +186,19 @@ void main() {
             '/club/projects',
             '/club/projects/:projectId',
             '/fanzone',
+            '/fanzone/game',
+            '/fanzone/game/:sessionId',
             '/fanzone/venue',
             '/fanzone/venue/order',
             '/fanzone/match/:fixtureId',
             '/fanzone/wallet',
+            '/game-operations',
+            '/game-operations/sessions',
+            '/game-operations/sessions/new',
+            '/game-operations/sessions/:sessionId',
+            '/my-tvs',
+            '/my-tvs/pair',
+            '/my-tvs/:displayId',
             '/settings',
             '/tickets',
             '/e-ticket/:id',

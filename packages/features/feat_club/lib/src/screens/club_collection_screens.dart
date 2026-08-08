@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_l10n/core_l10n.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/club_content_models.dart';
 import '../providers/club_content_providers.dart';
+import 'club_content_state_widgets.dart';
 
 class ClubTeamScreen extends ConsumerWidget {
   const ClubTeamScreen({super.key});
@@ -509,34 +511,89 @@ class _ClubCollectionScaffold<T> extends StatelessWidget {
     final l10n = context.afriL10n;
     return AfriScreenScaffold(
       title: title,
-      scrollable: false,
-      child: state.when(
-        loading: () => const AfriSkeletonList(itemCount: 5),
-        error: (_, __) => Center(
-          child: AfriStateView.error(
-            title: l10n.clubInformationUnavailable,
-            message: l10n.clubInformationLoadMessage,
-            actionLabel: l10n.retry,
-            onAction: onRetry,
-          ),
+      actions: [
+        AfriIconButton(
+          key: const ValueKey<String>('club-refresh-action'),
+          icon: AfriIcons.refresh,
+          tooltip: l10n.clubRefresh,
+          onTap: onRetry,
         ),
-        data: (items) {
-          if (items.isEmpty) {
-            return Center(
-              child: AfriStateView.empty(
-                title: emptyTitle,
-                message: emptyMessage,
-                actionLabel: l10n.clubRefresh,
-                onAction: onRetry,
+      ],
+      scrollable: false,
+      child: ValueListenableBuilder<bool>(
+        valueListenable: ConnectivityService.onlineNotifier,
+        builder: (context, isOnline, _) {
+          final items = state.valueOrNull;
+          if (items != null) {
+            final failure = state.hasError
+                ? ClubContentFailure.fromError(
+                    state.error!,
+                    isOnline: isOnline,
+                  )
+                : !isOnline
+                    ? const ClubContentFailure(ClubContentFailureKind.offline)
+                    : null;
+            return Column(
+              children: [
+                if (state.isRefreshing || failure != null) ...[
+                  ClubContentStatusBanner(
+                    refreshing: state.isRefreshing,
+                    failure: failure,
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                ],
+                Expanded(
+                  child: items.isEmpty
+                      ? Center(
+                          child: AfriStateView.empty(
+                            title: emptyTitle,
+                            message: emptyMessage,
+                            actionLabel: l10n.clubRefresh,
+                            onAction: onRetry,
+                          ),
+                        )
+                      : ListView.separated(
+                          padding: const EdgeInsets.only(
+                            bottom: SpacingTokens.spacing6,
+                          ),
+                          itemCount: items.length,
+                          separatorBuilder: (_, __) => const SizedBox(
+                            height: SpacingTokens.spacing3,
+                          ),
+                          itemBuilder: (context, index) =>
+                              itemBuilder(context, items[index]),
+                        ),
+                ),
+              ],
+            );
+          }
+          if (!isOnline) {
+            return const Center(
+              child: ClubContentFailureView(
+                failure: ClubContentFailure(ClubContentFailureKind.offline),
               ),
             );
           }
-          return ListView.separated(
-            padding: const EdgeInsets.only(bottom: SpacingTokens.spacing6),
-            itemCount: items.length,
-            separatorBuilder: (_, __) =>
-                const SizedBox(height: SpacingTokens.spacing3),
-            itemBuilder: (context, index) => itemBuilder(context, items[index]),
+          if (state.isLoading) {
+            return Semantics(
+              label: l10n.splashLoadingSemantic(title),
+              liveRegion: true,
+              child: ListView.separated(
+                itemCount: 5,
+                separatorBuilder: (_, __) =>
+                    const SizedBox(height: SpacingTokens.spacing3),
+                itemBuilder: (_, __) => const AfriSkeleton.card(),
+              ),
+            );
+          }
+          return Center(
+            child: ClubContentFailureView(
+              failure: ClubContentFailure.fromError(
+                state.error!,
+                isOnline: isOnline,
+              ),
+              onRetry: onRetry,
+            ),
           );
         },
       ),
@@ -568,23 +625,68 @@ class _ClubDetailScaffold<T> extends StatelessWidget {
     final l10n = context.afriL10n;
     return AfriScreenScaffold(
       title: title,
-      child: state.when(
-        loading: () => const AfriSkeletonList(itemCount: 3),
-        error: (_, __) => AfriStateView.error(
-          title: l10n.clubInformationUnavailable,
-          message: l10n.clubLinkedRecordLoadMessage,
-          actionLabel: l10n.retry,
-          onAction: onRetry,
+      actions: [
+        AfriIconButton(
+          key: const ValueKey<String>('club-refresh-action'),
+          icon: AfriIcons.refresh,
+          tooltip: l10n.clubRefresh,
+          onTap: onRetry,
         ),
-        data: (items) {
-          final selected = select(items);
-          if (selected == null) {
-            return AfriStateView.empty(
-              title: notFoundTitle,
-              message: notFoundMessage,
+      ],
+      child: ValueListenableBuilder<bool>(
+        valueListenable: ConnectivityService.onlineNotifier,
+        builder: (context, isOnline, _) {
+          final items = state.valueOrNull;
+          if (items != null) {
+            final selected = select(items);
+            if (selected == null) {
+              return AfriStateView.empty(
+                title: notFoundTitle,
+                message: notFoundMessage,
+              );
+            }
+            final failure = state.hasError
+                ? ClubContentFailure.fromError(
+                    state.error!,
+                    isOnline: isOnline,
+                  )
+                : !isOnline
+                    ? const ClubContentFailure(ClubContentFailureKind.offline)
+                    : null;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (state.isRefreshing || failure != null) ...[
+                  ClubContentStatusBanner(
+                    refreshing: state.isRefreshing,
+                    failure: failure,
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                ],
+                builder(selected),
+              ],
             );
           }
-          return builder(selected);
+          if (!isOnline) {
+            return const ClubContentFailureView(
+              failure: ClubContentFailure(ClubContentFailureKind.offline),
+            );
+          }
+          if (state.isLoading) {
+            return Semantics(
+              label: l10n.splashLoadingSemantic(title),
+              liveRegion: true,
+              child: const AfriSkeletonList(itemCount: 3),
+            );
+          }
+          return ClubContentFailureView(
+            failure: ClubContentFailure.fromError(
+              state.error!,
+              isOnline: isOnline,
+            ),
+            onRetry: onRetry,
+            linkedRecord: true,
+          );
         },
       ),
     );

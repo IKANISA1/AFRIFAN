@@ -8,6 +8,11 @@ import {
   type Page,
   type Route,
 } from "@playwright/test";
+import {
+  installEvidenceNavigationStability,
+  primeEvidenceScreenshot,
+  settleEvidenceVisuals,
+} from "./evidence-navigation-stability";
 
 type ResponseMode =
   | "loading"
@@ -53,20 +58,7 @@ const profile = {
 };
 
 async function settleVisuals(page: Page) {
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-    for (const animation of document.getAnimations()) {
-      const endTime = animation.effect?.getComputedTiming().endTime;
-      if (typeof endTime === "number" && Number.isFinite(endTime)) {
-        animation.finish();
-      } else {
-        animation.cancel();
-      }
-    }
-    await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-    );
-  });
+  await settleEvidenceVisuals(page);
 }
 
 async function expectNoSeriousAxeViolations(page: Page) {
@@ -90,9 +82,10 @@ async function expectNoHorizontalOverflow(page: Page) {
         .map((element) => ({
           tag: element.tagName.toLowerCase(),
           className: element.className.toString().slice(0, 120),
+          left: Math.round(element.getBoundingClientRect().left),
           right: Math.round(element.getBoundingClientRect().right),
         }))
-        .filter(({ right }) => right > clientWidth + 1)
+        .filter(({ left, right }) => left < -1 || right > clientWidth + 1)
         .slice(0, 12),
     };
   });
@@ -113,11 +106,12 @@ async function runMatrix(browser: Browser) {
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
-  const page = await context.newPage();
+  await installEvidenceNavigationStability(context);
+  let page = await context.newPage();
   let responseMode: ResponseMode = "ready";
   let savedBody: Record<string, unknown> | null = null;
 
-  await page.route("**/api/admin/**", async (route: Route) => {
+  await context.route("**/api/admin/**", async (route: Route) => {
     if (route.request().method() === "POST") {
       savedBody = route.request().postDataJSON() as Record<string, unknown>;
       await route.fulfill({
@@ -171,23 +165,28 @@ async function runMatrix(browser: Browser) {
     await expect(page.getByText(label).first()).toBeVisible();
   };
   const capture = async (state: string, profileName = "desktop_1440x1000") => {
-    await page.evaluate((shouldBlur) => {
-      if (shouldBlur && document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur();
-      }
-      document.documentElement.style.scrollBehavior = "auto";
-      document.body.style.scrollBehavior = "auto";
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    }, state === "selected" || state === "large_text");
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+    await page.evaluate(
+      (shouldBlur) => {
+        if (shouldBlur && document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+        document.documentElement.style.scrollBehavior = "auto";
+        document.body.style.scrollBehavior = "auto";
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      },
+      state === "selected" || state === "large_text",
+    );
+    await expect
+      .poll(() => page.evaluate(() => ({ x: window.scrollX, y: window.scrollY })))
+      .toEqual({ x: 0, y: 0 });
     await settleVisuals(page);
+    await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
     await page.screenshot({
       path: path.join(
         evidenceDirectory,
         `admin_settings_state_${state}_${state === "light" ? "light" : "dark"}_${profileName}.png`,
       ),
       fullPage: !state.startsWith("responsive_"),
-      animations: "disabled",
     });
   };
 
@@ -203,9 +202,9 @@ async function runMatrix(browser: Browser) {
   responseMode = "empty";
   await open("empty");
   await expectStatus("empty", /no club settings record/i);
-  await expect(page.getByRole("button", { name: /save settings/i })).toHaveCount(
-    0,
-  );
+  await expect(
+    page.getByRole("button", { name: /save settings/i }),
+  ).toHaveCount(0);
   await capture("empty");
 
   responseMode = "error";
@@ -221,7 +220,9 @@ async function runMatrix(browser: Browser) {
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus("offline", /club settings are offline/i);
-  await expect(page.getByDisplayValue("Verified Rayon Sports FC")).toBeVisible();
+  await expect(page.getByLabel("Club name")).toHaveValue(
+    "Verified Rayon Sports FC",
+  );
   await expect(
     page.getByRole("button", { name: /save settings/i }),
   ).toBeDisabled();
@@ -321,7 +322,21 @@ async function runMatrix(browser: Browser) {
     )
     .evaluateAll((elements) =>
       elements
-        .map((element) => element.getBoundingClientRect())
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          const style = window.getComputedStyle(element);
+          return {
+            tag: element.tagName.toLowerCase(),
+            type: element.getAttribute("type"),
+            label: element.getAttribute("aria-label"),
+            className: element.getAttribute("class"),
+            inlineStyle: element.getAttribute("style"),
+            computedWidth: style.width,
+            minWidth: style.minWidth,
+            width: rect.width,
+            height: rect.height,
+          };
+        })
         .filter(({ width, height }) => width < 48 || height < 48),
     );
   expect(undersized).toEqual([]);
@@ -348,7 +363,9 @@ async function runMatrix(browser: Browser) {
   responseMode = "loading";
   await page.getByRole("button", { name: /refresh club settings/i }).click();
   await expectStatus("syncing", /refreshing club settings/i);
-  await expect(page.getByDisplayValue("Verified Rayon Sports FC")).toBeVisible();
+  await expect(page.getByLabel("Club name")).toHaveValue(
+    "Verified Rayon Sports FC",
+  );
   await capture("syncing");
 
   responseMode = "ready";
@@ -357,7 +374,9 @@ async function runMatrix(browser: Browser) {
   responseMode = "conflict";
   await page.getByRole("button", { name: /refresh club settings/i }).click();
   await expectStatus("conflict", /club settings changed/i);
-  await expect(page.getByDisplayValue("Verified Rayon Sports FC")).toBeVisible();
+  await expect(page.getByLabel("Club name")).toHaveValue(
+    "Verified Rayon Sports FC",
+  );
   await capture("conflict");
 
   responseMode = "security_timeout";
@@ -372,6 +391,8 @@ async function runMatrix(browser: Browser) {
   await expectNoHorizontalOverflow(page);
   await capture("responsive_tablet", "tablet_1024x900");
 
+  await page.close();
+  page = await context.newPage();
   await page.setViewportSize({ width: 390, height: 844 });
   await open("compact");
   await expectStatus("ready", /club settings confirmed/i);

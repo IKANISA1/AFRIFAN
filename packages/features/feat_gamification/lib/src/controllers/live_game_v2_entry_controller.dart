@@ -76,6 +76,8 @@ class ParticipantGameEntryController
     required String expectedClubId,
     Duration discoveryTimeout = const Duration(seconds: 8),
     bool autoStart = true,
+    ParticipantGameEntryState initialState =
+        const ParticipantGameEntryState.initial(),
   }) : _runtimeFactory = runtimeFactory,
        _expectedClubId = expectedClubId.trim(),
        _discovery = ParticipantDiscoveryController(
@@ -83,7 +85,7 @@ class ParticipantGameEntryController
          expectedClubId: expectedClubId,
          fetchTimeout: discoveryTimeout,
        ),
-       super(const ParticipantGameEntryState.initial()) {
+       super(initialState) {
     _discoverySubscription = _discovery.states.listen(_handleDiscoveryState);
     if (autoStart) unawaited(start());
   }
@@ -125,10 +127,15 @@ class ParticipantGameEntryController
     await _runtime?.reconnect();
   }
 
-  Future<bool> openEligibleSession(String sessionId) async {
+  Future<bool> openEligibleSession(
+    String sessionId, {
+    bool reauthorizeDeepLink = false,
+  }) async {
     _ensureActive();
     await start();
-    final selected = _discovery.resolveSessionIdentity(sessionId);
+    final selected = reauthorizeDeepLink
+        ? await _discovery.authorizeSessionIdentity(sessionId)
+        : _discovery.resolveSessionIdentity(sessionId);
     if (selected == null) {
       state = ParticipantGameEntryState(
         status: ParticipantGameEntryStatus.failure,

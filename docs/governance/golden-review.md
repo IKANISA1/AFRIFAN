@@ -3,6 +3,237 @@
 The Flutter golden suite is a controlled visual-regression gate, not a command
 to accept changed pixels automatically.
 
+## 2026-08-01 owner TV management route-state review
+
+- Scope: all sixteen governed states for `/my-tvs/:displayId`: loading,
+  missing display, unavailable, offline, permission-denied, unchanged-form
+  disabled, focused, held destructive press, selected authorized location,
+  200-percent text, reduced motion, dark, light, retained syncing, conflict,
+  and bounded timeout.
+- Review method: source-resolution loading, disabled, selected, focus, held
+  press, syncing, conflict, and 320 by 720 large-text captures were inspected
+  against the established owner-TV management and shared form grammar. The
+  first large-text capture truncated the destructive label and the first focus
+  capture horizontally hid most of the current name; two-line action labels
+  and explicit leading-caret focus corrected both defects before admission.
+  The legacy owner-management baseline was regenerated for the truthful
+  unchanged-form disabled state.
+- Result: accepted for controlled local synthetic evidence. Permission denial
+  clears retained protected inventory, loading and retained refresh block all
+  mutations, Save changes is enabled only for a valid actual change, scope is
+  presented by authorized name without raw identifiers, the real destructive
+  action is visibly held without execution, and every action remains
+  scroll-reachable at 200-percent text.
+- Boundary: this does not prove authenticated shared/live owner scope, live
+  RLS/RPC/audit behavior, real display recovery/revocation, physical-device
+  accessibility, named review, signing, stores, deployment, or release.
+
+## 2026-08-01 owner TV pairing route-state review
+
+- Scope: all sixteen governed states for `/my-tvs/pair`: loading, no authorized
+  scope, unavailable, offline, permission-denied, incomplete-form disabled,
+  focused, pressed, selected authorized location, 200-percent text, reduced
+  motion, dark, light, retained syncing, conflict, and bounded timeout.
+- Review method: source-resolution loading, empty, dark, light, focus, held
+  press, selected, syncing, conflict, timeout, and 320 by 720 large-text
+  captures were inspected against the established owner-TV and shared form
+  grammar. Partial route frames and a focus capture that lost route identity
+  were rejected; bounded settlement and explicit scroll restoration now retain
+  the app-bar title and full form context.
+- Result: accepted for controlled local synthetic evidence. Initial data and
+  authorization failures expose no premature form, the primary action remains
+  disabled until challenge, display name, and named scope are valid, retained
+  uncertain state blocks mutation, raw venue identifiers remain hidden, and
+  real focus/press/selection states have distinct pixels.
+- Boundary: this does not prove authenticated shared/live owner scope, live
+  RLS/RPC/audit behavior, a real TV challenge exchange, physical-device
+  accessibility, named review, signing, stores, deployment, or release.
+
+## 2026-08-01 owner TV inventory route-state review
+
+- Scope: fourteen exact-current local captures for `/my-tvs`: loading, empty,
+  unavailable, offline, permission-denied, retained-disabled, focus, press,
+  200-percent text, reduced motion, dark, light, retained-syncing, and bounded
+  timeout.
+- Review method: source-resolution dark, light, loading, offline, retained,
+  syncing, large-text, focus, and held-pointer captures were inspected against
+  the established owner-TV and shared mobile component grammar. Intermediate
+  harness captures with partially entered route chrome or completed pointer
+  navigation were rejected; the accepted loading capture seeds the exact state
+  and the accepted pressed capture holds the real button gesture without
+  leaving the inventory route.
+- Result: accepted for controlled local synthetic evidence. Offline is distinct
+  from generic unavailability, retained data is labelled stale, refresh and
+  pairing are paused while authority is uncertain, keyboard focus is visible,
+  and the 320 by 720 large-text inventory remains scroll-reachable without a
+  layout exception.
+- Boundary: this does not prove authenticated shared/live owner scope, live
+  RLS/RPC/audit behavior, physical-device accessibility, named review,
+  signing, stores, deployment, or release.
+
+## 2026-08-01 game-operations hub route-state review
+
+- Scope: six exact-current local captures for the static role-gated
+  `/game-operations` hub: focused, pressed, 200-percent text, reduced motion,
+  dark, and light.
+- Review method: source-resolution dark, light, large-text, focus, and held
+  pointer captures were inspected against the existing list-row, scaffold,
+  spacing, typography, theme, and interaction grammar. The first pressed
+  attempt advanced navigation and was rejected; the accepted capture holds the
+  pointer without leaving the hub and has a digest distinct from the dark
+  baseline.
+- Result: accepted for controlled local synthetic evidence. The two role-safe
+  choices remain clear, both are scroll-reachable at 320 by 720 and
+  200-percent text, focus is visible, and no data, authorization, selection,
+  disabled, synchronization, conflict, or timeout state is fabricated for this
+  static navigation surface.
+- Boundary: this does not prove authorized live owner/organizer roles, the six
+  downstream operational routes, physical-device accessibility, named review,
+  signing, stores, deployment, or release.
+
+## 2026-08-01 football-club-first route-state review
+
+- Scope: 153 new exact-current local captures across the eleven canonical Club
+  routes. The matrix covers every applicable loading, empty, error, offline,
+  permission-denied, focus, press, 200-percent text, reduced-motion, dark,
+  light, syncing, conflict, and security-timeout state.
+- Review method: source-resolution hub, list, detail, recovery, refresh,
+  large-text, dark, and light samples were inspected against the existing
+  AFRICLUB semantic token, shared scaffold, state-view, list-row, card, button,
+  and icon grammar. An initial nested-route capture exposed partially entered
+  route chrome; the harness now advances a bounded post-settlement frame and
+  all 153 baselines reproduce exactly.
+- Result: accepted for controlled local synthetic evidence. Football-club
+  identity remains first, recovery copy is concise and privacy-safe, retained
+  content remains visible during refresh/offline states, and large text stays
+  scroll-reachable without a layout exception.
+- Boundary: this is not approved live club content, authenticated production
+  behavior, physical-device accessibility, named linguistic/design/privacy
+  approval, signing, store, deployment, or release proof.
+
+## 2026-08-01 native-TV owner-pairing QR correction
+
+- Scope: the governed Rwandan 1280 x 720 unpaired-TV state whose QR fixture
+  still encoded the obsolete `africlub://tv-pair/...` path.
+- Review method: the old and corrected source-resolution images were placed
+  side by side. The corrected QR encodes exactly
+  `africlub://my-tvs/pair?challenge=TV4K8M2Q`, matching backend emission and
+  runtime validation.
+- Result: accepted. Only the intentional QR modules changed; club identity,
+  localized copy, displayed challenge, expiry, D-pad focus, action hierarchy,
+  spacing, and overscan geometry are unchanged.
+- Boundary: this is deterministic synthetic exact-pixel proof. Shared/live
+  pairing, physical-TV/remote/AT, real-network timing, accountable approval,
+  production signing, stores, deployment, and release remain open.
+
+## 2026-08-01 owner TV management review
+
+- Scope: one new dark 390 x 844 TV-detail state covering complete safe
+  operational context, current named location, save, credential recovery, and
+  destructive access revocation.
+- Review method: the source-resolution image was inspected against the existing
+  My TVs inventory and shared mobile token/component grammar. The card,
+  typography, spacing, field, action, icon, and destructive hierarchy remain
+  consistent; the screen contains no raw venue ID or pairing credential.
+- Result: accepted for the local source checkpoint. All labels and values are
+  readable without clipping or overlap; save and recovery remain distinct from
+  the destructive revoke action.
+- Boundary: the image uses deterministic synthetic data. Shared/live role and
+  audit execution, real-display/network behavior, physical-device/AT,
+  accountable approval, signing, stores, deployment, and release remain open.
+
+## 2026-07-30 native-TV V2 projection review
+
+- Scope: six new 1280 × 720 native-TV states covering owner-claim pairing with
+  an actual QR payload, current question, reveal, retained-offline recovery,
+  paired-without-assignment, and completed gameplay at 170-percent text.
+- Review method: the six current images were inspected together with the
+  governed native-TV session reference. The V2 surfaces preserve the existing
+  overscan frame, club identity, dark palette, status/action placement,
+  typography, surface cards, public-alias privacy, and remote-focus treatment.
+  The pairing revision was also compared directly against its pre-QR image and
+  isolated pixel diff before admission.
+- Result: accepted for the local source checkpoint. The pairing QR is generated
+  from the validated `africlub://my-tvs/pair` payload, the one-time code remains
+  legible at ten-foot distance, reveal uses text/semantics plus border and
+  color, retained-offline state stays explicit, and large text reflows to a
+  vertical scroll surface without overflow.
+- Boundary: GAME-TV-02 now passes its separate local isolated-network contract;
+  these images do not prove Realtime behavior. Shared/live WAN,
+  physical remote/device, 1080p/4K overscan, assistive technology, soak,
+  signing, stores, accountable approval, and release remain open.
+
+## 2026-07-30 owner and organizer Settings entry review
+
+- Scope: the twenty-six governed Settings responsive and state baselines whose
+  pixels changed when the role-scoped `Games and TVs` section and `Game
+  operations` route entry were added.
+- Review method: paired current images against the exact `HEAD` references at
+  the same viewport and state, including compact dark, standard light,
+  security-timeout, 200-percent text, and tablet examples. The new section
+  follows the existing Settings cards, spacing, typography, icon, focus, and
+  theme system. No unrelated visual replacement was accepted.
+- Result: accepted for the local source checkpoint. Compact and large-text
+  captures remain vertically scrollable by design; tablet preserves the full
+  account, game, preferences, support, and sign-out sequence without overflow.
+  The fourteen-test Settings golden suite passes.
+- Boundary: the baseline admission proves deterministic synthetic source
+  rendering only. Authorized owner/organizer roles, live data, physical-device
+  accessibility, accountable design/privacy approval, signing, deployment,
+  stores, and release remain open.
+
+## 2026-07-30 route-wide localization closure review
+
+- Scope: the final Share Card, Prediction Detail, Game Session Join, Match
+  Detail, and Venue Check-in static task-copy surfaces in English, French, and
+  Kinyarwanda, including compact/200-percent text, privacy semantics, offline,
+  conflict, timeout, permission, selected, focused, pressed, loading, empty,
+  syncing, dark, light, and reduced-motion states.
+- Result: accepted for local engineering evidence. Existing English goldens
+  remain exact. The Match Detail empty-state action was restored to its
+  title-case English contract with a dedicated localized key; no changed pixels
+  or new baseline digest were admitted.
+- Validation: the EN/FR/RW catalog has exact 3,183-message parity; `core_l10n`
+  passes 8 tests; the complete Gamification package passes 586 tests; strict
+  Gamification analysis is clean; and the fail-closed 292-file inventory
+  reports 63 controlled dispositions and zero pending candidates.
+- Failure artifacts generated during intermediate localization comparisons
+  were retained outside the repository at
+  `/tmp/africlub-gamification-localization-failures-20260730-02`; they are not
+  governed baselines.
+- Boundary: French and Kinyarwanda remain draft pending named accountable
+  linguistic and approved localized visual review. Static source closure does
+  not prove dynamic/API/CMS content, physical devices, assistive technology,
+  authenticated production behavior, CI, signing, store, deployment, or
+  release approval.
+
+## 2026-07-30 Challenge Detail localization and large-text review
+
+- Scope: Challenge Detail state, card, action, status, feedback, and semantic
+  copy across English, French, and Kinyarwanda, plus the shared state view and
+  compact Challenge Card at 320 by 760 and 200-percent platform text.
+- Result: accepted for local engineering evidence. The large-text execution
+  initially exposed real vertical state-content and card-header/match overflows.
+  `AfriStateView` now scrolls centered state content only when text scaling
+  requires it, and Challenge Card stacks its header and match layout only at
+  large text. Normal-scale Challenge Detail images remain byte-identical to the
+  approved baselines.
+- Regression review: the localized notification CTA exposed a duplicate
+  `gameOpen` message ID whose later challenge meaning silently changed the
+  approved uppercase notification action. The contexts now use separate
+  message IDs. All seven responsive notification goldens again match their
+  approved pixels, and the Fan Zone provider test now asserts the locale-neutral
+  recovery message key rather than presentation copy.
+- Validation: 34 Challenge Detail feature/state/controller tests, 11 focused
+  notification and offline-recovery tests, 7 core-l10n tests, 433 core-theme
+  tests, and the complete deterministic 575-test Gamification package pass.
+  Strict analysis, the 1,084-baseline golden contract, and evidence-privacy
+  validation pass. No new Challenge Detail golden digest was admitted.
+- Boundary: local source and deterministic synthetic evidence do not constitute
+  named French/Kinyarwanda linguistic approval, physical-device or assistive-
+  technology proof, authenticated production behavior, CI, signing, store,
+  deployment, or release approval.
+
 ## Controlled contract
 
 - Baselines use fixed logical viewports, device pixel ratio 1, deterministic
@@ -1355,7 +1586,28 @@ synthetic and stable.
   assistive-technology/device execution, signing, and release evidence remain
   pending.
 
-## 2026-07-28 Complete TV Game Join route-state engineering review
+## 2026-08-01 GAME-MOB-02 participant-code retirement review
+
+- The 2026-07-28 TV Game Join and Game Controller sections below are retained
+  as historical evidence only. They no longer describe the production
+  `/fanzone/game` or `/fanzone/game/:sessionId` routes.
+- Both routes now render the code-free `ParticipantLiveGamesScreen`; the Fan
+  Zone action says “Live games,” and its supporting copy no longer frames TV
+  code entry as a participant journey.
+- The obsolete participant join form, local TV-code validator, session
+  controller, repository surface, providers, public exports, and their tests
+  were removed. The `game-session-action` participant join now requires a
+  validated session UUID and does not accept a join code.
+- Four affected Fan Zone baselines were compared against their former exact
+  captures before admission. The differences are limited to the intended
+  “Live games” label and shorter code-free supporting copy; layout, hierarchy,
+  target sizing, theme, and reachability remain intact.
+- Owner `My TVs` pairing remains separate: its validated one-time challenge,
+  `/my-tvs/pair` route, and `pairing_code` exchange are intentionally retained.
+- Shared/live session execution, physical-device notification entry,
+  accountable review, signing, stores, deployment, and release remain open.
+
+## 2026-07-28 Complete TV Game Join route-state engineering review (historical)
 
 - Scope: production mobile route `/fanzone/game`, its typed join controller,
   the complete local form/recovery contract, and sixteen deterministic
@@ -1402,7 +1654,7 @@ synthetic and stable.
   assistive-technology/device execution, signing, and release evidence remain
   pending.
 
-## 2026-07-28 Complete live Game Controller route-state engineering review
+## 2026-07-28 Complete live Game Controller route-state engineering review (historical)
 
 - Scope: production mobile route `/fanzone/game/:sessionId`, its typed
   controller/gateway boundary, bounded live read/join/answer contract, and
@@ -1870,9 +2122,9 @@ synthetic and stable.
   reachable, selected detail is visually distinct, and degraded consequences
   remain dominant while controls are paused.
 - Regression: eight controller tests and fifteen state tests producing sixteen
-  exact captures pass, along with the 262-test Admin regression and clean
+  exact captures pass, along with the 266-test Admin regression and clean
   focused analysis.
-- Governance: the manifest contains 1,078 exact SHA-256 baselines.
+- Governance: the manifest contains 1,084 exact SHA-256 baselines.
   Authenticated live role/RLS/RPC behavior, operational metric ownership,
   real-device sync audit reconciliation, physical assistive-technology/device
   execution, accountable design/privacy approval, pinned CI, signing, store
@@ -1911,3 +2163,179 @@ synthetic and stable.
   visual/privacy approval, physical iPhone and assistive-technology execution,
   pinned CI, signing, store processing, deployment, and release approval
   remain pending.
+
+## 2026-08-01 Live Games V2 native-TV accessibility checkpoint
+
+- Scope: the current native-TV live-game surface at deterministic 720p,
+  1080p, and 4K widget dimensions; simulated overscan; EN/FR/RW long copy;
+  exact 200-percent text; light/dark rendering; D-pad focus and back actions;
+  reduced-motion propagation; screen-reader semantics; and automated privacy
+  boundaries.
+- Inspection: Codex inspected the new synthetic 1280 x 720 long-copy capture
+  at source resolution. The 200-percent layout preserves readable hierarchy,
+  does not overlap the status or game panels, and intentionally becomes
+  vertically scrollable where the first viewport cannot contain all content.
+- Rejection and remediation: the first Kinyarwanda-scope 200-percent render
+  overflowed because the status pill could collapse the title column. The TV
+  header now constrains the large-text status width and permits a two-line,
+  ellipsized title without changing the accepted 1.7x baseline.
+- Regression: the combined native-TV files pass 55 tests, the unchanged 1.7x
+  baseline still matches, the new exact-200-percent digest is governed, and
+  `GAME-QA-05` is enforced by the static Live Games V2 contract validator.
+- Open boundaries: current native 1080p and 4K captures, physical-TV overscan,
+  remote and screen-reader execution, four-hour burn-in/thermal/crash/ANR
+  soak, accountable human design/privacy approval, shared/live execution,
+  signing, store processing, deployment, and release approval remain open.
+
+## 2026-08-01 Live Games V2 participant-layout checkpoint
+
+- Scope: the exact current participant V2 route in dark, light, retained
+  offline, and compact exact-200-percent states.
+- Inspection: Codex compared all four source-resolution captures in one local
+  contact sheet. The full-screen route has no competing bottom navigation;
+  safe-area spacing, action hierarchy, answer controls, and leaderboard remain
+  clear in both themes. Offline state leads with the reconnect consequence and
+  privacy-safe last-confirmed time. Exact-200-percent content scrolls without
+  overlap or text shrinkage.
+- Regression: 23 current participant tests pass for safe area, full-screen
+  isolation, compact layout, keyboard inset, EN/FR/RW exact-200-percent text,
+  both themes, reduced motion, denial, offline/reconnect, timeout, lifecycle
+  resume, and authoritative cross-client phases.
+- Boundary: deterministic widget/golden evidence is not physical-device,
+  assistive-technology, shared/live synchronization, accountable approval,
+  signing, store, deployment, or release evidence.
+
+## 2026-08-01 Live Games V2 organizer invitation-planning checkpoint
+
+- Scope: the exact current 390 x 844 dark organizer planner after selecting
+  invitation-only eligibility and one privacy-safe six-digit supporter Fan ID.
+- Inspection: Codex inspected the source-resolution capture. The football-game
+  planning hierarchy remains clear: approved question pack and eligibility lead,
+  schedule and optional TV assignment remain distinct, the supporter invitation
+  requirement is explicit, and the selected Fan ID remains readable above the
+  primary create action without overlap, clipping, or hidden controls.
+- Determinism: the widget route injects a fixed test clock, loads the governed app
+  fonts, uses synthetic non-production data, and matches the registered SHA-256
+  baseline exactly.
+- Boundary: this local widget comparison does not establish shared/live role or
+  RLS behavior, physical-device or assistive-technology execution, accountable
+  design/privacy approval, signing, store processing, deployment, or release.
+
+## 2026-08-01 Live Games V2 guarded organizer-control checkpoint
+
+- Scope: the exact current 390 x 844 dark organizer control route during an
+  open question, with one normal progression action and the available skip,
+  pause, early-end, and cancellation exceptions.
+- Inspection: Codex inspected the source-resolution capture, rejected the first
+  render because three narrow metric tiles broke words, changed the metrics to
+  a readable two-column wrap, regenerated the controlled baseline, and
+  reinspected it. The accepted capture keeps the current question, one primary
+  reveal action, and the separately styled exception controls readable without
+  overlap or clipping.
+- Determinism: the widget uses governed fonts and synthetic non-production
+  participant, question, display, and event data at a fixed viewport. The exact
+  capture matches its registered SHA-256 baseline.
+- Boundary: this local widget comparison does not establish shared/live role or
+  RLS behavior, real-network timing, physical-device or assistive-technology
+  execution, accountable design/privacy approval, signing, store processing,
+  deployment, or release.
+
+## 2026-08-01 Live Games V2 owner-inventory checkpoint
+
+- Scope: the exact current 390 x 844 dark My TVs route for an owner-managed
+  home display with authoritative health, last seen, app version, bounded
+  capabilities, and assigned-session context.
+- Inspection: Codex inspected the source-resolution capture. The display name,
+  home scope, online state, operational metadata, assigned game, and pairing
+  action remain readable without overlap, clipping, or hidden fields.
+- Determinism: the widget uses governed fonts, fixed synthetic non-production
+  data, and the current localization/catalog implementation. The exact capture
+  matches its registered SHA-256 baseline.
+- Boundary: this local widget comparison and isolated database proof do not
+  establish shared/live authorization, real-network timing, physical-device or
+  assistive-technology execution, accountable design/privacy approval, signing,
+  store processing, deployment, or release.
+
+## 2026-08-01 Live Games V2 native-TV full-projection checkpoint
+
+- Scope: five unchanged exact current-source 1280 x 720 goldens governing the
+  paired-empty, question plus standings, reveal/public result, completed
+  large-text, and retained-offline native-TV projections.
+- Inspection: the previously admitted source-resolution states remain the
+  controlling visual evidence because this closure changes projection parsing,
+  tests, contracts, and metadata without changing rendered layout or assets.
+  The suite matches every digest exactly. The five states keep the public game
+  hierarchy, choices, correct-answer treatment, public aliases, final
+  standings, offline consequence, and retry affordance readable without
+  overlap, clipping, private claim information, or participant entry codes.
+- Determinism: the widget routes use governed fonts, fixed synthetic
+  non-production data, deterministic 1280 x 720 surfaces, and EN/FR/RW locale
+  scopes. All five captures remain registered within the 1,099-baseline
+  contract.
+- Boundary: deterministic widget/golden and isolated-database evidence does
+  not establish authorized real-network Realtime delivery, shared/live cross-
+  client timing, physical-TV/remote/assistive-technology behavior, native
+  1080p/4K capture, four-hour soak, accountable approval, signing, store,
+  deployment, or release readiness.
+
+## 2026-08-01 Live Games V2 current native-resolution checkpoint
+
+- Scope: the current Android TV API 36 ARM64 APK rendered its real isolated-
+  backend owner-pairing journey at exact native 1920 x 1080/320 dpi and
+  3840 x 2160/640 dpi emulator profiles.
+- Inspection: both source-resolution PNGs preserve the Gikundiro TV hierarchy,
+  QR challenge, visible one-time code, expiry, renewal action and guidance.
+  No cropping, framework overflow, configuration failure or missing primary
+  action was observed. The 4K profile is an actual 3840 x 2160 framebuffer,
+  not an enlarged 1080p artifact.
+- Privacy: the challenge belongs to a synthetic isolated club and expired when
+  the local Supabase stack stopped without backup.
+- Boundary: these captures pass GAME-QA-05 native-current-resolution evidence
+  only. They do not establish physical-TV overscan, physical remote or screen-
+  reader use, four-hour target-hardware soak, accountable privacy approval,
+  shared/live execution, signing, store, deployment or release readiness.
+
+## 2026-08-02 organizer live-control route-state checkpoint
+
+- Scope: fourteen exact current route-state captures for
+  `/game-operations/sessions/:sessionId`; empty and selected are explicitly not
+  applicable to the canonical live-session control route.
+- Inspection: Codex inspected complete source-resolution loading, failure,
+  offline, denial, disabled, focus, held-press, 200-percent text, reduced-motion,
+  dark/light, retained-syncing, conflict, and timeout frames. The first review
+  rejected passive `Lobby open` copy as a next action; the admitted UI uses the
+  imperative `OPEN LOBBY`, keeps normal progression visually separate from
+  exception controls, and retains complete `OPEN LOBBY` and `CANCEL SESSION`
+  labels at 320 x 720 with 200-percent text.
+- Determinism: the production screen uses governed fonts, fixed synthetic
+  non-production session data, actual keyboard focus and held-pointer state,
+  and exact 390 x 844 or 320 x 720 surfaces. All fourteen current hashes and
+  the independently changed guarded-controls baseline pass the 1,348-baseline
+  golden contract.
+- Boundary: this local widget evidence does not establish shared/live role or
+  RLS/RPC/audit behavior, real sessions/displays, physical-device assistive
+  technology, accountable linguistic/design/privacy approval, clean-candidate
+  CI, signing, stores, deployment, or release.
+
+## 2026-08-02 participant discovery and live-play route-state checkpoint
+
+- Scope: fifteen exact current captures for `/fanzone/game` and sixteen for
+  `/fanzone/game/:sessionId`. Persistent selected is structurally not
+  applicable to discovery because choosing a game immediately enters the
+  canonical session route; confirmed answer selection is applicable to live
+  play.
+- Inspection: Codex inspected all thirty-one source-resolution frames
+  individually. Discovery loading, empty, failure, offline, denial, disabled,
+  focus, held press, 200-percent text, reduced motion, dark/light, retained
+  synchronization, identity/contract conflict, and timeout remain readable and
+  truthful. Live play additionally proves semantic selected answer state. No
+  critical copy, action, card, or identity is cropped or exposed incorrectly.
+- Determinism: the production screens use governed fonts, fixed synthetic
+  non-production eligible-session and participant projections, actual keyboard
+  focus, held-pointer state and semantic selection, and exact 390 x 844 or
+  320 x 720 surfaces. A repeated non-updating run matches every digest and the
+  complete manifest passes the 1,379-baseline golden contract.
+- Boundary: this local widget evidence does not establish authenticated
+  shared/live participant RLS/RPC/audit behavior, a real synchronized event,
+  physical-device assistive technology, accountable linguistic/design/privacy
+  approval, a clean sealed candidate, signing, stores, deployment, or release.

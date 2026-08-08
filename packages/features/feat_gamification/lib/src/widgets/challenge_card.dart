@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,6 +35,35 @@ class ChallengeCard extends StatelessWidget {
     final countdownTextColor = ColorTokens.isDark
         ? ColorTokens.warning
         : ColorTokens.onSurfaceVariant;
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+    final matchSummary = Column(
+      children: [
+        Text(
+          fixture.status == 'finished' || fixture.status == 'live'
+              ? '${fixture.homeScore ?? 0}-${fixture.awayScore ?? 0}'
+              : context.afriL10n.gameVersus,
+          style: TypographyTokens.titleLarge(
+            fixture.status == 'live' ? ColorTokens.error : accentTextColor,
+          ).copyWith(fontWeight: FontWeight.w900),
+        ),
+        const SizedBox(height: SpacingTokens.spacing1),
+        if (hasCountdown)
+          Text(
+            _formatCountdown(context, countdown),
+            textAlign: TextAlign.center,
+            style: TypographyTokens.labelSmall(countdownTextColor),
+          )
+        else
+          Text(
+            _formatKickoff(context, fixture.kickoffAt),
+            maxLines: compact ? 2 : 1,
+            overflow: TextOverflow.fade,
+            softWrap: compact,
+            textAlign: TextAlign.center,
+            style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
+          ),
+      ],
+    );
 
     return GlassCard(
       onTap: enabled ? () => context.push('/challenge/${challenge.id}') : null,
@@ -44,86 +74,70 @@ class ChallengeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _AvatarBadge(
-                  label: challenge.creatorDisplayName,
-                  avatarUrl: challenge.creatorAvatarUrl,
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        challenge.creatorDisplayName,
-                        style: TypographyTokens.titleSmall(),
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing1 / 2),
-                      Text(
-                        fixture.competitionName,
-                        style: TypographyTokens.labelSmall(
-                          ColorTokens.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+            if (largeText)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _ChallengeCreatorIdentity(
+                    challenge: challenge,
+                    competitionName: fixture.competitionName,
                   ),
-                ),
-                ChallengeStatusChip(status: challenge.status),
-              ],
-            ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  ChallengeStatusChip(status: challenge.status),
+                ],
+              )
+            else
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _ChallengeCreatorIdentity(
+                      challenge: challenge,
+                      competitionName: fixture.competitionName,
+                    ),
+                  ),
+                  ChallengeStatusChip(status: challenge.status),
+                ],
+              ),
             const SizedBox(height: SpacingTokens.spacing4),
-            Row(
-              children: [
-                Expanded(
-                  child: _TeamColumn(
+            if (largeText)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _TeamColumn(
                     name: fixture.homeTeamShort,
                     alignment: CrossAxisAlignment.start,
                   ),
-                ),
-                Column(
-                  children: [
-                    Text(
-                      fixture.status == 'finished' || fixture.status == 'live'
-                          ? '${fixture.homeScore ?? 0}-${fixture.awayScore ?? 0}'
-                          : 'VS',
-                      style: TypographyTokens.titleLarge(
-                        fixture.status == 'live'
-                            ? ColorTokens.error
-                            : accentTextColor,
-                      ).copyWith(fontWeight: FontWeight.w900),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing1),
-                    if (hasCountdown)
-                      Text(
-                        _formatCountdown(countdown),
-                        style: TypographyTokens.labelSmall(countdownTextColor),
-                      )
-                    else
-                      Text(
-                        compact
-                            ? fixture.kickoffAt
-                                      ?.toLocal()
-                                      .toString()
-                                      .split('.')
-                                      .first ??
-                                  'Kickoff soon'
-                            : _formatKickoff(fixture.kickoffAt),
-                        style: TypographyTokens.labelSmall(
-                          ColorTokens.onSurfaceVariant,
-                        ),
-                      ),
-                  ],
-                ),
-                Expanded(
-                  child: _TeamColumn(
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  matchSummary,
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  _TeamColumn(
                     name: fixture.awayTeamShort,
                     alignment: CrossAxisAlignment.end,
                   ),
-                ),
-              ],
-            ),
+                ],
+              )
+            else
+              Row(
+                children: [
+                  Expanded(
+                    child: _TeamColumn(
+                      name: fixture.homeTeamShort,
+                      alignment: CrossAxisAlignment.start,
+                    ),
+                  ),
+                  if (compact)
+                    Expanded(flex: 2, child: matchSummary)
+                  else
+                    matchSummary,
+                  Expanded(
+                    child: _TeamColumn(
+                      name: fixture.awayTeamShort,
+                      alignment: CrossAxisAlignment.end,
+                    ),
+                  ),
+                ],
+              ),
             const SizedBox(height: SpacingTokens.spacing4),
             Wrap(
               spacing: SpacingTokens.spacing2,
@@ -132,23 +146,27 @@ class ChallengeCard extends StatelessWidget {
                 StakeBadge(stakeFet: challenge.stakeFet),
                 _InfoChip(
                   icon: AfriIcons.users,
-                  label: '${challenge.totalParticipants} joined',
+                  label: context.afriL10n.gameJoinedCount(
+                    challenge.totalParticipants,
+                  ),
                 ),
                 _InfoChip(
                   icon: AfriIcons.rewards,
-                  label: '${challenge.totalPoolFet} pts total',
+                  label: context.afriL10n.gameTotalPoolPoints(
+                    challenge.totalPoolFet,
+                  ),
                 ),
                 if (challenge.creatorPrediction != null)
                   ScorePredictionPill(
                     homeScore: challenge.creatorPrediction!.homeScore,
                     awayScore: challenge.creatorPrediction!.awayScore,
-                    label: 'Creator',
+                    label: context.afriL10n.gameCreator,
                   ),
                 if (challenge.myEntry != null)
                   ScorePredictionPill(
                     homeScore: challenge.myEntry!.predictedHomeScore,
                     awayScore: challenge.myEntry!.predictedAwayScore,
-                    label: 'My pick',
+                    label: context.afriL10n.gameMyPick,
                     accent: ColorTokens.clubAccent,
                   ),
               ],
@@ -159,24 +177,27 @@ class ChallengeCard extends StatelessWidget {
     );
   }
 
-  String _formatKickoff(DateTime? value) {
+  String _formatKickoff(BuildContext context, DateTime? value) {
     if (value == null) {
-      return 'Kickoff soon';
+      return context.afriL10n.gameKickoffSoon;
     }
     final local = value.toLocal();
-    final hour = local.hour.toString().padLeft(2, '0');
-    final minute = local.minute.toString().padLeft(2, '0');
-    return '${local.day}/${local.month} $hour:$minute';
+    final materialL10n = MaterialLocalizations.of(context);
+    return '${materialL10n.formatShortDate(local)} • '
+        '${materialL10n.formatTimeOfDay(TimeOfDay.fromDateTime(local))}';
   }
 
-  String _formatCountdown(Duration duration) {
+  String _formatCountdown(BuildContext context, Duration duration) {
     if (duration.inHours >= 24) {
-      return '${duration.inDays}d left';
+      return context.afriL10n.gameDaysLeft(duration.inDays);
     }
     if (duration.inHours >= 1) {
-      return '${duration.inHours}h ${duration.inMinutes.remainder(60)}m';
+      return context.afriL10n.gameHoursMinutes(
+        duration.inHours,
+        duration.inMinutes.remainder(60),
+      );
     }
-    return '${duration.inMinutes}m left';
+    return context.afriL10n.gameMinutesLeft(duration.inMinutes);
   }
 }
 
@@ -195,6 +216,13 @@ class ChallengeStatusChip extends StatelessWidget {
       ChallengeStatus.cancelled => ColorTokens.error,
     };
     final textColor = ColorTokens.isDark ? color : ColorTokens.onSurface;
+    final label = switch (status) {
+      ChallengeStatus.open => context.afriL10n.gameOpenUpper,
+      ChallengeStatus.locked => context.afriL10n.gameLockedUpper,
+      ChallengeStatus.settled => context.afriL10n.gameSettledUpper,
+      ChallengeStatus.void_ => context.afriL10n.gameVoid,
+      ChallengeStatus.cancelled => context.afriL10n.gameCancelled,
+    };
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -206,7 +234,7 @@ class ChallengeStatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
-        status.name.replaceAll('_', '').toUpperCase(),
+        label,
         style: TypographyTokens.metricLabel(
           textColor,
         ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
@@ -235,7 +263,7 @@ class StakeBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
-        '$stakeFet pts',
+        context.afriL10n.gamePointBalance(stakeFet),
         style: TypographyTokens.metricLabel(
           textColor,
         ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
@@ -274,7 +302,7 @@ class ScorePredictionPill extends StatelessWidget {
         borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
-        '$label  $homeScore-$awayScore',
+        context.afriL10n.gameScorePrediction(label, homeScore, awayScore),
         style: TypographyTokens.metricLabel(
           textColor,
         ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.7),
@@ -310,9 +338,57 @@ class _InfoChip extends StatelessWidget {
             color: ColorTokens.onSurfaceVariant,
           ),
           const SizedBox(width: SpacingTokens.spacing3 / 2),
-          Text(label, style: TypographyTokens.labelSmall()),
+          Flexible(
+            child: Text(
+              label,
+              softWrap: true,
+              style: TypographyTokens.labelSmall(),
+            ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _ChallengeCreatorIdentity extends StatelessWidget {
+  const _ChallengeCreatorIdentity({
+    required this.challenge,
+    required this.competitionName,
+  });
+
+  final Challenge challenge;
+  final String competitionName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _AvatarBadge(
+          label: challenge.creatorDisplayName,
+          avatarUrl: challenge.creatorAvatarUrl,
+        ),
+        const SizedBox(width: SpacingTokens.spacing3),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                challenge.creatorDisplayName,
+                style: TypographyTokens.titleSmall(),
+              ),
+              const SizedBox(height: SpacingTokens.spacing1 / 2),
+              Text(
+                competitionName,
+                style: TypographyTokens.labelSmall(
+                  ColorTokens.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

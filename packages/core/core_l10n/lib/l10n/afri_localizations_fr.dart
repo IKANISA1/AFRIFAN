@@ -492,6 +492,100 @@ class AfriLocalizationsFr extends AfriLocalizations {
   String get tvOfflinePhase => 'Hors ligne';
 
   @override
+  String get tvPreparingDisplay => 'Préparation du téléviseur';
+
+  @override
+  String get tvCreatePairingChallenge => 'CRÉER UN CODE D’ASSOCIATION';
+
+  @override
+  String get tvPairingChallengeDescription =>
+      'Sur le téléphone du propriétaire, ouvrez Paramètres, puis Jeux et téléviseurs. Scannez le code QR ou saisissez le code à usage unique.';
+
+  @override
+  String tvPairingChallengeSemantic(String code) {
+    return 'Code d’association TV à usage unique $code';
+  }
+
+  @override
+  String get tvPairingWaitingOwner =>
+      'En attente de l’association par le propriétaire…';
+
+  @override
+  String tvPairingExpiresAt(String time) {
+    return 'Le code expire $time';
+  }
+
+  @override
+  String get tvCreateNewPairingCode => 'CRÉER UN NOUVEAU CODE';
+
+  @override
+  String get tvDisplayPairedNoGame => 'Téléviseur associé';
+
+  @override
+  String get tvDisplayPairedNoGameDescription =>
+      'Aucun jeu n’est attribué à ce téléviseur. Il se mettra à jour automatiquement.';
+
+  @override
+  String get tvGameScheduledTitle => 'Jeu planifié';
+
+  @override
+  String get tvGameLobbyTitle => 'Les joueurs rejoignent le jeu';
+
+  @override
+  String get tvGamePausedTitle => 'Jeu en pause';
+
+  @override
+  String get tvGameCancelledTitle => 'Jeu annulé';
+
+  @override
+  String get tvGameCompletedTitle => 'Jeu terminé';
+
+  @override
+  String get tvLiveSyncing => 'Synchronisation du dernier état du jeu';
+
+  @override
+  String get tvOfflineLastConfirmed =>
+      'Hors ligne · dernier état confirmé affiché';
+
+  @override
+  String tvLiveUpdatedAt(String time) {
+    return 'En direct · actualisé à $time';
+  }
+
+  @override
+  String tvQuestionNumber(int number) {
+    return 'Question $number';
+  }
+
+  @override
+  String get tvCorrectAnswer => 'Bonne réponse';
+
+  @override
+  String tvCorrectAnswerSemantic(String answer) {
+    return 'Bonne réponse : $answer';
+  }
+
+  @override
+  String tvSecondsRemaining(int seconds) {
+    return '$seconds secondes restantes';
+  }
+
+  @override
+  String get tvLeaderboardEmpty =>
+      'Les scores apparaîtront après les réponses des joueurs.';
+
+  @override
+  String get tvRetry => 'RÉESSAYER';
+
+  @override
+  String get tvSecureStorageUnavailable =>
+      'Le stockage sécurisé du téléviseur est indisponible. Réessayez avant une nouvelle association.';
+
+  @override
+  String get tvPairingExpired =>
+      'Ce code d’association a expiré. Créez un nouveau code.';
+
+  @override
   String get membershipTitle => 'Adhésion';
 
   @override
@@ -1262,6 +1356,42 @@ class AfriLocalizationsFr extends AfriLocalizations {
   @override
   String get clubLinkedRecordLoadMessage =>
       'La fiche du club liée n’a pas pu être chargée.';
+
+  @override
+  String get clubOfflineTitle => 'Informations du club hors ligne';
+
+  @override
+  String get clubOfflineMessage =>
+      'Connectez-vous pour charger les dernières informations officielles du club.';
+
+  @override
+  String get clubAccessDeniedTitle => 'Accès aux informations du club refusé';
+
+  @override
+  String get clubAccessDeniedMessage =>
+      'Ce compte ne peut pas accéder aux informations demandées du club.';
+
+  @override
+  String get clubChangedTitle => 'Informations du club modifiées';
+
+  @override
+  String get clubChangedMessage =>
+      'Les informations officielles du club ont changé pendant le chargement. Actualisez pour confirmer la dernière version.';
+
+  @override
+  String get clubSecurityTimeoutTitle =>
+      'Délai de sécurité des informations du club dépassé';
+
+  @override
+  String get clubSecurityTimeoutMessage =>
+      'Le service d’informations du club n’a pas répondu à temps. Actualisez pour réessayer.';
+
+  @override
+  String get clubRefreshingTitle => 'Actualisation des informations du club';
+
+  @override
+  String get clubRefreshingMessage =>
+      'Les dernières informations confirmées du club restent visibles pendant le chargement des mises à jour.';
 
   @override
   String get clubRefresh => 'Actualiser';
@@ -2803,7 +2933,7 @@ class AfriLocalizationsFr extends AfriLocalizations {
   String get ticketRefreshingTitle => 'Actualisation du billet';
 
   @override
-  String get ticketAccessChangedTitle => 'L’accès aux billets a changé';
+  String get ticketEntryCodeAccessChangedTitle => 'L’accès au billet a changé';
 
   @override
   String get ticketCheckTimedOutTitle => 'La vérification du billet a expiré';
@@ -3272,6 +3402,9 @@ class AfriLocalizationsFr extends AfriLocalizations {
   @override
   String get ticketFixtureCheckTimedOutTitle =>
       'La vérification du match a expiré';
+
+  @override
+  String get ticketAccessChangedTitle => 'L’accès aux billets a changé';
 
   @override
   String get ticketSavedFixtureReadOnlyMessage =>
@@ -4158,4 +4291,7909 @@ class AfriLocalizationsFr extends AfriLocalizations {
 
   @override
   String get contributionsNotNowUpper => 'PAS MAINTENANT';
+
+  @override
+  String get settingsTitle => 'Paramètres';
+
+  @override
+  String get settingsRoleAdmin => 'Administrateur';
+
+  @override
+  String get settingsRoleSupporter => 'Supporter';
+
+  @override
+  String get settingsMembershipDetails => 'Détails de l’adhésion';
+
+  @override
+  String get settingsSectionAccount => 'Compte';
+
+  @override
+  String get settingsSectionGamesAndTvs => 'Jeux et téléviseurs';
+
+  @override
+  String get settingsSectionPreferences => 'Préférences';
+
+  @override
+  String get settingsSectionSupport => 'Assistance';
+
+  @override
+  String get settingsEditProfile => 'Modifier le profil';
+
+  @override
+  String get settingsAppearance => 'Apparence';
+
+  @override
+  String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsPrivacy => 'Confidentialité';
+
+  @override
+  String get settingsHelpSupport => 'Aide et assistance';
+
+  @override
+  String get settingsSignOut => 'Se déconnecter';
+
+  @override
+  String get settingsRefreshingTitle => 'Actualisation des paramètres';
+
+  @override
+  String get settingsRefreshingMessage =>
+      'Les paramètres du compte et de l’apparence restent disponibles.';
+
+  @override
+  String get settingsOfflineTitle => 'Paramètres hors ligne';
+
+  @override
+  String get settingsOfflineMessage =>
+      'Hors ligne. Les paramètres du compte et de l’apparence restent disponibles. Reconnectez-vous pour l’assistance.';
+
+  @override
+  String get settingsHelpUnavailableTitle => 'Aide et assistance indisponibles';
+
+  @override
+  String get settingsSupportContactUnavailableTitle =>
+      'Contact d’assistance indisponible';
+
+  @override
+  String get settingsSupportContactUnavailableMessage =>
+      'Les autres paramètres fonctionnent toujours. Actualisez pour vérifier.';
+
+  @override
+  String get settingsLoadingTitle => 'Chargement des paramètres';
+
+  @override
+  String get settingsLoadingMessage => 'Vérification de l’assistance.';
+
+  @override
+  String get settingsAccessLimitedTitle => 'Accès aux paramètres limité';
+
+  @override
+  String get settingsAccessLimitedMessage =>
+      'L’assistance n’a pas pu être vérifiée. Les autres paramètres fonctionnent toujours.';
+
+  @override
+  String get settingsChangedTitle => 'Paramètres modifiés';
+
+  @override
+  String get settingsChangedMessage =>
+      'Actualisez pour charger les paramètres d’assistance actuels.';
+
+  @override
+  String get settingsSecurityTimeoutTitle => 'Vérification de sécurité expirée';
+
+  @override
+  String get settingsSecurityTimeoutMessage =>
+      'Vérifiez votre connexion et actualisez.';
+
+  @override
+  String get settingsSupportLoadFailedTitle =>
+      'Impossible de charger l’assistance';
+
+  @override
+  String get settingsSupportLoadFailedMessage =>
+      'Les paramètres du compte et de l’apparence restent disponibles.';
+
+  @override
+  String get settingsChecking => 'Vérification…';
+
+  @override
+  String get settingsConnectionRequired => 'Connexion requise';
+
+  @override
+  String get settingsUnavailable => 'Indisponible';
+
+  @override
+  String get settingsNotConfigured => 'Non configuré';
+
+  @override
+  String get settingsStatusUnavailable => 'État indisponible';
+
+  @override
+  String get settingsThemeUseDevice => 'Utiliser le réglage de l’appareil';
+
+  @override
+  String get settingsThemeLight => 'Clair';
+
+  @override
+  String get settingsThemeDark => 'Sombre';
+
+  @override
+  String get settingsAppearanceMessage =>
+      'Choisissez un thème ou suivez le réglage de votre appareil.';
+
+  @override
+  String get settingsThemeSystem => 'Système';
+
+  @override
+  String get settingsSupportNotConfigured =>
+      'Le contact d’assistance n’est pas configuré.';
+
+  @override
+  String settingsSupportGreeting(String app) {
+    return 'Bonjour, j’ai besoin d’aide avec $app.';
+  }
+
+  @override
+  String get settingsWhatsAppFailed => 'Impossible d’ouvrir WhatsApp.';
+
+  @override
+  String get settingsDeleteAccountTitle => 'SUPPRIMER VOTRE COMPTE ?';
+
+  @override
+  String get settingsDeleteAccountMessage =>
+      'Supprime définitivement votre profil, vos FET, badges et votre historique. Cette action est irréversible.';
+
+  @override
+  String get settingsDeleteAccountConfirmPrompt =>
+      'SAISISSEZ DELETE POUR CONFIRMER';
+
+  @override
+  String get settingsDeleteAccountConfirmValue => 'DELETE';
+
+  @override
+  String get settingsCancelUpper => 'ANNULER';
+
+  @override
+  String get settingsDeletePermanently => 'Supprimer définitivement';
+
+  @override
+  String get settingsNotificationPermissionTitle => 'RESTEZ DANS LE JEU';
+
+  @override
+  String get settingsNotificationPermissionMessage =>
+      'Recevez les alertes de matchs, contributions, étapes FET et actualités du club.';
+
+  @override
+  String get settingsMatchAlerts => 'Alertes avant le coup d’envoi';
+
+  @override
+  String get settingsContributionUpdates =>
+      'Actualités des contributions et billets';
+
+  @override
+  String get settingsFetMilestones => 'Étapes FET et nouveaux défis';
+
+  @override
+  String get settingsEnableNotifications => 'Activer les notifications';
+
+  @override
+  String get settingsMaybeLaterUpper => 'PLUS TARD';
+
+  @override
+  String get settingsSignOutTitle => 'SE DÉCONNECTER ?';
+
+  @override
+  String get settingsSignOutMessage =>
+      'Votre profil et vos FET sont enregistrés. Reconnectez-vous à tout moment.';
+
+  @override
+  String get settingsStay => 'Rester';
+
+  @override
+  String get settingsSignOutOthersTitle => 'DÉCONNECTER LES AUTRES APPAREILS ?';
+
+  @override
+  String get settingsSignOutOthersMessage =>
+      'Cet appareil reste connecté. Les autres sessions seront révoquées.';
+
+  @override
+  String get settingsSignOutOthersAction => 'DÉCONNECTER LES AUTRES';
+
+  @override
+  String get settingsCancel => 'Annuler';
+
+  @override
+  String get editProfileUpdated => 'Profil mis à jour.';
+
+  @override
+  String get editProfileServiceUnavailable =>
+      'Le service de profil est temporairement indisponible.';
+
+  @override
+  String get editProfileLoadingTitle => 'Chargement du profil';
+
+  @override
+  String get editProfileLoadingMessage =>
+      'Vérification de votre profil enregistré.';
+
+  @override
+  String get editProfileAccessLimitedTitle => 'Accès au profil limité';
+
+  @override
+  String get editProfileAccessLimitedMessage =>
+      'Votre profil n’a pas pu être vérifié. Reconnectez-vous.';
+
+  @override
+  String get editProfileSignInAgain => 'Se reconnecter';
+
+  @override
+  String get editProfileChangedTitle => 'Profil modifié';
+
+  @override
+  String get editProfileChangedMessage =>
+      'Actualisez pour charger le profil actuel avant de le modifier.';
+
+  @override
+  String get editProfileRefresh => 'Actualiser';
+
+  @override
+  String get editProfileSecurityTimeoutTitle =>
+      'Vérification de sécurité expirée';
+
+  @override
+  String get editProfileSecurityTimeoutMessage =>
+      'Vérifiez votre connexion et actualisez.';
+
+  @override
+  String get editProfileLoadFailedTitle => 'Impossible de charger le profil';
+
+  @override
+  String get editProfileLoadFailedMessage =>
+      'Votre profil est toujours protégé. Réessayez.';
+
+  @override
+  String get editProfileTryAgain => 'Réessayer';
+
+  @override
+  String get editProfileTitle => 'Profil';
+
+  @override
+  String get editProfileSavingTitle => 'Enregistrement du profil';
+
+  @override
+  String get editProfileSavingMessage =>
+      'Votre surnom reste visible pendant la confirmation.';
+
+  @override
+  String get editProfileRefreshingTitle => 'Actualisation du profil';
+
+  @override
+  String get editProfileRefreshingMessage =>
+      'Votre profil enregistré reste visible.';
+
+  @override
+  String get editProfileEditingUnavailableTitle =>
+      'Modification du profil indisponible';
+
+  @override
+  String get editProfileEditingUnavailableMessage =>
+      'Votre profil enregistré reste visible.';
+
+  @override
+  String get editProfileChangedElsewhereTitle => 'Profil modifié ailleurs';
+
+  @override
+  String get editProfileChangedElsewhereMessage =>
+      'Le dernier surnom a été chargé. Vérifiez-le avant d’enregistrer.';
+
+  @override
+  String get editProfileSaveUnconfirmedTitle => 'Enregistrement non confirmé';
+
+  @override
+  String get editProfileSaveUnconfirmedMessage =>
+      'Actualisez votre profil avant de réessayer.';
+
+  @override
+  String get editProfileSaveFailedTitle => 'Impossible d’enregistrer le profil';
+
+  @override
+  String get editProfileSaveFailedMessage =>
+      'Votre brouillon de surnom est conservé.';
+
+  @override
+  String get editProfileOfflineTitle => 'Profil hors ligne';
+
+  @override
+  String get editProfileOfflineMessage =>
+      'Hors ligne. Votre profil enregistré reste visible. Reconnectez-vous pour le modifier.';
+
+  @override
+  String get editProfileUnavailableTitle => 'Profil indisponible';
+
+  @override
+  String get editProfileUnavailableMessage =>
+      'Votre profil est indisponible. Reconnectez-vous pour récupérer votre compte.';
+
+  @override
+  String editProfileAlias(String alias) {
+    return '#$alias';
+  }
+
+  @override
+  String get editProfileNicknameLabel => 'Surnom';
+
+  @override
+  String get editProfileNicknameHint => 'Surnom de supporter facultatif';
+
+  @override
+  String get editProfileSaving => 'Enregistrement…';
+
+  @override
+  String get editProfileSaveChanges => 'Enregistrer les modifications';
+
+  @override
+  String get editProfileDeleteAccount => 'Supprimer le compte';
+
+  @override
+  String get editProfileDeleteHint =>
+      'Supprimer définitivement ce compte de supporter';
+
+  @override
+  String get editProfileDeleteFailed =>
+      'Impossible de supprimer le compte. Réessayez.';
+
+  @override
+  String get editProfileLanguageEnglish => 'Anglais';
+
+  @override
+  String get editProfileLanguageFrench => 'Français';
+
+  @override
+  String get editProfileLanguageKinyarwanda => 'Kinyarwanda';
+
+  @override
+  String get notificationPreferencesConnectionRestoredReview =>
+      'Connexion rétablie. Vérifiez vos modifications conservées, puis enregistrez.';
+
+  @override
+  String get notificationPreferencesConnectionRestoredRefreshing =>
+      'Connexion rétablie. Actualisation des préférences.';
+
+  @override
+  String get notificationPreferencesConnectBeforeChanging =>
+      'Connectez-vous avant de modifier la réception des notifications sur cet appareil.';
+
+  @override
+  String get notificationPreferencesDeviceTurnedOff =>
+      'Les notifications de l’appareil ont été désactivées. Enregistrez pour mettre à jour la préférence de votre compte.';
+
+  @override
+  String get notificationPreferencesPermissionGranted =>
+      'Autorisation accordée sur cet appareil. Enregistrez pour activer les alertes sur votre compte.';
+
+  @override
+  String get notificationPreferencesBlocked =>
+      'Notifications bloquées. Activez-les dans les réglages de l’appareil.';
+
+  @override
+  String get notificationPreferencesPermissionPending =>
+      'L’autorisation des notifications est toujours en attente.';
+
+  @override
+  String get notificationPreferencesPushUnavailable =>
+      'Les notifications push ne sont pas disponibles dans cette version.';
+
+  @override
+  String get notificationPreferencesDraftKeptConnect =>
+      'Vos modifications sont conservées. Connectez-vous avant d’enregistrer.';
+
+  @override
+  String get notificationPreferencesSaved =>
+      'Préférences de notification enregistrées.';
+
+  @override
+  String get notificationPreferencesChangedElsewhereLoading =>
+      'Les préférences ont été modifiées ailleurs. La dernière version est en cours de chargement ; vérifiez-la avant d’enregistrer à nouveau.';
+
+  @override
+  String get notificationPreferencesChangeNotPermitted =>
+      'Les modifications de notification ne sont pas autorisées pour ce compte.';
+
+  @override
+  String get notificationPreferencesChangedRefresh =>
+      'Les préférences ont été modifiées ailleurs. Actualisez avant d’enregistrer à nouveau.';
+
+  @override
+  String get notificationPreferencesSaveUnconfirmed =>
+      'L’enregistrement des notifications n’a pas été confirmé. Actualisez avant de réessayer.';
+
+  @override
+  String get notificationPreferencesSaveFailedDraftKept =>
+      'Les préférences de notification n’ont pas pu être enregistrées. Votre brouillon est conservé.';
+
+  @override
+  String get notificationPreferencesRefreshing =>
+      'Actualisation des préférences de notification.';
+
+  @override
+  String get notificationPreferencesLoadingTitle =>
+      'Chargement des notifications';
+
+  @override
+  String get notificationPreferencesLoadingMessage =>
+      'Vérification de votre préférence de réception enregistrée.';
+
+  @override
+  String get notificationPreferencesOfflineTitle =>
+      'Les notifications sont hors ligne';
+
+  @override
+  String get notificationPreferencesOfflineMessage =>
+      'Connectez-vous pour charger votre préférence de notification enregistrée.';
+
+  @override
+  String get notificationPreferencesUnavailableTitle =>
+      'Préférences de notification indisponibles';
+
+  @override
+  String get notificationPreferencesUnavailableMessage =>
+      'Connectez-vous pour gérer la réception des notifications.';
+
+  @override
+  String get notificationPreferencesAccessLimitedTitle =>
+      'Accès aux notifications limité';
+
+  @override
+  String get notificationPreferencesAccessLimitedMessage =>
+      'Vos préférences n’ont pas pu être vérifiées. Reconnectez-vous.';
+
+  @override
+  String get notificationPreferencesChangedTitle =>
+      'Paramètres de notification modifiés';
+
+  @override
+  String get notificationPreferencesChangedMessage =>
+      'Actualisez pour charger la préférence actuelle avant de la modifier.';
+
+  @override
+  String get notificationPreferencesSecurityTimeoutTitle =>
+      'Le contrôle de sécurité des notifications a expiré';
+
+  @override
+  String get notificationPreferencesSecurityTimeoutMessage =>
+      'Vérifiez votre connexion et actualisez.';
+
+  @override
+  String get notificationPreferencesLoadFailedTitle =>
+      'Impossible de charger les paramètres de notification.';
+
+  @override
+  String get notificationPreferencesLoadFailedMessage =>
+      'Votre préférence enregistrée est toujours en sécurité. Réessayez.';
+
+  @override
+  String get notificationPreferencesSavingTitle =>
+      'Enregistrement des préférences de notification';
+
+  @override
+  String get notificationPreferencesSavingMessage =>
+      'Vos choix restent visibles pendant la confirmation de l’enregistrement.';
+
+  @override
+  String get notificationPreferencesRefreshingTitle =>
+      'Actualisation des préférences de notification';
+
+  @override
+  String get notificationPreferencesRefreshingMessage =>
+      'Votre préférence de réception enregistrée reste visible.';
+
+  @override
+  String get notificationPreferencesEditingUnavailableTitle =>
+      'Modification des notifications indisponible';
+
+  @override
+  String get notificationPreferencesEditingUnavailableMessage =>
+      'Votre préférence enregistrée reste visible.';
+
+  @override
+  String get notificationPreferencesChangedElsewhereTitle =>
+      'Paramètres de notification modifiés ailleurs';
+
+  @override
+  String get notificationPreferencesChangedElsewhereMessage =>
+      'Actualisez et vérifiez la dernière préférence.';
+
+  @override
+  String get notificationPreferencesSaveNotConfirmedTitle =>
+      'Enregistrement des notifications non confirmé';
+
+  @override
+  String get notificationPreferencesSaveNotConfirmedMessage =>
+      'Actualisez avant de réessayer. Votre brouillon est conservé.';
+
+  @override
+  String get notificationPreferencesSaveFailedTitle =>
+      'Impossible d’enregistrer les préférences de notification';
+
+  @override
+  String get notificationPreferencesSaveFailedMessage =>
+      'Votre brouillon est toujours disponible.';
+
+  @override
+  String get notificationPreferencesSavedSettingsTitle =>
+      'Paramètres de notification enregistrés';
+
+  @override
+  String get notificationPreferencesSavedSettingsMessage =>
+      'Les valeurs peuvent être obsolètes. Reconnectez-vous avant de les modifier ou de les enregistrer.';
+
+  @override
+  String get notificationPreferencesCheckingPermissionsTitle =>
+      'Vérification des autorisations de l’appareil';
+
+  @override
+  String get notificationPreferencesCheckingPermissionsMessage =>
+      'Les contrôles de réception seront disponibles après cette vérification.';
+
+  @override
+  String get notificationPreferencesDeviceAlertsUnavailableTitle =>
+      'Alertes de l’appareil indisponibles';
+
+  @override
+  String get notificationPreferencesDeviceAlertsUnavailableMessage =>
+      'La réception push n’est pas configurée dans cette version.';
+
+  @override
+  String get notificationPreferencesPermissionEnabled =>
+      'Les notifications système sont activées sur cet appareil.';
+
+  @override
+  String get notificationPreferencesPermissionBlocked =>
+      'Les notifications système sont bloquées au niveau de l’appareil.';
+
+  @override
+  String get notificationPreferencesPermissionNotRequested =>
+      'Autorisation pas encore demandée.';
+
+  @override
+  String get notificationPreferencesPermissionNotConfigured =>
+      'Les notifications push ne sont pas configurées dans cette version.';
+
+  @override
+  String get notificationPreferencesPermissionChecking =>
+      'Vérification des autorisations de notification de l’appareil…';
+
+  @override
+  String get notificationPreferencesTitle => 'NOTIFICATIONS';
+
+  @override
+  String get notificationPreferencesDeliverySection =>
+      'RÉCEPTION DES NOTIFICATIONS';
+
+  @override
+  String get notificationPreferencesAlertsEnabled => 'Alertes activées.';
+
+  @override
+  String get notificationPreferencesEnableAlertsDescription =>
+      'Activez les alertes pour les matchs, reçus et actualités.';
+
+  @override
+  String get notificationPreferencesDeviceDelivery =>
+      'Réception des alertes sur l’appareil';
+
+  @override
+  String get notificationPreferencesConnectionRequiredUpper =>
+      'CONNEXION REQUISE';
+
+  @override
+  String get notificationPreferencesDisableAlerts => 'DÉSACTIVER LES ALERTES';
+
+  @override
+  String get notificationPreferencesEnableAlerts => 'ACTIVER LES ALERTES';
+
+  @override
+  String get notificationPreferencesDeliveryModel => 'MODÈLE DE RÉCEPTION';
+
+  @override
+  String notificationPreferencesFullStream(String app) {
+    return 'Lorsque les alertes sont activées, cette version transmet tout le flux de notifications $app disponible pour votre compte.';
+  }
+
+  @override
+  String get notificationPreferencesPerCategory =>
+      'Le réglage par catégorie n’est pas encore disponible dans cette version ; ce bouton contrôle donc toute la réception sur l’appareil.';
+
+  @override
+  String get notificationPreferencesSave => 'Enregistrer';
+
+  @override
+  String get privacySettingsConnectionRestoredReview =>
+      'Connexion rétablie. Vérifiez vos modifications conservées, puis enregistrez.';
+
+  @override
+  String get privacySettingsConnectionRestoredRefreshing =>
+      'Connexion rétablie. Actualisation des paramètres de confidentialité.';
+
+  @override
+  String get privacySettingsChangeReady =>
+      'Modification de confidentialité prête à être enregistrée.';
+
+  @override
+  String get privacySettingsDraftKeptConnect =>
+      'Vos modifications sont conservées. Connectez-vous avant d’enregistrer.';
+
+  @override
+  String get privacySettingsSaved =>
+      'Paramètres de confidentialité enregistrés.';
+
+  @override
+  String get privacySettingsChangedElsewhereLoading =>
+      'Les paramètres de confidentialité ont été modifiés ailleurs. La dernière version est en cours de chargement ; vérifiez-la avant d’enregistrer à nouveau.';
+
+  @override
+  String get privacySettingsChangeNotPermitted =>
+      'Les modifications de confidentialité ne sont pas autorisées pour ce compte.';
+
+  @override
+  String get privacySettingsChangedRefresh =>
+      'Les paramètres de confidentialité ont été modifiés ailleurs. Actualisez avant d’enregistrer à nouveau.';
+
+  @override
+  String get privacySettingsSaveUnconfirmed =>
+      'L’enregistrement de la confidentialité n’a pas été confirmé. Actualisez avant de réessayer.';
+
+  @override
+  String get privacySettingsSaveFailedDraftKept =>
+      'Les paramètres de confidentialité n’ont pas pu être enregistrés. Votre brouillon est conservé.';
+
+  @override
+  String get privacySettingsRefreshing =>
+      'Actualisation des paramètres de confidentialité.';
+
+  @override
+  String get privacySettingsConnectBeforeSigningOut =>
+      'Connectez-vous avant de déconnecter les autres appareils.';
+
+  @override
+  String get privacySettingsSessionsSignedOut =>
+      'Les autres sessions ont été déconnectées.';
+
+  @override
+  String get privacySettingsSessionsSignOutFailed =>
+      'Impossible de déconnecter les autres appareils. Réessayez.';
+
+  @override
+  String get privacySettingsSessionSecurityTimeout =>
+      'Le contrôle de sécurité de la session a expiré. Réessayez.';
+
+  @override
+  String get privacySettingsSmsAccessRequired =>
+      'La synchronisation SMS reste désactivée jusqu’à ce que vous accordiez l’accès aux SMS Android pour la vérification MoMo.';
+
+  @override
+  String get privacySettingsEnableMomoSmsTitle =>
+      'Activer la synchronisation SMS MoMo';
+
+  @override
+  String get privacySettingsMomoSmsDisclosure =>
+      'L’application lit uniquement les SMS de vérification Mobile Money approuvés sur cet appareil afin de rapprocher les paiements de contribution. Elle ne peut pas accéder aux autres messages.';
+
+  @override
+  String get privacySettingsNotNow => 'Pas maintenant';
+
+  @override
+  String get privacySettingsContinue => 'Continuer';
+
+  @override
+  String get privacySettingsLoadingTitle =>
+      'Chargement des paramètres de confidentialité';
+
+  @override
+  String get privacySettingsLoadingMessage =>
+      'Vérification de vos choix de confidentialité enregistrés.';
+
+  @override
+  String get privacySettingsOfflineTitle =>
+      'Les paramètres de confidentialité sont hors ligne';
+
+  @override
+  String get privacySettingsOfflineMessage =>
+      'Connectez-vous pour charger vos choix de confidentialité enregistrés.';
+
+  @override
+  String get privacySettingsUnavailableTitle =>
+      'Paramètres de confidentialité indisponibles';
+
+  @override
+  String get privacySettingsUnavailableMessage =>
+      'Connectez-vous pour consulter et gérer vos choix de confidentialité.';
+
+  @override
+  String get privacySettingsAccessLimitedTitle =>
+      'Accès à la confidentialité limité';
+
+  @override
+  String get privacySettingsAccessLimitedMessage =>
+      'Vos paramètres de confidentialité n’ont pas pu être vérifiés. Reconnectez-vous.';
+
+  @override
+  String get privacySettingsChangedTitle =>
+      'Paramètres de confidentialité modifiés';
+
+  @override
+  String get privacySettingsChangedMessage =>
+      'Actualisez pour charger les choix actuels avant de les modifier.';
+
+  @override
+  String get privacySettingsSecurityTimeoutTitle =>
+      'Le contrôle de sécurité de la confidentialité a expiré';
+
+  @override
+  String get privacySettingsSecurityTimeoutMessage =>
+      'Vérifiez votre connexion et actualisez.';
+
+  @override
+  String get privacySettingsLoadFailedTitle =>
+      'Impossible de charger les paramètres de confidentialité.';
+
+  @override
+  String get privacySettingsLoadFailedMessage =>
+      'Vos choix enregistrés sont toujours en sécurité. Réessayez.';
+
+  @override
+  String get privacySettingsSavingTitle =>
+      'Enregistrement des paramètres de confidentialité';
+
+  @override
+  String get privacySettingsSavingMessage =>
+      'Vos choix restent visibles pendant la confirmation de l’enregistrement.';
+
+  @override
+  String get privacySettingsRefreshingTitle =>
+      'Actualisation des paramètres de confidentialité';
+
+  @override
+  String get privacySettingsRefreshingMessage =>
+      'Vos choix enregistrés restent visibles.';
+
+  @override
+  String get privacySettingsEditingUnavailableTitle =>
+      'Modification de la confidentialité indisponible';
+
+  @override
+  String get privacySettingsEditingUnavailableMessage =>
+      'Vos choix enregistrés restent visibles.';
+
+  @override
+  String get privacySettingsChangedElsewhereTitle =>
+      'Paramètres de confidentialité modifiés ailleurs';
+
+  @override
+  String get privacySettingsChangedElsewhereMessage =>
+      'Actualisez et vérifiez les derniers choix.';
+
+  @override
+  String get privacySettingsSaveNotConfirmedTitle =>
+      'Enregistrement de la confidentialité non confirmé';
+
+  @override
+  String get privacySettingsSaveNotConfirmedMessage =>
+      'Actualisez avant de réessayer. Votre brouillon est conservé.';
+
+  @override
+  String get privacySettingsSaveFailedTitle =>
+      'Impossible d’enregistrer les paramètres de confidentialité';
+
+  @override
+  String get privacySettingsSaveFailedMessage =>
+      'Votre brouillon est toujours disponible.';
+
+  @override
+  String get privacySettingsSavedSettingsTitle =>
+      'Paramètres de confidentialité enregistrés';
+
+  @override
+  String get privacySettingsSavedSettingsMessage =>
+      'Les valeurs peuvent être obsolètes. Reconnectez-vous avant de les modifier ou de les enregistrer.';
+
+  @override
+  String get privacySettingsEditingUnavailableBuildMessage =>
+      'Vos choix enregistrés restent visibles dans cette version.';
+
+  @override
+  String get privacySettingsTitle => 'CONFIDENTIALITÉ';
+
+  @override
+  String get privacySettingsControls => 'CONTRÔLES DE CONFIDENTIALITÉ';
+
+  @override
+  String get privacySettingsControlsDescription =>
+      'Choisissez de partager ou non des événements de tâche généraux et anonymes. Les requêtes, contacts, identifiants de compte, codes, messages et montants exacts des paiements ne sont jamais inclus.';
+
+  @override
+  String get privacySettingsMomoSmsSync => 'Synchronisation SMS MoMo';
+
+  @override
+  String get privacySettingsMomoSmsSyncDescription =>
+      'Rapprochez les SMS de vérification Mobile Money approuvés pour vérifier plus vite les contributions.';
+
+  @override
+  String get privacySettingsShareAnalytics =>
+      'Partager des statistiques d’utilisation anonymes';
+
+  @override
+  String get privacySettingsShareAnalyticsDescription =>
+      'Aidez à améliorer la recherche, les billets, les contributions, la Zone Fan et les parcours de récupération.';
+
+  @override
+  String get privacySettingsAnalyticsFailClosed =>
+      'Les statistiques restent désactivées sauf si vous les acceptez et si la version signée dispose d’une configuration approuvée.';
+
+  @override
+  String get privacySettingsNoChanges => 'Aucune modification à enregistrer';
+
+  @override
+  String get privacySettingsSave => 'Enregistrer la confidentialité';
+
+  @override
+  String get privacySettingsYourData => 'VOS DONNÉES';
+
+  @override
+  String get privacySettingsExportDescription =>
+      'Demandez un export de compte via un canal d’assistance configuré.';
+
+  @override
+  String get privacySettingsExportAction => 'Demander l’export des données';
+
+  @override
+  String privacySettingsExportWhatsAppMessage(String app) {
+    return 'Demande d’export des données pour $app. Veuillez m’envoyer une copie des données de mon compte.';
+  }
+
+  @override
+  String privacySettingsExportEmailSubject(String app) {
+    return 'Demande d’export des données $app';
+  }
+
+  @override
+  String get privacySettingsExportEmailBody =>
+      'Veuillez m’envoyer une copie des données de mon compte.';
+
+  @override
+  String get privacySettingsMailFailed =>
+      'Impossible d’ouvrir votre application de messagerie.';
+
+  @override
+  String get privacySettingsOpenPolicy =>
+      'Ouvrir la politique de confidentialité';
+
+  @override
+  String get privacySettingsPolicyUnavailable =>
+      'Politique de confidentialité indisponible';
+
+  @override
+  String get privacySettingsPolicyNotAvailableYet =>
+      'La politique de confidentialité n’est pas encore disponible.';
+
+  @override
+  String get privacySettingsActiveSessions => 'SESSIONS ACTIVES';
+
+  @override
+  String get privacySettingsActiveSessionsDescription =>
+      'Révoquez les autres sessions actives liées à votre compte.';
+
+  @override
+  String get privacySettingsSignOutOtherDevices =>
+      'Déconnecter les autres appareils';
+
+  @override
+  String get adminLoadingTitle => 'Chargement de l’espace d’administration';
+
+  @override
+  String get adminLoadingMessage =>
+      'Vérification des opérations actuelles du club.';
+
+  @override
+  String get adminClubAdmin => 'ADMINISTRATION DU CLUB';
+
+  @override
+  String get adminExit => 'Quitter l’administration';
+
+  @override
+  String get adminCommandCenter => 'CENTRE DE COMMANDE';
+
+  @override
+  String get adminTotalUsers => 'UTILISATEURS TOTAUX';
+
+  @override
+  String get adminActiveGroups => 'GROUPES ACTIFS';
+
+  @override
+  String get adminTransactionsToday => 'TRANSACTIONS DU JOUR';
+
+  @override
+  String get adminTicketsSold => 'BILLETS VENDUS';
+
+  @override
+  String get adminQuickActions => 'ACTIONS RAPIDES';
+
+  @override
+  String get adminManageCms => 'Gérer le CMS';
+
+  @override
+  String get adminManageCmsDescription =>
+      'Articles, bannières et surfaces de contenu';
+
+  @override
+  String get adminCreateMatch => 'Créer un match';
+
+  @override
+  String get adminCreateMatchDescription =>
+      'Configuration du match, zones et contrôles des billets';
+
+  @override
+  String get adminViewContributions => 'Voir les contributions';
+
+  @override
+  String get adminViewContributionsDescription =>
+      'Suivre les collectes du club et des communautés';
+
+  @override
+  String get adminSendNotification => 'Envoyer une notification';
+
+  @override
+  String get adminSendNotificationDescription =>
+      'Envoi push par niveau, groupe ou à tous les supporters';
+
+  @override
+  String get adminSettleFixtures => 'Régler les matchs';
+
+  @override
+  String get adminSettleFixturesDescription =>
+      'Saisir les résultats et évaluer les marchés de pronostics';
+
+  @override
+  String get adminManageCompetitions => 'Gérer les compétitions';
+
+  @override
+  String get adminManageCompetitionsDescription =>
+      'Ajouter, modifier et activer les ligues et coupes prises en charge';
+
+  @override
+  String get adminSmsSyncMonitor => 'Suivi de synchronisation SMS';
+
+  @override
+  String get adminSmsSyncMonitorDescription =>
+      'État du pipeline d’ingestion des SMS MoMo';
+
+  @override
+  String get adminFeatureManager => 'Gestionnaire de fonctionnalités';
+
+  @override
+  String get adminFeatureManagerDashboardDescription =>
+      'Activer les fonctionnalités, la visibilité et la planification';
+
+  @override
+  String get adminRecentActivity => 'ACTIVITÉ RÉCENTE';
+
+  @override
+  String get adminRecentActivityUnavailable => 'Activité récente indisponible';
+
+  @override
+  String get adminRecentActivityUnavailableMessage =>
+      'Les totaux du tableau de bord sont à jour. Actualisez pour réessayer le flux d’activité.';
+
+  @override
+  String get adminNoRecentActivity => 'Aucune activité récente';
+
+  @override
+  String get adminNoRecentActivityMessage =>
+      'Les totaux actuels sont confirmés. Les nouvelles activités du club apparaîtront ici.';
+
+  @override
+  String get adminWorkspaceUnavailable =>
+      'Espace d’administration indisponible';
+
+  @override
+  String get adminMobileDisabledMessage =>
+      'L’administration mobile est désactivée dans cette version contrôlée.';
+
+  @override
+  String get adminBackToSettings => 'Retour aux paramètres';
+
+  @override
+  String get adminWorkspaceOffline => 'Espace d’administration hors ligne';
+
+  @override
+  String get adminWorkspaceOfflineMessage =>
+      'Reconnectez-vous avant de charger les opérations privées du club.';
+
+  @override
+  String get adminAccessUnavailable => 'Accès administrateur indisponible';
+
+  @override
+  String get adminAccessUnavailableMessage =>
+      'Ce compte ne peut pas consulter l’espace d’administration actuel du club.';
+
+  @override
+  String get adminDataChanged => 'Données administratives modifiées';
+
+  @override
+  String get adminDataChangedMessage =>
+      'Actualisez avant de poursuivre les opérations actuelles du club.';
+
+  @override
+  String get adminSecurityTimeout => 'Le contrôle de sécurité a expiré';
+
+  @override
+  String get adminSecurityTimeoutMessage =>
+      'Aucune donnée administrative n’a été affichée. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get adminPrivateDataHiddenMessage =>
+      'Les données privées du club restent masquées. Réessayez.';
+
+  @override
+  String get adminRefreshingTitle =>
+      'Actualisation de l’espace d’administration';
+
+  @override
+  String get adminRefreshingMessage =>
+      'Le dernier tableau de bord confirmé reste affiché pendant la vérification des données actuelles.';
+
+  @override
+  String get adminRefreshTimedOut => 'L’actualisation a expiré';
+
+  @override
+  String get adminCurrentRefreshUnavailable =>
+      'Actualisation actuelle indisponible';
+
+  @override
+  String get adminLastConfirmedMessage =>
+      'Le dernier tableau de bord confirmé reste affiché. Les actions sont suspendues jusqu’à la réussite de l’actualisation.';
+
+  @override
+  String get adminAccessRequired => 'ACCÈS ADMINISTRATEUR REQUIS';
+
+  @override
+  String get adminAccessRequiredMessage =>
+      'Cet espace est réservé aux administrateurs de club vérifiés pour le club actif.';
+
+  @override
+  String get adminChallengesTitle => 'OPÉRATIONS DES DÉFIS';
+
+  @override
+  String get adminBack => 'Retour';
+
+  @override
+  String get adminChallengesLoadingTitle =>
+      'Chargement des opérations de défis';
+
+  @override
+  String get adminChallengesLoadingMessage =>
+      'Vérification des règlements en cours.';
+
+  @override
+  String get adminChallengesFilterLabel => 'Filtre d’état des défis';
+
+  @override
+  String get adminChallengesFilterAll => 'TOUS';
+
+  @override
+  String get adminChallengesFilterOpen => 'OUVERTS';
+
+  @override
+  String get adminChallengesFilterLocked => 'VERROUILLÉS';
+
+  @override
+  String get adminChallengesFilterSettled => 'RÉGLÉS';
+
+  @override
+  String get adminChallengesFilterVoid => 'ANNULÉS';
+
+  @override
+  String get adminChallengesEmptyTitle => 'Aucune opération de défi';
+
+  @override
+  String get adminChallengesEmptyAllMessage =>
+      'Aucun défi n’est actuellement en attente.';
+
+  @override
+  String adminChallengesEmptyFilteredMessage(String status) {
+    return 'Aucun défi $status n’est actuellement en attente.';
+  }
+
+  @override
+  String get adminChallengesRetryTitle => 'Réessayer le règlement ?';
+
+  @override
+  String adminChallengesRetryMessage(String home, String away) {
+    return 'Revérifiez $home contre $away. Ne réessayez pas avant la confirmation de l’état actualisé.';
+  }
+
+  @override
+  String get adminCancelUpper => 'ANNULER';
+
+  @override
+  String get adminRetryUpper => 'RÉESSAYER';
+
+  @override
+  String get adminChallengesSettlementPending =>
+      'Le règlement reste en attente. Vérifiez l’état actualisé.';
+
+  @override
+  String get adminChallengesSettlementRefreshed =>
+      'État du règlement actualisé.';
+
+  @override
+  String get adminChallengesUnavailable => 'Opérations de défis indisponibles';
+
+  @override
+  String get adminChallengesDisabledMessage =>
+      'Les contrôles de règlement des défis sont désactivés dans cette version contrôlée.';
+
+  @override
+  String get adminBackToAdmin => 'Retour à l’administration';
+
+  @override
+  String get adminChallengesOffline => 'Opérations de défis hors ligne';
+
+  @override
+  String get adminChallengesOfflineMessage =>
+      'Reconnectez-vous avant de charger les règlements privés.';
+
+  @override
+  String get adminChallengesAccessUnavailable => 'Accès aux défis indisponible';
+
+  @override
+  String get adminChallengesAccessUnavailableMessage =>
+      'Ce compte ne peut pas consulter ni relancer les règlements des défis du club.';
+
+  @override
+  String get adminChallengesStatusChanged => 'État du défi modifié';
+
+  @override
+  String get adminChallengesStatusChangedMessage =>
+      'Actualisez avant de poursuivre le règlement.';
+
+  @override
+  String get adminChallengesSecurityTimeoutMessage =>
+      'Aucune donnée de défi n’a été affichée. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get adminChallengesPrivateDataHidden =>
+      'Les données privées de règlement restent masquées. Réessayez.';
+
+  @override
+  String get adminChallengesRetryingTitle => 'Nouvelle tentative de règlement';
+
+  @override
+  String get adminChallengesRetryingMessage =>
+      'Les contrôles sont suspendus jusqu’à la confirmation du résultat actuel.';
+
+  @override
+  String get adminChallengesRefreshingTitle =>
+      'Actualisation des opérations de défis';
+
+  @override
+  String get adminChallengesRefreshingMessage =>
+      'La dernière liste confirmée reste affichée pendant la vérification de l’état actuel.';
+
+  @override
+  String get adminChallengesOutcomeUnconfirmed =>
+      'Le résultat de la nouvelle tentative n’est pas confirmé. Actualisez avant toute autre action.';
+
+  @override
+  String get adminChallengesLastConfirmedMessage =>
+      'La dernière liste confirmée reste affichée. Les actions sont suspendues jusqu’à la réussite de l’actualisation.';
+
+  @override
+  String get adminChallengesVoidReasonRecorded =>
+      'MOTIF D’ANNULATION ENREGISTRÉ';
+
+  @override
+  String get adminChallengesNoVoidReason => 'AUCUN MOTIF D’ANNULATION';
+
+  @override
+  String adminChallengesSettlementMode(String mode) {
+    return 'RÈGLEMENT $mode';
+  }
+
+  @override
+  String adminChallengesAuditState(String state) {
+    return 'AUDIT $state';
+  }
+
+  @override
+  String get adminChallengesRetryingAction => 'RÈGLEMENT EN COURS';
+
+  @override
+  String get adminChallengesRetryAction => 'RELANCER LE RÈGLEMENT';
+
+  @override
+  String get adminChallengesCreator => 'CRÉATEUR';
+
+  @override
+  String get adminChallengesPool => 'CAGNOTTE';
+
+  @override
+  String get adminChallengesParticipants => 'PARTICIPANTS';
+
+  @override
+  String adminVersus(String home, String away) {
+    return '$home contre $away';
+  }
+
+  @override
+  String adminMetricSemantic(String label, String value) {
+    return '$label $value';
+  }
+
+  @override
+  String get adminSettlementConfirmTitle => 'RÉGLER CE MATCH ?';
+
+  @override
+  String adminSettlementConfirmMessage(
+    String home,
+    int homeScore,
+    int awayScore,
+    String away,
+  ) {
+    return '$home $homeScore – $awayScore $away\n\nCette action évalue les marchés de pronostics et peut déclencher des récompenses. Confirmez uniquement à partir du résultat officiel.';
+  }
+
+  @override
+  String get adminSettlementSettleUpper => 'RÉGLER';
+
+  @override
+  String adminSettlementReceipt(String score, int markets, int won, int lost) {
+    return 'Réglé $score • $markets marchés • $won gagnés • $lost perdus';
+  }
+
+  @override
+  String get adminSettlementReviewOfficialResult =>
+      'Vérifiez le résultat officiel et réessayez.';
+
+  @override
+  String get adminSettlementNotConfirmed =>
+      'Le règlement du match n’a pas été confirmé.';
+
+  @override
+  String get adminSettlementTitle => 'RÉGLER LES MATCHS';
+
+  @override
+  String get adminSettlementLoadingTitle =>
+      'Chargement de l’espace de règlement';
+
+  @override
+  String get adminSettlementLoadingMessage =>
+      'Vérification des informations contrôlées du match.';
+
+  @override
+  String get adminSettlementFilterScheduled => 'PROGRAMMÉS';
+
+  @override
+  String get adminSettlementFilterFinished => 'TERMINÉS';
+
+  @override
+  String get adminSettlementFilterAll => 'TOUS';
+
+  @override
+  String get adminSettlementControlTitle => 'CONTRÔLE DU RÉSULTAT OFFICIEL';
+
+  @override
+  String get adminSettlementControlMessage =>
+      'Le règlement évalue les marchés de pronostics et peut déclencher des récompenses. Utilisez uniquement un score final officiel et confirmé.';
+
+  @override
+  String get adminSettlementEmptyTitle => 'Aucun match dans cette vue';
+
+  @override
+  String get adminSettlementEmptyMessage =>
+      'Changez de filtre ou attendez les informations contrôlées du match.';
+
+  @override
+  String get adminSettlementVersusShort => 'CONTRE';
+
+  @override
+  String get adminSettlementOpenHint =>
+      'Ouvrir la confirmation du résultat officiel';
+
+  @override
+  String get adminSettlementUnavailableHint => 'Règlement indisponible';
+
+  @override
+  String get adminSettlementEnterOfficialResult =>
+      'SAISIR LE RÉSULTAT OFFICIEL';
+
+  @override
+  String get adminSettlementPaused => 'RÈGLEMENT SUSPENDU';
+
+  @override
+  String get adminSettlementSettled => 'RÉGLÉ';
+
+  @override
+  String get adminSettlementNotSettleable => 'NON RÉGLABLE';
+
+  @override
+  String get adminSettlementManagementUnavailable =>
+      'Gestion des règlements indisponible';
+
+  @override
+  String get adminSettlementDisabledMessage =>
+      'Les contrôles de règlement sont désactivés dans cette version contrôlée.';
+
+  @override
+  String get adminSettlementWorkspaceOffline =>
+      'Espace de règlement hors ligne';
+
+  @override
+  String get adminSettlementWorkspaceOfflineMessage =>
+      'Reconnectez-vous avant de charger les informations privées du match.';
+
+  @override
+  String get adminSettlementAccessUnavailable =>
+      'Accès au règlement indisponible';
+
+  @override
+  String get adminSettlementAccessUnavailableMessage =>
+      'Ce compte ne peut pas consulter ni régler les matchs de pronostics.';
+
+  @override
+  String get adminSettlementResultChanged => 'Résultat du match modifié';
+
+  @override
+  String get adminSettlementResultChangedMessage =>
+      'Actualisez avant de confirmer un autre règlement.';
+
+  @override
+  String get adminSettlementSecurityTimeoutMessage =>
+      'Aucune information de match n’a été affichée. Vérifiez votre connexion.';
+
+  @override
+  String get adminSettlementWorkspaceUnavailable =>
+      'Espace de règlement indisponible';
+
+  @override
+  String get adminSettlementPrivateDataHidden =>
+      'Les informations privées du match restent masquées. Réessayez.';
+
+  @override
+  String get adminSettlementCheckingResults =>
+      'Vérification des résultats des matchs';
+
+  @override
+  String get adminSettlementCheckingResultsMessage =>
+      'Le dernier état confirmé reste affiché pendant la vérification des données actuelles.';
+
+  @override
+  String get adminSettlementOutcomeUnconfirmed =>
+      'Le dernier règlement n’est pas confirmé. Les contrôles restent suspendus jusqu’à la réussite de l’actualisation.';
+
+  @override
+  String get adminSettlementLastConfirmedMessage =>
+      'Les dernières informations de match confirmées restent visibles. Les contrôles sont suspendus.';
+
+  @override
+  String get adminSettlementFinalScoreValidation =>
+      'Saisissez des scores finaux compris entre 0 et 99.';
+
+  @override
+  String get adminSettlementHalfTimeValidation =>
+      'Saisissez les deux scores de mi-temps sans dépasser le score final.';
+
+  @override
+  String get adminSettlementHalfTimeScore => 'Score à la mi-temps';
+
+  @override
+  String get adminSettlementHideHalfTime =>
+      'Masquer les champs du score à la mi-temps';
+
+  @override
+  String get adminSettlementShowHalfTime =>
+      'Afficher les champs du score à la mi-temps';
+
+  @override
+  String get adminSettlementHalfTimeOptional =>
+      'SCORE À LA MI-TEMPS (FACULTATIF)';
+
+  @override
+  String adminSettlementHalfTimeLabel(String team) {
+    return '$team MT';
+  }
+
+  @override
+  String get adminSettlementReviewAction => 'Vérifier le règlement';
+
+  @override
+  String get adminStatusFinished => 'TERMINÉ';
+
+  @override
+  String get adminStatusScheduled => 'PROGRAMMÉ';
+
+  @override
+  String get adminStatusLive => 'EN DIRECT';
+
+  @override
+  String get adminStatusCancelled => 'ANNULÉ';
+
+  @override
+  String get adminStatusPostponed => 'REPORTÉ';
+
+  @override
+  String adminScore(int home, int away) {
+    return '$home – $away';
+  }
+
+  @override
+  String get adminFeatureDetailTitle => 'DÉTAIL DE LA FONCTIONNALITÉ';
+
+  @override
+  String get adminFeatureLoadingTitle =>
+      'Chargement des paramètres de la fonctionnalité';
+
+  @override
+  String get adminFeatureLoadingMessage =>
+      'Vérification des canaux contrôlés et des règles d’accès.';
+
+  @override
+  String get adminFeatureNotFound => 'Fonctionnalité introuvable';
+
+  @override
+  String get adminFeatureNotFoundMessage =>
+      'Aucune fonctionnalité confirmée ne correspond à cette route contrôlée.';
+
+  @override
+  String get adminBackToFeatures => 'Retour aux fonctionnalités';
+
+  @override
+  String get adminFeatureGlobalState => 'ÉTAT GLOBAL';
+
+  @override
+  String adminFeatureDisableTooltip(String feature) {
+    return 'Désactiver $feature';
+  }
+
+  @override
+  String adminFeatureEnableTooltip(String feature) {
+    return 'Activer $feature';
+  }
+
+  @override
+  String adminFeatureStateSemantic(String feature, String state) {
+    return '$feature est $state';
+  }
+
+  @override
+  String get adminFeatureChangesGlobalState =>
+      'Modifie l’état global de la fonctionnalité';
+
+  @override
+  String get adminFeatureEnabled => 'Activée';
+
+  @override
+  String get adminFeatureDisabled => 'Désactivée';
+
+  @override
+  String get adminFeatureTapDisable =>
+      'Touchez pour désactiver cette fonctionnalité globalement';
+
+  @override
+  String get adminFeatureTapEnable =>
+      'Touchez pour activer cette fonctionnalité globalement';
+
+  @override
+  String get adminFeatureVisibility => 'VISIBILITÉ';
+
+  @override
+  String get adminFeatureVisibilityVisible => 'VISIBLE';
+
+  @override
+  String get adminFeatureVisibilityHidden => 'MASQUÉE';
+
+  @override
+  String get adminFeatureVisibilityMaintenance => 'MAINTENANCE';
+
+  @override
+  String get adminFeatureChannelConfig => 'CONFIGURATION DES CANAUX';
+
+  @override
+  String get adminFeatureNoChannelOverrides => 'Aucune substitution de canal';
+
+  @override
+  String get adminFeatureNoChannelOverridesMessage =>
+      'Cette fonctionnalité utilise son état global confirmé.';
+
+  @override
+  String get adminFeatureScheduling => 'PLANIFICATION';
+
+  @override
+  String get adminFeatureAccessRules => 'RÈGLES D’ACCÈS';
+
+  @override
+  String get adminFeatureAuthRequired => 'Authentification requise';
+
+  @override
+  String get adminFeatureAuthRequiredMessage =>
+      'Les utilisateurs doivent se connecter avant d’accéder à cette fonctionnalité.';
+
+  @override
+  String get adminFeatureSettingsUnavailable =>
+      'Paramètres de fonctionnalité indisponibles';
+
+  @override
+  String get adminFeatureEditingDisabled =>
+      'La modification des fonctionnalités est désactivée dans cette version contrôlée.';
+
+  @override
+  String get adminFeatureSettingsOffline =>
+      'Paramètres de fonctionnalité hors ligne';
+
+  @override
+  String get adminFeatureSettingsOfflineMessage =>
+      'Reconnectez-vous avant de charger la configuration privée.';
+
+  @override
+  String get adminFeatureAccessUnavailable =>
+      'Accès à la fonctionnalité indisponible';
+
+  @override
+  String get adminFeatureAccessUnavailableMessage =>
+      'Ce compte ne peut pas consulter ni modifier les paramètres de la fonctionnalité.';
+
+  @override
+  String get adminFeatureSettingsChanged =>
+      'Paramètres de fonctionnalité modifiés';
+
+  @override
+  String get adminFeatureSettingsChangedMessage =>
+      'Actualisez avant d’effectuer une autre modification.';
+
+  @override
+  String get adminFeatureSecurityTimeoutMessage =>
+      'Aucun paramètre de fonctionnalité n’a été affiché. Vérifiez votre connexion.';
+
+  @override
+  String get adminFeaturePrivateDataHidden =>
+      'Les paramètres privés restent masqués. Réessayez.';
+
+  @override
+  String get adminFeatureCheckingTitle =>
+      'Vérification des paramètres de fonctionnalité';
+
+  @override
+  String get adminFeatureCheckingMessage =>
+      'Le dernier état confirmé reste affiché pendant la vérification des données actuelles.';
+
+  @override
+  String get adminFeatureOutcomeUnconfirmed =>
+      'La dernière modification n’est pas confirmée. Les contrôles restent suspendus jusqu’à la réussite de l’actualisation.';
+
+  @override
+  String get adminFeatureLastConfirmed =>
+      'Les derniers paramètres confirmés restent visibles. Les contrôles sont suspendus.';
+
+  @override
+  String get adminFeatureChannelMobile => 'MOBILE';
+
+  @override
+  String get adminFeatureChannelWeb => 'WEB';
+
+  @override
+  String get adminFeatureChannelEnabled => 'Activée';
+
+  @override
+  String get adminFeatureChannelEnabledMessage =>
+      'La fonctionnalité est active sur ce canal.';
+
+  @override
+  String get adminFeatureChannelVisible => 'Visible';
+
+  @override
+  String get adminFeatureChannelVisibleMessage =>
+      'La fonctionnalité peut être affichée sur ce canal.';
+
+  @override
+  String get adminFeatureShowInNavigation => 'Afficher dans la navigation';
+
+  @override
+  String get adminFeatureShowInNavigationMessage =>
+      'Inclure cette fonctionnalité dans la navigation du canal.';
+
+  @override
+  String get adminFeatureShowOnHome => 'Afficher sur l’accueil';
+
+  @override
+  String get adminFeatureShowOnHomeMessage =>
+      'Inclure cette fonctionnalité sur l’écran d’accueil du canal.';
+
+  @override
+  String get adminFeatureAvailableFrom => 'Disponible à partir de';
+
+  @override
+  String get adminFeatureAvailableUntil => 'Disponible jusqu’au';
+
+  @override
+  String get adminFeatureClearSchedule => 'Effacer la planification';
+
+  @override
+  String get adminFeatureNotSet => 'Non défini';
+
+  @override
+  String adminFeatureSetTooltip(String label) {
+    return 'Définir $label';
+  }
+
+  @override
+  String adminFeatureDateSemantic(String label, String value) {
+    return '$label : $value';
+  }
+
+  @override
+  String get adminFeatureOpenDateTime =>
+      'Ouvre la sélection de la date et de l’heure';
+
+  @override
+  String get adminMatchesTitle => 'MATCHS';
+
+  @override
+  String get adminMatchesLoadingTitle => 'Chargement de l’espace des matchs';
+
+  @override
+  String get adminMatchesLoadingMessage =>
+      'Vérification des informations contrôlées des matchs.';
+
+  @override
+  String get adminMatchesDescription =>
+      'Gérez les matchs, leur mise en vente, l’allocation des billets et les scores en direct à partir de données confirmées.';
+
+  @override
+  String get adminMatchesFixtures => 'MATCHS';
+
+  @override
+  String get adminMatchesOnSale => 'EN VENTE';
+
+  @override
+  String get adminMatchesStatus => 'ÉTAT';
+
+  @override
+  String get adminMatchesFilterAll => 'TOUS';
+
+  @override
+  String get adminMatchesFilterLive => 'EN DIRECT';
+
+  @override
+  String get adminMatchesFilterUpcoming => 'À VENIR';
+
+  @override
+  String get adminMatchesFilterOnSale => 'EN VENTE';
+
+  @override
+  String get adminMatchesFilterCompleted => 'TERMINÉS';
+
+  @override
+  String get adminMatchesNoneConfigured => 'Aucun match configuré';
+
+  @override
+  String get adminMatchesNoneMatch => 'Aucun match correspondant';
+
+  @override
+  String get adminMatchesNoneConfiguredMessage =>
+      'Un match confirmé du club doit exister avant que cet espace puisse déterminer son périmètre partenaire.';
+
+  @override
+  String get adminMatchesNoneMatchMessage =>
+      'Choisissez un autre filtre d’état.';
+
+  @override
+  String get adminMatchesCreate => 'Créer un match';
+
+  @override
+  String get adminMatchesCreationPaused =>
+      'La création reste suspendue jusqu’à la disponibilité d’un périmètre partenaire confirmé.';
+
+  @override
+  String get adminMatchesCreated => 'Match créé avec succès.';
+
+  @override
+  String get adminMatchesUpdated => 'Match mis à jour avec succès.';
+
+  @override
+  String get adminMatchesManagementUnavailable =>
+      'Gestion des matchs indisponible';
+
+  @override
+  String get adminMatchesDisabledMessage =>
+      'Les contrôles des matchs sont désactivés dans cette version contrôlée.';
+
+  @override
+  String get adminMatchesWorkspaceOffline => 'Espace des matchs hors ligne';
+
+  @override
+  String get adminMatchesWorkspaceOfflineMessage =>
+      'Reconnectez-vous avant de charger les informations privées des matchs.';
+
+  @override
+  String get adminMatchesAccessUnavailable => 'Accès aux matchs indisponible';
+
+  @override
+  String get adminMatchesAccessUnavailableMessage =>
+      'Ce compte ne peut pas consulter ni modifier les informations des matchs.';
+
+  @override
+  String get adminMatchesInformationChanged =>
+      'Informations du match modifiées';
+
+  @override
+  String get adminMatchesInformationChangedMessage =>
+      'Actualisez avant d’effectuer une autre modification.';
+
+  @override
+  String get adminMatchesSecurityTimeoutMessage =>
+      'Aucune information de match n’a été affichée. Vérifiez votre connexion.';
+
+  @override
+  String get adminMatchesWorkspaceUnavailable =>
+      'Espace des matchs indisponible';
+
+  @override
+  String get adminMatchesPrivateDataHidden =>
+      'Les informations privées du match restent masquées. Réessayez.';
+
+  @override
+  String get adminMatchesCheckingTitle =>
+      'Vérification des informations du match';
+
+  @override
+  String get adminMatchesCheckingMessage =>
+      'Le dernier état confirmé reste affiché pendant la vérification des données actuelles.';
+
+  @override
+  String get adminMatchesOutcomeUnconfirmed =>
+      'La dernière modification n’est pas confirmée. Les contrôles restent suspendus jusqu’à la réussite de l’actualisation.';
+
+  @override
+  String get adminMatchesLastConfirmed =>
+      'Les dernières informations confirmées du match restent visibles. Les contrôles sont suspendus.';
+
+  @override
+  String adminMatchesOpenTooltip(String home, String away) {
+    return 'Ouvrir $home contre $away';
+  }
+
+  @override
+  String adminMatchesFixtureSemantic(String home, String away) {
+    return 'Match $home contre $away';
+  }
+
+  @override
+  String get adminMatchesOpenHint => 'Ouvre les paramètres contrôlés du match';
+
+  @override
+  String adminMatchesCompetitionVenue(String competition, String venue) {
+    return '$competition • $venue';
+  }
+
+  @override
+  String adminMatchesDateKickoff(String date, String time) {
+    return '$date • $time';
+  }
+
+  @override
+  String adminMatchesPrices(String symbol, String general, String vip) {
+    return 'GÉNÉRAL $symbol $general • VIP $symbol $vip';
+  }
+
+  @override
+  String adminMatchesScore(int home, int away, String minute) {
+    return 'Score $home-$away$minute';
+  }
+
+  @override
+  String adminMatchesAllocation(int percent, int sold, int capacity) {
+    return '$percent % alloués • $sold / $capacity billets';
+  }
+
+  @override
+  String get adminMatchesEditOnSale => 'MODIFIER LE MATCH EN VENTE';
+
+  @override
+  String get adminMatchesEdit => 'MODIFIER LE MATCH';
+
+  @override
+  String get adminStatusHalfTime => 'MI-TEMPS';
+
+  @override
+  String get adminStatusFullTime => 'TERMINÉ';
+
+  @override
+  String get adminStatusUpcoming => 'À VENIR';
+
+  @override
+  String adminMatchesLiveMinute(int minute) {
+    return ' • ${minute}e';
+  }
+
+  @override
+  String get adminMatchSaveNotConfirmed =>
+      'Le match n’a pas été enregistré. Vérifiez l’état confirmé de l’espace.';
+
+  @override
+  String get adminMatchReviewFields =>
+      'Vérifiez tous les champs du match et saisissez des valeurs valides.';
+
+  @override
+  String get adminMatchSaveFailedRefresh =>
+      'Le match n’a pas été enregistré. Actualisez puis réessayez.';
+
+  @override
+  String get adminMatchCreateTitle => 'CRÉER UN MATCH';
+
+  @override
+  String get adminMatchUpdateTitle => 'METTRE À JOUR LE MATCH';
+
+  @override
+  String get adminMatchHomeTeam => 'Équipe à domicile';
+
+  @override
+  String get adminMatchAwayTeam => 'Équipe à l’extérieur';
+
+  @override
+  String get adminMatchCompetition => 'Compétition';
+
+  @override
+  String get adminMatchVenue => 'Lieu';
+
+  @override
+  String adminMatchGeneralPrice(String symbol) {
+    return 'Général $symbol';
+  }
+
+  @override
+  String adminMatchVipPrice(String symbol) {
+    return 'VIP $symbol';
+  }
+
+  @override
+  String get adminMatchCapacity => 'Capacité';
+
+  @override
+  String get adminMatchTicketsOnSale => 'Billets en vente';
+
+  @override
+  String get adminMatchStatus => 'État du match';
+
+  @override
+  String get adminMatchStatusScheduled => 'Programmé';
+
+  @override
+  String get adminMatchStatusLive => 'En direct';
+
+  @override
+  String get adminMatchStatusHalfTime => 'Mi-temps';
+
+  @override
+  String get adminMatchStatusFullTime => 'Terminé';
+
+  @override
+  String get adminMatchStatusPostponed => 'Reporté';
+
+  @override
+  String get adminMatchStatusCancelled => 'Annulé';
+
+  @override
+  String get adminMatchHomeScore => 'Score à domicile';
+
+  @override
+  String get adminMatchAwayScore => 'Score à l’extérieur';
+
+  @override
+  String get adminMatchLiveMinute => 'Minute de jeu';
+
+  @override
+  String get adminMatchSummary => 'Résumé du match / note en direct';
+
+  @override
+  String get adminMatchSave => 'Enregistrer le match';
+
+  @override
+  String get adminMatchUpdate => 'Mettre à jour le match';
+
+  @override
+  String get adminFeatureManagerTitle => 'GESTIONNAIRE DE FONCTIONNALITÉS';
+
+  @override
+  String get adminFeatureRegistryLoading =>
+      'Chargement du registre des fonctionnalités';
+
+  @override
+  String get adminFeatureRegistryLoadingMessage =>
+      'Vérification de la configuration contrôlée des fonctionnalités.';
+
+  @override
+  String get adminFeatureManagerDescription =>
+      'Contrôlez la disponibilité des fonctionnalités du club avec une configuration confirmée et bornée.';
+
+  @override
+  String get adminFeatureRegistered => 'ENREGISTRÉES';
+
+  @override
+  String get adminFeatureEnabledUpper => 'ACTIVÉES';
+
+  @override
+  String get adminFeatureDisabledUpper => 'DÉSACTIVÉES';
+
+  @override
+  String get adminFeatureStatus => 'ÉTAT';
+
+  @override
+  String get adminFeatureFilterAll => 'TOUTES';
+
+  @override
+  String get adminFeatureNoneConfigured => 'Aucune fonctionnalité configurée';
+
+  @override
+  String get adminFeatureNoneMatch => 'Aucune fonctionnalité correspondante';
+
+  @override
+  String get adminFeatureNoneConfiguredMessage =>
+      'La configuration confirmée des fonctionnalités apparaîtra ici.';
+
+  @override
+  String get adminFeatureNoneMatchMessage =>
+      'Choisissez un autre filtre d’état.';
+
+  @override
+  String get adminFeatureManagementUnavailable =>
+      'Gestion des fonctionnalités indisponible';
+
+  @override
+  String get adminFeatureControlsDisabled =>
+      'Les contrôles de fonctionnalité sont désactivés dans cette version contrôlée.';
+
+  @override
+  String get adminFeatureRegistryOffline =>
+      'Registre des fonctionnalités hors ligne';
+
+  @override
+  String get adminFeatureConfigurationAccessMessage =>
+      'Ce compte ne peut pas consulter ni modifier la configuration des fonctionnalités.';
+
+  @override
+  String get adminFeatureConfigurationChanged =>
+      'Configuration des fonctionnalités modifiée';
+
+  @override
+  String get adminFeatureConfigurationChangedMessage =>
+      'Actualisez avant d’effectuer une autre modification.';
+
+  @override
+  String get adminFeatureConfigurationSecurityMessage =>
+      'Aucune configuration de fonctionnalité n’a été affichée. Vérifiez votre connexion.';
+
+  @override
+  String get adminFeatureRegistryUnavailable =>
+      'Registre des fonctionnalités indisponible';
+
+  @override
+  String get adminFeatureConfigurationHidden =>
+      'La configuration privée reste masquée. Réessayez.';
+
+  @override
+  String get adminFeatureConfigurationChecking =>
+      'Vérification de la configuration des fonctionnalités';
+
+  @override
+  String get adminFeatureConfigurationLastConfirmed =>
+      'La dernière configuration confirmée reste visible. Les contrôles sont suspendus.';
+
+  @override
+  String adminFeatureOpenTooltip(String feature) {
+    return 'Ouvrir $feature';
+  }
+
+  @override
+  String adminFeatureSettingsSemantic(String feature) {
+    return 'Paramètres de la fonctionnalité $feature';
+  }
+
+  @override
+  String get adminFeatureOpenSettingsHint =>
+      'Ouvre les paramètres contrôlés de la fonctionnalité';
+
+  @override
+  String adminFeatureChangeVisibilityTooltip(String feature) {
+    return 'Modifier la visibilité de $feature';
+  }
+
+  @override
+  String get adminFeatureChangeVisibility => 'Modifier la visibilité';
+
+  @override
+  String get adminCompetitionsTitle => 'COMPÉTITIONS';
+
+  @override
+  String get adminCompetitionsAdd => 'Ajouter une compétition';
+
+  @override
+  String get adminCompetitionsActionsUnavailable =>
+      'Actions de compétition indisponibles';
+
+  @override
+  String get adminCompetitionsLoading => 'Chargement des compétitions';
+
+  @override
+  String get adminCompetitionsLoadingMessage =>
+      'Vérification de l’espace contrôlé des compétitions.';
+
+  @override
+  String get adminCompetitionsDescription =>
+      'Gérez les compétitions et les saisons accessibles au moteur de pronostics.';
+
+  @override
+  String get adminCompetitionsNoneConfigured => 'Aucune compétition configurée';
+
+  @override
+  String get adminCompetitionsNoneMatch => 'Aucune compétition correspondante';
+
+  @override
+  String get adminCompetitionsNoneConfiguredMessage =>
+      'Créez la première compétition contrôlée lorsque l’accès est disponible.';
+
+  @override
+  String get adminCompetitionsNoneMatchMessage =>
+      'Choisissez une autre région ou un autre type de compétition.';
+
+  @override
+  String get adminCompetitionsManagementUnavailable =>
+      'Gestion des compétitions indisponible';
+
+  @override
+  String get adminCompetitionsControlsDisabled =>
+      'Les contrôles de compétition sont désactivés pour cette version contrôlée.';
+
+  @override
+  String get adminCompetitionsOffline => 'Espace des compétitions hors ligne';
+
+  @override
+  String get adminCompetitionsOfflineMessage =>
+      'Reconnectez-vous avant de charger les données privées des compétitions.';
+
+  @override
+  String get adminCompetitionsAccessUnavailable =>
+      'Accès aux compétitions indisponible';
+
+  @override
+  String get adminCompetitionsAccessMessage =>
+      'Ce compte ne peut pas consulter ni modifier la configuration des compétitions.';
+
+  @override
+  String get adminCompetitionsDataChanged => 'Données de compétition modifiées';
+
+  @override
+  String get adminCompetitionsDataChangedMessage =>
+      'Actualisez avant de poursuivre le travail sur les compétitions.';
+
+  @override
+  String get adminCompetitionsSecurityMessage =>
+      'Aucune donnée de compétition n’a été affichée. Vérifiez votre connexion.';
+
+  @override
+  String get adminCompetitionsWorkspaceUnavailable =>
+      'Espace des compétitions indisponible';
+
+  @override
+  String get adminCompetitionsHiddenMessage =>
+      'Les données privées des compétitions restent masquées. Réessayez.';
+
+  @override
+  String get adminCompetitionsUpdating =>
+      'Mise à jour de l’espace des compétitions';
+
+  @override
+  String get adminCompetitionsUpdatingMessage =>
+      'Les contrôles sont suspendus jusqu’à la confirmation du résultat actuel.';
+
+  @override
+  String get adminCompetitionsRefreshing => 'Actualisation des compétitions';
+
+  @override
+  String get adminCompetitionsRefreshingMessage =>
+      'Affichage des dernières données confirmées pendant la vérification.';
+
+  @override
+  String get adminCompetitionsCurrentRefreshUnavailable =>
+      'Actualisation actuelle indisponible';
+
+  @override
+  String get adminCompetitionsOutcomeUnconfirmed =>
+      'Le résultat de la mise à jour n’est pas confirmé. Actualisez avant une autre action.';
+
+  @override
+  String get adminCompetitionsLastConfirmed =>
+      'Les dernières données confirmées sont affichées. Les actions sont suspendues jusqu’à l’actualisation.';
+
+  @override
+  String get adminCompetitionCreated => 'Compétition créée';
+
+  @override
+  String get adminCompetitionUpdated => 'Compétition mise à jour';
+
+  @override
+  String get adminCompetitionActivateQuestion => 'ACTIVER LA COMPÉTITION ?';
+
+  @override
+  String get adminCompetitionDeactivateQuestion => 'DÉSACTIVER ?';
+
+  @override
+  String adminCompetitionActivateMessage(String competition) {
+    return '$competition sera accessible aux parcours de pronostics configurés.';
+  }
+
+  @override
+  String adminCompetitionDeactivateMessage(String competition) {
+    return '$competition ne sera plus accessible aux parcours de pronostics configurés.';
+  }
+
+  @override
+  String get adminActivateUpper => 'ACTIVER';
+
+  @override
+  String get adminDeactivateUpper => 'DÉSACTIVER';
+
+  @override
+  String get adminCompetitionActivated => 'Compétition activée';
+
+  @override
+  String get adminCompetitionDeactivated => 'Compétition désactivée';
+
+  @override
+  String get adminCompetitionsTotal => 'TOTAL';
+
+  @override
+  String get adminCompetitionsActive => 'ACTIVE';
+
+  @override
+  String get adminCompetitionsInactive => 'INACTIVE';
+
+  @override
+  String get adminCompetitionFilters => 'Filtres des compétitions';
+
+  @override
+  String get adminCompetitionRegion => 'RÉGION';
+
+  @override
+  String get adminCompetitionKind => 'TYPE';
+
+  @override
+  String get adminCompetitionSeasons => 'SAISONS';
+
+  @override
+  String get adminEditUpper => 'MODIFIER';
+
+  @override
+  String get adminCompetitionFilterAll => 'TOUTES';
+
+  @override
+  String get adminCompetitionRegionAfrica => 'AFRIQUE';
+
+  @override
+  String get adminCompetitionRegionEurope => 'EUROPE';
+
+  @override
+  String get adminCompetitionRegionInternational => 'INTERNATIONAL';
+
+  @override
+  String get adminCompetitionRegionGlobal => 'MONDIAL';
+
+  @override
+  String get adminCompetitionKindLeague => 'CHAMPIONNAT';
+
+  @override
+  String get adminCompetitionKindCup => 'COUPE';
+
+  @override
+  String get adminCompetitionKindTournament => 'TOURNOI';
+
+  @override
+  String get adminCompetitionEdit => 'MODIFIER LA COMPÉTITION';
+
+  @override
+  String get adminCompetitionAdd => 'AJOUTER UNE COMPÉTITION';
+
+  @override
+  String get adminCompetitionName => 'Nom';
+
+  @override
+  String get adminCompetitionShortName => 'Nom court';
+
+  @override
+  String get adminCompetitionSlug => 'Identifiant';
+
+  @override
+  String get adminCompetitionSlugHint => 'ex. championnat-national';
+
+  @override
+  String get adminCompetitionOrganizer => 'Organisateur';
+
+  @override
+  String get adminOptional => 'Facultatif';
+
+  @override
+  String get adminCompetitionCountryCode => 'Code pays';
+
+  @override
+  String get adminCompetitionCountryCodeHint => 'RW';
+
+  @override
+  String get adminCompetitionCountryName => 'Nom du pays';
+
+  @override
+  String get adminCompetitionCountryNameHint => 'Rwanda';
+
+  @override
+  String get adminCompetitionFormatNotes => 'Notes sur le format';
+
+  @override
+  String get adminCompetitionValidationMessage =>
+      'Vérifiez les noms requis, l’identifiant et le code pays.';
+
+  @override
+  String get adminCompetitionAvailable =>
+      'Accessible aux parcours de pronostics configurés';
+
+  @override
+  String get adminCompetitionUnavailable =>
+      'Indisponible pour les parcours de pronostics';
+
+  @override
+  String get adminSaveChanges => 'Enregistrer les modifications';
+
+  @override
+  String get adminCreateCompetition => 'Créer la compétition';
+
+  @override
+  String get adminSeasonAdd => 'Ajouter une saison';
+
+  @override
+  String get adminSeasonActionsUnavailable => 'Actions de saison indisponibles';
+
+  @override
+  String get adminSeasonNoneConfigured => 'Aucune saison configurée';
+
+  @override
+  String get adminSeasonNoneConfiguredMessage =>
+      'Ajoutez la première saison contrôlée lorsque l’accès est disponible.';
+
+  @override
+  String get adminSeasonCreated => 'Saison créée';
+
+  @override
+  String get adminSeasonActivateQuestion => 'ACTIVER LA SAISON ?';
+
+  @override
+  String get adminSeasonDeactivateQuestion => 'DÉSACTIVER LA SAISON ?';
+
+  @override
+  String adminSeasonAvailabilityMessage(String season, String availability) {
+    return '$season sera $availability pour les parcours de compétition configurés.';
+  }
+
+  @override
+  String get adminAvailable => 'disponible';
+
+  @override
+  String get adminUnavailable => 'indisponible';
+
+  @override
+  String get adminSeasonActivated => 'Saison activée';
+
+  @override
+  String get adminSeasonDeactivated => 'Saison désactivée';
+
+  @override
+  String get adminSeasonActivate => 'Activer la saison';
+
+  @override
+  String get adminSeasonDeactivate => 'Désactiver la saison';
+
+  @override
+  String get adminSeasonValidationMessage =>
+      'Vérifiez l’identifiant, le libellé et les années de la saison.';
+
+  @override
+  String get adminSeasonAddUpper => 'AJOUTER UNE SAISON';
+
+  @override
+  String get adminSeasonSlugHint => 'ex. championnat-2026';
+
+  @override
+  String get adminSeasonLabel => 'Libellé';
+
+  @override
+  String get adminSeasonLabelHint => 'ex. 2025/2026';
+
+  @override
+  String get adminSeasonYearStart => 'Année de début';
+
+  @override
+  String get adminSeasonYearEnd => 'Année de fin';
+
+  @override
+  String get adminCreateUpper => 'CRÉER';
+
+  @override
+  String get adminSeasonStatusPlanned => 'PLANIFIÉE';
+
+  @override
+  String get adminSeasonStatusActive => 'ACTIVE';
+
+  @override
+  String get adminSeasonStatusFinished => 'TERMINÉE';
+
+  @override
+  String get adminSeasonStatusArchived => 'ARCHIVÉE';
+
+  @override
+  String get adminNotificationSendTitle => 'ENVOYER UNE NOTIFICATION';
+
+  @override
+  String get adminNotificationLoading =>
+      'Chargement de l’espace des notifications';
+
+  @override
+  String get adminNotificationLoadingMessage =>
+      'Vérification des informations de livraison contrôlées.';
+
+  @override
+  String get adminNotificationDeliveryStatus => 'ÉTAT DE LIVRAISON';
+
+  @override
+  String get adminNotificationDeliveryStatusMessage =>
+      'Livraison via les fonctions Edge. Les envois planifiés sont déclenchés automatiquement.';
+
+  @override
+  String get adminNotificationAudience => 'PUBLIC';
+
+  @override
+  String get adminNotificationAudienceAllFans => 'TOUS LES SUPPORTERS';
+
+  @override
+  String get adminNotificationAudienceByTier => 'PAR NIVEAU';
+
+  @override
+  String get adminNotificationAudienceByGroup => 'PAR GROUPE';
+
+  @override
+  String get adminNotificationTierFan => 'FAN';
+
+  @override
+  String get adminNotificationTierBronze => 'BRONZE';
+
+  @override
+  String get adminNotificationTierGold => 'OR';
+
+  @override
+  String get adminNotificationTierPlatinum => 'PLATINE';
+
+  @override
+  String get adminNotificationSelectGroup => 'Sélectionner un groupe';
+
+  @override
+  String get adminNotificationTitleLabel => 'Titre de la notification';
+
+  @override
+  String get adminNotificationBodyLabel => 'Corps du message';
+
+  @override
+  String adminNotificationCharacterCount(int count) {
+    return '$count caractères';
+  }
+
+  @override
+  String get adminNotificationImageUrl => 'URL d’image facultative';
+
+  @override
+  String get adminNotificationSchedule => 'PLANIFIER';
+
+  @override
+  String get adminNotificationSendNow => 'ENVOYER MAINTENANT';
+
+  @override
+  String get adminNotificationPickDateTime => 'Choisir la date et l’heure';
+
+  @override
+  String get adminNotificationScheduleAction => 'Planifier la notification';
+
+  @override
+  String get adminNotificationSendAction => 'Envoyer la notification';
+
+  @override
+  String get adminNotificationCopyPayload => 'COPIER LES DONNÉES';
+
+  @override
+  String get adminNotificationSendHistory => 'HISTORIQUE DES ENVOIS';
+
+  @override
+  String get adminNotificationHistoryEmpty =>
+      'Aucun historique de notification';
+
+  @override
+  String get adminNotificationHistoryEmptyMessage =>
+      'Les livraisons confirmées apparaîtront ici après une demande.';
+
+  @override
+  String get adminNotificationManagementUnavailable =>
+      'Gestion des notifications indisponible';
+
+  @override
+  String get adminNotificationControlsDisabled =>
+      'Les contrôles de notification sont désactivés pour cette version contrôlée.';
+
+  @override
+  String get adminNotificationWorkspaceOffline =>
+      'Espace des notifications hors ligne';
+
+  @override
+  String get adminNotificationOfflineMessage =>
+      'Reconnectez-vous avant de charger les informations privées de livraison.';
+
+  @override
+  String get adminNotificationAccessUnavailable =>
+      'Accès aux notifications indisponible';
+
+  @override
+  String get adminNotificationAccessMessage =>
+      'Ce compte ne peut pas consulter ni envoyer de notifications.';
+
+  @override
+  String get adminNotificationDataChanged =>
+      'Informations de livraison modifiées';
+
+  @override
+  String get adminNotificationDataChangedMessage =>
+      'Actualisez avant une autre demande de notification.';
+
+  @override
+  String get adminNotificationSecurityMessage =>
+      'Aucune information de livraison n’a été affichée. Vérifiez votre connexion.';
+
+  @override
+  String get adminNotificationWorkspaceUnavailable =>
+      'Espace des notifications indisponible';
+
+  @override
+  String get adminNotificationHiddenMessage =>
+      'Les informations privées de livraison restent masquées. Réessayez.';
+
+  @override
+  String get adminNotificationChecking =>
+      'Vérification des informations de livraison';
+
+  @override
+  String get adminNotificationCheckingMessage =>
+      'Le dernier état confirmé reste affiché pendant la vérification.';
+
+  @override
+  String get adminNotificationOutcomeUnconfirmed =>
+      'La dernière demande n’est pas confirmée. Les contrôles restent suspendus jusqu’à l’actualisation.';
+
+  @override
+  String get adminNotificationLastConfirmed =>
+      'Les dernières informations confirmées restent visibles. Les contrôles sont suspendus.';
+
+  @override
+  String get adminNotificationValidationTitleBody =>
+      'Ajoutez d’abord un titre et un corps de message.';
+
+  @override
+  String get adminNotificationValidationTier =>
+      'Choisissez d’abord le niveau cible.';
+
+  @override
+  String get adminNotificationValidationGroup =>
+      'Choisissez d’abord le groupe cible.';
+
+  @override
+  String get adminNotificationValidationSchedule =>
+      'Choisissez d’abord la date et l’heure de livraison.';
+
+  @override
+  String get adminNotificationQueued =>
+      'Notification mise en file d’attente pour l’envoi planifié.';
+
+  @override
+  String adminNotificationScheduledFor(String date) {
+    return 'Notification planifiée pour $date.';
+  }
+
+  @override
+  String adminNotificationSentSummary(int requested, int sent) {
+    return 'Envoyée à $requested supporters. $sent livrées.';
+  }
+
+  @override
+  String adminNotificationPartialSummary(int sent, int failed) {
+    return 'Partiel : $sent livrées, $failed échouées.';
+  }
+
+  @override
+  String get adminNotificationDeliveryFailed =>
+      'Échec de la livraison de la notification.';
+
+  @override
+  String get adminNotificationRequestRecorded =>
+      'Demande de notification enregistrée.';
+
+  @override
+  String adminNotificationHistoryMetrics(int requested, int sent, int failed) {
+    return ' • $requested cibles • $sent envoyées • $failed échouées';
+  }
+
+  @override
+  String get adminNotificationFieldsInvalid =>
+      'Vérifiez les champs de notification et réessayez.';
+
+  @override
+  String get adminNotificationRequestUnconfirmed =>
+      'La demande de notification n’a pas été confirmée.';
+
+  @override
+  String get adminNotificationPayloadCopied =>
+      'Données copiées dans le presse-papiers.';
+
+  @override
+  String get adminNotificationTierNotSelected => 'Niveau non sélectionné';
+
+  @override
+  String adminNotificationTierPreview(String tier) {
+    return 'Niveau • $tier';
+  }
+
+  @override
+  String get adminNotificationGroupNotSelected => 'Groupe non sélectionné';
+
+  @override
+  String adminNotificationGroupPreview(String group) {
+    return 'Groupe • $group';
+  }
+
+  @override
+  String get adminNotificationAllSupporters => 'Tous les supporters';
+
+  @override
+  String get adminNotificationPreview => 'APERÇU';
+
+  @override
+  String get adminNotificationPreviewBody =>
+      'L’aperçu de votre message apparaît ici.';
+
+  @override
+  String get adminNotificationStatusScheduled => 'PLANIFIÉE';
+
+  @override
+  String get adminNotificationStatusSent => 'ENVOYÉE';
+
+  @override
+  String get adminNotificationStatusPartial => 'PARTIELLE';
+
+  @override
+  String get adminNotificationStatusFailed => 'ÉCHEC';
+
+  @override
+  String get adminContributionsTitle => 'CONTRIBUTIONS';
+
+  @override
+  String get adminContributionsLoading => 'Chargement des contributions';
+
+  @override
+  String get adminContributionsLoadingMessage =>
+      'Vérification du suivi contrôlé des contributions.';
+
+  @override
+  String get adminContributionsDescription =>
+      'Consultez les totaux des groupes du club sans exposer les identifiants des supporters ou des paiements.';
+
+  @override
+  String get adminContributionsMonthlyTotal => 'TOTAL ENREGISTRÉ CE MOIS';
+
+  @override
+  String adminContributionsSummary(int groups, int records) {
+    return '$groups groupes • $records données limitées';
+  }
+
+  @override
+  String get adminContributionsNoGroups => 'Aucun groupe de contribution';
+
+  @override
+  String get adminContributionsNoMatch => 'Aucun groupe correspondant';
+
+  @override
+  String get adminContributionsNoGroupsMessage =>
+      'Les groupes de contribution confirmés du club apparaîtront ici.';
+
+  @override
+  String get adminContributionsNoMatchMessage =>
+      'Choisissez un autre filtre de groupe.';
+
+  @override
+  String get adminContributionsExport =>
+      'Exporter le rapport respectueux de la vie privée';
+
+  @override
+  String get adminContributionsReportCopied =>
+      'Rapport de contribution respectueux de la vie privée copié.';
+
+  @override
+  String get adminContributionsUnavailable =>
+      'Suivi des contributions indisponible';
+
+  @override
+  String get adminContributionsDisabled =>
+      'Le suivi des contributions est désactivé pour cette version contrôlée.';
+
+  @override
+  String get adminContributionsOffline => 'Suivi des contributions hors ligne';
+
+  @override
+  String get adminContributionsOfflineMessage =>
+      'Reconnectez-vous avant de charger les données privées des contributions.';
+
+  @override
+  String get adminContributionsAccessUnavailable =>
+      'Accès aux contributions indisponible';
+
+  @override
+  String get adminContributionsAccessMessage =>
+      'Ce compte ne peut pas consulter les opérations privées de contribution.';
+
+  @override
+  String get adminContributionsDataChanged =>
+      'Données de contribution modifiées';
+
+  @override
+  String get adminContributionsDataChangedMessage =>
+      'Actualisez avant de vous fier aux totaux de contribution.';
+
+  @override
+  String get adminContributionsSecurityMessage =>
+      'Aucune donnée de contribution n’a été affichée. Vérifiez votre connexion.';
+
+  @override
+  String get adminContributionsHiddenMessage =>
+      'Les données privées de contribution restent masquées. Réessayez.';
+
+  @override
+  String get adminContributionsRefreshing => 'Actualisation des contributions';
+
+  @override
+  String get adminContributionsRefreshingMessage =>
+      'Les derniers totaux confirmés restent affichés pendant la vérification.';
+
+  @override
+  String get adminContributionsLastConfirmed =>
+      'Les derniers totaux confirmés restent visibles. Les contrôles sont suspendus jusqu’à l’actualisation.';
+
+  @override
+  String get adminContributionsGroupType => 'TYPE DE GROUPE';
+
+  @override
+  String get adminContributionsSort => 'TRIER';
+
+  @override
+  String get adminContributionsFilterAll => 'TOUS';
+
+  @override
+  String get adminContributionsTeamProjects => 'PROJETS D’ÉQUIPE';
+
+  @override
+  String get adminContributionsCommunity => 'COMMUNAUTÉ';
+
+  @override
+  String get adminContributionsRecent => 'RÉCENT';
+
+  @override
+  String get adminContributionsTotal => 'TOTAL';
+
+  @override
+  String get adminContributionsClosed => 'FERMÉ';
+
+  @override
+  String get adminContributionsActive => 'ACTIF';
+
+  @override
+  String get adminContributionsTeamProject => 'PROJET D’ÉQUIPE';
+
+  @override
+  String adminContributionsRecordMembers(int records, int members) {
+    return '$records données limitées • $members membres inscrits';
+  }
+
+  @override
+  String get adminContributionsActivityPending =>
+      'Activité de paiement en attente';
+
+  @override
+  String adminContributionsLastActivity(String date) {
+    return 'Dernière activité $date';
+  }
+
+  @override
+  String get adminSmsTitle => 'OPÉRATIONS SMS';
+
+  @override
+  String get adminSmsLoading => 'Chargement des opérations SMS';
+
+  @override
+  String get adminSmsLoadingMessage =>
+      'Vérification des informations contrôlées sur l’état du pipeline.';
+
+  @override
+  String get adminSmsNoHistory => 'Aucun historique d’opérations SMS';
+
+  @override
+  String get adminSmsNoHistoryMessage =>
+      'Aucun signal de santé contrôlé ni synchronisation n’est encore disponible.';
+
+  @override
+  String get adminSmsControlledHealth => 'VUE DE SANTÉ CONTRÔLÉE';
+
+  @override
+  String get adminSmsControlledHealthMessage =>
+      'Examinez la synchronisation des appareils, les vérifications de messages, la correspondance des contributions, les changements d’expéditeur, les nouvelles tentatives et le nettoyage de confidentialité sans afficher le contenu des messages ni les identifiants des supporters.';
+
+  @override
+  String get adminSmsPipelineHealth => 'SANTÉ DU PIPELINE';
+
+  @override
+  String get adminSmsRecentSync => 'SYNCHRONISATION RÉCENTE DES APPAREILS';
+
+  @override
+  String get adminSmsNoRecentRuns => 'Aucune synchronisation récente';
+
+  @override
+  String get adminSmsNoRecentRunsMessage =>
+      'Le résumé de santé reste disponible ci-dessus.';
+
+  @override
+  String adminSmsMetricSemantics(String label, String status) {
+    return '$label, $status';
+  }
+
+  @override
+  String get adminSmsCollapseDetails => 'Réduire les détails de santé';
+
+  @override
+  String get adminSmsExpandDetails => 'Développer les détails de santé';
+
+  @override
+  String adminSmsLastSignal(String date) {
+    return 'Dernier signal confirmé $date';
+  }
+
+  @override
+  String get adminSmsUnavailable => 'Opérations SMS indisponibles';
+
+  @override
+  String get adminSmsDisabled =>
+      'Le suivi des opérations SMS est désactivé pour cette version.';
+
+  @override
+  String get adminSmsOffline => 'Opérations SMS hors ligne';
+
+  @override
+  String get adminSmsOfflineMessage =>
+      'Reconnectez-vous avant de charger les informations opérationnelles privées.';
+
+  @override
+  String get adminSmsAccessUnavailable =>
+      'Accès aux opérations SMS indisponible';
+
+  @override
+  String get adminSmsAccessMessage =>
+      'Un accès administrateur de plateforme est requis pour cette vue.';
+
+  @override
+  String get adminSmsChanged => 'Opérations SMS modifiées';
+
+  @override
+  String get adminSmsChangedMessage =>
+      'Actualisez avant d’utiliser ces informations opérationnelles.';
+
+  @override
+  String get adminSmsSecurityMessage =>
+      'Aucune information opérationnelle n’a été affichée. Vérifiez votre connexion.';
+
+  @override
+  String get adminSmsHiddenMessage =>
+      'Les informations opérationnelles privées restent masquées. Réessayez.';
+
+  @override
+  String get adminSmsChecking => 'Vérification des opérations SMS';
+
+  @override
+  String get adminSmsCheckingMessage =>
+      'Le dernier état confirmé reste affiché pendant la vérification.';
+
+  @override
+  String get adminSmsLastConfirmed =>
+      'Les dernières informations opérationnelles confirmées restent visibles. Les contrôles sont suspendus.';
+
+  @override
+  String get adminSmsStatusHealthy => 'SAIN';
+
+  @override
+  String get adminSmsStatusSucceeded => 'RÉUSSI';
+
+  @override
+  String get adminSmsStatusDegraded => 'DÉGRADÉ';
+
+  @override
+  String get adminSmsStatusRunning => 'EN COURS';
+
+  @override
+  String get adminSmsStatusRateLimited => 'DÉBIT LIMITÉ';
+
+  @override
+  String get adminSmsStatusFailing => 'EN ÉCHEC';
+
+  @override
+  String get adminSmsStatusFailed => 'ÉCHEC';
+
+  @override
+  String get adminSmsTriggerInitial => 'HISTORIQUE INITIAL';
+
+  @override
+  String get adminSmsTriggerManual => 'MANUEL';
+
+  @override
+  String get adminSmsTriggerControlled => 'CONTRÔLÉ';
+
+  @override
+  String adminSmsRunTitle(String status, String trigger) {
+    return '$status • $trigger';
+  }
+
+  @override
+  String adminSmsRunMetrics(int scanned, int uploaded, int duplicates) {
+    return '$scanned analysés • $uploaded téléversés • $duplicates doublons';
+  }
+
+  @override
+  String get adminCmsTitle => 'GESTIONNAIRE DE CONTENU';
+
+  @override
+  String get adminCmsDescription =>
+      'Gérez les raccourcis d’accueil, les catalogues de partenaires et les compétitions de pronostics prises en charge.';
+
+  @override
+  String get adminCmsLoading => 'Chargement du gestionnaire de contenu';
+
+  @override
+  String get adminCmsLoadingMessage =>
+      'Vérification des travaux de publication actuels.';
+
+  @override
+  String get adminCmsNoContent => 'Aucun contenu géré';
+
+  @override
+  String get adminCmsNoContentMessage =>
+      'Choisissez une section pour créer le premier élément contrôlé.';
+
+  @override
+  String get adminCmsUnavailable => 'Gestionnaire de contenu indisponible';
+
+  @override
+  String get adminCmsDisabled =>
+      'Les contrôles de publication sont désactivés pour cette version contrôlée.';
+
+  @override
+  String get adminCmsOffline => 'Gestionnaire de contenu hors ligne';
+
+  @override
+  String get adminCmsOfflineMessage =>
+      'Reconnectez-vous avant de charger les contrôles de publication privés.';
+
+  @override
+  String get adminCmsAccessUnavailable => 'Accès au contenu indisponible';
+
+  @override
+  String get adminCmsAccessMessage =>
+      'Ce compte ne peut pas consulter ni modifier les données de publication du club.';
+
+  @override
+  String get adminCmsChanged => 'Contenu modifié';
+
+  @override
+  String get adminCmsChangedMessage =>
+      'Actualisez l’espace avant une autre modification.';
+
+  @override
+  String get adminCmsSecurityMessage =>
+      'Aucun contenu privé n’a été affiché. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get adminCmsHiddenMessage =>
+      'Les données privées de publication restent masquées. Réessayez.';
+
+  @override
+  String get adminCmsSaving => 'Enregistrement du contenu';
+
+  @override
+  String get adminCmsSavingMessage =>
+      'Les contrôles de publication sont suspendus jusqu’à la confirmation du résultat.';
+
+  @override
+  String get adminCmsRefreshing => 'Actualisation du contenu';
+
+  @override
+  String get adminCmsRefreshingMessage =>
+      'Le dernier espace confirmé reste affiché pendant la vérification.';
+
+  @override
+  String get adminCmsCurrentRefreshUnavailable =>
+      'Actualisation actuelle indisponible';
+
+  @override
+  String get adminCmsOutcomeUnconfirmed =>
+      'La dernière modification n’est pas confirmée. Actualisez avant une autre action.';
+
+  @override
+  String get adminCmsLastConfirmed =>
+      'Le dernier espace confirmé reste affiché. Les actions sont suspendues jusqu’à l’actualisation.';
+
+  @override
+  String get adminCmsChangeOffline =>
+      'Les modifications du CMS nécessitent une connexion. Aucune nouvelle tentative n’a été effectuée.';
+
+  @override
+  String get adminCmsChangeAccess =>
+      'L’accès au CMS n’est plus disponible pour ce compte.';
+
+  @override
+  String get adminCmsChangeConflict =>
+      'Le contenu du CMS a changé. Actualisez avant une autre action.';
+
+  @override
+  String get adminCmsChangeUnconfirmed =>
+      'Le résultat n’est pas confirmé. Actualisez avant une autre action.';
+
+  @override
+  String get adminCmsChangeFailed =>
+      'La modification du CMS n’a pas pu être effectuée. Vérifiez et réessayez.';
+
+  @override
+  String get adminCmsAddContentBlock => 'AJOUTER UN BLOC DE CONTENU';
+
+  @override
+  String get adminCmsEditContentBlock => 'MODIFIER LE BLOC DE CONTENU';
+
+  @override
+  String get adminCmsBlockKey => 'Clé du bloc (ex. home_hero_1)';
+
+  @override
+  String get adminCmsBlockType => 'Type de bloc (ex. bannière)';
+
+  @override
+  String get adminCmsTargetChannel => 'Canal cible';
+
+  @override
+  String get adminCmsPlacementKey => 'Emplacement';
+
+  @override
+  String get adminCmsTitleField => 'Titre';
+
+  @override
+  String get adminCmsSubtitleField => 'Sous-titre';
+
+  @override
+  String get adminCmsContentComponent => 'Nom du composant de contenu';
+
+  @override
+  String get adminCmsFeatureField => 'Fonctionnalité';
+
+  @override
+  String get adminCmsNone => 'Aucune';
+
+  @override
+  String get adminCmsSortOrder => 'Ordre de tri';
+
+  @override
+  String get adminCmsActive => 'Actif';
+
+  @override
+  String get adminCmsCreate => 'CRÉER';
+
+  @override
+  String get adminCmsSave => 'ENREGISTRER';
+
+  @override
+  String get adminCmsNewArticle => 'NOUVEL ARTICLE';
+
+  @override
+  String get adminCmsArticleTitle => 'Titre de l’article';
+
+  @override
+  String get adminCmsArticleBody => 'Corps de l’article';
+
+  @override
+  String get adminCmsAddQuickAction => 'AJOUTER UNE ACTION RAPIDE';
+
+  @override
+  String get adminCmsEditQuickAction => 'MODIFIER L’ACTION RAPIDE';
+
+  @override
+  String get adminCmsActionKey => 'Clé de l’action';
+
+  @override
+  String get adminCmsRoute => 'Route';
+
+  @override
+  String get adminCmsIconKey => 'Clé de l’icône';
+
+  @override
+  String get adminCmsEmoji => 'Emoji';
+
+  @override
+  String get adminCmsCountry => 'Pays';
+
+  @override
+  String get adminCmsAddPartner => 'AJOUTER UN PARTENAIRE';
+
+  @override
+  String get adminCmsEditPartner => 'MODIFIER LE PARTENAIRE';
+
+  @override
+  String get adminCmsName => 'Nom';
+
+  @override
+  String get adminCmsSlug => 'Identifiant';
+
+  @override
+  String get adminCmsCategory => 'Catégorie';
+
+  @override
+  String get adminCmsDescriptionField => 'Description';
+
+  @override
+  String get adminCmsGamificationLinked => 'Lié à la ludification';
+
+  @override
+  String get adminCmsCreatePartnerFirst => 'Créez d’abord un partenaire.';
+
+  @override
+  String get adminCmsAddPartnerService => 'AJOUTER UN SERVICE PARTENAIRE';
+
+  @override
+  String get adminCmsEditPartnerService => 'MODIFIER LE SERVICE PARTENAIRE';
+
+  @override
+  String get adminCmsPartner => 'Partenaire';
+
+  @override
+  String get adminCmsServiceSlug => 'Identifiant du service';
+
+  @override
+  String get adminCmsCtaLabel => 'Libellé de l’appel à l’action';
+
+  @override
+  String get adminCmsCtaAction => 'Action de l’appel à l’action';
+
+  @override
+  String get adminCmsAllCompetitionsAdded =>
+      'Toutes les compétitions actives figurent déjà dans le catalogue de pronostics.';
+
+  @override
+  String get adminCmsAddPredictionCompetition =>
+      'AJOUTER UNE COMPÉTITION DE PRONOSTICS';
+
+  @override
+  String get adminCmsEditPredictionCompetition =>
+      'MODIFIER LA COMPÉTITION DE PRONOSTICS';
+
+  @override
+  String get adminCmsCompetition => 'Compétition';
+
+  @override
+  String get adminCmsHighlightLabel => 'Libellé en vedette';
+
+  @override
+  String get adminCmsChannelMobile => 'Mobile';
+
+  @override
+  String get adminCmsChannelWeb => 'Web';
+
+  @override
+  String get adminCmsChannelBoth => 'Mobile et web';
+
+  @override
+  String get adminCmsCategoryOrganization => 'Organisation';
+
+  @override
+  String get adminCmsCategoryBank => 'Banque';
+
+  @override
+  String get adminCmsCategoryFootball => 'Football';
+
+  @override
+  String get adminCmsCategoryGeneral => 'Général';
+
+  @override
+  String get adminCmsCategoryCommunity => 'Communauté';
+
+  @override
+  String get adminCmsCategoryInsurance => 'Assurance';
+
+  @override
+  String get adminCmsCategoryMobility => 'Mobilité';
+
+  @override
+  String get adminCmsSectionNews => 'Actualités';
+
+  @override
+  String get adminCmsSectionQuickActions => 'Actions rapides';
+
+  @override
+  String get adminCmsSectionPartners => 'Partenaires';
+
+  @override
+  String get adminCmsSectionServices => 'Services';
+
+  @override
+  String get adminCmsSectionPredictions => 'Pronostics';
+
+  @override
+  String get adminCmsSectionPlacements => 'Emplacements';
+
+  @override
+  String get adminCmsSectionAuditLogs => 'Journaux d’audit';
+
+  @override
+  String get adminCmsNewsArticles => 'Articles d’actualité';
+
+  @override
+  String get adminCmsAddArticle => 'AJOUTER UN ARTICLE';
+
+  @override
+  String get adminCmsHomeQuickActions => 'Actions rapides d’accueil';
+
+  @override
+  String get adminCmsAddAction => 'AJOUTER UNE ACTION';
+
+  @override
+  String get adminCmsPartners => 'Partenaires';
+
+  @override
+  String get adminCmsAddPartnerAction => 'AJOUTER UN PARTENAIRE';
+
+  @override
+  String get adminCmsPartnerServices => 'Services partenaires';
+
+  @override
+  String get adminCmsAddService => 'AJOUTER UN SERVICE';
+
+  @override
+  String get adminCmsPredictionCompetitions => 'Compétitions de pronostics';
+
+  @override
+  String get adminCmsAddCompetition => 'AJOUTER UNE COMPÉTITION';
+
+  @override
+  String get adminCmsContentBlocks => 'Blocs de contenu de la plateforme';
+
+  @override
+  String get adminCmsAddBlock => 'AJOUTER UN BLOC';
+
+  @override
+  String get adminCmsAuditLogs =>
+      'JOURNAUX D’AUDIT DE LA GESTION DES FONCTIONNALITÉS';
+
+  @override
+  String get adminCmsQuickActionFallback => 'Action rapide';
+
+  @override
+  String get adminCmsServiceFallback => 'Service';
+
+  @override
+  String get adminCmsCompetitionFallback => 'Compétition';
+
+  @override
+  String get adminCmsContentBlockFallback => 'Bloc de contenu';
+
+  @override
+  String get adminCmsActiveUpper => 'ACTIF';
+
+  @override
+  String get adminCmsInactiveUpper => 'INACTIF';
+
+  @override
+  String get adminCmsGamificationUpper => 'LUDIFICATION';
+
+  @override
+  String get adminCmsDirectUpper => 'DIRECT';
+
+  @override
+  String get adminCmsStandardUpper => 'STANDARD';
+
+  @override
+  String get adminCmsDeactivate => 'DÉSACTIVER';
+
+  @override
+  String get adminCmsActivate => 'ACTIVER';
+
+  @override
+  String get adminCmsCtaPending => 'Action en attente';
+
+  @override
+  String get adminCmsNotAvailable => 's.o.';
+
+  @override
+  String adminCmsCompetitionSummary(String kind, int count) {
+    return '$kind • $count rencontres';
+  }
+
+  @override
+  String get adminCmsCatalog => 'CATALOGUE';
+
+  @override
+  String get adminCmsSupported => 'PRISE EN CHARGE';
+
+  @override
+  String get adminCmsUnknown => 'inconnu';
+
+  @override
+  String get adminCmsUnknownFeature => 'Fonctionnalité inconnue';
+
+  @override
+  String get adminCmsUnknownDate => 'Date inconnue';
+
+  @override
+  String get adminCmsActionFallback => 'ACTION';
+
+  @override
+  String adminCmsFeatureName(String feature) {
+    return 'Fonctionnalité : $feature';
+  }
+
+  @override
+  String get adminCmsActorWithheld =>
+      'Les informations sur l’auteur sont masquées dans l’espace mobile.';
+
+  @override
+  String get adminCmsEdit => 'MODIFIER';
+
+  @override
+  String get adminCmsUntitled => 'Sans titre';
+
+  @override
+  String get adminCmsNewsFallback => 'Actualités';
+
+  @override
+  String get adminCmsLive => 'PUBLIÉ';
+
+  @override
+  String get adminCmsDraft => 'BROUILLON';
+
+  @override
+  String get adminCmsNotPublished => 'Non publié';
+
+  @override
+  String get adminCmsFeatured => 'EN VEDETTE';
+
+  @override
+  String adminCmsArticleMeta(String category, String date, String featured) {
+    return '$category • $date$featured';
+  }
+
+  @override
+  String get adminCmsUnpublish => 'RETIRER';
+
+  @override
+  String get adminCmsPublish => 'PUBLIER';
+
+  @override
+  String adminCmsPair(String first, String second) {
+    return '$first • $second';
+  }
+
+  @override
+  String get gameCommunityPicks => 'CHOIX DE LA COMMUNAUTÉ';
+
+  @override
+  String get gameFetProgress => 'Progression FET';
+
+  @override
+  String get gameFet => 'FET';
+
+  @override
+  String get gameLevelUp => 'NIVEAU SUPÉRIEUR !';
+
+  @override
+  String get gameAwesome => 'Génial';
+
+  @override
+  String get gameKeepGoing => 'Continuez';
+
+  @override
+  String get gameLive => 'EN DIRECT';
+
+  @override
+  String gameOutcomePick(String outcome) {
+    return 'Choix $outcome';
+  }
+
+  @override
+  String gamePoints(int count) {
+    return '+$count pts';
+  }
+
+  @override
+  String get gameDaysShort => 'JOURS';
+
+  @override
+  String get gameHoursShort => 'H';
+
+  @override
+  String get gameMinutesShort => 'MIN';
+
+  @override
+  String get gameSecondsShort => 'SEC';
+
+  @override
+  String get gameDismissNotification => 'Fermer la notification';
+
+  @override
+  String get gamePredictions => 'PRONOSTICS';
+
+  @override
+  String get gameAccuracy => 'PRÉCISION';
+
+  @override
+  String get gamePointsEarned => 'POINTS GAGNÉS';
+
+  @override
+  String get gameRank => 'RANG';
+
+  @override
+  String get gameTopScorers => 'MEILLEURS BUTEURS';
+
+  @override
+  String get gameGoals => 'Buts';
+
+  @override
+  String get gameEntriesClosed => 'INSCRIPTIONS FERMÉES';
+
+  @override
+  String get gameEntriesCloseIn => 'FIN DES INSCRIPTIONS DANS';
+
+  @override
+  String gameFetProgressValue(int current, int maximum, String tier) {
+    return '$current sur $maximum, niveau $tier';
+  }
+
+  @override
+  String gamePickForTeams(String outcome, String home, String away) {
+    return 'Choix $outcome pour $home contre $away';
+  }
+
+  @override
+  String get gameSelectedPick => 'Choix sélectionné';
+
+  @override
+  String get gameAddPickToRound => 'Ajouter le choix à la manche';
+
+  @override
+  String gameNotificationSemantics(String title, String message) {
+    return 'Notification : $title. $message';
+  }
+
+  @override
+  String get gameDismissNotificationHint =>
+      'Touchez ou balayez vers le haut pour fermer';
+
+  @override
+  String get gameClubContextRequired => 'Le contexte du club est requis.';
+
+  @override
+  String get gameUnexpectedResponse => 'Réponse inattendue du serveur.';
+
+  @override
+  String get gameBack => 'Retour';
+
+  @override
+  String get gameRetry => 'Réessayer';
+
+  @override
+  String get gameOpenPredictionAlert => 'OUVRIR';
+
+  @override
+  String get gameBadgesTitle => 'VOS BADGES';
+
+  @override
+  String get gameBadgesUnavailable => 'Badges indisponibles';
+
+  @override
+  String get gameBadgesTemporarilyUnavailable =>
+      'Les badges sont temporairement indisponibles.';
+
+  @override
+  String gameBadgeSemantics(String name) {
+    return 'Badge $name';
+  }
+
+  @override
+  String get gameOpenBadgeDetails => 'Ouvrir les détails du badge';
+
+  @override
+  String get gamePredictionAlertsTitle => 'ALERTES DE PRONOSTICS';
+
+  @override
+  String get gameAlertsUnavailable => 'Alertes indisponibles';
+
+  @override
+  String get gamePredictionAlertsTemporarilyUnavailable =>
+      'Les alertes de pronostics sont temporairement indisponibles.';
+
+  @override
+  String gamePredictionAlertSemantics(
+    String title,
+    String message,
+    String date,
+    String reward,
+  ) {
+    return 'Alerte de pronostic, $title, $message, $date$reward';
+  }
+
+  @override
+  String gameRewardPointsSemantics(int count) {
+    return ', récompense de $count points';
+  }
+
+  @override
+  String get gameJustNow => 'À l’instant';
+
+  @override
+  String get gameStreakTitle => 'VOTRE SÉRIE';
+
+  @override
+  String gameStreakDays(int count) {
+    return '$count JOURS';
+  }
+
+  @override
+  String get gameStreakActive => 'Série active.';
+
+  @override
+  String get gameCurrent => 'ACTUELLE';
+
+  @override
+  String get gameBest => 'MEILLEURE';
+
+  @override
+  String get gameNextBonus => 'PROCHAIN BONUS';
+
+  @override
+  String gameWins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count victoires',
+      one: '1 victoire',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameStreakDaySemantics(int day, String wins) {
+    return 'Jour $day de la série : $wins';
+  }
+
+  @override
+  String get gameVerifyToPredict => 'VÉRIFIEZ POUR PRONOSTIQUER';
+
+  @override
+  String get gameMakePicks => 'Faites vos choix';
+
+  @override
+  String get gameMakePicksDescription =>
+      'Choisissez des rencontres dans toutes les ligues';
+
+  @override
+  String get gameEarnPoints => 'Gagnez des points';
+
+  @override
+  String get gameEarnPointsDescription =>
+      'Gagnez des points avec les bons choix';
+
+  @override
+  String get gameClimbLeaderboards => 'Grimpez au classement';
+
+  @override
+  String get gameClimbLeaderboardsDescription =>
+      'Affrontez vos amis et les supporters';
+
+  @override
+  String get gameVerifyNow => 'Vérifier maintenant';
+
+  @override
+  String get gameJustBrowsing => 'Je regarde seulement';
+
+  @override
+  String get gameOffersTitle => 'Offres';
+
+  @override
+  String get gameOffersUnavailable => 'Offres indisponibles';
+
+  @override
+  String get gameOffersTemporarilyUnavailable =>
+      'Les offres partenaires sont temporairement indisponibles.';
+
+  @override
+  String get gameWaysToEarn => 'Comment gagner';
+
+  @override
+  String get gameWaysToEarnDescription =>
+      'Participez aux campagnes et activations pour gagner des points.';
+
+  @override
+  String get gameBalance => 'Solde';
+
+  @override
+  String get gameAvailable => 'Disponibles';
+
+  @override
+  String gameActiveOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offres actives',
+      one: '1 offre active',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameFeatured => 'En vedette';
+
+  @override
+  String get gameMatchDay => 'Jour de match';
+
+  @override
+  String get gameAlwaysOn => 'Toujours actives';
+
+  @override
+  String get gameReward => 'Récompense';
+
+  @override
+  String get gameActivation => 'Activation';
+
+  @override
+  String get gameVerification => 'Vérification';
+
+  @override
+  String get gameCondition => 'Condition';
+
+  @override
+  String get gameClose => 'Fermer';
+
+  @override
+  String get gameDetails => 'Détails';
+
+  @override
+  String gamePointBalance(int count) {
+    return '$count pts';
+  }
+
+  @override
+  String gameFormattedPoints(String amount) {
+    return '$amount pts';
+  }
+
+  @override
+  String get gameVerificationApi => 'Confirmation par l’API partenaire';
+
+  @override
+  String get gameVerificationRenewal => 'Confirmation du renouvellement';
+
+  @override
+  String get gameVerificationReferral => 'Conversion du parrainage';
+
+  @override
+  String get gameVerificationReceipt => 'Scan du reçu ou du terminal';
+
+  @override
+  String get gameVerificationGeo => 'Pointage GPS ou sur le site';
+
+  @override
+  String get gameVerificationSocial => 'Vérification de la publication sociale';
+
+  @override
+  String get gameVerificationSavings => 'Confirmation du palier d’épargne';
+
+  @override
+  String get gameVerificationEcommerce => 'Confirmation de l’achat en boutique';
+
+  @override
+  String get gameVerificationMobility => 'Confirmation de la course terminée';
+
+  @override
+  String get gameVerificationEventQr => 'Validation du code QR de l’événement';
+
+  @override
+  String get gameVerificationManual => 'Vérification manuelle du partenaire';
+
+  @override
+  String get gameSettingsUpper => 'PARAMÈTRES';
+
+  @override
+  String get gamePrivacyUpper => 'CONFIDENTIALITÉ';
+
+  @override
+  String get gameCoreGuarantees => 'GARANTIES ESSENTIELLES';
+
+  @override
+  String get gamePhoneNumberHidden => 'Numéro de téléphone masqué';
+
+  @override
+  String get gamePhoneNumberHiddenDescription =>
+      'Votre numéro WhatsApp ou de téléphone est chiffré et stocké uniquement sur le serveur. Il n’est jamais révélé aux autres utilisateurs, aux administrateurs du club ou dans les classements publics.';
+
+  @override
+  String get gameAnonymousContributions => 'Contributions anonymes';
+
+  @override
+  String get gameAnonymousContributionsDescription =>
+      'Les contributions MoMo aux fan-clubs sont enregistrées uniquement avec votre Fan ID et une tranche de montant. Les montants exacts et les numéros de téléphone ne sont pas enregistrés.';
+
+  @override
+  String get gameVisibilityControls => 'CONTRÔLES DE VISIBILITÉ';
+
+  @override
+  String get gameShowRealName => 'Afficher le nom réel';
+
+  @override
+  String get gameShowRealNameDescription =>
+      'Lorsque cette option est désactivée, votre Fan ID apparaît dans les classements à la place de votre vrai nom.';
+
+  @override
+  String get gameFindableByPhone => 'Recherche par téléphone';
+
+  @override
+  String get gameFindableByPhoneDescription =>
+      'Permet à vos amis de vous trouver par numéro de téléphone. Votre numéro reste privé.';
+
+  @override
+  String get gamePrivacyFirst => 'Confidentialité prioritaire';
+
+  @override
+  String gamePrivacyFirstDescription(String appName) {
+    return '$appName ne vend, ne partage et n’expose pas vos données personnelles. Tous les identifiants de la plateforme sont anonymisés.';
+  }
+
+  @override
+  String get gameRewardsStoreTitle => 'BOUTIQUE DE RÉCOMPENSES';
+
+  @override
+  String get gameRewardsUnavailable => 'Récompenses indisponibles';
+
+  @override
+  String get gameRewardsTemporarilyUnavailable =>
+      'Les récompenses sont temporairement indisponibles.';
+
+  @override
+  String get gameAvailableBalance => 'SOLDE DISPONIBLE';
+
+  @override
+  String gameRewardsStoreDescription(String appName) {
+    return 'Échangez les récompenses $appName sans quitter le portefeuille unifié.';
+  }
+
+  @override
+  String gameRewardMeta(String category, String notes) {
+    return '$category · $notes';
+  }
+
+  @override
+  String gameRedeemCost(String cost) {
+    return 'Échanger $cost';
+  }
+
+  @override
+  String gameNeedCost(String cost) {
+    return 'Requiert $cost';
+  }
+
+  @override
+  String get gameRewardConfigurationMissing =>
+      'La configuration de la récompense est absente. Réessayez plus tard.';
+
+  @override
+  String get gameRewardAlreadyRedeemed =>
+      'Cet échange de récompense a déjà été effectué.';
+
+  @override
+  String gameRewardRedeemed(String reward, String cost) {
+    return '$reward échangé contre $cost.';
+  }
+
+  @override
+  String get gameRewardCouldNotRedeem =>
+      'Impossible d’échanger cette récompense.';
+
+  @override
+  String get gameFriendsTitle => 'Amis';
+
+  @override
+  String get gameSupportersUnavailable => 'Supporters indisponibles';
+
+  @override
+  String get gameSupportersTemporarilyUnavailable =>
+      'Les supporters sont temporairement indisponibles.';
+
+  @override
+  String get gameSearchSupporterHint =>
+      'Rechercher un pseudo ou un identifiant';
+
+  @override
+  String get gameDone => 'Terminé.';
+
+  @override
+  String get gameResults => 'Résultats';
+
+  @override
+  String get gameYourFriends => 'Vos amis';
+
+  @override
+  String get gameChallenge => 'Défier';
+
+  @override
+  String get gameAccept => 'Accepter';
+
+  @override
+  String get gamePending => 'En attente';
+
+  @override
+  String get gameAdd => 'Ajouter';
+
+  @override
+  String get gameOnline => 'En ligne';
+
+  @override
+  String get gameFixturesTitle => 'RENCONTRES';
+
+  @override
+  String get gameFixturesUnavailable => 'Rencontres indisponibles';
+
+  @override
+  String get gameFixturesCouldNotLoad =>
+      'Impossible de charger les rencontres pour le moment.';
+
+  @override
+  String get gameAll => 'Toutes';
+
+  @override
+  String get gameToday => 'Aujourd’hui';
+
+  @override
+  String get gameTomorrow => 'Demain';
+
+  @override
+  String get gameYesterday => 'Hier';
+
+  @override
+  String gameRelativeDate(String relative, String date) {
+    return '$relative · $date';
+  }
+
+  @override
+  String gameMatchCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rencontres',
+      one: '1 rencontre',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameMyActivity => 'MON ACTIVITÉ';
+
+  @override
+  String gameActiveCount(int count) {
+    return 'ACTIFS ($count)';
+  }
+
+  @override
+  String gameSettledTabCount(int count) {
+    return 'RÉGLÉS ($count)';
+  }
+
+  @override
+  String gameHistoryCount(int count) {
+    return 'HISTORIQUE ($count)';
+  }
+
+  @override
+  String get gameActivityUnavailable => 'Activité indisponible';
+
+  @override
+  String get gameActivityCouldNotLoad =>
+      'Impossible de charger votre activité pour le moment.';
+
+  @override
+  String get gameCouldNotCancelPick => 'Impossible d’annuler ce choix.';
+
+  @override
+  String get gameWon => 'GAGNÉ';
+
+  @override
+  String get gameLost => 'PERDU';
+
+  @override
+  String get gameCancelled => 'ANNULÉ';
+
+  @override
+  String get gameVoid => 'INVALIDÉ';
+
+  @override
+  String get gamePendingUpper => 'EN ATTENTE';
+
+  @override
+  String get gameTbd => 'À DÉFINIR';
+
+  @override
+  String gameVersusShort(String home, String away) {
+    return '$home c. $away';
+  }
+
+  @override
+  String get gameRound => 'Manche';
+
+  @override
+  String gameCompetitionTime(String competition, String time) {
+    return '$competition • $time';
+  }
+
+  @override
+  String get gameCancel => 'Annuler';
+
+  @override
+  String gameActivitySemantics(String home, String away) {
+    return 'Activité $home contre $away';
+  }
+
+  @override
+  String get gameOpenActivityDetail => 'Ouvrir le détail de l’activité';
+
+  @override
+  String get gameNotificationsUpper => 'NOTIFICATIONS';
+
+  @override
+  String get gameKickoffAlerts => 'Alertes de coup d’envoi';
+
+  @override
+  String get gameRoundResults => 'Résultats de la manche';
+
+  @override
+  String get gameFriendChallenges => 'Défis entre amis';
+
+  @override
+  String get gameLineupsUpper => 'COMPOSITIONS';
+
+  @override
+  String get gameSubstitutes => 'REMPLAÇANTS';
+
+  @override
+  String get gameActiveUpper => 'ACTIFS';
+
+  @override
+  String get gameWinRate => 'TAUX DE VICTOIRE';
+
+  @override
+  String get gameYouUpper => 'VOUS';
+
+  @override
+  String gameWalletSignedPoints(String sign, String amount) {
+    return '$sign$amount pts';
+  }
+
+  @override
+  String gameWalletBalance(String amount) {
+    return 'Solde $amount pts';
+  }
+
+  @override
+  String get gameVersus => 'CONTRE';
+
+  @override
+  String get gameKickoffSoon => 'Coup d’envoi imminent';
+
+  @override
+  String gameJoinedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participants',
+      one: '1 participant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameTotalPoolPoints(int count) {
+    return '$count pts au total';
+  }
+
+  @override
+  String get gameCreator => 'Créateur';
+
+  @override
+  String get gameMyPick => 'Mon choix';
+
+  @override
+  String get gameOpenUpper => 'OUVERT';
+
+  @override
+  String get gameLockedUpper => 'VERROUILLÉ';
+
+  @override
+  String get gameSettledUpper => 'RÉGLÉ';
+
+  @override
+  String gameDaysLeft(int count) {
+    return '$count j restants';
+  }
+
+  @override
+  String gameHoursMinutes(int hours, int minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
+  String gameMinutesLeft(int count) {
+    return '$count min restantes';
+  }
+
+  @override
+  String gameScorePrediction(String label, int home, int away) {
+    return '$label  $home-$away';
+  }
+
+  @override
+  String get gamePointsShare => 'Répartition des points';
+
+  @override
+  String get gamePointsShareDescription =>
+      'Les règles du niveau déterminent comment les points gagnés vous soutiennent et alimentent les récompenses collectives du club.';
+
+  @override
+  String gamePersonalPercentage(int count) {
+    return '$count% pour vous';
+  }
+
+  @override
+  String gameClubPercentage(int count) {
+    return '$count% pour le club';
+  }
+
+  @override
+  String gameTierSplit(int personal, int club) {
+    return '$personal/$club';
+  }
+
+  @override
+  String get gamePointsShareExplanation =>
+      'Vos points sont répartis selon le niveau : la part personnelle vous revient et la part du club soutient les récompenses collectives.';
+
+  @override
+  String get gameTierSupporter => 'Supporter';
+
+  @override
+  String get gameTierMember => 'Membre';
+
+  @override
+  String get gameTierUltra => 'Ultra';
+
+  @override
+  String get gameTierLegend => 'Légende';
+
+  @override
+  String get gameFree => 'Gratuit';
+
+  @override
+  String gameMonthlyPrice(String amount) {
+    return '$amount RWF / mois';
+  }
+
+  @override
+  String gameShareTitle(String appName) {
+    return 'Choix $appName';
+  }
+
+  @override
+  String get gameShareCopied =>
+      'Texte de partage copié dans le presse-papiers.';
+
+  @override
+  String gameShareStatusLine(String status, String home, String away) {
+    return '$status : $home c. $away';
+  }
+
+  @override
+  String gameFinalScore(int home, int away) {
+    return 'Score final : $home-$away';
+  }
+
+  @override
+  String gameMarketSelection(String market, String selection) {
+    return '$market : $selection';
+  }
+
+  @override
+  String gameEarnedShare(int count) {
+    return 'Gagné : +$count pts';
+  }
+
+  @override
+  String gamePotentialShare(int count) {
+    return 'Potentiel : +$count pts';
+  }
+
+  @override
+  String get gameMarketUpper => 'MARCHÉ';
+
+  @override
+  String get gamePickUpper => 'CHOIX';
+
+  @override
+  String get gameEarnedUpper => 'GAGNÉ';
+
+  @override
+  String get gamePotentialUpper => 'POTENTIEL';
+
+  @override
+  String gameShareTagline(String appName) {
+    return '$appName · JOUEZ. CHOISISSEZ. GAGNEZ.';
+  }
+
+  @override
+  String gamePickTypeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count types de choix',
+      one: '1 type de choix',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameSearchPickTypes => 'Rechercher des types de choix';
+
+  @override
+  String get gameClearSearch => 'Effacer la recherche';
+
+  @override
+  String get gameAddPicksToUnlock =>
+      'Ajoutez des choix pour déverrouiller la manche';
+
+  @override
+  String gameOpenRoundSummary(int count, int points) {
+    return 'Ouvrir la manche · $count choix · $points pts';
+  }
+
+  @override
+  String get gameLiveOnly => 'En direct uniquement';
+
+  @override
+  String gameOutcomeAddedToRound(String outcome) {
+    return '$outcome ajouté à votre manche.';
+  }
+
+  @override
+  String get gameMarkets => 'Marchés';
+
+  @override
+  String gameMarketCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count marchés',
+      one: '1 marché',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameStatsNotAvailableYet => 'Statistiques pas encore disponibles';
+
+  @override
+  String get gameLiveStatsUpdating =>
+      'Les statistiques en direct se mettent à jour automatiquement pendant le match.';
+
+  @override
+  String get gameLiveMatchDataUpdating =>
+      'Les données du centre de match se mettent à jour pour cette rencontre.';
+
+  @override
+  String get gameStructuredMatchStats =>
+      'Statistiques structurées du centre de match pour cette rencontre.';
+
+  @override
+  String get gameTotalGoals => 'Total des buts';
+
+  @override
+  String get gameFinalMatchStats => 'Statistiques finales du match.';
+
+  @override
+  String gameFixtureMarketTitle(String home, String away, String market) {
+    return '$home c. $away · $market';
+  }
+
+  @override
+  String get gamePickTypeLocked =>
+      'Type de choix verrouillé pour l’état actuel de cette rencontre.';
+
+  @override
+  String get gameLeaderboardTitle => 'Classement';
+
+  @override
+  String get gameFetRanking => 'Classement FET';
+
+  @override
+  String get gameSupporters => 'Supporters';
+
+  @override
+  String get gameAllTime => 'Depuis toujours';
+
+  @override
+  String get gameWeekly => 'Hebdomadaire';
+
+  @override
+  String get gameMonthly => 'Mensuel';
+
+  @override
+  String get gameLeaderboardUnavailable => 'Classement indisponible';
+
+  @override
+  String get gameLeaderboardTemporarilyUnavailable =>
+      'Le classement est temporairement indisponible.';
+
+  @override
+  String get gameRankingsUnavailable => 'Classements indisponibles';
+
+  @override
+  String get gameSupporterRankingsTemporarilyUnavailable =>
+      'Les classements des supporters sont temporairement indisponibles.';
+
+  @override
+  String get gameNotSignedIn => 'NON CONNECTÉ';
+
+  @override
+  String get gameTierFan => 'SUPPORTER';
+
+  @override
+  String get gameDisplayNameOn => 'Nom affiché';
+
+  @override
+  String get gameAliasOnly => 'Alias uniquement';
+
+  @override
+  String gameDisplayNameOnDescription(String name) {
+    return 'Les classements peuvent afficher $name au lieu de votre seul Fan ID.';
+  }
+
+  @override
+  String get gameAliasOnlyDescription =>
+      'Les classements affichent votre Fan ID ou votre alias au lieu de votre vrai nom.';
+
+  @override
+  String get gamePhoneHidden => 'Téléphone masqué';
+
+  @override
+  String get gamePhoneHiddenDescription =>
+      'Votre numéro de téléphone reste sur le serveur et n’est jamais montré aux autres supporters ou aux administrateurs du club.';
+
+  @override
+  String get gamePhoneDiscoveryOn => 'Recherche par téléphone active';
+
+  @override
+  String get gamePhoneDiscoveryOff => 'Recherche par téléphone inactive';
+
+  @override
+  String get gamePhoneDiscoveryOnDescription =>
+      'Les amis qui connaissent déjà votre numéro peuvent trouver votre profil.';
+
+  @override
+  String get gamePhoneDiscoveryOffDescription =>
+      'La recherche par téléphone est actuellement désactivée sur votre profil.';
+
+  @override
+  String get gameVerified => 'Vérifié';
+
+  @override
+  String get gameVerificationPending => 'Vérification en attente';
+
+  @override
+  String gameVerifiedDescription(String appName) {
+    return 'Votre identité téléphonique est vérifiée pour les parcours sociaux et de gains de $appName.';
+  }
+
+  @override
+  String gameVerificationPendingDescription(String appName) {
+    return 'Vérifiez votre téléphone pour débloquer toute l’expérience sociale $appName.';
+  }
+
+  @override
+  String get gameFanIdPersistentRule =>
+      'Votre Fan ID provient de votre profil et reste identique à votre retour.';
+
+  @override
+  String gameDisplayNameVisibleRule(String name) {
+    return 'Votre nom d’affichage « $name » peut apparaître dans les classements jusqu’à sa désactivation.';
+  }
+
+  @override
+  String get gameRealNameHiddenRule =>
+      'Votre vrai nom reste masqué dans les classements jusqu’à ce que vous activiez explicitement sa visibilité.';
+
+  @override
+  String get gamePhoneEncryptedRule =>
+      'Votre numéro de téléphone est chiffré et stocké uniquement sur le serveur.';
+
+  @override
+  String get gamePhoneDiscoveryEnabledRule =>
+      'La recherche d’amis par téléphone est actuellement activée sur votre compte.';
+
+  @override
+  String get gamePhoneDiscoveryDisabledRule =>
+      'La recherche d’amis par téléphone est actuellement désactivée sur votre compte.';
+
+  @override
+  String gamePhoneVerifiedRule(String appName) {
+    return 'Votre identité téléphonique est vérifiée pour les fonctionnalités et récompenses $appName.';
+  }
+
+  @override
+  String gamePhonePendingRule(String appName) {
+    return 'La vérification du téléphone est encore en attente pour votre profil $appName.';
+  }
+
+  @override
+  String gameTeamLinkedRule(String team) {
+    return 'Votre profil est associé à $team pour la personnalisation.';
+  }
+
+  @override
+  String get gameLinkTeamRule =>
+      'Vous pouvez associer une équipe favorite pendant l’accueil ou dans votre profil.';
+
+  @override
+  String get gameDeleteAccountRule =>
+      'La suppression de votre compte efface vos données personnelles et l’association du Fan ID du profil actif.';
+
+  @override
+  String get gameFanIdTitle => 'FAN ID';
+
+  @override
+  String get gameYourFanId => 'VOTRE FAN ID';
+
+  @override
+  String get gameAliasOnlyProfile => 'Profil avec alias uniquement';
+
+  @override
+  String get gameFanIdCopied => 'Fan ID copié dans le presse-papiers.';
+
+  @override
+  String get gameCopyToClipboard => 'Copier dans le presse-papiers';
+
+  @override
+  String get gamePrivacyBadges => 'BADGES DE CONFIDENTIALITÉ';
+
+  @override
+  String get gameIdentityRules => 'RÈGLES D’IDENTITÉ';
+
+  @override
+  String get gameIdentityRulesDescription =>
+      'Fonctionnement de votre Fan ID selon les paramètres actuels de votre profil.';
+
+  @override
+  String get gameStandingsTitle => 'CLASSEMENT';
+
+  @override
+  String get gameCompetitionNotFound => 'Compétition introuvable.';
+
+  @override
+  String get gameStandingsTemporarilyUnavailable =>
+      'Le classement est temporairement indisponible.';
+
+  @override
+  String get gameStandingsUnavailable => 'Classement indisponible';
+
+  @override
+  String get gamePositionShort => 'POS';
+
+  @override
+  String get gameTeamUpper => 'ÉQUIPE';
+
+  @override
+  String get gamePointsShort => 'PTS';
+
+  @override
+  String get gamePointsUpper => 'POINTS';
+
+  @override
+  String gameStandingRecord(
+    int played,
+    int goalsFor,
+    int goalsAgainst,
+    int difference,
+  ) {
+    return '${played}J · $goalsFor:$goalsAgainst · DB $difference';
+  }
+
+  @override
+  String get gameHeadToHead => 'FACE À FACE';
+
+  @override
+  String gameHeadToHeadEmpty(String home, String away) {
+    return 'L’historique des confrontations entre $home et $away apparaîtra ici.';
+  }
+
+  @override
+  String get gameWinDistribution => 'RÉPARTITION DES VICTOIRES';
+
+  @override
+  String get gameDraws => 'NULS';
+
+  @override
+  String gameTeamGoals(String team) {
+    return 'BUTS $team';
+  }
+
+  @override
+  String get gameRecentEncounters => 'CONFRONTATIONS RÉCENTES';
+
+  @override
+  String gameScore(int home, int away) {
+    return '$home - $away';
+  }
+
+  @override
+  String get gameTokenHistoryTitle => 'HISTORIQUE DES JETONS';
+
+  @override
+  String get gameTokenHistoryTemporarilyUnavailable =>
+      'L’historique des jetons est temporairement indisponible.';
+
+  @override
+  String get gameHistoryUnavailable => 'Historique indisponible';
+
+  @override
+  String get gameEarned => 'Gagné';
+
+  @override
+  String get gameSpent => 'Dépensé';
+
+  @override
+  String get gameAllUpper => 'TOUS';
+
+  @override
+  String get gameEarnedUpperFilter => 'GAGNÉS';
+
+  @override
+  String get gameSpentUpper => 'DÉPENSÉS';
+
+  @override
+  String get gameCredit => 'Crédit';
+
+  @override
+  String get gameDebit => 'Débit';
+
+  @override
+  String get gameLedgerUpdate => 'Mise à jour du registre';
+
+  @override
+  String gameTransactionSemantics(
+    String direction,
+    String headline,
+    String detail,
+    int amount,
+    int balance,
+    String date,
+  ) {
+    return 'Transaction de $direction, $headline, $detail, $amount points, solde de $balance points, $date';
+  }
+
+  @override
+  String get gameUnknownTime => 'Heure inconnue';
+
+  @override
+  String get gameClubFanZoneTitle => 'ZONE SUPPORTERS DU CLUB';
+
+  @override
+  String get gameClubFanZoneTemporarilyUnavailable =>
+      'La zone supporters du club est temporairement indisponible.';
+
+  @override
+  String get gameFanZoneUnavailable => 'Zone supporters indisponible';
+
+  @override
+  String get gameSupporterPulse => 'DYNAMIQUE DES SUPPORTERS';
+
+  @override
+  String get gameSupporterPulseDescription =>
+      'La dynamique réelle des supporters autour des compétitions actives, des choix de rencontres et des meilleurs clubs.';
+
+  @override
+  String get gameTopClubs => 'MEILLEURS CLUBS';
+
+  @override
+  String gameRankHash(int rank) {
+    return 'Nº $rank';
+  }
+
+  @override
+  String get gameSupporterLeans => 'TENDANCES DES SUPPORTERS';
+
+  @override
+  String gameSupporterLeansEmpty(String appName) {
+    return 'La répartition des choix de la communauté apparaîtra lorsque cette compétition aura des pronostics $appName actifs.';
+  }
+
+  @override
+  String gamePair(String first, String second) {
+    return '$first · $second';
+  }
+
+  @override
+  String gameSupporterLeanPercentage(String percentage) {
+    return '$percentage% des supporters penchent actuellement dans ce sens.';
+  }
+
+  @override
+  String get gameLeagueHubTitle => 'CENTRE DE LA LIGUE';
+
+  @override
+  String get gameLeagueDataTemporarilyUnavailable =>
+      'Les données de la ligue sont temporairement indisponibles.';
+
+  @override
+  String get gameLeagueUnavailable => 'Ligue indisponible';
+
+  @override
+  String get gameCompetition => 'COMPÉTITION';
+
+  @override
+  String get gameRegion => 'Région';
+
+  @override
+  String get gameLeague => 'Ligue';
+
+  @override
+  String get gameTeams => 'Équipes';
+
+  @override
+  String get gameFixtures => 'Rencontres';
+
+  @override
+  String get gameLeader => 'Leader';
+
+  @override
+  String get gameTopTable => 'HAUT DU TABLEAU';
+
+  @override
+  String get gameFullStandings => 'Classement complet';
+
+  @override
+  String gameLeagueStandingRecord(int played, int won, int drawn, int lost) {
+    return '${played}J · ${won}G ${drawn}N ${lost}P';
+  }
+
+  @override
+  String get gameEntrySubmitted => 'Participation envoyée';
+
+  @override
+  String get gameBonusEntryLive =>
+      'Votre participation bonus est maintenant active.';
+
+  @override
+  String get gameCouldNotSubmitBonus =>
+      'Impossible d’envoyer la participation bonus pour le moment.';
+
+  @override
+  String get gameKickoffTbd => 'Coup d’envoi à définir';
+
+  @override
+  String get gameBonusRound => 'Manche bonus';
+
+  @override
+  String get gameSubmitting => 'Envoi…';
+
+  @override
+  String get gameEntriesClosedSentence => 'Participations fermées';
+
+  @override
+  String get gameSubmitEntry => 'Envoyer la participation';
+
+  @override
+  String get gameBonusRoundActivationPending =>
+      'L’activation de la manche bonus est en attente.';
+
+  @override
+  String get gameBonusRoundTemporarilyUnavailable =>
+      'La manche bonus est temporairement indisponible.';
+
+  @override
+  String get gameBonusRoundUnavailable => 'Manche bonus indisponible';
+
+  @override
+  String get gamePointsPool => 'Réserve de points';
+
+  @override
+  String get gamePickAllFeatured =>
+      'Choisissez chaque rencontre en vedette avant le verrouillage de la manche.';
+
+  @override
+  String gamePicksComplete(int selected, int total) {
+    return '$selected choix sur $total terminés';
+  }
+
+  @override
+  String gameEntriesRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count participations restantes',
+      one: '1 participation restante',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameLeaders => 'Leaders';
+
+  @override
+  String get gameSocialHub => 'Espace social';
+
+  @override
+  String get gameClub => 'Club';
+
+  @override
+  String get gameSearchYourFriends => 'Rechercher vos amis';
+
+  @override
+  String get gameBrowse => 'Parcourir';
+
+  @override
+  String get gameViewAll => 'Tout voir';
+
+  @override
+  String get gameClubStandingsTemporarilyUnavailable =>
+      'Le classement du club est temporairement indisponible.';
+
+  @override
+  String get gameClubStandingsUnavailable => 'Classement du club indisponible';
+
+  @override
+  String get gameClubStanding => 'Classement dans le club';
+
+  @override
+  String get gameUnranked => 'Non classé';
+
+  @override
+  String get gameEarnPointsForClubTable =>
+      'Gagnez des points pour apparaître dans le classement du club.';
+
+  @override
+  String gamePointsEarnedSoFar(int count) {
+    return '$count pts gagnés jusqu’ici.';
+  }
+
+  @override
+  String gameNameYou(String name) {
+    return '$name (Vous)';
+  }
+
+  @override
+  String get gameChallengeFlowTemporarilyUnavailable =>
+      'Le parcours de défi est temporairement indisponible.';
+
+  @override
+  String gameHeadToHeadMessage(String appName, String home, String away) {
+    return 'Face-à-face $appName sur $home c. $away';
+  }
+
+  @override
+  String get gameChallengeSent => 'Défi envoyé';
+
+  @override
+  String get gameChallengeWaiting => 'Votre défi attend une réponse.';
+
+  @override
+  String get gameCouldNotSendChallenge =>
+      'Impossible d’envoyer le défi pour le moment.';
+
+  @override
+  String get gameSending => 'Envoi…';
+
+  @override
+  String get gameSendChallenge => 'Envoyer le défi';
+
+  @override
+  String get gameChallengeUnavailable => 'Défi indisponible';
+
+  @override
+  String get gameSupporter => 'Supporter';
+
+  @override
+  String get gameAddFriendsBeforeChallenge =>
+      'Ajoutez des amis avant d’envoyer un défi.';
+
+  @override
+  String get gameFindFriends => 'Trouver des amis';
+
+  @override
+  String get gameFixture => 'Rencontre';
+
+  @override
+  String get gamePick => 'Choix';
+
+  @override
+  String get gameSelected => 'Sélectionné';
+
+  @override
+  String get gameChoose => 'Choisir';
+
+  @override
+  String get gameTeamNotFound => 'Équipe introuvable.';
+
+  @override
+  String get gameTeamProfileTemporarilyUnavailable =>
+      'Le profil de l’équipe est temporairement indisponible.';
+
+  @override
+  String get gameSupporterActivityActiveClubOnly =>
+      'L’activité des supporters est disponible uniquement pour le club actif.';
+
+  @override
+  String get gameSupporterRoutingCurrentClubOnly =>
+      'Le registre des supporters et l’acheminement des contributions sont disponibles uniquement pour le club actuel de l’application.';
+
+  @override
+  String get gameContributionRouteNotPublished =>
+      'Ce club n’a pas encore publié de parcours de contribution actif.';
+
+  @override
+  String get gameClubSupporterDataUnavailable =>
+      'Les données des supporters du club sont temporairement indisponibles.';
+
+  @override
+  String get gameContributionsActiveClubOnly =>
+      'Les contributions sont disponibles uniquement pour le club actif.';
+
+  @override
+  String get gameContributionRouteUnavailable =>
+      'Parcours de contribution indisponible.';
+
+  @override
+  String get gameCouldNotOpenDialer =>
+      'Impossible d’ouvrir le composeur téléphonique.';
+
+  @override
+  String get gameDialerLaunchFailed => 'Échec du lancement du composeur.';
+
+  @override
+  String get gameEnterContributionAmount =>
+      'Saisissez le montant de la contribution';
+
+  @override
+  String gamePaymentRouteDescription(String recipient, String provider) {
+    return 'Vous paierez $recipient via $provider.';
+  }
+
+  @override
+  String gameAmountCurrency(String currency) {
+    return 'Montant ($currency)';
+  }
+
+  @override
+  String get gameDialNow => 'Composer maintenant';
+
+  @override
+  String get gameEnterValidAmount => 'Saisissez un montant valide.';
+
+  @override
+  String get gameTeamProfileTitle => 'PROFIL DE L’ÉQUIPE';
+
+  @override
+  String get gameTeamUnavailable => 'Équipe indisponible';
+
+  @override
+  String gameFoundedYear(int year) {
+    return 'Fondé en $year';
+  }
+
+  @override
+  String get gameTable => 'Classement';
+
+  @override
+  String get gameSquad => 'Effectif';
+
+  @override
+  String get gameOverview => 'Aperçu';
+
+  @override
+  String get gameMembers => 'Membres';
+
+  @override
+  String get gameContribute => 'Contribuer';
+
+  @override
+  String get gameAbout => 'À propos';
+
+  @override
+  String get gameLeaguePosition => 'POSITION DANS LA LIGUE';
+
+  @override
+  String get gamePlayedShort => 'J';
+
+  @override
+  String get gameWonShort => 'G';
+
+  @override
+  String get gameDrawnShort => 'N';
+
+  @override
+  String get gameLostShort => 'P';
+
+  @override
+  String get gameGoalDifferenceShort => 'DB';
+
+  @override
+  String get gameMomoContributionRoute => 'PARCOURS DE CONTRIBUTION MOMO';
+
+  @override
+  String gameUseProviderForClub(String provider, String club) {
+    return 'Utilisez $provider pour contribuer à $club.';
+  }
+
+  @override
+  String get gameThisClub => 'ce club';
+
+  @override
+  String get gameSupporterRegistryCurrentClubOnly =>
+      'Le registre des supporters est disponible uniquement pour le club actuel de l’application.';
+
+  @override
+  String get gameMembersUnavailable => 'Membres indisponibles';
+
+  @override
+  String get gameClubMembers => 'MEMBRES DU CLUB';
+
+  @override
+  String get gameTierGold => 'Or';
+
+  @override
+  String get gameTierSilver => 'Argent';
+
+  @override
+  String get gameTierBronze => 'Bronze';
+
+  @override
+  String get gameTierImena => 'Imena';
+
+  @override
+  String get gameTopContributors => 'MEILLEURS CONTRIBUTEURS';
+
+  @override
+  String get gameMomoContribution => 'CONTRIBUTION MOMO';
+
+  @override
+  String gameUseProviderInCountry(String provider, String country) {
+    return 'Utilisez $provider en $country pour contribuer à ce club.';
+  }
+
+  @override
+  String get gameEnterAmount => 'Saisir le montant';
+
+  @override
+  String gameEnterAmountDescription(String provider) {
+    return 'Choisissez le montant à envoyer via $provider.';
+  }
+
+  @override
+  String get gameConfirmInDialer => 'Confirmer dans le composeur';
+
+  @override
+  String gameConfirmInDialerDescription(String code) {
+    return 'Nous ouvrirons le composeur mobile money pour le code $code.';
+  }
+
+  @override
+  String get gameReconciliation => 'Rapprochement';
+
+  @override
+  String get gameReconciliationDescription =>
+      'Votre contribution est rapprochée de l’activité de votre club après confirmation du paiement.';
+
+  @override
+  String get gameOpeningDialer => 'Ouverture du composeur…';
+
+  @override
+  String get gameEnterAmountAndDial => 'Saisir le montant et composer';
+
+  @override
+  String gameAboutTeam(String team) {
+    return 'À PROPOS DE $team';
+  }
+
+  @override
+  String get gameThisClubUpper => 'CE CLUB';
+
+  @override
+  String get gameLocation => 'Lieu';
+
+  @override
+  String get gameCountry => 'Pays';
+
+  @override
+  String get gameFounded => 'Fondé';
+
+  @override
+  String get gameType => 'Type';
+
+  @override
+  String get gameAffiliatedClub => 'Club affilié';
+
+  @override
+  String get gameSelectedLeaderboardPeriod =>
+      'Période du classement sélectionnée';
+
+  @override
+  String get gameSelectPeriod => 'Sélectionner la période';
+
+  @override
+  String gameRankLabel(String rank) {
+    return 'Nº $rank';
+  }
+
+  @override
+  String get gameRankPending => 'Classement en attente';
+
+  @override
+  String gameAccuracyWins(String accuracy, int wins) {
+    String _temp0 = intl.Intl.pluralLogic(
+      wins,
+      locale: localeName,
+      other: '$wins victoires',
+      one: '1 victoire',
+    );
+    return '$accuracy% de précision · $_temp0';
+  }
+
+  @override
+  String gameSettledCount(int count) {
+    return '$count réglés';
+  }
+
+  @override
+  String gameTierAlias(String tier, String alias) {
+    return 'Niveau $tier · $alias';
+  }
+
+  @override
+  String gamePodiumRank(int rank) {
+    return 'Rang de podium $rank';
+  }
+
+  @override
+  String get gamePickRound => 'Manche de choix';
+
+  @override
+  String gameActivePicks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count choix actifs',
+      one: '1 choix actif',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameEarnUpToPoints(int count) {
+    return 'Gagnez jusqu’à $count pts';
+  }
+
+  @override
+  String get gamePickRoundEmpty => 'La manche de choix est vide';
+
+  @override
+  String get gamePickRoundEmptyDescription =>
+      'Ajoutez des choix depuis une rencontre et verrouillez-les ici.';
+
+  @override
+  String get gamePickRoundUpper => 'MANCHE DE CHOIX';
+
+  @override
+  String get gameAcca => 'Combiné';
+
+  @override
+  String gamePotentialPoints(int count) {
+    return 'Points potentiels : $count pts';
+  }
+
+  @override
+  String get gameLockInPicks => 'Verrouiller les choix';
+
+  @override
+  String get gameSomeSelectionsFailed =>
+      'Certains choix n’ont pas pu être envoyés.';
+
+  @override
+  String get gameCouldNotSubmitPicks => 'Impossible d’envoyer vos choix.';
+
+  @override
+  String get gameConfirmPicks => 'CONFIRMER LES CHOIX';
+
+  @override
+  String gameLockingCombo(int count) {
+    return 'Vous verrouillez $count choix en combiné.';
+  }
+
+  @override
+  String gameLockingPicks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Vous verrouillez $count choix.',
+      one: 'Vous verrouillez 1 choix.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameOutcomePotential(String outcome, int count) {
+    return '$outcome · +$count pts';
+  }
+
+  @override
+  String get gameTotalPotential => 'POTENTIEL TOTAL';
+
+  @override
+  String get gameGoBack => 'RETOUR';
+
+  @override
+  String gamePredictionsLocked(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pronostics verrouillés',
+      one: 'Pronostic verrouillé',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gameRoundId(String id) {
+    return 'ID de la manche : $id';
+  }
+
+  @override
+  String get gameShareUpper => 'PARTAGER';
+
+  @override
+  String get gameCopyUpper => 'COPIER';
+
+  @override
+  String get gameViewMyPredictions => 'VOIR MES PRONOSTICS';
+
+  @override
+  String get gameKeepBrowsing => 'CONTINUER À PARCOURIR';
+
+  @override
+  String get gameRemovePick => 'Retirer le choix';
+
+  @override
+  String get gameFans => 'Supporters';
+
+  @override
+  String get gameWallet => 'Portefeuille';
+
+  @override
+  String get gameMore => 'Plus';
+
+  @override
+  String get gameRoundUpper => 'MANCHE';
+
+  @override
+  String gameAccuracyRounds(String accuracy, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count manches',
+      one: '1 manche',
+    );
+    return '$accuracy% · $_temp0';
+  }
+
+  @override
+  String gamePointsRound(int count) {
+    return 'Manche de $count points';
+  }
+
+  @override
+  String get gamePointsRoundLabel => 'points par manche';
+
+  @override
+  String gamePointEntry(int count) {
+    return 'Participation de $count point';
+  }
+
+  @override
+  String gameFansCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count supporters',
+      one: '1 supporter',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gameChooseWdw => 'Choisir G/N/G';
+
+  @override
+  String get gameJoinRound => 'Rejoindre la manche';
+
+  @override
+  String gameSelectedOutcome(String outcome) {
+    return '$outcome sélectionné';
+  }
+
+  @override
+  String get gameChallengesTitle => 'DÉFIS';
+
+  @override
+  String get gameChallengesTemporarilyUnavailable =>
+      'Les défis sont temporairement indisponibles.';
+
+  @override
+  String get gameChallengesUnavailable => 'Défis indisponibles';
+
+  @override
+  String get gameDaily => 'QUOTIDIENS';
+
+  @override
+  String get gameWeeklyUpper => 'HEBDOMADAIRES';
+
+  @override
+  String get gameSeasonal => 'SAISONNIERS';
+
+  @override
+  String get gameCompleted => 'Terminé';
+
+  @override
+  String get gameChallengesRequireProfile =>
+      'Les défis apparaissent lorsque votre profil de supporter est actif.';
+
+  @override
+  String get gameWhatIsFet => 'QU’EST-CE QUE FET ?';
+
+  @override
+  String get gameWhatIsFetBody =>
+      'Les FET (jetons d’engagement des supporters) sont votre monnaie de supporter. Gagnez-les en participant à la vie du club : matchs, défis, pronostics et soutien à la communauté.';
+
+  @override
+  String get gameHowPredictionsWork => 'FONCTIONNEMENT DES PRONOSTICS';
+
+  @override
+  String get gameHowPredictionsWorkBody =>
+      'Parcourez les rencontres, choisissez un type de pronostic, puis verrouillez vos choix avant le coup d’envoi. Les bons choix rapportent des points selon leur difficulté.';
+
+  @override
+  String get gameEarnLevelRedeem => 'GAGNEZ, PROGRESSEZ ET ÉCHANGEZ';
+
+  @override
+  String get gameEarnLevelRedeemBody =>
+      'Votre solde augmente avec votre engagement. Grimpez au classement, débloquez des niveaux d’adhésion et échangez des récompenses dans la boutique du club.';
+
+  @override
+  String get gameBackUpper => 'RETOUR';
+
+  @override
+  String get gameGetStarted => 'COMMENCER';
+
+  @override
+  String get gameNext => 'SUIVANT';
+
+  @override
+  String get gameMyChallenges => 'MES DÉFIS';
+
+  @override
+  String get gameOpen => 'Ouverts';
+
+  @override
+  String get gameLocked => 'Verrouillés';
+
+  @override
+  String get gameSettled => 'Réglés';
+
+  @override
+  String get gameRefunded => 'Remboursés';
+
+  @override
+  String get gameLoadingChallenges => 'Chargement de vos défis';
+
+  @override
+  String get gameLoadingChallengesDescription =>
+      'Vérification des pools créés ou rejoints pour ce statut.';
+
+  @override
+  String get gameRefresh => 'Actualiser';
+
+  @override
+  String get gameRefreshingChallengeHistory =>
+      'Actualisation de l’historique des défis';
+
+  @override
+  String get gameRefreshingChallengeHistoryDescription =>
+      'Vos pools confirmés restent visibles pendant la vérification du statut récent.';
+
+  @override
+  String get gameChallengeHistoryReadOnly =>
+      'L’historique des défis est en lecture seule';
+
+  @override
+  String get gameChallengeHistoryReadOnlyDescription =>
+      'Vos pools confirmés restent visibles, mais l’ouverture des détails est désactivée pour cette version.';
+
+  @override
+  String get gameShowingSavedChallengeHistory =>
+      'Affichage de l’historique enregistré';
+
+  @override
+  String get gameShowingSavedChallengeHistoryDescription =>
+      'Reconnectez-vous et actualisez avant d’ouvrir un pool ou de vérifier un statut récent.';
+
+  @override
+  String get gameRefreshHistory => 'ACTUALISER L’HISTORIQUE';
+
+  @override
+  String gameNoFilteredChallenges(String filter) {
+    return 'Aucun défi $filter';
+  }
+
+  @override
+  String get gameCreateChallenge => 'Créer un défi';
+
+  @override
+  String gameChallengeCardSemantics(String home, String away, String summary) {
+    return '$home contre $away. $summary. Ouvrir les détails du défi.';
+  }
+
+  @override
+  String get gameOpensChallenge => 'Ouvre ce défi';
+
+  @override
+  String get gameChallengeDetailsUnavailable =>
+      'Les détails du défi sont indisponibles';
+
+  @override
+  String gameTeamsVersusMultiline(String home, String away) {
+    return '$home\ncontre\n$away';
+  }
+
+  @override
+  String get gameConnectionRestored => 'Connexion rétablie';
+
+  @override
+  String get gameChallengeHistoryOffline => 'Historique des défis hors ligne';
+
+  @override
+  String get gameRefreshLatestChallengeStatus =>
+      'Actualisez pour vérifier le statut récent de vos défis.';
+
+  @override
+  String get gameReconnectChallengePools =>
+      'Reconnectez-vous pour charger les pools créés ou rejoints.';
+
+  @override
+  String get gameChallengeHistoryUnavailable =>
+      'Historique des défis indisponible';
+
+  @override
+  String get gameChallengeHistoryPermissionDenied =>
+      'Votre accès actuel au club ne permet pas cet historique.';
+
+  @override
+  String get gameChallengeHistoryChanged => 'L’historique des défis a changé';
+
+  @override
+  String get gameChallengeHistoryChangedDescription =>
+      'Actualisez et vérifiez le statut récent avant d’ouvrir un défi.';
+
+  @override
+  String get gameChallengeHistoryTimedOut =>
+      'La vérification de l’historique a expiré';
+
+  @override
+  String get gameChallengeHistoryTimedOutDescription =>
+      'Aucun statut n’a été confirmé. Actualisez avant d’ouvrir un défi.';
+
+  @override
+  String get gameChallengeHistoryTryAgain =>
+      'Actualisez et réessayez lorsque l’historique est prêt.';
+
+  @override
+  String get gameOpenChallengesEmpty =>
+      'Créez ou rejoignez un pool pour voir ici un défi de score exact actif.';
+
+  @override
+  String get gameLockedChallengesEmpty =>
+      'Aucun défi rejoint n’attend actuellement de score final.';
+
+  @override
+  String get gameSettledChallengesEmpty =>
+      'Les résultats et points des défis terminés apparaîtront ici.';
+
+  @override
+  String get gameRefundedChallengesEmpty =>
+      'Les défis annulés ou remboursés apparaîtront ici.';
+
+  @override
+  String gameEarnedPoints(int count) {
+    return '$count pts gagnés';
+  }
+
+  @override
+  String get gameNoResultCredit => 'Aucun crédit de résultat';
+
+  @override
+  String gameReturnedPoints(int count) {
+    return '$count pts restitués';
+  }
+
+  @override
+  String gameMyPickScore(int home, int away) {
+    return 'Mon choix $home-$away';
+  }
+
+  @override
+  String get gameMoreOptions => 'Plus d’options';
+
+  @override
+  String get gameConnectToFanZone => 'Connectez-vous pour charger la Fan Zone.';
+
+  @override
+  String get gameOpeningFanZone => 'Ouverture de la Fan Zone';
+
+  @override
+  String get gameRefreshingFanZone => 'Actualisation de la Fan Zone';
+
+  @override
+  String get gameRefreshingFanZoneDescription =>
+      'Vos points, manches et pronostics actuels restent visibles pendant le chargement.';
+
+  @override
+  String get gameMatchdayRounds => 'Manches du jour de match';
+
+  @override
+  String get gameNoMatchdayRounds => 'Aucune manche de jour de match';
+
+  @override
+  String get gameTvGame => 'Jeu TV';
+
+  @override
+  String get gameReviewJoinedRounds =>
+      'Consultez les manches rejointes, cartes et résultats';
+
+  @override
+  String get gameEnterTvCode => 'Saisir le code TV';
+
+  @override
+  String get gameVenueCheckIn => 'Enregistrement sur place';
+
+  @override
+  String get gameVenueOrder => 'Commande sur place';
+
+  @override
+  String get gameVenueOrderDescription =>
+      'Commandez des boissons approuvées et suivez le retrait';
+
+  @override
+  String get gameLiveNow => 'En direct';
+
+  @override
+  String get gameThisWeek => 'Cette semaine';
+
+  @override
+  String get gamePointsBalanceTitle => 'Solde de points';
+
+  @override
+  String get gamePointsBalanceDescription =>
+      'Solde, gains, récompenses et activité';
+
+  @override
+  String get gameActivity => 'Activité';
+
+  @override
+  String get gameOpenPointsActivity => 'Voir les mouvements récents de points';
+
+  @override
+  String get gameSupporterClubs => 'Clubs de supporters';
+
+  @override
+  String get gameSupporterClubsDescription =>
+      'Fan-clubs, sections et groupes communautaires';
+
+  @override
+  String get gameMemberFans => 'Supporters membres';
+
+  @override
+  String get gameMemberFansDescription =>
+      'Ouvrir le registre des supporters dans une feuille';
+
+  @override
+  String get gameSupportClubDescription =>
+      'Projets et groupes de contribution des supporters';
+
+  @override
+  String get gameRedeemRewards => 'Utiliser les récompenses';
+
+  @override
+  String get gameRedeemRewardsDescription =>
+      'Utilisez vos points pour des récompenses et offres partenaires';
+
+  @override
+  String get gameAchievements => 'Réalisations';
+
+  @override
+  String get gameAchievementsDescription => 'Badges et statut de série';
+
+  @override
+  String get gameShareCard => 'Carte à partager';
+
+  @override
+  String get gameShareCardDescription =>
+      'Créez une carte de supporter à partager';
+
+  @override
+  String get gameConnectBeforeJoiningRound =>
+      'Connectez-vous avant de rejoindre cette manche.';
+
+  @override
+  String get gamePoolEntryFailed =>
+      'L’inscription à la cagnotte n’a pas pu être enregistrée.';
+
+  @override
+  String gameOutcomeJoined(String outcome) {
+    return '$outcome rejoint.';
+  }
+
+  @override
+  String gamePartnerSponsorsRound(String partner) {
+    return '$partner sponsorise cette manche. Faites un choix avant sa fermeture.';
+  }
+
+  @override
+  String get gameProjects => 'Projets';
+
+  @override
+  String get gameProjectsDescription =>
+      'Initiatives du club et besoins des campagnes';
+
+  @override
+  String get gameGroups => 'Groupes';
+
+  @override
+  String get gameGroupsDescription =>
+      'Rejoignez des groupes de contribution de supporters';
+
+  @override
+  String get gameQrSheetDescription =>
+      'L’affichage et le partage du QR restent dans cette feuille.';
+
+  @override
+  String get gameFanIdQrDisplay => 'Fan ID et affichage QR';
+
+  @override
+  String get gameQr => 'QR';
+
+  @override
+  String get gameBadgesEarnedDescription =>
+      'Obtenus grâce aux pronostics, présences et actions de soutien';
+
+  @override
+  String get gameStartStreak =>
+      'Rejoignez votre prochaine manche pour démarrer une série';
+
+  @override
+  String gameActivePlayDays(int count) {
+    return '$count jours de jeu actifs';
+  }
+
+  @override
+  String gameActionUnavailable(String description) {
+    return '$description. Indisponible.';
+  }
+
+  @override
+  String get gameFanZoneAccessUnavailable => 'Accès à la Fan Zone indisponible';
+
+  @override
+  String get gameFanZoneAccessUnavailableDescription =>
+      'Votre compte ne peut pas ouvrir la Fan Zone actuellement. Contactez l’assistance si cet accès devrait être disponible.';
+
+  @override
+  String get gameFanZoneChanged => 'La Fan Zone a changé';
+
+  @override
+  String get gameFanZoneChangedDescription =>
+      'Les données ont changé pendant votre consultation. Actualisez pour charger la version actuelle.';
+
+  @override
+  String get gameFanZoneSecurityTimedOut =>
+      'La vérification de sécurité a expiré';
+
+  @override
+  String get gameFanZoneSecurityTimedOutDescription =>
+      'Nous n’avons pas pu confirmer l’accès actuel. Actualisez avant de continuer.';
+
+  @override
+  String get gameFanZoneTemporarilyUnavailable =>
+      'La Fan Zone est temporairement indisponible.';
+
+  @override
+  String get gameSavedFanZoneContent =>
+      'Contenu enregistré affiché. Reconnectez-vous et actualisez pour les rencontres et soldes actuels.';
+
+  @override
+  String get gamePickSectionLabel => 'Choix';
+
+  @override
+  String get gamePicksLabel => 'Choix';
+
+  @override
+  String get gameRewardsLabel => 'Récompenses';
+
+  @override
+  String get gameStreakLabel => 'Série';
+
+  @override
+  String get gameBadgesLabel => 'Badges';
+
+  @override
+  String get gamePointsLabel => 'Points';
+
+  @override
+  String get gameAccuracyLabel => 'Précision';
+
+  @override
+  String get gameFanZoneUnavailableTitle => 'Fan Zone indisponible';
+
+  @override
+  String get venueOrderConfirmedToast =>
+      'Commande confirmée par le service du lieu. Payez uniquement sur place.';
+
+  @override
+  String get venueOrderingUnavailable => 'Commande sur place indisponible';
+
+  @override
+  String get venueFeatureDisabled =>
+      'Cette fonctionnalité contrôlée est désactivée pour ce club ou cette version.';
+
+  @override
+  String get venueBackToFanZone => 'RETOUR À LA FAN ZONE';
+
+  @override
+  String get venueOrderAccessDenied => 'Accès à la commande refusé';
+
+  @override
+  String get venueOrderAccessDeniedBody =>
+      'Ce compte ne peut pas utiliser le parcours de commande des supporters.';
+
+  @override
+  String get venueOrderAccessDeniedLoadBody =>
+      'Ce compte ne peut pas charger le parcours de commande des supporters.';
+
+  @override
+  String get venueCheckInBeforeOrdering =>
+      'Enregistrez-vous avant de commander';
+
+  @override
+  String get venueCheckInRequiredBody =>
+      'Un enregistrement confirmé est requis pour charger le menu de boissons approuvé.';
+
+  @override
+  String get venueCheckInFirst => 'S’ENREGISTRER D’ABORD';
+
+  @override
+  String get venueNoDrinksAvailable => 'Aucune boisson disponible';
+
+  @override
+  String get venueNoDrinksBody =>
+      'Le lieu enregistré n’a aucune boisson active approuvée actuellement.';
+
+  @override
+  String get venueRefreshMenu => 'ACTUALISER LE MENU';
+
+  @override
+  String get venueMenuUnavailableOffline => 'Menu indisponible hors connexion';
+
+  @override
+  String get venueMenuOfflineBody =>
+      'Reconnectez-vous avant de charger le menu. Aucune commande n’est mise en attente hors connexion.';
+
+  @override
+  String get venueTryAgain => 'RÉESSAYER';
+
+  @override
+  String get venueMenuCheckTimedOut => 'La vérification du menu a expiré';
+
+  @override
+  String get venueMenuCheckTimedOutBody =>
+      'L’application n’a pas pu établir un contexte sûr à temps. Effectuez une actualisation limitée.';
+
+  @override
+  String get venueMenuUnavailableBody =>
+      'Le lieu enregistré et son menu approuvé n’ont pas pu être chargés en toute sécurité.';
+
+  @override
+  String get venueOrderHero => 'Commander des boissons ici';
+
+  @override
+  String get venueOrderHeroBody =>
+      'Choisissez dans le menu de boissons approuvé. La file du personnel reste dans le portail du lieu.';
+
+  @override
+  String get venueApprovedDrinks => 'Boissons approuvées';
+
+  @override
+  String get venueOrderReview => 'Vérification de la commande';
+
+  @override
+  String venueOrderReviewValue(int count, String total) {
+    return '$count articles, $total';
+  }
+
+  @override
+  String get venueLegalAgeConfirmation => 'Confirmation de l’âge légal';
+
+  @override
+  String get venueNotSelected => 'Non sélectionné';
+
+  @override
+  String get venueAgeConfirmationRequired => 'Confirmation de l’âge requise';
+
+  @override
+  String get venueAgeConfirmationBody =>
+      'Confirmez uniquement si vous respectez l’âge légal du lieu. Le personnel peut encore vérifier votre éligibilité.';
+
+  @override
+  String get venueRemoveConfirmation => 'RETIRER LA CONFIRMATION';
+
+  @override
+  String get venueConfirmLegalAge => 'CONFIRMER L’ÂGE LÉGAL';
+
+  @override
+  String get venuePayAtVenue => 'Payer sur place';
+
+  @override
+  String get venuePaymentDisclaimer =>
+      'L’application crée uniquement la commande. Elle ne prend aucun paiement et ne prétend pas qu’il a réussi.';
+
+  @override
+  String get venueCreatingOrderUpper => 'CRÉATION DE LA COMMANDE';
+
+  @override
+  String get venueOrderConfirmedUpper => 'COMMANDE CONFIRMÉE';
+
+  @override
+  String get venueReviewCreateOrder => 'VÉRIFIER ET CRÉER';
+
+  @override
+  String get venueOrderProtections => 'Protections de la commande';
+
+  @override
+  String get venueDuplicateSubmission => 'Envoi en double';
+
+  @override
+  String get venueDuplicateSubmissionBody =>
+      'Une clé d’idempotence par tentative';
+
+  @override
+  String get venueOfflineBehavior => 'Comportement hors connexion';
+
+  @override
+  String get venueOfflineBehaviorBody =>
+      'Aucune mise en attente ni reprise automatique';
+
+  @override
+  String get venueStaffControls => 'Contrôles du personnel';
+
+  @override
+  String get venueStaffControlsBody => 'Portail du lieu uniquement';
+
+  @override
+  String venueItemsSelected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articles sélectionnés',
+      one: '1 article sélectionné',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get venueShowingSavedMenu => 'Menu enregistré affiché';
+
+  @override
+  String get venueShowingSavedMenuBody =>
+      'Reconnectez-vous avant de créer la commande. Rien n’est mis en attente ni rejoué hors connexion.';
+
+  @override
+  String get venueCreatingOrder => 'Création de la commande';
+
+  @override
+  String get venueCreatingOrderBody =>
+      'Attendez la confirmation du serveur. Ne répétez pas cette tentative.';
+
+  @override
+  String get venueOrderCreated => 'Commande créée';
+
+  @override
+  String venueOrderCreatedSummary(String status, String total) {
+    return '$status · $total. Le paiement reste externe et se fait sur place.';
+  }
+
+  @override
+  String get venueChooseDrink => 'Choisissez au moins une boisson';
+
+  @override
+  String get venueChooseDrinkBody =>
+      'La commande ne peut pas être créée avec une sélection vide.';
+
+  @override
+  String get venueCheckInRequired => 'Enregistrement requis';
+
+  @override
+  String get venueCheckInRejectedBody =>
+      'Le lieu n’a pas accepté cet enregistrement. Enregistrez-vous de nouveau avant de réessayer.';
+
+  @override
+  String get venueAgeSubmitBody =>
+      'Confirmez l’âge légal avant d’envoyer une boisson alcoolisée.';
+
+  @override
+  String get venueDrinkChanged => 'Une boisson sélectionnée a changé';
+
+  @override
+  String get venueDrinkChangedBody =>
+      'Actualisez le menu approuvé avant de réessayer.';
+
+  @override
+  String get venueOrderAttemptPaused => 'Tentative de commande suspendue';
+
+  @override
+  String get venueOrderAttemptPausedBody =>
+      'Une autre demande peut être active. Vérifiez la dernière commande avant de réessayer.';
+
+  @override
+  String get venueOrderConfirmationUncertain =>
+      'Confirmation de commande incertaine';
+
+  @override
+  String get venueOrderConfirmationUncertainBody =>
+      'Ne renvoyez pas la commande. Vérifiez la dernière commande avant de fermer.';
+
+  @override
+  String get venueOrderNotConfirmed => 'Commande non confirmée';
+
+  @override
+  String get venueOrderNotConfirmedBody =>
+      'Le serveur n’a pas confirmé cette commande. Fermez l’avertissement avant de réessayer.';
+
+  @override
+  String venueLatestOrder(String status) {
+    return 'Dernière commande : $status';
+  }
+
+  @override
+  String venueLatestOrderSummary(String total, String payment) {
+    return '$total · $payment.';
+  }
+
+  @override
+  String get venueReadyToOrder => 'Prêt à commander';
+
+  @override
+  String get venueReadyToOrderBody =>
+      'Choisissez des boissons approuvées, vérifiez le total, puis créez une seule fois.';
+
+  @override
+  String venueRemoveItem(String item) {
+    return 'Retirer $item';
+  }
+
+  @override
+  String venueAddItem(String item) {
+    return 'Ajouter $item';
+  }
+
+  @override
+  String venueDrinkSemantics(int count, String price) {
+    return '$count sélectionnés, $price chacun';
+  }
+
+  @override
+  String get venueAgeRestricted => 'Réservé à l’âge légal';
+
+  @override
+  String get venueWaitingForVenue => 'En attente du lieu';
+
+  @override
+  String get venueAccepted => 'Acceptée';
+
+  @override
+  String get venuePreparing => 'En préparation';
+
+  @override
+  String get venueReadyForPickup => 'Prête à retirer';
+
+  @override
+  String get venueServed => 'Servie';
+
+  @override
+  String get venueStatusPending => 'Statut en attente';
+
+  @override
+  String get venuePaidAtVenue => 'Payée sur place';
+
+  @override
+  String get venuePaymentWaived => 'Paiement annulé';
+
+  @override
+  String get venueRefundedExternally => 'Remboursée à l’extérieur';
+
+  @override
+  String get venuePaymentPending => 'Paiement en attente sur place';
+
+  @override
+  String get venueCheckinTitle => 'Enregistrement sur place';
+
+  @override
+  String get venueCheckinUnavailable => 'Enregistrement sur place indisponible';
+
+  @override
+  String get venueCheckinAccessDenied => 'Accès à l’enregistrement refusé';
+
+  @override
+  String get venueCheckinAccessDeniedBody =>
+      'Ce compte ne peut pas utiliser le parcours d’enregistrement des supporters.';
+
+  @override
+  String get venueCheckinSafeStateBody =>
+      'Le parcours n’a pas pu établir un état d’enregistrement sécurisé.';
+
+  @override
+  String get venueCheckinHero => 'Enregistrez-vous dans un lieu approuvé';
+
+  @override
+  String get venueCheckinHeroBody =>
+      'Saisissez le code TV ou QR tournant après votre arrivée. L’enregistrement des supporters n’expose jamais les contrôles du personnel ou d’administration.';
+
+  @override
+  String get venueCheckinCodeLabel => 'Code du lieu';
+
+  @override
+  String get venueCheckinInputLabel => 'Code TV ou QR';
+
+  @override
+  String get venueCheckinInputHint => 'Saisissez au moins 4 caractères';
+
+  @override
+  String get venueCheckinCheckingCodeUpper => 'VÉRIFICATION DU CODE';
+
+  @override
+  String get venueCheckinActionUpper => 'S’ENREGISTRER';
+
+  @override
+  String get venueCheckinLocationConsentSemantics =>
+      'Consentement à la vérification du lieu';
+
+  @override
+  String get venueCheckinOptionalLocationReview =>
+      'Vérification facultative du lieu';
+
+  @override
+  String get venueCheckinConsentMarkedBody =>
+      'Le consentement est indiqué pour cette tentative. Cette version n’envoie toujours aucune coordonnée ; les campagnes exigeant la localisation restent en attente d’examen.';
+
+  @override
+  String get venueCheckinNoLocationBody =>
+      'La localisation précise n’est pas collectée dans cette version. Vous pouvez indiquer votre consentement, mais les campagnes exigeant la localisation restent en attente d’examen.';
+
+  @override
+  String get venueCheckinRemoveConsentUpper => 'RETIRER LE CONSENTEMENT';
+
+  @override
+  String get venueCheckinMarkConsentUpper => 'DONNER LE CONSENTEMENT';
+
+  @override
+  String get venueCheckinPrivacyBoundary => 'Limite de confidentialité';
+
+  @override
+  String get venueCheckinPrivacyBoundaryBody =>
+      'Les codes tournants bruts sont hachés avant l’envoi et ne sont pas conservés par l’application. Aucune localisation précise n’est collectée.';
+
+  @override
+  String get venueCheckinPausedOffline =>
+      'Enregistrement suspendu hors connexion';
+
+  @override
+  String get venueCheckinPausedOfflineBody =>
+      'Reconnectez-vous avant l’envoi. Aucun enregistrement n’est mis en attente ni rejoué.';
+
+  @override
+  String get venueCheckinCheckingCode => 'Vérification du code du lieu';
+
+  @override
+  String get venueCheckinCheckingCodeBody =>
+      'Attendez le résultat du serveur. Ne répétez pas cet enregistrement.';
+
+  @override
+  String get venueCheckinPendingReview => 'Enregistrement en attente d’examen';
+
+  @override
+  String get venueCheckinConfirmed => 'Enregistrement confirmé';
+
+  @override
+  String get venueCheckinPendingReviewBody =>
+      'Le code du lieu a été accepté, mais une vérification contrôlée du lieu ou de la campagne reste nécessaire.';
+
+  @override
+  String venueCheckinFetRecorded(int count) {
+    return '+$count FET enregistrés pour cet enregistrement.';
+  }
+
+  @override
+  String get venueCheckinConfirmedNoReward =>
+      'Le lieu a accepté cet enregistrement. Aucune récompense n’était promise.';
+
+  @override
+  String get venueCheckinReady => 'Prêt pour l’enregistrement sur place';
+
+  @override
+  String get venueCheckinReadyBody =>
+      'Utilisez le code actuel uniquement après votre arrivée sur place.';
+
+  @override
+  String get venueCheckinInvalidCode => 'Code non accepté';
+
+  @override
+  String get venueCheckinInvalidCodeBody =>
+      'Saisissez le code TV ou QR actuel affiché sur place.';
+
+  @override
+  String get venueCheckinExpiredCode => 'Code du lieu expiré';
+
+  @override
+  String get venueCheckinExpiredCodeBody =>
+      'Consultez l’écran du lieu pour obtenir le code tournant actuel.';
+
+  @override
+  String get venueCheckinAlreadyCheckedIn => 'Déjà enregistré';
+
+  @override
+  String get venueCheckinAlreadyCheckedInBody =>
+      'Le serveur a trouvé un enregistrement existant. Aucune récompense en double n’a été créée.';
+
+  @override
+  String get venueCheckinCampaignUnavailable =>
+      'Campagne d’enregistrement indisponible';
+
+  @override
+  String get venueCheckinCampaignUnavailableBody =>
+      'La campagne est suspendue, inactive ou a atteint son budget contrôlé.';
+
+  @override
+  String get venueCheckinConflict => 'Conflit d’enregistrement';
+
+  @override
+  String get venueCheckinConflictBody =>
+      'Une autre tentative peut déjà être active. Confirmez l’état du lieu avant de réessayer.';
+
+  @override
+  String get venueCheckinConfirmationUncertain =>
+      'Confirmation d’enregistrement incertaine';
+
+  @override
+  String get venueCheckinConfirmationUncertainBody =>
+      'Ne répétez pas encore le code. Vérifiez votre activité sur place, puis fermez cet avertissement.';
+
+  @override
+  String get venueCheckinUnavailableShort => 'Enregistrement indisponible';
+
+  @override
+  String get venueCheckinUnavailableBody =>
+      'Le serveur n’a pas confirmé la tentative. Fermez cet avertissement avant de réessayer.';
+
+  @override
+  String get challengeConfirmTitle => 'CONFIRMER LE DÉFI';
+
+  @override
+  String challengeConfirmPoints(int count) {
+    return 'CONFIRMER $count pts';
+  }
+
+  @override
+  String get challengeCreateTitle => 'CRÉER UN DÉFI';
+
+  @override
+  String get challengeFindingFixtures => 'Recherche des prochaines rencontres';
+
+  @override
+  String get challengeFindingFixturesBody =>
+      'Vérification des matchs encore ouverts aux défis de score exact.';
+
+  @override
+  String get challengeNoFixtures => 'Aucune rencontre disponible';
+
+  @override
+  String get challengeNoFixturesBody =>
+      'Aucun prochain match n’est encore ouvert à un nouveau défi.';
+
+  @override
+  String get challengeRefreshFixtures => 'Actualiser les rencontres';
+
+  @override
+  String get challengeCreating => 'Création du défi';
+
+  @override
+  String get challengeCreatingBody =>
+      'Votre rencontre, score et mise restent visibles pendant la confirmation.';
+
+  @override
+  String get challengeCreationUnavailable => 'Création de défi indisponible';
+
+  @override
+  String get challengeCreationDisabledBody =>
+      'Vous pouvez consulter le formulaire, mais la création est désactivée pour cette version.';
+
+  @override
+  String get challengeShowingSavedFixtures =>
+      'Rencontres enregistrées affichées';
+
+  @override
+  String get challengeShowingSavedFixturesBody =>
+      'Reconnectez-vous et actualisez avant de modifier le score ou créer un défi.';
+
+  @override
+  String get challengeRefreshFixturesUpper => 'ACTUALISER LES RENCONTRES';
+
+  @override
+  String get challengeExactScore => 'Score exact';
+
+  @override
+  String challengeSelectedScore(int home, int away) {
+    return 'Score exact sélectionné : $home à $away';
+  }
+
+  @override
+  String get challengeVersusUpper => 'CONTRE';
+
+  @override
+  String get challengeEntryPoints => 'Points d’entrée';
+
+  @override
+  String get challengeEntryOptionsUnavailable =>
+      'Les options d’entrée au défi ne sont pas encore disponibles.';
+
+  @override
+  String challengeStakePoints(int count) {
+    return '$count pts';
+  }
+
+  @override
+  String get challengeCheckingBalance =>
+      'Vérification de votre solde de points.';
+
+  @override
+  String get challengeBalanceUnavailable =>
+      'Votre solde est indisponible. Actualisez avant de créer ce défi.';
+
+  @override
+  String get challengeBalanceInsufficient =>
+      'Votre solde actuel ne couvre pas cette entrée.';
+
+  @override
+  String get challengeCreatingUpper => 'CRÉATION DU DÉFI';
+
+  @override
+  String get challengeCreationOffline => 'Création de défi hors connexion';
+
+  @override
+  String get challengeRefreshLatestFixtures =>
+      'Actualisez les dernières rencontres avant de créer un défi.';
+
+  @override
+  String get challengeReconnectFixtures =>
+      'Reconnectez-vous pour charger les rencontres disponibles.';
+
+  @override
+  String get challengeAccessDeniedBody =>
+      'Votre accès actuel au club ne permet pas un nouveau défi.';
+
+  @override
+  String get challengeDetailsChanged => 'Les détails du défi ont changé';
+
+  @override
+  String get challengeDetailsChangedBody =>
+      'Actualisez les rencontres et vérifiez votre choix avant de réessayer.';
+
+  @override
+  String get challengeSecurityTimedOut =>
+      'La vérification de sécurité a expiré';
+
+  @override
+  String get challengeSecurityTimedOutBody =>
+      'Aucun défi n’a été confirmé. Actualisez avant de réessayer.';
+
+  @override
+  String get challengeTryAgainBody =>
+      'Actualisez et réessayez lorsque les rencontres seront disponibles.';
+
+  @override
+  String challengePreviewSemantics(
+    String homeTeam,
+    String awayTeam,
+    int homeScore,
+    int awayScore,
+    int stake,
+    int balance,
+  ) {
+    return 'Aperçu du défi. $homeTeam contre $awayTeam. Votre choix $homeScore à $awayScore. Entrée $stake points. Solde $balance points.';
+  }
+
+  @override
+  String get challengePreview => 'APERÇU DU DÉFI';
+
+  @override
+  String get challengeYourPick => 'Votre choix';
+
+  @override
+  String challengeBalancePoints(int count) {
+    return 'Solde $count pts';
+  }
+
+  @override
+  String get challengeLocksAtKickoff => 'Verrouillage au coup d’envoi';
+
+  @override
+  String challengeFixtureOption(String home, String away, String competition) {
+    return '$home vs $away • $competition';
+  }
+
+  @override
+  String challengeDecrease(String label) {
+    return 'Diminuer $label';
+  }
+
+  @override
+  String challengeIncrease(String label) {
+    return 'Augmenter $label';
+  }
+
+  @override
+  String get tvControllerTitle => 'Contrôleur de jeu';
+
+  @override
+  String get tvControllerUnavailable => 'Contrôleur indisponible';
+
+  @override
+  String get tvControllerUnavailableBody =>
+      'Le contrôle du jeu en direct n’est pas activé pour cette version ou ce club.';
+
+  @override
+  String get tvLiveSessionNotFound => 'Session en direct introuvable';
+
+  @override
+  String get tvLiveSessionNotFoundBody =>
+      'Ce lien de jeu est indisponible ou n’est plus actif.';
+
+  @override
+  String get tvLiveAccessDenied => 'Accès à la session refusé';
+
+  @override
+  String get tvLiveAccessDeniedBody =>
+      'Ce compte ne peut pas ouvrir le contrôleur demandé.';
+
+  @override
+  String get tvControllerOffline => 'Contrôleur hors connexion';
+
+  @override
+  String get tvControllerOfflineBody =>
+      'Reconnectez-vous pour charger la session. Les réponses ne sont jamais mises en attente.';
+
+  @override
+  String get tvSessionCheckTimedOut => 'La vérification de session a expiré';
+
+  @override
+  String get tvSessionCheckTimedOutBody =>
+      'Le contrôleur n’a pas pu confirmer un état sûr. Effectuez une actualisation limitée.';
+
+  @override
+  String get tvControllerLoadUnavailable => 'Contrôleur indisponible';
+
+  @override
+  String get tvControllerLoadUnavailableBody =>
+      'La session n’a pas pu être chargée. Aucun détail privé n’a été affiché.';
+
+  @override
+  String get tvLastConfirmedOffline =>
+      'Le dernier état confirmé est affiché. Les réponses et adhésions restent bloquées et ne sont jamais mises en attente.';
+
+  @override
+  String get tvConfirmingMembership => 'Confirmation de l’adhésion';
+
+  @override
+  String get tvConfirmingAnswer => 'Confirmation de la réponse';
+
+  @override
+  String get tvWaitingForServer =>
+      'Attendez le serveur en direct. Ne fermez pas et ne répétez pas cette action.';
+
+  @override
+  String get tvLiveStateChanged => 'L’état en direct a changé';
+
+  @override
+  String get tvLiveStateChangedBody =>
+      'Actualisez le contrôleur avant de rejoindre ou choisir une autre réponse.';
+
+  @override
+  String get tvRefreshUpper => 'ACTUALISER';
+
+  @override
+  String get tvConfirmationUncertain => 'Confirmation incertaine';
+
+  @override
+  String get tvConfirmationUncertainBody =>
+      'Le serveur n’a pas confirmé la dernière action. Elle reste bloquée jusqu’à une actualisation officielle.';
+
+  @override
+  String get tvLiveUpdateUnavailable => 'Mise à jour indisponible';
+
+  @override
+  String get tvLiveUpdateUnavailableBody =>
+      'Le dernier état confirmé est conservé. Actualisez avant de continuer.';
+
+  @override
+  String get tvUsingLastConfirmed => 'Dernier état confirmé utilisé';
+
+  @override
+  String get tvUsingLastConfirmedBody =>
+      'Les commandes restent bloquées jusqu’à l’actualisation de la session.';
+
+  @override
+  String tvCurrentSession(String code) {
+    return 'Session en direct actuelle $code';
+  }
+
+  @override
+  String get tvLiveSessionUpper => 'SESSION EN DIRECT';
+
+  @override
+  String get tvAnswerPad => 'Pavé de réponse';
+
+  @override
+  String get tvWaitingForChoices =>
+      'Attente de la publication des choix par l’hôte sur la TV.';
+
+  @override
+  String get tvChooseOnce =>
+      'Choisissez une fois. Le serveur confirme la première réponse acceptée.';
+
+  @override
+  String get tvConfirmedStateUnlocks =>
+      'Seul l’état serveur confirmé peut débloquer une autre réponse.';
+
+  @override
+  String get tvJoinSessionUpper => 'REJOINDRE CETTE SESSION';
+
+  @override
+  String get tvConfirmLeaderboardName =>
+      'Confirmez le nom affiché au classement TV.';
+
+  @override
+  String get tvDisplayName => 'Nom affiché';
+
+  @override
+  String get tvDisplayNameHelper => '2 à 48 caractères';
+
+  @override
+  String get tvJoinSession => 'Rejoindre la session';
+
+  @override
+  String tvAnswerSemantics(String answer) {
+    return 'Réponse $answer';
+  }
+
+  @override
+  String get tvSubmitAnswer => 'Envoyer la réponse';
+
+  @override
+  String get tvAnswerLocked => 'Réponse verrouillée';
+
+  @override
+  String get tvTeamStandings => 'Classement des équipes';
+
+  @override
+  String get tvStandingsEmpty =>
+      'Le classement apparaît après l’ouverture de la manche par l’hôte TV.';
+
+  @override
+  String get tvPhaseJoin => 'Rejoindre';
+
+  @override
+  String get tvPhaseWaiting => 'En attente';
+
+  @override
+  String get tvPhaseAnswering => 'Réponse';
+
+  @override
+  String get tvPhaseReveal => 'Révélation';
+
+  @override
+  String get tvPhaseStandings => 'Classement';
+
+  @override
+  String get tvPhaseReconnecting => 'Reconnexion';
+
+  @override
+  String get walletRewardsUnavailable => 'Récompenses indisponibles';
+
+  @override
+  String get walletDisabledBody =>
+      'Les points et l’activité des récompenses sont désactivés pour cette version.';
+
+  @override
+  String get walletNoActivity => 'Aucune activité de points';
+
+  @override
+  String get walletNoActivityBody =>
+      'Votre solde confirmé et l’activité des récompenses apparaîtront ici.';
+
+  @override
+  String get walletOffline => 'Récompenses hors connexion';
+
+  @override
+  String get walletOfflineBody =>
+      'Reconnectez-vous pour charger votre solde confirmé. Rien n’est mis en attente.';
+
+  @override
+  String get walletAccessDenied => 'Accès aux récompenses refusé';
+
+  @override
+  String get walletAccessDeniedBody =>
+      'Ce compte ne peut pas ouvrir le registre privé des points.';
+
+  @override
+  String get walletCheckTimedOut => 'La vérification des points a expiré';
+
+  @override
+  String get walletCheckTimedOutBody =>
+      'L’application n’a pas pu confirmer votre registre privé à temps. Effectuez une actualisation limitée.';
+
+  @override
+  String get walletUnavailableBody =>
+      'Votre registre de points n’a pas pu être chargé. Aucune activité privée n’a été affichée.';
+
+  @override
+  String walletBalanceValue(String points) {
+    return '$points pts';
+  }
+
+  @override
+  String get walletUsed => 'Utilisés';
+
+  @override
+  String walletHistoricalPoints(String points) {
+    return '$points points proviennent de récompenses antérieures à l’activation de l’historique.';
+  }
+
+  @override
+  String get walletEarn => 'Gagner';
+
+  @override
+  String get walletEarnBody =>
+      'Gagnez des points grâce aux initiatives et promotions partenaires.';
+
+  @override
+  String get walletUseBody =>
+      'Utilisez les points pour les récompenses, activités de match et défis Fan Zone.';
+
+  @override
+  String get walletRewardsBody =>
+      'Utilisez les points pour les avantages de match et récompenses partenaires.';
+
+  @override
+  String get walletRewardsEmptyBody =>
+      'Les récompenses disponibles apparaissent lorsque le club ou ses partenaires les publient.';
+
+  @override
+  String get walletActivityEmptyBody =>
+      'L’activité apparaît après des récompenses partenaires ou actions de match.';
+
+  @override
+  String get walletShowingSaved => 'Points enregistrés affichés';
+
+  @override
+  String get walletShowingSavedBody =>
+      'Reconnectez-vous pour le dernier solde et l’activité. Rien n’est mis en attente.';
+
+  @override
+  String get walletRefreshing => 'Actualisation des points';
+
+  @override
+  String get walletRefreshingBody =>
+      'Le solde confirmé reste visible pendant le chargement du registre.';
+
+  @override
+  String get walletChangedElsewhere => 'Les points ont changé ailleurs';
+
+  @override
+  String get walletChangedElsewhereBody =>
+      'Le solde enregistré reste visible. Actualisez pour confirmer le registre.';
+
+  @override
+  String get walletRefreshTimedOut => 'L’actualisation des points a expiré';
+
+  @override
+  String get walletRefreshTimedOutBody =>
+      'Le solde enregistré reste affiché. Effectuez une actualisation limitée.';
+
+  @override
+  String get walletMayBeOutdated => 'Les points peuvent être obsolètes';
+
+  @override
+  String get walletMayBeOutdatedBody =>
+      'Le dernier solde confirmé reste visible pendant l’indisponibilité du service.';
+
+  @override
+  String get walletSavedUntilRefresh =>
+      'Le dernier solde confirmé reste visible jusqu’à une actualisation réussie.';
+
+  @override
+  String get feedChallengeTitle => 'DÉFI';
+
+  @override
+  String get feedDescription =>
+      'Cagnottes de score exact pour de vraies rencontres. Créez, rejoignez une fois et obtenez le résultat officiel automatiquement.';
+
+  @override
+  String get feedCreateNew => 'CRÉER UN NOUVEAU DÉFI';
+
+  @override
+  String get feedOpening => 'Ouverture des défis';
+
+  @override
+  String get feedOpeningBody =>
+      'Vérification des rencontres, cagnottes et défis rejoints.';
+
+  @override
+  String get feedRefreshing => 'Actualisation des défis';
+
+  @override
+  String get feedRefreshingBody =>
+      'Les rencontres, cagnottes et défis rejoints restent visibles.';
+
+  @override
+  String get feedActionsUnavailable => 'Actions de défi indisponibles';
+
+  @override
+  String get feedActionsUnavailableBody =>
+      'Vous pouvez consulter les cagnottes, mais créer et rejoindre sont désactivés pour cette version.';
+
+  @override
+  String get feedShowingSaved => 'Défis enregistrés affichés';
+
+  @override
+  String get feedShowingSavedBody =>
+      'Reconnectez-vous avant de créer ou rejoindre une cagnotte.';
+
+  @override
+  String get feedUpdatesPaused => 'Mises à jour des défis suspendues';
+
+  @override
+  String get feedEmpty => 'Aucun défi disponible';
+
+  @override
+  String get feedEmptyBody =>
+      'De nouvelles cagnottes apparaîtront quand des rencontres admissibles seront ouvertes.';
+
+  @override
+  String get feedFeatured => 'Défis populaires / à la une';
+
+  @override
+  String get feedSeeAll => 'Tout voir';
+
+  @override
+  String get feedOpenChallenges => 'Défis ouverts';
+
+  @override
+  String get feedEndingSoon => 'Fin prochaine';
+
+  @override
+  String get feedEndingSoonAction => 'Fin prochaine';
+
+  @override
+  String get feedMyChallenges => 'Mes défis';
+
+  @override
+  String get feedSettledChallenges => 'Défis réglés';
+
+  @override
+  String get feedResults => 'Résultats';
+
+  @override
+  String get feedNoFilterMatches => 'Aucun résultat pour ce filtre';
+
+  @override
+  String get feedNoFilterMatchesBody =>
+      'Essayez une autre vue ou créez une nouvelle cagnotte.';
+
+  @override
+  String get feedAll => 'Tous';
+
+  @override
+  String get feedHighPool => 'Cagnotte élevée';
+
+  @override
+  String get feedMostParticipants => 'Plus de participants';
+
+  @override
+  String get feedMyJoined => 'Mes participations';
+
+  @override
+  String get feedChallengesOffline => 'Défis indisponibles hors connexion';
+
+  @override
+  String get feedChallengesOfflineBody =>
+      'Reconnectez-vous pour charger les rencontres et cagnottes actuelles.';
+
+  @override
+  String get feedAccessUnavailable => 'Accès aux défis indisponible';
+
+  @override
+  String get feedAccessUnavailableBody =>
+      'Votre accès actuel ne permet pas ces cagnottes.';
+
+  @override
+  String get feedDataChanged => 'Les données des défis ont changé';
+
+  @override
+  String get feedDataChangedBody =>
+      'Actualisez avant de consulter ou rejoindre les dernières cagnottes.';
+
+  @override
+  String get feedSecurityTimedOutBody =>
+      'Aucune action n’a été effectuée. Actualisez avant de réessayer.';
+
+  @override
+  String get feedUnavailable => 'Fil des défis indisponible';
+
+  @override
+  String get feedUnavailableBody =>
+      'Les cagnottes actuelles n’ont pas pu être chargées en toute sécurité.';
+
+  @override
+  String get detailTitle => 'DÉTAIL DU DÉFI';
+
+  @override
+  String get detailOpening => 'Ouverture du défi';
+
+  @override
+  String get detailOpeningBody =>
+      'Vérification de la cagnotte, des entrées et du résultat officiel.';
+
+  @override
+  String get detailNotFound => 'Défi introuvable';
+
+  @override
+  String get detailNotFoundBody =>
+      'Cette cagnotte est peut-être terminée, supprimée ou indisponible pour votre club.';
+
+  @override
+  String get detailBack => 'Retour aux défis';
+
+  @override
+  String get detailPendingBody =>
+      'La cagnotte et le score choisi restent visibles pendant la confirmation.';
+
+  @override
+  String get detailActionsUnavailableBody =>
+      'Vous pouvez consulter cette cagnotte, mais rejoindre et annuler sont désactivés.';
+
+  @override
+  String get detailShowingSaved => 'Défi enregistré affiché';
+
+  @override
+  String get detailShowingSavedBody =>
+      'Reconnectez-vous et actualisez avant de rejoindre, modifier le score ou annuler.';
+
+  @override
+  String get detailRefreshUpper => 'ACTUALISER LE DÉFI';
+
+  @override
+  String get detailMyPickUpper => 'MON CHOIX';
+
+  @override
+  String get detailMyEntry => 'Mon entrée';
+
+  @override
+  String get detailJoinUpper => 'REJOINDRE CE DÉFI';
+
+  @override
+  String get detailPickScoreBody =>
+      'Choisissez le score exact avant le verrouillage.';
+
+  @override
+  String get detailResults => 'RÉSULTATS';
+
+  @override
+  String get detailOfficialScore => 'Score officiel';
+
+  @override
+  String get detailWinners => 'Gagnants';
+
+  @override
+  String get detailLosers => 'Perdants';
+
+  @override
+  String get detailPointsPerWinner => 'Points / gagnant';
+
+  @override
+  String get detailEntries => 'ENTRÉES';
+
+  @override
+  String get detailEntryCancelled => 'Entrée annulée';
+
+  @override
+  String get detailWaitingResult =>
+      'En attente de la vérification du résultat officiel.';
+
+  @override
+  String detailScoreSemantics(String label, int value) {
+    return 'Score de $label : $value';
+  }
+
+  @override
+  String get detailAccessUnavailable => 'Accès au défi indisponible';
+
+  @override
+  String get detailAccessUnavailableBody =>
+      'Votre compte ne peut pas consulter ou modifier ce défi.';
+
+  @override
+  String get detailDataChangedBody =>
+      'Actualisez avant de consulter les entrées ou modifier ce défi.';
+
+  @override
+  String get detailSecurityTimedOutBody =>
+      'Aucune action n’a été confirmée. Actualisez avant de réessayer.';
+
+  @override
+  String get detailUnavailable => 'Défi indisponible';
+
+  @override
+  String get detailUnavailableBody =>
+      'Les derniers détails n’ont pas pu être confirmés. Actualisez pour réessayer.';
+
+  @override
+  String get detailJoinedSuccess => 'Défi rejoint avec succès.';
+
+  @override
+  String get detailCancelledSuccess => 'Défi annulé.';
+
+  @override
+  String get detailJoining => 'Participation au défi';
+
+  @override
+  String get detailCancelling => 'Annulation du défi';
+
+  @override
+  String get detailRefreshing => 'Actualisation du défi';
+
+  @override
+  String get detailJoiningUpper => 'PARTICIPATION EN COURS';
+
+  @override
+  String detailJoinWithPoints(int count) {
+    return 'REJOINDRE AVEC $count pts';
+  }
+
+  @override
+  String get detailCancellingUpper => 'ANNULATION EN COURS';
+
+  @override
+  String get detailCancelUpper => 'ANNULER LE DÉFI';
+
+  @override
+  String get detailConnectionRestored => 'Connexion rétablie';
+
+  @override
+  String get detailOffline => 'Détails du défi hors connexion';
+
+  @override
+  String get detailRefreshBeforeAction =>
+      'Actualisez pour vérifier la cagnotte avant de rejoindre ou annuler.';
+
+  @override
+  String get detailReconnectBeforeAction =>
+      'Reconnectez-vous pour vérifier la cagnotte avant de rejoindre ou annuler.';
+
+  @override
+  String get detailEntryActive => 'ACTIVE';
+
+  @override
+  String get detailEntryWinner => 'GAGNANT';
+
+  @override
+  String get detailEntryLoser => 'PERDANT';
+
+  @override
+  String get detailEntryRefunded => 'REMBOURSÉE';
+
+  @override
+  String get detailEntryCancelledStatus => 'ANNULÉE';
+
+  @override
+  String get gameShareOptionsClosed =>
+      'Options de partage fermées. Confirmez la destination avant de publier.';
+
+  @override
+  String get gameShareActionsUnavailable => 'Actions de partage indisponibles';
+
+  @override
+  String get gameShareActionsUnavailableDescription =>
+      'Vous pouvez revenir à la Fan Zone, mais le partage est désactivé dans cette version.';
+
+  @override
+  String get gameBackToFanZoneUpper => 'RETOUR À LA FAN ZONE';
+
+  @override
+  String get gamePredictionAccessDenied => 'Accès aux pronostics refusé';
+
+  @override
+  String get gamePredictionAccessDeniedDescription =>
+      'Ce compte ne peut pas ouvrir l’historique des pronostics pour le partager.';
+
+  @override
+  String get gameMakePickFirst => 'Faites d’abord un pronostic';
+
+  @override
+  String get gameShareCardsUnlock =>
+      'Les cartes à partager sont disponibles après un pronostic de jour de match.';
+
+  @override
+  String get gameBackToPicksUpper => 'RETOUR AUX PRONOSTICS';
+
+  @override
+  String get gameShareCardsOffline => 'Cartes à partager hors connexion';
+
+  @override
+  String get gameShareCardsOfflineDescription =>
+      'Reconnectez-vous pour charger votre historique de pronostics confirmé. Rien n’est mis en attente hors connexion.';
+
+  @override
+  String get gameHistoryCheckTimedOut =>
+      'La vérification de l’historique a expiré';
+
+  @override
+  String get gameHistoryCheckTimedOutDescription =>
+      'L’application n’a pas pu confirmer un historique de pronostics sûr à temps. Essayez une actualisation limitée.';
+
+  @override
+  String get gameTryAgainUpper => 'RÉESSAYER';
+
+  @override
+  String get gameShareCardsUnavailable => 'Cartes à partager indisponibles';
+
+  @override
+  String get gameShareCardsUnavailableDescription =>
+      'L’historique des pronostics n’a pas pu être chargé. Aucun détail d’activité privé n’a été affiché.';
+
+  @override
+  String get gameShowingSavedShareCard => 'Carte enregistrée affichée';
+
+  @override
+  String get gameShowingSavedShareCardDescription =>
+      'Reconnectez-vous avant de partager ou copier. Aucune action n’est mise en attente hors connexion.';
+
+  @override
+  String get gameCopyingShareText => 'Copie du texte de partage';
+
+  @override
+  String get gameOpeningShareOptions => 'Ouverture des options de partage';
+
+  @override
+  String get gameShareAwaitPlatformConfirmation =>
+      'Attendez la confirmation de la plateforme. Ne répétez pas cette action.';
+
+  @override
+  String get gameShareActionPaused => 'Action de partage suspendue';
+
+  @override
+  String get gameShareActionPausedDescription =>
+      'Une autre action était déjà active. Vérifiez la vue actuelle de la plateforme avant de continuer.';
+
+  @override
+  String get gameShareConfirmationUncertain =>
+      'Confirmation du partage incertaine';
+
+  @override
+  String get gameShareConfirmationUncertainDescription =>
+      'Vérifiez la feuille de partage ou le presse-papiers, puis fermez cet avertissement avant de réessayer.';
+
+  @override
+  String get gameShareActionUnavailable => 'Action de partage indisponible';
+
+  @override
+  String get gameShareActionUnavailableDescription =>
+      'La plateforme n’a pas terminé l’action. Fermez cet avertissement avant de réessayer.';
+
+  @override
+  String get gameUsingSavedPredictionHistory =>
+      'Historique de pronostics enregistré utilisé';
+
+  @override
+  String get gameUsingSavedPredictionHistoryDescription =>
+      'Actualisez cette page avant d’ouvrir une autre action de partage de la plateforme.';
+
+  @override
+  String get gameBackToPicks => 'Retour aux pronostics';
+
+  @override
+  String get gameChoosePick => 'Choisir un pronostic';
+
+  @override
+  String gameSharePredictionSemantics(
+    String home,
+    String away,
+    String market,
+    String outcome,
+  ) {
+    return '$home contre $away, $market, $outcome';
+  }
+
+  @override
+  String gameShareMarketSelection(String market, String selection) {
+    return '$market · $selection';
+  }
+
+  @override
+  String get gameCurrentlySelectedShareCard =>
+      'Carte à partager actuellement sélectionnée';
+
+  @override
+  String get gameSelectThisShareCard => 'Sélectionner cette carte à partager';
+
+  @override
+  String get gamePredictionPickCancelled => 'Pronostic annulé.';
+
+  @override
+  String get gamePredictionSummaryCopied =>
+      'Résumé de l’activité copié dans le presse-papiers.';
+
+  @override
+  String get gamePredictionScorePending => 'en attente';
+
+  @override
+  String gamePredictionSummaryClipboard(
+    String home,
+    String away,
+    String market,
+    String outcome,
+    String score,
+  ) {
+    return '$home contre $away · $market · $outcome · $score';
+  }
+
+  @override
+  String get gamePredictionStatusWon => 'GAGNÉ';
+
+  @override
+  String get gamePredictionStatusLost => 'PERDU';
+
+  @override
+  String get gamePredictionStatusCancelled => 'ANNULÉ';
+
+  @override
+  String get gamePredictionStatusVoid => 'INVALIDÉ';
+
+  @override
+  String get gamePredictionStatusPending => 'EN ATTENTE';
+
+  @override
+  String get gamePredictionDateTbd => 'À CONFIRMER';
+
+  @override
+  String gamePredictionDateTime(String date, String time) {
+    return '$date • $time';
+  }
+
+  @override
+  String gamePredictionWonSettlement(int count) {
+    return 'Ce pronostic a été validé et $count points ont été crédités.';
+  }
+
+  @override
+  String get gamePredictionLostSettlement =>
+      'Ce pronostic n’a pas été validé en votre faveur.';
+
+  @override
+  String gamePredictionOfficialOutcomeMessage(String outcome) {
+    return 'Résultat officiel : $outcome.';
+  }
+
+  @override
+  String get gamePredictionCancelledSettlement =>
+      'Ce pronostic a été annulé avant le verrouillage du match.';
+
+  @override
+  String get gamePredictionVoidSettlement =>
+      'Ce pronostic a été invalidé et aucun point n’a été attribué.';
+
+  @override
+  String get gamePredictionPendingSettlement =>
+      'Ce pronostic est verrouillé et sera validé à l’arrivée des résultats officiels.';
+
+  @override
+  String get gamePredictionActivityNotFound => 'Activité introuvable';
+
+  @override
+  String get gamePredictionActivityNotFoundDescription =>
+      'Ce pronostic peut être terminé, supprimé ou ne plus être accessible à votre compte.';
+
+  @override
+  String get gamePredictionBackToPredictions => 'Retour aux pronostics';
+
+  @override
+  String get gamePredictionCancellingPick => 'Annulation du pronostic';
+
+  @override
+  String get gamePredictionRefreshingActivity => 'Actualisation de l’activité';
+
+  @override
+  String get gamePredictionConfirmedPickVisible =>
+      'Le pronostic confirmé reste visible pendant la vérification de son statut.';
+
+  @override
+  String get gamePredictionActionsUnavailable => 'Actions indisponibles';
+
+  @override
+  String get gamePredictionCancellationDisabled =>
+      'Vous pouvez consulter ce pronostic, mais son annulation est désactivée dans cette version.';
+
+  @override
+  String get gamePredictionShowingSavedActivity =>
+      'Affichage de l’activité enregistrée';
+
+  @override
+  String get gamePredictionReconnectBeforeCancelling =>
+      'Reconnectez-vous et actualisez avant d’annuler ce pronostic.';
+
+  @override
+  String get gamePredictionActivityDetailTitle => 'DÉTAIL DE L’ACTIVITÉ';
+
+  @override
+  String gamePredictionShortTeams(String home, String away) {
+    return '$home  •  $away';
+  }
+
+  @override
+  String get gamePredictionVenueTbc => 'LIEU À CONFIRMER';
+
+  @override
+  String get gamePredictionPickType => 'TYPE DE PRONOSTIC';
+
+  @override
+  String get gamePredictionSelection => 'SÉLECTION';
+
+  @override
+  String get gamePredictionEarned => 'GAGNÉ';
+
+  @override
+  String get gamePredictionPotential => 'POTENTIEL';
+
+  @override
+  String gamePredictionPositiveValue(int count) {
+    return '+$count';
+  }
+
+  @override
+  String get gamePredictionSettlement => 'VALIDATION';
+
+  @override
+  String get gamePredictionPlaced => 'Enregistré';
+
+  @override
+  String get gamePredictionKickoff => 'Coup d’envoi';
+
+  @override
+  String get gamePredictionSettled => 'Validé';
+
+  @override
+  String get gamePredictionOfficialOutcome => 'Résultat officiel';
+
+  @override
+  String get gamePredictionCancelPick => 'ANNULER LE PRONOSTIC';
+
+  @override
+  String get gamePredictionCopyResult => 'COPIER LE RÉSULTAT';
+
+  @override
+  String get gamePredictionCopySummary => 'COPIER LE RÉSUMÉ';
+
+  @override
+  String get gamePredictionShareCard => 'PARTAGER LA CARTE';
+
+  @override
+  String get gamePredictionBrowseFixtures => 'PARCOURIR LES MATCHS';
+
+  @override
+  String get gamePredictionRefreshActivity => 'ACTUALISER L’ACTIVITÉ';
+
+  @override
+  String get gamePredictionConnectionRestored => 'Connexion rétablie';
+
+  @override
+  String get gamePredictionDetailsOffline => 'Détails hors connexion';
+
+  @override
+  String get gamePredictionRefreshBeforeCancelling =>
+      'Actualisez pour confirmer le pronostic avant de l’annuler.';
+
+  @override
+  String get gamePredictionReconnectToConfirm =>
+      'Reconnectez-vous pour confirmer le pronostic avant de l’annuler.';
+
+  @override
+  String get gamePredictionAccessUnavailable =>
+      'Accès à l’activité indisponible';
+
+  @override
+  String get gamePredictionAccessUnavailableDescription =>
+      'Votre compte actuel ne peut ni consulter ni modifier cette activité.';
+
+  @override
+  String get gamePredictionDataChanged => 'Données de l’activité modifiées';
+
+  @override
+  String get gamePredictionDataChangedDescription =>
+      'Actualisez avant de consulter le résultat ou d’annuler ce pronostic.';
+
+  @override
+  String get gamePredictionSecurityTimeout =>
+      'Délai de vérification de sécurité dépassé';
+
+  @override
+  String get gamePredictionSecurityTimeoutDescription =>
+      'Aucune annulation n’a été confirmée. Actualisez avant de réessayer.';
+
+  @override
+  String get gamePredictionUnavailable => 'Activité indisponible';
+
+  @override
+  String get gamePredictionUnavailableDescription =>
+      'Les derniers détails du pronostic n’ont pas pu être confirmés. Actualisez pour réessayer.';
+
+  @override
+  String gamePredictionSelectedMetricSemantics(String label, String value) {
+    return '$label $value, sélectionné';
+  }
+
+  @override
+  String gamePredictionMetricSemantics(String label, String value) {
+    return '$label $value';
+  }
+
+  @override
+  String get gameMatchTitle => 'Match';
+
+  @override
+  String get gameBackToFanZoneTitleCase => 'Retour à la Fan Zone';
+
+  @override
+  String get gameMatchNotFound => 'Match introuvable';
+
+  @override
+  String get gameMatchNotFoundDescription =>
+      'Ce match peut être terminé, supprimé ou ne plus être disponible.';
+
+  @override
+  String get gameWeekdayMon => 'LUN';
+
+  @override
+  String get gameWeekdayTue => 'MAR';
+
+  @override
+  String get gameWeekdayWed => 'MER';
+
+  @override
+  String get gameWeekdayThu => 'JEU';
+
+  @override
+  String get gameWeekdayFri => 'VEN';
+
+  @override
+  String get gameWeekdaySat => 'SAM';
+
+  @override
+  String get gameWeekdaySun => 'DIM';
+
+  @override
+  String get gameMonthJan => 'JAN';
+
+  @override
+  String get gameMonthFeb => 'FÉV';
+
+  @override
+  String get gameMonthMar => 'MAR';
+
+  @override
+  String get gameMonthApr => 'AVR';
+
+  @override
+  String get gameMonthMay => 'MAI';
+
+  @override
+  String get gameMonthJun => 'JUIN';
+
+  @override
+  String get gameMonthJul => 'JUIL';
+
+  @override
+  String get gameMonthAug => 'AOÛ';
+
+  @override
+  String get gameMonthSep => 'SEP';
+
+  @override
+  String get gameMonthOct => 'OCT';
+
+  @override
+  String get gameMonthNov => 'NOV';
+
+  @override
+  String get gameMonthDec => 'DÉC';
+
+  @override
+  String gameMatchKickoffDateTime(
+    String weekday,
+    int day,
+    String month,
+    String time,
+  ) {
+    return '$weekday $day $month · $time';
+  }
+
+  @override
+  String get gamePoolsTab => 'Pools';
+
+  @override
+  String get gameStatsTab => 'Stats';
+
+  @override
+  String get gameH2hTab => 'Face-à-face';
+
+  @override
+  String get gameLineupsTab => 'Compositions';
+
+  @override
+  String gameMatchTeamsVs(String home, String away) {
+    return '$home contre $away';
+  }
+
+  @override
+  String get gamePartnerPoolsTooltip => 'Pools partenaires';
+
+  @override
+  String get gameJoiningPartnerPool => 'Participation au pool partenaire';
+
+  @override
+  String get gameRefreshingMatch => 'Actualisation du match';
+
+  @override
+  String get gameConfirmedMatchVisible =>
+      'Le match confirmé reste visible pendant la vérification de son état.';
+
+  @override
+  String get gameMatchActionsUnavailable => 'Actions du match indisponibles';
+
+  @override
+  String get gameMatchActionsUnavailableDescription =>
+      'Vous pouvez consulter ce match, mais la participation aux pools partenaires est désactivée dans cette version.';
+
+  @override
+  String get gameShowingSavedMatch => 'Affichage du match enregistré';
+
+  @override
+  String get gameReconnectBeforePartnerPool =>
+      'Reconnectez-vous et actualisez avant de rejoindre un pool partenaire.';
+
+  @override
+  String get gameVsUpper => 'VS';
+
+  @override
+  String get gamePartnerOutcomeHomeWin => 'Victoire à domicile';
+
+  @override
+  String get gamePartnerOutcomeDraw => 'Match nul';
+
+  @override
+  String get gamePartnerOutcomeAwayWin => 'Victoire à l’extérieur';
+
+  @override
+  String get gamePartnerOutcomeUnknown => 'Inconnu';
+
+  @override
+  String get gamePartnerEarnRequired => 'Gain partenaire requis';
+
+  @override
+  String get gamePromotionEarnRequired => 'Gain promotionnel requis';
+
+  @override
+  String get gameOpenToAllFans => 'Ouvert à tous les supporters';
+
+  @override
+  String get gamePoolJoinOffline =>
+      'Reconnectez-vous et actualisez avant de rejoindre ce pool.';
+
+  @override
+  String get gamePoolJoinPermissionDenied =>
+      'Votre compte ne peut pas rejoindre ce pool partenaire.';
+
+  @override
+  String get gamePoolJoinConflict =>
+      'Ce pool a changé ou est verrouillé. Actualisez avant de réessayer.';
+
+  @override
+  String get gamePoolJoinTimeout =>
+      'Aucune participation n’a été confirmée. Actualisez avant de réessayer.';
+
+  @override
+  String get gamePoolJoinUnavailable =>
+      'La participation au pool n’a pas pu être confirmée.';
+
+  @override
+  String get gameRefreshMatch => 'ACTUALISER LE MATCH';
+
+  @override
+  String get gameMatchConnectionRestored => 'Connexion rétablie';
+
+  @override
+  String get gameMatchDetailsOffline => 'Détails du match hors connexion';
+
+  @override
+  String get gameRefreshBeforeJoiningPool =>
+      'Actualisez pour confirmer le match avant de rejoindre un pool.';
+
+  @override
+  String get gameReconnectBeforeJoiningPool =>
+      'Reconnectez-vous pour confirmer le match avant de rejoindre un pool.';
+
+  @override
+  String get gameMatchAccessUnavailable => 'Accès au match indisponible';
+
+  @override
+  String get gameMatchAccessUnavailableDescription =>
+      'Votre compte actuel ne peut pas consulter ce match.';
+
+  @override
+  String get gameMatchDataChanged => 'Données du match modifiées';
+
+  @override
+  String get gameMatchDataChangedDescription =>
+      'Actualisez avant de rejoindre un pool ou de consulter le statut actuel.';
+
+  @override
+  String get gameMatchSecurityTimeout => 'Délai de sécurité du match dépassé';
+
+  @override
+  String get gameMatchSecurityTimeoutDescription =>
+      'Aucune participation au pool n’a été confirmée. Actualisez avant de réessayer.';
+
+  @override
+  String get gameMatchUnavailable => 'Match indisponible';
+
+  @override
+  String get gameMatchUnavailableDescription =>
+      'Les derniers détails du match n’ont pas pu être confirmés. Actualisez pour réessayer.';
+
+  @override
+  String get gamePartnerWdwPools => 'Pools WDW partenaires';
+
+  @override
+  String get gameNoPartnerPool => 'Aucun pool partenaire pour ce match';
+
+  @override
+  String get gameNoPartnerPoolDescription =>
+      'Les pronostics de football s’ouvrent uniquement lorsqu’un partenaire crée un pool WDW à participation fixe pour ce match.';
+
+  @override
+  String get gameViewFanZone => 'Voir la Fan Zone';
+
+  @override
+  String gamePartnerPoolsOnly(String home, String away) {
+    return '$home contre $away utilise uniquement des pools WDW financés par des partenaires.';
+  }
+
+  @override
+  String get gameLiveGamesTitle => 'Jeux en direct';
+
+  @override
+  String get gameLiveGamesSubtitle =>
+      'Les jeux du club auxquels vous avez accès apparaissent automatiquement ici.';
+
+  @override
+  String get gameLiveGamesConnectionRequired =>
+      'Les jeux en direct nécessitent une connexion';
+
+  @override
+  String get gamePlayingAs => 'Vous jouez comme';
+
+  @override
+  String gamePlayingAsAlias(String alias) {
+    return 'Vous jouez comme $alias';
+  }
+
+  @override
+  String get gameDiscoveringSessions => 'Recherche de vos jeux';
+
+  @override
+  String get gameDiscoveringSessionsDescription =>
+      'Vérification de votre adhésion au club et de vos invitations.';
+
+  @override
+  String get gameNoEligibleSessions => 'Aucun jeu disponible pour le moment';
+
+  @override
+  String get gameNoEligibleSessionsDescription =>
+      'Les jeux programmés et en direct apparaîtront ici lorsque votre compte y aura accès.';
+
+  @override
+  String get gameDiscoveryUnavailable => 'Impossible d’actualiser les jeux';
+
+  @override
+  String get gameDiscoveryUnavailableDescription =>
+      'Votre dernière liste confirmée reste affichée lorsqu’elle est disponible. Réessayez une fois connecté.';
+
+  @override
+  String get gameDiscoveryRefreshing => 'Actualisation des jeux en direct';
+
+  @override
+  String get gameDiscoveryRefreshingDescription =>
+      'Votre dernière liste confirmée reste visible pendant la recherche de mises à jour.';
+
+  @override
+  String get gameDiscoveryConflict => 'La liste des jeux a changé';
+
+  @override
+  String get gameDiscoveryConflictDescription =>
+      'La liste des jeux du club a changé pendant votre consultation. Actualisez avant d’ouvrir un jeu.';
+
+  @override
+  String get gameLiveSessionConflict => 'La session de jeu a changé';
+
+  @override
+  String get gameLiveSessionConflictDescription =>
+      'L’identité confirmée du jeu a changé. Actualisez avant de continuer.';
+
+  @override
+  String get gameLiveSessionTimeout => 'L’actualisation sécurisée a expiré';
+
+  @override
+  String get gameLiveSessionTimeoutDescription =>
+      'Le dernier état du jeu n’a pas pu être confirmé à temps. Actualisez avant une nouvelle action.';
+
+  @override
+  String get gameNotEligible => 'Jeu indisponible';
+
+  @override
+  String get gameNotEligibleDescription =>
+      'Ce compte n’a pas accès au jeu demandé.';
+
+  @override
+  String get gameLiveAccessDeniedV2 => 'Accès au jeu en direct indisponible';
+
+  @override
+  String get gameLiveAccessDeniedV2Description =>
+      'Votre compte actuel ne peut pas ouvrir ce jeu du club.';
+
+  @override
+  String get gameReconnect => 'RECONNECTER';
+
+  @override
+  String get gameScheduled => 'PROGRAMMÉ';
+
+  @override
+  String get gameScheduledDescription =>
+      'Ce jeu s’ouvrira automatiquement lorsque l’organisateur le lancera. Revenez à l’heure prévue.';
+
+  @override
+  String get gameOpenGame => 'OUVRIR LE JEU';
+
+  @override
+  String get gameStartsAt => 'Début';
+
+  @override
+  String get gamePhaseEndsAt => 'Fin';
+
+  @override
+  String get gameLobbyTitle => 'Vous êtes dans le salon';
+
+  @override
+  String get gameLobbyDescription =>
+      'Restez ici. L’organisateur ouvrira la première question.';
+
+  @override
+  String get gamePausedTitle => 'Jeu en pause';
+
+  @override
+  String get gamePausedDescription =>
+      'Votre progression confirmée est conservée. Attendez que l’organisateur reprenne.';
+
+  @override
+  String get gameQuestionTitle => 'Question actuelle';
+
+  @override
+  String get gameChooseAnswer =>
+      'Choisissez une réponse. La première réponse confirmée est définitive.';
+
+  @override
+  String get gameAnswerSubmitting => 'Confirmation de votre réponse';
+
+  @override
+  String get gameAnswerConfirmed => 'Réponse confirmée';
+
+  @override
+  String get gameAnswerUncertain => 'Confirmation de la réponse en attente';
+
+  @override
+  String get gameAnswerUncertainDescription =>
+      'Ne répondez pas à nouveau. Actualisez pour confirmer le résultat officiel.';
+
+  @override
+  String get gameRevealTitle => 'Révélation de la réponse';
+
+  @override
+  String get gameCorrectAnswer => 'Bonne réponse';
+
+  @override
+  String get gameNoScores =>
+      'Les scores apparaîtront après la confirmation des réponses.';
+
+  @override
+  String get gameCompletedTitle => 'Jeu terminé';
+
+  @override
+  String get gameCompletedDescription =>
+      'Les scores définitifs figurent ci-dessous.';
+
+  @override
+  String get gameCancelledTitle => 'Jeu annulé';
+
+  @override
+  String get gameCancelledDescription =>
+      'L’organisateur a fermé ce jeu. Aucune autre réponse ne peut être envoyée.';
+
+  @override
+  String get gameSyncing => 'Synchronisation du jeu en direct';
+
+  @override
+  String get gameUsingLastConfirmed =>
+      'Affichage du dernier état confirmé du jeu.';
+
+  @override
+  String gameLastConfirmedAt(String time) {
+    return 'Dernière mise à jour $time';
+  }
+
+  @override
+  String get gameBackToGames => 'RETOUR AUX JEUX';
+
+  @override
+  String get gameSelectedAnswer => 'Réponse sélectionnée';
+
+  @override
+  String gameSelectedAnswerSemantics(String answer) {
+    return '$answer, réponse sélectionnée';
+  }
+
+  @override
+  String gameLeaderboardRank(int rank) {
+    return '$rank.';
+  }
+
+  @override
+  String get gameOperationsTitle => 'Opérations de jeu';
+
+  @override
+  String get gameOperationsSubtitle =>
+      'Gérez vos téléviseurs et les jeux en direct qui vous sont attribués.';
+
+  @override
+  String get gameOperationsOffline => 'Opérations de jeu hors ligne';
+
+  @override
+  String get gameOperationsOfflineDescription =>
+      'Reconnectez-vous pour actualiser le dernier état autorisé du propriétaire. Aucune association ni gestion n’est mise en attente hors ligne.';
+
+  @override
+  String get gameOrganizerOperationsOfflineDescription =>
+      'Reconnectez-vous pour actualiser le dernier état autorisé de l’organisateur. Aucune action de planification ou de contrôle en direct n’est mise en attente hors ligne.';
+
+  @override
+  String get gameMyTvsTitle => 'Mes téléviseurs';
+
+  @override
+  String get gameMyTvsSubtitle =>
+      'Associez, renommez, surveillez ou révoquez uniquement vos propres installations TV.';
+
+  @override
+  String get gameAddTv => 'ASSOCIER UN TÉLÉVISEUR';
+
+  @override
+  String get gameNoTvs => 'Aucun téléviseur associé';
+
+  @override
+  String get gameNoTvsDescription =>
+      'Ouvrez AFRICLUB TV pour afficher un code d’association, puis ajoutez-le ici.';
+
+  @override
+  String get gameTvHealth => 'État';
+
+  @override
+  String get gameTvStatus => 'Statut d’association';
+
+  @override
+  String get gameTvAssignedGame => 'Jeu attribué';
+
+  @override
+  String get gameTvUnassigned => 'Non attribué';
+
+  @override
+  String get gameTvLastSeen => 'Dernière activité';
+
+  @override
+  String get gameTvAppVersion => 'Version de l’application';
+
+  @override
+  String get gameTvCapabilities => 'Fonctionnalités';
+
+  @override
+  String get gameTvNotReported => 'Non renseigné';
+
+  @override
+  String get gameTvCapabilityEnabled => 'Activée';
+
+  @override
+  String get gameTvCapabilityDisabled => 'Désactivée';
+
+  @override
+  String gameTvAssignedSessionValue(String title, String phase) {
+    return '$title · $phase';
+  }
+
+  @override
+  String get gameTvInventoryStale =>
+      'Le dernier inventaire confirmé est affiché. Actualisez avant de gérer un téléviseur.';
+
+  @override
+  String get gameTvInventoryLoading => 'Chargement de votre inventaire TV';
+
+  @override
+  String get gameTvInventoryRefreshing =>
+      'Actualisation de l’inventaire des téléviseurs. L’association est suspendue jusqu’à confirmation du dernier périmètre du propriétaire.';
+
+  @override
+  String get gameTvHealthOnline => 'En ligne';
+
+  @override
+  String get gameTvHealthOffline => 'Hors ligne';
+
+  @override
+  String get gameTvHealthUnknown => 'Non signalé';
+
+  @override
+  String get gameTvHealthRevoked => 'Révoqué';
+
+  @override
+  String get gameTvStatusPaired => 'Associé';
+
+  @override
+  String get gameTvStatusPending => 'En attente';
+
+  @override
+  String get gameTvStatusDisabled => 'Désactivé';
+
+  @override
+  String get gameTvScopeHome => 'Domicile';
+
+  @override
+  String get gameTvScopeVenue => 'Établissement';
+
+  @override
+  String get gamePairTvTitle => 'Associer un téléviseur';
+
+  @override
+  String get gamePairTvDescription =>
+      'Saisissez le code affiché par AFRICLUB TV. Il expire rapidement et ne peut être utilisé qu’une fois.';
+
+  @override
+  String get gameTvChallenge => 'Code d’association';
+
+  @override
+  String get gameTvChallengeHint => 'Code à 8 caractères';
+
+  @override
+  String get gameTvName => 'Nom du téléviseur';
+
+  @override
+  String get gameTvNameHint => 'Par exemple, Salon';
+
+  @override
+  String get gameTvScope => 'Emplacement du téléviseur';
+
+  @override
+  String get gameTvAuthorizedScope => 'Emplacement autorisé';
+
+  @override
+  String get gameNoAuthorizedTvScopes =>
+      'Aucun emplacement domicile ou établissement autorisé n’est disponible pour ce téléviseur.';
+
+  @override
+  String get gameTvVenueId => 'Identifiant de l’établissement';
+
+  @override
+  String get gamePairTvAction => 'ASSOCIER CE TÉLÉVISEUR';
+
+  @override
+  String get gameTvPairingSuccess => 'Téléviseur associé';
+
+  @override
+  String get gameTvPairingSuccessDescription =>
+      'Le téléviseur figure maintenant dans votre inventaire personnel.';
+
+  @override
+  String get gameTvFormInvalid =>
+      'Vérifiez le code, le nom et l’emplacement avant de continuer.';
+
+  @override
+  String get gameTvDetailsTitle => 'Détails du téléviseur';
+
+  @override
+  String get gameSaveTv => 'ENREGISTRER';
+
+  @override
+  String get gameSaveTvConfirmTitle =>
+      'Enregistrer les modifications du téléviseur ?';
+
+  @override
+  String get gameSaveTvConfirmDescription =>
+      'Confirmez le nouveau nom et l’emplacement autorisé. Cette modification est inscrite dans le journal d’audit.';
+
+  @override
+  String get gameSaveTvConfirmAction => 'ENREGISTRER LE TÉLÉVISEUR';
+
+  @override
+  String get gameIssueNewPairing => 'CRÉER UN NOUVEAU CODE';
+
+  @override
+  String get gamePairingChallengeCreated => 'Nouveau code d’association';
+
+  @override
+  String get gameRecoverTvTitle => 'Récupérer un téléviseur';
+
+  @override
+  String get gameRecoverTvDescription =>
+      'Sur le téléviseur, choisissez Nouveau code d’association. Saisissez ou scannez ici ce nouveau code de 8 caractères pour renouveler l’identifiant de l’appareil.';
+
+  @override
+  String get gameRecoverTvCodeInstruction =>
+      'Utilisez un nouveau code affiché sur ce téléviseur. La récupération invalide l’ancien identifiant de l’appareil et est auditée.';
+
+  @override
+  String get gameRecoverTvAction => 'RÉCUPÉRER LE TÉLÉVISEUR';
+
+  @override
+  String get gameRecoverTvConfirmTitle => 'Récupérer ce téléviseur ?';
+
+  @override
+  String gameRecoverTvConfirmDescription(String name) {
+    return 'Récupérer $name avec ce nouveau code ? L’ancien identifiant de l’appareil cessera de fonctionner.';
+  }
+
+  @override
+  String get gameRecoverTvConfirmAction => 'RENOUVELER L’IDENTIFIANT';
+
+  @override
+  String get gameTvRecoveryUnavailable =>
+      'Ce téléviseur ne figure pas dans votre inventaire autorisé actuel. Actualisez puis réessayez.';
+
+  @override
+  String get gameRevokeTv => 'RÉVOQUER L’ACCÈS TV';
+
+  @override
+  String get gameRevokeTvConfirmTitle => 'Révoquer ce téléviseur ?';
+
+  @override
+  String get gameRevokeTvConfirmDescription =>
+      'Cette action retire immédiatement les jeux attribués et invalide l’identifiant du téléviseur.';
+
+  @override
+  String get gameRevokeTvConfirmAction => 'RÉVOQUER L’ACCÈS';
+
+  @override
+  String get gameManagedGamesTitle => 'Jeux que je gère';
+
+  @override
+  String get gameManagedGamesSubtitle =>
+      'Planifiez des questionnaires approuvés et contrôlez uniquement vos sessions attribuées.';
+
+  @override
+  String get gameManagedGamesLoading => 'Chargement de vos jeux attribués';
+
+  @override
+  String get gameManagedGamesRefreshing =>
+      'Actualisation des jeux attribués. La planification et le contrôle en direct sont suspendus jusqu’à confirmation de votre périmètre d’organisateur.';
+
+  @override
+  String get gameManagedGamesStale =>
+      'Affichage des derniers jeux attribués confirmés. Actualisez avant de planifier ou de contrôler une session.';
+
+  @override
+  String get gameNoManagedGames => 'Aucun jeu attribué';
+
+  @override
+  String get gameNoManagedGamesDescription =>
+      'Un administrateur peut attribuer une session, ou un organisateur autorisé peut en planifier une.';
+
+  @override
+  String get gamePlanGame => 'PLANIFIER UN JEU';
+
+  @override
+  String get gameSessionPlannerTitle => 'Planifier un jeu';
+
+  @override
+  String get gameQuestionPack => 'Questionnaire';
+
+  @override
+  String get gameSelectQuestionPack =>
+      'Sélectionnez un questionnaire approuvé de 20 questions';
+
+  @override
+  String get gameEligibility => 'Participants autorisés';
+
+  @override
+  String get gameEligibilityClubMembership => 'Membres du club éligibles';
+
+  @override
+  String get gameEligibilityInvitationOnly => 'Supporters invités uniquement';
+
+  @override
+  String get gameEligibilityHomeOwner =>
+      'Propriétaires des téléviseurs domestiques attribués';
+
+  @override
+  String get gameEligibilityVenue => 'Personnel autorisé de l’établissement';
+
+  @override
+  String get gameScheduleStart => 'Début prévu';
+
+  @override
+  String get gameChooseScheduleStart => 'CHOISIR L’HEURE';
+
+  @override
+  String get gameSelectedDisplays => 'Téléviseurs attribués';
+
+  @override
+  String get gameNoAssignableDisplays =>
+      'Aucun téléviseur disponible pour ce compte.';
+
+  @override
+  String get gameSelectedInvitees => 'Invitations des supporters';
+
+  @override
+  String get gameInviteesRequiredDescription =>
+      'Sélectionnez au moins un supporter éligible. Seuls les Fan ID sélectionnés pourront découvrir ce jeu.';
+
+  @override
+  String get gameInviteesOptionalDescription =>
+      'Facultatif : les Fan ID sélectionnés pourront découvrir ce jeu même en dehors du périmètre principal d’éligibilité.';
+
+  @override
+  String get gameNoInviteesDescription =>
+      'Aucun supporter actif du club ne peut être invité.';
+
+  @override
+  String get gameCreateSession => 'CRÉER LE JEU PLANIFIÉ';
+
+  @override
+  String get gamePlannerFormInvalid =>
+      'Vérifiez le questionnaire, l’éligibilité, les invitations, l’heure de début et les téléviseurs attribués avant de continuer.';
+
+  @override
+  String get gamePlannerNoPacks => 'Aucun questionnaire approuvé';
+
+  @override
+  String get gamePlannerNoPacksDescription =>
+      'Un administrateur doit publier un questionnaire complet de 20 questions avant la planification.';
+
+  @override
+  String get gameLiveControlTitle => 'Contrôle du jeu en direct';
+
+  @override
+  String get gameParticipantCount => 'Participants';
+
+  @override
+  String get gameDisplayCount => 'Téléviseurs attribués';
+
+  @override
+  String get gameEventSequence => 'Séquence d’événements';
+
+  @override
+  String get gameCurrentQuestionControl => 'Question actuelle';
+
+  @override
+  String get gameNoCurrentQuestion =>
+      'Aucune question n’est actuellement sélectionnée.';
+
+  @override
+  String get gameControlActions => 'Actions autorisées';
+
+  @override
+  String get gameNoControlActions =>
+      'Aucune action de cycle de vie n’est disponible.';
+
+  @override
+  String get gameNextAction => 'Prochaine action du jeu';
+
+  @override
+  String get gameValidateSessionAction => 'VALIDER LE JEU';
+
+  @override
+  String get gamePublishSessionAction => 'PUBLIER LE JEU';
+
+  @override
+  String get gameScheduleSessionAction => 'PLANIFIER LE JEU';
+
+  @override
+  String get gameOpenLobbyAction => 'OUVRIR LE LOBBY';
+
+  @override
+  String get gameOpenQuestionAction => 'OUVRIR LA QUESTION';
+
+  @override
+  String get gameRevealAnswerAction => 'RÉVÉLER LA RÉPONSE';
+
+  @override
+  String get gameCompleteSessionAction => 'TERMINER LE JEU';
+
+  @override
+  String get gameExceptionActions => 'Contrôles d’exception';
+
+  @override
+  String get gamePauseAction => 'METTRE LE JEU EN PAUSE';
+
+  @override
+  String get gameResumeAction => 'REPRENDRE LE JEU';
+
+  @override
+  String get gameSkipQuestionAction => 'PASSER LA QUESTION';
+
+  @override
+  String get gameEndEarlyAction => 'TERMINER LE JEU PLUS TÔT';
+
+  @override
+  String get gameCancelSessionAction => 'ANNULER LA SESSION';
+
+  @override
+  String get gameExceptionConfirmTitle => 'Confirmer l’action d’exception';
+
+  @override
+  String get gameExceptionConfirmDescription =>
+      'Cette action modifie le déroulement normal du jeu et est enregistrée dans la piste d’audit.';
+
+  @override
+  String get gameExceptionReason => 'Motif';
+
+  @override
+  String get gameExceptionReasonHint =>
+      'Expliquez pourquoi cette exception est nécessaire';
+
+  @override
+  String get gameExceptionReasonInvalid =>
+      'Saisissez un motif de 3 à 234 caractères.';
+
+  @override
+  String get gameConfirmAction => 'CONFIRMER L’ACTION';
+
+  @override
+  String get gameOperationsUnavailable => 'Opérations de jeu indisponibles';
+
+  @override
+  String get gameOperationsUnavailableDescription =>
+      'Le dernier état autorisé n’a pas pu être confirmé. Actualisez avant toute autre action.';
+
+  @override
+  String get gameOperationsAccessDenied => 'Accès aux opérations refusé';
+
+  @override
+  String get gameOperationsAccessDeniedDescription =>
+      'Ce compte n’est pas propriétaire, organisateur attribué, opérateur d’établissement ou administrateur pour cet élément.';
+
+  @override
+  String get gameOperationConflict => 'L’état du jeu a changé';
+
+  @override
+  String get gameOperationConflictDescription =>
+      'Actualisez l’état de référence avant de réessayer.';
+
+  @override
+  String get gameOperationTimeout => 'Opération de jeu non confirmée';
+
+  @override
+  String get gameOperationTimeoutDescription =>
+      'L’opération a pris trop de temps pour être confirmée. Actualisez l’état de référence avant de réessayer.';
+
+  @override
+  String get gamePhaseDraft => 'Brouillon';
+
+  @override
+  String get gamePhaseValidated => 'Validé';
+
+  @override
+  String get gamePhasePublished => 'Publié';
+
+  @override
+  String get gamePhaseScheduled => 'Planifié';
+
+  @override
+  String get gamePhaseLobby => 'Salon ouvert';
+
+  @override
+  String get gamePhaseQuestionOpen => 'Question ouverte';
+
+  @override
+  String get gamePhaseReveal => 'Révéler la réponse';
+
+  @override
+  String get gamePhasePaused => 'En pause';
+
+  @override
+  String get gamePhaseCompleted => 'Terminé';
+
+  @override
+  String get gamePhaseCancelled => 'Annulé';
+
+  @override
+  String get tvRemoteMenuTitle => 'Commandes de l’écran';
+
+  @override
+  String get tvRemoteMenuDescription =>
+      'Utilisez la croix directionnelle pour déplacer le focus, Sélectionner pour activer, Retour pour fermer et Menu pour ouvrir ces commandes.';
+
+  @override
+  String get tvRemoteMenuRetry => 'Actualiser l’écran';
+
+  @override
+  String get tvRemoteMenuClose => 'Fermer les commandes';
 }

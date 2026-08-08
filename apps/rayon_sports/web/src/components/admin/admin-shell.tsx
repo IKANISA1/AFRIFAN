@@ -10,6 +10,7 @@ import {
   Award,
   AlertTriangle,
   Bell,
+  Check,
   Crown,
   Database,
   FileImage,
@@ -20,6 +21,7 @@ import {
   LayoutDashboard,
   ListOrdered,
   MapPin,
+  MessageCircle,
   MoreHorizontal,
   Newspaper,
   PanelLeftClose,
@@ -134,8 +136,7 @@ function resolveNavItem(href: string) {
       .filter(Boolean)
       .at(-1)
       ?.replaceAll("-", " ")
-      .replace(/\b\w/g, (character) => character.toUpperCase()) ??
-    "Admin";
+      .replace(/\b\w/g, (character) => character.toUpperCase()) ?? "Admin";
   return (
     adminNavigation.find((item) => item.href === href) ?? {
       href,
@@ -162,14 +163,6 @@ function roleTone(role: string | null) {
   }
 }
 
-function WhatsAppIcon({ size = 24 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-    </svg>
-  );
-}
-
 function OtpDigitInput({
   value,
   length = 6,
@@ -183,7 +176,10 @@ function OtpDigitInput({
   // Array.from guarantees exactly `length` entries regardless of input.
   const digits = Array.from({ length }, (_, i) => value[i] ?? "");
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>, index: number) {
+  function handleKeyDown(
+    event: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+  ) {
     if (event.key === "Backspace") {
       event.preventDefault();
       const currentDigit = digits[index] ?? "";
@@ -217,7 +213,9 @@ function OtpDigitInput({
     // Replace the digit at `index` with the new character
     const before = value.padEnd(index, " ").slice(0, index);
     const after = value.slice(index + 1);
-    const next = (before + cleaned[0] + after).replace(/[^\d]/g, "").slice(0, length);
+    const next = (before + cleaned[0] + after)
+      .replace(/[^\d]/g, "")
+      .slice(0, length);
     onChange(next);
     if (index < length - 1) {
       document.getElementById(`otp-${index + 1}`)?.focus();
@@ -226,7 +224,10 @@ function OtpDigitInput({
 
   function handlePaste(event: React.ClipboardEvent) {
     event.preventDefault();
-    const pasted = event.clipboardData.getData("text").replace(/[^\d]/g, "").slice(0, length);
+    const pasted = event.clipboardData
+      .getData("text")
+      .replace(/[^\d]/g, "")
+      .slice(0, length);
     if (pasted) {
       onChange(pasted);
       const lastIndex = Math.min(pasted.length, length) - 1;
@@ -235,7 +236,10 @@ function OtpDigitInput({
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 sm:gap-3" onPaste={handlePaste}>
+    <div
+      className="flex items-center justify-center gap-2 sm:gap-3"
+      onPaste={handlePaste}
+    >
       {digits.map((digit, i) => (
         <input
           key={i}
@@ -249,11 +253,11 @@ function OtpDigitInput({
           onKeyDown={(e) => handleKeyDown(e, i)}
           onFocus={(e) => e.target.select()}
           className={cn(
-            "h-14 w-11 sm:h-16 sm:w-13 rounded-xl border-[1.2px] bg-transparent text-center font-display text-2xl font-bold text-white transition-all duration-200 outline-none",
+            "h-14 w-11 rounded-xl border-[1.2px] bg-transparent text-center font-display text-2xl font-bold text-[var(--admin-text-strong)] transition-all duration-200 outline-none sm:h-16 sm:w-13",
             digit
-              ? "border-[#25D366]/60 shadow-[0_0_20px_rgba(37,211,102,0.15)]"
-              : "border-white/12 hover:border-white/20",
-            "focus:border-[#25D366] focus:shadow-[0_0_24px_rgba(37,211,102,0.2)]",
+              ? "border-[var(--admin-auth-accent)] shadow-[0_0_20px_rgba(15,118,110,0.15)]"
+              : "border-[var(--admin-border)] hover:border-[var(--admin-border-strong)]",
+            "focus:border-[var(--admin-auth-accent)] focus:shadow-[0_0_24px_rgba(15,118,110,0.2)]",
           )}
         />
       ))}
@@ -286,9 +290,13 @@ function AdminAuthCard() {
       setCode("");
       setStatus("WhatsApp code sent");
     } catch (caught) {
-      const errorMessage = caught instanceof Error ? caught.message : "Could not send code.";
+      const errorMessage =
+        caught instanceof Error ? caught.message : "Could not send code.";
       setStatus(errorMessage);
-      if (errorMessage.toLowerCase().includes("access denied") || errorMessage.toLowerCase().includes("not recognized")) {
+      if (
+        errorMessage.toLowerCase().includes("access denied") ||
+        errorMessage.toLowerCase().includes("not recognized")
+      ) {
         setShowContactPopup(true);
       }
     }
@@ -311,13 +319,7 @@ function AdminAuthCard() {
   const activePhone = pendingPhone;
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-12 relative">
-      {/* Background glow effects */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#25D366]/4 blur-[120px]" />
-        <div className="absolute left-1/4 top-2/3 h-[300px] w-[300px] rounded-full bg-club-primary/6 blur-[100px]" />
-      </div>
-
+    <div className="admin-auth-gate relative flex min-h-screen items-center justify-center px-4 py-12">
       <AdminDialogFrame
         open={showContactPopup}
         onClose={() => setShowContactPopup(false)}
@@ -326,16 +328,16 @@ function AdminAuthCard() {
         closeLabel="Close access denied dialog"
       >
         <div className="space-y-6 text-center">
-          <div className="mx-auto flex h-18 w-18 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366]">
-            <WhatsAppIcon size={36} />
+          <div className="mx-auto flex h-18 w-18 items-center justify-center rounded-full bg-[var(--admin-auth-accent-soft)] text-[var(--admin-auth-accent)]">
+            <MessageCircle className="h-9 w-9" aria-hidden="true" />
           </div>
           <a
             href="https://wa.me/250788767816"
             target="_blank"
             rel="noopener"
-            className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#25D366] to-[#128C7E] px-5 py-4 text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(37,211,102,0.3)] active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#0F766E] to-[#075E54] px-5 py-4 text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(15,118,110,0.3)] active:scale-[0.98]"
           >
-            <WhatsAppIcon size={18} />
+            <MessageCircle className="h-[18px] w-[18px]" aria-hidden="true" />
             Message +250 788 767 816
           </a>
         </div>
@@ -348,7 +350,7 @@ function AdminAuthCard() {
           <div className="space-y-8">
             {/* Header with WhatsApp branding */}
             <div className="flex items-start gap-5">
-              <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/6">
+              <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface-muted)]">
                 <Image
                   src="/brand-mark.svg"
                   alt={`${siteConfig.shortTitle} emblem`}
@@ -358,10 +360,10 @@ function AdminAuthCard() {
                 />
               </div>
               <div className="space-y-1.5">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.3em] text-[#25D366]">
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.3em] text-[var(--admin-auth-accent)]">
                   Central admin
                 </p>
-                <h1 className="font-display text-[2rem] font-extrabold leading-[1.05] text-white sm:text-[2.6rem]">
+                <h1 className="font-display text-[1.75rem] font-extrabold leading-[1.05] text-[var(--admin-text-strong)] sm:text-[2.6rem]">
                   Secure sign in
                 </h1>
               </div>
@@ -373,28 +375,36 @@ function AdminAuthCard() {
             >
               {/* Status indicator */}
               <div className="flex items-center gap-3.5">
-                <div className={cn(
-                  "relative inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-all duration-500",
-                  activePhone
-                    ? "bg-[#25D366]/12 text-[#25D366]"
-                    : "border border-white/12 bg-white/5 text-white/60",
-                )}>
+                <div
+                  className={cn(
+                    "relative inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-all duration-500",
+                    activePhone
+                      ? "bg-[var(--admin-auth-accent-soft)] text-[var(--admin-auth-accent)]"
+                      : "border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] text-[var(--admin-text-muted)]",
+                  )}
+                >
                   {activePhone ? (
-                    <WhatsAppIcon size={22} />
+                    <MessageCircle
+                      className="h-[22px] w-[22px]"
+                      aria-hidden="true"
+                    />
                   ) : (
                     <Smartphone className="h-5 w-5" />
                   )}
                   {activePhone && (
-                    <span className="absolute inset-0 animate-ping rounded-full bg-[#25D366]/20" style={{ animationDuration: "2s" }} />
+                    <span
+                      className="absolute inset-0 animate-ping rounded-full bg-[var(--admin-auth-accent-soft)]"
+                      style={{ animationDuration: "2s" }}
+                    />
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">
+                  <p className="text-sm font-bold text-[var(--admin-text-strong)]">
                     {activePhone
                       ? "Enter verification code"
                       : "WhatsApp authentication"}
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="mt-0.5 text-xs text-[var(--admin-text-muted)]">
                     {activePhone
                       ? "6-digit code sent to your WhatsApp"
                       : "Use your approved admin phone number"}
@@ -404,15 +414,19 @@ function AdminAuthCard() {
 
               {/* Phone input state */}
               {!activePhone ? (
-                <form className="grid gap-5" onSubmit={handlePhoneSubmit} aria-busy={authBusy}>
+                <form
+                  className="grid gap-5"
+                  onSubmit={handlePhoneSubmit}
+                  aria-busy={authBusy}
+                >
                   <label className="grid gap-2.5">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--admin-text-muted)]">
                       Admin phone number
                     </span>
                     <div className="relative">
                       <div className="pointer-events-none absolute left-0 top-0 flex h-full items-center pl-4">
-                        <span className="flex items-center gap-1.5 rounded-lg bg-white/8 px-2.5 py-1 text-xs font-bold text-white/70">
-                          🇷🇼 +250
+                        <span className="flex items-center gap-1.5 rounded-lg bg-[var(--admin-surface-muted)] px-2.5 py-1 text-xs font-bold text-[var(--admin-text-strong)]">
+                          RW +250
                         </span>
                       </div>
                       <input
@@ -424,10 +438,7 @@ function AdminAuthCard() {
                         placeholder="+250 7xx xxx xxx"
                         autoComplete="tel"
                         disabled={authBusy}
-                        className={cn(
-                          ui.input,
-                          "admin-auth-phone-input",
-                        )}
+                        className={cn(ui.input, "admin-auth-phone-input")}
                       />
                     </div>
                   </label>
@@ -435,7 +446,7 @@ function AdminAuthCard() {
                     type="submit"
                     disabled={authBusy}
                     aria-label="Send code via WhatsApp"
-                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#25D366] to-[#128C7E] text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(37,211,102,0.3)] active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
+                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#0F766E] to-[#075E54] text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(15,118,110,0.3)] active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
                   >
                     {authBusy ? (
                       <>
@@ -444,7 +455,10 @@ function AdminAuthCard() {
                       </>
                     ) : (
                       <>
-                        <WhatsAppIcon size={18} />
+                        <MessageCircle
+                          className="h-[18px] w-[18px]"
+                          aria-hidden="true"
+                        />
                         Send WhatsApp code
                       </>
                     )}
@@ -452,31 +466,29 @@ function AdminAuthCard() {
                 </form>
               ) : (
                 /* OTP input state */
-                <form className="grid gap-5" onSubmit={handleCodeSubmit} aria-busy={authBusy}>
+                <form
+                  className="grid gap-5"
+                  onSubmit={handleCodeSubmit}
+                  aria-busy={authBusy}
+                >
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-[var(--admin-text-muted)]">
                       Code sent to{" "}
-                      <span className="font-bold text-white">
+                      <span className="font-bold text-[var(--admin-text-strong)]">
                         {formatAdminPhoneForDisplay(activePhone)}
                       </span>
                     </p>
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#25D366]/15 text-[#25D366]">
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--admin-auth-accent-soft)] text-[var(--admin-auth-accent)]">
+                      <Check className="h-3 w-3" aria-hidden="true" />
                     </div>
                   </div>
 
-                  <OtpDigitInput
-                    value={code}
-                    length={6}
-                    onChange={setCode}
-                  />
+                  <OtpDigitInput value={code} length={6} onChange={setCode} />
 
                   <button
                     type="submit"
                     disabled={authBusy || code.length < 6}
-                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#25D366] to-[#128C7E] text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(37,211,102,0.3)] active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
+                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#0F766E] to-[#075E54] text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(15,118,110,0.3)] active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
                   >
                     {authBusy ? (
                       <>
@@ -496,7 +508,7 @@ function AdminAuthCard() {
                       resetPendingPhone();
                     }}
                     disabled={authBusy}
-                    className="text-sm font-bold text-slate-400 hover:text-white transition-colors py-1"
+                    className="py-1 text-sm font-bold text-[var(--admin-text-muted)] transition-colors hover:text-[var(--admin-text-strong)]"
                   >
                     ← Use a different number
                   </button>
@@ -514,15 +526,13 @@ function AdminAuthCard() {
                   error && !status
                     ? "border-rose-400/30 bg-rose-500/10 text-rose-200"
                     : status?.toLowerCase().includes("sent")
-                      ? "border-[#25D366]/30 bg-[#25D366]/8 text-[#25D366]"
-                      : "border-white/10 bg-white/5 text-slate-200",
+                      ? "border-[var(--admin-auth-accent)] bg-[var(--admin-auth-accent-soft)] text-[var(--admin-auth-accent)]"
+                      : "border-[var(--admin-border)] bg-[var(--admin-surface-muted)] text-[var(--admin-text)]",
                 )}
               >
                 {status?.toLowerCase().includes("sent") && (
-                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#25D366]/20 text-[#25D366]">
-                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--admin-auth-accent-soft)] text-[var(--admin-auth-accent)]">
+                    <Check className="h-2.5 w-2.5" aria-hidden="true" />
                   </div>
                 )}
                 {status ?? notice ?? error}
@@ -530,7 +540,7 @@ function AdminAuthCard() {
             ) : null}
 
             {/* Footer */}
-            <p className="text-center text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500">
+            <p className="text-center text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--admin-text-muted)] sm:text-[10px] sm:tracking-[0.2em]">
               Secured by WhatsApp OTP · {siteConfig.shortTitle} admin
             </p>
           </div>
@@ -556,7 +566,7 @@ function AdminUnauthorizedCard() {
             <p className="admin-page-eyebrow">Access blocked</p>
             <h1 className="admin-page-title">Admin access restricted</h1>
             <p className="admin-page-copy">
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-[var(--admin-text-strong)]">
                 {user?.phone ?? user?.email ?? user?.id}
               </span>{" "}
               does not have an active admin assignment.
@@ -625,7 +635,7 @@ function SidebarNavigation({
 }) {
   const contextualSections = pathname.startsWith("/admin/cms")
     ? [{ title: "CMS views", items: cmsViews }]
-      : [];
+    : [];
 
   const renderSection = (title: string, items: string[]) => (
     <div key={title}>
@@ -708,11 +718,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
               className="animate-pulse"
               priority
             />
-            <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-slate-200">
+            <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-[var(--admin-text)]">
               Central admin
             </p>
-            <p className="text-lg text-white">Loading workspace</p>
-            <div className="mt-2 h-1 w-32 overflow-hidden rounded-full bg-white/10">
+            <p className="text-lg text-[var(--admin-text-strong)]">
+              Loading workspace
+            </p>
+            <div className="mt-2 h-1 w-32 overflow-hidden rounded-full bg-[var(--admin-border)]">
               <div className="h-full w-1/2 animate-pulse rounded-full bg-club-accent" />
             </div>
           </div>
@@ -757,7 +769,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           className={cn(
             "admin-desktop-sidebar hidden shrink-0 xl:block",
             sidebarCollapsed ? "w-[64px]" : "w-[260px]",
-            "transition-all duration-300 motion-reduce:transition-none"
+            "transition-all duration-300 motion-reduce:transition-none",
           )}
         >
           <div className="sticky top-0 flex h-screen flex-col border-r border-[var(--admin-border)] bg-[var(--admin-zinc-950)] px-3 py-4">
@@ -819,7 +831,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </div>
         </aside>
 
-        <div className="min-w-0 flex-1">
+        <div className="w-0 min-w-0 flex-1 overflow-x-hidden">
           <header className="sticky top-0 z-20 border-b border-[var(--admin-border)] bg-[var(--admin-zinc-950)/80] backdrop-blur-md px-4 py-3 sm:px-6 lg:px-8">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex items-center gap-4">
@@ -827,9 +839,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   type="button"
                   onClick={() => setSidebarCollapsed((v) => !v)}
                   className="hidden rounded-lg p-2 text-[var(--admin-zinc-500)] transition hover:bg-[var(--admin-zinc-900)] hover:text-[var(--admin-zinc-100)] xl:block"
-                  aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                  aria-label={
+                    sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
+                  }
                 >
-                  {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+                  {sidebarCollapsed ? (
+                    <PanelLeftOpen size={18} />
+                  ) : (
+                    <PanelLeftClose size={18} />
+                  )}
                 </button>
                 <div className="flex items-center gap-2">
                   <h1 className="text-sm font-bold text-[var(--admin-zinc-100)] uppercase tracking-wider">
@@ -845,13 +863,17 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 {access.canSelectClub && clubOptions.length > 1 ? (
                   <select
                     value={selectedClubId ?? ""}
-                    onChange={(e) => setClubScope(e.target.value).catch(() => {})}
+                    onChange={(e) =>
+                      setClubScope(e.target.value).catch(() => {})
+                    }
                     disabled={switchingClub}
                     aria-busy={switchingClub}
                     className="rounded-md border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] px-3 py-1.5 text-xs font-semibold text-[var(--admin-zinc-100)] outline-none"
                   >
                     {clubOptions.map((club) => (
-                      <option key={club.id} value={club.id}>{club.clubName}</option>
+                      <option key={club.id} value={club.id}>
+                        {club.clubName}
+                      </option>
                     ))}
                   </select>
                 ) : (
@@ -877,13 +899,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
             className="p-4 pb-28 sm:p-6 sm:pb-28 lg:p-8 lg:pb-28 xl:pb-8"
             aria-busy={switchingClub || undefined}
           >
-            <div className="mx-auto max-w-full">
-              {children}
-            </div>
+            <div className="mx-auto max-w-full">{children}</div>
           </main>
         </div>
       </div>
-
 
       <AdminMobileNav
         pathname={pathname}
@@ -939,11 +958,15 @@ function AdminMobileNav({
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex flex-col items-center gap-1 p-2 transition-colors",
-                  active ? "text-[var(--admin-zinc-100)]" : "text-[var(--admin-zinc-500)]"
+                  active
+                    ? "text-[var(--admin-zinc-100)]"
+                    : "text-[var(--admin-zinc-500)]",
                 )}
               >
                 <Icon size={20} />
-                <span className="text-[9px] font-bold uppercase tracking-wider">{item.label}</span>
+                <span className="text-[9px] font-bold uppercase tracking-wider">
+                  {item.label}
+                </span>
               </Link>
             );
           })}
@@ -953,12 +976,16 @@ function AdminMobileNav({
             onClick={() => setSheetOpen(true)}
             className={cn(
               "flex flex-col items-center gap-1 p-2",
-              sheetOpen ? "text-[var(--admin-zinc-100)]" : "text-[var(--admin-zinc-500)]"
+              sheetOpen
+                ? "text-[var(--admin-zinc-100)]"
+                : "text-[var(--admin-zinc-500)]",
             )}
             aria-label="Show more admin options"
           >
             <MoreHorizontal size={20} />
-            <span className="text-[9px] font-bold uppercase tracking-wider">More</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider">
+              More
+            </span>
           </button>
         </div>
       </nav>

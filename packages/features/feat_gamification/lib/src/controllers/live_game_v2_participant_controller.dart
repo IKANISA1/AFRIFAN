@@ -56,6 +56,7 @@ class ParticipantLiveGameController
     required String expectedClubId,
     required String sessionId,
     Duration fetchTimeout = const Duration(seconds: 8),
+    Duration missedEventRecoveryInterval = const Duration(seconds: 30),
     Duration submissionTimeout = const Duration(seconds: 8),
     bool autoStart = true,
   }) : _answerGateway = answerGateway,
@@ -67,6 +68,7 @@ class ParticipantLiveGameController
          expectedClubId: expectedClubId,
          sessionId: sessionId,
          fetchTimeout: fetchTimeout,
+         missedEventRecoveryInterval: missedEventRecoveryInterval,
        ),
        super(const ParticipantLiveGameRuntimeState.initial()) {
     _syncSubscription = _synchronizer.states.listen(_handleSyncState);
