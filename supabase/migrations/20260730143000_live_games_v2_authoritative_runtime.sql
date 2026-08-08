@@ -64,7 +64,7 @@ alter table africlub_game.tv_devices
   );
 
 alter table africlub_game.game_sessions
-  add column if not exists lifecycle_phase text not null default 'draft',
+  add column if not exists lifecycle_phase text,
   add column if not exists session_version bigint not null default 0,
   add column if not exists question_version bigint not null default 0,
   add column if not exists event_sequence bigint not null default 0,
@@ -90,7 +90,12 @@ set lifecycle_phase = case status
   when 'complete' then 'completed'
   when 'cancelled' then 'cancelled'
   else 'draft'
-end;
+end
+where lifecycle_phase is null;
+
+alter table africlub_game.game_sessions
+  alter column lifecycle_phase set default 'draft',
+  alter column lifecycle_phase set not null;
 
 alter table africlub_game.game_sessions
   drop constraint if exists game_sessions_lifecycle_phase_check;
@@ -3661,20 +3666,68 @@ using (
 
 -- Relation privileges and row policies are both required: the explicit grants
 -- let PostgreSQL reach the policies, while the policies keep raw rows scoped.
-revoke all on africlub_game.display_assignments from anon, authenticated;
-grant select on africlub_game.display_assignments to authenticated;
-revoke all on africlub_game.game_events from anon, authenticated;
-grant select on africlub_game.game_events to authenticated;
-revoke all on function africlub_game.is_session_participant(uuid) from public;
-grant execute on function africlub_game.is_session_participant(uuid)
+revoke all on table
+  africlub_game.role_grants,
+  africlub_game.session_organizers,
+  africlub_game.display_assignments,
+  africlub_game.session_eligibility,
+  africlub_game.session_invitations,
+  africlub_game.transition_requests,
+  africlub_game.operation_requests,
+  africlub_game.game_events,
+  africlub_game.display_pairing_challenges,
+  africlub_game.display_bootstrap_challenges
+from public, anon, authenticated, service_role;
+
+grant select on table
+  africlub_game.role_grants,
+  africlub_game.session_organizers,
+  africlub_game.session_eligibility,
+  africlub_game.session_invitations,
+  africlub_game.transition_requests,
+  africlub_game.operation_requests,
+  africlub_game.display_pairing_challenges
 to authenticated;
 
+-- Display assignment writes and all bootstrap-challenge access remain RPC-only.
+grant select on africlub_game.display_assignments to authenticated;
+grant select on africlub_game.game_events to authenticated;
+
+revoke all on function africlub_game.has_role(bigint, text, uuid)
+  from public, anon, authenticated, service_role;
+grant execute on function africlub_game.has_role(bigint, text, uuid)
+  to authenticated;
+revoke all on function africlub_game.can_manage_display(uuid)
+  from public, anon, authenticated, service_role;
+grant execute on function africlub_game.can_manage_display(uuid)
+  to authenticated;
+revoke all on function africlub_game.can_organize_session(uuid)
+  from public, anon, authenticated, service_role;
+grant execute on function africlub_game.can_organize_session(uuid)
+  to authenticated;
+revoke all on function africlub_game.is_session_participant(uuid)
+  from public, anon, authenticated, service_role;
+grant execute on function africlub_game.is_session_participant(uuid)
+to authenticated;
+revoke all on function africlub_game.can_plan_games(bigint)
+  from public, anon, authenticated, service_role;
+grant execute on function africlub_game.can_plan_games(bigint)
+  to authenticated;
+revoke all on function africlub_game.can_assign_display_to_session(uuid, uuid)
+  from public, anon, authenticated, service_role;
+grant execute on function africlub_game.can_assign_display_to_session(uuid, uuid)
+  to authenticated;
+revoke all on function africlub_game.allowed_session_phases_v2(uuid)
+  from public, anon, authenticated, service_role;
+grant execute on function africlub_game.allowed_session_phases_v2(uuid)
+  to authenticated;
+
 revoke all on function africlub_game.get_tv_session_state(uuid)
-from public, anon, authenticated;
+from public, anon, authenticated, service_role;
 revoke all on function africlub_game.join_session(uuid,text,bigint,text)
-from public, anon, authenticated;
+from public, anon, authenticated, service_role;
 revoke all on function africlub_game.submit_answer(uuid,uuid,text,text)
-from public, anon, authenticated;
+from public, anon, authenticated, service_role;
 grant execute on function africlub_game.get_tv_session_state(uuid)
 to service_role;
 grant execute on function africlub_game.join_session(uuid,text,bigint,text)
@@ -3682,92 +3735,92 @@ to service_role;
 grant execute on function africlub_game.submit_answer(uuid,uuid,text,text)
 to service_role;
 
-revoke all on function public.get_eligible_game_sessions_v2(uuid) from public;
+revoke all on function public.get_eligible_game_sessions_v2(uuid) from public, anon, authenticated, service_role;
 grant execute on function public.get_eligible_game_sessions_v2(uuid) to authenticated;
-revoke all on function public.get_participant_game_projection_v2(uuid) from public;
+revoke all on function public.get_participant_game_projection_v2(uuid) from public, anon, authenticated, service_role;
 grant execute on function public.get_participant_game_projection_v2(uuid) to authenticated;
-revoke all on function public.submit_participant_answer_v2(uuid,uuid,text,bigint,bigint,text) from public;
+revoke all on function public.submit_participant_answer_v2(uuid,uuid,text,bigint,bigint,text) from public, anon, authenticated, service_role;
 grant execute on function public.submit_participant_answer_v2(uuid,uuid,text,bigint,bigint,text) to authenticated;
-revoke all on function public.claim_display_pairing_challenge_v2(text,text,text,uuid) from public;
+revoke all on function public.claim_display_pairing_challenge_v2(text,text,text,uuid) from public, anon, authenticated, service_role;
 grant execute on function public.claim_display_pairing_challenge_v2(text,text,text,uuid) to authenticated;
-revoke all on function public.get_tv_game_projection_v2(text) from public;
+revoke all on function public.get_tv_game_projection_v2(text) from public, anon, authenticated, service_role;
 grant execute on function public.get_tv_game_projection_v2(text) to anon, authenticated;
-revoke all on function public.get_owned_displays_v2() from public;
+revoke all on function public.get_owned_displays_v2() from public, anon, authenticated, service_role;
 grant execute on function public.get_owned_displays_v2() to authenticated;
-revoke all on function public.update_owned_display_v2(uuid,text,text,uuid,text) from public;
+revoke all on function public.update_owned_display_v2(uuid,text,text,uuid,text) from public, anon, authenticated, service_role;
 grant execute on function public.update_owned_display_v2(uuid,text,text,uuid,text)
 to authenticated;
-revoke all on function public.revoke_owned_display_v2(uuid,text) from public;
+revoke all on function public.revoke_owned_display_v2(uuid,text) from public, anon, authenticated, service_role;
 grant execute on function public.revoke_owned_display_v2(uuid,text)
 to authenticated;
-revoke all on function public.get_managed_game_sessions_v2() from public;
+revoke all on function public.get_managed_game_sessions_v2() from public, anon, authenticated, service_role;
 grant execute on function public.get_managed_game_sessions_v2()
 to authenticated;
-revoke all on function public.get_game_planner_options_v2() from public;
+revoke all on function public.get_game_planner_options_v2() from public, anon, authenticated, service_role;
 grant execute on function public.get_game_planner_options_v2()
 to authenticated;
-revoke all on function public.get_organizer_game_projection_v2(uuid) from public;
+revoke all on function public.get_organizer_game_projection_v2(uuid) from public, anon, authenticated, service_role;
 grant execute on function public.get_organizer_game_projection_v2(uuid)
 to authenticated;
-revoke all on function public.get_admin_game_projection_v2(uuid) from public;
+revoke all on function public.get_admin_game_projection_v2(uuid) from public, anon, authenticated, service_role;
 grant execute on function public.get_admin_game_projection_v2(uuid)
 to authenticated;
 revoke all on function public.create_managed_game_session_v2(uuid,timestamptz,text,uuid[],text,uuid[],uuid[])
-  from public;
+  from public, anon, authenticated, service_role;
 grant execute on function public.create_managed_game_session_v2(uuid,timestamptz,text,uuid[],text,uuid[],uuid[])
   to authenticated;
 revoke all on function public.transition_managed_game_session_v2(uuid,text,bigint,text,uuid,timestamptz,text)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.transition_managed_game_session_v2(uuid,text,bigint,text,uuid,timestamptz,text)
 to authenticated;
 revoke all on function public.skip_managed_game_question_v2(uuid,uuid,bigint,text,text)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.skip_managed_game_question_v2(uuid,uuid,bigint,text,text)
 to authenticated;
 revoke all on function public.end_managed_game_session_v2(uuid,bigint,text,text)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.end_managed_game_session_v2(uuid,bigint,text,text)
 to authenticated;
 revoke all on function public.assign_managed_game_display_v2(uuid,uuid,text)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.assign_managed_game_display_v2(uuid,uuid,text)
 to authenticated;
 revoke all on function public.unassign_managed_game_display_v2(uuid,uuid,text)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.unassign_managed_game_display_v2(uuid,uuid,text)
 to authenticated;
 revoke all on function public.assign_game_organizer_v2(uuid,uuid,text)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.assign_game_organizer_v2(uuid,uuid,text)
 to authenticated;
 revoke all on function public.create_display_pairing_challenge_v2(text,text,jsonb)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.create_display_pairing_challenge_v2(text,text,jsonb)
 to anon, authenticated;
 revoke all on function public.claim_display_bootstrap_challenge_v2(text,text,text,uuid)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.claim_display_bootstrap_challenge_v2(text,text,text,uuid)
 to authenticated;
 revoke all on function public.recover_owned_display_from_bootstrap_v2(uuid,text,text)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.recover_owned_display_from_bootstrap_v2(uuid,text,text)
 to authenticated;
 revoke all on function public.exchange_display_pairing_challenge_v2(text,text)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.exchange_display_pairing_challenge_v2(text,text)
 to anon, authenticated;
-revoke all on function africlub_game.transition_session_v2(uuid,text,bigint,text,uuid,timestamptz,text) from public;
+revoke all on function africlub_game.transition_session_v2(uuid,text,bigint,text,uuid,timestamptz,text) from public, anon, authenticated, service_role;
 grant execute on function africlub_game.transition_session_v2(uuid,text,bigint,text,uuid,timestamptz,text) to service_role;
-revoke all on function africlub_game.assign_display_v2(uuid,uuid,text) from public;
+revoke all on function africlub_game.assign_display_v2(uuid,uuid,text) from public, anon, authenticated, service_role;
 grant execute on function africlub_game.assign_display_v2(uuid,uuid,text) to service_role;
-revoke all on function africlub_game.unassign_display_v2(uuid,uuid,text) from public;
+revoke all on function africlub_game.unassign_display_v2(uuid,uuid,text) from public, anon, authenticated, service_role;
 grant execute on function africlub_game.unassign_display_v2(uuid,uuid,text)
 to service_role;
-revoke all on function africlub_game.issue_display_pairing_challenge(uuid) from public;
+revoke all on function africlub_game.issue_display_pairing_challenge(uuid) from public, anon, authenticated, service_role;
 grant execute on function africlub_game.issue_display_pairing_challenge(uuid)
 to service_role;
 revoke all on function public.issue_owned_display_pairing_challenge_v2(uuid)
-from public;
+from public, anon, authenticated, service_role;
 grant execute on function public.issue_owned_display_pairing_challenge_v2(uuid)
 to authenticated;
 

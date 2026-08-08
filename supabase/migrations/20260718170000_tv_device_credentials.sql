@@ -35,6 +35,9 @@ create trigger tv_devices_prepare_pairing_code
 before insert or update of pairing_code on africlub_game.tv_devices
 for each row execute function africlub_game.prepare_tv_pairing_code();
 
+revoke execute on function africlub_game.prepare_tv_pairing_code()
+  from public, anon, authenticated, service_role;
+
 update africlub_game.tv_devices
 set pairing_code_hash = encode(digest(upper(btrim(pairing_code)), 'sha256'), 'hex'),
     pairing_expires_at = coalesce(pairing_expires_at, timezone('utc', now()) + interval '15 minutes'),
@@ -309,16 +312,27 @@ begin
 end;
 $$;
 
-revoke all on function public.exchange_tv_pairing_code(text, bigint) from public;
+revoke all on function africlub_game.admin_pair_tv_device(bigint, text, text, uuid)
+  from public, anon, authenticated, service_role;
+grant execute on function africlub_game.admin_pair_tv_device(bigint, text, text, uuid)
+  to authenticated, service_role;
+revoke all on function africlub_game.admin_revoke_tv_device(bigint, uuid, text)
+  from public, anon, authenticated, service_role;
+grant execute on function africlub_game.admin_revoke_tv_device(bigint, uuid, text)
+  to authenticated, service_role;
+
+revoke all on function public.exchange_tv_pairing_code(text, bigint)
+  from public, anon, authenticated, service_role;
 grant execute on function public.exchange_tv_pairing_code(text, bigint) to anon, authenticated;
-revoke all on function public.get_tv_display_state_with_credential(text) from public;
+revoke all on function public.get_tv_display_state_with_credential(text)
+  from public, anon, authenticated, service_role;
 grant execute on function public.get_tv_display_state_with_credential(text) to anon, authenticated;
 
 -- Device IDs and pairing codes are no longer bearer credentials for public clients.
-revoke execute on function public.get_tv_display_state(uuid, text, bigint) from public;
-revoke execute on function africlub_game.get_tv_display_state(uuid, text, bigint) from public;
-revoke execute on function public.get_tv_display_state(uuid, text, bigint) from anon;
-revoke execute on function africlub_game.get_tv_display_state(uuid, text, bigint) from anon;
+revoke execute on function public.get_tv_display_state(uuid, text, bigint)
+  from public, anon, authenticated, service_role;
+revoke execute on function africlub_game.get_tv_display_state(uuid, text, bigint)
+  from public, anon, authenticated, service_role;
 grant execute on function public.get_tv_display_state(uuid, text, bigint) to authenticated, service_role;
 grant execute on function africlub_game.get_tv_display_state(uuid, text, bigint) to authenticated, service_role;
 

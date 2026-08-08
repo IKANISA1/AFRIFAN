@@ -236,8 +236,11 @@ if generated_package_path.exists():
     if version_tuple(generated_match.group(1)) < required_version:
         raise SystemExit(
             "Generated Flutter Swift package target is below "
-            f"{required_ios_version}; run `flutter build ios --config-only` "
-            "from the app directory before opening Xcode."
+            f"{required_ios_version}; run "
+            "`python3 tools/scripts/sync_ios_swiftpm_deployment_target.py "
+            "--manifest apps/rayon_sports/ios/Flutter/ephemeral/Packages/"
+            "FlutterGeneratedPluginSwiftPackage/Package.swift --minimum "
+            f"{required_ios_version}` after Flutter configuration generation."
         )
 
 print(

@@ -91,11 +91,7 @@ void main() {
     );
 
     await _pumpAppStartup(tester);
-    await _pumpUntilVisible(
-      tester,
-      find.byType(QuickActionsGrid),
-      maxPumps: 60,
-    );
+    await _scrollHomeUntilVisible(tester, find.byType(QuickActionsGrid));
 
     expect(find.byType(QuickActionsGrid), findsOneWidget);
     expect(find.text('Tickets'), findsAtLeastNWidgets(1));
@@ -335,6 +331,20 @@ Future<void> _pumpUntilVisible(
   }
 
   expect(finder, findsOneWidget);
+}
+
+Future<void> _scrollHomeUntilVisible(WidgetTester tester, Finder finder) async {
+  final topChrome = find.byKey(const ValueKey<String>('home-top-chrome'));
+  await _pumpUntilVisible(tester, topChrome);
+
+  final homeScrollable = find.ancestor(
+    of: topChrome,
+    matching: find.byType(Scrollable),
+  );
+  expect(homeScrollable, findsOneWidget);
+
+  await tester.scrollUntilVisible(finder, 240, scrollable: homeScrollable);
+  await tester.pumpAndSettle();
 }
 
 Future<void> _pumpAppStartup(WidgetTester tester) async {

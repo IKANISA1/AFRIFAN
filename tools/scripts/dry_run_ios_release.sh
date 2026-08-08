@@ -8,6 +8,8 @@ APP_DIR="$ROOT/apps/$APP_SLUG"
 PRODUCTION_JSON="$APP_DIR/assets/flavors/production.json"
 IOS_APP_PATH="$APP_DIR/build/ios/iphoneos/Runner.app"
 IOS_ZIP_PATH="$APP_DIR/build/ios/iphoneos/Runner.app.zip"
+IOS_SWIFTPM_MANIFEST="$APP_DIR/ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift"
+IOS_MINIMUM_VERSION="${IOS_MINIMUM_VERSION:-15.5}"
 
 if [ ! -d "$APP_DIR" ]; then
   echo "Unknown app slug: $APP_SLUG" >&2
@@ -35,13 +37,29 @@ if ! command -v ditto >/dev/null 2>&1; then
 fi
 
 bash "$ROOT/tools/scripts/validate_flutter_runtime_pins.sh" --runtime
+
+(
+  cd "$APP_DIR"
+  flutter build ios --config-only --no-codesign \
+    --dart-define-from-file=assets/flavors/production.json
+)
+
+python3 "$ROOT/tools/scripts/sync_ios_swiftpm_deployment_target.py" \
+  --manifest "$IOS_SWIFTPM_MANIFEST" \
+  --minimum "$IOS_MINIMUM_VERSION"
+
 bash "$ROOT/tools/scripts/validate_club_release.sh" "$APP_SLUG"
 
 (
   cd "$APP_DIR"
-  flutter build ios --release --no-codesign \
+  flutter build ios --release --no-codesign --no-pub \
     --dart-define-from-file=assets/flavors/production.json
 )
+
+python3 "$ROOT/tools/scripts/sync_ios_swiftpm_deployment_target.py" \
+  --manifest "$IOS_SWIFTPM_MANIFEST" \
+  --minimum "$IOS_MINIMUM_VERSION" \
+  --check
 
 if [ ! -d "$IOS_APP_PATH" ]; then
   echo "iOS release dry-run did not produce Runner.app: $IOS_APP_PATH" >&2

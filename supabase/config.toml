@@ -247,10 +247,6 @@ template = "Your code is {{ .Code }}"
 # Controls the minimum amount of time that must pass before sending another sms otp.
 max_frequency = "5s"
 
-# Use pre-defined map of phone number to OTP for local app testing.
-[auth.sms.test_otp]
-250788767816 = "12345"
-
 # Configure logged in session timeouts.
 # [auth.sessions]
 # Force log out after the specified duration.

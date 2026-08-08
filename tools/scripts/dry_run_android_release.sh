@@ -39,27 +39,35 @@ cleanup() {
 }
 trap cleanup EXIT
 
-if [ -z "${ANDROID_KEYSTORE_PATH:-}" ] || \
-  [ -z "${ANDROID_KEYSTORE_PASSWORD:-}" ] || \
-  [ -z "${ANDROID_KEY_ALIAS:-}" ] || \
-  [ -z "${ANDROID_KEY_PASSWORD:-}" ]; then
-  TEMP_DIR="$(mktemp -d)"
-  export ANDROID_KEYSTORE_PATH="$TEMP_DIR/android-release-dry-run.jks"
-  export ANDROID_KEYSTORE_PASSWORD="${ANDROID_KEYSTORE_PASSWORD:-android}"
-  export ANDROID_KEY_ALIAS="${ANDROID_KEY_ALIAS:-africlub-dry-run}"
-  export ANDROID_KEY_PASSWORD="${ANDROID_KEY_PASSWORD:-android}"
+TEMP_DIR="$(mktemp -d)"
+export ANDROID_KEYSTORE_PATH="$TEMP_DIR/android-release-dry-run.jks"
+export ANDROID_KEYSTORE_PASSWORD="android-dry-run"
+export ANDROID_KEY_ALIAS="africlub-dry-run"
+export ANDROID_KEY_PASSWORD="android-dry-run"
 
-  keytool -genkeypair \
-    -storetype JKS \
+keytool -genkeypair \
+  -storetype JKS \
+  -keystore "$ANDROID_KEYSTORE_PATH" \
+  -storepass "$ANDROID_KEYSTORE_PASSWORD" \
+  -alias "$ANDROID_KEY_ALIAS" \
+  -keypass "$ANDROID_KEY_PASSWORD" \
+  -keyalg RSA \
+  -keysize 2048 \
+  -validity 3650 \
+  -dname "CN=AFRICLUB Dry Run,O=AFRICLUB,OU=Mobile,L=Kigali,S=Kigali,C=RW" \
+  >/dev/null 2>&1
+
+expected_signer_sha256="$(
+  keytool -list -v \
     -keystore "$ANDROID_KEYSTORE_PATH" \
     -storepass "$ANDROID_KEYSTORE_PASSWORD" \
-    -alias "$ANDROID_KEY_ALIAS" \
-    -keypass "$ANDROID_KEY_PASSWORD" \
-    -keyalg RSA \
-    -keysize 2048 \
-    -validity 3650 \
-    -dname "CN=AFRICLUB Dry Run,O=AFRICLUB,OU=Mobile,L=Kigali,S=Kigali,C=RW" \
-    >/dev/null 2>&1
+    -alias "$ANDROID_KEY_ALIAS" |
+    awk -F'SHA256: ' '/SHA256: / { print $2; exit }'
+)"
+
+if [ -z "$expected_signer_sha256" ]; then
+  echo "Could not read the ephemeral Android dry-run certificate fingerprint." >&2
+  exit 1
 fi
 
 (
@@ -73,5 +81,17 @@ if [ ! -f "$ARTIFACT_PATH" ]; then
   exit 1
 fi
 
+actual_signer_sha256="$(
+  keytool -printcert -jarfile "$ARTIFACT_PATH" |
+    awk -F'SHA256: ' '/SHA256: / { print $2; exit }'
+)"
+
+if [ -z "$actual_signer_sha256" ] || \
+  [ "$actual_signer_sha256" != "$expected_signer_sha256" ]; then
+  echo "Android release dry-run signer mismatch; refusing the artifact." >&2
+  exit 1
+fi
+
 echo "Android release dry-run artifact ready:"
 echo "$ARTIFACT_PATH"
+echo "Ephemeral signer SHA-256: $actual_signer_sha256"

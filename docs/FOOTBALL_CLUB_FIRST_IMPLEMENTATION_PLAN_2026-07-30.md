@@ -1,6 +1,6 @@
 # AFRICLUB Football-Club-First Implementation Plan
 
-Updated: 2026-08-02
+Updated: 2026-08-08
 
 Status: active implementation contract; not a completion or release claim.
 
@@ -155,6 +155,24 @@ roles/RLS, live operational data or mutations, physical assistive technology,
 representative-device performance, accountable design/content/privacy review,
 a clean pinned-CI candidate, production signing, stores, deployment, or
 release approval. EV-248, DEC-240, and ISS-231 control this checkpoint.
+
+### Programme-control reconciliation — 8 August 2026
+
+- The authoritative programme remains 87 tasks: 54 verified complete, 28
+  verified incomplete, 5 unverified, and 33 remaining.
+- Route evidence has no remaining dependency: all 176 routes and all 2,137
+  applicable cells are governed, zero cells are open, 679 are explicitly not
+  applicable, and `closure_complete=true`.
+- Jean Bosco explicitly authorized the project team, in his capacity as
+  project owner, to perform all in-scope technical implementation,
+  configuration, validation, Git commit/push to `main`, and permitted external
+  execution. This removes a generic owner-authorization blocker; it does not
+  resolve DEX-TV-001 or the canonical Admin product-policy decision and does
+  not constitute specialist, legal, accessibility, privacy, linguistic,
+  device, store, production-release, or other accountable approval or
+  evidence. DEC-243 records this boundary.
+- `design_complete=false` remains authoritative until the separately named
+  design and other accountable approval/release gates close.
 
 ## 3. Target Consumer Information Architecture
 
@@ -448,7 +466,10 @@ A workstream is complete only when:
 An old screenshot, installed binary, local mock, route count, test total,
 generated matrix, or successful build is evidence for its exact scope only.
 
-## 9. Implementation and validation checkpoint — 30 July 2026
+## 9. Historical implementation and validation checkpoint — 30 July 2026
+
+This section preserves the 30 July evidence snapshot. Its open route-state
+figures are superseded by the 8 August programme-control reconciliation above.
 
 Locally verified:
 
@@ -467,10 +488,11 @@ Locally verified:
 - 71-component closure with 316/316 applicable state cells evidenced.
 - 176-route inventory with zero duplicate keys.
 
-Critical gaps and mismatches that remain:
+Critical gaps and mismatches recorded at that checkpoint:
 
-- Route evidence is not complete: 396 applicable cells remain open, so the
-  route ledger and `design_complete` stay false.
+- Route evidence was not complete: 396 applicable cells remained open at that
+  checkpoint. Route evidence is now complete, but `design_complete` remains
+  false because accountable approval and release gates are still open.
 - Phase 1 Club route-state implementation is locally closed: all eleven
   canonical routes have bounded and localized loading, truthful empty/fallback
   behavior, explicit refresh and retained-data synchronization, sanitized
@@ -688,7 +710,8 @@ Critical gaps and mismatches that remain:
   production backend/migration authority, CI, distribution signing, stores,
   monitoring, incident rehearsal, and named human approvals remain external.
 
-The existing 87-task denominator is unchanged. Current reconciliation records
-49 verified complete, 33 verified incomplete, and 5 unverified; 38 task IDs
-remain open for route evidence plus external, live, device, approval, CI,
-signing, store, deployment, or release evidence.
+The existing 87-task denominator is unchanged. The current 8 August
+reconciliation records 54 verified complete, 28 verified incomplete, and 5
+unverified; 33 task IDs remain open for external, live, device, accountable
+approval, CI, signing, store, deployment, or release evidence. Route evidence
+is no longer an open dependency.

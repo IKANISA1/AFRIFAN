@@ -29,6 +29,9 @@ before insert on africlub_game.question_drafts
 for each row execute function
   africlub_game.enforce_question_draft_pending_review();
 
+revoke execute on function africlub_game.enforce_question_draft_pending_review()
+  from public, anon, authenticated, service_role;
+
 create or replace function africlub_game.evaluate_question_draft_checks(
   p_draft_id uuid
 )
@@ -159,7 +162,7 @@ as $$
 $$;
 
 revoke all on function africlub_game.evaluate_question_draft_checks(uuid)
-  from public, authenticated;
+  from public, anon, authenticated, service_role;
 grant execute on function africlub_game.evaluate_question_draft_checks(uuid)
   to service_role;
 
@@ -447,13 +450,49 @@ comment on function africlub_game.admin_review_question_draft(
 ) is
   'Records the attributable human decision and fails approval closed when required provenance or deterministic content checks fail.';
 
+revoke all on function africlub_game.admin_list_question_drafts(
+  bigint,
+  text,
+  text,
+  integer,
+  integer
+) from public, anon, authenticated, service_role;
+grant execute on function africlub_game.admin_list_question_drafts(
+  bigint,
+  text,
+  text,
+  integer,
+  integer
+) to authenticated, service_role;
+
+revoke all on function africlub_game.admin_review_question_draft(
+  uuid,
+  text,
+  text
+) from public, anon, authenticated, service_role;
+grant execute on function africlub_game.admin_review_question_draft(
+  uuid,
+  text,
+  text
+) to authenticated, service_role;
+
+-- The superseded overload remains present only so older clients receive a
+-- permission failure instead of a changed signature. Harden its stored
+-- SECURITY DEFINER configuration before revoking every API role.
+alter function africlub_game.admin_publish_question_pack(
+  bigint,
+  text,
+  uuid[],
+  text,
+  uuid
+) set search_path = public, africlub_game, pg_temp;
 revoke all on function africlub_game.admin_publish_question_pack(
   bigint,
   text,
   uuid[],
   text,
   uuid
-) from public, authenticated, service_role;
+) from public, anon, authenticated, service_role;
 
 create or replace function africlub_game.admin_publish_question_pack(
   p_club_id bigint,
@@ -615,6 +654,14 @@ begin
 end;
 $$;
 
+revoke all on function africlub_game.admin_publish_question_pack(
+  bigint,
+  text,
+  uuid[],
+  text,
+  uuid,
+  text
+) from public, anon, authenticated, service_role;
 grant execute on function africlub_game.admin_publish_question_pack(
   bigint,
   text,

@@ -16,7 +16,7 @@ create or replace function public.admin_bulk_update_ticket_status(
 returns integer
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 declare
   v_requested_count integer;
@@ -132,7 +132,7 @@ revoke all on function public.admin_bulk_update_ticket_status(
   uuid,
   text,
   boolean
-) from public, anon, authenticated;
+) from public, anon, authenticated, service_role;
 
 grant execute on function public.admin_bulk_update_ticket_status(
   uuid[],

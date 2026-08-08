@@ -32,12 +32,15 @@ for (propertiesFile in keystorePropertiesFiles) {
 }
 
 fun signingValue(propertyName: String, envName: String): String? {
+    val envValue = System.getenv(envName)?.trim()
+    if (!envValue.isNullOrEmpty()) {
+        return envValue
+    }
     val fileValue = keystoreProperties.getProperty(propertyName)?.trim()
     if (!fileValue.isNullOrEmpty()) {
         return fileValue
     }
-    val envValue = System.getenv(envName)?.trim()
-    return if (envValue.isNullOrEmpty()) null else envValue
+    return null
 }
 
 val releaseStoreFile = signingValue("storeFile", "ANDROID_KEYSTORE_PATH")

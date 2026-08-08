@@ -30,7 +30,7 @@ create or replace function public.cancel_shop_order_if_unchanged(
 returns public.shop_orders
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 declare
   v_actor_id uuid := auth.uid();
@@ -78,7 +78,7 @@ $$;
 revoke all on function public.cancel_shop_order_if_unchanged(
   uuid,
   timestamptz
-) from public, anon;
+) from public, anon, authenticated, service_role;
 
 grant execute on function public.cancel_shop_order_if_unchanged(
   uuid,
@@ -100,7 +100,7 @@ create or replace function public.admin_review_group_contribution_if_unchanged(
 returns public.group_contributions
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 declare
   v_contribution public.group_contributions;
@@ -210,7 +210,7 @@ revoke all on function public.admin_review_group_contribution_if_unchanged(
   uuid,
   text,
   boolean
-) from public, anon, authenticated;
+) from public, anon, authenticated, service_role;
 
 grant execute on function public.admin_review_group_contribution_if_unchanged(
   uuid,
@@ -244,7 +244,7 @@ create or replace function public.admin_review_membership_application_if_unchang
 ) returns public.membership_applications
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 declare
   v_application public.membership_applications;
@@ -367,7 +367,7 @@ revoke all on function public.admin_review_membership_application_if_unchanged(
   bigint,
   uuid,
   uuid
-) from public, anon, authenticated;
+) from public, anon, authenticated, service_role;
 
 grant execute on function public.admin_review_membership_application_if_unchanged(
   uuid,
@@ -394,7 +394,7 @@ create or replace function public.touch_platform_feature_parent_version()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 declare
   v_feature_id uuid;
@@ -414,6 +414,9 @@ begin
   return new;
 end;
 $$;
+
+revoke execute on function public.touch_platform_feature_parent_version()
+  from public, anon, authenticated, service_role;
 
 drop trigger if exists trg_platform_feature_channels_touch_parent
   on public.platform_feature_channels;
@@ -436,7 +439,7 @@ create or replace function public.admin_update_platform_feature_if_unchanged(
 ) returns public.platform_features
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 declare
   v_source public.platform_features;
@@ -704,7 +707,7 @@ revoke all on function public.admin_update_platform_feature_if_unchanged(
   bigint,
   jsonb,
   uuid
-) from public, anon, authenticated;
+) from public, anon, authenticated, service_role;
 
 grant execute on function public.admin_update_platform_feature_if_unchanged(
   uuid,

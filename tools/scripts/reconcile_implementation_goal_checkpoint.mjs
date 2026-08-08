@@ -32,8 +32,73 @@ const fileFacts = (file) => {
 const route = read(routePath);
 const design = read(designPath);
 const externalPreflight = read(externalPreflightPath);
-const exactHeadRun = externalPreflight.github_actions.exact_head_run;
-const exactHeadRunSummary = `exact-HEAD GitHub Actions run ${exactHeadRun.id} for ${exactHeadRun.head_sha} ended in ${exactHeadRun.conclusion} with ${exactHeadRun.job_count} jobs and ${exactHeadRun.log_available ? "available" : "no"} logs`;
+const candidate = externalPreflight.candidate ?? {};
+const githubActions = externalPreflight.github_actions ?? {};
+const exactHeadRun = githubActions.exact_head_run ?? {};
+const physicalDevices = externalPreflight.physical_devices ?? {};
+const iosDevices = Array.isArray(physicalDevices.ios)
+  ? physicalDevices.ios
+  : null;
+const hasRecordedDirtyBoundary =
+  candidate.dirty === false ||
+  (candidate.dirty === true &&
+    typeof candidate.working_tree_dirty_boundary === "string" &&
+    candidate.working_tree_dirty_boundary.trim().length > 0);
+const exactHeadMatchesCandidate =
+  typeof candidate.git_head === "string" &&
+  candidate.git_head.length > 0 &&
+  candidate.git_head === exactHeadRun.head_sha;
+const exactCandidate =
+  candidate.exact_candidate === true &&
+  candidate.candidate_commit_verified_remote === true &&
+  exactHeadMatchesCandidate &&
+  hasRecordedDirtyBoundary;
+const candidateMetadata = {
+  branch: candidate.branch ?? null,
+  head: candidate.git_head ?? null,
+  dirty: typeof candidate.dirty === "boolean" ? candidate.dirty : null,
+  exact_candidate: exactCandidate,
+  exact_candidate_reported_by_preflight: candidate.exact_candidate === true,
+  candidate_commit_verified_remote:
+    candidate.candidate_commit_verified_remote === true,
+  exact_head_run_matches_candidate: exactHeadMatchesCandidate,
+  working_tree_dirty_boundary:
+    candidate.working_tree_dirty_boundary ?? null,
+  observed_at_utc: externalPreflight.checked_at ?? null,
+};
+const exactHeadRunOutcome =
+  exactHeadRun.conclusion ?? exactHeadRun.status ?? "unknown";
+const exactHeadRunSummary = `exact-HEAD GitHub Actions run ${exactHeadRun.id ?? "unknown"} for ${exactHeadRun.head_sha ?? "unknown"} is ${exactHeadRun.status ?? "status unknown"} with outcome ${exactHeadRunOutcome}, ${exactHeadRun.job_count ?? "unknown"} jobs and ${exactHeadRun.log_available === true ? "available" : "no"} logs`;
+const pinnedRuntimeExecutionProven =
+  githubActions.pinned_runtime_execution_proven === true;
+const pinnedRuntimeSummary = pinnedRuntimeExecutionProven
+  ? `${exactHeadRunSummary}; the current preflight marks pinned-runtime execution as proven`
+  : `${exactHeadRunSummary}; the current preflight does not mark pinned-runtime execution as proven${githubActions.interpretation ? ` (${githubActions.interpretation})` : ""}`;
+const candidateSummary = `The current preflight records commit ${candidateMetadata.head ?? "unknown"} on branch ${candidateMetadata.branch ?? "unknown"}; remote verification is ${candidateMetadata.candidate_commit_verified_remote ? "confirmed" : "not confirmed"}, the exact-head run ${candidateMetadata.exact_head_run_matches_candidate ? "matches" : "does not match"} the candidate SHA, and exact_candidate=${candidateMetadata.exact_candidate}.`;
+const workingTreeSummary = candidateMetadata.dirty
+  ? `The working tree is dirty within the recorded preservation boundary: ${candidateMetadata.working_tree_dirty_boundary ?? "no boundary recorded"}.`
+  : candidateMetadata.dirty === false
+    ? "The working tree is recorded as clean."
+    : "The working-tree state is not reported by the current preflight.";
+const describeDevice = (device) => {
+  const identity = [device?.name, device?.model].filter(Boolean).join(" / ");
+  return `${identity || "unnamed iOS device"}: ${device?.state ?? "state unknown"}`;
+};
+const iosDeviceSummary =
+  iosDevices === null
+    ? "not reported"
+    : iosDevices.length > 0
+      ? iosDevices.map(describeDevice).join(", ")
+      : "none reported";
+const androidAttachedCount = physicalDevices.android_attached_count ?? null;
+const nativeTvAttachedCount = physicalDevices.native_tv_attached_count ?? null;
+const physicalDeviceSummary = `iOS devices: ${iosDeviceSummary}; attached Android devices: ${androidAttachedCount ?? "not reported"}; attached native-TV devices: ${nativeTvAttachedCount ?? "not reported"}`;
+const candidateCiRemainingCheck = exactCandidate
+  ? "pinned_ci_signing_store_processing_and_deployment"
+  : "exact_candidate_pinned_ci_signing_store_processing_and_deployment";
+const candidateCiRemainingBoundary = exactCandidate
+  ? "actual pinned CI execution"
+  : "exact controlled candidate and actual pinned CI execution";
 const closure = route.state_closure;
 if (
   closure.open_cell_count !== 0 ||
@@ -64,7 +129,7 @@ const incompleteUpdates = {
   "MOB-09":
     "Settings recovery, destructive behavior and the corrected compact-overflow presentation have local source, test and admitted browser evidence. Physical-device and assistive-technology proof remains open.",
   "EVID-03":
-    `One thousand three hundred seventy-nine deterministic Flutter/native-TV exact-pixel baselines remain hash-governed, and all applicable web routes now have admitted exact-current screenshot or response evidence. Local visual review, source freshness, privacy scanning and artifact retention controls pass. Actual execution of the golden and route-evidence contracts on the pinned CI runtime remains open because ${exactHeadRunSummary}.`,
+    `One thousand three hundred seventy-nine deterministic Flutter/native-TV exact-pixel baselines remain hash-governed, and all applicable web routes now have admitted exact-current screenshot or response evidence. Local visual review, source freshness, privacy scanning and artifact retention controls pass. Current pinned-runtime execution state: ${pinnedRuntimeSummary}.`,
   "EVID-04":
     "All 176 routes retain governed screenshot or response evidence. The final sixteen Admin PWA/Venue bundles and the native-TV remote/context checkpoint passed controlled visual/accessibility review and admission. Accountable human design approval for the final product surfaces remains open and has not been inferred.",
   "ADMIN-09":
@@ -73,31 +138,31 @@ const incompleteUpdates = {
 
 const retainedTaskUpdates = {
   "GOV-06":
-    `The controlled Flutter runtime is reconciled at 3.44.4 across local configuration and release tooling. Commit ${externalPreflight.candidate.git_head} is pushed to origin/main as the reviewed implementation candidate; the primary worktree retains only the explicitly preserved unrelated melos.yaml deletion and four local agent-history files. ${exactHeadRunSummary}, so it is not pinned-runtime execution evidence. Actual CI execution remains open.`,
+    `The controlled Flutter runtime is reconciled at 3.44.4 across local configuration and release tooling. ${candidateSummary} ${workingTreeSummary} Current CI state: ${pinnedRuntimeSummary}.`,
   "A11Y-02":
-    "The native-TV AVD now provides exact directional focus, center, Menu overlay and focus-restoration evidence, while automated semantics tests remain green. The current device preflight still found the paired iPhone 12 Pro unavailable and no attached Android or native-TV device. Current iOS VoiceOver and Android TalkBack or TV screen-reader traversal recordings on physical devices remain absent; emulator and automated semantics evidence do not close this task.",
+    `The native-TV AVD now provides exact directional focus, center, Menu overlay and focus-restoration evidence, while automated semantics tests remain green. The current device preflight reports ${physicalDeviceSummary}. Physical VoiceOver execution is ${physicalDevices.voiceover_execution_proven === true ? "proven" : "not proven"}, TalkBack execution is ${physicalDevices.talkback_execution_proven === true ? "proven" : "not proven"}, and physical TV remote or soak execution is ${physicalDevices.physical_tv_remote_or_soak_proven === true ? "proven" : "not proven"}; emulator and automated semantics evidence do not substitute for those physical-device controls.`,
   "EVID-06":
     "Exact-current Android production-main profile evidence records a 1,242 ms cold start against the 3,000 ms budget, 79.34% SurfaceFlinger jank against the 5% budget, 153,191 KiB total PSS with no approved memory threshold, and controlled settings, 120-item Shop, checkout and Perfetto workloads. EV-249 adds exact native-TV cold-launch and remote-interaction execution, but not a repeat/soak or performance profile. EVID-06 remains verified incomplete because the software-rendered mobile emulator fails frame/raster budgets and representative physical-device profiling, an approved memory budget, product-image and real checkout-submission workloads, live realtime, native-TV performance/soak and authenticated Admin-volume profiles remain open.",
   "EVID-07":
-    "All 136 admitted local evidence bundles have exact provenance sidecars covering 1,367 artifacts, including the reviewed native-TV remote/context and generic mobile pairing-link checkpoint; 1,379 golden baselines remain separately hash-governed. Clean-candidate and pinned-CI execution remain separate under GOV-06 and EVID-08.",
+    `All 136 admitted local evidence bundles have exact provenance sidecars covering 1,367 artifacts, including the reviewed native-TV remote/context and generic mobile pairing-link checkpoint; 1,379 golden baselines remain separately hash-governed. ${candidateCiRemainingBoundary[0].toUpperCase()}${candidateCiRemainingBoundary.slice(1)} remains separate under GOV-06 and EVID-08.`,
   "EVID-08":
-    `CI configuration generates and validates route, archetype and component ledgers, source compliance, all 1,379 golden digests, interaction differentiation, endpoint contracts, evidence provenance, privacy patterns and platform builds. ${exactHeadRunSummary}, so no pinned-runtime job executed. The current local set has 136 admitted bundles, zero pending bundles, 2,137 admitted route cells and zero open cells, including exact-current native-TV remote/context and iOS generic-link registration evidence. Actual pinned-runtime CI execution and every external release gate remain open.`,
+    `CI configuration generates and validates route, archetype and component ledgers, source compliance, all 1,379 golden digests, interaction differentiation, endpoint contracts, evidence provenance, privacy patterns and platform builds. Current CI state: ${pinnedRuntimeSummary}. The current local set has 136 admitted bundles, zero pending bundles, 2,137 admitted route cells and zero open cells, including exact-current native-TV remote/context and iOS generic-link registration evidence. External release gates remain separately governed.`,
   "TV-04":
     "Automated native-TV focus and remote contracts pass. EV-249 now proves exact-current Android TV AVD cold launch, D-pad up/down reachability, center renewal, dedicated Menu context behavior, localized retry/close actions and focus restoration from Android UI hierarchies and screenshots. Product-scope-dependent rows/details/overlays and physical TV/remote, overscan and screen-reader proof remain open, so TV-04 remains verified incomplete.",
   "TV-05":
     "Pairing, credential, retry, conflict, timeout, recovery, proxy and scoped-revocation contracts remain exact-tested. EV-249 fixes the TV-generated `africlub://` versus mobile manifest mismatch by explicitly registering and parser-allowlisting both `africlub://` and `gikundiro://` while rejecting unlisted schemes; the rebuilt iOS simulator now recognizes the generic TV URL. Authenticated production pairing/synchronization, multi-client idempotency/audit, physical QR handoff and real-remote proof remain open, so TV-05 remains verified incomplete.",
   "TV-09":
-    "The current preflight found no attached Android or native-TV device. Production signing credentials, a signed AAB and certificate fingerprint, managed-track/store processing, representative-hardware soak, crash/ANR dashboard evidence, device inventory/revocation drill, and operations-owner sign-off remain absent.",
+    `The current preflight reports ${physicalDeviceSummary}. Production signing credentials, a signed AAB and certificate fingerprint, managed-track/store processing, representative-hardware soak, crash/ANR dashboard evidence, device inventory/revocation drill, and operations-owner sign-off remain separately required.`,
   "REL-01":
-    `Release configuration, runtime pins, validation contracts, provenance controls and current local platform-build evidence exist, and reviewed implementation candidate ${externalPreflight.candidate.git_head} is verified on origin/main. The primary worktree retains explicitly preserved unrelated local changes, and ${exactHeadRunSummary}; no reproducible pinned-CI result exists. REL-01 therefore remains verified incomplete.`,
+    `Release configuration, runtime pins, validation contracts, provenance controls and current local platform-build evidence exist. ${candidateSummary} ${workingTreeSummary} Current CI state: ${pinnedRuntimeSummary}. REL-01 remains verified incomplete while its other release gates remain open.`,
   "REL-02":
     "An exact-current production-flavor Android AAB dry-run passes with a destroyed ephemeral self-signed key, and three release-readiness integration journeys pass on an Android API 36 emulator. REL-02 is verified incomplete because the artifact is not production-signed or store-processed and complete physical-Android runtime, TalkBack, permissions, deep links, offline/retry, destructive-flow, performance and live-backend proof is absent.",
   "REL-03":
     "An exact-current unsigned iOS release build succeeds for rw.ikanisa.rayonSports at minimum iOS 15.5, its app-level PrivacyInfo.xcprivacy is bundled with the SDK manifests, and three release-readiness integration journeys pass on an iPhone 17 / iOS 26.5 simulator. The earlier QA-06 checkpoint records a development-signed physical-iPhone install and launch subset. REL-03 remains verified incomplete because there is no distribution-signed archive, complete exact-candidate physical-iPhone runtime, VoiceOver, text sizing, permissions, deep links, offline/retry, destructive-flow, performance, App Store processing or live-backend proof.",
   "REL-04":
-    "The rebuilt iOS simulator recognizes the generic native-TV pairing URL and the platform/parser contracts pass, but this proves simulator registration only. The current preflight found the paired iPhone 12 Pro unavailable and no attached Android device. Complete physical mobile UAT, authenticated QR handoff and assistive-technology evidence remain absent. REL-04 remains unverified.",
+    `The rebuilt iOS simulator recognizes the generic native-TV pairing URL and the platform/parser contracts pass, but this proves simulator registration only. The current preflight reports ${physicalDeviceSummary}. Physical VoiceOver execution is ${physicalDevices.voiceover_execution_proven === true ? "proven" : "not proven"} and TalkBack execution is ${physicalDevices.talkback_execution_proven === true ? "proven" : "not proven"}. Complete physical mobile UAT, authenticated QR handoff and assistive-technology evidence remain separately governed. REL-04 remains unverified.`,
   "REL-05":
-    "EV-249 proves exact-current Android TV AVD directional focus, center, Menu context overlay and challenge renewal against an isolated local backend. No physical native-TV target is attached, so emulator execution does not establish real display, overscan, remote, screen-reader, reconnect, network, authenticated pairing, performance or soak behavior. REL-05 remains unverified.",
+    `EV-249 proves exact-current Android TV AVD directional focus, center, Menu context overlay and challenge renewal against an isolated local backend. The current preflight reports ${nativeTvAttachedCount ?? "an unreported number of"} attached native-TV devices and marks physical TV remote or soak execution as ${physicalDevices.physical_tv_remote_or_soak_proven === true ? "proven" : "not proven"}. Emulator execution does not by itself establish real display, overscan, remote, screen-reader, reconnect, network, authenticated pairing, performance or soak behavior. REL-05 remains unverified.`,
   "REL-06":
     "Privacy-filtered Crashlytics diagnostics now exclude account identifiers, raw exception messages and unsafe diagnostic strings; the Firebase startup contract keeps diagnostics compile-time gated and the focused observability tests, analysis and store/privacy validator pass. Existing local backend/API/hook and web contract evidence remains valid. REL-06 remains incomplete because authorized target-schema and hook-secret/dashboard configuration, live Meta delivery and identity callback, migration execution, RLS/grants, authenticated role matrices, rollback, monitoring dashboards and alerts, incident rehearsal, pinned CI, deployment evidence, and accountable backend/security approval remain open. No backend or production mutation was performed.",
   "REL-07":
@@ -265,7 +330,7 @@ validation.current_checkpoint = {
     web_api: 0,
   },
   latest_evidence: "EV-250",
-  latest_decision: "DEC-242",
+  latest_decision: "DEC-243",
   latest_issue: "ISS-233",
   affected_remaining_task_ids: remainingIds,
   latest_local_route_closure:
@@ -281,7 +346,7 @@ validation.current_checkpoint = {
     "authorized_target_backend_migration_rls_rpc_collision_and_rollback_execution",
     "physical_mobile_and_native_tv_device_assistive_technology_and_soak_execution",
     "authorized_two_phone_plus_physical_native_tv_synchronized_session",
-    "clean_candidate_pinned_ci_signing_store_processing_and_deployment",
+    candidateCiRemainingCheck,
     "named_product_design_privacy_security_operations_qa_and_release_approval",
   ],
   active_code_owned_queue: {
@@ -305,15 +370,33 @@ validation.current_checkpoint = {
   external_execution_preflight: {
     path: externalPreflightPath,
     ...fileFacts(externalPreflightPath),
-    github_actions_exact_head_run: exactHeadRun.id,
-    github_actions_exact_head_sha: exactHeadRun.head_sha,
-    github_actions_conclusion: `${exactHeadRun.conclusion}_${exactHeadRun.job_count}_jobs_${exactHeadRun.log_available ? "logs_available" : "no_logs"}`,
-    paired_ios_device_state: "unavailable",
-    attached_android_device_count: 0,
-    attached_native_tv_device_count: 0,
+    checked_at: externalPreflight.checked_at ?? null,
+    candidate: candidateMetadata,
+    github_actions_repository: githubActions.repository ?? null,
+    github_actions_exact_head_run: exactHeadRun.id ?? null,
+    github_actions_exact_head_sha: exactHeadRun.head_sha ?? null,
+    github_actions_status: exactHeadRun.status ?? null,
+    github_actions_conclusion: exactHeadRun.conclusion ?? null,
+    github_actions_job_count: exactHeadRun.job_count ?? null,
+    github_actions_log_available: exactHeadRun.log_available === true,
+    pinned_runtime_execution_proven: pinnedRuntimeExecutionProven,
+    github_actions_interpretation: githubActions.interpretation ?? null,
+    ios_devices: iosDevices,
+    paired_ios_device_state:
+      iosDevices?.length === 1 ? (iosDevices[0]?.state ?? null) : null,
+    attached_android_device_count: androidAttachedCount,
+    attached_native_tv_device_count: nativeTvAttachedCount,
+    voiceover_execution_proven:
+      physicalDevices.voiceover_execution_proven === true,
+    talkback_execution_proven:
+      physicalDevices.talkback_execution_proven === true,
+    physical_tv_remote_or_soak_proven:
+      physicalDevices.physical_tv_remote_or_soak_proven === true,
+    browser_evidence: externalPreflight.browser_evidence ?? null,
+    closure_effect: externalPreflight.closure_effect ?? null,
   },
-  closure_complete: true,
-  design_complete: false,
+  closure_complete: closure.closure_complete,
+  design_complete: design.design_complete,
 };
 validation.football_club_first_implementation = {
   ...validation.football_club_first_implementation,
@@ -353,6 +436,9 @@ write(manifestPath, validation);
 
 const r66 = read(r66Path);
 r66.generated_at_utc = now;
+r66.candidate = candidateMetadata;
+r66.external_execution_preflight =
+  validation.current_checkpoint.external_execution_preflight;
 r66.route_inventory = {
   ...r66.route_inventory,
   generated_at_utc: route.generated_at,
@@ -377,16 +463,23 @@ r66.task_accounting = {
 r66.closure = {
   ...r66.closure,
   sealed: false,
-  exact_candidate: false,
+  exact_candidate: exactCandidate,
   all_87_tasks_complete: remainingIds.length === 0,
   all_39_game_criteria_complete: false,
   all_4_deliverables_complete: false,
-  route_evidence_complete: true,
-  design_complete: false,
+  route_evidence_complete: design.route_evidence_complete,
+  design_complete: design.design_complete,
   game_flow_complete: false,
   release_ready: false,
   closure_complete: false,
 };
+r66.closure.external_or_human_gates = (
+  r66.closure.external_or_human_gates ?? []
+).map((gate) =>
+  exactCandidate && gate === "clean controlled candidate and pinned CI"
+    ? "actual pinned CI execution"
+    : gate,
+);
 delete r66.closure.all_38_tasks_complete;
 r66.design_compliance = {
   ...r66.design_compliance,
@@ -394,8 +487,8 @@ r66.design_compliance = {
   automated_status: "pass_with_route_evidence_complete_and_accountable_human_review_open",
   violation_count: design.violation_count,
   warning_count: design.warning_count,
-  design_complete: false,
-  route_evidence_complete: true,
+  design_complete: design.design_complete,
+  route_evidence_complete: design.route_evidence_complete,
   current_visual_review:
     "all 2,137 applicable route-state cells are admitted and 679 are explicit N/A; zero cells remain open after controlled review and explicit admission of the final sixteen-route batch",
 };
@@ -409,7 +502,7 @@ r66.implementation.not_implemented_or_not_closed = [
   "accountable onboarding-media and club-content rights approval",
   "authorized target-backend RLS, RPC, audit, collision and rollback execution",
   "physical mobile and native-TV device, remote, assistive-technology, performance and soak proof",
-  "clean controlled candidate and actual pinned CI execution",
+  candidateCiRemainingBoundary,
   "production signing, store processing, deployment and accountable release approval",
 ];
 const currentRouteFacts = fileFacts(routePath);

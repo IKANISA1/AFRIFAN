@@ -6,6 +6,12 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 cd "$ROOT"
 
+echo "==> Validate local-only Supabase migration security controls"
+node tools/scripts/validate_supabase_local_only_migrations.mjs
+
+echo "==> Validate iOS SwiftPM deployment-target synchronization"
+python3 -m unittest tools/scripts/sync_ios_swiftpm_deployment_target_test.py
+
 echo "==> Validate release contract"
 bash tools/scripts/validate_club_release.sh rayon_sports
 

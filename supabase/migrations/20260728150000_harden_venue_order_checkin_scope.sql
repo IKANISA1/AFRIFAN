@@ -11,7 +11,7 @@ create or replace function public.venue_order_create(
 ) returns jsonb
 language plpgsql
 security definer
-set search_path to 'public'
+set search_path = public, pg_temp
 as $$
 declare
   v_user_id uuid := auth.uid();
@@ -198,3 +198,20 @@ exception
     raise;
 end;
 $$;
+
+revoke execute on function public.venue_order_create(
+  bigint,
+  uuid,
+  uuid,
+  jsonb,
+  boolean,
+  text
+) from public, anon, authenticated, service_role;
+grant execute on function public.venue_order_create(
+  bigint,
+  uuid,
+  uuid,
+  jsonb,
+  boolean,
+  text
+) to authenticated;

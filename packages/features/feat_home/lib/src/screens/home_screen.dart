@@ -67,6 +67,13 @@ const List<ContentBlock> _localHomeContentBlocks = <ContentBlock>[
   ),
 ];
 
+const Set<String> _homePlacementKeys = <String>{
+  'home_hero',
+  'home_top',
+  'home_mid',
+  'home_bottom',
+};
+
 /// Home screen — live matches, quick actions, gamification, and club news.
 ///
 /// Uses [HomeFeedNotifier] via Riverpod for async state management instead
@@ -168,7 +175,10 @@ class HomeScreen extends ConsumerWidget {
 
     // ── Load all placements for home ──
     final featureConfig = ref.watch(featureConfigServiceProvider);
-    final useLocalComposition = !featureConfig.hasConfig;
+    final hasConfiguredHomeComposition = featureConfig.snapshot.contentBlocks
+        .any((block) => _homePlacementKeys.contains(block.placementKey));
+    final useLocalComposition =
+        !featureConfig.hasConfig && !hasConfiguredHomeComposition;
     final heroBlocks = _homeBlocksForPlacement(
       'home_hero',
       ref.watch(contentBlocksProvider('home_hero')),

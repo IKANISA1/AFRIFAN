@@ -19,6 +19,12 @@ create index if not exists idx_venue_staff_audit_scope_created
 
 alter table public.venue_staff_audit_events enable row level security;
 
+-- Audit rows are appended only inside the security-definer workflows below.
+-- Reset permissive public-schema default ACLs and expose scoped reads only.
+revoke all on table public.venue_staff_audit_events
+  from public, anon, authenticated, service_role;
+grant select on table public.venue_staff_audit_events to authenticated;
+
 drop policy if exists venue_staff_audit_read on public.venue_staff_audit_events;
 create policy venue_staff_audit_read
 on public.venue_staff_audit_events for select
@@ -41,7 +47,7 @@ create or replace function public.venue_menu_upsert(
 ) returns jsonb
 language plpgsql
 security definer
-set search_path to 'public'
+set search_path = public, pg_temp
 as $$
 declare
   v_actor uuid := auth.uid();
@@ -128,7 +134,7 @@ create or replace function public.venue_promotion_launch(
 ) returns jsonb
 language plpgsql
 security definer
-set search_path to 'public'
+set search_path = public, pg_temp
 as $$
 declare
   v_actor uuid := auth.uid();
@@ -226,9 +232,11 @@ begin
 end;
 $$;
 
-revoke all on function public.venue_menu_upsert(uuid, uuid, text, text, integer, text, boolean, boolean, integer) from public;
+revoke all on function public.venue_menu_upsert(uuid, uuid, text, text, integer, text, boolean, boolean, integer)
+  from public, anon, authenticated, service_role;
 grant execute on function public.venue_menu_upsert(uuid, uuid, text, text, integer, text, boolean, boolean, integer) to authenticated;
-revoke all on function public.venue_promotion_launch(uuid, uuid, text) from public;
+revoke all on function public.venue_promotion_launch(uuid, uuid, text)
+  from public, anon, authenticated, service_role;
 grant execute on function public.venue_promotion_launch(uuid, uuid, text) to authenticated;
 
 comment on table public.venue_staff_audit_events is 'Immutable audit trail for authenticated venue-operator mutations.';

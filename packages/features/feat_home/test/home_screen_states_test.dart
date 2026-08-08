@@ -11,6 +11,7 @@ import 'package:feat_home/src/screens/home_screen.dart';
 import 'package:feat_home/src/widgets/contributor_leaderboard.dart';
 import 'package:feat_home/src/widgets/latest_intel_section.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
+import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,6 +111,38 @@ void main() {
         expect(find.text('Join Gikundiro'), findsWidgets);
         expect(find.text('Fan Zone'), findsOneWidget);
         expect(find.text('Shop'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'does not mix local quick actions into configured Home composition',
+      (tester) async {
+        await tester.pumpWidget(
+          _buildApp(
+            homeRepository: const _FakeHomeFeedRepository(
+              snapshot: HomeFeedSnapshot(status: HomeFeedStatus.success),
+            ),
+            latestIntelRepository: const _FakeLatestIntelRepository(
+              LatestIntelSnapshot(status: LatestIntelStatus.empty),
+            ),
+            featureConfigSnapshot: const PlatformConfigSnapshot(
+              contentBlocks: <ContentBlock>[
+                ContentBlock(
+                  blockKey: 'configured_home_quick_actions',
+                  blockType: 'widget',
+                  placementKey: 'home_top',
+                  content: <String, dynamic>{'widget': 'quick_actions_grid'},
+                ),
+              ],
+            ),
+            child: const HomeScreen(),
+          ),
+        );
+
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(QuickActionsGrid), findsOneWidget);
       },
     );
 

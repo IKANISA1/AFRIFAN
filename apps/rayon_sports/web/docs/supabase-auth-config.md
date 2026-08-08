@@ -27,7 +27,9 @@ call the Meta Graph API or carry WhatsApp Cloud API secrets.
 #### Required Supabase Auth Settings (Dashboard -> Authentication -> Hooks)
 - **Phone provider**: ON
 - **Send SMS hook**: `https://<project-ref>.supabase.co/functions/v1/send-sms`
-- **Local test OTP**: `250788767816 = "12345"` in `supabase/config.toml`
+- **Local test OTPs**: no fixed mapping is committed. If a disposable local
+  stack needs a fixed OTP, configure it only in an untracked local copy and
+  remove it immediately after the test.
 
 #### Required Edge Function Secrets
 - `SUPABASE_AUTH_HOOK_SEND_SMS_SECRET` — the Standard Webhooks signing secret
@@ -59,7 +61,7 @@ await supabase.auth.signInWithOtp({
 // Verify OTP (uses "sms" type for both SMS and WhatsApp)
 await supabase.auth.verifyOtp({
   phone: "+250788xxxxxx",
-  token: "12345",
+  token: "<one-time-code>",
   type: "sms",
 });
 ```

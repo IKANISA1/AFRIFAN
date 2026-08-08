@@ -422,13 +422,28 @@ create policy venue_governance_controls_write_admin
   using (public.is_admin_user() or (club_id is not null and public.is_club_admin(club_id)))
   with check (public.is_admin_user() or (club_id is not null and public.is_club_admin(club_id)));
 
-grant select on public.platform_route_registry to anon, authenticated;
-grant select on public.platform_option_sets to anon, authenticated;
-grant select on public.platform_option_values to anon, authenticated;
-grant select on public.runtime_copy to anon, authenticated;
-grant select on public.site_navigation_items to anon, authenticated;
-grant select on public.site_search_items to anon, authenticated;
-grant select on public.venue_governance_controls to anon, authenticated;
+-- The production public-schema default ACL grants broad privileges to new
+-- Data API relations. Reset those inherited grants before adding the exact
+-- privileges required by RLS and the admin registry editor.
+revoke all on table
+  public.platform_route_registry,
+  public.platform_option_sets,
+  public.platform_option_values,
+  public.runtime_copy,
+  public.site_navigation_items,
+  public.site_search_items,
+  public.venue_governance_controls
+from public, anon, authenticated, service_role;
+
+grant select on table
+  public.platform_route_registry,
+  public.platform_option_sets,
+  public.platform_option_values,
+  public.runtime_copy,
+  public.site_navigation_items,
+  public.site_search_items,
+  public.venue_governance_controls
+to anon, authenticated;
 grant insert, update, delete on public.platform_route_registry to authenticated;
 grant insert, update, delete on public.platform_option_sets to authenticated;
 grant insert, update, delete on public.platform_option_values to authenticated;
@@ -436,6 +451,15 @@ grant insert, update, delete on public.runtime_copy to authenticated;
 grant insert, update, delete on public.site_navigation_items to authenticated;
 grant insert, update, delete on public.site_search_items to authenticated;
 grant insert, update, delete on public.venue_governance_controls to authenticated;
+grant select, insert, update, delete on table
+  public.platform_route_registry,
+  public.platform_option_sets,
+  public.platform_option_values,
+  public.runtime_copy,
+  public.site_navigation_items,
+  public.site_search_items,
+  public.venue_governance_controls
+to service_role;
 
 create or replace function public.get_platform_config(
   p_channel text default 'mobile',
@@ -731,6 +755,8 @@ begin
 end;
 $$;
 
+revoke execute on function public.get_platform_config(text, bigint)
+  from public, anon, authenticated, service_role;
 grant execute on function public.get_platform_config(text, bigint)
   to anon, authenticated, service_role;
 
@@ -786,6 +812,8 @@ as $$
   );
 $$;
 
+revoke execute on function public.get_platform_option_set(text, text, bigint)
+  from public, anon, authenticated, service_role;
 grant execute on function public.get_platform_option_set(text, text, bigint)
   to anon, authenticated, service_role;
 
@@ -928,8 +956,10 @@ begin
 end;
 $$;
 
+revoke execute on function africlub_game.get_tv_display_state(uuid, text, bigint)
+  from public, anon, authenticated, service_role;
 grant execute on function africlub_game.get_tv_display_state(uuid, text, bigint)
-  to anon, authenticated, service_role;
+  to authenticated, service_role;
 
 create or replace function public.get_tv_display_state(
   p_device_id uuid default null,
@@ -944,8 +974,10 @@ as $$
   select africlub_game.get_tv_display_state(p_device_id, p_pairing_code, p_club_id);
 $$;
 
+revoke execute on function public.get_tv_display_state(uuid, text, bigint)
+  from public, anon, authenticated, service_role;
 grant execute on function public.get_tv_display_state(uuid, text, bigint)
-  to anon, authenticated, service_role;
+  to authenticated, service_role;
 
 insert into public.platform_route_registry (
   route_key,

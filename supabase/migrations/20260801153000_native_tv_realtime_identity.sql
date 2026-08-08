@@ -41,6 +41,9 @@ before update of status, credential_revoked_at, credential_token_hash
 on africlub_game.tv_devices
 for each row execute function africlub_game.clear_tv_realtime_identity();
 
+revoke execute on function africlub_game.clear_tv_realtime_identity()
+  from public, anon, authenticated, service_role;
+
 create or replace function public.bind_tv_realtime_identity_v2(
   p_device_token text
 ) returns jsonb
@@ -159,10 +162,12 @@ using (
   )
 );
 
-revoke all on function public.bind_tv_realtime_identity_v2(text) from public;
+revoke all on function public.bind_tv_realtime_identity_v2(text)
+from public, anon, authenticated, service_role;
 grant execute on function public.bind_tv_realtime_identity_v2(text)
 to authenticated;
-revoke all on function africlub_game.is_tv_session_subscriber(uuid) from public;
+revoke all on function africlub_game.is_tv_session_subscriber(uuid)
+from public, anon, authenticated, service_role;
 grant execute on function africlub_game.is_tv_session_subscriber(uuid)
 to authenticated;
 

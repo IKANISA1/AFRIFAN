@@ -18,7 +18,7 @@ create or replace function public.admin_delete_mutable_record_if_unchanged(
 returns jsonb
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 declare
   v_allowed_tables constant text[] := array[
@@ -190,7 +190,7 @@ revoke all on function public.admin_delete_mutable_record_if_unchanged(
   boolean,
   text,
   text
-) from public, anon, authenticated;
+) from public, anon, authenticated, service_role;
 
 grant execute on function public.admin_delete_mutable_record_if_unchanged(
   text,
@@ -221,7 +221,7 @@ create or replace function public.audit_admin_sms_review_rejection()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 begin
   insert into public.admin_audit_log (
@@ -274,4 +274,4 @@ when (
 execute function public.audit_admin_sms_review_rejection();
 
 revoke all on function public.audit_admin_sms_review_rejection()
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;

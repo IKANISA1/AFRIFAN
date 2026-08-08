@@ -22,6 +22,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate checkpoint reconciliation controls
+        run: node --test tools/scripts/reconcile_implementation_goal_checkpoint.test.mjs
+
+      - name: Validate local-only Supabase migration security controls
+        run: node tools/scripts/validate_supabase_local_only_migrations.mjs
+
+      - name: Validate iOS SwiftPM deployment-target synchronization
+        run: python3 -m unittest tools/scripts/sync_ios_swiftpm_deployment_target_test.py
+
       - name: Validate controlled Flutter runtime configuration
         run: bash tools/scripts/validate_flutter_runtime_pins.sh
 
@@ -67,7 +80,7 @@ jobs:
           jq -e '
             .status == "pass" and
             .design_complete == false and
-            .route_evidence_complete == false and
+            .route_evidence_complete == true and
             .route_inventory_status == "pass" and
             .route_state_closure_status == "pass" and
             .screen_archetype_coverage_status == "pass" and
@@ -114,6 +127,9 @@ jobs:
         run: >-
           dart run melos exec --concurrency=1 --dir-exists="test" --
           bash "$MELOS_ROOT_PATH/tools/scripts/run_package_tests.sh" --coverage
+
+      - name: Run release-readiness host smoke journeys
+        run: flutter test apps/rayon_sports/integration_test/release_readiness_smoke_test.dart
 
       - name: Validate governed golden baselines
         run: bash tools/scripts/validate_golden_contract.sh
@@ -381,7 +397,11 @@ jobs:
       - name: Generate and validate iOS build configuration
         run: |
           flutter build ios --config-only --release --no-codesign --dart-define-from-file=assets/flavors/production.local.json
+          python3 ../../tools/scripts/sync_ios_swiftpm_deployment_target.py \
+            --manifest ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift \
+            --minimum 15.5
+          bash ../../tools/scripts/validate_ios_release_contract.sh rayon_sports
           dart run tool/validate_ios_dart_defines.dart ios/Flutter/Generated.xcconfig assets/flavors/production.local.json
 
       - name: Build iOS Framework
-        run: flutter build ios --release --no-codesign --dart-define-from-file=assets/flavors/production.local.json
+        run: flutter build ios --release --no-codesign --no-pub --dart-define-from-file=assets/flavors/production.local.json

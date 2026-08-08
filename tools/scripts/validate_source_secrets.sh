@@ -76,4 +76,26 @@ if [ -n "$tracked_dev_vars" ]; then
   exit 1
 fi
 
+python3 - "$ROOT/supabase/config.toml" <<'PY'
+import pathlib
+import re
+import sys
+
+config_path = pathlib.Path(sys.argv[1])
+config_text = config_path.read_text(encoding="utf-8")
+section = re.search(
+    r"(?ms)^\s*\[auth\.sms\.test_otp\]\s*$\n(?P<body>.*?)(?=^\s*\[|\Z)",
+    config_text,
+)
+active_mapping = section and re.search(
+    r'(?m)^\s*[^#\s][^=]*=\s*["\'][^"\']+["\']\s*(?:#.*)?$',
+    section.group("body"),
+)
+if active_mapping:
+    raise SystemExit(
+        "Committed Supabase fixed test OTP mappings are forbidden; "
+        "use an untracked, disposable local-only configuration."
+    )
+PY
+
 echo "Source secret and signing-material scan passed."

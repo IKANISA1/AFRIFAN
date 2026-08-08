@@ -4,7 +4,40 @@
     "path": "/Volumes/PRO-G40/DESIGN/DESIGN.md",
     "sha256": "ddc967348608fd5ab113de90ecfdb2486cc7f400aa54e045bff2be069fab70ee"
   },
-  "updated_at": "2026-07-30T05:29:04Z",
+  "updated_at": "2026-08-08T14:30:47Z",
+  "project_owner_execution_authority": {
+    "status": "authorized",
+    "authority_type": "project_owner_execution_authority_only",
+    "authorized_by": "Jean Bosco",
+    "authorized_role": "project owner",
+    "authorized_on": "2026-08-08",
+    "scope": [
+      "in_scope_technical_implementation",
+      "configuration",
+      "validation",
+      "git_commit_and_push_to_main",
+      "permitted_external_execution"
+    ],
+    "removes_blockers": [
+      "generic_authority_to_act"
+    ],
+    "does_not_constitute": [
+      "specialist_approval",
+      "legal_approval",
+      "design_approval",
+      "accessibility_approval",
+      "privacy_approval",
+      "security_approval",
+      "operations_approval",
+      "linguistic_approval",
+      "physical_device_approval",
+      "store_approval",
+      "production_release_approval",
+      "dex_tv_001_approval",
+      "canonical_admin_product_policy_approval"
+    ],
+    "decision": "DEC-243"
+  },
   "exceptions": [
     {
       "id": "DEX-TV-001",
@@ -74,7 +107,7 @@
       "topic": "Approve route-specific not-applicable state and archetype entries after route evidence population",
       "owner": "Product design lead",
       "due_date": null,
-      "status": "route_evidence_dependency_open"
+      "status": "route_evidence_dependency_resolved_approval_pending"
     }
   ]
 }

@@ -12,7 +12,7 @@ import {
   shouldBypassSubdomainRewrite,
 } from "@/lib/host-routing";
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const hostname = resolveRoutingHostname(
     request.headers.get("x-forwarded-host"),
     request.headers.get("host"),
