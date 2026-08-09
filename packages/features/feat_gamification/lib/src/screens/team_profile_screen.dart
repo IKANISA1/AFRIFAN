@@ -152,7 +152,10 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
 
       var routeQuery = client
           .from('partner_payment_routes')
-          .select()
+          .select(
+            'id,partner_id,club_id,partner_name,partner_slug,country,provider,'
+            'recipient_code,reconciliation_label,status',
+          )
           .eq('status', 'active');
       routeQuery = resolver.apply(routeQuery, scope);
       final routeRows = await routeQuery.limit(1);

@@ -1,56 +1,32 @@
-fastlane documentation
-----
+# Gikundiro Google Play Fastlane package
 
-# Installation
-
-Make sure you have the latest version of the Xcode command line tools installed:
-
-```sh
-xcode-select --install
-```
-
-For _fastlane_ installation instructions, see [Installing _fastlane_](https://docs.fastlane.tools/#installing-fastlane)
-
-# Available Actions
-
-## Android
-
-### android internal
+The lanes keep authentication outside the repository and validate the controlled
+store package before any upload. Validation alone does not mean Google has
+accepted the app.
 
 ```sh
-[bundle exec] fastlane android internal
+bundle exec fastlane android validate_metadata
+bundle exec fastlane android internal
+bundle exec fastlane android metadata
 ```
 
-Deploy to internal testing track with metadata only
+`internal` uploads the exact release AAB, metadata, localized changelogs, and
+artwork as a draft. `metadata` uploads approved listing material without an AAB.
+Both use the stronger `--release-ready` gate and therefore fail while artwork,
+portal values, classifications, or approvals are pending.
 
-### android metadata
+The production promotion lane uses `--submission-ready`, which additionally
+requires processed-artifact, questionnaire, reviewer-access, and submission
+evidence recorded in the portal-values file.
+
+Promotion is intentionally explicit:
 
 ```sh
-[bundle exec] fastlane android metadata
+CONFIRM_PLAY_PROMOTION=closed bundle exec fastlane android closed
+CONFIRM_PLAY_PROMOTION=production bundle exec fastlane android production
 ```
 
-Upload metadata only (no AAB)
-
-### android closed
-
-```sh
-[bundle exec] fastlane android closed
-```
-
-Promote internal to closed testing
-
-### android production
-
-```sh
-[bundle exec] fastlane android production
-```
-
-Promote to production
-
-----
-
-This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
-
-More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).
-
-The documentation of _fastlane_ can be found on [docs.fastlane.tools](https://docs.fastlane.tools).
+Set `PLAY_STORE_SERVICE_ACCOUNT_JSON_PATH` to a local or CI secret-managed JSON
+file. Never commit the service-account JSON, passwords, one-time codes, signing
+keys, or reviewer credentials. Portal questionnaires and reviewer access remain
+authenticated-console work governed by the package checklists.

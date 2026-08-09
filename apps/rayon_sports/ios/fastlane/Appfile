@@ -1,0 +1,7 @@
+app_identifier("rw.ikanisa.rayonSports")
+team_id("63STJ5N27W")
+
+# Authentication is intentionally external to the repository. Use an
+# App Store Connect API key/JWT or an authenticated local session. Never add
+# key material, account passwords, or one-time codes here.
+

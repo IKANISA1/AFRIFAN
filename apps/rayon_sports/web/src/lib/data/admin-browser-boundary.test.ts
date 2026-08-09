@@ -511,6 +511,7 @@ describe("admin browser API boundary", () => {
         status: "pending",
         qrCode: null,
         purchasedAt: "2026-07-30T09:00:00.000Z",
+        updatedAt: "2026-07-30T09:05:00.000Z",
         userName: "Verified Supporter",
         userPhone: "+250700000000",
         matchTitle: "Rayon Sports vs APR FC",
@@ -551,7 +552,11 @@ describe("admin browser API boundary", () => {
 
   it("updates ticket status through the scoped admin API in the browser", async () => {
     const origin = window.location.origin;
-    const payload = { ticketId: "ticket-1", status: "valid" };
+    const payload = {
+      ticketId: "ticket-1",
+      expectedUpdatedAt: "2026-07-30T09:05:00.000Z",
+      status: "valid",
+    };
     const fetchMock = vi
       .spyOn(globalThis, "fetch")
       .mockResolvedValue(jsonResponse({ success: true }) as Response);
@@ -565,7 +570,7 @@ describe("admin browser API boundary", () => {
           isSuperAdmin: false,
           role: "club_admin",
         },
-        payload.ticketId,
+        { id: payload.ticketId, updatedAt: payload.expectedUpdatedAt },
         payload.status,
       ),
     ).resolves.toBeUndefined();
@@ -580,7 +585,16 @@ describe("admin browser API boundary", () => {
   it("updates a reviewed ticket selection through the scoped bulk API", async () => {
     const origin = window.location.origin;
     const payload = {
-      ticketIds: ["ticket-1", "ticket-2"],
+      tickets: [
+        {
+          id: "ticket-1",
+          expectedUpdatedAt: "2026-07-30T09:05:00.000Z",
+        },
+        {
+          id: "ticket-2",
+          expectedUpdatedAt: "2026-07-30T09:06:00.000Z",
+        },
+      ],
       status: "valid" as const,
     };
     const fetchMock = vi
@@ -598,7 +612,10 @@ describe("admin browser API boundary", () => {
           isSuperAdmin: false,
           role: "club_admin",
         },
-        payload.ticketIds,
+        payload.tickets.map(({ id, expectedUpdatedAt }) => ({
+          id,
+          updatedAt: expectedUpdatedAt,
+        })),
         payload.status,
       ),
     ).resolves.toBeUndefined();

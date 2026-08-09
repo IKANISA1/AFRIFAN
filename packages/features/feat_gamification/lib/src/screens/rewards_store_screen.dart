@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -33,6 +34,16 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
   }
 
   Future<void> _load() async {
+    if (!ref.read(storeReleasePolicyProvider).allowsRewardRedemption) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _rewardOptions = const <FetRewardOption>[];
+          _error = null;
+        });
+      }
+      return;
+    }
     try {
       final results = await Future.wait<Object?>([
         ref.read(fetRepositoryProvider).loadWallet(),
@@ -67,6 +78,9 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
   }
 
   Future<void> _redeem(FetRewardOption option) async {
+    if (!ref.read(storeReleasePolicyProvider).allowsRewardRedemption) {
+      return;
+    }
     final cost = option.costFet;
     if (cost <= 0 || _isSubmitting) {
       return;
@@ -121,6 +135,11 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final allowsRewards = ref.watch(
+      storeReleasePolicyProvider.select(
+        (policy) => policy.allowsRewardRedemption,
+      ),
+    );
     final wallet = _wallet;
     final rewardOptions = _rewardOptions;
 
@@ -143,7 +162,19 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
       ),
       scrollable: false,
       constrainContent: true,
-      child: _isLoading
+      child: !allowsRewards
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriStateView.empty(
+                  title: context.afriL10n.gameRewardsUnavailable,
+                  message: context.afriL10n.gameRewardsUnavailable,
+                  actionLabel: context.afriL10n.gameBackToFanZoneUpper,
+                  onAction: () => context.go('/fanzone'),
+                ),
+              ),
+            )
+          : _isLoading
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),

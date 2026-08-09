@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../official_membership_tiers.dart';
+import 'membership_data_contract.dart';
 
 enum TierDetailPhase { ready, syncing, degraded }
 
@@ -125,10 +127,18 @@ class TierDetailData {
     );
   }
 
-  static TierDetailData? officialOrNull(String rawTier) {
+  static TierDetailData? officialOrNull(
+    String rawTier, {
+    bool includePaidDigitalBenefits = true,
+  }) {
     final normalized = normalizeMembershipSlug(rawTier);
-    if (officialMembershipPackage(normalized) == null) return null;
-    return TierDetailData.fromOfficialSlug(normalized);
+    final package = includePaidDigitalBenefits
+        ? officialMembershipPackage(normalized)
+        : storeReleaseMembershipPackage(normalized);
+    if (package == null) return null;
+    return includePaidDigitalBenefits
+        ? TierDetailData.fromOfficialSlug(normalized)
+        : TierDetailData.fromPackage(package);
   }
 
   final String slug;
@@ -182,16 +192,24 @@ abstract interface class TierDetailGateway {
 }
 
 class SupabaseTierDetailGateway implements TierDetailGateway {
-  const SupabaseTierDetailGateway(this._client);
+  const SupabaseTierDetailGateway(
+    this._client, {
+    this.storeReleasePolicy = const StoreReleasePolicy(isEnforced: true),
+  });
 
   final SupabaseClient _client;
+  final StoreReleasePolicy storeReleasePolicy;
 
   @override
   Future<TierDetailData?> load(String tierId) async {
     final normalized = normalizeMembershipSlug(tierId);
+    if (!storeReleasePolicy.allowsPaidDigitalMembership) {
+      final package = storeReleaseMembershipPackage(normalized);
+      return package == null ? null : TierDetailData.fromPackage(package);
+    }
     final response = await _client
         .from('membership_tiers')
-        .select()
+        .select(MembershipReadProjection.tier)
         .eq('category_slug', normalized)
         .eq('active', true)
         .order('sort_order', ascending: true)
@@ -203,7 +221,10 @@ class SupabaseTierDetailGateway implements TierDetailGateway {
 }
 
 final tierDetailGatewayProvider = Provider<TierDetailGateway>(
-  (ref) => SupabaseTierDetailGateway(ref.watch(supabaseClientProvider)),
+  (ref) => SupabaseTierDetailGateway(
+    ref.watch(supabaseClientProvider),
+    storeReleasePolicy: ref.watch(storeReleasePolicyProvider),
+  ),
 );
 
 final tierDetailLoadTimeoutProvider = Provider<Duration>(
@@ -222,6 +243,7 @@ final tierDetailProvider =
         ref.watch(tierDetailGatewayProvider),
         tierId,
         loadTimeout: ref.watch(tierDetailLoadTimeoutProvider),
+        storeReleasePolicy: ref.watch(storeReleasePolicyProvider),
       );
     });
 
@@ -231,11 +253,20 @@ class TierDetailController extends StateNotifier<AsyncValue<TierDetailState>> {
     String tierId, {
     Duration loadTimeout = const Duration(seconds: 12),
     bool autoLoad = true,
+    StoreReleasePolicy storeReleasePolicy = const StoreReleasePolicy(
+      isEnforced: true,
+    ),
   }) : _tierId = normalizeMembershipSlug(tierId),
        _loadTimeout = loadTimeout,
        super(
          AsyncValue.data(
-           TierDetailState(data: TierDetailData.officialOrNull(tierId)),
+           TierDetailState(
+             data: TierDetailData.officialOrNull(
+               tierId,
+               includePaidDigitalBenefits:
+                   storeReleasePolicy.allowsPaidDigitalMembership,
+             ),
+           ),
          ),
        ) {
     if (autoLoad) unawaited(refresh());

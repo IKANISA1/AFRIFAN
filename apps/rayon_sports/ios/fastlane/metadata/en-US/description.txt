@@ -1,0 +1,23 @@
+Gikundiro brings Rayon Sports FC updates and supporter services together in one app.
+
+CLUB AND MATCH UPDATES
+View club-published news, fixtures, results, standings, and match information. Live states appear only when an authorized data feed is available.
+
+TICKETS
+Browse published matches and ticket options. When an authorized payment route is active, Gikundiro can hand payment off to mobile money. A ticket appears only after the backend confirms the purchase.
+
+MEMBERSHIP AND SUPPORT
+Review published membership tiers, submit an application, and view confirmed membership or contribution records. Availability and benefits depend on the club's current configuration.
+
+SHOP
+Browse published merchandise, prepare an order, and use an authorized payment route when available. Orders remain pending until confirmed.
+
+FAN ACTIVITIES
+Join club-published games, predictions, points, and leaderboards when enabled. Gikundiro is not a betting app. FET points are in-app scores only: they have no cash value, cannot be purchased or withdrawn, and do not promise a prize.
+
+PRIVACY AND CONTROL
+Use a guest session or supported phone sign-in, choose whether to enable notifications, and request account deletion from the profile screen.
+
+Feature availability depends on the current club schedule, configuration, and authorized services. Prices, inventory, ticket status, membership status, and results come from the configured backend.
+
+Gikundiro is built by Ikanisa for Rayon Sports supporters.

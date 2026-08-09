@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "status": "portal_only",
+  "warning": "Populate from the authenticated console immediately before submission. Never store credentials, pairing codes, private keys, one-time codes, or identity documents here.",
+  "google_play": {
+    "developer_account_verified": null,
+    "app_record_exists": null,
+    "play_console_app_id": null,
+    "managed_private_distribution_confirmed": null,
+    "organization_ids_or_managed_configuration_complete": null,
+    "play_app_signing_enrolled": null,
+    "registered_upload_certificate_sha256": null,
+    "play_app_signing_certificate_sha256": null,
+    "version_code_available": null,
+    "target_countries_or_organizations": [],
+    "reviewer_access_configured": null,
+    "data_safety_published": null,
+    "app_content_forms_complete": null,
+    "android_tv_opt_in_complete": null,
+    "aab_uploaded": null,
+    "aab_processing_status": null,
+    "submission_status": null
+  }
+}

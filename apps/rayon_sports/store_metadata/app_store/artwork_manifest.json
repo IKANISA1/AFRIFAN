@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "pending",
+  "binary_facts": {
+    "supports_iphone": true,
+    "supports_ipad": true,
+    "targeted_device_family_source": "1,2"
+  },
+  "rules": {
+    "formats": ["jpeg", "jpg", "png"],
+    "alpha_allowed": false,
+    "minimum_count_per_required_display": 1,
+    "maximum_count_per_required_display": 10,
+    "actual_app_ui_only": true,
+    "no_real_supporter_data": true,
+    "no_real_payment_or_pairing_codes": true,
+    "capture_from_exact_candidate": true
+  },
+  "sets": [
+    {
+      "id": "iphone_6_9",
+      "required": true,
+      "directory": "../../ios/fastlane/screenshots/en-US",
+      "accepted_portrait_sizes": ["1260x2736", "1290x2796", "1320x2868"],
+      "planned_count": 4,
+      "status": "missing"
+    },
+    {
+      "id": "ipad_13",
+      "required": true,
+      "directory": "../../ios/fastlane/screenshots/en-US",
+      "accepted_portrait_sizes": ["2064x2752", "2048x2732"],
+      "planned_count": 4,
+      "status": "missing"
+    }
+  ],
+  "capture_plan": [
+    {"order": 1, "journey": "Home with current club-published content"},
+    {"order": 2, "journey": "Fixtures or match information"},
+    {"order": 3, "journey": "Membership or supporter profile"},
+    {"order": 4, "journey": "Tickets or merchandise without real payment"}
+  ],
+  "binary_icon_gate": {
+    "status": "pending",
+    "evidence": null,
+    "requirement": "Verify the exact archive includes a complete AppIcon asset catalog. The current source checkout did not expose Runner/Assets.xcassets during this packaging audit."
+  },
+  "approvals_required": [
+    "rayon_brand_and_content_rights",
+    "product_scope",
+    "privacy_and_retention",
+    "english_store_copy",
+    "french_store_copy",
+    "kinyarwanda_store_copy"
+  ]
+}

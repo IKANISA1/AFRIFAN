@@ -1,49 +1,46 @@
-# Gikundiro — Google Play Store Listing
+# Gikundiro — Google Play listing working copy
 
-## App Name (max 50 chars)
+Status: draft pending product, rights, policy, and language approval. The
+upload-ready text files live under `android/fastlane/metadata/android`.
+
+## App Name (max 30 chars)
 Gikundiro
 
 ## Short Description (max 80 chars)
-Gikundiro, the official Rayon Sports FC app for fans.
+Follow Rayon Sports, manage supporter services, and join fan activities.
 
 ## Full Description (max 4000 chars)
-Welcome to Gikundiro, the official Rayon Sports FC fan app and your all-in-one digital companion for Rwanda's most decorated football club.
+Gikundiro brings Rayon Sports FC updates and supporter services together in one app.
 
-🏟️ LIVE MATCH CENTER
-Follow published fixtures and results through the match center, with live updates shown only when an authorized club feed is available.
+CLUB AND MATCH UPDATES
+View club-published news, fixtures, results, standings, and match information. Live states appear only when an authorized data feed is available.
 
-🎫 DIGITAL TICKETING
-Review confirmed ticket availability and continue through the approved purchase channel when enabled. Governed digital tickets can be stored and presented in the app after an authoritative purchase is confirmed.
+TICKETS
+Browse published matches and ticket options. When an authorized payment route is active, Gikundiro can hand payment off to mobile money. A ticket appears only after the backend confirms the purchase.
 
-👤 FAN MEMBERSHIP
-Join the official Rayon Sports FC digital membership program. Access exclusive benefits, earn points, and showcase your loyalty status with your unique fan identity.
+MEMBERSHIP AND SUPPORT
+Review published membership tiers, submit an application, and view confirmed membership or contribution records. Availability and benefits depend on the club's current configuration.
 
-🎮 FAN GAMIFICATION
-Compete with other fans through challenges and leaderboards. Climb the rankings, unlock badges, and earn FET rewards for your dedication.
+FAN ACTIVITIES
+Join club-published games, predictions, points, and leaderboards when enabled. Gikundiro is not a betting app. FET points are in-app scores only: they have no cash value, cannot be purchased or withdrawn, and do not promise a prize.
 
-💰 CONTRIBUTIONS
-Support your club through transparent digital contributions. Join support Groups, track group contributions, and see how your support makes a difference.
+SHOP
+Browse published merchandise, prepare an order, and use an authorized payment route when available. Orders remain pending until confirmed.
 
-🛍️ OFFICIAL SHOP
-Browse approved Rayon Sports FC merchandise, sizes, and pricing. Checkout is available only when the authorized commerce and payment service is enabled.
-
-🏆 FAN CLUBS
-Connect with fellow supporters in your local fan club chapter. Organize watch parties, coordinate matchday travel, and build your supporter community.
+PRIVACY AND CONTROL
+Use a guest session or supported phone sign-in, choose whether to enable notifications, and request account deletion from the profile screen.
 
 FEATURES AT A GLANCE:
-• Matchday-ready supporter experience
-• Secure authentication & data protection
-• Mobile money handoff where an approved Rwanda payment route is enabled
-• Published fixtures, results, and authorized live updates
-• Governed digital tickets with QR entry after confirmed purchase
+Feature availability depends on the current club schedule, configuration, and authorized services. Prices, inventory, ticket status, membership status, and results come from the configured backend.
 
-"Gikundiro" — because every supporter is part of the family.
+Gikundiro is built by Ikanisa for Rayon Sports supporters.
 
-Built with ❤️ by Ikanisa for Rayon Sports FC fans worldwide.
+## Content rating and audience
 
-## Content Rating
-- IARC: Everyone (no violence, gambling, or mature content)
-- Target audience: 13+ (sports fans)
+Do not predeclare an IARC result. Complete the current questionnaire after the
+approved release feature flags, UGC treatment, contests/rewards, territories,
+and audience are final. The working product intent is not directed to children
+under 13; this is not a substitute for the Play Console target-audience answer.
 
 ## Category
 Sports
@@ -58,4 +55,4 @@ https://gikundiro.com
 https://gikundiro.com/privacy
 
 ## Account Deletion URL
-https://gikundiro.com/privacy#account-deletion
+https://gikundiro.com/account-deletion

@@ -197,16 +197,6 @@ describe("specialized admin route controlled states", () => {
 
   it.each([
     {
-      name: "content blocks",
-      invoke: () => getContentBlocks(request("/api/admin/content-blocks")),
-      operation: mocks.getAdminContentBlocks,
-    },
-    {
-      name: "features",
-      invoke: () => getFeatures(request("/api/admin/features")),
-      operation: mocks.getAdminFeatures,
-    },
-    {
       name: "bulk ticket status",
       invoke: () =>
         updateTicketBulk(
@@ -223,6 +213,59 @@ describe("specialized admin route controlled states", () => {
         updateTicket(
           request("/api/admin/tickets/status", {
             ticketId: "ticket-1",
+            status: "checked_in",
+          }),
+        ),
+      operation: mocks.updateTicketStatus,
+    },
+  ])(
+    "rejects unversioned $name payloads before mutation",
+    async ({ invoke, operation }) => {
+      const response = await invoke();
+
+      expect(response.status).toBe(400);
+      await expect(response.json()).resolves.toMatchObject({
+        retryable: false,
+        change_confirmed: false,
+      });
+      expect(operation).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    {
+      name: "content blocks",
+      invoke: () => getContentBlocks(request("/api/admin/content-blocks")),
+      operation: mocks.getAdminContentBlocks,
+    },
+    {
+      name: "features",
+      invoke: () => getFeatures(request("/api/admin/features")),
+      operation: mocks.getAdminFeatures,
+    },
+    {
+      name: "bulk ticket status",
+      invoke: () =>
+        updateTicketBulk(
+          request("/api/admin/tickets/bulk-status", {
+            tickets: [
+              {
+                id: "ticket-1",
+                expectedUpdatedAt: "2026-07-29T08:00:00Z",
+              },
+            ],
+            status: "checked_in",
+          }),
+        ),
+      operation: mocks.bulkUpdateTicketStatus,
+    },
+    {
+      name: "ticket status",
+      invoke: () =>
+        updateTicket(
+          request("/api/admin/tickets/status", {
+            ticketId: "ticket-1",
+            expectedUpdatedAt: "2026-07-29T08:00:00Z",
             status: "checked_in",
           }),
         ),
@@ -315,7 +358,12 @@ describe("specialized admin route controlled states", () => {
       invoke: () =>
         updateTicketBulk(
           request("/api/admin/tickets/bulk-status", {
-            ticketIds: ["ticket-1"],
+            tickets: [
+              {
+                id: "ticket-1",
+                expectedUpdatedAt: "2026-07-29T08:00:00Z",
+              },
+            ],
             status: "checked_in",
           }),
         ),
@@ -328,6 +376,7 @@ describe("specialized admin route controlled states", () => {
         updateTicket(
           request("/api/admin/tickets/status", {
             ticketId: "ticket-1",
+            expectedUpdatedAt: "2026-07-29T08:00:00Z",
             status: "checked_in",
           }),
         ),

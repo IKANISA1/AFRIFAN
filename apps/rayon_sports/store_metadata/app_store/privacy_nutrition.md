@@ -25,6 +25,7 @@ when the signed archive privacy report is generated.
 | Other financial information | App functionality | MoMo transaction references, contribution ledgers, and reconciliation data; no payment-card collection |
 | Gameplay content | App functionality | Predictions, trivia/game answers, score, and reward state |
 | Product interaction | App functionality; Analytics | Feature actions required for the selected journey; optional closed-taxonomy analytics only after consent and release enablement |
+| Other user content | App functionality | Profile nickname, predictions/game answers, and feature-gated challenge text; final release configuration and UGC treatment must be reconciled |
 
 ## Data not linked to the supporter
 
@@ -49,5 +50,7 @@ when the signed archive privacy report is generated.
 
 - Signed archive and Xcode-generated privacy report.
 - Reconciliation against the exact SDK set embedded in that archive.
+- Reconciliation of `Other User Content` against the app privacy manifest; the
+  current source manifest does not yet include that category.
 - App Store Connect screenshots/answers and public privacy URL verification.
 - Account Holder/Admin/App Manager submission and privacy/legal approval.

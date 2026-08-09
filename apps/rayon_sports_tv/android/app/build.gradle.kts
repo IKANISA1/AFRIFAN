@@ -53,6 +53,15 @@ android {
         versionName = flutter.versionName
     }
 
+    // Keep Flutter's native libraries uncompressed so AGP 9 can preserve
+    // 16 KiB ZIP alignment. The release validator also checks every ELF LOAD
+    // segment and the built APK rather than trusting this declaration alone.
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
     signingConfigs {
         if (hasReleaseSigning) {
             create("release") {

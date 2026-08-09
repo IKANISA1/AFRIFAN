@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "status": "portal_only",
+  "warning": "Populate from authenticated consoles immediately before submission. Never store passwords, API keys, one-time codes, private keys, identity documents, or reviewer credentials in this file.",
+  "google_play": {
+    "developer_account_type": null,
+    "developer_account_verified": null,
+    "app_record_exists": null,
+    "play_console_app_id": null,
+    "play_app_signing_enrolled": null,
+    "registered_upload_certificate_sha256": null,
+    "play_app_signing_certificate_sha256": null,
+    "version_code_available": null,
+    "production_access_status": null,
+    "required_closed_test_completed": null,
+    "target_countries": [],
+    "reviewer_access_configured": null,
+    "data_safety_published": null,
+    "app_content_forms_complete": null,
+    "artifact_uploaded": null,
+    "artifact_processing_status": null,
+    "submission_status": null
+  },
+  "app_store_connect": {
+    "organization_membership_active": null,
+    "app_record_exists": null,
+    "apple_id": null,
+    "sku": null,
+    "bundle_id_registered": null,
+    "build_number_available": null,
+    "agreements_active": null,
+    "tax_and_banking_complete_if_required": null,
+    "dsa_trader_status_complete": null,
+    "target_countries": [],
+    "reviewer_access_configured": null,
+    "app_privacy_published": null,
+    "build_uploaded": null,
+    "build_processing_status": null,
+    "testflight_validation_complete": null,
+    "submission_status": null
+  }
+}
+

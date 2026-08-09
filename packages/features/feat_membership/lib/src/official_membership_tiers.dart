@@ -176,6 +176,90 @@ List<Map<String, dynamic>> officialMembershipPackages() {
       .toList(growable: false);
 }
 
+/// Curated physical membership and live-event benefits for store builds that
+/// have not integrated and approved platform billing for digital entitlement.
+///
+/// Remote membership copy is intentionally ignored in this mode so a content
+/// update cannot silently advertise a paid in-app digital unlock.
+Map<String, dynamic>? storeReleaseMembershipPackage(String rawSlug) {
+  final normalized = normalizeMembershipSlug(rawSlug);
+  final base = officialMembershipPackage(normalized);
+  final benefits = _storeReleasePhysicalBenefits[normalized];
+  final summary = _storeReleasePhysicalSummaries[normalized];
+  if (base == null || benefits == null || summary == null) {
+    return null;
+  }
+  return <String, dynamic>{
+    ...base,
+    'description': summary,
+    'benefits': benefits,
+    'digital_entitlements_included': false,
+    'benefit_scope': 'physical_membership',
+    'store_billing_required': false,
+    'store_policy_scope': 'physical_membership_and_live_event_access',
+    'source_label': 'Official Rayon Sports membership category list',
+  };
+}
+
+List<Map<String, dynamic>> storeReleaseMembershipPackages() {
+  return officialMembershipTiers
+      .map((tier) => storeReleaseMembershipPackage(tier.slug))
+      .whereType<Map<String, dynamic>>()
+      .toList(growable: false);
+}
+
+const Map<String, String> _storeReleasePhysicalSummaries = <String, String>{
+  'gold':
+      'VVIP reserved seat, parking, and complimentary match-day hospitality.',
+  'silver': 'Home-match hospitality and VIP club event invitations.',
+  'bronze': 'Covered-stand membership with an official club jersey.',
+  'imena': 'Dedicated special entrance gate on match days.',
+  'inyamibwa': 'Standard fan-card access for home matches and training.',
+  'ingenzi-imanzi': 'Dedicated fan entrance gate and training access.',
+};
+
+const Map<String, List<String>> _storeReleasePhysicalBenefits =
+    <String, List<String>>{
+      'gold': <String>[
+        'VVIP permanent reserved seat and parking',
+        'Club Advisory Committee seat',
+        'General Assembly invitation',
+        'Complimentary half-time hospitality and refreshments',
+        'Free access to all training sessions',
+        'Official Rayon Sports jersey',
+        'Exclusive VVIP event invitations',
+        'Discounts with official sponsors and partners',
+      ],
+      'silver': <String>[
+        'VIP section for all home and organized matches',
+        'Hospitality and refreshments at home matches',
+        'Official Rayon Sports jersey',
+        'VIP invitations to club events',
+        'Discounts with club partners',
+      ],
+      'bronze': <String>[
+        'Covered stands access',
+        'Official Rayon Sports jersey',
+      ],
+      'imena': <String>[
+        '10% off home match tickets',
+        'Dedicated special entrance gate on match days',
+        '50% off training sessions at Nzove grounds',
+        'Free entry to open training sessions while traveling away',
+      ],
+      'inyamibwa': <String>[
+        '5% off home match tickets',
+        '20% off training sessions at Nzove grounds',
+        'Free entry to open training sessions while traveling away',
+      ],
+      'ingenzi-imanzi': <String>[
+        'Standard ticketing rates',
+        'Dedicated fan entrance gate',
+        '20% off training sessions at Nzove grounds',
+        'Free entry to open training sessions when the team plays away',
+      ],
+    };
+
 String normalizeMembershipSlug(String? rawValue) {
   final value = (rawValue ?? '').trim().toLowerCase();
   return switch (value) {

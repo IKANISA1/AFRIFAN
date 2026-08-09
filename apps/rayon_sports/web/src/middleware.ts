@@ -7,6 +7,7 @@ import {
 import {
   canonicalRecoveryPath,
   isAdminHostname,
+  isWorkersPreviewHostname,
   mapAdminSubdomainPath,
   resolveRoutingHostname,
   shouldBypassSubdomainRewrite,
@@ -30,6 +31,12 @@ export function middleware(request: NextRequest) {
     : null;
 
   const applyAdminScopeCookie = (response: NextResponse) => {
+    if (isWorkersPreviewHostname(hostname)) {
+      response.headers.set(
+        "X-Robots-Tag",
+        "noindex, nofollow, noarchive",
+      );
+    }
     if (requestedAdminClubId == null) {
       return response;
     }

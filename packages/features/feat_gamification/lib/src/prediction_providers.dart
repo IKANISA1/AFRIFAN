@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,7 +13,10 @@ export 'repositories/partner_pool_repository.dart';
 export 'repositories/prediction_repository.dart';
 
 final predictionRepositoryProvider = Provider<PredictionRepository>(
-  (ref) => PredictionRepository(client: ref.watch(supabaseClientProvider)),
+  (ref) => PredictionRepository(
+    client: ref.watch(supabaseClientProvider),
+    storeReleasePolicy: ref.watch(storeReleasePolicyProvider),
+  ),
 );
 
 final shareCardGatewayProvider = Provider<ShareCardGateway>(
@@ -50,11 +54,17 @@ final predictionNotificationsLoaderProvider =
     );
 
 final challengeRepositoryProvider = Provider<ChallengeRepository>(
-  (ref) => ChallengeRepository(client: ref.watch(supabaseClientProvider)),
+  (ref) => ChallengeRepository(
+    client: ref.watch(supabaseClientProvider),
+    storeReleasePolicy: ref.watch(storeReleasePolicyProvider),
+  ),
 );
 
 final partnerPoolRepositoryProvider = Provider<PartnerPoolRepository>(
-  (ref) => PartnerPoolRepository(client: ref.watch(supabaseClientProvider)),
+  (ref) => PartnerPoolRepository(
+    client: ref.watch(supabaseClientProvider),
+    storeReleasePolicy: ref.watch(storeReleasePolicyProvider),
+  ),
 );
 
 class ChallengeFixturesGateway {

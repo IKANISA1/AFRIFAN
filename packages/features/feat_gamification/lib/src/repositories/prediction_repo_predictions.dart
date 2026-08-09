@@ -65,6 +65,9 @@ extension PredictionRepoPredictions on PredictionRepository {
   }
 
   Future<PredictionJackpotRound?> loadActiveJackpotRound() async {
+    if (!_storeReleasePolicy.allowsStakedCompetitions) {
+      return null;
+    }
     final cacheKey = _cacheKey('jackpot_round', <Object?>[
       _client.auth.currentUser?.id ?? 'anonymous',
     ]);
@@ -91,6 +94,7 @@ extension PredictionRepoPredictions on PredictionRepository {
     required List<Map<String, String>> selections,
     String? idempotencyKey,
   }) async {
+    _requireStakedCompetitionAuthorization();
     final result = await SafeRpc.call(
       'prediction_place_jackpot_entry',
       params: <String, dynamic>{
@@ -127,13 +131,14 @@ extension PredictionRepoPredictions on PredictionRepository {
     required String selectedOutcome,
     String? message,
   }) async {
+    _requireStakedCompetitionAuthorization();
     final result = await SafeRpc.call(
       'prediction_create_friend_challenge',
       params: <String, dynamic>{
         'p_opponent_user_id': opponentUserId,
         'p_fixture_market_id': fixtureMarketId,
         'p_selected_outcome': selectedOutcome,
-        'p_message': message,
+        'p_message': _storeReleasePolicy.allowsCrossUserText ? message : null,
       },
       tag: _tag,
       maxAttempts: 1,

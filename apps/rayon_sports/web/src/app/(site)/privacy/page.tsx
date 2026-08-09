@@ -5,6 +5,11 @@ import {
 } from "@/components/legal-document";
 import { getClubProfile, getCmsContentBlock } from "@/lib/data/public";
 import { getSiteCopy } from "@/lib/site-copy";
+import {
+  policyLastUpdated,
+  privacyPolicySections,
+  supportEmail,
+} from "@/lib/release-legal-content";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
@@ -36,6 +41,12 @@ export default async function PrivacyPage() {
       title={title}
       content={content}
       documentKind="privacy"
+      lastUpdated={policyLastUpdated}
+      sections={privacyPolicySections}
+      actions={[
+        { href: "/account-deletion", label: "Request account deletion" },
+        { href: `mailto:${supportEmail}`, label: "Contact privacy support" },
+      ]}
     />
   );
 }

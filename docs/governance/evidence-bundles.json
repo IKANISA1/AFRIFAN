@@ -5415,6 +5415,38 @@
       ],
       "captured_at": "2026-08-02T06:40:06Z",
       "data_source": "exact_current_native_tv_debug_build_against_isolated_local_supabase_with_synthetic_club_and_ios_simulator_generic_link_registration__no_shared_linked_or_production_mutation_no_physical_device_live_pairing_signing_store_or_approval_claim"
+    },
+    {
+      "id": "state03-production-concurrency-20260808",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/state03_production_concurrency_20260808",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-03",
+        "ADMIN-05",
+        "EVID-07",
+        "EVID-08",
+        "REL-06"
+      ],
+      "baseline_commit": "ff66a459bed9dbc4f0efb5fb57f3882189d85c0f",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "5",
+      "flavor": "hosted_production_state03_concurrency_boundary",
+      "platform": "supabase_hosted_postgres_auth_data_api_node_validation",
+      "runtime_device": "Node 24.18.0; Supabase hosted PostgreSQL 17.6; two independent authenticated clients and service-role audit probes",
+      "viewport_profiles": [
+        {
+          "applicable": false,
+          "reason": "production database, authorization, concurrency, audit, rollback, and cleanup receipt; no visual capture is claimed"
+        }
+      ],
+      "locale": "not_applicable_database_boundary",
+      "themes": [
+        "not_applicable_no_visual_capture"
+      ],
+      "captured_at": "2026-08-08T20:46:35Z",
+      "data_source": "production Supabase Auth and Data API with deleted synthetic identities and fixtures; genuine two-client supporter order collisions, service-role contribution review, immutable audit, rollback, exact cleanup, and explicit non-completion for untested surfaces and accountable approvals"
     }
   ]
 }

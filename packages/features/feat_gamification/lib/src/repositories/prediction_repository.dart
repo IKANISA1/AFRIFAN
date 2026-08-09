@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -31,9 +32,38 @@ const _competitionsCatalog = 'prediction_supported_competitions_catalog';
 /// while keeping the same external API (returns unwrapped data, throws on
 /// unrecoverable errors). This means all 20+ consumer screens work unchanged.
 class PredictionRepository {
-  PredictionRepository({required SupabaseClient client}) : _client = client;
+  PredictionRepository({
+    required SupabaseClient client,
+    StoreReleasePolicy? storeReleasePolicy,
+  }) : _client = client,
+       _storeReleasePolicy =
+           storeReleasePolicy ??
+           StoreReleasePolicy.forCurrentBuild(const PlatformConfigSnapshot());
 
   final SupabaseClient _client;
+  final StoreReleasePolicy _storeReleasePolicy;
+
+  void _requireStakedCompetitionAuthorization() {
+    if (!_storeReleasePolicy.allowsStakedCompetitions) {
+      throw UnsupportedError(
+        'Challenge and prize-pool entries are unavailable in this store release.',
+      );
+    }
+  }
+
+  Map<String, dynamic> _sanitizeLeaderboardIdentity(Map<String, dynamic> row) {
+    if (_storeReleasePolicy.allowsCrossUserText) {
+      return row;
+    }
+    return <String, dynamic>{
+      ...row,
+      'display_name': _storeReleasePolicy.publicSupporterLabel(
+        displayName: row['display_name']?.toString(),
+        publicUserId: row['public_user_id']?.toString(),
+        userId: row['user_id']?.toString(),
+      ),
+    };
+  }
 
   Future<void> _clearUserCaches() async {
     final userId = _client.auth.currentUser?.id ?? 'anonymous';

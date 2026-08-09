@@ -148,6 +148,18 @@ export function SiteFooter({
             <Link href="/terms" className="hover:text-white transition-colors">
               Terms of Service
             </Link>
+            <Link
+              href="/support"
+              className="hover:text-white transition-colors"
+            >
+              Support
+            </Link>
+            <Link
+              href="/account-deletion"
+              className="hover:text-white transition-colors"
+            >
+              Account deletion
+            </Link>
           </div>
           <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/70">
             <span>Powered by</span>

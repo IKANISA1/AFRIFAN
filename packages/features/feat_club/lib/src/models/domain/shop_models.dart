@@ -3,6 +3,13 @@ import 'package:equatable/equatable.dart';
 
 /// A product in the club shop.
 class ClubProduct extends Equatable {
+  /// Public Data API projection. Rights-review actors, generation prompts and
+  /// provenance records intentionally remain server-side.
+  static const String dataApiProjection =
+      'id, partner_id, name, description, category, price, stock, '
+      'is_active, is_new, image_url, available_sizes, badge_label, '
+      'collection, sort_order';
+
   const ClubProduct({
     required this.id,
     required this.partnerId,

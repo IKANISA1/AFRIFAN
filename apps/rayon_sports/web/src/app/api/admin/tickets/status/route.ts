@@ -9,6 +9,7 @@ import {
 } from "@/lib/data/admin/tickets";
 
 export const dynamic = "force-dynamic";
+const ticketIdPattern = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,127}$/;
 
 export async function POST(request: NextRequest) {
   return handleAdminApiRoute(
@@ -19,16 +20,28 @@ export async function POST(request: NextRequest) {
         unknown
       >;
       const ticketId = String(body.ticketId ?? "").trim();
+      const expectedUpdatedAt = String(body.expectedUpdatedAt ?? "").trim();
       const status = String(body.status ?? "").trim();
 
-      if (!ticketId || !isAdminTicketStatusAction(status)) {
+      if (
+        !ticketIdPattern.test(ticketId) ||
+        !expectedUpdatedAt ||
+        expectedUpdatedAt.length > 64 ||
+        Number.isNaN(Date.parse(expectedUpdatedAt)) ||
+        !isAdminTicketStatusAction(status)
+      ) {
         throw new AdminApiValidationError(
-          "Both ticket id and status are required.",
+          "Ticket id, loaded version, and status are required.",
           "ADMIN_TICKET_STATUS_EMPTY",
         );
       }
 
-      await updateTicketStatus(client, access, ticketId, status);
+      await updateTicketStatus(
+        client,
+        access,
+        { id: ticketId, updatedAt: expectedUpdatedAt },
+        status,
+      );
       return { success: true };
     },
     {

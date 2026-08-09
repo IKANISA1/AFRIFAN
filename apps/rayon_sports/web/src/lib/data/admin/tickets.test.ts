@@ -7,6 +7,7 @@ import {
   getAdminTicketTargetPermission,
   isAdminTicketStatusAction,
   normalizeAdminTicketOrders,
+  normalizeAdminTicketVersions,
 } from "./tickets";
 
 const clubAdmin = {
@@ -30,6 +31,7 @@ describe("ticket status safety contract", () => {
     status: "pending",
     qrCode: "must-not-cross-the-boundary",
     purchasedAt: "2026-07-30T09:00:00.000Z",
+    updatedAt: "2026-07-30T09:05:00.000Z",
     userName: "Verified Supporter",
     userPhone: "+250700000000",
     matchTitle: "Rayon Sports vs APR FC",
@@ -46,6 +48,8 @@ describe("ticket status safety contract", () => {
     ["duplicate ids", [validOrder, validOrder]],
     ["invalid status", [{ ...validOrder, status: "arbitrary" }]],
     ["invalid timestamp", [{ ...validOrder, purchasedAt: "not-a-time" }]],
+    ["missing loaded version", [{ ...validOrder, updatedAt: null }]],
+    ["invalid loaded version", [{ ...validOrder, updatedAt: "not-a-time" }]],
     ["negative amount", [{ ...validOrder, amountPaid: -1 }]],
   ])("rejects %s instead of returning a partial queue", (_label, value) => {
     expect(() => normalizeAdminTicketOrders(value)).toThrow();
@@ -69,6 +73,30 @@ describe("ticket status safety contract", () => {
     expect(isAdminTicketStatusAction("pending")).toBe(false);
     expect(isAdminTicketStatusAction("refunded")).toBe(false);
     expect(isAdminTicketStatusAction("arbitrary")).toBe(false);
+  });
+
+  it("normalizes one version token per distinct reviewed ticket", () => {
+    expect(
+      normalizeAdminTicketVersions([
+        { id: "ticket-1", updatedAt: "2026-07-30T09:05:00Z" },
+        { id: "ticket-2", updatedAt: "2026-07-30T09:06:00Z" },
+      ]),
+    ).toEqual([
+      {
+        id: "ticket-1",
+        expectedUpdatedAt: "2026-07-30T09:05:00.000Z",
+      },
+      {
+        id: "ticket-2",
+        expectedUpdatedAt: "2026-07-30T09:06:00.000Z",
+      },
+    ]);
+    expect(() =>
+      normalizeAdminTicketVersions([
+        { id: "ticket-1", updatedAt: "2026-07-30T09:05:00Z" },
+        { id: "ticket-1", updatedAt: "2026-07-30T09:06:00Z" },
+      ]),
+    ).toThrow("duplicate");
   });
 
   it("enforces forward-only transitions and terminal states", () => {

@@ -13,6 +13,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../official_membership_tiers.dart';
+import '../providers/membership_mutation_gateway.dart';
 import '../providers/membership_provider.dart';
 import '../widgets/contribution_history.dart';
 import '../widgets/digital_membership_card.dart';
@@ -55,9 +56,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
   Map<String, dynamic>? get _membership => _snapshot?.membership;
 
-  List<Map<String, dynamic>> get _applications =>
-      _snapshot?.applications ?? const <Map<String, dynamic>>[];
-
   /// Refresh membership data from the provider after a write operation.
   Future<void> _refreshMembership() async {
     await ref.read(membershipProvider.notifier).refresh();
@@ -96,21 +94,21 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         return;
       }
 
-      final client = ref.read(supabaseClientProvider);
-      final resolver = ClubScopeResolver(client: client);
-      final scope = await resolver.requireResolved();
       final hasPendingRequest = _hasPendingApplicationForTier(tierValue);
       if (hasPendingRequest) {
         _showInfo(l10n.membershipAlreadyPending(tierLabel));
         return;
       }
 
+      final mutationGateway = ref.read(membershipMutationGatewayProvider);
       if (amount <= 0) {
-        await _upsertMembership(
-          client: client,
-          scope: scope,
-          user: user,
-          tierValue: tierValue,
+        if (tierValue != 'fan') {
+          throw UnsupportedError(
+            'Only the server-authorized free fan tier can be activated.',
+          );
+        }
+        await mutationGateway.activateFreeMembership().timeout(
+          widget.activationTimeout,
         );
         await _refreshMembership();
         if (!mounted) return;
@@ -118,6 +116,15 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         return;
       }
 
+      if (!_isPhysicalMembershipPackage(pkg)) {
+        throw UnsupportedError(
+          'This payment route supports approved physical memberships only.',
+        );
+      }
+
+      final client = ref.read(supabaseClientProvider);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
       final route = await _findActivePaymentRoute(client, resolver, scope);
       if (route == null) {
         _showError(l10n.membershipPaymentSetupPending);
@@ -126,22 +133,25 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
       final paymentReference =
           'membership-$tierValue-${DateTime.now().millisecondsSinceEpoch}';
-      await _createMembershipApplication(
-        client: client,
-        user: user,
-        clubId: scope.clubId!,
-        tierValue: tierValue,
-        amount: amount,
-        paymentReference: paymentReference,
-        route: route,
-        pkg: pkg,
-      );
+      final application = await mutationGateway
+          .submitPhysicalApplication(
+            tier: tierValue,
+            paymentReference: paymentReference,
+            chapter: _membershipChapter(pkg),
+          )
+          .timeout(widget.activationTimeout);
+      final authoritativeAmount = _applicationAmount(application);
+      if (authoritativeAmount <= 0) {
+        throw StateError(
+          'The server did not return an authoritative membership price.',
+        );
+      }
       await _refreshMembership();
       if (!mounted) return;
 
       final launched = await MomoDialerService.launchMomoUssd(
         recipient: route.recipientCode,
-        amount: amount,
+        amount: authoritativeAmount,
         country: route.country,
         recipientType: PaymentRecipientType.code,
       );
@@ -167,51 +177,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     }
   }
 
-  Future<void> _createMembershipApplication({
-    required SupabaseClient client,
-    required UserProfile user,
-    required int clubId,
-    required String tierValue,
-    required int amount,
-    required String paymentReference,
-    required PartnerPaymentRoute route,
-    required Map<String, dynamic> pkg,
-  }) async {
-    final pending = _applications.firstWhere(
-      (application) =>
-          (application['tier'] ?? '').toString().toLowerCase() == tierValue &&
-          (application['status'] ?? '').toString().toLowerCase() == 'pending',
-      orElse: () => const <String, dynamic>{},
-    );
-    if (pending.isNotEmpty) {
-      return;
-    }
-
-    await client.from('membership_applications').insert({
-      'user_id': user.id,
-      'club_id': clubId,
-      'tier': tierValue,
-      'status': 'pending',
-      'payment_status': 'unpaid',
-      'metadata': {
-        'amount': amount,
-        'currency_code': context.afriCurrencyCode,
-        'currency_symbol': context.afriCurrencySymbol,
-        'package_id': pkg['id']?.toString(),
-        'package_title': pkg['title']?.toString(),
-        'chapter':
-            _membership?['chapter']?.toString() ??
-            pkg['chapter']?.toString() ??
-            'Central',
-        'payment_reference': paymentReference,
-        'payment_route_id': route.id,
-        'payment_route_recipient': route.recipientCode,
-        'payment_route_country': route.country.name,
-        'payer_phone': user.momoNumber,
-      },
-    });
-  }
-
   Future<PartnerPaymentRoute?> _findActivePaymentRoute(
     SupabaseClient client,
     ClubScopeResolver resolver,
@@ -219,7 +184,10 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   ) async {
     var query = client
         .from('partner_payment_routes')
-        .select()
+        .select(
+          'id,partner_id,club_id,partner_name,partner_slug,country,provider,'
+          'recipient_code,reconciliation_label,status',
+        )
         .eq('status', 'active');
     query = resolver.apply(query, scope);
     final rows = await query.limit(1);
@@ -229,55 +197,39 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     return PartnerPaymentRoute.fromJson(rows.first);
   }
 
-  Future<void> _upsertMembership({
-    required SupabaseClient client,
-    required ClubScope scope,
-    required UserProfile user,
-    required String tierValue,
-  }) async {
-    final now = DateTime.now().toUtc();
-    final expiry = now.add(const Duration(days: 365));
-    final existing = await client
-        .from('fan_memberships')
-        .select('id, points, chapter')
-        .eq('user_id', user.id)
-        .eq('club_id', scope.clubId!)
-        .limit(1)
-        .maybeSingle();
-
-    if (existing == null) {
-      await client.from('fan_memberships').insert({
-        'user_id': user.id,
-        ...ClubScopeResolver(client: client).payload(scope),
-        'tier': tierValue,
-        'status': 'active',
-        'points': 0,
-        'chapter': 'Main',
-        'payment_status': PaymentStatus.verified.value,
-        'renewed_at': now.toIso8601String(),
-        'expires_at': expiry.toIso8601String(),
-      });
-      return;
-    }
-
-    final currentPoints = (existing['points'] as num?)?.toInt() ?? 0;
-    await client
-        .from('fan_memberships')
-        .update({
-          'tier': tierValue,
-          'status': 'active',
-          'payment_status': PaymentStatus.verified.value,
-          'points': currentPoints,
-          'renewed_at': now.toIso8601String(),
-          'expires_at': expiry.toIso8601String(),
-        })
-        .eq('id', existing['id']);
-  }
-
   int _packagePrice(Map<String, dynamic> pkg) {
     final annual = (pkg['annual_price'] as num?)?.toInt();
     final standard = (pkg['price'] as num?)?.toInt();
     return annual ?? standard ?? 0;
+  }
+
+  bool _isPhysicalMembershipPackage(Map<String, dynamic> pkg) {
+    if (pkg['store_billing_required'] != false) return false;
+    final benefitScope = pkg['benefit_scope']?.toString().trim().toLowerCase();
+    if (benefitScope == 'physical_membership') return true;
+
+    final packageId = pkg['id']?.toString() ?? '';
+    final storePolicyScope = pkg['store_policy_scope']
+        ?.toString()
+        .trim()
+        .toLowerCase();
+    return packageId.startsWith('official-') &&
+        storePolicyScope == 'physical_membership_and_live_event_access';
+  }
+
+  String _membershipChapter(Map<String, dynamic> pkg) {
+    final value =
+        _membership?['chapter']?.toString().trim() ??
+        pkg['chapter']?.toString().trim();
+    return value == null || value.isEmpty ? 'Main' : value;
+  }
+
+  int _applicationAmount(Map<String, dynamic> application) {
+    final metadata = application['metadata'];
+    if (metadata is! Map) return 0;
+    final rawAmount = metadata['amount'];
+    if (rawAmount is num) return rawAmount.toInt();
+    return int.tryParse(rawAmount?.toString() ?? '') ?? 0;
   }
 
   String _packagePriceLabel(Map<String, dynamic> pkg) {

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -21,12 +22,16 @@ enum _WalletSection {
   final String value;
   final IconData icon;
 
-  static _WalletSection fromUri(Uri uri) {
+  static _WalletSection fromUri(Uri uri, {required bool allowsRewards}) {
     final raw = uri.queryParameters['section']?.trim().toLowerCase();
-    return _WalletSection.values.firstWhere(
+    final selected = _WalletSection.values.firstWhere(
       (section) => section.value == raw,
       orElse: () => _WalletSection.earn,
     );
+    if (selected == _WalletSection.rewards && !allowsRewards) {
+      return _WalletSection.earn;
+    }
+    return selected;
   }
 }
 
@@ -89,21 +94,25 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
   }
 
   void _showOverflow() {
+    final storePolicy = ref.read(storeReleasePolicyProvider);
     unawaited(
       showAfriActionSheet(
         context: context,
-        title: context.afriL10n.gameRewardsLabel,
+        title: storePolicy.allowsRewardRedemption
+            ? context.afriL10n.gameRewardsLabel
+            : context.afriL10n.gamePointsLabel,
         actions: [
           AfriSheetAction(
             icon: AfriIcons.history,
             label: context.afriL10n.gameActivity,
             onTap: () => context.go('/fanzone/wallet?section=history'),
           ),
-          AfriSheetAction(
-            icon: AfriIcons.rewards,
-            label: context.afriL10n.gameRewardsLabel,
-            onTap: () => context.go('/fanzone/wallet?section=rewards'),
-          ),
+          if (storePolicy.allowsRewardRedemption)
+            AfriSheetAction(
+              icon: AfriIcons.rewards,
+              label: context.afriL10n.gameRewardsLabel,
+              onTap: () => context.go('/fanzone/wallet?section=rewards'),
+            ),
           AfriSheetAction(
             icon: AfriIcons.refresh,
             label: context.afriL10n.gameRefresh,
@@ -120,13 +129,16 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     final l10n = context.afriL10n;
     final asyncWallet = ref.watch(fetWalletRouteProvider);
     final enabled = ref.watch(fetWalletEnabledProvider);
+    final storePolicy = ref.watch(storeReleasePolicyProvider);
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          l10n.gameRewardsLabel,
+          storePolicy.allowsRewardRedemption
+              ? l10n.gameRewardsLabel
+              : l10n.gamePointsLabel,
           style: TypographyTokens.headlineSmall(),
         ),
         leading: AfriIconButton(
@@ -167,7 +179,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                       actionLabel: l10n.venueBackToFanZone,
                       onAction: _close,
                     )
-                  : _buildContent(snapshot),
+                  : _buildContent(snapshot, storePolicy),
             ),
     );
   }
@@ -203,12 +215,16 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     };
   }
 
-  Widget _buildContent(FetWalletSnapshot snapshot) {
+  Widget _buildContent(
+    FetWalletSnapshot snapshot,
+    StoreReleasePolicy storePolicy,
+  ) {
     final l10n = context.afriL10n;
     final wallet = snapshot.wallet;
     final transactions = snapshot.transactions;
     final selectedSection = _WalletSection.fromUri(
       GoRouterState.of(context).uri,
+      allowsRewards: storePolicy.allowsRewardRedemption,
     );
 
     return AfriRefreshIndicator(
@@ -297,11 +313,13 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             ),
           ],
           const SizedBox(height: SpacingTokens.spacing6),
-          _buildSectionSelector(selectedSection),
+          _buildSectionSelector(selectedSection, storePolicy),
           const SizedBox(height: SpacingTokens.sectionGap),
           if (selectedSection == _WalletSection.earn) ...[
-            FetSplitModel(currentTier: wallet?.tier ?? 'supporter'),
-            const SizedBox(height: SpacingTokens.sectionGap),
+            if (storePolicy.allowsPaidDigitalMembership) ...[
+              FetSplitModel(currentTier: wallet?.tier ?? 'supporter'),
+              const SizedBox(height: SpacingTokens.sectionGap),
+            ],
             AfriSectionHeader(title: l10n.walletEarn),
             const SizedBox(height: SpacingTokens.spacing4),
             AfriSurfaceCard(
@@ -312,18 +330,21 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                     l10n.walletEarnBody,
                     style: TypographyTokens.bodyMedium(),
                   ),
-                  const SizedBox(height: SpacingTokens.spacing2),
-                  Text(
-                    l10n.walletUseBody,
-                    style: TypographyTokens.bodySmall(
-                      ColorTokens.onSurfaceVariant,
+                  if (storePolicy.allowsRewardRedemption) ...[
+                    const SizedBox(height: SpacingTokens.spacing2),
+                    Text(
+                      l10n.walletUseBody,
+                      style: TypographyTokens.bodySmall(
+                        ColorTokens.onSurfaceVariant,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),
           ],
-          if (selectedSection == _WalletSection.rewards) ...[
+          if (storePolicy.allowsRewardRedemption &&
+              selectedSection == _WalletSection.rewards) ...[
             AfriSectionHeader(title: l10n.gameRewardsLabel),
             const SizedBox(height: SpacingTokens.spacing4),
             AfriSurfaceCard(
@@ -436,9 +457,19 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     };
   }
 
-  Widget _buildSectionSelector(_WalletSection selectedSection) {
+  Widget _buildSectionSelector(
+    _WalletSection selectedSection,
+    StoreReleasePolicy storePolicy,
+  ) {
+    final sections = _WalletSection.values
+        .where(
+          (section) =>
+              section != _WalletSection.rewards ||
+              storePolicy.allowsRewardRedemption,
+        )
+        .toList(growable: false);
     return AfriSegmentedControl(
-      items: _WalletSection.values
+      items: sections
           .map(
             (section) => AfriSegment(
               label: switch (section) {
@@ -450,9 +481,9 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             ),
           )
           .toList(growable: false),
-      selectedIndex: _WalletSection.values.indexOf(selectedSection),
+      selectedIndex: sections.indexOf(selectedSection),
       onChanged: (index) {
-        final section = _WalletSection.values[index];
+        final section = sections[index];
         context.go('/fanzone/wallet?section=${section.value}');
       },
     );

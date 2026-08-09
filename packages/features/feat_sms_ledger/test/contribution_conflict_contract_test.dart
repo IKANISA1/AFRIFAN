@@ -10,7 +10,7 @@ void main() {
     expect(error.toString(), contains('Refresh the queue'));
   });
 
-  test('reconciliation compares the loaded updated_at token atomically', () {
+  test('released client reconciliation remains fail closed', () {
     final packageSource = File(
       'lib/src/services/ledger_reconciliation_service.dart',
     );
@@ -22,9 +22,15 @@ void main() {
               ))
         .readAsStringSync();
 
-    expect(source, contains("'updated_at', expectedUpdatedAt"));
-    expect(source, contains(".eq('status', 'pending')"));
-    expect(source, contains('.maybeSingle()'));
-    expect(source, contains('throw const ContributionConflictException()'));
+    expect(
+      source,
+      contains('throw const ClientReconciliationDisabledException()'),
+    );
+    expect(source, contains('reconcile_group_contribution_from_sms'));
+    expect(source, isNot(contains(".from('group_contributions')")));
+    expect(source, isNot(contains(".from('momo_ledger_entries')")));
+    expect(source, isNot(contains(".from('momo_reconciliations')")));
+    expect(source, isNot(contains('.update(')));
+    expect(source, isNot(contains('.upsert(')));
   });
 }

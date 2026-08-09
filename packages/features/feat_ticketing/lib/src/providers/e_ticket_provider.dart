@@ -97,7 +97,7 @@ class SupabaseETicketGateway implements ETicketGateway {
     final scope = await resolver.requireResolved(_clubId);
     var query = _client
         .from('tickets')
-        .select('*, match:matches(*)')
+        .select(ClubTicket.dataApiProjection)
         .eq('user_id', userId)
         .eq('id', ticketId);
     query = resolver.apply(query, scope);

@@ -20,6 +20,7 @@
     "test:e2e:ci": "npm run playwright:cleanup && node scripts/run-playwright-suite.mjs",
     "test:e2e:wallet": "npm run playwright:cleanup && AFRICLUB_ALLOW_HTTP_PREVIEW=1 npm run build && node scripts/run-playwright-suite.mjs e2e/wallet.spec.ts --project=mobile-chromium --project=tablet-chromium",
     "test:lighthouse": "lhci autorun --config=.lighthouserc.js",
+    "test:cloudflare-release": "node --test scripts/validate-cloudflare-release.node-test.mjs",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "size": "node scripts/check-app-shell-size.mjs",
@@ -31,7 +32,8 @@
     "preview": "node scripts/sync-cloudflare-dev-vars.mjs && npm run build && opennextjs-cloudflare build --skipNextBuild && node scripts/fix-route-group-manifests.mjs --open-next && opennextjs-cloudflare preview",
     "deploy": "npm run build && opennextjs-cloudflare build --skipNextBuild && node scripts/fix-route-group-manifests.mjs --open-next && opennextjs-cloudflare deploy",
     "upload": "npm run build && opennextjs-cloudflare build --skipNextBuild && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "validate:cloudflare-release": "node scripts/validate-cloudflare-release.mjs"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.2",

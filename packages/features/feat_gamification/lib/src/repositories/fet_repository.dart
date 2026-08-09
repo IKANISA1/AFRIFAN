@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -6,9 +7,16 @@ import '../models/fet_models.dart';
 import '../models/reward_store_content.dart';
 
 class FetRepository {
-  FetRepository({required SupabaseClient client}) : _client = client;
+  FetRepository({
+    required SupabaseClient client,
+    StoreReleasePolicy? storeReleasePolicy,
+  }) : _client = client,
+       _storeReleasePolicy =
+           storeReleasePolicy ??
+           StoreReleasePolicy.forCurrentBuild(const PlatformConfigSnapshot());
 
   final SupabaseClient _client;
+  final StoreReleasePolicy _storeReleasePolicy;
   late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
     client: _client,
   );
@@ -49,6 +57,9 @@ class FetRepository {
     bool includeInactive = false,
     int limit = 500,
   }) async {
+    if (!_storeReleasePolicy.allowsRewardRedemption) {
+      return const <FetPartnerOffer>[];
+    }
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return const <FetPartnerOffer>[];
@@ -100,13 +111,24 @@ class FetRepository {
         .map((row) => Map<String, dynamic>.from(row))
         .toList(growable: false);
 
-    return rows.map(FetLeaderboardRow.fromJson).toList(growable: false);
+    return rows
+        .map(_sanitizePublicIdentity)
+        .map(FetLeaderboardRow.fromJson)
+        .toList(growable: false);
   }
 
   Future<List<FetFriendProfile>> loadFriends({
     int limit = 20,
     String? search,
   }) async {
+    final safeSearch = _storeReleasePolicy.allowsCrossUserText
+        ? search
+        : _systemAliasQuery(search);
+    if (!_storeReleasePolicy.allowsCrossUserText &&
+        search?.trim().isNotEmpty == true &&
+        safeSearch == null) {
+      return const <FetFriendProfile>[];
+    }
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return const <FetFriendProfile>[];
@@ -117,7 +139,7 @@ class FetRepository {
       params: <String, dynamic>{
         'p_club_id': scope.clubId,
         'p_limit': limit,
-        'p_search': search,
+        'p_search': safeSearch,
       },
       tag: _tag,
     );
@@ -131,14 +153,22 @@ class FetRepository {
         .map((row) => Map<String, dynamic>.from(row))
         .toList(growable: false);
 
-    return rows.map(FetFriendProfile.fromJson).toList(growable: false);
+    return rows
+        .map(_sanitizePublicIdentity)
+        .map(FetFriendProfile.fromJson)
+        .toList(growable: false);
   }
 
   Future<List<FetFriendProfile>> searchSupporters(
     String query, {
     int limit = 8,
   }) async {
-    final trimmed = query.trim();
+    final trimmed = _storeReleasePolicy.allowsCrossUserText
+        ? query.trim()
+        : _systemAliasQuery(query);
+    if (trimmed == null) {
+      return const <FetFriendProfile>[];
+    }
     if (trimmed.isEmpty) {
       return const <FetFriendProfile>[];
     }
@@ -167,7 +197,10 @@ class FetRepository {
         .map((row) => Map<String, dynamic>.from(row))
         .toList(growable: false);
 
-    return rows.map(FetFriendProfile.fromJson).toList(growable: false);
+    return rows
+        .map(_sanitizePublicIdentity)
+        .map(FetFriendProfile.fromJson)
+        .toList(growable: false);
   }
 
   Future<FetFriendActionResult> requestFriend({
@@ -187,7 +220,7 @@ class FetRepository {
       params: <String, dynamic>{
         'p_target_user_id': targetUserId,
         'p_club_id': scope.clubId,
-        'p_note': note,
+        'p_note': _storeReleasePolicy.allowsCrossUserText ? note : null,
       },
       tag: _tag,
       maxAttempts: 1,
@@ -241,6 +274,9 @@ class FetRepository {
   }
 
   Future<List<FetRewardOption>> loadRewardStoreItems() async {
+    if (!_storeReleasePolicy.allowsRewardRedemption) {
+      return const <FetRewardOption>[];
+    }
     final scope = await _scopeResolver.requireResolved();
 
     try {
@@ -278,6 +314,7 @@ class FetRepository {
     String? note,
     String? idempotencyKey,
   }) async {
+    _requireRewardAuthorization();
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return const FetRewardRedemptionResult(
@@ -290,7 +327,7 @@ class FetRepository {
       'fet_redeem_reward',
       params: <String, dynamic>{
         'p_reward_item_id': rewardItemId,
-        'p_note': note,
+        'p_note': _storeReleasePolicy.allowsCrossUserText ? note : null,
         'p_idempotency_key': idempotencyKey,
         'p_club_id': scope.clubId,
       },
@@ -537,7 +574,10 @@ class FetRepository {
         .map((row) => Map<String, dynamic>.from(row))
         .toList(growable: false);
 
-    return rows.map(FetWalletTransaction.fromJson).toList(growable: false);
+    return rows
+        .map(_sanitizeWalletTransaction)
+        .map(FetWalletTransaction.fromJson)
+        .toList(growable: false);
   }
 
   /// Loads the route-level private ledger without misrepresenting an RPC
@@ -573,13 +613,19 @@ class FetRepository {
         .map((row) => Map<String, dynamic>.from(row))
         .toList(growable: false);
 
-    return rows.map(FetWalletTransaction.fromJson).toList(growable: false);
+    return rows
+        .map(_sanitizeWalletTransaction)
+        .map(FetWalletTransaction.fromJson)
+        .toList(growable: false);
   }
 
   Future<List<FetWalletSupporter>> findSupporters(
     String query, {
     int limit = 8,
   }) async {
+    if (!_storeReleasePolicy.allowsPointsTransfer) {
+      return const <FetWalletSupporter>[];
+    }
     final trimmed = query.trim();
     if (trimmed.isEmpty) {
       return const <FetWalletSupporter>[];
@@ -609,7 +655,10 @@ class FetRepository {
         .map((row) => Map<String, dynamic>.from(row))
         .toList(growable: false);
 
-    return rows.map(FetWalletSupporter.fromJson).toList(growable: false);
+    return rows
+        .map(_sanitizePublicIdentity)
+        .map(FetWalletSupporter.fromJson)
+        .toList(growable: false);
   }
 
   Future<FetWalletOperationResult> transferFet({
@@ -618,6 +667,7 @@ class FetRepository {
     String? note,
     String? idempotencyKey,
   }) async {
+    _requirePointsTransferAuthorization();
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return const FetWalletOperationResult(
@@ -635,7 +685,7 @@ class FetRepository {
       params: <String, dynamic>{
         'p_recipient_user_id': recipientUserId,
         'p_amount': amount,
-        'p_note': note,
+        'p_note': _storeReleasePolicy.allowsCrossUserText ? note : null,
         'p_idempotency_key': idempotencyKey,
         'p_club_id': scope.clubId,
       },
@@ -664,6 +714,7 @@ class FetRepository {
     String? note,
     String? idempotencyKey,
   }) async {
+    _requireManualPointsRedemptionAuthorization();
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return const FetWalletOperationResult(
@@ -680,7 +731,7 @@ class FetRepository {
       'fet_redeem',
       params: <String, dynamic>{
         'p_amount': amount,
-        'p_note': note,
+        'p_note': _storeReleasePolicy.allowsCrossUserText ? note : null,
         'p_idempotency_key': idempotencyKey,
         'p_club_id': scope.clubId,
       },
@@ -717,6 +768,71 @@ class FetRepository {
     return _safeMaybeSingle(query.maybeSingle());
   }
 
+  Map<String, dynamic> _sanitizePublicIdentity(Map<String, dynamic> row) {
+    if (_storeReleasePolicy.allowsCrossUserText) {
+      return row;
+    }
+    return <String, dynamic>{
+      ...row,
+      'display_name': _storeReleasePolicy.publicSupporterLabel(
+        displayName: row['display_name']?.toString(),
+        publicUserId:
+            row['public_user_id']?.toString() ??
+            row['supporter_alias']?.toString(),
+        userId: row['user_id']?.toString(),
+      ),
+    };
+  }
+
+  Map<String, dynamic> _sanitizeWalletTransaction(Map<String, dynamic> row) {
+    if (_storeReleasePolicy.allowsCrossUserText ||
+        row['counterparty_user_id'] == null) {
+      return row;
+    }
+    return <String, dynamic>{
+      ...row,
+      'counterparty_display_name': _storeReleasePolicy.publicSupporterLabel(
+        displayName: row['counterparty_display_name']?.toString(),
+        publicUserId: row['counterparty_public_user_id']?.toString(),
+        userId: row['counterparty_user_id']?.toString(),
+      ),
+      'note': null,
+    };
+  }
+
+  void _requireRewardAuthorization() {
+    if (!_storeReleasePolicy.allowsRewardRedemption) {
+      throw UnsupportedError(
+        'Reward redemption is unavailable in this store release.',
+      );
+    }
+  }
+
+  void _requirePointsTransferAuthorization() {
+    if (!_storeReleasePolicy.allowsPointsTransfer) {
+      throw UnsupportedError(
+        'Points transfer is unavailable in this store release.',
+      );
+    }
+  }
+
+  void _requireManualPointsRedemptionAuthorization() {
+    if (!_storeReleasePolicy.allowsManualPointsRedemption) {
+      throw UnsupportedError(
+        'Manual points redemption is unavailable in this store release.',
+      );
+    }
+  }
+
+  String? _systemAliasQuery(String? value) {
+    final trimmed = value?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return null;
+    }
+    final normalized = trimmed.replaceAll(RegExp(r'[#\s-]'), '');
+    return RegExp(r'^\d{6}$').hasMatch(normalized) ? normalized : null;
+  }
+
   Future<Map<String, dynamic>?> _loadProfile(String userId) {
     return _safeMaybeSingle(
       _client
@@ -728,31 +844,16 @@ class FetRepository {
   }
 
   Future<List<Map<String, dynamic>>> _loadEventRows(String userId) async {
-    try {
-      return List<Map<String, dynamic>>.from(
-        await _client
-            .from('cool_events')
-            .select('event_type, fet_awarded, event_at')
-            .eq('user_id', userId)
-            .order('event_at', ascending: false)
-            .limit(250),
-      );
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'FetRepository',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      return List<Map<String, dynamic>>.from(
-        await _client
-            .from('fet_events')
-            .select('event_type, fet_awarded, event_at')
-            .eq('user_id', userId)
-            .order('event_at', ascending: false)
-            .limit(250),
-      );
-    }
+    return List<Map<String, dynamic>>.from(
+      await _client
+          .from('fet_events')
+          .select(
+            'id,user_id,club_id,event_type,fet_awarded,event_at,created_at',
+          )
+          .eq('user_id', userId)
+          .order('event_at', ascending: false)
+          .limit(250),
+    );
   }
 
   int _sumWeeklyFet(List<Map<String, dynamic>> eventRows) {

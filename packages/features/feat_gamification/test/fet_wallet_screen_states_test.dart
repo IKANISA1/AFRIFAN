@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
@@ -247,6 +248,9 @@ Future<void> _pumpRoute(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        storeReleasePolicyProvider.overrideWithValue(
+          const StoreReleasePolicy.unenforced(),
+        ),
         fetWalletRouteProvider.overrideWith((ref) => controller),
         fetWalletEnabledProvider.overrideWithValue(enabled),
       ],

@@ -600,6 +600,23 @@ void main() {
     expect(find.byType(FanzoneHubScreen), findsOneWidget);
   });
 
+  testWidgets('store release omits partner stake and reward surfaces', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _buildFanzoneApp(
+        () => _TestFanzoneHubNotifier(_buildSnapshot()),
+        storePolicy: const StoreReleasePolicy(isEnforced: true),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Join round'), findsNothing);
+    expect(find.text('Derby WDW Pool'), findsNothing);
+    expect(find.text('Rewards'), findsNothing);
+    expect(find.byType(FanzoneHubScreen), findsOneWidget);
+  });
+
   testWidgets('joins a partner WDW pool with a fixed fan FET stake', (
     tester,
   ) async {
@@ -1027,6 +1044,7 @@ Widget _buildFanzoneApp(
   Brightness brightness = Brightness.dark,
   Key? goldenKey,
   Locale? appLocale,
+  StoreReleasePolicy storePolicy = const StoreReleasePolicy.unenforced(),
 }) {
   final router = GoRouter(
     initialLocation: initialLocation,
@@ -1049,6 +1067,7 @@ Widget _buildFanzoneApp(
 
   return ProviderScope(
     overrides: [
+      storeReleasePolicyProvider.overrideWithValue(storePolicy),
       authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
       initialFeatureConfigSnapshotProvider.overrideWithValue(
         _enabledFanzoneFeatures,

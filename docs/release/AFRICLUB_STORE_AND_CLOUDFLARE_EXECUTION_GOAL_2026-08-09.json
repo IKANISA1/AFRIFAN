@@ -1,0 +1,304 @@
+{
+  "schema_version": "1.0",
+  "goal_id": "AFRICLUB-R67-STORE-CLOUDFLARE-SUBMISSION",
+  "revision": "2026-08-09-R67",
+  "status": "active_until_completion_predicate_proven",
+  "objective": "Implement, validate, evidence, and complete the governed Google Play mobile, Apple App Store, Google Play Android TV, Cloudflare public-domain, production-backend, CI, physical-device, approval, and submission work until every original AFRICLUB task is proved complete against one exact release candidate.",
+  "authority": {
+    "workspace_implementation_authorized": true,
+    "git_commit_and_push_to_main_authorized": true,
+    "in_scope_external_execution_authorized": true,
+    "secrets_must_remain_outside_git": true,
+    "identity_verification_and_one_time_codes_must_not_be_retained": true
+  },
+  "scope": {
+    "governed_task_total": 87,
+    "baseline_remaining_count": 33,
+    "baseline_remaining_task_ids": [
+      "GOV-01",
+      "GOV-03",
+      "GOV-05",
+      "GOV-06",
+      "MOB-08",
+      "MOB-09",
+      "STATE-03",
+      "STATE-06",
+      "A11Y-02",
+      "EVID-03",
+      "EVID-04",
+      "EVID-05",
+      "EVID-06",
+      "EVID-08",
+      "TV-01",
+      "TV-04",
+      "TV-05",
+      "TV-07",
+      "TV-09",
+      "ADMIN-01",
+      "ADMIN-02",
+      "ADMIN-05",
+      "ADMIN-07",
+      "ADMIN-08",
+      "ADMIN-09",
+      "REL-01",
+      "REL-02",
+      "REL-03",
+      "REL-04",
+      "REL-05",
+      "REL-06",
+      "REL-07",
+      "REL-08"
+    ],
+    "android_mobile_package": "rw.gikundiro.app",
+    "ios_bundle": "rw.ikanisa.rayonSports",
+    "android_tv_package": "rw.ikanisa.rayonSports.tv",
+    "android_tv_in_scope": true,
+    "cloudflare_worker": "gikundiro-web",
+    "cloudflare_hosts": [
+      "gikundiro.com",
+      "www.gikundiro.com",
+      "admin.gikundiro.com",
+      "fans.gikundiro.com"
+    ]
+  },
+  "invariants": [
+    "The governed denominator remains 87; nested workstreams do not replace or silently close an original task.",
+    "A release candidate is exact only when the live checkout is clean, its HEAD is verified on origin/main, and the retained CI run is for that same HEAD.",
+    "A stale preflight, prior commit artifact, local build, emulator run, or simulator run is historical evidence only and cannot close an exact-candidate, physical-device, store, deployment, or approval gate.",
+    "Every signed artifact must record source_git_head, package or bundle identity, version or build, SHA-256, byte size, signing fingerprint, toolchain, and validation result.",
+    "Google Play, App Store Connect, Android TV, Cloudflare, backend, device, and accountable approval results require current remote receipts or current physical evidence.",
+    "No credential, key, password, identity-verification material, biometric material, or one-time code may be committed or copied into the goal records.",
+    "Completion requires requirement-by-requirement proof; passing local tests or absence of a detected failure is not completion."
+  ],
+  "workstreams": [
+    {
+      "id": "RSG-01",
+      "name": "Product, policy, rights, language, and distribution decisions",
+      "mapped_task_ids": [
+        "GOV-01",
+        "GOV-03",
+        "GOV-05",
+        "MOB-08",
+        "EVID-04",
+        "EVID-05",
+        "TV-01",
+        "ADMIN-01",
+        "ADMIN-02",
+        "REL-08"
+      ],
+      "completion_evidence": [
+        "dated decisions for payments, digital benefits, predictions, contests, UGC, ages, territories, and Android TV distribution",
+        "rights approval or replacement for all public media and club assets",
+        "named French and Kinyarwanda linguistic approval",
+        "named owners and due dates for every remaining gate"
+      ]
+    },
+    {
+      "id": "RSG-02",
+      "name": "Exact candidate, dependency review, and pinned CI",
+      "mapped_task_ids": [
+        "GOV-06",
+        "EVID-03",
+        "EVID-08",
+        "REL-01"
+      ],
+      "completion_evidence": [
+        "clean live checkout with HEAD verified on origin/main",
+        "successful non-empty exact-HEAD pinned CI run with retained logs and artifacts",
+        "reviewed source-control inclusion and deletion decisions",
+        "regenerated candidate, evidence, task, and release manifests"
+      ]
+    },
+    {
+      "id": "RSG-03",
+      "name": "Production backend, authorization, concurrency, analytics, and operations",
+      "mapped_task_ids": [
+        "STATE-03",
+        "STATE-06",
+        "ADMIN-05",
+        "REL-06"
+      ],
+      "completion_evidence": [
+        "exact production migration, schema, RLS, grants, RPC, Edge Function, webhook, and secret-configuration receipt",
+        "complete two-client collision, actor, audit, rollback, recovery, and role matrix",
+        "live consent and minimum-cohort analytics suppression evidence",
+        "monitoring, alert, incident, retention, and rollback rehearsal evidence"
+      ]
+    },
+    {
+      "id": "RSG-04",
+      "name": "Authenticated publisher and deployment paths",
+      "mapped_task_ids": [
+        "REL-06",
+        "REL-07"
+      ],
+      "completion_evidence": [
+        "authenticated least-privilege Google Play publisher path",
+        "authenticated authorized App Store Connect upload path",
+        "Cloudflare token or session with the exact Workers, Pages, Zone Read, and DNS Edit permissions",
+        "no secrets retained in repository evidence"
+      ]
+    },
+    {
+      "id": "RSG-05",
+      "name": "Store records, signing ownership, identifiers, and platform contracts",
+      "mapped_task_ids": [
+        "REL-02",
+        "REL-03",
+        "REL-07",
+        "TV-09"
+      ],
+      "completion_evidence": [
+        "verified Play mobile and TV app records with Play App Signing and matching upload certificates",
+        "verified App Store Connect record, Team ID, bundle, agreements, capabilities, certificate, and profile",
+        "final store signing fingerprints registered with Firebase, OAuth, App Links, and Universal Links",
+        "version codes and build numbers proven unused before upload"
+      ]
+    },
+    {
+      "id": "RSG-06",
+      "name": "Exact-candidate signed artifacts and privacy reports",
+      "mapped_task_ids": [
+        "EVID-06",
+        "TV-09",
+        "REL-02",
+        "REL-03",
+        "REL-07"
+      ],
+      "completion_evidence": [
+        "exact-candidate upload-key-signed Android mobile AAB",
+        "exact-candidate App Store distribution-signed iOS archive or IPA",
+        "exact-candidate production-signed Android TV AAB",
+        "bundletool, merged-manifest, codesign, provisioning, privacy-report, SDK-manifest, 16 KB, symbols, mappings, and provenance validation"
+      ]
+    },
+    {
+      "id": "RSG-07",
+      "name": "Cloudflare exact-candidate deployment and public contracts",
+      "mapped_task_ids": [
+        "REL-06",
+        "REL-07"
+      ],
+      "completion_evidence": [
+        "current candidate deployed to gikundiro-web with retained version and rollback identifiers",
+        "all four governed hosts attached as active Worker Custom Domains and no longer serving the legacy Pages shell",
+        "public privacy, terms, support, deletion, assetlinks.json, and apple-app-site-association responses validated",
+        "TLS, redirects, API content types, CORS, callbacks, cache, security headers, robots, sitemap, logs, alerts, and rollback validated"
+      ]
+    },
+    {
+      "id": "RSG-08",
+      "name": "Store-distributed physical-device, accessibility, performance, and cross-surface UAT",
+      "mapped_task_ids": [
+        "MOB-09",
+        "A11Y-02",
+        "EVID-06",
+        "TV-04",
+        "TV-05",
+        "TV-07",
+        "ADMIN-07",
+        "ADMIN-08",
+        "ADMIN-09",
+        "REL-04",
+        "REL-05"
+      ],
+      "completion_evidence": [
+        "Play-internal physical Android UAT with TalkBack, App Links, push, lifecycle, recovery, and approved performance budgets",
+        "TestFlight physical iPhone UAT with VoiceOver, Universal Links, APNs, App Attest, lifecycle, recovery, and approved performance budgets",
+        "physical Android TV remote, QR pairing, overscan, screen-reader, network, thermal, burn-in, and four-hour soak evidence",
+        "authorized two-phone plus TV synchronized-session recovery matrix",
+        "authenticated Admin keyboard, zoom, reflow, screen-reader, authorization, and high-volume performance evidence"
+      ]
+    },
+    {
+      "id": "RSG-09",
+      "name": "Google Play mobile listing, declarations, testing, and submission",
+      "mapped_task_ids": [
+        "REL-02",
+        "REL-04",
+        "REL-07",
+        "REL-08"
+      ],
+      "completion_evidence": [
+        "complete approved icon, feature graphic, screenshots, descriptions, contacts, releases, and localizations",
+        "completed privacy, Data Safety, deletion, ads, audience, content-rating, access, financial, permission, UGC, payment, contest, and child-safety declarations",
+        "internal and any required closed testing, pre-launch report, bundle explorer, signing, 16 KB, integrity, and device-catalog results",
+        "production change submitted and Play Console receipt shows under review or later"
+      ]
+    },
+    {
+      "id": "RSG-10",
+      "name": "Apple App Store metadata, privacy, TestFlight, and submission",
+      "mapped_task_ids": [
+        "REL-03",
+        "REL-04",
+        "REL-07",
+        "REL-08"
+      ],
+      "completion_evidence": [
+        "complete approved metadata, screenshots, URLs, availability, pricing, categories, and release notes",
+        "completed App Privacy, age rating, content rights, encryption, trader, payment, UGC, contest, tracking, and deletion declarations",
+        "processed exact-candidate build and completed TestFlight physical-device validation",
+        "build attached to the submission and App Store Connect receipt shows Waiting for Review, In Review, or later"
+      ]
+    },
+    {
+      "id": "RSG-11",
+      "name": "Google Play Android TV listing, physical validation, and submission",
+      "mapped_task_ids": [
+        "TV-01",
+        "TV-04",
+        "TV-05",
+        "TV-07",
+        "TV-09",
+        "REL-05",
+        "REL-07"
+      ],
+      "completion_evidence": [
+        "separate TV app record, signing, Data Safety, rating, support, reviewer access, banner, and screenshots",
+        "production-signed exact-candidate TV AAB uploaded to the approved track",
+        "store-distributed physical TV validation passes the governed device matrix",
+        "TV release receipt shows submitted, processing, review, or approved status"
+      ]
+    },
+    {
+      "id": "RSG-12",
+      "name": "Named approval, console submission, receipts, rollout, and monitoring",
+      "mapped_task_ids": [
+        "GOV-03",
+        "GOV-05",
+        "EVID-04",
+        "EVID-05",
+        "REL-07",
+        "REL-08"
+      ],
+      "completion_evidence": [
+        "dated evidence-linked product, design, privacy, security, accessibility, legal, operations, QA, content-rights, language, and release-owner approvals",
+        "Google Play mobile and TV and Apple App Store submission receipts bound to the exact artifact hashes",
+        "Cloudflare exact-candidate production receipt and observation evidence",
+        "review-response, staged or phased rollout, crash or ANR, incident, and rollback ownership recorded"
+      ]
+    }
+  ],
+  "completion_predicate": {
+    "all_87_tasks_verified_complete": true,
+    "remaining_task_count_is_zero": true,
+    "exact_candidate_clean_remote_aligned": true,
+    "exact_head_ci_success_with_jobs_and_logs": true,
+    "all_signed_artifacts_bound_to_exact_candidate": true,
+    "production_backend_and_operations_proven": true,
+    "physical_android_ios_tv_and_admin_uat_proven": true,
+    "cloudflare_four_host_exact_candidate_cutover_proven": true,
+    "google_play_mobile_submitted_for_review": true,
+    "apple_app_store_submitted_for_review": true,
+    "google_play_tv_submitted_or_approved_track_receipt": true,
+    "all_named_approvals_recorded": true
+  },
+  "current_checkpoint_template": {
+    "generated_at": null,
+    "status": "not_reconciled",
+    "completion_proven": false,
+    "remaining_task_ids": [],
+    "workstreams": []
+  }
+}

@@ -113,6 +113,43 @@ class ClubMatch extends Equatable {
 
 /// A purchased ticket tied to a match.
 class ClubTicket extends Equatable {
+  /// Least-privilege Data API projection shared by every supporter ticket
+  /// reader. Keep this aligned with the column grants in the ticket boundary
+  /// migration; internal audit and mock-fixture fields are intentionally absent.
+  static const dataApiProjection = '''
+    id,
+    match_id,
+    user_id,
+    seat_type,
+    amount_paid,
+    qr_code,
+    momo_reference,
+    status,
+    purchased_at,
+    updated_at,
+    club_id,
+    created_at,
+    confirmed_at,
+    match:matches(
+      id,
+      home_team,
+      away_team,
+      competition,
+      venue,
+      match_date,
+      kickoff_time,
+      is_on_sale,
+      ticket_general_price,
+      ticket_vip_price,
+      sale_starts_at,
+      capacity,
+      sold_count,
+      image_url,
+      roster,
+      club_id
+    )
+  ''';
+
   const ClubTicket({
     required this.id,
     required this.matchId,
@@ -124,6 +161,7 @@ class ClubTicket extends Equatable {
     required this.paymentReference,
     required this.status,
     required this.purchasedAt,
+    required this.updatedAt,
   });
 
   final String id;
@@ -136,11 +174,14 @@ class ClubTicket extends Equatable {
   final String paymentReference;
   final jh.TicketStatus status;
   final DateTime purchasedAt;
+  final DateTime updatedAt;
 
   String get matchTitle => '${match.homeTeam} vs ${match.awayTeam}';
 
   factory ClubTicket.fromJson(Map<String, dynamic> json) {
     final nestedMatch = json['match'] as Map<String, dynamic>?;
+    final purchasedAt =
+        jh.parseDateTime(json['purchased_at']) ?? DateTime.now();
     return ClubTicket(
       id: jh.asStringOrNull(json['id']) ?? '',
       matchId: jh.asStringOrNull(json['match_id']) ?? '',
@@ -153,7 +194,8 @@ class ClubTicket extends Equatable {
       qrCode: jh.asStringOrNull(json['qr_code']) ?? '',
       paymentReference: jh.asStringOrNull(json['momo_reference']) ?? '',
       status: jh.TicketStatusX.fromValue(json['status']?.toString()),
-      purchasedAt: jh.parseDateTime(json['purchased_at']) ?? DateTime.now(),
+      purchasedAt: purchasedAt,
+      updatedAt: jh.parseDateTime(json['updated_at']) ?? purchasedAt,
     );
   }
 
@@ -166,5 +208,6 @@ class ClubTicket extends Equatable {
         amountPaid,
         status,
         purchasedAt,
+        updatedAt,
       ];
 }

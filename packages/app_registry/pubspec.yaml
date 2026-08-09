@@ -15,6 +15,8 @@ dependencies:
     path: ../core/core_router
   core_theme:
     path: ../core/core_theme
+  core_feature_config:
+    path: ../core/core_feature_config
 
   feat_home:
     path: ../features/feat_home

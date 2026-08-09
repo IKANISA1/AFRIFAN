@@ -6,10 +6,26 @@ extension PredictionRepoProfile on PredictionRepository {
   Future<bool> updateProfile(Map<String, dynamic> updates) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) return false;
+    final releaseSafeUpdates = Map<String, dynamic>.from(updates);
+    if (!_storeReleasePolicy.allowsCrossUserText) {
+      releaseSafeUpdates
+        ..remove('display_name')
+        ..remove('nickname')
+        ..remove('bio');
+      if (releaseSafeUpdates.containsKey('privacy_show_real_name')) {
+        releaseSafeUpdates['privacy_show_real_name'] = false;
+      }
+    }
+    if (releaseSafeUpdates.isEmpty) {
+      return false;
+    }
 
     final result = await SafeRpc.query<void>(
       () async {
-        await _client.from('profiles').update(updates).eq('id', userId);
+        await _client
+            .from('profiles')
+            .update(releaseSafeUpdates)
+            .eq('id', userId);
       },
       tag: _tag,
       description: 'updateProfile',

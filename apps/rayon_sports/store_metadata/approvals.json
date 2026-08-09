@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "pending",
+  "instructions": "Set a status to approved only with a named approver, ISO-8601 date, and evidence reference. Do not put signatures, credentials, identity documents, or private keys here.",
+  "approvals": [
+    {"id": "product_scope", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "rayon_brand_and_content_rights", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "privacy_and_retention", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "payments_and_digital_goods", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "rewards_contests_and_gambling", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "ugc_and_moderation", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "age_audience_and_territories", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "security_and_sdk_reconciliation", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "accessibility_and_physical_device_qa", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "english_store_copy", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "french_store_copy", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "kinyarwanda_store_copy", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "google_play_release_owner", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "apple_app_store_release_owner", "status": "pending", "approver": null, "approved_at": null, "evidence": null}
+  ]
+}
+

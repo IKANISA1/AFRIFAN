@@ -29,59 +29,22 @@ class AppConfigRepository {
     client: _client,
   );
 
-  bool _isMissingRelation(Object error, String relation) {
-    if (error is! PostgrestException) {
-      return false;
-    }
-    final message = error.message.toLowerCase();
-    return message.contains(relation.toLowerCase()) &&
-        message.contains('does not exist');
-  }
-
   String _cacheKey(String key, int? clubId) {
     return clubId == null ? key : '$clubId::$key';
   }
 
-  Future<String?> _getConfigValueFromTable(
-    String table,
-    String key, {
-    int? clubId,
-  }) async {
-    try {
-      var query = _client.from(table).select('value').eq('key', key);
-      if (clubId != null) {
-        query = query.eq('club_id', clubId);
-      }
-      final rows = await query.limit(1);
-      if (rows.isEmpty) {
-        return null;
-      }
-      return rows.first['value']?.toString();
-    } on PostgrestException catch (error) {
-      if (_isMissingRelation(error, table)) {
-        return null;
-      }
-      rethrow;
+  Future<List<Map<String, dynamic>>> _loadRuntimeRows({String? key}) async {
+    final response = await _client.rpc(
+      'get_runtime_app_config',
+      params: <String, dynamic>{'p_key': key},
+    );
+    if (response is! List) {
+      return const <Map<String, dynamic>>[];
     }
-  }
-
-  Future<List<Map<String, dynamic>>> _getRowsFromTable(
-    String table, {
-    int? clubId,
-  }) async {
-    try {
-      var query = _client.from(table).select();
-      if (clubId != null) {
-        query = query.eq('club_id', clubId);
-      }
-      final rows = await query;
-      return List<Map<String, dynamic>>.from(rows);
-    } on PostgrestException catch (error) {
-      if (_isMissingRelation(error, table)) {
-        return const <Map<String, dynamic>>[];
-      }
-      rethrow;
-    }
+    return response
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
   }
 
   /// Fetch a single config value by key.
@@ -96,25 +59,21 @@ class AppConfigRepository {
       _cache.remove(scopedCacheKey);
     }
 
-    final clubValue = clubId == null
-        ? null
-        : await _getConfigValueFromTable(
-            'club_app_config',
-            key,
-            clubId: clubId,
-          );
-    if (clubValue != null) {
-      _cache[scopedCacheKey] = clubValue;
-      return clubValue;
+    final rows = await _loadRuntimeRows(key: key);
+    String? resolvedValue;
+    for (final row in rows) {
+      final value = row['value']?.toString();
+      if (value == null) continue;
+      if (row['scope'] == 'club' && clubId != null) {
+        resolvedValue = value;
+        break;
+      }
+      resolvedValue ??= value;
     }
-
-    final globalValue = await _getConfigValueFromTable('app_config', key);
-    if (globalValue != null) {
-      _cache[scopedCacheKey] = globalValue;
-      return globalValue;
+    if (resolvedValue != null) {
+      _cache[scopedCacheKey] = resolvedValue;
     }
-
-    return null;
+    return resolvedValue;
   }
 
   /// Fetch all config entries.
@@ -122,20 +81,8 @@ class AppConfigRepository {
     final result = <String, String>{};
     final clubId = _scopeResolver.currentClubId;
 
-    final globalRows = await _getRowsFromTable('app_config');
-    for (final row in globalRows) {
-      final key = row['key']?.toString();
-      final value = row['value']?.toString();
-      if (key != null && value != null) {
-        result[key] = value;
-      }
-    }
-
-    final clubRows = clubId == null
-        ? const <Map<String, dynamic>>[]
-        : await _getRowsFromTable('club_app_config', clubId: clubId);
-
-    for (final row in clubRows) {
+    final rows = await _loadRuntimeRows();
+    for (final row in rows) {
       final key = row['key']?.toString();
       final value = row['value']?.toString();
       if (key != null && value != null) {

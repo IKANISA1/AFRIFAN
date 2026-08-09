@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:feat_gamification/src/fet_providers.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/repositories/fet_repository.dart';
@@ -100,6 +101,7 @@ Future<void> _pumpApp(
   WidgetTester tester, {
   required _FakeFetRepository repository,
   String initialLocation = '/fanzone/wallet',
+  StoreReleasePolicy storePolicy = const StoreReleasePolicy.unenforced(),
 }) async {
   tester.view.physicalSize = const Size(393, 852);
   tester.view.devicePixelRatio = 1.0;
@@ -118,7 +120,10 @@ Future<void> _pumpApp(
 
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [fetRepositoryProvider.overrideWithValue(repository)],
+      overrides: [
+        storeReleasePolicyProvider.overrideWithValue(storePolicy),
+        fetRepositoryProvider.overrideWithValue(repository),
+      ],
       child: MaterialApp.router(routerConfig: router),
     ),
   );
@@ -192,6 +197,26 @@ void main() {
     );
     expect(find.text('Send points'), findsNothing);
   });
+
+  testWidgets(
+    'store release keeps earned points while hiding rewards and paid benefits',
+    (tester) async {
+      final repository = _FakeFetRepository();
+      await _pumpApp(
+        tester,
+        repository: repository,
+        initialLocation: '/fanzone/wallet?section=rewards',
+        storePolicy: const StoreReleasePolicy(isEnforced: true),
+      );
+
+      expect(find.text('Points'), findsOneWidget);
+      expect(find.textContaining('1,250'), findsOneWidget);
+      expect(find.text('Rewards'), findsNothing);
+      expect(find.text('FET SPLIT MODEL'), findsNothing);
+      expect(find.text('Earn'), findsAtLeastNWidgets(1));
+      expect(find.text('Activity'), findsAtLeastNWidgets(1));
+    },
+  );
 
   testWidgets('does not expose manual redemption controls', (tester) async {
     final repository = _FakeFetRepository();

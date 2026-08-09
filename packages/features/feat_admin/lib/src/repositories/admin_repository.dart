@@ -522,7 +522,12 @@ class AdminRepository {
   Future<List<Map<String, dynamic>>> getPartners({int limit = 100}) async {
     final data = await _client
         .from('partners')
-        .select('*')
+        .select(
+          'id,name,category,country,description,fan_count,club_count,game_count,'
+          'slug,emoji,subtitle,is_active,sort_order,updated_at,'
+          'brand_primary_color,brand_secondary_color,website_url,'
+          'gamification_enabled',
+        )
         .order('sort_order', ascending: true)
         .order('name', ascending: true)
         .limit(limit);
@@ -1021,10 +1026,18 @@ class AdminRepository {
 
   /// Returns all shop products (admin view — includes inactive).
   Future<List<Map<String, dynamic>>> getShopProducts({int limit = 50}) async {
-    final scope = await _scopeResolver.resolve(null);
-    var query = _client.from('shop_products').select('*');
-    query = _scopeResolver.apply(query, scope);
-    final data = await query.order('sort_order').limit(limit);
+    if (limit < 1 || limit > 100) {
+      throw RangeError.range(limit, 1, 100, 'limit');
+    }
+    await _scopeResolver.requireResolved();
+    final data = await _client.rpc(
+      'admin_get_shop_products',
+      params: <String, dynamic>{
+        'p_limit': limit,
+        'p_offset': 0,
+        'p_include_inactive': true,
+      },
+    );
     return List<Map<String, dynamic>>.from(data as List);
   }
 

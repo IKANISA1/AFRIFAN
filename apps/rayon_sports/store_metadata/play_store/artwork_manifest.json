@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "status": "pending",
+  "rules": {
+    "actual_app_ui_only": true,
+    "no_real_supporter_data": true,
+    "no_real_payment_or_pairing_codes": true,
+    "no_unapproved_club_marks_or_photography": true,
+    "no_store_rank_price_or_download_claims": true,
+    "capture_from_exact_candidate": true
+  },
+  "assets": [
+    {
+      "id": "play_icon",
+      "required": true,
+      "path": "../../android/fastlane/metadata/android/en-US/images/icon.png",
+      "format": "32-bit PNG with alpha",
+      "width": 512,
+      "height": 512,
+      "max_bytes": 1048576,
+      "status": "missing"
+    },
+    {
+      "id": "feature_graphic",
+      "required": true,
+      "path": "../../android/fastlane/metadata/android/en-US/images/featureGraphic.png",
+      "format": "JPEG or 24-bit PNG without alpha",
+      "width": 1024,
+      "height": 500,
+      "status": "missing"
+    },
+    {
+      "id": "phone_screenshots",
+      "required": true,
+      "directory": "../../android/fastlane/metadata/android/en-US/images/phoneScreenshots",
+      "minimum_count": 2,
+      "recommended_count": 4,
+      "recommended_size": "1080x1920 portrait",
+      "status": "missing"
+    }
+  ],
+  "capture_plan": [
+    {"order": 1, "journey": "Home with current club-published content", "alt_text_draft": "Gikundiro home showing Rayon Sports updates and supporter shortcuts"},
+    {"order": 2, "journey": "Fixtures or match information", "alt_text_draft": "Published Rayon Sports fixtures and match details"},
+    {"order": 3, "journey": "Membership or supporter profile", "alt_text_draft": "Supporter membership status and profile controls"},
+    {"order": 4, "journey": "Tickets or merchandise without real payment", "alt_text_draft": "Ticket or merchandise options with confirmation status"}
+  ],
+  "approvals_required": [
+    "rayon_brand_and_content_rights",
+    "product_scope",
+    "privacy_and_retention",
+    "english_store_copy",
+    "french_store_copy",
+    "kinyarwanda_store_copy"
+  ]
+}
+

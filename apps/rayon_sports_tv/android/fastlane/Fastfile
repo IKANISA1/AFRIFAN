@@ -1,0 +1,55 @@
+default_platform(:android)
+
+platform :android do
+  validator = File.expand_path(
+    "../../../rayon_sports/store_metadata/validate_store_package.py",
+    __dir__,
+  )
+
+  desc "Validate the repository-local Android TV store package"
+  lane :validate_metadata do
+    sh("python3", validator, "--surface", "tv-play")
+  end
+
+  desc "Upload the approved TV AAB, metadata, artwork, and changelog as an internal draft"
+  lane :internal do
+    sh("python3", validator, "--surface", "tv-play", "--release-ready")
+    upload_to_play_store(
+      track: "internal",
+      aab: File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__),
+      skip_upload_metadata: false,
+      skip_upload_changelogs: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      release_status: "draft",
+    )
+  end
+
+  desc "Upload approved TV metadata and artwork only"
+  lane :metadata do
+    sh("python3", validator, "--surface", "tv-play", "--release-ready")
+    upload_to_play_store(
+      skip_upload_aab: true,
+      skip_upload_metadata: false,
+      skip_upload_changelogs: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+    )
+  end
+
+  desc "Promote the approved internal TV release to the configured managed track"
+  lane :promote do |options|
+    destination = options[:destination] || "alpha"
+    UI.user_error!("Unsupported destination") unless ["alpha", "production"].include?(destination)
+    gate = destination == "production" ? "--submission-ready" : "--release-ready"
+    sh("python3", validator, "--surface", "tv-play", gate)
+    expected = "tv-#{destination}"
+    UI.user_error!("Set CONFIRM_PLAY_TV_PROMOTION=#{expected}") unless ENV["CONFIRM_PLAY_TV_PROMOTION"] == expected
+    upload_to_play_store(
+      track: "internal",
+      track_promote_to: destination,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+    )
+  end
+end

@@ -2,6 +2,7 @@ import 'package:core_auth/core_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/platform_feature_config.dart';
+import '../policies/store_release_policy.dart';
 import '../repositories/feature_config_repository.dart';
 import '../services/feature_config_service.dart';
 
@@ -70,6 +71,17 @@ final featureConfigProvider =
       FeatureConfigNotifier.new,
     );
 
+/// Fail-closed policy derived from the same signed-in runtime config snapshot
+/// consumed by feature gates and route guards.
+final storeReleasePolicyProvider = Provider<StoreReleasePolicy>((ref) {
+  final asyncConfig = ref.watch(featureConfigProvider);
+  final snapshot =
+      asyncConfig.valueOrNull ??
+      ref.watch(initialFeatureConfigSnapshotProvider) ??
+      const PlatformConfigSnapshot();
+  return StoreReleasePolicy.forCurrentBuild(snapshot);
+});
+
 /// Derived provider for the [FeatureConfigService].
 ///
 /// Returns service wrapping the current snapshot (or empty if still loading).
@@ -88,6 +100,7 @@ final featureConfigServiceProvider = Provider<FeatureConfigService>((ref) {
     snapshot,
     isAuthenticated: authState.isAuthenticated,
     roles: roles,
+    storeReleasePolicy: ref.watch(storeReleasePolicyProvider),
   );
 });
 

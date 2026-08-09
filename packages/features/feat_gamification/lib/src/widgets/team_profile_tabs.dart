@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -202,12 +203,16 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
 
     try {
       final client = ref.read(supabaseClientProvider);
+      final storePolicy = ref.read(storeReleasePolicyProvider);
       final currentUserId = client.auth.currentUser?.id;
       final clubId = widget.clubId!;
+      final memberProjection = storePolicy.allowsCrossUserText
+          ? 'user_id, display_name, membership_number, points, tier'
+          : 'user_id, points, tier';
       final results = await Future.wait<Object?>([
         client
             .from('fan_memberships')
-            .select('user_id, display_name, membership_number, points, tier')
+            .select(memberProjection)
             .eq('club_id', clubId)
             .order('points', ascending: false)
             .order('joined_at', ascending: true)
@@ -243,10 +248,15 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
           .map(
             (row) => ClubMemberEntry(
               userId: row['user_id']?.toString() ?? '',
-              displayLabel: _memberLabel(
-                displayName: row['display_name']?.toString(),
-                membershipNumber: row['membership_number']?.toString(),
-              ),
+              displayLabel: storePolicy.allowsCrossUserText
+                  ? _memberLabel(
+                      displayName: row['display_name']?.toString(),
+                      membershipNumber: row['membership_number']?.toString(),
+                    )
+                  : storePolicy.publicSupporterLabel(
+                      displayName: row['display_name']?.toString(),
+                      userId: row['user_id']?.toString(),
+                    ),
               tier: row['tier']?.toString() ?? 'imena',
               points: (row['points'] as num?)?.toInt() ?? 0,
               isCurrentUser:

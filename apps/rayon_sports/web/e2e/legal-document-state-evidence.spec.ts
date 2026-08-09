@@ -35,8 +35,9 @@ async function expectDocumentContract(page: Page, kind: string) {
   await expect(document.locator("h1")).toHaveCount(1);
   await expect(document.locator("section p")).not.toHaveCount(0);
   await expect(
-    document.locator("a, button, input, select, textarea"),
+    document.locator("button, input, select, textarea"),
   ).toHaveCount(0);
+  await expect(document.locator(".legal-document-actions a")).toHaveCount(2);
 }
 
 async function expectNoSeriousAxeViolations(page: Page) {

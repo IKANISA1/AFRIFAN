@@ -1,0 +1,67 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Validate the repository-local mobile store package"
+  lane :validate_metadata do
+    sh("python3", File.expand_path("../../store_metadata/validate_store_package.py", __dir__), "--surface", "app-store")
+  end
+
+  desc "Upload approved metadata and screenshots without a binary"
+  lane :metadata do
+    sh(
+      "python3",
+      File.expand_path("../../store_metadata/validate_store_package.py", __dir__),
+      "--surface",
+      "app-store",
+      "--release-ready",
+    )
+    deliver(
+      app_identifier: "rw.ikanisa.rayonSports",
+      skip_binary_upload: true,
+      skip_metadata: false,
+      skip_screenshots: false,
+      submit_for_review: false,
+      automatic_release: false,
+      force: false,
+      run_precheck_before_submit: true,
+    )
+  end
+
+  desc "Upload the exact approved IPA to App Store Connect without submission"
+  lane :upload_build do
+    sh(
+      "python3",
+      File.expand_path("../../store_metadata/validate_store_package.py", __dir__),
+      "--surface",
+      "app-store",
+      "--release-ready",
+    )
+    pilot(
+      ipa: File.expand_path("../../build/ios/ipa/Gikundiro.ipa", __dir__),
+      skip_waiting_for_build_processing: false,
+      distribute_external: false,
+    )
+  end
+
+  desc "Submit the already processed and approved version to App Review"
+  lane :submit_review do
+    sh(
+      "python3",
+      File.expand_path("../../store_metadata/validate_store_package.py", __dir__),
+      "--surface",
+      "app-store",
+      "--submission-ready",
+    )
+    UI.user_error!("Set CONFIRM_APP_STORE_SUBMISSION=submit") unless ENV["CONFIRM_APP_STORE_SUBMISSION"] == "submit"
+    deliver(
+      app_identifier: "rw.ikanisa.rayonSports",
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: true,
+      submit_for_review: true,
+      automatic_release: false,
+      force: false,
+      run_precheck_before_submit: true,
+    )
+  end
+end

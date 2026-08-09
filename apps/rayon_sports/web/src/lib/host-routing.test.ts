@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   canonicalRecoveryPath,
   isAdminHostname,
+  isReleaseContractPath,
+  isWorkersPreviewHostname,
   mapAdminSubdomainPath,
   resolveRoutingHostname,
   shouldBypassSubdomainRewrite,
@@ -20,6 +22,16 @@ describe("host routing", () => {
         "admin.gikundiro.com, gikundiro-web.ikanisa.workers.dev",
       ),
     ).toBe("admin.gikundiro.com");
+  });
+
+  it("identifies Worker preview hosts without classifying production hosts", () => {
+    expect(
+      isWorkersPreviewHostname("candidate-gikundiro-web.ikanisa.workers.dev"),
+    ).toBe(true);
+    expect(isWorkersPreviewHostname("gikundiro.com")).toBe(false);
+    expect(isWorkersPreviewHostname("workers.dev.attacker.example")).toBe(
+      false,
+    );
   });
 
   it("rewrites admin host paths to the /admin route group", () => {
@@ -41,6 +53,26 @@ describe("host routing", () => {
     expect(shouldBypassSubdomainRewrite("/offline")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/admin-offline")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/brand-mark.svg")).toBe(true);
+    expect(shouldBypassSubdomainRewrite("/.well-known/assetlinks.json")).toBe(
+      true,
+    );
+    expect(
+      shouldBypassSubdomainRewrite(
+        "/.well-known/apple-app-site-association",
+      ),
+    ).toBe(true);
+    expect(shouldBypassSubdomainRewrite("/privacy")).toBe(true);
+    expect(shouldBypassSubdomainRewrite("/terms")).toBe(true);
+    expect(shouldBypassSubdomainRewrite("/support")).toBe(true);
+    expect(shouldBypassSubdomainRewrite("/account-deletion")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/tickets")).toBe(false);
+  });
+
+  it("recognizes only the public release-contract paths", () => {
+    expect(isReleaseContractPath("/.well-known/assetlinks.json")).toBe(true);
+    expect(isReleaseContractPath("/privacy")).toBe(true);
+    expect(isReleaseContractPath("/account-deletion/confirmation")).toBe(true);
+    expect(isReleaseContractPath("/admin/privacy")).toBe(false);
+    expect(isReleaseContractPath("/api/admin/features")).toBe(false);
   });
 });

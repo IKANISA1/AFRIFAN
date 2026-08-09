@@ -8,6 +8,9 @@ library;
 // Models
 export 'src/models/platform_feature_config.dart';
 
+// Store release policy
+export 'src/policies/store_release_policy.dart';
+
 // Services
 export 'src/services/feature_config_service.dart';
 

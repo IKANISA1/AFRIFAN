@@ -1,12 +1,20 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/partner_pool_models.dart';
 
 class PartnerPoolRepository {
-  PartnerPoolRepository({required SupabaseClient client}) : _client = client;
+  PartnerPoolRepository({
+    required SupabaseClient client,
+    StoreReleasePolicy? storeReleasePolicy,
+  }) : _client = client,
+       _storeReleasePolicy =
+           storeReleasePolicy ??
+           StoreReleasePolicy.forCurrentBuild(const PlatformConfigSnapshot());
 
   final SupabaseClient _client;
+  final StoreReleasePolicy _storeReleasePolicy;
   late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
     client: _client,
   );
@@ -18,6 +26,9 @@ class PartnerPoolRepository {
     int limit = 20,
     int offset = 0,
   }) async {
+    if (!_storeReleasePolicy.allowsStakedCompetitions) {
+      return const <PartnerPredictionPool>[];
+    }
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return const <PartnerPredictionPool>[];
@@ -52,6 +63,11 @@ class PartnerPoolRepository {
     required String selectedOutcome,
     String? idempotencyKey,
   }) async {
+    if (!_storeReleasePolicy.allowsStakedCompetitions) {
+      throw UnsupportedError(
+        'Stake-based partner pools are unavailable in this store release.',
+      );
+    }
     final result = await SafeRpc.call(
       'partner_prediction_pool_join',
       params: <String, dynamic>{

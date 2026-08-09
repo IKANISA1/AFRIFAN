@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-08-09",
+  "overall_status": "draft_pending_approval",
+  "mobile": {
+    "name": "Gikundiro",
+    "version_name": "1.0.3",
+    "build_number": 5,
+    "android_package": "rw.gikundiro.app",
+    "ios_bundle_id": "rw.ikanisa.rayonSports",
+    "apple_team_id": "63STJ5N27W",
+    "primary_market": "Rwanda",
+    "primary_category": "Sports",
+    "supported_app_locales": [
+      "en",
+      "fr",
+      "rw"
+    ],
+    "metadata_locales": {
+      "en-US": "draft_pending_approval",
+      "fr-FR": "draft_pending_language_approval"
+    },
+    "source_only_locales": {
+      "rw-RW": "runtime language retained as controlled copy; neither Google Play nor App Store Connect currently accepts Kinyarwanda listing metadata"
+    }
+  },
+  "verified_code_facts": {
+    "anonymous_session_available": true,
+    "phone_otp_available": true,
+    "account_creation_available": true,
+    "in_app_account_deletion_available": true,
+    "notifications_permission_optional": true,
+    "android_sms_autoread_release_define": false,
+    "android_source_requests_sms_or_call_log_permissions": false,
+    "ads_sdk_found": false,
+    "in_app_purchase_sdk_found": false,
+    "supabase_backend": true,
+    "firebase_sdks_bundled": true,
+    "firebase_observability_default_enabled": false,
+    "firebase_app_check_default_enabled": false,
+    "shop_merchandise_and_delivery_flow": true,
+    "ticketing_flow": true,
+    "membership_and_contribution_records": true,
+    "predictions_points_and_leaderboards": true,
+    "user_editable_display_name": true,
+    "user_display_names_visible_in_rankings_or_friend_surfaces": true,
+    "challenge_routes_require_feature_opt_in": true,
+    "cash_withdrawal_implementation_found": false
+  },
+  "blocking_classifications": [
+    {
+      "id": "POLICY-PAYMENTS-01",
+      "status": "blocking",
+      "question": "Do any paid memberships, rewards, or other paid flows unlock digital content or app functionality?",
+      "required_outcome": "Classify each SKU. Use store billing for digital goods or disable the paid digital benefit in the store candidate."
+    },
+    {
+      "id": "POLICY-REWARDS-01",
+      "status": "blocking",
+      "question": "Can FET, predictions, challenges, contests, or rewards be bought, transferred for value, withdrawn, or redeemed for cash or real-world prizes?",
+      "required_outcome": "Prove no purchase, cash value, withdrawal, wager, or real-world prize for the store candidate, or obtain the required legal/store authorization and age/geo controls."
+    },
+    {
+      "id": "POLICY-UGC-01",
+      "status": "blocking",
+      "question": "Will the release expose user-selected names, challenge notes, or other user content to another user?",
+      "required_outcome": "Either restrict output to system-generated aliases with no user text, or prove terms acceptance, filtering, report-content, report-user, block-user, moderation, and support operations."
+    },
+    {
+      "id": "POLICY-RIGHTS-01",
+      "status": "blocking",
+      "question": "Is written authority held for Rayon Sports names, marks, photography, fixtures, and other third-party content?",
+      "required_outcome": "Record the accountable rights approval and attach supporting material in the portal where requested."
+    },
+    {
+      "id": "POLICY-AUDIENCE-01",
+      "status": "blocking",
+      "question": "Which age groups and territories are approved for the exact feature set?",
+      "required_outcome": "Complete current Play/IARC and Apple questionnaires after payments, rewards, contests, and UGC decisions are final."
+    },
+    {
+      "id": "POLICY-PRIVACY-01",
+      "status": "blocking",
+      "question": "Do the exact AAB/IPA, bundled SDK manifests, production data flows, public privacy policy, Google Data safety, and Apple App Privacy answers agree?",
+      "required_outcome": "Reconcile signed-artifact SDK/network evidence, Android advertising-ID permissions, iOS privacy manifests including Other User Content, retention/deletion, processors, and both portal declarations."
+    }
+  ]
+}

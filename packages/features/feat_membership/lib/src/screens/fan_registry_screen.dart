@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -71,6 +72,9 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
   }
 
   String? get _searchQuery {
+    if (!ref.read(storeReleasePolicyProvider).allowsCrossUserText) {
+      return null;
+    }
     final query = _searchController.text.trim();
     return query.isEmpty ? null : query;
   }
@@ -180,6 +184,9 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
     final primary = ColorTokens.clubPrimary;
+    final allowsCrossUserText = ref.watch(
+      storeReleasePolicyProvider.select((policy) => policy.allowsCrossUserText),
+    );
     final fansLabel = l10n.fanRegistryLoaded(_fans.length);
     final summaryLabel = _searchQuery == null
         ? l10n.fanRegistrySummary
@@ -265,31 +272,50 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.screenPadding,
-                  0,
-                  SpacingTokens.screenPadding,
-                  SpacingTokens.spacing4,
+            if (allowsCrossUserText)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    SpacingTokens.screenPadding,
+                    0,
+                    SpacingTokens.screenPadding,
+                    SpacingTokens.spacing4,
+                  ),
+                  child: AfriInputField(
+                    controller: _searchController,
+                    hint: l10n.fanRegistrySearchHint,
+                    prefixIcon: AfriIcons.search,
+                    onChanged: _handleSearchChanged,
+                    textInputAction: TextInputAction.search,
+                    suffixIcon: _searchController.text.isEmpty
+                        ? null
+                        : AfriIconButton(
+                            icon: AfriIcons.close,
+                            onTap: _clearSearch,
+                            tooltip: l10n.searchClearTooltip,
+                            filled: false,
+                          ),
+                  ),
                 ),
-                child: AfriInputField(
-                  controller: _searchController,
-                  hint: l10n.fanRegistrySearchHint,
-                  prefixIcon: AfriIcons.search,
-                  onChanged: _handleSearchChanged,
-                  textInputAction: TextInputAction.search,
-                  suffixIcon: _searchController.text.isEmpty
-                      ? null
-                      : AfriIconButton(
-                          icon: AfriIcons.close,
-                          onTap: _clearSearch,
-                          tooltip: l10n.searchClearTooltip,
-                          filled: false,
-                        ),
+              )
+            else
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    SpacingTokens.screenPadding,
+                    0,
+                    SpacingTokens.screenPadding,
+                    SpacingTokens.spacing4,
+                  ),
+                  child: AfriStateBanner(
+                    icon: AfriIcons.visibilityOff,
+                    title: context.afriL10n.gameAliasOnly,
+                    subtitle: context.afriL10n.gameAliasOnlyDescription,
+                    tone: AfriStateBannerTone.info,
+                    compact: true,
+                  ),
                 ),
               ),
-            ),
             FanRegistryResultsSliver(
               isLoading: _isLoading,
               error: _error,

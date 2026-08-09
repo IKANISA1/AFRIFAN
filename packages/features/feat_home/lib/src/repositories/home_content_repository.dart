@@ -252,7 +252,10 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       final actionRows = List<Map<String, dynamic>>.from(
         await client
             .from('quick_actions')
-            .select()
+            .select(
+              'id,action_key,title,subtitle,emoji,route,country,sort_order,'
+              'is_active,icon_key',
+            )
             .eq('is_active', true)
             .order('sort_order', ascending: true)
             .order('title', ascending: true),
@@ -694,7 +697,10 @@ class SupabaseLatestIntelRepository implements LatestIntelRepository {
       }
       var query = client
           .from('news_articles')
-          .select()
+          .select(
+            'id,club_id,title,subtitle,image_url,is_published,sort_order,'
+            'image_provenance_id,image_rights_approved',
+          )
           .eq('is_published', true);
       query = ClubScopeResolver(client: client).apply(query, scope);
       final response = await query

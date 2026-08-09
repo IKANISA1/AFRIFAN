@@ -1,0 +1,9 @@
+Gikundiro TV is a read-only display for approved Rayon Sports venue and matchday activities.
+
+An authorized owner pairs and assigns the display from the supported owner workflow. The TV then shows the approved session lobby, current question and choices, answer reveal, public-alias standings, final result, completion, and privacy-safe recovery states.
+
+The public display does not accept participant entry codes. It does not show supporter identity, account credentials, private balances, reward claims, purchases, tickets, merchandise orders, or payment controls.
+
+Internet access and a valid approved display assignment are required. Session availability depends on club operations and the configured service.
+
+The current Rayon Sports display content is presented in Kinyarwanda, with English fallback for platform-provided interface text. The app does not currently offer a user-selectable TV language.

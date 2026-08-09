@@ -544,14 +544,27 @@ void main() {
       expect(service.isRouteAvailable('/fanzone/venue/order'), isFalse);
     });
 
-    test('isRouteAvailable allows challenge routes only when enabled', () {
+    test('challenge routes require both feature and store-policy approval', () {
+      final unapprovedService = FeatureConfigService(
+        buildSnapshot(features: [challengeFeature]),
+      );
       final enabledService = FeatureConfigService(
         buildSnapshot(features: [challengeFeature]),
+        storeReleasePolicy: const StoreReleasePolicy(
+          isEnforced: true,
+          stakedCompetitionsAuthorized: true,
+        ),
       );
       final disabledService = FeatureConfigService(
         buildSnapshot(features: [disabledChallengeFeature]),
+        storeReleasePolicy: const StoreReleasePolicy(
+          isEnforced: true,
+          stakedCompetitionsAuthorized: true,
+        ),
       );
 
+      expect(unapprovedService.isRouteAvailable('/fanzone/jackpot'), isFalse);
+      expect(unapprovedService.isRouteAvailable('/challenge/create'), isFalse);
       expect(enabledService.isRouteAvailable('/fanzone/jackpot'), isTrue);
       expect(enabledService.isRouteAvailable('/challenge/create'), isTrue);
       expect(disabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);

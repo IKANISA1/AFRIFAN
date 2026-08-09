@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -150,36 +149,22 @@ class StatementExportService {
   }
 
   Future<List<Map<String, dynamic>>> _loadGroupRows() async {
-    try {
-      final liveData = await _client
-          .from('contribution_groups')
-          .select('id, name, group_type, target_amount, '
-              'current_total, member_count, is_closed, created_at')
-          .order('created_at', ascending: false);
-      final liveRows = List<Map<String, dynamic>>.from(liveData as List);
-      if (liveRows.isNotEmpty) {
-        return liveRows
-            .map(
-              (row) => <String, dynamic>{
-                ...row,
-                'currency': _defaultCurrency,
-                'is_active': !(row['is_closed'] as bool? ?? false),
-              },
-            )
-            .toList(growable: false);
-      }
-    } catch (error, stackTrace) {
-      AfriLogger.warn('StatementExportService',
-          'Operation failed (non-critical).', error, stackTrace);
-      // Fall through to legacy schema.
-    }
-
-    final legacyData = await _client
+    final data = await _client
         .from('contribution_groups')
         .select('id, name, group_type, target_amount, '
-            'current_total, currency, member_count, is_active, created_at')
+            'current_total, currency, member_count, is_active, '
+            'is_closed, created_at')
         .order('created_at', ascending: false);
-    return List<Map<String, dynamic>>.from(legacyData as List);
+    return List<Map<String, dynamic>>.from(data as List)
+        .map(
+          (row) => <String, dynamic>{
+            ...row,
+            'currency': row['currency'] ?? _defaultCurrency,
+            'is_active':
+                row['is_active'] ?? !(row['is_closed'] as bool? ?? false),
+          },
+        )
+        .toList(growable: false);
   }
 
   /// Convert rows to CSV string.

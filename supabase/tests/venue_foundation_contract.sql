@@ -113,22 +113,30 @@ select pass('venue drinks menu trigger enforces top-10 active MVP');
 do $$
 declare
   checkin_source text;
+  internal_source text;
 begin
   select p.prosrc
     into checkin_source
     from pg_proc p
-   where p.proname = 'venue_checkin_validate'
-   limit 1;
+   where p.oid =
+     'public.venue_checkin_validate(bigint,text,text,numeric)'::regprocedure;
 
-  if checkin_source !~ 'idempotent_replay' or
-     checkin_source !~ 'expired_code' or
-     checkin_source !~ 'campaign_budget_exhausted' or
-     checkin_source !~ 'already_checked_in' then
+  select p.prosrc
+    into internal_source
+    from pg_proc p
+   where p.oid =
+     'public.venue_checkin_validate_unscoped_internal(bigint,text,text,numeric)'::regprocedure;
+
+  if checkin_source !~ 'fet_require_club_context' or
+     internal_source !~ 'idempotent_replay' or
+     internal_source !~ 'expired_code' or
+     internal_source !~ 'campaign_budget_exhausted' or
+     internal_source !~ 'already_checked_in' then
     raise exception 'venue_checkin_validate does not expose required stable states';
   end if;
 end $$;
 
-select pass('venue check-in RPC exposes stable product states');
+select pass('venue check-in wrapper binds trusted club scope and exposes stable product states');
 
 do $$
 declare
@@ -152,6 +160,30 @@ begin
   insert into public.african_football_clubs (club_name, country_name, club_slug)
   values ('Rayon Contract Club', 'Rwanda', 'rayon-contract-club')
   returning id into v_club_id;
+
+  insert into auth.users (id, aud, role)
+  values
+    (v_user_id, 'authenticated', 'authenticated'),
+    (v_second_user_id, 'authenticated', 'authenticated'),
+    (v_staff_user_id, 'authenticated', 'authenticated'),
+    (v_other_user_id, 'authenticated', 'authenticated'),
+    (v_manager_user_id, 'authenticated', 'authenticated');
+
+  insert into public.users (id, phone, full_name)
+  values
+    (v_user_id, '+250790100001', 'Venue Contract Supporter'),
+    (v_second_user_id, '+250790100002', 'Venue Contract Second Supporter'),
+    (v_staff_user_id, '+250790100003', 'Venue Contract Staff'),
+    (v_other_user_id, '+250790100004', 'Venue Contract Other Supporter'),
+    (v_manager_user_id, '+250790100005', 'Venue Contract Manager');
+
+  insert into public.profiles (id, club_id)
+  values
+    (v_user_id, v_club_id),
+    (v_second_user_id, v_club_id),
+    (v_staff_user_id, v_club_id),
+    (v_other_user_id, v_club_id),
+    (v_manager_user_id, v_club_id);
 
   insert into public.venues (
     club_id,

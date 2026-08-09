@@ -99,7 +99,7 @@ final myTicketProvider =
   final scope = await resolver.requireResolved(user.clubId);
   var query = client
       .from('tickets')
-      .select('*, match:matches(*)')
+      .select(ClubTicket.dataApiProjection)
       .eq('user_id', user.id)
       .eq('id', ticketId);
   query = resolver.apply(query, scope);

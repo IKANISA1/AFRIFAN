@@ -14,6 +14,11 @@ import 'safe_rpc.dart';
 class CountryRepository {
   CountryRepository({required SupabaseClient client}) : _client = client;
 
+  static const String _publicCountryProjection =
+      'id,name,flag,dialing_code,currency,currency_name,is_active,sort_order,'
+      'telecom_provider,momo_brand,ussd_number_format,ussd_code_format,'
+      'phone_placeholder';
+
   final SupabaseClient _client;
 
   /// In-memory cache so we don't re-fetch on every screen.
@@ -36,7 +41,7 @@ class CountryRepository {
     try {
       final rows = await _client
           .from('countries')
-          .select()
+          .select(_publicCountryProjection)
           .eq('is_active', true)
           .order('name', ascending: true);
 

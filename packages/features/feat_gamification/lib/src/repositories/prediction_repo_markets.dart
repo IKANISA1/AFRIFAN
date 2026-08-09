@@ -123,7 +123,7 @@ extension PredictionRepoMarkets on PredictionRepository {
         .entries
         .map(
           (entry) => PredictionLeaderboardEntry.fromJson(
-            entry.value,
+            _sanitizeLeaderboardIdentity(entry.value),
             rank: entry.key + 1,
           ),
         )

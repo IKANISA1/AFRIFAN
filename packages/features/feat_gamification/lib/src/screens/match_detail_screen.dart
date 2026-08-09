@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -33,12 +34,19 @@ class MatchDetailScreen extends ConsumerStatefulWidget {
 class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  late final bool _allowsStakedCompetitions;
   bool? _lastOnline;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _allowsStakedCompetitions = ref
+        .read(storeReleasePolicyProvider)
+        .allowsStakedCompetitions;
+    _tabController = TabController(
+      length: _allowsStakedCompetitions ? 4 : 3,
+      vsync: this,
+    );
   }
 
   @override
@@ -76,7 +84,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
   }
 
   List<String> _tabLabels(AfriLocalizations l10n) => <String>[
-    l10n.gamePoolsTab,
+    if (_allowsStakedCompetitions) l10n.gamePoolsTab,
     l10n.gameStatsTab,
     l10n.gameH2hTab,
     l10n.gameLineupsTab,
@@ -328,7 +336,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
           onTap: _leaveDetail,
           tooltip: l10n.gameBack,
         ),
-        actions: usesAccessibleChrome
+        actions: usesAccessibleChrome || !_allowsStakedCompetitions
             ? null
             : [
                 AfriIconButton(
@@ -367,7 +375,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                 compact: true,
               ),
             ),
-          if (!configuredActionsEnabled)
+          if (_allowsStakedCompetitions && !configuredActionsEnabled)
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 SpacingTokens.spacing6,
@@ -383,7 +391,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                 compact: true,
               ),
             )
-          else if (!isOnline)
+          else if (_allowsStakedCompetitions && !isOnline)
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 SpacingTokens.spacing6,
@@ -545,13 +553,14 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                _MatchPartnerPoolsTabBody(
-                  fixture: fixture,
-                  pools: routeState.partnerPools,
-                  onJoin: actionsEnabled
-                      ? (pool) => _showPartnerPoolJoinSheet(pool)
-                      : null,
-                ),
+                if (_allowsStakedCompetitions)
+                  _MatchPartnerPoolsTabBody(
+                    fixture: fixture,
+                    pools: routeState.partnerPools,
+                    onJoin: actionsEnabled
+                        ? (pool) => _showPartnerPoolJoinSheet(pool)
+                        : null,
+                  ),
                 MatchStatsTabBody(fixture: fixture, stats: stats),
                 H2hTabBody(
                   homeTeamName: fixture.homeTeamName,

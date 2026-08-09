@@ -16,6 +16,18 @@ enum PushPermissionStatus {
   provisional,
 }
 
+@visibleForTesting
+bool resolvePushDeliveryPreference(
+  Map<String, dynamic>? row, {
+  bool lookupFailed = false,
+}) {
+  if (lookupFailed) return false;
+  // No saved row retains the documented opt-out default. A failed lookup is
+  // deliberately different: an unknown preference must fail closed.
+  if (row == null) return true;
+  return row['push_enabled'] == true;
+}
+
 @pragma('vm:entry-point')
 Future<void> afriClubFirebaseMessagingBackgroundHandler(
   RemoteMessage message,
@@ -329,9 +341,9 @@ class PushNotificationService {
           .select('push_enabled')
           .eq('user_id', userId)
           .maybeSingle();
-      // Default to true (opt-out) until a settings row exists.
-      if (row == null) return true;
-      return row['push_enabled'] == true;
+      return resolvePushDeliveryPreference(
+        row == null ? null : Map<String, dynamic>.from(row),
+      );
     } catch (error, stackTrace) {
       AfriLogger.error(
         'Push',
@@ -339,8 +351,10 @@ class PushNotificationService {
         error,
         stackTrace,
       );
-      // Default to enabled on error — better to over-deliver than silently fail.
-      return true;
+      // A database failure is not consent to deliver. The caller may retry
+      // after settings are available, but must not subscribe on an unknown
+      // preference state.
+      return resolvePushDeliveryPreference(null, lookupFailed: true);
     }
   }
 

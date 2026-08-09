@@ -23,4 +23,16 @@ describe("proxy recovery routing", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("location")).toBeNull();
   });
+
+  it("prevents Worker preview aliases from being indexed", () => {
+    const response = middleware(
+      new NextRequest(
+        "https://candidate-gikundiro-web.ikanisa.workers.dev/privacy",
+      ),
+    );
+
+    expect(response.headers.get("x-robots-tag")).toBe(
+      "noindex, nofollow, noarchive",
+    );
+  });
 });

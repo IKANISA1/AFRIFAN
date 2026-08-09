@@ -1,0 +1,23 @@
+Gikundiro rassemble les actualités de Rayon Sports FC et les services destinés aux supporters dans une seule application.
+
+ACTUALITÉS DU CLUB ET MATCHS
+Consultez les actualités publiées par le club, les calendriers, les résultats, les classements et les informations sur les matchs. Les états en direct apparaissent uniquement lorsqu'une source de données autorisée est disponible.
+
+BILLETS
+Consultez les matchs publiés et les options de billets. Lorsqu'un moyen de paiement autorisé est actif, Gikundiro peut transmettre le paiement au service de mobile money. Un billet apparaît uniquement après confirmation par le système central.
+
+ADHÉSION ET SOUTIEN
+Consultez les formules d'adhésion publiées, envoyez une demande et affichez les adhésions ou contributions confirmées. La disponibilité et les avantages dépendent de la configuration actuelle du club.
+
+BOUTIQUE
+Consultez les articles publiés, préparez une commande et utilisez un moyen de paiement autorisé lorsqu'il est disponible. Les commandes restent en attente jusqu'à leur confirmation.
+
+ACTIVITÉS DES SUPPORTERS
+Participez aux jeux, pronostics, points et classements publiés par le club lorsqu'ils sont activés. Gikundiro n'est pas une application de paris. Les points FET sont uniquement des scores dans l'application : ils n'ont aucune valeur monétaire, ne peuvent être ni achetés ni retirés et ne garantissent aucun prix.
+
+CONFIDENTIALITÉ ET CONTRÔLE
+Utilisez une session invité ou la connexion par téléphone prise en charge, choisissez d'activer ou non les notifications et demandez la suppression du compte depuis l'écran du profil.
+
+La disponibilité des fonctions dépend du calendrier, de la configuration et des services autorisés du club. Les prix, les stocks, les billets, les adhésions et les résultats proviennent du système configuré.
+
+Gikundiro est développé par Ikanisa pour les supporters de Rayon Sports.

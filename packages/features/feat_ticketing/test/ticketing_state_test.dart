@@ -616,6 +616,7 @@ final ClubTicket _activeTicket = ClubTicket(
   paymentReference: 'momo-1',
   status: TicketStatus.active,
   purchasedAt: DateTime(2099, 4, 10, 12),
+  updatedAt: DateTime(2099, 4, 10, 12),
 );
 
 const _route = PartnerPaymentRoute(

@@ -12,13 +12,20 @@ const repoRoot = path.resolve(
 );
 const scriptName = "reconcile_implementation_goal_checkpoint.mjs";
 const sourceScript = path.join(repoRoot, "tools/scripts", scriptName);
+const sourceReleaseGoal = path.join(
+  repoRoot,
+  "docs/release/AFRICLUB_STORE_AND_CLOUDFLARE_EXECUTION_GOAL_2026-08-09.json",
+);
+const releaseGoalDefinition = JSON.parse(
+  fs.readFileSync(sourceReleaseGoal, "utf8"),
+);
 
 const writeJson = (file, value) => {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 };
 
-function runFixture(t, preflightOverrides = {}) {
+function runFixture(t, preflightOverrides = {}, options = {}) {
   const fixtureRoot = fs.mkdtempSync(
     path.join(os.tmpdir(), "africlub-reconcile-test-"),
   );
@@ -31,6 +38,15 @@ function runFixture(t, preflightOverrides = {}) {
   );
   fs.mkdirSync(path.dirname(fixtureScript), { recursive: true });
   fs.copyFileSync(sourceScript, fixtureScript);
+  const fixtureReleaseGoal = path.join(
+    fixtureRoot,
+    "docs/release/AFRICLUB_STORE_AND_CLOUDFLARE_EXECUTION_GOAL_2026-08-09.json",
+  );
+  fs.mkdirSync(path.dirname(fixtureReleaseGoal), { recursive: true });
+  fs.copyFileSync(
+    sourceReleaseGoal,
+    fixtureReleaseGoal,
+  );
 
   writeJson(
     path.join(output, "route_inventory_current/route-inventory.json"),
@@ -65,7 +81,7 @@ function runFixture(t, preflightOverrides = {}) {
     candidate: {
       git_head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       branch: "release/control-integrity",
-      dirty: true,
+      dirty: false,
       exact_candidate: true,
       candidate_commit_verified_remote: true,
       working_tree_dirty_boundary: "preserved unrelated local files",
@@ -164,19 +180,19 @@ function runFixture(t, preflightOverrides = {}) {
   );
   writeJson(path.join(output, "validation-manifest.json"), {
     tasks: [
-      "STATE-03",
-      "STATE-06",
-      "ADMIN-05",
-      "REL-02",
-      "REL-03",
-      "REL-06",
-      "REL-07",
-    ].map((id) => ({
-      id,
-      current_result: "verified_incomplete",
-      evidence: [],
-      notes: "stale fixture note",
-    })),
+      ...releaseGoalDefinition.scope.baseline_remaining_task_ids.map((id) => ({
+        id,
+        current_result: "verified_incomplete",
+        evidence: [],
+        notes: "stale fixture note",
+      })),
+      ...Array.from({ length: 54 }, (_, index) => ({
+        id: `FIX-COMPLETE-${String(index + 1).padStart(2, "0")}`,
+        current_result: "verified_complete",
+        evidence: ["fixture"],
+        notes: "fixture complete",
+      })),
+    ],
     summary: {},
     current_checkpoint: {},
     football_club_first_implementation: {
@@ -208,12 +224,42 @@ function runFixture(t, preflightOverrides = {}) {
     goal_revision: { football_club_first_implementation: {} },
   });
 
+  let fixtureGitHead = null;
+  if (options.initializeGit === true) {
+    execFileSync("git", ["init", "-b", "main"], {
+      cwd: fixtureRoot,
+      stdio: "pipe",
+    });
+    execFileSync("git", ["config", "user.name", "Fixture"], {
+      cwd: fixtureRoot,
+      stdio: "pipe",
+    });
+    execFileSync("git", ["config", "user.email", "fixture@example.test"], {
+      cwd: fixtureRoot,
+      stdio: "pipe",
+    });
+    execFileSync("git", ["add", "."], { cwd: fixtureRoot, stdio: "pipe" });
+    execFileSync("git", ["commit", "-m", "fixture"], {
+      cwd: fixtureRoot,
+      stdio: "pipe",
+    });
+    fixtureGitHead = execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: fixtureRoot,
+      encoding: "utf8",
+    }).trim();
+  }
+
   execFileSync(process.execPath, [fixtureScript], {
     cwd: fixtureRoot,
     stdio: "pipe",
+    env: {
+      ...process.env,
+      AFRICLUB_RECONCILE_SKIP_REMOTE_LOOKUPS: "1",
+    },
   });
   return {
     preflight,
+    fixtureGitHead,
     r66: JSON.parse(
       fs.readFileSync(
         path.join(output, "R66_WORKING_CANDIDATE_MANIFEST.json"),
@@ -233,14 +279,20 @@ test("derives current candidate and device metadata from the preflight", (t) => 
   assert.deepEqual(r66.candidate, {
     branch: preflight.candidate.branch,
     head: preflight.candidate.git_head,
-    dirty: true,
+    dirty: false,
+    dirty_paths: null,
     exact_candidate: true,
     exact_candidate_reported_by_preflight: true,
     candidate_commit_verified_remote: true,
+    remote_verification_method: "preflight_attestation",
+    remote_head: preflight.candidate.git_head,
     exact_head_run_matches_candidate: true,
     working_tree_dirty_boundary:
       preflight.candidate.working_tree_dirty_boundary,
     observed_at_utc: preflight.checked_at,
+    preflight_matches_checkout: true,
+    preflight_candidate_head: preflight.candidate.git_head,
+    preflight_checked_at: preflight.checked_at,
   });
   assert.equal(r66.closure.exact_candidate, true);
   assert.equal("porcelain_sha256" in r66.candidate, false);
@@ -332,8 +384,13 @@ test("fails exact-candidate derivation closed when preflight controls disagree",
       overrides: { exact_head_run: { head_sha: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" } },
     },
     {
-      name: "dirty worktree has no preservation boundary",
-      overrides: { candidate: { working_tree_dirty_boundary: "" } },
+      name: "dirty worktree remains inexact even with a preservation note",
+      overrides: {
+        candidate: {
+          dirty: true,
+          working_tree_dirty_boundary: "preserved unrelated local files",
+        },
+      },
     },
     {
       name: "preflight does not attest an exact candidate",
@@ -348,6 +405,47 @@ test("fails exact-candidate derivation closed when preflight controls disagree",
       assert.equal(r66.closure.exact_candidate, false);
     });
   }
+});
+
+test("binds current controls to the live checkout and demotes a stale preflight", (t) => {
+  const { fixtureGitHead, r66, validation } = runFixture(
+    t,
+    {},
+    { initializeGit: true },
+  );
+  const checkpoint = validation.current_checkpoint.external_execution_preflight;
+  const task = (id) => validation.tasks.find((entry) => entry.id === id);
+
+  assert.equal(r66.candidate.head, fixtureGitHead);
+  assert.equal(r66.candidate.branch, "main");
+  assert.equal(r66.candidate.dirty, false);
+  assert.equal(r66.candidate.preflight_matches_checkout, false);
+  assert.equal(r66.candidate.preflight_candidate_head, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+  assert.equal(r66.candidate.exact_candidate, false);
+  assert.equal(checkpoint.github_actions_exact_head_run, null);
+  assert.match(task("GOV-06").notes, new RegExp(fixtureGitHead));
+  assert.match(task("GOV-06").notes, /historical evidence only/);
+  assert.match(task("REL-02").notes, /prior slice evidence/);
+});
+
+test("validates and checkpoints all 12 release workstreams without false closure", (t) => {
+  const { r66, validation } = runFixture(t);
+  const goal = validation.release_submission_goal;
+
+  assert.equal(goal.workstream_count, 12);
+  assert.equal(goal.baseline_remaining_task_ids.length, 33);
+  assert.equal(goal.current_checkpoint.workstreams.length, 12);
+  assert.equal(goal.current_checkpoint.remaining_task_count, 33);
+  assert.equal(goal.current_checkpoint.completion_proven, false);
+  assert.equal(
+    goal.current_checkpoint.completion_checks.all_87_tasks_verified_complete,
+    false,
+  );
+  assert.equal(
+    goal.current_checkpoint.completion_checks.google_play_mobile_submitted_for_review,
+    false,
+  );
+  assert.equal(r66.release_submission_goal.completion_proven, false);
 });
 
 test("CI accepts the validated route-evidence-complete state", () => {

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": null,
+  "sourceCommit": null,
+  "playAppSigningSha256": null,
+  "candidateBuild": {
+    "lintPassed": null,
+    "typecheckPassed": null,
+    "testsPassed": null,
+    "nextBuildPassed": null,
+    "openNextBuildPassed": null,
+    "wranglerDryRunPassed": null,
+    "bundleSha256": null
+  },
+  "worker": {
+    "name": "gikundiro-web",
+    "deploymentIdBefore": null,
+    "versionIdBefore": null,
+    "versionIdCandidate": null,
+    "versionTagCandidate": null,
+    "candidatePreviewAlias": null,
+    "candidatePreviewUrl": null,
+    "workersDevUrl": "https://gikundiro-web.ikanisa.workers.dev",
+    "previewValidationReport": null,
+    "workersDevValidationReportAfterPromotion": null,
+    "tailEvidence": null
+  },
+  "pagesRollback": {
+    "projectName": null,
+    "deploymentId": null,
+    "deploymentUrl": null,
+    "preserved": true
+  },
+  "dnsBefore": [],
+  "pagesAssociationsBefore": [],
+  "workerCustomDomainsBefore": [],
+  "productionRouteGuard": {
+    "snapshotCompleted": null,
+    "fullWranglerDeployDisabledForCanary": null,
+    "unrelatedDnsPreserved": null
+  },
+  "cutoverResults": [
+    {
+      "hostname": "fans.gikundiro.com",
+      "order": 1,
+      "pagesAssociationRemovedAt": null,
+      "workerCustomDomainActiveAt": null,
+      "tlsActiveAt": null,
+      "validationReport": null,
+      "observationAcceptedAt": null
+    },
+    {
+      "hostname": "admin.gikundiro.com",
+      "order": 2,
+      "pagesAssociationRemovedAt": null,
+      "workerCustomDomainActiveAt": null,
+      "tlsActiveAt": null,
+      "validationReport": null,
+      "adminBoundaryEvidence": null,
+      "observationAcceptedAt": null
+    },
+    {
+      "hostname": "www.gikundiro.com",
+      "order": 3,
+      "pagesAssociationRemovedAt": null,
+      "workerCustomDomainActiveAt": null,
+      "tlsActiveAt": null,
+      "validationReport": null,
+      "observationAcceptedAt": null
+    },
+    {
+      "hostname": "gikundiro.com",
+      "order": 4,
+      "pagesAssociationRemovedAt": null,
+      "workerCustomDomainActiveAt": null,
+      "tlsActiveAt": null,
+      "validationReport": null,
+      "observationAcceptedAt": null
+    }
+  ],
+  "rollbackResults": [],
+  "finalValidationReport": null,
+  "operator": null,
+  "approvalReference": null
+}

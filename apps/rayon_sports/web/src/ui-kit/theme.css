@@ -412,6 +412,12 @@ body {
   text-wrap: balance;
 }
 
+.legal-document-updated {
+  margin-top: 1rem;
+  color: var(--legal-copy);
+  font-size: 0.875rem;
+}
+
 .legal-document-panel {
   display: grid;
   gap: 1.25rem;
@@ -427,10 +433,62 @@ body {
   overflow-wrap: anywhere;
 }
 
+.legal-document-section {
+  display: grid;
+  gap: 0.75rem;
+  scroll-margin-top: 6rem;
+}
+
+.legal-document-section h2 {
+  color: var(--legal-heading);
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(1.2rem, 4vw, 1.65rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.legal-document-section ul {
+  display: grid;
+  gap: 0.5rem;
+  padding-inline-start: 1.25rem;
+  list-style: disc;
+}
+
+.legal-document-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--legal-border);
+}
+
+.legal-document-actions a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border: 1px solid var(--legal-border);
+  border-radius: 9999px;
+  padding: 0.65rem 1rem;
+  color: var(--legal-heading);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.legal-document-actions a:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
+}
+
 @media (prefers-color-scheme: light) {
   .legal-document-page {
     color-scheme: light;
     --legal-background:
+      linear-gradient(
+        180deg,
+        #07111f 0,
+        #07111f 7.25rem,
+        transparent 7.25rem
+      ),
       radial-gradient(
         circle at 14% 4%,
         rgba(14, 116, 144, 0.12),
@@ -448,6 +506,192 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .legal-document-page,
   .legal-document-page * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.release-support-surface {
+  color-scheme: dark;
+  --release-support-background:
+    radial-gradient(circle at 12% 3%, rgba(14, 116, 144, 0.22), transparent 30rem),
+    linear-gradient(180deg, #07111f 0%, #0b1727 100%);
+  --release-support-heading: #f8fafc;
+  --release-support-copy: #cbd5e1;
+  --release-support-accent: #a5f3fc;
+  --release-support-panel: rgba(15, 23, 42, 0.88);
+  --release-support-border: rgba(165, 243, 252, 0.24);
+  --release-support-focus: #facc15;
+
+  min-height: 100%;
+  overflow-x: hidden;
+  background: var(--release-support-background);
+  color: var(--release-support-heading);
+}
+
+.release-support-hero,
+.release-support-steps li,
+.release-support-notice {
+  border: 1px solid var(--release-support-border);
+  background: var(--release-support-panel);
+}
+
+.release-support-hero {
+  border-radius: clamp(1.5rem, 5vw, 2.5rem);
+  padding: clamp(1.5rem, 5vw, 3rem);
+}
+
+.release-support-eyebrow {
+  color: var(--release-support-accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.release-support-title {
+  max-width: 19ch;
+  margin-top: 0.85rem;
+  color: var(--release-support-heading);
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(1.75rem, 8vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.release-support-description {
+  max-width: 56rem;
+  margin-top: 1.25rem;
+  color: var(--release-support-copy);
+  line-height: 1.75;
+}
+
+.release-support-steps {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  list-style: none;
+}
+
+.release-support-steps li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem;
+  border-radius: 1.5rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.release-support-steps li > span {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--release-support-accent);
+  color: #083344;
+  font-weight: 900;
+}
+
+.release-support-steps h2,
+.release-support-notice strong {
+  color: var(--release-support-heading);
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.release-support-steps p,
+.release-support-notice p {
+  margin-top: 0.5rem;
+  color: var(--release-support-copy);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.release-support-notice {
+  margin-top: 1.25rem;
+  border-radius: 1.5rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.release-support-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.release-support-actions a {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--release-support-border);
+  border-radius: 9999px;
+  padding: 0.75rem 1.25rem;
+  color: var(--release-support-heading);
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+}
+
+.release-support-actions .release-support-action-primary {
+  border-color: transparent;
+  background: var(--release-support-accent);
+  color: #083344;
+}
+
+.release-support-actions a:focus-visible {
+  outline: 3px solid var(--release-support-focus);
+  outline-offset: 4px;
+}
+
+@media (max-width: 420px) {
+  .release-support-actions {
+    display: grid;
+  }
+
+  .release-support-actions a {
+    width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .release-support-surface {
+    color-scheme: light;
+    --release-support-background:
+      linear-gradient(
+        180deg,
+        #07111f 0,
+        #07111f 7.25rem,
+        transparent 7.25rem
+      ),
+      radial-gradient(circle at 12% 3%, rgba(14, 116, 144, 0.12), transparent 30rem),
+      linear-gradient(180deg, #edf5fb 0%, #f8fafc 100%);
+    --release-support-heading: #0f172a;
+    --release-support-copy: #334155;
+    --release-support-accent: #0e7490;
+    --release-support-panel: rgba(255, 255, 255, 0.9);
+    --release-support-border: rgba(7, 89, 133, 0.24);
+    --release-support-focus: #7c3aed;
+  }
+
+  .release-support-steps li > span,
+  .release-support-actions .release-support-action-primary {
+    color: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .release-support-surface,
+  .release-support-surface * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;

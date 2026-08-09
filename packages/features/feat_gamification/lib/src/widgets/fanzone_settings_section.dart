@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Fanzone settings section for notification toggles.
 ///
@@ -11,14 +13,16 @@ import 'package:flutter/material.dart';
 /// Drop-in widget to embed in the app's existing settings screen.
 ///
 /// Persists all values via HiveCacheService with 365-day TTL.
-class FanzoneSettingsSection extends StatefulWidget {
+class FanzoneSettingsSection extends ConsumerStatefulWidget {
   const FanzoneSettingsSection({super.key});
 
   @override
-  State<FanzoneSettingsSection> createState() => _FanzoneSettingsSectionState();
+  ConsumerState<FanzoneSettingsSection> createState() =>
+      _FanzoneSettingsSectionState();
 }
 
-class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
+class _FanzoneSettingsSectionState
+    extends ConsumerState<FanzoneSettingsSection> {
   static const _kickoffAlertsKey = 'fanzone_pref:kickoff_alerts';
   static const _settlementAlertsKey = 'fanzone_pref:settlement_alerts';
   static const _challengeAlertsKey = 'fanzone_pref:challenge_alerts';
@@ -62,6 +66,11 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final allowsChallenges = ref.watch(
+      storeReleasePolicyProvider.select(
+        (policy) => policy.allowsStakedCompetitions,
+      ),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -89,13 +98,15 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
                 value: _settlementAlerts,
                 onChanged: _setSettlementAlerts,
               ),
-              const AfriDivider(),
-              _ToggleRow(
-                icon: AfriIcons.predict,
-                title: context.afriL10n.gameFriendChallenges,
-                value: _challengeAlerts,
-                onChanged: _setChallengeAlerts,
-              ),
+              if (allowsChallenges) ...[
+                const AfriDivider(),
+                _ToggleRow(
+                  icon: AfriIcons.predict,
+                  title: context.afriL10n.gameFriendChallenges,
+                  value: _challengeAlerts,
+                  onChanged: _setChallengeAlerts,
+                ),
+              ],
             ],
           ),
         ),

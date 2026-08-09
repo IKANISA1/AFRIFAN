@@ -175,14 +175,14 @@ export default function AdminTicketsPage() {
         await updateTicketStatus(
           client,
           access,
-          pendingAction.orders[0].id,
+          pendingAction.orders[0],
           pendingAction.status,
         );
       } else {
         await bulkUpdateTicketStatus(
           client,
           access,
-          pendingAction.orders.map((order) => order.id),
+          pendingAction.orders,
           pendingAction.status,
         );
       }

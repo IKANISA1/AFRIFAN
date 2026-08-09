@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_admin/feat_admin.dart';
@@ -46,9 +47,18 @@ abstract final class AppModuleRegistry {
     Map<String, dynamic>? configSnapshot,
     bool allowInternalMobileAdmin = internalMobileAdminBuild,
   }) {
+    final storePolicy = StoreReleasePolicy.fromRawSnapshot(
+      configSnapshot,
+      enforceStorePolicy:
+          config.environment.trim().toLowerCase() == 'production',
+    );
     return _allModules
         .where((module) {
           if (module.featureKey == 'admin' && !allowInternalMobileAdmin) {
+            return false;
+          }
+          if (module.featureKey == 'challenge' &&
+              !storePolicy.allowsStakedCompetitions) {
             return false;
           }
           if (configSnapshot != null) {

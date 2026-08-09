@@ -39,7 +39,9 @@ async function loadProducts() {
   const table = await resolveAccessibleTable(client, productTableCandidates);
   const { data, error } = await client
     .from(table)
-    .select("*")
+    .select(
+      "id, club_id, name, subtitle, description, category, price, image_url, sizes, is_active, collection, sort_order",
+    )
     .eq("club_id", activeClub.numericId)
     .eq("is_active", true)
     .order("sort_order", { ascending: true })

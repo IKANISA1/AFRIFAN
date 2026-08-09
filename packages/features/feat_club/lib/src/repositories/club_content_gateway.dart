@@ -47,7 +47,7 @@ class SupabaseClubContentGateway implements ClubContentGateway {
         .from('african_football_clubs')
         .select(
           'id, club_name, country_name, league, club_slug, '
-          'nickname_brand_identity, official_logo_url',
+          'nickname_brand_identity',
         )
         .eq('id', clubId)
         .maybeSingle();
@@ -76,8 +76,7 @@ class SupabaseClubContentGateway implements ClubContentGateway {
     final rows = await _client
         .from('squad_players')
         .select(
-          'id, name, position, shirt_number, nationality, bio, '
-          'image_url, photo_url',
+          'id, name, position, shirt_number, nationality, bio',
         )
         .eq('club_id', clubId)
         .eq('is_active', true)

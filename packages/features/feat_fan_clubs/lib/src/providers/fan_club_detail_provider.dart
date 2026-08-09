@@ -131,25 +131,16 @@ class SupabaseFanClubDetailGateway implements FanClubDetailGateway {
   Future<Map<String, dynamic>?> _loadFanclubRow(String routeId) async {
     if (_looksLikeUuid(routeId)) {
       final byId = await _client
-          .from('fanclubs')
-          .select()
+          .from('fan_clubs')
+          .select(
+            'id,partner_id,club_id,name,region,description,member_count,'
+            'event_count,rating,banner_emoji,is_active,created_at,updated_at',
+          )
           .eq('id', routeId)
-          .eq('approval_status', 'approved')
-          .eq('active', true)
-          .eq('visibility', 'public')
+          .eq('is_active', true)
           .maybeSingle();
       if (byId != null) return Map<String, dynamic>.from(byId);
     }
-
-    final bySlug = await _client
-        .from('fanclubs')
-        .select()
-        .eq('slug', routeId)
-        .eq('approval_status', 'approved')
-        .eq('active', true)
-        .eq('visibility', 'public')
-        .maybeSingle();
-    if (bySlug != null) return Map<String, dynamic>.from(bySlug);
 
     for (final fanclub in officialFanclubRegister()) {
       if (fanclub['id']?.toString() == routeId ||

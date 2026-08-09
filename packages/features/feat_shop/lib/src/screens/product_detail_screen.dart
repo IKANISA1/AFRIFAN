@@ -81,6 +81,11 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   static const _productsTable = 'shop_products';
+  static const _productProjection =
+      'id, partner_id, club_id, name, subtitle, description, category, '
+      'price, stock, is_active, is_new, image_url, sizes, available_sizes, '
+      'badge_label, collection, sort_order, product_id, product_type, '
+      'currency, image_rights_approved, image_provenance_id';
   static const _auditSampleProductId = 'sample-product';
 
   bool _isLoading = true;
@@ -285,7 +290,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final user = ref.read(currentUserProvider);
     final resolver = ClubScopeResolver(client: client);
     final scope = await resolver.requireResolved(user?.clubId);
-    var query = client.from(_productsTable).select().eq('id', widget.productId);
+    var query = client
+        .from(_productsTable)
+        .select(_productProjection)
+        .eq('id', widget.productId);
     query = resolver.apply(query, scope);
     final response = await query.maybeSingle();
     return response == null ? null : Map<String, dynamic>.from(response);

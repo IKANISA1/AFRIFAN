@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -49,6 +50,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
   }
 
   Future<void> _loadProfile() async {
+    final storePolicy = ref.read(storeReleasePolicyProvider);
     final profile = ref.read(currentUserProvider);
     if (profile == null || profile.id.isEmpty) {
       if (!mounted) return;
@@ -104,7 +106,8 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
         _trimmedOrNull(profileRow?['favorite_team_slug']) ??
         _trimmedOrNull(profile.favoriteTeamSlug);
     final showRealName =
-        profileRow?['privacy_show_real_name'] as bool? ?? _showRealName;
+        storePolicy.allowsCrossUserText &&
+        (profileRow?['privacy_show_real_name'] as bool? ?? _showRealName);
     final findableByPhone =
         profileRow?['privacy_findable_by_phone'] as bool? ?? _findableByPhone;
 
@@ -136,16 +139,19 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
     });
   }
 
-  List<_PrivacyBadgeData> _privacyBadges(BuildContext context) {
+  List<_PrivacyBadgeData> _privacyBadges(
+    BuildContext context, {
+    required bool showRealName,
+  }) {
     return <_PrivacyBadgeData>[
       _PrivacyBadgeData(
-        icon: _showRealName && (_displayName?.isNotEmpty ?? false)
+        icon: showRealName && (_displayName?.isNotEmpty ?? false)
             ? AfriIcons.badge
             : AfriIcons.visibilityOff,
-        label: _showRealName && (_displayName?.isNotEmpty ?? false)
+        label: showRealName && (_displayName?.isNotEmpty ?? false)
             ? context.afriL10n.gameDisplayNameOn
             : context.afriL10n.gameAliasOnly,
-        description: _showRealName && (_displayName?.isNotEmpty ?? false)
+        description: showRealName && (_displayName?.isNotEmpty ?? false)
             ? context.afriL10n.gameDisplayNameOnDescription(_displayName!)
             : context.afriL10n.gameAliasOnlyDescription,
       ),
@@ -179,10 +185,13 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
     ];
   }
 
-  List<String> _identityRules(BuildContext context) {
+  List<String> _identityRules(
+    BuildContext context, {
+    required bool showRealName,
+  }) {
     return <String>[
       context.afriL10n.gameFanIdPersistentRule,
-      if (_showRealName && (_displayName?.isNotEmpty ?? false))
+      if (showRealName && (_displayName?.isNotEmpty ?? false))
         context.afriL10n.gameDisplayNameVisibleRule(_displayName!)
       else
         context.afriL10n.gameRealNameHiddenRule,
@@ -205,6 +214,10 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final allowsCrossUserText = ref.watch(
+      storeReleasePolicyProvider.select((policy) => policy.allowsCrossUserText),
+    );
+    final showRealName = allowsCrossUserText && _showRealName;
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
@@ -319,7 +332,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                           if (_displayName?.isNotEmpty ?? false) ...[
                             const SizedBox(height: SpacingTokens.spacing3),
                             Text(
-                              _showRealName
+                              showRealName
                                   ? _displayName!
                                   : context.afriL10n.gameAliasOnlyProfile,
                               style: TypographyTokens.bodyMedium(),
@@ -389,15 +402,19 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                           Wrap(
                             spacing: SpacingTokens.spacing2,
                             runSpacing: SpacingTokens.spacing2,
-                            children: _privacyBadges(context)
-                                .map(
-                                  (badge) => _PrivacyBadge(
-                                    icon: badge.icon,
-                                    label: badge.label,
-                                    description: badge.description,
-                                  ),
-                                )
-                                .toList(growable: false),
+                            children:
+                                _privacyBadges(
+                                      context,
+                                      showRealName: showRealName,
+                                    )
+                                    .map(
+                                      (badge) => _PrivacyBadge(
+                                        icon: badge.icon,
+                                        label: badge.label,
+                                        description: badge.description,
+                                      ),
+                                    )
+                                    .toList(growable: false),
                           ),
                         ],
                       ),
@@ -423,7 +440,10 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                             style: TypographyTokens.bodySmall(),
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
-                          ..._identityRules(context).asMap().entries.map(
+                          ..._identityRules(
+                            context,
+                            showRealName: showRealName,
+                          ).asMap().entries.map(
                             (entry) => Padding(
                               padding: const EdgeInsets.only(
                                 bottom: SpacingTokens.spacing3,

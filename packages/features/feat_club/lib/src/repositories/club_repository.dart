@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,6 +13,14 @@ class OrderConflictException implements Exception {
       'Order changed after it was loaded. Refresh order history, review the latest status, and try again.';
 }
 
+class TicketConflictException implements Exception {
+  const TicketConflictException();
+
+  @override
+  String toString() =>
+      'Ticket changed after it was loaded. Refresh ticket history, review the latest status, and try again.';
+}
+
 /// Universal club repository — white-label, multi-tenant.
 ///
 /// All operations are scoped to the active club tenant.
@@ -19,24 +28,24 @@ class ClubRepository {
   ClubRepository({
     required SupabaseClient client,
     required OperationalHealthService healthService,
+    StoreReleasePolicy? storeReleasePolicy,
   })  : _client = client,
-        _health = healthService;
+        _health = healthService,
+        _storeReleasePolicy = storeReleasePolicy ??
+            StoreReleasePolicy.forCurrentBuild(
+              const PlatformConfigSnapshot(),
+            );
 
   final SupabaseClient _client;
   final OperationalHealthService _health;
+  final StoreReleasePolicy _storeReleasePolicy;
   late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
     client: _client,
   );
-  static const Map<FetEventType, String> _fetCodeByEventType =
-      <FetEventType, String>{
-    FetEventType.matchAttendance: 'G006',
-    FetEventType.inviteFriends: 'G021',
-    FetEventType.shopPurchase: 'G058',
-    FetEventType.completeProfile: 'G001',
-    FetEventType.weekStreak: 'G016',
-  };
-
-  String? get _userId => _client.auth.currentUser?.id;
+  static const String _contributionGroupProjection =
+      'id, creator_id, name, description, group_type, target_amount, '
+      'current_total, momo_recipient_code, momo_route_type, deadline, '
+      'is_recurring, is_closed, member_count, created_at, club_id, partner_id';
 
   Future<ClubScope> _requireGroupScope(String groupId) async {
     final activeScope = await _scopeResolver.requireResolved();
@@ -92,7 +101,9 @@ class ClubRepository {
   }) async {
     final scope = await _scopeResolver.requireResolved(partnerId);
     final membershipNumber = 'MEM-${DateTime.now().millisecondsSinceEpoch}';
-    final effectivePoints = points ?? tier.minPoints;
+    final effectivePoints = _storeReleasePolicy.allowsPaidDigitalMembership
+        ? points ?? tier.minPoints
+        : 0;
 
     final row = await _client
         .from('fan_memberships')
@@ -151,8 +162,9 @@ class ClubRepository {
       );
     }
 
-    final upgradedPoints =
-        existing.points >= tier.minPoints ? existing.points : tier.minPoints;
+    final upgradedPoints = _storeReleasePolicy.allowsPaidDigitalMembership
+        ? (existing.points >= tier.minPoints ? existing.points : tier.minPoints)
+        : existing.points;
 
     final row = await _client
         .from('fan_memberships')
@@ -189,13 +201,9 @@ class ClubRepository {
     int points,
     String reason,
   ) async {
-    final row = await _client.rpc('add_fan_points', params: {
-      'p_user_id': userId,
-      'p_partner_id': partnerId,
-      'p_points': points,
-      'p_reason': reason,
-    });
-    return FanMembership.fromJson(row as Map<String, dynamic>);
+    throw UnsupportedError(
+      'The released client cannot grant FET points. Awards must come from a reviewed server event.',
+    );
   }
 
   /// Search/list members of a partner club.
@@ -213,6 +221,11 @@ class ClubRepository {
     if (filterTier != null) {
       query = query.eq('tier', filterTier.value);
     }
+    if (!_storeReleasePolicy.allowsCrossUserText &&
+        searchQuery != null &&
+        searchQuery.trim().isNotEmpty) {
+      return const <FanMembership>[];
+    }
     if (searchQuery != null && searchQuery.isNotEmpty) {
       query = query.ilike('display_name', '%$searchQuery%');
     }
@@ -220,7 +233,19 @@ class ClubRepository {
     final rows = await query
         .order('points', ascending: false)
         .range(offset, offset + limit - 1);
-    return rows.map((r) => FanMembership.fromJson(r)).toList();
+    return rows.map((row) {
+      final membership = FanMembership.fromJson(row);
+      if (_storeReleasePolicy.allowsCrossUserText) {
+        return membership;
+      }
+      return membership.copyWith(
+        displayName: _storeReleasePolicy.publicSupporterLabel(
+          displayName: membership.displayName,
+          publicUserId: row['public_user_id']?.toString(),
+          userId: membership.userId,
+        ),
+      );
+    }).toList(growable: false);
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -232,13 +257,15 @@ class ClubRepository {
     if (scope.clubId == null) {
       return const <FanClub>[];
     }
-    var query = _client.from('fanclubs').select();
+    var query = _client.from('fan_clubs').select(
+          'id,partner_id,club_id,name,region,description,member_count,event_count,'
+          'rating,banner_emoji,is_active,created_at,updated_at',
+        );
     query = query.eq('club_id', scope.clubId!);
-    if (region != null) query = query.eq('district', region);
+    if (region != null) query = query.eq('region', region);
     final rows = await query
-        .eq('approval_status', 'approved')
-        .eq('active', true)
-        .order('sort_order', ascending: true);
+        .eq('is_active', true)
+        .order('member_count', ascending: false);
     return rows.map((r) => FanClub.fromJson(r)).toList();
   }
 
@@ -317,19 +344,32 @@ class ClubRepository {
     final scope = await _scopeResolver.requireResolved(partnerId);
     var query = _client
         .from('tickets')
-        .select('*, match:matches(*)')
+        .select(ClubTicket.dataApiProjection)
         .eq('user_id', userId);
     query = _scopeResolver.apply(query, scope);
     final rows = await query.order('purchased_at', ascending: false);
     return rows.map((r) => ClubTicket.fromJson(r)).toList();
   }
 
-  Future<void> cancelTicket(String ticketId) async {
-    await _client
-        .from('tickets')
-        .update({'status': 'cancelled'})
-        .eq('id', ticketId)
-        .eq('user_id', _userId!);
+  Future<ClubTicket> cancelTicket(ClubTicket ticket) async {
+    try {
+      await _client.rpc(
+        'cancel_ticket_if_unchanged',
+        params: {
+          'p_ticket_id': ticket.id,
+          'p_expected_updated_at': ticket.updatedAt.toUtc().toIso8601String(),
+        },
+      );
+      final refreshed = await _fetchTicketsByIds(<String>[ticket.id]);
+      return refreshed.single;
+    } on PostgrestException catch (error) {
+      final message = error.message.toLowerCase();
+      if (message.contains('ticket changed after it was loaded') ||
+          message.contains('can no longer be cancelled')) {
+        throw const TicketConflictException();
+      }
+      rethrow;
+    }
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -341,7 +381,10 @@ class ClubRepository {
     String? category,
   ) async {
     final scope = await _scopeResolver.requireResolved(partnerId);
-    var query = _client.from('shop_products').select().eq('is_active', true);
+    var query = _client
+        .from('shop_products')
+        .select(ClubProduct.dataApiProjection)
+        .eq('is_active', true);
     query = _scopeResolver.apply(query, scope);
 
     if (category != null) query = query.eq('category', category);
@@ -357,34 +400,60 @@ class ClubRepository {
     required String paymentReference,
     int discountAmount = 0,
   }) async {
-    final scope = await _scopeResolver.requireResolved(partnerId);
-    final subtotal = items.fold(0, (sum, item) => sum + item.lineTotal);
-    final total = subtotal - discountAmount;
+    await _scopeResolver.requireResolved(partnerId);
 
-    final row = await _client
-        .from('shop_orders')
-        .insert({
-          'user_id': userId,
-          ..._scopeResolver.payload(scope),
-          'items': items
-              .map((i) => {
-                    'product': i.product.toJson(),
-                    'quantity': i.quantity,
-                    'selected_variant': i.selectedVariant,
-                  })
-              .toList(),
-          'subtotal': subtotal,
-          'discount_amount': discountAmount,
-          'delivery_fee': 0,
-          'total': total,
-          'delivery_address': deliveryAddress,
-          'momo_reference': paymentReference,
-          'status': OrderStatus.pending.value,
-        })
-        .select()
-        .single();
+    final authenticatedUserId = _client.auth.currentUser?.id;
+    if (authenticatedUserId == null || authenticatedUserId != userId) {
+      throw StateError(
+        'An authenticated supporter may only place an order for their own account.',
+      );
+    }
+    if (items.isEmpty || items.length > 20) {
+      throw ArgumentError.value(
+        items.length,
+        'items',
+        'An order must contain between 1 and 20 products.',
+      );
+    }
+    if (discountAmount != 0) {
+      throw ArgumentError.value(
+        discountAmount,
+        'discountAmount',
+        'Discounts must be calculated by an approved server-side promotion.',
+      );
+    }
 
-    return row['id'] as String;
+    final result = await _client.rpc(
+      'create_shop_order',
+      params: <String, dynamic>{
+        'p_items': items
+            .map(
+              (item) => <String, dynamic>{
+                'product_id': item.product.id,
+                'quantity': item.quantity,
+                'selected_variant': item.selectedVariant,
+              },
+            )
+            .toList(growable: false),
+        'p_delivery_address': deliveryAddress,
+        'p_payment_reference': paymentReference,
+      },
+    );
+
+    final row = switch (result) {
+      final Map<dynamic, dynamic> value => Map<String, dynamic>.from(value),
+      final List<dynamic> value
+          when value.length == 1 && value.single is Map<dynamic, dynamic> =>
+        Map<String, dynamic>.from(value.single as Map<dynamic, dynamic>),
+      _ => throw StateError(
+          'Shop order request was not accepted by the backend.',
+        ),
+    };
+    final orderId = row['id']?.toString();
+    if (orderId == null || orderId.isEmpty) {
+      throw StateError('Shop order response did not include an order id.');
+    }
+    return orderId;
   }
 
   Future<List<ClubShopOrder>> getMyOrders(String userId) async {
@@ -434,7 +503,9 @@ class ClubRepository {
     bool includeClosedGroups = false,
   }) async {
     final scope = await _scopeResolver.requireResolved(partnerId);
-    var query = _client.from('contribution_groups').select();
+    var query = _client
+        .from('contribution_groups')
+        .select(_contributionGroupProjection);
     query = _scopeResolver.apply(query, scope);
     if (!includeClosedGroups) query = query.eq('is_closed', false);
     final rows = await query.order('created_at', ascending: false);
@@ -448,23 +519,81 @@ class ClubRepository {
     required int amount,
     required String paymentReference,
     String paymentMethod = 'momo',
+    String? idempotencyKey,
   }) async {
-    await _requireGroupScope(groupId);
-    final createdAt = DateTime.now().toIso8601String();
+    final authenticatedUserId = _client.auth.currentUser?.id;
+    if (authenticatedUserId == null || authenticatedUserId != userId) {
+      throw StateError(
+        'An authenticated supporter may only contribute from their own account.',
+      );
+    }
+    if (amount < 1 || amount > 100000000) {
+      throw ArgumentError.value(
+        amount,
+        'amount',
+        'Contribution amount must be between 1 and 100000000 RWF.',
+      );
+    }
+    if (paymentMethod.trim().toLowerCase() != 'momo') {
+      throw ArgumentError.value(
+        paymentMethod,
+        'paymentMethod',
+        'Only the reviewed mobile money contribution route is supported.',
+      );
+    }
 
-    final row = await _client
-        .from('group_contributions')
-        .insert({
-          'group_id': groupId,
-          'user_id': userId,
-          'amount': amount,
-          'status': 'pending',
-          'momo_reference': paymentReference,
-          'created_at': createdAt,
-        })
-        .select()
-        .single();
-    return row['id'] as String;
+    final normalizedReference = paymentReference
+        .trim()
+        .replaceAll(RegExp('[^A-Za-z0-9]'), '')
+        .toUpperCase();
+    if (normalizedReference.length < 6 || normalizedReference.length > 64) {
+      throw ArgumentError.value(
+        paymentReference,
+        'paymentReference',
+        'A valid payment reference between 6 and 64 characters is required.',
+      );
+    }
+    final normalizedIdempotencyKey =
+        (idempotencyKey ?? 'momo:$normalizedReference')
+            .trim()
+            .replaceAll(RegExp('[^A-Za-z0-9:_-]'), '')
+            .toLowerCase();
+    if (normalizedIdempotencyKey.length < 8 ||
+        normalizedIdempotencyKey.length > 128) {
+      throw ArgumentError.value(
+        idempotencyKey,
+        'idempotencyKey',
+        'A valid idempotency key between 8 and 128 characters is required.',
+      );
+    }
+
+    await _requireGroupScope(groupId);
+    final result = await _client.rpc(
+      'create_pending_group_contribution',
+      params: <String, dynamic>{
+        'p_group_id': groupId,
+        'p_amount': amount,
+        'p_payment_reference': normalizedReference,
+        'p_idempotency_key': normalizedIdempotencyKey,
+      },
+    );
+
+    final row = switch (result) {
+      final Map<dynamic, dynamic> value => Map<String, dynamic>.from(value),
+      final List<dynamic> value
+          when value.length == 1 && value.single is Map<dynamic, dynamic> =>
+        Map<String, dynamic>.from(value.single as Map<dynamic, dynamic>),
+      _ => throw StateError(
+          'Contribution request was not accepted by the backend.',
+        ),
+    };
+    final contributionId = row['id']?.toString();
+    if (contributionId == null || contributionId.isEmpty) {
+      throw StateError(
+        'Contribution response did not include a contribution id.',
+      );
+    }
+    return contributionId;
   }
 
   /// Check the payment verification status of a recorded contribution.
@@ -499,7 +628,9 @@ class ClubRepository {
     final query = _client
         .from('group_contributions')
         .select(
-            'id, group_id, user_id, amount, status, momo_reference, created_at')
+          'id, group_id, user_id, amount, status, payment_status, '
+          'momo_reference, confirmed_at, created_at, updated_at',
+        )
         .eq('group_id', groupId);
     final rows = await query.order('created_at', ascending: false).limit(limit);
     return List<Map<String, dynamic>>.from(
@@ -510,7 +641,7 @@ class ClubRepository {
   Future<List<ClubTicket>> _fetchTicketsByIds(List<String> ticketIds) async {
     final rows = await _client
         .from('tickets')
-        .select('*, match:matches(*)')
+        .select(ClubTicket.dataApiProjection)
         .inFilter('id', ticketIds)
         .order('purchased_at', ascending: false);
     final tickets = List<Map<String, dynamic>>.from(rows as List)
@@ -569,10 +700,34 @@ class ClubRepository {
     await _requireGroupScope(groupId);
     final rows = await _client
         .from('group_members')
-        .select('*, profile:profiles(public_user_id, display_name)')
+        .select(
+          'id, group_id, user_id, display_name, is_admin, is_anonymous, '
+          'contribution_amount, joined_at, '
+          'profile:profiles(public_user_id, display_name)',
+        )
         .eq('group_id', groupId)
         .order('joined_at', ascending: true);
-    return List<Map<String, dynamic>>.from(rows);
+    final members = List<Map<String, dynamic>>.from(rows);
+    if (_storeReleasePolicy.allowsCrossUserText) {
+      return members;
+    }
+    return members.map((member) {
+      final rawProfile = member['profile'];
+      if (rawProfile is! Map) {
+        return member;
+      }
+      final profile = Map<String, dynamic>.from(rawProfile);
+      final label = _storeReleasePolicy.publicSupporterLabel(
+        displayName: profile['display_name']?.toString(),
+        publicUserId: profile['public_user_id']?.toString(),
+        userId:
+            member['user_id']?.toString() ?? member['member_id']?.toString(),
+      );
+      return <String, dynamic>{
+        ...member,
+        'profile': <String, dynamic>{...profile, 'display_name': label},
+      };
+    }).toList(growable: false);
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -584,73 +739,22 @@ class ClubRepository {
     required FetEventType eventType,
     Map<String, Object?>? metadata,
   }) async {
-    final fetAwarded = await _resolveConfiguredFetAward(eventType);
-    final payload = {
-      'user_id': userId,
-      'event_type': eventType.eventKey,
-      'fet_awarded': fetAwarded,
-      'metadata': metadata,
-    };
-
-    try {
-      await _client.from('cool_events').insert(payload);
-    } catch (error, stackTrace) {
-      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).',
-          error, stackTrace);
-      await _client.from('fet_events').insert(payload);
-    }
+    throw UnsupportedError(
+      'The released client cannot record events that award FET. Awards must come from a reviewed server event.',
+    );
   }
 
   Future<List<FetEvent>> getFetHistory(
     String userId, {
     int limit = 50,
   }) async {
-    try {
-      final rows = await _client
-          .from('cool_events')
-          .select()
-          .eq('user_id', userId)
-          .order('event_at', ascending: false)
-          .limit(limit);
-      return rows.map((r) => FetEvent.fromJson(r)).toList();
-    } catch (error, stackTrace) {
-      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).',
-          error, stackTrace);
-      final rows = await _client
-          .from('fet_events')
-          .select()
-          .eq('user_id', userId)
-          .order('event_at', ascending: false)
-          .limit(limit);
-      return rows.map((r) => FetEvent.fromJson(r)).toList();
-    }
-  }
-
-  Future<int> _resolveConfiguredFetAward(FetEventType eventType) async {
-    final configuredCode = _fetCodeByEventType[eventType];
-    if (configuredCode == null) {
-      return eventType.fetReward;
-    }
-
-    try {
-      final scope = await _scopeResolver.requireResolved();
-      if (scope.clubId == null) {
-        return eventType.fetReward;
-      }
-
-      final row = await _client
-          .from('fan_engagement_token_catalog')
-          .select('fet_value')
-          .eq('club_id', scope.clubId!)
-          .eq('code', configuredCode)
-          .eq('is_active', true)
-          .maybeSingle();
-      return (row?['fet_value'] as num?)?.toInt() ?? eventType.fetReward;
-    } catch (error, stackTrace) {
-      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).',
-          error, stackTrace);
-      return eventType.fetReward;
-    }
+    final rows = await _client
+        .from('fet_events')
+        .select('id,user_id,club_id,event_type,fet_awarded,event_at,created_at')
+        .eq('user_id', userId)
+        .order('event_at', ascending: false)
+        .limit(limit);
+    return rows.map((r) => FetEvent.fromJson(r)).toList();
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -661,8 +765,13 @@ class ClubRepository {
     String partnerId,
   ) async {
     final scope = await _scopeResolver.requireResolved(partnerId);
-    var query =
-        _client.from('partner_payment_routes').select().eq('status', 'active');
+    var query = _client
+        .from('partner_payment_routes')
+        .select(
+          'id,partner_id,club_id,partner_name,partner_slug,country,provider,'
+          'recipient_code,reconciliation_label,status',
+        )
+        .eq('status', 'active');
     query = _scopeResolver.apply(query, scope);
     final rows = await query.limit(1);
 

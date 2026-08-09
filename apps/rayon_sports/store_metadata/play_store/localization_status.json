@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "locales": [
+    {"locale": "en-US", "status": "draft_pending_approval", "approver": null, "approved_at": null},
+    {"locale": "fr-FR", "status": "draft_pending_language_approval", "approver": null, "approved_at": null}
+  ],
+  "source_only": [
+    {"locale": "rw-RW", "status": "not_supported_by_google_play_listing", "source": "../../source_localizations/rw-RW/google_play"}
+  ]
+}

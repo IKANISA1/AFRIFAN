@@ -147,6 +147,17 @@ void main() {
   // ═══════════════════════════════════════════════════════════
 
   group('ClubTicket.fromJson', () {
+    test('least-privilege projection includes version and omits mock metadata',
+        () {
+      expect(ClubTicket.dataApiProjection, contains('updated_at'));
+      expect(ClubTicket.dataApiProjection, contains('match:matches('));
+      expect(ClubTicket.dataApiProjection, isNot(contains('mock_batch')));
+      expect(
+        ClubTicket.dataApiProjection,
+        isNot(contains('image_rights_approved_by')),
+      );
+    });
+
     test('parses ticket with nested match', () {
       final ticket = ClubTicket.fromJson({
         'id': 'ticket-1',
@@ -166,6 +177,7 @@ void main() {
         'momo_reference': 'MOMO-REF-001',
         'status': 'valid',
         'purchased_at': '2026-04-01T10:00:00Z',
+        'updated_at': '2026-04-01T10:05:00Z',
       });
 
       expect(ticket.id, 'ticket-1');
@@ -176,6 +188,7 @@ void main() {
       expect(ticket.qrCode, 'RS-123456');
       expect(ticket.paymentReference, 'MOMO-REF-001');
       expect(ticket.status, TicketStatus.active);
+      expect(ticket.updatedAt, DateTime.parse('2026-04-01T10:05:00Z'));
     });
 
     test('matchTitle combines team names', () {
@@ -195,6 +208,7 @@ void main() {
       });
 
       expect(ticket.matchTitle, 'Rayon vs Rayon Sports');
+      expect(ticket.updatedAt, ticket.purchasedAt);
     });
 
     test('parses ticket without nested match (fallback)', () {

@@ -125,7 +125,10 @@ class SupabaseNewsArticleGateway implements NewsArticleGateway {
     final scope = await resolver.requireResolved();
     var articleQuery = _client
         .from('news_articles')
-        .select()
+        .select(
+          'id,club_id,title,subtitle,body,category,image_url,is_published,'
+          'sort_order,created_at,image_provenance_id,image_rights_approved',
+        )
         .eq('id', articleId);
     articleQuery = resolver.apply(articleQuery, scope);
     final article = await articleQuery.maybeSingle();

@@ -49,11 +49,12 @@ class AuthRepository {
 
   // ─── Authentication ─────────────────────────────────────────
 
-  /// Sign in anonymously, injecting club_id into metadata.
-  /// Creates a profile row in the `profiles` table automatically.
+  /// Sign in anonymously, then bind the supporter to the configured club
+  /// through the governed bootstrap RPC. User metadata is never tenant
+  /// authority.
   Future<UserProfile> signInAnonymously() async {
     final response = await _runOperation<AuthResponse>(
-      () => _client.auth.signInAnonymously(data: {'club_id': clubId}),
+      () => _client.auth.signInAnonymously(),
       description: 'signInAnonymously',
     );
 
@@ -82,7 +83,6 @@ class AuthRepository {
       () => _client.auth.signInWithOtp(
         phone: phone,
         shouldCreateUser: shouldCreateUser,
-        data: {'club_id': clubId},
         channel: channel,
       ),
       description: 'requestPhoneSignInOtp',
@@ -190,17 +190,12 @@ class AuthRepository {
   Future<UserProfile> updateProfile(UserProfile profile) async {
     final expectedUpdatedAt = profile.updatedAt;
     if (expectedUpdatedAt == null) {
-      await _runAction(
-        () => _client
-            .from('profiles')
-            .upsert(profile.toProfileRow(includeId: true), onConflict: 'id'),
-        description: 'updateProfile.insertProfile',
-      );
+      await _bootstrapProfile(profile);
     } else {
       final updateResult = await SafeRpc.query<dynamic>(
         () => _client
             .from('profiles')
-            .update(profile.toProfileRow(includeId: false))
+            .update(_editableProfileRow(profile))
             .eq('id', profile.id)
             .eq('updated_at', expectedUpdatedAt)
             .select('id')
@@ -290,16 +285,8 @@ class AuthRepository {
   Future<void> _ensureProfileRow(User user) async {
     final seededProfile = _buildSeededProfile(user);
 
-    // Profile row is critical — must succeed for sign-in.
-    await _runAction(
-      () => _client
-          .from('profiles')
-          .upsert(
-            seededProfile.toProfileRow(includeId: true),
-            onConflict: 'id',
-          ),
-      description: '_ensureProfileRow.upsertProfile',
-    );
+    // Profile bootstrap is critical and server-authoritative for club scope.
+    await _bootstrapProfile(seededProfile);
 
     // Private contact is best-effort — table may not exist yet.
     try {
@@ -316,7 +303,17 @@ class AuthRepository {
     // Parallelize the two independent queries to halve latency.
     final results = await Future.wait(<Future<RpcResult<dynamic>>>[
       SafeRpc.query<dynamic>(
-        () => _client.from('profiles').select().eq('id', userId).maybeSingle(),
+        () => _client
+            .from('profiles')
+            .select(
+              'id, club_id, full_name, public_user_id, country, '
+              'language_code, avatar_url, is_admin, theme_preference, '
+              'created_at, updated_at, display_name, country_code, is_active, '
+              'favorite_team_slug, privacy_show_real_name, '
+              'privacy_findable_by_phone',
+            )
+            .eq('id', userId)
+            .maybeSingle(),
         tag: _tag,
         description: '_loadProfile.profile',
         maxAttempts: 3,
@@ -381,11 +378,46 @@ class AuthRepository {
     );
   }
 
+  Future<void> _bootstrapProfile(UserProfile profile) async {
+    final normalizedClubId = int.tryParse(clubId);
+    if (normalizedClubId == null) {
+      throw StateError('Configured club id must be numeric.');
+    }
+
+    await _runOperation<dynamic>(
+      () => _client.rpc(
+        'bootstrap_supporter_profile',
+        params: <String, dynamic>{
+          'p_club_id': normalizedClubId,
+          'p_display_name': _asOptionalString(profile.displayName),
+          'p_country_code':
+              _asOptionalString(profile.countryCode)?.toUpperCase() ?? 'RW',
+          'p_language_code':
+              _asOptionalString(profile.languageCode)?.toLowerCase() ?? 'rw',
+          'p_avatar_url': _asOptionalString(profile.avatarUrl),
+        },
+      ),
+      description: 'bootstrap_supporter_profile',
+    );
+  }
+
+  Map<String, dynamic> _editableProfileRow(UserProfile profile) =>
+      <String, dynamic>{
+        'display_name': _asOptionalString(profile.displayName),
+        'full_name': _asOptionalString(profile.displayName),
+        'country_code': _asOptionalString(profile.countryCode)?.toUpperCase(),
+        'country': _asOptionalString(profile.countryCode)?.toUpperCase(),
+        'language_code':
+            _asOptionalString(profile.languageCode)?.toLowerCase() ?? 'rw',
+        'avatar_url': _asOptionalString(profile.avatarUrl),
+        'favorite_team_slug': _asOptionalString(profile.favoriteTeamSlug),
+      };
+
   UserProfile _buildSeededProfile(User user) {
     final metadata = user.userMetadata ?? <String, dynamic>{};
     return UserProfile(
       id: user.id,
-      clubId: metadata['club_id']?.toString() ?? clubId,
+      clubId: clubId,
       momoNumber:
           _asOptionalString(metadata['momo_number']) ??
           _asOptionalString(user.phone),

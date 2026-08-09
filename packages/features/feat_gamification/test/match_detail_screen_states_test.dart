@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -229,6 +230,24 @@ void main() {
     );
   });
 
+  testWidgets('store release omits partner-pool navigation and actions', (
+    tester,
+  ) async {
+    await _pumpRoute(
+      tester,
+      controller: _ControlledMatchDetailController(
+        AsyncData<MatchDetailState>(_readyState()),
+      ),
+      capture: false,
+      storePolicy: const StoreReleasePolicy(isEnforced: true),
+    );
+
+    final l10n = lookupAfriLocalizations(const Locale('en'));
+    expect(find.text(l10n.gamePoolsTab), findsNothing);
+    expect(find.text('Join round'), findsNothing);
+    expect(find.text(l10n.gameStatsTab), findsOneWidget);
+  });
+
   testWidgets('golden Match detail focused state', (tester) async {
     final focusNode = FocusNode(debugLabel: 'match-detail-join-focus');
     addTearDown(focusNode.dispose);
@@ -434,6 +453,7 @@ Future<void> _pumpState(
   Locale locale = const Locale('en'),
   FocusNode? joinFocusNode,
   bool settle = true,
+  StoreReleasePolicy storePolicy = const StoreReleasePolicy.unenforced(),
   Future<void> Function(WidgetTester tester)? beforeCapture,
 }) async {
   ConnectivityService.setOnlineForTest(online);
@@ -449,6 +469,7 @@ Future<void> _pumpState(
     locale: locale,
     joinFocusNode: joinFocusNode,
     settle: settle,
+    storePolicy: storePolicy,
     beforeCapture: beforeCapture,
     goldenPath: _goldenPaths[id]!,
   );
@@ -466,6 +487,7 @@ Future<void> _pumpRoute(
   Locale locale = const Locale('en'),
   FocusNode? joinFocusNode,
   bool settle = true,
+  StoreReleasePolicy storePolicy = const StoreReleasePolicy.unenforced(),
   Future<void> Function(WidgetTester tester)? beforeCapture,
   String? goldenPath,
 }) async {
@@ -508,6 +530,7 @@ Future<void> _pumpRoute(
   await tester.pumpWidget(
     ProviderScope(
       overrides: <Override>[
+        storeReleasePolicyProvider.overrideWithValue(storePolicy),
         matchDetailProvider.overrideWith((ref, fixtureId) => controller),
         matchDetailActionsEnabledProvider.overrideWithValue(actionsEnabled),
       ],

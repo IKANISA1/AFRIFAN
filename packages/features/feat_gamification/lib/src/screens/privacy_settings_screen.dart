@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -38,7 +39,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
   void initState() {
     super.initState();
     // Start with cached values for instant UI, then load from server.
-    _showRealName = HiveCacheService.getJson<bool>(_showRealNameKey) ?? false;
+    _showRealName =
+        ref.read(storeReleasePolicyProvider).allowsCrossUserText &&
+        (HiveCacheService.getJson<bool>(_showRealNameKey) ?? false);
     _findableByPhone =
         HiveCacheService.getJson<bool>(_findableByPhoneKey) ?? false;
     unawaited(_loadFromServer());
@@ -62,7 +65,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
 
       if (!mounted) return;
       if (row != null) {
-        final serverShowReal = row['privacy_show_real_name'] as bool? ?? false;
+        final serverShowReal =
+            ref.read(storeReleasePolicyProvider).allowsCrossUserText &&
+            (row['privacy_show_real_name'] as bool? ?? false);
         final serverFindable =
             row['privacy_findable_by_phone'] as bool? ?? false;
 
@@ -100,6 +105,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
   }
 
   void _setShowRealName(bool value) {
+    if (!ref.read(storeReleasePolicyProvider).allowsCrossUserText) {
+      return;
+    }
     setState(() => _showRealName = value);
     unawaited(
       HiveCacheService.putJson(
@@ -133,6 +141,10 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final allowsCrossUserText = ref.watch(
+      storeReleasePolicyProvider.select((policy) => policy.allowsCrossUserText),
+    );
+    final showRealName = allowsCrossUserText && _showRealName;
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       showAppBar: false,
@@ -243,17 +255,29 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                   AfriSurfaceCard(
                         child: Column(
                           children: [
-                            _VisibilityToggle(
-                              icon: _showRealName
-                                  ? AfriIcons.visibility
-                                  : AfriIcons.visibilityOff,
-                              title: context.afriL10n.gameShowRealName,
-                              description:
-                                  context.afriL10n.gameShowRealNameDescription,
-                              value: _showRealName,
-                              onChanged: _setShowRealName,
-                            ),
-                            const AfriDivider(),
+                            if (allowsCrossUserText) ...[
+                              _VisibilityToggle(
+                                icon: showRealName
+                                    ? AfriIcons.visibility
+                                    : AfriIcons.visibilityOff,
+                                title: context.afriL10n.gameShowRealName,
+                                description: context
+                                    .afriL10n
+                                    .gameShowRealNameDescription,
+                                value: showRealName,
+                                onChanged: _setShowRealName,
+                              ),
+                              const AfriDivider(),
+                            ] else ...[
+                              _GuaranteeRow(
+                                icon: AfriIcons.visibilityOff,
+                                iconColor: ColorTokens.clubAccent,
+                                title: context.afriL10n.gameAliasOnly,
+                                description:
+                                    context.afriL10n.gameAliasOnlyDescription,
+                              ),
+                              const AfriDivider(),
+                            ],
                             _VisibilityToggle(
                               icon: AfriIcons.search,
                               title: context.afriL10n.gameFindableByPhone,
@@ -397,7 +421,7 @@ class _VisibilityToggle extends StatelessWidget {
   final String title;
   final String description;
   final bool value;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
 
   @override
   Widget build(BuildContext context) {

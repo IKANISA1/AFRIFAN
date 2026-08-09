@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -18,6 +19,7 @@ class ProfileScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final profile = ref.watch(currentUserProvider);
     final membershipSummary = ref.watch(_profileMembershipSummaryProvider);
+    final storePolicy = ref.watch(storeReleasePolicyProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
 
     return AfriScreenScaffold(
@@ -176,12 +178,14 @@ class ProfileScreen extends ConsumerWidget {
                       onTap: () => context.push('/fanzone/my'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
-                    _MenuItem(
-                      icon: AfriIcons.premium,
-                      label: l10n.profileClubBenefits,
-                      onTap: () => context.go('/fanzone?section=rewards'),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing2),
+                    if (storePolicy.allowsRewardRedemption) ...[
+                      _MenuItem(
+                        icon: AfriIcons.premium,
+                        label: l10n.profileClubBenefits,
+                        onTap: () => context.go('/fanzone?section=rewards'),
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing2),
+                    ],
                     _MenuItem(
                       icon: AfriIcons.contribute,
                       label: l10n.profileContributions,

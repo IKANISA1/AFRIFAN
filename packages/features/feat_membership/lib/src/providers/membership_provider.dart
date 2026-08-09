@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
 
 import '../official_membership_tiers.dart';
 import '../widgets/contribution_history.dart';
+import 'membership_data_contract.dart';
 
 enum MembershipFailureKind {
   permissionDenied,
@@ -163,7 +165,7 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
     if (userId != null) {
       membership = await client
           .from('fan_memberships')
-          .select()
+          .select(MembershipReadProjection.fanMembership)
           .eq('user_id', userId)
           .eq('club_id', clubId)
           .order('joined_at', ascending: false)
@@ -173,7 +175,7 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
       applications = List<Map<String, dynamic>>.from(
         await client
             .from('membership_applications')
-            .select()
+            .select(MembershipReadProjection.application)
             .eq('user_id', userId)
             .eq('club_id', clubId)
             .order('application_date', ascending: false)
@@ -225,10 +227,13 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
     required SupabaseClient client,
     required int clubId,
   }) async {
+    if (!ref.read(storeReleasePolicyProvider).allowsPaidDigitalMembership) {
+      return storeReleaseMembershipPackages();
+    }
     try {
       final tiersResponse = await client
           .from('membership_tiers')
-          .select()
+          .select(MembershipReadProjection.tier)
           .eq('active', true)
           .order('sort_order', ascending: true);
       final tiers = List<Map<String, dynamic>>.from(

@@ -1,4 +1,5 @@
 import '../models/platform_feature_config.dart';
+import '../policies/store_release_policy.dart';
 
 const List<MapEntry<String, String>> _fallbackRouteFeatureKeys =
     <MapEntry<String, String>>[
@@ -40,11 +41,13 @@ class FeatureConfigService {
     this._snapshot, {
     this.isAuthenticated = false,
     this.roles = const <String>{},
+    this.storeReleasePolicy = const StoreReleasePolicy(isEnforced: true),
   });
 
   final PlatformConfigSnapshot _snapshot;
   final bool isAuthenticated;
   final Set<String> roles;
+  final StoreReleasePolicy storeReleasePolicy;
 
   PlatformConfigSnapshot get snapshot => _snapshot;
 
@@ -309,6 +312,10 @@ class FeatureConfigService {
   }
 
   bool isRouteAvailable(String path) {
+    if (!storeReleasePolicy.isRouteAllowed(path)) {
+      return false;
+    }
+
     // M-8: Admin routes are always available — admin access is enforced by
     // the AdminRouteGuard (RBAC), not by public feature gating.
     final normalizedPath = _normalizeRoutePath(path);

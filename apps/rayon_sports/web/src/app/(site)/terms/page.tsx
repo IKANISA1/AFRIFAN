@@ -5,6 +5,11 @@ import {
 } from "@/components/legal-document";
 import { getClubProfile, getCmsContentBlock } from "@/lib/data/public";
 import { getSiteCopy } from "@/lib/site-copy";
+import {
+  policyLastUpdated,
+  supportEmail,
+  termsSections,
+} from "@/lib/release-legal-content";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
@@ -36,6 +41,12 @@ export default async function TermsPage() {
       title={title}
       content={content}
       documentKind="terms"
+      lastUpdated={policyLastUpdated}
+      sections={termsSections}
+      actions={[
+        { href: "/privacy", label: "Read the Privacy Policy" },
+        { href: `mailto:${supportEmail}`, label: "Contact support" },
+      ]}
     />
   );
 }

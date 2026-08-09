@@ -1,12 +1,20 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/challenge_models.dart';
 
 class ChallengeRepository {
-  ChallengeRepository({required SupabaseClient client}) : _client = client;
+  ChallengeRepository({
+    required SupabaseClient client,
+    StoreReleasePolicy? storeReleasePolicy,
+  }) : _client = client,
+       _storeReleasePolicy =
+           storeReleasePolicy ??
+           StoreReleasePolicy.forCurrentBuild(const PlatformConfigSnapshot());
 
   final SupabaseClient _client;
+  final StoreReleasePolicy _storeReleasePolicy;
   late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
     client: _client,
   );
@@ -20,6 +28,9 @@ class ChallengeRepository {
     int offset = 0,
     bool onlyJoined = false,
   }) async {
+    if (!_storeReleasePolicy.allowsStakedCompetitions) {
+      return const <Challenge>[];
+    }
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return const <Challenge>[];
@@ -44,7 +55,9 @@ class ChallengeRepository {
 
     return (result.data as List)
         .whereType<Map>()
-        .map((row) => Challenge.fromJson(Map<String, dynamic>.from(row)))
+        .map((row) => Map<String, dynamic>.from(row))
+        .map(_sanitizeChallenge)
+        .map(Challenge.fromJson)
         .toList(growable: false);
   }
 
@@ -54,6 +67,9 @@ class ChallengeRepository {
     int limit = 20,
     int offset = 0,
   }) async {
+    if (!_storeReleasePolicy.allowsStakedCompetitions) {
+      return const <Challenge>[];
+    }
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return const <Challenge>[];
@@ -77,13 +93,18 @@ class ChallengeRepository {
 
     return (result.data as List)
         .whereType<Map>()
-        .map((row) => Challenge.fromJson(Map<String, dynamic>.from(row)))
+        .map((row) => Map<String, dynamic>.from(row))
+        .map(_sanitizeChallenge)
+        .map(Challenge.fromJson)
         .toList(growable: false);
   }
 
   Future<ChallengeDetailPayload?> loadChallengeDetail(
     String challengeId,
   ) async {
+    if (!_storeReleasePolicy.allowsStakedCompetitions) {
+      return null;
+    }
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return null;
@@ -103,7 +124,7 @@ class ChallengeRepository {
     }
 
     return ChallengeDetailPayload.fromJson(
-      Map<String, dynamic>.from(result.data as Map),
+      _sanitizeChallengeDetail(Map<String, dynamic>.from(result.data as Map)),
     );
   }
 
@@ -113,6 +134,7 @@ class ChallengeRepository {
     required int awayScore,
     required int stakeFet,
   }) async {
+    _requireStakedCompetitionAuthorization();
     final scope = await _scopeResolver.requireResolved();
 
     final result = await SafeRpc.call(
@@ -133,7 +155,7 @@ class ChallengeRepository {
     }
 
     return ChallengeMutationResult.fromJson(
-      Map<String, dynamic>.from(result.data as Map),
+      _sanitizeChallengeMutation(Map<String, dynamic>.from(result.data as Map)),
     );
   }
 
@@ -142,6 +164,7 @@ class ChallengeRepository {
     required int homeScore,
     required int awayScore,
   }) async {
+    _requireStakedCompetitionAuthorization();
     final result = await SafeRpc.call(
       'prediction_challenge_join',
       params: <String, dynamic>{
@@ -158,11 +181,12 @@ class ChallengeRepository {
     }
 
     return ChallengeMutationResult.fromJson(
-      Map<String, dynamic>.from(result.data as Map),
+      _sanitizeChallengeMutation(Map<String, dynamic>.from(result.data as Map)),
     );
   }
 
   Future<ChallengeMutationResult> cancelChallenge(String challengeId) async {
+    _requireStakedCompetitionAuthorization();
     final result = await SafeRpc.call(
       'prediction_challenge_cancel',
       params: <String, dynamic>{'p_challenge_id': challengeId},
@@ -175,7 +199,103 @@ class ChallengeRepository {
     }
 
     return ChallengeMutationResult.fromJson(
-      Map<String, dynamic>.from(result.data as Map),
+      _sanitizeChallengeMutation(Map<String, dynamic>.from(result.data as Map)),
     );
+  }
+
+  Map<String, dynamic> _sanitizeChallenge(Map<String, dynamic> row) {
+    if (_storeReleasePolicy.allowsCrossUserText) {
+      return row;
+    }
+
+    final creatorUserId = row['creator_user_id']?.toString();
+    final rawCreator = row['creator'];
+    final creator = rawCreator is Map
+        ? Map<String, dynamic>.from(rawCreator)
+        : null;
+    final creatorId = creator?['id']?.toString() ?? creatorUserId;
+    final creatorLabel = _storeReleasePolicy.publicSupporterLabel(
+      displayName:
+          row['creator_name']?.toString() ??
+          creator?['display_name']?.toString(),
+      publicUserId: creator?['public_user_id']?.toString(),
+      userId: creatorId,
+    );
+    final rawEntry = row['my_entry'];
+
+    return <String, dynamic>{
+      ...row,
+      'creator_name': creatorLabel,
+      if (creator != null)
+        'creator': <String, dynamic>{...creator, 'display_name': creatorLabel},
+      if (rawEntry is Map)
+        'my_entry': _sanitizeChallengeEntry(
+          Map<String, dynamic>.from(rawEntry),
+        ),
+    };
+  }
+
+  Map<String, dynamic> _sanitizeChallengeEntry(Map<String, dynamic> row) {
+    if (_storeReleasePolicy.allowsCrossUserText) {
+      return row;
+    }
+    final rawUser = row['user'];
+    final user = rawUser is Map ? Map<String, dynamic>.from(rawUser) : null;
+    final userId = row['user_id']?.toString() ?? user?['id']?.toString();
+    final label = _storeReleasePolicy.publicSupporterLabel(
+      displayName:
+          row['user_name']?.toString() ?? user?['display_name']?.toString(),
+      publicUserId: user?['public_user_id']?.toString(),
+      userId: userId,
+    );
+    return <String, dynamic>{
+      ...row,
+      'user_name': label,
+      if (user != null)
+        'user': <String, dynamic>{...user, 'display_name': label},
+    };
+  }
+
+  Map<String, dynamic> _sanitizeChallengeDetail(Map<String, dynamic> row) {
+    if (_storeReleasePolicy.allowsCrossUserText) {
+      return row;
+    }
+    final rawChallenge = row['challenge'];
+    final rawEntries = row['entries'];
+    return <String, dynamic>{
+      ...row,
+      if (rawChallenge is Map)
+        'challenge': _sanitizeChallenge(
+          Map<String, dynamic>.from(rawChallenge),
+        ),
+      if (rawEntries is List)
+        'entries': rawEntries
+            .whereType<Map>()
+            .map((entry) => Map<String, dynamic>.from(entry))
+            .map(_sanitizeChallengeEntry)
+            .toList(growable: false),
+    };
+  }
+
+  Map<String, dynamic> _sanitizeChallengeMutation(Map<String, dynamic> row) {
+    if (_storeReleasePolicy.allowsCrossUserText) {
+      return row;
+    }
+    final rawChallenge = row['challenge'];
+    return <String, dynamic>{
+      ...row,
+      if (rawChallenge is Map)
+        'challenge': _sanitizeChallenge(
+          Map<String, dynamic>.from(rawChallenge),
+        ),
+    };
+  }
+
+  void _requireStakedCompetitionAuthorization() {
+    if (!_storeReleasePolicy.allowsStakedCompetitions) {
+      throw UnsupportedError(
+        'Stake-based challenges are unavailable in this store release.',
+      );
+    }
   }
 }

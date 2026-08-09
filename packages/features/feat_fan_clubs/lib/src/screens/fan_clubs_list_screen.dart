@@ -83,12 +83,13 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
   }) async {
     try {
       final rows = await client
-          .from('fanclubs')
-          .select()
-          .eq('approval_status', 'approved')
-          .eq('active', true)
-          .eq('visibility', 'public')
-          .order('sort_order', ascending: true);
+          .from('fan_clubs')
+          .select(
+            'id,partner_id,club_id,name,region,description,member_count,'
+            'event_count,rating,banner_emoji,is_active,created_at,updated_at',
+          )
+          .eq('is_active', true)
+          .order('member_count', ascending: false);
       final clubs = List<Map<String, dynamic>>.from(
         rows,
       ).map(normalizeFanclubRow).toList(growable: false);

@@ -13,39 +13,43 @@ select ok(
   and not has_table_privilege('anon', 'public.shop_orders', 'UPDATE')
   and not has_table_privilege('anon', 'public.shop_orders', 'DELETE')
   and has_table_privilege('authenticated', 'public.shop_orders', 'SELECT')
-  and has_table_privilege('authenticated', 'public.shop_orders', 'INSERT')
-  and has_table_privilege('authenticated', 'public.shop_orders', 'UPDATE')
-  and has_table_privilege('authenticated', 'public.shop_orders', 'DELETE')
+  and not has_table_privilege('authenticated', 'public.shop_orders', 'INSERT')
+  and not has_table_privilege('authenticated', 'public.shop_orders', 'UPDATE')
+  and not has_table_privilege('authenticated', 'public.shop_orders', 'DELETE')
   and not has_table_privilege('authenticated', 'public.shop_orders', 'TRUNCATE')
   and has_table_privilege('service_role', 'public.shop_orders', 'SELECT')
   and has_table_privilege('service_role', 'public.shop_orders', 'INSERT')
   and has_table_privilege('service_role', 'public.shop_orders', 'UPDATE')
   and has_table_privilege('service_role', 'public.shop_orders', 'DELETE')
   and has_table_privilege('service_role', 'public.shop_orders', 'TRUNCATE'),
-  'shop order ACL exposes policy-gated DML only to authenticated and service roles'
+  'shop order ACL exposes reads to authenticated and reserves all DML for service or RPC boundaries'
 );
 
 select ok(
-  has_table_privilege('anon', 'public.shop_products', 'SELECT')
+  not has_table_privilege('anon', 'public.shop_products', 'SELECT')
+  and has_column_privilege('anon', 'public.shop_products', 'id', 'SELECT')
+  and not has_column_privilege('anon', 'public.shop_products', 'image_prompt', 'SELECT')
   and not has_table_privilege('anon', 'public.shop_products', 'INSERT')
   and not has_table_privilege('anon', 'public.shop_products', 'UPDATE')
   and not has_table_privilege('anon', 'public.shop_products', 'DELETE')
-  and has_table_privilege('authenticated', 'public.shop_products', 'SELECT')
-  and has_table_privilege('authenticated', 'public.shop_products', 'INSERT')
-  and has_table_privilege('authenticated', 'public.shop_products', 'UPDATE')
-  and has_table_privilege('authenticated', 'public.shop_products', 'DELETE')
+  and not has_table_privilege('authenticated', 'public.shop_products', 'SELECT')
+  and has_column_privilege('authenticated', 'public.shop_products', 'name', 'SELECT')
+  and not has_column_privilege('authenticated', 'public.shop_products', 'image_rights_approved_by', 'SELECT')
+  and not has_table_privilege('authenticated', 'public.shop_products', 'INSERT')
+  and not has_table_privilege('authenticated', 'public.shop_products', 'UPDATE')
+  and not has_table_privilege('authenticated', 'public.shop_products', 'DELETE')
   and not has_table_privilege('authenticated', 'public.shop_products', 'TRUNCATE')
   and has_table_privilege('service_role', 'public.shop_products', 'SELECT')
   and has_table_privilege('service_role', 'public.shop_products', 'INSERT')
   and has_table_privilege('service_role', 'public.shop_products', 'UPDATE')
   and has_table_privilege('service_role', 'public.shop_products', 'DELETE')
   and has_table_privilege('service_role', 'public.shop_products', 'TRUNCATE'),
-  'shop product ACL keeps an active public catalog and policy-gated authenticated administration'
+  'shop product ACL keeps a safe active catalog projection and server-only administration'
 );
 
 select ok(
   (
-    select count(*) = 5
+    select count(*) = 2
     from pg_policies
     where schemaname = 'public'
       and tablename = 'shop_orders'
@@ -62,14 +66,14 @@ select ok(
     from pg_policies
     where schemaname = 'public'
       and tablename = 'shop_orders'
-      and not ('authenticated' = any(roles))
+      and (cmd <> 'SELECT' or not ('authenticated' = any(roles)))
   ),
-  'shop orders retain only explicit authenticated owner and scoped-admin policies'
+  'shop orders retain only explicit authenticated owner and scoped-admin read policies'
 );
 
 select ok(
   (
-    select count(*) = 3
+    select count(*) = 2
     from pg_policies
     where schemaname = 'public'
       and tablename = 'shop_products'
@@ -82,7 +86,8 @@ select ok(
       and policyname = 'shop_products_select_active_anon'
       and 'anon' = any(roles)
       and cmd = 'SELECT'
-      and qual ~ 'is_active = true'
+      and qual ~ 'is_active'
+      and qual ~ 'image_rights_approved'
   )
   and exists (
     select 1
@@ -93,6 +98,7 @@ select ok(
       and 'authenticated' = any(roles)
       and cmd = 'SELECT'
       and qual ~ 'requesting_club_id'
+      and qual ~ 'image_rights_approved'
   )
   and not exists (
     select 1
@@ -129,7 +135,7 @@ select ok(
     where procedure.oid = 'public.cancel_shop_order_if_unchanged(uuid,timestamptz)'::regprocedure
       and procedure.prosecdef
       and procedure.proconfig = array['search_path=""']::text[]
-      and procedure.prosrc ~ 'club_id::text = v_actor_club_id'
+      and procedure.prosrc ~ 'shop_order.club_id = v_actor_club_id'
   )
   and exists (
     select 1
@@ -350,41 +356,26 @@ declare
   visible_orders bigint;
   remaining_stock integer;
   loaded_version timestamptz;
+  created_order public.shop_orders;
   cancelled_order public.shop_orders;
-  direct_changes bigint;
+  direct_update_denied boolean := false;
 begin
-  insert into public.shop_orders (
-    id,
-    user_id,
-    club_id,
-    items,
-    subtotal,
-    total
-  ) values (
-    '99310000-0000-4000-8000-000000000020',
-    '99310000-0000-4000-8000-000000000001',
-    9931001,
+  select * into created_order
+  from public.create_shop_order(
     jsonb_build_array(
       jsonb_build_object(
-        'product',
-        jsonb_build_object(
-          'id',
-          '99310000-0000-4000-8000-000000000010'
-        ),
-        'quantity',
-        2
+        'product_id', '99310000-0000-4000-8000-000000000010',
+        'quantity', 2
       )
     ),
-    20000,
-    20000
+    'Kigali shop tenant contract address',
+    'shop-tenant-contract-reference'
   );
 
   select count(*) into visible_orders
   from public.shop_orders
-  where id in (
-    '99310000-0000-4000-8000-000000000020',
-    '99310000-0000-4000-8000-000000000021'
-  );
+  where id = created_order.id
+     or id = '99310000-0000-4000-8000-000000000021';
 
   select stock into remaining_stock
   from public.shop_products
@@ -392,32 +383,36 @@ begin
 
   select updated_at into loaded_version
   from public.shop_orders
-  where id = '99310000-0000-4000-8000-000000000020';
+  where id = created_order.id;
 
   select * into cancelled_order
   from public.cancel_shop_order_if_unchanged(
-    '99310000-0000-4000-8000-000000000020',
+    created_order.id,
     loaded_version
   );
 
-  update public.shop_orders
-  set total = 1
-  where id = '99310000-0000-4000-8000-000000000020';
-  get diagnostics direct_changes = row_count;
+  begin
+    update public.shop_orders
+    set total = 1
+    where id = created_order.id;
+  exception
+    when insufficient_privilege then direct_update_denied := true;
+  end;
 
   if visible_orders <> 1
      or remaining_stock <> 3
      or cancelled_order.status <> 'cancelled'
-     or direct_changes <> 0 then
-    raise exception 'nested own-club order contract failed: visible %, stock %, status %, direct %',
+     or cancelled_order.inventory_reserved
+     or not direct_update_denied then
+    raise exception 'authoritative own-club order contract failed: visible %, stock %, status %, direct denied %',
       visible_orders,
       remaining_stock,
       cancelled_order.status,
-      direct_changes;
+      direct_update_denied;
   end if;
 end $$;
 reset role;
-select pass('profile fallback permits nested checkout and scoped RPC cancellation without direct owner updates');
+select pass('profile fallback permits authoritative checkout and scoped RPC cancellation without direct owner updates');
 
 set local role authenticated;
 do $$
@@ -458,17 +453,7 @@ begin
   end;
 
   begin
-    insert into public.shop_orders (
-      id,
-      user_id,
-      club_id,
-      items,
-      subtotal,
-      total
-    ) values (
-      '99310000-0000-4000-8000-000000000023',
-      '99310000-0000-4000-8000-000000000001',
-      9931001,
+    perform public.create_shop_order(
       jsonb_build_array(
         jsonb_build_object(
           'product_id',
@@ -477,25 +462,15 @@ begin
           1
         )
       ),
-      9000,
-      9000
+      'Kigali foreign product contract address',
+      'shop-tenant-foreign-product'
     );
   exception
     when raise_exception then foreign_product_denied := true;
   end;
 
   begin
-    insert into public.shop_orders (
-      id,
-      user_id,
-      club_id,
-      items,
-      subtotal,
-      total
-    ) values (
-      '99310000-0000-4000-8000-000000000024',
-      '99310000-0000-4000-8000-000000000001',
-      9931001,
+    perform public.create_shop_order(
       jsonb_build_array(
         jsonb_build_object(
           'product_id',
@@ -504,25 +479,15 @@ begin
           -2
         )
       ),
-      0,
-      0
+      'Kigali invalid quantity contract address',
+      'shop-tenant-invalid-quantity'
     );
   exception
     when raise_exception then invalid_quantity_denied := true;
   end;
 
   begin
-    insert into public.shop_orders (
-      id,
-      user_id,
-      club_id,
-      items,
-      subtotal,
-      total
-    ) values (
-      '99310000-0000-4000-8000-000000000025',
-      '99310000-0000-4000-8000-000000000001',
-      9931001,
+    perform public.create_shop_order(
       jsonb_build_array(
         jsonb_build_object(
           'product_id',
@@ -531,8 +496,8 @@ begin
           99
         )
       ),
-      990000,
-      990000
+      'Kigali insufficient stock contract address',
+      'shop-tenant-insufficient-stock'
     );
   exception
     when raise_exception then insufficient_stock_denied := true;
@@ -559,7 +524,7 @@ select ok(
     where id = '99310000-0000-4000-8000-000000000012'
   )
   and (
-    select stock = 3
+    select stock = 5
     from public.shop_products
     where id = '99310000-0000-4000-8000-000000000010'
   ),
@@ -598,7 +563,7 @@ declare
 begin
   select count(*) into other_visible
   from public.shop_orders
-  where id = '99310000-0000-4000-8000-000000000020';
+  where momo_reference = 'shop-tenant-contract-reference';
   if other_visible <> 0 then
     raise exception 'another supporter could read the member order';
   end if;
@@ -666,7 +631,7 @@ set local role authenticated;
 do $$
 declare
   visible_products bigint;
-  changed_products bigint;
+  mutation_denied boolean := false;
 begin
   select count(*) into visible_products
   from public.shop_products
@@ -676,15 +641,18 @@ begin
     '99310000-0000-4000-8000-000000000012'
   );
 
-  update public.shop_products
-  set stock = 99
-  where id = '99310000-0000-4000-8000-000000000010';
-  get diagnostics changed_products = row_count;
+  begin
+    update public.shop_products
+    set stock = 99
+    where id = '99310000-0000-4000-8000-000000000010';
+  exception
+    when insufficient_privilege then mutation_denied := true;
+  end;
 
-  if visible_products <> 1 or changed_products <> 0 then
-    raise exception 'supporter product controls failed: visible %, changed %',
+  if visible_products <> 1 or not mutation_denied then
+    raise exception 'supporter product controls failed: visible %, mutation denied %',
       visible_products,
-      changed_products;
+      mutation_denied;
   end if;
 end $$;
 reset role;
@@ -706,8 +674,8 @@ declare
   visible_products bigint;
 begin
   select count(*) into visible_products
-  from public.shop_products
-  where id in (
+  from public.admin_get_shop_products(50, 0, true) as product
+  where product.id in (
     '99310000-0000-4000-8000-000000000010',
     '99310000-0000-4000-8000-000000000011',
     '99310000-0000-4000-8000-000000000012'
@@ -718,47 +686,22 @@ begin
   end if;
 end $$;
 reset role;
-select pass('a club admin reads active and inactive products only in the assigned club');
+select pass('a club admin uses the bounded RPC to read active and inactive assigned-club products');
 
 set local role authenticated;
 do $$
 declare
-  own_changed bigint;
-  own_deleted bigint;
-  foreign_changed bigint;
-  foreign_insert_denied boolean := false;
+  update_denied boolean := false;
+  insert_denied boolean := false;
+  delete_denied boolean := false;
 begin
-  update public.shop_products
-  set stock = 7
-  where id = '99310000-0000-4000-8000-000000000011';
-  get diagnostics own_changed = row_count;
-
-  update public.shop_products
-  set stock = 99
-  where id = '99310000-0000-4000-8000-000000000012';
-  get diagnostics foreign_changed = row_count;
-
-  insert into public.shop_products (
-    id,
-    club_id,
-    name,
-    category,
-    price,
-    stock,
-    is_active
-  ) values (
-    '99310000-0000-4000-8000-000000000014',
-    9931001,
-    'Scoped Admin Contract Product',
-    'shirt',
-    7000,
-    2,
-    false
-  );
-
-  delete from public.shop_products
-  where id = '99310000-0000-4000-8000-000000000014';
-  get diagnostics own_deleted = row_count;
+  begin
+    update public.shop_products
+    set stock = 7
+    where id = '99310000-0000-4000-8000-000000000010';
+  exception
+    when insufficient_privilege then update_denied := true;
+  end;
 
   begin
     insert into public.shop_products (
@@ -779,22 +722,25 @@ begin
       true
     );
   exception
-    when insufficient_privilege then foreign_insert_denied := true;
+    when insufficient_privilege then insert_denied := true;
   end;
 
-  if own_changed <> 1
-     or own_deleted <> 1
-     or foreign_changed <> 0
-     or not foreign_insert_denied then
-    raise exception 'club admin mutation scope failed: changed %, deleted %, foreign %, denied %',
-      own_changed,
-      own_deleted,
-      foreign_changed,
-      foreign_insert_denied;
+  begin
+    delete from public.shop_products
+    where id = '99310000-0000-4000-8000-000000000010';
+  exception
+    when insufficient_privilege then delete_denied := true;
+  end;
+
+  if not update_denied or not insert_denied or not delete_denied then
+    raise exception 'direct admin mutation remained reachable: update %, insert %, delete %',
+      update_denied,
+      insert_denied,
+      delete_denied;
   end if;
 end $$;
 reset role;
-select pass('club-admin product writes succeed in-scope and fail closed across clubs');
+select pass('club-admin mobile sessions cannot bypass the server-side catalog mutation boundary');
 
 select * from finish();
 

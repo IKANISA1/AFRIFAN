@@ -27,7 +27,7 @@ enum _FanzoneHubSection {
   final String value;
   final IconData icon;
 
-  static _FanzoneHubSection fromUri(Uri uri) {
+  static _FanzoneHubSection fromUri(Uri uri, {required bool allowsRewards}) {
     final raw = uri.queryParameters['section']?.trim().toLowerCase();
     var normalized = raw;
     if (raw == null || raw.isEmpty || raw == 'play') {
@@ -37,10 +37,14 @@ enum _FanzoneHubSection {
     } else if (raw == 'points' || raw == 'pay') {
       normalized = 'wallet';
     }
-    return _FanzoneHubSection.values.firstWhere(
+    final selected = _FanzoneHubSection.values.firstWhere(
       (section) => section.value == normalized,
       orElse: () => _FanzoneHubSection.values.first,
     );
+    if (selected == _FanzoneHubSection.rewards && !allowsRewards) {
+      return _FanzoneHubSection.wallet;
+    }
+    return selected;
   }
 }
 
@@ -56,6 +60,7 @@ class FanzoneHubScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final asyncHub = ref.watch(fanzoneHubProvider);
     final notifier = ref.read(fanzoneHubProvider.notifier);
+    final storePolicy = ref.watch(storeReleasePolicyProvider);
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
@@ -64,7 +69,7 @@ class FanzoneHubScreen extends ConsumerWidget {
         actions: [
           AfriIconButton(
             icon: AfriIcons.more,
-            onTap: () => _showOverflow(context),
+            onTap: () => _showOverflow(context, storePolicy),
             tooltip: l10n.gameMoreOptions,
           ),
         ],
@@ -106,8 +111,10 @@ class FanzoneHubScreen extends ConsumerWidget {
   }
 
   Widget _buildPendingContent(BuildContext context, WidgetRef ref) {
+    final storePolicy = ref.watch(storeReleasePolicyProvider);
     final selectedSection = _FanzoneHubSection.fromUri(
       GoRouterState.of(context).uri,
+      allowsRewards: storePolicy.allowsRewardRedemption,
     );
 
     return GradientBackground(
@@ -139,7 +146,11 @@ class FanzoneHubScreen extends ConsumerWidget {
                 SpacingTokens.screenPadding,
                 0,
               ),
-              child: _buildSectionSelector(context, selectedSection),
+              child: _buildSectionSelector(
+                context,
+                selectedSection,
+                storePolicy,
+              ),
             ),
           ),
           const SliverToBoxAdapter(
@@ -166,8 +177,10 @@ class FanzoneHubScreen extends ConsumerWidget {
   ) {
     final l10n = context.afriL10n;
     final notifier = ref.read(fanzoneHubProvider.notifier);
+    final storePolicy = ref.watch(storeReleasePolicyProvider);
     final selectedSection = _FanzoneHubSection.fromUri(
       GoRouterState.of(context).uri,
+      allowsRewards: storePolicy.allowsRewardRedemption,
     );
     final profile = ref.watch(currentUserProvider);
 
@@ -245,50 +258,55 @@ class FanzoneHubScreen extends ConsumerWidget {
                   SpacingTokens.screenPadding,
                   0,
                 ),
-                child: _buildSectionSelector(context, selectedSection),
+                child: _buildSectionSelector(
+                  context,
+                  selectedSection,
+                  storePolicy,
+                ),
               ),
             ),
 
             if (_isSection(selectedSection, {'play', 'predictions'})) ...[
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    SpacingTokens.screenPadding,
-                    SpacingTokens.sectionGap,
-                    SpacingTokens.screenPadding,
-                    0,
-                  ),
-                  child: AfriSectionCard(
-                    title: l10n.gameMatchdayRounds,
-                    trailingLabel: l10n.gamePicksLabel,
-                    onTrailingTap: () => context.push('/fanzone/my'),
-                    child: snapshot.partnerPools.isEmpty
-                        ? _sectionState(
-                            title: l10n.gameNoMatchdayRounds,
-                            message: context.afriL10n.fanZoneRoundsEmpty,
-                          )
-                        : Column(
-                            children: snapshot.partnerPools
-                                .map(
-                                  (pool) => Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: SpacingTokens.listItemGap,
-                                    ),
-                                    child: HubPartnerPoolRow(
-                                      pool: pool,
-                                      onJoin: () => _showPartnerPoolJoinSheet(
-                                        context,
-                                        ref,
-                                        pool,
+              if (storePolicy.allowsStakedCompetitions)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      SpacingTokens.screenPadding,
+                      SpacingTokens.sectionGap,
+                      SpacingTokens.screenPadding,
+                      0,
+                    ),
+                    child: AfriSectionCard(
+                      title: l10n.gameMatchdayRounds,
+                      trailingLabel: l10n.gamePicksLabel,
+                      onTrailingTap: () => context.push('/fanzone/my'),
+                      child: snapshot.partnerPools.isEmpty
+                          ? _sectionState(
+                              title: l10n.gameNoMatchdayRounds,
+                              message: context.afriL10n.fanZoneRoundsEmpty,
+                            )
+                          : Column(
+                              children: snapshot.partnerPools
+                                  .map(
+                                    (pool) => Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: SpacingTokens.listItemGap,
+                                      ),
+                                      child: HubPartnerPoolRow(
+                                        pool: pool,
+                                        onJoin: () => _showPartnerPoolJoinSheet(
+                                          context,
+                                          ref,
+                                          pool,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )
-                                .toList(growable: false),
-                          ),
+                                  )
+                                  .toList(growable: false),
+                            ),
+                    ),
                   ),
                 ),
-              ),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
@@ -301,13 +319,14 @@ class FanzoneHubScreen extends ConsumerWidget {
                     title: l10n.gameMatchdayRounds,
                     child: _HubActionList(
                       actions: [
-                        _HubAction(
-                          icon: AfriIcons.profile,
-                          title: l10n.gameSupporters,
-                          subtitle: l10n.gameReviewJoinedRounds,
-                          onTap: () =>
-                              context.go('/fanzone?section=supporters'),
-                        ),
+                        if (storePolicy.allowsStakedCompetitions)
+                          _HubAction(
+                            icon: AfriIcons.profile,
+                            title: l10n.gameSupporters,
+                            subtitle: l10n.gameReviewJoinedRounds,
+                            onTap: () =>
+                                context.go('/fanzone?section=supporters'),
+                          ),
                         _HubAction(
                           icon: AfriIcons.live,
                           title: l10n.gameLiveGamesTitle,
@@ -558,7 +577,8 @@ class FanzoneHubScreen extends ConsumerWidget {
                 ),
               ),
 
-            if (selectedSection == _FanzoneHubSection.rewards)
+            if (storePolicy.allowsRewardRedemption &&
+                selectedSection == _FanzoneHubSection.rewards)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
@@ -625,9 +645,17 @@ class FanzoneHubScreen extends ConsumerWidget {
   Widget _buildSectionSelector(
     BuildContext context,
     _FanzoneHubSection selectedSection,
+    StoreReleasePolicy storePolicy,
   ) {
+    final sections = _FanzoneHubSection.values
+        .where(
+          (section) =>
+              section != _FanzoneHubSection.rewards ||
+              storePolicy.allowsRewardRedemption,
+        )
+        .toList(growable: false);
     return AfriSegmentedControl(
-      items: _FanzoneHubSection.values
+      items: sections
           .map(
             (section) => AfriSegment(
               label: _sectionLabel(context, section),
@@ -635,9 +663,9 @@ class FanzoneHubScreen extends ConsumerWidget {
             ),
           )
           .toList(growable: false),
-      selectedIndex: _FanzoneHubSection.values.indexOf(selectedSection),
+      selectedIndex: sections.indexOf(selectedSection),
       onChanged: (index) {
-        final section = _FanzoneHubSection.values[index];
+        final section = sections[index];
         unawaited(
           FirebaseAnalyticsService.logFanzoneEngagement(
             surface: section.value,
@@ -784,7 +812,7 @@ class FanzoneHubScreen extends ConsumerWidget {
     );
   }
 
-  void _showOverflow(BuildContext context) {
+  void _showOverflow(BuildContext context, StoreReleasePolicy storePolicy) {
     unawaited(
       showAfriActionSheet(
         context: context,
@@ -810,11 +838,12 @@ class FanzoneHubScreen extends ConsumerWidget {
             label: context.afriL10n.gameFans,
             onTap: () => context.go('/fanzone?section=supporters'),
           ),
-          AfriSheetAction(
-            icon: AfriIcons.rewards,
-            label: context.afriL10n.gameRewardsLabel,
-            onTap: () => context.go('/fanzone?section=rewards'),
-          ),
+          if (storePolicy.allowsRewardRedemption)
+            AfriSheetAction(
+              icon: AfriIcons.rewards,
+              label: context.afriL10n.gameRewardsLabel,
+              onTap: () => context.go('/fanzone?section=rewards'),
+            ),
         ],
       ),
     );

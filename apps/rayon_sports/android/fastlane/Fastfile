@@ -1,30 +1,59 @@
 default_platform(:android)
 
 platform :android do
-  desc "Deploy to internal testing track with metadata only"
+  desc "Validate the repository-local mobile store package"
+  lane :validate_metadata do
+    sh("python3", File.expand_path("../../store_metadata/validate_store_package.py", __dir__), "--surface", "mobile-play")
+  end
+
+  desc "Upload the approved AAB, metadata, artwork, and changelog as an internal draft"
   lane :internal do
+    sh(
+      "python3",
+      File.expand_path("../../store_metadata/validate_store_package.py", __dir__),
+      "--surface",
+      "mobile-play",
+      "--release-ready",
+    )
     upload_to_play_store(
       track: "internal",
-      aab: "../build/app/outputs/bundle/release/app-release.aab",
+      aab: File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__),
       skip_upload_metadata: false,
       skip_upload_changelogs: false,
-      skip_upload_images: true,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
       release_status: "draft",
     )
   end
 
-  desc "Upload metadata only (no AAB)"
+  desc "Upload approved metadata and artwork only (no AAB)"
   lane :metadata do
+    sh(
+      "python3",
+      File.expand_path("../../store_metadata/validate_store_package.py", __dir__),
+      "--surface",
+      "mobile-play",
+      "--release-ready",
+    )
     upload_to_play_store(
       skip_upload_aab: true,
       skip_upload_metadata: false,
       skip_upload_changelogs: false,
-      skip_upload_images: true,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
     )
   end
 
   desc "Promote internal to closed testing"
   lane :closed do
+    sh(
+      "python3",
+      File.expand_path("../../store_metadata/validate_store_package.py", __dir__),
+      "--surface",
+      "mobile-play",
+      "--release-ready",
+    )
+    UI.user_error!("Set CONFIRM_PLAY_PROMOTION=closed to promote the approved release") unless ENV["CONFIRM_PLAY_PROMOTION"] == "closed"
     upload_to_play_store(
       track: "internal",
       track_promote_to: "alpha",
@@ -35,6 +64,14 @@ platform :android do
 
   desc "Promote to production"
   lane :production do
+    sh(
+      "python3",
+      File.expand_path("../../store_metadata/validate_store_package.py", __dir__),
+      "--surface",
+      "mobile-play",
+      "--submission-ready",
+    )
+    UI.user_error!("Set CONFIRM_PLAY_PROMOTION=production to promote the approved release") unless ENV["CONFIRM_PLAY_PROMOTION"] == "production"
     upload_to_play_store(
       track: "alpha",
       track_promote_to: "production",

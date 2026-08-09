@@ -4,7 +4,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess, TicketOrder } from "@/lib/types";
 import { requestAdminApi } from "./http";
-import { requireAdminClubId } from "./helpers";
+import {
+  AdminMutationConflictError,
+  requireAdminClubId,
+  requireExpectedUpdatedAt,
+} from "./helpers";
 
 export const MAX_ADMIN_TICKET_ORDERS = 500;
 const MAX_ADMIN_TICKET_MUTATION = 100;
@@ -18,6 +22,7 @@ const ticketProjection = `
   status,
   purchased_at,
   created_at,
+  updated_at,
   momo_reference,
   profiles:user_id (full_name, phone),
   matches:match_id (home_team, away_team)
@@ -37,6 +42,7 @@ export type AdminTicketStatusAction = Extract<
 >;
 
 export interface AdminTicketOrder extends TicketOrder {
+  updatedAt: string;
   userName?: string;
   userPhone?: string;
   matchTitle?: string;
@@ -123,12 +129,19 @@ function amount(value: unknown) {
   return value;
 }
 
-function timestamp(value: unknown) {
-  const normalized = boundedString(value, "Ticket purchase time", 64);
+function timestamp(value: unknown, label: string) {
+  const normalized = boundedString(value, label, 64);
   if (normalized == null || Number.isNaN(Date.parse(normalized))) {
-    throw new AdminTicketValidationError("Ticket purchase time is invalid.");
+    throw new AdminTicketValidationError(`${label} is invalid.`);
   }
   return new Date(normalized).toISOString();
+}
+
+function loadedVersion(value: unknown) {
+  const normalized = requireExpectedUpdatedAt(
+    typeof value === "string" ? value : null,
+  );
+  return timestamp(normalized, "Ticket loaded version");
 }
 
 function status(value: unknown): AdminTicketStatus {
@@ -149,7 +162,8 @@ function normalizeTicketOrder(value: unknown): AdminTicketOrder {
     amountPaid: amount(order.amountPaid),
     status: status(order.status),
     qrCode: null,
-    purchasedAt: timestamp(order.purchasedAt),
+    purchasedAt: timestamp(order.purchasedAt, "Ticket purchase time"),
+    updatedAt: loadedVersion(order.updatedAt),
     userName: boundedString(order.userName, "Supporter name", 160) as string,
     userPhone:
       optionalString(order.userPhone, "Supporter phone", 40) ?? "Not available",
@@ -172,6 +186,7 @@ function mapTicketOrder(row: Record<string, unknown>) {
     amountPaid: row.amount_paid,
     status: row.status,
     purchasedAt: row.purchased_at ?? row.created_at,
+    updatedAt: row.updated_at,
     userName: profile.full_name,
     userPhone: profile.phone,
     matchTitle: `${homeTeam} vs ${awayTeam}`,
@@ -303,31 +318,41 @@ export async function getAdminTicketOrders(
   return data.map((row) => mapTicketOrder(row as Record<string, unknown>));
 }
 
-function normalizeTicketIds(ticketIds: readonly string[]) {
+export type AdminTicketVersion = Readonly<
+  Pick<AdminTicketOrder, "id" | "updatedAt">
+>;
+
+export function normalizeAdminTicketVersions(
+  tickets: readonly AdminTicketVersion[],
+) {
   if (
-    !Array.isArray(ticketIds) ||
-    ticketIds.length === 0 ||
-    ticketIds.length > MAX_ADMIN_TICKET_MUTATION
+    !Array.isArray(tickets) ||
+    tickets.length === 0 ||
+    tickets.length > MAX_ADMIN_TICKET_MUTATION
   ) {
     throw new AdminTicketValidationError(
       "Select between 1 and 100 ticket records.",
     );
   }
-  const ids = ticketIds.map((ticketId) =>
-    identifier(ticketId, "Ticket id"),
-  );
-  if (new Set(ids).size !== ids.length) {
+  const versions = tickets.map((value) => {
+    const ticket = record(value, "Ticket selection");
+    return {
+      id: identifier(ticket.id, "Ticket id"),
+      expectedUpdatedAt: loadedVersion(ticket.updatedAt),
+    };
+  });
+  if (new Set(versions.map((ticket) => ticket.id)).size !== versions.length) {
     throw new AdminTicketValidationError(
       "Ticket selection contains duplicate records.",
     );
   }
-  return ids;
+  return versions;
 }
 
 export async function updateTicketStatus(
   client: SupabaseClient,
   access: AdminAccess,
-  ticketId: string,
+  ticket: AdminTicketVersion,
   nextStatus: string,
 ) {
   if (!isAdminTicketStatusAction(nextStatus)) {
@@ -335,7 +360,7 @@ export async function updateTicketStatus(
       "Unsupported ticket status action.",
     );
   }
-  const [id] = normalizeTicketIds([ticketId]);
+  const [version] = normalizeAdminTicketVersions([ticket]);
   const permission = getAdminTicketTargetPermission(access, nextStatus);
   if (!permission.allowed) {
     throw new AdminTicketValidationError(
@@ -345,26 +370,39 @@ export async function updateTicketStatus(
   if (typeof window !== "undefined") {
     await requestAdminApi("tickets/status", {
       method: "POST",
-      body: { ticketId: id, status: nextStatus },
+      body: {
+        ticketId: version.id,
+        expectedUpdatedAt: version.expectedUpdatedAt,
+        status: nextStatus,
+      },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "update ticket status");
-  const { error } = await client.rpc("admin_bulk_update_ticket_status", {
-    p_ticket_ids: [id],
-    p_status: nextStatus,
-    p_club_id: Number(clubId),
-    p_actor_id: access.userId ?? null,
-    p_role: access.role,
-    p_is_super_admin: access.isSuperAdmin,
-  });
-  if (error) throw new Error(error.message);
+  const { error } = await client.rpc(
+    "admin_bulk_update_ticket_status_if_unchanged",
+    {
+      p_ticket_ids: [version.id],
+      p_expected_updated_ats: [version.expectedUpdatedAt],
+      p_status: nextStatus,
+      p_club_id: Number(clubId),
+      p_actor_id: access.userId ?? null,
+      p_role: access.role,
+      p_is_super_admin: access.isSuperAdmin,
+    },
+  );
+  if (error) {
+    if (/changed after .* loaded|loaded version|stale/i.test(error.message)) {
+      throw new AdminMutationConflictError(error.message);
+    }
+    throw new Error(error.message);
+  }
 }
 
 export async function bulkUpdateTicketStatus(
   client: SupabaseClient,
   access: AdminAccess,
-  ticketIds: readonly string[],
+  tickets: readonly AdminTicketVersion[],
   nextStatus: AdminTicketStatusAction,
 ) {
   if (!isAdminTicketStatusAction(nextStatus)) {
@@ -372,7 +410,7 @@ export async function bulkUpdateTicketStatus(
       "Unsupported ticket status action.",
     );
   }
-  const ids = normalizeTicketIds(ticketIds);
+  const versions = normalizeAdminTicketVersions(tickets);
   const permission = getAdminTicketTargetPermission(access, nextStatus);
   if (!permission.allowed) {
     throw new AdminTicketValidationError(
@@ -382,18 +420,35 @@ export async function bulkUpdateTicketStatus(
   if (typeof window !== "undefined") {
     await requestAdminApi("tickets/bulk-status", {
       method: "POST",
-      body: { ticketIds: ids, status: nextStatus },
+      body: {
+        tickets: versions.map(({ id, expectedUpdatedAt }) => ({
+          id,
+          expectedUpdatedAt,
+        })),
+        status: nextStatus,
+      },
     });
     return;
   }
   const clubId = requireAdminClubId(access, "bulk update ticket status");
-  const { error } = await client.rpc("admin_bulk_update_ticket_status", {
-    p_ticket_ids: ids,
-    p_status: nextStatus,
-    p_club_id: Number(clubId),
-    p_actor_id: access.userId ?? null,
-    p_role: access.role,
-    p_is_super_admin: access.isSuperAdmin,
-  });
-  if (error) throw new Error(error.message);
+  const { error } = await client.rpc(
+    "admin_bulk_update_ticket_status_if_unchanged",
+    {
+      p_ticket_ids: versions.map(({ id }) => id),
+      p_expected_updated_ats: versions.map(
+        ({ expectedUpdatedAt }) => expectedUpdatedAt,
+      ),
+      p_status: nextStatus,
+      p_club_id: Number(clubId),
+      p_actor_id: access.userId ?? null,
+      p_role: access.role,
+      p_is_super_admin: access.isSuperAdmin,
+    },
+  );
+  if (error) {
+    if (/changed after .* loaded|loaded version|stale/i.test(error.message)) {
+      throw new AdminMutationConflictError(error.message);
+    }
+    throw new Error(error.message);
+  }
 }

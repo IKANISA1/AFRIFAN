@@ -68,6 +68,57 @@ void main() {
         isNot(contains('challenge')),
       );
     });
+
+    test('production remote challenge enablement is policy fail-closed', () {
+      final modules = AppModuleRegistry.build(
+        const _FakeClubConfig(environment: 'production'),
+        configSnapshot: <String, dynamic>{
+          'features': <Map<String, dynamic>>[
+            <String, dynamic>{
+              'feature_key': 'challenge',
+              'display_name': 'Challenge',
+              'is_enabled': true,
+              'visibility_state': 'visible',
+              'rules': <String, dynamic>{
+                'rollout_rules': <String, dynamic>{
+                  'store_release_authorized': true,
+                },
+              },
+            },
+          ],
+        },
+      );
+
+      expect(
+        modules.map((module) => module.featureKey),
+        isNot(contains('challenge')),
+      );
+    });
+
+    test('production challenge needs every explicit policy authorization', () {
+      final modules = AppModuleRegistry.build(
+        const _FakeClubConfig(environment: 'production'),
+        configSnapshot: <String, dynamic>{
+          'features': <Map<String, dynamic>>[
+            <String, dynamic>{
+              'feature_key': 'challenge',
+              'display_name': 'Challenge',
+              'is_enabled': true,
+              'visibility_state': 'visible',
+              'rules': <String, dynamic>{
+                'rollout_rules': <String, dynamic>{
+                  'store_release_authorized': true,
+                  'stakes_have_no_real_world_value': true,
+                  'contest_rules_approved': true,
+                },
+              },
+            },
+          ],
+        },
+      );
+
+      expect(modules.map((module) => module.featureKey), contains('challenge'));
+    });
   });
 
   group('Tab routes', () {
@@ -425,6 +476,7 @@ class _FakeClubConfig implements ClubConfig {
     this.hasShop = true,
     this.hasTicketing = true,
     this.hasMobileAdmin = false,
+    this.environment = 'test',
   });
 
   @override
@@ -434,6 +486,8 @@ class _FakeClubConfig implements ClubConfig {
   @override
   final bool hasTicketing;
   final bool hasMobileAdmin;
+  @override
+  final String environment;
   @override
   String get appName => 'AFRICLUB Test';
   @override
@@ -462,8 +516,6 @@ class _FakeClubConfig implements ClubConfig {
   bool get hasChat => false;
   @override
   bool get hasSmsLedger => false;
-  @override
-  String get environment => 'test';
   @override
   Map<String, bool> get features => <String, bool>{
     'fan_clubs': hasFanClubs,

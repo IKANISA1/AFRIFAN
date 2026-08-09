@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "status": "pending",
+  "rules": {
+    "capture_from_exact_candidate": true,
+    "actual_app_ui_only": true,
+    "synthetic_session_only": true,
+    "no_real_supporter_data": true,
+    "no_real_pairing_codes_or_device_credentials": true,
+    "no_unapproved_club_marks_or_photography": true,
+    "no_store_rank_price_or_download_claims": true,
+    "production_content_language": "rw"
+  },
+  "assets": [
+    {
+      "id": "play_icon",
+      "required": true,
+      "path": "../android/fastlane/metadata/android/en-US/images/icon.png",
+      "width": 512,
+      "height": 512,
+      "format": "32-bit PNG with alpha",
+      "max_bytes": 1048576,
+      "status": "missing"
+    },
+    {
+      "id": "play_tv_banner",
+      "required": true,
+      "path": "../android/fastlane/metadata/android/en-US/images/tvBanner.png",
+      "width": 1280,
+      "height": 720,
+      "format": "JPEG or 24-bit PNG without alpha",
+      "status": "missing"
+    },
+    {
+      "id": "tv_screenshots",
+      "required": true,
+      "directory": "../android/fastlane/metadata/android/en-US/images/tvScreenshots",
+      "minimum_count": 1,
+      "planned_count": 5,
+      "recommended_size": "1920x1080 landscape",
+      "status": "missing"
+    },
+    {
+      "id": "launcher_banner_in_aab",
+      "required": true,
+      "source_path": "../android/app/src/main/res/drawable/tv_banner.xml",
+      "required_release_form": "320x180 xhdpi raster drawable with app name",
+      "status": "requires_runtime_owner_verification"
+    }
+  ],
+  "capture_plan": [
+    {"order": 1, "journey": "Owner pairing screen in the production Kinyarwanda locale", "redaction": "Use a synthetic expired code and non-production QR payload"},
+    {"order": 2, "journey": "Live question and choices", "redaction": "Synthetic question only"},
+    {"order": 3, "journey": "Answer reveal and public-alias standings", "redaction": "Synthetic aliases only"},
+    {"order": 4, "journey": "Offline retained state", "redaction": "No production session data"},
+    {"order": 5, "journey": "Revoked or expired recovery state", "redaction": "No credential or live code"}
+  ]
+}
