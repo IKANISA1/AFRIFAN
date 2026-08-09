@@ -10,7 +10,8 @@ submission, review approval, or publication.
 - [x] Play app ID `4972182995232608852`, package `rw.ikanisa.rayonSports.tv`, version `1.0.0`, and version code `1` are confirmed.
 - [x] Internal release **Gikundiro TV 1.0.0 (1) – Internal** is available to testers.
 - [ ] Record the distinct Play App Signing identity; the recorded `FA:4C:...:B7:7D` fingerprint is the upload certificate.
-- [ ] Approve public Google Play TV distribution, countries, audience/content model, and promotion from internal testing.
+- [x] Public Google Play TV is the approved distribution route; internal testing remains the controlled preproduction stage.
+- [ ] Approve countries and final public-track promotion from internal testing.
 - [ ] Verify the merged release manifest requires Leanback, does not require a
       touchscreen, has a valid launcher icon, and requests only intended permissions.
 - [x] Verify the 320x180 xhdpi launcher-banner source and production-AAB embedded entry have byte-identical SHA-256 `272c3d57586d779f21ac17bf36acde3848ca1f5814ac49b4317b6e77014164b5`.
@@ -21,26 +22,26 @@ submission, review approval, or publication.
 
 ## Store listing
 
-- [ ] Enter the approved English and French title, short description, and full
+- [x] Enter the controlled English and French title, short description, and full
       description from Fastlane metadata.
-- [ ] Upload the prepared approved 512x512 icon, 1024x500 feature graphic,
+- [x] Upload the prepared 512x512 icon, 1024x500 feature graphic,
       1280x720 TV banner, and both actual 1920x1080 TV screenshots; use the
       capture and rights provenance in `artwork_manifest.json`.
-- [ ] Order `02_synthetic_reveal.jpg` first because it demonstrates the core
+- [x] Order `02_synthetic_reveal.jpg` first because it demonstrates the core
       read-only experience; keep `01_service_unavailable.jpg` second as an
       honest recovery/configuration state.
-- [ ] Verify support and privacy URLs are publicly reachable and consistent with
+- [x] Verify support and privacy URLs are publicly reachable and consistent with
       the TV data practices.
 - [ ] Record brand/content-rights approval and native-language review.
 
 ## Policy forms and access
 
-- [ ] Reconcile and submit Data safety from `data_safety.md`.
-- [ ] Complete App access with tested private reviewer steps.
-- [ ] Complete target audience, IARC rating, ads, financial features, news,
+- [x] Reconcile and save Data Safety from `data_safety.md`.
+- [x] Complete App access with private synthetic reviewer steps; credentials remain portal-only.
+- [x] Complete target audience, IARC rating, ads, financial features, news,
       health, government, UGC, and all other currently required declarations.
-- [x] Record the authenticated dashboard progress observed on `2026-08-09`: 6 of 11 setup tasks complete (privacy policy, ads, government-app, financial-features, health-app, and category/contact setup).
-- [ ] Complete the five remaining setup tasks: content rating, target audience, Data safety, sign-in details, and store listing.
+- [x] Record the authenticated dashboard progress observed on `2026-08-10`: all 11 of 11 setup tasks complete.
+- [x] Android TV form-factor opt-in is active and the dedicated TV listing media is attached.
 - [ ] Keep a synthetic review session and authorized owner path available for the
       entire review window.
 
@@ -48,5 +49,7 @@ submission, review approval, or publication.
 
 - [x] Record local production upload AAB SHA-256 and upload-certificate evidence.
 - [x] Record internal-testing release name, version code, and availability to testers.
+- [x] Record internal availability on 3,004 compatible devices and target SDK 36 / minimum SDK 24 / three ABI evidence.
+- [ ] Verify the store-installed companion mobile build 6 and paired TV reviewer journey after the Play upload-key activation window.
 - [ ] Record Play app-signing identity, device catalog, pre-launch/TV quality results, public track/rollout status, submission time, reviewer status, and final decision.
 - [ ] A portal upload is not approval; a processed build is not publication.

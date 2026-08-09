@@ -5456,6 +5456,38 @@
       "data_source": "exact_current_native_tv_debug_build_against_isolated_local_supabase_with_synthetic_club_and_ios_simulator_generic_link_registration__no_shared_linked_or_production_mutation_no_physical_device_live_pairing_signing_store_or_approval_claim"
     },
     {
+      "id": "supabase-production-audit-20260809",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/supabase_production_audit_20260809",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "ADMIN-05",
+        "STATE-03",
+        "REL-06",
+        "EVID-07",
+        "EVID-08"
+      ],
+      "baseline_commit": "d92394f47f660551701f4c65769085587cd1962b",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "hosted_production_supabase_control_audit_pre_final_hardening",
+      "platform": "supabase_management_api_hosted_postgres_and_edge_runtime",
+      "runtime_device": "Supabase hosted PostgreSQL 17.6 and deployed Edge Functions; control audit captured before the final ACL and auth-hook dependency migrations",
+      "viewport_profiles": [
+        {
+          "applicable": false,
+          "reason": "database, Auth, Storage, Realtime, Edge Function, advisor, secret-name, cron, and migration-parity evidence; no visual capture is claimed"
+        }
+      ],
+      "locale": "not_applicable_backend_control_audit",
+      "themes": [
+        "not_applicable_no_visual_capture"
+      ],
+      "captured_at": "2026-08-09T19:33:19Z",
+      "data_source": "historical production Supabase control audit with 18-of-18 governed Edge Function parity and zero strict-control failures; retained as pre-final evidence and superseded for current ACL, policy, function-path, and auth-hook state by later production catalog checks and migration 20260810011500"
+    },
+    {
       "id": "state03-production-concurrency-20260808",
       "admission_status": "admitted",
       "directory": "output/implementation_goal_20260724/state03_production_concurrency_20260808",

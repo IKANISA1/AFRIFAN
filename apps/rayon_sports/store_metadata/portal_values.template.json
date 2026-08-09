@@ -21,7 +21,7 @@
     "artifact_processing_status": "UPLOAD_REJECTED_REPLACEMENT_CERTIFICATE_NOT_VALID_UNTIL_2026-08-11T11:24:08Z",
     "submission_status": "NOT_YET_SENT_FOR_REVIEW",
     "verified_receipt": {
-      "observed_on": "2026-08-09",
+      "observed_on": "2026-08-10",
       "package_name": "rw.gikundiro.app",
       "intended_candidate_version_name": "1.0.3",
       "intended_candidate_version_code": 6,
@@ -82,11 +82,19 @@
       },
       "current_live_url_probe": {
         "dns_resolves": true,
-        "response_bytes": 1356,
-        "sha256_prefix": "9363ebe",
-        "content_status": "LEGACY_PAGES_SHELL_NOT_RELEASE_WORKER"
+        "worker_version_id": "33531652-e344-4192-8d2a-4ce73d0e1f5f",
+        "source_commit": "207e336ce1c3b881088d392e58d06286418bd2d5",
+        "build_id": "xno1d6QCcb21lW9Pm5WYH",
+        "custom_domains_active": [
+          "gikundiro.com",
+          "www.gikundiro.com",
+          "admin.gikundiro.com",
+          "fans.gikundiro.com"
+        ],
+        "content_status": "RELEASE_WORKER_ACTIVE_ALL_FOUR_CUSTOM_DOMAINS",
+        "admin_api_probe": "401_JSON_ADMIN_AUTHENTICATION_REQUIRED"
       },
-      "boundary": "The app record, signing identities, current dashboard state, and exact local code-6 AAB are verified. Play accepted the complete AAB transfer but rejected processing because the registered replacement 18:0C certificate is not valid until 2026-08-11T11:24:08Z; the rejected artifact was removed from the internal-testing draft. Code 6 therefore remains not uploaded, and a fresh accepted upload after that exact UTC time is required. The release Worker must also be cut over at the configured public URLs before Play URL revalidation; a resolving legacy shell is not deployment evidence for the release content."
+      "boundary": "The app record, signing identities, current dashboard state, exact local code-6 AAB, and release Worker on all four custom domains are verified. Play accepted the complete AAB transfer but rejected processing because the registered replacement 18:0C certificate is not valid until 2026-08-11T11:24:08Z; the rejected artifact was removed from the internal-testing draft. Code 6 therefore remains not uploaded, and a fresh accepted upload after that exact UTC time plus Play URL revalidation is required."
     }
   },
   "app_store_connect": {
@@ -103,13 +111,13 @@
       "RWA"
     ],
     "reviewer_access_configured": null,
-    "app_privacy_published": false,
+    "app_privacy_published": true,
     "build_uploaded": true,
     "build_processing_status": "VALID_APP_STORE_ELIGIBLE",
     "testflight_validation_complete": null,
-    "submission_status": "READY_FOR_REVIEW_BLOCKED_APP_PRIVACY",
+    "submission_status": "WAITING_FOR_REVIEW",
     "verified_receipt": {
-      "observed_on": "2026-08-09",
+      "observed_on": "2026-08-10",
       "bundle_id": "rw.ikanisa.rayonSports",
       "primary_locale": "en-US",
       "primary_category": "SPORTS",
@@ -129,17 +137,19 @@
       "build_store_eligibility": "APP_STORE_ELIGIBLE",
       "build_attached_to_version": true,
       "review_submission_id": "ff812c5c-8f5a-489b-89cd-6ea87bde9908",
-      "review_submission_state": "READY_FOR_REVIEW",
-      "version_item_attached_to_review_submission": false,
-      "submit_for_review_completed": false,
+      "review_submission_state": "WAITING_FOR_REVIEW",
+      "version_item_attached_to_review_submission": true,
+      "submit_for_review_completed": true,
+      "date_submitted_portal_display": "2026-08-10 12:59 AM",
+      "submitted_by": "Jean Bosco",
       "review_item_attachment_attempt": {
         "observed_on": "2026-08-09",
         "http_status": 409,
         "result": "STATE_ERROR.APP_DATA_USAGES_REQUIRED",
         "associated_error": "Published App Privacy data-usage answers are required before the version can be attached."
       },
-      "blocking_reason": "App Privacy is not published, so the version item cannot yet be attached to the review submission.",
-      "boundary": "The exact upload, processing state, immutable SKU, primary locale, and app-level third-party-content declaration are verified. A direct App Store Connect API attachment attempt returned only APP_DATA_USAGES_REQUIRED, confirming that the prepared privacy answers must be published before the version item can be attached. This is not a submitted, reviewed, or approved App Store release; accountable third-party-content rights evidence remains a separate gate."
+      "blocking_reason": null,
+      "boundary": "The exact upload, processing state, immutable SKU, primary locale, published App Privacy declaration, version attachment, and submission receipt are verified. App Store version 1.0.3 (6) is submitted and Waiting for Review; it is not yet reviewed, approved, or published. Accountable third-party-content rights evidence remains a separate gate."
     }
   }
 }

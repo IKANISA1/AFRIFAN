@@ -23,8 +23,8 @@
 
 ## App content
 
-- [ ] Cut over the exact release Worker at `https://gikundiro.com/privacy`, then revalidate the privacy-policy URL in Play Console; the portal reports `DNS not found`, while the latest direct probe resolves but returns only the 1,356-byte legacy Pages shell (`9363ebe…` SHA-256 prefix).
-- [ ] Cut over the exact release Worker at `https://gikundiro.com/account-deletion`, then revalidate both account-deletion and data-deletion fields in Play Console; both currently report `DNS not found`.
+- [x] Exact release Worker version `33531652-e344-4192-8d2a-4ce73d0e1f5f` is active on `gikundiro.com`, `www`, `admin`, and `fans`; build ID `xno1d6QCcb21lW9Pm5WYH` and the admin 401 JSON boundary are verified.
+- [ ] Revalidate the now-live privacy-policy, account-deletion, and data-deletion URLs in Play Console; the three portal errors predate the completed Worker cutover.
 - [ ] Ads declaration reconciled to exact AAB.
 - [ ] App access instructions tested from a fresh install.
 - [ ] Target audience and IARC complete.

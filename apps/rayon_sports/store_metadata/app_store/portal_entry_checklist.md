@@ -20,7 +20,7 @@
 - [ ] iPhone and iPad screenshot sets pass the artwork manifest.
 - [x] App icon presence is verified in exact IPA SHA-256 `606739bff02260103ac0ad55eb1b2d1c223f8aea60e9de1c4099ca7572c477bc`; brand/content-rights approval remains separate.
 - [ ] Privacy/support/marketing URLs verified live.
-- [ ] App Privacy answers match exact archive and SDK privacy report.
+- [x] App Privacy answers are published and were accepted for version attachment/submission.
 - [ ] Age-rating questionnaire and regional results approved.
 - [ ] App-level declaration `USES_THIRD_PARTY_CONTENT` is verified; retain the separate accountable content-rights authority gate.
 - [ ] Export-compliance answer approved.
@@ -36,10 +36,10 @@
 - [ ] Distribution signing identity/profile/capabilities evidence recorded.
 - [x] App Store Connect build resource `2e7356c9-a12a-46d3-be35-c0bd6621b3a0` is `VALID` and `APP_STORE_ELIGIBLE`.
 - [ ] Xcode validation and privacy report complete.
-- [x] Exact build 6 upload processed successfully; App Privacy remains a separate unresolved submission gate.
+- [x] Exact build 6 upload processed successfully and App Privacy is published.
 - [ ] Store-installed TestFlight UAT on iPhone and iPad complete.
 - [x] Build 6 is attached to App Store version resource `9e1e6c87-be1d-4736-82f6-48d397087f62`.
-- [x] Review submission `ff812c5c-8f5a-489b-89cd-6ea87bde9908` exists in `READY_FOR_REVIEW` state.
-- [ ] Publish App Privacy, then attach the version item to the review submission. The 9 August API attempt returned `409 STATE_ERROR.APP_DATA_USAGES_REQUIRED` with no other associated submission error.
-- [ ] Explicitly complete **Submit for Review**; `READY_FOR_REVIEW` is not submission.
-- [ ] Capture the exact submission timestamp after submission; the current receipt records only observation date `2026-08-09`.
+- [x] Review submission `ff812c5c-8f5a-489b-89cd-6ea87bde9908` contains iOS version `1.0.3 (6)`.
+- [x] **Submit for Review** completed; App Store Connect reports **Waiting for Review**.
+- [x] Submission receipt captured: portal display `10 August 2026, 12:59 AM`, submitted by Jean Bosco.
+- [ ] Capture Apple review decision, approval, and public-availability receipts when Apple completes review.
