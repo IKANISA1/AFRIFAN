@@ -1,0 +1,160 @@
+name: CI — Free Self-Hosted Release Gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Validation scope to run on the zero-cost self-hosted runner
+        required: true
+        default: smoke
+        type: choice
+        options:
+          - smoke
+          - supabase
+          - web
+          - flutter
+          - all
+
+permissions:
+  contents: read
+
+concurrency:
+  group: free-self-hosted-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Exact-commit runner preflight
+    runs-on: [self-hosted, macOS, ARM64, africlub-free]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - name: Bind evidence to the requested commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test -z "$(git status --porcelain)"
+          echo "Validated ${GITHUB_SHA} on $(uname -m) $(sw_vers -productVersion)"
+
+  supabase:
+    name: Supabase contracts
+    if: inputs.scope == 'supabase' || inputs.scope == 'all'
+    needs: preflight
+    runs-on: [self-hosted, macOS, ARM64, africlub-free]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Validate migration and Edge Function controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/scripts/validate_supabase_local_only_migrations.mjs
+          node tools/scripts/validate_supabase_advisor_remediation.mjs
+          node tools/scripts/validate_supabase_edge_contract.mjs
+          node tools/scripts/validate_live_games_v2_contract.mjs
+          deno check $(find supabase/functions -mindepth 2 -maxdepth 2 -name index.ts -print | sort)
+          deno test --allow-env --allow-net --allow-read \
+            $(find supabase/functions -type f \( -name '*_test.ts' -o -name '*test.ts' \) -print | sort)
+
+      - name: Run the transactional database contract suite
+        shell: bash
+        run: npx --yes supabase@2.113.0 test db --local
+
+  web:
+    name: Web and Cloudflare candidate
+    if: inputs.scope == 'web' || inputs.scope == 'all'
+    needs: preflight
+    runs-on: [self-hosted, macOS, ARM64, africlub-free]
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: apps/rayon_sports/web
+    env:
+      NEXT_PUBLIC_ANDROID_APP_LINK_SHA256_FINGERPRINTS: B8:B4:84:C9:3D:80:83:12:9C:90:1B:D4:9C:BE:35:65:7B:C1:4D:38:F3:D9:19:04:75:45:83:B5:AB:BC:E5:D9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/rayon_sports/web/package-lock.json
+
+      - name: Install exact dependencies
+        run: npm ci
+
+      - name: Run unit, static, and production-build gates
+        run: |
+          npm run lint
+          npm test
+          npm run test:venue-coverage
+          npm run typecheck
+          npm run build
+          npm run size
+          npm run test:cloudflare-release
+
+      - name: Run the controlled browser matrix
+        run: npm run test:e2e
+
+      - name: Package and dry-run the Worker candidate
+        run: |
+          npx opennextjs-cloudflare build --skipNextBuild
+          node scripts/fix-route-group-manifests.mjs --open-next
+          npx wrangler deploy --dry-run
+
+  flutter:
+    name: Flutter analysis and tests
+    if: inputs.scope == 'flutter' || inputs.scope == 'all'
+    needs: preflight
+    runs-on: [self-hosted, macOS, ARM64, africlub-free]
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          channel: stable
+          cache: true
+
+      - name: Resolve and bootstrap the workspace
+        run: |
+          flutter pub get
+          dart run melos bootstrap
+
+      - name: Analyze every package
+        run: dart run melos exec -- flutter analyze --fatal-infos --fatal-warnings
+
+      - name: Test every package serially
+        run: >-
+          dart run melos exec --concurrency=1 --dir-exists="test" --
+          bash "$MELOS_ROOT_PATH/tools/scripts/run_package_tests.sh"
+
+      - name: Run release smoke and governance gates
+        run: |
+          flutter test apps/rayon_sports/integration_test/release_readiness_smoke_test.dart
+          bash tools/scripts/validate_golden_contract.sh
+          bash tools/scripts/validate_evidence_privacy.sh
