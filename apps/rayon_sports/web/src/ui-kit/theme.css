@@ -3271,6 +3271,11 @@ textarea:focus-visible,
   min-height: 3rem;
 }
 
+.admin-workspace select.dashboard-input {
+  min-height: 3rem;
+  height: 3rem;
+}
+
 .admin-gamification-wallet-state-surface button,
 .admin-membership-state-surface button,
 .admin-notifications-state-surface button,

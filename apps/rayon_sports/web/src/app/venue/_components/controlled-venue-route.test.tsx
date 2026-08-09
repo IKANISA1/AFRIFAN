@@ -71,6 +71,10 @@ describe("controlled venue route evidence", () => {
     expect(surface).toHaveAttribute("data-venue-state", "pressed");
     fireEvent.pointerUp(refresh);
     expect(surface).toHaveAttribute("data-venue-state", "focused");
+    fireEvent.mouseDown(refresh);
+    expect(surface).toHaveAttribute("data-venue-state", "pressed");
+    fireEvent.mouseUp(refresh);
+    expect(surface).toHaveAttribute("data-venue-state", "focused");
     fireEvent.blur(refresh);
 
     const confirmed = screen.getByRole("button", {

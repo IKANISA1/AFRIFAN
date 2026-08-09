@@ -32,7 +32,7 @@ call the Meta Graph API or carry WhatsApp Cloud API secrets.
   remove it immediately after the test.
 
 #### Required Edge Function Secrets
-- `SUPABASE_AUTH_HOOK_SEND_SMS_SECRET` — the Standard Webhooks signing secret
+- `AUTH_HOOK_SEND_SMS_SECRET` — the Standard Webhooks signing secret
   configured for the Supabase Send SMS HTTP Hook
 - `WHATSAPP_PHONE_NUMBER_ID`
 - `WHATSAPP_CLOUD_API_TOKEN` or `WHATSAPP_CLOUD_ACCESS_TOKEN`

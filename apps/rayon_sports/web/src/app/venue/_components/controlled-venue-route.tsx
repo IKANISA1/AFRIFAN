@@ -240,8 +240,7 @@ export function ControlledVenueRoutePage({
     : interaction === "none"
       ? evidenceState
       : interaction;
-  const locked =
-    !online || evidenceState !== "ready" || interaction === "pressed";
+  const locked = !online || evidenceState !== "ready";
   const showRecords = ![
     "loading",
     "empty",
@@ -337,6 +336,8 @@ export function ControlledVenueRoutePage({
           onPointerDown={() => setInteraction("pressed")}
           onPointerUp={() => setInteraction("focused")}
           onPointerCancel={() => setInteraction("focused")}
+          onMouseDown={() => setInteraction("pressed")}
+          onMouseUp={() => setInteraction("focused")}
         >
           {config.primaryAction}
         </button>

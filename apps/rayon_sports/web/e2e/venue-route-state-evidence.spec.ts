@@ -229,18 +229,10 @@ async function captureRoute(browser: Browser, route: VenueRoute) {
   await open("ready");
   const refresh = page.getByRole("button", { name: route.action });
   await refresh.focus();
-  await refresh.dispatchEvent("pointerdown", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await refresh.dispatchEvent("mousedown", { button: 0 });
   await expectState("pressed");
   await capture("pressed");
-  await refresh.dispatchEvent("pointerup", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await refresh.dispatchEvent("mouseup", { button: 0 });
 
   await open("ready-selected");
   await page.getByRole("button", { name: /confirmed snapshot/i }).click();
