@@ -96,7 +96,7 @@ openai_api_key = "env(OPENAI_API_KEY)"
 
 # Email testing server. Emails sent with the local dev setup are not actually sent - rather, they
 # are monitored, and you can view the emails that would have been sent from the web interface.
-[inbucket]
+[local_smtp]
 enabled = true
 # Port to use for the email testing server web interface.
 port = 54324
@@ -264,13 +264,12 @@ max_frequency = "5s"
 enabled = true
 uri = "pg-functions://postgres/public/custom_access_token_hook"
 
-# Send SMS hook — routes OTP delivery through WhatsApp Cloud API.
-# Production: enable via Supabase Dashboard > Auth > Hooks > Send SMS
-#   URI: https://mmpbzcdhfvplxplnfucy.supabase.co/functions/v1/send-sms
-# [auth.hook.send_sms]
-# enabled = true
-# uri = "https://mmpbzcdhfvplxplnfucy.supabase.co/functions/v1/send-sms"
-# secrets = "env(SUPABASE_AUTH_HOOK_SEND_SMS_SECRET)"
+# Send SMS hook — routes OTP delivery through WhatsApp Cloud API. The hosted
+# Auth configuration uses the same URI and a separately managed signing secret.
+[auth.hook.send_sms]
+enabled = true
+uri = "https://mmpbzcdhfvplxplnfucy.supabase.co/functions/v1/send-sms"
+secrets = "env(AUTH_HOOK_SEND_SMS_SECRET)"
 
 # Multi-factor-authentication is available to Supabase Pro plan.
 [auth.mfa]
@@ -365,8 +364,30 @@ deno_version = 2
 # secret_key = "env(SECRET_VALUE)"
 
 # ── Edge Functions ──────────────────────────────────────────────
-# JWT verification is disabled at the gateway level.
-# Each function handles its own auth internally using the service_role key.
+# Gateway JWT verification is explicitly disabled because modern publishable and
+# secret keys are not JWTs. Every governed function must authenticate in code;
+# the public runtime-config endpoint is the only intentional anonymous read.
+
+[functions.admin-send-notification]
+verify_jwt = false
+
+[functions.admin-upload-image]
+verify_jwt = false
+
+[functions.admin-settle-fixture]
+verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = false
+
+[functions.dispatch-scheduled-notifications]
+verify_jwt = false
+
+[functions.game-session-action]
+verify_jwt = false
+
+[functions.generate-admin-image]
+verify_jwt = false
 
 [functions.sms-ingest]
 verify_jwt = false
@@ -377,6 +398,15 @@ verify_jwt = false
 [functions.generate-product-image]
 verify_jwt = false
 
+[functions.generate-question-drafts]
+verify_jwt = false
+
+[functions.get-platform-config]
+verify_jwt = false
+
+[functions.football-sync]
+verify_jwt = false
+
 [functions.record-operational-health]
 verify_jwt = false
 
@@ -385,6 +415,12 @@ verify_jwt = false
 
 # Supabase Auth hook — delivers OTP codes via WhatsApp Cloud API
 [functions.send-sms]
+verify_jwt = false
+
+[functions.send-notification]
+verify_jwt = false
+
+[functions.settle-prediction-notifications]
 verify_jwt = false
 
 [analytics]

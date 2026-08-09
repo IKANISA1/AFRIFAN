@@ -27,7 +27,7 @@ import { createSendSmsHandler } from "./handler.ts";
 export const handleRequest = createSendSmsHandler({
   sendOtpTemplate,
   getHookSecret: () =>
-    Deno.env.get("SUPABASE_AUTH_HOOK_SEND_SMS_SECRET")?.trim(),
+    Deno.env.get("AUTH_HOOK_SEND_SMS_SECRET")?.trim(),
 });
 
 if (import.meta.main) {

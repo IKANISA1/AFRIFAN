@@ -4,6 +4,7 @@
  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { jsonForbidden, jsonUnauthorized } from "./response.ts";
+import { getSupabasePublishableKey, getSupabaseUrl } from "./supabase.ts";
 
 export interface ValidatedRequest {
   userId: string;
@@ -67,6 +68,18 @@ function extractRoles(appMetadata: Record<string, unknown>): string[] {
   return Array.from(roles);
 }
 
+export function extractTrustedClubId(
+  appMetadata: Record<string, unknown>,
+): string | null {
+  const value = appMetadata["club_id"];
+  if (typeof value === "number" && Number.isSafeInteger(value) && value > 0) {
+    return String(value);
+  }
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return /^[1-9][0-9]*$/.test(trimmed) ? trimmed : null;
+}
+
 function hasMetadataAdminAccess(
   appMetadata: Record<string, unknown>,
   clubId?: number | string | null,
@@ -107,17 +120,17 @@ export async function validateRequest(
     return jsonUnauthorized("Missing Authorization header");
   }
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const supabaseUrl = getSupabaseUrl();
+  const supabasePublishableKey = getSupabasePublishableKey();
 
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  const supabase = createClient(supabaseUrl, supabasePublishableKey, {
     global: { headers: { Authorization: authHeader } },
   });
 
   const authResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
     headers: {
       Authorization: authHeader,
-      apikey: supabaseAnonKey,
+      apikey: supabasePublishableKey,
     },
   });
 
@@ -130,15 +143,14 @@ export async function validateRequest(
     return jsonUnauthorized("Invalid or expired token");
   }
 
-  const clubId = (user.app_metadata?.club_id as string | undefined) ??
-    (user.user_metadata?.club_id as string | undefined) ??
-    null;
+  const appMetadata = (user.app_metadata ?? {}) as Record<string, unknown>;
+  // User metadata is user-editable and must never establish tenant scope.
+  const clubId = extractTrustedClubId(appMetadata);
 
   if (options?.requireClubId && !clubId) {
     return jsonForbidden("club_id required in JWT claims");
   }
 
-  const appMetadata = (user.app_metadata ?? {}) as Record<string, unknown>;
   const roles = extractRoles(appMetadata);
 
   if (options?.requireAdmin) {

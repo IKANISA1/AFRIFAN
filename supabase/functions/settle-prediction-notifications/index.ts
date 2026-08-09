@@ -176,7 +176,8 @@ if (import.meta.main) {
     handler(req).then(
       (res) =>
         new Response(res.body, {
-          ...res,
+          status: res.status,
+          statusText: res.statusText,
           headers: {
             ...Object.fromEntries(res.headers.entries()),
             ...corsHeaders(),

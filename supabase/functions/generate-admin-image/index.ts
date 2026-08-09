@@ -142,15 +142,6 @@ function normalizeAspectRatio(value: unknown, fallback: string) {
   return supportedAspectRatios.has(normalized) ? normalized : fallback;
 }
 
-function slugify(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 64);
-}
-
 async function ensureClubAdminAccess(
   adminClient: ReturnType<typeof createAdminClient>,
   options: { userId: string; clubId: number },
@@ -207,7 +198,8 @@ function buildPrompt(
 ) {
   const directive = kindDirectives[kind];
   const clubName = club.club_name?.trim() || "the club";
-  const brandColors = club.primary_brand_colors?.trim() || "the club brand colors";
+  const brandColors = club.primary_brand_colors?.trim() ||
+    "the club brand colors";
   const nickname = club.nickname_brand_identity?.trim() || "the supporters";
   const country = club.country_name?.trim() || "Africa";
   const region = club.region?.trim() || "regional";
@@ -279,17 +271,25 @@ const handler = async (request: Request) => {
 
     const geminiKey = Deno.env.get("GEMINI_API_KEY")?.trim();
     if (!geminiKey) {
-      return jsonError("GEMINI_API_KEY is not configured for this project.", 503);
+      return jsonError(
+        "GEMINI_API_KEY is not configured for this project.",
+        503,
+      );
     }
 
-    const model =
-      Deno.env.get("GEMINI_IMAGE_MODEL")?.trim() || "gemini-2.5-flash-image";
+    const model = Deno.env.get("GEMINI_IMAGE_MODEL")?.trim() ||
+      "gemini-2.5-flash-image";
     const aspectRatio = normalizeAspectRatio(
       body.aspectRatio,
       kindDirectives[kind].aspectRatio,
     );
     const subject = asTrimmedString(body.subject);
-    const resolvedPrompt = buildPrompt(club as ClubBrand, kind, prompt, subject);
+    const resolvedPrompt = buildPrompt(
+      club as ClubBrand,
+      kind,
+      prompt,
+      subject,
+    );
 
     const geminiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -347,17 +347,17 @@ const handler = async (request: Request) => {
       : mimeType.includes("png")
       ? "png"
       : "jpg";
-    const clubFolder = slugify((club as ClubBrand).club_name || `club-${clubId}`) ||
-      `club-${clubId}`;
-    const storagePath =
-      `${clubFolder}/admin/${kind}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${extension}`;
+    const clubFolder = `club-${clubId}`;
+    const storagePath = `${clubFolder}/admin/${kind}/${Date.now()}-${
+      crypto.randomUUID().slice(0, 8)
+    }.${extension}`;
     const imageBytes = Uint8Array.from(
       atob(base64Data),
       (char) => char.charCodeAt(0),
     );
 
     const { error: uploadError } = await adminClient.storage
-      .from("product-images")
+      .from("africlub-product-images")
       .upload(storagePath, imageBytes, {
         contentType: mimeType,
         upsert: false,
@@ -368,7 +368,7 @@ const handler = async (request: Request) => {
     }
 
     const { data: publicUrlData } = adminClient.storage
-      .from("product-images")
+      .from("africlub-product-images")
       .getPublicUrl(storagePath);
 
     return jsonOk({
@@ -393,7 +393,8 @@ if (import.meta.main) {
   Deno.serve((request) =>
     handler(request).then((response) =>
       new Response(response.body, {
-        ...response,
+        status: response.status,
+        statusText: response.statusText,
         headers: {
           ...Object.fromEntries(response.headers.entries()),
           ...corsHeaders(),

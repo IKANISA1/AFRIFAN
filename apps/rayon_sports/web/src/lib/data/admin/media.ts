@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
 
-export const adminMediaBucket = "product-images";
+export const adminMediaBucket = "africlub-product-images";
 export const adminMediaMaxFileBytes = 5 * 1024 * 1024;
 
 const allowedMimeTypes = new Set([
@@ -45,15 +45,6 @@ export function defaultAspectRatioForAdminMediaKind(
     case "notification":
       return "16:9";
   }
-}
-
-function slugifySegment(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 64);
 }
 
 function resolveExtension(fileName: string, mimeType: string) {
@@ -103,8 +94,7 @@ export function buildAdminMediaStoragePath(options: {
   fileName: string;
   mimeType: string;
 }) {
-  const folder =
-    slugifySegment(options.clubSlug ?? "") || `club-${options.clubId}`;
+  const folder = `club-${options.clubId}`;
   const extension = resolveExtension(options.fileName, options.mimeType);
   const nonce = crypto.randomUUID().slice(0, 8);
   return `${folder}/admin/${options.kind}/${Date.now()}-${nonce}.${extension}`;
@@ -121,38 +111,35 @@ export async function uploadAdminImage(
 ): Promise<UploadedAdminImage> {
   const clubId = requireAdminClubId(access);
   validateImageFile(options.file);
-
-  const storagePath = buildAdminMediaStoragePath({
-    clubId,
-    clubSlug: options.clubSlug,
-    kind: options.kind,
-    fileName: options.file.name,
-    mimeType: options.file.type,
-  });
-
-  const { error: uploadError } = await client.storage
-    .from(adminMediaBucket)
-    .upload(storagePath, options.file, {
-      cacheControl: "31536000",
-      contentType: options.file.type,
-      upsert: false,
-    });
-
-  if (uploadError) {
-    throw new Error(`Image upload failed: ${uploadError.message}`);
+  const bytes = new Uint8Array(await options.file.arrayBuffer());
+  let binary = "";
+  for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
   }
 
-  const { data: urlData } = client.storage
-    .from(adminMediaBucket)
-    .getPublicUrl(storagePath);
-
-  if (!urlData.publicUrl) {
-    throw new Error("Image upload succeeded, but the public URL is missing.");
+  const { data, error } = await client.functions.invoke<{
+    image_url?: string;
+    storage_path?: string;
+    bucket?: string;
+  }>("admin-upload-image", {
+    body: {
+      club_id: clubId,
+      kind: options.kind,
+      mime_type: options.file.type,
+      image_data_base64: btoa(binary),
+    },
+  });
+  if (error) throw new Error(`Image upload failed: ${error.message}`);
+  if (
+    !data?.image_url || !data.storage_path ||
+    data.bucket !== adminMediaBucket
+  ) {
+    throw new Error("Image upload returned an incomplete response.");
   }
 
   return {
-    publicUrl: urlData.publicUrl,
-    storagePath,
+    publicUrl: data.image_url,
+    storagePath: data.storage_path,
   };
 }
 

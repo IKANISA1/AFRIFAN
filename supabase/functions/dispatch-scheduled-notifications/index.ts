@@ -177,6 +177,10 @@ export function createDispatchScheduledNotificationsHandler(
 if (import.meta.main) {
   const handler = createDispatchScheduledNotificationsHandler();
   Deno.serve((req: Request) => handler(req).then(
-    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+    (res) => new Response(res.body, {
+      status: res.status,
+      statusText: res.statusText,
+      headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() },
+    })
   ));
 }

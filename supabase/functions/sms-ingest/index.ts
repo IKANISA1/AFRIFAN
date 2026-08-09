@@ -280,6 +280,10 @@ async function handleRequest(request: Request) {
 
 if (import.meta.main) {
   Deno.serve((req: Request) => handleRequest(req).then(
-    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+    (res) => new Response(res.body, {
+      status: res.status,
+      statusText: res.statusText,
+      headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() },
+    })
   ));
 }

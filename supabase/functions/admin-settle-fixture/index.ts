@@ -161,7 +161,8 @@ if (import.meta.main) {
     handler(request).then(
       (response) =>
         new Response(response.body, {
-          ...response,
+          status: response.status,
+          statusText: response.statusText,
           headers: {
             ...Object.fromEntries(response.headers.entries()),
             ...corsHeaders(),
