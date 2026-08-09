@@ -97,6 +97,64 @@ function runFixture(t, preflightOverrides = {}) {
       physical_tv_remote_or_soak_proven: true,
       ...(preflightOverrides.physical_devices ?? {}),
     },
+    release_artifacts: {
+      android_upload_key_aab: {
+        bytes: 151063922,
+        sha256: "android-fixture-sha",
+        source_git_head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        jarsigner_verified: true,
+        store_uploaded: false,
+        ...(preflightOverrides.release_artifacts?.android_upload_key_aab ?? {}),
+      },
+      ios_app_store_ipa: {
+        bytes: 27552960,
+        sha256: "ios-fixture-sha",
+        source_git_head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        signature_verified: true,
+        store_uploaded: false,
+        ...(preflightOverrides.release_artifacts?.ios_app_store_ipa ?? {}),
+      },
+    },
+    store_delivery_audit: {
+      android: { uploaded: false, remote_processing_evidenced: false },
+      ios: { uploaded: false, remote_processing_evidenced: false },
+    },
+    supabase_production: {
+      status: "ACTIVE_HEALTHY",
+      postgres_version: "17.6.1.063",
+      exact_target_migrations: 14,
+      exact_target_migration_versions: Array.from(
+        { length: 14 },
+        (_, index) => `fixture-${index + 1}`,
+      ),
+      target_migration_set_verified: true,
+      generated_history_residue: 0,
+      core_invariants_passed: 11,
+      function_contract_rows_passed: 67,
+      relation_acl_cells_passed: 504,
+      privacy_rows_before_after: 152,
+      analytics_enabled_before_after: 152,
+      local_pgtap_tests_passed: 95,
+      ...(preflightOverrides.supabase_production ?? {}),
+    },
+    analytics_production: {
+      compile_time_gate: "ENABLE_FIREBASE_OBSERVABILITY",
+      compile_time_gate_enabled_in_exact_signed_artifacts: false,
+      minimum_reporting_threshold_contract: 20,
+      small_cohort_suppression_contract_present: true,
+      production_dashboard_connected: false,
+      production_dashboard_suppression_evidenced: false,
+      accountable_privacy_product_approval_evidenced: false,
+    },
+    emulator_and_simulator_validation: {
+      android_api_36: {
+        journeys_passed: 3,
+        journeys_total: 3,
+        fatal_exceptions: 0,
+        anrs: 0,
+      },
+      ios_simulator: { journeys_passed: 3, journeys_total: 3 },
+    },
     browser_evidence: { pending_bundle_count: 0 },
     closure_effect: { release_ready: false },
   };
@@ -105,7 +163,20 @@ function runFixture(t, preflightOverrides = {}) {
     preflight,
   );
   writeJson(path.join(output, "validation-manifest.json"), {
-    tasks: [],
+    tasks: [
+      "STATE-03",
+      "STATE-06",
+      "ADMIN-05",
+      "REL-02",
+      "REL-03",
+      "REL-06",
+      "REL-07",
+    ].map((id) => ({
+      id,
+      current_result: "verified_incomplete",
+      evidence: [],
+      notes: "stale fixture note",
+    })),
     summary: {},
     current_checkpoint: {},
     football_club_first_implementation: {
@@ -197,6 +268,57 @@ test("does not invent device inventory when preflight fields are absent", (t) =>
   assert.equal(checkpoint.paired_ios_device_state, null);
   assert.equal(checkpoint.attached_android_device_count, null);
   assert.equal(checkpoint.attached_native_tv_device_count, null);
+});
+
+test("derives release, production-backend and analytics task notes from the preflight", (t) => {
+  const { preflight, validation } = runFixture(t);
+  const task = (id) => validation.tasks.find((entry) => entry.id === id);
+
+  assert.match(task("REL-02").notes, /upload-key signed/);
+  assert.match(task("REL-02").notes, /android-fixture-sha/);
+  assert.doesNotMatch(task("REL-02").notes, /ephemeral self-signed/);
+  assert.match(task("REL-03").notes, /App Store distribution signed/);
+  assert.match(task("REL-03").notes, /ios-fixture-sha/);
+  assert.doesNotMatch(task("REL-03").notes, /exact-current unsigned/);
+  assert.match(task("REL-06").notes, /all 14 target migrations/);
+  assert.doesNotMatch(task("REL-06").notes, /No backend or production mutation/);
+  assert.match(task("REL-07").notes, /Android upload=false/);
+  assert.match(task("STATE-03").notes, /production Supabase project is ACTIVE_HEALTHY/);
+  assert.match(task("STATE-03").notes, /remains verified incomplete/);
+  assert.match(task("STATE-06").notes, /minimum cohort contract of 20/);
+  assert.match(task("STATE-06").notes, /production dashboard connection/);
+  assert.match(task("ADMIN-05").notes, /all 14 target migrations/);
+  assert.match(task("ADMIN-05").notes, /complete authenticated production/);
+
+  const checkpoint = validation.current_checkpoint.external_execution_preflight;
+  assert.deepEqual(checkpoint.release_artifacts, preflight.release_artifacts);
+  assert.deepEqual(checkpoint.supabase_production, preflight.supabase_production);
+  assert.deepEqual(checkpoint.analytics_production, preflight.analytics_production);
+});
+
+test("retains artifacts from a different source commit only as prior slice evidence", (t) => {
+  const { validation } = runFixture(t, {
+    release_artifacts: {
+      android_upload_key_aab: { source_git_head: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+      ios_app_store_ipa: { source_git_head: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+    },
+  });
+  const task = (id) => validation.tasks.find((entry) => entry.id === id);
+
+  assert.match(task("REL-02").notes, /prior slice evidence/);
+  assert.doesNotMatch(task("REL-02").notes, /exact-candidate Android AAB/);
+  assert.match(task("REL-03").notes, /prior slice evidence/);
+  assert.doesNotMatch(task("REL-03").notes, /exact-candidate iOS IPA/);
+});
+
+test("fails the production-backend summary closed without an exact migration set", (t) => {
+  const { validation } = runFixture(t, {
+    supabase_production: { target_migration_set_verified: false },
+  });
+  const state03 = validation.tasks.find((entry) => entry.id === "STATE-03");
+
+  assert.match(state03.notes, /not fully recorded/);
+  assert.doesNotMatch(state03.notes, /exact-version comparison verifies/);
 });
 
 test("fails exact-candidate derivation closed when preflight controls disagree", async (t) => {

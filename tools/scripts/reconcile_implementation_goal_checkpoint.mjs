@@ -36,6 +36,16 @@ const candidate = externalPreflight.candidate ?? {};
 const githubActions = externalPreflight.github_actions ?? {};
 const exactHeadRun = githubActions.exact_head_run ?? {};
 const physicalDevices = externalPreflight.physical_devices ?? {};
+const releaseArtifacts = externalPreflight.release_artifacts ?? {};
+const androidReleaseArtifact = releaseArtifacts.android_upload_key_aab ?? {};
+const iosReleaseArtifact = releaseArtifacts.ios_app_store_ipa ?? {};
+const storeDeliveryAudit = externalPreflight.store_delivery_audit ?? {};
+const supabaseProduction = externalPreflight.supabase_production ?? {};
+const analyticsProduction = externalPreflight.analytics_production ?? {};
+const emulatorAndSimulatorValidation =
+  externalPreflight.emulator_and_simulator_validation ?? {};
+const state03ProductionValidation =
+  externalPreflight.state03_production_validation ?? {};
 const iosDevices = Array.isArray(physicalDevices.ios)
   ? physicalDevices.ios
   : null;
@@ -93,6 +103,56 @@ const iosDeviceSummary =
 const androidAttachedCount = physicalDevices.android_attached_count ?? null;
 const nativeTvAttachedCount = physicalDevices.native_tv_attached_count ?? null;
 const physicalDeviceSummary = `iOS devices: ${iosDeviceSummary}; attached Android devices: ${androidAttachedCount ?? "not reported"}; attached native-TV devices: ${nativeTvAttachedCount ?? "not reported"}`;
+const formatBytes = (bytes) =>
+  Number.isInteger(bytes) ? bytes.toLocaleString("en-US") : "unreported";
+const androidJourney = emulatorAndSimulatorValidation.android_api_36 ?? {};
+const iosJourney = emulatorAndSimulatorValidation.ios_simulator ?? {};
+const artifactMatchesCandidate = (artifact) =>
+  typeof candidate.git_head === "string" &&
+  candidate.git_head.length > 0 &&
+  artifact.source_git_head === candidate.git_head;
+const androidArtifactMatchesCandidate = artifactMatchesCandidate(
+  androidReleaseArtifact,
+);
+const iosArtifactMatchesCandidate = artifactMatchesCandidate(iosReleaseArtifact);
+const androidReleaseSummary =
+  typeof androidReleaseArtifact.sha256 === "string" &&
+  androidReleaseArtifact.sha256.length > 0 &&
+  androidArtifactMatchesCandidate
+    ? `The exact-candidate Android AAB is upload-key signed, ${formatBytes(androidReleaseArtifact.bytes)} bytes, SHA-256 ${androidReleaseArtifact.sha256}, and jarsigner verification is ${androidReleaseArtifact.jarsigner_verified === true ? "passed" : "not proven"}. The Android API 36 emulator records ${androidJourney.journeys_passed ?? "an unreported number of"}/${androidJourney.journeys_total ?? "an unreported number of"} release-readiness journeys, ${androidJourney.fatal_exceptions ?? "an unreported number of"} fatal exceptions and ${androidJourney.anrs ?? "an unreported number of"} ANRs.`
+    : typeof androidReleaseArtifact.sha256 === "string" &&
+        androidReleaseArtifact.sha256.length > 0
+      ? `The recorded upload-key-signed Android AAB is bound to ${androidReleaseArtifact.source_git_head ?? "an unreported source commit"}, not the current candidate ${candidate.git_head ?? "whose source commit is unreported"}; it is retained only as prior slice evidence.`
+      : "The current preflight does not record a verified upload-key-signed Android AAB.";
+const iosReleaseSummary =
+  typeof iosReleaseArtifact.sha256 === "string" &&
+  iosReleaseArtifact.sha256.length > 0 &&
+  iosArtifactMatchesCandidate
+    ? `The exact-candidate iOS IPA is App Store distribution signed, ${formatBytes(iosReleaseArtifact.bytes)} bytes, SHA-256 ${iosReleaseArtifact.sha256}, and signature verification is ${iosReleaseArtifact.signature_verified === true ? "passed" : "not proven"}. The iOS simulator records ${iosJourney.journeys_passed ?? "an unreported number of"}/${iosJourney.journeys_total ?? "an unreported number of"} release-readiness journeys.`
+    : typeof iosReleaseArtifact.sha256 === "string" &&
+        iosReleaseArtifact.sha256.length > 0
+      ? `The recorded App Store distribution-signed iOS IPA is bound to ${iosReleaseArtifact.source_git_head ?? "an unreported source commit"}, not the current candidate ${candidate.git_head ?? "whose source commit is unreported"}; it is retained only as prior slice evidence.`
+      : "The current preflight does not record a verified App Store distribution-signed iOS IPA.";
+const targetBackendApplied =
+  supabaseProduction.status === "ACTIVE_HEALTHY" &&
+  Number.isInteger(supabaseProduction.exact_target_migrations) &&
+  supabaseProduction.exact_target_migrations >= 14 &&
+  Array.isArray(supabaseProduction.exact_target_migration_versions) &&
+  new Set(supabaseProduction.exact_target_migration_versions).size ===
+    supabaseProduction.exact_target_migrations &&
+  supabaseProduction.target_migration_set_verified === true &&
+  supabaseProduction.generated_history_residue === 0;
+const backendProductionSummary = targetBackendApplied
+  ? `The production Supabase project is ACTIVE_HEALTHY on PostgreSQL ${supabaseProduction.postgres_version ?? "version unreported"}; exact-version comparison verifies all ${supabaseProduction.exact_target_migrations} target migrations with zero generated history residue. Current catalog validation records ${supabaseProduction.core_invariants_passed ?? "an unreported number of"} core invariants, ${supabaseProduction.function_contract_rows_passed ?? "an unreported number of"} function-contract rows and ${supabaseProduction.relation_acl_cells_passed ?? "an unreported number of"} relation-ACL cells passing, while the fresh local reset and ${supabaseProduction.local_pgtap_tests_passed ?? "an unreported number of"} pgTAP tests pass.`
+  : "Authorized production migration and catalog validation are not fully recorded by the current preflight.";
+const state03RepresentativeSliceProven =
+  state03ProductionValidation.representative_slice_proven === true &&
+  state03ProductionValidation.state03_complete !== true;
+const state03RemainingCheck = targetBackendApplied
+  ? state03RepresentativeSliceProven
+    ? "remaining authenticated production cross-surface collision, RLS, actor/audit, rollback and recovery matrix"
+    : "authenticated production two-client concurrency, RLS, actor/audit, rollback and recovery proof"
+  : "authorized target backend migration, RLS, RPC, collision and rollback execution";
 const candidateCiRemainingCheck = exactCandidate
   ? "pinned_ci_signing_store_processing_and_deployment"
   : "exact_candidate_pinned_ci_signing_store_processing_and_deployment";
@@ -141,6 +201,12 @@ const retainedTaskUpdates = {
     `The controlled Flutter runtime is reconciled at 3.44.4 across local configuration and release tooling. ${candidateSummary} ${workingTreeSummary} Current CI state: ${pinnedRuntimeSummary}.`,
   "A11Y-02":
     `The native-TV AVD now provides exact directional focus, center, Menu overlay and focus-restoration evidence, while automated semantics tests remain green. The current device preflight reports ${physicalDeviceSummary}. Physical VoiceOver execution is ${physicalDevices.voiceover_execution_proven === true ? "proven" : "not proven"}, TalkBack execution is ${physicalDevices.talkback_execution_proven === true ? "proven" : "not proven"}, and physical TV remote or soak execution is ${physicalDevices.physical_tv_remote_or_soak_proven === true ? "proven" : "not proven"}; emulator and automated semantics evidence do not substitute for those physical-device controls.`,
+  "STATE-03":
+    `${backendProductionSummary} ${state03RepresentativeSliceProven ? "The governed production validation proves a representative shop-order cancellation and contribution-review slice with real two-client collision handling, RLS/grants, actor/audit attribution, rollback cleanup and authenticated recovery. STATE-03 remains verified incomplete because profile/settings, representative admin editing, membership review, feature aggregate copy-on-write, ticket bulk review, the full role matrix and physical application recovery are not all proven." : "STATE-03 remains verified incomplete because the current preflight does not yet prove the complete real two-client collision, authenticated RLS/grant, actor/audit, rollback-cleanup and recovery matrix through the application boundary."}`,
+  "STATE-06":
+    `The production privacy baseline contains ${supabaseProduction.privacy_rows_before_after ?? "an unreported number of"} governed preference rows and preserves ${supabaseProduction.analytics_enabled_before_after ?? "an unreported number of"} existing analytics choices. The exact signed artifacts keep ${analyticsProduction.compile_time_gate ?? "the observability compile-time gate"} ${analyticsProduction.compile_time_gate_enabled_in_exact_signed_artifacts === true ? "enabled" : "disabled"}; the closed taxonomy, explicit-consent rule and minimum cohort contract of ${analyticsProduction.minimum_reporting_threshold_contract ?? "unreported"} are ${analyticsProduction.small_cohort_suppression_contract_present === true ? "present" : "not proven"}. STATE-06 remains verified incomplete because a production dashboard connection, live dashboard suppression evidence and accountable privacy/product approval are ${analyticsProduction.production_dashboard_connected === true && analyticsProduction.production_dashboard_suppression_evidenced === true && analyticsProduction.accountable_privacy_product_approval_evidenced === true ? "recorded" : "not all recorded"}.`,
+  "ADMIN-05":
+    `${backendProductionSummary} Twenty-six destructive-action contracts retain their role, scope, selection-limit, review, recovery, concurrency and audit controls; ticket cancellation remains the only reviewed bulk workflow and is capped at 100. ADMIN-05 remains verified incomplete until the complete authenticated production platform-admin, club-admin, moderator, supporter, revoked-role, cross-club, stale-write, timeout-reload, rollback and audit-query matrix plus accountable operator approval pass.`,
   "EVID-06":
     "Exact-current Android production-main profile evidence records a 1,242 ms cold start against the 3,000 ms budget, 79.34% SurfaceFlinger jank against the 5% budget, 153,191 KiB total PSS with no approved memory threshold, and controlled settings, 120-item Shop, checkout and Perfetto workloads. EV-249 adds exact native-TV cold-launch and remote-interaction execution, but not a repeat/soak or performance profile. EVID-06 remains verified incomplete because the software-rendered mobile emulator fails frame/raster budgets and representative physical-device profiling, an approved memory budget, product-image and real checkout-submission workloads, live realtime, native-TV performance/soak and authenticated Admin-volume profiles remain open.",
   "EVID-07":
@@ -152,21 +218,21 @@ const retainedTaskUpdates = {
   "TV-05":
     "Pairing, credential, retry, conflict, timeout, recovery, proxy and scoped-revocation contracts remain exact-tested. EV-249 fixes the TV-generated `africlub://` versus mobile manifest mismatch by explicitly registering and parser-allowlisting both `africlub://` and `gikundiro://` while rejecting unlisted schemes; the rebuilt iOS simulator now recognizes the generic TV URL. Authenticated production pairing/synchronization, multi-client idempotency/audit, physical QR handoff and real-remote proof remain open, so TV-05 remains verified incomplete.",
   "TV-09":
-    `The current preflight reports ${physicalDeviceSummary}. Production signing credentials, a signed AAB and certificate fingerprint, managed-track/store processing, representative-hardware soak, crash/ANR dashboard evidence, device inventory/revocation drill, and operations-owner sign-off remain separately required.`,
+    `${androidReleaseSummary} The signed mobile package rw.gikundiro.app does not establish the separately required production-signed native-TV package rw.ikanisa.rayonSports.tv, its credential fingerprint or store processing. The current preflight reports ${physicalDeviceSummary}. Native-TV representative-hardware soak, crash/ANR dashboard evidence, device inventory/revocation drill and operations-owner sign-off remain separately required.`,
   "REL-01":
     `Release configuration, runtime pins, validation contracts, provenance controls and current local platform-build evidence exist. ${candidateSummary} ${workingTreeSummary} Current CI state: ${pinnedRuntimeSummary}. REL-01 remains verified incomplete while its other release gates remain open.`,
   "REL-02":
-    "An exact-current production-flavor Android AAB dry-run passes with a destroyed ephemeral self-signed key, and three release-readiness integration journeys pass on an Android API 36 emulator. REL-02 is verified incomplete because the artifact is not production-signed or store-processed and complete physical-Android runtime, TalkBack, permissions, deep links, offline/retry, destructive-flow, performance and live-backend proof is absent.",
+    `${androidReleaseSummary} REL-02 remains verified incomplete because complete physical-Android runtime, TalkBack, permissions, deep links, offline/retry, destructive-flow, representative performance and live-backend proof remain open. Store acceptance is tracked separately under REL-07.`,
   "REL-03":
-    "An exact-current unsigned iOS release build succeeds for rw.ikanisa.rayonSports at minimum iOS 15.5, its app-level PrivacyInfo.xcprivacy is bundled with the SDK manifests, and three release-readiness integration journeys pass on an iPhone 17 / iOS 26.5 simulator. The earlier QA-06 checkpoint records a development-signed physical-iPhone install and launch subset. REL-03 remains verified incomplete because there is no distribution-signed archive, complete exact-candidate physical-iPhone runtime, VoiceOver, text sizing, permissions, deep links, offline/retry, destructive-flow, performance, App Store processing or live-backend proof.",
+    `${iosReleaseSummary} Its app-level PrivacyInfo.xcprivacy remains bundled with the SDK manifests. REL-03 remains verified incomplete because complete exact-candidate physical-iPhone runtime, VoiceOver, text sizing, permissions, deep links, offline/retry, destructive-flow, representative performance and live-backend proof remain open. App Store acceptance is tracked separately under REL-07.`,
   "REL-04":
     `The rebuilt iOS simulator recognizes the generic native-TV pairing URL and the platform/parser contracts pass, but this proves simulator registration only. The current preflight reports ${physicalDeviceSummary}. Physical VoiceOver execution is ${physicalDevices.voiceover_execution_proven === true ? "proven" : "not proven"} and TalkBack execution is ${physicalDevices.talkback_execution_proven === true ? "proven" : "not proven"}. Complete physical mobile UAT, authenticated QR handoff and assistive-technology evidence remain separately governed. REL-04 remains unverified.`,
   "REL-05":
     `EV-249 proves exact-current Android TV AVD directional focus, center, Menu context overlay and challenge renewal against an isolated local backend. The current preflight reports ${nativeTvAttachedCount ?? "an unreported number of"} attached native-TV devices and marks physical TV remote or soak execution as ${physicalDevices.physical_tv_remote_or_soak_proven === true ? "proven" : "not proven"}. Emulator execution does not by itself establish real display, overscan, remote, screen-reader, reconnect, network, authenticated pairing, performance or soak behavior. REL-05 remains unverified.`,
   "REL-06":
-    "Privacy-filtered Crashlytics diagnostics now exclude account identifiers, raw exception messages and unsafe diagnostic strings; the Firebase startup contract keeps diagnostics compile-time gated and the focused observability tests, analysis and store/privacy validator pass. Existing local backend/API/hook and web contract evidence remains valid. REL-06 remains incomplete because authorized target-schema and hook-secret/dashboard configuration, live Meta delivery and identity callback, migration execution, RLS/grants, authenticated role matrices, rollback, monitoring dashboards and alerts, incident rehearsal, pinned CI, deployment evidence, and accountable backend/security approval remain open. No backend or production mutation was performed.",
+    `${backendProductionSummary} Privacy-filtered Crashlytics diagnostics, compile-time observability gating and local backend/API/hook contracts remain valid. REL-06 remains incomplete because the complete authenticated production role, RLS/grant, collision, actor/audit, rollback and recovery matrix; hook-secret/dashboard configuration; live Meta delivery and identity callback; monitoring dashboards and alerts; incident rehearsal; pinned CI; custom-domain cutover; and accountable backend/security approval remain open.`,
   "REL-07":
-    "Fail-closed production-signing configuration, ephemeral Android/mobile-TV release dry-runs, unsigned iOS release builds, conservative store/privacy working declarations and automated release contracts exist. No production upload/distribution key was used, no signed archive or managed-track artifact was processed, and no store-console mutation, review or approval occurred. REL-07 remains verified incomplete.",
+    `${androidReleaseSummary} ${iosReleaseSummary} The store-delivery audit records Android upload=${storeDeliveryAudit.android?.uploaded === true ? "true" : "false"} and iOS upload=${storeDeliveryAudit.ios?.uploaded === true ? "true" : "false"}; authenticated publisher paths and remote processing are not proven. Production signing and store processing for the separate native-TV package rw.ikanisa.rayonSports.tv are also not recorded. REL-07 remains verified incomplete until the governed Android, iOS and native-TV candidates are signed where applicable and accepted and processed by their stores. Named accountable approvals remain separately governed under REL-08.`,
   "REL-08":
     "The controlled records name the required product, design, accessibility, privacy, security, operations, QA and release owners and preserve every approval boundary. No accountable named approval has been supplied or inferred. REL-08 remains unverified.",
 };
@@ -246,7 +312,7 @@ for (const task of validation.tasks) {
         ]),
       ];
     }
-    if (["GOV-06", "A11Y-02", "EVID-08", "TV-09", "REL-01", "REL-04", "REL-05", "REL-08"].includes(task.id)) {
+    if (["GOV-06", "STATE-03", "STATE-06", "A11Y-02", "EVID-08", "TV-09", "ADMIN-05", "REL-01", "REL-02", "REL-03", "REL-04", "REL-05", "REL-06", "REL-07", "REL-08"].includes(task.id)) {
       task.evidence = [
         ...new Set([
           ...(task.evidence ?? []),
@@ -343,7 +409,7 @@ validation.current_checkpoint = {
     "named_french_and_kinyarwanda_linguistic_approval",
     "approved_onboarding_and_live_club_content_rights_and_provenance",
     "source_secret_rotation_decision_by_authorized_owner",
-    "authorized_target_backend_migration_rls_rpc_collision_and_rollback_execution",
+    state03RemainingCheck,
     "physical_mobile_and_native_tv_device_assistive_technology_and_soak_execution",
     "authorized_two_phone_plus_physical_native_tv_synchronized_session",
     candidateCiRemainingCheck,
@@ -393,6 +459,12 @@ validation.current_checkpoint = {
     physical_tv_remote_or_soak_proven:
       physicalDevices.physical_tv_remote_or_soak_proven === true,
     browser_evidence: externalPreflight.browser_evidence ?? null,
+    release_artifacts: releaseArtifacts,
+    store_delivery_audit: storeDeliveryAudit,
+    supabase_production: supabaseProduction,
+    analytics_production: analyticsProduction,
+    emulator_and_simulator_validation: emulatorAndSimulatorValidation,
+    state03_production_validation: state03ProductionValidation,
     closure_effect: externalPreflight.closure_effect ?? null,
   },
   closure_complete: closure.closure_complete,
@@ -500,10 +572,10 @@ r66.implementation.not_implemented_or_not_closed = [
   "dynamic CMS and externally governed content approval",
   "named French and Kinyarwanda linguistic approval",
   "accountable onboarding-media and club-content rights approval",
-  "authorized target-backend RLS, RPC, audit, collision and rollback execution",
+  state03RemainingCheck,
   "physical mobile and native-TV device, remote, assistive-technology, performance and soak proof",
   candidateCiRemainingBoundary,
-  "production signing, store processing, deployment and accountable release approval",
+  "store processing, custom-domain deployment and accountable release approval",
 ];
 const currentRouteFacts = fileFacts(routePath);
 const currentDesignReport = path.join(output, "design_compliance_current/report.md");
