@@ -175,7 +175,9 @@ export async function getAdminBanners(
   const clubId = requireAdminClubId(_access, "load home banners");
   const { data, error } = await client
     .from("home_banners")
-    .select("*")
+    .select(
+      "id,title,subtitle,badge_label,cta_label,route,image_url,sort_order,is_active,created_at,updated_at,club_id,distribution",
+    )
     .eq("club_id", clubId)
     .order("sort_order", { ascending: true });
 

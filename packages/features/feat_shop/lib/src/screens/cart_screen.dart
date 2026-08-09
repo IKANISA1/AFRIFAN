@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -169,6 +170,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Future<void> _checkout(List<CartItem> items, int total) async {
     if (_submitting) return;
+    if (!ref
+        .read(storeReleasePolicyProvider)
+        .allowsUnreconciledExternalPaymentLaunch) {
+      AfriToast.error(context, context.afriL10n.shopCheckoutNotPermitted);
+      return;
+    }
     if (!ConnectivityService.isOnline) {
       AfriToast.error(context, context.afriL10n.shopConnectBeforeCheckout);
       return;
@@ -374,26 +381,36 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
+    final checkoutAllowed = ref.watch(
+      storeReleasePolicyProvider.select(
+        (policy) => policy.allowsUnreconciledExternalPaymentLaunch,
+      ),
+    );
     final config = ClubConfigScope.maybeOf(context);
     final currency = _currencyFormatter;
     final deliveryHint = config == null
         ? context.afriL10n.shopEnterDeliveryAddress
         : context.afriL10n.shopStreetCityCountry(config.country);
     final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    _ensurePaymentRouteState(user);
+    if (checkoutAllowed) {
+      _ensurePaymentRouteState(user);
+    }
 
     final items = ref.watch(shopCartProvider);
     final total = ref.watch(shopCartTotalProvider);
     final paymentRouteBlocked =
-        user != null &&
-        (_paymentRouteLoading ||
-            _paymentRouteError != null ||
-            _paymentRouteMessage != null);
+        !checkoutAllowed ||
+        (user != null &&
+            (_paymentRouteLoading ||
+                _paymentRouteError != null ||
+                _paymentRouteMessage != null));
     final checkoutHardBlocked =
         _checkoutFailure?.kind == _CartCheckoutFailureKind.permissionDenied ||
         _checkoutFailure?.kind == _CartCheckoutFailureKind.securityTimeout;
     final cartChromeState =
-        '${items.length}:$total:${_paymentRouteLoading
+        '${items.length}:$total:${!checkoutAllowed
+            ? 'release_blocked'
+            : _paymentRouteLoading
             ? 'loading'
             : _paymentRouteError != null
             ? 'error'
@@ -608,6 +625,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     builder: (context, isOnline) => AfriButton(
                       label: !isOnline
                           ? context.afriL10n.shopConnectionRequired
+                          : !checkoutAllowed
+                          ? context.afriL10n.shopCheckoutNotPermitted
                           : _paymentRouteLoading
                           ? context.afriL10n.shopCheckingPayment
                           : _paymentRouteError != null
@@ -630,6 +649,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       onTap: () => _checkout(items, total),
                       enabled:
                           isOnline &&
+                          checkoutAllowed &&
                           !_submitting &&
                           !paymentRouteBlocked &&
                           !checkoutHardBlocked,

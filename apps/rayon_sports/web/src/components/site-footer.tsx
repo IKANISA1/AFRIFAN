@@ -109,7 +109,7 @@ export function SiteFooter({
 
           {/* Navigation Columns */}
           <div className="lg:col-span-8">
-            <div className="grid grid-cols-2 gap-12 sm:grid-cols-4">
+            <div className="site-footer-navigation grid grid-cols-2 gap-12 sm:grid-cols-4">
               {footerNavigationGroups.map((group) => (
                 <div key={group.title}>
                   <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white mb-8">

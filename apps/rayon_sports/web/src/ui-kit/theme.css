@@ -483,12 +483,7 @@ body {
   .legal-document-page {
     color-scheme: light;
     --legal-background:
-      linear-gradient(
-        180deg,
-        #07111f 0,
-        #07111f 7.25rem,
-        transparent 7.25rem
-      ),
+      linear-gradient(180deg, #07111f 0, #07111f 7.25rem, transparent 7.25rem),
       radial-gradient(
         circle at 14% 4%,
         rgba(14, 116, 144, 0.12),
@@ -516,7 +511,11 @@ body {
 .release-support-surface {
   color-scheme: dark;
   --release-support-background:
-    radial-gradient(circle at 12% 3%, rgba(14, 116, 144, 0.22), transparent 30rem),
+    radial-gradient(
+      circle at 12% 3%,
+      rgba(14, 116, 144, 0.22),
+      transparent 30rem
+    ),
     linear-gradient(180deg, #07111f 0%, #0b1727 100%);
   --release-support-heading: #f8fafc;
   --release-support-copy: #cbd5e1;
@@ -606,6 +605,14 @@ body {
   font-weight: 800;
 }
 
+.release-support-steps li > div {
+  min-width: 0;
+}
+
+.release-support-steps h2 {
+  overflow-wrap: anywhere;
+}
+
 .release-support-steps p,
 .release-support-notice p {
   margin-top: 0.5rem;
@@ -653,6 +660,10 @@ body {
   outline-offset: 4px;
 }
 
+.release-support-actions a:active {
+  transform: translateY(2px) scale(0.97);
+}
+
 @media (max-width: 420px) {
   .release-support-actions {
     display: grid;
@@ -661,19 +672,29 @@ body {
   .release-support-actions a {
     width: 100%;
   }
+
+  .site-footer-navigation {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
+  }
+
+  .site-footer-navigation li,
+  .site-footer-navigation a {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
 }
 
 @media (prefers-color-scheme: light) {
   .release-support-surface {
     color-scheme: light;
     --release-support-background:
-      linear-gradient(
-        180deg,
-        #07111f 0,
-        #07111f 7.25rem,
-        transparent 7.25rem
+      linear-gradient(180deg, #07111f 0, #07111f 7.25rem, transparent 7.25rem),
+      radial-gradient(
+        circle at 12% 3%,
+        rgba(14, 116, 144, 0.12),
+        transparent 30rem
       ),
-      radial-gradient(circle at 12% 3%, rgba(14, 116, 144, 0.12), transparent 30rem),
       linear-gradient(180deg, #edf5fb 0%, #f8fafc 100%);
     --release-support-heading: #0f172a;
     --release-support-copy: #334155;

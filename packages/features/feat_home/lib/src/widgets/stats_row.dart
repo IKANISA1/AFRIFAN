@@ -2,10 +2,11 @@ import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Home summary metrics — FET balance and supporter rank.
+/// Home summary metrics — personal FET balance and, when known, supporter rank.
 ///
-/// Both tiles are tappable: FET opens the fan leaderboard (by FET),
-/// Rank opens the supporter leaderboard (by contribution).
+/// A zero rank is an unavailable sentinel and is not rendered. This lets an
+/// owner-only membership read retain the supporter's balance without presenting
+/// a synthetic `#000` rank.
 class StatsRow extends StatelessWidget {
   final int globalFet;
   final int fanRank;
@@ -45,13 +46,14 @@ class StatsRow extends StatelessWidget {
           icon: AfriIcons.earn,
           onTap: onFetTap,
         ),
-        AfriStat(
-          label: context.afriL10n.homeRankLabel,
-          value: '#${fanRank.toString().padLeft(3, '0')}',
-          icon: AfriIcons.rank,
-          accentColor: ColorTokens.clubAccent,
-          onTap: onRankTap,
-        ),
+        if (fanRank > 0)
+          AfriStat(
+            label: context.afriL10n.homeRankLabel,
+            value: '#${fanRank.toString().padLeft(3, '0')}',
+            icon: AfriIcons.rank,
+            accentColor: ColorTokens.clubAccent,
+            onTap: onRankTap,
+          ),
       ],
     );
   }

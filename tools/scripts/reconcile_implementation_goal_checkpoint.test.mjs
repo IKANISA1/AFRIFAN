@@ -32,10 +32,7 @@ function runFixture(t, preflightOverrides = {}, options = {}) {
   t.after(() => fs.rmSync(fixtureRoot, { recursive: true, force: true }));
 
   const fixtureScript = path.join(fixtureRoot, "tools/scripts", scriptName);
-  const output = path.join(
-    fixtureRoot,
-    "output/implementation_goal_20260724",
-  );
+  const output = path.join(fixtureRoot, "output/implementation_goal_20260724");
   fs.mkdirSync(path.dirname(fixtureScript), { recursive: true });
   fs.copyFileSync(sourceScript, fixtureScript);
   const fixtureReleaseGoal = path.join(
@@ -43,34 +40,25 @@ function runFixture(t, preflightOverrides = {}, options = {}) {
     "docs/release/AFRICLUB_STORE_AND_CLOUDFLARE_EXECUTION_GOAL_2026-08-09.json",
   );
   fs.mkdirSync(path.dirname(fixtureReleaseGoal), { recursive: true });
-  fs.copyFileSync(
-    sourceReleaseGoal,
-    fixtureReleaseGoal,
-  );
+  fs.copyFileSync(sourceReleaseGoal, fixtureReleaseGoal);
 
-  writeJson(
-    path.join(output, "route_inventory_current/route-inventory.json"),
-    {
-      route_count: 176,
-      state_closure: {
-        state_count: 16,
-        cell_count: 2816,
-        evidenced_cell_count: 2137,
-        open_cell_count: 0,
-        closure_complete: true,
-      },
+  writeJson(path.join(output, "route_inventory_current/route-inventory.json"), {
+    route_count: 180,
+    state_closure: {
+      state_count: 16,
+      cell_count: 2880,
+      evidenced_cell_count: 2149,
+      open_cell_count: 0,
+      closure_complete: true,
     },
-  );
-  writeJson(
-    path.join(output, "design_compliance_current/VALIDATION.json"),
-    {
-      status: "pass",
-      route_evidence_complete: true,
-      design_complete: false,
-      violation_count: 0,
-      warning_count: 1,
-    },
-  );
+  });
+  writeJson(path.join(output, "design_compliance_current/VALIDATION.json"), {
+    status: "pass",
+    route_evidence_complete: true,
+    design_complete: false,
+    violation_count: 0,
+    warning_count: 1,
+  });
   fs.writeFileSync(
     path.join(output, "design_compliance_current/report.md"),
     "# fixture report\n",
@@ -211,9 +199,7 @@ function runFixture(t, preflightOverrides = {}, options = {}) {
     },
     route_inventory: {},
     closure: {
-      external_or_human_gates: [
-        "clean controlled candidate and pinned CI",
-      ],
+      external_or_human_gates: ["clean controlled candidate and pinned CI"],
     },
     design_compliance: {},
     implementation: {},
@@ -333,9 +319,15 @@ test("derives release, production-backend and analytics task notes from the pref
   assert.match(task("REL-03").notes, /ios-fixture-sha/);
   assert.doesNotMatch(task("REL-03").notes, /exact-current unsigned/);
   assert.match(task("REL-06").notes, /all 14 target migrations/);
-  assert.doesNotMatch(task("REL-06").notes, /No backend or production mutation/);
+  assert.doesNotMatch(
+    task("REL-06").notes,
+    /No backend or production mutation/,
+  );
   assert.match(task("REL-07").notes, /Android upload=false/);
-  assert.match(task("STATE-03").notes, /production Supabase project is ACTIVE_HEALTHY/);
+  assert.match(
+    task("STATE-03").notes,
+    /production Supabase project is ACTIVE_HEALTHY/,
+  );
   assert.match(task("STATE-03").notes, /remains verified incomplete/);
   assert.match(task("STATE-06").notes, /minimum cohort contract of 20/);
   assert.match(task("STATE-06").notes, /production dashboard connection/);
@@ -344,15 +336,25 @@ test("derives release, production-backend and analytics task notes from the pref
 
   const checkpoint = validation.current_checkpoint.external_execution_preflight;
   assert.deepEqual(checkpoint.release_artifacts, preflight.release_artifacts);
-  assert.deepEqual(checkpoint.supabase_production, preflight.supabase_production);
-  assert.deepEqual(checkpoint.analytics_production, preflight.analytics_production);
+  assert.deepEqual(
+    checkpoint.supabase_production,
+    preflight.supabase_production,
+  );
+  assert.deepEqual(
+    checkpoint.analytics_production,
+    preflight.analytics_production,
+  );
 });
 
 test("retains artifacts from a different source commit only as prior slice evidence", (t) => {
   const { validation } = runFixture(t, {
     release_artifacts: {
-      android_upload_key_aab: { source_git_head: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
-      ios_app_store_ipa: { source_git_head: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+      android_upload_key_aab: {
+        source_git_head: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      },
+      ios_app_store_ipa: {
+        source_git_head: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      },
     },
   });
   const task = (id) => validation.tasks.find((entry) => entry.id === id);
@@ -381,7 +383,11 @@ test("fails exact-candidate derivation closed when preflight controls disagree",
     },
     {
       name: "exact-head run does not match the candidate",
-      overrides: { exact_head_run: { head_sha: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" } },
+      overrides: {
+        exact_head_run: {
+          head_sha: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        },
+      },
     },
     {
       name: "dirty worktree remains inexact even with a preservation note",
@@ -420,7 +426,10 @@ test("binds current controls to the live checkout and demotes a stale preflight"
   assert.equal(r66.candidate.branch, "main");
   assert.equal(r66.candidate.dirty, false);
   assert.equal(r66.candidate.preflight_matches_checkout, false);
-  assert.equal(r66.candidate.preflight_candidate_head, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+  assert.equal(
+    r66.candidate.preflight_candidate_head,
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  );
   assert.equal(r66.candidate.exact_candidate, false);
   assert.equal(checkpoint.github_actions_exact_head_run, null);
   assert.match(task("GOV-06").notes, new RegExp(fixtureGitHead));
@@ -442,7 +451,8 @@ test("validates and checkpoints all 12 release workstreams without false closure
     false,
   );
   assert.equal(
-    goal.current_checkpoint.completion_checks.google_play_mobile_submitted_for_review,
+    goal.current_checkpoint.completion_checks
+      .google_play_mobile_submitted_for_review,
     false,
   );
   assert.equal(r66.release_submission_goal.completion_proven, false);

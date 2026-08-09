@@ -10,6 +10,16 @@ import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { AppConfigEntry, CmsContent, HomeBanner } from "@/lib/types";
 import { safeString, toIdString } from "@/lib/utils";
 
+type RuntimeConfigRpcClient = {
+  rpc: (
+    name: "get_runtime_app_config",
+    params: { p_key: string | null; p_club_id: number },
+  ) => Promise<{
+    data: unknown;
+    error: { message: string } | null;
+  }>;
+};
+
 // ─── Mappers ─────────────────────────────────────────────
 
 function mapHomeBanner(row: Record<string, unknown>): HomeBanner {
@@ -55,40 +65,22 @@ function mapAppConfig(row: Record<string, unknown>): AppConfigEntry {
   };
 }
 
-async function getGlobalAppConfigRows() {
+async function getRuntimeAppConfigRows(clubId: number) {
   const client = getReadOnlySupabase();
   if (client == null) {
     return [] as AppConfigEntry[];
   }
 
   try {
-    const { data } = await client.from("app_config").select("*").limit(100);
-    if (!Array.isArray(data) || data.length === 0) {
-      return [];
-    }
-    return data.map((row) => mapAppConfig(row));
-  } catch {
-    return [];
-  }
-}
-
-async function getClubAppConfigRows(clubId: number) {
-  const client = getReadOnlySupabase();
-  if (client == null) {
-    return [] as AppConfigEntry[];
-  }
-
-  try {
-    const { data } = await client
-      .from("club_app_config")
-      .select("*")
-      .eq("club_id", clubId)
-      .limit(100);
+    const { data, error } = await (
+      client as unknown as RuntimeConfigRpcClient
+    ).rpc("get_runtime_app_config", { p_key: null, p_club_id: clubId });
+    if (error) throw new Error(error.message);
 
     if (!Array.isArray(data) || data.length === 0) {
       return [];
     }
-    return data.map((row) => mapAppConfig(row));
+    return data.map((row) => mapAppConfig(row as Record<string, unknown>));
   } catch {
     return [];
   }
@@ -104,7 +96,9 @@ export const getHomeBanners = cache(async function getHomeBanners(): Promise<Hom
   try {
     const { data } = await client
       .from("home_banners")
-      .select("*")
+      .select(
+        "id,title,subtitle,badge_label,cta_label,route,image_url,sort_order,is_active,created_at,updated_at,club_id,distribution",
+      )
       .eq("club_id", activeClub.numericId)
       .eq("is_active", true)
       .order("sort_order", { ascending: true })
@@ -126,7 +120,10 @@ export const getCmsContentStrict = cache(async function getCmsContentStrict(
 
   let query = client
     .from("ai_content")
-    .select("*")
+    .select(
+      "id,content_type,title,subtitle,body,icon_emoji,cta_action,cta_label," +
+        "sort_order,status,is_active,club_id,distribution,updated_at",
+    )
     .eq("club_id", activeClub.numericId)
     .eq("is_active", true)
     .order("sort_order", { ascending: true })
@@ -156,16 +153,10 @@ export const getAppConfig = cache(async function getAppConfig(): Promise<
   Map<string, string>
 > {
   const activeClub = await getActiveClubReference();
-  const [globalEntries, clubEntries] = await Promise.all([
-    getGlobalAppConfigRows(),
-    getClubAppConfigRows(activeClub.numericId),
-  ]);
+  const entries = await getRuntimeAppConfigRows(activeClub.numericId);
 
   const merged = new Map<string, string>();
-  for (const entry of globalEntries) {
-    merged.set(entry.key, entry.value);
-  }
-  for (const entry of clubEntries) {
+  for (const entry of entries) {
     merged.set(entry.key, entry.value);
   }
   return merged;

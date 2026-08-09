@@ -454,6 +454,7 @@ test.describe("admin settings feature evidence matrix", () => {
   test("covers the governed route-state and interaction matrix", async ({
     browser,
   }) => {
+    test.setTimeout(180_000);
     await runMatrix(browser);
   });
 });

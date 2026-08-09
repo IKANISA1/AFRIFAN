@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -439,6 +440,9 @@ Widget _buildCartApp({
 }) {
   return ProviderScope(
     overrides: [
+      storeReleasePolicyProvider.overrideWithValue(
+        const StoreReleasePolicy.unenforced(),
+      ),
       currentUserProvider.overrideWithValue(user),
       if (seeded) shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),
     ],

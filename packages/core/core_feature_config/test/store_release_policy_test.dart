@@ -13,9 +13,18 @@ void main() {
       expect(policy.allowsRewardRedemption, isFalse);
       expect(policy.allowsCrossUserText, isFalse);
       expect(policy.allowsPaidDigitalMembership, isFalse);
+      expect(policy.allowsUnreconciledExternalPaymentLaunch, isFalse);
       expect(policy.allowsEarnedPointsReadHistory, isTrue);
       expect(policy.allowsPhysicalGoods, isTrue);
       expect(policy.allowsEventTickets, isTrue);
+    });
+
+    test('unreconciled external payment launch remains development-only', () {
+      const production = StoreReleasePolicy(isEnforced: true);
+      const development = StoreReleasePolicy.unenforced();
+
+      expect(production.allowsUnreconciledExternalPaymentLaunch, isFalse);
+      expect(development.allowsUnreconciledExternalPaymentLaunch, isTrue);
     });
 
     test('one generic server boolean cannot open a sensitive capability', () {

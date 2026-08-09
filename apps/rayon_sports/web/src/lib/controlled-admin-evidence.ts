@@ -1,8 +1,12 @@
 export type ControlledAdminEvidenceInput = {
   previewEnabled?: string;
   adminEvidenceEnabled?: string;
+  evidenceRequested?: boolean;
   host?: string | null;
 };
+
+export const controlledAdminEvidenceRequestHeader =
+  "x-africlub-controlled-admin-evidence";
 
 function normalizeHostname(host: string | null | undefined) {
   const value = host?.trim();
@@ -20,9 +24,14 @@ function normalizeHostname(host: string | null | undefined) {
 export function isControlledAdminEvidenceAllowed({
   previewEnabled,
   adminEvidenceEnabled,
+  evidenceRequested,
   host,
 }: ControlledAdminEvidenceInput) {
-  if (previewEnabled !== "1" || adminEvidenceEnabled !== "1") {
+  if (
+    previewEnabled !== "1" ||
+    adminEvidenceEnabled !== "1" ||
+    evidenceRequested !== true
+  ) {
     return false;
   }
 

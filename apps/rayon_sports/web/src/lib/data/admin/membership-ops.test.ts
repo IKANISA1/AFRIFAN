@@ -249,177 +249,66 @@ describe("getAdminMembershipApplications", () => {
 });
 
 describe("reviewMembershipApplication", () => {
-  it("resolves the club partner before calling the atomic review RPC", async () => {
+  it("calls the hardened atomic review RPC for a rejection", async () => {
+      const decision = "rejected" as const;
+      const notes = "Provider payment was not verified";
+      let rpcCallCount = 0;
+      const client = {
+        from(table: string) {
+          throw new Error(`Unexpected table lookup: ${table}`);
+        },
+        rpc(fn: string, payload: Record<string, unknown>) {
+          rpcCallCount += 1;
+          expect(fn).toBe("review_membership_application_if_unchanged");
+          expect(payload).toEqual({
+            p_application_id: "application-1",
+            p_expected_updated_at: "2026-07-24T20:00:00.000Z",
+            p_decision: decision,
+            p_payment_status: "failed",
+            p_actor_id: "admin-1",
+            p_notes: notes ?? null,
+          });
+          return Promise.resolve({
+            data: { id: "application-1" },
+            error: null,
+          });
+        },
+      } as unknown as SupabaseClient;
+
+      await expect(
+        reviewMembershipApplication(
+          client,
+          {
+            clubId: "24",
+            userId: "admin-1",
+          } as unknown as AdminAccess,
+          "application-1",
+          "2026-07-24T20:00:00.000Z",
+          decision,
+          notes,
+        ),
+      ).resolves.toBeUndefined();
+      expect(rpcCallCount).toBe(1);
+  });
+
+  it("fails closed before an approval can manufacture paid status", async () => {
+    let rpcCallCount = 0;
     const client = {
-      from(table: string) {
-        if (table === "membership_applications") {
-          return {
-            select(columns: string) {
-              expect(columns).toBe("*");
-              return {
-                eq(column: string, value: unknown) {
-                  expect(column).toBe("id");
-                  expect(value).toBe("application-1");
-                  return {
-                    single() {
-                      return Promise.resolve({
-                        data: {
-                          id: "application-1",
-                          user_id: "user-1",
-                          tier: "gold",
-                          payment_status: "paid",
-                          metadata: { chapter: "Central" },
-                        },
-                        error: null,
-                      });
-                    },
-                  };
-                },
-              };
-            },
-            update(payload: Record<string, unknown>) {
-              expect(payload.status).toBe("approved");
-              expect(payload.notes).toBe("Looks good");
-              expect(payload.reviewer_id).toBe("admin-1");
-              return {
-                eq(column: string, value: unknown) {
-                  expect(column).toBe("id");
-                  expect(value).toBe("application-1");
-                  return Promise.resolve({ error: null });
-                },
-              };
-            },
-          };
-        }
-
-        if (table === "african_football_clubs") {
-          return {
-            select(columns: string) {
-              expect(columns).toBe("club_name, club_slug");
-              return {
-                eq(column: string, value: unknown) {
-                  expect(column).toBe("id");
-                  expect(value).toBe(24);
-                  return {
-                    maybeSingle() {
-                      return Promise.resolve({
-                        data: {
-                          club_name: "Rayon Sports FC",
-                          club_slug: "rayon-sports",
-                        },
-                        error: null,
-                      });
-                    },
-                  };
-                },
-              };
-            },
-          };
-        }
-
-        if (table === "partners") {
-          return {
-            select(columns: string) {
-              expect(columns).toBe("id");
-              return {
-                eq(column: string, value: unknown) {
-                  if (column === "category") {
-                    expect(value).toBe("football");
-                    return {
-                      eq(innerColumn: string, innerValue: unknown) {
-                        expect(innerColumn).toBe("slug");
-                        expect(innerValue).toBe("rayon-sports");
-                        return {
-                          maybeSingle() {
-                            return Promise.resolve({
-                              data: { id: "partner-1" },
-                              error: null,
-                            });
-                          },
-                        };
-                      },
-                    };
-                  }
-
-                  throw new Error(`Unexpected partners filter: ${column}`);
-                },
-              };
-            },
-          };
-        }
-
-        if (table === "fan_memberships") {
-          return {
-            update(payload: Record<string, unknown>) {
-              expect(payload).toMatchObject({
-                tier: "gold",
-                status: "active",
-                club_id: 24,
-                chapter: "Central",
-              });
-              return {
-                eq(column: string, value: unknown) {
-                  expect(column).toBe("user_id");
-                  expect(value).toBe("user-1");
-                  return {
-                    eq(innerColumn: string, innerValue: unknown) {
-                      expect(innerColumn).toBe("partner_id");
-                      expect(innerValue).toBe("partner-1");
-                      return {
-                        select(columns: string) {
-                          expect(columns).toBe("id");
-                          return {
-                            maybeSingle() {
-                              return Promise.resolve({
-                                data: { id: "membership-1" },
-                                error: null,
-                              });
-                            },
-                          };
-                        },
-                      };
-                    },
-                  };
-                },
-              };
-            },
-          };
-        }
-
-        throw new Error(`Unexpected table lookup: ${table}`);
-      },
-      rpc(fn: string, payload: Record<string, unknown>) {
-        expect(fn).toBe(
-          "admin_review_membership_application_if_unchanged",
-        );
-        expect(payload).toEqual({
-          p_application_id: "application-1",
-          p_expected_updated_at: "2026-07-24T20:00:00.000Z",
-          p_decision: "approved",
-          p_notes: "Looks good",
-          p_club_id: 24,
-          p_partner_id: "partner-1",
-          p_actor_id: "admin-1",
-        });
-        return Promise.resolve({
-          data: { id: "application-1" },
-          error: null,
-        });
+      rpc() {
+        rpcCallCount += 1;
+        return Promise.resolve({ data: null, error: null });
       },
     } as unknown as SupabaseClient;
 
     await expect(
       reviewMembershipApplication(
         client,
-        {
-          clubId: "24",
-          userId: "admin-1",
-        } as unknown as AdminAccess,
+        { clubId: "24", userId: "admin-1" } as unknown as AdminAccess,
         "application-1",
         "2026-07-24T20:00:00.000Z",
         "approved",
-        "Looks good",
       ),
-    ).resolves.toBeUndefined();
+    ).rejects.toThrow("provider payment reconciliation");
+    expect(rpcCallCount).toBe(0);
   });
 });

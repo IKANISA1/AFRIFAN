@@ -33,6 +33,7 @@ void main() {
           paymentRoute: null,
           isActiveClubTeam: true,
           clubSupportMessage: 'Contribution route unavailable.',
+          allowsUnreconciledExternalPaymentLaunch: true,
         ),
       ),
     );
@@ -53,6 +54,7 @@ void main() {
           paymentRoute: _route,
           isActiveClubTeam: true,
           clubSupportMessage: null,
+          allowsUnreconciledExternalPaymentLaunch: true,
         ),
       ),
     );
@@ -74,6 +76,7 @@ void main() {
           paymentRoute: null,
           isActiveClubTeam: false,
           clubSupportMessage: 'Contribution route unavailable.',
+          allowsUnreconciledExternalPaymentLaunch: true,
         ),
       ),
     );
@@ -102,6 +105,7 @@ void main() {
           paymentRoute: _route,
           isActiveClubTeam: true,
           clubSupportMessage: null,
+          allowsUnreconciledExternalPaymentLaunch: true,
         ),
       ),
     );
@@ -119,6 +123,55 @@ void main() {
     await tester.pump();
 
     expect(dialed, isTrue);
+  });
+
+  testWidgets('store policy hides every external contribution promotion', (
+    tester,
+  ) async {
+    var dialed = false;
+
+    await tester.pumpWidget(
+      buildSubject(
+        Column(
+          children: [
+            const Expanded(
+              child: TeamOverviewTab(
+                team: _team,
+                tableRow: null,
+                paymentRoute: _route,
+                isActiveClubTeam: true,
+                clubSupportMessage: null,
+                allowsUnreconciledExternalPaymentLaunch: false,
+              ),
+            ),
+            Expanded(
+              child: TeamContributeTab(
+                isDialing: false,
+                onDial: () {
+                  dialed = true;
+                },
+                paymentRoute: _route,
+                isActiveClubTeam: true,
+                clubSupportMessage: null,
+                allowsUnreconciledExternalPaymentLaunch: false,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('MOMO CONTRIBUTION ROUTE'), findsNothing);
+    expect(find.text('MOMO CONTRIBUTION'), findsNothing);
+    expect(find.text('MTN MoMo code 1828'), findsNothing);
+    expect(find.text('Rayon contribution reference'), findsNothing);
+    expect(find.text('Enter amount & dial'), findsNothing);
+    expect(
+      find.byKey(const ValueKey<String>('team-contribute-empty')),
+      findsOne,
+    );
+    expect(dialed, isFalse);
   });
 }
 

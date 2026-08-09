@@ -104,7 +104,11 @@ create policy membership_packages_active_catalog_anon
 on public.membership_packages
 for select
 to anon
-using (is_active);
+using (
+  is_active
+  and benefit_scope = 'physical_membership'
+  and store_billing_required is false
+);
 
 create policy membership_packages_active_catalog_authenticated
 on public.membership_packages
@@ -112,6 +116,8 @@ for select
 to authenticated
 using (
   is_active
+  and benefit_scope = 'physical_membership'
+  and store_billing_required is false
   and (club_id is null or club_id::text = public.requesting_club_id())
 );
 
@@ -521,8 +527,13 @@ begin
     raise exception 'Membership review actor is not authorized for this club.';
   end if;
 
-  if v_decision = 'approved' and v_payment_status <> 'paid' then
-    raise exception 'Approved memberships require verified payment.';
+  if v_decision = 'approved'
+     and (
+       v_payment_status <> 'paid'
+       or v_previous.payment_status <> 'paid'
+     ) then
+    raise exception
+      'Approved memberships require a separately verified payment state.';
   end if;
 
   update public.membership_applications as application

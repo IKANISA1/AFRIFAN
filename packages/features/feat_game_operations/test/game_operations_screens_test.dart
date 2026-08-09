@@ -753,6 +753,42 @@ void main() {
   );
 
   testWidgets(
+    'organizer creates and assigns a claimed home TV in one planner journey',
+    (tester) async {
+      final gateway = FakeGameOperationsGateway();
+      await _pump(
+        tester,
+        gateway: gateway,
+        initialLocation: '/game-operations/sessions/new',
+      );
+
+      await tester.tap(
+        find.byKey(const ValueKey<String>('planner-eligibility')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Owners of assigned home TVs').last);
+      await tester.pumpAndSettle();
+
+      final display = find.byKey(
+        const ValueKey<String>('planner-display-display-1'),
+      );
+      await tester.ensureVisible(display);
+      await tester.tap(display);
+      await tester.pumpAndSettle();
+
+      final create = find.byKey(const ValueKey<String>('planner-create'));
+      await tester.ensureVisible(create);
+      await tester.tap(create);
+      await tester.pumpAndSettle();
+
+      expect(gateway.creations, 1);
+      expect(gateway.createDisplayIds.single, const <String>['display-1']);
+      expect(find.text('Live game control'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'organizer invitation planner selected state matches governed golden',
     (tester) async {
       await _pump(

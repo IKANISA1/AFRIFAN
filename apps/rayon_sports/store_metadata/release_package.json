@@ -5,7 +5,7 @@
   "mobile": {
     "name": "Gikundiro",
     "version_name": "1.0.3",
-    "build_number": 5,
+    "build_number": 6,
     "android_package": "rw.gikundiro.app",
     "ios_bundle_id": "rw.ikanisa.rayonSports",
     "apple_team_id": "63STJ5N27W",
@@ -24,6 +24,7 @@
       "rw-RW": "runtime language retained as controlled copy; neither Google Play nor App Store Connect currently accepts Kinyarwanda listing metadata"
     }
   },
+  "verified_code_facts_scope": "Source capability inventory before candidate policy enforcement; effective build-6 behavior is recorded separately in effective_candidate_facts.",
   "verified_code_facts": {
     "anonymous_session_available": true,
     "phone_otp_available": true,
@@ -47,24 +48,55 @@
     "challenge_routes_require_feature_opt_in": true,
     "cash_withdrawal_implementation_found": false
   },
+  "effective_candidate_facts": {
+    "store_release_policy_enforced_by_default": true,
+    "compiled_store_billing_available_default": false,
+    "paid_digital_membership_enabled": false,
+    "staked_competitions_enabled": false,
+    "reward_redemption_enabled": false,
+    "points_transfer_enabled": false,
+    "manual_points_redemption_enabled": false,
+    "cross_user_editable_text_enabled": false,
+    "public_supporter_labels_system_controlled": true,
+    "client_social_reward_challenge_rpcs_revoked_by_migration_20260809111441": true,
+    "physical_goods_enabled": true,
+    "event_tickets_enabled": true
+  },
   "blocking_classifications": [
     {
       "id": "POLICY-PAYMENTS-01",
-      "status": "blocking",
+      "status": "not_applicable_candidate_disabled",
       "question": "Do any paid memberships, rewards, or other paid flows unlock digital content or app functionality?",
-      "required_outcome": "Classify each SKU. Use store billing for digital goods or disable the paid digital benefit in the store candidate."
+      "candidate_outcome": "No paid digital benefit is enabled in the production store candidate. StoreReleasePolicy defaults to production enforcement, requires both server authorization and compiled store-billing availability for paid digital membership, and the latter defaults false. Candidate migration 20260809111441 permits only free physical-membership catalog entries and revokes client submission of paid membership applications.",
+      "evidence": [
+        "packages/core/core_feature_config/lib/src/policies/store_release_policy.dart",
+        "packages/core/core_feature_config/test/store_release_policy_test.dart",
+        "supabase/migrations/20260809111441_enforce_store_release_security_boundary.sql"
+      ]
     },
     {
       "id": "POLICY-REWARDS-01",
-      "status": "blocking",
+      "status": "not_applicable_candidate_disabled",
       "question": "Can FET, predictions, challenges, contests, or rewards be bought, transferred for value, withdrawn, or redeemed for cash or real-world prizes?",
-      "required_outcome": "Prove no purchase, cash value, withdrawal, wager, or real-world prize for the store candidate, or obtain the required legal/store authorization and age/geo controls."
+      "candidate_outcome": "No. Production policy disables staked competitions and reward redemption unless complete server rules explicitly authorize them; points transfer and manual redemption remain development-only. Client execution of redemption, transfer, partner-offer, challenge, jackpot, and related feed RPCs is revoked for this candidate.",
+      "evidence": [
+        "packages/core/core_feature_config/lib/src/policies/store_release_policy.dart",
+        "packages/core/core_feature_config/test/store_release_policy_test.dart",
+        "supabase/migrations/20260809111441_enforce_store_release_security_boundary.sql",
+        "supabase/tests/store_release_security_boundary_contract.sql"
+      ]
     },
     {
       "id": "POLICY-UGC-01",
-      "status": "blocking",
+      "status": "not_applicable_candidate_disabled",
       "question": "Will the release expose user-selected names, challenge notes, or other user content to another user?",
-      "required_outcome": "Either restrict output to system-generated aliases with no user text, or prove terms acceptance, filtering, report-content, report-user, block-user, moderation, and support operations."
+      "candidate_outcome": "No cross-user editable text is enabled. Production policy substitutes a stable system-controlled supporter alias unless the complete UGC control set is authorized, and client execution of friend, supporter-search, leaderboard, challenge-note and related social RPCs is revoked for this candidate.",
+      "evidence": [
+        "packages/core/core_feature_config/lib/src/policies/store_release_policy.dart",
+        "packages/core/core_feature_config/test/store_release_policy_test.dart",
+        "supabase/migrations/20260809111441_enforce_store_release_security_boundary.sql",
+        "supabase/tests/store_release_security_boundary_contract.sql"
+      ]
     },
     {
       "id": "POLICY-RIGHTS-01",
@@ -76,7 +108,7 @@
       "id": "POLICY-AUDIENCE-01",
       "status": "blocking",
       "question": "Which age groups and territories are approved for the exact feature set?",
-      "required_outcome": "Complete current Play/IARC and Apple questionnaires after payments, rewards, contests, and UGC decisions are final."
+      "required_outcome": "Complete current Play/IARC and Apple questionnaires for the exact disabled-feature candidate and approved territories."
     },
     {
       "id": "POLICY-PRIVACY-01",

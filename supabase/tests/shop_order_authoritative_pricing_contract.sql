@@ -18,7 +18,7 @@ select ok(
   and has_table_privilege('service_role', 'public.shop_orders', 'INSERT')
   and has_table_privilege('service_role', 'public.shop_orders', 'UPDATE')
   and has_table_privilege('service_role', 'public.shop_orders', 'DELETE'),
-  'supporters read orders but create and mutate them only through RPCs'
+  'supporters read orders while creation and mutation stay on explicit server or safe-user RPC boundaries'
 );
 
 select ok(
@@ -88,7 +88,7 @@ select ok(
       and procedure.prosrc ~ 'v_product.price'
       and procedure.prosrc ~ 'inventory_reserved'
   )
-  and has_function_privilege(
+  and not has_function_privilege(
     'authenticated',
     'public.create_shop_order(jsonb,text,text)',
     'EXECUTE'
@@ -98,7 +98,7 @@ select ok(
     'public.create_shop_order(jsonb,text,text)',
     'EXECUTE'
   )
-  and not has_function_privilege(
+  and has_function_privilege(
     'service_role',
     'public.create_shop_order(jsonb,text,text)',
     'EXECUTE'
@@ -252,7 +252,7 @@ set local role authenticated;
 do $$
 declare
   direct_insert_denied boolean := false;
-  created public.shop_orders;
+  client_create_denied boolean := false;
 begin
   begin
     insert into public.shop_orders (
@@ -276,6 +276,41 @@ begin
     when insufficient_privilege then direct_insert_denied := true;
   end;
 
+  begin
+    perform public.create_shop_order(
+      jsonb_build_array(
+        jsonb_build_object(
+          'product_id', '99340000-0000-4000-8000-000000000110',
+          'quantity', 1,
+          'selected_variant', 'M'
+        )
+      ),
+      'Denied client checkout address',
+      'shop-contract-client-denied'
+    );
+  exception
+    when insufficient_privilege then client_create_denied := true;
+  end;
+
+  if not direct_insert_denied or not client_create_denied then
+    raise exception 'client shop writes were not denied: direct %, RPC %',
+      direct_insert_denied,
+      client_create_denied;
+  end if;
+end $$;
+reset role;
+
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99340000-0000-4000-8000-000000000001","role":"service_role","club_id":"9934001","is_anonymous":true}',
+  true
+);
+set local role service_role;
+do $$
+declare
+  created public.shop_orders;
+begin
+
   select *
     into created
     from public.create_shop_order(
@@ -293,8 +328,7 @@ begin
       'shop-contract-reference-1'
     );
 
-  if not direct_insert_denied
-     or created.user_id <> '99340000-0000-4000-8000-000000000001'
+  if created.user_id <> '99340000-0000-4000-8000-000000000001'
      or created.club_id <> 9934001
      or created.status <> 'pending'
      or created.subtotal <> 25000
@@ -310,7 +344,7 @@ begin
   end if;
 end $$;
 reset role;
-select pass('direct inserts fail and the RPC persists canonical server price and scope');
+select pass('authenticated writes fail and the server RPC persists canonical price and scope');
 
 select is(
   (
@@ -322,7 +356,7 @@ select is(
   'accepted reservation decrements stock exactly once'
 );
 
-set local role authenticated;
+set local role service_role;
 do $$
 declare
   first_id uuid;
@@ -362,7 +396,7 @@ select is(
   'same-reference retry returns the order without reserving stock twice'
 );
 
-set local role authenticated;
+set local role service_role;
 do $$
 declare
   duplicate_denied boolean := false;
@@ -544,7 +578,12 @@ select ok(
   'order creation and cancellation retain actor, club, state, price and stock audit evidence'
 );
 
-set local role authenticated;
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99340000-0000-4000-8000-000000000001","role":"service_role","club_id":"9934001","is_anonymous":true}',
+  true
+);
+set local role service_role;
 do $$
 declare
   created public.shop_orders;

@@ -3,6 +3,13 @@
 Check the live pages immediately before portal entry because console forms and
 requirements change.
 
+Requirement snapshot rechecked 2026-08-09: the default listing requires a
+512x512 32-bit PNG icon, a 1024x500 feature graphic, and at least two
+screenshots across the listing; an Android TV distribution additionally
+requires at least one Android TV screenshot and a 1280x720 opaque TV banner.
+This package carries two TV screenshots so the TV-only listing also meets the
+default two-screenshot minimum.
+
 - Google Play store listing and preview assets:
   https://support.google.com/googleplay/android-developer/answer/9866151
 - Google Play app-record and listing fields:

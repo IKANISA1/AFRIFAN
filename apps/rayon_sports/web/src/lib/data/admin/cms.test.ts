@@ -1,5 +1,9 @@
+// @vitest-environment node
+
 import { describe, expect, it } from "vitest";
-import { normalizeAdminArticles } from "./cms";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { AdminAccess } from "@/lib/types";
+import { normalizeAdminArticles, saveAdminArticle } from "./cms";
 
 const validArticle = {
   id: "article-1",
@@ -73,5 +77,57 @@ describe("admin CMS response normalization", () => {
 
   it("fails closed for a non-array response", () => {
     expect(normalizeAdminArticles({ data: [validArticle] })).toEqual([]);
+  });
+
+  it("derives excerpts for presentation without writing a nonexistent column", async () => {
+    const client = {
+      from(table: string) {
+        expect(table).toBe("news_articles");
+        return {
+          select(columns: string) {
+            expect(columns).toBe("id");
+            return {
+              limit(limit: number) {
+                expect(limit).toBe(1);
+                return Promise.resolve({ data: [], error: null });
+              },
+            };
+          },
+          insert(payload: Record<string, unknown>) {
+            expect(payload).toMatchObject({
+              club_id: 24,
+              title: "Competition update",
+              body: "Full controlled announcement body.",
+            });
+            expect(payload).not.toHaveProperty("excerpt");
+            return {
+              select(columns: string) {
+                expect(columns).toBe("id");
+                return {
+                  single() {
+                    return Promise.resolve({
+                      data: { id: "article-created" },
+                      error: null,
+                    });
+                  },
+                };
+              },
+            };
+          },
+        };
+      },
+    } as unknown as SupabaseClient;
+
+    await expect(
+      saveAdminArticle(
+        client,
+        { clubId: "24" } as unknown as AdminAccess,
+        {
+          title: "Competition update",
+          excerpt: "Presentation-only summary",
+          body: "Full controlled announcement body.",
+        },
+      ),
+    ).resolves.toBe("article-created");
   });
 });

@@ -37,7 +37,7 @@ class StatementExportService {
                 r['amount'],
                 r['currency'] ?? _defaultCurrency,
                 r['status'],
-                r['momo_reference'] ?? '',
+                r['momo_reference'] ?? r['client_request_reference'] ?? '',
                 r['confirmed_at'] ?? '',
                 r['created_at'],
               ])
@@ -134,8 +134,8 @@ class StatementExportService {
       String groupId) async {
     final contributions = await _client
         .from('group_contributions')
-        .select(
-            'id, user_id, amount, status, momo_reference, confirmed_at, created_at')
+        .select('id, user_id, amount, status, client_request_reference, '
+            'momo_reference, confirmed_at, created_at')
         .eq('group_id', groupId)
         .order('created_at', ascending: false);
     return List<Map<String, dynamic>>.from(

@@ -3,12 +3,11 @@ export const appleTeamId = "63STJ5N27W";
 export const appleBundleId = "rw.ikanisa.rayonSports";
 export const appleApplicationId = `${appleTeamId}.${appleBundleId}`;
 
-// This is the controlled upload-certificate fingerprint recorded for the
-// current release artifacts. Google Play normally re-signs production builds,
-// so the Play app-signing fingerprint must be added through the public
-// build-time setting after the Play app record exists.
-export const androidUploadCertificateFingerprint =
-  "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10";
+// This is the verified Google Play App Signing SHA-256 certificate fingerprint
+// for the production Android application. Additional signing certificates can
+// be appended through the public build-time setting when required.
+export const androidPlayAppSigningCertificateFingerprint =
+  "B8:B4:84:C9:3D:80:83:12:9C:90:1B:D4:9C:BE:35:65:7B:C1:4D:38:F3:D9:19:04:75:45:83:B5:AB:BC:E5:D9";
 
 const sha256FingerprintPattern = /^(?:[0-9A-F]{2}:){31}[0-9A-F]{2}$/;
 
@@ -21,7 +20,7 @@ export function resolveAndroidCertificateFingerprints(
     .filter((candidate) => sha256FingerprintPattern.test(candidate));
 
   return Array.from(
-    new Set([androidUploadCertificateFingerprint, ...candidates]),
+    new Set([androidPlayAppSigningCertificateFingerprint, ...candidates]),
   );
 }
 

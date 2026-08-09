@@ -146,6 +146,21 @@ select ok(
       and procedure.prosrc ~ 'club_id is not distinct from new.club_id'
       and procedure.prosrc ~ 'v_quantity <= 0'
       and procedure.prosrc ~ 'stock >= v_quantity'
+  )
+  and not has_function_privilege(
+    'anon',
+    'public.create_shop_order(jsonb,text,text)',
+    'EXECUTE'
+  )
+  and not has_function_privilege(
+    'authenticated',
+    'public.create_shop_order(jsonb,text,text)',
+    'EXECUTE'
+  )
+  and has_function_privilege(
+    'service_role',
+    'public.create_shop_order(jsonb,text,text)',
+    'EXECUTE'
   ),
   'tenant helpers, cancellation, and stock mutation have fixed paths and trusted scope predicates'
 );
@@ -353,12 +368,38 @@ select set_config(
 set local role authenticated;
 do $$
 declare
-  visible_orders bigint;
-  remaining_stock integer;
-  loaded_version timestamptz;
+  client_create_denied boolean := false;
+begin
+  begin
+    perform public.create_shop_order(
+      jsonb_build_array(
+        jsonb_build_object(
+          'product_id', '99310000-0000-4000-8000-000000000010',
+          'quantity', 1
+        )
+      ),
+      'Denied authenticated checkout address',
+      'shop-tenant-client-denied'
+    );
+  exception
+    when insufficient_privilege then client_create_denied := true;
+  end;
+
+  if not client_create_denied then
+    raise exception 'authenticated shop creation RPC remained executable';
+  end if;
+end $$;
+reset role;
+
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99310000-0000-4000-8000-000000000001","role":"service_role","is_anonymous":true,"user_metadata":{"club_id":"9931002"}}',
+  true
+);
+set local role service_role;
+do $$
+declare
   created_order public.shop_orders;
-  cancelled_order public.shop_orders;
-  direct_update_denied boolean := false;
 begin
   select * into created_order
   from public.create_shop_order(
@@ -371,10 +412,31 @@ begin
     'Kigali shop tenant contract address',
     'shop-tenant-contract-reference'
   );
+end $$;
+reset role;
+
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99310000-0000-4000-8000-000000000001","role":"authenticated","is_anonymous":true,"user_metadata":{"club_id":"9931002"}}',
+  true
+);
+set local role authenticated;
+do $$
+declare
+  visible_orders bigint;
+  remaining_stock integer;
+  loaded_version timestamptz;
+  created_order_id uuid;
+  cancelled_order public.shop_orders;
+  direct_update_denied boolean := false;
+begin
+  select id into created_order_id
+  from public.shop_orders
+  where momo_reference = 'shop-tenant-contract-reference';
 
   select count(*) into visible_orders
   from public.shop_orders
-  where id = created_order.id
+  where id = created_order_id
      or id = '99310000-0000-4000-8000-000000000021';
 
   select stock into remaining_stock
@@ -383,18 +445,18 @@ begin
 
   select updated_at into loaded_version
   from public.shop_orders
-  where id = created_order.id;
+  where id = created_order_id;
 
   select * into cancelled_order
   from public.cancel_shop_order_if_unchanged(
-    created_order.id,
+    created_order_id,
     loaded_version
   );
 
   begin
     update public.shop_orders
     set total = 1
-    where id = created_order.id;
+    where id = created_order_id;
   exception
     when insufficient_privilege then direct_update_denied := true;
   end;
@@ -419,10 +481,25 @@ do $$
 declare
   denied boolean := false;
   cancellation_denied boolean := false;
-  foreign_product_denied boolean := false;
-  invalid_quantity_denied boolean := false;
-  insufficient_stock_denied boolean := false;
+  client_create_denied boolean := false;
 begin
+  begin
+    perform public.create_shop_order(
+      jsonb_build_array(
+        jsonb_build_object(
+          'product_id',
+          '99310000-0000-4000-8000-000000000010',
+          'quantity',
+          1
+        )
+      ),
+      'Denied authenticated checkout address',
+      'shop-tenant-client-denied-2'
+    );
+  exception
+    when insufficient_privilege then client_create_denied := true;
+  end;
+
   begin
     insert into public.shop_orders (
       id,
@@ -452,6 +529,27 @@ begin
     when raise_exception then cancellation_denied := true;
   end;
 
+  if not denied or not cancellation_denied or not client_create_denied then
+    raise exception 'client order boundaries failed: insert %, cancel %, create %',
+      denied,
+      cancellation_denied,
+      client_create_denied;
+  end if;
+end $$;
+reset role;
+
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99310000-0000-4000-8000-000000000001","role":"service_role","is_anonymous":true,"user_metadata":{"club_id":"9931002"}}',
+  true
+);
+set local role service_role;
+do $$
+declare
+  foreign_product_denied boolean := false;
+  invalid_quantity_denied boolean := false;
+  insufficient_stock_denied boolean := false;
+begin
   begin
     perform public.create_shop_order(
       jsonb_build_array(
@@ -503,14 +601,10 @@ begin
     when raise_exception then insufficient_stock_denied := true;
   end;
 
-  if not denied
-     or not cancellation_denied
-     or not foreign_product_denied
+  if not foreign_product_denied
      or not invalid_quantity_denied
      or not insufficient_stock_denied then
-    raise exception 'unsafe order actions were not denied: insert %, cancel %, product %, quantity %, stock %',
-      denied,
-      cancellation_denied,
+    raise exception 'unsafe server order requests were not denied: product %, quantity %, stock %',
       foreign_product_denied,
       invalid_quantity_denied,
       insufficient_stock_denied;
@@ -531,6 +625,11 @@ select ok(
   'cross-club order, RPC, inventory, and invalid-quantity attacks fail atomically'
 );
 
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99310000-0000-4000-8000-000000000001","role":"authenticated","is_anonymous":true,"user_metadata":{"club_id":"9931002"}}',
+  true
+);
 set local role authenticated;
 do $$
 declare

@@ -1,0 +1,4 @@
+v1.0.3 – Store Submission Update
+• Improved upgrade safety and session recovery for returning supporters
+• Updated privacy, support, and account-deletion links
+• Finalized store, iPad multitasking, and release-security controls

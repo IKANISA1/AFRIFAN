@@ -198,7 +198,7 @@ select ok(
 );
 
 select ok(
-  has_function_privilege(
+  not has_function_privilege(
     'authenticated',
     'public.purchase_club_tickets(uuid,uuid,text,integer,text)',
     'EXECUTE'
@@ -208,7 +208,7 @@ select ok(
     'public.purchase_club_tickets(uuid,uuid,text,integer,text)',
     'EXECUTE'
   )
-  and not has_function_privilege(
+  and has_function_privilege(
     'service_role',
     'public.purchase_club_tickets(uuid,uuid,text,integer,text)',
     'EXECUTE'
@@ -466,9 +466,7 @@ set local role authenticated;
 do $$
 declare
   direct_write_denied boolean := false;
-  first_ids uuid[];
-  retry_ids uuid[];
-  visible_count integer;
+  client_purchase_denied boolean := false;
 begin
   begin
     insert into public.tickets (
@@ -490,6 +488,37 @@ begin
     when insufficient_privilege then direct_write_denied := true;
   end;
 
+  begin
+    perform public.purchase_club_tickets(
+      '99320000-0000-4000-8000-000000000110',
+      '99320000-0000-4000-8000-000000000001',
+      'general',
+      1,
+      'ticket-contract-client-denied'
+    );
+  exception
+    when insufficient_privilege then client_purchase_denied := true;
+  end;
+
+  if not direct_write_denied or not client_purchase_denied then
+    raise exception 'client ticket writes were not denied: direct %, RPC %',
+      direct_write_denied,
+      client_purchase_denied;
+  end if;
+end $$;
+reset role;
+
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99320000-0000-4000-8000-000000000001","role":"service_role","club_id":"9932001","is_anonymous":true}',
+  true
+);
+set local role service_role;
+do $$
+declare
+  first_ids uuid[];
+  retry_ids uuid[];
+begin
   select pg_catalog.array_agg(result.id order by result.id)
     into first_ids
     from public.purchase_club_tickets(
@@ -510,24 +539,36 @@ begin
       'ticket-contract-reference-1'
     ) as result;
 
+  if pg_catalog.cardinality(first_ids) <> 2
+     or retry_ids is distinct from first_ids then
+    raise exception
+      'server purchase contract failed: first %, retry %',
+      first_ids,
+      retry_ids;
+  end if;
+end $$;
+reset role;
+
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99320000-0000-4000-8000-000000000001","role":"authenticated","club_id":"9932001","is_anonymous":true}',
+  true
+);
+set local role authenticated;
+do $$
+declare
+  visible_count integer;
+begin
   select pg_catalog.count(*)::integer
     into visible_count
     from public.tickets;
 
-  if not direct_write_denied
-     or pg_catalog.cardinality(first_ids) <> 2
-     or retry_ids is distinct from first_ids
-     or visible_count <> 2 then
-    raise exception
-      'supporter purchase contract failed: direct %, first %, retry %, visible %',
-      direct_write_denied,
-      first_ids,
-      retry_ids,
-      visible_count;
+  if visible_count <> 2 then
+    raise exception 'supporter ticket visibility failed: %', visible_count;
   end if;
 end $$;
 reset role;
-select pass('anonymous Auth supporter purchases through an idempotent RPC while direct writes fail');
+select pass('server purchase is idempotent while authenticated direct and RPC writes are denied');
 
 select is(
   (
@@ -539,7 +580,12 @@ select is(
   'pending ticket batches consume and refresh match capacity'
 );
 
-set local role authenticated;
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99320000-0000-4000-8000-000000000001","role":"service_role","club_id":"9932001","is_anonymous":true}',
+  true
+);
+set local role service_role;
 do $$
 declare
   wrong_owner_denied boolean := false;
@@ -606,7 +652,7 @@ end $$;
 reset role;
 select pass('purchase rejects owner spoofing, cross-club matches, invalid seats, and reference reuse');
 
-set local role authenticated;
+set local role service_role;
 do $$
 declare
   oversell_denied boolean := false;
@@ -641,8 +687,13 @@ begin
   end if;
 end $$;
 reset role;
-select pass('purchase rejects overselling and unbounded ticket batches');
+select pass('server purchase rejects overselling and unbounded ticket batches');
 
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"99320000-0000-4000-8000-000000000001","role":"authenticated","club_id":"9932001","is_anonymous":true}',
+  true
+);
 set local role authenticated;
 do $$
 declare
@@ -692,6 +743,7 @@ declare
   target_id uuid;
   loaded_version timestamptz;
   changed_count integer;
+  provider_denied boolean := false;
   stale_denied boolean := false;
   persisted_status text;
 begin
@@ -703,10 +755,23 @@ begin
    order by ticket.id
    limit 1;
 
+  begin
+    perform public.admin_bulk_update_ticket_status_if_unchanged(
+      array[target_id],
+      array[loaded_version],
+      'valid',
+      9932001,
+      '99320000-0000-4000-8000-000000000003',
+      'club_admin',
+      false
+    );
+  exception when raise_exception then provider_denied := true;
+  end;
+
   select public.admin_bulk_update_ticket_status_if_unchanged(
     array[target_id],
     array[loaded_version],
-    'valid',
+    'cancelled',
     9932001,
     '99320000-0000-4000-8000-000000000003',
     'club_admin',
@@ -731,17 +796,19 @@ begin
   exception when raise_exception then stale_denied := true;
   end;
 
-  if changed_count <> 1
-     or persisted_status <> 'valid'
+  if not provider_denied
+     or changed_count <> 1
+     or persisted_status <> 'cancelled'
      or not stale_denied then
-    raise exception 'admin concurrency contract failed: changed %, status %, stale %',
+    raise exception 'admin attestation/concurrency contract failed: provider %, changed %, status %, stale %',
+      provider_denied,
       changed_count,
       persisted_status,
       stale_denied;
   end if;
 end $$;
 reset role;
-select pass('service admin review updates an exact version and rejects the stale retry atomically');
+select pass('service admin validation fails closed without provider evidence while exact-version cancellation remains safe');
 
 select ok(
   exists (
@@ -751,13 +818,13 @@ select ok(
       and club_id = 9932001
       and actor_id = '99320000-0000-4000-8000-000000000003'
       and old_data ->> 'status' = 'pending'
-      and new_data ->> 'status' = 'valid'
+      and new_data ->> 'status' = 'cancelled'
       and old_data ? 'updated_at'
       and new_data ? 'updated_at'
       and metadata ->> 'optimistic_concurrency' = 'true'
       and metadata ->> 'selection_count' = '1'
   ),
-  'admin ticket review records exact actor, club, old/new state, versions, and batch size'
+  'admin ticket cancellation records exact actor, club, old/new state, versions, and batch size'
 );
 
 select set_config(
@@ -835,8 +902,8 @@ select is(
     from public.matches
     where id = '99320000-0000-4000-8000-000000000110'
   ),
-  1,
-  'cancelling a pending ticket releases capacity in the public match counter'
+  0,
+  'supporter and attestation-safe service cancellations release ticket capacity'
 );
 
 select * from finish();

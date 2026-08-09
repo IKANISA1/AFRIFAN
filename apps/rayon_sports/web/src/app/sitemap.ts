@@ -45,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           .from("news_articles")
           .select("id, published_at")
           .eq("club_id", activeClub.numericId)
-          .eq("status", "published")
+          .eq("is_published", true)
           .order("published_at", { ascending: false })
           .limit(50),
         client

@@ -1026,7 +1026,11 @@ export function CirclesSurface({
               </div>
             </article>
           ) : status === "loading" ? (
-            <div className="circles-skeleton" aria-label={message.label}>
+            <div
+              className="circles-skeleton"
+              role="status"
+              aria-label={message.label}
+            >
               <span />
               <span />
               <span />

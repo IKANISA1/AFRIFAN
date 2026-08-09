@@ -1,7 +1,7 @@
 # Google Play App content working answers
 
-Status: draft pending exact-AAB reconciliation and accountable approval. Enter
-these answers in Play Console only after every `BLOCKING` row is closed.
+Status: build-6 candidate classification reconciled; exact Android AAB, portal
+wording, rights, privacy, audience, and release-owner approval remain open.
 
 ## Privacy policy
 
@@ -38,10 +38,11 @@ these answers in Play Console only after every `BLOCKING` row is closed.
 
 - Current product statement: not directed to children under 13.
 - Portal selections: **pending accountable product/legal decision**.
-- Recommended conservative gate: do not select child age groups while the
-  release exposes payments, predictions, points/rewards, visible supporter
-  names, or unclassified contests without the required child-safety design and
-  Families compliance.
+- Recommended conservative gate: do not select child age groups without the
+  required child-safety/Families assessment. The candidate disables staked
+  contests, reward redemption, social discovery, and cross-user editable text,
+  but sports predictions, earned-points history, commerce references, and
+  remote club content still require exact questionnaire answers.
 - `BLOCKING`: approve intended ages and territories and verify the app's actual
   content and marketing are consistent with the selection.
 
@@ -50,8 +51,9 @@ these answers in Play Console only after every `BLOCKING` row is closed.
 Do not copy the former unsupported “Everyone” assertion. Answer the current
 questionnaire for the exact release. Review at minimum:
 
-- user-to-user display names and any feature-gated user text;
-- predictions, structured games, contests, points, leaderboards, and rewards;
+- system-controlled public aliases and the disabled cross-user text boundary;
+- predictions and earned-points history, with contests, staked challenges,
+  leaderboards/social discovery, and rewards disabled for public clients;
 - whether any outcome uses chance;
 - whether FET or any reward is purchasable, transferable, redeemable, or has
   real-world value;
@@ -70,19 +72,22 @@ questionnaire for the exact release. Review at minimum:
 ## Financial features declaration
 
 The app must complete this declaration even if the final answer were “none.”
-The following selections are the conservative working position:
+The following is the candidate-specific working position:
 
-- **Rewards, points, frequent-flyer miles and other incentives** — likely Yes,
-  because FET/points/reward surfaces exist.
+- **Rewards, points, frequent-flyer miles and other incentives** — earned-points
+  history may be visible, but transfer, redemption, partner offers, and reward
+  catalog access are disabled. Select the current Console answer based on the
+  exact visible build; do not describe a reward or cash-value program.
 - **Mobile payments and digital wallets** — policy-owner decision required.
   The app initiates an external MoMo USSD payment route and stores transaction
   references but does not implement a custodial wallet or card account.
 - Banking, loans, earned-wage access, credit, crypto/NFT, stock trading,
   insurance, financial advice, and buy-now-pay-later — no implementation found.
 
-`BLOCKING`: a legal/policy owner must map the exact functionality to the current
-Console choices; do not select “My app doesn't provide financial features”
-without resolving the payment and points rows.
+`BLOCKING`: a legal/policy owner must map the exact visible physical/off-app
+payment and read-only points context to the current Console choices. The
+code-owned paid-digital/reward enablement question is closed as disabled, but
+the portal declaration itself remains external.
 
 ## Data Safety and data deletion
 
@@ -101,27 +106,27 @@ without resolving the payment and points rows.
 
 ## User-generated content
 
-- Conservative answer: **UGC/social functionality is present or potentially
-  present** because editable nicknames and feature-gated notes can be visible
-  to other supporters in rankings/friend/challenge surfaces.
-- Current evidence did not identify clear report-content, report-user, and
-  block-user flows.
-- `BLOCKING`: either ship only system-generated aliases with all user text and
-  social/challenge surfaces disabled, or prove terms acceptance, filtering,
-  separate reporting and blocking, timely moderation, published contact, and
-  abuse-response operations.
+- Candidate answer: **No cross-user editable text or social UGC is enabled.**
+- `StoreReleasePolicy` replaces unapproved display names with stable
+  system-controlled aliases. Migration `20260809111441` revokes friend,
+  supporter-search, leaderboard, challenge-note, and related social RPCs from
+  public release clients.
+- UGC moderation controls are not applicable to this disabled candidate. Any
+  future cross-user text or social enablement requires a new artifact, full
+  terms/filtering/reporting/blocking/moderation evidence, and updated portal
+  answers.
 
 ## Real-money games, contests, and gambling
 
 - Intended working classification: **not a gambling app**.
-- Evidence supports predictions, FET points, leaderboards, rewards, and
-  feature-gated stake/challenge code. Absence of a cash-withdrawal method alone
-  is not enough to close the policy question.
-- `BLOCKING`: prove for the store candidate that FET cannot be bought, sold,
-  withdrawn, staked after purchase, or redeemed for cash/real-world prizes;
-  disable challenge/stake routes unless separately approved; document any
-  contest rules, entry method, prize, dates, selection/odds, ages, and
-  territories.
+- Production policy defaults fail closed and the candidate migration revokes
+  staked challenge, jackpot, partner-pool, reward, transfer, and related feed
+  RPCs from public release clients. FET is not purchasable, transferable,
+  manually redeemable, withdrawable, or enabled for a real-world prize in this
+  candidate.
+- Code-owned contest/reward enablement is therefore disabled/not applicable.
+  Current IARC, age, and territory answers remain an accountable portal gate;
+  any future contest must carry separately approved rules and controls.
 
 ## Payments
 
@@ -129,12 +134,14 @@ without resolving the payment and points rows.
   appropriate when the underlying item and fulfillment are physical/off-app.
 - Donations/contributions: document recipient, refund/dispute, and whether any
   digital entitlement is exchanged.
-- Membership: **unresolved**. Map every paid benefit. Any digital feature,
-  content, subscription, or app functionality must use the applicable Play
-  Billing model or be removed from the paid bundle.
+- Membership: paid digital membership is disabled. Production requires explicit
+  server authorization plus compiled store-billing availability, which defaults
+  false; the candidate migration exposes only free physical membership and
+  revokes client submission of paid applications.
 - The package contains no Play Billing SDK.
-- `BLOCKING`: complete the SKU-by-SKU classification in
-  `payments_rewards_ugc_decisions.md`.
+- Physical/off-app provider, fulfillment, refund/dispute, and portal answers
+  remain open. Any future paid/digital SKU requires a new billing-enabled
+  candidate and assessment.
 
 ## Permissions and APIs
 
@@ -160,4 +167,3 @@ without resolving the payment and points rows.
 - developer contact, support email, and website ownership;
 - package-name registration and account verification;
 - any required closed-test/production-access answers for the developer account.
-

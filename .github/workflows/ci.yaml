@@ -244,6 +244,11 @@ jobs:
         run: npm run build
 
       - name: Run E2E
+        env:
+          AFRICLUB_ALLOW_HTTP_PREVIEW: "1"
+          AFRICLUB_CONTROLLED_ADMIN_EVIDENCE: "1"
+          AFRICLUB_CONTROLLED_ROUTE_EVIDENCE: "1"
+          AFRICLUB_CONTROLLED_VENUE_EVIDENCE: "1"
         run: npm run test:e2e:ci
 
   # ──────────────────────────────────────────────

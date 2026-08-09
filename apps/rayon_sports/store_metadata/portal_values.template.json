@@ -5,11 +5,11 @@
   "google_play": {
     "developer_account_type": null,
     "developer_account_verified": null,
-    "app_record_exists": null,
-    "play_console_app_id": null,
-    "play_app_signing_enrolled": null,
-    "registered_upload_certificate_sha256": null,
-    "play_app_signing_certificate_sha256": null,
+    "app_record_exists": true,
+    "play_console_app_id": "4975567299527059359",
+    "play_app_signing_enrolled": true,
+    "registered_upload_certificate_sha256": "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10",
+    "play_app_signing_certificate_sha256": "B8:B4:84:C9:3D:80:83:12:9C:90:1B:D4:9C:BE:35:65:7B:C1:4D:38:F3:D9:19:04:75:45:83:B5:AB:BC:E5:D9",
     "version_code_available": null,
     "production_access_status": null,
     "required_closed_test_completed": null,
@@ -17,27 +17,129 @@
     "reviewer_access_configured": null,
     "data_safety_published": null,
     "app_content_forms_complete": null,
-    "artifact_uploaded": null,
-    "artifact_processing_status": null,
-    "submission_status": null
+    "artifact_uploaded": false,
+    "artifact_processing_status": "UPLOAD_REJECTED_REPLACEMENT_CERTIFICATE_NOT_VALID_UNTIL_2026-08-11T11:24:08Z",
+    "submission_status": "NOT_YET_SENT_FOR_REVIEW",
+    "verified_receipt": {
+      "observed_on": "2026-08-09",
+      "package_name": "rw.gikundiro.app",
+      "intended_candidate_version_name": "1.0.3",
+      "intended_candidate_version_code": 6,
+      "valid_candidate_aab_present": true,
+      "candidate_aab": {
+        "sha256": "0a47de88b60c74e5988f92d7e4e800dd096c5ffcbc7d5d3b51957cad66b32fa8",
+        "bytes": 151205832,
+        "embedded_package_name": "rw.gikundiro.app",
+        "embedded_version_name": "1.0.3",
+        "embedded_version_code": 6,
+        "upload_certificate_sha256": "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10"
+      },
+      "upload_key_reset": {
+        "status": "REPLACEMENT_CERTIFICATE_REGISTERED_ACTIVATION_DELAY_UNTIL_2026-08-11T11:24:08Z",
+        "previously_registered_certificate_sha256": "3B:26:95:2C:19:86:A2:E4:BD:EF:8A:CF:65:62:05:C9:DC:4B:1F:91:70:94:5D:10:C9:27:5C:B7:FE:3D:EA:36",
+        "certificate_panel_sha256": "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10",
+        "requested_replacement_certificate_sha256": "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10"
+      },
+      "candidate_upload_attempt": {
+        "observed_on": "2026-08-09",
+        "track": "internal_testing_draft",
+        "aab_sha256": "0a47de88b60c74e5988f92d7e4e800dd096c5ffcbc7d5d3b51957cad66b32fa8",
+        "accepted": false,
+        "portal_result": "UPLOAD_CERTIFICATE_NOT_YET_VALID_AFTER_RESET",
+        "replacement_certificate_valid_from": "2026-08-11T11:24:08Z",
+        "draft_cleanup": "REJECTED_UPLOAD_REMOVED"
+      },
+      "dashboard_status": "NOT_YET_SENT_FOR_REVIEW",
+      "production_setup_tasks_completed": 3,
+      "production_setup_tasks_total": 5,
+      "existing_pending_release": {
+        "version_name": "1.0.2",
+        "version_code": 4,
+        "next_action_shown": "Start full rollout"
+      },
+      "countries_and_regions_shown": 176,
+      "publishing_overview": {
+        "unsent_changes": 4,
+        "submit_enabled": false,
+        "portal_url_validation_issue_count": 3,
+        "portal_url_validation_issues": [
+          {
+            "field": "privacy_policy",
+            "configured_url": "https://gikundiro.com/privacy",
+            "portal_result": "DNS_NOT_FOUND"
+          },
+          {
+            "field": "account_deletion",
+            "configured_url": "https://gikundiro.com/account-deletion",
+            "portal_result": "DNS_NOT_FOUND"
+          },
+          {
+            "field": "data_deletion",
+            "configured_url": "https://gikundiro.com/account-deletion",
+            "portal_result": "DNS_NOT_FOUND"
+          }
+        ]
+      },
+      "current_live_url_probe": {
+        "dns_resolves": true,
+        "response_bytes": 1356,
+        "sha256_prefix": "9363ebe",
+        "content_status": "LEGACY_PAGES_SHELL_NOT_RELEASE_WORKER"
+      },
+      "boundary": "The app record, signing identities, current dashboard state, and exact local code-6 AAB are verified. Play accepted the complete AAB transfer but rejected processing because the registered replacement 18:0C certificate is not valid until 2026-08-11T11:24:08Z; the rejected artifact was removed from the internal-testing draft. Code 6 therefore remains not uploaded, and a fresh accepted upload after that exact UTC time is required. The release Worker must also be cut over at the configured public URLs before Play URL revalidation; a resolving legacy shell is not deployment evidence for the release content."
+    }
   },
   "app_store_connect": {
-    "organization_membership_active": null,
-    "app_record_exists": null,
-    "apple_id": null,
-    "sku": null,
-    "bundle_id_registered": null,
-    "build_number_available": null,
-    "agreements_active": null,
-    "tax_and_banking_complete_if_required": null,
-    "dsa_trader_status_complete": null,
-    "target_countries": [],
+    "organization_membership_active": true,
+    "app_record_exists": true,
+    "apple_id": "6799646107",
+    "sku": "GIKUNDIRO-IOS-2026",
+    "bundle_id_registered": true,
+    "build_number_available": true,
+    "agreements_active": true,
+    "tax_and_banking_complete_if_required": "NOT_REQUIRED_FREE_CANDIDATE_NO_IAP",
+    "dsa_trader_status_complete": true,
+    "target_countries": [
+      "RWA"
+    ],
     "reviewer_access_configured": null,
-    "app_privacy_published": null,
-    "build_uploaded": null,
-    "build_processing_status": null,
+    "app_privacy_published": false,
+    "build_uploaded": true,
+    "build_processing_status": "VALID_APP_STORE_ELIGIBLE",
     "testflight_validation_complete": null,
-    "submission_status": null
+    "submission_status": "READY_FOR_REVIEW_BLOCKED_APP_PRIVACY",
+    "verified_receipt": {
+      "observed_on": "2026-08-09",
+      "bundle_id": "rw.ikanisa.rayonSports",
+      "primary_locale": "en-US",
+      "primary_category": "SPORTS",
+      "content_rights_declaration": "USES_THIRD_PARTY_CONTENT",
+      "free_apps_agreement_status": "ACTIVE_THROUGH_2027-06-21",
+      "dsa_compliance_status": "ACTIVE",
+      "availability": "RWA_ONLY",
+      "price": "FREE",
+      "release_type": "AFTER_APPROVAL",
+      "copyright": "2026 Ikanisa",
+      "version": "1.0.3",
+      "build_number": 6,
+      "version_resource_id": "9e1e6c87-be1d-4736-82f6-48d397087f62",
+      "build_resource_or_delivery_id": "2e7356c9-a12a-46d3-be35-c0bd6621b3a0",
+      "ipa_sha256": "606739bff02260103ac0ad55eb1b2d1c223f8aea60e9de1c4099ca7572c477bc",
+      "processing_state": "VALID",
+      "build_store_eligibility": "APP_STORE_ELIGIBLE",
+      "build_attached_to_version": true,
+      "review_submission_id": "ff812c5c-8f5a-489b-89cd-6ea87bde9908",
+      "review_submission_state": "READY_FOR_REVIEW",
+      "version_item_attached_to_review_submission": false,
+      "submit_for_review_completed": false,
+      "review_item_attachment_attempt": {
+        "observed_on": "2026-08-09",
+        "http_status": 409,
+        "result": "STATE_ERROR.APP_DATA_USAGES_REQUIRED",
+        "associated_error": "Published App Privacy data-usage answers are required before the version can be attached."
+      },
+      "blocking_reason": "App Privacy is not published, so the version item cannot yet be attached to the review submission.",
+      "boundary": "The exact upload, processing state, immutable SKU, primary locale, and app-level third-party-content declaration are verified. A direct App Store Connect API attachment attempt returned only APP_DATA_USAGES_REQUIRED, confirming that the prepared privacy answers must be published before the version item can be attached. This is not a submitted, reviewed, or approved App Store release; accountable third-party-content rights evidence remains a separate gate."
+    }
   }
 }
-

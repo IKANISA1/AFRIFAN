@@ -171,9 +171,15 @@ async function loadMembershipPackages(): Promise<MembershipPackage[]> {
 
   const { data, error } = await client
     .from("membership_tiers")
-    .select("*")
+    .select(
+      "id,partner_id,club_id,tier,category_slug,title,name,subtitle," +
+        "description,benefits,annual_price,price,is_active,sort_order," +
+        "benefit_scope,store_billing_required",
+    )
     .eq("club_id", activeClub.numericId)
     .eq("is_active", true)
+    .eq("benefit_scope", "physical_membership")
+    .eq("store_billing_required", false)
     .order("sort_order", { ascending: true })
     .limit(6);
 
@@ -205,8 +211,12 @@ async function loadFanClubs(): Promise<FanClubItem[]> {
 
   const { data, error } = await client
     .from("fan_clubs")
-    .select("*")
+    .select(
+      "id,partner_id,club_id,name,region,description,member_count," +
+        "event_count,rating,banner_emoji,is_active,created_at,updated_at",
+    )
     .eq("club_id", activeClub.numericId)
+    .eq("is_active", true)
     .order("member_count", { ascending: false })
     .limit(12);
 
@@ -237,7 +247,9 @@ async function loadContributionGroups(): Promise<ContributionGroup[]> {
 
   const { data, error } = await client
     .from("contribution_groups")
-    .select("*")
+    .select(
+      "id,name,description,group_type,target_amount,current_total,currency,member_count,is_closed,is_active,club_id,created_at,updated_at",
+    )
     .eq("club_id", activeClub.numericId)
     .eq("is_active", true)
     .order("created_at", { ascending: false })
@@ -275,8 +287,10 @@ async function loadStandings(): Promise<StandingRow[]> {
   }
 
   const { data, error } = await client
-    .from("unified_standings")
-    .select("*")
+    .from("standings")
+    .select(
+      "position,club_name,club_slug,played,goal_difference,points,form",
+    )
     .eq("club_id", activeClub.numericId)
     .order("position", { ascending: true })
     .limit(24);
@@ -308,10 +322,10 @@ async function loadSquad(): Promise<SquadPlayer[]> {
   }
 
   const { data, error } = await client
-    .from("unified_roster")
-    .select("*")
+    .from("squad_players")
+    .select("id,name,position,shirt_number,nationality,bio")
     .eq("club_id", activeClub.numericId)
-    .order("number", { ascending: true })
+    .order("shirt_number", { ascending: true })
     .limit(40);
 
   if (error) throw error;

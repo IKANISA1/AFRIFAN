@@ -17,7 +17,7 @@ The app collects and processes user data through Supabase (backend) and local st
 ### 1. Personal info
 | Data Type | Collected | Shared | Purpose | Optional |
 |-----------|-----------|--------|---------|----------|
-| Name | Yes | No | Profile, membership, rankings/friend surfaces | Yes |
+| Name | Yes | No | Private profile and membership records; public supporter labels are system-controlled aliases | Yes |
 | Email address | No | No | Not collected in the shipped mobile auth flow | N/A |
 | Phone number | Yes | No | Optional phone authentication, profile/contact use, and authorized mobile-money handoff | Yes, except when required by an enabled signed-in journey |
 
@@ -31,7 +31,7 @@ The app collects and processes user data through Supabase (backend) and local st
 | Data Type | Collected | Shared | Purpose | Optional |
 |-----------|-----------|--------|---------|----------|
 | App interactions | Yes | No | Core journeys, security/audit state, games and feature use | No |
-| Other user-generated content | Yes | No | Profile nickname, predictions/game answers, and feature-gated challenge text | Varies by feature; final release configuration must be reconciled |
+| Other user-generated content | Yes | No | Private profile nickname and structured prediction/game answers. Cross-user text, challenge notes, social discovery, and public user names are disabled for this candidate | Varies by the private profile/game journey |
 
 ### 4. Device or other IDs
 | Data Type | Collected | Shared | Purpose | Optional |

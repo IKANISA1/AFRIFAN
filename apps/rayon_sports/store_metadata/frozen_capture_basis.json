@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-08-09",
+  "head_commit": "d92394f47f660551701f4c65769085587cd1962b",
+  "authoritative_tracked_worktree_state_digest_sha256": "cef8cb37fa74321a92c7d47a0d904b639f7fd5909aea66cb1fe5049c6429cca5",
+  "authoritative_tracked_worktree_file_count": 3123,
+  "authoritative_tracked_worktree_digest_method": "SHA-256 of HEAD commit plus newline plus the full binary Git diff from HEAD for pubspec.yaml, pubspec.lock, analysis_options.yaml, dart_test.yaml, apps, packages, and tools/scripts/run_package_tests.sh, excluding apps/rayon_sports/web/**, apps/**/build/**, and apps/**/store_metadata/**.",
+  "runtime_source_manifest_digest_sha256": "7ddc0399a572c6664c646a3ec13d074c15cfbd1bb1ce476c9b7d12a3c6b1f64b",
+  "runtime_source_file_count": 668,
+  "runtime_source_manifest": "frozen_tracked_source.sha256",
+  "runtime_source_digest_method": "Hash each included tracked runtime file's current working-tree bytes with SHA-256, write '<sha256><two spaces><repo-relative-path><newline>' records in bytewise path order, then SHA-256 the complete record file.",
+  "included_runtime_source": [
+    "root pubspec.yaml and pubspec.lock",
+    "packages/**/lib/**, packages/**/assets/**, and packages/**/pubspec.yaml",
+    "apps/rayon_sports lib, Android, iOS, assets, pubspec.yaml, and pubspec.lock",
+    "apps/rayon_sports_tv lib, Android, assets, pubspec.yaml, and pubspec.lock"
+  ],
+  "excluded_from_digest": [
+    "build outputs",
+    "tests and integration tests",
+    "Fastlane/store metadata and generated store media",
+    "web, backend, governance, and unrelated application surfaces"
+  ],
+  "current_mobile_candidate": {
+    "version_name": "1.0.3",
+    "build_number": 6,
+    "ios_ipa_path": "../build/ios/ipa/Gikundiro.ipa",
+    "ios_ipa_sha256": "606739bff02260103ac0ad55eb1b2d1c223f8aea60e9de1c4099ca7572c477bc",
+    "ios_bundle_id": "rw.ikanisa.rayonSports",
+    "ios_archive_icon_presence_verified": true
+  },
+  "dirty_tracked_runtime_files": [
+    "apps/rayon_sports/ios/Runner/Info.plist",
+    "apps/rayon_sports/pubspec.yaml",
+    "apps/rayon_sports_tv/lib/main.dart",
+    "packages/core/core_feature_config/lib/src/policies/store_release_policy.dart",
+    "packages/features/feat_admin/lib/src/repositories/admin_repository.dart",
+    "packages/features/feat_club/lib/src/repositories/club_repository.dart",
+    "packages/features/feat_club/pubspec.yaml",
+    "packages/features/feat_contributions/lib/src/controllers/group_detail_controller.dart",
+    "packages/features/feat_contributions/lib/src/screens/club_projects_screen.dart",
+    "packages/features/feat_contributions/lib/src/widgets/overlays/momo_contribution_sheet.dart",
+    "packages/features/feat_gamification/lib/src/screens/team_profile_screen.dart",
+    "packages/features/feat_gamification/lib/src/widgets/team_profile_tabs.dart",
+    "packages/features/feat_home/lib/src/repositories/home_content_repository.dart",
+    "packages/features/feat_home/lib/src/search/discovery_search_provider.dart",
+    "packages/features/feat_home/lib/src/search/local_discovery_search_repository.dart",
+    "packages/features/feat_home/lib/src/widgets/stats_row.dart",
+    "packages/features/feat_shop/lib/src/screens/cart_screen.dart",
+    "packages/features/feat_shop/pubspec.yaml",
+    "packages/features/feat_sms_ledger/lib/src/services/statement_export_service.dart",
+    "packages/features/feat_sms_ledger/pubspec.yaml",
+    "packages/features/feat_ticketing/lib/src/screens/match_detail_screen.dart",
+    "packages/features/feat_ticketing/pubspec.yaml"
+  ],
+  "untracked_runtime_source_file_count": 0,
+  "capture_source_authoritative_tracked_worktree_state_digest_sha256": "cca7ed5908dc33ae95e92b3c242647a1b9fc259dd51c64c47fc70738115e1e33",
+  "capture_source_runtime_manifest_digest_sha256": "ecb0fdda74ff7b9fe0e81b2005861d09d5c722b83468a21519be615d22e83995",
+  "candidate_delta_from_capture": {
+    "changed_runtime_files": [
+      "apps/rayon_sports/ios/Runner/Info.plist",
+      "apps/rayon_sports/pubspec.yaml"
+    ],
+    "ui_code_or_asset_changes": false,
+    "description": "The mobile candidate advanced from build 5 to build 6 and added iOS export-compliance and iPad-orientation declarations. Portrait iPhone/iPad and Android UI code/assets did not change, so the existing screenshots are visually equivalent but are not exact build-6 captures."
+  },
+  "capture_boundary": "The checked-in screenshots retain their original build-5/capture-source digests. The current manifest and authoritative digest describe the build-6 candidate; exact build-6 screenshot capture is not claimed. TV runtime inputs did not change after the final TV capture, although production-AAB delivery parity remains separately recorded.",
+  "stability_check": "All 668 current runtime-source records verify, the current runtime manifest hashes to 7ddc0399a572c6664c646a3ec13d074c15cfbd1bb1ce476c9b7d12a3c6b1f64b, and the current authoritative tracked-worktree digest reproduced as cef8cb37fa74321a92c7d47a0d904b639f7fd5909aea66cb1fe5049c6429cca5.",
+  "final_commit_binding": "The final Git commit is recorded after commit in ignored release evidence to avoid a tracked-manifest hash recursion."
+}

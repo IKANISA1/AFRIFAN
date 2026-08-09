@@ -29,12 +29,11 @@ class ClubRepository {
     required SupabaseClient client,
     required OperationalHealthService healthService,
     StoreReleasePolicy? storeReleasePolicy,
-  })  : _client = client,
-        _health = healthService,
-        _storeReleasePolicy = storeReleasePolicy ??
-            StoreReleasePolicy.forCurrentBuild(
-              const PlatformConfigSnapshot(),
-            );
+  }) : _client = client,
+       _health = healthService,
+       _storeReleasePolicy =
+           storeReleasePolicy ??
+           StoreReleasePolicy.forCurrentBuild(const PlatformConfigSnapshot());
 
   final SupabaseClient _client;
   final OperationalHealthService _health;
@@ -43,9 +42,13 @@ class ClubRepository {
     client: _client,
   );
   static const String _contributionGroupProjection =
-      'id, creator_id, name, description, group_type, target_amount, '
+      'id, name, description, group_type, target_amount, '
       'current_total, momo_recipient_code, momo_route_type, deadline, '
       'is_recurring, is_closed, member_count, created_at, club_id, partner_id';
+  static const String _fanMembershipProjection =
+      'id,user_id,partner_id,club_id,tier,points,joined_at,chapter,'
+      'membership_number,display_name,expires_at,renewed_at,payment_status,'
+      'status,created_at,updated_at';
 
   Future<ClubScope> _requireGroupScope(String groupId) async {
     final activeScope = await _scopeResolver.requireResolved();
@@ -77,8 +80,10 @@ class ClubRepository {
   ) async {
     try {
       final scope = await _scopeResolver.requireResolved(partnerId);
-      var query =
-          _client.from('fan_memberships').select().eq('user_id', userId);
+      var query = _client
+          .from('fan_memberships')
+          .select(_fanMembershipProjection)
+          .eq('user_id', userId);
       query = _scopeResolver.apply(query, scope);
       final row = await query.maybeSingle();
       if (row == null) return null;
@@ -214,8 +219,13 @@ class ClubRepository {
     int limit = 20,
     int offset = 0,
   }) async {
+    if (!_storeReleasePolicy.allowsCrossUserText) {
+      return const <FanMembership>[];
+    }
     final scope = await _scopeResolver.requireResolved(partnerId);
-    var query = _client.from('fan_memberships').select();
+    var query = _client
+        .from('fan_memberships')
+        .select(_fanMembershipProjection);
     query = _scopeResolver.apply(query, scope);
 
     if (filterTier != null) {
@@ -233,19 +243,21 @@ class ClubRepository {
     final rows = await query
         .order('points', ascending: false)
         .range(offset, offset + limit - 1);
-    return rows.map((row) {
-      final membership = FanMembership.fromJson(row);
-      if (_storeReleasePolicy.allowsCrossUserText) {
-        return membership;
-      }
-      return membership.copyWith(
-        displayName: _storeReleasePolicy.publicSupporterLabel(
-          displayName: membership.displayName,
-          publicUserId: row['public_user_id']?.toString(),
-          userId: membership.userId,
-        ),
-      );
-    }).toList(growable: false);
+    return rows
+        .map((row) {
+          final membership = FanMembership.fromJson(row);
+          if (_storeReleasePolicy.allowsCrossUserText) {
+            return membership;
+          }
+          return membership.copyWith(
+            displayName: _storeReleasePolicy.publicSupporterLabel(
+              displayName: membership.displayName,
+              publicUserId: row['public_user_id']?.toString(),
+              userId: membership.userId,
+            ),
+          );
+        })
+        .toList(growable: false);
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -257,7 +269,9 @@ class ClubRepository {
     if (scope.clubId == null) {
       return const <FanClub>[];
     }
-    var query = _client.from('fan_clubs').select(
+    var query = _client
+        .from('fan_clubs')
+        .select(
           'id,partner_id,club_id,name,region,description,member_count,event_count,'
           'rating,banner_emoji,is_active,created_at,updated_at',
         );
@@ -313,19 +327,23 @@ class ClubRepository {
     required String paymentReference,
   }) async {
     try {
-      final result = await _client.rpc('purchase_club_tickets', params: {
-        'p_match_id': matchId,
-        'p_user_id': userId,
-        'p_seat_type': seatType,
-        'p_quantity': quantity,
-        'p_payment_reference': paymentReference,
-      });
+      final result = await _client.rpc(
+        'purchase_club_tickets',
+        params: {
+          'p_match_id': matchId,
+          'p_user_id': userId,
+          'p_seat_type': seatType,
+          'p_quantity': quantity,
+          'p_payment_reference': paymentReference,
+        },
+      );
       final ticketIds = _extractTicketIds(result);
       if (ticketIds.isNotEmpty) {
         return _fetchTicketsByIds(ticketIds);
       }
       throw StateError(
-          'Ticket purchase request was not accepted by the backend.');
+        'Ticket purchase request was not accepted by the backend.',
+      );
     } on PostgrestException catch (error) {
       if (!_isMissingPurchaseRpc(error)) {
         rethrow;
@@ -446,8 +464,8 @@ class ClubRepository {
           when value.length == 1 && value.single is Map<dynamic, dynamic> =>
         Map<String, dynamic>.from(value.single as Map<dynamic, dynamic>),
       _ => throw StateError(
-          'Shop order request was not accepted by the backend.',
-        ),
+        'Shop order request was not accepted by the backend.',
+      ),
     };
     final orderId = row['id']?.toString();
     if (orderId == null || orderId.isEmpty) {
@@ -517,7 +535,7 @@ class ClubRepository {
     required String groupId,
     required String userId,
     required int amount,
-    required String paymentReference,
+    required String clientRequestReference,
     String paymentMethod = 'momo',
     String? idempotencyKey,
   }) async {
@@ -542,19 +560,20 @@ class ClubRepository {
       );
     }
 
-    final normalizedReference = paymentReference
+    final normalizedClientRequestReference = clientRequestReference
         .trim()
         .replaceAll(RegExp('[^A-Za-z0-9]'), '')
         .toUpperCase();
-    if (normalizedReference.length < 6 || normalizedReference.length > 64) {
+    if (normalizedClientRequestReference.length < 6 ||
+        normalizedClientRequestReference.length > 64) {
       throw ArgumentError.value(
-        paymentReference,
-        'paymentReference',
-        'A valid payment reference between 6 and 64 characters is required.',
+        clientRequestReference,
+        'clientRequestReference',
+        'A valid client request reference between 6 and 64 characters is required.',
       );
     }
     final normalizedIdempotencyKey =
-        (idempotencyKey ?? 'momo:$normalizedReference')
+        (idempotencyKey ?? 'momo:$normalizedClientRequestReference')
             .trim()
             .replaceAll(RegExp('[^A-Za-z0-9:_-]'), '')
             .toLowerCase();
@@ -573,7 +592,7 @@ class ClubRepository {
       params: <String, dynamic>{
         'p_group_id': groupId,
         'p_amount': amount,
-        'p_payment_reference': normalizedReference,
+        'p_client_request_reference': normalizedClientRequestReference,
         'p_idempotency_key': normalizedIdempotencyKey,
       },
     );
@@ -584,8 +603,8 @@ class ClubRepository {
           when value.length == 1 && value.single is Map<dynamic, dynamic> =>
         Map<String, dynamic>.from(value.single as Map<dynamic, dynamic>),
       _ => throw StateError(
-          'Contribution request was not accepted by the backend.',
-        ),
+        'Contribution request was not accepted by the backend.',
+      ),
     };
     final contributionId = row['id']?.toString();
     if (contributionId == null || contributionId.isEmpty) {
@@ -594,6 +613,31 @@ class ClubRepository {
       );
     }
     return contributionId;
+  }
+
+  /// Cancels an own-account contribution when the external payment channel
+  /// could not be launched and no provider reference was bound.
+  Future<void> cancelPendingContributionPaymentLaunch(
+    String contributionId,
+  ) async {
+    final normalizedContributionId = contributionId.trim();
+    if (normalizedContributionId.isEmpty) {
+      throw ArgumentError.value(
+        contributionId,
+        'contributionId',
+        'A contribution id is required.',
+      );
+    }
+
+    final result = await _client.rpc(
+      'cancel_pending_group_contribution_payment_launch',
+      params: <String, dynamic>{'p_contribution_id': normalizedContributionId},
+    );
+    if (result != true) {
+      throw StateError(
+        'The pending contribution cancellation was not confirmed.',
+      );
+    }
   }
 
   /// Check the payment verification status of a recorded contribution.
@@ -629,7 +673,8 @@ class ClubRepository {
         .from('group_contributions')
         .select(
           'id, group_id, user_id, amount, status, payment_status, '
-          'momo_reference, confirmed_at, created_at, updated_at',
+          'client_request_reference, momo_reference, confirmed_at, '
+          'created_at, updated_at',
         )
         .eq('group_id', groupId);
     final rows = await query.order('created_at', ascending: false).limit(limit);
@@ -644,9 +689,9 @@ class ClubRepository {
         .select(ClubTicket.dataApiProjection)
         .inFilter('id', ticketIds)
         .order('purchased_at', ascending: false);
-    final tickets = List<Map<String, dynamic>>.from(rows as List)
-        .map(ClubTicket.fromJson)
-        .toList(growable: false);
+    final tickets = List<Map<String, dynamic>>.from(
+      rows as List,
+    ).map(ClubTicket.fromJson).toList(growable: false);
     if (tickets.isEmpty) {
       throw StateError('Ticket purchase was not confirmed by the backend.');
     }
@@ -711,23 +756,26 @@ class ClubRepository {
     if (_storeReleasePolicy.allowsCrossUserText) {
       return members;
     }
-    return members.map((member) {
-      final rawProfile = member['profile'];
-      if (rawProfile is! Map) {
-        return member;
-      }
-      final profile = Map<String, dynamic>.from(rawProfile);
-      final label = _storeReleasePolicy.publicSupporterLabel(
-        displayName: profile['display_name']?.toString(),
-        publicUserId: profile['public_user_id']?.toString(),
-        userId:
-            member['user_id']?.toString() ?? member['member_id']?.toString(),
-      );
-      return <String, dynamic>{
-        ...member,
-        'profile': <String, dynamic>{...profile, 'display_name': label},
-      };
-    }).toList(growable: false);
+    return members
+        .map((member) {
+          final rawProfile = member['profile'];
+          if (rawProfile is! Map) {
+            return member;
+          }
+          final profile = Map<String, dynamic>.from(rawProfile);
+          final label = _storeReleasePolicy.publicSupporterLabel(
+            displayName: profile['display_name']?.toString(),
+            publicUserId: profile['public_user_id']?.toString(),
+            userId:
+                member['user_id']?.toString() ??
+                member['member_id']?.toString(),
+          );
+          return <String, dynamic>{
+            ...member,
+            'profile': <String, dynamic>{...profile, 'display_name': label},
+          };
+        })
+        .toList(growable: false);
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -744,10 +792,7 @@ class ClubRepository {
     );
   }
 
-  Future<List<FetEvent>> getFetHistory(
-    String userId, {
-    int limit = 50,
-  }) async {
+  Future<List<FetEvent>> getFetHistory(String userId, {int limit = 50}) async {
     final rows = await _client
         .from('fet_events')
         .select('id,user_id,club_id,event_type,fet_awarded,event_at,created_at')
@@ -761,9 +806,7 @@ class ClubRepository {
   // Payment Route
   // ═══════════════════════════════════════════════════════════
 
-  Future<PartnerPaymentRoute?> findActivePaymentRoute(
-    String partnerId,
-  ) async {
+  Future<PartnerPaymentRoute?> findActivePaymentRoute(String partnerId) async {
     final scope = await _scopeResolver.requireResolved(partnerId);
     var query = _client
         .from('partner_payment_routes')
@@ -781,9 +824,7 @@ class ClubRepository {
     return PartnerPaymentRoute.fromJson(rows.first);
   }
 
-  Future<PartnerPaymentRoute> getActivePaymentRoute(
-    String partnerId,
-  ) async {
+  Future<PartnerPaymentRoute> getActivePaymentRoute(String partnerId) async {
     final route = await findActivePaymentRoute(partnerId);
     if (route != null) {
       return route;

@@ -24,6 +24,9 @@ The package deliberately separates three kinds of evidence:
 - `portal_only`: must be obtained from an authenticated store account.
 - `blocking`: submission must not proceed until the item is closed.
 - `not_applicable`: supported by a recorded product or policy decision.
+- `not_applicable_candidate_disabled`: code and backend controls keep the
+  capability unavailable in this exact candidate; future enablement requires a
+  new assessment and artifact.
 
 ## Validation
 

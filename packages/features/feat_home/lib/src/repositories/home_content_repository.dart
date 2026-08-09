@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -159,6 +160,88 @@ class HomeFeedSnapshot {
   }
 }
 
+@visibleForTesting
+class HomeMembershipProjection {
+  const HomeMembershipProjection({
+    required this.leaderboard,
+    required this.hasCurrentMembership,
+    required this.userFet,
+    required this.fanRank,
+    this.membershipTier,
+    this.membershipPaymentStatus,
+  });
+
+  final List<ContributorEntry> leaderboard;
+  final bool hasCurrentMembership;
+  final int userFet;
+  final int fanRank;
+  final String? membershipTier;
+  final String? membershipPaymentStatus;
+}
+
+/// Projects membership rows without mistaking an owner-only RLS result for a
+/// public leaderboard. Personal balance and membership state remain available
+/// even when cross-user ranking is suppressed.
+@visibleForTesting
+HomeMembershipProjection projectHomeMembershipRows({
+  required List<Map<String, dynamic>> memberships,
+  required String? currentUserId,
+  required bool allowsCrossUserLeaderboard,
+  Map<String, String> publicAliases = const <String, String>{},
+}) {
+  final leaderboard = allowsCrossUserLeaderboard
+      ? memberships
+            .asMap()
+            .entries
+            .take(3)
+            .map((entry) {
+              final row = entry.value;
+              final userId = row['user_id']?.toString() ?? '';
+              return ContributorEntry(
+                rank: entry.key + 1,
+                alias:
+                    publicAliases[userId] ??
+                    (userId.isEmpty
+                        ? '000000'
+                        : (100000 + userId.hashCode.abs() % 900000).toString()),
+                points: (row['points'] as num?)?.toInt() ?? 0,
+              );
+            })
+            .toList(growable: false)
+      : const <ContributorEntry>[];
+
+  if (currentUserId == null) {
+    return HomeMembershipProjection(
+      leaderboard: leaderboard,
+      hasCurrentMembership: false,
+      userFet: 0,
+      fanRank: 0,
+    );
+  }
+
+  final currentIndex = memberships.indexWhere(
+    (row) => row['user_id']?.toString() == currentUserId,
+  );
+  if (currentIndex == -1) {
+    return HomeMembershipProjection(
+      leaderboard: leaderboard,
+      hasCurrentMembership: false,
+      userFet: 0,
+      fanRank: 0,
+    );
+  }
+
+  final currentMembership = memberships[currentIndex];
+  return HomeMembershipProjection(
+    leaderboard: leaderboard,
+    hasCurrentMembership: true,
+    userFet: (currentMembership['points'] as num?)?.toInt() ?? 0,
+    fanRank: allowsCrossUserLeaderboard ? currentIndex + 1 : 0,
+    membershipTier: currentMembership['tier']?.toString(),
+    membershipPaymentStatus: currentMembership['payment_status']?.toString(),
+  );
+}
+
 HomeFeedSnapshot localHomeFeedFallbackSnapshot() {
   return const HomeFeedSnapshot(
     status: HomeFeedStatus.degraded,
@@ -207,7 +290,10 @@ abstract class LatestIntelRepository {
 }
 
 final homeFeedRepositoryProvider = Provider<HomeFeedRepository>((ref) {
-  return SupabaseHomeFeedRepository(client: ref.watch(supabaseClientProvider));
+  return SupabaseHomeFeedRepository(
+    client: ref.watch(supabaseClientProvider),
+    storeReleasePolicy: ref.watch(storeReleasePolicyProvider),
+  );
 });
 
 final latestIntelRepositoryProvider = Provider<LatestIntelRepository>((ref) {
@@ -217,9 +303,13 @@ final latestIntelRepositoryProvider = Provider<LatestIntelRepository>((ref) {
 });
 
 class SupabaseHomeFeedRepository implements HomeFeedRepository {
-  SupabaseHomeFeedRepository({required this.client});
+  SupabaseHomeFeedRepository({
+    required this.client,
+    required this.storeReleasePolicy,
+  });
 
   final SupabaseClient client;
+  final StoreReleasePolicy storeReleasePolicy;
 
   @override
   Future<HomeFeedSnapshot> load() async {
@@ -244,6 +334,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     Object? membershipsError;
     Object? matchesError;
     Object? quickActionsError;
+    final allowsCrossUserLeaderboard = storeReleasePolicy.allowsCrossUserText;
 
     try {
       final activeCountryCode = RuntimeBranding.displayCountryCode
@@ -281,13 +372,25 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     }
 
     try {
-      var membershipsQuery = client.from('fan_memberships').select();
-      membershipsQuery = ClubScopeResolver(
-        client: client,
-      ).apply(membershipsQuery, scope);
-      memberships = List<Map<String, dynamic>>.from(
-        await membershipsQuery.order('points', ascending: false).limit(20),
-      );
+      if (allowsCrossUserLeaderboard || currentUserId != null) {
+        var membershipsQuery = client
+            .from('fan_memberships')
+            .select(
+              'id,user_id,partner_id,club_id,tier,points,joined_at,chapter,'
+              'membership_number,display_name,expires_at,renewed_at,'
+              'payment_status,status,created_at,updated_at',
+            );
+        membershipsQuery = ClubScopeResolver(
+          client: client,
+        ).apply(membershipsQuery, scope);
+        memberships = List<Map<String, dynamic>>.from(
+          allowsCrossUserLeaderboard
+              ? await membershipsQuery
+                    .order('points', ascending: false)
+                    .limit(20)
+              : await membershipsQuery.eq('user_id', currentUserId!).limit(1),
+        );
+      }
     } catch (error) {
       membershipsError = error;
     }
@@ -313,7 +416,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     }
 
     final profile = <String, String>{};
-    if (memberships.isNotEmpty) {
+    if (allowsCrossUserLeaderboard && memberships.isNotEmpty) {
       await _loadProfile(
         memberships: memberships,
         currentUserId: currentUserId,
@@ -321,54 +424,33 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       );
     }
 
-    final leaderboard = memberships
-        .asMap()
-        .entries
-        .take(3)
-        .map((entry) {
-          final rank = entry.key + 1;
-          final row = entry.value;
-          final userId = row['user_id']?.toString() ?? '';
-          return ContributorEntry(
-            rank: rank,
-            alias:
-                profile[userId] ??
-                (userId.isEmpty
-                    ? '000000'
-                    : (100000 + userId.hashCode.abs() % 900000).toString()),
-            points: (row['points'] as num?)?.toInt() ?? 0,
-          );
-        })
-        .toList(growable: false);
+    final membershipProjection = projectHomeMembershipRows(
+      memberships: memberships,
+      currentUserId: currentUserId,
+      allowsCrossUserLeaderboard: allowsCrossUserLeaderboard,
+      publicAliases: profile,
+    );
+    final leaderboard = membershipProjection.leaderboard;
 
     // ── Derive the current user's personal activity balance and rank ──
-    var userFet = 0;
-    var fanRank = 0;
-    String? membershipTier;
-    String? membershipPaymentStatus;
-    if (currentUserId != null) {
-      final index = memberships.indexWhere(
-        (row) => row['user_id']?.toString() == currentUserId,
+    var userFet = membershipProjection.userFet;
+    var fanRank = membershipProjection.fanRank;
+    var membershipTier = membershipProjection.membershipTier;
+    var membershipPaymentStatus = membershipProjection.membershipPaymentStatus;
+    if (currentUserId != null && !membershipProjection.hasCurrentMembership) {
+      // The user can fall outside a genuine top-20 batch. In the owner-only
+      // store mode this remains a self-row lookup and never derives a rank.
+      await _resolveUserFetAndRank(
+        scope: scope,
+        currentUserId: currentUserId,
+        includeCrossUserRank: allowsCrossUserLeaderboard,
+        result: (int fet, int rank, String? tier, String? paymentStatus) {
+          userFet = fet;
+          fanRank = rank;
+          membershipTier = tier;
+          membershipPaymentStatus = paymentStatus;
+        },
       );
-      if (index != -1) {
-        final membership = memberships[index];
-        userFet = (membership['points'] as num?)?.toInt() ?? 0;
-        fanRank = index + 1;
-        membershipTier = membership['tier']?.toString();
-        membershipPaymentStatus = membership['payment_status']?.toString();
-      } else {
-        // User not in the top-20 batch — look up their row directly.
-        await _resolveUserFetAndRank(
-          scope: scope,
-          currentUserId: currentUserId,
-          result: (int fet, int rank, String? tier, String? paymentStatus) {
-            userFet = fet;
-            fanRank = rank;
-            membershipTier = tier;
-            membershipPaymentStatus = paymentStatus;
-          },
-        );
-      }
     }
 
     final heroSlides = matchesError == null
@@ -421,6 +503,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
   Future<void> _resolveUserFetAndRank({
     required ClubScope scope,
     required String currentUserId,
+    required bool includeCrossUserRank,
     required void Function(
       int fet,
       int rank,
@@ -440,14 +523,18 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
 
       final userPoints = (row['points'] as num?)?.toInt() ?? 0;
 
-      // Count how many members have more points to derive rank.
-      var countQuery = client
-          .from('fan_memberships')
-          .select('user_id')
-          .gt('points', userPoints);
-      countQuery = ClubScopeResolver(client: client).apply(countQuery, scope);
-      final higherRows = List<Map<String, dynamic>>.from(await countQuery);
-      final rank = higherRows.length + 1;
+      var rank = 0;
+      if (includeCrossUserRank) {
+        // Count how many visible members have more points only when the
+        // cross-user dataset itself is authorized for this build.
+        var countQuery = client
+            .from('fan_memberships')
+            .select('user_id')
+            .gt('points', userPoints);
+        countQuery = ClubScopeResolver(client: client).apply(countQuery, scope);
+        final higherRows = List<Map<String, dynamic>>.from(await countQuery);
+        rank = higherRows.length + 1;
+      }
 
       result(
         userPoints,

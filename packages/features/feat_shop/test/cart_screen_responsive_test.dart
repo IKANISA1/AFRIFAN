@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -28,7 +29,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [currentUserProvider.overrideWithValue(null)],
+        overrides: [
+          storeReleasePolicyProvider.overrideWithValue(
+            const StoreReleasePolicy.unenforced(),
+          ),
+          currentUserProvider.overrideWithValue(null),
+        ],
         child: MaterialApp(
           home: ClubConfigScope(
             config: ClubConfig.fallback(),
@@ -48,6 +54,37 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('production policy keeps checkout and payment lookup closed', (
+    tester,
+  ) async {
+    final repository = _FakeClubRepository();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          storeReleasePolicyProvider.overrideWithValue(
+            const StoreReleasePolicy(isEnforced: true),
+          ),
+          currentUserProvider.overrideWithValue(_user),
+          clubRepositoryProvider.overrideWithValue(repository),
+          shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),
+        ],
+        child: MaterialApp(
+          home: ClubConfigScope(
+            config: ClubConfig.fallback(),
+            child: const CartScreen(),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final blocked = find.widgetWithText(AfriButton, 'Checkout not permitted');
+    expect(blocked, findsOneWidget);
+    expect(tester.widget<AfriButton>(blocked).enabled, isFalse);
+    verifyNever(() => repository.findActivePaymentRoute(any()));
+  });
+
   testWidgets(
     'checkout announces address error, retains input, supports autofill, and releases focus',
     (tester) async {
@@ -63,6 +100,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            storeReleasePolicyProvider.overrideWithValue(
+              const StoreReleasePolicy.unenforced(),
+            ),
             currentUserProvider.overrideWithValue(_user),
             clubRepositoryProvider.overrideWithValue(repository),
             shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),
@@ -132,6 +172,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            storeReleasePolicyProvider.overrideWithValue(
+              const StoreReleasePolicy.unenforced(),
+            ),
             currentUserProvider.overrideWithValue(_user),
             clubRepositoryProvider.overrideWithValue(repository),
             shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),
@@ -182,6 +225,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          storeReleasePolicyProvider.overrideWithValue(
+            const StoreReleasePolicy.unenforced(),
+          ),
           currentUserProvider.overrideWithValue(_user),
           clubRepositoryProvider.overrideWithValue(repository),
           shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),
@@ -260,6 +306,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            storeReleasePolicyProvider.overrideWithValue(
+              const StoreReleasePolicy.unenforced(),
+            ),
             currentUserProvider.overrideWithValue(_user),
             clubRepositoryProvider.overrideWithValue(repository),
             shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),
@@ -322,6 +371,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            storeReleasePolicyProvider.overrideWithValue(
+              const StoreReleasePolicy.unenforced(),
+            ),
             currentUserProvider.overrideWithValue(_user),
             clubRepositoryProvider.overrideWithValue(repository),
             shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),
@@ -398,6 +450,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            storeReleasePolicyProvider.overrideWithValue(
+              const StoreReleasePolicy.unenforced(),
+            ),
             currentUserProvider.overrideWithValue(_user),
             clubRepositoryProvider.overrideWithValue(repository),
             shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),
@@ -443,6 +498,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            storeReleasePolicyProvider.overrideWithValue(
+              const StoreReleasePolicy.unenforced(),
+            ),
             currentUserProvider.overrideWithValue(_user),
             clubRepositoryProvider.overrideWithValue(repository),
             shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),

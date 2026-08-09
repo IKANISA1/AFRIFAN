@@ -73,13 +73,20 @@ describe("admin optimistic-concurrency adoption", () => {
     ["features.ts", "admin_update_platform_feature_if_unchanged"],
     [
       "membership-ops.ts",
-      "admin_review_membership_application_if_unchanged",
+      "review_membership_application_if_unchanged",
     ],
   ])("%s uses a transactional version-checked RPC", (file, rpc) => {
     const value = source(dataRoot, file);
     expect(value).toContain("requireExpectedUpdatedAt");
     expect(value).toContain(rpc);
     expect(value).toContain("AdminMutationConflictError");
+  });
+
+  it("does not call the legacy membership-review RPC", () => {
+    const value = source(dataRoot, "membership-ops.ts");
+    expect(value).not.toContain(
+      "admin_review_membership_application_if_unchanged",
+    );
   });
 
   it("feature settings retain the loaded version and refresh on conflict", () => {

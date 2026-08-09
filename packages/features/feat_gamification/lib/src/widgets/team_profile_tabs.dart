@@ -29,6 +29,7 @@ class TeamOverviewTab extends StatelessWidget {
     required this.paymentRoute,
     required this.isActiveClubTeam,
     required this.clubSupportMessage,
+    required this.allowsUnreconciledExternalPaymentLaunch,
   });
 
   final TeamCatalogEntry? team;
@@ -36,6 +37,7 @@ class TeamOverviewTab extends StatelessWidget {
   final PartnerPaymentRoute? paymentRoute;
   final bool isActiveClubTeam;
   final String? clubSupportMessage;
+  final bool allowsUnreconciledExternalPaymentLaunch;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,9 @@ class TeamOverviewTab extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       physics: const BouncingScrollPhysics(),
       children: [
-        if (isActiveClubTeam && paymentRoute != null) ...[
+        if (allowsUnreconciledExternalPaymentLaunch &&
+            isActiveClubTeam &&
+            paymentRoute != null) ...[
           TeamContributionRouteBanner(team: team, paymentRoute: paymentRoute!),
           const SizedBox(height: SpacingTokens.spacing5),
         ],
@@ -204,15 +208,27 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
     try {
       final client = ref.read(supabaseClientProvider);
       final storePolicy = ref.read(storeReleasePolicyProvider);
+      if (!storePolicy.allowsCrossUserText) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _contributors = const <ClubMemberEntry>[];
+          _goldCount = 0;
+          _silverCount = 0;
+          _bronzeCount = 0;
+          _imenaCount = 0;
+          _isLoading = false;
+          _message = context.afriL10n.gameClubSupporterDataUnavailable;
+        });
+        return;
+      }
       final currentUserId = client.auth.currentUser?.id;
       final clubId = widget.clubId!;
-      final memberProjection = storePolicy.allowsCrossUserText
-          ? 'user_id, display_name, membership_number, points, tier'
-          : 'user_id, points, tier';
       final results = await Future.wait<Object?>([
         client
             .from('fan_memberships')
-            .select(memberProjection)
+            .select('user_id, display_name, membership_number, points, tier')
             .eq('club_id', clubId)
             .order('points', ascending: false)
             .order('joined_at', ascending: true)
@@ -248,15 +264,10 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
           .map(
             (row) => ClubMemberEntry(
               userId: row['user_id']?.toString() ?? '',
-              displayLabel: storePolicy.allowsCrossUserText
-                  ? _memberLabel(
-                      displayName: row['display_name']?.toString(),
-                      membershipNumber: row['membership_number']?.toString(),
-                    )
-                  : storePolicy.publicSupporterLabel(
-                      displayName: row['display_name']?.toString(),
-                      userId: row['user_id']?.toString(),
-                    ),
+              displayLabel: _memberLabel(
+                displayName: row['display_name']?.toString(),
+                membershipNumber: row['membership_number']?.toString(),
+              ),
               tier: row['tier']?.toString() ?? 'imena',
               points: (row['points'] as num?)?.toInt() ?? 0,
               isCurrentUser:
@@ -508,6 +519,7 @@ class TeamContributeTab extends StatelessWidget {
     required this.paymentRoute,
     required this.isActiveClubTeam,
     required this.clubSupportMessage,
+    required this.allowsUnreconciledExternalPaymentLaunch,
   });
 
   final bool isDialing;
@@ -515,10 +527,13 @@ class TeamContributeTab extends StatelessWidget {
   final PartnerPaymentRoute? paymentRoute;
   final bool isActiveClubTeam;
   final String? clubSupportMessage;
+  final bool allowsUnreconciledExternalPaymentLaunch;
 
   @override
   Widget build(BuildContext context) {
-    if (!isActiveClubTeam || paymentRoute == null) {
+    if (!allowsUnreconciledExternalPaymentLaunch ||
+        !isActiveClubTeam ||
+        paymentRoute == null) {
       return const SizedBox.shrink(
         key: ValueKey<String>('team-contribute-empty'),
       );

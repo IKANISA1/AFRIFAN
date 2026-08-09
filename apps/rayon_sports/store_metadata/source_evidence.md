@@ -2,7 +2,7 @@
 
 | Topic | Current evidence | Store-pack conclusion |
 | --- | --- | --- |
-| Identity | `pubspec.yaml`, Android `build.gradle.kts`, Xcode project | Android `rw.gikundiro.app`; iOS `rw.ikanisa.rayonSports`; `1.0.3 (5)` |
+| Identity | `pubspec.yaml`, Android `build.gradle.kts`, exact IPA `Info.plist` | Android `rw.gikundiro.app`; iOS `rw.ikanisa.rayonSports`; current mobile version `1.0.3 (6)` |
 | Authentication | `core_auth`, onboarding phone-auth screen | Anonymous sessions and phone OTP are implemented; restricted paths still need reviewer access |
 | Account deletion | edit-profile screen, typed confirmation overlay, `delete-account` Edge Function invocation | In-app deletion exists; live completion and public web request route still need end-to-end evidence |
 | Android permissions | source and generated release manifest | Notification permission is present; source removes location, audio, storage, and phone-state permissions; inspected release output has no SMS/Call Log permission |
@@ -10,12 +10,19 @@
 | Ads | package inventory and merged manifest | No ads SDK or ad placement found; Firebase dependencies introduce advertising-ID-related manifest entries in the inspected output, so exact-artifact review remains required |
 | Firebase | core-network bootstrap/config | Firebase SDKs are bundled. Analytics, Crashlytics, and Performance require a compile-time observability gate; analytics additionally requires consent. Messaging can initialize after notification permission. App Check has its own compile-time gate |
 | Backend | Supabase packages and repositories | Account/user IDs, profile, membership, ticket, shop, contribution, prediction, and device/session data can be transmitted to Supabase |
-| Payments | shop, ticketing, membership, contribution flows | App can create pending records and hand off an authorized MoMo USSD route; confirmation remains authoritative. Digital-benefit classification is unresolved |
-| Rewards and predictions | gamification packages and feature registry | Predictions, points, leaderboards, and reward surfaces exist. Challenge routes require feature opt-in. No cash withdrawal implementation was found, but value/prize and production-feature decisions require approval |
-| UGC | editable nickname, public/friend ranking rows, challenge-note models | Another user can potentially see user-selected text. No clear report-and-block implementation was found; this is a release-blocking classification unless the store build exposes only controlled aliases |
+| Payments | `StoreReleasePolicy`; shop/ticket/membership flows; migration `20260809111441` | Physical goods, event tickets, and contributions remain subject to fulfillment/refund/provider declarations. Paid digital membership is disabled: production policy requires explicit server plus compiled store-billing authorization, and the candidate migration exposes only free physical-membership packages while revoking paid membership submission |
+| Rewards and predictions | `StoreReleasePolicy`; migration and pgTAP contract `20260809111441` | Ordinary read-only/earned-points context may remain, but staked challenges, jackpot entry, reward redemption, partner offers, transfer, and manual redemption are disabled for public clients in this candidate |
+| UGC | `StoreReleasePolicy.publicSupporterLabel`; migration and pgTAP contract `20260809111441` | Cross-user editable text is disabled. Production falls back to system-controlled aliases, and friend/search/leaderboard/challenge RPCs are unavailable to public release clients; UGC moderation approval is therefore not applicable to this disabled candidate |
 | Rights | onboarding `SOURCES.md` | Images came from the club ecosystem, but reuse and trademark authority are explicitly pending |
 | Locales | club config, Flutter localizations, and current official portal language lists | Mobile UI supports English, French, and Kinyarwanda. English/French upload metadata and Kinyarwanda source copy remain pending approval; Kinyarwanda is kept outside Fastlane because neither store currently accepts that metadata language |
 | iPad | Xcode `TARGETED_DEVICE_FAMILY = "1,2"` | The app runs on iPad; iPad App Store screenshots are required |
+| Play artwork | `play_store/artwork_manifest.json`; `tools/generate_store_artwork.swift` | Deterministic 512x512 icon and 1024x500 feature graphic use original Gikundiro geometry only, with no club crest or photography; accountable approval remains open |
+| Android screenshots | `../android/fastlane/metadata/android/en-US/images/phoneScreenshots` | Four genuine 1080x1920 anonymous-state captures came from the build-5 release APK. Build 6 changes only the version and iOS `Info.plist`, so the Android UI is visually equivalent; exact build-6 screenshot capture and Play AAB/portal parity are not claimed |
+| Apple screenshots | `../ios/fastlane/screenshots/en-US`; `app_store/artwork_manifest.json` | Four 1320x2868 iPhone and four 2064x2752 iPad images are genuine build-5 production-config simulator UI. The build-6 delta is version metadata plus non-visual iOS export/orientation declarations, so the images are visually equivalent but are not exact build-6 IPA captures |
+| iOS release artifact | `build/ios/ipa/Gikundiro.ipa`; `app_store/artwork_manifest.json` | Exact signed IPA SHA-256 `606739bff02260103ac0ad55eb1b2d1c223f8aea60e9de1c4099ca7572c477bc`; bundle `rw.ikanisa.rayonSports`, version `1.0.3 (6)` |
+| iOS app icon | Exact IPA ZIP entries and `Info.plist`; source `AppIcon.appiconset` | `Assets.car`, 120x120 iPhone icon, 152x152 iPad icon, and `CFBundleIcons` declarations are present in the exact build-6 IPA. This closes technical presence only; accountable brand/content-rights approval remains open |
 
-Generated build outputs are supporting evidence only. Re-run this assessment on
-the exact frozen commit and signed artifacts before submission.
+Generated build outputs are supporting evidence only. The current build-6
+candidate and original screenshot-capture digests are distinguished in
+`frozen_capture_basis.json`; re-run the final signed Android artifacts and
+portal checks before submission.

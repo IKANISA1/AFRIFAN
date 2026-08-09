@@ -4,21 +4,62 @@
   "warning": "Populate from the authenticated console immediately before submission. Never store credentials, pairing codes, private keys, one-time codes, or identity documents here.",
   "google_play": {
     "developer_account_verified": null,
-    "app_record_exists": null,
-    "play_console_app_id": null,
-    "managed_private_distribution_confirmed": null,
-    "organization_ids_or_managed_configuration_complete": null,
+    "app_record_exists": true,
+    "play_console_app_id": "4972182995232608852",
+    "public_google_play_tv_distribution_confirmed": null,
+    "internal_testing_track_verified": true,
     "play_app_signing_enrolled": null,
-    "registered_upload_certificate_sha256": null,
+    "registered_upload_certificate_sha256": "FA:4C:70:17:85:D5:19:E4:AF:05:D9:B7:48:B3:F4:82:64:C3:28:63:09:0F:71:DC:A8:C8:04:6B:EA:CB:B7:7D",
     "play_app_signing_certificate_sha256": null,
-    "version_code_available": null,
-    "target_countries_or_organizations": [],
-    "reviewer_access_configured": null,
-    "data_safety_published": null,
-    "app_content_forms_complete": null,
+    "version_code_available": true,
+    "target_countries": [],
+    "reviewer_access_configured": false,
+    "data_safety_published": false,
+    "app_content_forms_complete": false,
     "android_tv_opt_in_complete": null,
-    "aab_uploaded": null,
-    "aab_processing_status": null,
-    "submission_status": null
+    "aab_uploaded": true,
+    "aab_processing_status": "AVAILABLE_TO_TESTERS",
+    "submission_status": "INTERNAL_TESTING_NOT_PUBLIC_REVIEW",
+    "verified_receipt": {
+      "observed_on": "2026-08-09",
+      "package_name": "rw.ikanisa.rayonSports.tv",
+      "internal_release_name": "Gikundiro TV 1.0.0 (1) – Internal",
+      "version_name": "1.0.0",
+      "version_code": 1,
+      "track": "internal_testing",
+      "tester_availability": "AVAILABLE_TO_TESTERS",
+      "aab_sha256": "37bfdbd7a7206c7002c4ba6fad55bfc43247e3df133a6d656b72828ff7f1ae77",
+      "upload_certificate_sha256": "FA:4C:70:17:85:D5:19:E4:AF:05:D9:B7:48:B3:F4:82:64:C3:28:63:09:0F:71:DC:A8:C8:04:6B:EA:CB:B7:7D",
+      "reviewer_flow_backend": {
+        "production_migration_version": "20260809140058",
+        "production_migration_name": "repair_managed_game_reviewer_progression",
+        "production_applied": true,
+        "local_clean_replay_verified": true,
+        "local_full_database_tests": "277/277",
+        "reviewer_identity_provisioned": false,
+        "fixed_otp_configured": false,
+        "store_installed_end_to_end_review_journey_verified": false
+      },
+      "dashboard_setup_progress": {
+        "completed": 6,
+        "total": 11,
+        "completed_tasks": [
+          "privacy_policy",
+          "ads",
+          "government_apps",
+          "financial_features",
+          "health_apps",
+          "category_and_contact"
+        ],
+        "remaining_tasks": [
+          "content_rating",
+          "target_audience",
+          "data_safety",
+          "sign_in_details",
+          "store_listing"
+        ]
+      },
+      "boundary": "The internal-testing release is available to testers, and production migration 20260809140058 now provides shipping-build compatibility for first-question initialization and managed progression. No reviewer identity, fixed OTP, synthetic membership/role/pack, or store-installed end-to-end review receipt exists yet. Public TV distribution, reviewer access, remaining setup tasks, review submission, review, and publication are not complete."
+    }
   }
 }

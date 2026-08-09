@@ -53,17 +53,4 @@ export function sanitizeMediaUrl(value: unknown, fallback: string) {
   return fallback;
 }
 
-export const newsTableCandidates = ["news_articles", "rs_news_articles"];
 export const productTableCandidates = ["shop_products", "rs_shop_products"];
-export const squadTableCandidates = [
-  "squad_players",
-  "players",
-  "club_players",
-  "rs_squad_players",
-];
-export const standingsTableCandidates = [
-  "standings",
-  "league_standings",
-  "club_standings",
-  "rs_standings",
-];

@@ -237,9 +237,13 @@ for (const routeConfig of routes) {
 
     mode = "ready";
     await open("focused");
-    const back = page.getByRole("link", {
-      name: routeConfig.mode === "ticket" ? "Ticketing" : "Fixtures",
-    });
+    const back = page
+      .getByRole("navigation", {
+        name: routeConfig.mode === "ticket" ? "Ticketing" : "Fixtures",
+      })
+      .getByRole("link", {
+        name: routeConfig.mode === "ticket" ? "Ticketing" : "Fixtures",
+      });
     await back.focus();
     await expect(page.locator(".match-detail-surface")).toHaveAttribute(
       "data-match-interaction",

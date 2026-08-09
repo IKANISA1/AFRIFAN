@@ -29,15 +29,18 @@ platform :ios do
 
   desc "Upload the exact approved IPA to App Store Connect without submission"
   lane :upload_build do
+    ipa_path = File.expand_path("../../build/ios/ipa/Gikundiro.ipa", __dir__)
     sh(
       "python3",
       File.expand_path("../../store_metadata/validate_store_package.py", __dir__),
       "--surface",
       "app-store",
       "--release-ready",
+      "--artifact",
+      ipa_path,
     )
     pilot(
-      ipa: File.expand_path("../../build/ios/ipa/Gikundiro.ipa", __dir__),
+      ipa: ipa_path,
       skip_waiting_for_build_processing: false,
       distribute_external: false,
     )

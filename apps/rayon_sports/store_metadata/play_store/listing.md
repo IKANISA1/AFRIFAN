@@ -22,7 +22,7 @@ MEMBERSHIP AND SUPPORT
 Review published membership tiers, submit an application, and view confirmed membership or contribution records. Availability and benefits depend on the club's current configuration.
 
 FAN ACTIVITIES
-Join club-published games, predictions, points, and leaderboards when enabled. Gikundiro is not a betting app. FET points are in-app scores only: they have no cash value, cannot be purchased or withdrawn, and do not promise a prize.
+Join free club-published prediction games and view your earned-points history when available. The public release does not offer challenges, jackpots, rewards, point transfers, social discovery, or leaderboards. Gikundiro is not a betting app. FET points are in-app scores only: they have no cash value, cannot be purchased or withdrawn, and do not promise a prize.
 
 SHOP
 Browse published merchandise, prepare an order, and use an authorized payment route when available. Orders remain pending until confirmed.
@@ -38,9 +38,12 @@ Gikundiro is built by Ikanisa for Rayon Sports supporters.
 ## Content rating and audience
 
 Do not predeclare an IARC result. Complete the current questionnaire after the
-approved release feature flags, UGC treatment, contests/rewards, territories,
-and audience are final. The working product intent is not directed to children
-under 13; this is not a substitute for the Play Console target-audience answer.
+audience, territories, remote content, ordinary prediction and earned-points,
+and physical/off-app commerce facts are approved. The public candidate disables
+cross-user UGC, contests, rewards, challenges, jackpots, point transfers, social
+discovery, and leaderboards by default. The working product intent is not
+directed to children under 13; this is not a substitute for the Play Console
+target-audience answer.
 
 ## Category
 Sports

@@ -309,7 +309,7 @@ Future<void> _showTvContextMenu(
   final l10n = context.afriL10n;
   await showDialog<void>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
+    builder: (dialogContext) => AfriAlertDialog(
       key: const ValueKey<String>('tv-remote-context-menu'),
       title: Text(l10n.tvRemoteMenuTitle),
       content: ConstrainedBox(

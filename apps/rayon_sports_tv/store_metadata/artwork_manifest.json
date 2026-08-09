@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "status": "pending",
+  "status": "store_media_minimum_met_with_two_genuine_avd_captures_and_feature_graphic_pending_play_delivery_parity_and_approval",
   "rules": {
-    "capture_from_exact_candidate": true,
+    "capture_from_exact_candidate": false,
     "actual_app_ui_only": true,
     "synthetic_session_only": true,
     "no_real_supporter_data": true,
@@ -20,7 +20,7 @@
       "height": 512,
       "format": "32-bit PNG with alpha",
       "max_bytes": 1048576,
-      "status": "missing"
+      "status": "generated_pending_approval"
     },
     {
       "id": "play_tv_banner",
@@ -29,30 +29,142 @@
       "width": 1280,
       "height": 720,
       "format": "JPEG or 24-bit PNG without alpha",
-      "status": "missing"
+      "status": "generated_pending_approval"
+    },
+    {
+      "id": "play_feature_graphic",
+      "required": true,
+      "path": "../android/fastlane/metadata/android/en-US/images/featureGraphic.png",
+      "width": 1024,
+      "height": 500,
+      "format": "24-bit PNG without alpha",
+      "sha256": "0512e0d30a23650e4d763f4c56189f1b27eabebd5fc375462a152b80e209c3e6",
+      "alt_text": "Gikundiro TV logo and read-only matchday display message on a blue background.",
+      "status": "generated_checksum_locked_pending_approval"
     },
     {
       "id": "tv_screenshots",
       "required": true,
       "directory": "../android/fastlane/metadata/android/en-US/images/tvScreenshots",
-      "minimum_count": 1,
-      "planned_count": 5,
+      "minimum_count": 2,
+      "captured_count": 2,
+      "recommended_count": 5,
       "recommended_size": "1920x1080 landscape",
-      "status": "missing"
+      "alt_text_by_file": {
+        "01_service_unavailable.jpg": "Gikundiro TV shows a service setup message in Kinyarwanda.",
+        "02_synthetic_reveal.jpg": "Gikundiro TV shows an answer reveal and public-alias standings in Kinyarwanda."
+      },
+      "status": "two_genuine_api36_avd_captures_pending_play_delivery_parity_and_approval"
     },
     {
       "id": "launcher_banner_in_aab",
       "required": true,
-      "source_path": "../android/app/src/main/res/drawable/tv_banner.xml",
+      "source_path": "../android/app/src/main/res/drawable-xhdpi/tv_banner.png",
+      "source_dimensions": "320x180",
       "required_release_form": "320x180 xhdpi raster drawable with app name",
-      "status": "requires_runtime_owner_verification"
+      "source_sha256": "272c3d57586d779f21ac17bf36acde3848ca1f5814ac49b4317b6e77014164b5",
+      "production_aab_path": "base/res/drawable-xhdpi-v4/tv_banner.png",
+      "production_aab_embedded_sha256": "272c3d57586d779f21ac17bf36acde3848ca1f5814ac49b4317b6e77014164b5",
+      "byte_parity_verified": true,
+      "status": "verified_in_production_aab"
     }
   ],
+  "artwork_generation": {
+    "generator": "../../rayon_sports/store_metadata/tools/generate_store_artwork.swift",
+    "method": "deterministic native vector drawing for the icon and TV banner",
+    "rights_basis": "Original Gikundiro G and TV geometry using only system typography and solid/gradient colors; no club crest, photography, or third-party artwork.",
+    "feature_graphic": {
+      "method": "Project-owned icon and TV banner references were composed with image generation, then uniformly resampled from the exact 1024:500 source ratio to 1024x500 and checksum locked.",
+      "source_asset_paths": [
+        "../android/fastlane/metadata/android/en-US/images/icon.png",
+        "../android/fastlane/metadata/android/en-US/images/tvBanner.png"
+      ],
+      "generated_source_dimensions": "1794x876",
+      "generated_source_sha256": "b8d7e38d1e850e431de98d018316ec3ce60248bff7862b6d83ac0c27a528fb32",
+      "normalization": "Uniform resample only; no crop, content replacement, or transparency was introduced.",
+      "output_sha256": "0512e0d30a23650e4d763f4c56189f1b27eabebd5fc375462a152b80e209c3e6",
+      "rights_basis": "Original project-owned Gikundiro geometry and generic system typography only; no club crest, photography, person, stadium, store badge, ranking, price, or third-party mark."
+    }
+  },
+  "capture_provenance": {
+    "capture_stage": "same-TV-source validation-APK capture retained alongside production upload AAB",
+    "recapture_after_source_freeze_required": false,
+    "captured_at": "2026-08-09",
+    "source_commit": "d92394f47f660551701f4c65769085587cd1962b",
+    "source_worktree_state": "dirty concurrent workspace preserved",
+    "capture_source_authoritative_tracked_worktree_state_digest_sha256": "cca7ed5908dc33ae95e92b3c242647a1b9fc259dd51c64c47fc70738115e1e33",
+    "capture_source_runtime_manifest_digest_sha256": "ecb0fdda74ff7b9fe0e81b2005861d09d5c722b83468a21519be615d22e83995",
+    "current_candidate_authoritative_tracked_worktree_state_digest_sha256": "cef8cb37fa74321a92c7d47a0d904b639f7fd5909aea66cb1fe5049c6429cca5",
+    "current_candidate_runtime_source_manifest_digest_sha256": "7ddc0399a572c6664c646a3ec13d074c15cfbd1bb1ce476c9b7d12a3c6b1f64b",
+    "runtime_source_manifest": "../../rayon_sports/store_metadata/frozen_tracked_source.sha256",
+    "store_media_checksum_manifest": "store_media.sha256",
+    "capture_artifact_path": "../build/app/outputs/apk/release/app-release-validation-only.apk",
+    "capture_artifact_sha256": "9d1415af0cdba186399a5d0cdfa05c6f8d7c60f176a05d0461bce7f287f977b6",
+    "package_id": "rw.ikanisa.rayonSports.tv",
+    "version_name": "1.0.0",
+    "version_code": 1,
+    "capture_signer_certificate_sha256": "07d97b69646ca6881446f6d15ec94744a31a27fb1fe1af103f9fc010b0902949",
+    "capture_signer_scope": "Local Validation Only",
+    "signing_key_retention": "The throwaway local-validation signing key was deleted immediately after the build; no production signing credential was used or retained.",
+    "device": "AFRICLUB_TV_API36 Android TV emulator",
+    "capture_dimensions": "1920x1080",
+    "captured_state": "Current release validation artifact service-unavailable state plus a current-app synthetic reveal/standings state; neither image shows a pairing code, QR payload, device credential, supporter identity, payment data, or production session data.",
+    "capture_fidelity_boundary": "Both images are genuine API 36 Android TV AVD renders of the current Flutter TV interface. The first comes from the release validation APK built from the same TV runtime source as the production upload AAB. The second comes from a non-shipping debug capture artifact that injected a deterministic synthetic projection through the app's existing preview-state boundary; its temporary entry point was deleted after capture. Neither is claimed as a Play-generated delivery APK capture, so exact Play-delivery visual parity remains open.",
+    "exact_production_aab_or_play_delivery_capture": false,
+    "pre_final_artifact_sha256": "9c65da3ee6fdab6feb4fe52b1417fe31157f4cb51e1784ed28e1b18b56d42f3d",
+    "recapture_drift": "The final TV-only governance edit changed the validation APK and required an authoritative reinstall and recapture. The final service-unavailable screenshot remained visually equivalent and contains no live pairing, QR, supporter, or production-session data.",
+    "files": [
+      "01_service_unavailable.jpg",
+      "02_synthetic_reveal.jpg"
+    ],
+    "captures": [
+      {
+        "file": "01_service_unavailable.jpg",
+        "sha256": "d40d10ef9177f4ce74a8bb570a3a423ff5eb0f4898ac150d40a7be36fe33b239",
+        "artifact_path": "../build/app/outputs/apk/release/app-release-validation-only.apk",
+        "artifact_sha256": "9d1415af0cdba186399a5d0cdfa05c6f8d7c60f176a05d0461bce7f287f977b6",
+        "build_mode": "release_validation_only",
+        "physical_dimensions": "1920x1080",
+        "state": "configuration_missing",
+        "data_boundary": "No pairing code, QR payload, device credential, supporter data, or production session data."
+      },
+      {
+        "file": "02_synthetic_reveal.jpg",
+        "sha256": "ff1c16623d132e0790a541aa50e6c35eebcad73310a8e2c66024f9ce9acd27b5",
+        "artifact_path": "../build/app/outputs/flutter-apk/app-debug.apk",
+        "artifact_sha256": "a1531b8843766f158230dac8f7861605581f3e5bcee66384bbbf99b306fcb1e4",
+        "build_mode": "debug_non_shipping_synthetic_capture",
+        "physical_dimensions": "1920x1080",
+        "logical_viewport": "1280x720 at AVD density 240",
+        "state": "reveal_with_public_alias_standings",
+        "state_source": "Deterministic synthetic TvRuntimeState injected through the existing RayonSportsTvApp previewState boundary; the temporary capture entry point was deleted after capture.",
+        "data_boundary": "Kinyarwanda synthetic question, choices, scores, and public aliases only; no backend request, pairing material, credential, real supporter data, payment data, or production session data.",
+        "visual_review": "Pass; no debug banner, overflow indicator, clipping, secret, credential, QR code, or personal data is visible."
+      }
+    ]
+  },
+  "production_release_artifact": {
+    "path": "../build/app/outputs/bundle/release/app-release.aab",
+    "sha256": "37bfdbd7a7206c7002c4ba6fad55bfc43247e3df133a6d656b72828ff7f1ae77",
+    "upload_certificate_sha256": "FA:4C:70:17:85:D5:19:E4:AF:05:D9:B7:48:B3:F4:82:64:C3:28:63:09:0F:71:DC:A8:C8:04:6B:EA:CB:B7:7D",
+    "signer_subject": "CN=Gikundiro TV Upload, OU=Mobile, O=IKANISA LTD, L=Kigali, ST=Kigali, C=RW",
+    "distribution_intent": "public_google_play_tv",
+    "current_preproduction_stage": "internal_testing",
+    "play_app_signing_and_delivery_parity": "portal_evidence_pending"
+  },
   "capture_plan": [
-    {"order": 1, "journey": "Owner pairing screen in the production Kinyarwanda locale", "redaction": "Use a synthetic expired code and non-production QR payload"},
-    {"order": 2, "journey": "Live question and choices", "redaction": "Synthetic question only"},
-    {"order": 3, "journey": "Answer reveal and public-alias standings", "redaction": "Synthetic aliases only"},
-    {"order": 4, "journey": "Offline retained state", "redaction": "No production session data"},
-    {"order": 5, "journey": "Revoked or expired recovery state", "redaction": "No credential or live code"}
+    {"order": 1, "file": "02_synthetic_reveal.jpg", "journey": "Synthetic answer reveal and public-alias standings in the production Kinyarwanda locale", "redaction": "None required; deterministic synthetic question content and public aliases only.", "status": "captured", "listing_priority": "primary"},
+    {"order": 2, "file": "01_service_unavailable.jpg", "journey": "Service-unavailable state in the production Kinyarwanda locale", "redaction": "None required; the release artifact displayed no pairing code, QR payload, supporter data, or production session data.", "status": "captured", "listing_priority": "secondary"}
+  ],
+  "approvals_required": [
+    "tv_product_scope",
+    "tv_distribution_model",
+    "rayon_brand_and_content_rights",
+    "tv_privacy_and_retention",
+    "tv_security_review",
+    "tv_physical_device_qa",
+    "english_store_copy",
+    "french_store_copy",
+    "google_play_tv_release_owner"
   ]
 }

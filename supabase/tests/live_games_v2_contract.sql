@@ -5,7 +5,7 @@ create extension if not exists pgtap with schema extensions;
 
 begin;
 
-select plan(80);
+select plan(82);
 
 select ok(
   to_regclass('africlub_game.display_assignments') is not null
@@ -705,6 +705,16 @@ insert into public.fan_memberships (
     'GAME-SUSPENDED-001',
     'Suspended Member Name',
     'suspended',
+    'verified',
+    timezone('utc', now()) + interval '1 year'
+  ),
+  (
+    '99000000-0000-4000-8000-000000000013',
+    '99000000-0000-4000-8000-000000000001',
+    9900001,
+    'GAME-REVIEWER-001',
+    'Synthetic Reviewer Organizer',
+    'active',
     'verified',
     timezone('utc', now()) + interval '1 year'
   );
@@ -1794,6 +1804,269 @@ select is(
   3,
   'managed inventory includes both newly planned sessions exactly once'
 );
+
+do $$
+declare
+  v_installation_nonce text :=
+    'reviewer-installation-nonce-contract-00000001';
+  v_display_id uuid;
+  v_device_token text;
+  v_session_id uuid;
+  v_first_question_id uuid;
+  v_second_question_id uuid;
+  pairing jsonb;
+  claimed jsonb;
+  exchanged jsonb;
+  owned_inventory jsonb;
+  planner_options jsonb;
+  created jsonb;
+  lobby jsonb;
+  opened jsonb;
+  revealed jsonb;
+  advanced jsonb;
+  tv_projection jsonb;
+begin
+  perform set_config(
+    'request.jwt.claim.sub',
+    '99000000-0000-4000-8000-000000000013',
+    true
+  );
+  perform set_config(
+    'request.jwt.claims',
+    '{"sub":"99000000-0000-4000-8000-000000000013","role":"authenticated","club_id":"9900001"}',
+    true
+  );
+
+  pairing := public.create_display_pairing_challenge_v2(
+    v_installation_nonce,
+    '2.0.0-contract',
+    '{"platform":"android_tv","projection_version":2}'::jsonb
+  );
+  claimed := public.claim_display_bootstrap_challenge_v2(
+    pairing->>'challenge',
+    'Synthetic Reviewer Home Display',
+    'home',
+    null
+  );
+  exchanged := public.exchange_display_pairing_challenge_v2(
+    pairing->>'challenge',
+    v_installation_nonce
+  );
+  v_display_id := (claimed->>'display_id')::uuid;
+  v_device_token := exchanged->>'device_credential';
+  owned_inventory := public.get_owned_displays_v2();
+  planner_options := public.get_game_planner_options_v2();
+
+  if pairing->>'status' <> 'pending_owner_claim'
+     or claimed->>'status' <> 'claimed'
+     or exchanged->>'status' <> 'paired'
+     or length(v_device_token) <> 64
+     or not exists (
+       select 1
+       from jsonb_array_elements(owned_inventory->'displays') owned_display
+       where owned_display->>'display_id' = v_display_id::text
+     )
+     or not exists (
+       select 1
+       from jsonb_array_elements(planner_options->'displays') planner_display
+       where planner_display->>'display_id' = v_display_id::text
+     )
+     or not exists (
+       select 1
+       from jsonb_array_elements(planner_options->'packs') planner_pack
+       where planner_pack->>'pack_id' =
+         '99000000-0000-4000-8000-000000000062'
+     )
+     or not exists (
+       select 1
+       from africlub_game.tv_devices display
+       where display.id = v_display_id
+         and display.owner_user_id =
+           '99000000-0000-4000-8000-000000000013'::uuid
+         and display.scope_type = 'home'
+     )
+     or not exists (
+       select 1
+       from public.fan_memberships membership
+       where membership.user_id =
+           '99000000-0000-4000-8000-000000000013'::uuid
+         and membership.club_id = 9900001
+         and membership.status = 'active'
+         and membership.payment_status = 'verified'::public.payment_status
+         and membership.expires_at > timezone('utc', now())
+     )
+     or not africlub_game.has_role(9900001, 'game_organizer', null)
+     or exists (
+       select 1
+       from public.admin_role_assignments admin_grant
+       where admin_grant.user_id =
+         '99000000-0000-4000-8000-000000000013'::uuid
+     )
+     or exists (
+       select 1
+       from public.venue_staff_memberships venue_membership
+       where venue_membership.user_id =
+         '99000000-0000-4000-8000-000000000013'::uuid
+         and venue_membership.is_active
+     )
+     or exists (
+       select 1
+       from africlub_game.role_grants role_grant
+       where role_grant.user_id =
+         '99000000-0000-4000-8000-000000000013'::uuid
+         and role_grant.revoked_at is null
+         and role_grant.role_key not in ('game_organizer', 'display_owner')
+     ) then
+    raise exception 'least-privilege reviewer could not claim its home display';
+  end if;
+
+  created := public.create_managed_game_session_v2(
+    '99000000-0000-4000-8000-000000000062',
+    timezone('utc', now()) + interval '1 hour',
+    'home_owner',
+    array[v_display_id],
+    'reviewer-session-contract-0001'
+  );
+  v_session_id := (created->>'session_id')::uuid;
+
+  select session_question.id into v_first_question_id
+  from africlub_game.session_questions session_question
+  where session_question.session_id = v_session_id
+  order by session_question.ordinal, session_question.id
+  limit 1;
+  select session_question.id into v_second_question_id
+  from africlub_game.session_questions session_question
+  where session_question.session_id = v_session_id
+    and session_question.ordinal > 1
+  order by session_question.ordinal, session_question.id
+  limit 1;
+
+  if created->'current_question_control'->>'id' <> v_first_question_id::text
+     or not exists (
+       select 1
+       from africlub_game.game_sessions session_row
+       where session_row.id = v_session_id
+         and session_row.current_session_question_id = v_first_question_id
+     )
+     or not exists (
+       select 1
+       from africlub_game.display_assignments assignment
+       where assignment.session_id = v_session_id
+         and assignment.display_id = v_display_id
+         and assignment.unassigned_at is null
+     ) then
+    raise exception 'reviewer session did not initialize and assign atomically';
+  end if;
+
+  tv_projection := public.get_tv_game_projection_v2(v_device_token);
+  if tv_projection->>'phase' <> 'scheduled'
+     or tv_projection->'question' <> 'null'::jsonb then
+    raise exception 'scheduled TV projection exposed queued question content: %', tv_projection;
+  end if;
+
+  lobby := public.transition_managed_game_session_v2(
+    v_session_id,
+    'activated_lobby',
+    (created->>'session_version')::bigint,
+    'reviewer-lobby-contract-0001',
+    v_first_question_id,
+    null,
+    null
+  );
+  tv_projection := public.get_tv_game_projection_v2(v_device_token);
+  if tv_projection->>'phase' <> 'activated_lobby'
+     or tv_projection->'question' <> 'null'::jsonb then
+    raise exception 'lobby TV projection exposed queued question content: %', tv_projection;
+  end if;
+
+  opened := public.transition_managed_game_session_v2(
+    v_session_id,
+    'question_open',
+    (lobby->>'session_version')::bigint,
+    'reviewer-open-first-contract-0001',
+    v_first_question_id,
+    timezone('utc', now()) + interval '30 seconds',
+    null
+  );
+  tv_projection := public.get_tv_game_projection_v2(v_device_token);
+  if opened->'current_question_control'->>'id' <> v_first_question_id::text
+     or tv_projection->>'phase' <> 'question_open'
+     or tv_projection->'question'->>'id' <> v_first_question_id::text then
+    raise exception 'first question did not open on the assigned TV: %', tv_projection;
+  end if;
+
+  revealed := public.transition_managed_game_session_v2(
+    v_session_id,
+    'reveal',
+    (opened->>'session_version')::bigint,
+    'reviewer-reveal-first-contract-0001',
+    v_first_question_id,
+    null,
+    null
+  );
+  advanced := public.transition_managed_game_session_v2(
+    v_session_id,
+    'question_open',
+    (revealed->>'session_version')::bigint,
+    'reviewer-open-next-contract-0001',
+    v_first_question_id,
+    timezone('utc', now()) + interval '30 seconds',
+    null
+  );
+  tv_projection := public.get_tv_game_projection_v2(v_device_token);
+  if advanced->'current_question_control'->>'id' <> v_second_question_id::text
+     or tv_projection->>'phase' <> 'question_open'
+     or tv_projection->'question'->>'id' <> v_second_question_id::text then
+    raise exception 'legacy reveal payload did not advance to question two: %', tv_projection;
+  end if;
+
+end $$;
+select pass(
+  'least-privilege reviewer claims and assigns its display, hides queued content, opens question one, and advances to question two with the frozen mobile payload'
+);
+
+do $$
+begin
+  perform set_config(
+    'request.jwt.claim.sub',
+    '99000000-0000-4000-8000-000000000011',
+    true
+  );
+  perform set_config(
+    'request.jwt.claims',
+    '{"sub":"99000000-0000-4000-8000-000000000011","role":"authenticated","club_id":"9900001"}',
+    true
+  );
+end $$;
+select throws_ok(
+  $statement$
+    select public.transition_managed_game_session_v2(
+      '99000000-0000-4000-8000-000000000031',
+      'question_open',
+      8,
+      'unauthorized-next-contract-0001',
+      '99000000-0000-4000-8000-000000000041',
+      timezone('utc', now()) + interval '30 seconds',
+      null
+    )
+  $statement$,
+  'P0001',
+  'Not authorized to control this game session',
+  'legacy next-question normalization does not reveal session state to an unauthorized member'
+);
+do $$
+begin
+  perform set_config(
+    'request.jwt.claim.sub',
+    '99000000-0000-4000-8000-000000000013',
+    true
+  );
+  perform set_config(
+    'request.jwt.claims',
+    '{"sub":"99000000-0000-4000-8000-000000000013","role":"authenticated","club_id":"9900001"}',
+    true
+  );
+end $$;
 
 do $$
 declare

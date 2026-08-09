@@ -8,6 +8,10 @@ import {
   type Page,
   type Route,
 } from "@playwright/test";
+import {
+  crossClientFixture,
+  managedSessionWireFromState,
+} from "../src/test-support/live-games-v2-cross-client-fixture";
 
 type ResponseMode =
   | "loading"
@@ -67,6 +71,18 @@ const audit = Array.from({ length: 30 }, (_, index) => {
     },
   };
 });
+
+const managedSession = {
+  ...managedSessionWireFromState(crossClientFixture.states[0]),
+  allowed_actions: ["cancelled"],
+};
+
+const managedSessions = {
+  club_id: 24,
+  server_time: "2026-08-01T14:00:00.000Z",
+  can_plan: true,
+  sessions: [managedSession],
+};
 
 function responseFor(mode: Exclude<ResponseMode, "loading">, data: unknown) {
   if (mode === "ready" || mode === "empty") {
@@ -155,13 +171,57 @@ async function runAdminGamesMatrix(browser: Browser) {
     deviceScaleFactor: 1,
     colorScheme: "dark",
     reducedMotion: "no-preference",
+    serviceWorkers: "block",
   });
   const page = await context.newPage();
   let responseMode: ResponseMode = "ready";
+  const pendingLoadingRequests = new Set<{
+    release: () => void;
+    finished: Promise<void>;
+  }>();
+
+  await page.route("**/admin/games?**", async (route: Route) => {
+    if (route.request().resourceType() !== "document") {
+      await route.fallback();
+      return;
+    }
+    const response = await route.fetch();
+    const headers = { ...response.headers() };
+    const contentSecurityPolicy = headers["content-security-policy"];
+    if (contentSecurityPolicy) {
+      headers["content-security-policy"] = contentSecurityPolicy
+        .split(";")
+        .map((directive) => directive.trim())
+        .filter(
+          (directive) => directive.toLowerCase() !== "upgrade-insecure-requests",
+        )
+        .join("; ");
+    }
+    await route.fulfill({ response, headers });
+  });
 
   await page.route("**/api/game-session-action", async (route: Route) => {
-    if (responseMode === "loading") {
-      await new Promise<void>(() => {});
+    const mode = responseMode;
+    if (mode === "loading") {
+      let releaseLoadingRequest: (() => void) | undefined;
+      let markLoadingRequestFinished: (() => void) | undefined;
+      const loadingRequestFinished = new Promise<void>((resolve) => {
+        markLoadingRequestFinished = resolve;
+      });
+      const loadingRequest = {
+        release: () => releaseLoadingRequest?.(),
+        finished: loadingRequestFinished,
+      };
+      pendingLoadingRequests.add(loadingRequest);
+      try {
+        await new Promise<void>((resolve) => {
+          releaseLoadingRequest = resolve;
+        });
+        await route.abort("aborted");
+      } finally {
+        pendingLoadingRequests.delete(loadingRequest);
+        markLoadingRequestFinished?.();
+      }
       return;
     }
     const body = route.request().postDataJSON() as { action?: string };
@@ -170,11 +230,10 @@ async function runAdminGamesMatrix(browser: Browser) {
         ? drafts
         : body.action === "list_audit_log"
           ? audit
-          : {};
-    const response = responseFor(
-      responseMode,
-      responseMode === "empty" ? [] : readyData,
-    );
+          : body.action === "get_managed_sessions"
+            ? managedSessions
+            : {};
+    const response = responseFor(mode, mode === "empty" ? [] : readyData);
     await route.fulfill({
       status: response.status,
       contentType: "application/json",
@@ -182,13 +241,25 @@ async function runAdminGamesMatrix(browser: Browser) {
     });
   });
 
+  const releasePendingLoadingRequests = async () => {
+    const pending = [...pendingLoadingRequests];
+    pending.forEach(({ release }) => release());
+    await Promise.all(pending.map(({ finished }) => finished));
+  };
+  const expectLoadingRequestHeld = () =>
+    expect
+      .poll(() => pendingLoadingRequests.size, { timeout: 15_000 })
+      .toBeGreaterThan(0);
+
   const surface = () => page.locator(".admin-games-state-surface").first();
   const open = (nonce: string) =>
     page.goto(`/admin/games?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   const expectStatus = async (status: string, label: RegExp) => {
-    await expect(surface()).toHaveAttribute("data-admin-games-status", status);
+    await expect(surface()).toHaveAttribute("data-admin-games-status", status, {
+      timeout: 15_000,
+    });
     await expect(page.locator(".admin-games-status")).toContainText(label);
   };
   const capture = async (state: string, profile = "desktop_1440x1000") => {
@@ -207,13 +278,16 @@ async function runAdminGamesMatrix(browser: Browser) {
   responseMode = "loading";
   await open("loading");
   await expectStatus("loading", /loading game operations/i);
+  await expectLoadingRequestHeld();
   await capture("loading");
   await expect(
     page.getByRole("button", { name: /refresh game operations/i }),
   ).toBeDisabled();
   await capture("disabled");
-
   responseMode = "empty";
+  await releasePendingLoadingRequests();
+  await page.goto("about:blank");
+
   await open("empty");
   await expectStatus("empty", /no game operations in this scope/i);
   await capture("empty");
@@ -238,13 +312,19 @@ async function runAdminGamesMatrix(browser: Browser) {
   responseMode = "ready";
   await open("permission-preparation");
   await expectStatus("ready", /game operations snapshot confirmed/i);
-  await page
-    .getByRole("textbox", { name: /session title/i })
-    .fill("Unsaved private session");
+  await page.getByRole("tab", { name: /content studio/i }).click();
+  await expect(
+    page.getByRole("heading", { name: "Content Studio" }),
+  ).toBeVisible();
+  const unsavedPrivateInput = page.getByRole("textbox", {
+    name: /source title/i,
+  });
+  await unsavedPrivateInput.fill("Unsaved private source");
+  await expect(unsavedPrivateInput).toHaveValue("Unsaved private source");
   responseMode = "permission_denied";
   await page.getByRole("button", { name: /refresh game operations/i }).click();
   await expectStatus("permission_denied", /game operations access denied/i);
-  await expect(page.getByText("Unsaved private session")).toHaveCount(0);
+  await expect(unsavedPrivateInput).toHaveCount(0);
   await expect(page.getByText(/verified result 01/i)).toHaveCount(0);
   await capture("permission_denied");
 
@@ -277,6 +357,7 @@ async function runAdminGamesMatrix(browser: Browser) {
     isPrimary: true,
   });
 
+  await page.getByRole("tab", { name: /content studio/i }).click();
   const firstDraft = page.getByRole("button", {
     name: /verified result 01 belongs to rayon sports/i,
   });
@@ -341,11 +422,19 @@ async function runAdminGamesMatrix(browser: Browser) {
     confirmation = dialog.message();
     await dialog.dismiss();
   });
+  await page.getByRole("tab", { name: /live control/i }).click();
+  await page.getByRole("button", { name: /load managed sessions/i }).click();
+  await expect(
+    page.getByRole("combobox", { name: /managed session/i }),
+  ).toHaveValue(managedSession.session_id);
+  await page.getByRole("button", { name: /review cancellation/i }).click();
   await page
-    .getByRole("textbox", { name: /tv device id/i })
-    .fill("00000000-0000-4000-8000-000000000099");
-  await page.getByRole("button", { name: /revoke tv credential/i }).click();
-  expect(confirmation).toContain("Scope: Club 24; one paired display");
+    .getByRole("button", { name: "Confirm cancel session", exact: true })
+    .click();
+  expect(confirmation).toContain("Scope: Club 24; session version");
+  expect(confirmation).toContain(
+    "Impact: The game will stop and cannot return to live play.",
+  );
   expect(confirmation).toContain(
     "Recovery requires a separate manual admin action.",
   );
@@ -363,10 +452,12 @@ async function runAdminGamesMatrix(browser: Browser) {
   responseMode = "loading";
   await page.getByRole("button", { name: /refresh game operations/i }).click();
   await expectStatus("syncing", /refreshing game operations/i);
+  await expectLoadingRequestHeld();
   await expect(page.getByText("30", { exact: true }).first()).toBeVisible();
   await capture("syncing");
 
   responseMode = "ready";
+  await releasePendingLoadingRequests();
   await open("conflict");
   await expectStatus("ready", /game operations snapshot confirmed/i);
   responseMode = "conflict";
@@ -474,7 +565,7 @@ test.describe("controlled Admin PWA game operations evidence", () => {
   test("captures the exact authenticated game-operations state matrix", async ({
     browser,
   }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(300_000);
     await runAdminGamesMatrix(browser);
   });
 });

@@ -17,9 +17,10 @@
   methods when their fulfillment is genuinely outside the app.
 - Contributions require recipient, donation/payment, refund, dispute, and
   entitlement review.
-- Membership is unresolved: inventory every paid benefit. Any digital feature,
-  content, subscription, or in-app entitlement must use the applicable Apple
-  In-App Purchase model or be excluded from the paid bundle/release.
+- Paid digital membership is disabled in this candidate. Production policy
+  requires explicit server authorization plus compiled store-billing
+  availability, which defaults false; candidate migration `20260809111441`
+  exposes only free physical membership and revokes paid application submission.
 - The package contains no StoreKit/in-app-purchase SDK.
 - Do not claim a purchase is complete until the authoritative backend confirms
   it.
@@ -27,11 +28,22 @@
 ## Predictions, rewards, and gaming
 
 - No real-money gambling classification is proposed.
-- Prove that FET cannot be purchased, sold, withdrawn, or redeemed for cash or
-  unapproved real-world prizes.
-- Disable stake/challenge code in the store candidate unless separately
-  licensed/approved and accurately age/geo restricted.
-- Publish and approve rules for any contest, promotion, or real-world reward.
+- FET purchase, transfer, manual redemption, reward redemption, partner offers,
+  staked challenges, jackpots, and related public-client RPCs are disabled by
+  production policy plus migration `20260809111441`.
+- The candidate is not presented as gambling and exposes no enabled cash or
+  real-world-prize path. Any future contest, promotion, or reward requires a new
+  artifact, approved rules, age/geo controls, and updated store answers.
+
+## User-generated content
+
+- Cross-user editable text and social discovery are disabled for this
+  candidate. Production policy substitutes system-controlled aliases and the
+  candidate migration revokes friend/search/leaderboard/challenge RPCs from
+  public clients.
+- UGC moderation approval is not applicable to this disabled build. Any future
+  enablement requires terms, filtering, reporting, blocking, moderation, and a
+  new App Review assessment.
 
 ## Digital Services Act
 
@@ -48,4 +60,3 @@
 - Free distribution without IAP may not require banking, but portal status is
   authoritative.
 - Complete tax/banking agreements before offering any paid app or IAP.
-

@@ -16,3 +16,11 @@ will fail while artwork, portal values, policy decisions, or accountable
 approvals remain pending. Actual App Review contact and demo credentials must be
 entered only in App Store Connect. `submit_review` uses the stronger
 `--submission-ready` gate and leaves release timing manual after review.
+
+`upload_build` resolves one canonical IPA path and passes that same path to the
+validator and `pilot`. The validator hashes the exact file against
+`artwork_manifest.json`, opens its single embedded app `Info.plist`, and requires
+the bundle identifier, version, and build number to match the controlled release
+package before Fastlane can upload it. Submission validation separately requires
+truthful completed portal booleans and processing/review states; a nonblank
+blocked, pending, or ready-for-review-but-not-submitted state does not pass.

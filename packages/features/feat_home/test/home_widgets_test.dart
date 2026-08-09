@@ -67,6 +67,17 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('#007'), findsOneWidget);
     });
+
+    testWidgets('keeps own FET visible without rendering an unknown rank', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildTestApp(globalFet: 2140, fanRank: 0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('2,140'), findsOneWidget);
+      expect(find.text('RANK'), findsNothing);
+      expect(find.text('#000'), findsNothing);
+    });
   });
 
   // ═══════════════════════════════════════════════════════════

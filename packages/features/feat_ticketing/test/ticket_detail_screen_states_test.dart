@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_club/feat_club.dart';
@@ -364,6 +365,9 @@ Future<void> _pumpRoute(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        storeReleasePolicyProvider.overrideWithValue(
+          const StoreReleasePolicy.unenforced(),
+        ),
         currentUserProvider.overrideWithValue(null),
         ticketDetailProvider.overrideWith((ref, matchId) => controller),
         ticketDetailAccessEnabledProvider.overrideWithValue(accessEnabled),

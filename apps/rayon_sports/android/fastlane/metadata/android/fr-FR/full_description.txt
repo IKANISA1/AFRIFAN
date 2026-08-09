@@ -13,7 +13,7 @@ BOUTIQUE
 Consultez les articles publiés, préparez une commande et utilisez un moyen de paiement autorisé lorsqu'il est disponible. Les commandes restent en attente jusqu'à leur confirmation.
 
 ACTIVITÉS DES SUPPORTERS
-Participez aux jeux, pronostics, points et classements publiés par le club lorsqu'ils sont activés. Gikundiro n'est pas une application de paris. Les points FET sont uniquement des scores dans l'application : ils n'ont aucune valeur monétaire, ne peuvent être ni achetés ni retirés et ne garantissent aucun prix.
+Participez gratuitement aux jeux de pronostics publiés par le club et consultez l'historique de vos points acquis lorsqu'ils sont disponibles. La version publique ne propose ni défis, ni jackpots, ni récompenses, ni transferts de points, ni découverte sociale, ni classements. Gikundiro n'est pas une application de paris. Les points FET sont uniquement des scores dans l'application : ils n'ont aucune valeur monétaire, ne peuvent être ni achetés ni retirés et ne garantissent aucun prix.
 
 CONFIDENTIALITÉ ET CONTRÔLE
 Utilisez une session invité ou la connexion par téléphone prise en charge, choisissez d'activer ou non les notifications et demandez la suppression du compte depuis l'écran du profil.

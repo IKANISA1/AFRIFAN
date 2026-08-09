@@ -15,9 +15,18 @@ artwork as a draft. `metadata` uploads approved listing material without an AAB.
 Both use the stronger `--release-ready` gate and therefore fail while artwork,
 portal values, classifications, or approvals are pending.
 
+The `internal` lane resolves one canonical AAB path and passes that same path to
+both the validator and Fastlane. Before upload, validation requires its SHA-256,
+byte length, package, version, version code, upload certificate, merged release
+manifest, and Gradle bundle-output metadata to match the controlled Play receipt
+and release package.
+
 The production promotion lane uses `--submission-ready`, which additionally
 requires processed-artifact, questionnaire, reviewer-access, and submission
-evidence recorded in the portal-values file.
+evidence recorded in the portal-values file. Boolean proofs must be `true`, and
+blocked, pending, rejected, not-uploaded, draft, failed, or otherwise
+non-complete processing/submission states remain release gates even when they
+are nonblank.
 
 Promotion is intentionally explicit:
 

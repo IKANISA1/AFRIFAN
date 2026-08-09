@@ -3,7 +3,10 @@ import {
   adminClubScopeCookieName,
   getRequestedAdminClubId,
 } from "@/lib/admin-club-scope";
-import { isControlledAdminEvidenceAllowed } from "@/lib/controlled-admin-evidence";
+import {
+  controlledAdminEvidenceRequestHeader,
+  isControlledAdminEvidenceAllowed,
+} from "@/lib/controlled-admin-evidence";
 import { emptyAdminAccess, resolveAdminAccess } from "@/lib/data/admin/access";
 import { getAdminClubScopeOptions } from "@/lib/data/admin/settings";
 import { getServerSupabase } from "@/lib/supabase/server";
@@ -56,6 +59,8 @@ export async function getAdminPortalInitialState(): Promise<AdminPortalInitialSt
       previewEnabled: process.env.AFRICLUB_ALLOW_HTTP_PREVIEW,
       adminEvidenceEnabled:
         process.env.AFRICLUB_CONTROLLED_ADMIN_EVIDENCE,
+      evidenceRequested:
+        requestHeaders.get(controlledAdminEvidenceRequestHeader) === "1",
       host:
         requestHeaders.get("x-forwarded-host") ??
         requestHeaders.get("host"),

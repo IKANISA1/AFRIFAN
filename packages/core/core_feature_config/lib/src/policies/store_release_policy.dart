@@ -83,6 +83,11 @@ class StoreReleasePolicy {
   bool get allowsPaidDigitalMembership =>
       !isEnforced || (paidDigitalMembershipAuthorized && storeBillingAvailable);
 
+  /// Direct external-payment launch without a server-created pending intent is
+  /// development-only. A published recipient route or reconciliation label is
+  /// not evidence that the app can track, reconcile, or recover the payment.
+  bool get allowsUnreconciledExternalPaymentLaunch => !isEnforced;
+
   /// Peer-to-peer points transfer and unscoped/manual redemption remain
   /// development-only. A no-real-value reward catalog approval does not imply
   /// that a transferable balance or generic redemption rail is store-safe.

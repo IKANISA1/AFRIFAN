@@ -34,6 +34,7 @@ const orders = Array.from({ length: 30 }, (_, index) => ({
   status: index % 4 === 0 ? "valid" : "pending",
   qrCode: null,
   purchasedAt: new Date(Date.parse(timestamp) + index * 60_000).toISOString(),
+  updatedAt: new Date(Date.parse(timestamp) + index * 60_000).toISOString(),
   userName: `Verified Supporter ${index + 1}`,
   userPhone: `+25070000${String(index).padStart(4, "0")}`,
   matchTitle: `Rayon Sports vs Club ${index + 1}`,

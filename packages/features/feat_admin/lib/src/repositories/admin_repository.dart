@@ -11,8 +11,34 @@ import 'feature_management_repository.dart';
 class AdminRepository {
   AdminRepository({required SupabaseClient client}) : _client = client;
 
-  static const _preferredNewsTable = 'news_articles';
-  static const _fallbackNewsTable = 'news_articles';
+  static const _newsProjection =
+      'id,club_id,title,subtitle,body,category,image_url,is_published,'
+      'published_at,is_featured,sort_order,created_at,updated_at,author_name,'
+      'image_provenance_id,image_rights_approved';
+  static const _partnerProjection =
+      'id,name,category,country,description,fan_count,club_count,game_count,'
+      'slug,emoji,subtitle,is_active,sort_order,updated_at,'
+      'brand_primary_color,brand_secondary_color,website_url,'
+      'gamification_enabled';
+  static const _partnerServiceProjection =
+      'id,partner_id,title,subtitle,emoji,category,details,cta_label,'
+      'cta_action,country,sort_order,is_active,created_at,updated_at,'
+      'service_slug,gamification_enabled,partner:partners(id,name,slug)';
+  static const _quickActionProjection =
+      'id,action_key,title,subtitle,route,icon_key,emoji,country,sort_order,'
+      'is_active,created_at,updated_at';
+  static const _newsUpdateFields = <String>{
+    'title',
+    'subtitle',
+    'body',
+    'category',
+    'image_url',
+    'is_published',
+    'published_at',
+    'is_featured',
+    'sort_order',
+    'author_name',
+  };
 
   final SupabaseClient _client;
   late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
@@ -357,7 +383,7 @@ class AdminRepository {
         .select(
           'id, name, description, group_type, '
           'target_amount, current_total, member_count, '
-          'is_closed, creator_id, created_at',
+          'is_closed, created_at',
         );
     query = _scopeResolver.apply(query, scope);
     final data = await query
@@ -412,9 +438,8 @@ class AdminRepository {
     int limit = 50,
     int offset = 0,
   }) async {
-    final newsTable = await _resolveNewsTable();
     final scope = await _scopeResolver.resolve(null);
-    var query = _client.from(newsTable).select('*');
+    var query = _client.from('news_articles').select(_newsProjection);
     query = _scopeResolver.apply(query, scope);
     final data = await query
         .order('created_at', ascending: false)
@@ -435,10 +460,9 @@ class AdminRepository {
     DateTime? publishedAt,
     int sortOrder = 0,
   }) async {
-    final newsTable = await _resolveNewsTable();
     final effectiveClubId = clubId ?? _scopeResolver.currentClubId;
     final data = await _client
-        .from(newsTable)
+        .from('news_articles')
         .insert({
           if (effectiveClubId != null) 'club_id': effectiveClubId,
           'title': title,
@@ -454,7 +478,7 @@ class AdminRepository {
           else if (isPublished)
             'published_at': DateTime.now().toUtc().toIso8601String(),
         })
-        .select()
+        .select(_newsProjection)
         .single();
     return Map<String, dynamic>.from(data);
   }
@@ -464,9 +488,14 @@ class AdminRepository {
     String articleId,
     Map<String, dynamic> updates,
   ) async {
-    final newsTable = await _resolveNewsTable();
+    if (updates.isEmpty || !updates.keys.every(_newsUpdateFields.contains)) {
+      throw const FormatException('Invalid news article update fields.');
+    }
     final scope = await _scopeResolver.resolve(null);
-    var query = _client.from(newsTable).update(updates).eq('id', articleId);
+    var query = _client
+        .from('news_articles')
+        .update(Map<String, dynamic>.from(updates))
+        .eq('id', articleId);
     query = _scopeResolver.apply(query, scope);
     await query;
   }
@@ -476,7 +505,7 @@ class AdminRepository {
   Future<List<Map<String, dynamic>>> getQuickActions({int limit = 50}) async {
     final data = await _client
         .from('quick_actions')
-        .select('*')
+        .select(_quickActionProjection)
         .order('sort_order', ascending: true)
         .order('title', ascending: true)
         .limit(limit);
@@ -507,7 +536,7 @@ class AdminRepository {
           'sort_order': sortOrder,
           'is_active': isActive,
         })
-        .select()
+        .select(_quickActionProjection)
         .single();
     return Map<String, dynamic>.from(data);
   }
@@ -522,12 +551,7 @@ class AdminRepository {
   Future<List<Map<String, dynamic>>> getPartners({int limit = 100}) async {
     final data = await _client
         .from('partners')
-        .select(
-          'id,name,category,country,description,fan_count,club_count,game_count,'
-          'slug,emoji,subtitle,is_active,sort_order,updated_at,'
-          'brand_primary_color,brand_secondary_color,website_url,'
-          'gamification_enabled',
-        )
+        .select(_partnerProjection)
         .order('sort_order', ascending: true)
         .order('name', ascending: true)
         .limit(limit);
@@ -560,7 +584,7 @@ class AdminRepository {
           'sort_order': sortOrder,
           'gamification_enabled': gamificationEnabled,
         })
-        .select()
+        .select(_partnerProjection)
         .single();
     return Map<String, dynamic>.from(data);
   }
@@ -577,7 +601,7 @@ class AdminRepository {
   }) async {
     final data = await _client
         .from('partner_services')
-        .select('*, partner:partners(id, name, slug)')
+        .select(_partnerServiceProjection)
         .order('sort_order', ascending: true)
         .order('title', ascending: true)
         .limit(limit);
@@ -614,7 +638,7 @@ class AdminRepository {
           'is_active': isActive,
           'gamification_enabled': gamificationEnabled,
         })
-        .select('*, partner:partners(id, name, slug)')
+        .select(_partnerServiceProjection)
         .single();
     return Map<String, dynamic>.from(data);
   }
@@ -1063,9 +1087,8 @@ class AdminRepository {
 
   /// Returns recent news titles for dashboard feed.
   Future<List<String>> getRecentNewsTitles({int limit = 3}) async {
-    final newsTable = await _resolveNewsTable();
     final scope = await _scopeResolver.resolve(null);
-    var query = _client.from(newsTable).select('title');
+    var query = _client.from('news_articles').select('title');
     query = _scopeResolver.apply(query, scope);
     final data = await query
         .order('created_at', ascending: false)
@@ -1139,21 +1162,6 @@ class AdminRepository {
     }
 
     return Map<String, dynamic>.from(result.data as Map);
-  }
-
-  Future<String> _resolveNewsTable() async {
-    for (final table in const [_preferredNewsTable, _fallbackNewsTable]) {
-      try {
-        await _client.from(table).select('id').limit(1);
-        return table;
-      } on PostgrestException catch (error) {
-        if (!_isMissingTable(error) || table == _fallbackNewsTable) {
-          rethrow;
-        }
-      }
-    }
-
-    return _fallbackNewsTable;
   }
 
   bool _isMissingTable(PostgrestException error) {

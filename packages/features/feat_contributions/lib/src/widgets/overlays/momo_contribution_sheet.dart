@@ -9,6 +9,32 @@ import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+enum ContributionPaymentLaunchResult {
+  launched,
+  cancelledAfterLaunchFailure,
+  cancellationFailed,
+}
+
+/// Launches the external payment channel and compensates a failed launch by
+/// cancelling the exact pending contribution created for that attempt.
+Future<ContributionPaymentLaunchResult> launchContributionPaymentWithRecovery({
+  required Future<bool> Function() launchPayment,
+  required Future<void> Function() cancelPendingContribution,
+  void Function(Object error, StackTrace stackTrace)? onCancellationError,
+}) async {
+  if (await launchPayment()) {
+    return ContributionPaymentLaunchResult.launched;
+  }
+
+  try {
+    await cancelPendingContribution();
+    return ContributionPaymentLaunchResult.cancelledAfterLaunchFailure;
+  } catch (error, stackTrace) {
+    onCancellationError?.call(error, stackTrace);
+    return ContributionPaymentLaunchResult.cancellationFailed;
+  }
+}
+
 /// Full contribution flow: Amount → USSD Confirmation → Record → Success.
 ///
 /// Uses [MomoDialerService] for dynamic USSD building and
@@ -59,62 +85,192 @@ Future<void> showMomoAmountEntrySheet(
     break;
   }
 
-  // Launch the MOMO dialer with dynamic USSD
-  // §2.4 LOCKED — no hardcoded MOMO fallback.
-  final recipient = recipientMomo ?? '';
-  final launched = await MomoDialerService.launchMomoUssd(
-    recipient: recipient,
-    amount: amountDraft,
-    country:
-        AfriCountryCatalog.byIsoCode(context.afriCountryCode) ??
-        AfriCountryCatalog.defaultCountry,
-  );
-
-  if (!launched) {
-    if (!context.mounted) return;
-    AfriToast.error(context, context.afriL10n.contributionsDialerFailed);
+  // Persist the immutable reconciliation target before opening an external
+  // payment channel. A payment must never launch without a recoverable record.
+  final normalizedGroupId = groupId?.trim() ?? '';
+  final recipient = recipientMomo?.trim() ?? '';
+  if (normalizedGroupId.isEmpty || recipient.isEmpty || !context.mounted) {
+    if (context.mounted) {
+      AfriToast.error(
+        context,
+        context.afriL10n.contributionsPaymentRouteUnavailableMessage,
+      );
+    }
     return;
   }
 
-  // Record the contribution in the database
-  var recordedPending = false;
-  String? contributionId;
-  if (groupId != null && context.mounted) {
-    try {
-      final container = ProviderScope.containerOf(context);
-      final repo = container.read(clubRepositoryProvider);
-      final userId = container.read(currentUserProvider)?.id;
-
-      if (userId != null) {
-        final ref = 'MOMO-${DateTime.now().millisecondsSinceEpoch}';
-        contributionId = await repo.contribute(
-          groupId: groupId,
-          userId: userId,
-          amount: amountDraft,
-          paymentReference: ref,
-        );
-        recordedPending = true;
-      }
-    } catch (e) {
-      AfriLogger.warn(
-        'ContributionOverlay',
-        'Failed to record contribution: $e',
-      );
-    }
+  final container = ProviderScope.containerOf(context);
+  final repo = container.read(clubRepositoryProvider);
+  final userId = container.read(currentUserProvider)?.id;
+  if (userId == null) {
+    AfriToast.error(context, context.afriL10n.contributionsRecordFailedMessage);
+    return;
   }
 
-  if (!context.mounted) return;
+  final country =
+      AfriCountryCatalog.byIsoCode(context.afriCountryCode) ??
+      AfriCountryCatalog.defaultCountry;
 
-  await showDialog<void>(
-    context: context,
-    barrierColor: ColorTokens.scrim,
-    builder: (context) => _ContributionSuccessDialog(
-      amount: amountDraft,
-      title: title,
-      recordedPending: recordedPending,
-      contributionId: contributionId,
-    ),
-  );
+  while (context.mounted) {
+    late final String contributionId;
+    try {
+      final requestReference = 'MOMO-${DateTime.now().microsecondsSinceEpoch}';
+      contributionId = await repo.contribute(
+        groupId: normalizedGroupId,
+        userId: userId,
+        amount: amountDraft,
+        clientRequestReference: requestReference,
+      );
+    } catch (error, stackTrace) {
+      AfriLogger.warn(
+        'ContributionOverlay',
+        'Failed to create the pending contribution before payment launch.',
+        error,
+        stackTrace,
+      );
+      if (context.mounted) {
+        AfriToast.error(
+          context,
+          context.afriL10n.contributionsRecordFailedMessage,
+        );
+      }
+      return;
+    }
+
+    final launchResult = await launchContributionPaymentWithRecovery(
+      // §2.4 LOCKED — no hardcoded MOMO fallback.
+      launchPayment: () => MomoDialerService.launchMomoUssd(
+        recipient: recipient,
+        amount: amountDraft,
+        country: country,
+      ),
+      cancelPendingContribution: () =>
+          repo.cancelPendingContributionPaymentLaunch(contributionId),
+      onCancellationError: (error, stackTrace) {
+        AfriLogger.warn(
+          'ContributionOverlay',
+          'Failed to cancel the pending contribution after dialer launch failure.',
+          error,
+          stackTrace,
+        );
+      },
+    );
+
+    if (!context.mounted) return;
+
+    if (launchResult == ContributionPaymentLaunchResult.launched) {
+      await showDialog<void>(
+        context: context,
+        barrierColor: ColorTokens.scrim,
+        builder: (context) => _ContributionSuccessDialog(
+          amount: amountDraft,
+          title: title,
+          recordedPending: true,
+          contributionId: contributionId,
+        ),
+      );
+      return;
+    }
+
+    var cancellationFailed =
+        launchResult == ContributionPaymentLaunchResult.cancellationFailed;
+    var retryPaymentAfterCleanup = false;
+    while (cancellationFailed) {
+      if (!context.mounted) return;
+      final retryCancellation = await showDialog<bool>(
+        context: context,
+        barrierColor: ColorTokens.scrim,
+        builder: (context) =>
+            const _ContributionDialerRecoveryDialog(cancellationFailed: true),
+      );
+      if (retryCancellation != true || !context.mounted) return;
+
+      try {
+        await repo.cancelPendingContributionPaymentLaunch(contributionId);
+        cancellationFailed = false;
+        retryPaymentAfterCleanup = true;
+      } catch (error, stackTrace) {
+        AfriLogger.warn(
+          'ContributionOverlay',
+          'Pending contribution cancellation retry failed.',
+          error,
+          stackTrace,
+        );
+      }
+    }
+
+    if (!context.mounted) return;
+    if (!retryPaymentAfterCleanup) {
+      final retryPayment = await showDialog<bool>(
+        context: context,
+        barrierColor: ColorTokens.scrim,
+        builder: (context) =>
+            const _ContributionDialerRecoveryDialog(cancellationFailed: false),
+      );
+      if (retryPayment != true || !context.mounted) return;
+    }
+    // The failed attempt is cancelled. A retry starts with a new immutable
+    // pending record before making another external dialer request.
+  }
+}
+
+class _ContributionDialerRecoveryDialog extends StatelessWidget {
+  const _ContributionDialerRecoveryDialog({required this.cancellationFailed});
+
+  final bool cancellationFailed;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
+    final heading = cancellationFailed
+        ? l10n.contributionsRecordFailedTitle
+        : l10n.contributionsPaymentFailedTitle;
+    final message = cancellationFailed
+        ? '${l10n.contributionsDialerFailed}\n\n'
+              '${l10n.contributionsRecordFailedMessage}'
+        : l10n.contributionsDialerFailed;
+
+    return AfriDialog(
+      child: SingleChildScrollView(
+        child: Semantics(
+          container: true,
+          liveRegion: true,
+          label: l10n.contributionsStatusAnnouncement(heading, message),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(AfriIcons.statusWarning, color: ColorTokens.error, size: 64),
+              const SizedBox(height: SpacingTokens.spacing4),
+              Text(
+                heading,
+                style: TypographyTokens.headlineLarge().copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: SpacingTokens.spacing2),
+              Text(
+                message,
+                style: TypographyTokens.bodyMedium(),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              AfriButton(
+                label: l10n.tryAgain,
+                fullWidth: true,
+                onTap: () => Navigator.of(context).pop(true),
+              ),
+              const SizedBox(height: SpacingTokens.spacing2),
+              AfriTextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.contributionsBackToGroup),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// Announces contribution payment state changes without hiding the visible

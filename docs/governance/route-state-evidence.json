@@ -1,8 +1,92 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-02T06:09:14Z",
+  "generated_at": "2026-08-09T09:51:12Z",
   "cells": {},
   "groups": [
+    {
+      "id": "consumer-static-support-policy-states",
+      "admission_status": "admitted",
+      "cells": [
+        "consumer_web|/support|next_page|focused",
+        "consumer_web|/support|next_page|pressed",
+        "consumer_web|/support|next_page|large_text",
+        "consumer_web|/support|next_page|reduced_motion",
+        "consumer_web|/support|next_page|dark",
+        "consumer_web|/support|next_page|light"
+      ],
+      "test_evidence": [
+        "apps/rayon_sports/web/src/components/support-surface.test.tsx",
+        "apps/rayon_sports/web/e2e/release-web-contract.spec.ts",
+        "apps/rayon_sports/web/e2e/support-policy-state-evidence.spec.ts",
+        "packages/app_registry/test/route_inventory_generation_test.dart"
+      ],
+      "screenshot_evidence": [
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support_state_focused_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support_state_pressed_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support_state_large_text_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support_state_reduced_motion_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support_state_dark_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support_state_light_light_pixel7.png"
+      ],
+      "accessibility_evidence": [
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support-policy-state-evidence.json"
+      ],
+      "performance_evidence": [
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support-policy-state-evidence.json"
+      ],
+      "privacy_evidence": [
+        "output/implementation_goal_20260724/evidence-privacy-validation.json",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support-policy-state-evidence.json"
+      ],
+      "platform_build_evidence": [
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support-policy-state-evidence.json"
+      ],
+      "disposition_note": "The public Support route always renders governed local guidance and safe support actions, and current Pixel 7 production-build evidence proves visible keyboard focus, held-press feedback, 200-percent text reflow without route or shared-footer overflow, reduced motion, semantic dark and light themes, zero critical or serious Axe findings, and 48-pixel actions. This is local browser evidence only; named privacy, legal, content, design, and linguistic approval, physical assistive-technology review, deployed-domain verification, pinned CI, and release approval remain open.",
+      "owner": "Consumer web support-policy content, privacy, accessibility, responsive, and evidence QA",
+      "reviewed_at": "2026-08-09"
+    },
+    {
+      "id": "consumer-static-account-deletion-policy-states",
+      "admission_status": "admitted",
+      "cells": [
+        "consumer_web|/account-deletion|next_page|focused",
+        "consumer_web|/account-deletion|next_page|pressed",
+        "consumer_web|/account-deletion|next_page|large_text",
+        "consumer_web|/account-deletion|next_page|reduced_motion",
+        "consumer_web|/account-deletion|next_page|dark",
+        "consumer_web|/account-deletion|next_page|light"
+      ],
+      "test_evidence": [
+        "apps/rayon_sports/web/src/components/support-surface.test.tsx",
+        "apps/rayon_sports/web/e2e/release-web-contract.spec.ts",
+        "apps/rayon_sports/web/e2e/support-policy-state-evidence.spec.ts",
+        "packages/app_registry/test/route_inventory_generation_test.dart"
+      ],
+      "screenshot_evidence": [
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/account-deletion_state_focused_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/account-deletion_state_pressed_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/account-deletion_state_large_text_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/account-deletion_state_reduced_motion_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/account-deletion_state_dark_dark_pixel7.png",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/account-deletion_state_light_light_pixel7.png"
+      ],
+      "accessibility_evidence": [
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support-policy-state-evidence.json"
+      ],
+      "performance_evidence": [
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support-policy-state-evidence.json"
+      ],
+      "privacy_evidence": [
+        "output/implementation_goal_20260724/evidence-privacy-validation.json",
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support-policy-state-evidence.json"
+      ],
+      "platform_build_evidence": [
+        "output/implementation_goal_20260724/consumer_web_support_policy_states/support-policy-state-evidence.json"
+      ],
+      "disposition_note": "The public Account deletion route always renders governed local deletion, verification, retention, and TV-revocation guidance without collecting credentials, and current Pixel 7 production-build evidence proves visible keyboard focus, held-press feedback, 200-percent text reflow without route or shared-footer overflow, reduced motion, semantic dark and light themes, zero critical or serious Axe findings, and 48-pixel actions. This is local browser evidence only; named privacy, legal, retention, content, design, and linguistic approval, physical assistive-technology review, deployed-domain verification, pinned CI, and release approval remain open.",
+      "owner": "Consumer web account-deletion policy, privacy, accessibility, responsive, and evidence QA",
+      "reviewed_at": "2026-08-09"
+    },
     {
       "id": "mobile-home-dark",
       "cells": [

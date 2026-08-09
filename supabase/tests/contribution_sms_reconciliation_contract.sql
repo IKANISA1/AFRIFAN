@@ -8,10 +8,16 @@ begin;
 select plan(21);
 
 select ok(
-  has_table_privilege('anon', 'public.contribution_groups', 'SELECT')
-  and has_table_privilege(
+  has_column_privilege(
+    'anon',
+    'public.contribution_groups',
+    'name',
+    'SELECT'
+  )
+  and has_column_privilege(
     'authenticated',
     'public.contribution_groups',
+    'momo_recipient_code',
     'SELECT'
   )
   and not has_table_privilege(
@@ -51,6 +57,12 @@ select ok(
   not has_table_privilege(
     'authenticated',
     'public.group_contributions',
+    'SELECT'
+  )
+  and has_column_privilege(
+    'authenticated',
+    'public.group_contributions',
+    'client_request_reference',
     'SELECT'
   )
   and has_column_privilege(
@@ -236,6 +248,20 @@ select ok(
        and tablename = 'group_contributions'
        and indexname = 'idx_group_contributions_reconciliation_idempotency'
        and indexdef ~ 'WHERE \(reconciliation_idempotency_key IS NOT NULL\)'
+  )
+  and exists (
+    select 1
+      from pg_indexes
+     where schemaname = 'public'
+       and tablename = 'group_contributions'
+       and indexname = 'idx_group_contributions_reconciled_ledger_entry_id'
+  )
+  and exists (
+    select 1
+      from pg_indexes
+     where schemaname = 'public'
+       and tablename = 'group_contributions'
+       and indexname = 'idx_group_contributions_reconciliation_id'
   )
   and exists (
     select 1
@@ -557,7 +583,7 @@ begin
   created := public.create_pending_group_contribution(
     '99360000-0000-4000-8000-000000000110',
     5000,
-    'tx-success-0001',
+    'momo-client-success-0001',
     'pending:success:01'
   );
   if created ->> 'status' <> 'pending'
@@ -569,13 +595,13 @@ begin
   perform public.create_pending_group_contribution(
     '99360000-0000-4000-8000-000000000110',
     7000,
-    'TXMISMATCH0002',
+    'MOMO-CLIENT-MISMATCH-0002',
     'pending:mismatch:02'
   );
   perform public.create_pending_group_contribution(
     '99360000-0000-4000-8000-000000000110',
     9000,
-    'TXROLLBACK0003',
+    'MOMO-CLIENT-ROLLBACK-0003',
     'pending:rollback:03'
   );
 end;
@@ -591,14 +617,16 @@ select ok(
        and user_id = '99360000-0000-4000-8000-000000000001'
        and status = 'pending'
        and payment_status = 'pending_verification'
+       and momo_reference is null
   )
   and exists (
     select 1
       from public.group_contributions
-     where momo_reference = 'TXSUCCESS0001'
+     where client_request_reference = 'MOMOCLIENTSUCCESS0001'
+       and momo_reference is null
        and idempotency_key = 'pending:success:01'
   ),
-  'pending RPC binds the authenticated user and stores normalized immutable references'
+  'pending RPC stores an immutable client reference without inventing a provider TxID'
 );
 
 set local role authenticated;
@@ -609,11 +637,11 @@ declare
 begin
   select id into first_id
     from public.group_contributions
-   where momo_reference = 'TXSUCCESS0001';
+   where client_request_reference = 'MOMOCLIENTSUCCESS0001';
   replayed := public.create_pending_group_contribution(
     '99360000-0000-4000-8000-000000000110',
     5000,
-    'TX-SUCCESS-0001',
+    'MOMO-CLIENT-SUCCESS-0001',
     'pending:success:01'
   );
   if (replayed ->> 'id')::uuid <> first_id
@@ -636,7 +664,7 @@ begin
     perform public.create_pending_group_contribution(
       '99360000-0000-4000-8000-000000000110',
       5001,
-      'TXSUCCESS0001',
+      'MOMOCLIENTSUCCESS0001',
       'pending:success:01'
     );
   exception when others then conflict_denied := true;
@@ -754,7 +782,7 @@ begin
   begin
     update public.group_contributions
        set status = 'confirmed'
-     where momo_reference = 'TXSUCCESS0001';
+     where client_request_reference = 'MOMOCLIENTSUCCESS0001';
   exception when insufficient_privilege then update_denied := true;
   end;
 
@@ -782,7 +810,11 @@ begin
 
   begin
     perform public.reconcile_group_contribution_from_sms(
-      (select id from public.group_contributions where momo_reference = 'TXSUCCESS0001'),
+      (
+        select id
+          from public.group_contributions
+         where client_request_reference = 'MOMOCLIENTSUCCESS0001'
+      ),
       '99360000-0000-4000-8000-000000000220',
       pg_catalog.clock_timestamp(),
       pg_catalog.clock_timestamp(),
@@ -821,7 +853,7 @@ begin
   select id, updated_at
     into contribution_id, contribution_version
     from public.group_contributions
-   where momo_reference = 'TXSUCCESS0001';
+   where client_request_reference = 'MOMOCLIENTSUCCESS0001';
   select updated_at into ledger_version
     from public.momo_ledger_entries
    where id = '99360000-0000-4000-8000-000000000220';
@@ -853,6 +885,7 @@ select ok(
       join public.momo_reconciliations as reconciliation
         on reconciliation.id = contribution.reconciliation_id
      where contribution.momo_reference = 'TXSUCCESS0001'
+       and contribution.client_request_reference = 'MOMOCLIENTSUCCESS0001'
        and contribution.status = 'confirmed'
        and contribution.payment_status = 'verified'
        and contribution.confirmed_at is not null
@@ -913,7 +946,7 @@ begin
   select id, updated_at
     into contribution_id, contribution_version
     from public.group_contributions
-   where momo_reference = 'TXMISMATCH0002';
+   where client_request_reference = 'MOMOCLIENTMISMATCH0002';
   select updated_at into ledger_version
     from public.momo_ledger_entries
    where id = '99360000-0000-4000-8000-000000000221';
@@ -938,6 +971,7 @@ begin
         where id = contribution_id
           and status = 'pending'
           and payment_status = 'pending_verification'
+          and momo_reference is null
      )
      or not exists (
        select 1
@@ -987,7 +1021,7 @@ begin
   select id, updated_at
     into contribution_id, contribution_version
     from public.group_contributions
-   where momo_reference = 'TXROLLBACK0003';
+   where client_request_reference = 'MOMOCLIENTROLLBACK0003';
   select updated_at into ledger_version
     from public.momo_ledger_entries
    where id = '99360000-0000-4000-8000-000000000222';
@@ -1012,6 +1046,7 @@ begin
         where id = contribution_id
           and status = 'pending'
           and reconciliation_id is null
+          and momo_reference is null
      )
      or not exists (
        select 1

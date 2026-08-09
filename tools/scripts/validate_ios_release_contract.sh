@@ -71,6 +71,23 @@ try:
 except Exception as exc:
     raise SystemExit(f"Invalid Info.plist: {exc}") from exc
 
+required_ipad_orientations = {
+    "UIInterfaceOrientationPortrait",
+    "UIInterfaceOrientationPortraitUpsideDown",
+    "UIInterfaceOrientationLandscapeLeft",
+    "UIInterfaceOrientationLandscapeRight",
+}
+actual_ipad_orientations = set(info.get("UISupportedInterfaceOrientations~ipad", []))
+if actual_ipad_orientations != required_ipad_orientations:
+    raise SystemExit(
+        "Info.plist must declare all four iPad orientations for App Store multitasking; "
+        f"actual={sorted(actual_ipad_orientations)}."
+    )
+if info.get("ITSAppUsesNonExemptEncryption") is not False:
+    raise SystemExit(
+        "Info.plist must explicitly declare ITSAppUsesNonExemptEncryption=false."
+    )
+
 try:
     entitlements = plistlib.loads(entitlements_path.read_bytes())
 except Exception as exc:
@@ -100,6 +117,7 @@ expected_data_types = {
     "NSPrivacyCollectedDataTypePurchaseHistory",
     "NSPrivacyCollectedDataTypeOtherFinancialInfo",
     "NSPrivacyCollectedDataTypeGameplayContent",
+    "NSPrivacyCollectedDataTypeOtherUserContent",
     "NSPrivacyCollectedDataTypeProductInteraction",
     "NSPrivacyCollectedDataTypeCrashData",
     "NSPrivacyCollectedDataTypePerformanceData",

@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "status": "pending",
+  "status": "build_5_capture_ui_equivalent_to_build_6_pending_approval_and_play_aab_parity",
   "rules": {
     "actual_app_ui_only": true,
     "no_real_supporter_data": true,
     "no_real_payment_or_pairing_codes": true,
     "no_unapproved_club_marks_or_photography": true,
     "no_store_rank_price_or_download_claims": true,
-    "capture_from_exact_candidate": true
+    "capture_from_exact_candidate": false
   },
   "assets": [
     {
@@ -18,7 +18,7 @@
       "width": 512,
       "height": 512,
       "max_bytes": 1048576,
-      "status": "missing"
+      "status": "generated_pending_approval"
     },
     {
       "id": "feature_graphic",
@@ -27,7 +27,7 @@
       "format": "JPEG or 24-bit PNG without alpha",
       "width": 1024,
       "height": 500,
-      "status": "missing"
+      "status": "generated_pending_approval"
     },
     {
       "id": "phone_screenshots",
@@ -35,15 +35,60 @@
       "directory": "../../android/fastlane/metadata/android/en-US/images/phoneScreenshots",
       "minimum_count": 2,
       "recommended_count": 4,
+      "captured_count": 4,
       "recommended_size": "1080x1920 portrait",
-      "status": "missing"
+      "status": "build_5_capture_ui_equivalent_to_build_6_pending_approval"
     }
   ],
+  "artwork_generation": {
+    "generator": "../tools/generate_store_artwork.swift",
+    "method": "deterministic native vector drawing",
+    "rights_basis": "Original Gikundiro G geometry using only system typography and solid/gradient colors; no club crest, photography, or third-party artwork."
+  },
+  "capture_provenance": {
+    "capture_stage": "build-5 capture retained as build-6 UI-equivalent evidence",
+    "recapture_after_source_freeze_required": false,
+    "captured_at": "2026-08-09",
+    "source_commit": "d92394f47f660551701f4c65769085587cd1962b",
+    "source_worktree_state": "dirty concurrent workspace preserved",
+    "capture_source_authoritative_tracked_worktree_state_digest_sha256": "cca7ed5908dc33ae95e92b3c242647a1b9fc259dd51c64c47fc70738115e1e33",
+    "capture_source_runtime_manifest_digest_sha256": "ecb0fdda74ff7b9fe0e81b2005861d09d5c722b83468a21519be615d22e83995",
+    "current_candidate_authoritative_tracked_worktree_state_digest_sha256": "cef8cb37fa74321a92c7d47a0d904b639f7fd5909aea66cb1fe5049c6429cca5",
+    "current_candidate_runtime_source_manifest_digest_sha256": "7ddc0399a572c6664c646a3ec13d074c15cfbd1bb1ce476c9b7d12a3c6b1f64b",
+    "runtime_source_manifest": "../frozen_tracked_source.sha256",
+    "store_media_checksum_manifest": "../store_media.sha256",
+    "artifact_path": "../../build/app/outputs/flutter-apk/app-release.apk",
+    "artifact_sha256": "b4c83af24b2e2c9b59a20db34b1549279e210dac82dfa2de21f2ec28558e92c9",
+    "package_id": "rw.gikundiro.app",
+    "version_name": "1.0.3",
+    "version_code": 5,
+    "current_candidate_version_name": "1.0.3",
+    "current_candidate_version_code": 6,
+    "signer_certificate_sha256": "180cf8b8d4f0a5a38d51d9c9e2ff5123fb49cdce6d93bd0108e1d1298697d510",
+    "build_configuration": "Flutter release with assets/flavors/production.json",
+    "device": "Collect_Pixel4a_API36 Android emulator",
+    "capture_dimensions": "1080x1920",
+    "session": "anonymous guest with zeroed supporter state",
+    "artifact_relation": "The exact locally built build-5 release APK was used for capture. The current build-6 candidate differs in mobile runtime inputs only at pubspec version/build metadata and iOS Info.plist declarations; Android UI code/assets did not change. The screenshots are visually equivalent but are not claimed as exact build-6 captures. Exact build-6 Play AAB, signing, portal processing, and accountable approval remain separate gates.",
+    "exact_build_6_capture": false,
+    "ui_equivalence_basis": [
+      "apps/rayon_sports/pubspec.yaml changed 1.0.3+5 to 1.0.3+6",
+      "apps/rayon_sports/ios/Runner/Info.plist changed export-compliance and iPad orientation declarations only"
+    ],
+    "pre_final_artifact_sha256": "52a99db6d11f99e7e6ba33d79aa4c43ef8f3de056eb851a33b6653af349d1098",
+    "recapture_drift": "The rebuilt frozen-source APK and all screenshot hashes changed from the pre-final reference set; visual inspection found no real supporter, payment, or pairing data.",
+    "files": [
+      "01_home.jpg",
+      "02_club.jpg",
+      "03_fanzone.jpg",
+      "04_fixtures.jpg"
+    ]
+  },
   "capture_plan": [
-    {"order": 1, "journey": "Home with current club-published content", "alt_text_draft": "Gikundiro home showing Rayon Sports updates and supporter shortcuts"},
-    {"order": 2, "journey": "Fixtures or match information", "alt_text_draft": "Published Rayon Sports fixtures and match details"},
-    {"order": 3, "journey": "Membership or supporter profile", "alt_text_draft": "Supporter membership status and profile controls"},
-    {"order": 4, "journey": "Tickets or merchandise without real payment", "alt_text_draft": "Ticket or merchandise options with confirmation status"}
+    {"order": 1, "journey": "Anonymous home state", "alt_text_draft": "Gikundiro home with navigation, rights-gated content placeholders, and supporter shortcuts"},
+    {"order": 2, "journey": "Club overview", "alt_text_draft": "Club overview with the generic in-app brand mark and navigation"},
+    {"order": 3, "journey": "Fan Zone anonymous state", "alt_text_draft": "Fan Zone with zeroed anonymous supporter activity"},
+    {"order": 4, "journey": "Fixtures empty state", "alt_text_draft": "Fixtures screen with no fabricated match records"}
   ],
   "approvals_required": [
     "rayon_brand_and_content_rights",
@@ -54,4 +99,3 @@
     "kinyarwanda_store_copy"
   ]
 }
-

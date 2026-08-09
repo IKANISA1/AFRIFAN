@@ -23,8 +23,8 @@ const associationHeaders = {
   "cross-origin-resource-policy": "cross-origin",
   "x-content-type-options": "nosniff",
 };
-const uploadFingerprint =
-  "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10";
+const playAppSigningFingerprint =
+  "B8:B4:84:C9:3D:80:83:12:9C:90:1B:D4:9C:BE:35:65:7B:C1:4D:38:F3:D9:19:04:75:45:83:B5:AB:BC:E5:D9";
 const absentPlayFingerprint =
   "AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99";
 
@@ -39,7 +39,7 @@ before(async () => {
             target: {
               namespace: "android_app",
               package_name: "rw.gikundiro.app",
-              sha256_cert_fingerprints: [uploadFingerprint],
+              sha256_cert_fingerprints: [playAppSigningFingerprint],
             },
           },
         ]),

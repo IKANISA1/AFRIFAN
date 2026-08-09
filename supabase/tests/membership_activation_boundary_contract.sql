@@ -125,7 +125,7 @@ select ok(
     'public.activate_free_fan_membership()',
     'EXECUTE'
   )
-  and has_function_privilege(
+  and not has_function_privilege(
     'authenticated',
     'public.submit_membership_application(text,text,text)',
     'EXECUTE'
@@ -274,17 +274,37 @@ insert into public.membership_packages (
     false,
     true,
     1
+  ),
+  (
+    '99350000-0000-4000-8000-000000000114',
+    '99350000-0000-4000-8000-000000000100',
+    9935001,
+    'fan',
+    'Free Supporter Membership',
+    'Free base club membership',
+    '[]'::jsonb,
+    0,
+    0,
+    'physical_membership',
+    false,
+    true,
+    4
   );
 
 set local role anon;
-select is(
+select ok(
   (
-    select pg_catalog.count(*)::integer
+    select pg_catalog.count(*) = 1
+      and pg_catalog.bool_and(
+        benefit_scope = 'physical_membership'
+        and store_billing_required is false
+        and coalesce(annual_price, price, 0) = 0
+        and tier = 'fan'
+      )
     from public.membership_tiers
     where active
   ),
-  4,
-  'anonymous clients can read the active compatibility catalog'
+  'anonymous clients see only the free, physical, non-billing catalog tier'
 );
 reset role;
 
@@ -372,92 +392,39 @@ select pass('free base membership activation is idempotent');
 set local role authenticated;
 do $$
 declare
-  application public.membership_applications;
-begin
-  select * into application
-  from public.submit_membership_application(
-    'gold',
-    'membership-contract-payment-1',
-    'Kigali'
-  );
-
-  if application.user_id <> '99350000-0000-4000-8000-000000000001'
-     or application.club_id <> 9935001
-     or application.status <> 'pending'
-     or application.payment_status <> 'unpaid'
-     or application.metadata ->> 'amount' <> '100000'
-     or application.metadata ->> 'benefit_scope' <> 'physical_membership'
-     or application.metadata ->> 'payment_reference' <>
-       'membership-contract-payment-1' then
-    raise exception 'membership application contract failed: %', application;
-  end if;
-end $$;
-reset role;
-select pass('physical membership application binds server offer, price, actor and club');
-
-set local role authenticated;
-do $$
-declare
-  first_id uuid;
-  retry_id uuid;
-begin
-  select application.id into first_id
-  from public.membership_applications as application
-  where application.user_id = auth.uid()
-    and application.tier = 'gold'
-    and application.status = 'pending';
-
-  select application.id into retry_id
-  from public.submit_membership_application(
-    'gold',
-    'membership-contract-payment-ignored-on-retry',
-    'Kigali'
-  ) as application;
-
-  if retry_id is distinct from first_id then
-    raise exception 'pending application retry changed id: % vs %', retry_id, first_id;
-  end if;
-end $$;
-reset role;
-select pass('one pending application per supporter, club and tier is idempotent');
-
-set local role authenticated;
-do $$
-declare
-  unclassified_denied boolean := false;
-  digital_denied boolean := false;
-  foreign_denied boolean := false;
+  paid_application_denied boolean := false;
 begin
   begin
     perform public.submit_membership_application(
-      'silver', 'membership-contract-unclassified', 'Kigali'
+      'gold',
+      'membership-contract-payment-1',
+      'Kigali'
     );
-  exception when raise_exception then unclassified_denied := true;
+  exception when insufficient_privilege then
+    paid_application_denied := true;
   end;
 
-  begin
-    perform public.submit_membership_application(
-      'bronze', 'membership-contract-digital', 'Kigali'
-    );
-  exception when raise_exception then digital_denied := true;
-  end;
-
-  begin
-    perform public.submit_membership_application(
-      'platinum', 'membership-contract-foreign', 'Kigali'
-    );
-  exception when raise_exception then foreign_denied := true;
-  end;
-
-  if not unclassified_denied or not digital_denied or not foreign_denied then
-    raise exception 'unsafe offer denial failed: unclassified %, digital %, foreign %',
-      unclassified_denied,
-      digital_denied,
-      foreign_denied;
+  if not paid_application_denied then
+    raise exception 'paid membership application did not fail closed';
   end if;
 end $$;
 reset role;
-select pass('unclassified, digital-billing, and foreign-club offers fail closed');
+select pass('paid membership application is unavailable to the submitted client');
+
+select is(
+  (select pg_catalog.count(*)::integer from public.membership_applications),
+  0,
+  'no paid application or payment promise is created before reconciliation exists'
+);
+
+select ok(
+  not has_function_privilege(
+    'service_role',
+    'public.submit_membership_application(text,text,text)',
+    'EXECUTE'
+  ),
+  'the unverified paid application entry point is not exposed to service callers'
+);
 
 select set_config(
   'request.jwt.claim.sub',
@@ -480,13 +447,35 @@ select is(
 );
 reset role;
 
+insert into public.membership_applications (
+  id,
+  user_id,
+  club_id,
+  tier,
+  status,
+  payment_status,
+  metadata
+) values (
+  '99350000-0000-4000-8000-000000000120',
+  '99350000-0000-4000-8000-000000000001',
+  9935001,
+  'gold',
+  'pending',
+  'unpaid',
+  pg_catalog.jsonb_build_object(
+    'package_id', '99350000-0000-4000-8000-000000000110',
+    'amount', 100000,
+    'source', 'contract_unverified_fixture'
+  )
+);
+
 set local role service_role;
 do $$
 declare
   application_id uuid;
   loaded_version timestamptz;
   unauthorized_denied boolean := false;
-  unpaid_denied boolean := false;
+  unverified_payment_denied boolean := false;
   stale_denied boolean := false;
   reviewed public.membership_applications;
 begin
@@ -513,28 +502,28 @@ begin
       application_id,
       loaded_version,
       'approved',
-      'unpaid',
+      'paid',
       '99350000-0000-4000-8000-000000000003',
-      'Payment not verified'
+      'Reviewer must not manufacture paid status'
     );
-  exception when raise_exception then unpaid_denied := true;
+  exception when raise_exception then unverified_payment_denied := true;
   end;
 
   select * into reviewed
   from public.review_membership_application_if_unchanged(
     application_id,
     loaded_version,
-    'approved',
-    'paid',
+    'rejected',
+    'failed',
     '99350000-0000-4000-8000-000000000003',
-    'Verified physical membership payment'
+    'Provider payment was not independently verified'
   );
 
   begin
     perform public.review_membership_application_if_unchanged(
       application_id,
       loaded_version,
-      'rejected',
+      'approved',
       'failed',
       '99350000-0000-4000-8000-000000000003',
       'Stale retry'
@@ -543,42 +532,34 @@ begin
   end;
 
   if not unauthorized_denied
-     or not unpaid_denied
+     or not unverified_payment_denied
      or not stale_denied
-     or reviewed.status <> 'approved'
-     or reviewed.payment_status <> 'paid'
+     or reviewed.status <> 'rejected'
+     or reviewed.payment_status <> 'failed'
      or reviewed.reviewer_id <> '99350000-0000-4000-8000-000000000003' then
     raise exception 'membership review contract failed: %', reviewed;
   end if;
 end $$;
 reset role;
-select pass('authorized service review requires paid state, exact version and scoped actor');
+select pass('review cannot manufacture paid state and rejection remains versioned and scoped');
 
 select ok(
-  exists (
+  not exists (
     select 1
     from public.fan_memberships
     where user_id = '99350000-0000-4000-8000-000000000001'
       and club_id = 9935001
-      and tier = 'gold'
-      and points = 0
-      and payment_status = 'verified'
-      and status = 'active'
-      and renewed_at is not null
-      and expires_at > renewed_at
+      and tier <> 'fan'
   ),
-  'approval activates the physical membership without client-controlled points'
+  'an unverified paid application cannot activate or upgrade membership'
 );
 
 select ok(
-  exists (
+  not exists (
     select 1
     from public.admin_audit_log
     where action = 'supporter_membership_application_created'
       and actor_id = '99350000-0000-4000-8000-000000000001'
-      and club_id = 9935001
-      and metadata ->> 'authoritative_offer' = 'true'
-      and metadata ->> 'benefit_scope' = 'physical_membership'
   )
   and exists (
     select 1
@@ -587,11 +568,11 @@ select ok(
       and actor_id = '99350000-0000-4000-8000-000000000003'
       and club_id = 9935001
       and old_data ->> 'status' = 'pending'
-      and new_data ->> 'status' = 'approved'
+      and new_data ->> 'status' = 'rejected'
       and metadata ->> 'optimistic_concurrency' = 'true'
-      and metadata ->> 'membership_activated' = 'true'
+      and metadata ->> 'membership_activated' = 'false'
   ),
-  'membership submission and review retain authoritative actor, scope, state and classification evidence'
+  'rejection retains authoritative actor, scope and state without a false paid audit trail'
 );
 
 select * from finish();

@@ -4,9 +4,10 @@
 -- feature metadata.
 
 alter default privileges for role postgres in schema public
-  revoke truncate, references, trigger on tables from public, anon, authenticated;
+  revoke truncate, references, trigger, maintain on tables
+  from public, anon, authenticated;
 
-revoke truncate, references, trigger on all tables in schema public
+revoke truncate, references, trigger, maintain on all tables in schema public
   from public, anon, authenticated;
 
 -- Public club identity. Private contacts, market research, MoMo routing, and
@@ -68,6 +69,31 @@ grant select (
   image_provenance_id,
   image_rights_approved
 ) on public.news_articles to anon, authenticated;
+grant insert (
+  club_id,
+  title,
+  subtitle,
+  body,
+  category,
+  image_url,
+  is_published,
+  published_at,
+  is_featured,
+  sort_order,
+  author_name
+) on public.news_articles to authenticated;
+grant update (
+  title,
+  subtitle,
+  body,
+  category,
+  image_url,
+  is_published,
+  published_at,
+  is_featured,
+  sort_order,
+  author_name
+) on public.news_articles to authenticated;
 grant all privileges on table public.news_articles to service_role;
 
 drop policy if exists news_articles_select_published on public.news_articles;
@@ -174,8 +200,10 @@ revoke all privileges on table public.app_config, public.club_app_config
 grant all privileges on table public.app_config, public.club_app_config
   to service_role;
 
+drop function if exists public.get_runtime_app_config(text);
 create or replace function public.get_runtime_app_config(
-  p_key text default null
+  p_key text default null,
+  p_club_id bigint default null
 )
 returns table (
   scope text,
@@ -215,7 +243,10 @@ as $$
       config.club_id,
       1 as precedence
     from public.club_app_config as config
-    where config.club_id::text = public.requesting_club_id()
+    where config.club_id = coalesce(
+      p_club_id,
+      nullif(public.requesting_club_id(), '')::bigint
+    )
       and (
         config.key like 'feature\_%' escape '\'
         or config.key like 'kill\_%' escape '\'
@@ -236,9 +267,9 @@ as $$
   order by allowed.key, allowed.precedence;
 $$;
 
-revoke all on function public.get_runtime_app_config(text)
+revoke all on function public.get_runtime_app_config(text, bigint)
   from public, anon, authenticated, service_role;
-grant execute on function public.get_runtime_app_config(text)
+grant execute on function public.get_runtime_app_config(text, bigint)
   to anon, authenticated;
 
 revoke all privileges on table public.quick_actions
@@ -252,6 +283,12 @@ create policy quick_actions_public_active_read
   for select
   to anon, authenticated
   using (is_active is true);
+drop policy if exists quick_actions_admin_read on public.quick_actions;
+create policy quick_actions_admin_read
+  on public.quick_actions
+  for select
+  to authenticated
+  using (public.is_admin_user());
 
 -- Partner cards expose public business copy, never the legacy WhatsApp/MoMo
 -- contact fields or free-form metadata.
@@ -311,11 +348,64 @@ create policy partners_public_active_read
   for select
   to anon, authenticated
   using (is_active is true);
+drop policy if exists partners_admin_read on public.partners;
+create policy partners_admin_read
+  on public.partners
+  for select
+  to authenticated
+  using (public.is_admin_user());
 
 revoke all privileges on table public.partner_services
   from public, anon, authenticated;
-grant select on table public.partner_services to anon, authenticated;
-grant insert, update, delete on table public.partner_services to authenticated;
+grant select (
+  id,
+  partner_id,
+  title,
+  subtitle,
+  emoji,
+  category,
+  details,
+  cta_label,
+  cta_action,
+  country,
+  sort_order,
+  is_active,
+  created_at,
+  updated_at,
+  service_slug,
+  gamification_enabled
+) on public.partner_services to anon, authenticated;
+grant insert (
+  partner_id,
+  title,
+  subtitle,
+  emoji,
+  category,
+  details,
+  cta_label,
+  cta_action,
+  country,
+  sort_order,
+  is_active,
+  service_slug,
+  gamification_enabled
+) on public.partner_services to authenticated;
+grant update (
+  partner_id,
+  title,
+  subtitle,
+  emoji,
+  category,
+  details,
+  cta_label,
+  cta_action,
+  country,
+  sort_order,
+  is_active,
+  service_slug,
+  gamification_enabled
+) on public.partner_services to authenticated;
+grant delete on table public.partner_services to authenticated;
 grant all privileges on table public.partner_services to service_role;
 drop policy if exists "Public read partner_services" on public.partner_services;
 create policy partner_services_public_active_read
@@ -323,6 +413,12 @@ create policy partner_services_public_active_read
   for select
   to anon, authenticated
   using (is_active is true);
+drop policy if exists partner_services_admin_read on public.partner_services;
+create policy partner_services_admin_read
+  on public.partner_services
+  for select
+  to authenticated
+  using (public.is_admin_user());
 
 revoke all privileges on table public.initiatives
   from public, anon, authenticated;
@@ -606,6 +702,10 @@ grant select, insert, update, delete on table public.platform_option_sets,
 grant all privileges on table public.platform_option_sets,
   public.platform_option_values
   to service_role;
+drop policy if exists platform_option_sets_select_runtime
+  on public.platform_option_sets;
+drop policy if exists platform_option_values_select_runtime
+  on public.platform_option_values;
 
 create or replace function public.enforce_store_release_rule_authority()
 returns trigger

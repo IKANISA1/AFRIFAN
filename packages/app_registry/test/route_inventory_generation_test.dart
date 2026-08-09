@@ -144,6 +144,28 @@ void main() {
         expect(state['rationale'], contains('Deterministic local asset'));
       }
     }
+    final deterministicVerifierDocuments = closureRoutes.where(
+      (route) =>
+          route['kind'] == 'http_route' &&
+          route['endpoint_state_contract'] == 'deterministic_verifier_document',
+    );
+    expect(
+      deterministicVerifierDocuments.map((route) => route['path']).toSet(),
+      <String>{
+        '/.well-known/apple-app-site-association',
+        '/.well-known/assetlinks.json',
+      },
+    );
+    for (final document in deterministicVerifierDocuments) {
+      final documentStates = document['states']! as Map<String, Object?>;
+      expect(documentStates, hasLength(routeClosureStates.length));
+      for (final value in documentStates.values) {
+        final state = value! as Map<String, Object?>;
+        expect(state['applicability'], 'not_applicable');
+        expect(state['evidence_status'], 'not_applicable');
+        expect(state['rationale'], contains('Deterministic verifier document'));
+      }
+    }
     final standaloneRecoveryRoutes = closureRoutes.where(
       (route) =>
           route['rendered_state_contract'] == 'standalone_offline_recovery',
@@ -271,8 +293,11 @@ void main() {
     final staticContactRoutes = closureRoutes.where(
       (route) => route['rendered_state_contract'] == 'static_contact_surface',
     );
-    expect(staticContactRoutes, hasLength(1));
-    expect(staticContactRoutes.single['path'], '/contact');
+    expect(staticContactRoutes.map((route) => route['path']).toSet(), <String>{
+      '/account-deletion',
+      '/contact',
+      '/support',
+    });
     const expectedStaticContactStates = <String>{
       'focused',
       'pressed',
@@ -281,21 +306,23 @@ void main() {
       'dark',
       'light',
     };
-    final staticContactStates =
-        staticContactRoutes.single['states']! as Map<String, Object?>;
-    for (final entry in staticContactStates.entries) {
-      final state = entry.value! as Map<String, Object?>;
-      expect(
-        state['applicability'],
-        expectedStaticContactStates.contains(entry.key)
-            ? 'applicable'
-            : 'not_applicable',
-      );
-      if (!expectedStaticContactStates.contains(entry.key)) {
+    for (final staticContactRoute in staticContactRoutes) {
+      final staticContactStates =
+          staticContactRoute['states']! as Map<String, Object?>;
+      for (final entry in staticContactStates.entries) {
+        final state = entry.value! as Map<String, Object?>;
         expect(
-          state['rationale'],
-          contains('always renders governed fallback content'),
+          state['applicability'],
+          expectedStaticContactStates.contains(entry.key)
+              ? 'applicable'
+              : 'not_applicable',
         );
+        if (!expectedStaticContactStates.contains(entry.key)) {
+          expect(
+            state['rationale'],
+            contains('always renders governed fallback content'),
+          );
+        }
       }
     }
     final controlledSearchRoutes = closureRoutes.where(

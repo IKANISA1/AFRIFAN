@@ -8,16 +8,22 @@ platform :android do
 
   desc "Upload the approved AAB, metadata, artwork, and changelog as an internal draft"
   lane :internal do
+    aab_path = File.expand_path(
+      "../../build/app/outputs/bundle/release/app-release.aab",
+      __dir__,
+    )
     sh(
       "python3",
       File.expand_path("../../store_metadata/validate_store_package.py", __dir__),
       "--surface",
       "mobile-play",
       "--release-ready",
+      "--artifact",
+      aab_path,
     )
     upload_to_play_store(
       track: "internal",
-      aab: File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__),
+      aab: aab_path,
       skip_upload_metadata: false,
       skip_upload_changelogs: false,
       skip_upload_images: false,

@@ -3,6 +3,11 @@
 Status: draft only. Re-answer using the current Play Console wording for the
 exact submitted AAB.
 
+Distribution intent is a public Google Play TV listing. Internal testing is the
+current pre-production stage; public promotion remains subject to accountable
+distribution, audience, rights, privacy, device, language, and release-owner
+approval.
+
 ## App access
 
 - Restricted functionality: **Yes**. A display must be paired and assigned by an

@@ -23,8 +23,8 @@ The current Rayon Sports display content is presented in Kinyarwanda, with Engli
 ## Classification
 
 - Category: Sports
-- Audience: managed venue devices; not designed for children
-- Preferred distribution: managed/private; a public Android TV listing requires separate product, rights, audience, and policy approval
+- Intended use: authorized venue displays; not designed for children
+- Distribution intent: public Google Play TV listing; internal testing is the current pre-production stage and public promotion remains approval-gated
 - Advertising: none found in the current TV source
 - Purchases: none in the TV app
 - Account creation: none in the TV app; the display uses a temporary owner pairing flow and a device credential
@@ -33,4 +33,4 @@ Support, privacy, and account-deletion URLs must be verified in Play Console bef
 
 ## Artwork plan
 
-Capture the pairing, live question, reveal/standings, offline/retry, and revoked/expired states from the exact signed candidate at 1280x720 or higher. Use only synthetic sessions and public aliases; never expose real pairing codes, device credentials, supporter information, balances, payments, or production session data. See `artwork_manifest.json`.
+The current store set contains two genuine 1920x1080 API 36 AVD renders: the service-unavailable state from a same-TV-source validation release APK, and a Kinyarwanda synthetic reveal/public-alias standings state rendered by the current Flutter TV interface through its existing preview-state boundary. Neither is claimed as a Play-delivered production-AAB capture. The required 1024x500 feature graphic is checksum locked and uses only the project-owned Gikundiro visual language. Add pairing, live-question, offline/retry, and revoked/expired states only from an authorized synthetic internal-test session at 1280x720 or higher; never expose real pairing codes, device credentials, supporter information, balances, payments, or production session data. See `artwork_manifest.json`.

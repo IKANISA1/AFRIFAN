@@ -722,7 +722,11 @@ export function SupportersSurface({
               </div>
             </article>
           ) : status === "loading" ? (
-            <div className="supporters-skeleton" aria-label={message.label}>
+            <div
+              className="supporters-skeleton"
+              role="status"
+              aria-label={message.label}
+            >
               <span />
               <span />
               <span />

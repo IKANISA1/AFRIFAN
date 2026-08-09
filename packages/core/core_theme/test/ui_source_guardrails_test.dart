@@ -1280,6 +1280,7 @@ List<String> _findStoredVisualAssets(Directory repoRoot) {
     final lower = normalizedPath.toLowerCase();
     if (forbiddenExtensions.any(lower.endsWith)) {
       if (_isGovernedRuntimeMedia(repoRoot, entity)) continue;
+      if (_isGovernedStoreReleaseMedia(repoRoot, entity)) continue;
       if (_isGovernedGoldenEvidence(repoRoot, entity)) continue;
       violations.add(normalizedPath);
     }
@@ -1287,6 +1288,65 @@ List<String> _findStoredVisualAssets(Directory repoRoot) {
 
   violations.sort();
   return violations;
+}
+
+bool _isGovernedStoreReleaseMedia(Directory repoRoot, File mediaFile) {
+  final normalizedRoot = repoRoot.path.replaceAll('\\', '/');
+  final normalizedPath = mediaFile.path.replaceAll('\\', '/');
+  final relativePath = normalizedPath.startsWith('$normalizedRoot/')
+      ? normalizedPath.substring(normalizedRoot.length + 1)
+      : normalizedPath;
+
+  String? manifestPath;
+  var isControlledPath = false;
+  if (RegExp(
+    r'^apps/rayon_sports/android/app/src/main/res/mipmap-[^/]+/ic_launcher\.png$',
+  ).hasMatch(relativePath)) {
+    manifestPath =
+        '${repoRoot.path}/apps/rayon_sports/store_metadata/play_store/artwork_manifest.json';
+    isControlledPath = true;
+  } else if (relativePath.startsWith(
+    'apps/rayon_sports/android/fastlane/metadata/android/en-US/images/',
+  )) {
+    manifestPath =
+        '${repoRoot.path}/apps/rayon_sports/store_metadata/play_store/artwork_manifest.json';
+    isControlledPath = true;
+  } else if (relativePath.startsWith(
+        'apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/',
+      ) ||
+      relativePath.startsWith(
+        'apps/rayon_sports/ios/fastlane/screenshots/en-US/',
+      )) {
+    manifestPath =
+        '${repoRoot.path}/apps/rayon_sports/store_metadata/app_store/artwork_manifest.json';
+    isControlledPath = true;
+  } else if (RegExp(
+        r'^apps/rayon_sports_tv/android/app/src/main/res/(drawable|mipmap)-[^/]+/(tv_banner|ic_launcher)\.png$',
+      ).hasMatch(relativePath) ||
+      relativePath.startsWith(
+        'apps/rayon_sports_tv/android/fastlane/metadata/android/en-US/images/',
+      )) {
+    manifestPath =
+        '${repoRoot.path}/apps/rayon_sports_tv/store_metadata/artwork_manifest.json';
+    isControlledPath = true;
+  }
+  if (!isControlledPath || manifestPath == null) return false;
+
+  final manifest = File(manifestPath);
+  if (!manifest.existsSync()) return false;
+  try {
+    final decoded = jsonDecode(manifest.readAsStringSync());
+    if (decoded is! Map<String, dynamic>) return false;
+    final status = '${decoded['status']}'.toLowerCase();
+    final approvals = decoded['approvals_required'];
+    final content = manifest.readAsStringSync();
+    return status.contains('pending') &&
+        approvals is List<dynamic> &&
+        approvals.contains('rayon_brand_and_content_rights') &&
+        content.contains('capture_from_exact_candidate');
+  } on FormatException {
+    return false;
+  }
 }
 
 bool _isGovernedRuntimeMedia(Directory repoRoot, File mediaFile) {
@@ -1377,6 +1437,19 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
         path.endsWith(
           '/packages/core/core_theme/test/ui_source_guardrails_test.dart',
         ) ||
+        path.endsWith(
+          '/apps/rayon_sports/android/app/src/main/AndroidManifest.xml',
+        ) ||
+        path.endsWith(
+          '/apps/rayon_sports_tv/android/app/src/main/AndroidManifest.xml',
+        ) ||
+        path.endsWith(
+          '/apps/rayon_sports/ios/Runner.xcodeproj/project.pbxproj',
+        ) ||
+        path.endsWith(
+          '/apps/rayon_sports/store_metadata/app_store/artwork_manifest.json',
+        ) ||
+        path.endsWith('/apps/rayon_sports/store_metadata/source_evidence.md') ||
         path.endsWith(
           '/apps/rayon_sports/web/src/app/brand-mark.svg/route.ts',
         ) ||

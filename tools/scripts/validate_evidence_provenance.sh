@@ -34,6 +34,22 @@ jq -e '
   )
 ' "$REGISTRY" >/dev/null
 
+validate_commit_exists() {
+  local record_type="$1"
+  local record_id="$2"
+  local baseline_commit="$3"
+
+  if ! git -C "$ROOT" cat-file -e "${baseline_commit}^{commit}" 2>/dev/null; then
+    printf '%s baseline commit does not exist: %s (%s)\n' \
+      "$record_type" "$record_id" "$baseline_commit" >&2
+    exit 1
+  fi
+}
+
+while IFS=$'\t' read -r bundle_id baseline_commit; do
+  validate_commit_exists "Evidence bundle" "$bundle_id" "$baseline_commit"
+done < <(jq -r '.bundles[] | [.id, .baseline_commit] | @tsv' "$REGISTRY")
+
 registered_directories="$(
   jq -r \
     --arg root "${EVIDENCE_ROOT#"$ROOT/"}" \
@@ -90,6 +106,11 @@ while IFS= read -r relative_directory; do
       (.bytes | type == "number" and . >= 0)
     )
   ' "$manifest_path" >/dev/null
+
+  manifest_bundle_id="$(jq -r '.bundle_id' "$manifest_path")"
+  manifest_baseline_commit="$(jq -r '.provenance.baseline_commit' "$manifest_path")"
+  validate_commit_exists \
+    "Evidence manifest" "$manifest_bundle_id" "$manifest_baseline_commit"
 
   while IFS=$'\t' read -r artifact_path expected_sha expected_bytes; do
     absolute_artifact="$ROOT/$artifact_path"

@@ -179,6 +179,7 @@ class FakeGameOperationsGateway implements GameOperationsGateway {
   final List<String> recoveryIdempotencyKeys = <String>[];
   final List<String> recoveryChallenges = <String>[];
   final List<String> createIdempotencyKeys = <String>[];
+  final List<List<String>> createDisplayIds = <List<String>>[];
   final List<List<String>> createInviteeUserIds = <List<String>>[];
   final List<String> transitionIdempotencyKeys = <String>[];
   final List<DateTime?> transitionDeadlines = <DateTime?>[];
@@ -306,6 +307,7 @@ class FakeGameOperationsGateway implements GameOperationsGateway {
   }) async {
     creations++;
     createIdempotencyKeys.add(idempotencyKey);
+    createDisplayIds.add(List<String>.of(displayIds));
     createInviteeUserIds.add(List<String>.of(inviteeUserIds));
     _failMutationIfRequested();
     return managedGame;

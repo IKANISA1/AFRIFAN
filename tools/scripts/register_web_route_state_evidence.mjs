@@ -11,6 +11,19 @@ const toWholeSecondIso = (value) =>
 const generatedAt = toWholeSecondIso(Date.now());
 const reviewedAt = generatedAt.slice(0, 10);
 const baselineCommit = "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e";
+const pubspec = fs.readFileSync(
+  path.join(root, "apps/rayon_sports/pubspec.yaml"),
+  "utf8",
+);
+const pubspecVersionMatch = pubspec.match(
+  /^version:\s*([^+\s]+)\+([^\s#]+)(?:\s*#.*)?$/m,
+);
+if (!pubspecVersionMatch) {
+  throw new Error(
+    "apps/rayon_sports/pubspec.yaml must declare version as <app-version>+<build-number>",
+  );
+}
+const [, appVersion, buildNumber] = pubspecVersionMatch;
 const admissionRequested = process.argv.includes("--admit-reviewed");
 const unknownArguments = process.argv
   .slice(2)
@@ -252,8 +265,8 @@ for (const [id, surface, route, directory] of routes) {
     ],
     baseline_commit: baselineCommit,
     dirty_state: true,
-    app_version: "1.0.3",
-    build_number: "5",
+    app_version: appVersion,
+    build_number: buildNumber,
     flavor: `${surface}_production_local_controlled_${directory}_evidence`,
     platform: "nextjs_production_build_playwright_chromium",
     runtime_device:

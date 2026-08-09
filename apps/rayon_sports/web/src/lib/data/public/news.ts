@@ -6,11 +6,12 @@ import { getActiveClubReference } from "@/lib/club-context";
 import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { NewsArticle } from "@/lib/types";
 import { safeString, toIdString } from "@/lib/utils";
-import {
-  newsTableCandidates,
-  resolveAccessibleTable,
-  sanitizeMediaUrl,
-} from "./helpers";
+import { sanitizeMediaUrl } from "./helpers";
+
+const publicNewsProjection =
+  "id,club_id,title,subtitle,body,category,image_url,is_published," +
+  "published_at,is_featured,sort_order,created_at,author_name," +
+  "image_provenance_id,image_rights_approved";
 
 function mapNewsRow(row: Record<string, unknown>): NewsArticle {
   const rawContent =
@@ -55,10 +56,9 @@ async function loadNewsArticles() {
   const activeClub = await getActiveClubReference();
   if (client == null) return [];
 
-  const table = await resolveAccessibleTable(client, newsTableCandidates);
   const { data, error } = await client
-    .from(table)
-    .select("*")
+    .from("news_articles")
+    .select(publicNewsProjection)
     .eq("club_id", activeClub.numericId)
     .eq("is_published", true)
     .order("published_at", { ascending: false })

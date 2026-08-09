@@ -690,13 +690,13 @@ describe("admin browser API boundary", () => {
     );
   });
 
-  it("reviews membership applications through the scoped admin API in the browser", async () => {
+  it("rejects membership applications through the scoped admin API in the browser", async () => {
     const origin = window.location.origin;
     const payload = {
       applicationId: "application-1",
       expectedUpdatedAt: "2026-07-24T20:00:00.000Z",
-      decision: "approved" as const,
-      notes: "Approved after payment confirmation.",
+      decision: "rejected" as const,
+      notes: "Provider payment was not verified.",
     };
     const fetchMock = vi
       .spyOn(globalThis, "fetch")

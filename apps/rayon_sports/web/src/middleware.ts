@@ -12,6 +12,7 @@ import {
   resolveRoutingHostname,
   shouldBypassSubdomainRewrite,
 } from "@/lib/host-routing";
+import { controlledAdminEvidenceRequestHeader } from "@/lib/controlled-admin-evidence";
 
 export function middleware(request: NextRequest) {
   const hostname = resolveRoutingHostname(
@@ -29,6 +30,16 @@ export function middleware(request: NextRequest) {
   const requestedAdminClubId = isAdminRequest
     ? getRequestedAdminClubId(request.nextUrl.searchParams)
     : null;
+  const forwardedRequestHeaders = new Headers(request.headers);
+  forwardedRequestHeaders.delete(controlledAdminEvidenceRequestHeader);
+  if (isAdminRequest && request.nextUrl.searchParams.has("evidence")) {
+    forwardedRequestHeaders.set(controlledAdminEvidenceRequestHeader, "1");
+  }
+
+  const continueRequest = () =>
+    NextResponse.next({
+      request: { headers: forwardedRequestHeaders },
+    });
 
   const applyAdminScopeCookie = (response: NextResponse) => {
     if (isWorkersPreviewHostname(hostname)) {
@@ -60,20 +71,24 @@ export function middleware(request: NextRequest) {
   }
 
   if (!isAdminHostname(hostname)) {
-    return applyAdminScopeCookie(NextResponse.next());
+    return applyAdminScopeCookie(continueRequest());
   }
 
   if (shouldBypassSubdomainRewrite(pathname)) {
-    return applyAdminScopeCookie(NextResponse.next());
+    return applyAdminScopeCookie(continueRequest());
   }
 
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
-    return applyAdminScopeCookie(NextResponse.next());
+    return applyAdminScopeCookie(continueRequest());
   }
 
   const rewriteUrl = request.nextUrl.clone();
   rewriteUrl.pathname = mapAdminSubdomainPath(pathname);
-  return applyAdminScopeCookie(NextResponse.rewrite(rewriteUrl));
+  return applyAdminScopeCookie(
+    NextResponse.rewrite(rewriteUrl, {
+      request: { headers: forwardedRequestHeaders },
+    }),
+  );
 }
 
 export const config = {

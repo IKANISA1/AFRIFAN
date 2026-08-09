@@ -91,25 +91,23 @@ test("public home renders on a phone viewport", async ({ page }) => {
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: /this is gikundiro/i }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("link", {
-      name: /app y'abafana|open fan app|open supporter app/i,
+    page.getByRole("heading", {
+      name: /rayon sports fc\. matchday starts here/i,
     }),
   ).toBeVisible();
+  await expect(page.getByText(/supporter app coming soon/i)).toBeVisible();
 });
 
 test("supporters handoff page renders on tablet", async ({ page }) => {
   await page.goto("/supporters", { waitUntil: "domcontentloaded" });
   await expect(
     page.getByRole("heading", {
-      name: /the supporter journey continues on mobile/i,
+      name: /rayon sports fc rewards and public ranking/i,
     }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", {
-      name: /admin-managed fan engagement rewards/i,
+      name: /confirmed reward catalog|no public rewards listed/i,
     }),
   ).toBeVisible();
 });

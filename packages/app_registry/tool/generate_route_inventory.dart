@@ -1278,6 +1278,14 @@ List<String> _readRouteEvidencePaths({
           'upstream operation, or rendered interaction state.',
     );
   }
+  if (kind == 'http_route' &&
+      route['endpoint_state_contract'] == 'deterministic_verifier_document') {
+    return (
+      false,
+      'Deterministic verifier document has no request input, authorization, '
+          'mutation, upstream operation, or rendered interaction state.',
+    );
+  }
   if (kind == 'api_route' || kind == 'http_route') {
     const endpointStates = <String>{
       'empty',
@@ -1452,6 +1460,12 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
     final isDeterministicAsset =
         isRouteHandler &&
         const <String>{'/brand-mark.svg', '/brand-surface.svg'}.contains(path);
+    final isDeterministicVerifierDocument =
+        isRouteHandler &&
+        const <String>{
+          '/.well-known/apple-app-site-association',
+          '/.well-known/assetlinks.json',
+        }.contains(path);
     final isStandaloneOfflineRecovery =
         !isRouteHandler &&
         const <String>{'/offline', '/admin-offline'}.contains(path);
@@ -1459,7 +1473,13 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
     final isDisplayOnlyLiveSurface = !isRouteHandler && path == '/tv-display';
     final isStaticLegalDocument =
         !isRouteHandler && const <String>{'/privacy', '/terms'}.contains(path);
-    final isStaticContactSurface = !isRouteHandler && path == '/contact';
+    final isStaticContactSurface =
+        !isRouteHandler &&
+        const <String>{
+          '/account-deletion',
+          '/contact',
+          '/support',
+        }.contains(path);
     final isControlledSearchSurface = !isRouteHandler && path == '/search';
     final isControlledHistorySurface = !isRouteHandler && path == '/history';
     final isAdmin = path == '/admin' || path.startsWith('/admin/');
@@ -1496,6 +1516,8 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
           : 'responsive web page',
       'endpoint_state_contract': isDeterministicAsset
           ? 'deterministic_asset'
+          : isDeterministicVerifierDocument
+          ? 'deterministic_verifier_document'
           : isApi || isRouteHandler
           ? 'controlled_response'
           : null,
@@ -1517,7 +1539,8 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
       'recommendation': null,
       'target_path': null,
       'source': file.path.substring(workspace.path.length + 1),
-      'required_state_evidence': isDeterministicAsset
+      'required_state_evidence':
+          isDeterministicAsset || isDeterministicVerifierDocument
           ? <String>['deterministic_success']
           : isApi || isRouteHandler
           ? <String>[

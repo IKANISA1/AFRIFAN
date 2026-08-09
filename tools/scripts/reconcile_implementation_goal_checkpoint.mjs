@@ -6,7 +6,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const root = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 const output = path.join(root, "output/implementation_goal_20260724");
 const manifestPath = path.join(output, "validation-manifest.json");
 const r66Path = path.join(output, "R66_WORKING_CANDIDATE_MANIFEST.json");
@@ -19,8 +22,14 @@ const releaseGoalPath = path.join(
   output,
   "release-submission-execution-goal.json",
 );
-const routePath = path.join(output, "route_inventory_current/route-inventory.json");
-const designPath = path.join(output, "design_compliance_current/VALIDATION.json");
+const routePath = path.join(
+  output,
+  "route_inventory_current/route-inventory.json",
+);
+const designPath = path.join(
+  output,
+  "design_compliance_current/VALIDATION.json",
+);
 const externalPreflightPath = path.join(
   output,
   "external-execution-preflight-20260802.json",
@@ -87,7 +96,8 @@ const liveDirtyPaths = liveGitPorcelain
       .filter(Boolean)
       .map((line) => line.slice(3).trim())
   : [];
-const liveGitDirty = liveGitPorcelain === null ? null : liveDirtyPaths.length > 0;
+const liveGitDirty =
+  liveGitPorcelain === null ? null : liveDirtyPaths.length > 0;
 const localOriginMain = run("git", [
   "rev-parse",
   "--verify",
@@ -160,8 +170,7 @@ const liveExactHeadRun = liveRunEntry
     }
   : null;
 const exactHeadRun =
-  liveExactHeadRun ??
-  (preflightMatchesCheckout ? preflightExactHeadRun : {});
+  liveExactHeadRun ?? (preflightMatchesCheckout ? preflightExactHeadRun : {});
 const iosDevices = Array.isArray(physicalDevices.ios)
   ? physicalDevices.ios
   : null;
@@ -206,8 +215,8 @@ const candidateMetadata = {
   exact_head_run_matches_candidate: exactHeadMatchesCandidate,
   working_tree_dirty_boundary: liveGitHead
     ? null
-    : candidate.working_tree_dirty_boundary ?? null,
-  observed_at_utc: liveGitHead ? now : externalPreflight.checked_at ?? null,
+    : (candidate.working_tree_dirty_boundary ?? null),
+  observed_at_utc: liveGitHead ? now : (externalPreflight.checked_at ?? null),
   preflight_matches_checkout: preflightMatchesCheckout,
   preflight_candidate_head: candidate.git_head ?? null,
   preflight_checked_at: externalPreflight.checked_at ?? null,
@@ -262,7 +271,8 @@ const artifactMatchesCandidate = (artifact) =>
 const androidArtifactMatchesCandidate = artifactMatchesCandidate(
   androidReleaseArtifact,
 );
-const iosArtifactMatchesCandidate = artifactMatchesCandidate(iosReleaseArtifact);
+const iosArtifactMatchesCandidate =
+  artifactMatchesCandidate(iosReleaseArtifact);
 const androidReleaseSummary =
   typeof androidReleaseArtifact.sha256 === "string" &&
   androidReleaseArtifact.sha256.length > 0 &&
@@ -308,23 +318,30 @@ const candidateCiRemainingBoundary = exactCandidate
   ? "actual pinned CI execution"
   : "exact controlled candidate and actual pinned CI execution";
 const closure = route.state_closure;
+const notApplicableRouteStateCellCount =
+  closure.cell_count - closure.evidenced_cell_count - closure.open_cell_count;
 if (
+  route.route_count !== 180 ||
+  closure.cell_count !== 2880 ||
   closure.open_cell_count !== 0 ||
-  closure.evidenced_cell_count !== 2137 ||
+  closure.evidenced_cell_count !== 2149 ||
+  notApplicableRouteStateCellCount !== 731 ||
   closure.closure_complete !== true ||
   design.route_evidence_complete !== true ||
   design.design_complete !== false
 ) {
-  throw new Error("Current route/design checkpoint is not the expected route-complete, approval-open state");
+  throw new Error(
+    "Current route/design checkpoint is not the expected route-complete, approval-open state",
+  );
 }
 
 const completedUpdates = {
   "GOV-04":
-    "The fail-closed registrar admitted the visually reviewed, exact-current nine-route Admin PWA and seven-route Venue portal batch. The generated 176-route ledger now proves all 2,137 applicable cells, retains 679 explicit N/A decisions, has zero open cells and records closure_complete=true. Accountable design and media-rights decisions remain separately governed under GOV-01/03/05 and EVID-04/05.",
+    "The fail-closed registrar retains the reviewed Admin PWA and Venue portal evidence and admits exact-current evidence for the new consumer support-policy surfaces, while deterministic association documents receive explicit structural N/A classifications for inapplicable visual states. The generated 180-route ledger now proves all 2,149 applicable cells, retains 731 explicit N/A decisions, has zero open cells and records closure_complete=true. Accountable design and media-rights decisions remain separately governed under GOV-01/03/05 and EVID-04/05.",
   "STATE-01":
-    "All 176 product routes are mapped across 16 governed states in a 2,816-cell fail-closed ledger. Exact-current typed tests plus screenshot or response evidence prove all 2,137 applicable cells, 679 cells are explicitly not applicable, zero cells remain open and closure_complete=true.",
+    "All 180 product routes are mapped across 16 governed states in a 2,880-cell fail-closed ledger. Exact-current typed tests plus screenshot or response evidence prove all 2,149 applicable cells, 731 cells are explicitly not applicable, zero cells remain open and closure_complete=true.",
   "EVID-02":
-    "The matrix links all 2,137 applicable route-state cells to typed test plus screenshot or response evidence, retains 679 explicit N/A decisions, and records zero open cells after reviewed admission of the final sixteen Admin PWA and Venue portal bundles.",
+    "The matrix links all 2,149 applicable route-state cells to typed test plus screenshot or response evidence, retains 731 explicit N/A decisions, and records zero open cells after controlled admission of the new public support-policy states and explicit structural N/A classification of deterministic verifier documents.",
   "ADMIN-03":
     "The canonical Next/PWA implementation has adaptive source, unit coverage and admitted exact-current desktop, tablet and compact evidence for every governed Admin route, including the corrected Settings compact-overflow behavior. Live authorization and accountable operator review remain under ADMIN-01/05/07/08/09 and REL-06/08.",
   "ADMIN-06":
@@ -336,51 +353,35 @@ const incompleteUpdates = {
     "The shared generated catalog now has exact EN/FR/RW parity across 3,378 messages, including the four native-TV Menu context labels added in EV-249. Route-wide static Flutter migration and fail-closed inventory remain locally complete. Dynamic and unrecognized source review, approved localized route/state visuals, and accountable French/Kinyarwanda linguistic approval remain open; draft translations and static-source closure are not treated as approved route-visible copy.",
   "MOB-09":
     "Settings recovery, destructive behavior and the corrected compact-overflow presentation have local source, test and admitted browser evidence. Physical-device and assistive-technology proof remains open.",
-  "EVID-03":
-    `One thousand three hundred seventy-nine deterministic Flutter/native-TV exact-pixel baselines remain hash-governed, and all applicable web routes now have admitted exact-current screenshot or response evidence. Local visual review, source freshness, privacy scanning and artifact retention controls pass. Current pinned-runtime execution state: ${pinnedRuntimeSummary}.`,
+  "EVID-03": `One thousand three hundred seventy-nine deterministic Flutter/native-TV exact-pixel baselines remain hash-governed, and all applicable web routes now have admitted exact-current screenshot or response evidence. Local visual review, source freshness, privacy scanning and artifact retention controls pass. Current pinned-runtime execution state: ${pinnedRuntimeSummary}.`,
   "EVID-04":
-    "All 176 routes retain governed screenshot or response evidence. The final sixteen Admin PWA/Venue bundles and the native-TV remote/context checkpoint passed controlled visual/accessibility review and admission. Accountable human design approval for the final product surfaces remains open and has not been inferred.",
+    "All 180 routes retain governed screenshot or response evidence or an explicit structural N/A classification for inapplicable states. The new support-policy surfaces passed controlled visual/accessibility review, and the deterministic verifier documents retain route-response contract coverage. Accountable human design approval for the final product surfaces remains open and has not been inferred.",
   "ADMIN-09":
     "All Admin routes now retain admitted exact-current controlled evidence. Live authorization, physical-device accessibility/performance and accountable operator approval remain open and are not established by loopback synthetic evidence.",
 };
 
 const retainedTaskUpdates = {
-  "GOV-06":
-    `The controlled Flutter runtime is reconciled at 3.44.4 across local configuration and release tooling. ${candidateSummary} ${workingTreeSummary} Current CI state: ${pinnedRuntimeSummary}.`,
-  "A11Y-02":
-    `The native-TV AVD now provides exact directional focus, center, Menu overlay and focus-restoration evidence, while automated semantics tests remain green. The current device preflight reports ${physicalDeviceSummary}. Physical VoiceOver execution is ${physicalDevices.voiceover_execution_proven === true ? "proven" : "not proven"}, TalkBack execution is ${physicalDevices.talkback_execution_proven === true ? "proven" : "not proven"}, and physical TV remote or soak execution is ${physicalDevices.physical_tv_remote_or_soak_proven === true ? "proven" : "not proven"}; emulator and automated semantics evidence do not substitute for those physical-device controls.`,
-  "STATE-03":
-    `${backendProductionSummary} ${state03RepresentativeSliceProven ? "The governed production validation proves a representative shop-order cancellation and contribution-review slice with real two-client collision handling, RLS/grants, actor/audit attribution, rollback cleanup and authenticated recovery. STATE-03 remains verified incomplete because profile/settings, representative admin editing, membership review, feature aggregate copy-on-write, ticket bulk review, the full role matrix and physical application recovery are not all proven." : "STATE-03 remains verified incomplete because the current preflight does not yet prove the complete real two-client collision, authenticated RLS/grant, actor/audit, rollback-cleanup and recovery matrix through the application boundary."}`,
-  "STATE-06":
-    `The production privacy baseline contains ${supabaseProduction.privacy_rows_before_after ?? "an unreported number of"} governed preference rows and preserves ${supabaseProduction.analytics_enabled_before_after ?? "an unreported number of"} existing analytics choices. The exact signed artifacts keep ${analyticsProduction.compile_time_gate ?? "the observability compile-time gate"} ${analyticsProduction.compile_time_gate_enabled_in_exact_signed_artifacts === true ? "enabled" : "disabled"}; the closed taxonomy, explicit-consent rule and minimum cohort contract of ${analyticsProduction.minimum_reporting_threshold_contract ?? "unreported"} are ${analyticsProduction.small_cohort_suppression_contract_present === true ? "present" : "not proven"}. STATE-06 remains verified incomplete because a production dashboard connection, live dashboard suppression evidence and accountable privacy/product approval are ${analyticsProduction.production_dashboard_connected === true && analyticsProduction.production_dashboard_suppression_evidenced === true && analyticsProduction.accountable_privacy_product_approval_evidenced === true ? "recorded" : "not all recorded"}.`,
-  "ADMIN-05":
-    `${backendProductionSummary} Twenty-six destructive-action contracts retain their role, scope, selection-limit, review, recovery, concurrency and audit controls; ticket cancellation remains the only reviewed bulk workflow and is capped at 100. ADMIN-05 remains verified incomplete until the complete authenticated production platform-admin, club-admin, moderator, supporter, revoked-role, cross-club, stale-write, timeout-reload, rollback and audit-query matrix plus accountable operator approval pass.`,
+  "GOV-06": `The controlled Flutter runtime is reconciled at 3.44.4 across local configuration and release tooling. ${candidateSummary} ${workingTreeSummary} Current CI state: ${pinnedRuntimeSummary}.`,
+  "A11Y-02": `The native-TV AVD now provides exact directional focus, center, Menu overlay and focus-restoration evidence, while automated semantics tests remain green. The current device preflight reports ${physicalDeviceSummary}. Physical VoiceOver execution is ${physicalDevices.voiceover_execution_proven === true ? "proven" : "not proven"}, TalkBack execution is ${physicalDevices.talkback_execution_proven === true ? "proven" : "not proven"}, and physical TV remote or soak execution is ${physicalDevices.physical_tv_remote_or_soak_proven === true ? "proven" : "not proven"}; emulator and automated semantics evidence do not substitute for those physical-device controls.`,
+  "STATE-03": `${backendProductionSummary} ${state03RepresentativeSliceProven ? "The governed production validation proves a representative shop-order cancellation and contribution-review slice with real two-client collision handling, RLS/grants, actor/audit attribution, rollback cleanup and authenticated recovery. STATE-03 remains verified incomplete because profile/settings, representative admin editing, membership review, feature aggregate copy-on-write, ticket bulk review, the full role matrix and physical application recovery are not all proven." : "STATE-03 remains verified incomplete because the current preflight does not yet prove the complete real two-client collision, authenticated RLS/grant, actor/audit, rollback-cleanup and recovery matrix through the application boundary."}`,
+  "STATE-06": `The production privacy baseline contains ${supabaseProduction.privacy_rows_before_after ?? "an unreported number of"} governed preference rows and preserves ${supabaseProduction.analytics_enabled_before_after ?? "an unreported number of"} existing analytics choices. The exact signed artifacts keep ${analyticsProduction.compile_time_gate ?? "the observability compile-time gate"} ${analyticsProduction.compile_time_gate_enabled_in_exact_signed_artifacts === true ? "enabled" : "disabled"}; the closed taxonomy, explicit-consent rule and minimum cohort contract of ${analyticsProduction.minimum_reporting_threshold_contract ?? "unreported"} are ${analyticsProduction.small_cohort_suppression_contract_present === true ? "present" : "not proven"}. STATE-06 remains verified incomplete because a production dashboard connection, live dashboard suppression evidence and accountable privacy/product approval are ${analyticsProduction.production_dashboard_connected === true && analyticsProduction.production_dashboard_suppression_evidenced === true && analyticsProduction.accountable_privacy_product_approval_evidenced === true ? "recorded" : "not all recorded"}.`,
+  "ADMIN-05": `${backendProductionSummary} Twenty-six destructive-action contracts retain their role, scope, selection-limit, review, recovery, concurrency and audit controls; ticket cancellation remains the only reviewed bulk workflow and is capped at 100. ADMIN-05 remains verified incomplete until the complete authenticated production platform-admin, club-admin, moderator, supporter, revoked-role, cross-club, stale-write, timeout-reload, rollback and audit-query matrix plus accountable operator approval pass.`,
   "EVID-06":
     "Exact-current Android production-main profile evidence records a 1,242 ms cold start against the 3,000 ms budget, 79.34% SurfaceFlinger jank against the 5% budget, 153,191 KiB total PSS with no approved memory threshold, and controlled settings, 120-item Shop, checkout and Perfetto workloads. EV-249 adds exact native-TV cold-launch and remote-interaction execution, but not a repeat/soak or performance profile. EVID-06 remains verified incomplete because the software-rendered mobile emulator fails frame/raster budgets and representative physical-device profiling, an approved memory budget, product-image and real checkout-submission workloads, live realtime, native-TV performance/soak and authenticated Admin-volume profiles remain open.",
-  "EVID-07":
-    `All 136 admitted local evidence bundles have exact provenance sidecars covering 1,367 artifacts, including the reviewed native-TV remote/context and generic mobile pairing-link checkpoint; 1,379 golden baselines remain separately hash-governed. ${candidateCiRemainingBoundary[0].toUpperCase()}${candidateCiRemainingBoundary.slice(1)} remains separate under GOV-06 and EVID-08.`,
-  "EVID-08":
-    `CI configuration generates and validates route, archetype and component ledgers, source compliance, all 1,379 golden digests, interaction differentiation, endpoint contracts, evidence provenance, privacy patterns and platform builds. Current CI state: ${pinnedRuntimeSummary}. The current local set has 136 admitted bundles, zero pending bundles, 2,137 admitted route cells and zero open cells, including exact-current native-TV remote/context and iOS generic-link registration evidence. External release gates remain separately governed.`,
+  "EVID-07": `All 136 admitted local evidence bundles have exact provenance sidecars covering 1,367 artifacts, including the reviewed native-TV remote/context and generic mobile pairing-link checkpoint; 1,379 golden baselines remain separately hash-governed. ${candidateCiRemainingBoundary[0].toUpperCase()}${candidateCiRemainingBoundary.slice(1)} remains separate under GOV-06 and EVID-08.`,
+  "EVID-08": `CI configuration generates and validates route, archetype and component ledgers, source compliance, all 1,379 golden digests, interaction differentiation, endpoint contracts, evidence provenance, privacy patterns and platform builds. Current CI state: ${pinnedRuntimeSummary}. The current local set has 136 admitted bundles, zero pending bundles, 2,149 admitted route cells and zero open cells, including exact-current native-TV remote/context and iOS generic-link registration evidence. External release gates remain separately governed.`,
   "TV-04":
     "Automated native-TV focus and remote contracts pass. EV-249 now proves exact-current Android TV AVD cold launch, D-pad up/down reachability, center renewal, dedicated Menu context behavior, localized retry/close actions and focus restoration from Android UI hierarchies and screenshots. Product-scope-dependent rows/details/overlays and physical TV/remote, overscan and screen-reader proof remain open, so TV-04 remains verified incomplete.",
   "TV-05":
     "Pairing, credential, retry, conflict, timeout, recovery, proxy and scoped-revocation contracts remain exact-tested. EV-249 fixes the TV-generated `africlub://` versus mobile manifest mismatch by explicitly registering and parser-allowlisting both `africlub://` and `gikundiro://` while rejecting unlisted schemes; the rebuilt iOS simulator now recognizes the generic TV URL. Authenticated production pairing/synchronization, multi-client idempotency/audit, physical QR handoff and real-remote proof remain open, so TV-05 remains verified incomplete.",
-  "TV-09":
-    `${androidReleaseSummary} The signed mobile package rw.gikundiro.app does not establish the separately required production-signed native-TV package rw.ikanisa.rayonSports.tv, its credential fingerprint or store processing. The current preflight reports ${physicalDeviceSummary}. Native-TV representative-hardware soak, crash/ANR dashboard evidence, device inventory/revocation drill and operations-owner sign-off remain separately required.`,
-  "REL-01":
-    `Release configuration, runtime pins, validation contracts, provenance controls and current local platform-build evidence exist. ${candidateSummary} ${workingTreeSummary} Current CI state: ${pinnedRuntimeSummary}. REL-01 remains verified incomplete while its other release gates remain open.`,
-  "REL-02":
-    `${androidReleaseSummary} REL-02 remains verified incomplete because complete physical-Android runtime, TalkBack, permissions, deep links, offline/retry, destructive-flow, representative performance and live-backend proof remain open. Store acceptance is tracked separately under REL-07.`,
-  "REL-03":
-    `${iosReleaseSummary} Its app-level PrivacyInfo.xcprivacy remains bundled with the SDK manifests. REL-03 remains verified incomplete because complete exact-candidate physical-iPhone runtime, VoiceOver, text sizing, permissions, deep links, offline/retry, destructive-flow, representative performance and live-backend proof remain open. App Store acceptance is tracked separately under REL-07.`,
-  "REL-04":
-    `The rebuilt iOS simulator recognizes the generic native-TV pairing URL and the platform/parser contracts pass, but this proves simulator registration only. The current preflight reports ${physicalDeviceSummary}. Physical VoiceOver execution is ${physicalDevices.voiceover_execution_proven === true ? "proven" : "not proven"} and TalkBack execution is ${physicalDevices.talkback_execution_proven === true ? "proven" : "not proven"}. Complete physical mobile UAT, authenticated QR handoff and assistive-technology evidence remain separately governed. REL-04 remains unverified.`,
-  "REL-05":
-    `EV-249 proves exact-current Android TV AVD directional focus, center, Menu context overlay and challenge renewal against an isolated local backend. The current preflight reports ${nativeTvAttachedCount ?? "an unreported number of"} attached native-TV devices and marks physical TV remote or soak execution as ${physicalDevices.physical_tv_remote_or_soak_proven === true ? "proven" : "not proven"}. Emulator execution does not by itself establish real display, overscan, remote, screen-reader, reconnect, network, authenticated pairing, performance or soak behavior. REL-05 remains unverified.`,
-  "REL-06":
-    `${backendProductionSummary} Privacy-filtered Crashlytics diagnostics, compile-time observability gating and local backend/API/hook contracts remain valid. REL-06 remains incomplete because the complete authenticated production role, RLS/grant, collision, actor/audit, rollback and recovery matrix; hook-secret/dashboard configuration; live Meta delivery and identity callback; monitoring dashboards and alerts; incident rehearsal; pinned CI; custom-domain cutover; and accountable backend/security approval remain open.`,
-  "REL-07":
-    `${androidReleaseSummary} ${iosReleaseSummary} The store-delivery audit records Android upload=${storeDeliveryAudit.android?.uploaded === true ? "true" : "false"} and iOS upload=${storeDeliveryAudit.ios?.uploaded === true ? "true" : "false"}; authenticated publisher paths and remote processing are not proven. Production signing and store processing for the separate native-TV package rw.ikanisa.rayonSports.tv are also not recorded. REL-07 remains verified incomplete until the governed Android, iOS and native-TV candidates are signed where applicable and accepted and processed by their stores. Named accountable approvals remain separately governed under REL-08.`,
+  "TV-09": `${androidReleaseSummary} The signed mobile package rw.gikundiro.app does not establish the separately required production-signed native-TV package rw.ikanisa.rayonSports.tv, its credential fingerprint or store processing. The current preflight reports ${physicalDeviceSummary}. Native-TV representative-hardware soak, crash/ANR dashboard evidence, device inventory/revocation drill and operations-owner sign-off remain separately required.`,
+  "REL-01": `Release configuration, runtime pins, validation contracts, provenance controls and current local platform-build evidence exist. ${candidateSummary} ${workingTreeSummary} Current CI state: ${pinnedRuntimeSummary}. REL-01 remains verified incomplete while its other release gates remain open.`,
+  "REL-02": `${androidReleaseSummary} REL-02 remains verified incomplete because complete physical-Android runtime, TalkBack, permissions, deep links, offline/retry, destructive-flow, representative performance and live-backend proof remain open. Store acceptance is tracked separately under REL-07.`,
+  "REL-03": `${iosReleaseSummary} Its app-level PrivacyInfo.xcprivacy remains bundled with the SDK manifests. REL-03 remains verified incomplete because complete exact-candidate physical-iPhone runtime, VoiceOver, text sizing, permissions, deep links, offline/retry, destructive-flow, representative performance and live-backend proof remain open. App Store acceptance is tracked separately under REL-07.`,
+  "REL-04": `The rebuilt iOS simulator recognizes the generic native-TV pairing URL and the platform/parser contracts pass, but this proves simulator registration only. The current preflight reports ${physicalDeviceSummary}. Physical VoiceOver execution is ${physicalDevices.voiceover_execution_proven === true ? "proven" : "not proven"} and TalkBack execution is ${physicalDevices.talkback_execution_proven === true ? "proven" : "not proven"}. Complete physical mobile UAT, authenticated QR handoff and assistive-technology evidence remain separately governed. REL-04 remains unverified.`,
+  "REL-05": `EV-249 proves exact-current Android TV AVD directional focus, center, Menu context overlay and challenge renewal against an isolated local backend. The current preflight reports ${nativeTvAttachedCount ?? "an unreported number of"} attached native-TV devices and marks physical TV remote or soak execution as ${physicalDevices.physical_tv_remote_or_soak_proven === true ? "proven" : "not proven"}. Emulator execution does not by itself establish real display, overscan, remote, screen-reader, reconnect, network, authenticated pairing, performance or soak behavior. REL-05 remains unverified.`,
+  "REL-06": `${backendProductionSummary} Privacy-filtered Crashlytics diagnostics, compile-time observability gating and local backend/API/hook contracts remain valid. REL-06 remains incomplete because the complete authenticated production role, RLS/grant, collision, actor/audit, rollback and recovery matrix; hook-secret/dashboard configuration; live Meta delivery and identity callback; monitoring dashboards and alerts; incident rehearsal; pinned CI; custom-domain cutover; and accountable backend/security approval remain open.`,
+  "REL-07": `${androidReleaseSummary} ${iosReleaseSummary} The store-delivery audit records Android upload=${storeDeliveryAudit.android?.uploaded === true ? "true" : "false"} and iOS upload=${storeDeliveryAudit.ios?.uploaded === true ? "true" : "false"}; authenticated publisher paths and remote processing are not proven. Production signing and store processing for the separate native-TV package rw.ikanisa.rayonSports.tv are also not recorded. REL-07 remains verified incomplete until the governed Android, iOS and native-TV candidates are signed where applicable and accepted and processed by their stores. Named accountable approvals remain separately governed under REL-08.`,
   "REL-08":
     "The controlled records name the required product, design, accessibility, privacy, security, operations, QA and release owners and preserve every approval boundary. No accountable named approval has been supplied or inferred. REL-08 remains unverified.",
 };
@@ -421,7 +422,9 @@ if (
   releaseWorkstreamTaskIds.some((id) => !releaseGoalTaskIds.includes(id)) ||
   releaseGoalTaskIds.some((id) => !releaseWorkstreamTaskIds.includes(id))
 ) {
-  failGoalContract("workstream mappings do not cover exactly the 33-task baseline");
+  failGoalContract(
+    "workstream mappings do not cover exactly the 33-task baseline",
+  );
 }
 for (const workstream of releaseGoalWorkstreams) {
   if (
@@ -431,18 +434,20 @@ for (const workstream of releaseGoalWorkstreams) {
     !Array.isArray(workstream.completion_evidence) ||
     workstream.completion_evidence.length === 0
   ) {
-    failGoalContract(`${workstream.id ?? "unknown"} is missing execution or evidence fields`);
+    failGoalContract(
+      `${workstream.id ?? "unknown"} is missing execution or evidence fields`,
+    );
   }
 }
 for (const task of validation.tasks) {
   if (completedUpdates[task.id]) {
     task.current_result = "verified_complete";
     task.notes = completedUpdates[task.id];
-    task.evidence = [...new Set([...(task.evidence ?? []), "EV-248"] )];
+    task.evidence = [...new Set([...(task.evidence ?? []), "EV-248"])];
   } else if (incompleteUpdates[task.id]) {
     task.current_result = "verified_incomplete";
     task.notes = incompleteUpdates[task.id];
-    task.evidence = [...new Set([...(task.evidence ?? []), "EV-248"] )];
+    task.evidence = [...new Set([...(task.evidence ?? []), "EV-248"])];
   } else if (retainedTaskUpdates[task.id]) {
     task.notes = retainedTaskUpdates[task.id];
     if (task.id === "REL-02") {
@@ -485,9 +490,31 @@ for (const task of validation.tasks) {
       ];
     }
     if (task.id === "EVID-07") {
-      task.evidence = [...new Set([...(task.evidence ?? []), "EV-243", "EV-246", "EV-247", "EV-249"] )];
+      task.evidence = [
+        ...new Set([
+          ...(task.evidence ?? []),
+          "EV-243",
+          "EV-246",
+          "EV-247",
+          "EV-249",
+        ]),
+      ];
     }
-    if (["MOB-08", "A11Y-02", "EVID-04", "EVID-05", "EVID-06", "EVID-07", "EVID-08", "TV-04", "TV-05", "REL-04", "REL-05"].includes(task.id)) {
+    if (
+      [
+        "MOB-08",
+        "A11Y-02",
+        "EVID-04",
+        "EVID-05",
+        "EVID-06",
+        "EVID-07",
+        "EVID-08",
+        "TV-04",
+        "TV-05",
+        "REL-04",
+        "REL-05",
+      ].includes(task.id)
+    ) {
       task.evidence = [
         ...new Set([
           ...(task.evidence ?? []),
@@ -497,7 +524,9 @@ for (const task of validation.tasks) {
         ]),
       ];
     }
-    if (["GOV-06", "EVID-06", "ADMIN-08", "REL-02", "REL-04"].includes(task.id)) {
+    if (
+      ["GOV-06", "EVID-06", "ADMIN-08", "REL-02", "REL-04"].includes(task.id)
+    ) {
       task.evidence = [
         ...new Set([
           ...(task.evidence ?? []),
@@ -508,7 +537,25 @@ for (const task of validation.tasks) {
         ]),
       ];
     }
-    if (["GOV-06", "STATE-03", "STATE-06", "A11Y-02", "EVID-08", "TV-09", "ADMIN-05", "REL-01", "REL-02", "REL-03", "REL-04", "REL-05", "REL-06", "REL-07", "REL-08"].includes(task.id)) {
+    if (
+      [
+        "GOV-06",
+        "STATE-03",
+        "STATE-06",
+        "A11Y-02",
+        "EVID-08",
+        "TV-09",
+        "ADMIN-05",
+        "REL-01",
+        "REL-02",
+        "REL-03",
+        "REL-04",
+        "REL-05",
+        "REL-06",
+        "REL-07",
+        "REL-08",
+      ].includes(task.id)
+    ) {
       task.evidence = [
         ...new Set([
           ...(task.evidence ?? []),
@@ -516,7 +563,17 @@ for (const task of validation.tasks) {
         ]),
       ];
     }
-    if (["GOV-06", "EVID-08", "REL-01", "REL-02", "REL-03", "REL-04", "REL-07"].includes(task.id)) {
+    if (
+      [
+        "GOV-06",
+        "EVID-08",
+        "REL-01",
+        "REL-02",
+        "REL-03",
+        "REL-04",
+        "REL-07",
+      ].includes(task.id)
+    ) {
       task.evidence = [
         ...new Set([
           ...(task.evidence ?? []),
@@ -548,7 +605,9 @@ for (const task of validation.tasks) {
 }
 
 for (const task of validation.tasks) {
-  if (!["GOV-06", "EVID-06", "ADMIN-08", "REL-02", "REL-04"].includes(task.id)) {
+  if (
+    !["GOV-06", "EVID-06", "ADMIN-08", "REL-02", "REL-04"].includes(task.id)
+  ) {
     continue;
   }
   task.evidence = [
@@ -674,8 +733,7 @@ const releaseCompletionChecks = {
 };
 const goalPredicateKeys = Object.keys(releaseGoal.completion_predicate ?? {});
 if (
-  goalPredicateKeys.join("|") !==
-  Object.keys(releaseCompletionChecks).join("|")
+  goalPredicateKeys.join("|") !== Object.keys(releaseCompletionChecks).join("|")
 ) {
   failGoalContract("completion predicate keys do not match reconciler checks");
 }
@@ -755,11 +813,10 @@ validation.current_checkpoint = {
     current_remaining_count: remainingIds.length,
   },
   latest_local_route_closure:
-    "all 176 routes remain governed; all 2,137 applicable cells are admitted, 679 are explicitly N/A, zero cells are open and closure_complete=true",
+    "all 180 routes remain governed; all 2,149 applicable cells are admitted, 731 are explicitly N/A, zero cells are open and closure_complete=true",
   active_implementation_route:
     "r67_store_cloudflare_submission_execution_across_remaining_r66_tasks",
-  active_implementation_stage:
-    "release_submission_program_active_fail_closed",
+  active_implementation_stage: "release_submission_program_active_fail_closed",
   active_release_workstream_ids: releaseWorkstreamIds,
   active_implementation_remaining_checks: [
     "dynamic_and_unrecognized_copy_review",
@@ -788,7 +845,7 @@ validation.current_checkpoint = {
     owner_organizer_open_cells: 0,
     global_open_cells: 0,
     permission_gate:
-      "No local route-evidence admission remains queued. The corrected sixteen-route batch passed exact-current execution, visual review, provenance preflight and explicit fail-closed admission.",
+      "No local route-evidence admission remains queued. The current 180-route ledger passed exact-current execution, controlled visual or response review, provenance preflight and explicit fail-closed admission.",
   },
   external_execution_preflight: {
     path: externalPreflightPath,
@@ -836,9 +893,11 @@ validation.current_checkpoint = {
 };
 validation.football_club_first_implementation = {
   ...validation.football_club_first_implementation,
-  status: "all_176_routes_locally_evidence_complete_external_and_accountable_gates_open",
+  status:
+    "all_180_routes_locally_evidence_complete_external_and_accountable_gates_open",
   post_plan_design_compliance: {
-    ...validation.football_club_first_implementation.post_plan_design_compliance,
+    ...validation.football_club_first_implementation
+      .post_plan_design_compliance,
     status: design.status,
     design_complete: design.design_complete,
     route_evidence_complete: design.route_evidence_complete,
@@ -864,16 +923,18 @@ for (const deliverable of r66Deliverables) {
   if (deliverable.id === "DELIV-01") {
     deliverable.status = "current_local_audit_complete_accountable_review_open";
     deliverable.current_evidence =
-      "current-source football-club-first UI/UX, architecture and journey audit is reconciled across 176 routes; all 2,137 applicable cells are admitted, zero remain pending, and 679 are explicit N/A";
+      "current-source football-club-first UI/UX, architecture and journey audit is reconciled across 180 routes; all 2,149 applicable cells are admitted, zero remain pending, and 731 are explicit N/A";
   } else if (deliverable.id === "DELIV-02") {
     deliverable.status = "current_local_manifest_complete_unsealed_candidate";
     deliverable.current_evidence = `machine-readable 87-task accounting records ${resultCounts.verified_complete} complete, ${resultCounts.verified_incomplete} incomplete and ${resultCounts.unverified} unverified; every remaining item names an external, human, device, live, CI, signing, store, deployment or release boundary`;
   } else if (deliverable.id === "DELIV-03") {
-    deliverable.status = "fresh_structural_inventory_and_route_state_closure_complete";
+    deliverable.status =
+      "fresh_structural_inventory_and_route_state_closure_complete";
     deliverable.current_evidence =
-      "current inventory has 176 routes, zero duplicates, 2,816 cells, 2,137 admitted applicable cells, zero open cells and 679 explicit N/A decisions; closure_complete=true";
+      "current inventory has 180 routes, zero duplicates, 2,880 cells, 2,149 admitted applicable cells, zero open cells and 731 explicit N/A decisions; closure_complete=true";
   } else if (deliverable.id === "DELIV-04") {
-    deliverable.status = "automated_pass_route_evidence_complete_overall_approval_open";
+    deliverable.status =
+      "automated_pass_route_evidence_complete_overall_approval_open";
     deliverable.current_evidence =
       "current source gate records zero violations, one governed approval warning, route_evidence_complete=true and design_complete=false";
   }
@@ -892,9 +953,12 @@ r66.route_inventory = {
   state_closure: {
     state_count: closure.state_count,
     cell_count: closure.cell_count,
-    applicable_cell_count: closure.evidenced_cell_count + closure.open_cell_count,
+    applicable_cell_count:
+      closure.evidenced_cell_count + closure.open_cell_count,
     not_applicable_cell_count:
-      closure.cell_count - closure.evidenced_cell_count - closure.open_cell_count,
+      closure.cell_count -
+      closure.evidenced_cell_count -
+      closure.open_cell_count,
     evidenced_cell_count: closure.evidenced_cell_count,
     open_cell_count: closure.open_cell_count,
     closure_complete: closure.closure_complete,
@@ -945,14 +1009,15 @@ r66.closure.external_or_human_gates = [
 delete r66.closure.all_38_tasks_complete;
 r66.design_compliance = {
   ...r66.design_compliance,
-  scope: "automated_source_plus_fail_closed_176_route_cross_surface_checkpoint",
-  automated_status: "pass_with_route_evidence_complete_and_accountable_human_review_open",
+  scope: "automated_source_plus_fail_closed_180_route_cross_surface_checkpoint",
+  automated_status:
+    "pass_with_route_evidence_complete_and_accountable_human_review_open",
   violation_count: design.violation_count,
   warning_count: design.warning_count,
   design_complete: design.design_complete,
   route_evidence_complete: design.route_evidence_complete,
   current_visual_review:
-    "all 2,137 applicable route-state cells are admitted and 679 are explicit N/A; zero cells remain open after controlled review and explicit admission of the final sixteen-route batch",
+    "all 2,149 applicable route-state cells are admitted and 731 are explicit N/A; zero cells remain open after controlled review of the current 180-route ledger",
 };
 r66.implementation.active_phase =
   "R67 store and Cloudflare submission execution is active across the remaining R66 tasks";
@@ -971,7 +1036,10 @@ r66.implementation.not_implemented_or_not_closed = [
   "named accountable release approval",
 ];
 const currentRouteFacts = fileFacts(routePath);
-const currentDesignReport = path.join(output, "design_compliance_current/report.md");
+const currentDesignReport = path.join(
+  output,
+  "design_compliance_current/report.md",
+);
 const currentDesignFacts = fileFacts(currentDesignReport);
 const currentDesignValidationFacts = fileFacts(designPath);
 r66.deliverables.DELIV03 = {
@@ -979,7 +1047,7 @@ r66.deliverables.DELIV03 = {
   json_path: routePath,
   json_sha256: currentRouteFacts.sha256,
   json_bytes: currentRouteFacts.bytes,
-  freshness: "current_local_route_state_checkpoint_2137_admitted_0_open_679_na",
+  freshness: "current_local_route_state_checkpoint_2149_admitted_0_open_731_na",
 };
 r66.deliverables.DELIV04 = {
   ...r66.deliverables.DELIV04,
@@ -989,7 +1057,8 @@ r66.deliverables.DELIV04 = {
   validation_path: designPath,
   validation_sha256: currentDesignValidationFacts.sha256,
   validation_bytes: currentDesignValidationFacts.bytes,
-  freshness: "current_local_route_evidence_complete_with_accountable_design_approval_open",
+  freshness:
+    "current_local_route_evidence_complete_with_accountable_design_approval_open",
 };
 r66.contradictions_and_staleness = r66.contradictions_and_staleness.map(
   (item) =>
@@ -998,7 +1067,7 @@ r66.contradictions_and_staleness = r66.contradictions_and_staleness.map(
           ...item,
           status: "superseded",
           description:
-            "All earlier partial route ledgers are superseded by the current 176-route, 2,816-cell ledger with 2,137 admitted applicable cells, zero open cells, 679 explicit N/A decisions and closure_complete=true.",
+            "All earlier partial route ledgers are superseded by the current 180-route, 2,880-cell ledger with 2,149 admitted applicable cells, zero open cells, 731 explicit N/A decisions and closure_complete=true.",
         }
       : item.id === "CONTRA-R66-04"
         ? {
@@ -1033,7 +1102,8 @@ engagement.goal_revision = {
     closure.cell_count - closure.evidenced_cell_count - closure.open_cell_count,
   football_club_first_implementation: {
     ...engagement.goal_revision.football_club_first_implementation,
-    status: "all_176_routes_locally_evidence_complete_external_and_accountable_gates_open",
+    status:
+      "all_180_routes_locally_evidence_complete_external_and_accountable_gates_open",
     route_evidence_regeneration_required: false,
   },
   release_submission_execution: {
@@ -1048,12 +1118,13 @@ engagement.goal_revision = {
   },
   active_implementation_route:
     "r67_store_cloudflare_submission_execution_across_remaining_r66_tasks",
-  active_implementation_stage:
-    "release_submission_program_active_fail_closed",
+  active_implementation_stage: "release_submission_program_active_fail_closed",
   active_implementation_remaining_checks:
     validation.current_checkpoint.active_implementation_remaining_checks,
-  active_code_owned_queue: validation.current_checkpoint.active_code_owned_queue,
-  evidence_admission_queue: validation.current_checkpoint.evidence_admission_queue,
+  active_code_owned_queue:
+    validation.current_checkpoint.active_code_owned_queue,
+  evidence_admission_queue:
+    validation.current_checkpoint.evidence_admission_queue,
 };
 engagement.status = releaseGoalCompletionProven
   ? "complete"

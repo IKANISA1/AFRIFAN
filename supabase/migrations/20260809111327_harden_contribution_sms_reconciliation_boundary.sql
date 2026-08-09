@@ -3,10 +3,12 @@
 -- Supporters may read only tenant-scoped records and create a pending
 -- contribution through create_pending_group_contribution(). Confirmation is
 -- deliberately reserved for a trusted service transaction that binds an exact
--- SMS ledger entry, reference, amount, club, version token and audit actor.
+-- SMS ledger entry, provider reference, amount, club, version token and audit
+-- actor. Client request correlation remains distinct and immutable.
 
 alter table public.group_contributions
   add column if not exists confirmed_at timestamptz,
+  add column if not exists client_request_reference text,
   add column if not exists idempotency_key text,
   add column if not exists reconciled_ledger_entry_id uuid,
   add column if not exists reconciliation_id uuid,
@@ -16,6 +18,30 @@ alter table public.group_contributions
 alter table public.group_contributions
   alter column payment_status
     set default 'pending_verification'::public.payment_status;
+
+-- Older released clients used MOMO-<timestamp> (and similar locally-created
+-- tokens) in momo_reference before a provider transaction existed. Preserve
+-- those as request correlation, but leave the provider reference unbound until
+-- the trusted reconciliation transaction verifies the parsed SMS and ledger.
+update public.group_contributions
+   set client_request_reference = coalesce(
+         client_request_reference,
+         nullif(
+           pg_catalog.upper(
+             pg_catalog.regexp_replace(
+               pg_catalog.btrim(coalesce(momo_reference, '')),
+               '[^A-Za-z0-9]',
+               '',
+               'g'
+             )
+           ),
+           ''
+         ),
+         'LEGACY' || pg_catalog.replace(id::text, '-', '')
+       ),
+       momo_reference = null,
+       payment_status = 'pending_verification'::public.payment_status
+ where status = 'pending';
 
 do $$
 begin
@@ -76,8 +102,22 @@ create unique index if not exists
 on public.group_contributions (reconciliation_idempotency_key)
 where reconciliation_idempotency_key is not null;
 
+create index if not exists idx_group_contributions_reconciled_ledger_entry_id
+on public.group_contributions (reconciled_ledger_entry_id);
+
+create index if not exists idx_group_contributions_reconciliation_id
+on public.group_contributions (reconciliation_id);
+
 create index if not exists idx_group_contributions_group_user_created
 on public.group_contributions (group_id, user_id, created_at desc);
+
+create index if not exists idx_group_contributions_client_request_reference
+on public.group_contributions (
+  user_id,
+  group_id,
+  client_request_reference
+)
+where client_request_reference is not null;
 
 create or replace function public.enforce_group_contribution_identity()
 returns trigger
@@ -88,10 +128,15 @@ begin
   if new.group_id is distinct from old.group_id
      or new.user_id is distinct from old.user_id
      or new.amount is distinct from old.amount
-     or new.momo_reference is distinct from old.momo_reference
+     or new.client_request_reference is distinct from old.client_request_reference
      or new.idempotency_key is distinct from old.idempotency_key then
     raise exception
-      'Contribution identity, amount, payment reference and idempotency key are immutable.';
+      'Contribution identity, amount, client request reference and idempotency key are immutable.';
+  end if;
+
+  if old.momo_reference is not null
+     and new.momo_reference is distinct from old.momo_reference then
+    raise exception 'A provider payment reference is immutable after binding.';
   end if;
 
   if old.reconciled_ledger_entry_id is not null
@@ -214,7 +259,7 @@ grant execute on function public.is_group_member(uuid, uuid)
 create or replace function public.create_pending_group_contribution(
   p_group_id uuid,
   p_amount integer,
-  p_payment_reference text,
+  p_client_request_reference text,
   p_idempotency_key text default null
 )
 returns jsonb
@@ -226,9 +271,8 @@ declare
   v_actor_id uuid := auth.uid();
   v_club_claim text := public.requesting_club_id();
   v_club_id bigint;
-  v_reference text;
+  v_client_request_reference text;
   v_idempotency_key text;
-  v_group public.groups%rowtype;
   v_contribution public.group_contributions%rowtype;
   v_inserted boolean := false;
 begin
@@ -249,23 +293,23 @@ begin
     raise exception 'Contribution amount must be between 1 and 100000000 RWF.';
   end if;
 
-  v_reference := pg_catalog.upper(
+  v_client_request_reference := pg_catalog.upper(
     pg_catalog.regexp_replace(
-      pg_catalog.btrim(coalesce(p_payment_reference, '')),
+      pg_catalog.btrim(coalesce(p_client_request_reference, '')),
       '[^A-Za-z0-9]',
       '',
       'g'
     )
   );
-  if pg_catalog.length(v_reference) < 6
-     or pg_catalog.length(v_reference) > 64 then
-    raise exception 'A valid payment reference between 6 and 64 characters is required.';
+  if pg_catalog.length(v_client_request_reference) < 6
+     or pg_catalog.length(v_client_request_reference) > 64 then
+    raise exception 'A valid client request reference between 6 and 64 characters is required.';
   end if;
 
   v_idempotency_key := pg_catalog.lower(
     pg_catalog.regexp_replace(
       pg_catalog.btrim(
-        coalesce(p_idempotency_key, 'momo:' || v_reference)
+        coalesce(p_idempotency_key, 'momo:' || v_client_request_reference)
       ),
       '[^A-Za-z0-9:_-]',
       '',
@@ -277,8 +321,7 @@ begin
     raise exception 'A valid idempotency key between 8 and 128 characters is required.';
   end if;
 
-  select contribution_group.*
-    into v_group
+  perform 1
     from public.groups as contribution_group
    where contribution_group.id = p_group_id
      and contribution_group.club_id = v_club_id
@@ -298,15 +341,20 @@ begin
   select contribution.*
     into v_contribution
     from public.group_contributions as contribution
-   where contribution.momo_reference = v_reference
+   where contribution.user_id = v_actor_id
+     and contribution.group_id = p_group_id
+     and contribution.client_request_reference = v_client_request_reference
+   order by contribution.created_at desc
+   limit 1
    for update;
 
   if found then
-    if v_contribution.user_id is distinct from v_actor_id
-       or v_contribution.group_id is distinct from p_group_id
-       or v_contribution.amount is distinct from p_amount
-       or v_contribution.idempotency_key is distinct from v_idempotency_key then
-      raise exception 'Payment reference is already bound to another contribution request.';
+    if v_contribution.amount is distinct from p_amount
+       or (
+         v_contribution.idempotency_key is not null
+         and v_contribution.idempotency_key is distinct from v_idempotency_key
+       ) then
+      raise exception 'Client request reference is already bound to another contribution request.';
     end if;
   else
     begin
@@ -316,7 +364,7 @@ begin
         amount,
         status,
         payment_status,
-        momo_reference,
+        client_request_reference,
         idempotency_key
       ) values (
         p_group_id,
@@ -324,7 +372,7 @@ begin
         p_amount,
         'pending',
         'pending_verification'::public.payment_status,
-        v_reference,
+        v_client_request_reference,
         v_idempotency_key
       )
       on conflict on constraint group_contributions_idempotency_key_key
@@ -344,7 +392,11 @@ begin
          contribution.user_id = v_actor_id
          and contribution.group_id = p_group_id
          and contribution.idempotency_key = v_idempotency_key
-       ) or contribution.momo_reference = v_reference
+       ) or (
+         contribution.user_id = v_actor_id
+         and contribution.group_id = p_group_id
+         and contribution.client_request_reference = v_client_request_reference
+       )
        order by
          case when contribution.idempotency_key = v_idempotency_key then 0 else 1 end
        limit 1
@@ -355,9 +407,12 @@ begin
        or v_contribution.user_id is distinct from v_actor_id
        or v_contribution.group_id is distinct from p_group_id
        or v_contribution.amount is distinct from p_amount
-       or v_contribution.momo_reference is distinct from v_reference
-       or v_contribution.idempotency_key is distinct from v_idempotency_key then
-      raise exception 'Idempotency key or payment reference conflicts with another request.';
+       or v_contribution.client_request_reference is distinct from v_client_request_reference
+       or (
+         v_contribution.idempotency_key is not null
+         and v_contribution.idempotency_key is distinct from v_idempotency_key
+       ) then
+      raise exception 'Idempotency key or client request reference conflicts with another request.';
     end if;
   end if;
 
@@ -538,10 +593,22 @@ begin
     )
   );
 
-  if pg_catalog.length(v_reference) < 6
-     or v_ledger_reference is distinct from v_reference
-     or v_parsed_reference is distinct from v_reference then
-    raise exception 'Contribution and SMS payment references do not match exactly.';
+  if pg_catalog.length(v_ledger_reference) < 6
+     or v_parsed_reference is distinct from v_ledger_reference
+     or (
+       pg_catalog.length(v_reference) > 0
+       and v_reference is distinct from v_ledger_reference
+     ) then
+    raise exception 'Parsed SMS and ledger payment references do not match exactly.';
+  end if;
+
+  if exists (
+    select 1
+      from public.group_contributions as other_contribution
+     where other_contribution.momo_reference = v_ledger_reference
+       and other_contribution.id <> v_contribution.id
+  ) then
+    raise exception 'Provider payment reference is already bound to another contribution.';
   end if;
 
   if v_ledger.user_id is distinct from v_contribution.user_id
@@ -647,6 +714,7 @@ begin
   update public.group_contributions
      set status = 'confirmed',
          payment_status = 'verified'::public.payment_status,
+         momo_reference = v_ledger_reference,
          confirmed_at = v_reconciled_at,
          reconciled_ledger_entry_id = v_ledger.id,
          reconciliation_id = v_reconciliation.id,
@@ -934,6 +1002,7 @@ grant select (
   amount,
   status,
   payment_status,
+  client_request_reference,
   momo_reference,
   confirmed_at,
   created_at,
@@ -982,7 +1051,7 @@ comment on function public.create_pending_group_contribution(
   text,
   text
 ) is
-  'Creates only the authenticated member''s own-club pending contribution, with a normalized immutable payment reference and idempotent replay.';
+  'Creates only the authenticated member''s own-club pending contribution, with a normalized immutable client request reference, an unbound provider reference and idempotent replay.';
 
 comment on function public.reconcile_group_contribution_from_sms(
   uuid,

@@ -96,7 +96,12 @@ export const getClubProfile = cache(async function getClubProfile() {
   try {
     const { data } = await client
       .from("african_football_clubs")
-      .select("*")
+      .select(
+        "id,club_name,club_slug,nickname_brand_identity,country_iso_code," +
+          "league,region,currency_code,currency_symbol,default_language," +
+          "supported_languages,primary_color_hex,secondary_color_hex," +
+          "accent_color_hex,feature_flags",
+      )
       .eq("club_slug", activeClub.slug)
       .maybeSingle();
 

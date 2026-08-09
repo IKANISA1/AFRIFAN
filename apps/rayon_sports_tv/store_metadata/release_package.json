@@ -10,7 +10,9 @@
     "min_sdk": 24,
     "target_sdk": 36,
     "category": "Sports",
-    "preferred_distribution": "managed_private",
+    "preferred_distribution": "public_google_play_tv",
+    "current_preproduction_stage": "internal_testing",
+    "public_submission_status": "pending_approval_and_portal_promotion",
     "effective_runtime_content_locale": "rw",
     "material_widget_fallback_locale": "en",
     "material_app_declared_locales": ["en", "fr"],
@@ -36,21 +38,34 @@
     "ads_sdk_found": false,
     "supabase_backend": true
   },
+  "production_artifact_evidence": {
+    "path": "../build/app/outputs/bundle/release/app-release.aab",
+    "sha256": "37bfdbd7a7206c7002c4ba6fad55bfc43247e3df133a6d656b72828ff7f1ae77",
+    "upload_certificate_sha256": "FA:4C:70:17:85:D5:19:E4:AF:05:D9:B7:48:B3:F4:82:64:C3:28:63:09:0F:71:DC:A8:C8:04:6B:EA:CB:B7:7D",
+    "signer_subject": "CN=Gikundiro TV Upload, OU=Mobile, O=IKANISA LTD, L=Kigali, ST=Kigali, C=RW",
+    "launcher_banner_source_path": "../android/app/src/main/res/drawable-xhdpi/tv_banner.png",
+    "launcher_banner_embedded_path": "base/res/drawable-xhdpi-v4/tv_banner.png",
+    "launcher_banner_source_sha256": "272c3d57586d779f21ac17bf36acde3848ca1f5814ac49b4317b6e77014164b5",
+    "launcher_banner_embedded_sha256": "272c3d57586d779f21ac17bf36acde3848ca1f5814ac49b4317b6e77014164b5",
+    "launcher_banner_byte_parity_verified": true,
+    "boundary": "This records the locally inspected production upload AAB and upload certificate. Play App Signing identity, Play-generated delivery APKs, processing, review, and public availability remain portal evidence."
+  },
   "blocking_items": [
     {
       "id": "TV-DISTRIBUTION-01",
       "status": "blocking",
-      "required_outcome": "Approve managed/private distribution or complete a separate public-listing policy assessment."
+      "required_outcome": "Approve the intended public Google Play TV distribution, countries/audience/content model, and promotion from internal testing to the public review track."
     },
     {
       "id": "TV-BANNER-01",
-      "status": "blocking",
-      "required_outcome": "Replace or validate the source vector banner against the current Android TV launcher requirements with a 320x180 xhdpi raster asset in the release artifact."
+      "status": "verified_technical",
+      "required_outcome": "Technical source-to-AAB byte parity is complete. Keep accountable brand/content-rights approval and Play device/launcher review as separate gates.",
+      "evidence": "Source and production-AAB embedded banner both hash to 272c3d57586d779f21ac17bf36acde3848ca1f5814ac49b4317b6e77014164b5."
     },
     {
       "id": "TV-ARTWORK-01",
       "status": "blocking",
-      "required_outcome": "Capture and approve actual TV screenshots and the Play listing banner from the exact candidate without real data or pairing codes."
+      "required_outcome": "Approve the icon, checksum-locked feature graphic, TV banner, and two genuine AVD screenshots; then confirm visual parity on the Play-delivered internal-testing build without real data or pairing codes. One screenshot is same-source validation-release UI and one is a deterministic synthetic-state render of the current interface; neither is claimed as a Play-delivered AAB capture."
     },
     {
       "id": "TV-RIGHTS-01",

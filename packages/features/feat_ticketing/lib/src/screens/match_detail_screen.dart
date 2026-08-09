@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -131,6 +132,15 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
 
   Future<void> _handlePurchase(ClubMatch match) async {
     if (_submitting) return;
+    if (!ref
+        .read(storeReleasePolicyProvider)
+        .allowsUnreconciledExternalPaymentLaunch) {
+      AfriToast.error(
+        context,
+        context.afriL10n.ticketPaymentVerificationUnavailable,
+      );
+      return;
+    }
     if (!ConnectivityService.isOnline) {
       AfriToast.error(
         context,
@@ -255,7 +265,12 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     final l10n = context.afriL10n;
     final user = ref.watch(currentUserProvider);
     final accessEnabled = ref.watch(ticketDetailAccessEnabledProvider);
-    if (accessEnabled) {
+    final checkoutAllowed = ref.watch(
+      storeReleasePolicyProvider.select(
+        (policy) => policy.allowsUnreconciledExternalPaymentLaunch,
+      ),
+    );
+    if (accessEnabled && checkoutAllowed) {
       _ensurePaymentRouteState(user);
     }
     final detailAsync = ref.watch(ticketDetailProvider(widget.matchId));
@@ -288,7 +303,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
             Text(l10n.ticketMatchDay, style: TypographyTokens.headlineLarge()),
       ),
       scrollable: false,
-      child: !accessEnabled
+      child: !accessEnabled || !checkoutAllowed
           ? MatchDetailEmptyState(
               title: l10n.ticketSalesUnavailableTitle,
               body: l10n.ticketSalesUnavailableMessage,

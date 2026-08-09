@@ -36,16 +36,16 @@ access. Where enabled, the app hands an authorized mobile-money payment to the
 system dialer. Review does not require or authorize a real payment. Seeded
 pending and confirmed records are available through the review access.
 
-Predictions, points, rankings, rewards, and any challenge surface are controlled
-by production feature configuration. In the submitted store candidate, list the
-exact enabled states here. The app is not presented as real-money gambling; any
-enabled FET points must not be purchasable, withdrawable, or redeemable for cash
-or an unapproved real-world prize.
+In build `1.0.3 (6)`, production store policy disables staked challenges,
+jackpots, reward redemption, partner offers, FET transfer/manual redemption,
+social discovery, and cross-user editable text. The candidate migration revokes
+the corresponding public-client RPCs. Earned-points history and ordinary free
+sports-prediction context may remain, but no purchase, withdrawal, stake,
+cash/real-world prize, or reward claim is enabled.
 
-If user-chosen display names or notes are enabled, describe the exact reporting,
-blocking, filtering, moderation, and support controls here. Otherwise confirm
-that the candidate exposes only system-controlled aliases and that social/user
-text features are disabled.
+Public supporter labels use system-controlled aliases. User-chosen display names
+and challenge notes are not exposed to other users in this candidate. Any future
+enablement requires a new binary and updated moderation/review evidence.
 
 ## Review-path acceptance gate
 
@@ -56,6 +56,5 @@ text features are disabled.
 - [ ] Backend and public URLs remain available throughout review.
 - [ ] Seed data contains no real supporter information.
 - [ ] Reviewer can execute account deletion on a disposable review identity.
-- [ ] Exact enabled feature flags are included in the portal notes.
+- [ ] Exact disabled feature-policy and migration boundary is included in the portal notes.
 - [ ] Partnership/trademark authorization is attached if Apple requests it.
-

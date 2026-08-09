@@ -126,6 +126,35 @@ void main() {
       );
     });
 
+    test(
+      'omits supporter directory routes when cross-user text is closed',
+      () async {
+        const releaseRepository = LocalDiscoverySearchRepository(
+          allowsCrossUserText: false,
+        );
+
+        final response = await releaseRepository.search(
+          const DiscoverySearchQuery(
+            text: 'supporter',
+            category: DiscoveryCategory.supporters,
+          ),
+        );
+
+        expect(
+          response.results.map((result) => result.id),
+          isNot(contains('supporter-directory')),
+        );
+        expect(
+          response.results.map((result) => result.id),
+          isNot(contains('fan-registry')),
+        );
+        expect(
+          response.results.map((result) => result.destination),
+          isNot(contains('/membership/fans')),
+        );
+      },
+    );
+
     test('localizes the searchable catalog for EN, FR, and RW', () async {
       for (final testCase in <({String locale, String query, String title})>[
         (locale: 'en', query: 'tickets', title: 'Match tickets'),

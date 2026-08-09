@@ -75,6 +75,8 @@ coverage/
 # Env
 .env
 .env.*
+!/.env.example
+!/apps/rayon_sports/web/.env.example
 *.service-account.json
 *service-account*.json
 apps/*/assets/flavors/*.local.json

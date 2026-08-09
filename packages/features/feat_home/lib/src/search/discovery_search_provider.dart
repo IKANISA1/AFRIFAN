@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,11 +13,16 @@ final discoverySearchRepositoryProvider = Provider<DiscoverySearchRepository>((
   ref,
 ) {
   final client = ref.watch(supabaseClientProvider);
+  final allowsCrossUserText = ref.watch(
+    storeReleasePolicyProvider.select((policy) => policy.allowsCrossUserText),
+  );
   return FederatedDiscoverySearchRepository(
-    local: const LocalDiscoverySearchRepository(),
+    local: LocalDiscoverySearchRepository(
+      allowsCrossUserText: allowsCrossUserText,
+    ),
     liveSources: <DiscoverySearchSource>[
       SupabaseClubDiscoverySource(client: client),
-      SupabaseSupporterDiscoverySource(client: client),
+      if (allowsCrossUserText) SupabaseSupporterDiscoverySource(client: client),
       SupabaseFixtureDiscoverySource(client: client),
       SupabaseCommerceDiscoverySource(client: client),
       SupabaseVenueDiscoverySource(client: client),

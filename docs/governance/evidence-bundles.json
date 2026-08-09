@@ -4,6 +4,45 @@
   "manifest_name": "build-provenance.json",
   "bundles": [
     {
+      "id": "consumer-web-support-policy-states-20260809",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/consumer_web_support_policy_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "REL-07"
+      ],
+      "baseline_commit": "d92394f47f660551701f4c65769085587cd1962b",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "consumer_web_production_local_support_policy_route_evidence",
+      "platform": "nextjs_production_build_playwright_mobile_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; mobile Chromium Pixel 7 profile",
+      "viewport_profiles": [
+        {
+          "width": 412,
+          "height": 839,
+          "device_pixel_ratio": 2.625
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "focused",
+        "pressed"
+      ],
+      "captured_at": "2026-08-09T10:50:42Z",
+      "data_source": "dirty local working-tree production web build at capture time, based on the recorded baseline commit; no exact source patch digest was recorded; synthetic non-production browser interaction states for public support and account-deletion routes; no physical assistive-technology, deployed-domain, store, or accountable approval claim"
+    },
+    {
       "id": "android-profile-performance-checkpoint-20260802",
       "directory": "output/implementation_goal_20260724/android_profile_performance_checkpoint_20260802",
       "artifact_scope": "recursive",

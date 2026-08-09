@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   core_auth:
     path: ../../core/core_auth
+  core_feature_config:
+    path: ../../core/core_feature_config
   core_l10n:
     path: ../../core/core_l10n
   core_theme:

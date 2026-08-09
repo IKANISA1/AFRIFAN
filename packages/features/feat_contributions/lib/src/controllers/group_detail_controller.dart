@@ -115,7 +115,11 @@ class SupabaseGroupDetailGateway implements GroupDetailGateway {
 
     final groupRow = await _client
         .from('contribution_groups')
-        .select()
+        .select(
+          'id,name,description,group_type,target_amount,current_total,'
+          'momo_recipient_code,momo_route_type,deadline,is_recurring,'
+          'is_closed,member_count,created_at,club_id,partner_id,is_active',
+        )
         .eq('id', groupId)
         .eq('club_id', clubId)
         .maybeSingle();

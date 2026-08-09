@@ -15,7 +15,21 @@ APP_DIR="$REPO_ROOT/apps/rayon_sports"
 ANDROID_DIR="$APP_DIR/android"
 KEYSTORE_FILE="$ANDROID_DIR/upload-keystore.jks"
 KEYSTORE_PROPS="$ANDROID_DIR/keystore.properties"
+PUBSPEC_FILE="$APP_DIR/pubspec.yaml"
+RELEASE_CONTRACT="$REPO_ROOT/tools/scripts/android_release_contract.mjs"
+EXPECTED_APPLICATION_ID="rw.gikundiro.app"
 FLUTTER_PIN="$(tr -d '[:space:]' < "$REPO_ROOT/.fvmrc")"
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "❌ Node.js is required to parse and validate the Android release contract."
+  exit 2
+fi
+
+release_version="$(
+  node "$RELEASE_CONTRACT" version --pubspec "$PUBSPEC_FILE"
+)"
+IFS=$'\t' read -r BUILD_NAME BUILD_NUMBER <<< "$release_version"
+echo "🏷️  Release version: $BUILD_NAME+$BUILD_NUMBER"
 
 # ── Resolve Flutter ──
 if [ -x "$REPO_ROOT/.fvm/flutter_sdk/bin/flutter" ]; then
@@ -32,7 +46,7 @@ else
 fi
 
 echo "🔧 Using Flutter: $FLUTTER"
-$FLUTTER --version | head -1
+"$FLUTTER" --version | head -1
 bash "$REPO_ROOT/tools/scripts/validate_flutter_runtime_pins.sh" \
   --runtime "$FLUTTER"
 
@@ -73,10 +87,19 @@ fi
 # ── Build signed AAB ──
 echo "🏗️  Building signed release AAB..."
 cd "$APP_DIR"
-$FLUTTER build appbundle --release --dart-define-from-file=assets/flavors/production.json
+"$FLUTTER" build appbundle --release \
+  --build-name "$BUILD_NAME" \
+  --build-number "$BUILD_NUMBER" \
+  --dart-define-from-file=assets/flavors/production.json
 
 AAB_PATH="$APP_DIR/build/app/outputs/bundle/release/app-release.aab"
 if [ -f "$AAB_PATH" ]; then
+  node "$RELEASE_CONTRACT" validate \
+    --app-dir "$APP_DIR" \
+    --artifact "$AAB_PATH" \
+    --expected-application-id "$EXPECTED_APPLICATION_ID" \
+    --expected-version-name "$BUILD_NAME" \
+    --expected-version-code "$BUILD_NUMBER"
   SIZE=$(du -h "$AAB_PATH" | cut -f1)
   echo ""
   echo "✅ Signed AAB built successfully!"

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -15,8 +16,8 @@ import '../prediction_providers.dart';
 import '../widgets/team_profile_tabs.dart';
 import '../widgets/team_profile_widgets.dart';
 
-/// Team Profile — 5-tab layout matching the fanafrika reference:
-/// Overview · Members · Fixtures · Contribute · About
+/// Team Profile — Overview · Members · Fixtures · About, with the legacy
+/// direct-contribution tab available only in an unenforced development build.
 class TeamProfileScreen extends ConsumerStatefulWidget {
   const TeamProfileScreen({super.key, required this.teamSlug});
 
@@ -29,6 +30,7 @@ class TeamProfileScreen extends ConsumerStatefulWidget {
 class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  late final bool _allowsUnreconciledExternalPaymentLaunch;
 
   TeamCatalogEntry? _team;
   LeagueStandingEntry? _tableRow;
@@ -45,7 +47,13 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _allowsUnreconciledExternalPaymentLaunch = ref
+        .read(storeReleasePolicyProvider)
+        .allowsUnreconciledExternalPaymentLaunch;
+    _tabController = TabController(
+      length: _allowsUnreconciledExternalPaymentLaunch ? 5 : 4,
+      vsync: this,
+    );
     unawaited(_load());
   }
 
@@ -150,6 +158,10 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         );
       }
 
+      if (!_allowsUnreconciledExternalPaymentLaunch) {
+        return TeamClubContext(clubId: clubId, isActiveClubTeam: true);
+      }
+
       var routeQuery = client
           .from('partner_payment_routes')
           .select(
@@ -221,6 +233,10 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
   }
 
   Future<void> _dialMomoUssd() async {
+    if (!_allowsUnreconciledExternalPaymentLaunch) {
+      return;
+    }
+
     if (!_isActiveClubTeam) {
       _showMessage(
         _clubSupportMessage ?? context.afriL10n.gameContributionsActiveClubOnly,
@@ -459,7 +475,8 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                         Tab(text: context.afriL10n.gameOverview),
                         Tab(text: context.afriL10n.gameMembers),
                         Tab(text: context.afriL10n.gameFixtures),
-                        Tab(text: context.afriL10n.gameContribute),
+                        if (_allowsUnreconciledExternalPaymentLaunch)
+                          Tab(text: context.afriL10n.gameContribute),
                         Tab(text: context.afriL10n.gameAbout),
                       ],
                     ),
@@ -475,6 +492,8 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                     paymentRoute: _paymentRoute,
                     isActiveClubTeam: _isActiveClubTeam,
                     clubSupportMessage: _clubSupportMessage,
+                    allowsUnreconciledExternalPaymentLaunch:
+                        _allowsUnreconciledExternalPaymentLaunch,
                   ),
                   TeamMembersTab(
                     clubId: _activeClubId,
@@ -484,13 +503,16 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                     fixtures: _fixtures,
                     kickoffLabel: (value) => _kickoffLabel(context, value),
                   ),
-                  TeamContributeTab(
-                    isDialing: _isDialing,
-                    onDial: _dialMomoUssd,
-                    paymentRoute: _paymentRoute,
-                    isActiveClubTeam: _isActiveClubTeam,
-                    clubSupportMessage: _clubSupportMessage,
-                  ),
+                  if (_allowsUnreconciledExternalPaymentLaunch)
+                    TeamContributeTab(
+                      isDialing: _isDialing,
+                      onDial: _dialMomoUssd,
+                      paymentRoute: _paymentRoute,
+                      isActiveClubTeam: _isActiveClubTeam,
+                      clubSupportMessage: _clubSupportMessage,
+                      allowsUnreconciledExternalPaymentLaunch:
+                          _allowsUnreconciledExternalPaymentLaunch,
+                    ),
                   TeamAboutTab(team: team),
                 ],
               ),

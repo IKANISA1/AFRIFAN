@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_ticketing/src/screens/match_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [currentUserProvider.overrideWithValue(null)],
+        overrides: [
+          storeReleasePolicyProvider.overrideWithValue(
+            const StoreReleasePolicy.unenforced(),
+          ),
+          currentUserProvider.overrideWithValue(null),
+        ],
         child: const MaterialApp(
           home: MatchDetailScreen(matchId: 'fixture-missing'),
         ),

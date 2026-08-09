@@ -14,7 +14,6 @@ import {
   AdminMutationConflictError,
   requireAdminClubId,
   requireExpectedUpdatedAt,
-  resolveClubFootballPartnerId,
 } from "./helpers";
 
 type SupporterRegistryRow = {
@@ -448,6 +447,11 @@ export async function reviewMembershipApplication(
   decision: "approved" | "rejected",
   notes?: string,
 ) {
+  if (decision === "approved") {
+    throw new Error(
+      "Membership approval is disabled until provider payment reconciliation is verified independently.",
+    );
+  }
   if (typeof window !== "undefined") {
     await requestAdminApi("membership-applications/review", {
       method: "POST",
@@ -455,19 +459,17 @@ export async function reviewMembershipApplication(
     });
     return;
   }
-  const clubId = requireAdminClubId(access, "review application");
+  requireAdminClubId(access, "review application");
   const loadedVersion = requireExpectedUpdatedAt(expectedUpdatedAt);
-  const partnerId = await resolveClubFootballPartnerId(client, clubId);
   const { error } = await client.rpc(
-    "admin_review_membership_application_if_unchanged",
+    "review_membership_application_if_unchanged",
     {
       p_application_id: applicationId,
       p_expected_updated_at: loadedVersion,
       p_decision: decision,
-      p_notes: notes ?? null,
-      p_club_id: clubId,
-      p_partner_id: partnerId,
+      p_payment_status: "failed",
       p_actor_id: access.userId ?? null,
+      p_notes: notes ?? null,
     },
   );
 

@@ -2,8 +2,9 @@
 
 This directory is the source-controlled preparation pack for the Android TV
 listing. It records verified code facts, draft answers, artwork requirements,
-reviewer guidance, portal-only values, and accountable approvals. It does not
-claim that an AAB was uploaded, reviewed, approved, or released.
+reviewer guidance, portal-only values, and accountable approvals. Internal
+testing is the recorded pre-production stage; it must not be represented as
+public submission, review approval, staged production release, or publication.
 
 Run the code-owned gate from this directory:
 
@@ -18,9 +19,15 @@ processed-artifact and portal-form evidence before promotion/submission. Do not
 commit Play credentials, passwords, one-time codes,
 identity evidence, private keys, real pairing codes, or device credentials.
 
-The current packaging decision is managed/private distribution. A public TV
-release is a separate accountable decision because it changes audience,
-discoverability, content-rights, and moderation exposure.
+The intended distribution is a public Google Play TV listing. Internal testing
+is the current pre-production stage. Public-track promotion still requires the
+named distribution, product, rights, audience, privacy, device, language, and
+release-owner approvals plus authenticated portal evidence.
+
+The prepared media set now satisfies the code-owned default listing inventory:
+a 512x512 app icon, 1024x500 feature graphic, 1280x720 Android TV banner, and
+two 1920x1080 genuine AVD screenshots. This inventory is not evidence that the
+assets were uploaded, approved, or rendered from a Play-delivered build.
 
 The current production content locale is Kinyarwanda with English fallback for
 platform-provided text; there is no user-selectable TV locale. English and

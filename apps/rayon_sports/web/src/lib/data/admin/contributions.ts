@@ -324,7 +324,7 @@ export async function getAdminContributionSnapshot(
   const groupsQuery = client
     .from(contributionTable)
     .select(
-      "id, name, description, group_type, target_amount, current_total, member_count, creator_id, is_closed, created_at, updated_at, currency",
+      "id, name, description, group_type, target_amount, current_total, member_count, is_closed, created_at, updated_at, currency",
     )
     .eq("club_id", clubId)
     .order("created_at", { ascending: false })

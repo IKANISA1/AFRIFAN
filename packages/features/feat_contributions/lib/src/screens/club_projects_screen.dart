@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../widgets/contribution_overlays.dart';
-
 class ClubProjectsScreen extends ConsumerStatefulWidget {
   const ClubProjectsScreen({super.key});
 
@@ -214,9 +212,13 @@ class _ProjectCard extends StatelessWidget {
                   ? l10n.contributionsContributeAction
                   : l10n.connectionRequired,
               fullWidth: true,
-              onTap: () =>
-                  unawaited(showMomoAmountEntrySheet(context, title: title)),
-              enabled: isOnline,
+              onTap: () {
+                if (groupId.isEmpty) {
+                  return;
+                }
+                unawaited(context.push('/contribute/group/$groupId'));
+              },
+              enabled: isOnline && groupId.isNotEmpty,
             ),
           ),
         ],

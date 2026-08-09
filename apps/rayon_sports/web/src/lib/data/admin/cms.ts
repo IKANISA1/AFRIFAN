@@ -201,7 +201,6 @@ export async function saveAdminArticle(
     club_id: clubId,
     title: input.title.trim(),
     subtitle: safeString(input.subtitle) || null,
-    excerpt: safeString(input.excerpt) || safeString(input.body).slice(0, 140),
     body: input.body.trim(),
     category: safeString(input.category, "News"),
     image_url: safeString(input.imageUrl) || null,

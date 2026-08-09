@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -30,6 +31,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          storeReleasePolicyProvider.overrideWithValue(
+            const StoreReleasePolicy.unenforced(),
+          ),
           currentUserProvider.overrideWith(
             (ref) => const UserProfile(
               id: 'user-1',
@@ -337,6 +341,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          storeReleasePolicyProvider.overrideWithValue(
+            const StoreReleasePolicy.unenforced(),
+          ),
           currentUserProvider.overrideWithValue(_user),
           clubRepositoryProvider.overrideWithValue(repository),
           ticketMatchProvider('match-1').overrideWith((ref) async => _match),
@@ -392,12 +399,54 @@ void main() {
     );
   });
 
+  testWidgets('production policy keeps paid ticket reservation closed', (
+    tester,
+  ) async {
+    final repository = _FakeClubRepository();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          storeReleasePolicyProvider.overrideWithValue(
+            const StoreReleasePolicy(isEnforced: true),
+          ),
+          currentUserProvider.overrideWithValue(_user),
+          clubRepositoryProvider.overrideWithValue(repository),
+          ticketMatchProvider('match-1').overrideWith((ref) async => _match),
+        ],
+        child: MaterialApp(
+          home: ClubConfigScope(
+            config: ClubConfig.fallback(),
+            child: const MatchDetailScreen(matchId: 'match-1'),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ticket sales unavailable'), findsOneWidget);
+    expect(find.text('Review reservation'), findsNothing);
+    verifyNever(() => repository.findActivePaymentRoute(any()));
+    verifyNever(
+      () => repository.purchaseTickets(
+        matchId: any(named: 'matchId'),
+        userId: any(named: 'userId'),
+        seatType: any(named: 'seatType'),
+        quantity: any(named: 'quantity'),
+        paymentReference: any(named: 'paymentReference'),
+      ),
+    );
+  });
+
   testWidgets('seat map exposes stand buttons beyond canvas hit testing', (
     tester,
   ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          storeReleasePolicyProvider.overrideWithValue(
+            const StoreReleasePolicy.unenforced(),
+          ),
           ticketDetailGatewayProvider.overrideWithValue(
             _StaticTicketDetailGateway(_match),
           ),
@@ -435,6 +484,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          storeReleasePolicyProvider.overrideWithValue(
+            const StoreReleasePolicy.unenforced(),
+          ),
           eTicketGatewayProvider.overrideWithValue(
             _StaticETicketGateway(_activeTicket),
           ),

@@ -10,24 +10,24 @@ sheet only after the exact production feature configuration is frozen.
 | --- | --- | --- |
 | Parental controls | No dedicated parental control found | Product/legal approval |
 | Age assurance | No age-gate implementation found | Required decision before selecting youth audiences |
-| User-generated content | Potentially Yes | Editable nickname and feature-gated user text can be visible to others |
-| Messaging/chat | No shipping chat module identified; configuration declares chat capability | Confirm exact registered routes and production config |
+| User-generated content | No cross-user UGC in this candidate | Production policy uses system aliases; social/challenge client RPCs are revoked. Private profile nickname and structured answers remain privacy-declaration inputs, not cross-user content |
+| Messaging/chat | No | No shipping chat module; social/friend RPCs are unavailable to public release clients |
 | Advertising | No ads found | Exact archive/SDK reconciliation |
-| In-app purchases | No StoreKit/IAP SDK found | Confirm membership/digital benefit decision |
+| In-app purchases | No | No StoreKit/IAP SDK; paid digital membership is fail-closed and candidate membership submission is restricted to free physical packages |
 
 ## Content descriptors
 
 | Descriptor | Working answer | Notes |
 | --- | --- | --- |
 | Violence | None found in app mechanics | Review remotely supplied news/media and screenshots |
-| Profanity/crude humor | None in controlled source copy | UGC decision can change this |
-| Mature/suggestive/sexual content | None found in controlled source copy | UGC and remote content can change this |
+| Profanity/crude humor | None in controlled source copy | Confirm remotely supplied club content |
+| Mature/suggestive/sexual content | None found in controlled source copy | Confirm remotely supplied club content |
 | Horror/fear | None found | Confirm remote content |
 | Alcohol/tobacco/drugs | None found | Confirm offers/news/content |
 | Medical/treatment | None found | Not a health app |
-| Gambling/simulated gambling | Intended No | Must prove no wager, purchased entry, cash value, or prize mechanics |
-| Contests | Potentially Yes | Predictions, games, rankings, and rewards require exact classification |
-| Loot boxes/random rewards | No implementation established | Confirm reward selection rules |
+| Gambling/simulated gambling | No for this candidate | Staked challenge, jackpot, transfer, redemption, and prize/value client paths are fail-closed and RPC-revoked |
+| Contests | No enabled contest/prize path | Ordinary free sports-prediction context may remain; challenges, partner pools, jackpot, rewards, and related feeds are disabled |
+| Loot boxes/random rewards | No | Reward catalog, offers, and redemption are disabled for public clients |
 
 ## Final gate
 
@@ -36,4 +36,3 @@ sheet only after the exact production feature configuration is frozen.
 - Ensure marketing, privacy policy, terms, onboarding, and store territories
   match the final rating.
 - Obtain product/legal approval with the exact build and config reference.
-
