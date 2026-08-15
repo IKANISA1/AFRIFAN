@@ -135,7 +135,6 @@ const scopedRuntimeProjections: Record<ScopedRuntimeTable, string> = {
 const surfaceValues = new Set<RuntimeRegistrySurface>([
   "mobile",
   "web",
-  "tv",
   "venue",
   "admin",
   "both",

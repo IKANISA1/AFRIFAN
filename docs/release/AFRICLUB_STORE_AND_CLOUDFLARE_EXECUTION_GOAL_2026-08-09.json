@@ -2,7 +2,8 @@
   "schema_version": "1.0",
   "goal_id": "AFRICLUB-R67-STORE-CLOUDFLARE-SUBMISSION",
   "revision": "2026-08-09-R67",
-  "status": "active_until_completion_predicate_proven",
+  "status": "superseded_by_football_only_split_2026_08_15",
+  "superseded_by": "docs/architecture/AFRICLUB_LETS_PLAY_SPLIT_2026-08-15.md",
   "objective": "Implement, validate, evidence, and complete the governed Google Play mobile, Apple App Store, Google Play Android TV, Cloudflare public-domain, production-backend, CI, physical-device, approval, and submission work until every original AFRICLUB task is proved complete against one exact release candidate.",
   "authority": {
     "workspace_implementation_authorized": true,

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('supports injected focus and TV Select activation', (
+  testWidgets('supports injected focus and keyboard Select activation', (
     tester,
   ) async {
     final focusNode = FocusNode(debugLabel: 'test AfriButton');

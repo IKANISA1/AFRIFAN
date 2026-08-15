@@ -50,7 +50,7 @@ class SupabaseClientFactory {
       try {
         await Supabase.initialize(
           url: supabaseUrl,
-          anonKey: supabaseAnonKey,
+          publishableKey: supabaseAnonKey,
           httpClient: TimeoutHttpClient(
             http.Client(),
             timeout: _networkTimeout,

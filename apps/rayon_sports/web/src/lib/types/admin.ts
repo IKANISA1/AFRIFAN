@@ -221,7 +221,6 @@ export type RuntimeRegistryScope = "global" | "club";
 export type RuntimeRegistrySurface =
   | "mobile"
   | "web"
-  | "tv"
   | "venue"
   | "admin"
   | "both";

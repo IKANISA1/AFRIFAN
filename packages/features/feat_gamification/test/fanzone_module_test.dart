@@ -71,19 +71,6 @@ void main() {
       expect(liveRoute!.redirect, isNotNull);
     });
 
-    test('live games are focused standalone routes outside the tab shell', () {
-      final nestedRoutes = _routeMap(module.routes);
-      final standaloneRoutes = _routeMap(module.standaloneRoutes);
-
-      expect(nestedRoutes['game'], isNull);
-      expect(nestedRoutes['game/:sessionId'], isNull);
-      expect(standaloneRoutes['/fanzone/game']?.pageBuilder, isNotNull);
-      expect(
-        standaloneRoutes['/fanzone/game/:sessionId']?.pageBuilder,
-        isNotNull,
-      );
-    });
-
     test('legacy fanzone entrypoints target consolidated hub sections', () {
       final decisions = {
         for (final decision in module.routePresentationDecisions)
@@ -111,11 +98,6 @@ void main() {
         expect(decisions['/fanzone/fixtures'], RoutePresentation.redirect);
         expect(decisions['/fanzone/live'], RoutePresentation.redirect);
         expect(decisions['/fanzone/my'], RoutePresentation.redirect);
-        expect(decisions['/fanzone/game'], RoutePresentation.fullScreen);
-        expect(
-          decisions['/fanzone/game/:sessionId'],
-          RoutePresentation.fullScreen,
-        );
         expect(decisions['/fanzone/venue'], RoutePresentation.fullScreen);
         expect(decisions['/fanzone/venue/order'], RoutePresentation.fullScreen);
         expect(decisions['/fanzone/offers'], RoutePresentation.redirect);

@@ -31,7 +31,6 @@ flutter:
 workspace:
   # ── Apps ──
   - apps/rayon_sports
-  - apps/rayon_sports_tv
   - apps/vitalo
   - apps/yanga
   - apps/tp_mazembe
@@ -69,7 +68,6 @@ workspace:
   - packages/features/feat_live
   - packages/features/feat_membership
   - packages/features/feat_gamification
-  - packages/features/feat_game_operations
   - packages/features/feat_contributions
   - packages/features/feat_shop
   - packages/features/feat_sms_ledger

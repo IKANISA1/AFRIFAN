@@ -1,8 +1,7 @@
 # Gikundiro store-delivery package
 
 This directory is the controlled, repository-local working package for the
-Google Play and Apple App Store submissions for the Gikundiro mobile app. The
-Android TV package is under `apps/rayon_sports_tv/store_metadata`.
+Google Play and Apple App Store submissions for the Gikundiro mobile app.
 
 The package deliberately separates three kinds of evidence:
 

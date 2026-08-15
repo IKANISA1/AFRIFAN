@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   ClipboardList,
   GlassWater,
-  Monitor,
   QrCode,
   ShieldCheck,
   Users,
@@ -38,12 +37,6 @@ const workflows = [
     "/venue/checkins",
     QrCode,
     "Review recent check-ins, location states, and FET awards.",
-  ],
-  [
-    "TV code",
-    "/venue/tv-code",
-    Monitor,
-    "Check whether the paired venue display has an active rotating code.",
   ],
   [
     "Promotions",

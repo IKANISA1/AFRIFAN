@@ -681,22 +681,6 @@ void main() {
       );
     });
 
-    test('Native TV routes use the shared responsive scaffold', () {
-      final violations = _scanDartFiles(
-        roots: [Directory('${repoRoot.path}/apps/rayon_sports_tv/lib')],
-        pattern: RegExp(r'\bScaffold\s*\('),
-      );
-
-      expect(
-        violations,
-        isEmpty,
-        reason: _formatViolations(
-          'Found a native TV route bypassing AfriScreenScaffold.',
-          violations,
-        ),
-      );
-    });
-
     test('Feature route tab bars use shared chrome', () {
       final violations = _scanDartFiles(
         roots: [
@@ -1320,15 +1304,6 @@ bool _isGovernedStoreReleaseMedia(Directory repoRoot, File mediaFile) {
     manifestPath =
         '${repoRoot.path}/apps/rayon_sports/store_metadata/app_store/artwork_manifest.json';
     isControlledPath = true;
-  } else if (RegExp(
-        r'^apps/rayon_sports_tv/android/app/src/main/res/(drawable|mipmap)-[^/]+/(tv_banner|ic_launcher)\.png$',
-      ).hasMatch(relativePath) ||
-      relativePath.startsWith(
-        'apps/rayon_sports_tv/android/fastlane/metadata/android/en-US/images/',
-      )) {
-    manifestPath =
-        '${repoRoot.path}/apps/rayon_sports_tv/store_metadata/artwork_manifest.json';
-    isControlledPath = true;
   }
   if (!isControlledPath || manifestPath == null) return false;
 
@@ -1441,9 +1416,6 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
           '/apps/rayon_sports/android/app/src/main/AndroidManifest.xml',
         ) ||
         path.endsWith(
-          '/apps/rayon_sports_tv/android/app/src/main/AndroidManifest.xml',
-        ) ||
-        path.endsWith(
           '/apps/rayon_sports/ios/Runner.xcodeproj/project.pbxproj',
         ) ||
         path.endsWith(
@@ -1456,7 +1428,6 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
         path.endsWith(
           '/apps/rayon_sports/web/src/app/brand-surface.svg/route.ts',
         ) ||
-        path.endsWith('/apps/rayon_sports_tv/test/tv_app_test.dart') ||
         path.endsWith('/tools/scripts/design_compliance_report.sh'),
   );
 }

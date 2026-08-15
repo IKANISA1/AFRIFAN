@@ -181,7 +181,7 @@ class MomoSmsBackgroundProcessor {
       try {
         await Supabase.initialize(
           url: EnvConfig.supabaseUrl,
-          anonKey: EnvConfig.supabaseAnonKey,
+          publishableKey: EnvConfig.supabaseAnonKey,
         );
       } catch (error) {
         final message = error.toString().toLowerCase();

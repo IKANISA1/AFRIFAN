@@ -66,7 +66,6 @@ const routes = [
   ["venue-portal-checkins-rendered-states", "venue_portal", "/venue/checkins", "venue_portal_checkins_states", "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts"],
   ["venue-portal-promotions-rendered-states", "venue_portal", "/venue/promotions", "venue_portal_promotions_states", "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts"],
   ["venue-portal-staff-rendered-states", "venue_portal", "/venue/staff", "venue_portal_staff_states", "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts"],
-  ["venue-portal-tv-code-rendered-states", "venue_portal", "/venue/tv-code", "venue_portal_tv_code_states", "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts"],
 ];
 
 function readJson(relativePath) {

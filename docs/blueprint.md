@@ -1,6 +1,11 @@
 # AFRICLUB Architecture Blueprint
 
-Updated: 2026-07-30
+Updated: 2026-08-15
+
+Status: superseded for product-surface boundaries by
+[`architecture/AFRICLUB_LETS_PLAY_SPLIT_2026-08-15.md`](architecture/AFRICLUB_LETS_PLAY_SPLIT_2026-08-15.md).
+The historical TV/trivia architecture below is retained only as an audit
+record and is not part of the active AFRICLUB build.
 
 Design authority: this document is architecture-only. `../DESIGN.md` is the
 sole source for product visuals, interface rules, tokens, screen archetypes, and

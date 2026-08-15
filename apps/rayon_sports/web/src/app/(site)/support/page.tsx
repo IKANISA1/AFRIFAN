@@ -15,7 +15,7 @@ export default function SupportPage() {
       kind="support"
       eyebrow="Support"
       title="Get help through the right Gikundiro channel."
-      description="Authenticated account, membership, ticket, order, and contribution questions are safest in the mobile app. Public support remains available when you cannot sign in or need help with an approved Gikundiro TV display."
+      description="Authenticated account, membership, ticket, order, and contribution questions are safest in the mobile app. Public support remains available when you cannot sign in."
       steps={[
         {
           heading: "Use the mobile app when you can sign in",
@@ -28,10 +28,6 @@ export default function SupportPage() {
         {
           heading: "Use the dedicated privacy route for deletion",
           body: "The account-deletion page explains the in-app deletion flow, the public request route, what is removed, and what may be lawfully retained.",
-        },
-        {
-          heading: "Request support for an approved TV display",
-          body: "An authorized display owner can request pairing, assignment, revocation, or provisioning-data support. Share only the public display alias or approved callback details; never email the display credential or pairing challenge.",
         },
       ]}
       notice="Never email a password, one-time code, payment credential, full identity document, biometric material, or private recovery secret. Support will not ask for them through this page."

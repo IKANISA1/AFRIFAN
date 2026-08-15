@@ -19,8 +19,6 @@ void main() {
 
     // Account section
     expect(find.text('Edit profile'), findsOneWidget);
-    expect(find.text('Games and TVs'), findsOneWidget);
-    expect(find.text('Game operations'), findsOneWidget);
 
     // Scroll to reveal Preferences.
     await tester.scrollUntilVisible(find.text('Notifications'), 200);
@@ -70,19 +68,6 @@ void main() {
     expect(find.text('MOMO linked'), findsNothing);
     expect(find.text('MOMO (optional)'), findsNothing);
     expect(find.text('Link MoMo number'), findsNothing);
-  });
-
-  testWidgets('settings exposes the owner and organizer operations hub', (
-    tester,
-  ) async {
-    await tester.pumpWidget(_buildSettingsApp());
-    await tester.pumpAndSettle();
-
-    await tester.tap(
-      find.byKey(const ValueKey<String>('settings-game-operations-action')),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('Game operations destination'), findsOneWidget);
   });
 
   testWidgets('matches the streamlined settings layout', (tester) async {
@@ -192,11 +177,6 @@ Widget _buildSettingsApp({_FakeClubConfig? config}) {
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsScreen(),
-      ),
-      GoRoute(
-        path: '/game-operations',
-        builder: (context, state) =>
-            const Scaffold(body: Text('Game operations destination')),
       ),
     ],
   );

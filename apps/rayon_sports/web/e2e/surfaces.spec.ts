@@ -432,7 +432,6 @@ test("venue manager session reaches every scoped workflow and revocation fails c
       ["/venue/menu", /drinks menu/i],
       ["/venue/checkins", /^check-ins$/i],
       ["/venue/promotions", /^promotions$/i],
-      ["/venue/tv-code", /tv code status/i],
       ["/venue/staff", /venue staff/i],
     ] as const;
     const evidenceDir = path.resolve(

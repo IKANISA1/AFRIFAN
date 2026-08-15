@@ -1,6 +1,6 @@
 # AFRICLUB Universal App Design Standard 2026
 
-This document is the single design authority for this repository. Any production mobile app, native Flutter TV app, admin panel, Flutter-first web shell, native iOS or Android app, React Native app, or embedded app surface must use this file as its design contract. No secondary design folder, screenshot parity matrix, token JSON, design-system markdown, source-variant asset folder, provenance note, or archived design report may override this standard.
+This document is the single design authority for this repository. Any production mobile app, admin panel, Flutter-first web shell, native iOS or Android app, React Native app, or embedded app surface must use this file as its design contract. No secondary design folder, screenshot parity matrix, token JSON, design-system markdown, source-variant asset folder, provenance note, or archived design report may override this standard.
 
 This standard is built from current platform guidance, local implementation evidence, and the Revolut reference grammar. Revolut is the interaction-quality benchmark for hierarchy, density, chrome, motion, and state polish; AFRICLUB remains a football-club product with its own identity, data, routes, accessibility obligations, and legal boundaries. Product teams must not copy finance, crypto, rewards, card, regulated, or account semantics merely to resemble the reference.
 
@@ -19,7 +19,7 @@ This file is grounded in these evidence inputs:
 - Current AFRICLUB implementation evidence in `packages/core/core_theme`, `packages/core/core_app`, `packages/core/core_router`, the feature packages, and the governed route/state closure outputs.
 - Current official Revolut public evidence: the App Store listing and accessibility declarations, Revolut 10 product-design statements, and the 2026 Open Banking brand colour guidance.
 - Fresh public user research checked on 2026-07-30, including current praise for fluid iOS motion and transaction scanning and current complaints about renamed actions, feature discovery, navigation complexity, and unwanted product prominence.
-- Current platform guidance checked for this profile: Flutter adaptive/responsive design and accessibility, Apple Human Interface Guidelines and accessibility, Android TV navigation, Material 3, and WCAG 2.2.
+- Current platform guidance checked for this profile: Flutter adaptive/responsive design and accessibility, Apple Human Interface Guidelines and accessibility, Material 3, and WCAG 2.2.
 
 ### Evidence Status On 2026-07-30
 
@@ -52,9 +52,6 @@ Authoritative external references:
 - Flutter focus system: https://docs.flutter.dev/ui/interactivity/focus
 - Flutter Actions and Shortcuts: https://docs.flutter.dev/ui/interactivity/actions-and-shortcuts
 - Apple Human Interface Guidelines: https://developer.apple.com/design/human-interface-guidelines
-- Apple tvOS design: https://developer.apple.com/design/human-interface-guidelines/designing-for-tvos
-- Android TV design: https://developer.android.com/design/ui/tv
-- Android TV navigation: https://developer.android.com/training/tv/get-started/navigation
 - Material 3 navigation rail: https://m3.material.io/components/navigation-rail/overview
 - Apple Design Awards 2026: https://developer.apple.com/design/awards/
 - Revolut App Store accessibility and platform listing: https://apps.apple.com/us/app/revolut-send-spend-and-save/id932493382
@@ -80,11 +77,11 @@ The standard is not based on taste alone. The following benchmarks convert obser
 | Uber public listing | High-scale mobility products foreground fast task completion, upfront pricing, location, safety, reliability, localization, and frequent performance fixes. | Transactional mobile flows must show destination, cost or consequence, status, safety/recovery actions, and live reliability states before ornamental content. |
 | Airbnb public listing | Travel products combine discovery, personalized recommendations, booking detail, messaging, offline trip information, and host/operator tooling in one app. | Multi-sided products need role-specific information architecture, trip/task continuity, offline-readable critical details, and separate operator workflows. |
 | Spotify public listing | Media products scale through search, personalization, library management, offline access, and dense content discovery. | Discovery surfaces need fast search, personal relevance, saved/recent states, media placeholders, and scalable list/grid performance. |
-| Flutter, Material 3, Apple HIG, and Android TV guidance | Production apps must adapt to device class, input mode, platform convention, safe area, focus, accessibility, and testing constraints. | Flutter implementation must treat responsiveness, focus, keyboard, D-pad, semantics, and platform adaptation as first-order architecture. |
+| Flutter, Material 3, and Apple HIG guidance | Production apps must adapt to device class, input mode, platform convention, safe area, focus, accessibility, and testing constraints. | Flutter implementation must treat responsiveness, focus, keyboard, semantics, and platform adaptation as first-order architecture. |
 | Fluent 2 tokens | Large product suites separate raw/global values from semantic alias tokens so teams share a language and avoid hardcoded styling. | This system must use semantic Flutter `ThemeExtension` tokens for every color, spacing, radius, shadow, motion, density, focus, and surface role. |
 | Carbon, Polaris, and Atlassian admin guidance | Admin surfaces need tables, sorting, filtering, selection, batch actions, pagination, keyboard operation, clear empty states, and next actions. | Admin design must be dense but auditable: table/list modes, filters, detail panels, bulk-review flows, empty/error states, and keyboard/screen-reader coverage are mandatory. |
 
-World-class benchmark conclusion: the target is not "make it look like one app." The target is to combine Revolut-level premium shell quality, Apple-level inclusive interaction polish, Material/Flutter adaptive engineering, Android TV focus discipline, and enterprise-grade admin data handling into one coherent system.
+World-class benchmark conclusion: the target is not "make it look like one app." The target is to combine Revolut-level premium shell quality, Apple-level inclusive interaction polish, Material/Flutter adaptive engineering, and enterprise-grade admin data handling into one coherent system.
 
 ## Reference Screenshot Lessons
 
@@ -133,131 +130,35 @@ Every app must define and implement these Screen Archetypes before feature work 
 - Help and support: self-serve answers, contact options, incident states, and escalation.
 - Offline and recovery: cached data, retry affordances, sync status, and conflict handling.
 - Admin or operator screens, if present: dense, accessible, auditable, and visually separate from consumer mobile surfaces.
-- TV home: remote-first content or action hub with clear focused item, large readable hierarchy, and no dependence on touch gestures.
-- TV detail: 10-foot object view with focus-safe actions, large media or state preview, and predictable back behavior.
 - Admin dashboard: dense operational overview with key metrics, alerts, filters, and one clear next action.
 - Admin list and queue: sortable, filterable, paginated, auditable records with bulk actions and detail panels.
 - Admin detail and audit trail: object state, owner, risk, history, permissions, attachments, and reversible operator actions.
 
 ## Cross-Surface Product Architecture
 
-Mobile, TV, and admin must share one semantic design system while serving different jobs:
+Mobile, web, venue, and admin share one semantic design system while serving
+different jobs:
 
-- Flutter mobile app: consumer or field-user experience. Prioritize thumb reach, compact command chrome, first-viewport value, quick actions, protected routes, offline/retry states, and native Android/iOS behavior.
-- Native Flutter TV app: living-room or shared-screen experience delivered as a native TV runtime, not as a web app in a TV browser. Prioritize D-pad focus, 10-foot readability, large focus states, remote shortcuts, horizontal content rows, safe overscan margins, platform TV back/menu behavior, and minimal text entry.
-- Admin panel or Admin PWA: operator experience. Prioritize density, scanning, filtering, auditability, permission clarity, bulk action safety, keyboard support, and desktop/tablet responsiveness.
+- Flutter mobile is the supporter experience. Prioritize thumb reach,
+  first-viewport football context, protected routes, and truthful recovery.
+- The public website communicates club identity and hands authenticated
+  supporter journeys to the mobile app.
+- The venue portal is a bounded matchday operational surface.
+- The Admin PWA prioritizes scanning, filtering, auditability, permission
+  clarity, safe consequential actions, and desktop/tablet responsiveness.
 
 Shared rules:
 
-- All surfaces use the same semantic tokens, typography scale, icon roles, motion durations, status taxonomy, and accessibility requirements.
-- Consumer mobile and TV surfaces must never expose admin-only routes, data, permissions, or affordances.
-- Consumer mobile may expose only narrow, non-tab, role-gated `My TVs` owner
-  and `Games I manage` organizer projections. These are not admin routes and
-  must not expose broad publishing, moderation, role assignment, venue-staff,
-  audit-review, or platform controls; the `/admin` route family remains
-  excluded from consumer builds.
-- The organizer planner is football-session-first: approved 20-question pack,
-  schedule, eligibility, supporter invitations, and optional authorized
-  display assignment precede activation and live control. Invitation-only
-  planning uses a privacy-safe display name plus six-digit Fan ID and never
-  contact, account, payment, or credential fields. The selected state keeps
-  the pack and eligibility hierarchy above distinct TV assignment and
-  supporter invitation sections with one primary create action. Lifecycle
-  controls render only server-advertised next actions and retain authoritative
-  phase, version, sequence, and timing rather than client-owned progress.
-- Organizer Live Control presents at most one visually dominant normal next
-  transition. Pause, resume, skip, early-end, and cancellation are a distinct
-  confirmed exception group. Skip and early-end require a bounded reason and
-  use their dedicated versioned, idempotent, audited RPCs; they never pass
-  through ordinary progression. Conflict or timeout keeps every mutation
-  locked until an authoritative refresh, while the last confirmed safe session
-  remains visible. Any in-flight or failed authoritative refresh also locks
-  every organizer action; permission loss clears the protected session rather
-  than retaining it. A definite retryable mutation failure may reuse the same
-  idempotent intent, but never an ambiguous result. Phone metrics must reflow
-  rather than split words.
-- `My TVs` is a narrow owner/manager inventory, not a general Admin surface.
-  Each card exposes only the current club's manageable display name, home or
-  venue scope, server-derived health and last-seen state, app version, bounded
-  scalar capabilities, and safe assigned-session title/phase. Empty and denied
-  states are explicit; a recoverable refresh failure may retain the last
-  confirmed inventory with a warning, but pairing remains disabled until an
-  authoritative refresh succeeds. Device credentials and pairing codes never
-  cross the inventory projection.
-- `My TVs` pairing and management use the challenge created on native TV V2,
-  accepted by validated deep link or manual entry. Home and venue choices are
-  server-authorized, same-club, approved, and named; raw venue identifiers are
-  never user input. Rename or move, credential recovery, and destructive
-  revocation are separate confirmed, idempotent, audited actions. Recovery
-  consumes a fresh TV bootstrap challenge, invalidates the old credential, and
-  requires the TV to exchange for a replacement. Any uncertain outcome locks
-  all management mutations until authoritative refresh; obsolete owner-issued
-  pairing and legacy claim interfaces remain retired.
-- An unpaired native TV generates and displays its own short-lived challenge
-  plus an exact `My TVs` deep-link QR; it never asks for an owner or participant
-  secret. After authenticated owner claim, one secure credential exchange
-  clears pairing material and enters the role-safe projection. Revocation
-  clears credential, subscription, and retained content before any recovery.
-- A paired native TV is the public game projection, not a join-code or private
-  reward-claim surface. It must render paired-empty, scheduled, lobby, current
-  question and choices with server deadline, reveal/public result, contiguous
-  public-alias standings, completion, pause/cancellation, retained-offline, and
-  authoritative reconnect consequences. Only the seven governed lifecycle
-  phases are accepted; missing question/deadline/result data, unknown phases,
-  broken rank order, private identity, balances, claims, orders, credentials,
-  and pre-reveal answers fail closed.
-- Admin surfaces may be denser than mobile, but they must still use the same premium dark shell grammar, concise copy, stable navigation, tokenized panels, and designed states.
-- Admin game operations must separate Content Studio, Session Planner, and
-  Live Control. Routine pack, question, session, organizer, and display work
-  uses authorized named selectors and guarded confirmations; raw identifiers,
-  optimistic versions, deadlines, ordering, and idempotency keys stay internal.
-- Game-content review must keep source/citation fragments, schema/model,
-  AI/human generation, human reviewer, review time, and deterministic QA
-  visible without leaking answers. Every generated or imported question starts
-  `pending_review`; approval fails closed when required provenance or exact/
-  normalized duplicate, ambiguity, answer-consistency, supported-language, or
-  entertainment-policy checks fail. A pack cannot publish until its exact
-  source-backed mobile and TV previews are reviewed; any title, description,
-  or question-order change invalidates that acknowledgement.
-- Current game surfaces synchronize structured prediction and reviewed-trivia
-  state only. A live or prerecorded video programme requires a separately
-  approved product, media-rights, ingest, transcoding, CDN, telemetry,
-  moderation, bandwidth, accessibility, and fallback contract; none is
-  inferred from TV game display or synchronized trivia.
-- Admin Live Control must show authoritative phase, version, one valid next
-  action, identity-free participant and TV projection previews, last
-  refresh/event health, and server-time latency buckets. Offline and restored
-  connections keep mutations locked until authoritative refresh; participant
-  identity, correct answers, and device credentials never appear.
-- The game backend contract is projection-first: owner-scoped displays have
-  bounded capability metadata and explicit session assignments; participant,
-  organizer, admin, and TV variants carry monotonic versions, event sequence,
-  server time, phase deadline, allowed actions, and freshness. Pause/resume,
-  reasoned skip, and reasoned early end are authoritative retry-safe operations,
-  not client-only visual states.
-- Display and event access is least-privilege at both relation-grant and RLS
-  layers. Owners, venue managers, assigned organizers, club admins, and
-  platform admins receive only their governed scope. Realtime messages use
-  `{club_id}:game_session:{session_id}`, contain no private or answer-bearing
-  content, and are refresh hints only; every client must reconcile the typed
-  authoritative projection after an event.
-- One session may target several explicitly assigned displays. Home displays
-  are owner/invitation scoped and never implicitly club-wide. Venue managers
-  operate assigned displays and require an explicit organizer grant to control
-  a game. Participant identity is the authenticated AFRICLUB account projected
-  only through a session-safe public alias.
-- Native TV Realtime uses a dedicated anonymous Auth identity bound to one
-  active revocable device credential. It may read only events for explicitly
-  assigned club/session pairs, clears identity on disable/revoke/rotation, and
-  uses bounded polling only while disconnected or recovering.
-- Controlled local acceptance requires an executable isolated Realtime network
-  check, not only mocked streams or database policy assertions: assigned events
-  must arrive monotonically, unbound identities must receive zero rows through
-  per-event RLS, revocation must stop subsequent delivery, and every event must
-  remain an invalidation hint followed by authoritative projection refresh.
-  Passing this local check does not establish shared/live WAN, physical-TV,
-  approval, signing, store, deployment, or release readiness.
-- A feature is not design-complete until its mobile, TV where applicable, and admin/operator implications are either implemented or explicitly marked not applicable in this file or the product source of truth.
+- All surfaces use the same semantic tokens, typography, icon roles, motion
+  durations, state taxonomy, and accessibility requirements.
+- Consumer surfaces never expose admin-only routes, data, permissions, or
+  affordances.
+- Football and club identity lead navigation and hierarchy; predictions are a
+  secondary football-engagement surface.
+- Admin surfaces may be denser than mobile but retain concise copy, stable
+  navigation, tokenized panels, explicit permission states, and audit trails.
+- A feature is not design-complete until its mobile, web, admin, and venue
+  implications are implemented or explicitly marked not applicable.
 
 ## AFRICLUB Football-Club-First Product Contract
 
@@ -270,8 +171,7 @@ The mandatory product priority is:
 
 1. Club identity, team, news, fixtures, results, standings, and history.
 2. Membership, fan clubs, contributions, projects, tickets, and shop.
-3. Selected-match predictions, competitions, and governed football or approved
-   music trivia.
+3. Selected-match football predictions and competitions.
 4. Secondary matchday utilities such as venues, check-in, drinks ordering,
    promotions, and venue-hosted game events.
 
@@ -289,28 +189,23 @@ AFRICLUB screen hierarchy must follow these rules:
   standings, history, projects, tickets, and shop.
 - Membership makes belonging visible through the digital card, plan/status,
   fan clubs, contribution history/statements, and relevant club projects.
-- Fan Zone contains free selected-match predictions, approved competitions,
-  reviewed football trivia, feature-gated approved music trivia, TV games,
-  points/reward context, and supporter communities.
+- Fan Zone contains free selected-match football predictions, approved
+  competitions, points/reward context, and supporter communities.
 - Matchday experiences or Places to watch contains secondary venue discovery,
-  explicit check-in, a bounded drinks menu/order, venue game events, and
-  approved promotions.
+  explicit check-in, a bounded drinks menu/order, and approved promotions.
 - Search must discover club, team, news, fixtures, results, standings,
-  projects, tickets, products, supporter communities, games, and approved
+  projects, tickets, products, supporter communities, and approved
   venues according to permissions and availability.
 
-Prediction and trivia presentation is safety-critical:
+Prediction presentation is safety-critical:
 
 - predictions are free-to-enter and available only for selected approved
   matches from configured main leagues, the local league, or approved club
   competitions;
 - no odds, staking, betting, cash-payout, or fantasy-squad implication is
   permitted;
-- AI-assisted trivia remains a draft until a governed human review/publish
-  workflow approves correctness, difficulty, duplication, rights, language,
-  and answer integrity;
-- game eligibility, score, session state, and rewards display one authoritative
-  cross-surface truth.
+- prediction eligibility, score, settlement state, and rewards display one
+  authoritative cross-surface truth.
 
 All supported club apps use the same semantic system and shared domain
 contracts. Branding and configuration may vary, but shared layouts must reserve
@@ -320,15 +215,14 @@ assumption.
 
 ## AFRICLUB Surface Applicability
 
-The in-scope surfaces are consumer Flutter mobile apps, the native Flutter TV
-app where enabled for a club, the public club website, the admin/operator PWA,
+The in-scope surfaces are consumer Flutter mobile apps, the public club
+website, the admin/operator PWA,
 and the bounded venue/operator portal. Each surface uses the shared semantic
 system but must keep its own role boundary, density, input model, and route
 tree. Rayon Sports is the fully governed reference club profile; other club
 apps inherit the shared system through runtime club configuration.
 
-Mobile, public web, admin, and route/state evidence are required for Rayon.
-Native TV evidence is required where the Rayon TV product is enabled. Venue
+Mobile, public web, admin, and route/state evidence are required for Rayon. Venue
 routes are secondary matchday utilities and do not replace the Home, Club, Fan
 Zone, or Membership hierarchy. A surface may be marked not applicable only in
 the governed route matrix with a reason, owner, date, and review release.
@@ -401,7 +295,7 @@ Secondary colors are required, but only as semantic support for meaning, hierarc
 | Info | Periwinkle `#8885F0` or wealth teal `#204050` | Neutral guidance, sync notices, tips, scheduled states, support messages. | Replacing primary action color or turning every helper panel blue. |
 | Accent | Violet `#7050E8`, hot violet `#9838F0`, dusty rose `#D38B96` | Product-owned highlight, upgrade, reward, featured item, chart series with legend. | Copying reference rewards/crypto meanings when the product does not support them. |
 | Neutral | Paper, ink, muted border, glass surface | Disabled states, secondary text, dividers, chips, skeletons, table chrome. | Making disabled controls look active or hiding unavailable reasons. |
-| Focus | High-contrast ring derived from periwinkle or paper | Keyboard, D-pad, screen reader, TV remote, and admin table focus. | Focus indicated by color alone, hover-only focus, or focus rings hidden for aesthetics. |
+| Focus | High-contrast ring derived from periwinkle or paper | Keyboard, screen reader, and admin table focus. | Focus indicated by color alone, hover-only focus, or focus rings hidden for aesthetics. |
 
 Secondary color gates:
 
@@ -682,18 +576,18 @@ Each component must define default, hover where applicable, focused, pressed, se
 
 Components must share tokens and semantics while adapting to input mode and density:
 
-| Component | Flutter Mobile | Native Flutter TV | Admin Panel |
-| --- | --- | --- | --- |
-| Shell | Safe-area scaffold, compact top chrome, bottom nav, branch state. | Overscan-safe scaffold, persistent focus rail, large content rows, back handling. | Sidebar or rail, top command bar, workspace grid, guarded routes. |
-| Navigation | Bottom nav for primary tabs, back for depth, sheets for transient choices. | D-pad reachable rails, tabs, carousels, remembered row focus. | Sidebar, breadcrumbs where useful, tabs, tables, detail drawers. |
-| Search | Search pill, recent queries, filters, empty/no-result states. | Voice/remote-friendly search, suggestions, mobile handoff where possible. | Global command search plus scoped table search and filters. |
-| Cards and panels | Full-width translucent panels, repeated cards, clear tap target. | Large focusable tiles with stable aspect ratio and focus scale. | Dense cards, metrics, list cards below tablet width, no card-inside-card nesting. |
-| Tables and lists | Lists, grouped rows, chips, no dense desktop tables. | Lists only when large and focus-safe; avoid spreadsheets. | Sortable, filterable, paginated or virtualized tables with selectable rows. |
-| Forms | Progressive fields, mobile keyboards, validation, draft safety. | Avoid long text entry; use choices, voice, QR, mobile handoff. | Dense forms with sections, inline validation, permissions, audit review. |
-| Dialogs and sheets | Bottom sheets for choices, dialogs for high-risk confirmation. | Full-screen or side overlays reachable by remote. | Drawers, modals, review dialogs, confirmation and undo flows. |
-| Empty states | One clear next action and concise reason. | One large recovery action and focus default. | Explain data scope, filters, permissions, and next operator action. |
-| Focus | Visible keyboard/screen-reader focus; touch remains primary. | Focus is the primary interaction model and must be obvious at all times. | Keyboard focus, row focus, table control focus, command palette focus. |
-| Feedback | Snackbar, banner, inline validation, optimistic update recovery. | Large toast/banner, nonblocking playback/state feedback. | Audit-safe banners, status chips, queue freshness, bulk action summaries. |
+| Component | Flutter Mobile | Admin Panel |
+| --- | --- | --- |
+| Shell | Safe-area scaffold, compact top chrome, bottom nav, branch state. | Sidebar or rail, top command bar, workspace grid, guarded routes. |
+| Navigation | Bottom nav for primary tabs, back for depth, sheets for transient choices. | Sidebar, breadcrumbs where useful, tabs, tables, detail drawers. |
+| Search | Search pill, recent queries, filters, empty/no-result states. | Global command search plus scoped table search and filters. |
+| Cards and panels | Full-width translucent panels, repeated cards, clear tap target. | Dense cards, metrics, list cards below tablet width, no card-inside-card nesting. |
+| Tables and lists | Lists, grouped rows, chips, no dense desktop tables. | Sortable, filterable, paginated or virtualized tables with selectable rows. |
+| Forms | Progressive fields, mobile keyboards, validation, draft safety. | Dense forms with sections, inline validation, permissions, audit review. |
+| Dialogs and sheets | Bottom sheets for choices, dialogs for high-risk confirmation. | Drawers, modals, review dialogs, confirmation and undo flows. |
+| Empty states | One clear next action and concise reason. | Explain data scope, filters, permissions, and next operator action. |
+| Focus | Visible keyboard/screen-reader focus; touch remains primary. | Keyboard focus, row focus, table control focus, command palette focus. |
+| Feedback | Snackbar, banner, inline validation, optimistic update recovery. | Audit-safe banners, status chips, queue freshness, bulk action summaries. |
 
 ## State Requirements
 
@@ -730,45 +624,6 @@ The responsive contract covers these viewport bands:
 - Keyboard open: inputs remain visible with error text and submit controls reachable.
 
 No text, icon, media, chip, badge, or button label may overlap or overflow its parent in these bands.
-
-## Native Flutter TV Standard
-
-Flutter TV surfaces must be native TV apps, not web apps, browser shells, or responsive desktop pages shown on a television. A TV build must target native TV runtimes such as Android TV/Google TV and tvOS where supported by the product, with native packaging, remote input, focus traversal, platform back/menu behavior, and device or simulator evidence. Web render-smoke evidence can support shared UI validation, but it cannot prove TV readiness.
-
-### TV Layout
-
-- Primary canvas targets are 1280 x 720 and 1920 x 1080, with safe margins that keep important content away from screen edges.
-- The first viewport must show the current focus, the selected object or value, and the next likely action without scrolling.
-- Prefer horizontal rows, rails, carousels, and large tiles over long vertical forms.
-- Use stable row heights, tile aspect ratios, and focus-safe spacing so scale effects do not cause layout shifts.
-- Text must remain readable from a living-room distance: larger titles, fewer lines, stronger contrast, and no small helper copy.
-- Avoid dense tables, small chips, text-entry-heavy workflows, hover-only affordances, and hidden gestures.
-
-### TV Focus And Remote Interaction
-
-- Every interactive element must be reachable by D-pad, arrow keys, select/enter, and back.
-- The focused item must be visually obvious through scale, outline, elevation, glow, or tonal change; color alone is not enough.
-- Focus traversal must follow spatial layout and preserve focus memory when returning to a row, tab, or detail surface.
-- Back returns to the previous view or parent surface without losing context.
-- Search and text entry must offer voice input, recent queries, suggestions, QR handoff, or mobile companion entry where possible.
-- Remote shortcuts must be implemented through Flutter focus, `Shortcuts`, and `Actions`, with tests for directional navigation.
-- Touch, mouse, hover, browser viewport resizing, and web keyboard shortcuts are not acceptable substitutes for native TV remote behavior.
-
-### TV State And Performance
-
-- Loading states must reserve tile sizes and row positions.
-- Empty and error states must have one large primary recovery action.
-- Media, images, and previews must have placeholders and error fallbacks.
-- Scrolling must be virtualized for large rows and never jank under remote repeat input.
-- Reduced motion replaces parallax, scale, and spatial transitions with simpler focus outlines and fades.
-
-### Native TV Build And QA
-
-- Android TV builds must be validated as installable native Android packages on an Android TV or Google TV target, emulator, or physical device.
-- tvOS builds, where part of the product scope, must be validated as native tvOS builds in simulator or device workflows, not Safari/web previews.
-- TV screenshots must come from the native TV runtime or a native TV simulator/emulator.
-- TV navigation tests must cover D-pad up, down, left, right, select, back/menu, long lists, row-to-detail transitions, and focus restoration.
-- TV release gates must record package/build identifier, target runtime, viewport, input device, screenshot path, and any unsupported platform capability.
 
 ## Admin Panel Standard
 
@@ -819,12 +674,11 @@ Visual QA Standard gates must include:
 - golden or snapshot tests for shared components and design tokens.
 - light and dark screenshots for all primary screen archetypes.
 - small phone, standard phone, large phone, tablet, landscape, and keyboard-open screenshots.
-- Native TV screenshots for 720p, 1080p, focused, unfocused, row-scrolled, detail, search, empty, loading, error, and reduced-motion states where a TV surface exists.
 - Admin screenshots for desktop, tablet, compact fallback, dense table, card/list fallback, filter open, detail panel, bulk selection, permission denied, stale data, and high-volume states.
 - loading, empty, error, offline, disabled, focused, selected, and permission-denied states.
 - pixel checks for blank screens, clipped text, overlapping controls, missing images, and wrong theme mode.
-- accessibility scans for contrast, semantics, focus order, touch targets, keyboard operation, D-pad operation, screen reader labels, large text, and reduced motion.
-- performance checks for first frame, animation jank, scroll stability, memory pressure, large lists, remote repeat input, and admin table virtualization.
+- accessibility scans for contrast, semantics, focus order, touch targets, keyboard operation, screen reader labels, large text, and reduced motion.
+- performance checks for first frame, animation jank, scroll stability, memory pressure, large lists, and admin table virtualization.
 
 Visual evidence must use sanitized data. Screenshots must not expose secrets, raw phone numbers, OTPs, private customer data, production tokens, or private account identifiers.
 
@@ -857,40 +711,35 @@ Recommended Flutter package boundaries:
 
 ## Robust Implementation Goal
 
-Goal: build one comprehensive, reference-backed UI/UX system for Flutter mobile, native Flutter TV, and admin panel surfaces, using the Revolut screenshot grammar as the baseline for premium interaction quality while preserving product-owned content, role boundaries, accessibility, and platform-native behavior.
+Goal: maintain one reference-backed UI/UX system for AFRICLUB mobile, public
+web, venue, and Admin surfaces while preserving football-first hierarchy,
+role boundaries, accessibility, privacy, and platform-native behavior.
 
-Completion requires all of the following:
-
-- One authoritative `DESIGN.md` governs mobile, TV, and admin surfaces.
-- The Revolut screenshot grammar is converted into semantic tokens, app shell rules, component contracts, state requirements, and QA gates.
-- Flutter mobile routes use the shared dark/premium shell, compact command chrome, first-viewport value, circular quick actions, floating navigation, and complete state handling.
-- Native Flutter TV routes use D-pad focus, 10-foot readability, focus memory, remote shortcuts, large stable tiles, TV-safe navigation, and native TV packaging.
-- Admin routes use dense but calm operator layouts: sidebar/rail, dashboards, tables, queues, detail panels, audit logs, filters, bulk action review, and permission-safe states.
-- Consumer mobile and TV apps contain no admin-only routes or affordances.
-- Admin panel exposes no consumer-only shortcuts that bypass permissions, audit trails, or review steps.
-- All components consume semantic tokens rather than hardcoded colors, radii, text styles, shadows, durations, or breakpoints.
-- Accessibility is verified for WCAG 2.2 AA, screen reader semantics, focus order, target size, large text, reduced motion, non-color-only state, and keyboard/remote operation.
-- Visual evidence exists for mobile, native TV, and admin breakpoints, including light/dark or dark/high-contrast modes, state variants, and route-level screenshots.
+Completion requires shared semantic tokens, complete async/recovery states,
+responsive mobile and admin layouts, football-first navigation, permission-safe
+operator actions, accessibility evidence, and exact-current visual evidence for
+every in-scope route.
 
 ## Robust Implementation Plan
 
 ### Phase 0: Evidence Inventory
 
 - Collect the current Revolut reference screenshots into a stable local evidence folder with filenames, dimensions, and contact sheet.
-- Collect current mobile route screenshots, admin PWA screenshots, and native TV screenshots or native TV prototype screenshots.
-- Create a route inventory for mobile, TV, and admin, including hidden, guarded, modal, sheet, and error routes.
-- Mark every route as consumer, TV, admin, shared, or not applicable.
+- Collect current mobile route and Admin PWA screenshots.
+- Create a route inventory for mobile and admin, including hidden, guarded,
+  modal, sheet, and error routes.
+- Mark every route as consumer, admin, shared, or not applicable.
 
 ### Phase 1: Token And Theme Consolidation
 
 - Map the reference palette seeds into semantic token roles.
-- Add typed Flutter `ThemeExtension` classes for color, spacing, shape, typography, motion, elevation, focus, TV, and admin density.
+- Add typed Flutter `ThemeExtension` classes for color, spacing, shape, typography, motion, elevation, focus, and admin density.
 - Remove hardcoded color, radius, shadow, and text-style literals from feature screens.
 - Define high contrast and reduced motion token variants.
 
 ### Phase 2: Shared Shell And Components
 
-- Build or standardize app shell, top command chrome, search pill, circular command button, quick action row, floating navigation, side rail, admin sidebar, TV rail, sheets, dialogs, banners, skeletons, empty states, and error states.
+- Build or standardize app shell, top command chrome, search pill, circular command button, quick action row, floating navigation, side rail, admin sidebar, sheets, dialogs, banners, skeletons, empty states, and error states.
 - Ensure components expose all default, focused, pressed, selected, disabled, loading, offline, empty, success, warning, danger, permission denied, and skeleton states.
 - Add semantic icon roles for repeated concepts.
 
@@ -904,25 +753,19 @@ Completion requires all of the following:
 - Verify compact, standard, large phone, tablet, landscape, keyboard-open, large-text, and offline states.
 - Block admin routes and admin affordances from the consumer mobile route tree.
 
-### Phase 4: Native Flutter TV Upgrade
-
-- Define the TV route map and not-applicable mobile features.
-- Build native TV-specific shell, focus ring, content rows, large tiles, remote shortcut handling, search/text-entry alternatives, and back/menu behavior.
-- Test D-pad traversal, select, back/menu, focus memory, row scrolling, loading placeholders, empty/error states, reduced motion, overscan-safe layout, and native TV packaging.
-
-### Phase 5: Admin Panel Upgrade
+### Phase 4: Admin Panel Upgrade
 
 - Apply the shared admin shell to all operator routes.
 - Add dashboard, list, table, queue, detail, audit, permission, and bulk-action patterns.
 - Verify desktop, tablet, compact fallback, keyboard, screen reader, high data volume, empty queue, partial failure, stale data, unauthenticated, and out-of-role states.
 - Ensure every consequential action records a review, confirmation, undo where possible, and audit trail.
 
-### Phase 6: Evidence And Release Gates
+### Phase 5: Evidence And Release Gates
 
-- Generate route screenshots for every mobile, native TV, and admin route and critical modal/sheet state.
+- Generate route screenshots for every mobile and admin route and critical modal/sheet state.
 - Generate component goldens or snapshots for shared primitives and high-risk states.
-- Run accessibility checks for contrast, semantics, focus order, target size, large text, reduced motion, keyboard, and D-pad.
-- Run performance checks for first frame, scroll, animation, memory pressure, remote repeat input, and large admin datasets.
+- Run accessibility checks for contrast, semantics, focus order, target size, large text, reduced motion, and keyboard.
+- Run performance checks for first frame, scroll, animation, memory pressure, and large admin datasets.
 - Publish a design-compliance report that maps every route to screenshot evidence, state evidence, accessibility evidence, and remaining exceptions.
 
 ## Design Exceptions Register
@@ -949,15 +792,15 @@ Every production route must have evidence. Use this template in release docs, QA
 | Field | Required Evidence |
 | --- | --- |
 | Route ID | Canonical route path or route name. |
-| Surface | Mobile, native TV, admin, web, shared, modal, or sheet. |
+| Surface | Mobile, admin, web, shared, modal, or sheet. |
 | Role Boundary | Consumer, owner, operator, admin, guest, unauthenticated, or not applicable. |
 | Default Screenshot | Primary screenshot at the target viewport. |
-| Responsive Screenshots | Compact phone, standard phone, large phone, tablet, landscape, native TV 720p/1080p, admin desktop/tablet as applicable. |
+| Responsive Screenshots | Compact phone, standard phone, large phone, tablet, landscape, and admin desktop/tablet as applicable. |
 | State Screenshots | Loading, empty, error, offline, permission denied, disabled, selected, focused, success, warning, danger. |
-| Accessibility Evidence | Contrast, semantics labels, focus order, target size, 200 percent text, reduced motion, keyboard, D-pad where applicable. |
-| Performance Evidence | First frame, scroll, route transition, image loading, list virtualization, admin table performance, TV remote repeat input. |
+| Accessibility Evidence | Contrast, semantics labels, focus order, target size, 200 percent text, reduced motion, and keyboard where applicable. |
+| Performance Evidence | First frame, scroll, route transition, image loading, list virtualization, and admin table performance. |
 | Privacy Evidence | Screenshots use sanitized data and mask phone numbers, OTPs, tokens, private IDs, and sensitive account details. |
-| Platform Evidence | Android, iOS, Android TV, tvOS where scoped, web/admin, safe area, keyboard, status/nav bars, remote input, back/menu behavior, deep links. |
+| Platform Evidence | Android, iOS, web/admin, safe area, keyboard, status/navigation bars, and deep links. |
 | Exceptions | Link to Design Exceptions Register entries or `none`. |
 | Owner And Date | Person or agent, date captured, commit or build identifier. |
 
@@ -996,74 +839,17 @@ The parity gate cannot pass while any of these are true:
   licensed source and allowed-use record;
 - `design_complete=false` in the governed evidence output.
 
-Current 2026-08-02 controlled status:
+Current 2026-08-15 restructuring status:
 
-- 176 governed routes.
-- 1,881 route-state cells have admitted current evidence.
-- 256 applicable state cells remain open across nine Admin PWA and seven Venue
-  portal routes pending corrected exact-current browser execution and review.
-- 679 cells explicitly not applicable.
-- `Closure complete: false` for the governed local route-state ledger; 117
-  evidence bundles are admitted and 16 are pending.
-- `design_complete=false` because live/authenticated, physical-device and
-  assistive-technology, performance, reference, accountable approval, clean
-  candidate, signing, store, deployment, and release gates remain open.
-- 71 universal components implemented; all 316 applicable component-state
-  cells evidenced and 678 structurally not applicable.
-- `revolut_live_capture_partial=true`.
-- `revolut_live_capture_complete=false`.
-- `unsigned_ios_release_build=true`.
-- `clean_controlled_candidate=false`.
-- Current native-TV evidence includes inspected Android TV API 36 emulator
-  captures of the real isolated-backend pairing journey at exact 1920 x 1080
-  and 3840 x 2160. This passes the native-current-resolution clause only;
-  physical-TV overscan/remote/screen-reader execution, four-hour soak and
-  accountable privacy approval remain open under GAME-QA-05.
-- GAME-QA-03 now records an exact physical synchronized-session preflight:
-  zero available physical phones, one paired but unavailable iPhone 12 Pro,
-  zero physical native-TV targets, and two available iOS simulators. Simulator
-  and emulator evidence cannot close the required two-phone-plus-native-TV
-  journey. Authorized shared-backend execution, correlated logs/video,
-  measured network loss/recovery, physical accessibility and accountable
-  approvals remain open.
-- GAME-QA-06 now records exact-current dirty local build success for unsigned
-  iOS release, ephemeral-signed Android AAB, ephemeral-signed native-TV release
-  APK, and the web production gate, plus exact paired-iPhone install/launch.
-  This does not establish a clean candidate, pinned CI, complete physical UAT/
-  AT, production signing/store, target-backend migration/rollback, approval, or
-  release readiness.
-- The eleven Club routes now close their entire controlled applicability
-  contract: 153/153 applicable cells have executable tests and exact current
-  390 x 844 or 320 x 720 captures; 23 disabled/selected/empty cells are
-  explicitly non-applicable. The governed read-only family distinguishes
-  offline, permission denial, conflict, timeout and unknown failure; retains
-  confirmed content while refreshing; exposes a real refresh action; and
-  passes 194 Club tests. Live content authority, physical-device accessibility,
-  named approval and release remain open.
-- The static role-gated `/game-operations` hub closes all six applicable
-  focus, held-press, 200-percent text, reduced-motion, dark, and light cells;
-  ten data, authorization, disabled, selection, synchronization, conflict, and
-  timeout cells are explicitly non-applicable. The authenticated `/my-tvs`
-  inventory closes all fourteen applicable cells with typed offline recovery,
-  retained-authority lockout, and exact loading/recovery/interaction/theme
-  evidence; selected and conflict are explicitly non-applicable. The organizer
-  inventory likewise closes all fourteen applicable cells with permission
-  clearing and stale-authority lockout. The organizer planner closes all
-  sixteen applicable cells with complete-plan gating, invitee selection,
-  organizer-specific offline recovery, retained-refresh and mutation-
-  uncertainty lockout, exact interaction/theme evidence, and a fully readable
-  200-percent primary action. The live-control route closes all fourteen
-  applicable cells with empty and selected explicitly N/A, imperative normal
-  transition hierarchy, organizer-specific offline recovery, and complete
-  primary/exception lockout during uncertainty. Participant discovery closes
-  15/15 applicable cells with persistent selected explicitly N/A, and the
-  participant live route closes all 16 cells with distinct retained sync,
-  permission, conflict, timeout, disabled-answer, focus, held-press,
-  selected-answer, theme, motion, and 200-percent-text evidence. The final nine
-  Admin PWA and seven Venue portal routes retain all 256 applicable cells as
-  open. Their prior browser artifacts were rejected for incomplete manifests,
-  theme-label drift, and compact navigation clipping; corrected source/specs
-  now require a successful exact-current rerun before atomic admission.
+- AFRICLUB is scoped to football, club, membership, supporter, commerce,
+  contribution, ticketing, venue, and free-prediction journeys.
+- TV and trivia route/state evidence was retired from this design authority and
+  transferred to the LET'S PLAY product boundary.
+- Existing route evidence predating the split must be regenerated before it can
+  support a release claim.
+- Physical-device, assistive-technology, live-service, clean-candidate,
+  accountable approval, signing, store, deployment, and release gates remain
+  external and open.
 
 ## Quality Gates
 
@@ -1075,7 +861,6 @@ A product is not design-complete until all Quality Gates pass:
 - Component completeness: Universal Component Library components exist or are intentionally not applicable.
 - State completeness: all State Requirements are implemented for screens and components.
 - Responsive coverage: 320-374, 375-430, 431-599, 600-719, 720+, Landscape, Foldables, and Keyboard open are verified.
-- Native TV coverage: native package/build proof, D-pad focus, remote select/back/menu, focus memory, 720p/1080p layout, safe margins, reduced motion, and large readable type are verified where TV exists.
 - Admin coverage: desktop/tablet/compact admin layouts, keyboard operation, tables, filters, detail panels, bulk actions, permission states, and audit trails are verified where admin exists.
 - Accessibility coverage: contrast, semantics, focus, touch targets, text scale, and reduced motion are verified.
 - Visual coverage: route screenshot coverage and golden or snapshot tests exist for critical paths.
@@ -1083,14 +868,14 @@ A product is not design-complete until all Quality Gates pass:
 - Privacy coverage: screenshots, logs, analytics, and UI mask sensitive data.
 - Platform coverage: Android and iOS platform conventions, permissions, status bars, navigation, haptics, and safe areas are respected.
 - AFRICLUB product coverage: club-first hierarchy, canonical Club routes,
-  selected-match game taxonomy, membership/project journey, and secondary
+  selected-match prediction taxonomy, membership/project journey, and secondary
   venue placement are verified on exact-current mobile evidence.
 
 ## Universal App Generation Prompt
 
 When generating or rebuilding an app, use this instruction:
 
-Create a production app using the Universal App Design Standard 2026. Use this `DESIGN.md` as the only design authority. Build the actual usable first screen, not a landing page. Use the Revolut reference screenshot grammar as the premium baseline for shell, hierarchy, command chrome, action rows, panels, navigation, density, and state polish. Implement a typed token model, app shell, Universal Component Library, all State Requirements, mobile responsive bands from 320 dp through tablet/foldable/landscape, native Flutter TV focus/remote behavior and native package evidence where applicable, admin panel density and auditability where applicable, accessibility support, route screenshot coverage, and golden or snapshot tests. Use domain-specific truthful content, sanitize private data, avoid unsupported regulated claims, and keep Flutter implementation aligned with semantic tokens and reusable components.
+Create a production app using the Universal App Design Standard 2026. Use this `DESIGN.md` as the only design authority. Build the actual usable first screen, not a landing page. Use the Revolut reference screenshot grammar as the premium baseline for shell, hierarchy, command chrome, action rows, panels, navigation, density, and state polish. Implement a typed token model, app shell, Universal Component Library, all State Requirements, mobile responsive bands from 320 dp through tablet/foldable/landscape, admin panel density and auditability where applicable, accessibility support, route screenshot coverage, and golden or snapshot tests. Use domain-specific truthful content, sanitize private data, avoid unsupported regulated claims, and keep Flutter implementation aligned with semantic tokens and reusable components.
 
 ## Governance
 

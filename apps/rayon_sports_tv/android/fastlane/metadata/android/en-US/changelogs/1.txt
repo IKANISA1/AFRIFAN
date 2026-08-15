@@ -1,1 +1,0 @@
-Initial managed Android TV release for paired, read-only live fan activity displays.

@@ -17,12 +17,12 @@
 | Locales | club config, Flutter localizations, and current official portal language lists | Mobile UI supports English, French, and Kinyarwanda. English/French upload metadata and Kinyarwanda source copy remain pending approval; Kinyarwanda is kept outside Fastlane because neither store currently accepts that metadata language |
 | iPad | Xcode `TARGETED_DEVICE_FAMILY = "1,2"` | The app runs on iPad; iPad App Store screenshots are required |
 | Play artwork | `play_store/artwork_manifest.json`; `tools/generate_store_artwork.swift` | Deterministic 512x512 icon and 1024x500 feature graphic use original Gikundiro geometry only, with no club crest or photography; accountable approval remains open |
-| Android screenshots | `../android/fastlane/metadata/android/en-US/images/phoneScreenshots` | Four genuine 1080x1920 anonymous-state captures came from the build-5 release APK. Build 6 changes only the version and iOS `Info.plist`, so the Android UI is visually equivalent; exact build-6 screenshot capture and Play AAB/portal parity are not claimed |
-| Apple screenshots | `../ios/fastlane/screenshots/en-US`; `app_store/artwork_manifest.json` | Four 1320x2868 iPhone and four 2064x2752 iPad images are genuine build-5 production-config simulator UI. The build-6 delta is version metadata plus non-visual iOS export/orientation declarations, so the images are visually equivalent but are not exact build-6 IPA captures |
+| Android screenshots | `../android/fastlane/metadata/android/en-US/images/phoneScreenshots` | Three historical 1080x1920 captures remain. The old Fan Zone capture was retired because it displayed the moved TV/trivia entry point; a complete football-only recapture is required before submission. |
+| Apple screenshots | `../ios/fastlane/screenshots/en-US`; `app_store/artwork_manifest.json` | Three historical iPhone and three iPad captures remain. The old Fan Zone captures were retired because they displayed the moved TV/trivia entry point; complete football-only recaptures are required before submission. |
 | iOS release artifact | `build/ios/ipa/Gikundiro.ipa`; `app_store/artwork_manifest.json` | Exact signed IPA SHA-256 `606739bff02260103ac0ad55eb1b2d1c223f8aea60e9de1c4099ca7572c477bc`; bundle `rw.ikanisa.rayonSports`, version `1.0.3 (6)` |
 | iOS app icon | Exact IPA ZIP entries and `Info.plist`; source `AppIcon.appiconset` | `Assets.car`, 120x120 iPhone icon, 152x152 iPad icon, and `CFBundleIcons` declarations are present in the exact build-6 IPA. This closes technical presence only; accountable brand/content-rights approval remains open |
 
-Generated build outputs are supporting evidence only. The current build-6
-candidate and original screenshot-capture digests are distinguished in
-`frozen_capture_basis.json`; re-run the final signed Android artifacts and
-portal checks before submission.
+Generated build outputs are supporting evidence only. The previous frozen
+capture basis was retired by the football-only split; generate a new source
+freeze, final signed artifacts, screenshots, and portal checks before
+submission.

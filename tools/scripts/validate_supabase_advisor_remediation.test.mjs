@@ -48,15 +48,17 @@ const indexStatement = (name) =>
 test("accepts the exact checked-in remediation contract", () => {
   assert.deepEqual(validateAdvisorRemediationSql(validSql), {
     statementCount: 54,
-    functionCount: 27,
-    indexCount: 26,
+    functionCount: 25,
+    indexCount: 1,
     executeRevokeCount: 1,
     qualifiedFixtureBodyCount: 0,
+    retiredSchemaFunctionCount: 2,
+    retiredSchemaIndexCount: 25,
   });
 });
 
-test("requires every one of the 26 live findings and the replay-drift path repair", () => {
-  assert.equal(EXPECTED_FUNCTION_PATHS.size, 27);
+test("requires every active function path repair", () => {
+  assert.equal(EXPECTED_FUNCTION_PATHS.size, 25);
   for (const signature of EXPECTED_FUNCTION_PATHS.keys()) {
     const name = functionName(signature);
     const declaration = functionStatement(name);
@@ -180,8 +182,8 @@ test("requires one exact execute revoke and rejects a later grant", () => {
   );
 });
 
-test("requires all and only the 26 exact IF NOT EXISTS FK indexes", () => {
-  assert.equal(EXPECTED_FK_INDEXES.size, 26);
+test("requires every active IF NOT EXISTS FK index", () => {
+  assert.equal(EXPECTED_FK_INDEXES.size, 1);
   for (const indexName of EXPECTED_FK_INDEXES.keys()) {
     const declaration = indexStatement(indexName);
     assert.ok(declaration, `test fixture is missing ${indexName}`);
@@ -200,14 +202,17 @@ test("requires all and only the 26 exact IF NOT EXISTS FK indexes", () => {
   );
   expectFailure(
     validSql.replace(
-      `create index if not exists ${firstIndexName}`,
-      `create index ${firstIndexName}`,
+      "create index if not exists idx_venue_staff_audit_events_venue_id",
+      "create index idx_venue_staff_audit_events_venue_id",
     ),
     /must use the exact CREATE INDEX IF NOT EXISTS single-column form/,
   );
   expectFailure(
-    validSql.replace("(assigned_by);", "(club_id);"),
-    /targets africlub_game\.display_assignments\(club_id\)/,
+    validSql.replace(
+      "on public.venue_staff_audit_events (venue_id);",
+      "on public.venue_staff_audit_events (club_id);",
+    ),
+    /targets public\.venue_staff_audit_events\(club_id\)/,
   );
 });
 
@@ -226,8 +231,8 @@ test("rejects protected-schema DDL and ignores commented-out text", () => {
   const result = validateAdvisorRemediationSql(
     `${validSql}\n-- alter table auth.users add column ignored text;\n/* create index ignored on storage.objects (id); */\n`,
   );
-  assert.equal(result.functionCount, 27);
-  assert.equal(result.indexCount, 26);
+  assert.equal(result.functionCount, 25);
+  assert.equal(result.indexCount, 1);
 });
 
 test("rejects arbitrary statements and malformed SQL instead of silently skipping them", () => {

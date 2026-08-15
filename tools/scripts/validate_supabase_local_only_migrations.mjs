@@ -4,16 +4,12 @@ const migrationNames = [
   "20260703223439_dynamic_runtime_registries.sql",
   "20260718161000_runtime_copy_key_contract_repair.sql",
   "20260718162000_venue_operator_audit_workflows.sql",
-  "20260718170000_tv_device_credentials.sql",
   "20260724143000_govern_runtime_media_rights.sql",
   "20260724190000_privacy_safe_analytics_opt_in.sql",
   "20260724203000_admin_ticket_status_audit.sql",
   "20260724220000_mutable_record_optimistic_concurrency.sql",
   "20260724233000_admin_destructive_action_audit.sql",
   "20260728150000_harden_venue_order_checkin_scope.sql",
-  "20260730143000_live_games_v2_authoritative_runtime.sql",
-  "20260730152000_game_content_provenance_preview_gate.sql",
-  "20260801153000_native_tv_realtime_identity.sql",
   "20260801154500_preserve_authenticated_jwt_role.sql",
 ];
 
@@ -100,19 +96,6 @@ for (const [migrationName, sql] of migrationEntries) {
 }
 assert(securityDefinerCount > 0, "No SECURITY DEFINER functions were inspected.");
 
-const governedContent = migrations.get(
-  "20260730152000_game_content_provenance_preview_gate.sql",
-);
-assert(
-  /alter\s+function\s+africlub_game\.admin_publish_question_pack\s*\(\s*bigint\s*,\s*text\s*,\s*uuid\[\]\s*,\s*text\s*,\s*uuid\s*\)\s+set\s+search_path\s*=\s*public\s*,\s*africlub_game\s*,\s*pg_temp\s*;/i.test(
-    governedContent,
-  ) &&
-    /revoke\s+all\s+on\s+function\s+africlub_game\.admin_publish_question_pack\s*\(\s*bigint\s*,\s*text\s*,\s*uuid\[\]\s*,\s*text\s*,\s*uuid\s*\)\s+from\s+public\s*,\s*anon\s*,\s*authenticated\s*,\s*service_role\s*;/i.test(
-      governedContent,
-    ),
-  "The legacy publication overload must put pg_temp last and remain revoked from every API role.",
-);
-
 const analytics = migrations.get(
   "20260724190000_privacy_safe_analytics_opt_in.sql",
 );
@@ -130,31 +113,6 @@ assert(
   /existing choices are preserved/i.test(analytics) &&
     /affirmative user action/i.test(analytics),
   "The analytics consent semantics must remain explicit in schema documentation.",
-);
-
-const lifecycle = migrations.get(
-  "20260730143000_live_games_v2_authoritative_runtime.sql",
-);
-assert(
-  /add\s+column\s+if\s+not\s+exists\s+lifecycle_phase\s+text\s*,/i.test(
-    lifecycle,
-  ) &&
-    !/add\s+column\s+if\s+not\s+exists\s+lifecycle_phase\s+text\s+not\s+null\s+default/i.test(
-      lifecycle,
-    ),
-  "Lifecycle phase must be nullable until the legacy-only backfill completes.",
-);
-assert(
-  /update\s+africlub_game\.game_sessions\s+set\s+lifecycle_phase\s*=\s*case[\s\S]*?end\s+where\s+lifecycle_phase\s+is\s+null\s*;/i.test(
-    lifecycle,
-  ),
-  "Lifecycle backfill must update only null legacy rows so replay preserves V2 phases.",
-);
-assert(
-  /alter\s+column\s+lifecycle_phase\s+set\s+default\s+'draft'\s*,\s*alter\s+column\s+lifecycle_phase\s+set\s+not\s+null/i.test(
-    lifecycle,
-  ),
-  "Lifecycle default and NOT NULL must be applied after the guarded backfill.",
 );
 
 const hook = migrations.get(
@@ -193,16 +151,6 @@ const requiredAclResetRelations = [
   "public.site_search_items",
   "public.venue_governance_controls",
   "public.venue_staff_audit_events",
-  "africlub_game.role_grants",
-  "africlub_game.session_organizers",
-  "africlub_game.display_assignments",
-  "africlub_game.session_eligibility",
-  "africlub_game.session_invitations",
-  "africlub_game.transition_requests",
-  "africlub_game.operation_requests",
-  "africlub_game.game_events",
-  "africlub_game.display_pairing_challenges",
-  "africlub_game.display_bootstrap_challenges",
 ];
 const relationResetBlocks = [
   ...allSql.matchAll(
@@ -225,16 +173,6 @@ assert(
     ),
   "Runtime registries must grant scoped client access and the exact server-admin DML set.",
 );
-assert(
-  /grant\s+select\s+on\s+table[\s\S]*?africlub_game\.display_pairing_challenges[\s\S]*?to\s+authenticated\s*;/i.test(
-    lifecycle,
-  ) &&
-    !/grant\s+(?:all|insert|update|delete)[^;]*africlub_game\.display_bootstrap_challenges/i.test(
-      lifecycle,
-    ),
-  "Live-game Data API relations must be read-scoped and bootstrap storage RPC-only.",
-);
-
 console.log(
   `Validated ${migrationNames.length} local-only migrations, ${securityDefinerCount} SECURITY DEFINER functions, consent preservation, replay safety, protected-schema boundaries, and explicit ACL resets.`,
 );

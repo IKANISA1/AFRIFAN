@@ -141,50 +141,6 @@
       "data_source": "current_local_source_and_synthetic_non_production"
     },
     {
-      "id": "live-games-v2-local-checkpoint",
-      "directory": "output/implementation_goal_20260724/live_games_v2_local_checkpoint_20260730",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "STATE-02",
-        "STATE-03",
-        "EVID-03",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_live_games_v2_local",
-      "platform": "flutter_test_and_static_supabase_contract",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; deterministic widget/controller and static SQL contract execution",
-      "viewport_profiles": [
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 834,
-          "height": 1194,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-08-01T11:23:02Z",
-      "data_source": "current_user_defined_structured_prediction_trivia_scope_local_source_synthetic_non_production_and_unapplied_sql"
-    },
-    {
       "id": "web-tv-club-scoped-realtime-checkpoint",
       "directory": "output/implementation_goal_20260724/web_tv_club_scoped_realtime_checkpoint_20260730",
       "artifact_scope": "recursive",
@@ -839,33 +795,6 @@
         "light"
       ],
       "captured_at": "2026-07-24T22:12:00Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "native-tv-evidence",
-      "directory": "output/implementation_goal_20260724/tv_native_evidence_current",
-      "task_ids": [
-        "TV-08"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "rayon_sports_tv_debug",
-      "platform": "android_tv_emulator",
-      "runtime_device": "Android TV 16 API 36; arm64-v8a; AFRICLUB_TV_API36; ADB remote injection",
-      "viewport_profiles": [
-        {
-          "width": 1920,
-          "height": 1080,
-          "dpi": 320
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-07-24T16:05:31Z",
       "data_source": "synthetic_non_production"
     },
     {
@@ -3150,48 +3079,6 @@
       "data_source": "current_dirty_local_source_synthetic_route_boundary_tests_and_nonproduction_simulator_with_live_authorization_unavailable"
     },
     {
-      "id": "native-tv-v2-local-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/native_tv_v2_local_checkpoint_20260730",
-      "task_ids": [
-        "TV-01",
-        "TV-05",
-        "TV-07",
-        "STATE-01",
-        "STATE-03",
-        "EVID-02",
-        "EVID-03",
-        "EVID-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "rayon_sports_tv_local_production_configuration",
-      "platform": "flutter_macos_arm64_android_tv_debug",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic 1280x720 widget runtime; Android TV debug build only",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale": 1.7
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-07-30T14:20:00Z",
-      "data_source": "current_dirty_local_source_synthetic_tv_projection_tests_and_debug_build_with_live_realtime_authorization_unavailable"
-    },
-    {
       "id": "match-quiz-retirement-checkpoint-20260730",
       "directory": "output/implementation_goal_20260724/match_quiz_retirement_checkpoint_20260730",
       "task_ids": [
@@ -3222,40 +3109,6 @@
       ],
       "captured_at": "2026-07-30T14:40:00Z",
       "data_source": "current_dirty_local_source_static_contract_and_full_web_regression_without_live_backend_execution"
-    },
-    {
-      "id": "admin-game-operations-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/admin_game_operations_checkpoint_20260730",
-      "task_ids": [
-        "ADMIN-01",
-        "ADMIN-03",
-        "ADMIN-05",
-        "ADMIN-07",
-        "ADMIN-09",
-        "STATE-03",
-        "EVID-03",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_web_local_production_build",
-      "platform": "nextjs_web_node_24_local",
-      "runtime_device": "Node 24.18.0; Vitest 4.1.9; TypeScript; ESLint; Next.js 16.2.10 production build; Deno unavailable",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "authenticated Admin game workspace visual QA blocked at the WhatsApp sign-in gate; source, interaction tests, typecheck, lint and production build only"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_admin_design_system_source_only_visual_auth_blocked"
-      ],
-      "captured_at": "2026-07-30T15:09:00Z",
-      "data_source": "current_dirty_local_source_synthetic_authorized_projection_tests_static_sql_contract_and_full_web_regression_without_live_backend_or_authenticated_visual_execution"
     },
     {
       "id": "admin-game-content-governance-checkpoint-20260730",
@@ -3403,39 +3256,6 @@
       "data_source": "current_dirty_local_source_local_production_render_supplied_same_state_reference_three_exact_current_viewports_combined_reference_current_difference_review_and_full_web_regression_without_credentials_or_external_mutation"
     },
     {
-      "id": "authoritative-game-backend-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/authoritative_game_backend_checkpoint_20260801",
-      "task_ids": [
-        "STATE-03",
-        "TV-01",
-        "TV-05",
-        "ADMIN-01",
-        "ADMIN-05",
-        "ADMIN-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "rayon_sports_live_games_v2_local_source",
-      "platform": "postgres_sql_flutter_native_tv_local",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; native-TV widget/golden runtime; Node 24 static SQL validator; Supabase CLI unavailable",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "backend and typed-projection source checkpoint; existing native-TV visual baselines were regression-tested but no new visual claim was needed"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_native_tv_design_system_regression"
-      ],
-      "captured_at": "2026-08-01T12:02:10Z",
-      "data_source": "current_dirty_local_authoritative_sql_typed_projection_and_native_tv_tests_without_authorized_database_or_live_cross_client_execution"
-    },
-    {
       "id": "live-games-v2-database-execution-checkpoint-20260801",
       "directory": "output/implementation_goal_20260724/live_games_v2_database_execution_checkpoint_20260801",
       "task_ids": [
@@ -3465,44 +3285,6 @@
       ],
       "captured_at": "2026-08-01T12:28:40Z",
       "data_source": "current_dirty_source_full_repository_migration_chain_on_separate_unlinked_local_database_with_70_pgtap_checks_and_no_production_mutation"
-    },
-    {
-      "id": "native-tv-realtime-identity-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/native_tv_realtime_identity_checkpoint_20260801",
-      "task_ids": [
-        "GOV-03",
-        "GOV-05",
-        "STATE-03",
-        "TV-01",
-        "TV-05",
-        "TV-07",
-        "ADMIN-01",
-        "ADMIN-02",
-        "ADMIN-05",
-        "ADMIN-06",
-        "EVID-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "rayon_sports_native_tv_realtime_identity_local",
-      "platform": "flutter_android_tv_supabase_postgres_realtime_local",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; Supabase CLI 2.111.0; isolated PostgreSQL 17; local Realtime network probe",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "runtime identity, synchronization and database-contract tranche; six existing native-TV goldens regression-passed and no visible UI changed"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_native_tv_design_system_regression"
-      ],
-      "captured_at": "2026-08-01T14:23:17Z",
-      "data_source": "current_dirty_local_source_isolated_full_migration_database_auth_issued_identity_and_failed_local_realtime_network_probe_without_shared_or_production_mutation"
     },
     {
       "id": "live-games-v2-qa01-checkpoint-20260801",
@@ -3561,82 +3343,6 @@
       ],
       "captured_at": "2026-08-01T14:54:38Z",
       "data_source": "current_dirty_local_source_and_one_deterministic_six_state_fixture_without_shared_live_physical_device_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-qa04-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa04_checkpoint_20260801",
-      "task_ids": [
-        "STATE-03",
-        "ADMIN-06",
-        "EVID-04",
-        "EVID-06",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "africlub_live_games_v2_qa04_resilience_local",
-      "platform": "flutter_participant_mobile_android_tv_local_test_runtime",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic unit and widget test runtime",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "controller, synchronizer, reconciliation and process-restart resilience checkpoint; existing widgets regression-passed and no visible production UI changed"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_mobile_and_native_tv_design_system_test_render"
-      ],
-      "captured_at": "2026-08-01T15:07:16Z",
-      "data_source": "current_dirty_local_source_and_one_deterministic_eleven_scenario_resilience_matrix_without_shared_live_physical_device_network_timing_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-qa05-local-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa05_local_checkpoint_20260801",
-      "task_ids": [
-        "A11Y-02",
-        "TV-04",
-        "TV-07",
-        "EVID-04",
-        "EVID-05",
-        "EVID-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "africlub_live_games_v2_qa05_tv_accessibility_local",
-      "platform": "flutter_native_tv_local_widget_and_golden_test_runtime",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic macOS-hosted native-TV widget and golden test runtime",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "evidence": "exact synthetic golden plus widget execution"
-        },
-        {
-          "width": 1920,
-          "height": 1080,
-          "device_pixel_ratio": 1,
-          "evidence": "widget execution only; not native-device capture"
-        },
-        {
-          "width": 3840,
-          "height": 2160,
-          "device_pixel_ratio": 1,
-          "evidence": "widget execution only; not native-device capture"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-08-01T15:28:29Z",
-      "data_source": "current_dirty_local_source_and_synthetic_privacy_safe_native_tv_widget_golden_focus_semantics_and_automated_privacy_tests_without_native_1080p_4k_physical_tv_soak_human_approval_shared_live_or_release_claim"
     },
     {
       "id": "live-games-v2-mob05-checkpoint-20260801",
@@ -3929,150 +3635,6 @@
       "data_source": "current_dirty_local_source_deterministic_owner_inventory_tests_full_chain_isolated_database_contract_and_inspected_exact_golden_without_shared_live_physical_device_real_network_timing_human_approval_or_release_claim"
     },
     {
-      "id": "live-games-v2-own02-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_own02_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "TV-05",
-        "ADMIN-02",
-        "ADMIN-05",
-        "ADMIN-06",
-        "STATE-03",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_owner_pairing_management_local",
-      "platform": "flutter_mobile_native_tv_contract_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.109.1; PostgreSQL 17; deterministic macOS-hosted owner-management tests and isolated database ports 55322/55320",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1,
-          "evidence": "exact deterministic owner TV-detail management golden"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T18:26:19Z",
-      "data_source": "current_dirty_local_source_deterministic_owner_pairing_management_tests_full_chain_isolated_database_contract_and_inspected_exact_golden_without_shared_live_real_display_physical_device_real_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-tv03-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_tv03_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "TV-05",
-        "ADMIN-05",
-        "ADMIN-06",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-06",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_native_tv_pairing_only_local",
-      "platform": "flutter_native_tv_local_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.109.1; PostgreSQL 17; deterministic macOS-hosted native-TV tests and isolated database ports 56322/56320",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "evidence": "exact deterministic Rwandan native-TV pairing challenge golden with production My TVs QR deep link"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T18:42:49Z",
-      "data_source": "current_dirty_local_source_deterministic_native_tv_pairing_only_tests_full_chain_isolated_database_contract_and_side_by_side_inspected_exact_golden_without_shared_live_physical_tv_real_network_timing_human_approval_signing_store_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-tv01-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_tv01_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "TV-01",
-        "TV-07",
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-06",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_native_tv_full_projection_local",
-      "platform": "flutter_native_tv_local_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.109.1; PostgreSQL 17; deterministic macOS-hosted native-TV tests and isolated database ports 56322/56320",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "evidence": "five exact deterministic native-TV paired-empty question reveal completion and retained-offline projection goldens"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T18:54:02Z",
-      "data_source": "current_dirty_local_source_deterministic_native_tv_full_projection_tests_full_chain_isolated_database_contract_and_five_unchanged_exact_current_source_goldens_without_shared_live_physical_tv_real_network_timing_human_approval_signing_store_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-tv02-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_tv02_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "TV-01",
-        "TV-07",
-        "STATE-03",
-        "EVID-02",
-        "EVID-04",
-        "EVID-06",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_native_tv_realtime_local",
-      "platform": "flutter_native_tv_local_supabase_postgres_and_isolated_realtime_network",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; Supabase CLI 2.111.0; PostgreSQL 17; Realtime v2.120.3; isolated ports 57321/57322/57320",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "network identity delivery ordering RLS and revocation checkpoint; exact visual states remain governed by GAME-TV-01 and GAME-TV-03"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "not_applicable_no_visual_change"
-      ],
-      "captured_at": "2026-08-01T19:11:26Z",
-      "data_source": "current_dirty_local_source_auth_issued_tv_identity_full_chain_isolated_database_and_isolated_realtime_network_delivery_ordering_rls_revocation_execution_without_shared_live_physical_tv_wan_human_approval_signing_store_or_release_claim"
-    },
-    {
       "id": "live-games-v2-qa05-native-resolution-checkpoint-20260801",
       "directory": "output/implementation_goal_20260724/live_games_v2_qa05_native_resolution_checkpoint_20260801",
       "artifact_scope": "recursive",
@@ -4150,39 +3712,6 @@
       "data_source": "current_dirty_local_source_unsigned_ios_release_ephemeral_signed_android_and_tv_release_dry_runs_current_web_gate_and_exact_physical_iphone_install_launch_without_clean_candidate_pinned_ci_production_signing_store_full_physical_uat_target_backend_approval_or_release_claim"
     },
     {
-      "id": "live-games-v2-qa03-execution-preflight-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa03_execution_preflight_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-03",
-        "A11Y-02",
-        "EVID-04",
-        "EVID-06",
-        "EVID-08",
-        "REL-06",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3 mobile; 1.0.0 native TV; current web",
-      "build_number": "5 mobile; 1 native TV",
-      "flavor": "africlub_game_qa03_physical_synchronized_session_preflight",
-      "platform": "flutter_coredevice_adb_read_only_device_inventory",
-      "runtime_device": "Flutter 3.44.4; paired unavailable iPhone 12 Pro iOS 26.6; two iOS 26.5 simulators; no attached Android or physical native-TV target",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "read-only execution preflight; no synchronized physical-session visual evidence claimed"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "not_applicable_device_inventory_only"
-      ],
-      "captured_at": "2026-08-01T20:00:55Z",
-      "data_source": "exact_current_read_only_flutter_adb_and_coredevice_inventory_without_authorized_shared_backend_two_available_physical_phones_physical_native_tv_synchronized_execution_network_timing_video_approval_or_release_claim"
-    },
-    {
       "id": "club-route-states-20260801",
       "directory": "output/implementation_goal_20260724/club_route_states_20260801",
       "artifact_scope": "recursive",
@@ -4227,51 +3756,6 @@
       ],
       "captured_at": "2026-08-01T20:32:30Z",
       "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_club_data_without_authenticated_live_backend_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "game-operations-hub-route-states-20260801",
-      "directory": "output/implementation_goal_20260724/game_operations_hub_route_states_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_game_operations_hub_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real game-operations hub route",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion"
-      ],
-      "captured_at": "2026-08-01T20:59:35Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_static_role_gated_navigation_without_live_authorization_downstream_mutation_physical_device_human_approval_signing_store_deployment_or_release_claim"
     },
     {
       "id": "session-planner-route-states-20260802",
@@ -4463,54 +3947,6 @@
       ],
       "captured_at": "2026-08-01T21:44:19Z",
       "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_owner_tv_pairing_without_authenticated_shared_live_role_rls_rpc_audit_real_tv_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "tv-detail-route-states-20260801",
-      "directory": "output/implementation_goal_20260724/tv_detail_route_states_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_tv_detail_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real authenticated owner TV management route",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline",
-        "retained_syncing",
-        "mutation_conflict"
-      ],
-      "captured_at": "2026-08-01T22:04:08Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_owner_tv_management_without_authenticated_shared_live_role_rls_rpc_audit_real_display_physical_device_human_approval_signing_store_deployment_or_release_claim"
     },
     {
       "id": "live-game-control-route-states-20260802",
@@ -5361,99 +4797,6 @@
       ],
       "captured_at": "2026-08-02T06:05:19Z",
       "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_staff_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "venue-portal-tv-code-rendered-states-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_tv_code_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_tv_code_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-02T06:05:35Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_tv-code_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "native-tv-remote-context-checkpoint-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/native_tv_remote_context_checkpoint_20260802",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "A11Y-02",
-        "EVID-04",
-        "EVID-05",
-        "EVID-06",
-        "EVID-07",
-        "EVID-08",
-        "TV-04",
-        "TV-05",
-        "REL-04",
-        "REL-05"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "native_tv_debug_isolated_local_backend_and_mobile_ios_simulator_generic_pairing_link",
-      "platform": "android_tv_api36_avd_and_ios_simulator",
-      "runtime_device": "AFRICLUB_TV_API36 read-only Android TV API 36 AVD at 1920x1080; Lovelies iPhone 12 Pro iOS simulator",
-      "viewport_profiles": [
-        {
-          "width": 1920,
-          "height": 1080,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 3
-        }
-      ],
-      "locale": "rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-02T06:40:06Z",
-      "data_source": "exact_current_native_tv_debug_build_against_isolated_local_supabase_with_synthetic_club_and_ios_simulator_generic_link_registration__no_shared_linked_or_production_mutation_no_physical_device_live_pairing_signing_store_or_approval_claim"
     },
     {
       "id": "supabase-production-audit-20260809",

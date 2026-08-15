@@ -66,7 +66,6 @@ jobs:
           node tools/scripts/validate_supabase_local_only_migrations.mjs
           node tools/scripts/validate_supabase_advisor_remediation.mjs
           node tools/scripts/validate_supabase_edge_contract.mjs
-          node tools/scripts/validate_live_games_v2_contract.mjs
           deno check $(find supabase/functions -mindepth 2 -maxdepth 2 -name index.ts -print | sort)
           deno test --allow-env --allow-net --allow-read \
             $(find supabase/functions -type f \( -name '*_test.ts' -o -name '*test.ts' \) -print | sort)

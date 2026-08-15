@@ -22,7 +22,7 @@ void main() {
     );
   });
 
-  test('Android registers both branded and generic TV pairing links', () {
+  test('Android registers both branded and legacy app-link schemes', () {
     final manifest = File(
       '${_workspacePrefix()}apps/rayon_sports/android/app/src/main/AndroidManifest.xml',
     ).readAsStringSync();

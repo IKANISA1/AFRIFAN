@@ -13,8 +13,6 @@ const FIXTURE_BASELINE_MIGRATION = path.resolve(
 );
 
 export const EXPECTED_FUNCTION_PATHS = new Map([
-  ["africlub_game.current_club_id()", []],
-  ["africlub_game.normalize_question_prompt(text)", []],
   [
     "football._seed_fixture(text,text,text,text,timestamp with time zone,text,text)",
     [],
@@ -50,85 +48,6 @@ export const EXPECTED_FUNCTION_PATHS = new Map([
 
 export const EXPECTED_FK_INDEXES = new Map([
   [
-    "idx_display_assignments_assigned_by",
-    ["africlub_game.display_assignments", "assigned_by"],
-  ],
-  [
-    "idx_display_assignments_club_id",
-    ["africlub_game.display_assignments", "club_id"],
-  ],
-  [
-    "idx_display_bootstrap_challenges_consumed_by",
-    ["africlub_game.display_bootstrap_challenges", "consumed_by"],
-  ],
-  [
-    "idx_display_bootstrap_challenges_display_id",
-    ["africlub_game.display_bootstrap_challenges", "display_id"],
-  ],
-  [
-    "idx_display_pairing_challenges_club_id",
-    ["africlub_game.display_pairing_challenges", "club_id"],
-  ],
-  [
-    "idx_display_pairing_challenges_consumed_by",
-    ["africlub_game.display_pairing_challenges", "consumed_by"],
-  ],
-  [
-    "idx_display_pairing_challenges_display_id",
-    ["africlub_game.display_pairing_challenges", "display_id"],
-  ],
-  ["idx_game_events_actor_id", ["africlub_game.game_events", "actor_id"]],
-  ["idx_game_events_club_id", ["africlub_game.game_events", "club_id"]],
-  [
-    "idx_operation_requests_club_id",
-    ["africlub_game.operation_requests", "club_id"],
-  ],
-  ["idx_role_grants_granted_by", ["africlub_game.role_grants", "granted_by"]],
-  ["idx_role_grants_user_id", ["africlub_game.role_grants", "user_id"]],
-  ["idx_role_grants_venue_id", ["africlub_game.role_grants", "venue_id"]],
-  [
-    "idx_session_eligibility_club_id",
-    ["africlub_game.session_eligibility", "club_id"],
-  ],
-  [
-    "idx_session_eligibility_created_by",
-    ["africlub_game.session_eligibility", "created_by"],
-  ],
-  [
-    "idx_session_invitations_club_id",
-    ["africlub_game.session_invitations", "club_id"],
-  ],
-  [
-    "idx_session_invitations_invited_by",
-    ["africlub_game.session_invitations", "invited_by"],
-  ],
-  [
-    "idx_session_invitations_user_id",
-    ["africlub_game.session_invitations", "user_id"],
-  ],
-  [
-    "idx_session_organizers_assigned_by",
-    ["africlub_game.session_organizers", "assigned_by"],
-  ],
-  [
-    "idx_session_organizers_club_id",
-    ["africlub_game.session_organizers", "club_id"],
-  ],
-  [
-    "idx_session_organizers_user_id",
-    ["africlub_game.session_organizers", "user_id"],
-  ],
-  [
-    "idx_transition_requests_actor_id",
-    ["africlub_game.transition_requests", "actor_id"],
-  ],
-  [
-    "idx_transition_requests_club_id",
-    ["africlub_game.transition_requests", "club_id"],
-  ],
-  ["idx_tv_devices_owner_user_id", ["africlub_game.tv_devices", "owner_user_id"]],
-  ["idx_tv_devices_venue_id", ["africlub_game.tv_devices", "venue_id"]],
-  [
     "idx_venue_staff_audit_events_venue_id",
     ["public.venue_staff_audit_events", "venue_id"],
   ],
@@ -144,6 +63,8 @@ const REQUIRED_EXECUTE_REVOKE_ROLES = new Set([
   "authenticated",
   "service_role",
 ]);
+const RETIRED_SCHEMA_FUNCTION_COUNT = 2;
+const RETIRED_SCHEMA_INDEX_COUNT = 25;
 
 const fail = (message) => {
   throw new Error(message);
@@ -475,12 +396,18 @@ export function validateAdvisorRemediationSql(sql) {
   const indexes = new Map();
   const fixtureDefinitions = new Map();
   let executeRevokeCount = 0;
+  let retiredSchemaFunctionCount = 0;
+  let retiredSchemaIndexCount = 0;
 
   for (const [statementIndex, statement] of statements.entries()) {
     assertNoProtectedSchemaDdl(statement);
 
     if (/^alter\s+function\b/i.test(statement)) {
       const declaration = parseAlterFunction(statement);
+      if (declaration.signature.startsWith("africlub_game.")) {
+        retiredSchemaFunctionCount += 1;
+        continue;
+      }
       if (!EXPECTED_FUNCTION_PATHS.has(declaration.signature)) {
         fail(`Unexpected advisor function declaration: ${declaration.signature}.`);
       }
@@ -504,6 +431,10 @@ export function validateAdvisorRemediationSql(sql) {
 
     if (/^create\s+(?:unique\s+)?index\b/i.test(statement)) {
       const declaration = parseIndex(statement);
+      if (declaration.relation.startsWith("africlub_game.")) {
+        retiredSchemaIndexCount += 1;
+        continue;
+      }
       const expected = EXPECTED_FK_INDEXES.get(declaration.name);
       if (expected == null) {
         fail(`Unexpected advisor FK index declaration: ${declaration.name}.`);
@@ -575,6 +506,12 @@ export function validateAdvisorRemediationSql(sql) {
   if (executeRevokeCount !== 1) {
     fail("Missing football.auto_lock_fixture_markets EXECUTE revoke declaration.");
   }
+  if (retiredSchemaFunctionCount !== RETIRED_SCHEMA_FUNCTION_COUNT) {
+    fail("Historical advisor migration has unexpected retired-schema function drift.");
+  }
+  if (retiredSchemaIndexCount !== RETIRED_SCHEMA_INDEX_COUNT) {
+    fail("Historical advisor migration has unexpected retired-schema index drift.");
+  }
 
   return {
     statementCount: statements.length,
@@ -582,6 +519,8 @@ export function validateAdvisorRemediationSql(sql) {
     indexCount: indexes.size,
     executeRevokeCount,
     qualifiedFixtureBodyCount: fixtureDefinitions.size,
+    retiredSchemaFunctionCount,
+    retiredSchemaIndexCount,
   };
 }
 
@@ -592,7 +531,7 @@ async function main() {
   const sql = await readFile(migrationPath, "utf8");
   const result = validateAdvisorRemediationSql(sql);
   console.log(
-    `Validated 26 live advisor function paths plus ${result.functionCount - 26} baseline-replay drift repair, ${result.executeRevokeCount} trigger execute ACL reset, ${result.indexCount} exact FK indexes, and zero protected-schema or unexpected declarations in ${migrationPath}.`,
+    `Validated ${result.functionCount} active advisor function paths, ${result.executeRevokeCount} trigger execute ACL reset, ${result.indexCount} active FK index, fixed retired-schema statement counts, and zero protected-schema or unexpected active declarations in ${migrationPath}.`,
   );
 }
 

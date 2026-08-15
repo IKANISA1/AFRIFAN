@@ -10,7 +10,6 @@ import {
   getVenueOrders,
   getVenueOverview,
   getVenueStaff,
-  getVenueTvCode,
 } from "./venue-operations";
 
 vi.mock("@/lib/supabase/server", () => ({ getServerSupabase: vi.fn() }));
@@ -577,45 +576,6 @@ describe("venue operations", () => {
       }),
       expect.objectContaining({ isLaunchable: false }),
     ]);
-  });
-
-  it("returns no TV code, maps a code, and surfaces query errors", async () => {
-    await expect(
-      getVenueTvCode(client({ data: null, error: null }).supabase, access),
-    ).resolves.toBeNull();
-    const row = scopedRow({
-      status: "active",
-      expires_at: "2026-07-18T13:00:00Z",
-      rotates_at: "2026-07-18T12:05:00Z",
-      venue_checkin_campaigns: { campaign_name: "Matchday" },
-    });
-    await expect(
-      getVenueTvCode(client({ data: row, error: null }).supabase, access),
-    ).resolves.toEqual(expect.objectContaining({ campaignName: "Matchday" }));
-    await expect(
-      getVenueTvCode(client({ error: { message: "denied" } }).supabase, access),
-    ).rejects.toThrow("TV code query failed");
-  });
-
-  it("accepts an optional TV rotation and rejects a missing campaign relation", async () => {
-    const row = scopedRow({
-      status: "active",
-      expires_at: "2026-07-18T13:00:00Z",
-      rotates_at: null,
-      venue_checkin_campaigns: { campaign_name: "Matchday" },
-    });
-    await expect(
-      getVenueTvCode(client({ data: row, error: null }).supabase, access),
-    ).resolves.toEqual(expect.objectContaining({ rotatesAt: "" }));
-    await expect(
-      getVenueTvCode(
-        client({
-          data: { ...row, venue_checkin_campaigns: null },
-          error: null,
-        }).supabase,
-        access,
-      ),
-    ).rejects.toThrow("TV code campaign is invalid");
   });
 
   it("surfaces list errors and rejects malformed collection responses", async () => {

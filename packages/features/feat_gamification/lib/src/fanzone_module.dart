@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'screens/fanzone_hub_screen.dart';
 import 'screens/fet_wallet_screen.dart';
 import 'screens/match_detail_screen.dart';
-import 'screens/participant_live_games_screen.dart';
 import 'screens/prediction_detail_screen.dart';
 import 'screens/share_card_generator_screen.dart';
 import 'screens/venue_checkin_screen.dart';
@@ -188,48 +187,12 @@ class FanzoneModule extends FeatureModule {
   ];
 
   @override
-  List<RouteBase> get standaloneRoutes => [
-    GoRoute(
-      path: '/fanzone/game',
-      name: 'fanzone-game-session-entry',
-      pageBuilder: (context, state) =>
-          afriRoutePage(state, const ParticipantLiveGamesScreen()),
-    ),
-    GoRoute(
-      path: '/fanzone/game/:sessionId',
-      name: 'fanzone-game-session-controller',
-      pageBuilder: (context, state) => afriRoutePage(
-        state,
-        ParticipantLiveGamesScreen(
-          initialSessionId: state.pathParameters['sessionId'],
-        ),
-      ),
-    ),
-  ];
-
-  @override
   List<RoutePresentationDecision> get routePresentationDecisions => const [
     RoutePresentationDecision(
       path: '/fanzone',
       presentation: RoutePresentation.fullScreen,
       recommendation: 'keep',
       rationale: 'Primary engagement hub and bottom-tab destination.',
-    ),
-    RoutePresentationDecision(
-      path: '/fanzone/game',
-      presentation: RoutePresentation.fullScreen,
-      renderedStateContract: 'controlled_participant_discovery_surface',
-      recommendation: 'keep',
-      rationale:
-          'Eligible-session discovery is a focused authenticated task with no TV-code input or competing bottom navigation.',
-    ),
-    RoutePresentationDecision(
-      path: '/fanzone/game/:sessionId',
-      presentation: RoutePresentation.fullScreen,
-      renderedStateContract: 'controlled_participant_live_surface',
-      recommendation: 'keep',
-      rationale:
-          'The synchronized participant game requires a focused full-screen deep-link destination.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/venue',

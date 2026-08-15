@@ -51,7 +51,7 @@ export interface ContentBlock {
 export interface PlatformRouteConfig {
   route_key: string;
   path_pattern: string;
-  surface: "mobile" | "web" | "tv" | "venue" | "admin" | "both";
+  surface: "mobile" | "web" | "venue" | "admin" | "both";
   feature_key: string;
   label?: string | null;
   auth_required: boolean;
@@ -77,14 +77,14 @@ export interface PlatformOptionSet {
   label: string;
   description?: string | null;
   value_type: "text" | "number" | "boolean" | "json";
-  surface: "mobile" | "web" | "tv" | "venue" | "admin" | "both";
+  surface: "mobile" | "web" | "venue" | "admin" | "both";
   metadata: Record<string, unknown>;
   values: PlatformOptionValue[];
 }
 
 export interface RuntimeCopyEntry {
   copy_key: string;
-  surface: "mobile" | "web" | "tv" | "venue" | "admin" | "both";
+  surface: "mobile" | "web" | "venue" | "admin" | "both";
   locale: string;
   text_value: string;
   description?: string | null;
@@ -96,7 +96,7 @@ export interface SiteNavigationItem {
   label: string;
   href: string;
   nav_group: string;
-  surface: "web" | "mobile" | "admin" | "venue" | "tv" | "both";
+  surface: "web" | "mobile" | "admin" | "venue" | "both";
   feature_key?: string | null;
   sort_order: number | null;
   metadata: Record<string, unknown>;
@@ -109,7 +109,7 @@ export interface SiteSearchItem {
   href: string;
   category: string;
   meta_label?: string | null;
-  surface: "web" | "mobile" | "admin" | "venue" | "tv" | "both";
+  surface: "web" | "mobile" | "admin" | "venue" | "both";
   feature_key?: string | null;
   sort_order: number | null;
   metadata: Record<string, unknown>;

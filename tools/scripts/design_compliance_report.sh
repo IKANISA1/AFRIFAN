@@ -120,7 +120,6 @@ if [ -f "$ROUTE_INVENTORY_JSON" ] &&
     (.routes | type == "array" and length == $root.route_count) and
     any(.routes[]; .surface == "mobile" and .path == "/home") and
     any(.routes[]; .surface == "mobile" and .path == "/search") and
-    any(.routes[]; .surface == "native_tv") and
     any(.routes[]; .surface == "admin_pwa") and
     any(.routes[]; .surface == "venue_portal")
   ' "$ROUTE_INVENTORY_JSON" >/dev/null; then
@@ -429,7 +428,6 @@ forbidden_static_refs="$(
     -g '!output/**' |
     rg -v 'packages/core/core_theme/test/ui_source_guardrails_test\.dart' |
     rg -v 'apps/rayon_sports/web/src/app/brand-(mark|surface)\.svg/route\.ts' |
-    rg -v 'apps/rayon_sports_tv/test/tv_app_test\.dart' |
     rg -v 'tools/scripts/design_compliance_report\.sh' || true
 )"
 record_violation "Forbidden static visual references" "$forbidden_static_refs"

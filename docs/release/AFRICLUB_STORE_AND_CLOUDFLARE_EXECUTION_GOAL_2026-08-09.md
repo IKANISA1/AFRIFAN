@@ -2,7 +2,10 @@
 
 Goal ID: `AFRICLUB-R67-STORE-CLOUDFLARE-SUBMISSION`
 Revision: `2026-08-09-R67`
-Status: active until the fail-closed completion predicate is proved
+Status: superseded on 2026-08-15 by the football-only split. TV/trivia tasks in
+this record moved to LET'S PLAY and cannot be used as current AFRICLUB release
+requirements. See
+[`../architecture/AFRICLUB_LETS_PLAY_SPLIT_2026-08-15.md`](../architecture/AFRICLUB_LETS_PLAY_SPLIT_2026-08-15.md).
 
 ## Objective
 

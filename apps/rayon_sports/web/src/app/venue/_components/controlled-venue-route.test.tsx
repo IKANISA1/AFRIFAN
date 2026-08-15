@@ -11,7 +11,6 @@ const routes: Array<[ControlledVenueRoute, RegExp, RegExp]> = [
   ["checkins", /check-ins/i, /refresh check-ins/i],
   ["promotions", /promotions/i, /refresh promotions/i],
   ["staff", /venue staff/i, /refresh venue staff/i],
-  ["tv-code", /tv code status/i, /refresh tv code status/i],
 ];
 
 describe("controlled venue route evidence", () => {

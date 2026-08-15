@@ -72,11 +72,6 @@ class HubQuickRoutes extends StatelessWidget {
   Widget build(BuildContext context) {
     final primaryItems = <({String label, IconData icon, String route})>[
       (
-        label: context.afriL10n.gameLiveGamesTitle,
-        icon: AfriIcons.live,
-        route: '/fanzone/game',
-      ),
-      (
         label: context.afriL10n.gameFans,
         icon: AfriIcons.profile,
         route: '/fanzone?section=supporters',

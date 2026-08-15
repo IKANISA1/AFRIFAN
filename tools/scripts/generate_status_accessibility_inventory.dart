@@ -104,7 +104,6 @@ void main(List<String> arguments) {
     'workspace': root.path,
     'scope': <String>[
       'packages/**/lib/**/*.dart',
-      'apps/rayon_sports_tv/lib/**/*.dart',
       'apps/rayon_sports/web/src/**/*.{ts,tsx,css}',
     ],
     'summary': <String, Object?>{
@@ -161,7 +160,6 @@ Directory _repoRoot() {
 List<File> _productionSourceFiles(Directory root) {
   final roots = <Directory>[
     Directory('${root.path}/packages'),
-    Directory('${root.path}/apps/rayon_sports_tv/lib'),
     Directory('${root.path}/apps/rayon_sports/web/src'),
   ];
   final files = <File>[];
@@ -177,10 +175,7 @@ List<File> _productionSourceFiles(Directory root) {
           path.endsWith('.ts') ||
           path.endsWith('.tsx') ||
           path.endsWith('.css');
-      final isDart =
-          path.endsWith('.dart') &&
-          (path.contains('/lib/') ||
-              path.contains('/apps/rayon_sports_tv/lib/'));
+      final isDart = path.endsWith('.dart') && path.contains('/lib/');
       if ((!isWeb && !isDart) ||
           path.contains('/test/') ||
           path.contains('.test.') ||

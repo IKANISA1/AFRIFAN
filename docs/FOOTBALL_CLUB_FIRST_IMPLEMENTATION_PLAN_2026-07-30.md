@@ -1,8 +1,11 @@
 # AFRICLUB Football-Club-First Implementation Plan
 
-Updated: 2026-08-08
+Updated: 2026-08-15
 
-Status: active implementation contract; not a completion or release claim.
+Status: historical implementation record. TV/trivia sections are superseded by
+[`architecture/AFRICLUB_LETS_PLAY_SPLIT_2026-08-15.md`](architecture/AFRICLUB_LETS_PLAY_SPLIT_2026-08-15.md).
+AFRICLUB's current contract is football-only; this file must not be used to
+restore or release the moved surfaces.
 
 Design authority: [`../DESIGN.md`](../DESIGN.md). This plan controls product
 priority, information architecture, domain ownership, sequencing, and evidence

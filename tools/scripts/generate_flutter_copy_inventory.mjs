@@ -37,7 +37,6 @@ const dispositionInput = resolve(
 const roots = [
   "packages/features",
   "apps/rayon_sports/lib",
-  "apps/rayon_sports_tv/lib",
 ].map((path) => resolve(repoRoot, path));
 
 const namedFields = [
@@ -216,11 +215,6 @@ const inventory = {
           "/feat_home/lib/src/screens/discovery_search",
         ) ||
           entry.file.includes("/feat_home/lib/src/search/")),
-    ).length,
-    localized_tv_literals_remaining: uniqueEntries.filter(
-      (entry) =>
-        isPending(entry) &&
-        entry.file === "apps/rayon_sports_tv/lib/main.dart",
     ).length,
   },
   candidates_by_package: Object.fromEntries(
@@ -412,7 +406,6 @@ that every literal is user-facing. Each candidate remains
 - Packages with candidates: ${inventoryValue.summary.packages_with_candidates}
 - Packages with pending candidates: ${inventoryValue.summary.packages_with_pending_candidates}
 - Search-surface candidate literals remaining after the current migration: ${inventoryValue.summary.localized_search_literals_remaining}
-- Native-TV candidate literals remaining after the current migration: ${inventoryValue.summary.localized_tv_literals_remaining}
 - Controlled disposition registry: \`${inventoryValue.methodology.disposition_registry}\`
 - Source digest: \`${inventoryValue.source_sha256}\`
 

@@ -1,6 +1,11 @@
 # Rayon Sports Release Checklist
 
-This is the canonical release checklist for the `rayon_sports` product suite.
+Status: historical pre-split checklist. It is superseded by
+[`release/AFRICLUB_FOOTBALL_ONLY_RELEASE_GATES_2026-08-15.md`](release/AFRICLUB_FOOTBALL_ONLY_RELEASE_GATES_2026-08-15.md)
+and must not be used to release an AFRICLUB TV/trivia surface.
+
+This was the canonical release checklist for the former `rayon_sports`
+multi-surface product suite.
 
 The ordered execution goal and its machine-readable completion predicate are:
 

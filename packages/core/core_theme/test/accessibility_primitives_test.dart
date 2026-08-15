@@ -284,7 +284,11 @@ void main() {
             padding: EdgeInsets.all(24),
             child: AfriStatRow(
               stats: <AfriStat>[
-                AfriStat(label: 'Active', value: '4', icon: Icons.tv),
+                AfriStat(
+                  label: 'Active',
+                  value: '4',
+                  icon: Icons.event_available,
+                ),
                 AfriStat(
                   label: 'Accuracy',
                   value: '63%',

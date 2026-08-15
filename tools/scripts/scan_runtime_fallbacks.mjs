@@ -6,7 +6,6 @@ const repoRoot = new URL("../../", import.meta.url).pathname;
 
 const roots = [
   "apps/rayon_sports/web/src",
-  "apps/rayon_sports_tv/lib",
   "packages/core/core_feature_config/lib",
   "packages/features/feat_gamification/lib",
   "packages/features/feat_home/lib",
