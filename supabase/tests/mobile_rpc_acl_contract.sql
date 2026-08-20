@@ -33,9 +33,7 @@ insert into expected_mobile_rpc_acl values
   ('public.fet_transfer(uuid,integer,text,text,bigint)', false, false, true),
   ('public.fixtures_calendar(date,date,text,text,integer)', true, true, false),
   ('public.fixtures_date_summary(date,date,text)', true, true, false),
-  ('public.get_eligible_game_sessions_v2(uuid)', false, true, false),
   ('public.get_momo_sms_operational_summary()', false, true, false),
-  ('public.get_participant_game_projection_v2(uuid)', false, true, false),
   ('public.get_platform_config(text,bigint)', true, true, true),
   ('public.is_super_admin()', false, true, false),
   ('public.partner_prediction_pool_feed(bigint,text[],integer,integer)', false, false, true),
@@ -62,14 +60,13 @@ insert into expected_mobile_rpc_acl values
   ('public.prediction_place_acca(jsonb)', false, true, false),
   ('public.prediction_place_jackpot_entry(uuid,jsonb,text)', false, false, true),
   ('public.purchase_club_tickets(uuid,uuid,text,integer,text)', false, false, true),
-  ('public.submit_participant_answer_v2(uuid,uuid,text,bigint,bigint,text)', false, true, false),
   ('public.venue_checkin_validate(bigint,text,text,numeric)', false, true, false),
   ('public.venue_order_create(bigint,uuid,uuid,jsonb,boolean,text)', false, true, false);
 
 select is(
   (select count(*)::integer from expected_mobile_rpc_acl),
-  51,
-  'the reviewed mobile RPC denominator remains 51'
+  48,
+  'the reviewed football-only mobile RPC denominator remains 48'
 );
 
 select is(
@@ -139,7 +136,7 @@ select ok(
     where acl.grantee = 0
       and acl.privilege_type = 'EXECUTE'
   ),
-  'none of the 51 functions inherits execution through PUBLIC'
+  'none of the 48 functions inherits execution through PUBLIC'
 );
 
 select ok(
