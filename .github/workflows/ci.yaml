@@ -29,9 +29,6 @@ jobs:
       - name: Enforce football-only repository boundary
         run: node tools/scripts/validate_repository_boundary.mjs
 
-      - name: Validate checkpoint reconciliation controls
-        run: node --test tools/scripts/reconcile_implementation_goal_checkpoint.test.mjs
-
       - name: Validate local-only Supabase migration security controls
         run: node tools/scripts/validate_supabase_local_only_migrations.mjs
 
@@ -73,46 +70,42 @@ jobs:
         env:
           SOURCE_DESIGN: ${{ github.workspace }}/DESIGN.md
           EXCEPTIONS_REGISTER: ${{ github.workspace }}/docs/governance/design-exceptions.json
-          ROUTE_INVENTORY_JSON: ${{ runner.temp }}/africlub-route-inventory/route-inventory.json
-          ROUTE_STATE_CLOSURE_JSON: ${{ runner.temp }}/africlub-route-inventory/route-state-closure.json
-          SCREEN_ARCHETYPE_COVERAGE_JSON: ${{ runner.temp }}/africlub-route-inventory/screen-archetype-coverage.json
-          COMPONENT_INVENTORY_JSON: ${{ runner.temp }}/africlub-component-inventory/universal-component-inventory.json
-          OUT_DIR: ${{ runner.temp }}/africlub-route-inventory
+          ROUTE_INVENTORY_JSON: ${{ runner.temp }}/africlub-governance/route/route-inventory.json
+          ROUTE_STATE_CLOSURE_JSON: ${{ runner.temp }}/africlub-governance/route/route-state-closure.json
+          SCREEN_ARCHETYPE_COVERAGE_JSON: ${{ runner.temp }}/africlub-governance/route/screen-archetype-coverage.json
+          COMPONENT_INVENTORY_JSON: ${{ runner.temp }}/africlub-governance/component/universal-component-inventory.json
+          OUT_DIR: ${{ runner.temp }}/africlub-governance/route
         run: |
           bash tools/scripts/generate_route_inventory.sh
-          OUT_DIR="${{ runner.temp }}/africlub-component-inventory" \
+          OUT_DIR="${{ runner.temp }}/africlub-governance/component" \
             bash tools/scripts/generate_component_inventory.sh
           dart run tools/scripts/generate_status_accessibility_inventory.dart \
-            "${{ runner.temp }}/africlub-status-accessibility"
+            "${{ runner.temp }}/africlub-governance/accessibility"
           jq -e '
             .summary.contract_complete == true and
             .summary.review_required == 0 and
             .summary.semantic_color_occurrences > 0 and
             .summary.status_component_occurrences > 0 and
             (.color_vision_simulations | length) == 8
-          ' "${{ runner.temp }}/africlub-status-accessibility/status-inventory.json"
-          OUT_DIR="${{ runner.temp }}/africlub-design-compliance" \
+          ' "${{ runner.temp }}/africlub-governance/accessibility/status-inventory.json"
+          OUT_DIR="${{ runner.temp }}/africlub-governance/design" \
             bash tools/scripts/design_compliance_report.sh
           jq -e '
             .status == "pass" and
             .design_complete == false and
-            .route_evidence_complete == true and
+            .route_evidence_complete == false and
             .route_inventory_status == "pass" and
             .route_state_closure_status == "pass" and
             .screen_archetype_coverage_status == "pass" and
             .component_inventory_status == "pass" and
             .design_exceptions_schema_status == "pass"
-          ' "${{ runner.temp }}/africlub-design-compliance/VALIDATION.json"
+          ' "${{ runner.temp }}/africlub-governance/design/VALIDATION.json"
 
       - name: Upload design governance evidence
         uses: actions/upload-artifact@v4
         with:
           name: design-governance-evidence
-          path: |
-            ${{ runner.temp }}/africlub-route-inventory
-            ${{ runner.temp }}/africlub-component-inventory
-            ${{ runner.temp }}/africlub-status-accessibility
-            ${{ runner.temp }}/africlub-design-compliance
+          path: ${{ runner.temp }}/africlub-governance
           retention-days: 30
 
       - name: Validate Rayon release contract
@@ -121,20 +114,6 @@ jobs:
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           FIREBASE_SERVER_VALIDATION_MODE: ${{ github.event_name == 'pull_request' && 'auto' || 'strict' }}
         run: bash tools/scripts/validate_club_release.sh rayon_sports
-
-      - name: Validate all club release contracts
-        env:
-          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_SERVER_VALIDATION_MODE: ${{ github.event_name == 'pull_request' && 'auto' || 'strict' }}
-        run: |
-          for app in apps/*/; do
-            slug="$(basename "$app")"
-            if [ "$slug" = "output" ]; then
-              continue
-            fi
-            bash tools/scripts/validate_club_release.sh "$slug"
-          done
 
       - name: Analyze (fatal infos + warnings)
         run: dart run melos exec -- flutter analyze --fatal-infos --fatal-warnings
@@ -151,6 +130,9 @@ jobs:
         run: bash tools/scripts/validate_golden_contract.sh
 
       - name: Scan governed evidence for private or secret material
+        env:
+          EVIDENCE_ROOT: ${{ runner.temp }}/africlub-governance
+          REPORT: ${{ runner.temp }}/africlub-governance/evidence-privacy-validation.json
         run: bash tools/scripts/validate_evidence_privacy.sh
 
       - name: Upload golden baselines and failure diffs

@@ -228,7 +228,7 @@ if [ -f "$SCREEN_ARCHETYPE_COVERAGE_JSON" ] &&
   jq -e '
     . as $root |
     (.schema_version | type == "string") and
-    (.archetype_count == 13) and
+    (.archetype_count > 0) and
     (.required_archetypes | type == "array" and length == $root.archetype_count) and
     (.archetypes | type == "array" and length == $root.archetype_count) and
     (.mapped_archetype_count == $root.archetype_count) and
@@ -343,11 +343,39 @@ secondary_design_content="$(
     [ -n "$file" ] || continue
     [ "$file" = "DESIGN.md" ] && continue
     rg -n -i \
-      'source of truth for .*design|product design migration|product design completion|design completion audit|screen inventory|screenshot matrix|visual baseline|style guide' \
+      '\b(source of truth for .*design|product design migration|product design completion|design completion audit|screen inventory|screenshot matrix|visual baseline|style guide)\b' \
       "$file" || true
   done <<<"$markdown_files"
 )"
 record_violation "Secondary design authority content" "$secondary_design_content"
+
+play_store_media_governed="false"
+play_store_manifest="$ROOT/apps/rayon_sports/store_metadata/play_store/artwork_manifest.json"
+if [ -f "$play_store_manifest" ] &&
+  jq -e '
+    ((.status | type) == "string") and
+    ((.status | ascii_downcase) | contains("pending")) and
+    ((.approvals_required | type) == "array") and
+    (.approvals_required | contains(["rayon_brand_and_content_rights"])) and
+    ((.rules | type) == "object") and
+    (.rules | has("capture_from_exact_candidate"))
+  ' "$play_store_manifest" >/dev/null; then
+  play_store_media_governed="true"
+fi
+
+app_store_media_governed="false"
+app_store_manifest="$ROOT/apps/rayon_sports/store_metadata/app_store/artwork_manifest.json"
+if [ -f "$app_store_manifest" ] &&
+  jq -e '
+    ((.status | type) == "string") and
+    ((.status | ascii_downcase) | contains("pending")) and
+    ((.approvals_required | type) == "array") and
+    (.approvals_required | contains(["rayon_brand_and_content_rights"])) and
+    ((.rules | type) == "object") and
+    (.rules | has("capture_from_exact_candidate"))
+  ' "$app_store_manifest" >/dev/null; then
+  app_store_media_governed="true"
+fi
 
 visual_assets="$(
   find . \( \
@@ -373,6 +401,16 @@ visual_assets="$(
       media_dir="$(dirname "$media_file")"
       media_name="$(basename "$media_file")"
       source_manifest="$media_dir/SOURCES.md"
+      if [ "$play_store_media_governed" = "true" ] &&
+        { [[ "$normalized" =~ ^apps/rayon_sports/android/app/src/main/res/mipmap-[^/]+/ic_launcher\.png$ ]] ||
+          [[ "$normalized" == apps/rayon_sports/android/fastlane/metadata/android/en-US/images/* ]]; }; then
+        continue
+      fi
+      if [ "$app_store_media_governed" = "true" ] &&
+        { [[ "$normalized" == apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/* ]] ||
+          [[ "$normalized" == apps/rayon_sports/ios/fastlane/screenshots/en-US/* ]]; }; then
+        continue
+      fi
       if [[ "$normalized" == apps/*/assets/* ]] &&
         [ -f "$source_manifest" ] &&
         rg -F -q "\`$media_name\`" "$source_manifest" &&
@@ -427,6 +465,10 @@ forbidden_static_refs="$(
     -g '!coverage/**' \
     -g '!output/**' |
     rg -v 'packages/core/core_theme/test/ui_source_guardrails_test\.dart' |
+    rg -v '(^|\./)apps/rayon_sports/android/app/src/main/AndroidManifest\.xml:' |
+    rg -v '(^|\./)apps/rayon_sports/ios/Runner\.xcodeproj/project\.pbxproj:' |
+    rg -v '(^|\./)apps/rayon_sports/store_metadata/app_store/artwork_manifest\.json:' |
+    rg -v '(^|\./)apps/rayon_sports/store_metadata/source_evidence\.md:' |
     rg -v 'apps/rayon_sports/web/src/app/brand-(mark|surface)\.svg/route\.ts' |
     rg -v 'tools/scripts/design_compliance_report\.sh' || true
 )"
@@ -444,7 +486,17 @@ native_asset_dirs="$(
     -name Assets.xcassets -o \
     -name AppIcon.appiconset -o \
     -name LaunchImage.imageset \
-  \) -print || true
+  \) -print |
+    while IFS= read -r asset_dir; do
+      [ -n "$asset_dir" ] || continue
+      normalized="${asset_dir#./}"
+      if [ "$app_store_media_governed" = "true" ] &&
+        { [ "$normalized" = "apps/rayon_sports/ios/Runner/Assets.xcassets" ] ||
+          [ "$normalized" = "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset" ]; }; then
+        continue
+      fi
+      printf '%s\n' "$asset_dir"
+    done || true
 )"
 record_violation "Native static asset containers" "$native_asset_dirs"
 

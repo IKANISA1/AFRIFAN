@@ -156,6 +156,9 @@ jobs:
           bash "$MELOS_ROOT_PATH/tools/scripts/run_package_tests.sh"
 
       - name: Run release smoke and governance gates
+        env:
+          EVIDENCE_ROOT: ${{ github.workspace }}/docs/governance
+          REPORT: ${{ runner.temp }}/africlub-evidence-privacy-validation.json
         run: |
           flutter test apps/rayon_sports/integration_test/release_readiness_smoke_test.dart
           bash tools/scripts/validate_golden_contract.sh
