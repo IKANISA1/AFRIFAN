@@ -7,6 +7,7 @@ import { VenueEmptyState, VenuePageHeader } from "./venue-shell";
 
 export type ControlledVenueRoute =
   | "overview"
+  | "ticket-verification"
   | "orders"
   | "menu"
   | "checkins"
@@ -48,6 +49,33 @@ const routes: Record<ControlledVenueRoute, RouteConfig> = {
       { label: "Campaigns", value: "2", detail: "Approved today" },
       { label: "Open orders", value: "6", detail: "Oldest first" },
       { label: "Check-ins", value: "34", detail: "Identity-free total" },
+    ],
+  },
+  "ticket-verification": {
+    eyebrow: "2 active assignments",
+    title: "Ticket verification",
+    description:
+      "Verify the current rotating ticket code against authoritative payment, event, venue, gate, and staff-assignment records before admission.",
+    emptyTitle: "No active verifier assignment",
+    emptyBody:
+      "Admission verification remains unavailable until an administrator assigns this account to a live event, venue, gate, and shift.",
+    primaryAction: "Refresh ticket verification",
+    records: [
+      {
+        label: "Gate NORTH_1",
+        value: "Ready",
+        detail: "Assignment active · Online verification required",
+      },
+      {
+        label: "Last confirmed check",
+        value: "Admitted",
+        detail: "Synthetic ticket · No supporter identity",
+      },
+      {
+        label: "Admission rule",
+        value: "Authoritative",
+        detail: "HTTP success alone never confirms admission",
+      },
     ],
   },
   orders: {

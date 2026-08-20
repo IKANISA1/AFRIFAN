@@ -259,11 +259,11 @@ It is an active plan, not a completion or release claim.
   permission, disabled-answer, focus, held-press, selected-answer, theme,
   motion, and 200-percent-text evidence.
 - These are local implementation results, not release approval. The governed
-  route ledger contains 176 routes and 2,816 cells: 1,881 cells have admitted
-  current evidence, 256 remain open, and 679 are explicitly not applicable.
-  Corrected specs exist for the final nine Admin PWA and seven Venue portal
-  routes, but all sixteen bundles remain pending until an explicitly authorized
-  exact-current browser rerun passes visual review and admission.
+  route ledger contains 182 routes and 2,912 cells: all 2,171 applicable cells
+  have admitted current evidence, zero remain open, and 741 are explicitly not
+  applicable. Evidence governance contains 140 admitted bundles, zero pending
+  bundles, and 1,408 governed artifacts. The Venue ticket-verification page
+  and API are included in the closed local route-state ledger.
   Physical-device, authenticated live operator/backend, production TV signing,
   pinned CI/distribution, store, named linguistic/design/content, and release
   approvals remain external gates; `design_complete=false` remains truthful.

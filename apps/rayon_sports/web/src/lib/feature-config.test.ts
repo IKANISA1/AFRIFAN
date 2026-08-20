@@ -7,6 +7,7 @@ import {
   getFeatureAccess,
   getFeatureKeyForPath,
   getNavFeatures,
+  getRuntimeCopy,
   isRouteAvailable,
   type PlatformConfigSnapshot,
 } from "./feature-config";
@@ -209,6 +210,74 @@ describe("feature-config", () => {
 
     expect(navKeys).toEqual(["news", "venue_app"]);
     expect(blockKeys).toEqual(["hero", "news-promo"]);
+  });
+
+  it("uses exact, language, then deterministic English runtime-copy fallback", () => {
+    const copyConfig: PlatformConfigSnapshot = {
+      ...config,
+      runtime_copy: [
+        {
+          copy_key: "home.feed.degraded",
+          surface: "web",
+          locale: "rw",
+          text_value: "Amakuru ntabonetse.",
+          description: null,
+          metadata: {},
+        },
+        {
+          copy_key: "home.feed.degraded",
+          surface: "web",
+          locale: "fr",
+          text_value: "Les informations sont indisponibles.",
+          description: null,
+          metadata: {},
+        },
+        {
+          copy_key: "home.feed.degraded",
+          surface: "web",
+          locale: "en",
+          text_value: "Club data is unavailable.",
+          description: null,
+          metadata: {},
+        },
+        {
+          copy_key: "home.feed.degraded",
+          surface: "web",
+          locale: "fr-rw",
+          text_value: "Les informations locales sont indisponibles.",
+          description: null,
+          metadata: {},
+        },
+      ],
+    };
+
+    expect(getRuntimeCopy(copyConfig, "home.feed.degraded", "FR_rw")).toBe(
+      "Les informations locales sont indisponibles.",
+    );
+    expect(getRuntimeCopy(copyConfig, "home.feed.degraded", "fr-BE")).toBe(
+      "Les informations sont indisponibles.",
+    );
+    expect(getRuntimeCopy(copyConfig, "home.feed.degraded", "de")).toBe(
+      "Club data is unavailable.",
+    );
+  });
+
+  it("does not fall through to unrelated runtime-copy locales", () => {
+    const copyConfig: PlatformConfigSnapshot = {
+      ...config,
+      runtime_copy: [
+        {
+          copy_key: "home.feed.degraded",
+          surface: "web",
+          locale: "rw",
+          text_value: "Amakuru ntabonetse.",
+          description: null,
+          metadata: {},
+        },
+      ],
+    };
+
+    expect(getRuntimeCopy(copyConfig, "home.feed.degraded", "fr")).toBeNull();
   });
 
   it("blocks disabled routes while leaving unrelated routes alone", () => {

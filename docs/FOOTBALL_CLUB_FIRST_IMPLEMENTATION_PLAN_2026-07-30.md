@@ -44,12 +44,12 @@ checkout:
 - EN/FR/RW catalogs have exhaustive Settings, Admin, and Game key parity;
 - strict repository analysis and the deterministic 44-package test suite pass.
 
-The implementation is route-state complete locally, but it is not yet design-
-approved or release complete. The fresh route ledger contains 176 routes and
-2,816 cells: all 2,137 applicable cells are admitted, zero remain open, and 679
-are explicitly not applicable. The final nine Admin PWA routes and seven Venue
-portal routes passed exact-current controlled browser execution, visual review,
-source-freshness preflight and explicit fail-closed admission. The static
+The implementation retains the prior route-state closure and extends it to
+Venue ticket verification. The fresh route ledger contains 182 routes and
+2,912 cells: all 2,171 applicable cells are admitted, zero remain open, and 741
+are explicitly not applicable. The Admin PWA and Venue portal routes, including
+the new Venue page and API, have exact-current execution, review, registration,
+and admission. The static
 Flutter copy inventory now has zero pending candidates across all 292 scanned
 production Dart files; dynamic API/CMS copy and named French/Kinyarwanda review
 remain separate.
@@ -137,17 +137,20 @@ specification, exact-current execution, review, and admission:
 - visual review corrected large-text settings and feature layouts, shop-form
   stretching, Admin light-theme contrast, and venue light-theme metadata
   contrast before the exact-current rerun;
-- all nine Admin PWA and seven Venue portal suites passed against current
-  source; a final seven-route Venue rerun confirmed stable compact navigation
-  and complete action-label rendering;
+- all nine Admin PWA and the prior seven Venue portal suites passed against
+  current source; a final seven-route Venue rerun confirmed stable compact
+  navigation and complete action-label rendering;
 - privacy/source-freshness preflight, controlled visual review and explicit
   atomic registration admitted sixteen bundles, taking evidence governance to
   135 admitted and zero pending;
 - the older candidate captures remain rejected contradiction evidence and were
   not used to bypass review.
 
-The local route-state ledger now records all 2,137 applicable cells admitted,
-zero open cells, 679 explicit N/A decisions, and `closure_complete=true`.
+The subsequently added Venue ticket-verification page and controlled API are
+also implemented, reviewed, and admitted. The local route-state ledger now
+records 182 routes, all 2,171 applicable cells admitted, zero open cells, 741
+explicit N/A decisions, and `closure_complete=true`; evidence governance has
+140 admitted bundles and zero pending.
 Design compliance records zero violations, one governed approval warning,
 `route_evidence_complete=true`, and `design_complete=false`. This does not
 prove authenticated live
@@ -160,8 +163,8 @@ release approval. EV-248, DEC-240, and ISS-231 control this checkpoint.
 
 - The authoritative programme remains 87 tasks: 54 verified complete, 28
   verified incomplete, 5 unverified, and 33 remaining.
-- Route evidence has no remaining dependency: all 176 routes and all 2,137
-  applicable cells are governed, zero cells are open, 679 are explicitly not
+- Route evidence has no remaining dependency: all 182 routes and all 2,171
+  applicable cells are governed, zero cells are open, 741 are explicitly not
   applicable, and `closure_complete=true`.
 - Jean Bosco explicitly authorized the project team, in his capacity as
   project owner, to perform all in-scope technical implementation,
@@ -173,6 +176,22 @@ release approval. EV-248, DEC-240, and ISS-231 control this checkpoint.
   evidence. DEC-243 records this boundary.
 - `design_complete=false` remains authoritative until the separately named
   design and other accountable approval/release gates close.
+
+### Current governed checkpoint — 13 August 2026
+
+- The 87-task denominator remains unchanged: 54 verified complete, 28 verified
+  incomplete, 5 unverified, and 33 remaining.
+- The current route inventory contains 182 routes and 2,912 cells. All 2,171
+  applicable cells are admitted, zero are open, 741 are explicit N/A, and
+  `closure_complete=true`.
+- Evidence governance contains 140 admitted bundles, zero pending bundles,
+  1,408 governed artifacts, and 1,379 hash-governed golden baselines.
+- Automated design-source compliance passes with zero violations and one
+  warning: the accountable approval gate. `route_evidence_complete=true` and
+  `design_complete=false` remain truthful.
+- Every remaining task is retained against a named live/backend, physical
+  device or assistive-technology, accountable approval, clean-candidate/CI,
+  signing, store, deployment, performance, or release-evidence boundary.
 
 ## 3. Target Consumer Information Architecture
 

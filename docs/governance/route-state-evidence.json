@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-09T09:51:12Z",
+  "generated_at": "2026-08-15T05:28:37Z",
   "cells": {},
   "groups": [
     {
@@ -12998,10 +12998,12 @@
         "web_api|/api/admin/features/update|api_route|security_timeout",
         "web_api|/api/admin/membership-applications/review|api_route|security_timeout",
         "web_api|/api/admin/tickets/bulk-status|api_route|security_timeout",
-        "web_api|/api/admin/tickets/status|api_route|security_timeout"
+        "web_api|/api/admin/tickets/status|api_route|security_timeout",
+        "web_api|/api/admin/ticket-verifiers|api_route|security_timeout"
       ],
       "test_evidence": [
-        "apps/rayon_sports/web/src/lib/admin-api-handler.test.ts"
+        "apps/rayon_sports/web/src/lib/admin-api-handler.test.ts",
+        "apps/rayon_sports/web/src/app/api/admin/ticket-verifiers/route.test.ts"
       ],
       "response_evidence": [
         "output/implementation_goal_20260724/api_response_contracts/admin-operation-security-timeout.json"
@@ -13023,10 +13025,12 @@
         "web_api|/api/admin/features/update|api_route|permission_denied",
         "web_api|/api/admin/membership-applications/review|api_route|permission_denied",
         "web_api|/api/admin/tickets/bulk-status|api_route|permission_denied",
-        "web_api|/api/admin/tickets/status|api_route|permission_denied"
+        "web_api|/api/admin/tickets/status|api_route|permission_denied",
+        "web_api|/api/admin/ticket-verifiers|api_route|permission_denied"
       ],
       "test_evidence": [
-        "apps/rayon_sports/web/src/lib/admin-api-handler.test.ts"
+        "apps/rayon_sports/web/src/lib/admin-api-handler.test.ts",
+        "apps/rayon_sports/web/src/app/api/admin/ticket-verifiers/route.test.ts"
       ],
       "response_evidence": [
         "output/implementation_goal_20260724/api_response_contracts/admin-permission-denied.json"
@@ -13048,10 +13052,12 @@
         "web_api|/api/admin/features/update|api_route|error",
         "web_api|/api/admin/membership-applications/review|api_route|error",
         "web_api|/api/admin/tickets/bulk-status|api_route|error",
-        "web_api|/api/admin/tickets/status|api_route|error"
+        "web_api|/api/admin/tickets/status|api_route|error",
+        "web_api|/api/admin/ticket-verifiers|api_route|error"
       ],
       "test_evidence": [
-        "apps/rayon_sports/web/src/lib/admin-api-handler.test.ts"
+        "apps/rayon_sports/web/src/lib/admin-api-handler.test.ts",
+        "apps/rayon_sports/web/src/app/api/admin/ticket-verifiers/route.test.ts"
       ],
       "response_evidence": [
         "output/implementation_goal_20260724/api_response_contracts/admin-request-error.json"
@@ -13324,11 +13330,15 @@
         "web_api|/api/admin/tickets/bulk-status|api_route|conflict",
         "web_api|/api/admin/tickets/status|api_route|empty",
         "web_api|/api/admin/tickets/status|api_route|syncing",
-        "web_api|/api/admin/tickets/status|api_route|conflict"
+        "web_api|/api/admin/tickets/status|api_route|conflict",
+        "web_api|/api/admin/ticket-verifiers|api_route|empty",
+        "web_api|/api/admin/ticket-verifiers|api_route|syncing",
+        "web_api|/api/admin/ticket-verifiers|api_route|conflict"
       ],
       "test_evidence": [
         "apps/rayon_sports/web/src/app/api/admin/specialized-routes-controlled-states.test.ts",
-        "apps/rayon_sports/web/src/lib/admin-api-handler.test.ts"
+        "apps/rayon_sports/web/src/lib/admin-api-handler.test.ts",
+        "apps/rayon_sports/web/src/app/api/admin/ticket-verifiers/route.test.ts"
       ],
       "response_evidence": [
         "output/implementation_goal_20260724/api_response_contracts/remaining-web-api-controlled-states.json"
@@ -23297,6 +23307,32 @@
       "reviewed_at": "2026-08-02"
     },
     {
+      "id": "venue-ticket-verification-controlled-api-states",
+      "admission_status": "admitted",
+      "cells": [
+        "web_api|/api/venue/tickets/verify|api_route|empty",
+        "web_api|/api/venue/tickets/verify|api_route|error",
+        "web_api|/api/venue/tickets/verify|api_route|permission_denied",
+        "web_api|/api/venue/tickets/verify|api_route|syncing",
+        "web_api|/api/venue/tickets/verify|api_route|conflict",
+        "web_api|/api/venue/tickets/verify|api_route|security_timeout"
+      ],
+      "test_evidence": [
+        "apps/rayon_sports/web/src/app/api/venue/tickets/verify/route.test.ts",
+        "packages/app_registry/test/route_inventory_generation_test.dart"
+      ],
+      "response_evidence": [
+        "output/implementation_goal_20260724/api_response_contracts/ticket-verification-controlled-states.json"
+      ],
+      "privacy_evidence": [
+        "output/implementation_goal_20260724/evidence-privacy-validation.json",
+        "output/implementation_goal_20260724/api_response_contracts/ticket-verification-controlled-states.json"
+      ],
+      "disposition_note": "Eight focused route tests prove malformed-input rejection before authentication, staff-session enforcement, origin rejection, pending-until-authoritative-settlement behavior, sanitized conflict and upstream-failure mapping, and bounded authorization timeout. The admitted HTTP evidence contains only synthetic identifiers and no ticket code, supporter identity, token, or private diagnostic. Live verifier assignment, target RLS/RPC, scanner hardware, production deployment, and accountable operations approval remain open.",
+      "owner": "Venue ticket-verification API authorization, concurrency, privacy, and resilience QA",
+      "reviewed_at": "2026-08-13"
+    },
+    {
       "id": "venue-portal-overview-rendered-states",
       "admission_status": "admitted",
       "cells": [
@@ -23357,7 +23393,70 @@
       ],
       "disposition_note": "The football-secondary venue operations route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves deterministic synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe venue copy. Live venue authorization and records, payment/order integration, alcohol and age-policy approval, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
       "owner": "Venue portal operations, authorization, privacy, accessibility, responsive, and evidence QA",
-      "reviewed_at": "2026-08-02"
+      "reviewed_at": "2026-08-13"
+    },
+    {
+      "id": "venue-portal-ticket-verification-rendered-states",
+      "admission_status": "admitted",
+      "cells": [
+        "venue_portal|/venue/tickets/verify|next_page|loading",
+        "venue_portal|/venue/tickets/verify|next_page|empty",
+        "venue_portal|/venue/tickets/verify|next_page|error",
+        "venue_portal|/venue/tickets/verify|next_page|offline",
+        "venue_portal|/venue/tickets/verify|next_page|permission_denied",
+        "venue_portal|/venue/tickets/verify|next_page|disabled",
+        "venue_portal|/venue/tickets/verify|next_page|focused",
+        "venue_portal|/venue/tickets/verify|next_page|pressed",
+        "venue_portal|/venue/tickets/verify|next_page|selected",
+        "venue_portal|/venue/tickets/verify|next_page|large_text",
+        "venue_portal|/venue/tickets/verify|next_page|reduced_motion",
+        "venue_portal|/venue/tickets/verify|next_page|dark",
+        "venue_portal|/venue/tickets/verify|next_page|light",
+        "venue_portal|/venue/tickets/verify|next_page|syncing",
+        "venue_portal|/venue/tickets/verify|next_page|conflict",
+        "venue_portal|/venue/tickets/verify|next_page|security_timeout"
+      ],
+      "test_evidence": [
+        "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
+        "apps/rayon_sports/web/src/lib/controlled-venue-evidence.test.ts",
+        "packages/app_registry/test/route_inventory_generation_test.dart"
+      ],
+      "screenshot_evidence": [
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_conflict_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_dark_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_disabled_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_empty_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_error_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_focused_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_large_text_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_light_light_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_loading_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_offline_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_permission_denied_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_pressed_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_reduced_motion_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_responsive_compact_dark_compact_390x844.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_responsive_tablet_dark_tablet_1024x900.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_security_timeout_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_selected_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue_ticket_verification_state_syncing_dark_desktop_1440x1000.png"
+      ],
+      "accessibility_evidence": [
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue-ticket_verification-state-evidence.json"
+      ],
+      "performance_evidence": [
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue-ticket_verification-state-evidence.json"
+      ],
+      "privacy_evidence": [
+        "output/implementation_goal_20260724/evidence-privacy-validation.json",
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue-ticket_verification-state-evidence.json"
+      ],
+      "platform_build_evidence": [
+        "output/implementation_goal_20260724/venue_portal_ticket_verification_states/venue-ticket_verification-state-evidence.json"
+      ],
+      "disposition_note": "The football-secondary venue operations route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves deterministic synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe venue copy. Live venue authorization and records, payment/order integration, alcohol and age-policy approval, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
+      "owner": "Venue portal operations, authorization, privacy, accessibility, responsive, and evidence QA",
+      "reviewed_at": "2026-08-13"
     },
     {
       "id": "venue-portal-orders-rendered-states",
@@ -23420,7 +23519,7 @@
       ],
       "disposition_note": "The football-secondary venue operations route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves deterministic synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe venue copy. Live venue authorization and records, payment/order integration, alcohol and age-policy approval, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
       "owner": "Venue portal operations, authorization, privacy, accessibility, responsive, and evidence QA",
-      "reviewed_at": "2026-08-02"
+      "reviewed_at": "2026-08-13"
     },
     {
       "id": "venue-portal-menu-rendered-states",
@@ -23483,7 +23582,7 @@
       ],
       "disposition_note": "The football-secondary venue operations route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves deterministic synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe venue copy. Live venue authorization and records, payment/order integration, alcohol and age-policy approval, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
       "owner": "Venue portal operations, authorization, privacy, accessibility, responsive, and evidence QA",
-      "reviewed_at": "2026-08-02"
+      "reviewed_at": "2026-08-13"
     },
     {
       "id": "venue-portal-checkins-rendered-states",
@@ -23546,7 +23645,7 @@
       ],
       "disposition_note": "The football-secondary venue operations route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves deterministic synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe venue copy. Live venue authorization and records, payment/order integration, alcohol and age-policy approval, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
       "owner": "Venue portal operations, authorization, privacy, accessibility, responsive, and evidence QA",
-      "reviewed_at": "2026-08-02"
+      "reviewed_at": "2026-08-13"
     },
     {
       "id": "venue-portal-promotions-rendered-states",
@@ -23609,7 +23708,7 @@
       ],
       "disposition_note": "The football-secondary venue operations route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves deterministic synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe venue copy. Live venue authorization and records, payment/order integration, alcohol and age-policy approval, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
       "owner": "Venue portal operations, authorization, privacy, accessibility, responsive, and evidence QA",
-      "reviewed_at": "2026-08-02"
+      "reviewed_at": "2026-08-13"
     },
     {
       "id": "venue-portal-staff-rendered-states",
@@ -23672,7 +23771,7 @@
       ],
       "disposition_note": "The football-secondary venue operations route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves deterministic synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe venue copy. Live venue authorization and records, payment/order integration, alcohol and age-policy approval, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
       "owner": "Venue portal operations, authorization, privacy, accessibility, responsive, and evidence QA",
-      "reviewed_at": "2026-08-02"
+      "reviewed_at": "2026-08-13"
     },
     {
       "id": "venue-portal-tv-code-rendered-states",
@@ -23735,7 +23834,70 @@
       ],
       "disposition_note": "The football-secondary venue operations route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves deterministic synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe venue copy. Live venue authorization and records, payment/order integration, alcohol and age-policy approval, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
       "owner": "Venue portal operations, authorization, privacy, accessibility, responsive, and evidence QA",
-      "reviewed_at": "2026-08-02"
+      "reviewed_at": "2026-08-13"
+    },
+    {
+      "id": "admin-pwa-ticket-verifiers-rendered-states",
+      "admission_status": "admitted",
+      "cells": [
+        "admin_pwa|/admin/tickets/verifiers|next_page|loading",
+        "admin_pwa|/admin/tickets/verifiers|next_page|empty",
+        "admin_pwa|/admin/tickets/verifiers|next_page|error",
+        "admin_pwa|/admin/tickets/verifiers|next_page|offline",
+        "admin_pwa|/admin/tickets/verifiers|next_page|permission_denied",
+        "admin_pwa|/admin/tickets/verifiers|next_page|disabled",
+        "admin_pwa|/admin/tickets/verifiers|next_page|focused",
+        "admin_pwa|/admin/tickets/verifiers|next_page|pressed",
+        "admin_pwa|/admin/tickets/verifiers|next_page|selected",
+        "admin_pwa|/admin/tickets/verifiers|next_page|large_text",
+        "admin_pwa|/admin/tickets/verifiers|next_page|reduced_motion",
+        "admin_pwa|/admin/tickets/verifiers|next_page|dark",
+        "admin_pwa|/admin/tickets/verifiers|next_page|light",
+        "admin_pwa|/admin/tickets/verifiers|next_page|syncing",
+        "admin_pwa|/admin/tickets/verifiers|next_page|conflict",
+        "admin_pwa|/admin/tickets/verifiers|next_page|security_timeout"
+      ],
+      "test_evidence": [
+        "apps/rayon_sports/web/e2e/admin-ticket-verifiers-state-evidence.spec.ts",
+        "apps/rayon_sports/web/src/lib/controlled-admin-evidence.test.ts",
+        "packages/app_registry/test/route_inventory_generation_test.dart"
+      ],
+      "screenshot_evidence": [
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_conflict_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_dark_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_disabled_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_empty_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_error_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_focused_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_large_text_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_light_light_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_loading_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_offline_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_permission_denied_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_pressed_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_reduced_motion_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_responsive_mobile_390x844_dark_mobile_390x844.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_responsive_tablet_834x1112_dark_tablet_834x1112.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_security_timeout_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_selected_dark_desktop_1440x1000.png",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin_ticket_verifiers_state_syncing_dark_desktop_1440x1000.png"
+      ],
+      "accessibility_evidence": [
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin-ticket-verifiers-state-evidence.json"
+      ],
+      "performance_evidence": [
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin-ticket-verifiers-state-evidence.json"
+      ],
+      "privacy_evidence": [
+        "output/implementation_goal_20260724/evidence-privacy-validation.json",
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin-ticket-verifiers-state-evidence.json"
+      ],
+      "platform_build_evidence": [
+        "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states/admin-ticket-verifiers-state-evidence.json"
+      ],
+      "disposition_note": "The authenticated Admin PWA route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves bounded synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe operator copy. Live role and RLS behavior, cross-role mutation UAT, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
+      "owner": "Admin PWA authorization, privacy, accessibility, responsive, and evidence QA",
+      "reviewed_at": "2026-08-15"
     }
   ]
 }

@@ -156,5 +156,7 @@ jobs:
       - name: Run release smoke and governance gates
         run: |
           flutter test apps/rayon_sports/integration_test/release_readiness_smoke_test.dart
+          node tools/scripts/validate_ios_qa_isolation.mjs
+          node tools/scripts/validate_mobile_qa_isolation.mjs
           bash tools/scripts/validate_golden_contract.sh
           bash tools/scripts/validate_evidence_privacy.sh

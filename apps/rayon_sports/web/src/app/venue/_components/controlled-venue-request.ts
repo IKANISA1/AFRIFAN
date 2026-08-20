@@ -12,6 +12,7 @@ export const controlledVenueAccess: VenueAccess = {
   canManageMenu: true,
   canOperateOrders: true,
   canLaunchPromotions: true,
+  canVerifyTickets: true,
 };
 
 export async function isControlledVenueEvidenceRequest() {

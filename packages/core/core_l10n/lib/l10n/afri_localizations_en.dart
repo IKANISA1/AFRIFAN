@@ -2832,6 +2832,56 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Wallet export is not available in this release yet.';
 
   @override
+  String get ticketGoogleWalletChecking =>
+      'Checking Google Wallet availability…';
+
+  @override
+  String get ticketGoogleWalletReady =>
+      'Your confirmed ticket can be added to Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletAdding => 'ADDING TO GOOGLE WALLET…';
+
+  @override
+  String get ticketGoogleWalletAdded => 'ADDED TO GOOGLE WALLET';
+
+  @override
+  String get ticketGoogleWalletAddingMessage =>
+      'Preparing the secure Wallet pass and opening Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletAddedMessage =>
+      'Google Wallet confirmed that the pass was saved.';
+
+  @override
+  String get ticketGoogleWalletCancelled =>
+      'The Google Wallet save was cancelled. Your ticket remains available here.';
+
+  @override
+  String get ticketGoogleWalletUnavailable =>
+      'Google Wallet is not available on this device or account.';
+
+  @override
+  String get ticketGoogleWalletOnlineRequired =>
+      'Reconnect before adding this ticket to Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletPaymentPending =>
+      'Payment must be confirmed before this ticket can be added to Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletPermissionDenied =>
+      'This account cannot add the selected ticket to Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletTimeout =>
+      'The secure Wallet request timed out. No save is confirmed; try again.';
+
+  @override
+  String get ticketGoogleWalletFailed =>
+      'The ticket could not be added to Google Wallet. Try again later.';
+
+  @override
   String ticketSelectedSemantic(String match) {
     return 'Selected e-ticket $match';
   }

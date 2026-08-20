@@ -423,6 +423,15 @@ verify_jwt = false
 [functions.settle-prediction-notifications]
 verify_jwt = false
 
+[functions.google-wallet-ticket-pass]
+verify_jwt = false
+
+[functions.sync-google-wallet-ticket-state]
+verify_jwt = false
+
+[functions.verify-ticket]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327

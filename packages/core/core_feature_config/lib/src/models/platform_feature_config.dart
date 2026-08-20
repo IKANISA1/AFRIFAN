@@ -138,17 +138,16 @@ class PlatformConfigSnapshot {
 
   String? copyValue(String key, {String locale = 'en'}) {
     final normalizedKey = normalizePlatformFeatureKey(key);
-    for (final entry in runtimeCopy) {
-      if (normalizePlatformFeatureKey(entry.copyKey) == normalizedKey &&
-          entry.locale == locale &&
-          entry.textValue.trim().isNotEmpty) {
-        return entry.textValue;
-      }
-    }
-    for (final entry in runtimeCopy) {
-      if (normalizePlatformFeatureKey(entry.copyKey) == normalizedKey &&
-          entry.textValue.trim().isNotEmpty) {
-        return entry.textValue;
+    final requestedLocale = _normalizeRuntimeCopyLocale(locale);
+    final languageCode = requestedLocale.split('-').first;
+    final localeFallbacks = <String>{requestedLocale, languageCode, 'en'};
+    for (final candidateLocale in localeFallbacks) {
+      for (final entry in runtimeCopy) {
+        if (normalizePlatformFeatureKey(entry.copyKey) == normalizedKey &&
+            _normalizeRuntimeCopyLocale(entry.locale) == candidateLocale &&
+            entry.textValue.trim().isNotEmpty) {
+          return entry.textValue;
+        }
       }
     }
     return null;
@@ -258,6 +257,11 @@ class PlatformConfigSnapshot {
 
   /// Empty snapshot used as a safe fallback.
   static const PlatformConfigSnapshot empty = PlatformConfigSnapshot();
+}
+
+String _normalizeRuntimeCopyLocale(String value) {
+  final normalized = value.trim().replaceAll('_', '-').toLowerCase();
+  return normalized.isEmpty ? 'en' : normalized;
 }
 
 // ── PlatformFeature ──

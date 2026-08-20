@@ -18,6 +18,7 @@ const authContracts = new Map([
   ["generate-product-image", [/validateRequest\(/, /requireClubAdmin:/]],
   ["generate-question-drafts", [/requireClubAdminCaller\(/]],
   ["get-platform-config", [/createAnonClient\(/]],
+  ["google-wallet-ticket-pass", [/requireAuthenticatedCaller\(/, /enforceRateLimit\(/]],
   ["football-sync", [/requireCronSecret\(/, /requireAdminCaller\(/]],
   ["livescore-openai-sync", [/requireAdminCaller\(/, /x-cron-secret/]],
   ["parse-momo-sms", [/validateRequest\(/]],
@@ -26,6 +27,8 @@ const authContracts = new Map([
   ["send-sms", [/createSendSmsHandler\(/]],
   ["settle-prediction-notifications", [/requireCronSecret\(/]],
   ["sms-ingest", [/validateRequest\(/]],
+  ["sync-google-wallet-ticket-state", [/requireCronSecret\(/]],
+  ["verify-ticket", [/requireAuthenticatedCaller\(/, /enforceRateLimit\(/]],
 ]);
 
 function fail(message) {

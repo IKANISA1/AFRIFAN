@@ -25,6 +25,13 @@ const venueRoutes: VenueRoute[] = [
     retainedText: "Open orders",
   },
   {
+    slug: "ticket_verification",
+    route: "/venue/tickets/verify",
+    heading: "Ticket verification",
+    action: /refresh ticket verification/i,
+    retainedText: "Gate NORTH_1",
+  },
+  {
     slug: "orders",
     route: "/venue/orders",
     heading: "Drinks orders",
@@ -147,12 +154,6 @@ async function captureRoute(browser: Browser, route: VenueRoute) {
         for (const button of document.querySelectorAll<HTMLElement>(
           ".ui-button",
         )) {
-          const label = button.textContent ?? "";
-          const stableLabel = document.createElement("span");
-          stableLabel.textContent = label;
-          stableLabel.style.display = "inline-block";
-          stableLabel.style.whiteSpace = "nowrap";
-          button.replaceChildren(stableLabel);
           button.style.transition = "none";
           button.style.transform = "none";
           button.style.willChange = "auto";
@@ -231,6 +232,9 @@ async function captureRoute(browser: Browser, route: VenueRoute) {
   await refresh.focus();
   await refresh.dispatchEvent("mousedown", { button: 0 });
   await expectState("pressed");
+  expect(
+    await refresh.evaluate((button) => getComputedStyle(button).transform),
+  ).not.toBe("none");
   await capture("pressed");
   await refresh.dispatchEvent("mouseup", { button: 0 });
 

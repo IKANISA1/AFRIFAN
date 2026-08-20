@@ -526,19 +526,25 @@ export function getRuntimeCopy(
   locale = "en",
 ): string | null {
   const normalizedKey = normalizeFeatureKey(copyKey);
-  const normalizedLocale = locale.trim().toLowerCase();
-  const entry =
-    config.runtime_copy.find(
+  const normalizedLocale = normalizeRuntimeCopyLocale(locale);
+  const localeFallbacks = [
+    ...new Set([normalizedLocale, normalizedLocale.split("-")[0], "en"]),
+  ];
+  for (const candidateLocale of localeFallbacks) {
+    const entry = config.runtime_copy.find(
       (copy) =>
         normalizeFeatureKey(copy.copy_key) === normalizedKey &&
-        copy.locale.toLowerCase() === normalizedLocale,
-    ) ??
-    config.runtime_copy.find(
-      (copy) =>
-        normalizeFeatureKey(copy.copy_key) === normalizedKey &&
-        copy.locale.toLowerCase() === "en",
+        normalizeRuntimeCopyLocale(copy.locale) === candidateLocale &&
+        copy.text_value.trim().length > 0,
     );
-  return entry?.text_value ?? null;
+    if (entry != null) return entry.text_value;
+  }
+  return null;
+}
+
+function normalizeRuntimeCopyLocale(locale: string): string {
+  const normalized = locale.trim().replaceAll("_", "-").toLowerCase();
+  return normalized.length === 0 ? "en" : normalized;
 }
 
 export function getHomeFeatures(

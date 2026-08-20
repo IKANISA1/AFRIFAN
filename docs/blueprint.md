@@ -54,10 +54,11 @@ secondary venue/matchday utility. The operating sequence is controlled in
   partial failure, and recovery through 86 passing Flutter tests. Shared/live
   deployment, actual network timing, synchronized devices, physical
   accessibility, and exact-candidate release execution remain gated.
-- The current ledger has 176 routes and 2,816 governed route-state cells:
-  1,881 cells are admitted, 256 remain open, and 679 are not applicable. The
-  final nine Admin PWA and seven Venue portal matrices require corrected
-  exact-current browser execution and review.
+- The current ledger has 182 routes and 2,912 governed route-state cells: all
+  2,171 applicable cells are admitted, zero remain open, and 741 are not
+  applicable. Evidence governance contains 140 admitted bundles and zero
+  pending bundles; the Venue ticket-verification page/API are included in the
+  closed local route-state ledger.
   The eleven-route Club family is locally closed at 153/153 applicable cells;
   live content authority, physical-device accessibility, named approval and
   release remain separate. The static `/game-operations` hub is also locally
@@ -72,8 +73,10 @@ secondary venue/matchday utility. The operating sequence is controlled in
   N/A. All seven local owner/organizer projections are evidence-complete.
   Participant discovery closes 15/15 applicable cells with selected explicitly
   N/A, and participant live play closes all 16 cells. The corrected
-  exact-current matrices for the final nine Admin PWA and seven Venue portal
-  routes pass and are admitted, closing the local route-state ledger;
+  exact-current matrices for the final nine Admin PWA and prior seven Venue
+  portal routes pass and are admitted. The later Venue ticket-verification
+  page and API are also implemented, reviewed, and admitted, keeping the local
+  route-state ledger closed across all eight Venue pages;
   authorized shared/live-role evidence remains separate.
 - Organizer planning and live control now preserve last-confirmed context only
   for recovery, lock actions during any unconfirmed refresh, clear protected
@@ -87,8 +90,9 @@ secondary venue/matchday utility. The operating sequence is controlled in
   actions lock when authority or mutation outcome is uncertain. The 172-test
   Game Operations regression and strict analysis pass.
   Component closure is complete for all 316 applicable cells across 71
-  components. Local route-state closure remains incomplete; `design_complete`
-  remains false because browser admission, live, physical-device, accountable approval, clean-candidate,
+  components. Local route-state closure includes the Venue ticket-verification
+  page/API; `design_complete` remains false because live, physical-device,
+  accountable approval, clean-candidate,
   signing, store, deployment, and release gates are separate.
 - The shared localization architecture now carries 3,183 exact-parity
   EN/FR/RW messages. Its fail-closed inventory scans 292 production Dart files

@@ -1,0 +1,8 @@
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug-qa.xcconfig"
+#include "Debug.xcconfig"
+
+// Isolated physical-device QA identity. This must never share the production
+// bundle identifier or production push/associated-domain entitlements.
+PRODUCT_BUNDLE_IDENTIFIER=rw.ikanisa.rayonSports.qa.codex
+AFRICLUB_DISPLAY_NAME=Gikundiro QA
+CODE_SIGN_ENTITLEMENTS=Runner/RunnerQA.entitlements

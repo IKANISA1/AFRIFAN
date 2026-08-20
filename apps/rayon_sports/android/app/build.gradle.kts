@@ -7,13 +7,13 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val isolatedDebugApplicationIdSuffix = providers
+val isolatedNonReleaseApplicationIdSuffix = providers
     .gradleProperty("africlubDebugApplicationIdSuffix")
     .orNull
     ?.trim()
     ?.takeIf { it.isNotEmpty() }
 val hasGoogleServicesConfig = file("google-services.json").exists()
-if (hasGoogleServicesConfig && isolatedDebugApplicationIdSuffix == null) {
+if (hasGoogleServicesConfig && isolatedNonReleaseApplicationIdSuffix == null) {
     apply(plugin = "com.google.gms.google-services")
 }
 
@@ -56,8 +56,8 @@ if (isReleaseBuildRequested && !hasGoogleServicesConfig) {
     error("Release builds require android/app/google-services.json for Firebase-backed production features.")
 }
 
-if (isReleaseBuildRequested && isolatedDebugApplicationIdSuffix != null) {
-    error("africlubDebugApplicationIdSuffix is allowed only for isolated debug-device validation.")
+if (isReleaseBuildRequested && isolatedNonReleaseApplicationIdSuffix != null) {
+    error("africlubDebugApplicationIdSuffix is allowed only for isolated debug/profile device validation.")
 }
 
 if (isReleaseBuildRequested && !hasReleaseSigning) {
@@ -101,8 +101,14 @@ android {
 
     buildTypes {
         debug {
-            if (isolatedDebugApplicationIdSuffix != null) {
-                applicationIdSuffix = isolatedDebugApplicationIdSuffix
+            if (isolatedNonReleaseApplicationIdSuffix != null) {
+                applicationIdSuffix = isolatedNonReleaseApplicationIdSuffix
+                versionNameSuffix = "-isolated-qa"
+            }
+        }
+        getByName("profile") {
+            if (isolatedNonReleaseApplicationIdSuffix != null) {
+                applicationIdSuffix = isolatedNonReleaseApplicationIdSuffix
                 versionNameSuffix = "-isolated-qa"
             }
         }
@@ -133,6 +139,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.android.gms:play-services-pay:16.5.0")
 }
 
 flutter {

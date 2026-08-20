@@ -1302,9 +1302,7 @@ bool _isGovernedStoreReleaseMedia(Directory repoRoot, File mediaFile) {
   if (RegExp(
     r'^apps/rayon_sports/android/app/src/main/res/mipmap-[^/]+/ic_launcher\.png$',
   ).hasMatch(relativePath)) {
-    manifestPath =
-        '${repoRoot.path}/apps/rayon_sports/store_metadata/play_store/artwork_manifest.json';
-    isControlledPath = true;
+    return _isGovernedNativeLauncherEntry(repoRoot, relativePath);
   } else if (relativePath.startsWith(
     'apps/rayon_sports/android/fastlane/metadata/android/en-US/images/',
   )) {
@@ -1312,11 +1310,12 @@ bool _isGovernedStoreReleaseMedia(Directory repoRoot, File mediaFile) {
         '${repoRoot.path}/apps/rayon_sports/store_metadata/play_store/artwork_manifest.json';
     isControlledPath = true;
   } else if (relativePath.startsWith(
-        'apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/',
-      ) ||
-      relativePath.startsWith(
-        'apps/rayon_sports/ios/fastlane/screenshots/en-US/',
-      )) {
+    'apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/',
+  )) {
+    return _isGovernedNativeLauncherEntry(repoRoot, relativePath);
+  } else if (relativePath.startsWith(
+    'apps/rayon_sports/ios/fastlane/screenshots/en-US/',
+  )) {
     manifestPath =
         '${repoRoot.path}/apps/rayon_sports/store_metadata/app_store/artwork_manifest.json';
     isControlledPath = true;
@@ -1344,6 +1343,35 @@ bool _isGovernedStoreReleaseMedia(Directory repoRoot, File mediaFile) {
         approvals is List<dynamic> &&
         approvals.contains('rayon_brand_and_content_rights') &&
         content.contains('capture_from_exact_candidate');
+  } on FormatException {
+    return false;
+  }
+}
+
+bool _isGovernedNativeLauncherEntry(Directory repoRoot, String relativePath) {
+  final manifest = File(
+    '${repoRoot.path}/apps/rayon_sports/store_metadata/native_launcher_assets.json',
+  );
+  if (!manifest.existsSync()) return false;
+
+  try {
+    final decoded = jsonDecode(manifest.readAsStringSync());
+    if (decoded is! Map<String, dynamic>) return false;
+    final rights = decoded['rights_basis'];
+    final assets = decoded['assets'];
+    if (decoded['generator'] != 'tools/generate_store_artwork.swift' ||
+        rights is! Map<String, dynamic> ||
+        rights['original_project_owned'] != true ||
+        rights['contains_club_crest'] != false ||
+        rights['contains_third_party_artwork'] != false ||
+        assets is! List<dynamic>) {
+      return false;
+    }
+    return assets.whereType<Map<String, dynamic>>().any(
+      (asset) =>
+          asset['path'] == relativePath &&
+          RegExp(r'^[0-9a-f]{64}$').hasMatch('${asset['sha256']}'),
+    );
   } on FormatException {
     return false;
   }
@@ -1448,6 +1476,9 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
         ) ||
         path.endsWith(
           '/apps/rayon_sports/store_metadata/app_store/artwork_manifest.json',
+        ) ||
+        path.endsWith(
+          '/apps/rayon_sports/store_metadata/native_launcher_assets.json',
         ) ||
         path.endsWith('/apps/rayon_sports/store_metadata/source_evidence.md') ||
         path.endsWith(
@@ -1572,6 +1603,10 @@ bool _isGeneratedPath(String normalizedPath) {
       normalizedPath.contains('/.dart_tool/') ||
       normalizedPath.contains('/.next/') ||
       normalizedPath.endsWith('/.next') ||
+      normalizedPath.contains('/.open-next/') ||
+      normalizedPath.endsWith('/.open-next') ||
+      normalizedPath.contains('/test/failures/') ||
+      normalizedPath.endsWith('/test/failures') ||
       normalizedPath.contains('/coverage/') ||
       normalizedPath.endsWith('/coverage') ||
       normalizedPath.contains('/output/') ||

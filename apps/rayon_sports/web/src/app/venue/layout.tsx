@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { resolveVenueAccess } from "@/lib/data/venue-access";
+import { getActiveTicketVerifierAssignments } from "@/lib/data/ticket-verification";
 import {
   controlledVenueAccess,
   isControlledVenueEvidenceRequest,
@@ -29,5 +30,27 @@ export default async function VenueLayout({
     );
   }
   const result = await resolveVenueAccess();
+  if (result.status === "ready") {
+    let canVerifyTickets = false;
+    try {
+      canVerifyTickets =
+        (await getActiveTicketVerifierAssignments(result.client, result.access))
+          .length > 0;
+    } catch {
+      // Ticket verification is an optional, fail-closed capability. A migration
+      // or verifier-service issue must not take down unrelated venue workflows.
+      console.error("Ticket verifier capability lookup failed");
+    }
+    return (
+      <VenueAccessBoundary
+        result={{
+          ...result,
+          access: { ...result.access, canVerifyTickets },
+        }}
+      >
+        {children}
+      </VenueAccessBoundary>
+    );
+  }
   return <VenueAccessBoundary result={result}>{children}</VenueAccessBoundary>;
 }

@@ -18,6 +18,7 @@ ROUTE_STATE_CLOSURE_JSON="${ROUTE_STATE_CLOSURE_JSON:-$(dirname "$ROUTE_INVENTOR
 SCREEN_ARCHETYPE_COVERAGE_JSON="${SCREEN_ARCHETYPE_COVERAGE_JSON:-$(dirname "$ROUTE_INVENTORY_JSON")/screen-archetype-coverage.json}"
 COMPONENT_INVENTORY_JSON="${COMPONENT_INVENTORY_JSON:-$ROOT/output/implementation_goal_20260724/component_inventory_current/universal-component-inventory.json}"
 GOLDEN_BASELINES_JSON="${GOLDEN_BASELINES_JSON:-$ROOT/docs/governance/golden-baselines.json}"
+NATIVE_LAUNCHER_ASSETS_JSON="${NATIVE_LAUNCHER_ASSETS_JSON:-$ROOT/apps/rayon_sports/store_metadata/native_launcher_assets.json}"
 
 mkdir -p "$OUT_DIR"
 : >"$VIOLATIONS"
@@ -46,6 +47,97 @@ record_warning() {
     } >>"$WARNINGS"
   fi
 }
+
+governed_store_release_media() {
+  local normalized_path="$1"
+  local manifest=""
+
+  case "$normalized_path" in
+    apps/rayon_sports/android/app/src/main/res/mipmap-*/ic_launcher.png|apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/*.png)
+      local expected_sha=""
+      local actual_sha=""
+      [ -f "$NATIVE_LAUNCHER_ASSETS_JSON" ] || return 1
+      expected_sha="$(
+        jq -r --arg path "$normalized_path" \
+          '.assets[]? | select(.path == $path) | .sha256' \
+          "$NATIVE_LAUNCHER_ASSETS_JSON" |
+          head -n 1
+      )"
+      [[ "$expected_sha" =~ ^[0-9a-f]{64}$ ]] || return 1
+      actual_sha="$(shasum -a 256 "$ROOT/$normalized_path" | awk '{print $1}')"
+      [ "$actual_sha" = "$expected_sha" ] || return 1
+      jq -e '
+        (.generator == "tools/generate_store_artwork.swift") and
+        (.rights_basis.original_project_owned == true) and
+        (.rights_basis.contains_club_crest == false) and
+        (.rights_basis.contains_third_party_artwork == false)
+      ' "$NATIVE_LAUNCHER_ASSETS_JSON" >/dev/null
+      return
+      ;;
+  esac
+
+  case "$normalized_path" in
+    apps/rayon_sports/android/fastlane/metadata/android/en-US/images/*)
+      manifest="$ROOT/apps/rayon_sports/store_metadata/play_store/artwork_manifest.json"
+      ;;
+    apps/rayon_sports/ios/fastlane/screenshots/en-US/*)
+      manifest="$ROOT/apps/rayon_sports/store_metadata/app_store/artwork_manifest.json"
+      ;;
+    apps/rayon_sports_tv/android/app/src/main/res/drawable-*/tv_banner.png|apps/rayon_sports_tv/android/app/src/main/res/mipmap-*/ic_launcher.png|apps/rayon_sports_tv/android/fastlane/metadata/android/en-US/images/*)
+      manifest="$ROOT/apps/rayon_sports_tv/store_metadata/artwork_manifest.json"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+
+  [ -f "$manifest" ] &&
+    jq -e '
+      (.status | type == "string" and test("pending"; "i")) and
+      (.rules.capture_from_exact_candidate | type == "boolean") and
+      (.approvals_required | type == "array") and
+      (.approvals_required | index("rayon_brand_and_content_rights") != null)
+    ' "$manifest" >/dev/null
+}
+
+native_launcher_manifest_errors="$(
+  if [ ! -f "$NATIVE_LAUNCHER_ASSETS_JSON" ]; then
+    printf 'Missing native launcher manifest: %s\n' "$NATIVE_LAUNCHER_ASSETS_JSON"
+  elif ! jq -e '
+    (.schema_version == 1) and
+    (.generator == "tools/generate_store_artwork.swift") and
+    (.rights_basis.original_project_owned == true) and
+    (.rights_basis.contains_club_crest == false) and
+    (.rights_basis.contains_third_party_artwork == false) and
+    (.assets | type == "array" and length == 20) and
+    all(
+      .assets[];
+      (.platform == "android" or .platform == "ios") and
+      (.path | type == "string" and length > 0) and
+      (.pixel_width | type == "number" and . > 0) and
+      (.pixel_height | type == "number" and . > 0) and
+      (.alpha_allowed | type == "boolean") and
+      (.sha256 | type == "string" and test("^[0-9a-f]{64}$"))
+    )
+  ' "$NATIVE_LAUNCHER_ASSETS_JSON" >/dev/null; then
+    printf 'Native launcher manifest schema or provenance is invalid: %s\n' \
+      "$NATIVE_LAUNCHER_ASSETS_JSON"
+  else
+    while IFS=$'\t' read -r asset_path expected_sha; do
+      [ -n "$asset_path" ] || continue
+      if [ ! -f "$ROOT/$asset_path" ]; then
+        printf 'Missing governed native launcher asset: %s\n' "$asset_path"
+        continue
+      fi
+      actual_sha="$(shasum -a 256 "$ROOT/$asset_path" | awk '{print $1}')"
+      if [ "$actual_sha" != "$expected_sha" ]; then
+        printf 'Native launcher hash mismatch: %s expected %s got %s\n' \
+          "$asset_path" "$expected_sha" "$actual_sha"
+      fi
+    done < <(jq -r '.assets[] | [.path, .sha256] | @tsv' "$NATIVE_LAUNCHER_ASSETS_JSON")
+  fi
+)"
+record_violation "Native launcher asset governance" "$native_launcher_manifest_errors"
 
 checksum_status="fail"
 repo_design_sha=""
@@ -317,6 +409,8 @@ markdown_files="$(
     -path '*/.dart_tool' -o \
     -path '*/build' -o \
     -path '*/.next' -o \
+    -path '*/.open-next' -o \
+    -path '*/test/failures' -o \
     -path '*/coverage' -o \
     -path '*/output' \
   \) -prune -o -type f \( \
@@ -357,6 +451,8 @@ visual_assets="$(
     -path '*/.dart_tool' -o \
     -path '*/build' -o \
     -path '*/.next' -o \
+    -path '*/.open-next' -o \
+    -path '*/test/failures' -o \
     -path '*/coverage' -o \
     -path '*/output' \
   \) -prune -o -type f \( \
@@ -379,6 +475,9 @@ visual_assets="$(
         rg -F -q "\`$media_name\`" "$source_manifest" &&
         rg -q -i 'source:\s*`https://' "$source_manifest" &&
         rg -q -i '(approval|right[- ]to[- ]use|rights).*(recorded|required|approved)' "$source_manifest"; then
+        continue
+      fi
+      if governed_store_release_media "$normalized"; then
         continue
       fi
       if [[ "$normalized" == */test/goldens/* ]] &&
@@ -425,9 +524,16 @@ forbidden_static_refs="$(
     -g '!build/**' \
     -g '!.dart_tool/**' \
     -g '!.next/**' \
+    -g '!.open-next/**' \
     -g '!coverage/**' \
     -g '!output/**' |
     rg -v 'packages/core/core_theme/test/ui_source_guardrails_test\.dart' |
+    rg -v 'apps/rayon_sports/android/app/src/main/AndroidManifest\.xml' |
+    rg -v 'apps/rayon_sports_tv/android/app/src/main/AndroidManifest\.xml' |
+    rg -v 'apps/rayon_sports/ios/Runner\.xcodeproj/project\.pbxproj' |
+    rg -v 'apps/rayon_sports/store_metadata/app_store/artwork_manifest\.json' |
+    rg -v 'apps/rayon_sports/store_metadata/native_launcher_assets\.json' |
+    rg -v 'apps/rayon_sports/store_metadata/source_evidence\.md' |
     rg -v 'apps/rayon_sports/web/src/app/brand-(mark|surface)\.svg/route\.ts' |
     rg -v 'apps/rayon_sports_tv/test/tv_app_test\.dart' |
     rg -v 'tools/scripts/design_compliance_report\.sh' || true
@@ -440,13 +546,26 @@ native_asset_dirs="$(
     -path '*/.dart_tool' -o \
     -path '*/build' -o \
     -path '*/.next' -o \
+    -path '*/.open-next' -o \
     -path '*/coverage' -o \
     -path '*/output' \
   \) -prune -o -type d \( \
     -name Assets.xcassets -o \
     -name AppIcon.appiconset -o \
     -name LaunchImage.imageset \
-  \) -print || true
+  \) -print |
+    while IFS= read -r asset_dir; do
+      [ -n "$asset_dir" ] || continue
+      normalized="${asset_dir#./}"
+      if { [ "$normalized" = "apps/rayon_sports/ios/Runner/Assets.xcassets" ] ||
+          [ "$normalized" = "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset" ]; } &&
+        [ -z "$native_launcher_manifest_errors" ] &&
+        jq -e '[.assets[] | select(.platform == "ios")] | length == 15' \
+          "$NATIVE_LAUNCHER_ASSETS_JSON" >/dev/null; then
+        continue
+      fi
+      printf '%s\n' "$asset_dir"
+    done || true
 )"
 record_violation "Native static asset containers" "$native_asset_dirs"
 
@@ -454,6 +573,7 @@ web_asset_dirs="$(
   find apps/rayon_sports/web \( \
     -path '*/node_modules' -o \
     -path '*/.next' -o \
+    -path '*/.open-next' -o \
     -path '*/coverage' -o \
     -path '*/output' \
   \) -prune -o -type d \( \

@@ -5,8 +5,7 @@ const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : null;
 const analyticsUrl = process.env.NEXT_PUBLIC_VITALS_ENDPOINT?.trim();
 const analyticsOrigin = analyticsUrl ? new URL(analyticsUrl).origin : null;
 const isDevelopment = process.env.NODE_ENV === "development";
-const enforceSecureTransport =
-  process.env.AFRICLUB_ALLOW_HTTP_PREVIEW !== "1";
+const enforceSecureTransport = process.env.AFRICLUB_ALLOW_HTTP_PREVIEW !== "1";
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -104,9 +103,7 @@ const nextConfig: NextConfig = {
               "worker-src 'self' blob:",
               "media-src 'self' blob: https://*.supabase.co",
               "object-src 'none'",
-              ...(enforceSecureTransport
-                ? ["upgrade-insecure-requests"]
-                : []),
+              ...(enforceSecureTransport ? ["upgrade-insecure-requests"] : []),
             ].join("; "),
           },
         ],
@@ -121,6 +118,19 @@ const nextConfig: NextConfig = {
           {
             key: "X-Robots-Tag",
             value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+      {
+        source: "/venue/tickets/verify",
+        headers: [
+          {
+            key: "Permissions-Policy",
+            value: "camera=(self), microphone=(), geolocation=(), payment=()",
+          },
+          {
+            key: "Cache-Control",
+            value: "no-store, max-age=0",
           },
         ],
       },

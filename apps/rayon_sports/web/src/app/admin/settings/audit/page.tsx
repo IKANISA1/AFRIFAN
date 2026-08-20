@@ -23,6 +23,7 @@ import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import {
   getAdminAuditLogs,
   normalizeAdminAuditLogs,
+  projectAdminAuditDetail,
   type AdminAuditRecord,
 } from "@/lib/data/admin/audit";
 import { useAdminResourceState } from "@/lib/use-admin-resource-state";
@@ -375,29 +376,35 @@ export default function AdminAuditLogPage() {
         onClose={() => setDetailLog(null)}
         title="Audit record details"
       >
-        {detailLog ? (
-          <dl className="grid gap-5 text-sm">
-            <AuditDetail label="Administrator" value={detailLog.userName} />
-            <AuditDetail label="Action" value={detailLog.action} />
-            <AuditDetail label="Target table" value={detailLog.targetTable} />
-            <AuditDetail
-              label="Target record"
-              value={detailLog.targetId ?? "Not recorded"}
-            />
-            <AuditDetail
-              label="Timestamp"
-              value={formatAuditDate(detailLog.createdAt)}
-            />
-            <AuditJsonDetail label="Previous values" value={detailLog.oldData} />
-            <AuditJsonDetail label="New values" value={detailLog.newData} />
-            <AuditJsonDetail label="Metadata" value={detailLog.metadata} />
-            {detailLog.notes ? (
-              <AuditDetail label="Notes" value={detailLog.notes} />
-            ) : null}
-          </dl>
-        ) : null}
+        {detailLog ? <AuditRecordDetails record={detailLog} /> : null}
       </AdminActionDrawer>
     </div>
+  );
+}
+
+function AuditRecordDetails({ record }: { record: AdminAuditRecord }) {
+  const detail = useMemo(() => projectAdminAuditDetail(record), [record]);
+  return (
+    <dl className="grid gap-5 text-sm">
+      <AuditDetail label="Administrator" value={record.userName} />
+      <AuditDetail label="Action" value={record.action} />
+      <AuditDetail label="Target table" value={record.targetTable} />
+      <AuditDetail
+        label="Target record"
+        value={record.targetId ?? "Not recorded"}
+      />
+      <AuditDetail
+        label="Timestamp"
+        value={formatAuditDate(record.createdAt)}
+      />
+      <AuditJsonDetail
+        label="Previous values"
+        value={detail.previousValues}
+      />
+      <AuditJsonDetail label="New values" value={detail.newValues} />
+      <AuditJsonDetail label="Metadata" value={detail.metadata} />
+      {record.notes ? <AuditDetail label="Notes" value={record.notes} /> : null}
+    </dl>
   );
 }
 
@@ -419,7 +426,7 @@ function AuditJsonDetail({
   value,
 }: {
   label: string;
-  value: Record<string, unknown>;
+  value: string;
 }) {
   return (
     <div>
@@ -427,9 +434,7 @@ function AuditJsonDetail({
         {label}
       </dt>
       <dd className="mt-2 overflow-x-auto rounded-xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-3 font-mono text-xs text-[var(--admin-text)]">
-        <pre className="whitespace-pre-wrap break-words">
-          {JSON.stringify(value, null, 2)}
-        </pre>
+        <pre className="whitespace-pre-wrap break-words">{value}</pre>
       </dd>
     </div>
   );

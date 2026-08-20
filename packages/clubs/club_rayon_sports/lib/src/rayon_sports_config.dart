@@ -104,6 +104,7 @@ class RayonSportsConfig implements ClubConfig {
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,
+    'google_wallet_tickets': true,
     'chat': hasChat,
     'sms_ledger': hasSmsLedger,
   };

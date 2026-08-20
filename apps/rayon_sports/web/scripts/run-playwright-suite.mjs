@@ -3,7 +3,10 @@ import { resolve } from "node:path";
 
 const root = resolve(process.cwd());
 const supervisorScript = resolve(root, "scripts/start-playwright-server.mjs");
-const playwrightCli = resolve(root, "node_modules/playwright/cli.js");
+// Run the CLI from the same package that owns `test`/`expect` in every spec.
+// A transitive `playwright` package may resolve to a different version and
+// causes Playwright to reject test.describe() as belonging to another runner.
+const playwrightCli = resolve(root, "node_modules/@playwright/test/cli.js");
 const appPort = 3200;
 const readyPort = 3201;
 const testArgs = process.argv.slice(2);

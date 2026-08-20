@@ -1,6 +1,6 @@
 # Rayon Fullstack UAT Matrix
 
-Updated: 2026-08-02
+Updated: 2026-08-13
 
 Status vocabulary: `PASS` means freshly verified against the current tree; `PARTIAL` means implementation is present but required representative-device or external-console evidence remains; `BLOCKED` means a named external approval/input is missing. Historical HTTP-200 screenshots are not workflow proof.
 
@@ -29,8 +29,8 @@ This acceptance is open at the evidence and release layers. The current source
 now implements the required primary hierarchy, canonical Club family, free
 selected-match prediction boundary, secondary venue placement, and mandatory
 club scope. Existing route, build, or surface-specific PASS records remain
-evidence only for their stated scope. The local route ledger remains open at
-1,881 admitted cells, 256 open cells, and 679 explicit N/A decisions;
+  evidence only for their stated scope. The local route ledger records 2,171
+admitted applicable cells, zero open cells, and 741 explicit N/A decisions;
 external and accountable release gates also remain open.
 
 ## Current Controlled Checkpoint
@@ -39,7 +39,7 @@ external and accountable release gates also remain open.
 - Flutter deterministic regression: all 45 test-bearing packages pass through
   the root-primary Melos harness.
 - Application integration smoke: 3 journeys pass.
-- Web: 113 files and 957 tests pass, plus typecheck, zero-warning lint, and
+- Web: 119 files and 993 tests pass, plus typecheck, zero-warning lint, and
   production build.
 - Backend: 15 pgTAP and 74 Deno Edge tests pass.
 - Live Games V2 organizer planning: GAME-ORG-01 passes 36 focused Flutter
@@ -104,8 +104,8 @@ external and accountable release gates also remain open.
   backend, two-phone-plus-TV execution, correlated exact-build logs/video,
   measured loss/reconnect recovery, physical accessibility, approvals, and
   release remain open.
-- Route ledger: 176 routes; 1,881 cells are admitted, 256 are open across the
-  final Admin PWA/Venue tranche, and 679 are explicitly not applicable.
+- Route ledger: 182 routes; all 2,171 applicable cells are admitted, zero are
+  open, 741 are explicitly not applicable, and `closure_complete=true`.
 - Component ledger: 71 components; all 316 applicable cells evidenced and zero
   open.
 - Local artifacts: exact-current unsigned iOS release ZIP, ephemeral-signed
@@ -121,12 +121,12 @@ external and accountable release gates also remain open.
 | --- | --- | --- |
 | Mobile supporter app | Football-primary navigation, auth restore, deep links, Club family, offline/retry, Profile/Settings, membership, tickets, shop, narrow role-gated owner/organizer projections, and secondary matchday utilities | PARTIAL: the eleven-route Club family closes 153/153 applicable local route-state cells with 194 passing Club tests and exact visual evidence. All seven local owner/organizer operations routes are evidence-complete: the static hub closes 6/6 applicable cells; `/my-tvs`, `/game-operations/sessions`, and live control close 14/14 applicable cells each with explicit N/A decisions; Pair TV, TV management, and planner close 16/16. Exact focus, held press, 200-percent text, reduced motion, themes, recovery, retained synchronization, conflict/timeout behavior, imperative live actions, and all-control lockout are governed. Strict source analysis, 172 Game Operations tests, package regressions, three integration smoke journeys, GAME-ORG-01/02 and GAME-OWN-01/02 local/isolated-database/visual contracts, exact-current unsigned iOS release, ephemeral-signed Android release AAB, and exact paired iPhone 12 Pro install/launch pass. Approved live Club content, shared/live authorization, real display operations, complete physical-device journeys/AT, production distribution signing, and store evidence remain open. |
 | Flutter native TV app | Secure pairing, authoritative game projection, reconnect/resume, remote focus, screen-safe data, and managed signing | PARTIAL: GAME-TV-01/02/03 projection, isolated-Realtime reconciliation and pairing contracts pass locally with 58 tests, zero-issue analysis, 80/80 full-chain pgTAP, five ordered assigned-TV events, zero unbound or post-revocation events, seven governed 720p states, a debug APK build, and inspected exact current native Android TV API 36 emulator pairing captures at 1920 x 1080 and 3840 x 2160. Shared/live WAN loss/soak, production signing, physical-TV overscan/remote/screen-reader traversal, four-hour crash/ANR soak, accountable approval, store and release evidence remain open. |
-| Venue portal | Auth boundary plus today, orders, menu, check-ins, campaigns, TV code, and staff workflows | PARTIAL: 112 cells across seven Venue routes remain pending corrected exact-current desktop/tablet/compact browser execution, visual review, and admission. Live authenticated staff/RLS/data/mutation UAT and named staff approval also remain external. |
-| Admin PWA | Protected admin governance for clubs, content, matches, games, membership, commerce, venues, audit, and runtime controls | PARTIAL: most Admin routes retain admitted evidence, while 144 cells across nine routes remain pending corrected exact-current production-build browser matrices and admission. Live authenticated operator/RLS/mutation UAT and named operator approval also remain external. |
+| Venue portal | Auth boundary plus today, orders, menu, check-ins, campaigns, TV code, ticket verification, and staff workflows | PARTIAL: all eight Venue route matrices, including `/venue/tickets/verify`, are admitted for controlled local behavior. Live authenticated staff/RLS/data/mutation UAT and named staff approval remain external. |
+| Admin PWA | Protected admin governance for clubs, content, matches, games, membership, commerce, venues, audit, and runtime controls | PARTIAL: all governed Admin route-state matrices are admitted for controlled local behavior. Live authenticated operator/RLS/mutation UAT, physical keyboard/screen-reader and representative-performance execution, and named operator approval remain external. |
 | Public website | Club information, news, fixtures/results/standings, tickets/shop handoff, and approved venue discovery | PARTIAL: source regression and production build pass; exact-current route-state and release-candidate evidence remain scoped by the route ledger. Authenticated venue operations remain prohibited on the public surface. |
 | Supabase and Edge/RPC | Club-scoped schemas, RLS, idempotency, hashes, audit behavior, authoritative game state, venue/order boundaries | PARTIAL: 15 pgTAP and 74 Deno Edge tests pass locally. Production migration, rollback, monitoring, incident rehearsal, and accountable approval remain open; this audit made no production mutation. |
-| Web quality gates | Reproducible install, typecheck, tests, warning budget, and build | PASS locally: 113 files and 957 tests, typecheck, zero-warning lint, and the Next production build pass. Release/deployment approval is separate. |
-| Audit artifact integrity | Synchronized `DESIGN.md`, current UAT matrix, governed inventories, compliance report, privacy validation, and provenance | PARTIAL: automated source compliance has zero hard violations and two warnings, `route_evidence_complete=false`, and `design_complete=false`. Provenance for the admitted set and all external gates remain separate. |
+| Web quality gates | Reproducible install, typecheck, tests, warning budget, and build | PASS locally: 119 files and 993 tests, typecheck, zero-warning lint, and the Next production build pass. Release/deployment approval is separate. |
+| Audit artifact integrity | Synchronized `DESIGN.md`, current UAT matrix, governed inventories, compliance report, privacy validation, and provenance | PARTIAL: automated source compliance has zero violations and one accountable-approval warning, `route_evidence_complete=true`, and `design_complete=false`. Final provenance validation and all external gates remain separate. |
 
 ## Operational Runbooks
 

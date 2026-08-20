@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:app_registry/app_registry.dart';
 import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_app/bootstrap.dart';
+import 'package:core_app/core_app.dart';
 import 'package:core_auth/core_auth.dart';
-import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_network/core_network.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:feat_home/src/widgets/quick_actions_grid.dart';
@@ -22,6 +25,7 @@ void main() {
   });
 
   setUp(() {
+    ConnectivityService.setOnlineForTest(true);
     binding.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(
           accessibleNavigation: true,
@@ -31,6 +35,7 @@ void main() {
   });
 
   tearDown(() {
+    ConnectivityService.setOnlineForTest(true);
     binding.platformDispatcher.clearAccessibilityFeaturesTestValue();
   });
 
@@ -216,6 +221,88 @@ void main() {
       expect(find.text('Privacy policy'), findsNothing);
     },
   );
+
+  testWidgets('restores Settings from a validated warm custom deep link', (
+    tester,
+  ) async {
+    final links = StreamController<Uri>();
+    addTearDown(links.close);
+
+    await _startSmokeApp(
+      AfriClubBootstrapOptions(
+        modules: AppModuleRegistry.build(const _SmokeRayonSportsConfig()),
+        startupOptions: const AppStartupOptions.integrationTest(),
+        authRepository: _FakeAuthRepository(restoreResult: _smokeUser),
+        deepLinkParser: DeepLinkParser(customScheme: 'gikundiro'),
+        deepLinkService: FakeDeepLinkService(stream: links.stream),
+        providerOverrides: [
+          initialFeatureConfigSnapshotProvider.overrideWithValue(
+            _smokeFeatureSnapshot,
+          ),
+          homeFeedRepositoryProvider.overrideWithValue(
+            const _FakeHomeFeedRepository(snapshot: _smokeHomeSnapshot),
+          ),
+          latestIntelRepositoryProvider.overrideWithValue(
+            const _FakeLatestIntelRepository(_smokeLatestIntelSnapshot),
+          ),
+          currentUserProvider.overrideWith((ref) => _smokeUser),
+          supportWhatsAppProvider.overrideWith((ref) async => '250788000000'),
+        ],
+      ),
+    );
+
+    await _pumpAppStartup(tester);
+    await _scrollHomeUntilVisible(tester, find.byType(QuickActionsGrid));
+
+    links.add(Uri.parse('gikundiro://settings'));
+    await tester.pump();
+    await _pumpUntilVisible(tester, find.text('Settings'));
+
+    expect(find.text('Settings'), findsOneWidget);
+  });
+
+  testWidgets(
+    'keeps offline settings usable and cancels destructive sign-out safely',
+    (tester) async {
+      ConnectivityService.setOnlineForTest(false);
+
+      await _startSmokeApp(
+        AfriClubBootstrapOptions(
+          modules: AppModuleRegistry.build(const _SmokeRayonSportsConfig()),
+          startupOptions: const AppStartupOptions.integrationTest(),
+          authRepository: _FakeAuthRepository(restoreResult: _smokeUser),
+          initialLocation: '/settings',
+          providerOverrides: [
+            initialFeatureConfigSnapshotProvider.overrideWithValue(
+              _smokeFeatureSnapshot,
+            ),
+            currentUserProvider.overrideWith((ref) => _smokeUser),
+          ],
+        ),
+      );
+
+      await _pumpAppStartup(tester);
+      await _pumpUntilVisible(tester, find.text('Offline settings'));
+      expect(find.text('Offline settings'), findsOneWidget);
+
+      final settingsScrollable = find.byType(Scrollable).first;
+      await tester.scrollUntilVisible(
+        find.text('Sign out'),
+        240,
+        scrollable: settingsScrollable,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Sign out'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('SIGN OUT?'), findsOneWidget);
+      await tester.tap(find.text('Stay'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Settings'), findsOneWidget);
+      expect(find.text('Sign out'), findsOneWidget);
+    },
+  );
 }
 
 Future<void> _startSmokeApp(AfriClubBootstrapOptions options) {
@@ -245,6 +332,40 @@ const _smokeFeatureSnapshot = PlatformConfigSnapshot(
       placementKey: 'home_bottom',
       sortOrder: 20,
     ),
+  ],
+);
+
+const _smokeUser = UserProfile(
+  id: 'user-1',
+  clubId: '24',
+  publicUserId: '483912',
+  momoNumber: '0788123456',
+  momoProvider: 'MoMo',
+  languageCode: 'en',
+);
+
+const _smokeHomeSnapshot = HomeFeedSnapshot(
+  heroSlides: [
+    MatchSlide(
+      homeTeam: 'RAYON SPORTS',
+      awayTeam: 'Rayon Sports FC',
+      venue: 'AMAHORO STADIUM',
+      status: 'ON SALE',
+      dateInfo: '12 Rayon Sports • 18:00',
+      route: '/tickets',
+    ),
+  ],
+  status: HomeFeedStatus.success,
+);
+
+const _smokeLatestIntelSnapshot = LatestIntelSnapshot(
+  status: LatestIntelStatus.ready,
+  articles: [
+    {
+      'id': 'article-1',
+      'title': 'Training ground update',
+      'subtitle': 'First-team preparations continue this week.',
+    },
   ],
 );
 

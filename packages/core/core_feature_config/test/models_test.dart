@@ -141,6 +141,68 @@ void main() {
       expect(snapshot.featureByKey('nonexistent'), isNull);
     });
 
+    test(
+      'runtime copy uses exact, language, then deterministic English fallback',
+      () {
+        const snapshot = PlatformConfigSnapshot(
+          runtimeCopy: [
+            RuntimeCopyEntry(
+              copyKey: 'home.feed.degraded',
+              surface: 'mobile',
+              locale: 'rw',
+              textValue: 'Amakuru ntabonetse.',
+            ),
+            RuntimeCopyEntry(
+              copyKey: 'home.feed.degraded',
+              surface: 'mobile',
+              locale: 'fr',
+              textValue: 'Les informations sont indisponibles.',
+            ),
+            RuntimeCopyEntry(
+              copyKey: 'home.feed.degraded',
+              surface: 'mobile',
+              locale: 'en',
+              textValue: 'Club data is unavailable.',
+            ),
+            RuntimeCopyEntry(
+              copyKey: 'home.feed.degraded',
+              surface: 'mobile',
+              locale: 'fr-rw',
+              textValue: 'Les informations locales sont indisponibles.',
+            ),
+          ],
+        );
+
+        expect(
+          snapshot.copyValue('home.feed.degraded', locale: 'FR_rw'),
+          'Les informations locales sont indisponibles.',
+        );
+        expect(
+          snapshot.copyValue('home.feed.degraded', locale: 'fr-BE'),
+          'Les informations sont indisponibles.',
+        );
+        expect(
+          snapshot.copyValue('home.feed.degraded', locale: 'de'),
+          'Club data is unavailable.',
+        );
+      },
+    );
+
+    test('runtime copy never falls through to an unrelated locale', () {
+      const snapshot = PlatformConfigSnapshot(
+        runtimeCopy: [
+          RuntimeCopyEntry(
+            copyKey: 'home.feed.degraded',
+            surface: 'mobile',
+            locale: 'rw',
+            textValue: 'Amakuru ntabonetse.',
+          ),
+        ],
+      );
+
+      expect(snapshot.copyValue('home.feed.degraded', locale: 'fr'), isNull);
+    });
+
     test('toJson and fromJson are symmetric', () {
       final original = PlatformConfigSnapshot(
         features: [

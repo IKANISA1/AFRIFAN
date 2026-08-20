@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "build_5_capture_ui_equivalent_to_build_6_pending_approval_and_play_aab_parity",
+  "status": "current_source_release_mode_aab_and_corrected_launcher_verified_exact_candidate_approval_and_play_parity_pending",
   "rules": {
     "actual_app_ui_only": true,
     "no_real_supporter_data": true,
@@ -45,6 +45,25 @@
     "method": "deterministic native vector drawing",
     "rights_basis": "Original Gikundiro G geometry using only system typography and solid/gradient colors; no club crest, photography, or third-party artwork."
   },
+  "native_launcher_source": {
+    "manifest": "../native_launcher_assets.json",
+    "generator": "../tools/generate_store_artwork.swift",
+    "asset_count": 5,
+    "contains_club_crest": false,
+    "contains_third_party_artwork": false,
+    "status": "source_corrected_checksum_locked_and_local_release_mode_aab_packaged_new_exact_candidate_build_required"
+  },
+  "local_release_dry_run": {
+    "evidence": "../../../../output/implementation_goal_20260724/RELEASE_MODE_DRY_RUN_EVIDENCE_2026-08-13.json",
+    "artifact_sha256": "e6ea25707c2583831bb598374b663783f7a30fced73140989da2c020999586a1",
+    "package_id": "rw.gikundiro.app",
+    "version_name": "1.0.3",
+    "version_code": 6,
+    "launcher_compiled_and_visually_verified_crest_free": true,
+    "ephemeral_signer_only": true,
+    "exact_candidate": false,
+    "play_upload_or_processing_proven": false
+  },
   "capture_provenance": {
     "capture_stage": "build-5 capture retained as build-6 UI-equivalent evidence",
     "recapture_after_source_freeze_required": false,
@@ -69,11 +88,12 @@
     "device": "Collect_Pixel4a_API36 Android emulator",
     "capture_dimensions": "1080x1920",
     "session": "anonymous guest with zeroed supporter state",
-    "artifact_relation": "The exact locally built build-5 release APK was used for capture. The current build-6 candidate differs in mobile runtime inputs only at pubspec version/build metadata and iOS Info.plist declarations; Android UI code/assets did not change. The screenshots are visually equivalent but are not claimed as exact build-6 captures. Exact build-6 Play AAB, signing, portal processing, and accountable approval remain separate gates.",
+    "artifact_relation": "The exact locally built build-5 release APK was used for capture. Current source subsequently replaced the Android launcher crest with the governed crest-free Gikundiro G. The stored screenshots contain only in-app surfaces and do not show the system launcher icon, so they remain visually equivalent for those captured frames but are not exact-current-candidate captures. A new Play AAB/build, signing parity, portal processing, and accountable approval remain separate gates.",
     "exact_build_6_capture": false,
     "ui_equivalence_basis": [
       "apps/rayon_sports/pubspec.yaml changed 1.0.3+5 to 1.0.3+6",
-      "apps/rayon_sports/ios/Runner/Info.plist changed export-compliance and iPad orientation declarations only"
+      "apps/rayon_sports/ios/Runner/Info.plist changed export-compliance and iPad orientation declarations",
+      "Android launcher assets changed to the governed crest-free Gikundiro G, but the launcher icon is outside every retained in-app screenshot frame"
     ],
     "pre_final_artifact_sha256": "52a99db6d11f99e7e6ba33d79aa4c43ef8f3de056eb851a33b6653af349d1098",
     "recapture_drift": "The rebuilt frozen-source APK and all screenshot hashes changed from the pre-final reference set; visual inspection found no real supporter, payment, or pairing data.",

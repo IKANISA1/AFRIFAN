@@ -2262,6 +2262,41 @@ textarea:focus-visible,
   min-height: 3rem;
 }
 
+.controlled-venue-state-surface[data-venue-state="pressed"]
+  .ui-button-primary {
+  background: #d9ad00;
+  box-shadow: inset 0 3px 0 rgba(0, 0, 0, 0.24);
+  transform: translateY(1px) scale(0.98);
+}
+
+.venue-portal .ui-button-secondary,
+.venue-access-state .ui-button-secondary {
+  border: 1px solid rgba(139, 185, 255, 0.48);
+  background: rgba(139, 185, 255, 0.14);
+  color: var(--venue-foreground);
+  box-shadow: inset 0 0 0 1px rgba(139, 185, 255, 0.08);
+}
+
+.venue-portal .ui-button-secondary:hover,
+.venue-access-state .ui-button-secondary:hover {
+  border-color: rgba(139, 185, 255, 0.72);
+  background: rgba(139, 185, 255, 0.22);
+}
+
+.venue-portal .ui-button-tertiary,
+.venue-access-state .ui-button-tertiary {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--venue-copy);
+}
+
+.venue-portal .ui-button-tertiary:hover,
+.venue-access-state .ui-button-tertiary:hover {
+  border-color: var(--venue-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--venue-foreground);
+}
+
 .venue-portal :focus-visible,
 .venue-access-state :focus-visible {
   outline: 3px solid var(--outline-focus);
@@ -2289,6 +2324,24 @@ textarea:focus-visible,
     background: #ffffff;
     color: var(--venue-foreground);
     box-shadow: 0 16px 32px -26px rgba(15, 23, 42, 0.34);
+  }
+
+  .venue-portal .ui-button-secondary,
+  .venue-access-state .ui-button-secondary {
+    border-color: rgba(13, 99, 243, 0.4);
+    background: rgba(13, 99, 243, 0.1);
+    color: #0f172a;
+  }
+
+  .venue-portal .ui-button-tertiary,
+  .venue-access-state .ui-button-tertiary {
+    color: #334155;
+  }
+
+  .venue-portal .ui-button-tertiary:hover,
+  .venue-access-state .ui-button-tertiary:hover {
+    background: rgba(15, 23, 42, 0.05);
+    color: #0f172a;
   }
 
   .venue-portal .ui-panel-inset {
@@ -3230,6 +3283,68 @@ textarea:focus-visible,
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .admin-table [data-column-priority="tertiary"] {
+    display: none;
+  }
+}
+
+.admin-ticket-verifiers-state-surface {
+  container-type: inline-size;
+}
+
+@container (max-width: 50rem) {
+  .admin-ticket-verifiers-assignments.admin-table-shell {
+    overflow: visible;
+  }
+
+  .admin-ticket-verifiers-assignments .admin-table {
+    min-width: 0;
+  }
+
+  .admin-ticket-verifiers-assignments .admin-table thead {
+    display: none;
+  }
+
+  .admin-ticket-verifiers-assignments .admin-table,
+  .admin-ticket-verifiers-assignments .admin-table tbody,
+  .admin-ticket-verifiers-assignments .admin-table tr,
+  .admin-ticket-verifiers-assignments .admin-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-ticket-verifiers-assignments .admin-table tbody {
+    display: grid;
+    gap: 0.85rem;
+    padding: 0.85rem;
+  }
+
+  .admin-ticket-verifiers-assignments .admin-table tbody tr,
+  .admin-ticket-verifiers-assignments .admin-table-row {
+    display: grid !important;
+    gap: 0.75rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.95rem;
+  }
+
+  .admin-ticket-verifiers-assignments .admin-table-cell {
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  .admin-ticket-verifiers-assignments .admin-table-cell[data-column-label]::before {
+    content: attr(data-column-label);
+    display: block;
+    margin-bottom: 0.32rem;
+    color: var(--admin-text-muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .admin-ticket-verifiers-assignments .admin-table-cell-full-span::before {
     display: none;
   }
 }

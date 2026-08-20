@@ -22,7 +22,7 @@ jq -e '
 ' "$GOLDEN_MANIFEST" >/dev/null
 
 patterns=(
-  '(\+250|00250|07)[0-9][[:space:]-]?[0-9]{3}[[:space:]-]?[0-9]{4}'
+  '(^|[^0-9])((\+250|00250)[[:space:]-]?7[0-9]|07[0-9])[[:space:]-]?[0-9]{3}[[:space:]-]?[0-9]{4}([^0-9]|$)'
   'eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'
   '(^|[^A-Za-z0-9])(sb_secret_|sk_live_|rk_live_|AKIA)[A-Za-z0-9_-]{8,}'
   '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----'
@@ -32,7 +32,9 @@ patterns=(
 )
 
 scan_failed=false
+pattern_args=()
 for pattern in "${patterns[@]}"; do
+  pattern_args+=("-e" "$pattern")
   text_matches="$(
     rg -n -i -e "$pattern" \
       "$EVIDENCE_ROOT" \
@@ -50,19 +52,21 @@ for pattern in "${patterns[@]}"; do
       "$pattern" "$text_matches" >&2
     scan_failed=true
   fi
-
-  while IFS= read -r relative_image_path; do
-    [ -n "$relative_image_path" ] || continue
-    image_path="$ROOT/$relative_image_path"
-    test -f "$image_path"
-    binary_match="$(strings "$image_path" | rg -n -i -e "$pattern" || true)"
-    if [ -n "$binary_match" ]; then
-      printf 'Golden privacy violation in %s for pattern %s\n' \
-        "$image_path" "$pattern" >&2
-      scan_failed=true
-    fi
-  done < <(jq -r '.baselines[].path' "$GOLDEN_MANIFEST" | sort -u)
 done
+
+while IFS= read -r relative_image_path; do
+  [ -n "$relative_image_path" ] || continue
+  image_path="$ROOT/$relative_image_path"
+  test -f "$image_path"
+  binary_match="$(
+    strings "$image_path" | rg -n -i "${pattern_args[@]}" || true
+  )"
+  if [ -n "$binary_match" ]; then
+    printf 'Golden privacy violation in %s for governed privacy patterns\n' \
+      "$image_path" >&2
+    scan_failed=true
+  fi
+done < <(jq -r '.baselines[].path' "$GOLDEN_MANIFEST" | sort -u)
 
 if [ "$scan_failed" = true ]; then
   exit 1

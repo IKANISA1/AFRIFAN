@@ -69,6 +69,23 @@ export {
   updateTicketStatus,
 } from "./tickets";
 
+export {
+  findAdminTicketVerifierCandidate,
+  getAdminTicketVerifierWorkspace,
+  grantAdminTicketVerifierAssignment,
+  normalizeAdminTicketVerifierCandidate,
+  normalizeAdminTicketVerifierWorkspace,
+  revokeAdminTicketVerifierAssignment,
+} from "./ticket-verifiers";
+
+export type {
+  AdminTicketOrganization,
+  AdminTicketVerifierAssignment,
+  AdminTicketVerifierCandidate,
+  AdminTicketVerifierEvent,
+  AdminTicketVerifierWorkspace,
+} from "./ticket-verifiers";
+
 // Settings
 export {
   getAdminClubScopeOptions,

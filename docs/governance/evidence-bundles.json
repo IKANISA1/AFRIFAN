@@ -5063,356 +5063,6 @@
       "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_admin_pwa__admin_venues_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
     },
     {
-      "id": "venue-portal-overview-rendered-states-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_overview_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_overview_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-02T06:03:56Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "venue-portal-orders-rendered-states-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_orders_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_orders_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-02T06:04:13Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_orders_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "venue-portal-menu-rendered-states-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_menu_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_menu_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-02T06:04:29Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_menu_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "venue-portal-checkins-rendered-states-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_checkins_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_checkins_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-02T06:04:46Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_checkins_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "venue-portal-promotions-rendered-states-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_promotions_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_promotions_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-02T06:05:02Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_promotions_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "venue-portal-staff-rendered-states-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_staff_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_staff_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-02T06:05:19Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_staff_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "venue-portal-tv-code-rendered-states-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_tv_code_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_tv_code_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-02T06:05:35Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_tv-code_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
       "id": "native-tv-remote-context-checkpoint-20260802",
       "admission_status": "admitted",
       "directory": "output/implementation_goal_20260724/native_tv_remote_context_checkpoint_20260802",
@@ -5518,6 +5168,565 @@
       ],
       "captured_at": "2026-08-08T20:46:35Z",
       "data_source": "production Supabase Auth and Data API with deleted synthetic identities and fixtures; genuine two-client supporter order collisions, service-role contribution review, immutable audit, rollback, exact cleanup, and explicit non-completion for untested surfaces and accountable approvals"
+    },
+    {
+      "id": "venue-portal-overview-rendered-states-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/venue_portal_overview_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "VENUE-PORTAL-LOCAL",
+        "REL-07"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "venue_portal_production_local_controlled_venue_portal_overview_states_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-08-13T16:53:44Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
+    },
+    {
+      "id": "venue-portal-ticket-verification-rendered-states-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/venue_portal_ticket_verification_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "VENUE-PORTAL-LOCAL",
+        "REL-07"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "venue_portal_production_local_controlled_venue_portal_ticket_verification_states_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-08-13T16:54:01Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_tickets_verify_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
+    },
+    {
+      "id": "venue-portal-orders-rendered-states-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/venue_portal_orders_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "VENUE-PORTAL-LOCAL",
+        "REL-07"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "venue_portal_production_local_controlled_venue_portal_orders_states_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-08-13T16:54:18Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_orders_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
+    },
+    {
+      "id": "venue-portal-menu-rendered-states-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/venue_portal_menu_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "VENUE-PORTAL-LOCAL",
+        "REL-07"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "venue_portal_production_local_controlled_venue_portal_menu_states_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-08-13T16:54:35Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_menu_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
+    },
+    {
+      "id": "venue-portal-checkins-rendered-states-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/venue_portal_checkins_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "VENUE-PORTAL-LOCAL",
+        "REL-07"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "venue_portal_production_local_controlled_venue_portal_checkins_states_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-08-13T16:54:51Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_checkins_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
+    },
+    {
+      "id": "venue-portal-promotions-rendered-states-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/venue_portal_promotions_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "VENUE-PORTAL-LOCAL",
+        "REL-07"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "venue_portal_production_local_controlled_venue_portal_promotions_states_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-08-13T16:55:08Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_promotions_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
+    },
+    {
+      "id": "venue-portal-staff-rendered-states-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/venue_portal_staff_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "VENUE-PORTAL-LOCAL",
+        "REL-07"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "venue_portal_production_local_controlled_venue_portal_staff_states_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-08-13T16:55:25Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_staff_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
+    },
+    {
+      "id": "venue-portal-tv-code-rendered-states-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/venue_portal_tv_code_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "VENUE-PORTAL-LOCAL",
+        "REL-07"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "venue_portal_production_local_controlled_venue_portal_tv_code_states_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-08-13T16:55:41Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_tv-code_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
+    },
+    {
+      "id": "physical-mobile-uat-current-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/physical_mobile_uat_current",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "MOB-09",
+        "A11Y-02",
+        "EVID-04",
+        "EVID-06",
+        "EVID-07",
+        "EVID-08",
+        "REL-02",
+        "REL-04"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3-isolated-qa",
+      "build_number": "6",
+      "flavor": "physical_android_isolated_synthetic_smoke",
+      "platform": "flutter_android_physical_device_debug",
+      "runtime_device": "Physical Pixel 4a, Android 13/API 33; device identifier intentionally omitted",
+      "viewport_profiles": [
+        {
+          "device": "Pixel 4a",
+          "physical": true,
+          "orientation": "portrait"
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "system_default"
+      ],
+      "captured_at": "2026-08-13T18:59:16Z",
+      "data_source": "current_dirty_source_on_isolated_debug_application_id_with_synthetic_providers; five physical Android journeys passed, including an in-app warm custom-link transition and controlled offline Settings with destructive sign-out cancellation; a supplemental physical resolver check proved gikundiro and africlub custom-scheme package resolution plus top-resumed MainActivity and rejected an unlisted scheme; no verified HTTPS App Link, authenticated end-to-end OS-link destination, physical network change, destructive mutation, production backend, customer data, runtime permissions, TalkBack, installed-customer-app replacement, iOS execution or release claim"
+    },
+    {
+      "id": "ios-isolated-qa-build-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/ios_isolated_qa_build_20260813",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "MOB-09",
+        "A11Y-02",
+        "EVID-04",
+        "EVID-07",
+        "EVID-08",
+        "REL-03",
+        "REL-04"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3-isolated-qa",
+      "build_number": "6",
+      "flavor": "ios_isolated_qa_unsigned_build",
+      "platform": "flutter_ios_unsigned_device_and_xcode_simulator_configuration",
+      "runtime_device": "Generic iOS device build and generic iOS simulator configuration; physical iPhone intentionally not modified",
+      "viewport_profiles": [
+        {
+          "target": "generic iOS device",
+          "physical_execution": false
+        },
+        {
+          "target": "generic iOS simulator",
+          "physical_execution": false
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "not_executed"
+      ],
+      "captured_at": "2026-08-13T18:04:35Z",
+      "data_source": "current_dirty_source_isolated_qa_identity_contract_unsigned_device_build_and_simulator_configuration_build; no signing, provisioning, physical iPhone modification, Firebase QA registration, authenticated live backend, accessibility, store or release claim"
+    },
+    {
+      "id": "physical-android-performance-current-20260813",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/physical_android_performance_current",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "MOB-09",
+        "EVID-06",
+        "EVID-07",
+        "EVID-08",
+        "ADMIN-08",
+        "REL-02",
+        "REL-04"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3-isolated-qa",
+      "build_number": "6",
+      "flavor": "physical_android_isolated_profile_performance",
+      "platform": "flutter_android_physical_device_profile",
+      "runtime_device": "Physical Pixel 4a, Android 13/API 33; device identifier intentionally omitted",
+      "viewport_profiles": [
+        {
+          "device": "Pixel 4a",
+          "physical": true,
+          "orientation": "portrait"
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "system_default"
+      ],
+      "captured_at": "2026-08-13T18:29:21Z",
+      "data_source": "current_dirty_source_on_isolated_profile_application_id_with_controlled_non_production_providers; physical journey passed but declared 16 ms frame budget failed for transitions and raster-heavy scrolling; no production backend, customer data, product images, checkout submission, realtime, approved memory budget, TalkBack, runtime permissions, exact-candidate or release claim"
+    },
+    {
+      "id": "admin-pwa-ticket-verifiers-rendered-states-20260815",
+      "admission_status": "admitted",
+      "directory": "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states",
+      "artifact_scope": "immediate",
+      "task_ids": [
+        "STATE-01",
+        "EVID-02",
+        "EVID-03",
+        "EVID-04",
+        "EVID-05",
+        "EVID-08",
+        "ADMIN-PWA-LOCAL",
+        "REL-07"
+      ],
+      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "dirty_state": true,
+      "app_version": "1.0.3",
+      "build_number": "6",
+      "flavor": "admin_pwa_production_local_controlled_admin_pwa_ticket_verifiers_states_evidence",
+      "platform": "nextjs_production_build_playwright_chromium",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "viewport_profiles": [
+        {
+          "width": 1440,
+          "height": 1000,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 1024,
+          "height": 900,
+          "device_pixel_ratio": 1
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "device_pixel_ratio": 1
+        }
+      ],
+      "locale": "en",
+      "themes": [
+        "dark",
+        "light",
+        "large_text_200_percent",
+        "reduced_motion",
+        "offline"
+      ],
+      "captured_at": "2026-08-15T05:28:05Z",
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_admin_pwa__admin_tickets_verifiers_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
     }
   ]
 }

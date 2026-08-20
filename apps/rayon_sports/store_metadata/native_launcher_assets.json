@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "status": "generated_original_project_owned_pending_accountable_brand_approval",
+  "generator": "tools/generate_store_artwork.swift",
+  "rights_basis": {
+    "original_project_owned": true,
+    "contains_club_crest": false,
+    "contains_third_party_artwork": false,
+    "description": "Original Gikundiro G geometry using system typography and project colours; no club crest, photography, or third-party artwork."
+  },
+  "approval_boundary": "Source provenance and prohibited-content removal are verified. Accountable product and brand approval remains a separate release gate.",
+  "assets": [
+    {"platform": "android", "path": "apps/rayon_sports/android/app/src/main/res/mipmap-mdpi/ic_launcher.png", "pixel_width": 48, "pixel_height": 48, "alpha_allowed": true, "sha256": "ac10da392499bf278a9ff2d1dd852a000b074c956b2b0d4b7ee74ecf65a3d79c"},
+    {"platform": "android", "path": "apps/rayon_sports/android/app/src/main/res/mipmap-hdpi/ic_launcher.png", "pixel_width": 72, "pixel_height": 72, "alpha_allowed": true, "sha256": "55ab694f066a0aa84eb5ecc6e67e29f5a8f1cf5fa50278f71b9cf566d87773ac"},
+    {"platform": "android", "path": "apps/rayon_sports/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png", "pixel_width": 96, "pixel_height": 96, "alpha_allowed": true, "sha256": "bf1c9a4117aecbcd16cb8c634ce762c8ca910cc15eb01073ef93b8b5397121be"},
+    {"platform": "android", "path": "apps/rayon_sports/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png", "pixel_width": 144, "pixel_height": 144, "alpha_allowed": true, "sha256": "b9a18d4c6e0a649c45acd792fc81c0c7dda9de888deb54b88973c505e9b6e519"},
+    {"platform": "android", "path": "apps/rayon_sports/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png", "pixel_width": 192, "pixel_height": 192, "alpha_allowed": true, "sha256": "100199a2aa82c645e12cf0959c862baa5118e18ee3072ac519a33b7ea5d6bce4"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png", "pixel_width": 20, "pixel_height": 20, "alpha_allowed": false, "sha256": "c74e0d8cbc183657fb2dffee7adf96b181bbb09b82db0588829c94d4a49fcfbb"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png", "pixel_width": 40, "pixel_height": 40, "alpha_allowed": false, "sha256": "7137831102ce840a006a05e96b74e915f247508f15b29855e5ee7de6a304f8e1"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png", "pixel_width": 60, "pixel_height": 60, "alpha_allowed": false, "sha256": "bbb13e053353af2e9eff2cace467d8cb4f60a8cfa6cd7f525c3390fe179769f5"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png", "pixel_width": 29, "pixel_height": 29, "alpha_allowed": false, "sha256": "aa21240dd08aaabc94860a4d8aa75a1b252cb9184e4a9bc341eaac843982e5f5"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png", "pixel_width": 58, "pixel_height": 58, "alpha_allowed": false, "sha256": "8c114b735d1ffbd3e4ee11ca962860284eb49748d4e68e7c1a2c8371192db352"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png", "pixel_width": 87, "pixel_height": 87, "alpha_allowed": false, "sha256": "a20060053b9c27f66473223f374a247a640899fd389a7a279d5d3204af0fc77a"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png", "pixel_width": 40, "pixel_height": 40, "alpha_allowed": false, "sha256": "7137831102ce840a006a05e96b74e915f247508f15b29855e5ee7de6a304f8e1"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png", "pixel_width": 80, "pixel_height": 80, "alpha_allowed": false, "sha256": "21231c2b7bd10cc06e7e8e8b6c00762577b25063405fa12c689fa1ad026db205"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png", "pixel_width": 120, "pixel_height": 120, "alpha_allowed": false, "sha256": "c95ca0b923c73d90837e112562fd95dd525272b64a1b02e7a5a3e9f83eb87237"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png", "pixel_width": 120, "pixel_height": 120, "alpha_allowed": false, "sha256": "c95ca0b923c73d90837e112562fd95dd525272b64a1b02e7a5a3e9f83eb87237"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png", "pixel_width": 180, "pixel_height": 180, "alpha_allowed": false, "sha256": "e2240fde325b015105d7a0aba019eb4dd805d762e9b12b11af5cebd25057a438"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png", "pixel_width": 76, "pixel_height": 76, "alpha_allowed": false, "sha256": "1316d48332e06a2645843ca00d17627eeacc64f7c696384d354fe500657f2265"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png", "pixel_width": 152, "pixel_height": 152, "alpha_allowed": false, "sha256": "831d29bce6a3769a9ddc90097fde26a26ed38da692a51d6673aaf7a702884cf1"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png", "pixel_width": 167, "pixel_height": 167, "alpha_allowed": false, "sha256": "75cd3f2581bb880decd3af5daaa28850378a185df8e7db98cdae422ba1dd57d2"},
+    {"platform": "ios", "path": "apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png", "pixel_width": 1024, "pixel_height": 1024, "alpha_allowed": false, "sha256": "c88c0e4dac623f8b85a939ee2359115b95bf491bddd0897a68b2f2bf2cfd927f"}
+  ]
+}

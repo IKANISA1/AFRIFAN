@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeAdminAuditLogs } from "./audit";
+import { normalizeAdminAuditLogs, projectAdminAuditDetail } from "./audit";
 
 const timestamp = "2026-07-30T09:00:00.000Z";
 
@@ -105,5 +105,18 @@ describe("admin audit normalization", () => {
 
     expect(normalized).toHaveLength(500);
     expect(normalized.at(-1)?.id).toBe("audit-499");
+  });
+
+  it("projects only normalized detail fields for the drawer", () => {
+    const [normalized] = normalizeAdminAuditLogs([row("audit-detail")]);
+    expect(normalized).toBeDefined();
+
+    const detail = projectAdminAuditDetail(normalized!);
+
+    expect(detail.previousValues).toContain('"access_token": "[redacted]"');
+    expect(detail.newValues).toContain('"password": "[redacted]"');
+    expect(detail.metadata).toContain('"authorization": "[redacted]"');
+    expect(JSON.stringify(detail)).not.toContain("private-token");
+    expect(JSON.stringify(detail)).not.toContain("private-password");
   });
 });

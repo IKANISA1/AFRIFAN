@@ -2883,6 +2883,56 @@ class AfriLocalizationsFr extends AfriLocalizations {
       'L’export vers un portefeuille n’est pas encore disponible dans cette version.';
 
   @override
+  String get ticketGoogleWalletChecking =>
+      'Vérification de la disponibilité de Google Wallet…';
+
+  @override
+  String get ticketGoogleWalletReady =>
+      'Votre billet confirmé peut être ajouté à Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletAdding => 'AJOUT À GOOGLE WALLET…';
+
+  @override
+  String get ticketGoogleWalletAdded => 'AJOUTÉ À GOOGLE WALLET';
+
+  @override
+  String get ticketGoogleWalletAddingMessage =>
+      'Préparation du billet sécurisé et ouverture de Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletAddedMessage =>
+      'Google Wallet a confirmé l’enregistrement du billet.';
+
+  @override
+  String get ticketGoogleWalletCancelled =>
+      'L’enregistrement dans Google Wallet a été annulé. Votre billet reste disponible ici.';
+
+  @override
+  String get ticketGoogleWalletUnavailable =>
+      'Google Wallet n’est pas disponible sur cet appareil ou ce compte.';
+
+  @override
+  String get ticketGoogleWalletOnlineRequired =>
+      'Reconnectez-vous avant d’ajouter ce billet à Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletPaymentPending =>
+      'Le paiement doit être confirmé avant l’ajout de ce billet à Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletPermissionDenied =>
+      'Ce compte ne peut pas ajouter le billet sélectionné à Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletTimeout =>
+      'La demande sécurisée a expiré. Aucun enregistrement n’est confirmé ; réessayez.';
+
+  @override
+  String get ticketGoogleWalletFailed =>
+      'Le billet n’a pas pu être ajouté à Google Wallet. Réessayez plus tard.';
+
+  @override
   String ticketSelectedSemantic(String match) {
     return 'Billet électronique sélectionné : $match';
   }

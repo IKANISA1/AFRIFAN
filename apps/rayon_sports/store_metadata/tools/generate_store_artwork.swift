@@ -66,7 +66,7 @@ private func drawOrbit(in rect: NSRect, lineWidth: CGFloat, opacity: CGFloat = 1
     sky.withAlphaComponent(opacity).setStroke()
     orbit.stroke()
 
-    let markerSize = max(10, lineWidth * 2.2)
+    let markerSize = max(1, lineWidth * 2.2)
     let marker = NSBezierPath(
         ovalIn: NSRect(
             x: rect.maxX - markerSize * 1.3,
@@ -168,6 +168,30 @@ private func drawBackground(width: CGFloat, height: CGFloat) {
     )
 }
 
+private func drawMobileMark(size: CGFloat) {
+    drawBackground(width: size, height: size)
+    drawOrbit(
+        in: NSRect(
+            x: size * 0.140625,
+            y: size * 0.140625,
+            width: size * 0.71875,
+            height: size * 0.71875
+        ),
+        lineWidth: max(1, size * 0.017578125)
+    )
+    drawCentered(
+        "G",
+        in: NSRect(
+            x: size * 0.1875,
+            y: size * 0.177734375,
+            width: size * 0.625,
+            height: size * 0.625
+        ),
+        font: .systemFont(ofSize: size * 0.4921875, weight: .black),
+        color: white
+    )
+}
+
 private let mobileIcon = repositoryRoot
     .appendingPathComponent("apps/rayon_sports/android/fastlane/metadata/android/en-US/images/icon.png")
 private let mobileFeatureGraphic = repositoryRoot
@@ -177,15 +201,61 @@ private let tvIcon = repositoryRoot
 private let tvBanner = repositoryRoot
     .appendingPathComponent("apps/rayon_sports_tv/android/fastlane/metadata/android/en-US/images/tvBanner.png")
 
+private let androidLauncherIcons: [(size: Int, path: String)] = [
+    (48, "apps/rayon_sports/android/app/src/main/res/mipmap-mdpi/ic_launcher.png"),
+    (72, "apps/rayon_sports/android/app/src/main/res/mipmap-hdpi/ic_launcher.png"),
+    (96, "apps/rayon_sports/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png"),
+    (144, "apps/rayon_sports/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"),
+    (192, "apps/rayon_sports/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"),
+]
+
+private let iosAppIcons: [(size: Int, filename: String)] = [
+    (20, "Icon-App-20x20@1x.png"),
+    (40, "Icon-App-20x20@2x.png"),
+    (60, "Icon-App-20x20@3x.png"),
+    (29, "Icon-App-29x29@1x.png"),
+    (58, "Icon-App-29x29@2x.png"),
+    (87, "Icon-App-29x29@3x.png"),
+    (40, "Icon-App-40x40@1x.png"),
+    (80, "Icon-App-40x40@2x.png"),
+    (120, "Icon-App-40x40@3x.png"),
+    (120, "Icon-App-60x60@2x.png"),
+    (180, "Icon-App-60x60@3x.png"),
+    (76, "Icon-App-76x76@1x.png"),
+    (152, "Icon-App-76x76@2x.png"),
+    (167, "Icon-App-83.5x83.5@2x.png"),
+    (1024, "Icon-App-1024x1024@1x.png"),
+]
+
+private let iosAppIconDirectory = repositoryRoot
+    .appendingPathComponent("apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset")
+
 try writePNG(width: 512, height: 512, hasAlpha: true, destination: mobileIcon) {
-    drawBackground(width: 512, height: 512)
-    drawOrbit(in: NSRect(x: 72, y: 72, width: 368, height: 368), lineWidth: 9)
-    drawCentered(
-        "G",
-        in: NSRect(x: 96, y: 91, width: 320, height: 320),
-        font: .systemFont(ofSize: 252, weight: .black),
-        color: white
-    )
+    drawMobileMark(size: 512)
+}
+
+for launcherIcon in androidLauncherIcons {
+    let destination = repositoryRoot.appendingPathComponent(launcherIcon.path)
+    try writePNG(
+        width: launcherIcon.size,
+        height: launcherIcon.size,
+        hasAlpha: true,
+        destination: destination
+    ) {
+        drawMobileMark(size: CGFloat(launcherIcon.size))
+    }
+}
+
+for appIcon in iosAppIcons {
+    let destination = iosAppIconDirectory.appendingPathComponent(appIcon.filename)
+    try writePNG(
+        width: appIcon.size,
+        height: appIcon.size,
+        hasAlpha: false,
+        destination: destination
+    ) {
+        drawMobileMark(size: CGFloat(appIcon.size))
+    }
 }
 
 try writePNG(width: 1024, height: 500, hasAlpha: false, destination: mobileFeatureGraphic) {
@@ -269,6 +339,12 @@ try writePNG(width: 1280, height: 720, hasAlpha: false, destination: tvBanner) {
     )
 }
 
-for output in [mobileIcon, mobileFeatureGraphic, tvIcon, tvBanner] {
+let nativeIconOutputs = androidLauncherIcons.map {
+    repositoryRoot.appendingPathComponent($0.path)
+} + iosAppIcons.map {
+    iosAppIconDirectory.appendingPathComponent($0.filename)
+}
+
+for output in [mobileIcon, mobileFeatureGraphic, tvIcon, tvBanner] + nativeIconOutputs {
     print(output.path)
 }

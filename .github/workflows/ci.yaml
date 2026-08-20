@@ -27,7 +27,24 @@ jobs:
           node-version: '22'
 
       - name: Validate checkpoint reconciliation controls
-        run: node --test tools/scripts/reconcile_implementation_goal_checkpoint.test.mjs
+        run: >-
+          node --test
+          tools/scripts/reconcile_implementation_goal_checkpoint.test.mjs
+          tools/scripts/generate_dynamic_copy_inventory.test.mjs
+
+      - name: Validate static and dynamic localization source inventories
+        run: |
+          mkdir -p "${{ runner.temp }}/africlub-localization-inventory"
+          node tools/scripts/generate_flutter_copy_inventory.mjs \
+            --json "${{ runner.temp }}/africlub-localization-inventory/flutter-copy-inventory.json" \
+            --markdown "${{ runner.temp }}/africlub-localization-inventory/flutter-copy-inventory.md"
+          node tools/scripts/generate_dynamic_copy_inventory.mjs \
+            --json "${{ runner.temp }}/africlub-localization-inventory/dynamic-copy-inventory.json" \
+            --markdown "${{ runner.temp }}/africlub-localization-inventory/dynamic-copy-inventory.md"
+          jq -e '.summary.pending_candidate_literals == 0' \
+            "${{ runner.temp }}/africlub-localization-inventory/flutter-copy-inventory.json"
+          jq -e '.summary.pending_dynamic_copy_candidates == 0' \
+            "${{ runner.temp }}/africlub-localization-inventory/dynamic-copy-inventory.json"
 
       - name: Validate local-only Supabase migration security controls
         run: node tools/scripts/validate_supabase_local_only_migrations.mjs
@@ -144,6 +161,11 @@ jobs:
       - name: Run release-readiness host smoke journeys
         run: flutter test apps/rayon_sports/integration_test/release_readiness_smoke_test.dart
 
+      - name: Validate isolated iOS QA identity
+        run: |
+          node tools/scripts/validate_ios_qa_isolation.mjs
+          node tools/scripts/validate_mobile_qa_isolation.mjs
+
       - name: Validate governed golden baselines
         run: bash tools/scripts/validate_golden_contract.sh
 
@@ -213,6 +235,11 @@ jobs:
 
       - name: Unit tests
         run: npm test
+
+      - name: Validate deterministic Admin collection and audit guardrails
+        env:
+          ADMIN_PERFORMANCE_OUTPUT_PATH: ${{ runner.temp }}/admin-high-volume-performance.json
+        run: npm run qa:admin-performance
 
       - name: Venue authorization and operations coverage
         run: npm run test:venue-coverage

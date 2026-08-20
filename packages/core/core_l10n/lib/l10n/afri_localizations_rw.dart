@@ -2862,6 +2862,55 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Kohereza tike muri wallet ntibiraboneka muri iyi verisiyo.';
 
   @override
+  String get ticketGoogleWalletChecking => 'Kureba niba Google Wallet iboneka…';
+
+  @override
+  String get ticketGoogleWalletReady =>
+      'Tike yawe yemejwe ishobora kongerwa muri Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletAdding => 'IRI KONGERWA MURI GOOGLE WALLET…';
+
+  @override
+  String get ticketGoogleWalletAdded => 'YONGEWE MURI GOOGLE WALLET';
+
+  @override
+  String get ticketGoogleWalletAddingMessage =>
+      'Tike itekanye iri gutegurwa kandi Google Wallet iri gufungurwa.';
+
+  @override
+  String get ticketGoogleWalletAddedMessage =>
+      'Google Wallet yemeje ko tike yabitswe.';
+
+  @override
+  String get ticketGoogleWalletCancelled =>
+      'Kubika muri Google Wallet byahagaritswe. Tike yawe iracyaboneka hano.';
+
+  @override
+  String get ticketGoogleWalletUnavailable =>
+      'Google Wallet ntiboneka kuri iki gikoresho cyangwa kuri iyi konti.';
+
+  @override
+  String get ticketGoogleWalletOnlineRequired =>
+      'Ongera uhuze mbere yo kongera iyi tike muri Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletPaymentPending =>
+      'Ubwishyu bugomba kwemezwa mbere yo kongera iyi tike muri Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletPermissionDenied =>
+      'Iyi konti ntishobora kongera tike yatoranyijwe muri Google Wallet.';
+
+  @override
+  String get ticketGoogleWalletTimeout =>
+      'Ubusabe butekanye bwarengeje igihe. Nta kubika kwemejwe; ongera ugerageze.';
+
+  @override
+  String get ticketGoogleWalletFailed =>
+      'Tike ntiyashoboye kongerwa muri Google Wallet. Ongera ugerageze nyuma.';
+
+  @override
   String ticketSelectedSemantic(String match) {
     return 'E-tike yatoranyijwe $match';
   }

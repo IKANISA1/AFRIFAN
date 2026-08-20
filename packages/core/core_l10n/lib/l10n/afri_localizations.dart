@@ -4840,6 +4840,84 @@ abstract class AfriLocalizations {
   /// **'Wallet export is not available in this release yet.'**
   String get ticketWalletExportUnavailable;
 
+  /// No description provided for @ticketGoogleWalletChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking Google Wallet availability…'**
+  String get ticketGoogleWalletChecking;
+
+  /// No description provided for @ticketGoogleWalletReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Your confirmed ticket can be added to Google Wallet.'**
+  String get ticketGoogleWalletReady;
+
+  /// No description provided for @ticketGoogleWalletAdding.
+  ///
+  /// In en, this message translates to:
+  /// **'ADDING TO GOOGLE WALLET…'**
+  String get ticketGoogleWalletAdding;
+
+  /// No description provided for @ticketGoogleWalletAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'ADDED TO GOOGLE WALLET'**
+  String get ticketGoogleWalletAdded;
+
+  /// No description provided for @ticketGoogleWalletAddingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing the secure Wallet pass and opening Google Wallet.'**
+  String get ticketGoogleWalletAddingMessage;
+
+  /// No description provided for @ticketGoogleWalletAddedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Wallet confirmed that the pass was saved.'**
+  String get ticketGoogleWalletAddedMessage;
+
+  /// No description provided for @ticketGoogleWalletCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'The Google Wallet save was cancelled. Your ticket remains available here.'**
+  String get ticketGoogleWalletCancelled;
+
+  /// No description provided for @ticketGoogleWalletUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Wallet is not available on this device or account.'**
+  String get ticketGoogleWalletUnavailable;
+
+  /// No description provided for @ticketGoogleWalletOnlineRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect before adding this ticket to Google Wallet.'**
+  String get ticketGoogleWalletOnlineRequired;
+
+  /// No description provided for @ticketGoogleWalletPaymentPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment must be confirmed before this ticket can be added to Google Wallet.'**
+  String get ticketGoogleWalletPaymentPending;
+
+  /// No description provided for @ticketGoogleWalletPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'This account cannot add the selected ticket to Google Wallet.'**
+  String get ticketGoogleWalletPermissionDenied;
+
+  /// No description provided for @ticketGoogleWalletTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The secure Wallet request timed out. No save is confirmed; try again.'**
+  String get ticketGoogleWalletTimeout;
+
+  /// No description provided for @ticketGoogleWalletFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The ticket could not be added to Google Wallet. Try again later.'**
+  String get ticketGoogleWalletFailed;
+
   /// No description provided for @ticketSelectedSemantic.
   ///
   /// In en, this message translates to:

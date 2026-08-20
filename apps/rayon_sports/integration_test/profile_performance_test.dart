@@ -23,6 +23,9 @@ import 'package:test_support/app_font_loader.dart';
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  const physicalDeviceProfile = bool.fromEnvironment(
+    'AFRICLUB_PHYSICAL_DEVICE_PROFILE',
+  );
 
   setUpAll(loadAppFonts);
 
@@ -52,7 +55,7 @@ void main() {
       ),
     );
 
-    await _pumpUntilVisible(tester, find.byType(QuickActionsGrid));
+    await _scrollHomeUntilVisible(tester, find.byType(QuickActionsGrid));
     startupStopwatch.stop();
 
     binding.reportData ??= <String, dynamic>{};
@@ -62,7 +65,7 @@ void main() {
       'data_source': 'controlled_non_production_providers',
       'frame_budget_ms': 16,
       'live_backend_used': false,
-      'physical_device_claimed': false,
+      'physical_device_claimed': physicalDeviceProfile,
     };
 
     await binding.watchPerformance(() async {
@@ -138,6 +141,9 @@ Widget _profileShopApp(GoRouter router) {
   return ProviderScope(
     overrides: [
       currentUserProvider.overrideWithValue(_profileUser),
+      storeReleasePolicyProvider.overrideWithValue(
+        const StoreReleasePolicy.unenforced(),
+      ),
       shopCartProvider.overrideWith((ref) => _ProfileCartNotifier()),
     ],
     child: MaterialApp.router(
@@ -347,4 +353,18 @@ Future<void> _pumpUntilVisible(
     await tester.pump(const Duration(milliseconds: 100));
   }
   expect(finder, findsOneWidget);
+}
+
+Future<void> _scrollHomeUntilVisible(WidgetTester tester, Finder finder) async {
+  final topChrome = find.byKey(const ValueKey<String>('home-top-chrome'));
+  await _pumpUntilVisible(tester, topChrome);
+
+  final homeScrollable = find.ancestor(
+    of: topChrome,
+    matching: find.byType(Scrollable),
+  );
+  expect(homeScrollable, findsOneWidget);
+
+  await tester.scrollUntilVisible(finder, 240, scrollable: homeScrollable);
+  await tester.pumpAndSettle();
 }

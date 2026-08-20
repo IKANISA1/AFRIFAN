@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../providers/e_ticket_provider.dart';
+import '../providers/google_wallet_provider.dart';
 
 class ETicketQrScreen extends ConsumerStatefulWidget {
   const ETicketQrScreen({
@@ -76,6 +79,28 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
   Widget build(BuildContext context) {
     final ticketAsync = ref.watch(eTicketProvider(widget.ticketId));
     final accessEnabled = ref.watch(eTicketAccessEnabledProvider);
+    final clubConfig = ClubConfigScope.maybeOf(context);
+    final googleWalletCompiled =
+        clubConfig?.features['google_wallet_tickets'] == true &&
+        !kIsWeb &&
+        defaultTargetPlatform == TargetPlatform.android;
+    final walletFeatureAccess = googleWalletCompiled
+        ? ref
+              .watch(featureConfigServiceProvider)
+              .getFeatureAccess('google_wallet_tickets')
+        : null;
+    final googleWalletEnabled =
+        googleWalletCompiled &&
+        walletFeatureAccess != null &&
+        walletFeatureAccess.isRegistered &&
+        walletFeatureAccess.isVisible &&
+        walletFeatureAccess.isAvailable;
+    final googleWalletAvailability = googleWalletEnabled
+        ? ref.watch(googleWalletAvailabilityProvider)
+        : const AsyncValue<bool>.data(false);
+    final googleWalletState = googleWalletEnabled
+        ? ref.watch(googleWalletControllerProvider(widget.ticketId))
+        : const GoogleWalletAddState();
     return ConnectivityBuilder(
       builder: (context, isOnline) {
         final previousOnline = _lastOnline;
@@ -92,6 +117,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
           ticketAsync,
           isOnline: isOnline,
           accessEnabled: accessEnabled,
+          googleWalletEnabled: googleWalletEnabled,
+          googleWalletAvailability: googleWalletAvailability,
+          googleWalletState: googleWalletState,
         );
       },
     );
@@ -101,6 +129,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
     AsyncValue<ETicketState> ticketAsync, {
     required bool isOnline,
     required bool accessEnabled,
+    required bool googleWalletEnabled,
+    required AsyncValue<bool> googleWalletAvailability,
+    required GoogleWalletAddState googleWalletState,
   }) {
     final l10n = context.afriL10n;
     return AfriScreenScaffold(
@@ -145,14 +176,45 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                   );
                 }
 
-                final code =
-                    ticket.qrCode.isNotEmpty ? ticket.qrCode : ticket.id;
-                final reduceMotion = !widget.scannerAnimationEnabled ||
+                final code = ticket.qrCode.isNotEmpty
+                    ? ticket.qrCode
+                    : ticket.id;
+                final reduceMotion =
+                    !widget.scannerAnimationEnabled ||
                     _shouldReduceMotion(context);
                 final stackWalletActions =
                     MediaQuery.textScalerOf(context).scale(1) >= 1.5 ||
-                        MediaQuery.sizeOf(context).width < 360;
+                    MediaQuery.sizeOf(context).width < 360;
                 final qrSize = stackWalletActions ? 160.0 : 220.0;
+                final googleWalletAvailable =
+                    googleWalletAvailability.valueOrNull == true;
+                final googleWalletBusy =
+                    googleWalletState.phase == GoogleWalletAddPhase.adding;
+                final googleWalletAdded =
+                    googleWalletState.phase == GoogleWalletAddPhase.added;
+                final googleWalletButton = AfriButton(
+                  label: googleWalletBusy
+                      ? l10n.ticketGoogleWalletAdding
+                      : googleWalletAdded
+                      ? l10n.ticketGoogleWalletAdded
+                      : l10n.ticketGoogleWallet,
+                  onTap: () => unawaited(
+                    ref
+                        .read(
+                          googleWalletControllerProvider(
+                            widget.ticketId,
+                          ).notifier,
+                        )
+                        .add(),
+                  ),
+                  variant: AfriButtonVariant.outline,
+                  icon: AfriIcons.wallet,
+                  enabled:
+                      isOnline &&
+                      googleWalletAvailable &&
+                      !googleWalletBusy &&
+                      !googleWalletAdded,
+                );
                 final passCard = AfriPanelCard(
                   backgroundColor: ColorTokens.paperSurface,
                   borderColor: ColorTokens.transparent,
@@ -236,13 +298,14 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                           children: [
                             Text(
                               ticket.matchTitle.toUpperCase(),
-                              style: TypographyTokens.headlineMedium(
-                                ColorTokens.inkBase,
-                              ).copyWith(
-                                fontWeight: FontWeight.w900,
-                                fontStyle: FontStyle.italic,
-                                height: 1,
-                              ),
+                              style:
+                                  TypographyTokens.headlineMedium(
+                                    ColorTokens.inkBase,
+                                  ).copyWith(
+                                    fontWeight: FontWeight.w900,
+                                    fontStyle: FontStyle.italic,
+                                    height: 1,
+                                  ),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: SpacingTokens.spacing3),
@@ -252,8 +315,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                 vertical: SpacingTokens.spacing1,
                               ),
                               decoration: BoxDecoration(
-                                color: ColorTokens.clubAccent
-                                    .withValues(alpha: 0.1),
+                                color: ColorTokens.clubAccent.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: BorderRadius.circular(
                                   ShapeTokens.radiusSm,
                                 ),
@@ -262,9 +326,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                 ticket.seatType.label.toUpperCase(),
                                 style: TypographyTokens.titleMedium(
                                   ColorTokens.clubAccent,
-                                ).copyWith(
-                                  fontWeight: FontWeight.w900,
-                                ),
+                                ).copyWith(fontWeight: FontWeight.w900),
                               ),
                             ),
                             const SizedBox(height: SpacingTokens.spacing6),
@@ -319,9 +381,10 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         ),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            minHeight: (constraints.maxHeight -
-                                    SpacingTokens.spacing12)
-                                .clamp(0, double.infinity),
+                            minHeight:
+                                (constraints.maxHeight -
+                                        SpacingTokens.spacing12)
+                                    .clamp(0, double.infinity),
                           ),
                           child: Center(
                             child: Column(
@@ -329,10 +392,12 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                               children: [
                                 reduceMotion
                                     ? passCard
-                                    : passCard.afriAnimate(context).scale(
-                                          duration: 400.ms,
-                                          curve: Curves.easeOutBack,
-                                        ),
+                                    : passCard
+                                          .afriAnimate(context)
+                                          .scale(
+                                            duration: 400.ms,
+                                            curve: Curves.easeOutBack,
+                                          ),
                                 const SizedBox(height: SpacingTokens.spacing8),
                                 if (stackWalletActions) ...[
                                   SizedBox(
@@ -345,19 +410,16 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                       enabled: false,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: SpacingTokens.spacing3,
-                                  ),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: AfriButton(
-                                      label: l10n.ticketGoogleWallet,
-                                      onTap: () {},
-                                      variant: AfriButtonVariant.outline,
-                                      icon: AfriIcons.wallet,
-                                      enabled: false,
+                                  if (!googleWalletEnabled ||
+                                      googleWalletAvailable) ...[
+                                    const SizedBox(
+                                      height: SpacingTokens.spacing3,
                                     ),
-                                  ),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: googleWalletButton,
+                                    ),
+                                  ],
                                 ] else
                                   Row(
                                     children: [
@@ -370,23 +432,23 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                           enabled: false,
                                         ),
                                       ),
-                                      const SizedBox(
-                                        width: SpacingTokens.spacing3,
-                                      ),
-                                      Expanded(
-                                        child: AfriButton(
-                                          label: l10n.ticketGoogleWallet,
-                                          onTap: () {},
-                                          variant: AfriButtonVariant.outline,
-                                          icon: AfriIcons.wallet,
-                                          enabled: false,
+                                      if (!googleWalletEnabled ||
+                                          googleWalletAvailable) ...[
+                                        const SizedBox(
+                                          width: SpacingTokens.spacing3,
                                         ),
-                                      ),
+                                        Expanded(child: googleWalletButton),
+                                      ],
                                     ],
                                   ),
                                 const SizedBox(height: SpacingTokens.spacing3),
                                 Text(
-                                  l10n.ticketWalletExportUnavailable,
+                                  _googleWalletStatusMessage(
+                                    l10n,
+                                    featureEnabled: googleWalletEnabled,
+                                    availability: googleWalletAvailability,
+                                    state: googleWalletState,
+                                  ),
                                   style: TypographyTokens.bodySmall(
                                     ColorTokens.onSurfaceVariant,
                                   ),
@@ -416,20 +478,23 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         ),
                         child: _RetainedTicketBanner(
                           online: isOnline,
-                          refreshing: isRefreshing ||
+                          refreshing:
+                              isRefreshing ||
                               routeState.phase == ETicketPhase.syncing,
                           failure: routeState.failure,
-                          onRefresh: routeState.failure?.kind ==
+                          onRefresh:
+                              routeState.failure?.kind ==
                                   ETicketFailureKind.permissionDenied
                               ? null
                               : () => unawaited(
-                                    ref
-                                        .read(
-                                          eTicketProvider(widget.ticketId)
-                                              .notifier,
-                                        )
-                                        .refresh(),
-                                  ),
+                                  ref
+                                      .read(
+                                        eTicketProvider(
+                                          widget.ticketId,
+                                        ).notifier,
+                                      )
+                                      .refresh(),
+                                ),
                         ),
                       ),
                       Expanded(child: pass),
@@ -446,53 +511,77 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
     );
   }
 
+  String _googleWalletStatusMessage(
+    AfriLocalizations l10n, {
+    required bool featureEnabled,
+    required AsyncValue<bool> availability,
+    required GoogleWalletAddState state,
+  }) {
+    if (!featureEnabled) return l10n.ticketWalletExportUnavailable;
+    if (availability.isLoading) return l10n.ticketGoogleWalletChecking;
+    if (availability.valueOrNull != true) {
+      return l10n.ticketGoogleWalletUnavailable;
+    }
+    return switch (state.phase) {
+      GoogleWalletAddPhase.idle => l10n.ticketGoogleWalletReady,
+      GoogleWalletAddPhase.adding => l10n.ticketGoogleWalletAddingMessage,
+      GoogleWalletAddPhase.added => l10n.ticketGoogleWalletAddedMessage,
+      GoogleWalletAddPhase.cancelled => l10n.ticketGoogleWalletCancelled,
+      GoogleWalletAddPhase.failed => switch (state.failure?.kind) {
+        GoogleWalletFailureKind.offline =>
+          l10n.ticketGoogleWalletOnlineRequired,
+        GoogleWalletFailureKind.paymentPending =>
+          l10n.ticketGoogleWalletPaymentPending,
+        GoogleWalletFailureKind.permissionDenied =>
+          l10n.ticketGoogleWalletPermissionDenied,
+        GoogleWalletFailureKind.securityTimeout =>
+          l10n.ticketGoogleWalletTimeout,
+        _ => l10n.ticketGoogleWalletFailed,
+      },
+    };
+  }
+
   Widget _failureState(Object error, bool isOnline) {
     final failure = ETicketFailure.fromError(error);
     return switch (failure.kind) {
       ETicketFailureKind.offline => _QrState(
-          title: context.afriL10n.ticketOfflineTitle,
-          body: context.afriL10n.ticketOfflineMessage,
-        ),
+        title: context.afriL10n.ticketOfflineTitle,
+        body: context.afriL10n.ticketOfflineMessage,
+      ),
       ETicketFailureKind.permissionDenied => _QrState(
-          title: context.afriL10n.ticketAccessDeniedTitle,
-          body: context.afriL10n.ticketAccessDeniedMessage,
-        ),
+        title: context.afriL10n.ticketAccessDeniedTitle,
+        body: context.afriL10n.ticketAccessDeniedMessage,
+      ),
       ETicketFailureKind.conflict => _QrState(
-          title: context.afriL10n.ticketChangedTitle,
-          body: context.afriL10n.ticketChangedMessage,
-          actionLabel: isOnline ? context.afriL10n.ticketRefreshAction : null,
-          onAction: isOnline
-              ? () => unawaited(
-                    ref
-                        .read(eTicketProvider(widget.ticketId).notifier)
-                        .refresh(),
-                  )
-              : null,
-        ),
+        title: context.afriL10n.ticketChangedTitle,
+        body: context.afriL10n.ticketChangedMessage,
+        actionLabel: isOnline ? context.afriL10n.ticketRefreshAction : null,
+        onAction: isOnline
+            ? () => unawaited(
+                ref.read(eTicketProvider(widget.ticketId).notifier).refresh(),
+              )
+            : null,
+      ),
       ETicketFailureKind.securityTimeout => _QrState(
-          title: context.afriL10n.ticketSecurityTimeoutTitle,
-          body: context.afriL10n.ticketSecurityTimeoutMessage,
-          actionLabel: isOnline ? context.afriL10n.ticketRefreshAction : null,
-          onAction: isOnline
-              ? () => unawaited(
-                    ref
-                        .read(eTicketProvider(widget.ticketId).notifier)
-                        .refresh(),
-                  )
-              : null,
-        ),
+        title: context.afriL10n.ticketSecurityTimeoutTitle,
+        body: context.afriL10n.ticketSecurityTimeoutMessage,
+        actionLabel: isOnline ? context.afriL10n.ticketRefreshAction : null,
+        onAction: isOnline
+            ? () => unawaited(
+                ref.read(eTicketProvider(widget.ticketId).notifier).refresh(),
+              )
+            : null,
+      ),
       ETicketFailureKind.unknown => _QrState(
-          title: context.afriL10n.ticketUnavailableTitle,
-          body: context.afriL10n.ticketUnavailableMessage,
-          actionLabel: isOnline ? context.afriL10n.ticketRefreshAction : null,
-          onAction: isOnline
-              ? () => unawaited(
-                    ref
-                        .read(eTicketProvider(widget.ticketId).notifier)
-                        .refresh(),
-                  )
-              : null,
-        ),
+        title: context.afriL10n.ticketUnavailableTitle,
+        body: context.afriL10n.ticketUnavailableMessage,
+        actionLabel: isOnline ? context.afriL10n.ticketRefreshAction : null,
+        onAction: isOnline
+            ? () => unawaited(
+                ref.read(eTicketProvider(widget.ticketId).notifier).refresh(),
+              )
+            : null,
+      ),
     };
   }
 
@@ -503,18 +592,14 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
           label,
           style: TypographyTokens.labelSmall(
             ColorTokens.inkFaint,
-          ).copyWith(
-            fontWeight: FontWeight.w900,
-          ),
+          ).copyWith(fontWeight: FontWeight.w900),
         ),
         const SizedBox(height: SpacingTokens.spacing1 / 2),
         Text(
           value,
           style: TypographyTokens.labelMedium(
             ColorTokens.inkBase,
-          ).copyWith(
-            fontWeight: FontWeight.w900,
-          ),
+          ).copyWith(fontWeight: FontWeight.w900),
         ),
       ],
     );
@@ -540,19 +625,19 @@ class _RetainedTicketBanner extends StatelessWidget {
     final title = !online
         ? l10n.ticketSavedCodeTitle
         : refreshing
-            ? l10n.ticketRefreshingTitle
-            : failure?.kind == ETicketFailureKind.permissionDenied
-                ? l10n.ticketEntryCodeAccessChangedTitle
-                : failure?.kind == ETicketFailureKind.conflict
-                    ? l10n.ticketChangedTitle
-                    : failure?.kind == ETicketFailureKind.securityTimeout
-                        ? l10n.ticketCheckTimedOutTitle
-                        : l10n.ticketRefreshUnavailableTitle;
+        ? l10n.ticketRefreshingTitle
+        : failure?.kind == ETicketFailureKind.permissionDenied
+        ? l10n.ticketEntryCodeAccessChangedTitle
+        : failure?.kind == ETicketFailureKind.conflict
+        ? l10n.ticketChangedTitle
+        : failure?.kind == ETicketFailureKind.securityTimeout
+        ? l10n.ticketCheckTimedOutTitle
+        : l10n.ticketRefreshUnavailableTitle;
     final subtitle = !online
         ? l10n.ticketSavedCodeMessage
         : refreshing
-            ? l10n.ticketRefreshingMessage
-            : l10n.ticketRefreshBeforeUse;
+        ? l10n.ticketRefreshingMessage
+        : l10n.ticketRefreshBeforeUse;
     return Column(
       children: [
         AfriStateBanner(

@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CheckCircle2, Clock, Eye, Search, Ticket } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle2, Clock, Eye, Search, ShieldCheck, Ticket } from "lucide-react";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
@@ -162,11 +163,6 @@ export default function AdminTicketsPage() {
       status === "conflict" ||
       status === "security_timeout");
 
-  useEffect(() => {
-    const availableIds = new Set(orders.map((order) => order.id));
-    setSelectedIds((current) => pruneAdminSelection(current, availableIds));
-  }, [orders]);
-
   async function confirmStatusUpdate() {
     if (!client || pendingAction == null || mutationLocked) return;
     setMutating(true);
@@ -239,12 +235,21 @@ export default function AdminTicketsPage() {
     () => paginateAdminRecords(sortedOrders, page, pageSize),
     [page, sortedOrders],
   );
-  const selectedOrders = useMemo(
-    () => orders.filter((order) => selectedIds.has(order.id)),
+  const activeSelectedIds = useMemo(
+    () =>
+      pruneAdminSelection(
+        selectedIds,
+        new Set(orders.map((order) => order.id)),
+      ),
     [orders, selectedIds],
   );
+  const selectedOrders = useMemo(
+    () => orders.filter((order) => activeSelectedIds.has(order.id)),
+    [activeSelectedIds, orders],
+  );
   const pageIds = orderPage.items.map((order) => order.id);
-  const selectedOnPage = pageIds.filter((id) => selectedIds.has(id)).length;
+  const selectedOnPage = pageIds.filter((id) => activeSelectedIds.has(id))
+    .length;
   const allPageSelected =
     pageIds.length > 0 && selectedOnPage === pageIds.length;
 
@@ -313,7 +318,19 @@ export default function AdminTicketsPage() {
       data-admin-tickets-status={status}
       data-admin-tickets-interaction={interaction}
     >
-      <AdminPageHeader eyebrow="Supporter programs" title="Ticket operations" />
+      <AdminPageHeader
+        eyebrow="Supporter programs"
+        title="Ticket operations"
+        actions={
+          <Link
+            href="/admin/tickets/verifiers"
+            className="admin-button admin-button-secondary min-h-12"
+          >
+            <ShieldCheck size={17} aria-hidden="true" />
+            Verifier authority
+          </Link>
+        }
+      />
 
       <AdminResourceStatusBanner
         status={status}
@@ -396,7 +413,7 @@ export default function AdminTicketsPage() {
 
           {!mutationLocked ? (
             <AdminSelectionBar
-              selectedCount={selectedIds.size}
+              selectedCount={activeSelectedIds.size}
               scopeLabel={`${selectedOnPage} selected on this page; scope is the active club only.`}
               onClear={() => setSelectedIds(new Set())}
               onReview={() => setReviewOpen(true)}
@@ -478,7 +495,7 @@ export default function AdminTicketsPage() {
                 </tr>
               ) : (
                 orderPage.items.map((order) => {
-                  const selected = selectedIds.has(order.id);
+                  const selected = activeSelectedIds.has(order.id);
                   const canValidate = canAdminTransitionTicketStatus(
                     access,
                     order.status,
@@ -509,7 +526,7 @@ export default function AdminTicketsPage() {
                           onChange={(event) =>
                             commitSelection(
                               toggleAdminSelection(
-                                selectedIds,
+                                activeSelectedIds,
                                 order.id,
                                 event.target.checked,
                               ),
@@ -636,7 +653,7 @@ export default function AdminTicketsPage() {
                   onChange={(event) =>
                     commitSelection(
                       setAdminPageSelection(
-                        selectedIds,
+                        activeSelectedIds,
                         pageIds,
                         event.target.checked,
                       ),

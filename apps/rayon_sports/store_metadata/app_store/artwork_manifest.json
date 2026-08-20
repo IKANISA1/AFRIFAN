@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "build_5_simulator_capture_ui_equivalent_to_verified_build_6_ipa_pending_approval",
+  "status": "native_icon_corrected_and_local_no_codesign_device_build_verified_new_exact_candidate_ipa_and_approval_pending",
   "binary_facts": {
     "supports_iphone": true,
     "supports_ipad": true,
@@ -54,11 +54,12 @@
     "capture_version_name": "1.0.3",
     "capture_build_number": 5,
     "build_configuration": "Flutter iOS simulator debug engine with assets/flavors/production.json",
-    "capture_fidelity_boundary": "Flutter release mode is unsupported on iOS Simulator. These genuine build-5 production-config screens are visually equivalent to build 6 because the only later mobile runtime-file changes were the build number and non-visual iOS Info.plist declarations. They are not claimed as exact build-6 or signed-IPA captures.",
+    "capture_fidelity_boundary": "Flutter release mode is unsupported on iOS Simulator. These genuine build-5 production-config screens remain visually equivalent for the captured in-app frames: later changes were build metadata, non-visual iOS Info.plist declarations, and a crest-free launcher replacement that is not visible inside those frames. They are not claimed as exact-current-candidate or signed-IPA captures.",
     "exact_build_6_screenshot_capture": false,
     "ui_equivalence_basis": [
       "apps/rayon_sports/pubspec.yaml changed 1.0.3+5 to 1.0.3+6",
-      "apps/rayon_sports/ios/Runner/Info.plist added ITSAppUsesNonExemptEncryption=false and iPad landscape orientations"
+      "apps/rayon_sports/ios/Runner/Info.plist added ITSAppUsesNonExemptEncryption=false and iPad landscape orientations",
+      "The iOS launcher set changed to the governed crest-free Gikundiro G, but the launcher icon is outside every retained in-app screenshot frame"
     ],
     "pre_final_artifact_executable_sha256": "01ccd6b07368d492de7352c2d03993e8d4f58d79d3d9a63b162486fbc1894fad",
     "recapture_drift": "The rebuilt frozen-source simulator executable and all screenshot hashes changed from the pre-final reference set; visual inspection found no real supporter, payment, or pairing data.",
@@ -95,7 +96,29 @@
     "version_name": "1.0.3",
     "build_number": 6,
     "artifact_kind": "signed IPA",
-    "screenshot_relation": "UI-equivalent build-5 simulator captures; exact build-6 capture is not claimed"
+    "screenshot_relation": "UI-equivalent build-5 simulator captures; exact build-6 capture is not claimed",
+    "current_source_relation": "Archived build-6 IPA predates the crest-free native launcher correction and is no longer exact-candidate parity evidence."
+  },
+  "native_launcher_source": {
+    "manifest": "../native_launcher_assets.json",
+    "generator": "../tools/generate_store_artwork.swift",
+    "asset_count": 15,
+    "contains_club_crest": false,
+    "contains_third_party_artwork": false,
+    "alpha_allowed": false,
+    "status": "source_corrected_checksum_locked_and_local_device_build_packaged_new_signed_archive_required"
+  },
+  "local_release_dry_run": {
+    "evidence": "../../../../output/implementation_goal_20260724/RELEASE_MODE_DRY_RUN_EVIDENCE_2026-08-13.json",
+    "artifact_sha256": "64635a9fa9b9ddb5f668132e078a6da5bd72797f610439fe0318f0e6e4c12758",
+    "bundle_id": "rw.ikanisa.rayonSports",
+    "version_name": "1.0.3",
+    "build_number": 6,
+    "iphone_and_ipad_icons_present_without_alpha": true,
+    "launcher_compiled_and_visually_verified_crest_free": true,
+    "codesigning_disabled": true,
+    "exact_candidate": false,
+    "testflight_or_app_store_processing_proven": false
   },
   "capture_plan": [
     {"order": 1, "journey": "Anonymous home state"},
@@ -104,16 +127,18 @@
     {"order": 4, "journey": "Fixtures empty state on iPhone and iPad"}
   ],
   "binary_icon_gate": {
-    "status": "archive_icon_presence_verified",
+    "status": "current_source_local_device_build_icon_presence_verified_exact_signed_archive_parity_pending",
     "evidence": [
       "../../ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
       "../../ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
       "IPA Payload/Runner.app/Assets.car sha256 6ffc4225ba167f93661c580f5369d4dd82a77fc8a937851aeb141593ec8170d6",
       "IPA Payload/Runner.app/AppIcon60x60@2x.png is 120x120 without alpha; sha256 29f0253eab3f87c004282deca90625d1f33fb23734d360098eef69c0de0a7aa0",
       "IPA Payload/Runner.app/AppIcon76x76@2x~ipad.png is 152x152 without alpha; sha256 adf37abf6c4d8a0d62d307b715f5195c6a7eb78d0a6fbf921e904184f45e037c",
-      "IPA Info.plist CFBundleIcons and CFBundleIcons~ipad declare AppIcon"
+      "IPA Info.plist CFBundleIcons and CFBundleIcons~ipad declare AppIcon",
+      "Current no-codesign device build Runner.app/AppIcon60x60@2x.png is 120x120 without alpha and visually verified crest-free; sha256 ab9ddcb366c28ec60e10da3deb2846668066e80114596b92d26fe816c205b9e0",
+      "Current no-codesign device build Runner.app/AppIcon76x76@2x~ipad.png is 152x152 without alpha; sha256 060064ce7f5d49f06d1f5cf13f73d5279b54c71144d1399603b6c2b5f5e0d28e"
     ],
-    "requirement": "Technical app-icon presence is verified in the exact build-6 IPA. Accountable Rayon brand/content-rights approval remains a separate approvals_required gate."
+    "requirement": "The corrected governed crest-free launcher set was verified in a local no-codesign release-mode device build. A new sealed exact-candidate Apple-distribution archive must still prove signed-binary parity. Accountable product/brand approval remains separate."
   },
   "approvals_required": [
     "rayon_brand_and_content_rights",

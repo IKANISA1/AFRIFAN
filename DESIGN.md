@@ -996,15 +996,15 @@ The parity gate cannot pass while any of these are true:
   licensed source and allowed-use record;
 - `design_complete=false` in the governed evidence output.
 
-Current 2026-08-02 controlled status:
+Current 2026-08-13 controlled status:
 
-- 176 governed routes.
-- 1,881 route-state cells have admitted current evidence.
-- 256 applicable state cells remain open across nine Admin PWA and seven Venue
-  portal routes pending corrected exact-current browser execution and review.
-- 679 cells explicitly not applicable.
-- `Closure complete: false` for the governed local route-state ledger; 117
-  evidence bundles are admitted and 16 are pending.
+- 182 governed routes.
+- All 2,171 applicable route-state cells have admitted current evidence.
+- Zero applicable state cells remain open.
+- 741 cells are explicitly not applicable.
+- `Closure complete: true` for the governed local route-state ledger; 140
+  evidence bundles are admitted and zero are pending, covering 1,408 governed
+  artifacts and 1,379 hash-governed golden baselines.
 - `design_complete=false` because live/authenticated, physical-device and
   assistive-technology, performance, reference, accountable approval, clean
   candidate, signing, store, deployment, and release gates remain open.
@@ -1059,11 +1059,13 @@ Current 2026-08-02 controlled status:
   15/15 applicable cells with persistent selected explicitly N/A, and the
   participant live route closes all 16 cells with distinct retained sync,
   permission, conflict, timeout, disabled-answer, focus, held-press,
-  selected-answer, theme, motion, and 200-percent-text evidence. The final nine
-  Admin PWA and seven Venue portal routes retain all 256 applicable cells as
-  open. Their prior browser artifacts were rejected for incomplete manifests,
-  theme-label drift, and compact navigation clipping; corrected source/specs
-  now require a successful exact-current rerun before atomic admission.
+  selected-answer, theme, motion, and 200-percent-text evidence. The governed
+  prior Admin PWA and Venue portal routes retain admitted exact-current local
+  evidence after source-freshness checks, visual review, compositor hardening,
+  and atomic registration. The Venue ticket-verification page/API now also
+  have exact-current state evidence and admission. Live role/RLS and mutation UAT, physical assistive
+  technology and representative performance, and accountable operator/design
+  approval remain separate gates.
 
 ## Quality Gates
 
