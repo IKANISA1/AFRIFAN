@@ -9,15 +9,40 @@ void main() {
   test('generates a complete multi-surface route inventory', () {
     const configuredOutput = String.fromEnvironment('ROUTE_INVENTORY_OUT_DIR');
     final workspace = resolveRouteInventoryWorkspace(Directory.current);
-    final outputDirectory = Directory(
-      configuredOutput.isEmpty
-          ? '${workspace.path}/output/route_inventory_test'
-          : configuredOutput,
+    final temporaryRoot = Directory.systemTemp.createTempSync(
+      'africlub-route-inventory-',
     );
+    addTearDown(() {
+      if (temporaryRoot.existsSync()) {
+        temporaryRoot.deleteSync(recursive: true);
+      }
+    });
+    final outputDirectory = configuredOutput.isEmpty
+        ? Directory('${temporaryRoot.path}/output')
+        : Directory(configuredOutput);
+    final routeStateEvidenceFile =
+        File(
+          '${temporaryRoot.path}/route-state-evidence.json',
+        )..writeAsStringSync(
+          '${jsonEncode(<String, Object?>{
+            'schema_version': '1.0',
+            'cells': <String, Object?>{
+              'mobile|/home|tab|dark': <String, Object?>{
+                'test_evidence': <String>['packages/features/feat_home/test/home_screen_states_test.dart'],
+                'screenshot_evidence': <String>['packages/features/feat_home/test/goldens/'
+                    'home_compact_dark_320x760.png'],
+                'disposition_note': 'Hermetic route-inventory test evidence for one governed cell.',
+                'owner': 'Route inventory test',
+                'reviewed_at': '2026-08-20',
+              },
+            },
+          })}\n',
+        );
 
     final payload = generateRouteInventory(
       workspace: workspace,
       outputDirectory: outputDirectory,
+      routeStateEvidenceFile: routeStateEvidenceFile,
     );
     final routes = payload['routes']! as List<Map<String, Object?>>;
     final routeKeys = routes
@@ -58,10 +83,9 @@ void main() {
       isTrue,
     );
     final generatedClosure = payload['state_closure']! as Map<String, Object?>;
-    expect(generatedClosure['evidenced_cell_count'], greaterThan(0));
-    expect(generatedClosure['open_cell_count'], lessThan(1980));
-    expect(generatedClosure['open_cell_count'], 0);
-    expect(generatedClosure['closure_complete'], isTrue);
+    expect(generatedClosure['evidenced_cell_count'], 1);
+    expect(generatedClosure['open_cell_count'], greaterThan(0));
+    expect(generatedClosure['closure_complete'], isFalse);
 
     // A missing evidence overlay must retain the original fail-closed ledger
     // rather than promoting source discovery to behavioral or visual proof.

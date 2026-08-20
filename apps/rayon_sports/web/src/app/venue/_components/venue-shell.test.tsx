@@ -49,7 +49,7 @@ describe("VenueAccessBoundary", () => {
     );
   });
 
-  it("shows assigned venue scope and all seven operator destinations", () => {
+  it("shows assigned venue scope and all six football operator destinations", () => {
     const result = {
       status: "ready",
       access: {
@@ -77,7 +77,7 @@ describe("VenueAccessBoundary", () => {
     });
     expect(navigation).toHaveClass("grid", "grid-cols-2", "sm:grid-cols-4");
     expect(navigation).not.toHaveClass("overflow-x-auto");
-    expect(screen.getAllByRole("link")).toHaveLength(7);
+    expect(screen.getAllByRole("link")).toHaveLength(6);
     expect(screen.getByRole("link", { name: "Today" })).toHaveAttribute(
       "aria-current",
       "page",
