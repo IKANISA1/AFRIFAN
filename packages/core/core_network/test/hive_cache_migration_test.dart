@@ -14,24 +14,23 @@ class FakeSecureStorage extends FlutterSecureStorage {
   @override
   Future<String?> read({
     required String key,
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async =>
-      store[key];
+  }) async => store[key];
 
   @override
   Future<void> write({
     required String key,
     required String? value,
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) async {
     if (value != null) {
@@ -79,43 +78,49 @@ void main() {
       expect(result?['value'], 42);
     });
 
-    test('migrates existing unencrypted box to encrypted (data cleared)', () async {
-      // Phase 1: Create an unencrypted box with data.
-      final unencryptedBox = await Hive.openBox<String>('africlub_cache');
-      await unencryptedBox.put('old_data', jsonEncode({'legacy': true}));
-      expect(unencryptedBox.length, greaterThan(0));
-      await unencryptedBox.close();
+    test(
+      'migrates existing unencrypted box to encrypted (data cleared)',
+      () async {
+        // Phase 1: Create an unencrypted box with data.
+        final unencryptedBox = await Hive.openBox<String>('africlub_cache');
+        await unencryptedBox.put('old_data', jsonEncode({'legacy': true}));
+        expect(unencryptedBox.length, greaterThan(0));
+        await unencryptedBox.close();
 
-      // Phase 2: Initialize encryption, then try to open the cache.
-      await HiveEncryptionService.initialize(
-        secureStorageOverride: FakeSecureStorage(),
-      );
-      await HiveCacheService.initialize();
+        // Phase 2: Initialize encryption, then try to open the cache.
+        await HiveEncryptionService.initialize(
+          secureStorageOverride: FakeSecureStorage(),
+        );
+        await HiveCacheService.initialize();
 
-      // Old data should be gone (migrated = cleared).
-      final cached = HiveCacheService.getJson<Map>('old_data');
-      expect(cached, isNull);
+        // Old data should be gone (migrated = cleared).
+        final cached = HiveCacheService.getJson<Map>('old_data');
+        expect(cached, isNull);
 
-      // But the box should still work for new data.
-      await HiveCacheService.putJson('new_data', <String, dynamic>{
-        'migrated': true,
-      });
-      final newResult = HiveCacheService.getJson<Map>('new_data');
-      expect(newResult, isNotNull);
-      expect(newResult?['migrated'], true);
-    });
+        // But the box should still work for new data.
+        await HiveCacheService.putJson('new_data', <String, dynamic>{
+          'migrated': true,
+        });
+        final newResult = HiveCacheService.getJson<Map>('new_data');
+        expect(newResult, isNotNull);
+        expect(newResult?['migrated'], true);
+      },
+    );
 
-    test('cache works correctly without encryption (graceful degradation)', () async {
-      // Don't initialize encryption — cipher will be null.
-      await HiveCacheService.initialize();
+    test(
+      'cache works correctly without encryption (graceful degradation)',
+      () async {
+        // Don't initialize encryption — cipher will be null.
+        await HiveCacheService.initialize();
 
-      await HiveCacheService.putJson('unencrypted', <String, dynamic>{
-        'safe': false,
-      });
+        await HiveCacheService.putJson('unencrypted', <String, dynamic>{
+          'safe': false,
+        });
 
-      final result = HiveCacheService.getJson<Map>('unencrypted');
-      expect(result, isNotNull);
-      expect(result?['safe'], false);
-    });
+        final result = HiveCacheService.getJson<Map>('unencrypted');
+        expect(result, isNotNull);
+        expect(result?['safe'], false);
+      },
+    );
   });
 }

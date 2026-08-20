@@ -12,6 +12,9 @@ node tools/scripts/validate_supabase_local_only_migrations.mjs
 echo "==> Validate iOS SwiftPM deployment-target synchronization"
 python3 -m unittest tools/scripts/sync_ios_swiftpm_deployment_target_test.py
 
+echo "==> Prepare generated iOS SwiftPM package"
+bash tools/scripts/prepare_rayon_ios_swiftpm.sh rayon_sports
+
 echo "==> Validate release contract"
 bash tools/scripts/validate_club_release.sh rayon_sports
 
@@ -30,10 +33,10 @@ flutter test apps/rayon_sports/integration_test/release_readiness_smoke_test.dar
 echo "==> Web typecheck, tests, build, audit"
 (
   cd apps/rayon_sports/web
-  npm run typecheck
-  npm test
-  npm run build
-  npm audit --audit-level=high
+  corepack npm run check:dependencies
+  corepack npm run typecheck
+  corepack npm test
+  corepack npm run build
 )
 
 echo "Rayon Sports release gate passed."

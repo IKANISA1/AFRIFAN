@@ -97,20 +97,23 @@ jobs:
           cache-dependency-path: apps/rayon_sports/web/package-lock.json
 
       - name: Install exact dependencies
-        run: npm ci
+        run: corepack npm ci
+
+      - name: Validate dependency graph and advisories
+        run: corepack npm run check:dependencies
 
       - name: Run unit, static, and production-build gates
         run: |
-          npm run lint
-          npm test
-          npm run test:venue-coverage
-          npm run typecheck
-          npm run build
-          npm run size
-          npm run test:cloudflare-release
+          corepack npm run lint
+          corepack npm test
+          corepack npm run test:venue-coverage
+          corepack npm run typecheck
+          corepack npm run build
+          corepack npm run size
+          corepack npm run test:cloudflare-release
 
       - name: Run the controlled browser matrix
-        run: npm run test:e2e
+        run: corepack npm run test:e2e
 
       - name: Package and dry-run the Worker candidate
         run: |

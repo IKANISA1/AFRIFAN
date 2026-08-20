@@ -206,28 +206,31 @@ jobs:
           cache-dependency-path: apps/rayon_sports/web/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: corepack npm ci
+
+      - name: Validate dependency graph and advisories
+        run: corepack npm run check:dependencies
 
       - name: Lint
-        run: npm run lint
+        run: corepack npm run lint
 
       - name: Unit tests
-        run: npm test
+        run: corepack npm test
 
       - name: Venue authorization and operations coverage
-        run: npm run test:venue-coverage
+        run: corepack npm run test:venue-coverage
 
       - name: TypeScript check
-        run: npm run typecheck
+        run: corepack npm run typecheck
 
       - name: Build
-        run: npm run build
+        run: corepack npm run build
 
       - name: Bundle budget
-        run: npm run size
+        run: corepack npm run size
 
       - name: Lighthouse CI
-        run: npm run test:lighthouse
+        run: corepack npm run test:lighthouse
 
   web-e2e:
     name: Web E2E
@@ -246,7 +249,7 @@ jobs:
           cache-dependency-path: apps/rayon_sports/web/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: corepack npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium firefox webkit
@@ -254,7 +257,7 @@ jobs:
       - name: Build
         env:
           AFRICLUB_ALLOW_HTTP_PREVIEW: "1"
-        run: npm run build
+        run: corepack npm run build
 
       - name: Run E2E
         env:
@@ -262,7 +265,7 @@ jobs:
           AFRICLUB_CONTROLLED_ADMIN_EVIDENCE: "1"
           AFRICLUB_CONTROLLED_ROUTE_EVIDENCE: "1"
           AFRICLUB_CONTROLLED_VENUE_EVIDENCE: "1"
-        run: npm run test:e2e:ci
+        run: corepack npm run test:e2e:ci
 
   # ──────────────────────────────────────────────
   # Android: Debug Build (PR gate — catch compile errors early)
@@ -415,9 +418,7 @@ jobs:
       - name: Generate and validate iOS build configuration
         run: |
           flutter build ios --config-only --release --no-codesign --dart-define-from-file=assets/flavors/production.local.json
-          python3 ../../tools/scripts/sync_ios_swiftpm_deployment_target.py \
-            --manifest ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift \
-            --minimum 15.5
+          bash ../../tools/scripts/prepare_rayon_ios_swiftpm.sh rayon_sports
           bash ../../tools/scripts/validate_ios_release_contract.sh rayon_sports
           dart run tool/validate_ios_dart_defines.dart ios/Flutter/Generated.xcconfig assets/flavors/production.local.json
 
