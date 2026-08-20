@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Enforce football-only repository boundary
+        run: node tools/scripts/validate_repository_boundary.mjs
+
       - name: Validate checkpoint reconciliation controls
         run: node --test tools/scripts/reconcile_implementation_goal_checkpoint.test.mjs
 
