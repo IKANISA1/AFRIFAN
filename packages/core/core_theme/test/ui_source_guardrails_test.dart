@@ -1208,6 +1208,21 @@ void main() {
         ),
       );
     });
+
+    test('Generated Lighthouse evidence stays outside source scans', () {
+      expect(
+        _isGeneratedPath(
+          '${repoRoot.path}/apps/rayon_sports/web/.lighthouseci/home-run-1.html',
+        ),
+        isTrue,
+      );
+      expect(
+        _isGeneratedPath(
+          '${repoRoot.path}/apps/rayon_sports/web/src/app/page.tsx',
+        ),
+        isFalse,
+      );
+    });
   });
 }
 
@@ -1541,6 +1556,8 @@ List<FileSystemEntity> _safeRecursiveList(Directory root) {
 bool _isGeneratedPath(String normalizedPath) {
   return normalizedPath.contains('/build/') ||
       normalizedPath.contains('/.dart_tool/') ||
+      normalizedPath.contains('/.lighthouseci/') ||
+      normalizedPath.endsWith('/.lighthouseci') ||
       normalizedPath.contains('/.next/') ||
       normalizedPath.endsWith('/.next') ||
       normalizedPath.contains('/coverage/') ||
