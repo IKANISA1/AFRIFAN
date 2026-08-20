@@ -19,15 +19,16 @@ Status: active source-boundary checklist; not a release authorization.
 - Flutter workspace analysis and tests pass.
 - Affected Fan Zone and Settings visual baselines are reviewed and pass.
 - `apps/rayon_sports` builds for Android using a non-production configuration.
-- Modified consumer/admin/venue web source lint, type checks, tests, and
-  production build pass; repository-wide pre-existing lint debt is tracked and
-  remains release-blocking until resolved or explicitly dispositioned.
+- Consumer/admin/venue web type checks, full tests, zero-warning source lint,
+  and production build pass.
 - route inventory, UI guardrails, Supabase Edge/local-migration contracts, and
   store-package consistency validators pass. Evidence/privacy findings require
   human review because the current scanner treats migration timestamps as
   possible Rwanda phone numbers.
 - an active-source scan finds no moved TV/trivia imports, routes, packages,
   localized copy, push routes, or build registrations.
+- database negative tests prove retired TV/trivia roles, wrappers, and
+  Realtime publication cannot reopen after the forward decommission migration.
 
 ## Required release evidence
 

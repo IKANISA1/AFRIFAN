@@ -52,14 +52,15 @@ privacy declarations, and visual baselines were updated to this boundary.
 
 Historical AFRICLUB Supabase migrations are an immutable deployment ledger and
 still describe schemas that may exist in deployed databases. They are not
-registered by the current app, web, Edge Function, or local runtime surfaces.
-No destructive production schema or data deletion is included in this source
-split.
+registered by the current app, web, or Edge Function surfaces. A forward-only
+decommission migration revokes access to the retired runtime and removes its
+Realtime publication while retaining historical data. No production schema or
+data deletion is included in this source split.
 
-Before a later database retirement migration is approved, the accountable
-owner must confirm production inventory, retention/export requirements,
-rollback, dependent clients, and the LET'S PLAY cutover. Only then may a
-separate migration archive or drop the retired objects.
+Before the decommission migration is applied, and before any later physical
+deletion is approved, the accountable owner must confirm production inventory,
+retention/export requirements, rollback, dependent clients, and the LET'S PLAY
+cutover. Only then may a separate migration archive or drop the retired objects.
 
 ## Local validation and release gates
 
@@ -69,12 +70,12 @@ active-source reference scans, and the applicable governance validators.
 LET'S PLAY passed database reset/pgTAP/lint, Deno validation, Dart/Flutter
 analysis and tests, Flutter Web/mobile builds, and native TV unit/build gates.
 
-Two existing AFRICLUB repository-wide checks are not promoted to green by this
-split: full web lint still reports 28 unrelated pre-existing React hook/ref
-findings (all modified web files lint clean), and the evidence privacy scanner
-misclassifies migration-version timestamps as Rwanda phone numbers. The store
-package is internally consistent but retains 26 explicit approval, portal, and
-policy gates.
+The 2026-08-20 closure rerun passes full web typecheck, 890 tests, zero-warning
+lint, and production build, plus the complete Flutter analysis/test matrix,
+fresh Supabase reset/tests/lint, store/privacy contracts, and active-source
+negative scan. See
+`docs/release/AFRICLUB_FOOTBALL_ONLY_SPLIT_CLOSURE_2026-08-20.md` for exact
+results and remaining gates.
 
 Local validation does not authorize deployment. Remaining gates include:
 
@@ -83,8 +84,6 @@ Local validation does not authorize deployment. Remaining gates include:
 - physical mobile and TV-device accessibility, focus, disconnect, and recovery
   testing;
 - replacement AFRICLUB football-only store screenshots and signed artifacts;
-- LET'S PLAY TV websocket invalidation (the current native client uses bounded
-  projection polling);
 - signing, store setup, deployment, UAT, monitoring, and accountable product,
   privacy, content, legal, and release approvals.
 
