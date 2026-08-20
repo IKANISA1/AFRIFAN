@@ -1,18 +1,17 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { readNormalizedFootballBaseline } from "./football-baseline-test-support";
 
-const migrationPath = resolve(
-  process.cwd(),
-  "../../../supabase/migrations/20260724203000_admin_ticket_status_audit.sql",
-);
-const migration = readFileSync(migrationPath, "utf8");
+const migration = readNormalizedFootballBaseline();
 
 describe("ticket status database boundary", () => {
   it("is service-role only and records each mutation in the same function", () => {
     expect(migration).toMatch(/security definer/i);
-    expect(migration).toMatch(/revoke all[\s\S]*from public, anon, authenticated/i);
-    expect(migration).toMatch(/grant execute[\s\S]*to service_role/i);
+    expect(migration).toMatch(
+      /revoke all on function public\.admin_bulk_update_ticket_status_if_unchanged[\s\S]*from public;/i,
+    );
+    expect(migration).toMatch(
+      /grant all on function public\.admin_bulk_update_ticket_status_if_unchanged[\s\S]*to service_role;/i,
+    );
     expect(migration).toMatch(/insert into public\.admin_audit_log/i);
     expect(migration).toMatch(/update public\.tickets/i);
   });

@@ -23,9 +23,8 @@ The target supporter navigation is `Home · Club · Fan Zone · Membership`.
 Settings belongs behind profile. Venue utilities must not displace club or
 football destinations in primary navigation.
 
-The governed implementation sequence and evidence gates are in
-[`docs/FOOTBALL_CLUB_FIRST_IMPLEMENTATION_PLAN_2026-07-30.md`](docs/FOOTBALL_CLUB_FIRST_IMPLEMENTATION_PLAN_2026-07-30.md).
-It is an active plan, not a completion or release claim.
+The authoritative architecture and evidence gates are in
+[`docs/blueprint.md`](docs/blueprint.md).
 
 ## Current Architecture
 
@@ -39,20 +38,14 @@ It is an active plan, not a completion or release claim.
   - `club_slug` for routing, host mapping, and branding resolution.
   - `partner_id` retained only for archived migration compatibility.
 
-### Controlled restructuring checkpoint — 15 August 2026
+### Current repository boundary
 
-- AFRICLUB is a football-only workspace: club identity, team, news, fixtures,
-  live match information, results, standings, membership, supporter groups,
-  contributions, tickets, shop, and free football predictions.
-- TV display, trivia participation, question-pack administration, and live
-  trivia session operations were transferred to the separate LET'S PLAY
-  repository and are no longer registered by this workspace.
-- Historical Supabase migrations remain in the immutable migration ledger so
-  deployed databases can still replay and reconcile safely. They are not active
-  product modules; destructive schema retirement requires a separately
-  approved data-retention and deployment runbook.
-- The split is source-only and local until both repository branches pass their
-  validation gates and an accountable release owner authorizes deployment.
+- AFRICLUB contains only football, club, membership, supporter, commerce,
+  contribution, ticketing, venue, and free-prediction capabilities.
+- Supabase uses one reproducible football-platform baseline plus governed seed
+  data for fresh environments.
+- Existing deployed databases require approved forward-only reconciliation;
+  this repository state is not authorization to reset or rewrite production.
 
 ## Product Surfaces
 
@@ -103,7 +96,7 @@ packages/
   clubs/                  per-club config packages
 
 supabase/
-  migrations/             schema and tenancy migrations
+  migrations/             reproducible football-platform baseline
 ```
 
 ## Platform Rules
@@ -135,7 +128,6 @@ npx --yes supabase test db
 
 ## Key Docs
 
-- [docs/FOOTBALL_CLUB_FIRST_IMPLEMENTATION_PLAN_2026-07-30.md](/Volumes/PRO-G40/AFRICLUB/docs/FOOTBALL_CLUB_FIRST_IMPLEMENTATION_PLAN_2026-07-30.md)
 - [docs/blueprint.md](/Volumes/PRO-G40/AFRICLUB/docs/blueprint.md)
 - [docs/venue_app_architecture.md](/Volumes/PRO-G40/AFRICLUB/docs/venue_app_architecture.md)
 - [docs/fet_ledger_and_rewards_policy.md](/Volumes/PRO-G40/AFRICLUB/docs/fet_ledger_and_rewards_policy.md)

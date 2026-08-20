@@ -35,7 +35,8 @@ const icons: Record<ToastVariant, typeof Info> = {
 
 const variantStyles: Record<ToastVariant, string> = {
   success: "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
-  error: "border-rose-400/30 bg-rose-500/10 text-rose-200",
+  error:
+    "border-rose-400/30 bg-rose-500/10 text-[var(--admin-danger-text)]",
   info: "border-border-soft bg-white/8 text-slate-200",
 };
 

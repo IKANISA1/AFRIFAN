@@ -22,7 +22,7 @@
     "test:lighthouse": "lhci autorun --config=.lighthouserc.js",
     "test:cloudflare-release": "node --test scripts/validate-cloudflare-release.node-test.mjs",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
+    "typecheck": "next typegen && tsc --noEmit -p tsconfig.typecheck.json",
     "size": "node scripts/check-app-shell-size.mjs",
     "qa:runtime-fallbacks": "node ../../../tools/scripts/scan_runtime_fallbacks.mjs",
     "qa:admin-performance": "node --experimental-strip-types scripts/benchmark-admin-collection.mjs",

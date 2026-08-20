@@ -4238,7 +4238,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get settingsDeletePermanently => 'Siba burundu';
 
   @override
-  String get settingsNotificationPermissionTitle => 'KOMEZA KUBA MU MUKINO';
+  String get settingsNotificationPermissionTitle => 'GUMA HAMWE N\'IKIPE';
 
   @override
   String get settingsNotificationPermissionMessage =>

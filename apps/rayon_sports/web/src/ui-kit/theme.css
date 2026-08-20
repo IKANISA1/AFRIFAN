@@ -3152,7 +3152,6 @@ textarea:focus-visible,
 .admin-community-state-surface,
 .admin-contributions-state-surface,
 .admin-football-sync-state-surface,
-.admin-games-state-surface,
 .admin-gamification-state-surface,
 .admin-gamification-wallet-state-surface,
 .admin-membership-state-surface,
@@ -3164,7 +3163,6 @@ textarea:focus-visible,
 
 .admin-contributions-metrics-grid,
 .admin-football-sync-metrics-grid,
-.admin-games-metrics-grid,
 .admin-gamification-metrics-grid,
 .admin-gamification-wallet-metrics-grid,
 .admin-membership-metrics-grid,
@@ -3176,7 +3174,6 @@ textarea:focus-visible,
   gap: 1.25rem;
 }
 
-.admin-games-state-surface :is(button, input, select),
 .admin-gamification-state-surface :is(button, input, select),
 .admin-gamification-wallet-state-surface :is(button, input, select),
 .admin-membership-state-surface :is(button, input, select),
@@ -3199,7 +3196,6 @@ textarea:focus-visible,
   min-width: 3rem;
 }
 
-.admin-games-state-surface label,
 .admin-gamification-state-surface label,
 .admin-gamification-wallet-state-surface label,
 .admin-membership-state-surface label,
@@ -3209,7 +3205,6 @@ textarea:focus-visible,
   min-width: 0;
 }
 
-.admin-games-state-surface :is(input, select, textarea),
 .admin-gamification-state-surface :is(input, select, textarea),
 .admin-gamification-wallet-state-surface :is(input, select, textarea),
 .admin-membership-state-surface :is(input, select, textarea),

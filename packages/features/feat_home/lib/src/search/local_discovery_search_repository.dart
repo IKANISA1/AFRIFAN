@@ -119,13 +119,7 @@ class LocalDiscoverySearchRepository implements DiscoverySearchRepository {
               category: DiscoveryCategory.fixtures,
               destination: '/club/fixtures',
               icon: AfriIcons.fixture,
-              keywords: <String>[
-                'match',
-                'matches',
-                'game',
-                'schedule',
-                'result',
-              ],
+              keywords: <String>['match', 'matches', 'schedule', 'result'],
             ),
             DiscoveryResult(
               id: 'live-match',

@@ -9,9 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
-import '../game_result_copy.dart';
 import '../models/fet_models.dart';
 import '../models/reward_store_content.dart';
+import '../prediction_result_copy.dart';
 
 class RewardsStoreScreen extends ConsumerStatefulWidget {
   const RewardsStoreScreen({super.key});
@@ -105,7 +105,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
         return;
       }
       snackbarMessage = result.message.isNotEmpty
-          ? context.localizeGameResultMessage(result.message)
+          ? context.localizePredictionResultMessage(result.message)
           : result.alreadyProcessed
           ? context.afriL10n.gameRewardAlreadyRedeemed
           : context.afriL10n.gameRewardRedeemed(option.reward, option.cost);

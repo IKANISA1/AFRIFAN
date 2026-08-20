@@ -132,12 +132,7 @@ function strictInteger(
   return normalized;
 }
 
-function strictTimestamp(
-  value: unknown,
-  label: string,
-  { optional = false }: { optional?: boolean } = {},
-) {
-  if (optional && (value == null || value === "")) return "";
+function strictTimestamp(value: unknown, label: string) {
   const normalized = strictText(value, label, 64);
   if (!Number.isFinite(Date.parse(normalized))) {
     throw new VenueDataContractError(`${label} is invalid`);

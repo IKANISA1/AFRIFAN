@@ -29,7 +29,7 @@ select
 from pg_proc p
 join pg_namespace n on n.oid = p.pronamespace
 where p.prosecdef
-  and n.nspname in ('public', 'football', 'africlub_game')
+  and n.nspname in ('public', 'football')
   and has_function_privilege('anon', p.oid, 'execute');
 
 select is(
@@ -41,7 +41,7 @@ select is(
       coalesce(p.proacl, acldefault('f', p.proowner))
     ) acl
     where p.prosecdef
-      and n.nspname in ('public', 'football', 'africlub_game')
+      and n.nspname in ('public', 'football')
       and acl.grantee = 0
       and acl.privilege_type = 'EXECUTE'
   ),
@@ -84,7 +84,7 @@ select is(
     select count(*)::integer
     from pg_proc p
     join pg_namespace n on n.oid = p.pronamespace
-    where n.nspname in ('public', 'football', 'africlub_game')
+    where n.nspname in ('public', 'football')
       and p.prokind = 'f'
       and p.proconfig is null
   ),
@@ -162,7 +162,7 @@ select p.oid::regprocedure::text as signature
 from pg_proc p
 join pg_namespace n on n.oid = p.pronamespace
 where p.prosecdef
-  and n.nspname in ('public', 'football', 'africlub_game')
+  and n.nspname in ('public', 'football')
   and has_function_privilege('authenticated', p.oid, 'execute');
 
 select is(

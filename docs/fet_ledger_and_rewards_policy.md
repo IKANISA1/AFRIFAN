@@ -12,7 +12,7 @@ FET must not be described as cash, odds, betting winnings, payout, stake, deposi
 
 - Earning FET for approved supporter actions.
 - Earning an approved, pre-disclosed reward from a free selected-match
-  prediction or reviewed trivia game after authoritative settlement.
+  prediction after authoritative settlement.
 - Venue check-in rewards inside approved campaigns.
 - Admin-reviewed adjustments with a reason and idempotency key.
 - Reservations and reversals for future closed-loop redemption flows.
@@ -26,7 +26,7 @@ FET must not be described as cash, odds, betting winnings, payout, stake, deposi
 - Open-loop spend.
 - Betting, odds, stake, or payout mechanics.
 - Alcohol-linked rewards without compliance review.
-- Any game mechanic that uses odds, a stake, a paid entry, a cash payout, or
+- Any contest mechanic that uses odds, a stake, a paid entry, a cash payout, or
   unreviewed AI-generated content.
 
 ## Ledger Rules
@@ -38,10 +38,9 @@ FET must not be described as cash, odds, betting winnings, payout, stake, deposi
 - Reversals require a reason and actor.
 - Admin exports must avoid personal data leakage.
 - Client code never receives service-role keys or private feed credentials.
-- A game reward references one authoritative game/session/result and is not
-  calculated independently by mobile, TV, venue, or web clients.
-- AI-assisted trivia cannot create a ledger event until its question set is
-  reviewed, published, played, and settled by the governed backend flow.
+- A prediction reward references one authoritative fixture, market, selection,
+  and official result and is not calculated independently by mobile, venue, or
+  web clients.
 
 ## Venue Wallet And Reservation Model
 
@@ -53,5 +52,5 @@ Venue campaigns may have a `fet_budget` and `fet_award_per_checkin`. Campaign ev
 - Privacy review records location and retention handling.
 - Alcohol/age review records drinks-ordering constraints.
 - SQL contract tests verify idempotency, non-negative balances, RLS, and scoped access.
-- Game/reward contract tests verify free entry, selected-match eligibility,
+- Prediction/reward contract tests verify free entry, selected-match eligibility,
   authoritative settlement, duplicate prevention, and reversal behavior.

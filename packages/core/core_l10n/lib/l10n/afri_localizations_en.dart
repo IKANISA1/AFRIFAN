@@ -4188,7 +4188,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get settingsDeletePermanently => 'Delete permanently';
 
   @override
-  String get settingsNotificationPermissionTitle => 'STAY IN THE GAME';
+  String get settingsNotificationPermissionTitle => 'STAY WITH THE CLUB';
 
   @override
   String get settingsNotificationPermissionMessage =>

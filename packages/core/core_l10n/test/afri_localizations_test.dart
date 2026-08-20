@@ -270,28 +270,31 @@ void main() {
     }
   });
 
-  test('Game EN, FR, and RW ARB catalogs have exhaustive key parity', () {
+  test('football feature EN, FR, and RW catalogs have key parity', () {
     final catalogs = <String, Map<String, dynamic>>{
       for (final language in <String>['en', 'fr', 'rw'])
         language:
             jsonDecode(_arbCatalog(language).readAsStringSync())
                 as Map<String, dynamic>,
     };
-    final gameKeys = catalogs['en']!.keys
+    // This pre-split namespace now contains only football, club, prediction,
+    // rewards, and supporter copy. The repository boundary scanner
+    // independently rejects unsupported product surfaces from every locale.
+    final footballFeatureKeys = catalogs['en']!.keys
         .where((key) => !key.startsWith('@') && key.startsWith('game'))
         .toSet();
 
-    expect(gameKeys, isNotEmpty);
+    expect(footballFeatureKeys, isNotEmpty);
     for (final entry in catalogs.entries) {
       final localeKeys = entry.value.keys
           .where((key) => !key.startsWith('@'))
           .toSet();
       expect(
         localeKeys,
-        containsAll(gameKeys),
-        reason: '${entry.key} must contain every Game catalog key.',
+        containsAll(footballFeatureKeys),
+        reason: '${entry.key} must contain every football feature key.',
       );
-      for (final key in gameKeys) {
+      for (final key in footballFeatureKeys) {
         expect(
           entry.value[key],
           isA<String>().having(

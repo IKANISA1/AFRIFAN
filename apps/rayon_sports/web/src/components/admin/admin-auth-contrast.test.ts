@@ -63,6 +63,7 @@ describe("Admin authentication contrast contract", () => {
     expect(authCard).toContain("var(--admin-text-strong)");
     expect(authCard).toContain("var(--admin-text-muted)");
     expect(authCard).toContain("var(--admin-auth-accent)");
+    expect(authCard).toContain("var(--admin-danger-text)");
     expect(authCard).toContain("RW +250");
     expect(authCard).not.toContain("text-slate-");
     expect(authCard).not.toContain("WhatsAppIcon");

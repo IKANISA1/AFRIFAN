@@ -33,7 +33,6 @@
       "physical_device_approval",
       "store_approval",
       "production_release_approval",
-      "dex_tv_001_approval",
       "canonical_admin_product_policy_approval"
     ],
     "decision": "DEC-243"
@@ -64,13 +63,6 @@
     }
   ],
   "pending_decisions": [
-    {
-      "id": "DEC-TV-APPROVAL-001",
-      "topic": "Approve or reject DEX-TV-001 display-only TV scope",
-      "owner": "TV product owner",
-      "due_date": null,
-      "status": "owner_and_due_date_required"
-    },
     {
       "id": "DEC-ADMIN-001",
       "topic": "Approve Next/PWA as canonical admin and classify Flutter feat_admin as internal-only or removable",

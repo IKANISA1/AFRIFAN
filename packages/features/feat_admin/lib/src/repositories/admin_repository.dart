@@ -16,7 +16,7 @@ class AdminRepository {
       'published_at,is_featured,sort_order,created_at,updated_at,author_name,'
       'image_provenance_id,image_rights_approved';
   static const _partnerProjection =
-      'id,name,category,country,description,fan_count,club_count,game_count,'
+      'id,name,category,country,description,fan_count,club_count,'
       'slug,emoji,subtitle,is_active,sort_order,updated_at,'
       'brand_primary_color,brand_secondary_color,website_url,'
       'gamification_enabled';

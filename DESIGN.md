@@ -6,7 +6,7 @@ This standard is built from current platform guidance, local implementation evid
 
 ## Universal Design Goal
 
-Build a world-class product suite that feels calm, fast, premium, trustworthy, and task-focused across mobile, TV, and admin surfaces. The interface should combine modern fintech-grade polish with universal product patterns: compact hierarchy, confident typography, thumb-first and remote-first actions, resilient state handling, motion that clarifies changes, inclusive accessibility, and adaptive layouts that scale from small phones to tablets, foldables, desktop shells, large-screen TVs, and dense operator consoles.
+Build a world-class product suite that feels calm, fast, premium, trustworthy, and task-focused across mobile, web, venue, and admin surfaces. The interface should combine modern fintech-grade polish with universal product patterns: compact hierarchy, confident typography, thumb-first and keyboard-first actions, resilient state handling, motion that clarifies changes, inclusive accessibility, and adaptive layouts that scale from small phones to tablets, foldables, desktop shells, and dense operator consoles.
 
 The standard is intentionally universal. Product teams must replace domain examples with their own truthful product data, but must keep the system principles, token model, component contracts, state requirements, quality gates, and Flutter implementation rules.
 
@@ -173,7 +173,7 @@ The mandatory product priority is:
 2. Membership, fan clubs, contributions, projects, tickets, and shop.
 3. Selected-match football predictions and competitions.
 4. Secondary matchday utilities such as venues, check-in, drinks ordering,
-   promotions, and venue-hosted game events.
+   promotions, and venue-hosted football events.
 
 The target mobile primary navigation is `Home · Club · Fan Zone · Membership`.
 Settings, privacy, notifications, support, language, theme, and account
@@ -270,7 +270,7 @@ Each token must have Light mode and Dark mode values. High contrast mode should 
 
 These seed colors define the default premium reference family. Teams may adapt hue for their brand, but the roles and contrast relationships must remain intact:
 
-- Deep chrome black `#050510`: bottom navigation, command pills, modal chrome, TV focus backplates, and admin shell rails.
+- Deep chrome black `#050510`: bottom navigation, command pills, modal chrome, and admin shell rails.
 - Immersive ink `#252044`: deep background, admin shell depth, dark text on pale export surfaces.
 - Account blue `#0818A0`: high-energy account or primary-value gradient stops.
 - Deep account navy `#000840`: top gradient depth and account-value hero fields.
@@ -281,7 +281,7 @@ These seed colors define the default premium reference family. Teams may adapt h
 - Paper `#FAF8F5`: high-contrast pill CTA fill, export canvas, QR backgrounds, and readable inverse surfaces.
 - Mint success `#3CD070`, orange-red warning/danger `#FF5E43`, dusty rose `#D38B96`, and periwinkle `#8885F0`: semantic accent seeds, not page-wide decoration.
 
-Implementation rule: code must expose these as semantic roles such as `color.chrome.default`, `color.hero.gradientStart`, `color.hero.gradientEnd`, `color.surface.glass`, `color.action.pill`, `color.tv.focus`, and `color.admin.rail`, not as feature-screen hardcoded literals.
+Implementation rule: code must expose these as semantic roles such as `color.chrome.default`, `color.hero.gradientStart`, `color.hero.gradientEnd`, `color.surface.glass`, `color.action.pill`, `color.focus.ring`, and `color.admin.rail`, not as feature-screen hardcoded literals.
 
 ### Secondary Color Usage Matrix
 
@@ -320,7 +320,7 @@ Rayon owns this runtime identity:
 | Club primary | `#0D63F3` | Primary action, active control, focus derivation, and brand energy. Never large body text on light backgrounds without contrast resolution. |
 | Club secondary | `#0A1326` | Dark shell depth and gradient foundation. |
 | Club accent | `#E2B85F` | Membership tier, trophy, achievement, and verified club emphasis. Not a generic CTA fill. |
-| Chrome black | `#050510` | Search pill, floating navigation, modal chrome, and TV backplates. |
+| Chrome black | `#050510` | Search pill, floating navigation, modal chrome, and admin rails. |
 | Dark canvas seed | `#100820` | Lower-shell depth blended with club primary at runtime. |
 | Dark panel seed | `#181038` | Grouped immersive panels blended with club primary at runtime. |
 | Dark asset seed | `#101830` | Cards and media-safe dark surfaces. |
@@ -360,7 +360,7 @@ Production Flutter currently uses the platform UI font because
 `TypographyTokens` leaves `fontFamily` unset. Golden tests alone use
 `GoldenRoboto` for deterministic rendering. This is the authoritative current
 decision until a licensed, packaged family is approved and implemented across
-iOS, Android, web, admin, and TV.
+  iOS, Android, web, and admin.
 
 Revolut's use of Aeonik Pro is a reference-brand decision, not permission to
 ship that family in AFRICLUB. Do not name or package Aeonik Pro unless the
@@ -406,7 +406,7 @@ Typography rules:
   elevation change.
 - If a partnership font is later approved, add the font licence record, package
   files locally, map every weight explicitly, update golden baselines, and prove
-  Kinyarwanda, French, English, numeric, large-text, web, admin, and TV coverage
+  Kinyarwanda, French, English, numeric, large-text, web, and admin coverage
   before changing this profile.
 
 ### Spacing And Shape Tokens
@@ -432,7 +432,7 @@ Motion must explain state, preserve orientation, and prove performance:
 - Route transitions use short fades, shared-axis movement, or platform-native transitions. Do not use decorative motion that delays task completion.
 - Bottom sheets rise from the task origin where possible and return focus to the trigger on dismiss.
 - Admin drawers and detail panels slide predictably from the side related to the selected row or action.
-- TV focus movement may use scale, glow, or elevation, but the focused item must remain within its layout slot and never push neighboring items into overlap.
+- Keyboard and directional focus movement may use scale, glow, or elevation, but the focused item must remain within its layout slot and never push neighboring items into overlap.
 - Loading motion uses skeleton shimmer or progress only when it does not harm readability, reduced-motion settings, or battery/performance.
 - Optimistic updates must animate into final state and provide undo or retry when network confirmation fails.
 - Destructive, payment, identity, permission, and admin-bulk flows must slow down only at review/confirmation points.
@@ -443,12 +443,11 @@ Motion must explain state, preserve orientation, and prove performance:
 The Revolut reference screenshots and Apple Design Award examples both show that world-class interfaces reduce reading burden. Copy must be concise, stateful, and useful:
 
 - Lead with value, amount, object, status, or action. Put explanation second.
-- Use short labels for circular actions, chips, tabs, table columns, and TV tiles.
+- Use short labels for circular actions, chips, tabs, table columns, and compact tiles.
 - Prefer numbers, icons, badges, and state labels over paragraphs.
 - Empty states must say what happened and provide the next useful action.
 - Error states must explain recovery, not expose raw backend traces unless the user is an operator on an admin surface.
 - Admin copy may be denser, but it must still be scannable: table titles, column labels, filters, row summaries, and action labels should be precise.
-- TV copy must be readable at a distance and should avoid multi-line helper text.
 - Avoid visible text that explains the UI itself, keyboard shortcuts, visual design, or obvious gestures.
 - Do not copy reference-app product claims, regulated finance language, rewards language, crypto labels, or brand terms unless the product legally and functionally supports them.
 
@@ -516,8 +515,8 @@ Fan Zone:
 
 - Lead with the user's active pick, accuracy, and points only when data is
   available and explained.
-- Pick, League, and Points use a shared segmented control. TV code, venue
-  check-in, and venue order remain a secondary Matchday group below football
+- Pick, League, and Points use a shared segmented control. Venue check-in and
+  venue order remain a secondary Matchday group below football
   prediction, club competitions, and supporter activity.
 - No odds, staking, payouts, probability advice, or cash language.
 
@@ -774,7 +773,7 @@ Any deviation from this standard must be explicitly recorded. Exceptions are all
 
 Each exception must include:
 
-- `surface`: mobile, TV, admin, web, native platform, or shared component.
+- `surface`: mobile, venue, admin, web, native platform, or shared component.
 - `route_or_component`: exact route, screen, modal, sheet, or component.
 - `standard_rule`: the rule being varied.
 - `reason`: why the standard cannot be followed.
@@ -839,14 +838,12 @@ The parity gate cannot pass while any of these are true:
   licensed source and allowed-use record;
 - `design_complete=false` in the governed evidence output.
 
-Current 2026-08-15 restructuring status:
+Current repository status:
 
 - AFRICLUB is scoped to football, club, membership, supporter, commerce,
   contribution, ticketing, venue, and free-prediction journeys.
-- TV and trivia route/state evidence was retired from this design authority and
-  transferred to the LET'S PLAY product boundary.
-- Existing route evidence predating the split must be regenerated before it can
-  support a release claim.
+- Route evidence predating the single football-platform baseline must be
+  regenerated before it can support a release claim.
 - Physical-device, assistive-technology, live-service, clean-candidate,
   accountable approval, signing, store, deployment, and release gates remain
   external and open.

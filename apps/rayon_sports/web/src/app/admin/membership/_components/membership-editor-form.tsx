@@ -133,7 +133,7 @@ export function MembershipEditorForm({
           id="membership-form-error"
           role="alert"
           tabIndex={-1}
-          className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200 outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+          className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-[var(--admin-danger-text)] outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
         >
           {errorMessage}
         </div>

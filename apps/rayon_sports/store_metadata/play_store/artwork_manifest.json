@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "status": "football_only_split_recapture_required_pending_approval",
+  "status": "recapture_required_pending_approval",
   "rules": {
     "actual_app_ui_only": true,
     "no_real_supporter_data": true,
-    "no_real_payment_or_pairing_codes": true,
+    "no_real_payment_or_membership_codes": true,
     "no_unapproved_club_marks_or_photography": true,
     "no_store_rank_price_or_download_claims": true,
     "capture_from_exact_candidate": false
@@ -37,7 +37,7 @@
       "recommended_count": 4,
       "captured_count": 3,
       "recommended_size": "1080x1920 portrait",
-      "status": "partial_historical_set_fanzone_recapture_required"
+      "status": "partial_set_exact_candidate_recapture_required"
     }
   ],
   "artwork_generation": {
@@ -46,7 +46,7 @@
     "rights_basis": "Original Gikundiro G geometry using only system typography and solid/gradient colors; no club crest, photography, or third-party artwork."
   },
   "capture_provenance": {
-    "capture_stage": "historical build-5 capture set invalidated by football-only split",
+    "capture_stage": "prior local build capture set; exact candidate recapture required",
     "recapture_after_source_freeze_required": true,
     "captured_at": "2026-08-09",
     "source_commit": "d92394f47f660551701f4c65769085587cd1962b",
@@ -66,11 +66,11 @@
     "device": "Collect_Pixel4a_API36 Android emulator",
     "capture_dimensions": "1080x1920",
     "session": "anonymous guest with zeroed supporter state",
-    "artifact_relation": "The build-5 screenshots predate the football-only split. The Fan Zone capture was retired because it displayed the moved TV/trivia entry point. A new signed football-only candidate and screenshot set are required before submission.",
+    "artifact_relation": "The build-5 screenshots are not from the current candidate. A new signed candidate and screenshot set are required before submission.",
     "exact_build_6_capture": false,
     "ui_equivalence_basis": [],
     "pre_final_artifact_sha256": "52a99db6d11f99e7e6ba33d79aa4c43ef8f3de056eb851a33b6653af349d1098",
-    "recapture_drift": "The rebuilt frozen-source APK and all screenshot hashes changed from the pre-final reference set; visual inspection found no real supporter, payment, or pairing data.",
+    "recapture_drift": "The rebuilt frozen-source APK and all screenshot hashes changed from the pre-final reference set; visual inspection found no real supporter, payment, or membership-code data.",
     "files": [
       "01_home.jpg",
       "02_club.jpg",

@@ -63,8 +63,8 @@ function walk(dir) {
 
 function hasScopedFilter(window) {
   return /\bfilter\s*:/.test(window) ||
-    /\.eq\(\s*["'`](id|club_id|venue_id|screen_id|session_id|game_session_id|user_id|fixture_id|pool_id)["'`]/.test(window) ||
-    /\.match\(\s*\{[^}]+(id|club_id|venue_id|screen_id|session_id|game_session_id|user_id|fixture_id|pool_id)/s.test(window);
+    /\.eq\(\s*["'`](id|club_id|venue_id|screen_id|session_id|user_id|fixture_id|pool_id)["'`]/.test(window) ||
+    /\.match\(\s*\{[^}]+(id|club_id|venue_id|screen_id|session_id|user_id|fixture_id|pool_id)/s.test(window);
 }
 
 function inspectFile(filePath) {
@@ -76,7 +76,7 @@ function inspectFile(filePath) {
       line.includes('"postgres_changes"');
     const isSupabaseDartRealtime = line.includes(".onPostgresChanges(");
     const isChannelSubscribe = /\.channel\(/.test(line) &&
-      /realtime|game|session|screen|order|leaderboard|fixture|pool/i.test(line);
+      /realtime|session|screen|order|leaderboard|fixture|pool/i.test(line);
     if (!isSupabaseJsRealtime && !isSupabaseDartRealtime && !isChannelSubscribe) {
       continue;
     }

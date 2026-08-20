@@ -8,10 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
-import '../game_result_copy.dart';
 import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
+import '../prediction_result_copy.dart';
 import '../widgets/market_option_pill.dart';
 
 class FriendChallengeScreen extends ConsumerStatefulWidget {
@@ -158,7 +158,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
           content: Text(
             result.message.isEmpty
                 ? context.afriL10n.gameChallengeWaiting
-                : context.localizeGameResultMessage(result.message),
+                : context.localizePredictionResultMessage(result.message),
           ),
           actions: [
             AfriTextButton(
@@ -173,7 +173,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
         context,
         result.message.isEmpty
             ? context.afriL10n.gameCouldNotSendChallenge
-            : context.localizeGameResultMessage(result.message),
+            : context.localizePredictionResultMessage(result.message),
       );
     }
 

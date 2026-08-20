@@ -83,7 +83,7 @@
       "platform_build_evidence": [
         "output/implementation_goal_20260724/consumer_web_support_policy_states/support-policy-state-evidence.json"
       ],
-      "disposition_note": "The public Account deletion route always renders governed local deletion, verification, retention, and TV-revocation guidance without collecting credentials, and current Pixel 7 production-build evidence proves visible keyboard focus, held-press feedback, 200-percent text reflow without route or shared-footer overflow, reduced motion, semantic dark and light themes, zero critical or serious Axe findings, and 48-pixel actions. This is local browser evidence only; named privacy, legal, retention, content, design, and linguistic approval, physical assistive-technology review, deployed-domain verification, pinned CI, and release approval remain open.",
+      "disposition_note": "The public Account deletion route always renders governed local deletion, verification, and retention guidance without collecting credentials, and current Pixel 7 production-build evidence proves visible keyboard focus, held-press feedback, 200-percent text reflow without route or shared-footer overflow, reduced motion, semantic dark and light themes, zero critical or serious Axe findings, and 48-pixel actions. This is local browser evidence only; named privacy, legal, retention, content, design, and linguistic approval, physical assistive-technology review, deployed-domain verification, pinned CI, and release approval remain open.",
       "owner": "Consumer web account-deletion policy, privacy, accessibility, responsive, and evidence QA",
       "reviewed_at": "2026-08-09"
     },

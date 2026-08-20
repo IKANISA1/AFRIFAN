@@ -524,7 +524,7 @@ function AdminAuthCard() {
                 className={cn(
                   "flex items-center gap-3 rounded-2xl border px-5 py-3.5 text-sm leading-6",
                   error && !status
-                    ? "border-rose-400/30 bg-rose-500/10 text-rose-200"
+                    ? "border-rose-400/30 bg-rose-500/10 text-[var(--admin-danger-text)]"
                     : status?.toLowerCase().includes("sent")
                       ? "border-[var(--admin-auth-accent)] bg-[var(--admin-auth-accent-soft)] text-[var(--admin-auth-accent)]"
                       : "border-[var(--admin-border)] bg-[var(--admin-surface-muted)] text-[var(--admin-text)]",

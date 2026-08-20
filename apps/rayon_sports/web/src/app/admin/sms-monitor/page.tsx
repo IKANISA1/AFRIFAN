@@ -801,7 +801,7 @@ export default function AdminSmsMonitorPage() {
                 type="button"
                 onClick={() => handleReject(detailReview).catch(() => {})}
                 disabled={mutationLocked}
-                className="admin-button admin-button-secondary !text-rose-200 disabled:opacity-60"
+                className="admin-button admin-button-secondary !text-[var(--admin-danger-text)] disabled:opacity-60"
               >
                 Reject
               </button>

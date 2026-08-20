@@ -1,49 +1,47 @@
-# AFRICLUB football-only release gates
+# AFRICLUB Football-Only Release Gates
 
-Date: 2026-08-15
+Status: active source-boundary checklist; not release authorization.
 
-Status: active source-boundary checklist; not a release authorization.
+## Candidate Boundary
 
-## Candidate boundary
+- Mobile, public web, admin, and venue surfaces expose only club, football,
+  prediction, membership, supporter, contribution, ticket, shop, reward, and
+  venue capabilities.
+- Workspace registration, routes, localization, push configuration, backend
+  objects, store metadata, documentation, and evidence records follow the same
+  boundary.
+- The database is reproducible from one clean baseline and governed seed.
 
-- The mobile app, public web, admin, and venue surfaces expose football, club,
-  membership, contribution, ticket, shop, prediction, supporter, and venue
-  capabilities only.
-- The repository contains no active TV app, trivia route, trivia runtime,
-  trivia administration, or trivia Edge Function.
-- Historical database migrations and dated release records are not active
-  product registration and do not authorize destructive production cleanup.
+## Required Local Gates
 
-## Required local gates
+- Flutter dependency resolution, strict workspace analysis, and all package
+  tests pass.
+- Football-first route tests and visual baselines pass.
+- Android and iOS local build checks pass in the available environment.
+- Web typecheck, tests, zero-warning lint, and production build pass.
+- Repository boundary, route inventory, UI guardrail, evidence privacy,
+  provenance, secret, store, and shell validators pass.
+- A fresh local Supabase reset, all pgTAP contracts, schema lint, and empty
+  schema drift pass.
+- Positive checks prove predictions and all other supported football-platform
+  capabilities remain registered and executable.
+- No generated dependency, cache, build, coverage, or evidence-output
+  directory remains in the worktree.
 
-- Flutter workspace analysis and tests pass.
-- Affected Fan Zone and Settings visual baselines are reviewed and pass.
-- `apps/rayon_sports` builds for Android using a non-production configuration.
-- Consumer/admin/venue web type checks, full tests, zero-warning source lint,
-  and production build pass.
-- route inventory, UI guardrails, Supabase Edge/local-migration contracts, and
-  store-package consistency validators pass. Evidence/privacy findings require
-  human review because the current scanner treats migration timestamps as
-  possible Rwanda phone numbers.
-- an active-source scan finds no moved TV/trivia imports, routes, packages,
-  localized copy, push routes, or build registrations.
-- database negative tests prove retired TV/trivia roles, wrappers, and
-  Realtime publication cannot reopen after the forward decommission migration.
+## Required Release Evidence
 
-## Required release evidence
-
-- Generate a clean exact-candidate source freeze after the split.
-- Capture new football-only Android, iPhone, and iPad screenshots. The former
-  Fan Zone store images were retired because they displayed a moved entry
-  point.
-- Build and verify new signed Android and iOS artifacts; do not reuse the
-  pre-split artifact hashes or equivalence claim.
+- Create a clean exact-candidate source freeze.
+- Capture new Android, iPhone, and iPad screenshots from the exact signed
+  candidate using synthetic or masked data.
+- Verify Android and iOS signing, package identity, entitlements, permissions,
+  links, privacy manifests, notification setup, and artifact hashes.
 - Complete physical Android/iOS accessibility, lifecycle, deep-link, push,
-  offline/reconnect, and performance testing.
-- Revalidate backend schema, RLS, RPC, Edge Functions, privacy declarations,
-  Cloudflare deployment, monitoring, rollback, and production data retention.
+  offline/reconnect, upgrade, rollback, and performance testing.
+- Revalidate production schema, RLS, RPCs, Edge Functions, storage, schedules,
+  privacy declarations, public-domain deployment, monitoring, observation, and
+  rollback.
 - Record accountable product, design, accessibility, privacy, security, legal,
-  content-rights, language, QA, operations, and release approvals.
+  content-rights, language, QA, operations, and final release approvals.
 
-No production deployment, store submission, schema deletion, or external
-approval is performed by the repository split.
+Repository completion does not authorize production database changes,
+deployment, store submission, or external approval.

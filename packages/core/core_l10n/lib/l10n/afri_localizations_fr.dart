@@ -4260,7 +4260,7 @@ class AfriLocalizationsFr extends AfriLocalizations {
   String get settingsDeletePermanently => 'Supprimer définitivement';
 
   @override
-  String get settingsNotificationPermissionTitle => 'RESTEZ DANS LE JEU';
+  String get settingsNotificationPermissionTitle => 'RESTEZ AVEC LE CLUB';
 
   @override
   String get settingsNotificationPermissionMessage =>

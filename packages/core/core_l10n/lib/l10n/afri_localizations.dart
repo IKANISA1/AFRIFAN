@@ -7144,7 +7144,7 @@ abstract class AfriLocalizations {
   /// No description provided for @settingsNotificationPermissionTitle.
   ///
   /// In en, this message translates to:
-  /// **'STAY IN THE GAME'**
+  /// **'STAY WITH THE CLUB'**
   String get settingsNotificationPermissionTitle;
 
   /// No description provided for @settingsNotificationPermissionMessage.

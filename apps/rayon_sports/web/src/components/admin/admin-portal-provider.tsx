@@ -150,7 +150,18 @@ export function AdminPortalProvider({
   children: ReactNode;
   initialState?: AdminPortalInitialState;
 }) {
-  const [client] = useState(() => getBrowserSupabase());
+  const controlledEvidence = initialState?.controlledEvidence === true;
+  const [client] = useState<SupabaseClient | null>(() => {
+    const configuredClient = getBrowserSupabase();
+    if (configuredClient != null || !controlledEvidence) {
+      return configuredClient;
+    }
+
+    // Controlled local evidence pages use the authenticated same-origin admin
+    // API and never call this sentinel directly. A non-null value lets those
+    // pages exercise their real API state machines without browser credentials.
+    return {} as SupabaseClient;
+  });
   const [session, setSession] = useState<Session | null>(initialState?.session ?? null);
   const [user, setUser] = useState<User | null>(initialState?.user ?? null);
   const [access, setAccess] = useState<AdminAccess>(initialState?.access ?? emptyAdminAccess);
@@ -163,7 +174,6 @@ export function AdminPortalProvider({
   const [error, setError] = useState<string | null>(initialState?.error ?? null);
   const [notice, setNotice] = useState<string | null>(null);
   const [pendingPhone, setPendingPhone] = useState<string | null>(null);
-  const controlledEvidence = initialState?.controlledEvidence === true;
 
   const syncPendingPhone = useCallback((value: string | null) => {
     setPendingPhone(value);

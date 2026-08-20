@@ -301,8 +301,15 @@ async function runMatrix(browser: Browser) {
 
   mode = "ready";
   await open("conflict");
+  await expectStatus("ready", /audit history confirmed/i);
   mode = "conflict";
-  await page.getByRole("button", { name: /refresh audit history/i }).click();
+  const conflictRefresh = page.getByRole("button", {
+    name: /refresh audit history/i,
+  });
+  await expect(conflictRefresh).toBeVisible();
+  // The conflict response synchronously replaces this control with recovery
+  // UI. Dispatching the controlled event avoids waiting on a detached node.
+  await conflictRefresh.dispatchEvent("click");
   await expectStatus("conflict", /audit history changed/i);
   await capture("conflict");
 

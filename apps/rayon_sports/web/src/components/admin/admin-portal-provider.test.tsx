@@ -38,6 +38,11 @@ function TimeoutHarness() {
   );
 }
 
+function ClientAvailabilityHarness() {
+  const { client } = useAdminPortal();
+  return <output aria-label="client-state">{client == null ? "missing" : "ready"}</output>;
+}
+
 describe("AdminPortalProvider", () => {
   afterEach(() => {
     vi.useRealTimers();
@@ -192,5 +197,42 @@ describe("AdminPortalProvider", () => {
     expect(screen.getByText("Controlled evidence content")).toBeVisible();
     expect(client.auth.onAuthStateChange).not.toHaveBeenCalled();
     expect(client.auth.getSession).not.toHaveBeenCalled();
+  });
+
+  it("exposes a same-origin API sentinel for controlled evidence without browser credentials", () => {
+    vi.mocked(getBrowserSupabase).mockReturnValue(null);
+
+    render(
+      <AdminPortalProvider
+        initialState={{
+          session: null,
+          user: {
+            id: "controlled-admin-evidence",
+            app_metadata: {},
+            user_metadata: {},
+            aud: "authenticated",
+            created_at: "2026-07-29T00:00:00.000Z",
+          },
+          access: {
+            hasAccess: true,
+            isAuthenticated: true,
+            isSuperAdmin: true,
+            userId: "controlled-admin-evidence",
+            role: "super_admin",
+            clubId: "24",
+            availableClubIds: ["24"],
+            canSelectClub: false,
+            assignmentCount: 1,
+          },
+          clubOptions: [],
+          error: null,
+          controlledEvidence: true,
+        }}
+      >
+        <ClientAvailabilityHarness />
+      </AdminPortalProvider>,
+    );
+
+    expect(screen.getByLabelText("client-state")).toHaveTextContent("ready");
   });
 });

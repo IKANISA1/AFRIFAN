@@ -1203,7 +1203,7 @@
   "settingsDeleteAccountConfirmValue": "DELETE",
   "settingsCancelUpper": "ANNULER",
   "settingsDeletePermanently": "Supprimer définitivement",
-  "settingsNotificationPermissionTitle": "RESTEZ DANS LE JEU",
+  "settingsNotificationPermissionTitle": "RESTEZ AVEC LE CLUB",
   "settingsNotificationPermissionMessage": "Recevez les alertes de matchs, contributions, étapes FET et actualités du club.",
   "settingsMatchAlerts": "Alertes avant le coup d’envoi",
   "settingsContributionUpdates": "Actualités des contributions et billets",
