@@ -14,7 +14,7 @@ import {
 } from "@/lib/host-routing";
 import { controlledAdminEvidenceRequestHeader } from "@/lib/controlled-admin-evidence";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const hostname = resolveRoutingHostname(
     request.headers.get("x-forwarded-host"),
     request.headers.get("host"),

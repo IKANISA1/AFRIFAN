@@ -1,13 +1,13 @@
 import { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
-import { middleware } from "./middleware";
+import { proxy } from "./proxy";
 
 describe("proxy recovery routing", () => {
   it.each([
     "https://gikundiro.com/admin/offline?source=legacy",
     "https://admin.gikundiro.com/admin/offline?source=legacy",
   ])("redirects the stale nested route before admin rendering: %s", (url) => {
-    const response = middleware(new NextRequest(url));
+    const response = proxy(new NextRequest(url));
 
     expect(response.status).toBe(308);
     expect(response.headers.get("location")).toBe(
@@ -16,7 +16,7 @@ describe("proxy recovery routing", () => {
   });
 
   it("leaves the canonical standalone recovery route available", () => {
-    const response = middleware(
+    const response = proxy(
       new NextRequest("https://admin.gikundiro.com/admin-offline"),
     );
 
@@ -25,7 +25,7 @@ describe("proxy recovery routing", () => {
   });
 
   it("prevents Worker preview aliases from being indexed", () => {
-    const response = middleware(
+    const response = proxy(
       new NextRequest(
         "https://candidate-gikundiro-web.ikanisa.workers.dev/privacy",
       ),

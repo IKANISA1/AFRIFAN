@@ -243,6 +243,7 @@ test("fixtures prove all sixteen applicable rendered states", async ({
 
   mode = "ready";
   await openFixtures(page, "focused");
+  await expectStatus(page, "ready", /fixture list confirmed/i);
   const tickets = page.getByRole("link", { name: /buy tickets/i });
   await tickets.focus();
   await expect(page.locator(".fixtures-surface")).toHaveAttribute(
