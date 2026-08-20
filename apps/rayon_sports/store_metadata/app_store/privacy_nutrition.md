@@ -23,7 +23,7 @@ when the signed archive privacy report is generated.
 | Device ID | App functionality | App attestation, push registration, fraud prevention, and device revocation |
 | Purchase history | App functionality | Confirmed tickets, shop orders, and contribution records |
 | Other financial information | App functionality | MoMo transaction references, contribution ledgers, and reconciliation data; no payment-card collection |
-| Prediction content | App functionality | Football prediction selections, score, and reward state |
+| Gameplay content | App functionality | Football prediction selections, score, and reward state |
 | Product interaction | App functionality; Analytics | Feature actions required for the selected journey; optional closed-taxonomy analytics only after consent and release enablement |
 | Other user content | App functionality | Private profile nickname and structured football prediction selections may be collected. Cross-user editable text, challenge notes, social discovery, and public user names are disabled; public labels use system aliases |
 
