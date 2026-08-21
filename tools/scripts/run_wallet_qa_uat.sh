@@ -72,17 +72,17 @@ flutter test packages/features/feat_settings/test
 echo "==> Web lint, typecheck, unit tests, build"
 (
   cd apps/rayon_sports/web
-  npm run lint
-  npm run typecheck
-  npm test
-  npm run build
+  corepack npm run lint
+  corepack npm run typecheck
+  corepack npm test
+  corepack npm run build
 )
 
 if [ "$SKIP_SEED" -eq 0 ]; then
   echo "==> Seeding wallet QA personas"
   (
     cd apps/rayon_sports/web
-    npm run qa:wallet:seed
+    corepack npm run qa:wallet:seed
   )
 fi
 
@@ -90,7 +90,7 @@ if [ "$SKIP_E2E" -eq 0 ]; then
   echo "==> Wallet browser UAT"
   (
     cd apps/rayon_sports/web
-    npm run test:e2e:wallet
+    corepack npm run test:e2e:wallet
   )
 fi
 

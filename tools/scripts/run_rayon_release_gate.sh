@@ -30,10 +30,10 @@ flutter test apps/rayon_sports/integration_test/release_readiness_smoke_test.dar
 echo "==> Web typecheck, tests, build, audit"
 (
   cd apps/rayon_sports/web
-  npm run typecheck
-  npm test
-  npm run build
-  npm audit --audit-level=high
+  corepack npm run typecheck
+  corepack npm test
+  corepack npm run build
+  corepack npm audit --audit-level=high
 )
 
 echo "Rayon Sports release gate passed."

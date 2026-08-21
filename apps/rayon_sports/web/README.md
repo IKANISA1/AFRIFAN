@@ -21,12 +21,17 @@ Fan journeys now live in the Flutter mobile app. The website can hand users off 
 
 1. Copy `.env.example` into `.env.local`.
 2. Fill in the Supabase values when you want live data.
-3. Run:
+3. Load the repository Node version and install the exact locked dependencies:
 
 ```bash
-npm install
-npm run dev
+nvm use
+corepack npm ci
+corepack npm run check:dependencies
+corepack npm run dev
 ```
+
+The package-manager contract is `npm@12.0.2` via Corepack. Do not add a second
+lockfile or use pnpm/yarn in this app.
 
 The site will run on `http://localhost:3000`.
 
@@ -48,13 +53,13 @@ Behavior:
 ## Commands
 
 ```bash
-npm run dev
-npm run preview
-npm run deploy
-npm run lint
-npm run typecheck
-npm test
-npm run build
+corepack npm run dev
+corepack npm run preview
+corepack npm run deploy
+corepack npm run lint
+corepack npm run typecheck
+corepack npm test
+corepack npm run build
 ```
 
 ## Route map
@@ -102,13 +107,13 @@ The production worker is deployed with OpenNext for Cloudflare. The current work
 Preview locally through the Cloudflare runtime:
 
 ```bash
-npm run preview
+corepack npm run preview
 ```
 
 Deploy to Cloudflare Workers:
 
 ```bash
-npm run deploy
+corepack npm run deploy
 ```
 
 The worker uses:

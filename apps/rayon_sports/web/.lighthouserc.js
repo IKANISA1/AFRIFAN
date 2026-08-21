@@ -11,7 +11,7 @@ module.exports = {
       ],
       numberOfRuns: 3,
       settings: {
-        // Lighthouse 12 no longer supports the legacy "mobile" preset flag.
+        // Lighthouse no longer supports the legacy "mobile" preset flag.
         // These settings preserve a mobile audit profile on throttled hardware.
         formFactor: "mobile",
         screenEmulation: {
@@ -40,9 +40,6 @@ module.exports = {
         // SEO
         "categories:seo": ["error", { minScore: 0.9 }],
       },
-    },
-    upload: {
-      target: "temporary-public-storage",
     },
   },
 };

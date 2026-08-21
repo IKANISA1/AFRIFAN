@@ -372,8 +372,8 @@ supabase/
 flutter pub get
 dart run melos run analyze --no-select
 dart run melos run test_all --no-select
-(cd apps/rayon_sports/web && npm run typecheck && npm test && npm run lint && npm run build)
-npx --yes supabase test db
+(cd apps/rayon_sports/web && corepack npm run check:dependencies && corepack npm run typecheck && corepack npm test && corepack npm run lint && corepack npm run build)
+corepack npm@12.0.2 exec --yes --package=supabase@2.113.0 -- supabase test db --local
 ```
 
 ## Key Docs

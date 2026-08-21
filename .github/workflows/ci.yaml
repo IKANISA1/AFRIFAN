@@ -228,33 +228,36 @@ jobs:
           cache-dependency-path: apps/rayon_sports/web/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: corepack npm ci
+
+      - name: Validate dependency graph and advisories
+        run: corepack npm run check:dependencies
 
       - name: Lint
-        run: npm run lint
+        run: corepack npm run lint
 
       - name: Unit tests
-        run: npm test
+        run: corepack npm test
 
       - name: Validate deterministic Admin collection and audit guardrails
         env:
           ADMIN_PERFORMANCE_OUTPUT_PATH: ${{ runner.temp }}/admin-high-volume-performance.json
-        run: npm run qa:admin-performance
+        run: corepack npm run qa:admin-performance
 
       - name: Venue authorization and operations coverage
-        run: npm run test:venue-coverage
+        run: corepack npm run test:venue-coverage
 
       - name: TypeScript check
-        run: npm run typecheck
+        run: corepack npm run typecheck
 
       - name: Build
-        run: npm run build
+        run: corepack npm run build
 
       - name: Bundle budget
-        run: npm run size
+        run: corepack npm run size
 
       - name: Lighthouse CI
-        run: npm run test:lighthouse
+        run: corepack npm run test:lighthouse
 
   web-e2e:
     name: Web E2E
@@ -273,15 +276,15 @@ jobs:
           cache-dependency-path: apps/rayon_sports/web/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: corepack npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox webkit
+        run: corepack npm exec -- playwright install --with-deps chromium firefox webkit
 
       - name: Build
         env:
           AFRICLUB_ALLOW_HTTP_PREVIEW: "1"
-        run: npm run build
+        run: corepack npm run build
 
       - name: Run E2E
         env:
@@ -289,7 +292,7 @@ jobs:
           AFRICLUB_CONTROLLED_ADMIN_EVIDENCE: "1"
           AFRICLUB_CONTROLLED_ROUTE_EVIDENCE: "1"
           AFRICLUB_CONTROLLED_VENUE_EVIDENCE: "1"
-        run: npm run test:e2e:ci
+        run: corepack npm run test:e2e:ci
 
   # ──────────────────────────────────────────────
   # Android: Debug Build (PR gate — catch compile errors early)
