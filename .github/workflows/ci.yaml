@@ -24,7 +24,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: '.nvmrc'
 
       - name: Enforce football-only repository boundary
         run: node tools/scripts/validate_repository_boundary.mjs
@@ -186,7 +186,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: '.nvmrc'
           cache: 'npm'
           cache-dependency-path: apps/rayon_sports/web/package-lock.json
 
@@ -229,7 +229,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: '.nvmrc'
           cache: 'npm'
           cache-dependency-path: apps/rayon_sports/web/package-lock.json
 
