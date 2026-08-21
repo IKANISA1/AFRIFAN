@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "task_id": "MOB-08",
+  "entries": [],
+  "rules": [
+    {
+      "id": "source-authored-names-and-football-identities",
+      "expected_match_count": 144,
+      "source_keys": [
+        "author_name",
+        "away_team",
+        "club_name",
+        "competition",
+        "country_name",
+        "display_name",
+        "home_team",
+        "league",
+        "name",
+        "nationality",
+        "nickname_brand_identity",
+        "source_label",
+        "venue"
+      ],
+      "disposition": "source_authored_or_proper_name_content",
+      "contract": "The client preserves governed proper names, supporter-authored identities, and official football identities as supplied; these values are not UI chrome translations.",
+      "rationale": "Names and official football identities must not be machine-translated or silently rewritten by the client.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "id": "source-authored-editorial-and-catalog-content",
+      "expected_match_count": 120,
+      "source_keys": [
+        "benefits",
+        "bio",
+        "body",
+        "content",
+        "description",
+        "match_access",
+        "reward",
+        "seating_access",
+        "subtitle",
+        "title"
+      ],
+      "disposition": "editorial_content_requires_source_locale_approval",
+      "contract": "CMS, catalog, membership, news, and match content retains its recorded source locale; publishing workflows own locale metadata and accountable translation approval.",
+      "rationale": "The mobile client renders governed editorial records and must not claim that arbitrary remote copy is translated merely because the surrounding interface is localized.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "id": "controlled-enum-and-status-copy",
+      "expected_match_count": 42,
+      "source_keys": ["category", "label", "position"],
+      "disposition": "client_localized_enum_or_failure_mapping",
+      "contract": "Controlled categories, labels, and positions are mapped to localized client copy when they act as UI chrome; source-authored values remain governed content.",
+      "rationale": "These fields cross a mixed enum/content boundary and require an explicit client mapping or source-locale treatment instead of an implicit translation claim.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "id": "service-result-message-mapping",
+      "expected_match_count": 8,
+      "source_keys": ["message"],
+      "disposition": "client_localized_enum_or_failure_mapping",
+      "contract": "Typed service outcomes are mapped to core_l10n copy before supporter display; unrecognized backend diagnostics remain private or use a localized generic fallback.",
+      "rationale": "Backend message text is diagnostic data, not a trusted localization source of truth.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "id": "locale-governed-runtime-copy",
+      "expected_match_count": 1,
+      "source_keys": ["text_value"],
+      "disposition": "locale_governed_runtime_copy",
+      "contract": "Runtime copy entries carry a governed locale and approval boundary before publication.",
+      "rationale": "The runtime-copy registry is the explicit dynamic localization channel.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    }
+  ]
+}

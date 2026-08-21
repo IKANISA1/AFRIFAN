@@ -31,7 +31,7 @@ const markdownOutput = resolve(
 const dispositionInput = resolve(
   repoRoot,
   args.get("--dispositions") ??
-    "output/implementation_goal_20260724/localization_copy_matrix/copy-dispositions.json",
+    "docs/governance/localization/flutter-copy-dispositions.json",
 );
 
 const roots = [

@@ -1,0 +1,555 @@
+{
+  "schema_version": "1.0",
+  "task_id": "MOB-08",
+  "entries": [
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_competitions_controller.dart",
+      "field": "label",
+      "value": "competitions",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_competitions_controller.dart",
+      "field": "label",
+      "value": "seasons",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_contributions_controller.dart",
+      "field": "label",
+      "value": "contribution groups",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_contributions_controller.dart",
+      "field": "label",
+      "value": "contributions",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_features_controller.dart",
+      "field": "label",
+      "value": "feature channels",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_features_controller.dart",
+      "field": "label",
+      "value": "feature rules",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_features_controller.dart",
+      "field": "label",
+      "value": "platform features",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_matches_controller.dart",
+      "field": "label",
+      "value": "matches",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_notifications_controller.dart",
+      "field": "label",
+      "value": "notification groups",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/admin_notifications_controller.dart",
+      "field": "label",
+      "value": "notification history",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart",
+      "field": "description",
+      "value": "Load feature registry",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart",
+      "field": "description",
+      "value": "Update feature channel config",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart",
+      "field": "description",
+      "value": "Update feature rules",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart",
+      "field": "description",
+      "value": "Update feature row",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/screens/contributions_monitor_screen.dart",
+      "field": "text",
+      "value": "$currencySymbol ${currency.format(snapshot.monthlyTotalAt(referenceTime ?? DateTime.now().toUtc()))}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/screens/contributions_monitor_screen.dart",
+      "field": "text",
+      "value": "$currencySymbol ${currency.format(item.currentTotal)}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/screens/sms_sync_monitor_screen.dart",
+      "field": "text",
+      "value": "$value",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_admin/lib/src/widgets/notification_widgets.dart",
+      "field": "text",
+      "value": "$statusLabel$datePart$metrics",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_club/lib/src/repositories/club_repository.dart",
+      "field": "message",
+      "value": "Fan membership created",
+      "disposition": "internal_operational_diagnostic",
+      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_club/lib/src/repositories/club_repository.dart",
+      "field": "message",
+      "value": "Fan membership activated",
+      "disposition": "internal_operational_diagnostic",
+      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_club/lib/src/screens/club_collection_screens.dart",
+      "field": "text",
+      "value": "${row.position}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_club/lib/src/screens/club_collection_screens.dart",
+      "field": "text",
+      "value": "$value",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/fanzone_module.dart",
+      "field": "label",
+      "value": "Fan Zone",
+      "disposition": "localized_primary_navigation_fallback",
+      "rationale": "The shell maps this feature key to core_l10n for supporter-visible navigation; the module label is the deterministic fallback and route inventory identifier.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_community_picks.dart",
+      "field": "description",
+      "value": "loadCommunityPicks($fixtureMarketId)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_community_picks.dart",
+      "field": "description",
+      "value": "loadFixtureCommunityPicks($fixtureId)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_competitions.dart",
+      "field": "description",
+      "value": "loadCompetitionCatalog",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_competitions.dart",
+      "field": "description",
+      "value": "loadCompetition($competitionSlug)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_competitions.dart",
+      "field": "description",
+      "value": "loadStandings($competitionSlug)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_competitions.dart",
+      "field": "description",
+      "value": "loadTeam($teamSlug)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_competitions.dart",
+      "field": "description",
+      "value": "loadTeamRoster($teamSlug)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_competitions.dart",
+      "field": "description",
+      "value": "loadTeamFixtures($teamSlug)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_fixtures.dart",
+      "field": "description",
+      "value": "loadFixtures(status=$status)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_fixtures.dart",
+      "field": "description",
+      "value": "loadFixture($fixtureId)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_h2h_encounters.dart",
+      "field": "description",
+      "value": "loadH2h($homeTeamSlug vs $awayTeamSlug)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_lineups.dart",
+      "field": "description",
+      "value": "loadLineupHome($homeTeamSlug)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_lineups.dart",
+      "field": "description",
+      "value": "loadLineupAway($awayTeamSlug)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_markets.dart",
+      "field": "description",
+      "value": "loadMarketCatalog",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_markets.dart",
+      "field": "description",
+      "value": "loadLeaderboard(scope=$scope, period=$period)",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_notifications.dart",
+      "field": "description",
+      "value": "loadNotifications",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_profile.dart",
+      "field": "description",
+      "value": "updateProfile",
+      "disposition": "internal_data_contract_or_trace_label",
+      "rationale": "This literal labels a bounded parser collection, SafeRpc operation, or repository trace and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/screens/challenge_detail_screen.dart",
+      "field": "text",
+      "value": "$value",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/screens/create_challenge_screen.dart",
+      "field": "text",
+      "value": "$value",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/screens/fet_wallet_screen.dart",
+      "field": "text",
+      "value": "${transactions.length}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/screens/venue_order_screen.dart",
+      "field": "text",
+      "value": "$count",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/widgets/animated_fet_counter.dart",
+      "field": "text",
+      "value": "${widget.prefix}$displayValue${widget.suffix}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/widgets/community_prediction_bar.dart",
+      "field": "text",
+      "value": "${pick.pickPercentage.toStringAsFixed(0)}%",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/widgets/top_scorers_section.dart",
+      "field": "text",
+      "value": "${scorer.rank}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/widgets/top_scorers_section.dart",
+      "field": "text",
+      "value": "${scorer.goals}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_home/lib/src/home_module.dart",
+      "field": "label",
+      "value": "Home",
+      "disposition": "localized_primary_navigation_fallback",
+      "rationale": "The shell maps this feature key to core_l10n for supporter-visible navigation; the module label is the deterministic fallback and route inventory identifier.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_home/lib/src/widgets/contributor_leaderboard.dart",
+      "field": "text",
+      "value": "#${data.alias}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_shop/lib/src/screens/product_detail_screen.dart",
+      "field": "text",
+      "value": "$_quantity",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_shop/lib/src/screens/shop_screen.dart",
+      "field": "text",
+      "value": "$cartItemCount",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_shop/lib/src/widgets/cart_item_card.dart",
+      "field": "text",
+      "value": "${item.quantity}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_shop/lib/src/widgets/checkout_bar.dart",
+      "field": "label",
+      "value": "$itemCount",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_shop/lib/src/widgets/shop_top_bar.dart",
+      "field": "text",
+      "value": "$cartItemCount",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_autoread_service.dart",
+      "field": "message",
+      "value": "SMS retry queue drain failed before all captures could retry.",
+      "disposition": "internal_operational_diagnostic",
+      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_background_processor.dart",
+      "field": "message",
+      "value": "SMS retry queue has pending captures awaiting retry.",
+      "disposition": "internal_operational_diagnostic",
+      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_telemetry.dart",
+      "field": "message",
+      "value": "M-Money pattern matched from unapproved sender.",
+      "disposition": "internal_operational_diagnostic",
+      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_telemetry.dart",
+      "field": "message",
+      "value": "SMS retry queue has pending captures awaiting retry.",
+      "disposition": "internal_operational_diagnostic",
+      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_telemetry.dart",
+      "field": "message",
+      "value": "SMS retry queue is full; new capture was dropped.",
+      "disposition": "internal_operational_diagnostic",
+      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_ticketing/lib/src/widgets/ticket_configure_step.dart",
+      "field": "text",
+      "value": "$quantity",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-08-21"
+    }
+  ]
+}

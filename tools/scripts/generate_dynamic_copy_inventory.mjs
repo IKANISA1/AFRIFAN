@@ -36,7 +36,7 @@ const markdownOutput = resolve(
 const dispositionInput = resolve(
   repoRoot,
   args.get("--dispositions") ??
-    "output/implementation_goal_20260724/localization_copy_matrix/dynamic-copy-dispositions.json",
+    "docs/governance/localization/dynamic-copy-dispositions.json",
 );
 
 const copyKeys = [
