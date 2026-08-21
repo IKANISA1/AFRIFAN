@@ -50,8 +50,7 @@ class ClubMatch extends Equatable {
       jh.FanTier.bronze => saleStartsAt.subtract(const Duration(hours: 24)),
       jh.FanTier.imena ||
       jh.FanTier.inyamibwa ||
-      jh.FanTier.ingenziImanzi =>
-        saleStartsAt,
+      jh.FanTier.ingenziImanzi => saleStartsAt,
     };
     return !DateTime.now().isBefore(accessStart);
   }
@@ -69,46 +68,48 @@ class ClubMatch extends Equatable {
       isOnSale: jh.asBool(json['is_on_sale']),
       ticketGeneralPrice: jh.asInt(json['ticket_general_price']),
       ticketVipPrice: jh.asInt(json['ticket_vip_price']),
-      saleStartsAt: jh.parseDateTime(json['sale_starts_at']) ??
+      saleStartsAt:
+          jh.parseDateTime(json['sale_starts_at']) ??
           matchDate.subtract(const Duration(days: 7)),
       capacity: jh.asInt(json['capacity']),
       soldCount: jh.asInt(json['sold_count']),
       imageUrl: jh.asStringOrNull(json['image_url']),
-      roster: (json['roster'] as List?)?.map((e) => e.toString()).toList() ??
+      roster:
+          (json['roster'] as List?)?.map((e) => e.toString()).toList() ??
           const <String>[],
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'home_team': homeTeam,
-        'away_team': awayTeam,
-        'competition': competition,
-        'venue': venue,
-        'match_date': matchDate.toIso8601String(),
-        'kickoff_time': kickoffTime,
-        'is_on_sale': isOnSale,
-        'ticket_general_price': ticketGeneralPrice,
-        'ticket_vip_price': ticketVipPrice,
-        'sale_starts_at': saleStartsAt.toIso8601String(),
-        'capacity': capacity,
-        'sold_count': soldCount,
-        'image_url': imageUrl,
-        'roster': roster,
-      };
+    'id': id,
+    'home_team': homeTeam,
+    'away_team': awayTeam,
+    'competition': competition,
+    'venue': venue,
+    'match_date': matchDate.toIso8601String(),
+    'kickoff_time': kickoffTime,
+    'is_on_sale': isOnSale,
+    'ticket_general_price': ticketGeneralPrice,
+    'ticket_vip_price': ticketVipPrice,
+    'sale_starts_at': saleStartsAt.toIso8601String(),
+    'capacity': capacity,
+    'sold_count': soldCount,
+    'image_url': imageUrl,
+    'roster': roster,
+  };
 
   @override
   List<Object?> get props => [
-        id,
-        homeTeam,
-        awayTeam,
-        competition,
-        venue,
-        matchDate,
-        isOnSale,
-        capacity,
-        soldCount,
-      ];
+    id,
+    homeTeam,
+    awayTeam,
+    competition,
+    venue,
+    matchDate,
+    isOnSale,
+    capacity,
+    soldCount,
+  ];
 }
 
 /// A purchased ticket tied to a match.
@@ -201,13 +202,13 @@ class ClubTicket extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        matchId,
-        userId,
-        seatType,
-        amountPaid,
-        status,
-        purchasedAt,
-        updatedAt,
-      ];
+    id,
+    matchId,
+    userId,
+    seatType,
+    amountPaid,
+    status,
+    purchasedAt,
+    updatedAt,
+  ];
 }

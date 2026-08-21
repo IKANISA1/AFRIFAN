@@ -4,8 +4,6 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 APP_DIR="$ROOT/apps/rayon_sports"
-TV_DIR="$ROOT/apps/rayon_sports_tv"
-
 python3 - \
   "$APP_DIR/store_metadata/privacy_policy.html" \
   "$APP_DIR/store_metadata/play_store/data_safety.md" \
@@ -13,7 +11,6 @@ python3 - \
   "$APP_DIR/store_metadata/app_store/privacy_nutrition.md" \
   "$APP_DIR/store_metadata/release_policy_assessment.md" \
   "$APP_DIR/android/app/src/main/AndroidManifest.xml" \
-  "$TV_DIR/android/app/src/main/AndroidManifest.xml" \
   "$ROOT/packages/core/core_network/lib/src/crashlytics_service.dart" \
   "$ROOT/packages/features/feat_sms_ledger/lib/src/services/momo_sms_autoread_service.dart" <<'PY'
 import pathlib
@@ -27,7 +24,6 @@ import xml.etree.ElementTree as ET
     apple_privacy_path,
     assessment_path,
     mobile_manifest_path,
-    tv_manifest_path,
     crashlytics_path,
     sms_path,
 ) = (pathlib.Path(value) for value in sys.argv[1:])
@@ -39,7 +35,6 @@ paths = (
     apple_privacy_path,
     assessment_path,
     mobile_manifest_path,
-    tv_manifest_path,
     crashlytics_path,
     sms_path,
 )
@@ -109,15 +104,10 @@ def active_permissions(path: pathlib.Path) -> set[str]:
     return result
 
 mobile_permissions = active_permissions(mobile_manifest_path)
-tv_permissions = active_permissions(tv_manifest_path)
 checks["mobile active permissions are minimal"] = mobile_permissions == {
     "android.permission.INTERNET",
     "android.permission.POST_NOTIFICATIONS",
 }
-checks["TV active permissions are minimal"] = tv_permissions == {
-    "android.permission.INTERNET",
-}
-
 failures = [label for label, passed in checks.items() if not passed]
 if failures:
     raise SystemExit(
@@ -126,7 +116,6 @@ if failures:
 
 print(
     "Store/privacy contract passed: "
-    f"{len(checks)} assertions; mobile_permissions={sorted(mobile_permissions)}; "
-    f"tv_permissions={sorted(tv_permissions)}."
+    f"{len(checks)} assertions; mobile_permissions={sorted(mobile_permissions)}."
 )
 PY

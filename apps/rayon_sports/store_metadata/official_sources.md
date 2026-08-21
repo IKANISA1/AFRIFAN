@@ -9,14 +9,12 @@ requirements and questionnaires can change.
 - [Prepare an app for review and provide sign-in details](https://support.google.com/googleplay/android-developer/answer/9859455?hl=en)
 - [Data Safety form](https://support.google.com/googleplay/android-developer/answer/10787469?hl=en)
 - [Account deletion](https://support.google.com/googleplay/android-developer/answer/13327111?hl=en)
-- [Preview assets and Android TV listing assets](https://support.google.com/googleplay/android-developer/answer/9866151?hl=en)
+- [Preview assets](https://support.google.com/googleplay/android-developer/answer/9866151?hl=en)
 - [User-generated content](https://support.google.com/googleplay/android-developer/answer/9876937?hl=en)
 - [Real-money gambling, games, contests, and loyalty rewards](https://support.google.com/googleplay/android-developer/answer/9877032?hl=en)
 - [Financial-features declaration](https://support.google.com/googleplay/android-developer/answer/13849271?hl=en)
 - [Payments policy](https://support.google.com/googleplay/android-developer/answer/9858738?hl=en)
 - [Supported Google Play listing languages](https://support.google.com/googleplay/android-developer/answer/9844778?hl=en)
-- [Android TV app quality](https://developer.android.com/docs/quality-guidelines/tv-app-quality)
-- [Android TV manifest and 320x180 launcher banner](https://developer.android.com/training/tv/get-started/create)
 
 ## Apple
 

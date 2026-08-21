@@ -62,7 +62,7 @@ select jsonb_build_object(
         'no_rls_tables', count(*) filter (where c.relkind in ('r','p') and not c.relrowsecurity)
       ) summary
       from pg_class c join pg_namespace n on n.oid = c.relnamespace
-      where n.nspname in ('public','football','africlub_game','storage')
+      where n.nspname in ('public','football','storage')
         and c.relkind in ('r','p','v','m')
       group by n.nspname
     ) relation_summary
@@ -71,7 +71,7 @@ select jsonb_build_object(
     select coalesce(jsonb_agg(format('%I.%I', n.nspname, c.relname)
       order by n.nspname, c.relname), '[]'::jsonb)
     from pg_class c join pg_namespace n on n.oid = c.relnamespace
-    where n.nspname in ('public','football','africlub_game')
+    where n.nspname in ('public','football')
       and c.relkind in ('r','p') and c.relrowsecurity
       and not exists (select 1 from pg_policy p where p.polrelid = c.oid)
   ),
@@ -85,7 +85,7 @@ select jsonb_build_object(
   'policy_counts', (
     select jsonb_object_agg(schemaname, count) from (
       select schemaname, count(*) count from pg_policies
-      where schemaname in ('public','football','africlub_game','storage')
+      where schemaname in ('public','football','storage')
       group by schemaname
     ) policy_summary
   ),
@@ -107,7 +107,7 @@ select jsonb_build_object(
         )
       ) summary
       from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-      where n.nspname in ('public','football','africlub_game')
+      where n.nspname in ('public','football')
       group by n.nspname
     ) function_summary
   ),
@@ -395,7 +395,6 @@ def main() -> int:
         "daily-fixture-sync",
     }
     expected_rls_no_policy = {
-        "africlub_game.display_bootstrap_challenges",
         "public.admin_phone_access",
         "public.request_rate_limits",
     }

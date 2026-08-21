@@ -37,18 +37,18 @@ class FanMembership extends Equatable {
       expiresAt != null && expiresAt!.isBefore(DateTime.now());
 
   int get nextTierPoints => switch (tier) {
-        jh.FanTier.ingenziImanzi => 250,
-        jh.FanTier.inyamibwa => 500,
-        jh.FanTier.imena => 1000,
-        jh.FanTier.bronze => 2000,
-        jh.FanTier.silver => 5000,
-        jh.FanTier.gold => points,
-      };
+    jh.FanTier.ingenziImanzi => 250,
+    jh.FanTier.inyamibwa => 500,
+    jh.FanTier.imena => 1000,
+    jh.FanTier.bronze => 2000,
+    jh.FanTier.silver => 5000,
+    jh.FanTier.gold => points,
+  };
 
   int get pointsToNextTier => switch (tier) {
-        jh.FanTier.gold => 0,
-        _ => (nextTierPoints - points).clamp(0, nextTierPoints),
-      };
+    jh.FanTier.gold => 0,
+    _ => (nextTierPoints - points).clamp(0, nextTierPoints),
+  };
 
   double get progressToNextTier {
     if (tier == jh.FanTier.gold) return 1;
@@ -67,7 +67,8 @@ class FanMembership extends Equatable {
     return FanMembership(
       id: jh.asStringOrNull(json['id']) ?? '',
       userId: jh.asStringOrNull(json['user_id']) ?? '',
-      partnerId: jh.asStringOrNull(json['partner_id']) ??
+      partnerId:
+          jh.asStringOrNull(json['partner_id']) ??
           jh.asStringOrNull(json['club_id']) ??
           '',
       displayName: jh.asStringOrNull(json['display_name']) ?? 'Supporter',
@@ -78,25 +79,26 @@ class FanMembership extends Equatable {
       joinedAt: jh.parseDateTime(json['joined_at']) ?? DateTime.now(),
       expiresAt: jh.parseDateTime(json['expires_at']),
       renewedAt: jh.parseDateTime(json['renewed_at']),
-      paymentStatus:
-          jh.PaymentStatusX.fromValue(json['payment_status'] as String?),
+      paymentStatus: jh.PaymentStatusX.fromValue(
+        json['payment_status'] as String?,
+      ),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'user_id': userId,
-        'partner_id': partnerId,
-        'display_name': displayName,
-        'tier': tier.value,
-        'points': points,
-        'chapter': chapter,
-        'membership_number': membershipNumber,
-        'joined_at': joinedAt.toIso8601String(),
-        if (expiresAt != null) 'expires_at': expiresAt!.toIso8601String(),
-        if (renewedAt != null) 'renewed_at': renewedAt!.toIso8601String(),
-        'payment_status': paymentStatus.value,
-      };
+    'id': id,
+    'user_id': userId,
+    'partner_id': partnerId,
+    'display_name': displayName,
+    'tier': tier.value,
+    'points': points,
+    'chapter': chapter,
+    'membership_number': membershipNumber,
+    'joined_at': joinedAt.toIso8601String(),
+    if (expiresAt != null) 'expires_at': expiresAt!.toIso8601String(),
+    if (renewedAt != null) 'renewed_at': renewedAt!.toIso8601String(),
+    'payment_status': paymentStatus.value,
+  };
 
   FanMembership copyWith({
     String? id,
@@ -134,19 +136,19 @@ class FanMembership extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        partnerId,
-        displayName,
-        tier,
-        points,
-        chapter,
-        membershipNumber,
-        joinedAt,
-        expiresAt,
-        renewedAt,
-        paymentStatus,
-      ];
+    id,
+    userId,
+    partnerId,
+    displayName,
+    tier,
+    points,
+    chapter,
+    membershipNumber,
+    joinedAt,
+    expiresAt,
+    renewedAt,
+    paymentStatus,
+  ];
 }
 
 class FanClub extends Equatable {
@@ -175,37 +177,41 @@ class FanClub extends Equatable {
   factory FanClub.fromJson(Map<String, dynamic> json) {
     return FanClub(
       id: jh.asStringOrNull(json['id']) ?? '',
-      partnerId: jh.asStringOrNull(json['partner_id']) ??
+      partnerId:
+          jh.asStringOrNull(json['partner_id']) ??
           jh.asStringOrNull(json['club_id']) ??
           '',
       name: jh.asStringOrNull(json['name']) ?? '',
-      region: jh.asStringOrNull(json['region']) ??
+      region:
+          jh.asStringOrNull(json['region']) ??
           jh.asStringOrNull(json['district']) ??
           jh.asStringOrNull(json['province']) ??
           '',
-      description: jh.asStringOrNull(json['description']) ??
+      description:
+          jh.asStringOrNull(json['description']) ??
           jh.asStringOrNull(json['notes']) ??
           '',
       memberCount: jh.asInt(json['member_count'] ?? json['members_count']),
       eventCount: jh.asInt(json['event_count'] ?? json['events_count']),
       rating: jh.asDouble(json['rating']),
-      bannerImageUrl: jh.asStringOrNull(json['banner_image_url']) ??
+      bannerImageUrl:
+          jh.asStringOrNull(json['banner_image_url']) ??
           jh.asStringOrNull(json['cover_image_url']) ??
           jh.asStringOrNull(json['logo_url']),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'partner_id': partnerId,
-        'name': name,
-        'region': region,
-        'description': description,
-        'member_count': memberCount,
-        'event_count': eventCount,
-        'rating': rating,
-        'banner_image_url': bannerImageUrl,
-      };
+    'id': id,
+    'partner_id': partnerId,
+    'name': name,
+    'region': region,
+    'description': description,
+    'member_count': memberCount,
+    'event_count': eventCount,
+    'rating': rating,
+    'banner_image_url': bannerImageUrl,
+  };
 
   @override
   List<Object?> get props => [id, partnerId, name, region];

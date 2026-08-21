@@ -43,10 +43,7 @@ class TicketConfigureStep extends StatelessWidget {
           onTap: quantity > 1 ? () => onQuantityChanged(quantity - 1) : null,
         ),
         const SizedBox(width: SpacingTokens.spacing3),
-        Text(
-          '$quantity',
-          style: TypographyTokens.headlineMedium(),
-        ),
+        Text('$quantity', style: TypographyTokens.headlineMedium()),
         const SizedBox(width: SpacingTokens.spacing3),
         AfriIconButton(
           icon: AfriIcons.add,

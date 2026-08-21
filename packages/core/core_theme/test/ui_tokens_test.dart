@@ -350,16 +350,14 @@ void main() {
       expect(BorderTokens.chromeFocus, greaterThan(BorderTokens.chrome));
     });
 
-    test('focus, admin, and TV contracts are concrete', () {
+    test('focus and admin contracts are concrete', () {
       expect(tokens.focusRingWidth, greaterThanOrEqualTo(3));
       expect(tokens.focusScale, greaterThanOrEqualTo(1));
       expect(tokens.adminRailWidth, greaterThanOrEqualTo(240));
       expect(tokens.adminTableRowHeight, greaterThanOrEqualTo(48));
-      expect(tokens.tvSafeMargin720, greaterThanOrEqualTo(48));
-      expect(tokens.tvTileFocusScale, greaterThan(1));
     });
 
-    test('required evidence ids cover mobile, admin, TV, and state gates', () {
+    test('required evidence ids cover mobile, admin, and state gates', () {
       expect(AfriDesignTokens.requiredStateIds, contains('permissionDenied'));
       expect(AfriDesignTokens.requiredStateIds, contains('reducedMotion'));
       expect(
@@ -370,7 +368,6 @@ void main() {
         AfriDesignTokens.requiredAdminEvidenceIds,
         contains('bulkSelection'),
       );
-      expect(AfriDesignTokens.requiredTvEvidenceIds, contains('tv1080p'));
     });
   });
 }

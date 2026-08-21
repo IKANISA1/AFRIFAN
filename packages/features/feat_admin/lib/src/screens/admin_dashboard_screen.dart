@@ -284,9 +284,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         _AdminActionTile(
           route: '/admin/features',
           title: context.afriL10n.adminFeatureManager,
-          subtitle: context
-              .afriL10n
-              .adminFeatureManagerDashboardDescription,
+          subtitle: context.afriL10n.adminFeatureManagerDashboardDescription,
           icon: AfriIcons.settings,
           enabled: enabled,
           selected:

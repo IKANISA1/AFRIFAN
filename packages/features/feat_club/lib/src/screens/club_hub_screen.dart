@@ -32,10 +32,7 @@ class ClubHubScreen extends ConsumerWidget {
     return AfriScreenScaffold(
       appBar: AfriAppBar(
         automaticallyImplyLeading: false,
-        title: Text(
-          l10n.clubTitle,
-          style: TypographyTokens.headlineSmall(),
-        ),
+        title: Text(l10n.clubTitle, style: TypographyTokens.headlineSmall()),
         actions: [
           AfriIconButton(
             key: const ValueKey<String>('club-refresh-action'),
@@ -46,10 +43,8 @@ class ClubHubScreen extends ConsumerWidget {
         ],
       ),
       bottomNavigationAware: true,
-      bodyWrapper: (child) => GradientBackground(
-        routePath: '/club',
-        child: child,
-      ),
+      bodyWrapper: (child) =>
+          GradientBackground(routePath: '/club', child: child),
       child: ValueListenableBuilder<bool>(
         valueListenable: ConnectivityService.onlineNotifier,
         builder: (context, isOnline, _) {
@@ -59,8 +54,8 @@ class ClubHubScreen extends ConsumerWidget {
                   isOnline: isOnline,
                 )
               : !isOnline
-                  ? const ClubContentFailure(ClubContentFailureKind.offline)
-                  : null;
+              ? const ClubContentFailure(ClubContentFailureKind.offline)
+              : null;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -110,10 +105,7 @@ class ClubHubScreen extends ConsumerWidget {
               if (overview.isLoading || failure != null) ...[
                 const SizedBox(height: SpacingTokens.spacing4),
                 if (failure == null)
-                  const ClubContentStatusBanner(
-                    refreshing: true,
-                    failure: null,
-                  )
+                  const ClubContentStatusBanner(refreshing: true, failure: null)
                 else if (failure.kind == ClubContentFailureKind.unknown)
                   AfriStateView.offline(
                     compact: true,
@@ -128,8 +120,8 @@ class ClubHubScreen extends ConsumerWidget {
                     failure: failure,
                     onRetry:
                         failure.kind == ClubContentFailureKind.permissionDenied
-                            ? null
-                            : () => ref.invalidate(clubOverviewProvider),
+                        ? null
+                        : () => ref.invalidate(clubOverviewProvider),
                   ),
               ],
               const SizedBox(height: SpacingTokens.sectionGap),

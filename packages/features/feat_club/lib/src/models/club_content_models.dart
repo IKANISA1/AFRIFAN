@@ -48,14 +48,14 @@ class ClubOverview extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-        id,
-        name,
-        country,
-        league,
-        slug,
-        nickname,
-        logoUrl,
-      ];
+    id,
+    name,
+    country,
+    league,
+    slug,
+    nickname,
+    logoUrl,
+  ];
 }
 
 class ClubNewsItem extends Equatable {
@@ -95,15 +95,15 @@ class ClubNewsItem extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-        id,
-        title,
-        subtitle,
-        body,
-        category,
-        author,
-        publishedAt,
-        imageUrl,
-      ];
+    id,
+    title,
+    subtitle,
+    body,
+    category,
+    author,
+    publishedAt,
+    imageUrl,
+  ];
 }
 
 class ClubSquadMember extends Equatable {
@@ -140,14 +140,14 @@ class ClubSquadMember extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-        id,
-        name,
-        position,
-        shirtNumber,
-        nationality,
-        bio,
-        imageUrl,
-      ];
+    id,
+    name,
+    position,
+    shirtNumber,
+    nationality,
+    bio,
+    imageUrl,
+  ];
 }
 
 class ClubFixtureItem extends Equatable {
@@ -203,18 +203,18 @@ class ClubFixtureItem extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-        id,
-        homeTeam,
-        awayTeam,
-        competition,
-        venue,
-        matchDate,
-        kickoffTime,
-        status,
-        homeScore,
-        awayScore,
-        isOnSale,
-      ];
+    id,
+    homeTeam,
+    awayTeam,
+    competition,
+    venue,
+    matchDate,
+    kickoffTime,
+    status,
+    homeScore,
+    awayScore,
+    isOnSale,
+  ];
 }
 
 class ClubStandingItem extends Equatable {
@@ -252,14 +252,14 @@ class ClubStandingItem extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-        id,
-        position,
-        clubName,
-        played,
-        goalDifference,
-        points,
-        clubSlug,
-      ];
+    id,
+    position,
+    clubName,
+    played,
+    goalDifference,
+    points,
+    clubSlug,
+  ];
 }
 
 class ClubHistoryItem extends Equatable {
@@ -326,11 +326,11 @@ class ClubProjectItem extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-        id,
-        name,
-        description,
-        currentTotal,
-        targetAmount,
-        memberCount,
-      ];
+    id,
+    name,
+    description,
+    currentTotal,
+    targetAmount,
+    memberCount,
+  ];
 }

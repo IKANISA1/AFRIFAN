@@ -20,21 +20,19 @@ void main() {
       'updated_at': '2026-07-24T18:05:00Z',
     });
 
-    expect(
-      order.updatedAt,
-      DateTime.parse('2026-07-24T18:05:00Z'),
-    );
+    expect(order.updatedAt, DateTime.parse('2026-07-24T18:05:00Z'));
   });
 
   test('order cancellation requires the loaded version token', () {
     final packageSource = File('lib/src/repositories/club_repository.dart');
-    final source = (packageSource.existsSync()
-            ? packageSource
-            : File(
-                'packages/features/feat_club/lib/src/repositories/'
-                'club_repository.dart',
-              ))
-        .readAsStringSync();
+    final source =
+        (packageSource.existsSync()
+                ? packageSource
+                : File(
+                    'packages/features/feat_club/lib/src/repositories/'
+                    'club_repository.dart',
+                  ))
+            .readAsStringSync();
 
     expect(source, contains('cancel_shop_order_if_unchanged'));
     expect(source, contains('p_expected_updated_at'));

@@ -19,11 +19,8 @@ class EnvConfig {
 
   /// Country code from the club config (e.g. 'RW' for Rayon Sports).
   /// In production this is injected from dart-define-from-file.
-  static const String? countryCode = String.fromEnvironment(
-            'COUNTRY_CODE',
-            defaultValue: '',
-          ) ==
-          ''
+  static const String? countryCode =
+      String.fromEnvironment('COUNTRY_CODE', defaultValue: '') == ''
       ? null
       : String.fromEnvironment('COUNTRY_CODE');
 
@@ -43,8 +40,8 @@ enum AppAccessPermission {
   sms;
 
   String get storageKey => switch (this) {
-        AppAccessPermission.sms => 'sms',
-      };
+    AppAccessPermission.sms => 'sms',
+  };
 }
 
 class AppAccessService {
@@ -131,12 +128,22 @@ Future<Box<T>> openHiveBox<T>(String boxName) async {
     try {
       return await Hive.openBox<T>(boxName, encryptionCipher: cipher);
     } catch (error, stackTrace) {
-      AfriLogger.warn('MomoSmsDeps', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'MomoSmsDeps',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       // Migration: existing unencrypted box → delete and re-open encrypted.
       try {
         await Hive.deleteBoxFromDisk(boxName);
       } catch (error, stackTrace) {
-      AfriLogger.warn('MomoSmsDeps', 'Operation failed (non-critical).', error, stackTrace);
+        AfriLogger.warn(
+          'MomoSmsDeps',
+          'Operation failed (non-critical).',
+          error,
+          stackTrace,
+        );
         // Best-effort cleanup.
       }
       return await Hive.openBox<T>(boxName, encryptionCipher: cipher);

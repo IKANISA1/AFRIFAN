@@ -135,10 +135,7 @@ void main() {
             )
             .first;
         final gestureDetector = find
-            .descendant(
-              of: focusable,
-              matching: find.byType(GestureDetector),
-            )
+            .descendant(of: focusable, matching: find.byType(GestureDetector))
             .first;
         Focus.of(tester.element(gestureDetector)).requestFocus();
         await tester.pumpAndSettle();
@@ -156,9 +153,7 @@ void main() {
       value: AsyncData<TicketDetailState>(
         _ready(
           phase: TicketDetailPhase.degraded,
-          failure: const TicketDetailFailure(
-            TicketDetailFailureKind.conflict,
-          ),
+          failure: const TicketDetailFailure(TicketDetailFailureKind.conflict),
         ),
       ),
       check: (tester) async {
@@ -265,9 +260,7 @@ void main() {
       value: AsyncData<TicketDetailState>(
         _ready(
           phase: TicketDetailPhase.degraded,
-          failure: const TicketDetailFailure(
-            TicketDetailFailureKind.conflict,
-          ),
+          failure: const TicketDetailFailure(TicketDetailFailureKind.conflict),
         ),
       ),
       check: (_) async {
@@ -356,9 +349,8 @@ Future<void> _pumpRoute(
           ),
           GoRoute(
             path: 'map/:id',
-            builder: (context, state) => InteractiveSeatMapScreen(
-              matchId: state.pathParameters['id']!,
-            ),
+            builder: (context, state) =>
+                InteractiveSeatMapScreen(matchId: state.pathParameters['id']!),
           ),
         ],
       ),
@@ -406,7 +398,7 @@ Future<void> _pumpRoute(
 
 class _Controller extends TicketDetailController {
   _Controller(AsyncValue<TicketDetailState> value)
-      : super(_Gateway(), 'match-1', autoLoad: false) {
+    : super(_Gateway(), 'match-1', autoLoad: false) {
     state = value;
   }
 
@@ -431,16 +423,16 @@ TicketDetailState _ready({
 }
 
 ClubMatch _match() => ClubMatch(
-      id: 'match-1',
-      homeTeam: 'Rayon Sports',
-      awayTeam: 'APR FC',
-      competition: 'Rwanda Premier League',
-      venue: 'Amahoro Stadium',
-      matchDate: DateTime.utc(2026, 8, 2, 15),
-      kickoffTime: '17:00',
-      isOnSale: true,
-      ticketGeneralPrice: 5000,
-      ticketVipPrice: 15000,
-      saleStartsAt: DateTime.utc(2026, 7, 20, 9),
-      capacity: 45000,
-    );
+  id: 'match-1',
+  homeTeam: 'Rayon Sports',
+  awayTeam: 'APR FC',
+  competition: 'Rwanda Premier League',
+  venue: 'Amahoro Stadium',
+  matchDate: DateTime.utc(2026, 8, 2, 15),
+  kickoffTime: '17:00',
+  isOnSale: true,
+  ticketGeneralPrice: 5000,
+  ticketVipPrice: 15000,
+  saleStartsAt: DateTime.utc(2026, 7, 20, 9),
+  capacity: 45000,
+);

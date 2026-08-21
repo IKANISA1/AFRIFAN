@@ -31,16 +31,18 @@ class StatementExportService {
         'Created At',
       ],
       rows: rows
-          .map((r) => [
-                r['id'],
-                r['user_id'],
-                r['amount'],
-                r['currency'] ?? _defaultCurrency,
-                r['status'],
-                r['momo_reference'] ?? r['client_request_reference'] ?? '',
-                r['confirmed_at'] ?? '',
-                r['created_at'],
-              ])
+          .map(
+            (r) => [
+              r['id'],
+              r['user_id'],
+              r['amount'],
+              r['currency'] ?? _defaultCurrency,
+              r['status'],
+              r['momo_reference'] ?? r['client_request_reference'] ?? '',
+              r['confirmed_at'] ?? '',
+              r['created_at'],
+            ],
+          )
           .toList(),
     );
   }
@@ -53,9 +55,11 @@ class StatementExportService {
   }) async {
     var query = _client
         .from('momo_ledger_entries')
-        .select('id, amount, currency, external_reference, '
-            'counterparty_name, description, tx_category, '
-            'cashflow_bucket, ledger_status, tx_datetime, created_at');
+        .select(
+          'id, amount, currency, external_reference, '
+          'counterparty_name, description, tx_category, '
+          'cashflow_bucket, ledger_status, tx_datetime, created_at',
+        );
 
     if (from != null) {
       query = query.gte('tx_datetime', from.toUtc().toIso8601String());
@@ -82,19 +86,21 @@ class StatementExportService {
         'Created At',
       ],
       rows: rows
-          .map((r) => [
-                r['id'],
-                r['amount'],
-                r['currency'] ?? _defaultCurrency,
-                r['external_reference'] ?? '',
-                r['counterparty_name'] ?? '',
-                r['description'] ?? '',
-                r['tx_category'] ?? '',
-                r['cashflow_bucket'] ?? '',
-                r['ledger_status'] ?? '',
-                r['tx_datetime'] ?? '',
-                r['created_at'],
-              ])
+          .map(
+            (r) => [
+              r['id'],
+              r['amount'],
+              r['currency'] ?? _defaultCurrency,
+              r['external_reference'] ?? '',
+              r['counterparty_name'] ?? '',
+              r['description'] ?? '',
+              r['tx_category'] ?? '',
+              r['cashflow_bucket'] ?? '',
+              r['ledger_status'] ?? '',
+              r['tx_datetime'] ?? '',
+              r['created_at'],
+            ],
+          )
           .toList(),
     );
   }
@@ -115,27 +121,32 @@ class StatementExportService {
         'Created At',
       ],
       rows: rows
-          .map((r) => [
-                r['id'],
-                r['name'],
-                r['group_type'],
-                r['target_amount'],
-                r['current_total'],
-                r['currency'] ?? _defaultCurrency,
-                r['member_count'],
-                r['is_active'] ?? !(r['is_closed'] as bool? ?? false),
-                r['created_at'],
-              ])
+          .map(
+            (r) => [
+              r['id'],
+              r['name'],
+              r['group_type'],
+              r['target_amount'],
+              r['current_total'],
+              r['currency'] ?? _defaultCurrency,
+              r['member_count'],
+              r['is_active'] ?? !(r['is_closed'] as bool? ?? false),
+              r['created_at'],
+            ],
+          )
           .toList(),
     );
   }
 
   Future<List<Map<String, dynamic>>> _loadContributionRows(
-      String groupId) async {
+    String groupId,
+  ) async {
     final contributions = await _client
         .from('group_contributions')
-        .select('id, user_id, amount, status, client_request_reference, '
-            'momo_reference, confirmed_at, created_at')
+        .select(
+          'id, user_id, amount, status, client_request_reference, '
+          'momo_reference, confirmed_at, created_at',
+        )
         .eq('group_id', groupId)
         .order('created_at', ascending: false);
     return List<Map<String, dynamic>>.from(
@@ -151,9 +162,11 @@ class StatementExportService {
   Future<List<Map<String, dynamic>>> _loadGroupRows() async {
     final data = await _client
         .from('contribution_groups')
-        .select('id, name, group_type, target_amount, '
-            'current_total, currency, member_count, is_active, '
-            'is_closed, created_at')
+        .select(
+          'id, name, group_type, target_amount, '
+          'current_total, currency, member_count, is_active, '
+          'is_closed, created_at',
+        )
         .order('created_at', ascending: false);
     return List<Map<String, dynamic>>.from(data as List)
         .map(

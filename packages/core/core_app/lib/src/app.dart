@@ -88,9 +88,7 @@ class _AfriClubAppState extends State<AfriClubApp> {
         initialLocation: widget.initialLocation,
         deepLinkParser: widget.deepLinkParser,
         deepLinkService: widget.deepLinkService,
-        notificationRouteStream:
-            widget.notificationRouteStream ??
-            PushNotificationService.openedRoutes,
+        notificationRouteStream: widget.notificationRouteStream,
         frameworkLocaleForLanguageCode: _frameworkLocaleForLanguageCode,
         appLocaleForLanguageCode: _appLocaleForLanguageCode,
       ),

@@ -39,8 +39,9 @@ void main() {
       TicketMatchesFailureKind.securityTimeout,
     );
     expect(
-      TicketMatchesFailure.fromError(StateError('private ticket token 4482'))
-          .toString(),
+      TicketMatchesFailure.fromError(
+        StateError('private ticket token 4482'),
+      ).toString(),
       'TicketMatchesFailure(unknown)',
     );
   });
@@ -361,9 +362,8 @@ void main() {
       tester,
       id: 'conflict',
       ticketMatchesOverride: ticketMatchesProvider.overrideWith(
-        (ref) async => throw const TicketMatchesFailure(
-          TicketMatchesFailureKind.conflict,
-        ),
+        (ref) async =>
+            throw const TicketMatchesFailure(TicketMatchesFailureKind.conflict),
       ),
     );
 
@@ -424,10 +424,7 @@ Widget _buildTicketingApp(
       locale: locale.languageCode == 'rw' ? const Locale('en') : locale,
       localizationsDelegates: AfriLocalizations.localizationsDelegates,
       supportedLocales: const <Locale>[Locale('en'), Locale('fr')],
-      theme: ClubTheme.from(
-        ClubConfig.fallback(),
-        brightness: brightness,
-      ),
+      theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
       routerConfig: router,
       builder: (context, child) {
         final mediaQuery = MediaQuery.of(context);
@@ -523,9 +520,9 @@ void _setGoldenSurface(WidgetTester tester, Size size) {
   tester.view.devicePixelRatio = 1.0;
   tester.platformDispatcher.accessibilityFeaturesTestValue =
       const FakeAccessibilityFeatures(
-    disableAnimations: true,
-    accessibleNavigation: true,
-  );
+        disableAnimations: true,
+        accessibleNavigation: true,
+      );
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
   addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);

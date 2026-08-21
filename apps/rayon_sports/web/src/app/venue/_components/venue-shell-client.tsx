@@ -19,7 +19,6 @@ const navigation = [
   ["Menu", "/venue/menu"],
   ["Check-ins", "/venue/checkins"],
   ["Promotions", "/venue/promotions"],
-  ["TV code", "/venue/tv-code"],
   ["Staff", "/venue/staff"],
 ] as const;
 

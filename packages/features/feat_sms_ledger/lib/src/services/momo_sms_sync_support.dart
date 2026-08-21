@@ -28,8 +28,9 @@ class MomoSmsSyncState {
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'initialBackfillCompletedAt':
-          initialBackfillCompletedAt?.toUtc().toIso8601String(),
+      'initialBackfillCompletedAt': initialBackfillCompletedAt
+          ?.toUtc()
+          .toIso8601String(),
       'lastSuccessfulSyncAt': lastSuccessfulSyncAt?.toUtc().toIso8601String(),
       'latestKnownMessageAt': latestKnownMessageAt?.toUtc().toIso8601String(),
     };
@@ -172,8 +173,9 @@ class MomoSmsSyncRunRecord {
       'duplicate_messages': duplicateMessages,
       'oldest_message_at': oldestMessageAt?.toUtc().toIso8601String(),
       'newest_message_at': newestMessageAt?.toUtc().toIso8601String(),
-      'latest_known_message_at':
-          latestKnownMessageAt?.toUtc().toIso8601String(),
+      'latest_known_message_at': latestKnownMessageAt
+          ?.toUtc()
+          .toIso8601String(),
       'error_message': errorMessage,
       if (metadata != null && metadata!.isNotEmpty) 'metadata': metadata,
     };
@@ -186,8 +188,8 @@ class MomoSmsSyncRunAuditWriter {
   MomoSmsSyncRunAuditWriter({
     required MomoSmsSyncRunInsert insert,
     CrashlyticsService? crashlytics,
-  })  : _insert = insert,
-        _crashlytics = crashlytics;
+  }) : _insert = insert,
+       _crashlytics = crashlytics;
 
   factory MomoSmsSyncRunAuditWriter.supabase({
     required SupabaseClient client,

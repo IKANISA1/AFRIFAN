@@ -16,7 +16,7 @@ Review cadence: before every release and quarterly
 ## Matchday opening checklist
 
 - Confirm `/venue` shows the correct venue, staff role, and live service state.
-- Verify order queue, active menu (maximum 10), check-in campaign window/budget, TV-code lifecycle, and staff roster.
+- Verify order queue, active menu (maximum 10), check-in campaign window and budget, short-lived check-in code lifecycle, and staff roster.
 - Perform one test order transition and confirm an audit event exists.
 - Confirm support contacts and correlation-ID escalation channel are staffed.
 
@@ -28,7 +28,7 @@ Review cadence: before every release and quarterly
 | SEV-2 | Orders/check-ins unavailable during event | 15 min | Switch to documented manual fallback, capture correlation IDs, notify backend on-call. |
 | SEV-3 | Degraded or stale non-critical data | 4 hours | Record issue, retry safely, schedule correction. |
 
-Never represent an error state as an empty queue. Record UTC time, venue, workflow, correlation ID, operator, impact, mitigation, and resolution. Do not copy supporter identity, balances, tokens, pairing codes, or order contents into chat or tickets.
+Never represent an error state as an empty queue. Record UTC time, venue, workflow, correlation ID, operator, impact, mitigation, and resolution. Do not copy supporter identity, balances, tokens, check-in codes, or order contents into chat or tickets.
 
 ## Audit retention
 
@@ -42,5 +42,4 @@ Never represent an error state as an empty queue. Record UTC time, venue, workfl
 - Close expired campaigns and codes; reconcile order and FET totals.
 - Revoke temporary staff assignments.
 - Record unresolved incidents and handoff owner/time.
-- Confirm no raw check-in code, TV credential, or supporter personal data was retained in operational notes.
-
+- Confirm no raw check-in code, access credential, or supporter personal data was retained in operational notes.

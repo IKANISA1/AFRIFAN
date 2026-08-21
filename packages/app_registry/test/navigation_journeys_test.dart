@@ -159,37 +159,6 @@ void main() {
       );
     });
 
-    test(
-      'narrow owner and organizer journeys stay non-tab without enabling admin',
-      () {
-        final operations = modules.firstWhere(
-          (module) => module.featureKey == 'game_operations',
-        );
-        final paths = operations.routePresentationDecisions
-            .map((decision) => decision.path)
-            .toSet();
-
-        expect(operations.tabRoute, isNull);
-        expect(
-          paths,
-          containsAll(<String>{
-            '/my-tvs',
-            '/my-tvs/pair',
-            '/game-operations',
-            '/game-operations/sessions',
-          }),
-        );
-        expect(
-          paths.where((path) => path == '/admin' || path.startsWith('/admin/')),
-          isEmpty,
-        );
-        expect(
-          modules.map((module) => module.featureKey),
-          isNot(contains('admin')),
-        );
-      },
-    );
-
     test('/admin keeps the operations routes for explicit internal builds', () {
       final internalModules = AppModuleRegistry.build(
         const _AllFeaturesConfig(mobileAdmin: true),
@@ -390,19 +359,10 @@ void main() {
           '/club/projects',
           '/club/projects/:projectId',
           '/fanzone',
-          '/fanzone/game',
-          '/fanzone/game/:sessionId',
           '/fanzone/venue',
           '/fanzone/venue/order',
           '/fanzone/match/:fixtureId',
           '/fanzone/wallet',
-          '/game-operations',
-          '/game-operations/sessions',
-          '/game-operations/sessions/new',
-          '/game-operations/sessions/:sessionId',
-          '/my-tvs',
-          '/my-tvs/pair',
-          '/my-tvs/:displayId',
           '/settings',
           '/tickets',
           '/e-ticket/:id',

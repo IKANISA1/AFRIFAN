@@ -5,7 +5,7 @@
   "bundles": [
     {
       "id": "consumer-web-support-policy-states-20260809",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/consumer_web_support_policy_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -43,77 +43,6 @@
       "data_source": "dirty local working-tree production web build at capture time, based on the recorded baseline commit; no exact source patch digest was recorded; synthetic non-production browser interaction states for public support and account-deletion routes; no physical assistive-technology, deployed-domain, store, or accountable approval claim"
     },
     {
-      "id": "android-profile-performance-checkpoint-20260802",
-      "directory": "output/implementation_goal_20260724/android_profile_performance_checkpoint_20260802",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "GOV-06",
-        "EVID-06",
-        "ADMIN-08",
-        "REL-02",
-        "REL-04"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_production_local_android_profile_performance",
-      "platform": "android_api36_software_rendered_emulator_profile_perfetto_surfaceflinger_and_flutter_frame_timing",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Android 16 API 36 sdk_gphone64_arm64 emulator 1080x2340 density 440; software-rendered lavapipe/SwiftShader",
-      "viewport_profiles": [
-        {
-          "width": 1080,
-          "height": 2340,
-          "device_pixel_ratio": 2.75
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "production_default"
-      ],
-      "captured_at": "2026-08-02T04:53:08Z",
-      "data_source": "current_dirty_local_source_production_main_profile_apk_controlled_non_production_providers_android_emulator_adb_surfaceflinger_meminfo_perfetto_and_flutter_frame_timing_with_no_live_backend_physical_device_store_or_release_claim"
-    },
-    {
-      "id": "release-platform-checkpoint-20260802",
-      "directory": "output/implementation_goal_20260724/release_platform_checkpoint_20260802",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "GOV-06",
-        "EVID-04",
-        "EVID-08",
-        "REL-01",
-        "REL-02",
-        "REL-03",
-        "REL-04",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_production_local_release_platform_checkpoint",
-      "platform": "android_api36_emulator_ios_26_5_simulator_ephemeral_android_release_and_unsigned_ios_release",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Android API 36 emulator 1080x2340 density 440; iPhone 17 iOS 26.5 simulator; Android ephemeral self-signed release dry-run",
-      "viewport_profiles": [
-        {
-          "width": 1080,
-          "height": 2340,
-          "device_pixel_ratio": 2.75
-        },
-        {
-          "applicable": false,
-          "reason": "iOS integration result records the named simulator and OS; no screenshot claim is made"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "production_default"
-      ],
-      "captured_at": "2026-08-02T04:07:09Z",
-      "data_source": "current_dirty_local_source_deterministic_test_providers_android_emulator_ios_simulator_ephemeral_self_signed_android_release_and_unsigned_ios_release_with_no_live_backend_physical_device_store_or_release_claim"
-    },
-    {
       "id": "implementation-goal-root",
       "directory": "output/implementation_goal_20260724",
       "artifact_scope": "immediate",
@@ -138,893 +67,8 @@
         "multi_surface_declared_by_sub_bundle"
       ],
       "captured_at": "2026-07-24T08:54:55Z",
-      "data_source": "current_local_source_and_synthetic_non_production"
-    },
-    {
-      "id": "live-games-v2-local-checkpoint",
-      "directory": "output/implementation_goal_20260724/live_games_v2_local_checkpoint_20260730",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "STATE-02",
-        "STATE-03",
-        "EVID-03",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_live_games_v2_local",
-      "platform": "flutter_test_and_static_supabase_contract",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; deterministic widget/controller and static SQL contract execution",
-      "viewport_profiles": [
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 834,
-          "height": 1194,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-08-01T11:23:02Z",
-      "data_source": "current_user_defined_structured_prediction_trivia_scope_local_source_synthetic_non_production_and_unapplied_sql"
-    },
-    {
-      "id": "web-tv-club-scoped-realtime-checkpoint",
-      "directory": "output/implementation_goal_20260724/web_tv_club_scoped_realtime_checkpoint_20260730",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-03",
-        "ADMIN-06",
-        "EVID-03",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_web_tv_realtime_local",
-      "platform": "nextjs_web_local_test_and_build",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Vitest 4.1.9; deterministic local channel, cleanup, reconnect, authorization-failure and answer-safety tests",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "source and deterministic client contract checkpoint; no new visual pixels"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_no_visual_change"
-      ],
-      "captured_at": "2026-08-01T11:12:22Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_web_channel_cleanup_reconnect_authorization_and_answer_safety_tests"
-    },
-    {
-      "id": "android-physical-preflight",
-      "directory": "output/implementation_goal_20260724/android_physical_evidence_current",
-      "task_ids": [
-        "REL-01"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3-isolated-qa",
-      "build_number": "5",
-      "flavor": "rayon_sports_codexqa",
-      "platform": "android_physical",
-      "runtime_device": "Android 13 API 33; Pixel 4a; USB ADB",
-      "viewport_profiles": [
-        {
-          "width": 1080,
-          "height": 2340,
-          "device_pixel_ratio": "physical"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_captured_device_locked"
-      ],
-      "captured_at": "2026-07-24T15:41:27Z",
-      "data_source": "isolated_qa_non_production"
-    },
-    {
-      "id": "compact-phone-matrix",
-      "directory": "output/implementation_goal_20260724/compact_phone_matrix",
-      "task_ids": [
-        "RESP-02",
-        "EVID-03"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_golden",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic widget surface",
-      "viewport_profiles": [
-        {
-          "width": 320,
-          "height": 760,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 374,
-          "height": 812,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-07-24T20:24:00Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "universal-component-inventory",
-      "directory": "output/implementation_goal_20260724/component_inventory_current",
-      "task_ids": [
-        "SYS-07",
-        "EVID-03"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_golden",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; pointer and keyboard widget harness",
-      "viewport_profiles": [
-        {
-          "width": 900,
-          "height": 1600,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-07-24T18:52:26Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "contrast-matrix",
-      "directory": "output/implementation_goal_20260724/contrast_matrix",
-      "task_ids": [
-        "A11Y-01",
-        "EVID-03"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_golden",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic widget surface",
-      "viewport_profiles": [
-        {
-          "width": 430,
-          "height": 900,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-07-24T19:52:39Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "deep-link-navigation-matrix",
-      "directory": "output/implementation_goal_20260724/deep_link_navigation_matrix",
-      "task_ids": [
-        "STATE-04"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_test",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; GoRouter widget/unit harness",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "route graph and guard contract; representative widget tests own their declared viewports"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_navigation_contract"
-      ],
-      "captured_at": "2026-07-24T20:02:30Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "design-compliance-report",
-      "directory": "output/implementation_goal_20260724/design_compliance_current",
-      "task_ids": [
-        "GOV-04",
-        "EVID-08"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "repository_compliance",
-      "platform": "macos_arm64_shell",
-      "runtime_device": "bash; jq; rg; local repository source",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "non-visual repository compliance report"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_source_report"
-      ],
-      "captured_at": "2026-07-24T20:02:30Z",
-      "data_source": "current_local_source"
-    },
-    {
-      "id": "onboarding-comparison-record",
-      "directory": "output/implementation_goal_20260724/evidence",
-      "task_ids": [
-        "GOV-01",
-        "GOV-04"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "governance_record",
-      "platform": "repository_evidence",
-      "runtime_device": "local governed evidence record",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "rights and comparison record; no retained screenshot"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_governance_record"
-      ],
-      "captured_at": "2026-07-24T00:00:00Z",
-      "data_source": "current_local_source"
-    },
-    {
-      "id": "focus-traversal-matrix",
-      "directory": "output/implementation_goal_20260724/focus_traversal_matrix",
-      "task_ids": [
-        "A11Y-03"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "cross_surface_test",
-      "platform": "flutter_test_and_web_unit",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; npm 11.16.0",
-      "viewport_profiles": [
-        {
-          "width": 393,
-          "height": 852,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 720,
-          "height": 1024,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "web_semantic"
-      ],
-      "captured_at": "2026-07-24T16:12:44Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "form-accessibility-matrix",
-      "directory": "output/implementation_goal_20260724/form_accessibility_matrix",
-      "task_ids": [
-        "A11Y-08"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "cross_surface_test",
-      "platform": "flutter_test_and_web_unit",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; npm 11.16.0",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "semantic form contract spans widget and DOM harnesses"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "web_semantic"
-      ],
-      "captured_at": "2026-07-24T16:08:09Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "form-state-safety-matrix",
-      "directory": "output/implementation_goal_20260724/form_state_safety_matrix",
-      "task_ids": [
-        "STATE-05"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "cross_surface_test",
-      "platform": "flutter_test_and_web_unit",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; npm 11.16.0",
-      "viewport_profiles": [
-        {
-          "width": 393,
-          "height": 852,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "web_semantic"
-      ],
-      "captured_at": "2026-07-24T17:15:00Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "high-contrast-matrix",
-      "directory": "output/implementation_goal_20260724/high_contrast_matrix",
-      "task_ids": [
-        "SYS-03",
-        "A11Y-01"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_golden",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic widget surface",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "high_contrast"
-      ],
-      "captured_at": "2026-07-24T19:31:57Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "keyboard-viewport-matrix",
-      "directory": "output/implementation_goal_20260724/keyboard_viewport_matrix",
-      "task_ids": [
-        "RESP-06"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "cross_surface_test",
-      "platform": "flutter_test_and_web_unit",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; npm 11.16.0",
-      "viewport_profiles": [
-        {
-          "width": 393,
-          "height": 852,
-          "device_pixel_ratio": 1,
-          "bottom_inset": 320
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "web_semantic"
-      ],
-      "captured_at": "2026-07-24T18:50:00Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "landscape-matrix",
-      "directory": "output/implementation_goal_20260724/landscape_matrix",
-      "task_ids": [
-        "RESP-05"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_test",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic widget surface",
-      "viewport_profiles": [
-        {
-          "width": 852,
-          "height": 393,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 720,
-          "height": 320,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-07-24T19:58:00Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "offline-recovery-matrix",
-      "directory": "output/implementation_goal_20260724/offline_recovery_matrix",
-      "task_ids": [
-        "STATE-02"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_test",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic widget and provider harnesses",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "behavior contract spanning controlled provider and widget states; separate responsive evidence owns exact visual viewports"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "not_applicable_behavior_contract"
-      ],
-      "captured_at": "2026-07-24T21:01:41Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "large-phone-matrix",
-      "directory": "output/implementation_goal_20260724/large_phone_matrix",
-      "task_ids": [
-        "RESP-03",
-        "EVID-03"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_golden",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic widget surface",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 430,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 599,
-          "height": 900,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-07-24T21:24:00Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "route-inventory",
-      "directory": "output/implementation_goal_20260724/route_inventory_current",
-      "task_ids": [
-        "EVID-01",
-        "EVID-02",
-        "STATE-01"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "repository_inventory",
-      "platform": "dart_tool_macos_arm64",
-      "runtime_device": "Dart 3.12.2; AppModuleRegistry and repository route scanner",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "multi-surface route/state inventory; evidence cells declare their own viewports"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "multi_surface_declared_by_evidence_cell"
-      ],
-      "captured_at": "2026-07-24T19:19:58Z",
-      "data_source": "current_local_source_and_synthetic_evidence_links"
-    },
-    {
-      "id": "status-accessibility-inventory",
-      "directory": "output/implementation_goal_20260724/status_accessibility_inventory",
-      "task_ids": [
-        "A11Y-06"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "cross_surface_source_inventory",
-      "platform": "dart_and_node_tooling_macos_arm64",
-      "runtime_device": "Dart 3.12.2; Node 24.18.0; repository source inventory",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "source and color-vision simulation inventory"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "protanopia",
-        "deuteranopia",
-        "tritanopia"
-      ],
-      "captured_at": "2026-07-24T15:50:54Z",
-      "data_source": "current_local_source_and_synthetic_color_simulation"
-    },
-    {
-      "id": "tablet-foldable-matrix",
-      "directory": "output/implementation_goal_20260724/tablet_foldable_matrix",
-      "task_ids": [
-        "RESP-04",
-        "EVID-03"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_golden",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic foldable/tablet widget surface",
-      "viewport_profiles": [
-        {
-          "width": 674,
-          "height": 842,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 834,
-          "height": 1194,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 850,
-          "height": 900,
-          "device_pixel_ratio": 1,
-          "hinge_width": 16
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-07-24T22:12:00Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "text-scale-matrix",
-      "directory": "output/implementation_goal_20260724/text_scale_matrix",
-      "task_ids": [
-        "A11Y-05"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_test",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; text scale factor 2.0",
-      "viewport_profiles": [
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_factor": 2
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-07-24T19:45:00Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "theme-parity-matrix",
-      "directory": "output/implementation_goal_20260724/theme_parity_matrix",
-      "task_ids": [
-        "SYS-01",
-        "EVID-03"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_golden",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic widget surface",
-      "viewport_profiles": [
-        {
-          "width": 320,
-          "height": 760,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 374,
-          "height": 812,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 900,
-          "height": 1600,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-07-24T22:12:00Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "native-tv-evidence",
-      "directory": "output/implementation_goal_20260724/tv_native_evidence_current",
-      "task_ids": [
-        "TV-08"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "rayon_sports_tv_debug",
-      "platform": "android_tv_emulator",
-      "runtime_device": "Android TV 16 API 36; arm64-v8a; AFRICLUB_TV_API36; ADB remote injection",
-      "viewport_profiles": [
-        {
-          "width": 1920,
-          "height": 1080,
-          "dpi": 320
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-07-24T16:05:31Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "localization-copy-matrix",
-      "directory": "output/implementation_goal_20260724/localization_copy_matrix",
-      "task_ids": [
-        "MOB-08",
-        "TV-06",
-        "TV-07",
-        "A11Y-05"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_localization_test",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; generated l10n and deterministic widget harnesses",
-      "viewport_profiles": [
-        {
-          "width": 320,
-          "height": 568,
-          "device_pixel_ratio": 1,
-          "text_scale_factor": 2
-        },
-        {
-          "width": 320,
-          "height": 760,
-          "device_pixel_ratio": 1,
-          "text_scale_factor": 2
-        },
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en_fr_rw",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-07-24T21:31:18Z",
-      "data_source": "synthetic_non_production"
-    },
-    {
-      "id": "optimistic-concurrency-matrix",
-      "directory": "output/implementation_goal_20260724/optimistic_concurrency_matrix",
-      "task_ids": [
-        "STATE-03"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "multi_surface_concurrency_test",
-      "platform": "flutter_test_web_unit_and_sql_source_contract",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; npm 11.16.0; static PostgreSQL migration contract",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "non-visual concurrency, transaction, permission, audit, and recovery contract"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_state_contract"
-      ],
-      "captured_at": "2026-07-24T22:22:12Z",
-      "data_source": "current_local_source_and_synthetic_non_production"
-    },
-    {
-      "id": "admin-queue-safety-matrix",
-      "directory": "output/implementation_goal_20260724/admin_queue_safety_matrix",
-      "task_ids": [
-        "ADMIN-04",
-        "ADMIN-05"
-      ],
-      "baseline_commit": "fb3bc03dfaee6abd421928028b8afc7b77d8e4a3",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "web_admin_governance_test",
-      "platform": "web_unit_and_sql_source_contract",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Vitest 4.1.9; static PostgreSQL migration contract",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "non-visual queue capability, role, scope, transaction, audit, and recovery contract"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "web_semantic",
-        "not_applicable_transaction_contract"
-      ],
-      "captured_at": "2026-07-24T23:55:00Z",
-      "data_source": "current_local_source_and_synthetic_non_production"
-    },
-    {
-      "id": "api-response-contracts",
-      "directory": "output/implementation_goal_20260724/api_response_contracts",
-      "task_ids": [
-        "STATE-01",
-        "STATE-03",
-        "EVID-02",
-        "EVID-05",
-        "EVID-08",
-        "ADMIN-05",
-        "ADMIN-06",
-        "REL-06"
-      ],
-      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "web_and_auth_api_contract_test",
-      "platform": "web_unit_edge_function_node_and_static_config_contract",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Vitest 4.1.9; Web Crypto; repository source",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "non-visual HTTP response, timeout, authorization, privacy, and conflict contracts"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_http_contract"
-      ],
-      "captured_at": "2026-07-29T08:51:02Z",
-      "data_source": "current_local_source_and_synthetic_non_production"
-    },
-    {
-      "id": "ios-runtime-evidence-current",
-      "directory": "output/implementation_goal_20260724/ios_runtime_evidence_current",
-      "task_ids": [
-        "BUILD-02",
-        "EVID-04"
-      ],
-      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_production_local_debug_and_non_release_offline_qa_variant",
-      "platform": "ios_simulator",
-      "runtime_device": "iOS 26.5; iPhone 17 and temporary iPhone 17 Pro simulator; Flutter 3.44.4; Dart 3.12.2; Xcode 26.6",
-      "viewport_profiles": [
-        {
-          "width": 1206,
-          "height": 2622,
-          "device_pixel_ratio": "simulator_native"
-        }
-      ],
-      "locale": "en_rw",
-      "themes": [
-        "light"
-      ],
-      "captured_at": "2026-07-29T06:32:00Z",
-      "data_source": "current_dirty_local_source; configured read-only environment for normal routes; deterministic non-release compile-time override for offline state"
+      "data_source": "current_local_source_and_synthetic_non_production",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-recovery-states",
@@ -1060,7 +104,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T09:38:26Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-share-target-states",
@@ -1095,43 +140,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T09:24:40Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
-    },
-    {
-      "id": "consumer-web-tv-display-states",
-      "directory": "output/implementation_goal_20260724/consumer_web_tv_display_states",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "REL-07"
-      ],
-      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "consumer_web_production_local",
-      "platform": "nextjs_production_build_playwright_chromium_display",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium 1280 x 720 DPR 1 display profile",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-07-29T09:58:56Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-legal-document-states",
@@ -1166,7 +176,8 @@
         "reduced_motion"
       ],
       "captured_at": "2026-07-29T10:25:43Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-contact-states",
@@ -1201,7 +212,8 @@
         "reduced_motion"
       ],
       "captured_at": "2026-07-29T10:42:53Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-search-states",
@@ -1238,7 +250,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T11:10:20Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-history-states",
@@ -1275,7 +288,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T11:34:41Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-news-states",
@@ -1312,7 +326,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T13:59:00Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-news-article-states",
@@ -1349,7 +364,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T14:21:00Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-fixtures-states",
@@ -1387,7 +403,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T12:39:50Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-fixture-detail-states",
@@ -1425,7 +442,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T13:08:29Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-ticket-detail-states",
@@ -1463,7 +481,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T13:08:29Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-ticket-states",
@@ -1501,7 +520,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T13:35:26Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-results-states",
@@ -1539,7 +559,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T13:35:26Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-standings-states",
@@ -1577,7 +598,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T13:57:31Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-squad-states",
@@ -1615,7 +637,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T14:19:08Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-venues-states",
@@ -1653,7 +676,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T14:47:00Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-supporters-states",
@@ -1691,7 +715,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T14:57:57Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-circles-states",
@@ -1729,7 +754,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T15:13:52Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-fan-clubs-states",
@@ -1767,7 +793,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T15:28:56Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-membership-states",
@@ -1805,7 +832,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T15:43:01Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-shop-states",
@@ -1843,7 +871,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T16:04:30Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-shop-product-states",
@@ -1881,7 +910,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T16:04:30Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "consumer-web-home-states",
@@ -1919,7 +949,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T16:25:00Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_local_preview_feature_allowance",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-dashboard-states",
@@ -1971,7 +1002,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T18:59:00Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_admin_shell_allowance_and_no_protected_api_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_admin_shell_allowance_and_no_protected_api_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-access-states",
@@ -2023,7 +1055,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T17:14:04Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_platform_admin_shell_allowance_and_no_protected_api_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_platform_admin_shell_allowance_and_no_protected_api_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-matches-states",
@@ -2075,7 +1108,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T17:30:00Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-squad-states",
@@ -2127,7 +1161,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T17:43:58Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-standings-states",
@@ -2179,7 +1214,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T17:59:39Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-cms-states",
@@ -2231,7 +1267,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T18:16:00Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-cms-banners-states",
@@ -2283,7 +1320,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T18:31:16Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-cms-config-states",
@@ -2335,7 +1373,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T18:45:34Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-cms-content-states",
@@ -2387,7 +1426,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T19:02:55Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-cms-content-blocks-states",
@@ -2439,7 +1479,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T19:19:53Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-community-states",
@@ -2491,7 +1532,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T19:41:55Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-contributions-states",
@@ -2544,7 +1586,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T20:04:57Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-football-sync-states",
@@ -2597,61 +1640,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T20:27:22Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
-    },
-    {
-      "id": "admin-pwa-games-states",
-      "directory": "output/implementation_goal_20260724/admin_pwa_games_states",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "TV-05",
-        "ADMIN-03",
-        "ADMIN-05",
-        "ADMIN-06",
-        "ADMIN-07",
-        "ADMIN-08",
-        "ADMIN-09",
-        "REL-07"
-      ],
-      "baseline_commit": "b7d983b3b7b367404a94896824f67bf6dd924499",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "admin_pwa_production_local_controlled_authenticated_game_operations_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-07-29T20:50:33Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-gamification-states",
@@ -2704,7 +1694,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T21:15:29Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-gamification-wallet-states",
@@ -2757,7 +1748,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T21:41:38Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-membership-states",
@@ -2810,7 +1802,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T22:05:52Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-notifications-states",
@@ -2863,7 +1856,8 @@
         "offline"
       ],
       "captured_at": "2026-07-29T22:28:29Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-offers-states",
@@ -2916,1705 +1910,12 @@
         "offline"
       ],
       "captured_at": "2026-07-29T22:48:26Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass"
-    },
-    {
-      "id": "admin-pwa-current-run-audit-20260730",
-      "directory": "output/implementation_goal_20260724/admin_pwa_current_run_audit_20260730",
-      "task_ids": [
-        "GOV-03",
-        "GOV-04",
-        "STATE-01",
-        "A11Y-01",
-        "EVID-03",
-        "ADMIN-03"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_admin_pwa_current_run_audit",
-      "platform": "codex_desktop_in_app_browser_chromium",
-      "runtime_device": "Codex Desktop in-app browser; Chromium; current local Next production build",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "light"
-      ],
-      "captured_at": "2026-07-30T12:20:33Z",
-      "data_source": "current_dirty_local_source_permission_denied_nonproduction_with_no_protected_api_or_mutation_bypass"
-    },
-    {
-      "id": "venue-portal-current-run-audit-20260730",
-      "directory": "output/implementation_goal_20260724/venue_portal_current_run_audit_20260730",
-      "task_ids": [
-        "STATE-01",
-        "A11Y-01",
-        "EVID-03",
-        "ADMIN-03",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_venue_portal_current_run_audit",
-      "platform": "codex_desktop_in_app_browser_chromium",
-      "runtime_device": "Codex Desktop in-app browser; Chromium; current local Next production build",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "light"
-      ],
-      "captured_at": "2026-07-30T12:25:32Z",
-      "data_source": "current_dirty_local_source_shared_service_unavailable_nonproduction_fail_closed_authorization_boundary"
-    },
-    {
-      "id": "club-current-simulator-audit-20260730",
-      "directory": "output/implementation_goal_20260724/club_current_simulator_audit_20260730",
-      "task_ids": [
-        "MOB-08",
-        "MOB-09",
-        "STATE-01",
-        "STATE-02",
-        "STATE-04",
-        "A11Y-01",
-        "A11Y-02",
-        "EVID-03"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_current_source_club_audit",
-      "platform": "ios_simulator",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; XcodeBuildMCP; iPhone 17 simulator 6A21F82F-C4D9-4AAA-8D7B-8B634C95F105; iOS 26.5",
-      "viewport_profiles": [
-        {
-          "width": 368,
-          "height": 800,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "light"
-      ],
-      "captured_at": "2026-07-30T12:42:30Z",
-      "data_source": "current_dirty_local_source_and_shared_nonproduction_club_projection_with_history_content_mismatch_not_release_evidence"
-    },
-    {
-      "id": "r66-current-candidate-screenshots-working",
-      "directory": "output/implementation_goal_20260724/r66_current_candidate_screenshots",
-      "task_ids": [
-        "GOV-03",
-        "GOV-04",
-        "MOB-08",
-        "MOB-09",
-        "STATE-01",
-        "EVID-02",
-        "EVID-03"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_current_source_working_candidate",
-      "platform": "ios_simulator",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; iPhone 17 simulator; iOS 26.5; simulator-only working evidence",
-      "viewport_profiles": [
-        {
-          "width": 393,
-          "height": 852,
-          "device_pixel_ratio": 3
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "current_simulator_theme"
-      ],
-      "captured_at": "2026-07-30T09:19:34Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_simulator_states_working_unsealed_and_not_release_evidence"
-    },
-    {
-      "id": "r66-route-inventory-working",
-      "directory": "output/implementation_goal_20260724/r66_route_inventory_working",
-      "task_ids": [
-        "GOV-04",
-        "EVID-03",
-        "EVID-08"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "repository_route_inventory_working_candidate",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; local route inventory generator",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "structural route and route-state inventory"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_structural_inventory"
-      ],
-      "captured_at": "2026-07-30T06:45:47Z",
-      "data_source": "current_dirty_local_source_working_structural_inventory_with_state_closure_incomplete"
-    },
-    {
-      "id": "r66-design-compliance-working",
-      "directory": "output/implementation_goal_20260724/r66_design_compliance_working",
-      "task_ids": [
-        "GOV-04",
-        "EVID-08"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "repository_design_compliance_working_candidate",
-      "platform": "macos_arm64_shell",
-      "runtime_device": "bash; jq; rg; local repository source and R66 route inventory",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "automated source-compliance report"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_source_report"
-      ],
-      "captured_at": "2026-07-30T06:45:47Z",
-      "data_source": "current_dirty_local_source_automated_pass_with_design_complete_false_and_route_evidence_complete_false"
-    },
-    {
-      "id": "game-owner-organizer-mobile-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/game_owner_organizer_mobile_checkpoint_20260730",
-      "task_ids": [
-        "ADMIN-01",
-        "ADMIN-02",
-        "ADMIN-03",
-        "ADMIN-05",
-        "ADMIN-06",
-        "STATE-01",
-        "STATE-03",
-        "TV-05",
-        "EVID-02",
-        "EVID-03",
-        "EVID-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_local_production_configuration",
-      "platform": "flutter_macos_arm64_ios_simulator_android_debug",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; iPhone 17 simulator 6A21F82F-C4D9-4AAA-8D7B-8B634C95F105; iOS 26.5; Android debug build; App Registry mobile-admin-boundary tests",
-      "viewport_profiles": [
-        {
-          "width": 393,
-          "height": 852,
-          "device_pixel_ratio": 3
-        },
-        {
-          "width": 320,
-          "height": 760,
-          "device_pixel_ratio": 1,
-          "text_scale": 2
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "light",
-        "deterministic_widget_theme"
-      ],
-      "captured_at": "2026-08-01T11:17:55Z",
-      "data_source": "current_dirty_local_source_synthetic_route_boundary_tests_and_nonproduction_simulator_with_live_authorization_unavailable"
-    },
-    {
-      "id": "native-tv-v2-local-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/native_tv_v2_local_checkpoint_20260730",
-      "task_ids": [
-        "TV-01",
-        "TV-05",
-        "TV-07",
-        "STATE-01",
-        "STATE-03",
-        "EVID-02",
-        "EVID-03",
-        "EVID-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "rayon_sports_tv_local_production_configuration",
-      "platform": "flutter_macos_arm64_android_tv_debug",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic 1280x720 widget runtime; Android TV debug build only",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale": 1.7
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-07-30T14:20:00Z",
-      "data_source": "current_dirty_local_source_synthetic_tv_projection_tests_and_debug_build_with_live_realtime_authorization_unavailable"
-    },
-    {
-      "id": "match-quiz-retirement-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/match_quiz_retirement_checkpoint_20260730",
-      "task_ids": [
-        "GOV-04",
-        "STATE-03",
-        "STATE-06",
-        "ADMIN-01",
-        "EVID-03",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_web_local_production_build",
-      "platform": "nextjs_web_node_24_local",
-      "runtime_device": "Node 24.18.0; Vitest; TypeScript; ESLint; Next.js 16 production build",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "unused parallel source removed; no rendered route changed"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_source_retirement"
-      ],
-      "captured_at": "2026-07-30T14:40:00Z",
-      "data_source": "current_dirty_local_source_static_contract_and_full_web_regression_without_live_backend_execution"
-    },
-    {
-      "id": "admin-game-operations-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/admin_game_operations_checkpoint_20260730",
-      "task_ids": [
-        "ADMIN-01",
-        "ADMIN-03",
-        "ADMIN-05",
-        "ADMIN-07",
-        "ADMIN-09",
-        "STATE-03",
-        "EVID-03",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_web_local_production_build",
-      "platform": "nextjs_web_node_24_local",
-      "runtime_device": "Node 24.18.0; Vitest 4.1.9; TypeScript; ESLint; Next.js 16.2.10 production build; Deno unavailable",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "authenticated Admin game workspace visual QA blocked at the WhatsApp sign-in gate; source, interaction tests, typecheck, lint and production build only"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_admin_design_system_source_only_visual_auth_blocked"
-      ],
-      "captured_at": "2026-07-30T15:09:00Z",
-      "data_source": "current_dirty_local_source_synthetic_authorized_projection_tests_static_sql_contract_and_full_web_regression_without_live_backend_or_authenticated_visual_execution"
-    },
-    {
-      "id": "admin-game-content-governance-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/admin_game_content_governance_checkpoint_20260730",
-      "task_ids": [
-        "ADMIN-03",
-        "ADMIN-05",
-        "ADMIN-06",
-        "ADMIN-09",
-        "EVID-03",
-        "EVID-08",
-        "REL-06",
-        "REL-08"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_web_local_production_build",
-      "platform": "nextjs_web_node_24_local",
-      "runtime_device": "Node 24.18.0; Vitest 4.1.9; TypeScript; ESLint; Next.js 16.2.10 production build; Deno unavailable",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "authenticated Admin Content Studio preview comparison blocked at the WhatsApp sign-in gate; source, interaction tests, typecheck, lint and production build only"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_admin_design_system_source_only_visual_auth_blocked"
-      ],
-      "captured_at": "2026-08-01T11:47:33Z",
-      "data_source": "current_dirty_local_source_insert_forced_pending_review_citation_schema_model_and_deterministic_approval_gate_static_sql_contract_and_full_web_regression_without_authorized_database_or_accountable_editorial_approval"
-    },
-    {
-      "id": "admin-game-live-observability-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/admin_game_live_observability_checkpoint_20260730",
-      "task_ids": [
-        "ADMIN-03",
-        "ADMIN-06",
-        "ADMIN-08",
-        "EVID-06",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_web_local_production_build",
-      "platform": "nextjs_web_node_24_local",
-      "runtime_device": "Node 24.18.0; Vitest 4.1.9; TypeScript; ESLint; Next.js 16.2.10 production build; Deno unavailable",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "authenticated Admin Live Control comparison blocked at the WhatsApp sign-in gate; source, interaction tests, typecheck, lint and production build only"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_admin_design_system_source_only_visual_auth_blocked"
-      ],
-      "captured_at": "2026-07-30T15:45:00Z",
-      "data_source": "current_dirty_local_source_synthetic_observability_and_reconnect_tests_static_sql_contract_and_full_web_regression_without_live_backend_network_or_authenticated_visual_execution"
-    },
-    {
-      "id": "admin-auth-contrast-source-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/admin_auth_contrast_source_checkpoint_20260730",
-      "task_ids": [
-        "ADMIN-03",
-        "ADMIN-07",
-        "ADMIN-09",
-        "EVID-02",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_web_local_production_build",
-      "platform": "nextjs_web_node_24_local",
-      "runtime_device": "Node 24.18.0; Vitest 4.1.9; TypeScript; ESLint; Next.js 16.2.10 production build",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "source remediation and deterministic contrast measurement only; fresh same-state desktop, tablet, and compact current captures were not produced"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "light_source_contract",
-        "dark_source_contract"
-      ],
-      "captured_at": "2026-07-30T16:10:00Z",
-      "data_source": "current_dirty_local_source_reference_finding_deterministic_wcag_measurements_and_full_web_regression_without_fresh_visual_capture"
-    },
-    {
-      "id": "admin-auth-exact-current-checkpoint-20260730",
-      "directory": "output/implementation_goal_20260724/admin_auth_exact_current_checkpoint_20260730",
-      "task_ids": [
-        "ADMIN-03",
-        "ADMIN-07",
-        "ADMIN-09",
-        "EVID-02",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_web_local_production_build",
-      "platform": "nextjs_web_node_24_chrome_local",
-      "runtime_device": "Node 24.18.0; Vitest 4.1.9; TypeScript; ESLint; Next.js 16.2.10 production build; user-connected Chrome extension browser; in-app browser unavailable",
-      "viewport_profiles": [
-        {
-          "name": "desktop",
-          "width": 1280,
-          "height": 720,
-          "theme": "light",
-          "locale": "en",
-          "state": "signed_out_phone_entry"
-        },
-        {
-          "name": "tablet",
-          "width": 834,
-          "height": 1194,
-          "theme": "light",
-          "locale": "en",
-          "state": "signed_out_phone_entry"
-        },
-        {
-          "name": "compact",
-          "width": 390,
-          "height": 844,
-          "theme": "light",
-          "locale": "en",
-          "state": "signed_out_phone_entry"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "light_exact_current_visual",
-        "light_dark_source_contrast_contract"
-      ],
-      "captured_at": "2026-08-01T11:01:30Z",
-      "data_source": "current_dirty_local_source_local_production_render_supplied_same_state_reference_three_exact_current_viewports_combined_reference_current_difference_review_and_full_web_regression_without_credentials_or_external_mutation"
-    },
-    {
-      "id": "authoritative-game-backend-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/authoritative_game_backend_checkpoint_20260801",
-      "task_ids": [
-        "STATE-03",
-        "TV-01",
-        "TV-05",
-        "ADMIN-01",
-        "ADMIN-05",
-        "ADMIN-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "rayon_sports_live_games_v2_local_source",
-      "platform": "postgres_sql_flutter_native_tv_local",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; native-TV widget/golden runtime; Node 24 static SQL validator; Supabase CLI unavailable",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "backend and typed-projection source checkpoint; existing native-TV visual baselines were regression-tested but no new visual claim was needed"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_native_tv_design_system_regression"
-      ],
-      "captured_at": "2026-08-01T12:02:10Z",
-      "data_source": "current_dirty_local_authoritative_sql_typed_projection_and_native_tv_tests_without_authorized_database_or_live_cross_client_execution"
-    },
-    {
-      "id": "live-games-v2-database-execution-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_database_execution_checkpoint_20260801",
-      "task_ids": [
-        "STATE-03",
-        "TV-01",
-        "ADMIN-05",
-        "ADMIN-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "rayon_sports_live_games_v2_isolated_database_contract",
-      "platform": "supabase_postgres_local_isolated",
-      "runtime_device": "Supabase CLI 2.111.0; PostgreSQL 17.6.1.156; isolated project on 55322/55320; one pgTAP file and 70 checks",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "database migration, authorization, publication, privacy and projection-refresh contract checkpoint"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_database_contract"
-      ],
-      "captured_at": "2026-08-01T12:28:40Z",
-      "data_source": "current_dirty_source_full_repository_migration_chain_on_separate_unlinked_local_database_with_70_pgtap_checks_and_no_production_mutation"
-    },
-    {
-      "id": "native-tv-realtime-identity-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/native_tv_realtime_identity_checkpoint_20260801",
-      "task_ids": [
-        "GOV-03",
-        "GOV-05",
-        "STATE-03",
-        "TV-01",
-        "TV-05",
-        "TV-07",
-        "ADMIN-01",
-        "ADMIN-02",
-        "ADMIN-05",
-        "ADMIN-06",
-        "EVID-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "rayon_sports_native_tv_realtime_identity_local",
-      "platform": "flutter_android_tv_supabase_postgres_realtime_local",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; Supabase CLI 2.111.0; isolated PostgreSQL 17; local Realtime network probe",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "runtime identity, synchronization and database-contract tranche; six existing native-TV goldens regression-passed and no visible UI changed"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_native_tv_design_system_regression"
-      ],
-      "captured_at": "2026-08-01T14:23:17Z",
-      "data_source": "current_dirty_local_source_isolated_full_migration_database_auth_issued_identity_and_failed_local_realtime_network_probe_without_shared_or_production_mutation"
-    },
-    {
-      "id": "live-games-v2-qa01-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa01_checkpoint_20260801",
-      "task_ids": [
-        "STATE-03",
-        "EVID-03",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "africlub_live_games_v2_qa01_local_contract",
-      "platform": "supabase_postgres_node_flutter_web_local",
-      "runtime_device": "Supabase CLI 2.111.0; isolated PostgreSQL 17; Node 24.18.0 static contract; adjacent Flutter and web contract suites",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "contract, policy and isolated-database QA checkpoint with no visible UI change"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_applicable_contract_and_policy_tests"
-      ],
-      "captured_at": "2026-08-01T14:40:09Z",
-      "data_source": "current_dirty_local_source_and_clean_isolated_full_migration_77_check_database_contract_without_shared_live_or_release_mutation"
-    },
-    {
-      "id": "live-games-v2-qa02-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa02_checkpoint_20260801",
-      "task_ids": [
-        "STATE-01",
-        "STATE-03",
-        "EVID-03",
-        "EVID-08"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "africlub_live_games_v2_qa02_cross_client_local",
-      "platform": "flutter_ios_android_tv_nextjs_admin_local_test_runtime",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; Vitest 4.1.9; deterministic widget and jsdom rendering",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "fixture-driven model and widget/component convergence checkpoint; existing screen layouts are rendered in test harnesses but no new screenshot artifact is admitted"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_surface_design_system_test_render"
-      ],
-      "captured_at": "2026-08-01T14:54:38Z",
-      "data_source": "current_dirty_local_source_and_one_deterministic_six_state_fixture_without_shared_live_physical_device_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-qa04-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa04_checkpoint_20260801",
-      "task_ids": [
-        "STATE-03",
-        "ADMIN-06",
-        "EVID-04",
-        "EVID-06",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "africlub_live_games_v2_qa04_resilience_local",
-      "platform": "flutter_participant_mobile_android_tv_local_test_runtime",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic unit and widget test runtime",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "controller, synchronizer, reconciliation and process-restart resilience checkpoint; existing widgets regression-passed and no visible production UI changed"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "existing_mobile_and_native_tv_design_system_test_render"
-      ],
-      "captured_at": "2026-08-01T15:07:16Z",
-      "data_source": "current_dirty_local_source_and_one_deterministic_eleven_scenario_resilience_matrix_without_shared_live_physical_device_network_timing_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-qa05-local-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa05_local_checkpoint_20260801",
-      "task_ids": [
-        "A11Y-02",
-        "TV-04",
-        "TV-07",
-        "EVID-04",
-        "EVID-05",
-        "EVID-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "africlub_live_games_v2_qa05_tv_accessibility_local",
-      "platform": "flutter_native_tv_local_widget_and_golden_test_runtime",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic macOS-hosted native-TV widget and golden test runtime",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "evidence": "exact synthetic golden plus widget execution"
-        },
-        {
-          "width": 1920,
-          "height": 1080,
-          "device_pixel_ratio": 1,
-          "evidence": "widget execution only; not native-device capture"
-        },
-        {
-          "width": 3840,
-          "height": 2160,
-          "device_pixel_ratio": 1,
-          "evidence": "widget execution only; not native-device capture"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-08-01T15:28:29Z",
-      "data_source": "current_dirty_local_source_and_synthetic_privacy_safe_native_tv_widget_golden_focus_semantics_and_automated_privacy_tests_without_native_1080p_4k_physical_tv_soak_human_approval_shared_live_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-mob05-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_mob05_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "A11Y-02",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_participant_layout_local",
-      "platform": "flutter_participant_mobile_local_widget_and_golden_test_runtime",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic macOS-hosted participant widget, route, localization, and golden test runtime",
-      "viewport_profiles": [
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "evidence": "exact 200-percent golden and widget execution"
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1,
-          "evidence": "dark, light, and offline-retained exact goldens plus widget execution"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-08-01T15:50:58Z",
-      "data_source": "current_dirty_local_source_and_synthetic_privacy_safe_participant_widget_route_localization_and_golden_tests_without_shared_live_physical_device_assistive_technology_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-mob04-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_mob04_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "STATE-03",
-        "EVID-02",
-        "EVID-06",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_participant_recovery_local",
-      "platform": "flutter_participant_mobile_local_controller_widget_and_golden_test_runtime",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic macOS-hosted participant controller, widget, and golden test runtime",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1,
-          "evidence": "offline-retained exact golden plus widget execution"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-08-01T16:02:30Z",
-      "data_source": "current_dirty_local_source_and_synthetic_privacy_safe_participant_recovery_tests_without_shared_live_physical_device_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-mob03-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_mob03_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-02",
-        "STATE-03",
-        "EVID-06",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_participant_sync_local",
-      "platform": "flutter_participant_mobile_local_controller_and_static_database_contract_runtime",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic macOS-hosted participant repository, controller, reconciliation, widget, and static pgTAP contract runtime",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "synchronization, authorization, ordering, deadline, and subscription lifecycle contract; participant widget regressions executed without new visual pixels"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "existing_participant_design_system_test_render"
-      ],
-      "captured_at": "2026-08-01T16:13:44Z",
-      "data_source": "current_dirty_local_source_deterministic_participant_tests_and_existing_isolated_database_contract_without_shared_live_physical_device_real_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-mob01-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_mob01_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "MOB-08",
-        "STATE-01",
-        "STATE-03",
-        "ADMIN-02",
-        "EVID-02"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_code_free_discovery_local",
-      "platform": "flutter_mobile_local_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.111.0; PostgreSQL 17; deterministic macOS-hosted tests and isolated database port 56322",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1,
-          "evidence": "participant discovery widget execution; no new visual baseline"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "existing_participant_design_system_test_render"
-      ],
-      "captured_at": "2026-08-01T16:29:13Z",
-      "data_source": "current_dirty_local_source_deterministic_code_free_discovery_notification_route_tests_and_isolated_database_contract_without_shared_live_physical_device_platform_delivery_real_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-mob02-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_mob02_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "MOB-08",
-        "STATE-01",
-        "TV-05",
-        "ADMIN-02",
-        "EVID-02"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_participant_code_retirement_local",
-      "platform": "flutter_mobile_and_admin_web_local_source_test_runtime",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; npm 11.16.0; deterministic macOS-hosted Flutter and Vitest execution",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1,
-          "evidence": "Fan Zone code-free entry visual comparison plus participant route widget execution"
-        },
-        {
-          "width": 834,
-          "height": 1194,
-          "device_pixel_ratio": 1,
-          "evidence": "Fan Zone tablet code-free copy comparison"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark",
-        "light"
-      ],
-      "captured_at": "2026-08-01T16:46:07Z",
-      "data_source": "current_dirty_local_source_deterministic_flutter_web_static_contract_and_reviewed_exact_golden_evidence_without_shared_live_physical_device_platform_delivery_real_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-org01-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_org01_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "ADMIN-01",
-        "ADMIN-02",
-        "ADMIN-03",
-        "ADMIN-05",
-        "ADMIN-06",
-        "STATE-01",
-        "STATE-03",
-        "TV-05",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_organizer_planning_local",
-      "platform": "flutter_mobile_local_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.111.0; PostgreSQL 17; deterministic macOS-hosted organizer tests and isolated database ports 55322/55320",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1,
-          "evidence": "exact deterministic organizer invitation-planner selected-state golden"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T17:18:22Z",
-      "data_source": "current_dirty_local_source_deterministic_organizer_tests_full_chain_isolated_database_contract_and_inspected_exact_golden_without_shared_live_physical_device_real_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-org02-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_org02_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "ADMIN-05",
-        "ADMIN-06",
-        "STATE-03",
-        "EVID-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_guarded_organizer_operations_local",
-      "platform": "flutter_mobile_local_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.111.0; PostgreSQL 17; deterministic macOS-hosted guarded organizer tests and unchanged authoritative SQL covered by isolated database ports 55322/55320",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1,
-          "evidence": "exact deterministic guarded organizer-control golden after rejected metric-layout render was corrected"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T17:40:30Z",
-      "data_source": "current_dirty_local_source_deterministic_guarded_organizer_tests_unchanged_full_chain_isolated_database_contract_and_inspected_exact_golden_without_shared_live_physical_device_real_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-own01-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_own01_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "ADMIN-01",
-        "ADMIN-02",
-        "ADMIN-03",
-        "ADMIN-06",
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_owner_inventory_local",
-      "platform": "flutter_mobile_local_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.111.0; PostgreSQL 17; deterministic macOS-hosted owner-inventory tests and isolated database ports 55322/55320",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1,
-          "evidence": "exact deterministic owner My TVs inventory golden"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T18:01:16Z",
-      "data_source": "current_dirty_local_source_deterministic_owner_inventory_tests_full_chain_isolated_database_contract_and_inspected_exact_golden_without_shared_live_physical_device_real_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-own02-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_own02_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "TV-05",
-        "ADMIN-02",
-        "ADMIN-05",
-        "ADMIN-06",
-        "STATE-03",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-06",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_owner_pairing_management_local",
-      "platform": "flutter_mobile_native_tv_contract_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.109.1; PostgreSQL 17; deterministic macOS-hosted owner-management tests and isolated database ports 55322/55320",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1,
-          "evidence": "exact deterministic owner TV-detail management golden"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T18:26:19Z",
-      "data_source": "current_dirty_local_source_deterministic_owner_pairing_management_tests_full_chain_isolated_database_contract_and_inspected_exact_golden_without_shared_live_real_display_physical_device_real_network_timing_human_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-tv03-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_tv03_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "TV-05",
-        "ADMIN-05",
-        "ADMIN-06",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-06",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_native_tv_pairing_only_local",
-      "platform": "flutter_native_tv_local_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.109.1; PostgreSQL 17; deterministic macOS-hosted native-TV tests and isolated database ports 56322/56320",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "evidence": "exact deterministic Rwandan native-TV pairing challenge golden with production My TVs QR deep link"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T18:42:49Z",
-      "data_source": "current_dirty_local_source_deterministic_native_tv_pairing_only_tests_full_chain_isolated_database_contract_and_side_by_side_inspected_exact_golden_without_shared_live_physical_tv_real_network_timing_human_approval_signing_store_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-tv01-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_tv01_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "TV-01",
-        "TV-07",
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-06",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_native_tv_full_projection_local",
-      "platform": "flutter_native_tv_local_and_supabase_postgres_isolated",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Supabase CLI 2.109.1; PostgreSQL 17; deterministic macOS-hosted native-TV tests and isolated database ports 56322/56320",
-      "viewport_profiles": [
-        {
-          "width": 1280,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "evidence": "five exact deterministic native-TV paired-empty question reveal completion and retained-offline projection goldens"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T18:54:02Z",
-      "data_source": "current_dirty_local_source_deterministic_native_tv_full_projection_tests_full_chain_isolated_database_contract_and_five_unchanged_exact_current_source_goldens_without_shared_live_physical_tv_real_network_timing_human_approval_signing_store_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-tv02-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_tv02_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "TV-01",
-        "TV-07",
-        "STATE-03",
-        "EVID-02",
-        "EVID-04",
-        "EVID-06",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "africlub_live_games_v2_native_tv_realtime_local",
-      "platform": "flutter_native_tv_local_supabase_postgres_and_isolated_realtime_network",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Node 24.18.0; Supabase CLI 2.111.0; PostgreSQL 17; Realtime v2.120.3; isolated ports 57321/57322/57320",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "network identity delivery ordering RLS and revocation checkpoint; exact visual states remain governed by GAME-TV-01 and GAME-TV-03"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "not_applicable_no_visual_change"
-      ],
-      "captured_at": "2026-08-01T19:11:26Z",
-      "data_source": "current_dirty_local_source_auth_issued_tv_identity_full_chain_isolated_database_and_isolated_realtime_network_delivery_ordering_rls_revocation_execution_without_shared_live_physical_tv_wan_human_approval_signing_store_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-qa05-native-resolution-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa05_native_resolution_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "A11Y-02",
-        "TV-04",
-        "TV-07",
-        "EVID-04",
-        "EVID-05",
-        "EVID-06",
-        "REL-06"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.0",
-      "build_number": "1",
-      "flavor": "africlub_live_games_v2_qa05_native_resolution_emulator",
-      "platform": "android_tv_api36_arm64_native_emulator",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Android TV 16/API 36 ARM64; native 1080p/320 dpi and 4K/640 dpi emulator profiles; isolated Supabase CLI 2.111.0 stack",
-      "viewport_profiles": [
-        {
-          "width": 1920,
-          "height": 1080,
-          "device_pixel_ratio": "native_emulator_320_dpi",
-          "evidence": "current APK real isolated-backend owner-pairing journey"
-        },
-        {
-          "width": 3840,
-          "height": 2160,
-          "device_pixel_ratio": "native_emulator_640_dpi",
-          "evidence": "current APK real isolated-backend owner-pairing journey"
-        }
-      ],
-      "locale": "rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-01T19:26:48Z",
-      "data_source": "current_dirty_local_source_current_debug_apk_isolated_synthetic_club_and_short_lived_pairing_challenge_native_android_tv_emulator_captures_without_physical_tv_remote_screen_reader_soak_human_approval_shared_live_signing_store_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-qa06-local-build-checkpoint-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa06_local_build_checkpoint_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "GOV-06",
-        "EVID-08",
-        "REL-01",
-        "REL-02",
-        "REL-03",
-        "REL-04",
-        "REL-05",
-        "REL-06",
-        "REL-07",
-        "REL-08"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3 mobile; 1.0.0 native TV; current web",
-      "build_number": "5 mobile; 1 native TV",
-      "flavor": "africlub_game_qa06_exact_current_dirty_local_build_subset",
-      "platform": "ios_android_android_tv_and_nextjs_local_build_matrix",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; Xcode device release; Android release AAB; Android TV release APK; Node 24.18.0; Next.js 16.2.10; paired iPhone 12 Pro iOS 26.6",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "build, signature, install and launch checkpoint; visual native TV resolution evidence is governed separately under EV-231"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "build_matrix_not_visual_state_claim"
-      ],
-      "captured_at": "2026-08-01T19:53:35Z",
-      "data_source": "current_dirty_local_source_unsigned_ios_release_ephemeral_signed_android_and_tv_release_dry_runs_current_web_gate_and_exact_physical_iphone_install_launch_without_clean_candidate_pinned_ci_production_signing_store_full_physical_uat_target_backend_approval_or_release_claim"
-    },
-    {
-      "id": "live-games-v2-qa03-execution-preflight-20260801",
-      "directory": "output/implementation_goal_20260724/live_games_v2_qa03_execution_preflight_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-03",
-        "A11Y-02",
-        "EVID-04",
-        "EVID-06",
-        "EVID-08",
-        "REL-06",
-        "REL-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3 mobile; 1.0.0 native TV; current web",
-      "build_number": "5 mobile; 1 native TV",
-      "flavor": "africlub_game_qa03_physical_synchronized_session_preflight",
-      "platform": "flutter_coredevice_adb_read_only_device_inventory",
-      "runtime_device": "Flutter 3.44.4; paired unavailable iPhone 12 Pro iOS 26.6; two iOS 26.5 simulators; no attached Android or physical native-TV target",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "read-only execution preflight; no synchronized physical-session visual evidence claimed"
-        }
-      ],
-      "locale": "en,fr,rw",
-      "themes": [
-        "not_applicable_device_inventory_only"
-      ],
-      "captured_at": "2026-08-01T20:00:55Z",
-      "data_source": "exact_current_read_only_flutter_adb_and_coredevice_inventory_without_authorized_shared_backend_two_available_physical_phones_physical_native_tv_synchronized_execution_network_timing_video_approval_or_release_claim"
-    },
-    {
-      "id": "club-route-states-20260801",
-      "directory": "output/implementation_goal_20260724/club_route_states_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_club_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic widget surfaces using the real eleven-route Club tree",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; en,fr,rw generated state copy",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-01T20:32:30Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_club_data_without_authenticated_live_backend_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "game-operations-hub-route-states-20260801",
-      "directory": "output/implementation_goal_20260724/game_operations_hub_route_states_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_game_operations_hub_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real game-operations hub route",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion"
-      ],
-      "captured_at": "2026-08-01T20:59:35Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_static_role_gated_navigation_without_live_authorization_downstream_mutation_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "session-planner-route-states-20260802",
-      "directory": "output/implementation_goal_20260724/session_planner_route_states_20260802",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_session_planner_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real authenticated organizer session-planner route",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline",
-        "retained_syncing",
-        "conflict",
-        "security_timeout"
-      ],
-      "captured_at": "2026-08-02T00:10:47Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_organizer_session_planner_without_authenticated_shared_live_role_rls_rpc_audit_real_session_display_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "managed-games-route-states-20260801",
-      "directory": "output/implementation_goal_20260724/managed_games_route_states_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_managed_games_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real authenticated organizer assigned-game inventory route",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline",
-        "retained_syncing"
-      ],
-      "captured_at": "2026-08-01T23:48:12Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_organizer_assigned_game_inventory_without_authenticated_shared_live_role_rls_rpc_audit_real_session_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "my-tvs-route-states-20260801",
-      "directory": "output/implementation_goal_20260724/my_tvs_route_states_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_my_tvs_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real authenticated owner TV inventory route",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline",
-        "retained_syncing"
-      ],
-      "captured_at": "2026-08-01T21:20:24Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_owner_tv_inventory_without_authenticated_shared_live_role_rls_rpc_audit_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "pair-tv-route-states-20260801",
-      "directory": "output/implementation_goal_20260724/pair_tv_route_states_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_pair_tv_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real authenticated owner TV pairing route",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline",
-        "retained_syncing",
-        "mutation_conflict"
-      ],
-      "captured_at": "2026-08-01T21:44:19Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_owner_tv_pairing_without_authenticated_shared_live_role_rls_rpc_audit_real_tv_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "tv-detail-route-states-20260801",
-      "directory": "output/implementation_goal_20260724/tv_detail_route_states_20260801",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_tv_detail_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real authenticated owner TV management route",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline",
-        "retained_syncing",
-        "mutation_conflict"
-      ],
-      "captured_at": "2026-08-01T22:04:08Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_owner_tv_management_without_authenticated_shared_live_role_rls_rpc_audit_real_display_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "live-game-control-route-states-20260802",
-      "directory": "output/implementation_goal_20260724/live_game_control_route_states_20260802",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_live_game_control_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real authenticated organizer live-game control route",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline",
-        "retained_syncing",
-        "mutation_conflict",
-        "security_timeout"
-      ],
-      "captured_at": "2026-08-02T00:30:09Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_organizer_live_game_control_without_authenticated_shared_live_role_rls_rpc_audit_real_session_display_physical_device_human_approval_signing_store_deployment_or_release_claim"
-    },
-    {
-      "id": "participant-game-route-states-20260802",
-      "directory": "output/implementation_goal_20260724/participant_game_route_states_20260802",
-      "artifact_scope": "recursive",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-07",
-        "A11Y-03",
-        "A11Y-05",
-        "A11Y-07",
-        "GAME-MOB-05"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "rayon_sports_participant_game_route_state_local_evidence",
-      "platform": "flutter_test_macos_arm64",
-      "runtime_device": "Flutter 3.44.4; Dart 3.12.2; deterministic real authenticated participant discovery and live-play routes",
-      "viewport_profiles": [
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 320,
-          "height": 720,
-          "device_pixel_ratio": 1,
-          "text_scale_percent": 200
-        }
-      ],
-      "locale": "en screenshots; generated EN/FR/RW catalog",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline",
-        "retained_syncing",
-        "identity_conflict",
-        "security_timeout",
-        "confirmed_selection"
-      ],
-      "captured_at": "2026-08-02T00:59:11Z",
-      "data_source": "current_dirty_local_source_and_deterministic_synthetic_non_production_participant_game_without_authenticated_shared_live_role_rls_rpc_audit_real_synchronized_event_physical_device_human_approval_signing_store_deployment_or_release_claim"
+      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_with_explicit_two_key_loopback_only_authenticated_admin_shell_allowance_and_no_protected_api_or_mutation_bypass",
+      "admission_status": "pending"
     },
     {
       "id": "admin-pwa-predictions-rendered-states-20260802",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/admin_pwa_predictions_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -4664,7 +1965,7 @@
     },
     {
       "id": "admin-pwa-settings-rendered-states-20260802",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/admin_pwa_settings_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -4714,7 +2015,7 @@
     },
     {
       "id": "admin-pwa-settings-audit-rendered-states-20260802",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/admin_pwa_settings_audit_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -4764,7 +2065,7 @@
     },
     {
       "id": "admin-pwa-settings-features-rendered-states-20260802",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/admin_pwa_settings_features_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -4814,7 +2115,7 @@
     },
     {
       "id": "admin-pwa-settings-runtime-rendered-states-20260802",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/admin_pwa_settings_runtime_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -4864,7 +2165,7 @@
     },
     {
       "id": "admin-pwa-shop-rendered-states-20260802",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/admin_pwa_shop_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -4914,7 +2215,7 @@
     },
     {
       "id": "admin-pwa-sms-monitor-rendered-states-20260802",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/admin_pwa_sms_monitor_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -4964,7 +2265,7 @@
     },
     {
       "id": "admin-pwa-tickets-rendered-states-20260802",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/admin_pwa_tickets_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -5014,7 +2315,7 @@
     },
     {
       "id": "admin-pwa-venues-rendered-states-20260802",
-      "admission_status": "admitted",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/admin_pwa_venues_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -5063,115 +2364,8 @@
       "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_admin_pwa__admin_venues_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
     },
     {
-      "id": "native-tv-remote-context-checkpoint-20260802",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/native_tv_remote_context_checkpoint_20260802",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "A11Y-02",
-        "EVID-04",
-        "EVID-05",
-        "EVID-06",
-        "EVID-07",
-        "EVID-08",
-        "TV-04",
-        "TV-05",
-        "REL-04",
-        "REL-05"
-      ],
-      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "native_tv_debug_isolated_local_backend_and_mobile_ios_simulator_generic_pairing_link",
-      "platform": "android_tv_api36_avd_and_ios_simulator",
-      "runtime_device": "AFRICLUB_TV_API36 read-only Android TV API 36 AVD at 1920x1080; Lovelies iPhone 12 Pro iOS simulator",
-      "viewport_profiles": [
-        {
-          "width": 1920,
-          "height": 1080,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 3
-        }
-      ],
-      "locale": "rw",
-      "themes": [
-        "dark"
-      ],
-      "captured_at": "2026-08-02T06:40:06Z",
-      "data_source": "exact_current_native_tv_debug_build_against_isolated_local_supabase_with_synthetic_club_and_ios_simulator_generic_link_registration__no_shared_linked_or_production_mutation_no_physical_device_live_pairing_signing_store_or_approval_claim"
-    },
-    {
-      "id": "supabase-production-audit-20260809",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/supabase_production_audit_20260809",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "ADMIN-05",
-        "STATE-03",
-        "REL-06",
-        "EVID-07",
-        "EVID-08"
-      ],
-      "baseline_commit": "d92394f47f660551701f4c65769085587cd1962b",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "6",
-      "flavor": "hosted_production_supabase_control_audit_pre_final_hardening",
-      "platform": "supabase_management_api_hosted_postgres_and_edge_runtime",
-      "runtime_device": "Supabase hosted PostgreSQL 17.6 and deployed Edge Functions; control audit captured before the final ACL and auth-hook dependency migrations",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "database, Auth, Storage, Realtime, Edge Function, advisor, secret-name, cron, and migration-parity evidence; no visual capture is claimed"
-        }
-      ],
-      "locale": "not_applicable_backend_control_audit",
-      "themes": [
-        "not_applicable_no_visual_capture"
-      ],
-      "captured_at": "2026-08-09T19:33:19Z",
-      "data_source": "historical production Supabase control audit with 18-of-18 governed Edge Function parity and zero strict-control failures; retained as pre-final evidence and superseded for current ACL, policy, function-path, and auth-hook state by later production catalog checks and migration 20260810011500"
-    },
-    {
-      "id": "state03-production-concurrency-20260808",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/state03_production_concurrency_20260808",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-03",
-        "ADMIN-05",
-        "EVID-07",
-        "EVID-08",
-        "REL-06"
-      ],
-      "baseline_commit": "ff66a459bed9dbc4f0efb5fb57f3882189d85c0f",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "5",
-      "flavor": "hosted_production_state03_concurrency_boundary",
-      "platform": "supabase_hosted_postgres_auth_data_api_node_validation",
-      "runtime_device": "Node 24.18.0; Supabase hosted PostgreSQL 17.6; two independent authenticated clients and service-role audit probes",
-      "viewport_profiles": [
-        {
-          "applicable": false,
-          "reason": "production database, authorization, concurrency, audit, rollback, and cleanup receipt; no visual capture is claimed"
-        }
-      ],
-      "locale": "not_applicable_database_boundary",
-      "themes": [
-        "not_applicable_no_visual_capture"
-      ],
-      "captured_at": "2026-08-08T20:46:35Z",
-      "data_source": "production Supabase Auth and Data API with deleted synthetic identities and fixtures; genuine two-client supporter order collisions, service-role contribution review, immutable audit, rollback, exact cleanup, and explicit non-completion for untested surfaces and accountable approvals"
-    },
-    {
-      "id": "venue-portal-overview-rendered-states-20260813",
-      "admission_status": "admitted",
+      "id": "venue-portal-overview-rendered-states-20260802",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/venue_portal_overview_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -5184,13 +2378,13 @@
         "VENUE-PORTAL-LOCAL",
         "REL-07"
       ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
       "dirty_state": true,
       "app_version": "1.0.3",
-      "build_number": "6",
+      "build_number": "5",
       "flavor": "venue_portal_production_local_controlled_venue_portal_overview_states_evidence",
       "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
       "viewport_profiles": [
         {
           "width": 1440,
@@ -5216,62 +2410,12 @@
         "reduced_motion",
         "offline"
       ],
-      "captured_at": "2026-08-13T16:53:44Z",
+      "captured_at": "2026-08-02T06:03:56Z",
       "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
     },
     {
-      "id": "venue-portal-ticket-verification-rendered-states-20260813",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_ticket_verification_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "6",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_ticket_verification_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-13T16:54:01Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_tickets_verify_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "venue-portal-orders-rendered-states-20260813",
-      "admission_status": "admitted",
+      "id": "venue-portal-orders-rendered-states-20260802",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/venue_portal_orders_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -5284,13 +2428,13 @@
         "VENUE-PORTAL-LOCAL",
         "REL-07"
       ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
       "dirty_state": true,
       "app_version": "1.0.3",
-      "build_number": "6",
+      "build_number": "5",
       "flavor": "venue_portal_production_local_controlled_venue_portal_orders_states_evidence",
       "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
       "viewport_profiles": [
         {
           "width": 1440,
@@ -5316,12 +2460,12 @@
         "reduced_motion",
         "offline"
       ],
-      "captured_at": "2026-08-13T16:54:18Z",
+      "captured_at": "2026-08-02T06:04:13Z",
       "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_orders_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
     },
     {
-      "id": "venue-portal-menu-rendered-states-20260813",
-      "admission_status": "admitted",
+      "id": "venue-portal-menu-rendered-states-20260802",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/venue_portal_menu_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -5334,13 +2478,13 @@
         "VENUE-PORTAL-LOCAL",
         "REL-07"
       ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
       "dirty_state": true,
       "app_version": "1.0.3",
-      "build_number": "6",
+      "build_number": "5",
       "flavor": "venue_portal_production_local_controlled_venue_portal_menu_states_evidence",
       "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
       "viewport_profiles": [
         {
           "width": 1440,
@@ -5366,12 +2510,12 @@
         "reduced_motion",
         "offline"
       ],
-      "captured_at": "2026-08-13T16:54:35Z",
+      "captured_at": "2026-08-02T06:04:29Z",
       "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_menu_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
     },
     {
-      "id": "venue-portal-checkins-rendered-states-20260813",
-      "admission_status": "admitted",
+      "id": "venue-portal-checkins-rendered-states-20260802",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/venue_portal_checkins_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -5384,13 +2528,13 @@
         "VENUE-PORTAL-LOCAL",
         "REL-07"
       ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
       "dirty_state": true,
       "app_version": "1.0.3",
-      "build_number": "6",
+      "build_number": "5",
       "flavor": "venue_portal_production_local_controlled_venue_portal_checkins_states_evidence",
       "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
       "viewport_profiles": [
         {
           "width": 1440,
@@ -5416,12 +2560,12 @@
         "reduced_motion",
         "offline"
       ],
-      "captured_at": "2026-08-13T16:54:51Z",
+      "captured_at": "2026-08-02T06:04:46Z",
       "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_checkins_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
     },
     {
-      "id": "venue-portal-promotions-rendered-states-20260813",
-      "admission_status": "admitted",
+      "id": "venue-portal-promotions-rendered-states-20260802",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/venue_portal_promotions_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -5434,13 +2578,13 @@
         "VENUE-PORTAL-LOCAL",
         "REL-07"
       ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
       "dirty_state": true,
       "app_version": "1.0.3",
-      "build_number": "6",
+      "build_number": "5",
       "flavor": "venue_portal_production_local_controlled_venue_portal_promotions_states_evidence",
       "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
       "viewport_profiles": [
         {
           "width": 1440,
@@ -5466,12 +2610,12 @@
         "reduced_motion",
         "offline"
       ],
-      "captured_at": "2026-08-13T16:55:08Z",
+      "captured_at": "2026-08-02T06:05:02Z",
       "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_promotions_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
     },
     {
-      "id": "venue-portal-staff-rendered-states-20260813",
-      "admission_status": "admitted",
+      "id": "venue-portal-staff-rendered-states-20260802",
+      "admission_status": "pending",
       "directory": "output/implementation_goal_20260724/venue_portal_staff_states",
       "artifact_scope": "immediate",
       "task_ids": [
@@ -5484,13 +2628,13 @@
         "VENUE-PORTAL-LOCAL",
         "REL-07"
       ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
+      "baseline_commit": "5016c8896bbb78b293dc89aaebd8d831c9ac7c4e",
       "dirty_state": true,
       "app_version": "1.0.3",
-      "build_number": "6",
+      "build_number": "5",
       "flavor": "venue_portal_production_local_controlled_venue_portal_staff_states_evidence",
       "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
+      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.2.10; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
       "viewport_profiles": [
         {
           "width": 1440,
@@ -5516,217 +2660,8 @@
         "reduced_motion",
         "offline"
       ],
-      "captured_at": "2026-08-13T16:55:25Z",
+      "captured_at": "2026-08-02T06:05:19Z",
       "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_staff_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "venue-portal-tv-code-rendered-states-20260813",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/venue_portal_tv_code_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "VENUE-PORTAL-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "6",
-      "flavor": "venue_portal_production_local_controlled_venue_portal_tv_code_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-13T16:55:41Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_venue_portal__venue_tv-code_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
-    },
-    {
-      "id": "physical-mobile-uat-current-20260813",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/physical_mobile_uat_current",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "MOB-09",
-        "A11Y-02",
-        "EVID-04",
-        "EVID-06",
-        "EVID-07",
-        "EVID-08",
-        "REL-02",
-        "REL-04"
-      ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
-      "dirty_state": true,
-      "app_version": "1.0.3-isolated-qa",
-      "build_number": "6",
-      "flavor": "physical_android_isolated_synthetic_smoke",
-      "platform": "flutter_android_physical_device_debug",
-      "runtime_device": "Physical Pixel 4a, Android 13/API 33; device identifier intentionally omitted",
-      "viewport_profiles": [
-        {
-          "device": "Pixel 4a",
-          "physical": true,
-          "orientation": "portrait"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "system_default"
-      ],
-      "captured_at": "2026-08-13T18:59:16Z",
-      "data_source": "current_dirty_source_on_isolated_debug_application_id_with_synthetic_providers; five physical Android journeys passed, including an in-app warm custom-link transition and controlled offline Settings with destructive sign-out cancellation; a supplemental physical resolver check proved gikundiro and africlub custom-scheme package resolution plus top-resumed MainActivity and rejected an unlisted scheme; no verified HTTPS App Link, authenticated end-to-end OS-link destination, physical network change, destructive mutation, production backend, customer data, runtime permissions, TalkBack, installed-customer-app replacement, iOS execution or release claim"
-    },
-    {
-      "id": "ios-isolated-qa-build-20260813",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/ios_isolated_qa_build_20260813",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "MOB-09",
-        "A11Y-02",
-        "EVID-04",
-        "EVID-07",
-        "EVID-08",
-        "REL-03",
-        "REL-04"
-      ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
-      "dirty_state": true,
-      "app_version": "1.0.3-isolated-qa",
-      "build_number": "6",
-      "flavor": "ios_isolated_qa_unsigned_build",
-      "platform": "flutter_ios_unsigned_device_and_xcode_simulator_configuration",
-      "runtime_device": "Generic iOS device build and generic iOS simulator configuration; physical iPhone intentionally not modified",
-      "viewport_profiles": [
-        {
-          "target": "generic iOS device",
-          "physical_execution": false
-        },
-        {
-          "target": "generic iOS simulator",
-          "physical_execution": false
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "not_executed"
-      ],
-      "captured_at": "2026-08-13T18:04:35Z",
-      "data_source": "current_dirty_source_isolated_qa_identity_contract_unsigned_device_build_and_simulator_configuration_build; no signing, provisioning, physical iPhone modification, Firebase QA registration, authenticated live backend, accessibility, store or release claim"
-    },
-    {
-      "id": "physical-android-performance-current-20260813",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/physical_android_performance_current",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "MOB-09",
-        "EVID-06",
-        "EVID-07",
-        "EVID-08",
-        "ADMIN-08",
-        "REL-02",
-        "REL-04"
-      ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
-      "dirty_state": true,
-      "app_version": "1.0.3-isolated-qa",
-      "build_number": "6",
-      "flavor": "physical_android_isolated_profile_performance",
-      "platform": "flutter_android_physical_device_profile",
-      "runtime_device": "Physical Pixel 4a, Android 13/API 33; device identifier intentionally omitted",
-      "viewport_profiles": [
-        {
-          "device": "Pixel 4a",
-          "physical": true,
-          "orientation": "portrait"
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "system_default"
-      ],
-      "captured_at": "2026-08-13T18:29:21Z",
-      "data_source": "current_dirty_source_on_isolated_profile_application_id_with_controlled_non_production_providers; physical journey passed but declared 16 ms frame budget failed for transitions and raster-heavy scrolling; no production backend, customer data, product images, checkout submission, realtime, approved memory budget, TalkBack, runtime permissions, exact-candidate or release claim"
-    },
-    {
-      "id": "admin-pwa-ticket-verifiers-rendered-states-20260815",
-      "admission_status": "admitted",
-      "directory": "output/implementation_goal_20260724/admin_pwa_ticket_verifiers_states",
-      "artifact_scope": "immediate",
-      "task_ids": [
-        "STATE-01",
-        "EVID-02",
-        "EVID-03",
-        "EVID-04",
-        "EVID-05",
-        "EVID-08",
-        "ADMIN-PWA-LOCAL",
-        "REL-07"
-      ],
-      "baseline_commit": "10adf5dc087499afe2a5980fb527c1b884abf992",
-      "dirty_state": true,
-      "app_version": "1.0.3",
-      "build_number": "6",
-      "flavor": "admin_pwa_production_local_controlled_admin_pwa_ticket_verifiers_states_evidence",
-      "platform": "nextjs_production_build_playwright_chromium",
-      "runtime_device": "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-      "viewport_profiles": [
-        {
-          "width": 1440,
-          "height": 1000,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 1024,
-          "height": 900,
-          "device_pixel_ratio": 1
-        },
-        {
-          "width": 390,
-          "height": 844,
-          "device_pixel_ratio": 1
-        }
-      ],
-      "locale": "en",
-      "themes": [
-        "dark",
-        "light",
-        "large_text_200_percent",
-        "reduced_motion",
-        "offline"
-      ],
-      "captured_at": "2026-08-15T05:28:05Z",
-      "data_source": "current_dirty_local_source_and_synthetic_non_production_browser_states_for_admin_pwa__admin_tickets_verifiers_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim"
     }
   ]
 }

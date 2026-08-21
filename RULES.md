@@ -154,7 +154,7 @@ After any refactor that moves or removes features:
 
 ## **SECTION 4 - DESIGN AUTHORITY LOCK**
 
-Before touching any user-facing Flutter, web, admin, venue, or native TV
+Before touching any user-facing Flutter, web, admin, or venue
 surface, read `DESIGN.md` first. It is the sole design authority for this
 repository.
 
@@ -278,12 +278,11 @@ Example: `rayon_sports_rw:ledger:group-uuid-123`
 
 Never subscribe to a channel without the `club_id` prefix — this is what prevents cross-club data leakage in Realtime.
 
-### **6.5 Venue, TV, And FET Rules**
+### **6.5 Venue And FET Rules**
 
 * Venue-owned records must include both `club_id` and `venue_id`
-* Venue check-in must use rotating QR/TV codes first; foreground geolocation is optional verification only
+* Venue check-in must use rotating short-lived codes first; foreground geolocation is optional verification only
 * Venue ordering is drinks-only top-10 MVP unless the owner approves a wider POS scope
-* TV surfaces are read-only and must never show personal data, wallet balances, check-in identity, or order queues
 * FET is a closed-loop monetary-equivalent reward ledger until legal/payment review approves otherwise
 * FET copy must never imply cash-out, odds, betting, stake, deposit, payout, or open-loop stored value
 * AI-generated drafts must never auto-publish
@@ -566,7 +565,7 @@ NEVER:
 | ----- | ----- | ----- | ----- |
 | March 2026 | 1.0.0 | Initial rules document created | IKANISA Ltd. |
 | March 2026 | 1.1.0 | Added runtime theme governance and hardcoded-value cleanup rules | IKANISA Ltd. |
-| 2026-07-02 | 1.2.0 | Added venue, TV, LiveScore, FET, and no-browser-check-in guardrails for Rayon venue rollout | Codex |
+| 2026-07-02 | 1.2.0 | Added venue, LiveScore, FET, and no-browser-check-in guardrails for Rayon venue rollout | Codex |
 
 ---
 

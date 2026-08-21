@@ -92,7 +92,7 @@ test("public home renders on a phone viewport", async ({ page }) => {
 
   await expect(
     page.getByRole("heading", {
-      name: /rayon sports fc\. matchday starts here/i,
+      name: /rayon sports\. matchday starts here/i,
     }),
   ).toBeVisible();
   await expect(page.getByText(/supporter app coming soon/i)).toBeVisible();
@@ -102,7 +102,7 @@ test("supporters handoff page renders on tablet", async ({ page }) => {
   await page.goto("/supporters", { waitUntil: "domcontentloaded" });
   await expect(
     page.getByRole("heading", {
-      name: /rayon sports fc rewards and public ranking/i,
+      name: /rayon sports rewards and public ranking/i,
     }),
   ).toBeVisible();
   await expect(
@@ -432,7 +432,6 @@ test("venue manager session reaches every scoped workflow and revocation fails c
       ["/venue/menu", /drinks menu/i],
       ["/venue/checkins", /^check-ins$/i],
       ["/venue/promotions", /^promotions$/i],
-      ["/venue/tv-code", /tv code status/i],
       ["/venue/staff", /venue staff/i],
     ] as const;
     const evidenceDir = path.resolve(

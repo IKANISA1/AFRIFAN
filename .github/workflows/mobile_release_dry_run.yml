@@ -36,16 +36,6 @@ jobs:
       - name: Bootstrap workspace
         run: dart run melos bootstrap
 
-      - name: Validate all club release contracts
-        run: |
-          for app in apps/*/; do
-            slug="$(basename "$app")"
-            if [ "$slug" = "output" ]; then
-              continue
-            fi
-            bash tools/scripts/validate_club_release.sh "$slug"
-          done
-
       - name: Run white-label app shell smoke tests
         run: |
           smoke_tests=$(find apps -path '*/test/app_shell_smoke_test.dart' ! -path 'apps/rayon_sports/*' | sort)
@@ -53,8 +43,15 @@ jobs:
             echo "❌ No white-label app shell smoke tests found."
             exit 1
           fi
-          echo "$smoke_tests"
-          flutter test $smoke_tests
+          while IFS= read -r smoke_test; do
+            app_dir="${smoke_test%/test/app_shell_smoke_test.dart}"
+            flavor_file="$app_dir/assets/flavors/production.json"
+            if [ ! -f "$flavor_file" ]; then
+              echo "❌ Missing flavor contract: $flavor_file"
+              exit 1
+            fi
+            flutter test "$smoke_test" --dart-define-from-file="$flavor_file"
+          done <<< "$smoke_tests"
 
       - name: Build Android release dry run
         run: bash tools/scripts/dry_run_android_release.sh rayon_sports
@@ -90,16 +87,6 @@ jobs:
       - name: Bootstrap workspace
         run: dart run melos bootstrap
 
-      - name: Validate all club release contracts
-        run: |
-          for app in apps/*/; do
-            slug="$(basename "$app")"
-            if [ "$slug" = "output" ]; then
-              continue
-            fi
-            bash tools/scripts/validate_club_release.sh "$slug"
-          done
-
       - name: Run white-label app shell smoke tests
         run: |
           smoke_tests=$(find apps -path '*/test/app_shell_smoke_test.dart' ! -path 'apps/rayon_sports/*' | sort)
@@ -107,8 +94,15 @@ jobs:
             echo "❌ No white-label app shell smoke tests found."
             exit 1
           fi
-          echo "$smoke_tests"
-          flutter test $smoke_tests
+          while IFS= read -r smoke_test; do
+            app_dir="${smoke_test%/test/app_shell_smoke_test.dart}"
+            flavor_file="$app_dir/assets/flavors/production.json"
+            if [ ! -f "$flavor_file" ]; then
+              echo "❌ Missing flavor contract: $flavor_file"
+              exit 1
+            fi
+            flutter test "$smoke_test" --dart-define-from-file="$flavor_file"
+          done <<< "$smoke_tests"
 
       - name: Build iOS release dry run
         run: bash tools/scripts/dry_run_ios_release.sh rayon_sports

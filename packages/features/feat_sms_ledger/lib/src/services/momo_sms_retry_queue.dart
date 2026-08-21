@@ -29,7 +29,12 @@ class MomoSmsRetryQueue {
       final box = await _openBox(boxName);
       return box.length;
     } catch (error, stackTrace) {
-      AfriLogger.warn('MomoSmsRetryQueue', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'MomoSmsRetryQueue',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return 0;
     }
   }
@@ -69,10 +74,7 @@ class MomoSmsRetryQueue {
   ) async {
     final box = await _openBox(boxName);
     if (box.isEmpty) {
-      return const RetryQueueDrainResult(
-        queuedBefore: 0,
-        queuedAfter: 0,
-      );
+      return const RetryQueueDrainResult(queuedBefore: 0, queuedAfter: 0);
     }
 
     final queuedBefore = box.length;

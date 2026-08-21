@@ -33,10 +33,6 @@ export default function AccountDeletionPage() {
           heading: "Receive completion or retention information",
           body: "The active profile and account-linked application data are removed through the governed deletion workflow. Confirmed transaction, fraud-prevention, security, and audit records may remain access-restricted only when an applicable legal or documented operational obligation requires retention.",
         },
-        {
-          heading: "Revoke an approved Gikundiro TV display",
-          body: "Gikundiro TV uses a revocable display credential instead of a supporter account. An authorized owner can use the same support channel to request display revocation or deletion of associated provisioning data, subject to lawful security and audit retention.",
-        },
       ]}
       notice="Account deletion is irreversible. Do not send passwords, verification codes, payment credentials, biometric material, or identity documents with a public request."
       actions={[

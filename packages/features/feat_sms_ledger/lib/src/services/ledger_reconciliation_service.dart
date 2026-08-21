@@ -51,5 +51,7 @@ class LedgerReconciliationService {
 
 final ledgerReconciliationServiceProvider =
     Provider<LedgerReconciliationService>((ref) {
-  return LedgerReconciliationService(client: ref.watch(supabaseClientProvider));
-});
+      return LedgerReconciliationService(
+        client: ref.watch(supabaseClientProvider),
+      );
+    });

@@ -66,13 +66,6 @@ const venueRoutes: VenueRoute[] = [
     action: /refresh venue staff/i,
     retainedText: "Assignment 1",
   },
-  {
-    slug: "tv_code",
-    route: "/venue/tv-code",
-    heading: "TV code status",
-    action: /refresh tv code status/i,
-    retainedText: "Amahoro screen 1",
-  },
 ];
 
 const governedStates = [
@@ -381,7 +374,6 @@ async function captureRoute(browser: Browser, route: VenueRoute) {
       permission_denial_clears_records: true,
       offline_and_syncing_retain_last_confirmed_snapshot: true,
       uncertain_mutations_locked: true,
-      readable_tv_code_rendered: false,
       supporter_identity_rendered: false,
       synthetic_non_production_data: true,
       minimum_target_css_pixels: 48,

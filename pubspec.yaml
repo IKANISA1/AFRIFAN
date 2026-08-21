@@ -11,7 +11,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_riverpod: ^2.6.1
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^10.3.1
   equatable: ^2.0.7
   hive: ^2.2.3
   crypto: ^3.0.6
@@ -31,7 +31,6 @@ flutter:
 workspace:
   # ── Apps ──
   - apps/rayon_sports
-  - apps/rayon_sports_tv
   - apps/vitalo
   - apps/yanga
   - apps/tp_mazembe
@@ -69,7 +68,6 @@ workspace:
   - packages/features/feat_live
   - packages/features/feat_membership
   - packages/features/feat_gamification
-  - packages/features/feat_game_operations
   - packages/features/feat_contributions
   - packages/features/feat_shop
   - packages/features/feat_sms_ledger
@@ -108,6 +106,11 @@ melos:
       environment:
         sdk: ">=3.10.0 <4.0.0"
         flutter: ">=3.38.0"
+      hooks:
+        # Flutter regenerates its ignored SwiftPM bridge at iOS 13.0. Rayon
+        # targets iOS 15.5, so the governed bootstrap raises the generated
+        # manifest before Xcode resolves packages. Non-macOS hosts skip safely.
+        post: bash tools/scripts/prepare_rayon_ios_swiftpm.sh rayon_sports
 
   scripts:
     analyze:

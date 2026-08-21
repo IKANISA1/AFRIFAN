@@ -125,9 +125,7 @@ void main() {
       id: 'focused',
       value: AsyncData<ETicketState>(_ready()),
       check: (tester) async {
-        final close = find.byKey(
-          const ValueKey<String>('e-ticket-close'),
-        );
+        final close = find.byKey(const ValueKey<String>('e-ticket-close'));
         final focusable = find
             .descendant(
               of: close,
@@ -135,10 +133,7 @@ void main() {
             )
             .first;
         final gestureDetector = find
-            .descendant(
-              of: focusable,
-              matching: find.byType(GestureDetector),
-            )
+            .descendant(of: focusable, matching: find.byType(GestureDetector))
             .first;
         Focus.of(tester.element(gestureDetector)).requestFocus();
         await tester.pumpAndSettle();
@@ -270,10 +265,8 @@ void main() {
         ETicketFailure(ETicketFailureKind.securityTimeout),
         StackTrace.empty,
       ),
-      check: (_) async => expect(
-        find.text('Ticket security check timed out'),
-        findsOneWidget,
-      ),
+      check: (_) async =>
+          expect(find.text('Ticket security check timed out'), findsOneWidget),
     );
   });
 }
@@ -381,7 +374,7 @@ Future<void> _pumpRoute(
 
 class _Controller extends ETicketController {
   _Controller(AsyncValue<ETicketState> value)
-      : super(_Gateway(), 'ticket-1', autoLoad: false) {
+    : super(_Gateway(), 'ticket-1', autoLoad: false) {
     state = value;
   }
 
@@ -406,27 +399,27 @@ ETicketState _ready({
 }
 
 ClubTicket _ticket() => ClubTicket.fromJson({
-      'id': 'ticket-1',
-      'match_id': 'match-1',
-      'user_id': 'user-1',
-      'seat_type': 'vip',
-      'amount_paid': 15000,
-      'qr_code': 'AFRICLUB-TICKET-1',
-      'momo_reference': 'not-rendered',
-      'status': 'active',
-      'purchased_at': '2026-07-28T09:00:00Z',
-      'match': {
-        'id': 'match-1',
-        'home_team': 'Rayon Sports',
-        'away_team': 'APR FC',
-        'competition': 'Rwanda Premier League',
-        'venue': 'Amahoro Stadium',
-        'match_date': '2026-08-02T15:00:00Z',
-        'kickoff_time': '17:00',
-        'is_on_sale': true,
-        'ticket_general_price': 5000,
-        'ticket_vip_price': 15000,
-        'sale_starts_at': '2026-07-20T09:00:00Z',
-        'capacity': 45000,
-      },
-    });
+  'id': 'ticket-1',
+  'match_id': 'match-1',
+  'user_id': 'user-1',
+  'seat_type': 'vip',
+  'amount_paid': 15000,
+  'qr_code': 'AFRICLUB-TICKET-1',
+  'momo_reference': 'not-rendered',
+  'status': 'active',
+  'purchased_at': '2026-07-28T09:00:00Z',
+  'match': {
+    'id': 'match-1',
+    'home_team': 'Rayon Sports',
+    'away_team': 'APR FC',
+    'competition': 'Rwanda Premier League',
+    'venue': 'Amahoro Stadium',
+    'match_date': '2026-08-02T15:00:00Z',
+    'kickoff_time': '17:00',
+    'is_on_sale': true,
+    'ticket_general_price': 5000,
+    'ticket_vip_price': 15000,
+    'sale_starts_at': '2026-07-20T09:00:00Z',
+    'capacity': 45000,
+  },
+});

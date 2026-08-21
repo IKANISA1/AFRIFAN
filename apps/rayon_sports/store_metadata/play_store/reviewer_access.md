@@ -43,7 +43,7 @@ Select: **All or some functionality is restricted**.
 - published ticket plus pending and confirmed ticket examples;
 - merchandise cart plus pending and confirmed order examples;
 - contribution history with privacy-safe fictitious data;
-- predictions/live-game state only if enabled in the submitted release;
+- football prediction state only if enabled in the submitted release;
 - account deletion on a disposable review identity.
 
 ## Acceptance gate
@@ -55,4 +55,3 @@ Select: **All or some functionality is restricted**.
 - Review does not require a real payment, cash-value reward, production admin
   action, or out-of-band human intervention.
 - Instructions were tested from a fresh store-installed build.
-

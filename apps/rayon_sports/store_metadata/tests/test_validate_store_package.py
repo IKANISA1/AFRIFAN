@@ -36,7 +36,7 @@ class StorePackageValidationTest(unittest.TestCase):
         self.assertIn("POLICY_BLOCKING", codes)
         self.assertNotIn("ARTWORK_MISSING", codes)
         self.assertNotIn("SCREENSHOTS_MISSING", codes)
-        self.assertNotIn("IOS_ICON_GATE", codes)
+        self.assertIn("IOS_ICON_GATE", codes)
         self.assertNotIn("ARTWORK_GATE", codes)
         self.assertIn("PORTAL_VALUE_PENDING", codes)
         self.assertFalse(result.valid(enforce_gates=True))
@@ -57,17 +57,7 @@ class StorePackageValidationTest(unittest.TestCase):
         ):
             self.assertFalse(any(approval_id in message for message in approval_messages))
 
-    def test_tv_artwork_approvals_match_controlled_approvals(self) -> None:
-        tv_store = validator.TV_DIR / "store_metadata"
-        artwork = json.loads((tv_store / "artwork_manifest.json").read_text(encoding="utf-8"))
-        approvals = json.loads((tv_store / "approvals.json").read_text(encoding="utf-8"))
-        self.assertIn("rayon_brand_and_content_rights", artwork["approvals_required"])
-        self.assertEqual(
-            {item["id"] for item in approvals["approvals"]},
-            set(artwork["approvals_required"]),
-        )
-
-    def test_exact_release_artifact_provenance_is_recorded(self) -> None:
+    def test_prior_release_artifact_and_current_icon_parity_gate_are_recorded(self) -> None:
         app_store = json.loads(
             (validator.STORE_DIR / "app_store" / "artwork_manifest.json").read_text(
                 encoding="utf-8"
@@ -79,23 +69,13 @@ class StorePackageValidationTest(unittest.TestCase):
         )
         self.assertEqual(6, app_store["release_artifact"]["build_number"])
         self.assertEqual(
-            "archive_icon_presence_verified",
+            "current_source_local_device_build_icon_presence_verified_exact_signed_archive_parity_pending",
             app_store["binary_icon_gate"]["status"],
         )
-
-        tv_store = validator.TV_DIR / "store_metadata"
-        tv_artwork = json.loads(
-            (tv_store / "artwork_manifest.json").read_text(encoding="utf-8")
+        self.assertIn(
+            "no longer exact-candidate parity evidence",
+            app_store["release_artifact"]["current_source_relation"],
         )
-        self.assertEqual(
-            "37bfdbd7a7206c7002c4ba6fad55bfc43247e3df133a6d656b72828ff7f1ae77",
-            tv_artwork["production_release_artifact"]["sha256"],
-        )
-        launcher = next(
-            item for item in tv_artwork["assets"] if item["id"] == "launcher_banner_in_aab"
-        )
-        self.assertTrue(launcher["byte_parity_verified"])
-        self.assertEqual(launcher["source_sha256"], launcher["production_aab_embedded_sha256"])
 
     def test_submission_ready_adds_post_upload_portal_gates(self) -> None:
         upload = validator.validate({validator.MOBILE_PLAY}, release_ready=True)
@@ -362,14 +342,14 @@ class StorePackageValidationTest(unittest.TestCase):
 
     def test_json_cli_is_machine_readable(self) -> None:
         completed = subprocess.run(
-            [sys.executable, str(SCRIPT), "--surface", "tv-play", "--json"],
+            [sys.executable, str(SCRIPT), "--surface", "mobile-play", "--json"],
             check=False,
             capture_output=True,
             text=True,
         )
         self.assertEqual(0, completed.returncode, completed.stderr)
         payload = json.loads(completed.stdout)
-        self.assertEqual(["tv-play"], payload["surfaces"])
+        self.assertEqual(["mobile-play"], payload["surfaces"])
         self.assertTrue(payload["valid"])
         self.assertGreater(len(payload["gates"]), 0)
 

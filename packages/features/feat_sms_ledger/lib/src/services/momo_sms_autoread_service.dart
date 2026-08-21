@@ -66,32 +66,34 @@ class MomoSmsAutoreadService {
     MomoSmsAutoreadSupportChecker? supportsSmsAutoread,
     MomoSmsInboxLoader? inboxLoader,
     this.countryCode,
-  })  : _client = client,
-        _appAccessService = appAccessService,
-        _telephony = telephony ?? Telephony.instance,
-        _ingestionRepository =
-            ingestionRepository ?? MomoSmsIngestionRepository(client: client),
-        _crashlytics = crashlytics,
-        _operationalHealthService = operationalHealthService ??
-            OperationalHealthService(client: client),
-        _openBox = openBox ?? openHiveBox<String>,
-        _syncStateStore = syncStateStore ??
-            MomoSmsSyncStateStore(
-              openBox: openBox ?? openHiveBox<String>,
-              boxName: _syncStateBoxName,
-            ),
-        _syncRunAuditWriter = syncRunAuditWriter ??
-            MomoSmsSyncRunAuditWriter.supabase(
-              client: client,
-              crashlytics: crashlytics,
-            ),
-        _consentCallback = consentCallback,
-        _smsPermissionStatus =
-            smsPermissionStatus ?? (() => Permission.sms.status),
-        _requestSmsPermission =
-            requestSmsPermission ?? (() => Permission.sms.request()),
-        _supportsSmsAutoreadOverride = supportsSmsAutoread,
-        _inboxLoader = inboxLoader;
+  }) : _client = client,
+       _appAccessService = appAccessService,
+       _telephony = telephony ?? Telephony.instance,
+       _ingestionRepository =
+           ingestionRepository ?? MomoSmsIngestionRepository(client: client),
+       _crashlytics = crashlytics,
+       _operationalHealthService =
+           operationalHealthService ?? OperationalHealthService(client: client),
+       _openBox = openBox ?? openHiveBox<String>,
+       _syncStateStore =
+           syncStateStore ??
+           MomoSmsSyncStateStore(
+             openBox: openBox ?? openHiveBox<String>,
+             boxName: _syncStateBoxName,
+           ),
+       _syncRunAuditWriter =
+           syncRunAuditWriter ??
+           MomoSmsSyncRunAuditWriter.supabase(
+             client: client,
+             crashlytics: crashlytics,
+           ),
+       _consentCallback = consentCallback,
+       _smsPermissionStatus =
+           smsPermissionStatus ?? (() => Permission.sms.status),
+       _requestSmsPermission =
+           requestSmsPermission ?? (() => Permission.sms.request()),
+       _supportsSmsAutoreadOverride = supportsSmsAutoread,
+       _inboxLoader = inboxLoader;
 
   final SupabaseClient _client;
   final AppAccessService _appAccessService;
@@ -163,9 +165,7 @@ class MomoSmsAutoreadService {
       );
       _isListening = true;
       _activeUserId = session.user.id;
-      await _crashlytics?.log(
-        'momo_sms: Android SMS autoread active',
-      );
+      await _crashlytics?.log('momo_sms: Android SMS autoread active');
     }
 
     final syncState = await _readSyncState(session.user.id);
@@ -180,9 +180,7 @@ class MomoSmsAutoreadService {
     return true;
   }
 
-  Future<bool> enable({
-    Future<bool> Function()? onShowRationale,
-  }) async {
+  Future<bool> enable({Future<bool> Function()? onShowRationale}) async {
     if (!_supportsSmsAutoread || !EnvConfig.enableAndroidMomoSmsAutoread) {
       return false;
     }
@@ -220,7 +218,8 @@ class MomoSmsAutoreadService {
           .eq('user_id', session.user.id)
           .maybeSingle();
 
-      final enabled = row is Map<String, dynamic> &&
+      final enabled =
+          row is Map<String, dynamic> &&
           row['momo_sms_autoread_enabled'] == true;
       await _appAccessService.setEnabled(AppAccessPermission.sms, enabled);
     } catch (error, stackTrace) {
@@ -383,18 +382,21 @@ class MomoSmsAutoreadService {
     // Fix 7: If local sync state is completely empty on a manual trigger,
     // the user likely reinstalled or cleared data. Force a full re-scan
     // to recover any unsynced messages.
-    final isReinstallRecovery = trigger == MomoInboxSyncTrigger.manual &&
+    final isReinstallRecovery =
+        trigger == MomoInboxSyncTrigger.manual &&
         !syncState.hasInitialBackfill &&
         syncState.lastSuccessfulSyncAt == null;
 
-    final cutoff = trigger == MomoInboxSyncTrigger.initialPermissionGrant ||
+    final cutoff =
+        trigger == MomoInboxSyncTrigger.initialPermissionGrant ||
             isReinstallRecovery
         ? historicalCutoff
         : MomoSmsSyncPlanner.resolveManualCutoff(
             syncState: syncState,
             historicalCutoff: historicalCutoff,
           );
-    final incremental = trigger == MomoInboxSyncTrigger.manual &&
+    final incremental =
+        trigger == MomoInboxSyncTrigger.manual &&
         !isReinstallRecovery &&
         cutoff.isAfter(historicalCutoff);
 
@@ -500,8 +502,8 @@ class MomoSmsAutoreadService {
         MomoSmsSyncState(
           initialBackfillCompletedAt:
               trigger == MomoInboxSyncTrigger.initialPermissionGrant
-                  ? scanCompletedAt
-                  : syncState.initialBackfillCompletedAt,
+              ? scanCompletedAt
+              : syncState.initialBackfillCompletedAt,
           lastSuccessfulSyncAt: scanCompletedAt,
           latestKnownMessageAt: latestKnownMessageAt,
         ),

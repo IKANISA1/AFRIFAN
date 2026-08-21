@@ -37,28 +37,6 @@ void main() {
       expect(route?.toString(), '/fanzone/fixtures?filter=live');
     });
 
-    test(
-      'maps the explicit generic TV pairing alias into the mobile route',
-      () {
-        final parser = DeepLinkParser(
-          customScheme: 'gikundiro',
-          additionalCustomSchemes: const <String>['africlub'],
-        );
-
-        final route = parser.toInternalUri(
-          Uri.parse('africlub://my-tvs/pair?challenge=TV4K8M2Q'),
-        );
-
-        expect(route?.toString(), '/my-tvs/pair?challenge=TV4K8M2Q');
-        expect(
-          parser.toInternalUri(
-            Uri.parse('unlisted://my-tvs/pair?challenge=TV4K8M2Q'),
-          ),
-          isNull,
-        );
-      },
-    );
-
     test('ignores unrelated schemes', () {
       final parser = DeepLinkParser(customScheme: 'gikundiro');
 

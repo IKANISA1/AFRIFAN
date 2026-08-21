@@ -11,7 +11,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(PostgresChangeEvent.all);
     registerFallbackValue(
-      PostgresChangeFilter(
+      const PostgresChangeFilter(
         type: PostgresChangeFilterType.eq,
         column: 'id',
         value: 'fixture-9',

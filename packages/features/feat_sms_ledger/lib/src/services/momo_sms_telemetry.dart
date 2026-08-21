@@ -61,8 +61,12 @@ Map<String, dynamic>? _senderDriftTelemetry({
     // In the integrated service, the repository import is already available.
     return null; // Will be populated via the repository's senderDriftTelemetry
   } catch (error, stackTrace) {
-    AfriLogger.warn('MomoSmsTelemetry', 'Operation failed (non-critical).',
-        error, stackTrace);
+    AfriLogger.warn(
+      'MomoSmsTelemetry',
+      'Operation failed (non-critical).',
+      error,
+      stackTrace,
+    );
     return null;
   }
 }

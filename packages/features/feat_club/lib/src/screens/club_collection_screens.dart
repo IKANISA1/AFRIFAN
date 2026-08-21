@@ -79,10 +79,8 @@ class ClubNewsDetailScreen extends ConsumerWidget {
       title: l10n.clubNewsTitle.toUpperCase(),
       state: state,
       onRetry: () => ref.invalidate(clubNewsProvider),
-      select: (items) => _firstWhereOrNull(
-        items,
-        (item) => item.id == articleId,
-      ),
+      select: (items) =>
+          _firstWhereOrNull(items, (item) => item.id == articleId),
       notFoundTitle: l10n.clubArticleUnavailableTitle,
       notFoundMessage: l10n.clubArticleUnavailableMessage,
       builder: (article) => GlassCard(
@@ -118,9 +116,7 @@ class ClubNewsDetailScreen extends ConsumerWidget {
                   article.author,
                   _shortDate(context, article.publishedAt),
                 ].where((value) => value.isNotEmpty).join(' • '),
-                style: TypographyTokens.bodySmall(
-                  ColorTokens.onSurfaceVariant,
-                ),
+                style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
               ),
             ],
             const SizedBox(height: SpacingTokens.spacing5),
@@ -143,9 +139,9 @@ class ClubFixturesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.afriL10n;
-    final state = ref.watch(clubMatchesProvider).whenData(
-          (items) => items.where((item) => !item.isCompleted).toList(),
-        );
+    final state = ref
+        .watch(clubMatchesProvider)
+        .whenData((items) => items.where((item) => !item.isCompleted).toList());
     return _ClubCollectionScaffold(
       title: l10n.clubFixturesTitle.toUpperCase(),
       state: state,
@@ -176,7 +172,9 @@ class ClubResultsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.afriL10n;
-    final state = ref.watch(clubMatchesProvider).whenData(
+    final state = ref
+        .watch(clubMatchesProvider)
+        .whenData(
           (items) => items
               .where((item) => item.isCompleted)
               .toList()
@@ -219,10 +217,7 @@ class ClubFixtureDetailScreen extends ConsumerWidget {
       title: l10n.clubMatchTitle.toUpperCase(),
       state: state,
       onRetry: () => ref.invalidate(clubMatchesProvider),
-      select: (items) => _firstWhereOrNull(
-        items,
-        (item) => item.id == matchId,
-      ),
+      select: (items) => _firstWhereOrNull(items, (item) => item.id == matchId),
       notFoundTitle: l10n.clubMatchUnavailableTitle,
       notFoundMessage: l10n.clubMatchUnavailableMessage,
       builder: (fixture) => GlassCard(
@@ -245,9 +240,7 @@ class ClubFixtureDetailScreen extends ConsumerWidget {
             const SizedBox(height: SpacingTokens.spacing3),
             Text(
               _fixtureSubtitle(context, fixture),
-              style: TypographyTokens.bodyLarge(
-                ColorTokens.onSurfaceVariant,
-              ),
+              style: TypographyTokens.bodyLarge(ColorTokens.onSurfaceVariant),
             ),
             if (fixture.isCompleted) ...[
               const SizedBox(height: SpacingTokens.spacing5),
@@ -416,9 +409,7 @@ class ClubProjectsScreen extends ConsumerWidget {
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               l10n.clubSupporters(project.memberCount),
-              style: TypographyTokens.bodySmall(
-                ColorTokens.onSurfaceVariant,
-              ),
+              style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
             ),
           ],
         ),
@@ -440,10 +431,8 @@ class ClubProjectDetailScreen extends ConsumerWidget {
       title: l10n.clubProjectTitle.toUpperCase(),
       state: state,
       onRetry: () => ref.invalidate(clubProjectsProvider),
-      select: (items) => _firstWhereOrNull(
-        items,
-        (item) => item.id == projectId,
-      ),
+      select: (items) =>
+          _firstWhereOrNull(items, (item) => item.id == projectId),
       notFoundTitle: l10n.clubProjectUnavailableTitle,
       notFoundMessage: l10n.clubProjectUnavailableMessage,
       builder: (project) => GlassCard(
@@ -470,17 +459,14 @@ class ClubProjectDetailScreen extends ConsumerWidget {
             const SizedBox(height: SpacingTokens.spacing3),
             Text(
               l10n.clubSupportersParticipate(project.memberCount),
-              style: TypographyTokens.bodyMedium(
-                ColorTokens.onSurfaceVariant,
-              ),
+              style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
             AfriButton(
               label: l10n.clubOpenContribution,
               fullWidth: true,
-              onTap: () => unawaited(
-                context.push('/contribute/group/${project.id}'),
-              ),
+              onTap: () =>
+                  unawaited(context.push('/contribute/group/${project.id}')),
             ),
           ],
         ),
@@ -526,13 +512,10 @@ class _ClubCollectionScaffold<T> extends StatelessWidget {
           final items = state.valueOrNull;
           if (items != null) {
             final failure = state.hasError
-                ? ClubContentFailure.fromError(
-                    state.error!,
-                    isOnline: isOnline,
-                  )
+                ? ClubContentFailure.fromError(state.error!, isOnline: isOnline)
                 : !isOnline
-                    ? const ClubContentFailure(ClubContentFailureKind.offline)
-                    : null;
+                ? const ClubContentFailure(ClubContentFailureKind.offline)
+                : null;
             return Column(
               children: [
                 if (state.isRefreshing || failure != null) ...[
@@ -557,9 +540,8 @@ class _ClubCollectionScaffold<T> extends StatelessWidget {
                             bottom: SpacingTokens.spacing6,
                           ),
                           itemCount: items.length,
-                          separatorBuilder: (_, __) => const SizedBox(
-                            height: SpacingTokens.spacing3,
-                          ),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: SpacingTokens.spacing3),
                           itemBuilder: (context, index) =>
                               itemBuilder(context, items[index]),
                         ),
@@ -646,13 +628,10 @@ class _ClubDetailScaffold<T> extends StatelessWidget {
               );
             }
             final failure = state.hasError
-                ? ClubContentFailure.fromError(
-                    state.error!,
-                    isOnline: isOnline,
-                  )
+                ? ClubContentFailure.fromError(state.error!, isOnline: isOnline)
                 : !isOnline
-                    ? const ClubContentFailure(ClubContentFailureKind.offline)
-                    : null;
+                ? const ClubContentFailure(ClubContentFailureKind.offline)
+                : null;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -714,9 +693,7 @@ class _StandingValue extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TypographyTokens.labelSmall(
-              ColorTokens.onSurfaceVariant,
-            ),
+            style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(

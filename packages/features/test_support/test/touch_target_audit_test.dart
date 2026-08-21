@@ -70,9 +70,6 @@ void main() {
       ),
     );
 
-    expectTapTargetsMeetMinimum(
-      tester,
-      approvedDenseKeys: <Key>{denseKey},
-    );
+    expectTapTargetsMeetMinimum(tester, approvedDenseKeys: <Key>{denseKey});
   });
 }

@@ -16,6 +16,7 @@ APP_FRAMEWORK_INFO_PLIST="$IOS_DIR/Flutter/AppFrameworkInfo.plist"
 XCODE_PROJECT="$IOS_DIR/Runner.xcodeproj/project.pbxproj"
 RUNNER_SCHEME="$IOS_DIR/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme"
 GENERATED_SWIFT_PACKAGE="$IOS_DIR/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift"
+WORKSPACE_PUBSPEC="$ROOT/pubspec.yaml"
 IOS_MINIMUM_VERSION="${IOS_MINIMUM_VERSION:-15.5}"
 
 if [ ! -d "$APP_DIR" ]; then
@@ -34,6 +35,8 @@ python3 - \
   "$XCODE_PROJECT" \
   "$RUNNER_SCHEME" \
   "$GENERATED_SWIFT_PACKAGE" \
+  "$WORKSPACE_PUBSPEC" \
+  "$APP_SLUG" \
   "$IOS_MINIMUM_VERSION" <<'PY'
 import pathlib
 import plistlib
@@ -50,7 +53,9 @@ framework_info_path = pathlib.Path(sys.argv[7])
 xcode_project_path = pathlib.Path(sys.argv[8])
 runner_scheme_path = pathlib.Path(sys.argv[9])
 generated_package_path = pathlib.Path(sys.argv[10])
-required_ios_version = sys.argv[11]
+workspace_pubspec_path = pathlib.Path(sys.argv[11])
+app_slug = sys.argv[12]
+required_ios_version = sys.argv[13]
 
 for path, label in (
     (info_path, "Info.plist"),
@@ -58,10 +63,10 @@ for path, label in (
     (privacy_manifest_path, "PrivacyInfo.xcprivacy"),
     (google_service_path, "GoogleService-Info.plist"),
     (launch_screen_path, "LaunchScreen.storyboard"),
-    (podfile_path, "Podfile"),
     (framework_info_path, "Flutter/AppFrameworkInfo.plist"),
     (xcode_project_path, "Runner.xcodeproj/project.pbxproj"),
     (runner_scheme_path, "Runner.xcscheme"),
+    (workspace_pubspec_path, "workspace pubspec.yaml"),
 ):
     if not path.exists():
         raise SystemExit(f"Missing {label}: {path}")
@@ -199,15 +204,6 @@ def version_tuple(raw: str) -> tuple[int, ...]:
         raise SystemExit(f"Invalid iOS deployment version: {raw}") from exc
 
 required_version = version_tuple(required_ios_version)
-podfile = podfile_path.read_text()
-podfile_match = re.search(r"platform\s+:ios,\s*['\"]([^'\"]+)['\"]", podfile)
-if podfile_match is None:
-    raise SystemExit("Podfile must declare an explicit iOS deployment target.")
-if version_tuple(podfile_match.group(1)) < required_version:
-    raise SystemExit(
-        f"Podfile iOS target {podfile_match.group(1)} is below {required_ios_version}."
-    )
-
 try:
     framework_info = plistlib.loads(framework_info_path.read_bytes())
 except Exception as exc:
@@ -220,6 +216,74 @@ if not framework_minimum or version_tuple(framework_minimum) < required_version:
     )
 
 xcode_project = xcode_project_path.read_text()
+uses_flutter_swiftpm = (
+    "XCLocalSwiftPackageReference" in xcode_project
+    and "FlutterGeneratedPluginSwiftPackage" in xcode_project
+)
+
+if uses_flutter_swiftpm:
+    ios_dir = podfile_path.parent
+    forbidden_files = [podfile_path, ios_dir / "Podfile.lock"]
+    present_forbidden_files = [str(path) for path in forbidden_files if path.exists()]
+    if present_forbidden_files:
+        raise SystemExit(
+            "SwiftPM-enabled iOS projects must not retain CocoaPods manifests: "
+            + ", ".join(present_forbidden_files)
+        )
+    if (ios_dir / "Pods").exists():
+        raise SystemExit("SwiftPM-enabled iOS projects must not retain an ios/Pods directory.")
+
+    forbidden_project_tokens = (
+        "Pods-Runner",
+        "Pods_Runner",
+        "[CP]",
+        "PODS_ROOT",
+        "PODS_PODFILE_DIR_PATH",
+    )
+    remaining_project_tokens = [
+        token for token in forbidden_project_tokens if token in xcode_project
+    ]
+    if remaining_project_tokens:
+        raise SystemExit(
+            "Runner.xcodeproj retains CocoaPods integration tokens: "
+            + ", ".join(remaining_project_tokens)
+        )
+
+    for relative_path in (
+        "Flutter/Debug.xcconfig",
+        "Flutter/Release.xcconfig",
+        "Runner.xcworkspace/contents.xcworkspacedata",
+    ):
+        path = ios_dir / relative_path
+        if not path.exists():
+            raise SystemExit(f"Missing SwiftPM project file: {path}")
+        if "Pods/" in path.read_text():
+            raise SystemExit(f"{path} retains a CocoaPods reference.")
+
+    expected_bootstrap_hook = (
+        "post: bash tools/scripts/prepare_rayon_ios_swiftpm.sh " + app_slug
+    )
+    if expected_bootstrap_hook not in workspace_pubspec_path.read_text():
+        raise SystemExit(
+            "Workspace bootstrap must prepare the generated iOS SwiftPM package; "
+            f"missing `{expected_bootstrap_hook}`."
+        )
+else:
+    if not podfile_path.exists():
+        raise SystemExit(
+            "Runner.xcodeproj is not wired to Flutter SwiftPM and has no Podfile fallback."
+        )
+    podfile = podfile_path.read_text()
+    podfile_match = re.search(
+        r"platform\s+:ios,\s*['\"]([^'\"]+)['\"]", podfile
+    )
+    if podfile_match is None:
+        raise SystemExit("Podfile must declare an explicit iOS deployment target.")
+    if version_tuple(podfile_match.group(1)) < required_version:
+        raise SystemExit(
+            f"Podfile iOS target {podfile_match.group(1)} is below {required_ios_version}."
+        )
+
 if "PrivacyInfo.xcprivacy in Resources" not in xcode_project:
     raise SystemExit(
         "Runner.xcodeproj must include PrivacyInfo.xcprivacy in the app resources phase."
@@ -255,14 +319,17 @@ if generated_package_path.exists():
         raise SystemExit(
             "Generated Flutter Swift package target is below "
             f"{required_ios_version}; run "
-            "`python3 tools/scripts/sync_ios_swiftpm_deployment_target.py "
-            "--manifest apps/rayon_sports/ios/Flutter/ephemeral/Packages/"
-            "FlutterGeneratedPluginSwiftPackage/Package.swift --minimum "
-            f"{required_ios_version}` after Flutter configuration generation."
+            "`bash tools/scripts/prepare_rayon_ios_swiftpm.sh rayon_sports` "
+            "after Flutter dependency resolution."
+        )
+    if uses_flutter_swiftpm and "flutter_secure_storage_darwin" not in generated_package:
+        raise SystemExit(
+            "Generated Flutter Swift package is missing flutter_secure_storage_darwin."
         )
 
 print(
     "iOS release contract ok "
-    f"({bundle_id}, project {project_id}, minimum iOS {required_ios_version})"
+    f"({bundle_id}, project {project_id}, minimum iOS {required_ios_version}, "
+    f"package manager {'SwiftPM' if uses_flutter_swiftpm else 'CocoaPods'})"
 )
 PY

@@ -34,8 +34,8 @@ void main() {
 
   test('presentation decision declares the exact registered target', () {
     final decision = TicketingModule().routePresentationDecisions.singleWhere(
-          (candidate) => candidate.path == '/my-tickets',
-        );
+      (candidate) => candidate.path == '/my-tickets',
+    );
 
     expect(decision.targetPath, '/tickets?tab=mine');
   });

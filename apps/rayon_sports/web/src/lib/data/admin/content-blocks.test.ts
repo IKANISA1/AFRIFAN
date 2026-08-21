@@ -67,7 +67,7 @@ describe("admin content-block response normalization", () => {
         { ...validBlock, id: "" },
         { ...validBlock, id: "bad-key", blockKey: "" },
         { ...validBlock, id: "bad-scope", scope: "private" },
-        { ...validBlock, id: "bad-channel", targetChannel: "tv" },
+        { ...validBlock, id: "bad-channel", targetChannel: "unsupported" },
         { ...validBlock, id: "bad-flag", isActive: "yes" },
         { ...validBlock, id: "bad-date", updatedAt: "not-a-date" },
         null,

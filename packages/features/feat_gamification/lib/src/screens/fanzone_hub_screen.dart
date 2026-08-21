@@ -48,7 +48,7 @@ enum _FanzoneHubSection {
   }
 }
 
-/// Fan Zone hub — TV-led games, supporter activity, and social points.
+/// Fan Zone hub — football predictions, supporter activity, and social points.
 ///
 /// Uses [FanzoneHubNotifier] via Riverpod for async state management instead
 /// of manual setState, enabling proper caching and DevTools integration.
@@ -327,12 +327,6 @@ class FanzoneHubScreen extends ConsumerWidget {
                             onTap: () =>
                                 context.go('/fanzone?section=supporters'),
                           ),
-                        _HubAction(
-                          icon: AfriIcons.live,
-                          title: l10n.gameLiveGamesTitle,
-                          subtitle: l10n.gameLiveGamesSubtitle,
-                          onTap: () => context.push('/fanzone/game'),
-                        ),
                         _HubAction.featureGated(
                           featureKey: 'venue_checkin',
                           icon: AfriIcons.qrScan,

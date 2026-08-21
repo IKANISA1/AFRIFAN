@@ -58,10 +58,7 @@ void main() {
     });
 
     test('isSoldOut returns true when sold >= capacity', () {
-      final soldOut = ClubMatch.fromJson({
-        ...validJson,
-        'sold_count': 25000,
-      });
+      final soldOut = ClubMatch.fromJson({...validJson, 'sold_count': 25000});
       expect(soldOut.isSoldOut, isTrue);
       expect(soldOut.remainingCapacity, 0);
     });
@@ -131,10 +128,12 @@ void main() {
         'is_on_sale': true,
         'capacity': 100,
         'sold_count': 100,
-        'sale_starts_at':
-            DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
-        'match_date':
-            DateTime.now().add(const Duration(days: 7)).toIso8601String(),
+        'sale_starts_at': DateTime.now()
+            .subtract(const Duration(days: 1))
+            .toIso8601String(),
+        'match_date': DateTime.now()
+            .add(const Duration(days: 7))
+            .toIso8601String(),
       });
       for (final tier in FanTier.values) {
         expect(soldOut.isAccessibleForTier(tier), isFalse);
@@ -147,16 +146,18 @@ void main() {
   // ═══════════════════════════════════════════════════════════
 
   group('ClubTicket.fromJson', () {
-    test('least-privilege projection includes version and omits mock metadata',
-        () {
-      expect(ClubTicket.dataApiProjection, contains('updated_at'));
-      expect(ClubTicket.dataApiProjection, contains('match:matches('));
-      expect(ClubTicket.dataApiProjection, isNot(contains('mock_batch')));
-      expect(
-        ClubTicket.dataApiProjection,
-        isNot(contains('image_rights_approved_by')),
-      );
-    });
+    test(
+      'least-privilege projection includes version and omits mock metadata',
+      () {
+        expect(ClubTicket.dataApiProjection, contains('updated_at'));
+        expect(ClubTicket.dataApiProjection, contains('match:matches('));
+        expect(ClubTicket.dataApiProjection, isNot(contains('mock_batch')));
+        expect(
+          ClubTicket.dataApiProjection,
+          isNot(contains('image_rights_approved_by')),
+        );
+      },
+    );
 
     test('parses ticket with nested match', () {
       final ticket = ClubTicket.fromJson({
@@ -251,10 +252,7 @@ void main() {
       final ticket = ClubTicket.fromJson({
         'id': 't-4',
         'match_id': 'm-4',
-        'match': {
-          'id': 'm-4',
-          'match_date': '2026-05-01T15:00:00Z',
-        },
+        'match': {'id': 'm-4', 'match_date': '2026-05-01T15:00:00Z'},
         'user_id': 'u-1',
         'seat_type': 'premium_lounge',
         'amount_paid': 50000,

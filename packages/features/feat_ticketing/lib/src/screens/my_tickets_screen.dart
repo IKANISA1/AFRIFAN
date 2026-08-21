@@ -22,9 +22,9 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
   late final TabController _tabController;
 
   CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
-        currencyCode: context.afriCurrencyCode,
-        currencySymbol: context.afriCurrencySymbol,
-      );
+    currencyCode: context.afriCurrencyCode,
+    currencySymbol: context.afriCurrencySymbol,
+  );
 
   @override
   void initState() {
@@ -54,11 +54,14 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
       ),
       data: (tickets) {
         final now = DateTime.now();
-        final upcoming = tickets.where((ticket) {
-          final isOpenTicket = ticket.status == TicketStatus.pending ||
-              ticket.status == TicketStatus.active;
-          return isOpenTicket && !ticket.match.matchDate.isBefore(now);
-        }).toList(growable: false);
+        final upcoming = tickets
+            .where((ticket) {
+              final isOpenTicket =
+                  ticket.status == TicketStatus.pending ||
+                  ticket.status == TicketStatus.active;
+              return isOpenTicket && !ticket.match.matchDate.isBefore(now);
+            })
+            .toList(growable: false);
         final past = tickets
             .where((ticket) => !upcoming.contains(ticket))
             .toList(growable: false);
@@ -221,8 +224,9 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                         decoration: BoxDecoration(
                           color: isActive
                               ? ColorTokens.success.withValues(alpha: 0.2)
-                              : ColorTokens.outlineVariant
-                                  .withValues(alpha: 0.2),
+                              : ColorTokens.outlineVariant.withValues(
+                                  alpha: 0.2,
+                                ),
                           borderRadius: ShapeTokens.chipRadius,
                         ),
                         child: Text(

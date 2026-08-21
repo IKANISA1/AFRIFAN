@@ -50,17 +50,19 @@ class ClubProduct extends Equatable {
   factory ClubProduct.fromJson(Map<String, dynamic> json) {
     final rawSizes = switch (json['available_sizes'] ?? json['sizes']) {
       final List<dynamic> values => values,
-      final String value when value.trim().isNotEmpty => value
-          .split(',')
-          .map((part) => part.trim())
-          .where((part) => part.isNotEmpty)
-          .toList(),
+      final String value when value.trim().isNotEmpty =>
+        value
+            .split(',')
+            .map((part) => part.trim())
+            .where((part) => part.isNotEmpty)
+            .toList(),
       _ => const <dynamic>[],
     };
 
     return ClubProduct(
       id: jh.asStringOrNull(json['id']) ?? '',
-      partnerId: jh.asStringOrNull(json['partner_id']) ??
+      partnerId:
+          jh.asStringOrNull(json['partner_id']) ??
           jh.asStringOrNull(json['club_id']) ??
           '',
       name: jh.asStringOrNull(json['name']) ?? 'Shop Item',
@@ -82,21 +84,21 @@ class ClubProduct extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'partner_id': partnerId,
-        'name': name,
-        'description': description,
-        'category': category.value,
-        'price': price,
-        'stock': stock,
-        'is_active': isActive,
-        'is_new': isNew,
-        'image_url': imageUrl,
-        'sizes': availableSizes,
-        'badge_label': badgeLabel,
-        'collection': collection,
-        'sort_order': sortOrder,
-      };
+    'id': id,
+    'partner_id': partnerId,
+    'name': name,
+    'description': description,
+    'category': category.value,
+    'price': price,
+    'stock': stock,
+    'is_active': isActive,
+    'is_new': isNew,
+    'image_url': imageUrl,
+    'sizes': availableSizes,
+    'badge_label': badgeLabel,
+    'collection': collection,
+    'sort_order': sortOrder,
+  };
 
   @override
   List<Object?> get props => [id, partnerId, name, category, price, stock];
@@ -162,14 +164,17 @@ class ClubShopOrder extends Equatable {
 
   factory ClubShopOrder.fromJson(Map<String, dynamic> json) {
     final rawItems = json['items'] as List? ?? const [];
-    final items = rawItems.whereType<Map<String, dynamic>>().map((item) {
-      final productJson = item['product'] as Map<String, dynamic>? ?? item;
-      return CartItem(
-        product: ClubProduct.fromJson(productJson),
-        quantity: jh.asInt(item['quantity'], fallback: 1).clamp(1, 9999),
-        selectedVariant: jh.asStringOrNull(item['selected_variant']),
-      );
-    }).toList(growable: false);
+    final items = rawItems
+        .whereType<Map<String, dynamic>>()
+        .map((item) {
+          final productJson = item['product'] as Map<String, dynamic>? ?? item;
+          return CartItem(
+            product: ClubProduct.fromJson(productJson),
+            quantity: jh.asInt(item['quantity'], fallback: 1).clamp(1, 9999),
+            selectedVariant: jh.asStringOrNull(item['selected_variant']),
+          );
+        })
+        .toList(growable: false);
 
     final subtotal = jh.asInt(json['subtotal']);
     final discount = jh.asInt(json['discount_amount']);
@@ -178,7 +183,8 @@ class ClubShopOrder extends Equatable {
     return ClubShopOrder(
       id: jh.asStringOrNull(json['id']) ?? '',
       userId: jh.asStringOrNull(json['user_id']) ?? '',
-      partnerId: jh.asStringOrNull(json['partner_id']) ??
+      partnerId:
+          jh.asStringOrNull(json['partner_id']) ??
           jh.asStringOrNull(json['club_id']),
       items: items,
       subtotal: subtotal,

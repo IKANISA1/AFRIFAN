@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:app_registry/app_registry.dart';
 import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_app/bootstrap.dart';
@@ -68,7 +70,7 @@ void main() {
       'physical_device_claimed': physicalDeviceProfile,
     };
 
-    await binding.watchPerformance(() async {
+    await _watchPerformanceOrRun(binding, () async {
       final context = tester.element(find.byType(QuickActionsGrid));
       GoRouter.of(context).go('/settings');
       await _pumpUntilVisible(tester, find.text('Settings'));
@@ -76,7 +78,7 @@ void main() {
     }, reportKey: 'home_to_settings_transition_frames');
 
     final scrollable = find.byType(Scrollable).first;
-    await binding.watchPerformance(() async {
+    await _watchPerformanceOrRun(binding, () async {
       for (var index = 0; index < 4; index++) {
         await tester.fling(scrollable, const Offset(0, -600), 1200);
         await tester.pumpAndSettle();
@@ -101,14 +103,14 @@ void main() {
 
     final catalogScroll = find.byType(CustomScrollView);
     expect(catalogScroll, findsOneWidget);
-    await binding.watchPerformance(() async {
+    await _watchPerformanceOrRun(binding, () async {
       for (var index = 0; index < 6; index++) {
         await tester.fling(catalogScroll, const Offset(0, -900), 1800);
         await tester.pumpAndSettle();
       }
     }, reportKey: 'shop_120_item_list_scroll_frames');
 
-    await binding.watchPerformance(() async {
+    await _watchPerformanceOrRun(binding, () async {
       await tester.tap(find.text('Checkout').last);
       await _pumpUntilVisible(tester, find.text('Delivery address'));
       await _pumpUntilVisible(tester, find.text('Checkout via MOMO'));
@@ -117,7 +119,7 @@ void main() {
     final addressField = find.byType(TextField).first;
     final checkoutScroll = find.byType(SingleChildScrollView);
     expect(checkoutScroll, findsOneWidget);
-    await binding.watchPerformance(() async {
+    await _watchPerformanceOrRun(binding, () async {
       await tester.enterText(addressField, '12 Amahoro Avenue');
       await tester.fling(checkoutScroll, const Offset(0, -700), 1400);
       await tester.pumpAndSettle();
@@ -353,6 +355,25 @@ Future<void> _pumpUntilVisible(
     await tester.pump(const Duration(milliseconds: 100));
   }
   expect(finder, findsOneWidget);
+}
+
+Future<void> _watchPerformanceOrRun(
+  IntegrationTestWidgetsFlutterBinding binding,
+  Future<void> Function() action, {
+  required String reportKey,
+}) async {
+  final serviceInfo = await developer.Service.getInfo();
+  if (serviceInfo.serverUri == null) {
+    await action();
+    binding.reportData ??= <String, dynamic>{};
+    binding.reportData![reportKey] = <String, dynamic>{
+      'captured': false,
+      'reason': 'vm_service_unavailable_in_host_flutter_test',
+    };
+    return;
+  }
+
+  await binding.watchPerformance(action, reportKey: reportKey);
 }
 
 Future<void> _scrollHomeUntilVisible(WidgetTester tester, Finder finder) async {

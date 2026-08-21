@@ -14,13 +14,14 @@ void main() {
     final packageSource = File(
       'lib/src/services/ledger_reconciliation_service.dart',
     );
-    final source = (packageSource.existsSync()
-            ? packageSource
-            : File(
-                'packages/features/feat_sms_ledger/lib/src/services/'
-                'ledger_reconciliation_service.dart',
-              ))
-        .readAsStringSync();
+    final source =
+        (packageSource.existsSync()
+                ? packageSource
+                : File(
+                    'packages/features/feat_sms_ledger/lib/src/services/'
+                    'ledger_reconciliation_service.dart',
+                  ))
+            .readAsStringSync();
 
     expect(
       source,

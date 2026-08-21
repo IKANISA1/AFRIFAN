@@ -11,9 +11,8 @@ export const privacyPolicySections: LegalDocumentSection[] = [
     ],
     items: [
       "Optional profile details, including display name and phone number.",
-      "Membership, ticket, shop-order, contribution, prediction, trivia, reward, and support history.",
+      "Membership, ticket, shop-order, contribution, prediction, reward, and support history.",
       "Account, installation, device-attestation, push-delivery, security, and fraud-prevention identifiers.",
-      "For approved Gikundiro TV displays: an installation nonce, temporary pairing challenge, secure revocable device credential, and display, assignment, session, and projection state.",
       "Consent-controlled product-interaction, crash, and performance diagnostics when those services are enabled for the release.",
     ],
   },
@@ -24,7 +23,6 @@ export const privacyPolicySections: LegalDocumentSection[] = [
       "Authenticate accounts, enforce club and role boundaries, protect transactions, and prevent abuse.",
       "Deliver requested notifications and reconcile confirmed memberships, tickets, orders, and contributions.",
       "Maintain reliability and improve the product using only the diagnostics permitted by the selected consent and release configuration.",
-      "Provision, assign, secure, update, and revoke approved Gikundiro TV displays.",
     ],
   },
   {
@@ -32,12 +30,6 @@ export const privacyPolicySections: LegalDocumentSection[] = [
     paragraphs: [
       "The current public mobile release candidate does not request SMS or Call Log access and does not provide SMS auto-read. A future or separately distributed release must provide its own disclosure, consent and control flow, platform-policy approval, and updated store declarations before processing payment messages.",
       "Firebase App Check, push delivery, crash reporting, performance monitoring, and analytics operate only when the relevant service is included and enabled for the release and, where applicable, the supporter has provided consent.",
-    ],
-  },
-  {
-    heading: "Gikundiro TV display boundaries",
-    paragraphs: [
-      "The paired TV application uses a revocable display credential and does not create or sign in to a supporter account. Public projections can show approved question content, scores, ranks, and public aliases. They are designed not to show supporter identity, credentials, private balances, payments, reward claims, tickets, purchases, or orders.",
     ],
   },
   {
@@ -51,7 +43,6 @@ export const privacyPolicySections: LegalDocumentSection[] = [
     paragraphs: [
       "Network traffic uses HTTPS/TLS. Application authorization and database access controls are designed to separate supporter, club, and administrative data. No Internet service can guarantee absolute security.",
       "Account data is retained while an account remains active. Confirmed transaction, fraud-prevention, security, and audit records may be retained after deletion where required by law or a documented operational obligation; retained records are access-restricted and removed under the approved schedule.",
-      "TV installation, pairing, assignment, security, and revocation records are retained only for their approved operational and security period.",
     ],
   },
   {
@@ -62,7 +53,6 @@ export const privacyPolicySections: LegalDocumentSection[] = [
       "Withdraw optional notification or diagnostics consent through device or app settings.",
       "Delete an accessible account from Profile > Settings > Delete Account in the mobile app.",
       "If the app is inaccessible, use the public account-deletion page to start a privacy-safe support request.",
-      "An authorized TV display owner may use the same support route to request display revocation or deletion of associated provisioning data, subject to lawful security and audit retention.",
     ],
   },
   {
@@ -87,7 +77,6 @@ export const termsSections: LegalDocumentSection[] = [
       "Keep account access and device credentials secure and report suspected unauthorized use promptly.",
       "Do not share passwords, one-time codes, payment credentials, or identity documents through public support channels.",
       "Guest or anonymous access may have limited recovery options until the supporter adds an approved recovery method.",
-      "Only an authorized display owner may pair, assign, or revoke a Gikundiro TV display. Do not copy or disclose its pairing challenge or device credential.",
     ],
   },
   {
@@ -105,9 +94,9 @@ export const termsSections: LegalDocumentSection[] = [
     ],
   },
   {
-    heading: "Predictions, trivia, and rewards",
+    heading: "Predictions and rewards",
     paragraphs: [
-      "Predictions, trivia, points, badges, and Fan Engagement Tokens are entertainment and supporter-engagement features. Unless a separately published promotion expressly states otherwise, they have no cash value, are not transferable, and are not a wager, deposit, or financial product.",
+      "Predictions, points, badges, and Fan Engagement Tokens are entertainment and supporter-engagement features. Unless a separately published promotion expressly states otherwise, they have no cash value, are not transferable, and are not a wager, deposit, or financial product.",
     ],
   },
   {

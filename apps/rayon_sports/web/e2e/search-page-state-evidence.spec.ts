@@ -334,16 +334,20 @@ test("search proves all sixteen applicable rendered states", async ({
 
   mode = "ready";
   await openSearch(page, "targets");
+  await expectStatus(page, "ready", /search ready/i);
   const targetSizes = await page
     .locator(
       ".search-form button, .search-form input, .search-suggestions button",
     )
     .evaluateAll((elements) =>
-      elements.map((element) => {
-        const rect = element.getBoundingClientRect();
-        return { width: rect.width, height: rect.height };
-      }),
+      elements
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          return { width: rect.width, height: rect.height };
+        })
+        .filter(({ width, height }) => width > 0 && height > 0),
     );
+  expect(targetSizes.length).toBeGreaterThan(0);
   for (const target of targetSizes) {
     expect(target.width).toBeGreaterThanOrEqual(48);
     expect(target.height).toBeGreaterThanOrEqual(48);

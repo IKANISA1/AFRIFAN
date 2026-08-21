@@ -826,7 +826,7 @@ export default function AdminTicketsPage() {
               </p>
             </div>
             {pendingAction.status === "cancelled" ? (
-              <p className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+              <p className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-[var(--admin-danger-text)]">
                 Cancellation is destructive and cannot be undone from this
                 queue. Confirm only after checking the supporter and payment
                 details.

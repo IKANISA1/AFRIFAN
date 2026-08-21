@@ -17,9 +17,7 @@ void main() {
     test('initializes with a new key when none exists', () async {
       final storage = _FakeSecureStorage();
 
-      await HiveEncryptionService.initialize(
-        secureStorageOverride: storage,
-      );
+      await HiveEncryptionService.initialize(secureStorageOverride: storage);
 
       expect(HiveEncryptionService.isInitialized, isTrue);
       expect(HiveEncryptionService.cipher, isNotNull);
@@ -37,16 +35,12 @@ void main() {
       final storage = _FakeSecureStorage();
 
       // First init — generates key.
-      await HiveEncryptionService.initialize(
-        secureStorageOverride: storage,
-      );
+      await HiveEncryptionService.initialize(secureStorageOverride: storage);
       final firstKey = storage.store['africlub_hive_encryption_key_v1'];
 
       // Reset and re-init — should reuse.
       HiveEncryptionService.resetForTest();
-      await HiveEncryptionService.initialize(
-        secureStorageOverride: storage,
-      );
+      await HiveEncryptionService.initialize(secureStorageOverride: storage);
       final secondKey = storage.store['africlub_hive_encryption_key_v1'];
 
       expect(firstKey, equals(secondKey));
@@ -56,14 +50,10 @@ void main() {
     test('is idempotent — second call is a no-op', () async {
       final storage = _FakeSecureStorage();
 
-      await HiveEncryptionService.initialize(
-        secureStorageOverride: storage,
-      );
+      await HiveEncryptionService.initialize(secureStorageOverride: storage);
       final cipherA = HiveEncryptionService.cipher;
 
-      await HiveEncryptionService.initialize(
-        secureStorageOverride: storage,
-      );
+      await HiveEncryptionService.initialize(secureStorageOverride: storage);
       final cipherB = HiveEncryptionService.cipher;
 
       expect(identical(cipherA, cipherB), isTrue);
@@ -86,9 +76,7 @@ void main() {
         List<int>.generate(16, (i) => i),
       );
 
-      await HiveEncryptionService.initialize(
-        secureStorageOverride: storage,
-      );
+      await HiveEncryptionService.initialize(secureStorageOverride: storage);
 
       // Should degrade — invalid key detected.
       expect(HiveEncryptionService.isInitialized, isTrue);
@@ -97,9 +85,7 @@ void main() {
 
     test('resetForTest clears cipher and initialization flag', () async {
       final storage = _FakeSecureStorage();
-      await HiveEncryptionService.initialize(
-        secureStorageOverride: storage,
-      );
+      await HiveEncryptionService.initialize(secureStorageOverride: storage);
 
       expect(HiveEncryptionService.cipher, isNotNull);
 
@@ -128,9 +114,7 @@ void main() {
 
     test('encrypted box can store and retrieve data', () async {
       final storage = _FakeSecureStorage();
-      await HiveEncryptionService.initialize(
-        secureStorageOverride: storage,
-      );
+      await HiveEncryptionService.initialize(secureStorageOverride: storage);
 
       final cipher = HiveEncryptionService.cipher;
       expect(cipher, isNotNull);
@@ -166,11 +150,11 @@ class _FakeSecureStorage extends FlutterSecureStorage {
   @override
   Future<String?> read({
     required String key,
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) async {
     return store[key];
@@ -180,11 +164,11 @@ class _FakeSecureStorage extends FlutterSecureStorage {
   Future<void> write({
     required String key,
     required String? value,
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) async {
     if (value != null) {
@@ -202,11 +186,11 @@ class _ThrowingSecureStorage extends FlutterSecureStorage {
   @override
   Future<String?> read({
     required String key,
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) async {
     throw Exception('Secure storage unavailable');

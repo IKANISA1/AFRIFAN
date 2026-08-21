@@ -22,7 +22,7 @@ MEMBERSHIP AND SUPPORT
 Review published membership tiers, submit an application, and view confirmed membership or contribution records. Availability and benefits depend on the club's current configuration.
 
 FAN ACTIVITIES
-Join free club-published prediction games and view your earned-points history when available. The public release does not offer challenges, jackpots, rewards, point transfers, social discovery, or leaderboards. Gikundiro is not a betting app. FET points are in-app scores only: they have no cash value, cannot be purchased or withdrawn, and do not promise a prize.
+Join free club-published prediction competitions and view your earned-points history when available. The public release does not offer challenges, jackpots, rewards, point transfers, social discovery, or leaderboards. Gikundiro is not a betting app. FET points are in-app scores only: they have no cash value, cannot be purchased or withdrawn, and do not promise a prize.
 
 SHOP
 Browse published merchandise, prepare an order, and use an authorized payment route when available. Orders remain pending until confirmed.

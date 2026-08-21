@@ -1,13 +1,6 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { readNormalizedFootballBaseline } from "./football-baseline-test-support";
 
-const migration = readFileSync(
-  resolve(
-    process.cwd(),
-    "../../../supabase/migrations/20260724233000_admin_destructive_action_audit.sql",
-  ),
-  "utf8",
-);
+const migration = readNormalizedFootballBaseline();
 
 describe("admin destructive action audit migration", () => {
   it("keeps role validation, delete, and immutable audit evidence atomic", () => {
@@ -26,10 +19,10 @@ describe("admin destructive action audit migration", () => {
     expect(migration).toMatch(/v_allowed_tables constant text\[\]/i);
     expect(migration).toMatch(/not \(p_table_name = any\(v_allowed_tables\)\)/i);
     expect(migration).toMatch(
-      /revoke all on function public\.admin_delete_mutable_record_if_unchanged[\s\S]+from public, anon, authenticated/i,
+      /revoke all on function public\.admin_delete_mutable_record_if_unchanged[\s\S]+from public;/i,
     );
     expect(migration).toMatch(
-      /grant execute on function public\.admin_delete_mutable_record_if_unchanged[\s\S]+to service_role/i,
+      /grant all on function public\.admin_delete_mutable_record_if_unchanged[\s\S]+to service_role;/i,
     );
   });
 

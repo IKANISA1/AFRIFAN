@@ -41,7 +41,6 @@ void main() {
         l10n.fanIdPrivacyTrust,
         ..._onboardingAuthMessages(l10n),
         ..._searchMessages(l10n),
-        ..._tvMessages(l10n),
         ..._membershipMessages(l10n),
         ..._clubMessages(l10n),
         ..._homeMessages(l10n),
@@ -70,8 +69,6 @@ void main() {
 
     expect(fr.onboardingContinueWhatsApp, isNot(en.onboardingContinueWhatsApp));
     expect(rw.onboardingContinueWhatsApp, isNot(en.onboardingContinueWhatsApp));
-    expect(fr.tvPairingUnavailable, isNot(en.tvPairingUnavailable));
-    expect(rw.tvPairingUnavailable, isNot(en.tvPairingUnavailable));
     expect(fr.searchTitle, isNot(en.searchTitle));
     expect(rw.searchTitle, isNot(en.searchTitle));
     expect(fr.searchTicketsTitle, isNot(en.searchTicketsTitle));
@@ -128,8 +125,6 @@ void main() {
     );
     expect(fr.settingsTitle, isNot(en.settingsTitle));
     expect(rw.settingsTitle, isNot(en.settingsTitle));
-    expect(fr.settingsSectionGamesAndTvs, isNot(en.settingsSectionGamesAndTvs));
-    expect(rw.settingsSectionGamesAndTvs, isNot(en.settingsSectionGamesAndTvs));
     expect(
       fr.notificationPreferencesDeliverySection,
       isNot(en.notificationPreferencesDeliverySection),
@@ -148,29 +143,13 @@ void main() {
     expect(rw.adminCmsTitle, isNot(en.adminCmsTitle));
     expect(fr.gameRewardsStoreTitle, isNot(en.gameRewardsStoreTitle));
     expect(rw.gameRewardsStoreTitle, isNot(en.gameRewardsStoreTitle));
-    expect(fr.gameLiveGamesTitle, isNot(en.gameLiveGamesTitle));
-    expect(rw.gameLiveGamesTitle, isNot(en.gameLiveGamesTitle));
-    expect(fr.gameNoEligibleSessions, isNot(en.gameNoEligibleSessions));
-    expect(rw.gameNoEligibleSessions, isNot(en.gameNoEligibleSessions));
-    expect(fr.gameScheduledDescription, isNot(en.gameScheduledDescription));
-    expect(rw.gameScheduledDescription, isNot(en.gameScheduledDescription));
-    expect(fr.gamePhaseEndsAt, isNot(en.gamePhaseEndsAt));
-    expect(rw.gamePhaseEndsAt, isNot(en.gamePhaseEndsAt));
-    expect(fr.gameOperationsTitle, isNot(en.gameOperationsTitle));
-    expect(rw.gameOperationsTitle, isNot(en.gameOperationsTitle));
-    expect(fr.gameMyTvsTitle, isNot(en.gameMyTvsTitle));
-    expect(rw.gameMyTvsTitle, isNot(en.gameMyTvsTitle));
-    expect(fr.gamePlannerFormInvalid, isNot(en.gamePlannerFormInvalid));
-    expect(rw.gamePlannerFormInvalid, isNot(en.gamePlannerFormInvalid));
-    expect(fr.gameLiveControlTitle, isNot(en.gameLiveControlTitle));
-    expect(rw.gameLiveControlTitle, isNot(en.gameLiveControlTitle));
     expect(
       rw.onboardingBelongBody('Rayon Sports FC'),
       contains('Rayon Sports FC'),
     );
   });
 
-  test('task and TV recovery messages stay within governed copy bounds', () {
+  test('task recovery messages stay within governed copy bounds', () {
     for (final locale in locales) {
       final l10n = lookupAfriLocalizations(locale);
       final compactMessages = <String>[
@@ -184,17 +163,10 @@ void main() {
         l10n.fanIdPrivacyTrust,
         ..._searchMessages(l10n),
       ];
-      final tvMessages = <String>[..._tvMessages(l10n)];
-
       expect(
         compactMessages,
         everyElement(hasLength(lessThanOrEqualTo(100))),
         reason: '${locale.languageCode} compact copy exceeded 100 characters.',
-      );
-      expect(
-        tvMessages,
-        everyElement(hasLength(lessThanOrEqualTo(90))),
-        reason: '${locale.languageCode} TV copy exceeded 90 characters.',
       );
     }
   });
@@ -298,28 +270,31 @@ void main() {
     }
   });
 
-  test('Game EN, FR, and RW ARB catalogs have exhaustive key parity', () {
+  test('football feature EN, FR, and RW catalogs have key parity', () {
     final catalogs = <String, Map<String, dynamic>>{
       for (final language in <String>['en', 'fr', 'rw'])
         language:
             jsonDecode(_arbCatalog(language).readAsStringSync())
                 as Map<String, dynamic>,
     };
-    final gameKeys = catalogs['en']!.keys
+    // This pre-split namespace now contains only football, club, prediction,
+    // rewards, and supporter copy. The repository boundary scanner
+    // independently rejects unsupported product surfaces from every locale.
+    final footballFeatureKeys = catalogs['en']!.keys
         .where((key) => !key.startsWith('@') && key.startsWith('game'))
         .toSet();
 
-    expect(gameKeys, isNotEmpty);
+    expect(footballFeatureKeys, isNotEmpty);
     for (final entry in catalogs.entries) {
       final localeKeys = entry.value.keys
           .where((key) => !key.startsWith('@'))
           .toSet();
       expect(
         localeKeys,
-        containsAll(gameKeys),
-        reason: '${entry.key} must contain every Game catalog key.',
+        containsAll(footballFeatureKeys),
+        reason: '${entry.key} must contain every football feature key.',
       );
-      for (final key in gameKeys) {
+      for (final key in footballFeatureKeys) {
         expect(
           entry.value[key],
           isA<String>().having(
@@ -548,36 +523,6 @@ List<String> _searchMessages(AfriLocalizations l10n) => <String>[
   l10n.searchClubFixtureFallback,
   l10n.searchClubProductFallback,
   l10n.searchMerchandiseFallback,
-];
-
-List<String> _tvMessages(AfriLocalizations l10n) => <String>[
-  l10n.tvPairingUnavailable,
-  l10n.tvConfigurationMissing,
-  l10n.tvCredentialRevoked,
-  l10n.tvEnterAdminCode,
-  l10n.tvJoinFromFanZone,
-  l10n.tvConnectionLostRetry,
-  l10n.tvAppTitle('Gikundiro'),
-  l10n.tvBrandMarkSemantic('Rayon Sports'),
-  l10n.tvPairThisDisplay,
-  l10n.tvPairingCodeLabel,
-  l10n.tvPairingCodeHelper,
-  l10n.tvPairingInProgress,
-  l10n.tvPairDisplayAction,
-  l10n.tvSessionCodeInstruction,
-  l10n.tvSessionCodeSemantic('ABC123'),
-  l10n.tvFetRewardLabel(25),
-  l10n.tvExpiresLabel(l10n.tvExpiresMinutes(5)),
-  l10n.tvExpired,
-  l10n.tvExpiresLessThanOneMinute,
-  l10n.tvExpiresMinutes(5),
-  l10n.tvExpiresHoursMinutes(1, 5),
-  l10n.tvVenueSessionDetails,
-  l10n.tvVenueSessionOnly,
-  l10n.tvNoSupporterDetails,
-  l10n.tvPairingStatusAndExpiry,
-  l10n.tvDefaultPairingPrompt,
-  l10n.tvOfflinePhase,
 ];
 
 List<String> _membershipMessages(AfriLocalizations l10n) => <String>[
@@ -1468,7 +1413,6 @@ List<String> _clubMessages(AfriLocalizations l10n) => <String>[
 
 List<String> _settingsMessages(AfriLocalizations l10n) => <String>[
   l10n.settingsTitle,
-  l10n.settingsSectionGamesAndTvs,
   l10n.settingsEditProfile,
   l10n.settingsAppearance,
   l10n.settingsNotifications,
@@ -1565,62 +1509,7 @@ List<String> _gameMessages(AfriLocalizations l10n) => <String>[
   l10n.gameMyActivity,
   l10n.gameActiveCount(2),
   l10n.gameActivitySemantics('Rayon Sports', 'APR'),
-  l10n.gameLiveGamesTitle,
-  l10n.gameLiveGamesSubtitle,
-  l10n.gamePlayingAs,
-  l10n.gamePlayingAsAlias('Lion 42'),
-  l10n.gameDiscoveringSessions,
-  l10n.gameDiscoveringSessionsDescription,
-  l10n.gameNoEligibleSessions,
-  l10n.gameNoEligibleSessionsDescription,
-  l10n.gameDiscoveryUnavailable,
-  l10n.gameDiscoveryUnavailableDescription,
-  l10n.gameNotEligible,
-  l10n.gameNotEligibleDescription,
-  l10n.gameLiveAccessDeniedV2,
-  l10n.gameLiveAccessDeniedV2Description,
-  l10n.gameReconnect,
   l10n.gameRefresh,
   l10n.gameLiveNow,
-  l10n.gameScheduled,
-  l10n.gameScheduledDescription,
-  l10n.gameOpenGame,
-  l10n.gameStartsAt,
-  l10n.gamePhaseEndsAt,
-  l10n.gameLobbyTitle,
-  l10n.gameLobbyDescription,
-  l10n.gamePausedTitle,
-  l10n.gamePausedDescription,
-  l10n.gameQuestionTitle,
-  l10n.gameChooseAnswer,
-  l10n.gameAnswerSubmitting,
-  l10n.gameAnswerConfirmed,
-  l10n.gameAnswerUncertain,
-  l10n.gameAnswerUncertainDescription,
-  l10n.gameRevealTitle,
-  l10n.gameCorrectAnswer,
   l10n.gameLeaderboardTitle,
-  l10n.gameNoScores,
-  l10n.gameCompletedTitle,
-  l10n.gameCompletedDescription,
-  l10n.gameCancelledTitle,
-  l10n.gameCancelledDescription,
-  l10n.gameSyncing,
-  l10n.gameUsingLastConfirmed,
-  l10n.gameBackToGames,
-  l10n.gameSelectedAnswer,
-  l10n.gameSelectedAnswerSemantics('Sample'),
-  l10n.gameLeaderboardRank(1),
-  l10n.gameOperationsTitle,
-  l10n.gameOperationsSubtitle,
-  l10n.gameMyTvsTitle,
-  l10n.gamePairTvTitle,
-  l10n.gameTvFormInvalid,
-  l10n.gameManagedGamesTitle,
-  l10n.gameSessionPlannerTitle,
-  l10n.gamePlannerFormInvalid,
-  l10n.gameLiveControlTitle,
-  l10n.gameOperationsUnavailable,
-  l10n.gameOperationsAccessDenied,
-  l10n.gameOperationConflict,
 ];

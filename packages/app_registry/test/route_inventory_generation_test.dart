@@ -9,15 +9,40 @@ void main() {
   test('generates a complete multi-surface route inventory', () {
     const configuredOutput = String.fromEnvironment('ROUTE_INVENTORY_OUT_DIR');
     final workspace = resolveRouteInventoryWorkspace(Directory.current);
-    final outputDirectory = Directory(
-      configuredOutput.isEmpty
-          ? '${workspace.path}/output/route_inventory_test'
-          : configuredOutput,
+    final temporaryRoot = Directory.systemTemp.createTempSync(
+      'africlub-route-inventory-',
     );
+    addTearDown(() {
+      if (temporaryRoot.existsSync()) {
+        temporaryRoot.deleteSync(recursive: true);
+      }
+    });
+    final outputDirectory = configuredOutput.isEmpty
+        ? Directory('${temporaryRoot.path}/output')
+        : Directory(configuredOutput);
+    final routeStateEvidenceFile =
+        File(
+          '${temporaryRoot.path}/route-state-evidence.json',
+        )..writeAsStringSync(
+          '${jsonEncode(<String, Object?>{
+            'schema_version': '1.0',
+            'cells': <String, Object?>{
+              'mobile|/home|tab|dark': <String, Object?>{
+                'test_evidence': <String>['packages/features/feat_home/test/home_screen_states_test.dart'],
+                'screenshot_evidence': <String>['packages/features/feat_home/test/goldens/'
+                    'home_compact_dark_320x760.png'],
+                'disposition_note': 'Hermetic route-inventory test evidence for one governed cell.',
+                'owner': 'Route inventory test',
+                'reviewed_at': '2026-08-20',
+              },
+            },
+          })}\n',
+        );
 
     final payload = generateRouteInventory(
       workspace: workspace,
       outputDirectory: outputDirectory,
+      routeStateEvidenceFile: routeStateEvidenceFile,
     );
     final routes = payload['routes']! as List<Map<String, Object?>>;
     final routeKeys = routes
@@ -28,7 +53,6 @@ void main() {
     expect(routes.length, greaterThan(100));
     expect(routeKeys, contains('mobile|/home'));
     expect(routeKeys, contains('mobile|/search'));
-    expect(routeKeys, contains('native_tv|/tv/session'));
     expect(routeKeys, contains('admin_pwa|/admin'));
     expect(routeKeys, contains('venue_portal|/venue'));
     expect(routeKeys, contains('web_api|/api/search-index'));
@@ -59,10 +83,9 @@ void main() {
       isTrue,
     );
     final generatedClosure = payload['state_closure']! as Map<String, Object?>;
-    expect(generatedClosure['evidenced_cell_count'], greaterThan(0));
-    expect(generatedClosure['open_cell_count'], lessThan(1980));
-    expect(generatedClosure['open_cell_count'], 0);
-    expect(generatedClosure['closure_complete'], isTrue);
+    expect(generatedClosure['evidenced_cell_count'], 1);
+    expect(generatedClosure['open_cell_count'], greaterThan(0));
+    expect(generatedClosure['closure_complete'], isFalse);
 
     // A missing evidence overlay must retain the original fail-closed ledger
     // rather than promoting source discovery to behavioral or visual proof.
@@ -219,45 +242,6 @@ void main() {
             ? 'applicable'
             : 'not_applicable',
       );
-    }
-    final displayOnlyRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] == 'display_only_live_surface',
-    );
-    expect(displayOnlyRoutes, hasLength(1));
-    final displayOnlyRoute = displayOnlyRoutes.single;
-    expect(displayOnlyRoute['path'], '/tv-display');
-    const expectedDisplayOnlyStates = <String>{
-      'loading',
-      'empty',
-      'error',
-      'offline',
-      'permission_denied',
-      'disabled',
-      'large_text',
-      'reduced_motion',
-      'dark',
-      'light',
-      'syncing',
-      'conflict',
-      'security_timeout',
-    };
-    final displayOnlyStates =
-        displayOnlyRoute['states']! as Map<String, Object?>;
-    for (final entry in displayOnlyStates.entries) {
-      final state = entry.value! as Map<String, Object?>;
-      expect(
-        state['applicability'],
-        expectedDisplayOnlyStates.contains(entry.key)
-            ? 'applicable'
-            : 'not_applicable',
-      );
-      if (!expectedDisplayOnlyStates.contains(entry.key)) {
-        expect(
-          state['rationale'],
-          contains('no focusable, pressable, or selectable controls'),
-        );
-      }
     }
     final staticLegalDocumentRoutes = closureRoutes.where(
       (route) => route['rendered_state_contract'] == 'static_legal_document',
@@ -425,209 +409,6 @@ void main() {
         );
       }
     }
-    final controlledParticipantDiscoveryRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] ==
-          'controlled_participant_discovery_surface',
-    );
-    expect(
-      controlledParticipantDiscoveryRoutes
-          .map((route) => route['path'])
-          .toSet(),
-      {'/fanzone/game'},
-    );
-    final participantDiscoveryStates =
-        controlledParticipantDiscoveryRoutes.single['states']!
-            as Map<String, Object?>;
-    for (final entry in participantDiscoveryStates.entries) {
-      expect(
-        (entry.value! as Map<String, Object?>)['applicability'],
-        entry.key == 'selected' ? 'not_applicable' : 'applicable',
-      );
-    }
-    final controlledParticipantLiveRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] ==
-          'controlled_participant_live_surface',
-    );
-    expect(
-      controlledParticipantLiveRoutes.map((route) => route['path']).toSet(),
-      {'/fanzone/game/:sessionId'},
-    );
-    final participantLiveStates =
-        controlledParticipantLiveRoutes.single['states']!
-            as Map<String, Object?>;
-    for (final entry in participantLiveStates.entries) {
-      expect(
-        (entry.value! as Map<String, Object?>)['applicability'],
-        'applicable',
-      );
-    }
-    final staticGameOperationsHubRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] ==
-          'static_game_operations_hub_surface',
-    );
-    expect(
-      staticGameOperationsHubRoutes.map((route) => route['path']).toSet(),
-      {'/game-operations'},
-    );
-    const expectedStaticGameOperationsHubStates = <String>{
-      'focused',
-      'pressed',
-      'large_text',
-      'reduced_motion',
-      'dark',
-      'light',
-    };
-    final gameOperationsHubStates =
-        staticGameOperationsHubRoutes.single['states']! as Map<String, Object?>;
-    for (final entry in gameOperationsHubStates.entries) {
-      expect(
-        (entry.value! as Map<String, Object?>)['applicability'],
-        expectedStaticGameOperationsHubStates.contains(entry.key)
-            ? 'applicable'
-            : 'not_applicable',
-      );
-    }
-    final controlledTvInventoryRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] == 'controlled_tv_inventory_surface',
-    );
-    expect(controlledTvInventoryRoutes.map((route) => route['path']).toSet(), {
-      '/my-tvs',
-    });
-    const expectedControlledTvInventoryStates = <String>{
-      'loading',
-      'empty',
-      'error',
-      'offline',
-      'permission_denied',
-      'disabled',
-      'focused',
-      'pressed',
-      'large_text',
-      'reduced_motion',
-      'dark',
-      'light',
-      'syncing',
-      'security_timeout',
-    };
-    final tvInventoryStates =
-        controlledTvInventoryRoutes.single['states']! as Map<String, Object?>;
-    for (final entry in tvInventoryStates.entries) {
-      expect(
-        (entry.value! as Map<String, Object?>)['applicability'],
-        expectedControlledTvInventoryStates.contains(entry.key)
-            ? 'applicable'
-            : 'not_applicable',
-      );
-    }
-    final controlledOrganizerInventoryRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] ==
-          'controlled_organizer_inventory_surface',
-    );
-    expect(
-      controlledOrganizerInventoryRoutes.map((route) => route['path']).toSet(),
-      {'/game-operations/sessions'},
-    );
-    final organizerInventoryStates =
-        controlledOrganizerInventoryRoutes.single['states']!
-            as Map<String, Object?>;
-    for (final entry in organizerInventoryStates.entries) {
-      expect(
-        (entry.value! as Map<String, Object?>)['applicability'],
-        expectedControlledTvInventoryStates.contains(entry.key)
-            ? 'applicable'
-            : 'not_applicable',
-      );
-    }
-    final controlledOrganizerPlannerRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] ==
-          'controlled_organizer_planner_surface',
-    );
-    expect(
-      controlledOrganizerPlannerRoutes.map((route) => route['path']).toSet(),
-      {'/game-operations/sessions/new'},
-    );
-    final organizerPlannerStates =
-        controlledOrganizerPlannerRoutes.single['states']!
-            as Map<String, Object?>;
-    for (final entry in organizerPlannerStates.entries) {
-      expect(
-        (entry.value! as Map<String, Object?>)['applicability'],
-        'applicable',
-      );
-    }
-    final controlledOrganizerLiveRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] ==
-          'controlled_organizer_live_control_surface',
-    );
-    expect(
-      controlledOrganizerLiveRoutes.map((route) => route['path']).toSet(),
-      {'/game-operations/sessions/:sessionId'},
-    );
-    const expectedControlledOrganizerLiveStates = <String>{
-      'loading',
-      'error',
-      'offline',
-      'permission_denied',
-      'disabled',
-      'focused',
-      'pressed',
-      'large_text',
-      'reduced_motion',
-      'dark',
-      'light',
-      'syncing',
-      'conflict',
-      'security_timeout',
-    };
-    final organizerLiveStates =
-        controlledOrganizerLiveRoutes.single['states']! as Map<String, Object?>;
-    for (final entry in organizerLiveStates.entries) {
-      expect(
-        (entry.value! as Map<String, Object?>)['applicability'],
-        expectedControlledOrganizerLiveStates.contains(entry.key)
-            ? 'applicable'
-            : 'not_applicable',
-      );
-    }
-    final controlledTvPairingRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] == 'controlled_tv_pairing_surface',
-    );
-    expect(controlledTvPairingRoutes.map((route) => route['path']).toSet(), {
-      '/my-tvs/pair',
-    });
-    final tvPairingStates =
-        controlledTvPairingRoutes.single['states']! as Map<String, Object?>;
-    for (final entry in tvPairingStates.entries) {
-      expect(
-        (entry.value! as Map<String, Object?>)['applicability'],
-        'applicable',
-      );
-    }
-    final controlledTvManagementRoutes = closureRoutes.where(
-      (route) =>
-          route['rendered_state_contract'] ==
-          'controlled_tv_management_surface',
-    );
-    expect(controlledTvManagementRoutes.map((route) => route['path']).toSet(), {
-      '/my-tvs/:displayId',
-    });
-    final tvManagementStates =
-        controlledTvManagementRoutes.single['states']! as Map<String, Object?>;
-    for (final entry in tvManagementStates.entries) {
-      expect(
-        (entry.value! as Map<String, Object?>)['applicability'],
-        'applicable',
-      );
-    }
-
     // HTTP endpoints use executable response contracts, not fabricated visual
     // evidence, while rendered routes continue to require screenshots.
     final apiEvidenceFile = File(

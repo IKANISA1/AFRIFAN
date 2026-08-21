@@ -33,7 +33,8 @@ class TicketCheckoutStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final total = (selectedSeatType == SeatType.vip
+    final total =
+        (selectedSeatType == SeatType.vip
             ? match.ticketVipPrice
             : match.ticketGeneralPrice) *
         quantity;
@@ -94,10 +95,7 @@ class TicketCheckoutStep extends StatelessWidget {
             AfriSurfaceCard(
               child: Row(
                 children: [
-                  Icon(
-                    AfriIcons.verified,
-                    color: ColorTokens.success,
-                  ),
+                  Icon(AfriIcons.verified, color: ColorTokens.success),
                   const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
                     child: Text(
@@ -117,17 +115,18 @@ class TicketCheckoutStep extends StatelessWidget {
               label: !isOnline
                   ? context.afriL10n.shopConnectionRequired
                   : match.isSoldOut
-                      ? context.afriL10n.ticketSoldOut
-                      : paymentRouteMessage != null
-                          ? context.afriL10n.shopPaymentRouteNotReady
-                          : submitting
-                              ? context.afriL10n.shopProcessing
-                              : context.afriL10n.ticketPayViaMomo,
+                  ? context.afriL10n.ticketSoldOut
+                  : paymentRouteMessage != null
+                  ? context.afriL10n.shopPaymentRouteNotReady
+                  : submitting
+                  ? context.afriL10n.shopProcessing
+                  : context.afriL10n.ticketPayViaMomo,
               icon: AfriIcons.phone,
               fullWidth: true,
               isLoading: submitting,
               onTap: onPurchaseRequest,
-              enabled: isOnline &&
+              enabled:
+                  isOnline &&
                   !match.isSoldOut &&
                   match.isOnSale &&
                   !submitting &&

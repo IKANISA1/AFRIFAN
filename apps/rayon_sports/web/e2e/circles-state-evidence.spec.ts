@@ -310,6 +310,7 @@ for (const surfaceCase of surfaceCases) {
 
     responseMode = "ready";
     await open("focused");
+    await expectStatus(page, "ready", surfaceCase.ready);
     const primaryAction = page
       .getByRole("link", { name: /app links coming soon/i })
       .first();

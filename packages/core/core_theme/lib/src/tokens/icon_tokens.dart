@@ -22,7 +22,7 @@ class AfriIcons {
   static const IconData membership = Icons.card_membership_outlined;
   static const IconData contribute = Icons.volunteer_activism_outlined;
   static const IconData tickets = Icons.confirmation_number_outlined;
-  static const IconData live = Icons.live_tv_rounded;
+  static const IconData live = Icons.sports_score_rounded;
   static const IconData shop = Icons.storefront_outlined;
   static const IconData cart = Icons.shopping_cart_outlined;
   static const IconData groups = Icons.groups_outlined;

@@ -26,7 +26,7 @@ abstract interface class ClubContentGateway {
 /// admin and contribution workflows.
 class SupabaseClubContentGateway implements ClubContentGateway {
   SupabaseClubContentGateway(this._client)
-      : _scopeResolver = ClubScopeResolver(client: _client);
+    : _scopeResolver = ClubScopeResolver(client: _client);
 
   final SupabaseClient _client;
   final ClubScopeResolver _scopeResolver;
@@ -75,9 +75,7 @@ class SupabaseClubContentGateway implements ClubContentGateway {
     final clubId = await _requireClubId();
     final rows = await _client
         .from('squad_players')
-        .select(
-          'id, name, position, shirt_number, nationality, bio',
-        )
+        .select('id, name, position, shirt_number, nationality, bio')
         .eq('club_id', clubId)
         .eq('is_active', true)
         .order('shirt_number')

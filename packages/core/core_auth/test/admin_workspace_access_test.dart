@@ -124,9 +124,7 @@ void main() {
 
     group('platform admin', () {
       test('has access to everything', () {
-        const access = AdminWorkspaceAccess(
-          hasPlatformAccess: true,
-        );
+        const access = AdminWorkspaceAccess(hasPlatformAccess: true);
 
         expect(access.hasAnyAdminAccess, isTrue);
         expect(access.hasBankAdminAccess, isTrue);
@@ -166,9 +164,7 @@ void main() {
 
     group('global partner admin', () {
       test('can access all partners', () {
-        const access = AdminWorkspaceAccess(
-          hasGlobalPartnerAccess: true,
-        );
+        const access = AdminWorkspaceAccess(hasGlobalPartnerAccess: true);
 
         expect(access.hasPartnerAdminAccess, isTrue);
         expect(access.canAccessPartnerId('any-partner'), isTrue);
@@ -223,8 +219,9 @@ void main() {
       });
 
       test('handles empty RPC response', () {
-        final access =
-            AdminWorkspaceAccess.fromRpcResponse(<String, dynamic>{});
+        final access = AdminWorkspaceAccess.fromRpcResponse(
+          <String, dynamic>{},
+        );
         expect(access.hasPlatformAccess, isFalse);
         expect(access.hasBankAccess, isFalse);
         expect(access.hasAnyAdminAccess, isFalse);
@@ -232,9 +229,7 @@ void main() {
       });
 
       test('handles legacy has_rayon_access field', () {
-        final json = <String, dynamic>{
-          'has_rayon_access': true,
-        };
+        final json = <String, dynamic>{'has_rayon_access': true};
 
         final access = AdminWorkspaceAccess.fromRpcResponse(json);
         expect(access.hasGlobalPartnerAccess, isTrue);
@@ -257,9 +252,7 @@ void main() {
       });
 
       test('parses legacy admin flag from JWT', () {
-        final metadata = <String, dynamic>{
-          'is_admin': true,
-        };
+        final metadata = <String, dynamic>{'is_admin': true};
 
         final access = AdminWorkspaceAccess.fromAppMetadata(metadata);
         expect(access.hasPlatformAccess, isTrue);
@@ -277,8 +270,9 @@ void main() {
       });
 
       test('handles empty metadata', () {
-        final access =
-            AdminWorkspaceAccess.fromAppMetadata(<String, dynamic>{});
+        final access = AdminWorkspaceAccess.fromAppMetadata(
+          <String, dynamic>{},
+        );
         expect(access.hasAnyAdminAccess, isFalse);
       });
     });

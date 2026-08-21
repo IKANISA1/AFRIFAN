@@ -182,13 +182,6 @@ const routes = [
     "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
   ],
   [
-    "venue-portal-tv-code-rendered-states",
-    "venue_portal",
-    "/venue/tv-code",
-    "venue_portal_tv_code_states",
-    "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
-  ],
-  [
     "venue-portal-ticket-verification-rendered-states",
     "venue_portal",
     "/venue/tickets/verify",

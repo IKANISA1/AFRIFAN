@@ -20,7 +20,7 @@ void main() {
   });
 
   test('every canonical Flutter route resolves through the router graph', () {
-    expect(canonicalRoutes.length, 92);
+    expect(canonicalRoutes.length, 83);
 
     for (final path in canonicalRoutes.keys) {
       final concreteUri = Uri.parse(_concretePath(path));

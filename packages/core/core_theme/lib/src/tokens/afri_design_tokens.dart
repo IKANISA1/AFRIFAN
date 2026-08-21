@@ -11,7 +11,7 @@ import 'tap_tokens.dart';
 ///
 /// The values here are semantic implementation tokens. They are not a second
 /// design authority; they encode the mandatory responsive, motion, focus,
-/// admin, and TV contracts from the repository-level DESIGN.md.
+/// and admin contracts from the repository-level DESIGN.md.
 class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
   const AfriDesignTokens({
     required this.spaceStep,
@@ -39,12 +39,6 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
     required this.adminTableRowHeight,
     required this.adminDetailPanelWidth,
     required this.adminCompactFallbackMaxWidth,
-    required this.tvSafeMargin720,
-    required this.tvSafeMargin1080,
-    required this.tvRailWidth,
-    required this.tvTileMinWidth,
-    required this.tvTileFocusScale,
-    required this.tvRemoteRepeatDebounce,
   });
 
   factory AfriDesignTokens.standard() => const AfriDesignTokens(
@@ -73,12 +67,6 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
     adminTableRowHeight: 56,
     adminDetailPanelWidth: 420,
     adminCompactFallbackMaxWidth: 719,
-    tvSafeMargin720: 48,
-    tvSafeMargin1080: 72,
-    tvRailWidth: 112,
-    tvTileMinWidth: 240,
-    tvTileFocusScale: 1.06,
-    tvRemoteRepeatDebounce: Duration(milliseconds: 90),
   );
 
   factory AfriDesignTokens.highContrast() {
@@ -93,8 +81,6 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
       standardMotion: base.reducedMotion,
       slowMotion: base.reducedMotion,
       focusScale: 1,
-      tvTileFocusScale: 1,
-      tvRemoteRepeatDebounce: Duration.zero,
     );
   }
 
@@ -129,13 +115,6 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
   final double adminTableRowHeight;
   final double adminDetailPanelWidth;
   final double adminCompactFallbackMaxWidth;
-
-  final double tvSafeMargin720;
-  final double tvSafeMargin1080;
-  final double tvRailWidth;
-  final double tvTileMinWidth;
-  final double tvTileFocusScale;
-  final Duration tvRemoteRepeatDebounce;
 
   static const List<String> requiredStateIds = <String>[
     'loading',
@@ -178,20 +157,6 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
     'permissionDenied',
     'staleData',
     'highVolume',
-  ];
-
-  static const List<String> requiredTvEvidenceIds = <String>[
-    'tv720p',
-    'tv1080p',
-    'focused',
-    'unfocused',
-    'rowScrolled',
-    'detail',
-    'search',
-    'empty',
-    'loading',
-    'error',
-    'reducedMotion',
   ];
 
   AfriViewportBand viewportBandForWidth(double width) {
@@ -272,12 +237,6 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
     double? adminTableRowHeight,
     double? adminDetailPanelWidth,
     double? adminCompactFallbackMaxWidth,
-    double? tvSafeMargin720,
-    double? tvSafeMargin1080,
-    double? tvRailWidth,
-    double? tvTileMinWidth,
-    double? tvTileFocusScale,
-    Duration? tvRemoteRepeatDebounce,
   }) {
     return AfriDesignTokens(
       spaceStep: spaceStep ?? this.spaceStep,
@@ -310,13 +269,6 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
           adminDetailPanelWidth ?? this.adminDetailPanelWidth,
       adminCompactFallbackMaxWidth:
           adminCompactFallbackMaxWidth ?? this.adminCompactFallbackMaxWidth,
-      tvSafeMargin720: tvSafeMargin720 ?? this.tvSafeMargin720,
-      tvSafeMargin1080: tvSafeMargin1080 ?? this.tvSafeMargin1080,
-      tvRailWidth: tvRailWidth ?? this.tvRailWidth,
-      tvTileMinWidth: tvTileMinWidth ?? this.tvTileMinWidth,
-      tvTileFocusScale: tvTileFocusScale ?? this.tvTileFocusScale,
-      tvRemoteRepeatDebounce:
-          tvRemoteRepeatDebounce ?? this.tvRemoteRepeatDebounce,
     );
   }
 
@@ -388,16 +340,6 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
       adminCompactFallbackMaxWidth: _lerp(
         adminCompactFallbackMaxWidth,
         other.adminCompactFallbackMaxWidth,
-        t,
-      ),
-      tvSafeMargin720: _lerp(tvSafeMargin720, other.tvSafeMargin720, t),
-      tvSafeMargin1080: _lerp(tvSafeMargin1080, other.tvSafeMargin1080, t),
-      tvRailWidth: _lerp(tvRailWidth, other.tvRailWidth, t),
-      tvTileMinWidth: _lerp(tvTileMinWidth, other.tvTileMinWidth, t),
-      tvTileFocusScale: _lerp(tvTileFocusScale, other.tvTileFocusScale, t),
-      tvRemoteRepeatDebounce: _lerpDuration(
-        tvRemoteRepeatDebounce,
-        other.tvRemoteRepeatDebounce,
         t,
       ),
     );

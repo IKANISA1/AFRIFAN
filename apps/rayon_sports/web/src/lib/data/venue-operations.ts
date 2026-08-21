@@ -44,13 +44,6 @@ export interface VenueCampaign {
   isLaunchable: boolean;
 }
 
-export interface VenueTvCode {
-  status: string;
-  expiresAt: string;
-  rotatesAt: string;
-  campaignName: string;
-}
-
 export interface VenueStaffMember {
   id: string;
   role: string;
@@ -139,12 +132,7 @@ function strictInteger(
   return normalized;
 }
 
-function strictTimestamp(
-  value: unknown,
-  label: string,
-  { optional = false }: { optional?: boolean } = {},
-) {
-  if (optional && (value == null || value === "")) return "";
+function strictTimestamp(value: unknown, label: string) {
   const normalized = strictText(value, label, 64);
   if (!Number.isFinite(Date.parse(normalized))) {
     throw new VenueDataContractError(`${label} is invalid`);
@@ -413,38 +401,6 @@ export async function getVenueCampaigns(client: SupabaseClient, access: VenueAcc
   });
   assertUniqueIds(campaigns, "Campaigns");
   return campaigns;
-}
-
-export async function getVenueTvCode(client: SupabaseClient, access: VenueAccess) {
-  const { data, error } = await client
-    .from("venue_checkin_codes")
-    .select("club_id, venue_id, status, expires_at, rotates_at, venue_checkin_campaigns(campaign_name)")
-    .eq("club_id", access.clubId)
-    .eq("venue_id", access.venueId)
-    .eq("status", "active")
-    .order("expires_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  if (error) throw new Error("TV code query failed");
-  if (data == null) return null;
-  const row = data as unknown as Record<string, unknown>;
-  assertVenueScope(row, access);
-  const campaign = row.venue_checkin_campaigns as Record<string, unknown> | null;
-  if (campaign == null) {
-    throw new VenueDataContractError("TV code campaign is invalid");
-  }
-  return {
-    status: strictEnum(row.status, "TV code status", new Set(["active"])),
-    expiresAt: strictTimestamp(row.expires_at, "TV code expiry"),
-    rotatesAt: strictTimestamp(row.rotates_at, "TV code rotation", {
-      optional: true,
-    }),
-    campaignName: strictText(
-      campaign.campaign_name,
-      "TV code campaign",
-      120,
-    ),
-  } satisfies VenueTvCode;
 }
 
 export async function getVenueStaff(client: SupabaseClient, access: VenueAccess) {

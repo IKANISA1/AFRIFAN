@@ -48,12 +48,6 @@ class PushNotificationService {
   static bool _messagingRuntimeRegistered = false;
   static StreamSubscription<AuthState>? _authSubscription;
   static StreamSubscription<String>? _tokenRefreshSubscription;
-  static StreamSubscription<RemoteMessage>? _messageOpenedSubscription;
-  static final StreamController<Uri> _openedRouteController =
-      StreamController<Uri>.broadcast(sync: true);
-
-  static Stream<Uri> get openedRoutes => _openedRouteController.stream;
-
   static Future<void> initialize({required String clubId}) async {
     _clubId = clubId;
     if (_initialized || Firebase.apps.isEmpty || kIsWeb) {
@@ -262,24 +256,6 @@ class PushNotificationService {
       );
     });
 
-    await _messageOpenedSubscription?.cancel();
-    _messageOpenedSubscription = FirebaseMessaging.onMessageOpenedApp.listen(
-      _publishOpenedRoute,
-      onError: (Object error, StackTrace stackTrace) {
-        AfriLogger.error(
-          'Push',
-          'Notification-open stream failed.',
-          error,
-          stackTrace,
-        );
-      },
-    );
-
-    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-    if (initialMessage != null) {
-      _publishOpenedRoute(initialMessage);
-    }
-
     await _tokenRefreshSubscription?.cancel();
     _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh
         .listen(
@@ -298,18 +274,6 @@ class PushNotificationService {
         );
 
     _messagingRuntimeRegistered = true;
-  }
-
-  static void _publishOpenedRoute(RemoteMessage message) {
-    final route = PushNotificationRouteParser.parse(message.data);
-    if (route == null) {
-      AfriLogger.warn(
-        'Push',
-        'Ignored notification without a valid live-game destination.',
-      );
-      return;
-    }
-    _openedRouteController.add(route);
   }
 
   static Future<void> _setAutoInitEnabled(
@@ -477,24 +441,5 @@ class PushNotificationService {
     }
 
     await table.insert(payload);
-  }
-}
-
-/// Converts only a governed live-game notification payload into an internal
-/// route. The session identity is validated before the app router sees it;
-/// arbitrary notification-provided routes are never accepted.
-abstract final class PushNotificationRouteParser {
-  static final RegExp _uuidPattern = RegExp(
-    r'^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
-  );
-
-  static Uri? parse(Map<String, dynamic> data) {
-    final type = data['type']?.toString().trim().toLowerCase();
-    if (type != 'live_game') return null;
-
-    final sessionId = data['session_id']?.toString().trim().toLowerCase();
-    if (sessionId == null || !_uuidPattern.hasMatch(sessionId)) return null;
-
-    return Uri(path: '/fanzone/game/$sessionId');
   }
 }

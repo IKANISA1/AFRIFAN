@@ -15,8 +15,9 @@ import 'country_catalog.dart';
 /// Must be called during app bootstrap, before [AfriCountryCatalog] is used.
 Future<List<AfriCountry>> loadBuiltInCountries() async {
   try {
-    final content =
-        await rootBundle.loadString('packages/core_utils/assets/countries.json');
+    final content = await rootBundle.loadString(
+      'packages/core_utils/assets/countries.json',
+    );
     final List<dynamic> jsonList = jsonDecode(content);
     return jsonList
         .map((j) => AfriCountry.fromJson(Map<String, dynamic>.from(j)))

@@ -98,27 +98,27 @@ class ClubContentFailureCopy {
   }) {
     return switch (failure.kind) {
       ClubContentFailureKind.offline => ClubContentFailureCopy(
-          l10n.clubOfflineTitle,
-          l10n.clubOfflineMessage,
-        ),
+        l10n.clubOfflineTitle,
+        l10n.clubOfflineMessage,
+      ),
       ClubContentFailureKind.permissionDenied => ClubContentFailureCopy(
-          l10n.clubAccessDeniedTitle,
-          l10n.clubAccessDeniedMessage,
-        ),
+        l10n.clubAccessDeniedTitle,
+        l10n.clubAccessDeniedMessage,
+      ),
       ClubContentFailureKind.conflict => ClubContentFailureCopy(
-          l10n.clubChangedTitle,
-          l10n.clubChangedMessage,
-        ),
+        l10n.clubChangedTitle,
+        l10n.clubChangedMessage,
+      ),
       ClubContentFailureKind.securityTimeout => ClubContentFailureCopy(
-          l10n.clubSecurityTimeoutTitle,
-          l10n.clubSecurityTimeoutMessage,
-        ),
+        l10n.clubSecurityTimeoutTitle,
+        l10n.clubSecurityTimeoutMessage,
+      ),
       ClubContentFailureKind.unknown => ClubContentFailureCopy(
-          l10n.clubInformationUnavailable,
-          linkedRecord
-              ? l10n.clubLinkedRecordLoadMessage
-              : l10n.clubInformationLoadMessage,
-        ),
+        l10n.clubInformationUnavailable,
+        linkedRecord
+            ? l10n.clubLinkedRecordLoadMessage
+            : l10n.clubInformationLoadMessage,
+      ),
     };
   }
 }

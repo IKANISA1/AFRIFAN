@@ -283,91 +283,6 @@ body {
   }
 }
 
-.tv-display {
-  color-scheme: dark;
-  --tv-background:
-    radial-gradient(
-      circle at 18% 8%,
-      rgba(14, 116, 144, 0.22),
-      transparent 30%
-    ),
-    linear-gradient(180deg, #07111f 0%, #0b1727 100%);
-  --tv-ink: #f8fafc;
-  --tv-copy-muted: #cbd5e1;
-  --tv-accent: #a5f3fc;
-  --tv-accent-fill: #a5f3fc;
-  --tv-accent-ink: #083344;
-  --tv-accent-border: rgba(165, 243, 252, 0.28);
-  --tv-accent-surface: rgba(165, 243, 252, 0.1);
-  --tv-success-fill: #6ee7b7;
-  --tv-success-ink: #052e16;
-  --tv-warning: #fde68a;
-  --tv-border: rgba(255, 255, 255, 0.16);
-  --tv-panel: rgba(255, 255, 255, 0.07);
-  --tv-panel-strong: rgba(255, 255, 255, 0.11);
-  --tv-option-surface: rgba(2, 6, 23, 0.62);
-  --tv-status-border: rgba(251, 191, 36, 0.48);
-  --tv-status-surface: rgba(120, 53, 15, 0.24);
-  --tv-code-surface: #fff;
-  --tv-code-ink: #0f172a;
-  --tv-code-muted: #475569;
-
-  min-height: 100vh;
-  min-height: 100dvh;
-  overflow-x: hidden;
-  background: var(--tv-background);
-  color: var(--tv-ink);
-}
-
-.tv-display [data-tv-status="loading"] svg,
-.tv-display [data-tv-status="syncing"] svg {
-  animation: tv-status-pulse 1.2s ease-in-out infinite;
-}
-
-@keyframes tv-status-pulse {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(0.94);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  .tv-display {
-    color-scheme: light;
-    --tv-background:
-      radial-gradient(
-        circle at 18% 8%,
-        rgba(14, 116, 144, 0.14),
-        transparent 30%
-      ),
-      linear-gradient(180deg, #edf5fb 0%, #f8fafc 100%);
-    --tv-ink: #0f172a;
-    --tv-copy-muted: #334155;
-    --tv-accent: #075985;
-    --tv-accent-fill: #0e7490;
-    --tv-accent-ink: #fff;
-    --tv-accent-border: rgba(7, 89, 133, 0.28);
-    --tv-accent-surface: rgba(14, 116, 144, 0.09);
-    --tv-success-fill: #047857;
-    --tv-success-ink: #fff;
-    --tv-warning: #92400e;
-    --tv-border: rgba(15, 23, 42, 0.18);
-    --tv-panel: rgba(255, 255, 255, 0.78);
-    --tv-panel-strong: rgba(255, 255, 255, 0.92);
-    --tv-option-surface: rgba(226, 232, 240, 0.82);
-    --tv-status-border: rgba(180, 83, 9, 0.42);
-    --tv-status-surface: rgba(254, 243, 199, 0.82);
-    --tv-code-surface: #0f172a;
-    --tv-code-ink: #fff;
-    --tv-code-muted: #cbd5e1;
-  }
-}
-
 .legal-document-page {
   color-scheme: dark;
   --legal-background:
@@ -3352,7 +3267,6 @@ textarea:focus-visible,
 .admin-community-state-surface,
 .admin-contributions-state-surface,
 .admin-football-sync-state-surface,
-.admin-games-state-surface,
 .admin-gamification-state-surface,
 .admin-gamification-wallet-state-surface,
 .admin-membership-state-surface,
@@ -3364,7 +3278,6 @@ textarea:focus-visible,
 
 .admin-contributions-metrics-grid,
 .admin-football-sync-metrics-grid,
-.admin-games-metrics-grid,
 .admin-gamification-metrics-grid,
 .admin-gamification-wallet-metrics-grid,
 .admin-membership-metrics-grid,
@@ -3376,7 +3289,6 @@ textarea:focus-visible,
   gap: 1.25rem;
 }
 
-.admin-games-state-surface :is(button, input, select),
 .admin-gamification-state-surface :is(button, input, select),
 .admin-gamification-wallet-state-surface :is(button, input, select),
 .admin-membership-state-surface :is(button, input, select),
@@ -3399,7 +3311,6 @@ textarea:focus-visible,
   min-width: 3rem;
 }
 
-.admin-games-state-surface label,
 .admin-gamification-state-surface label,
 .admin-gamification-wallet-state-surface label,
 .admin-membership-state-surface label,
@@ -3409,7 +3320,6 @@ textarea:focus-visible,
   min-width: 0;
 }
 
-.admin-games-state-surface :is(input, select, textarea),
 .admin-gamification-state-surface :is(input, select, textarea),
 .admin-gamification-wallet-state-surface :is(input, select, textarea),
 .admin-membership-state-surface :is(input, select, textarea),

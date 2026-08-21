@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import plistlib
+import re
 import struct
 import xml.etree.ElementTree as ET
 import zipfile
@@ -225,11 +226,52 @@ def validate_app_icon(project_root: Path) -> list[Finding]:
     if len(marketing) != 1:
         findings.append(Finding("error", "ios.app_icon", f"expected one iOS marketing icon, found {len(marketing)}"))
     pbxproj = (project_root / "ios/Runner.xcodeproj/project.pbxproj").read_text(encoding="utf-8")
-    setting_count = pbxproj.count("ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;")
-    if setting_count != 3:
-        findings.append(Finding("error", "ios.app_icon", f"AppIcon build setting count is {setting_count}, expected 3"))
+    runner_configuration_list = re.search(
+        r'/\* Build configuration list for PBXNativeTarget "Runner" \*/ = \{'
+        r'.*?buildConfigurations = \((?P<configurations>.*?)\);.*?\n\s*\};',
+        pbxproj,
+        re.DOTALL,
+    )
+    if runner_configuration_list is None:
+        findings.append(Finding("error", "ios.app_icon", "Runner build configuration list is missing"))
+        runner_configurations: list[tuple[str, str]] = []
+    else:
+        runner_configurations = re.findall(
+            r"([A-F0-9]+) /\* ([^*]+?) \*/",
+            runner_configuration_list.group("configurations"),
+        )
+        if not runner_configurations:
+            findings.append(Finding("error", "ios.app_icon", "Runner has no build configurations"))
+
+    missing_app_icon_settings: list[str] = []
+    for configuration_id, configuration_name in runner_configurations:
+        configuration = re.search(
+            rf"^\s*{re.escape(configuration_id)} /\*.*?\*/ = \{{"
+            r".*?^\s*\};",
+            pbxproj,
+            re.DOTALL | re.MULTILINE,
+        )
+        if configuration is None or "ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;" not in configuration.group(0):
+            missing_app_icon_settings.append(configuration_name)
+    if missing_app_icon_settings:
+        findings.append(
+            Finding(
+                "error",
+                "ios.app_icon",
+                "AppIcon is not selected by Runner configuration(s): "
+                + ", ".join(missing_app_icon_settings),
+            )
+        )
     if not any(item.level == "error" for item in findings):
-        findings.append(Finding("pass", "ios.app_icon", f"{len(referenced)} referenced icons have exact dimensions; Debug/Profile/Release select AppIcon"))
+        configuration_names = "/".join(name for _, name in runner_configurations)
+        findings.append(
+            Finding(
+                "pass",
+                "ios.app_icon",
+                f"{len(referenced)} referenced icons have exact dimensions; "
+                f"Runner {configuration_names} configurations select AppIcon",
+            )
+        )
     return findings
 
 

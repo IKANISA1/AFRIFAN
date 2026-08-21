@@ -148,14 +148,20 @@ void main() {
       expect(MomoSmsIngestionRepository.isApprovedSender('M-Money'), isTrue);
       expect(MomoSmsIngestionRepository.isApprovedSender('MOMO'), isTrue);
       expect(
-          MomoSmsIngestionRepository.isApprovedSender('MobileMoney'), isTrue);
+        MomoSmsIngestionRepository.isApprovedSender('MobileMoney'),
+        isTrue,
+      );
     });
 
     test('rejects unknown senders', () {
       expect(
-          MomoSmsIngestionRepository.isApprovedSender('Airtel Money'), isFalse);
-      expect(MomoSmsIngestionRepository.isApprovedSender('+250781234567'),
-          isFalse);
+        MomoSmsIngestionRepository.isApprovedSender('Airtel Money'),
+        isFalse,
+      );
+      expect(
+        MomoSmsIngestionRepository.isApprovedSender('+250781234567'),
+        isFalse,
+      );
       expect(MomoSmsIngestionRepository.isApprovedSender(''), isFalse);
       expect(MomoSmsIngestionRepository.isApprovedSender(null), isFalse);
     });

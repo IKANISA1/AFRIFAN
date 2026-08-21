@@ -1,9 +1,0 @@
-Gikundiro TV est un écran en lecture seule destiné aux activités approuvées de Rayon Sports dans les lieux et les jours de match.
-
-Un responsable autorisé associe et attribue l'écran depuis le parcours prévu à cet effet. Le téléviseur affiche ensuite le salon de la session approuvée, la question et les choix en cours, la réponse, le classement avec des pseudonymes publics, le résultat final, la fin de session et des états de récupération respectueux de la vie privée.
-
-L'écran public n'accepte pas les codes de participation. Il n'affiche pas l'identité des supporters, les identifiants de compte, les soldes privés, les demandes de récompense, les achats, les billets, les commandes ou les contrôles de paiement.
-
-Une connexion Internet et une attribution valide et approuvée de l'écran sont nécessaires. La disponibilité des sessions dépend des opérations du club et du service configuré.
-
-Le contenu actuel de l'écran Rayon Sports est présenté en kinyarwanda, avec un repli en anglais pour le texte fourni par la plateforme. L'application ne propose pas actuellement de langue TV sélectionnable par l'utilisateur.

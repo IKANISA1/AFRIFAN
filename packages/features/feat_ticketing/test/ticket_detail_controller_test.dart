@@ -144,16 +144,16 @@ class _Gateway implements TicketDetailGateway {
 }
 
 ClubMatch _match() => ClubMatch(
-      id: 'match-1',
-      homeTeam: 'Rayon Sports',
-      awayTeam: 'APR FC',
-      competition: 'Rwanda Premier League',
-      venue: 'Amahoro Stadium',
-      matchDate: DateTime.utc(2026, 8, 2, 15),
-      kickoffTime: '17:00',
-      isOnSale: true,
-      ticketGeneralPrice: 5000,
-      ticketVipPrice: 15000,
-      saleStartsAt: DateTime.utc(2026, 7, 20, 9),
-      capacity: 45000,
-    );
+  id: 'match-1',
+  homeTeam: 'Rayon Sports',
+  awayTeam: 'APR FC',
+  competition: 'Rwanda Premier League',
+  venue: 'Amahoro Stadium',
+  matchDate: DateTime.utc(2026, 8, 2, 15),
+  kickoffTime: '17:00',
+  isOnSale: true,
+  ticketGeneralPrice: 5000,
+  ticketVipPrice: 15000,
+  saleStartsAt: DateTime.utc(2026, 7, 20, 9),
+  capacity: 45000,
+);

@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
-import '../game_result_copy.dart';
 import '../models/fet_models.dart';
+import '../prediction_result_copy.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
   const FriendsListScreen({super.key});
@@ -180,7 +180,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
     AfriToast.info(
       context,
       result.message.isNotEmpty
-          ? context.localizeGameResultMessage(result.message)
+          ? context.localizePredictionResultMessage(result.message)
           : context.afriL10n.gameDone,
     );
     unawaited(_refreshVisibleData());

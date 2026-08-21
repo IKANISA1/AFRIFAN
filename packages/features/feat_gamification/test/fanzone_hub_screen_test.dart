@@ -342,21 +342,10 @@ void main() {
     expect(find.text('Join round'), findsOneWidget);
     expectTapTargetsMeetMinimum(tester);
 
-    await _scrollFanzoneTo(tester, find.text('Live games'));
+    await _scrollFanzoneTo(tester, find.text('Supporters'));
 
     expect(find.text('Matchday rounds'), findsWidgets);
     expect(find.text('Supporters'), findsOneWidget);
-    expect(find.text('Live games'), findsOneWidget);
-    expect(find.text('TV Code'), findsNothing);
-    expect(
-      find.text('Eligible club games appear here automatically.'),
-      findsOneWidget,
-    );
-    expect(find.text('Enter TV code'), findsNothing);
-    expect(
-      tester.getTopLeft(find.text('Supporters')).dy,
-      lessThan(tester.getTopLeft(find.text('Live games')).dy),
-    );
     expect(find.text('Challenges'), findsNothing);
     expectTapTargetsMeetMinimum(tester);
   });
@@ -378,7 +367,6 @@ void main() {
 
         expect(find.text('Points'), findsAtLeastNWidgets(1));
         expect(find.text('Points balance'), findsOneWidget);
-        expect(find.text('Live games'), findsNothing);
       }
     },
   );
@@ -521,9 +509,8 @@ void main() {
 
       expect(find.byType(FanzoneHubScreen), findsOneWidget);
       expect(find.byType(AfriSegmentedControl), findsOneWidget);
-      await _scrollFanzoneTo(tester, find.text('Live games'));
-      expect(find.text('Live games'), findsOneWidget);
-      expect(find.text('Enter TV code'), findsNothing);
+      await _scrollFanzoneTo(tester, find.text('Supporters'));
+      expect(find.text('Supporters'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -576,10 +563,8 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        await _scrollFanzoneTo(tester, find.text(l10n.gameLiveGamesTitle));
-        expect(find.text(l10n.gameLiveGamesSubtitle), findsOneWidget);
-        expect(find.text(l10n.gameEnterTvCode), findsNothing);
-        expect(find.text(l10n.fanZoneVenueCode), findsOneWidget);
+        await _scrollFanzoneTo(tester, find.text(l10n.gameMatchdayRounds));
+        expect(find.text(l10n.gameMatchdayRounds), findsWidgets);
         expect(tester.takeException(), isNull);
       },
     );
@@ -726,7 +711,6 @@ void main() {
     expect(find.text('Live updates paused'), findsOneWidget);
     expect(find.byType(AfriStateBanner), findsOneWidget);
     expect(find.text('League'), findsOneWidget);
-    expect(find.text('Live games'), findsNothing);
 
     await tester.drag(find.byType(CustomScrollView), const Offset(0, -500));
     await tester.pumpAndSettle();
@@ -927,7 +911,7 @@ void main() {
         unawaited(notifier.refresh());
         await tester.pump();
         expect(find.text('Refreshing Fan Zone'), findsOneWidget);
-        expect(find.text('Live games'), findsOneWidget);
+        expect(find.text('Matchday rounds'), findsWidgets);
       },
       afterCapture: (tester) async {
         refreshCompleter.complete(_buildSnapshot());

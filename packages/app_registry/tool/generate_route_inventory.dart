@@ -36,7 +36,6 @@ const requiredScreenArchetypes = <String>[
   'notifications',
   'support',
   'offline',
-  'tv',
   'admin',
 ];
 
@@ -159,13 +158,6 @@ Map<String, Object?> generateRouteInventory({
       role: 'consumer',
       kind: 'error_path',
     ),
-    _systemRecord(
-      path: '/tv/session',
-      surface: 'native_tv',
-      role: 'venue_display',
-      kind: 'display_and_pairing',
-      source: 'apps/rayon_sports_tv/lib/main.dart',
-    ),
   ]);
 
   routes.addAll(_collectNextRoutes(workspace));
@@ -198,7 +190,6 @@ Map<String, Object?> generateRouteInventory({
       'FeatureModule tab, nested, standalone, public-path, and presentation metadata',
       'apps/rayon_sports/web/src/app/**/page.tsx',
       'apps/rayon_sports/web/src/app/**/route.ts',
-      'apps/rayon_sports_tv/lib/main.dart',
       'AppRouter system unavailable/error paths',
     ],
     'route_count': routes.length,
@@ -411,7 +402,6 @@ bool _matchesScreenArchetype(Map<String, Object?> route, String archetype) {
           containsAny(<String>['/contact', '/privacy', '/terms', '/support']),
     'offline' =>
       rendered && (path.contains('/offline') || path == '/feature-unavailable'),
-    'tv' => surface == 'native_tv' || path == '/tv-display',
     'admin' => surface == 'admin_pwa' || surface == 'mobile_internal_admin',
     _ => false,
   };
@@ -428,7 +418,6 @@ String _screenArchetypeOwner(String archetype) {
     'notifications' => 'Notifications owner',
     'support' => 'Support and policy owner',
     'offline' => 'Reliability owner',
-    'tv' => 'Native TV product owner',
     'admin' => 'Admin product and security owner',
     _ => '',
   };
@@ -928,161 +917,6 @@ List<String> _readRouteEvidencePaths({
 
 (bool, String) _classifyClosureState(Map<String, Object?> route, String state) {
   final kind = route['kind'] as String;
-  if (route['rendered_state_contract'] ==
-      'controlled_participant_discovery_surface') {
-    final applicable = state != 'selected';
-    return (
-      applicable,
-      applicable
-          ? 'Controlled participant discovery must prove this eligible-session '
-                'content, authorization, recovery, interaction, presentation, '
-                'synchronization, contract-conflict, or bounded-read state.'
-          : 'Participant discovery routes immediately into the selected game '
-                'and therefore has no persistent selected control state.',
-    );
-  }
-  if (route['rendered_state_contract'] ==
-      'controlled_participant_live_surface') {
-    return (
-      true,
-      'Controlled participant live play must prove every governed discovery, '
-          'authoritative game, authorization, recovery, answer-control, '
-          'interaction, presentation, synchronization, conflict, and '
-          'bounded-read state.',
-    );
-  }
-  if (route['rendered_state_contract'] == 'controlled_tv_management_surface') {
-    return (
-      true,
-      'Security-sensitive TV management owns every governed content, data, '
-          'authorization, validation, interaction, presentation, '
-          'synchronization, and bounded-mutation state.',
-    );
-  }
-  if (route['rendered_state_contract'] == 'controlled_tv_pairing_surface') {
-    return (
-      true,
-      'Security-sensitive TV pairing owns every governed form, data, '
-          'authorization, interaction, presentation, synchronization, and '
-          'bounded-mutation state.',
-    );
-  }
-  if (route['rendered_state_contract'] == 'controlled_tv_inventory_surface') {
-    const tvInventoryStates = <String>{
-      'loading',
-      'empty',
-      'error',
-      'offline',
-      'permission_denied',
-      'disabled',
-      'focused',
-      'pressed',
-      'large_text',
-      'reduced_motion',
-      'dark',
-      'light',
-      'syncing',
-      'security_timeout',
-    };
-    final applicable = tvInventoryStates.contains(state);
-    return (
-      applicable,
-      applicable
-          ? 'Controlled owner TV inventory must prove this content, recovery, '
-                'interaction, presentation, synchronization, or bounded-read state.'
-          : 'Owner TV inventory has no selected control state and read-only '
-                'inventory refresh does not expose a version-conflict state.',
-    );
-  }
-  if (route['rendered_state_contract'] ==
-      'controlled_organizer_inventory_surface') {
-    const organizerInventoryStates = <String>{
-      'loading',
-      'empty',
-      'error',
-      'offline',
-      'permission_denied',
-      'disabled',
-      'focused',
-      'pressed',
-      'large_text',
-      'reduced_motion',
-      'dark',
-      'light',
-      'syncing',
-      'security_timeout',
-    };
-    final applicable = organizerInventoryStates.contains(state);
-    return (
-      applicable,
-      applicable
-          ? 'Controlled organizer session inventory must prove this content, '
-                'authorization, recovery, interaction, presentation, '
-                'synchronization, or bounded-read state.'
-          : 'Organizer session inventory has no selected control state and '
-                'read-only inventory refresh does not expose a version-conflict state.',
-    );
-  }
-  if (route['rendered_state_contract'] ==
-      'controlled_organizer_planner_surface') {
-    return (
-      true,
-      'Controlled organizer planner must prove every governed content, form, '
-          'authorization, validation, interaction, presentation, '
-          'synchronization, conflict, and bounded-create state.',
-    );
-  }
-  if (route['rendered_state_contract'] ==
-      'controlled_organizer_live_control_surface') {
-    const liveControlStates = <String>{
-      'loading',
-      'error',
-      'offline',
-      'permission_denied',
-      'disabled',
-      'focused',
-      'pressed',
-      'large_text',
-      'reduced_motion',
-      'dark',
-      'light',
-      'syncing',
-      'conflict',
-      'security_timeout',
-    };
-    final applicable = liveControlStates.contains(state);
-    return (
-      applicable,
-      applicable
-          ? 'Controlled organizer live session must prove this authoritative '
-                'content, authorization, recovery, interaction, presentation, '
-                'synchronization, conflict, or bounded-mutation state.'
-          : 'A canonical live session never has an empty collection or a '
-                'persistent selection control state.',
-    );
-  }
-  if (route['rendered_state_contract'] ==
-      'static_game_operations_hub_surface') {
-    const gameOperationsHubStates = <String>{
-      'focused',
-      'pressed',
-      'large_text',
-      'reduced_motion',
-      'dark',
-      'light',
-    };
-    final applicable = gameOperationsHubStates.contains(state);
-    return (
-      applicable,
-      applicable
-          ? 'Static game-operations hub must prove this interaction or '
-                'presentation state with current rendered evidence.'
-          : 'Static game-operations hub always renders two governed '
-                'navigation choices and owns no collection, authorization, '
-                'disabled, selection, synchronization, conflict, or bounded '
-                'data operation.',
-    );
-  }
   if (route['rendered_state_contract'] == 'static_contact_surface') {
     const contactStates = <String>{
       'focused',
@@ -1189,32 +1023,6 @@ List<String> _readRouteEvidencePaths({
           : 'Static legal document always renders governed fallback copy and '
                 'owns no controls, authorization, mutation, synchronization, '
                 'conflict, or timeout workflow.',
-    );
-  }
-  if (route['rendered_state_contract'] == 'display_only_live_surface') {
-    const displayOnlyStates = <String>{
-      'loading',
-      'empty',
-      'error',
-      'offline',
-      'permission_denied',
-      'disabled',
-      'large_text',
-      'reduced_motion',
-      'dark',
-      'light',
-      'syncing',
-      'conflict',
-      'security_timeout',
-    };
-    final applicable = displayOnlyStates.contains(state);
-    return (
-      applicable,
-      applicable
-          ? 'Display-only live surface must prove this content, recovery, '
-                'presentation, synchronization, or bounded-operation state.'
-          : 'Display-only live surface exposes no focusable, pressable, or '
-                'selectable controls.',
     );
   }
   if (route['rendered_state_contract'] == 'bounded_share_target') {
@@ -1470,7 +1278,6 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
         !isRouteHandler &&
         const <String>{'/offline', '/admin-offline'}.contains(path);
     final isBoundedShareTarget = !isRouteHandler && path == '/share-target';
-    final isDisplayOnlyLiveSurface = !isRouteHandler && path == '/tv-display';
     final isStaticLegalDocument =
         !isRouteHandler && const <String>{'/privacy', '/terms'}.contains(path);
     final isStaticContactSurface =
@@ -1525,8 +1332,6 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
           ? 'standalone_offline_recovery'
           : isBoundedShareTarget
           ? 'bounded_share_target'
-          : isDisplayOnlyLiveSurface
-          ? 'display_only_live_surface'
           : isStaticLegalDocument
           ? 'static_legal_document'
           : isStaticContactSurface

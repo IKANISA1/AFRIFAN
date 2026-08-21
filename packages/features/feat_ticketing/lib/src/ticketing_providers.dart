@@ -67,8 +67,10 @@ final ticketMatchesProvider = FutureProvider<List<ClubMatch>>((ref) async {
   }
 });
 
-final ticketMatchProvider =
-    FutureProvider.family<ClubMatch?, String>((ref, matchId) async {
+final ticketMatchProvider = FutureProvider.family<ClubMatch?, String>((
+  ref,
+  matchId,
+) async {
   final user = ref.watch(currentUserProvider);
   if (user == null || matchId.isEmpty) return null;
 
@@ -89,8 +91,10 @@ final myTicketsProvider = FutureProvider<List<ClubTicket>>((ref) async {
   return ref.watch(clubRepositoryProvider).getMyTickets(user.id, user.clubId);
 });
 
-final myTicketProvider =
-    FutureProvider.family<ClubTicket?, String>((ref, ticketId) async {
+final myTicketProvider = FutureProvider.family<ClubTicket?, String>((
+  ref,
+  ticketId,
+) async {
   final user = ref.watch(currentUserProvider);
   if (user == null || ticketId.isEmpty) return null;
 

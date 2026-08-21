@@ -116,19 +116,6 @@ class SettingsScreen extends ConsumerWidget {
 
           const SizedBox(height: SpacingTokens.spacing6),
 
-          // ── Game operations ──
-          _buildMinimalistSection(l10n.settingsSectionGamesAndTvs, [
-            AfriListRow(
-              key: const ValueKey<String>('settings-game-operations-action'),
-              icon: AfriIcons.live,
-              title: l10n.gameOperationsTitle,
-              subtitle: l10n.gameOperationsSubtitle,
-              onTap: () => context.push('/game-operations'),
-            ),
-          ]),
-
-          const SizedBox(height: SpacingTokens.spacing6),
-
           // ── Preferences ──
           _buildMinimalistSection(l10n.settingsSectionPreferences, [
             AfriListRow(

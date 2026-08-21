@@ -30,8 +30,8 @@ The app collects and processes user data through Supabase (backend) and local st
 ### 3. App activity and user content
 | Data Type | Collected | Shared | Purpose | Optional |
 |-----------|-----------|--------|---------|----------|
-| App interactions | Yes | No | Core journeys, security/audit state, games and feature use | No |
-| Other user-generated content | Yes | No | Private profile nickname and structured prediction/game answers. Cross-user text, challenge notes, social discovery, and public user names are disabled for this candidate | Varies by the private profile/game journey |
+| App interactions | Yes | No | Core journeys, security/audit state, football predictions, and feature use | No |
+| Other user-generated content | Yes | No | Private profile nickname and structured football prediction selections. Cross-user text, challenge notes, social discovery, and public user names are disabled for this candidate | Varies by the private profile or prediction journey |
 
 ### 4. Device or other IDs
 | Data Type | Collected | Shared | Purpose | Optional |

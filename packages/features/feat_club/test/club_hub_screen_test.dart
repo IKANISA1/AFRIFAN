@@ -44,27 +44,23 @@ void main() {
     expect(find.text('Retry'), findsOneWidget);
   });
 
-  for (final locale in const <Locale>[
-    Locale('fr'),
-    Locale('rw'),
-  ]) {
-    testWidgets(
-      'renders the official Club hub in ${locale.languageCode}',
-      (tester) async {
-        await tester.pumpWidget(
-          _testApp(_FakeClubContentGateway(), appLocale: locale),
-        );
-        await tester.pumpAndSettle();
+  for (final locale in const <Locale>[Locale('fr'), Locale('rw')]) {
+    testWidgets('renders the official Club hub in ${locale.languageCode}', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _testApp(_FakeClubContentGateway(), appLocale: locale),
+      );
+      await tester.pumpAndSettle();
 
-        final l10n = lookupAfriLocalizations(locale);
-        expect(find.text(l10n.clubOfficialSection), findsOneWidget);
-        expect(find.text(l10n.clubTeamTitle), findsOneWidget);
-        expect(find.text(l10n.clubNewsTitle), findsOneWidget);
-        expect(find.text(l10n.clubFixturesTitle), findsOneWidget);
-        expect(find.text(l10n.clubProjectsTitle), findsOneWidget);
-        expect(find.text(l10n.clubShopTitle), findsOneWidget);
-      },
-    );
+      final l10n = lookupAfriLocalizations(locale);
+      expect(find.text(l10n.clubOfficialSection), findsOneWidget);
+      expect(find.text(l10n.clubTeamTitle), findsOneWidget);
+      expect(find.text(l10n.clubNewsTitle), findsOneWidget);
+      expect(find.text(l10n.clubFixturesTitle), findsOneWidget);
+      expect(find.text(l10n.clubProjectsTitle), findsOneWidget);
+      expect(find.text(l10n.clubShopTitle), findsOneWidget);
+    });
   }
 }
 
@@ -81,10 +77,7 @@ Widget _testApp(
       locale: appLocale,
       child: MaterialApp(
         theme: ClubTheme.from(config),
-        home: ClubConfigScope(
-          config: config,
-          child: const ClubHubScreen(),
-        ),
+        home: ClubConfigScope(config: config, child: const ClubHubScreen()),
       ),
     ),
   );
@@ -93,13 +86,13 @@ Widget _testApp(
 class _FakeClubContentGateway implements ClubContentGateway {
   @override
   Future<ClubOverview?> loadOverview() async => const ClubOverview(
-        id: 24,
-        name: 'Rayon Sports FC',
-        country: 'Rwanda',
-        league: 'Rwanda Premier League',
-        slug: 'rayon_sports_rw',
-        nickname: 'Gikundiro',
-      );
+    id: 24,
+    name: 'Rayon Sports FC',
+    country: 'Rwanda',
+    league: 'Rwanda Premier League',
+    slug: 'rayon_sports_rw',
+    nickname: 'Gikundiro',
+  );
 
   @override
   Future<List<ClubHistoryItem>> loadHistory() async => const [];

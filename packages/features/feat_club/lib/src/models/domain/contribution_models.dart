@@ -56,7 +56,8 @@ class ContributionGroup extends Equatable {
       ),
       targetAmount: jh.asInt(json['target_amount']),
       currentTotal: jh.asInt(json['current_total']),
-      paymentRecipient: jh.asStringOrNull(json['momo_recipient_code']) ??
+      paymentRecipient:
+          jh.asStringOrNull(json['momo_recipient_code']) ??
           jh.asStringOrNull(json['receiving_momo_code']) ??
           jh.asStringOrNull(json['momo_number']),
       paymentRecipientType: _parseRecipientType(
@@ -73,15 +74,15 @@ class ContributionGroup extends Equatable {
   }
 
   Map<String, dynamic> toInsertJson() => {
-        'name': name,
-        'description': description,
-        'group_type': groupType.value,
-        'target_amount': targetAmount,
-        'receiving_momo_code': paymentRecipient,
-        'momo_route_type': _serializeRecipientType(paymentRecipientType),
-        'deadline': deadline?.toIso8601String(),
-        'is_recurring': isRecurring,
-      };
+    'name': name,
+    'description': description,
+    'group_type': groupType.value,
+    'target_amount': targetAmount,
+    'receiving_momo_code': paymentRecipient,
+    'momo_route_type': _serializeRecipientType(paymentRecipientType),
+    'deadline': deadline?.toIso8601String(),
+    'is_recurring': isRecurring,
+  };
 
   @override
   List<Object?> get props => [id, creatorId, name, currentTotal, isClosed];

@@ -113,8 +113,10 @@ class _InteractiveSeatMapScreenState
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
-        title: Text(l10n.ticketSeatMapTitle,
-            style: TypographyTokens.headlineLarge()),
+        title: Text(
+          l10n.ticketSeatMapTitle,
+          style: TypographyTokens.headlineLarge(),
+        ),
         backgroundColor: ColorTokens.transparent,
         elevation: 0,
         leading: AfriIconButton(
@@ -280,38 +282,38 @@ class _InteractiveSeatMapScreenState
         : TicketDetailFailure.fromError(error);
     return switch (failure.kind) {
       TicketDetailFailureKind.offline => _SeatMapConsequence(
-          title: l10n.ticketSeatMapOfflineTitle,
-          body: l10n.ticketSeatMapOfflineMessage,
-          actionLabel: l10n.ticketBackToTicketUpper,
-          onAction: _close,
-        ),
+        title: l10n.ticketSeatMapOfflineTitle,
+        body: l10n.ticketSeatMapOfflineMessage,
+        actionLabel: l10n.ticketBackToTicketUpper,
+        onAction: _close,
+      ),
       TicketDetailFailureKind.permissionDenied => _SeatMapConsequence(
-          title: l10n.ticketSeatMapAccessTitle,
-          body: l10n.ticketSeatMapAccessMessage,
-          actionLabel: l10n.ticketBackToTicketUpper,
-          onAction: _close,
-        ),
+        title: l10n.ticketSeatMapAccessTitle,
+        body: l10n.ticketSeatMapAccessMessage,
+        actionLabel: l10n.ticketBackToTicketUpper,
+        onAction: _close,
+      ),
       TicketDetailFailureKind.securityTimeout => _SeatMapConsequence(
-          title: l10n.ticketSeatMapSecurityTitle,
-          body: l10n.ticketSeatMapSecurityMessage,
-          actionLabel: l10n.ticketTryAgainUpper,
-          onAction: () =>
-              ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
-        ),
+        title: l10n.ticketSeatMapSecurityTitle,
+        body: l10n.ticketSeatMapSecurityMessage,
+        actionLabel: l10n.ticketTryAgainUpper,
+        onAction: () =>
+            ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
+      ),
       TicketDetailFailureKind.conflict => _SeatMapConsequence(
-          title: l10n.ticketSeatMapChangedTitle,
-          body: l10n.ticketSeatMapChangedMessage,
-          actionLabel: l10n.ticketRefreshSeatMapUpper,
-          onAction: () =>
-              ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
-        ),
+        title: l10n.ticketSeatMapChangedTitle,
+        body: l10n.ticketSeatMapChangedMessage,
+        actionLabel: l10n.ticketRefreshSeatMapUpper,
+        onAction: () =>
+            ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
+      ),
       TicketDetailFailureKind.unknown => _SeatMapConsequence(
-          title: l10n.ticketSeatMapLoadFailedTitle,
-          body: l10n.ticketSeatMapLoadFailedMessage,
-          actionLabel: l10n.ticketTryAgainUpper,
-          onAction: () =>
-              ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
-        ),
+        title: l10n.ticketSeatMapLoadFailedTitle,
+        body: l10n.ticketSeatMapLoadFailedMessage,
+        actionLabel: l10n.ticketTryAgainUpper,
+        onAction: () =>
+            ref.read(ticketDetailProvider(widget.matchId).notifier).load(),
+      ),
     };
   }
 
@@ -334,35 +336,35 @@ class _InteractiveSeatMapScreenState
     if (failure == null) return null;
     return switch (failure.kind) {
       TicketDetailFailureKind.conflict => _SeatMapStatus(
-          title: l10n.ticketSeatMapChangedTitle,
-          body: l10n.ticketLastConfirmedStandsMessage,
-          actionLabel: l10n.ticketRefreshSeatMapUpper,
-          onAction: () =>
-              ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
-        ),
+        title: l10n.ticketSeatMapChangedTitle,
+        body: l10n.ticketLastConfirmedStandsMessage,
+        actionLabel: l10n.ticketRefreshSeatMapUpper,
+        onAction: () =>
+            ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+      ),
       TicketDetailFailureKind.securityTimeout => _SeatMapStatus(
-          title: l10n.ticketSeatMapCheckTimedOutTitle,
-          body: l10n.ticketLastConfirmedStandsMessage,
-          actionLabel: l10n.ticketRefreshSeatMapUpper,
-          onAction: () =>
-              ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
-        ),
+        title: l10n.ticketSeatMapCheckTimedOutTitle,
+        body: l10n.ticketLastConfirmedStandsMessage,
+        actionLabel: l10n.ticketRefreshSeatMapUpper,
+        onAction: () =>
+            ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+      ),
       TicketDetailFailureKind.permissionDenied => _SeatMapStatus(
-          title: l10n.ticketSeatAccessChangedTitle,
-          body: l10n.ticketSavedSeatMapReadOnlyMessage,
-          tone: AfriStateBannerTone.danger,
-        ),
+        title: l10n.ticketSeatAccessChangedTitle,
+        body: l10n.ticketSavedSeatMapReadOnlyMessage,
+        tone: AfriStateBannerTone.danger,
+      ),
       TicketDetailFailureKind.offline => _SeatMapStatus(
-          title: l10n.ticketSavedSeatMapTitle,
-          body: l10n.ticketSavedSeatMapMessage,
-        ),
+        title: l10n.ticketSavedSeatMapTitle,
+        body: l10n.ticketSavedSeatMapMessage,
+      ),
       TicketDetailFailureKind.unknown => _SeatMapStatus(
-          title: l10n.ticketSeatMapRefreshFailedTitle,
-          body: l10n.ticketLastConfirmedStandsMessage,
-          actionLabel: l10n.ticketRefreshSeatMapUpper,
-          onAction: () =>
-              ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
-        ),
+        title: l10n.ticketSeatMapRefreshFailedTitle,
+        body: l10n.ticketLastConfirmedStandsMessage,
+        actionLabel: l10n.ticketRefreshSeatMapUpper,
+        onAction: () =>
+            ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+      ),
     };
   }
 
@@ -433,9 +435,12 @@ class _InteractiveSeatMapScreenState
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: SpacingTokens.spacing2),
-        Text(label,
-            style: TypographyTokens.labelSmall()
-                .copyWith(color: ColorTokens.onSurfaceVariant)),
+        Text(
+          label,
+          style: TypographyTokens.labelSmall().copyWith(
+            color: ColorTokens.onSurfaceVariant,
+          ),
+        ),
       ],
     );
   }
@@ -494,11 +499,7 @@ class _SeatMapConsequence extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              AfriIcons.seat,
-              size: 56,
-              color: ColorTokens.onSurfaceVariant,
-            ),
+            Icon(AfriIcons.seat, size: 56, color: ColorTokens.onSurfaceVariant),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               title,
@@ -606,7 +607,9 @@ class _TappableSeatMapState extends State<_TappableSeatMap> {
 
   void _handleSemanticTap() {
     widget.onSeatTap(
-        Offset(widget.size.width * 0.75, widget.size.height / 2), widget.size);
+      Offset(widget.size.width * 0.75, widget.size.height / 2),
+      widget.size,
+    );
   }
 
   @override
@@ -712,8 +715,11 @@ class StadiumPainter extends CustomPainter {
       ..strokeWidth = 2;
 
     canvas.drawRect(pitchRect, linePaint);
-    canvas.drawLine(Offset(center.dx - 50, center.dy),
-        Offset(center.dx + 50, center.dy), linePaint);
+    canvas.drawLine(
+      Offset(center.dx - 50, center.dy),
+      Offset(center.dx + 50, center.dy),
+      linePaint,
+    );
     canvas.drawCircle(center, 15, linePaint);
   }
 

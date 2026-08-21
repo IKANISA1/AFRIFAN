@@ -24,9 +24,7 @@ class TicketDetailFailure implements Exception {
   static TicketDetailFailure fromError(Object error) {
     if (error is TicketDetailFailure) return error;
     if (error is TimeoutException) {
-      return const TicketDetailFailure(
-        TicketDetailFailureKind.securityTimeout,
-      );
+      return const TicketDetailFailure(TicketDetailFailureKind.securityTimeout);
     }
     final normalized = error.toString().toLowerCase();
     if (normalized.contains('permission') ||
@@ -107,16 +105,18 @@ final ticketDetailAccessEnabledProvider = Provider<bool>((ref) => true);
 
 final seatMapAccessEnabledProvider = Provider<bool>((ref) => true);
 
-final ticketDetailProvider = StateNotifierProvider.family<
-    TicketDetailController,
-    AsyncValue<TicketDetailState>,
-    String>((ref, matchId) {
-  return TicketDetailController(
-    ref.watch(ticketDetailGatewayProvider),
-    matchId,
-    loadTimeout: ref.watch(ticketDetailLoadTimeoutProvider),
-  );
-});
+final ticketDetailProvider =
+    StateNotifierProvider.family<
+      TicketDetailController,
+      AsyncValue<TicketDetailState>,
+      String
+    >((ref, matchId) {
+      return TicketDetailController(
+        ref.watch(ticketDetailGatewayProvider),
+        matchId,
+        loadTimeout: ref.watch(ticketDetailLoadTimeoutProvider),
+      );
+    });
 
 class TicketDetailController
     extends StateNotifier<AsyncValue<TicketDetailState>> {
@@ -125,8 +125,8 @@ class TicketDetailController
     this._matchId, {
     Duration loadTimeout = const Duration(seconds: 12),
     bool autoLoad = true,
-  })  : _loadTimeout = loadTimeout,
-        super(const AsyncValue.loading()) {
+  }) : _loadTimeout = loadTimeout,
+       super(const AsyncValue.loading()) {
     if (autoLoad) unawaited(load());
   }
 

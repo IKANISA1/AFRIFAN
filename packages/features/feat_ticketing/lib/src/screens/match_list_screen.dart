@@ -11,10 +11,7 @@ import '../ticketing_providers.dart';
 import 'my_tickets_screen.dart';
 
 class MatchListScreen extends ConsumerStatefulWidget {
-  const MatchListScreen({
-    super.key,
-    this.autofocusMatchId,
-  });
+  const MatchListScreen({super.key, this.autofocusMatchId});
 
   final String? autofocusMatchId;
 
@@ -34,9 +31,9 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
   late bool _wasOnline;
 
   CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
-        currencyCode: context.afriCurrencyCode,
-        currencySymbol: context.afriCurrencySymbol,
-      );
+    currencyCode: context.afriCurrencyCode,
+    currencySymbol: context.afriCurrencySymbol,
+  );
 
   @override
   void initState() {
@@ -100,7 +97,8 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
     } else if (matchesAsync.hasError && _cachedMatches != null) {
       _isStale = true;
     }
-    final displayedMatches = _cachedMatches != null &&
+    final displayedMatches =
+        _cachedMatches != null &&
             (matchesAsync.hasError || matchesAsync.isLoading)
         ? AsyncData<List<ClubMatch>>(_cachedMatches!)
         : matchesAsync;
@@ -116,8 +114,10 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
           onTap: () => context.pop(),
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
-        title:
-            Text(l10n.ticketListTitle, style: TypographyTokens.headlineLarge()),
+        title: Text(
+          l10n.ticketListTitle,
+          style: TypographyTokens.headlineLarge(),
+        ),
         actions: [
           AfriIconButton(
             icon: AfriIcons.filter,
@@ -128,19 +128,31 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                 title: l10n.ticketMatchFilters,
                 sortOptions: [
                   AfriFilterOption(
-                      value: 'soonest', label: l10n.ticketSortSoonest),
+                    value: 'soonest',
+                    label: l10n.ticketSortSoonest,
+                  ),
                   AfriFilterOption(
-                      value: 'latest', label: l10n.ticketSortLatest),
+                    value: 'latest',
+                    label: l10n.ticketSortLatest,
+                  ),
                   AfriFilterOption(
-                      value: 'cheapest', label: l10n.ticketSortCheapest),
+                    value: 'cheapest',
+                    label: l10n.ticketSortCheapest,
+                  ),
                 ],
                 typeOptions: [
                   AfriFilterOption(
-                      value: 'available', label: l10n.ticketTypeAvailable),
+                    value: 'available',
+                    label: l10n.ticketTypeAvailable,
+                  ),
                   AfriFilterOption(
-                      value: 'sold_out', label: l10n.ticketTypeSoldOut),
+                    value: 'sold_out',
+                    label: l10n.ticketTypeSoldOut,
+                  ),
                   AfriFilterOption(
-                      value: 'vip', label: l10n.ticketTypeVipZones),
+                    value: 'vip',
+                    label: l10n.ticketTypeVipZones,
+                  ),
                 ],
                 initialSortBy: _sortBy,
                 initialSelectedTypes: _selectedTypes,
@@ -161,8 +173,9 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
           ConnectivityBuilder(
             builder: (context, isOnline) => AfriIconButton(
               icon: AfriIcons.refresh,
-              onTap:
-                  isOnline ? () => ref.invalidate(ticketMatchesProvider) : null,
+              onTap: isOnline
+                  ? () => ref.invalidate(ticketMatchesProvider)
+                  : null,
               tooltip: isOnline
                   ? l10n.ticketRefreshMatches
                   : l10n.ticketRefreshMatchesOffline,
@@ -214,8 +227,9 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                 0,
               ),
               child: AfriStateBanner(
-                icon:
-                    isRefreshing ? AfriIcons.refresh : AfriIcons.statusWarning,
+                icon: isRefreshing
+                    ? AfriIcons.refresh
+                    : AfriIcons.statusWarning,
                 title: isRefreshing
                     ? l10n.ticketRefreshingInventoryTitle
                     : l10n.ticketSavedInventoryTitle,
@@ -278,37 +292,40 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
   }
 
   List<ClubMatch> _applyFilters(List<ClubMatch> matches) {
-    final filtered = matches.where((match) {
-      if (_selectedTypes.contains('available') &&
-          (!match.isOnSale || match.isSoldOut)) {
-        return false;
-      }
-      if (_selectedTypes.contains('sold_out') && !match.isSoldOut) {
-        return false;
-      }
-      if (_selectedTypes.contains('vip') && match.ticketVipPrice <= 0) {
-        return false;
-      }
-      if (_dateRange != null) {
-        final start = DateTime(
-          _dateRange!.start.year,
-          _dateRange!.start.month,
-          _dateRange!.start.day,
-        );
-        final end = DateTime(
-          _dateRange!.end.year,
-          _dateRange!.end.month,
-          _dateRange!.end.day,
-          23,
-          59,
-          59,
-        );
-        if (match.matchDate.isBefore(start) || match.matchDate.isAfter(end)) {
-          return false;
-        }
-      }
-      return true;
-    }).toList(growable: false);
+    final filtered = matches
+        .where((match) {
+          if (_selectedTypes.contains('available') &&
+              (!match.isOnSale || match.isSoldOut)) {
+            return false;
+          }
+          if (_selectedTypes.contains('sold_out') && !match.isSoldOut) {
+            return false;
+          }
+          if (_selectedTypes.contains('vip') && match.ticketVipPrice <= 0) {
+            return false;
+          }
+          if (_dateRange != null) {
+            final start = DateTime(
+              _dateRange!.start.year,
+              _dateRange!.start.month,
+              _dateRange!.start.day,
+            );
+            final end = DateTime(
+              _dateRange!.end.year,
+              _dateRange!.end.month,
+              _dateRange!.end.day,
+              23,
+              59,
+              59,
+            );
+            if (match.matchDate.isBefore(start) ||
+                match.matchDate.isAfter(end)) {
+              return false;
+            }
+          }
+          return true;
+        })
+        .toList(growable: false);
 
     final sorted = List<ClubMatch>.from(filtered);
     switch (_sortBy) {
@@ -372,18 +389,18 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                 status: soldOut
                     ? l10n.ticketStatusSoldOut
                     : onSale
-                        ? l10n.ticketStatusAvailable
-                        : l10n.ticketUpcoming,
+                    ? l10n.ticketStatusAvailable
+                    : l10n.ticketUpcoming,
                 statusColor: soldOut
                     ? ColorTokens.onSurfaceVariant
                     : onSale
-                        ? ColorTokens.success
-                        : ColorTokens.info,
+                    ? ColorTokens.success
+                    : ColorTokens.info,
                 statusBackground: soldOut
                     ? ColorTokens.outlineVariant.withValues(alpha: 0.2)
                     : onSale
-                        ? ColorTokens.success.withValues(alpha: 0.2)
-                        : ColorTokens.info.withValues(alpha: 0.16),
+                    ? ColorTokens.success.withValues(alpha: 0.2)
+                    : ColorTokens.info.withValues(alpha: 0.16),
                 usesLargeTextLayout: usesLargeTextLayout,
                 brandMarkBuilder: _buildBrandMark,
               ),
@@ -411,8 +428,10 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                   final priceBlock = Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l10n.ticketFrom,
-                          style: TypographyTokens.labelSmall()),
+                      Text(
+                        l10n.ticketFrom,
+                        style: TypographyTokens.labelSmall(),
+                      ),
                       Text(
                         price,
                         style: TypographyTokens.headlineMedium().copyWith(
@@ -424,8 +443,8 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                   final actionLabel = soldOut
                       ? l10n.ticketSoldOut
                       : onSale
-                          ? l10n.ticketBuyAction
-                          : l10n.ticketSalesNotOpen;
+                      ? l10n.ticketBuyAction
+                      : l10n.ticketSalesNotOpen;
                   final actionButton = AfriButton(
                     key: ValueKey<String>('ticket-action-${match.id}'),
                     label: actionLabel,
@@ -445,10 +464,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                       children: [
                         priceBlock,
                         const SizedBox(height: SpacingTokens.spacing3),
-                        SizedBox(
-                          width: double.infinity,
-                          child: actionButton,
-                        ),
+                        SizedBox(width: double.infinity, child: actionButton),
                       ],
                     );
                   }
@@ -523,8 +539,9 @@ class _MatchAvailabilityHeader extends StatelessWidget {
       child: Text(
         status,
         maxLines: usesLargeTextLayout ? 2 : 1,
-        overflow:
-            usesLargeTextLayout ? TextOverflow.visible : TextOverflow.ellipsis,
+        overflow: usesLargeTextLayout
+            ? TextOverflow.visible
+            : TextOverflow.ellipsis,
         style: TypographyTokens.labelSmall().copyWith(color: statusColor),
       ),
     );
@@ -691,29 +708,29 @@ class _TicketFailureView extends StatelessWidget {
 
     return switch (failure.kind) {
       TicketMatchesFailureKind.permissionDenied => _TicketState(
-          title: l10n.ticketListAccessTitle,
-          body: l10n.ticketListAccessMessage,
-          actionLabel: l10n.ticketAccessRequired,
-          onPressed: null,
-        ),
+        title: l10n.ticketListAccessTitle,
+        body: l10n.ticketListAccessMessage,
+        actionLabel: l10n.ticketAccessRequired,
+        onPressed: null,
+      ),
       TicketMatchesFailureKind.conflict => _TicketState(
-          title: l10n.ticketInventoryChangedTitle,
-          body: l10n.ticketInventoryChangedMessage,
-          actionLabel: l10n.ticketRefresh,
-          onPressed: onRetry,
-        ),
+        title: l10n.ticketInventoryChangedTitle,
+        body: l10n.ticketInventoryChangedMessage,
+        actionLabel: l10n.ticketRefresh,
+        onPressed: onRetry,
+      ),
       TicketMatchesFailureKind.securityTimeout => _TicketState(
-          title: l10n.ticketInventorySecurityTitle,
-          body: l10n.ticketInventorySecurityMessage,
-          actionLabel: l10n.ticketRefresh,
-          onPressed: onRetry,
-        ),
+        title: l10n.ticketInventorySecurityTitle,
+        body: l10n.ticketInventorySecurityMessage,
+        actionLabel: l10n.ticketRefresh,
+        onPressed: onRetry,
+      ),
       TicketMatchesFailureKind.unknown => _TicketState(
-          title: l10n.ticketFixturesUnavailableTitle,
-          body: l10n.ticketFixturesUnavailableMessage,
-          actionLabel: l10n.ticketRetry,
-          onPressed: onRetry,
-        ),
+        title: l10n.ticketFixturesUnavailableTitle,
+        body: l10n.ticketFixturesUnavailableMessage,
+        actionLabel: l10n.ticketRetry,
+        onPressed: onRetry,
+      ),
     };
   }
 }

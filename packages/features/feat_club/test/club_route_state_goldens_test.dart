@@ -30,11 +30,7 @@ void main() {
     for (final state in _clubStates) {
       if (state == 'empty' && !route.hasEmptyState) continue;
       testWidgets('golden ${route.pattern} $state state', (tester) async {
-        await _pumpClubRouteState(
-          tester,
-          route: route,
-          state: state,
-        );
+        await _pumpClubRouteState(tester, route: route, state: state);
       });
     }
   }
@@ -88,16 +84,18 @@ Future<void> _pumpClubRouteState(
   required _ClubRouteSpec route,
   required String state,
 }) async {
-  final size =
-      state == 'large_text' ? const Size(320, 720) : const Size(390, 844);
+  final size = state == 'large_text'
+      ? const Size(320, 720)
+      : const Size(390, 844);
   final brightness = state == 'light' ? Brightness.light : Brightness.dark;
   final reducedMotion = state == 'reduced_motion';
   final gateway = _ClubStateGateway(_modeFor(state));
   TestGesture? heldGesture;
 
   _setGoldenSurface(tester, size, reducedMotion: reducedMotion);
-  tester.platformDispatcher.textScaleFactorTestValue =
-      state == 'large_text' ? 2 : 1;
+  tester.platformDispatcher.textScaleFactorTestValue = state == 'large_text'
+      ? 2
+      : 1;
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
   TypographyTokens.debugUseFallbackFonts = true;
   addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
@@ -277,9 +275,9 @@ void _setGoldenSurface(
   tester.view.devicePixelRatio = 1;
   tester.platformDispatcher.accessibilityFeaturesTestValue =
       FakeAccessibilityFeatures(
-    disableAnimations: reducedMotion,
-    accessibleNavigation: reducedMotion,
-  );
+        disableAnimations: reducedMotion,
+        accessibleNavigation: reducedMotion,
+      );
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
   addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
@@ -324,28 +322,24 @@ class _ClubStateGateway implements ClubContentGateway {
     _pendingCompletions.clear();
   }
 
-  Future<T> _load<T>({
-    required String key,
-    required T data,
-    required T empty,
-  }) {
+  Future<T> _load<T>({required String key, required T data, required T empty}) {
     _calls[key] = (_calls[key] ?? 0) + 1;
     return switch (mode) {
       _ClubGatewayMode.loading => _pending(empty),
       _ClubGatewayMode.empty => Future<T>.value(empty),
       _ClubGatewayMode.error => Future<T>.error(
-          StateError('private-club-record-4482 failed'),
-        ),
+        StateError('private-club-record-4482 failed'),
+      ),
       _ClubGatewayMode.permissionDenied => Future<T>.error(
-          StateError('RLS permission denied private-club-record-4482'),
-        ),
+        StateError('RLS permission denied private-club-record-4482'),
+      ),
       _ClubGatewayMode.syncing when _calls[key]! > 1 => _pending(data),
       _ClubGatewayMode.conflict => Future<T>.error(
-          StateError('stale revision conflict private-club-record-4482'),
-        ),
+        StateError('stale revision conflict private-club-record-4482'),
+      ),
       _ClubGatewayMode.securityTimeout => Future<T>.error(
-          TimeoutException('private-club-record-4482 security timeout'),
-        ),
+        TimeoutException('private-club-record-4482 security timeout'),
+      ),
       _ => Future<T>.value(data),
     };
   }
@@ -359,53 +353,35 @@ class _ClubStateGateway implements ClubContentGateway {
   }
 
   @override
-  Future<ClubOverview?> loadOverview() => _load<ClubOverview?>(
-        key: 'overview',
-        data: _overview,
-        empty: null,
-      );
+  Future<ClubOverview?> loadOverview() =>
+      _load<ClubOverview?>(key: 'overview', data: _overview, empty: null);
 
   @override
-  Future<List<ClubHistoryItem>> loadHistory() => _load(
-        key: 'history',
-        data: _history,
-        empty: const <ClubHistoryItem>[],
-      );
+  Future<List<ClubHistoryItem>> loadHistory() =>
+      _load(key: 'history', data: _history, empty: const <ClubHistoryItem>[]);
 
   @override
-  Future<List<ClubFixtureItem>> loadMatches() => _load(
-        key: 'matches',
-        data: _matches,
-        empty: const <ClubFixtureItem>[],
-      );
+  Future<List<ClubFixtureItem>> loadMatches() =>
+      _load(key: 'matches', data: _matches, empty: const <ClubFixtureItem>[]);
 
   @override
-  Future<List<ClubNewsItem>> loadNews() => _load(
-        key: 'news',
-        data: _news,
-        empty: const <ClubNewsItem>[],
-      );
+  Future<List<ClubNewsItem>> loadNews() =>
+      _load(key: 'news', data: _news, empty: const <ClubNewsItem>[]);
 
   @override
-  Future<List<ClubProjectItem>> loadProjects() => _load(
-        key: 'projects',
-        data: _projects,
-        empty: const <ClubProjectItem>[],
-      );
+  Future<List<ClubProjectItem>> loadProjects() =>
+      _load(key: 'projects', data: _projects, empty: const <ClubProjectItem>[]);
 
   @override
-  Future<List<ClubSquadMember>> loadSquad() => _load(
-        key: 'squad',
-        data: _squad,
-        empty: const <ClubSquadMember>[],
-      );
+  Future<List<ClubSquadMember>> loadSquad() =>
+      _load(key: 'squad', data: _squad, empty: const <ClubSquadMember>[]);
 
   @override
   Future<List<ClubStandingItem>> loadStandings() => _load(
-        key: 'standings',
-        data: _standings,
-        empty: const <ClubStandingItem>[],
-      );
+    key: 'standings',
+    data: _standings,
+    empty: const <ClubStandingItem>[],
+  );
 }
 
 const _overview = ClubOverview(

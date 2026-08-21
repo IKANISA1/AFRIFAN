@@ -12,8 +12,7 @@ export type ControlledVenueRoute =
   | "menu"
   | "checkins"
   | "promotions"
-  | "staff"
-  | "tv-code";
+  | "staff";
 
 type EvidenceState =
   | "loading"
@@ -173,25 +172,6 @@ const routes: Record<ControlledVenueRoute, RouteConfig> = {
         label: "Assignment 3",
         value: "Reviewer",
         detail: "Read-only assignment",
-      },
-    ],
-  },
-  "tv-code": {
-    eyebrow: "Paired display",
-    title: "TV code status",
-    description:
-      "Check the assigned display status. The readable rotating code appears only on the paired display.",
-    emptyTitle: "No active TV code",
-    emptyBody:
-      "Ask a club administrator to pair the display and issue an approved rotating code.",
-    primaryAction: "Refresh TV code status",
-    records: [
-      { label: "Display", value: "Connected", detail: "Amahoro screen 1" },
-      { label: "Campaign", value: "Derby arrival", detail: "Approved" },
-      {
-        label: "Next rotation",
-        value: "18:50",
-        detail: "Readable code withheld",
       },
     ],
   },

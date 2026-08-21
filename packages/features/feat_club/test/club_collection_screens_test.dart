@@ -37,10 +37,7 @@ void main() {
     final gateway = _PendingClubContentGateway();
 
     await tester.pumpWidget(
-      _testApp(
-        gateway,
-        timeout: const Duration(milliseconds: 10),
-      ),
+      _testApp(gateway, timeout: const Duration(milliseconds: 10)),
     );
     await tester.pump(const Duration(milliseconds: 20));
     await tester.pump();
@@ -55,7 +52,8 @@ void main() {
   ) async {
     await tester.pumpWidget(
       _testApp(
-          _ThrowingClubContentGateway(StateError('RLS permission denied'))),
+        _ThrowingClubContentGateway(StateError('RLS permission denied')),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -83,7 +81,8 @@ void main() {
   testWidgets('identifies conflicting Club projections', (tester) async {
     await tester.pumpWidget(
       _testApp(
-          _ThrowingClubContentGateway(StateError('stale version conflict'))),
+        _ThrowingClubContentGateway(StateError('stale version conflict')),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -101,10 +100,7 @@ Widget _testApp(
   final router = GoRouter(
     initialLocation: '/club/news',
     routes: <RouteBase>[
-      GoRoute(
-        path: '/club/news',
-        builder: (_, __) => const ClubNewsScreen(),
-      ),
+      GoRoute(path: '/club/news', builder: (_, __) => const ClubNewsScreen()),
     ],
   );
 

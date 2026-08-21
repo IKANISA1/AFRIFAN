@@ -8,9 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../game_result_copy.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
+import '../prediction_result_copy.dart';
 
 class MyPredictionsScreen extends ConsumerStatefulWidget {
   const MyPredictionsScreen({super.key});
@@ -168,7 +168,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
 
       AfriToast.error(
         context,
-        context.localizeGameResultMessage(result.message),
+        context.localizePredictionResultMessage(result.message),
       );
     } catch (error, stackTrace) {
       AfriLogger.warn(

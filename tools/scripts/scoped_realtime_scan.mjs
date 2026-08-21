@@ -27,12 +27,7 @@ const sourceExtensions = new Set([
 ]);
 
 const violations = [];
-const publicationViolations = [];
 let checkedSubscriptions = 0;
-const migrationPublicationSource = readFileSync(
-  join(root, "supabase/migrations/20260702120000_africlub_game_runtime_foundation.sql"),
-  "utf8",
-);
 
 function extensionOf(path) {
   const dot = path.lastIndexOf(".");
@@ -68,30 +63,8 @@ function walk(dir) {
 
 function hasScopedFilter(window) {
   return /\bfilter\s*:/.test(window) ||
-    /\.eq\(\s*["'`](id|club_id|venue_id|screen_id|session_id|game_session_id|user_id|fixture_id|pool_id)["'`]/.test(window) ||
-    /\.match\(\s*\{[^}]+(id|club_id|venue_id|screen_id|session_id|game_session_id|user_id|fixture_id|pool_id)/s.test(window);
-}
-
-function subscribedAfriclubGameTables(window) {
-  if (!/\bschema\s*:\s*["'`]africlub_game["'`]/.test(window)) {
-    return [];
-  }
-
-  const tables = [];
-  const tablePattern = /\btable\s*:\s*["'`]([a-zA-Z0-9_]+)["'`]/g;
-  let match;
-  while ((match = tablePattern.exec(window)) !== null) {
-    tables.push(match[1]);
-  }
-  return tables;
-}
-
-function isPublishedRealtimeTable(tableName) {
-  const pattern = new RegExp(
-    `alter\\s+publication\\s+supabase_realtime\\s+add\\s+table\\s+africlub_game\\.${tableName}\\b`,
-    "i",
-  );
-  return pattern.test(migrationPublicationSource);
+    /\.eq\(\s*["'`](id|club_id|venue_id|screen_id|session_id|user_id|fixture_id|pool_id)["'`]/.test(window) ||
+    /\.match\(\s*\{[^}]+(id|club_id|venue_id|screen_id|session_id|user_id|fixture_id|pool_id)/s.test(window);
 }
 
 function inspectFile(filePath) {
@@ -103,7 +76,7 @@ function inspectFile(filePath) {
       line.includes('"postgres_changes"');
     const isSupabaseDartRealtime = line.includes(".onPostgresChanges(");
     const isChannelSubscribe = /\.channel\(/.test(line) &&
-      /realtime|game|session|screen|order|leaderboard|fixture|pool/i.test(line);
+      /realtime|session|screen|order|leaderboard|fixture|pool/i.test(line);
     if (!isSupabaseJsRealtime && !isSupabaseDartRealtime && !isChannelSubscribe) {
       continue;
     }
@@ -116,16 +89,6 @@ function inspectFile(filePath) {
         line: index + 1,
         detail: "missing visible id/tenant/session realtime filter",
       });
-    }
-
-    for (const tableName of subscribedAfriclubGameTables(window)) {
-      if (!isPublishedRealtimeTable(tableName)) {
-        publicationViolations.push({
-          filePath,
-          line: index + 1,
-          detail: `subscribes to africlub_game.${tableName}, but the game migration does not publish it to supabase_realtime`,
-        });
-      }
     }
   }
 }
@@ -145,16 +108,6 @@ console.log(`Checked ${checkedSubscriptions} realtime subscription candidate(s).
 if (violations.length > 0) {
   console.error("\nUnscoped realtime subscription candidates found:");
   for (const violation of violations) {
-    console.error(
-      `- ${relative(root, violation.filePath)}:${violation.line} ${violation.detail}`,
-    );
-  }
-  process.exit(1);
-}
-
-if (publicationViolations.length > 0) {
-  console.error("\nRealtime publication mismatches found:");
-  for (const violation of publicationViolations) {
     console.error(
       `- ${relative(root, violation.filePath)}:${violation.line} ${violation.detail}`,
     );

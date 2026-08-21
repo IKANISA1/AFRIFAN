@@ -36,28 +36,30 @@ void main() {
     });
 
     test('/tickets has match detail and seat map sub-routes', () {
-      final ticketsRoute = module.routes
+      final ticketsRoute = module.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/tickets',
+      );
+      final subPaths = ticketsRoute.routes
           .whereType<GoRoute>()
-          .firstWhere((r) => r.path == '/tickets');
-      final subPaths =
-          ticketsRoute.routes.whereType<GoRoute>().map((r) => r.path).toList();
+          .map((r) => r.path)
+          .toList();
 
       expect(subPaths, contains('detail/:id'));
       expect(subPaths, contains('map/:id'));
     });
 
     test('detail routes use shared pushed-route pages', () {
-      final ticketsRoute = module.routes
-          .whereType<GoRoute>()
-          .firstWhere((r) => r.path == '/tickets');
+      final ticketsRoute = module.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/tickets',
+      );
       final subRoutes = ticketsRoute.routes.whereType<GoRoute>().toList();
 
       for (final route in <GoRoute>[
         ...subRoutes.where((route) => route.path == 'detail/:id'),
         ...subRoutes.where((route) => route.path == 'map/:id'),
-        module.routes
-            .whereType<GoRoute>()
-            .firstWhere((route) => route.path == '/e-ticket/:id'),
+        module.routes.whereType<GoRoute>().firstWhere(
+          (route) => route.path == '/e-ticket/:id',
+        ),
       ]) {
         expect(route.pageBuilder, isNotNull, reason: route.path);
         expect(route.builder, isNull, reason: route.path);
@@ -65,12 +67,12 @@ void main() {
     });
 
     test('only ticket list keeps a standard builder', () {
-      final ticketsRoute = module.routes
-          .whereType<GoRoute>()
-          .firstWhere((route) => route.path == '/tickets');
-      final myTicketsRoute = module.routes
-          .whereType<GoRoute>()
-          .firstWhere((route) => route.path == '/my-tickets');
+      final ticketsRoute = module.routes.whereType<GoRoute>().firstWhere(
+        (route) => route.path == '/tickets',
+      );
+      final myTicketsRoute = module.routes.whereType<GoRoute>().firstWhere(
+        (route) => route.path == '/my-tickets',
+      );
 
       expect(ticketsRoute.builder, isNotNull);
       expect(ticketsRoute.pageBuilder, isNull);
@@ -79,21 +81,23 @@ void main() {
       expect(myTicketsRoute.builder, isNull);
     });
 
-    test('declares route presentation decisions for the minimal app policy',
-        () {
-      final decisions = {
-        for (final decision in module.routePresentationDecisions)
-          decision.path: decision.presentation,
-      };
+    test(
+      'declares route presentation decisions for the minimal app policy',
+      () {
+        final decisions = {
+          for (final decision in module.routePresentationDecisions)
+            decision.path: decision.presentation,
+        };
 
-      expect(decisions['/tickets'], RoutePresentation.fullScreen);
-      expect(
-        decisions['/tickets/detail/:id'],
-        RoutePresentation.fullHeightSheet,
-      );
-      expect(decisions['/my-tickets'], RoutePresentation.redirect);
-      expect(decisions['/e-ticket/:id'], RoutePresentation.fullScreen);
-    });
+        expect(decisions['/tickets'], RoutePresentation.fullScreen);
+        expect(
+          decisions['/tickets/detail/:id'],
+          RoutePresentation.fullHeightSheet,
+        );
+        expect(decisions['/my-tickets'], RoutePresentation.redirect);
+        expect(decisions['/e-ticket/:id'], RoutePresentation.fullScreen);
+      },
+    );
 
     test('isEnabled returns true when ticketing feature is present', () {
       expect(module.isEnabled({'ticketing': true}), isTrue);

@@ -17,7 +17,7 @@ const args = readArgs(process.argv.slice(2));
 const repoRoot = resolve(args.get("--repo-root") ?? defaultRepoRoot);
 const sourceRoots = (
   args.get("--roots") ??
-  "packages/core,packages/features,apps/rayon_sports/lib,apps/rayon_sports_tv/lib"
+  "packages/core,packages/features,apps/rayon_sports/lib"
 )
   .split(",")
   .map((value) => value.trim())

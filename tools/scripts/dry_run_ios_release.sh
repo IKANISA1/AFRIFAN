@@ -44,9 +44,7 @@ bash "$ROOT/tools/scripts/validate_flutter_runtime_pins.sh" --runtime
     --dart-define-from-file=assets/flavors/production.json
 )
 
-python3 "$ROOT/tools/scripts/sync_ios_swiftpm_deployment_target.py" \
-  --manifest "$IOS_SWIFTPM_MANIFEST" \
-  --minimum "$IOS_MINIMUM_VERSION"
+bash "$ROOT/tools/scripts/prepare_rayon_ios_swiftpm.sh" "$APP_SLUG"
 
 bash "$ROOT/tools/scripts/validate_club_release.sh" "$APP_SLUG"
 

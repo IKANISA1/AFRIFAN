@@ -196,11 +196,6 @@ private let mobileIcon = repositoryRoot
     .appendingPathComponent("apps/rayon_sports/android/fastlane/metadata/android/en-US/images/icon.png")
 private let mobileFeatureGraphic = repositoryRoot
     .appendingPathComponent("apps/rayon_sports/android/fastlane/metadata/android/en-US/images/featureGraphic.png")
-private let tvIcon = repositoryRoot
-    .appendingPathComponent("apps/rayon_sports_tv/android/fastlane/metadata/android/en-US/images/icon.png")
-private let tvBanner = repositoryRoot
-    .appendingPathComponent("apps/rayon_sports_tv/android/fastlane/metadata/android/en-US/images/tvBanner.png")
-
 private let androidLauncherIcons: [(size: Int, path: String)] = [
     (48, "apps/rayon_sports/android/app/src/main/res/mipmap-mdpi/ic_launcher.png"),
     (72, "apps/rayon_sports/android/app/src/main/res/mipmap-hdpi/ic_launcher.png"),
@@ -229,7 +224,6 @@ private let iosAppIcons: [(size: Int, filename: String)] = [
 
 private let iosAppIconDirectory = repositoryRoot
     .appendingPathComponent("apps/rayon_sports/ios/Runner/Assets.xcassets/AppIcon.appiconset")
-
 try writePNG(width: 512, height: 512, hasAlpha: true, destination: mobileIcon) {
     drawMobileMark(size: 512)
 }
@@ -286,65 +280,12 @@ try writePNG(width: 1024, height: 500, hasAlpha: false, destination: mobileFeatu
     accent.fill()
 }
 
-try writePNG(width: 512, height: 512, hasAlpha: true, destination: tvIcon) {
-    drawBackground(width: 512, height: 512)
-    drawOrbit(in: NSRect(x: 69, y: 69, width: 374, height: 374), lineWidth: 9)
-    drawCentered(
-        "G",
-        in: NSRect(x: 85, y: 113, width: 342, height: 300),
-        font: .systemFont(ofSize: 230, weight: .black),
-        color: white
-    )
-    let tvPill = NSBezierPath(roundedRect: NSRect(x: 317, y: 101, width: 106, height: 66), xRadius: 25, yRadius: 25)
-    gold.setFill()
-    tvPill.fill()
-    drawCentered(
-        "TV",
-        in: NSRect(x: 317, y: 101, width: 106, height: 66),
-        font: .systemFont(ofSize: 31, weight: .black),
-        color: navy,
-        tracking: 1
-    )
-}
-
-try writePNG(width: 1280, height: 720, hasAlpha: false, destination: tvBanner) {
-    drawBackground(width: 1280, height: 720)
-    drawOrbit(in: NSRect(x: 110, y: 110, width: 500, height: 500), lineWidth: 11)
-    drawCentered(
-        "G",
-        in: NSRect(x: 151, y: 148, width: 418, height: 418),
-        font: .systemFont(ofSize: 324, weight: .black),
-        color: white
-    )
-    drawLeft(
-        "GIKUNDIRO",
-        at: NSPoint(x: 678, y: 387),
-        font: .systemFont(ofSize: 82, weight: .black),
-        color: white,
-        tracking: 2.5
-    )
-    drawLeft(
-        "TV",
-        at: NSPoint(x: 678, y: 275),
-        font: .systemFont(ofSize: 112, weight: .black),
-        color: gold,
-        tracking: 5
-    )
-    drawLeft(
-        "FOOTBALL ON THE BIG SCREEN",
-        at: NSPoint(x: 684, y: 229),
-        font: .systemFont(ofSize: 26, weight: .semibold),
-        color: white.withAlphaComponent(0.82),
-        tracking: 1.6
-    )
-}
-
 let nativeIconOutputs = androidLauncherIcons.map {
     repositoryRoot.appendingPathComponent($0.path)
 } + iosAppIcons.map {
     iosAppIconDirectory.appendingPathComponent($0.filename)
 }
 
-for output in [mobileIcon, mobileFeatureGraphic, tvIcon, tvBanner] + nativeIconOutputs {
+for output in [mobileIcon, mobileFeatureGraphic] + nativeIconOutputs {
     print(output.path)
 }

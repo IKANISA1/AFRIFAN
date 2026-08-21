@@ -189,7 +189,9 @@ class HiveCacheService {
     final box = _box;
     if (box == null) return 0;
     return box.keys
-        .where((k) => k is String && !k.startsWith(_metaPrefix) && k != _versionKey)
+        .where(
+          (k) => k is String && !k.startsWith(_metaPrefix) && k != _versionKey,
+        )
         .length;
   }
 

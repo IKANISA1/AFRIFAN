@@ -383,9 +383,6 @@ verify_jwt = false
 [functions.dispatch-scheduled-notifications]
 verify_jwt = false
 
-[functions.game-session-action]
-verify_jwt = false
-
 [functions.generate-admin-image]
 verify_jwt = false
 
@@ -396,9 +393,6 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.generate-product-image]
-verify_jwt = false
-
-[functions.generate-question-drafts]
 verify_jwt = false
 
 [functions.get-platform-config]

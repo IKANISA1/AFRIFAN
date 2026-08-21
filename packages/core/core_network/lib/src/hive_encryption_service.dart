@@ -55,10 +55,7 @@ class HiveEncryptionService {
         keyBytes = base64Decode(existingKey);
       } else {
         keyBytes = _generateSecureKey();
-        await storage.write(
-          key: _secureKey,
-          value: base64Encode(keyBytes),
-        );
+        await storage.write(key: _secureKey, value: base64Encode(keyBytes));
         AfriLogger.info(_tag, 'Generated new Hive encryption key.');
       }
 
@@ -93,7 +90,10 @@ class HiveEncryptionService {
 
   static FlutterSecureStorage _defaultSecureStorage() {
     return const FlutterSecureStorage(
-      aOptions: AndroidOptions(encryptedSharedPreferences: true),
+      aOptions: AndroidOptions(
+        migrateOnAlgorithmChange: true,
+        migrateWithBackup: true,
+      ),
       iOptions: IOSOptions(
         accessibility: KeychainAccessibility.first_unlock_this_device,
       ),

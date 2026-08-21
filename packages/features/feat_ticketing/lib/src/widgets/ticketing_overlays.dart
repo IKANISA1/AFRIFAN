@@ -78,10 +78,7 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
                 label: context.afriL10n.ticketMatchUpper,
                 value: matchTitle,
               ),
-              _SheetRow(
-                label: context.afriL10n.ticketZoneUpper,
-                value: zone,
-              ),
+              _SheetRow(label: context.afriL10n.ticketZoneUpper, value: zone),
               if (seatCode != null)
                 _SheetRow(
                   label: context.afriL10n.ticketSeatUpper,
@@ -148,17 +145,13 @@ class _SheetRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
       child: Row(
         children: [
-          Expanded(
-            child: Text(label, style: TypographyTokens.bodyMedium()),
-          ),
+          Expanded(child: Text(label, style: TypographyTokens.bodyMedium())),
           Text(
             value,
             style: highlighted
                 ? TypographyTokens.headlineLarge(
                     ColorTokens.clubAccent,
-                  ).copyWith(
-                    fontWeight: FontWeight.w800,
-                  )
+                  ).copyWith(fontWeight: FontWeight.w800)
                 : TypographyTokens.labelLarge(),
           ),
         ],

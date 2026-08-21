@@ -47,7 +47,7 @@ class MomoSmsRateLimitException implements Exception {
 
 class MomoSmsIngestionRepository {
   MomoSmsIngestionRepository({required SupabaseClient client})
-      : _client = client;
+    : _client = client;
 
   final SupabaseClient _client;
 
@@ -104,7 +104,8 @@ class MomoSmsIngestionRepository {
       return false;
     }
 
-    final hasCurrencySignal = normalizedBody.contains('rwf') ||
+    final hasCurrencySignal =
+        normalizedBody.contains('rwf') ||
         normalizedBody.contains('frw') ||
         RegExp(r'\b\d[\d,.\s]*\s*(rwf|frw)\b').hasMatch(normalizedBody);
     if (!hasCurrencySignal) {
@@ -136,8 +137,9 @@ class MomoSmsIngestionRepository {
     }
 
     final lowercaseBody = normalizedBody.toLowerCase();
-    final senderKind =
-        RegExp(r'^\+?\d+$').hasMatch(trimmedSender) ? 'msisdn' : 'alias';
+    final senderKind = RegExp(r'^\+?\d+$').hasMatch(trimmedSender)
+        ? 'msisdn'
+        : 'alias';
     final hasTxReference = _hasTxReferenceSignal(lowercaseBody);
     final hasBalanceSignal = _hasBalanceSignal(lowercaseBody);
     final hasFeeSignal = _hasFeeSignal(lowercaseBody);
@@ -234,7 +236,8 @@ class MomoSmsIngestionRepository {
   }) {
     final normalizedSender = _normalizeSender(sender);
     final normalizedBody = _normalizeWhitespace(body);
-    final payload = '$normalizedSender|${receivedAt.toUtc().toIso8601String()}|'
+    final payload =
+        '$normalizedSender|${receivedAt.toUtc().toIso8601String()}|'
         '$normalizedBody';
     return sha256.convert(utf8.encode(payload)).toString();
   }

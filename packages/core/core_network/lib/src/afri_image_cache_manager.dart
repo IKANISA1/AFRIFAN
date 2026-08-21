@@ -7,10 +7,6 @@ class AfriImageCacheManager {
   static const key = 'afri_image_cache';
 
   static final CacheManager instance = CacheManager(
-    Config(
-      key,
-      stalePeriod: const Duration(days: 7),
-      maxNrOfCacheObjects: 200,
-    ),
+    Config(key, stalePeriod: const Duration(days: 7), maxNrOfCacheObjects: 200),
   );
 }

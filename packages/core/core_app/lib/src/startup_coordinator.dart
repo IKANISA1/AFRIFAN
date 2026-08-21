@@ -125,9 +125,8 @@ class AppStartupCoordinator {
 
     final firebaseReady = await _runBestEffortStartupTask<bool>(
       label: 'Firebase',
-      operation: () => FirebaseBootstrapService.initialize(
-        options: options.firebaseOptions,
-      ),
+      operation: () =>
+          FirebaseBootstrapService.initialize(options: options.firebaseOptions),
       fallback: false,
     );
     final appCheckReady = await _runBestEffortStartupTask<bool>(

@@ -38,8 +38,9 @@ class SeatTypeCard extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label:
-          selected ? 'Selected ticket access $title' : 'Ticket access $title',
+      label: selected
+          ? 'Selected ticket access $title'
+          : 'Ticket access $title',
       child: AfriPressFeedback(
         onTap: onTap,
         builder: (context, state) => AfriSurfaceCard(
@@ -100,9 +101,7 @@ class TicketSummaryRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(label, style: TypographyTokens.bodyMedium()),
-          ),
+          Expanded(child: Text(label, style: TypographyTokens.bodyMedium())),
           const SizedBox(width: SpacingTokens.spacing3),
           Flexible(
             child: Text(

@@ -81,9 +81,9 @@ class SupabaseETicketGateway implements ETicketGateway {
     required SupabaseClient client,
     required String? userId,
     required String? clubId,
-  })  : _client = client,
-        _userId = userId,
-        _clubId = clubId;
+  }) : _client = client,
+       _userId = userId,
+       _clubId = clubId;
 
   final SupabaseClient _client;
   final String? _userId;
@@ -122,14 +122,18 @@ final eTicketLoadTimeoutProvider = Provider<Duration>(
 
 final eTicketAccessEnabledProvider = Provider<bool>((ref) => true);
 
-final eTicketProvider = StateNotifierProvider.family<ETicketController,
-    AsyncValue<ETicketState>, String>((ref, ticketId) {
-  return ETicketController(
-    ref.watch(eTicketGatewayProvider),
-    ticketId,
-    loadTimeout: ref.watch(eTicketLoadTimeoutProvider),
-  );
-});
+final eTicketProvider =
+    StateNotifierProvider.family<
+      ETicketController,
+      AsyncValue<ETicketState>,
+      String
+    >((ref, ticketId) {
+      return ETicketController(
+        ref.watch(eTicketGatewayProvider),
+        ticketId,
+        loadTimeout: ref.watch(eTicketLoadTimeoutProvider),
+      );
+    });
 
 class ETicketController extends StateNotifier<AsyncValue<ETicketState>> {
   ETicketController(
@@ -137,8 +141,8 @@ class ETicketController extends StateNotifier<AsyncValue<ETicketState>> {
     this._ticketId, {
     Duration loadTimeout = const Duration(seconds: 12),
     bool autoLoad = true,
-  })  : _loadTimeout = loadTimeout,
-        super(const AsyncValue.loading()) {
+  }) : _loadTimeout = loadTimeout,
+       super(const AsyncValue.loading()) {
     if (autoLoad) unawaited(load());
   }
 

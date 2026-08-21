@@ -59,9 +59,7 @@ void main() {
     expect(find.textContaining('Upcoming ticket inventory'), findsOneWidget);
   });
 
-  testWidgets('checkout uses route warning banner', (
-    tester,
-  ) async {
+  testWidgets('checkout uses route warning banner', (tester) async {
     final semantics = tester.ensureSemantics();
     var purchaseRequests = 0;
 
@@ -268,10 +266,7 @@ void main() {
       expect(find.text('CHECKOUT SUMMARY'), findsOneWidget);
       expect(find.text('VIP-7'), findsOneWidget);
       final warning = find.byType(AfriStateBanner);
-      final action = find.widgetWithText(
-        AfriButton,
-        'Payment route not ready',
-      );
+      final action = find.widgetWithText(AfriButton, 'Payment route not ready');
       await tester.ensureVisible(warning);
       await tester.ensureVisible(action);
       expect(tester.takeException(), isNull);
@@ -473,10 +468,10 @@ void main() {
   ) async {
     tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(
-      accessibleNavigation: true,
-      disableAnimations: true,
-      reduceMotion: true,
-    );
+          accessibleNavigation: true,
+          disableAnimations: true,
+          reduceMotion: true,
+        );
     addTearDown(
       tester.binding.platformDispatcher.clearAccessibilityFeaturesTestValue,
     );
@@ -510,56 +505,53 @@ void main() {
   });
 
   for (final profile in _compactGoldenProfiles) {
-    testWidgets(
-      'golden compact ticket checkout ${profile.id}',
-      (tester) async {
-        _setGoldenSurface(tester, profile.size);
-        TypographyTokens.debugUseFallbackFonts = true;
-        addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
-        ColorTokens.setBrightness(profile.brightness);
-        addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
-        final previousCountries = AfriCountryCatalog.all;
-        AfriCountryCatalog.withCountries(const <AfriCountry>[_rwanda]);
-        addTearDown(() => AfriCountryCatalog.withCountries(previousCountries));
+    testWidgets('golden compact ticket checkout ${profile.id}', (tester) async {
+      _setGoldenSurface(tester, profile.size);
+      TypographyTokens.debugUseFallbackFonts = true;
+      addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
+      ColorTokens.setBrightness(profile.brightness);
+      addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
+      final previousCountries = AfriCountryCatalog.all;
+      AfriCountryCatalog.withCountries(const <AfriCountry>[_rwanda]);
+      addTearDown(() => AfriCountryCatalog.withCountries(previousCountries));
 
-        await tester.pumpWidget(
-          MaterialApp(
-            theme: ClubTheme.from(
-              ClubConfig.fallback(),
-              brightness: profile.brightness,
-            ),
-            home: RepaintBoundary(
-              key: const ValueKey<String>('ticket-checkout-golden'),
-              child: AfriScreenScaffold(
-                showAppBar: false,
-                scrollable: false,
-                child: TicketCheckoutStep(
-                  match: _match,
-                  currency: CurrencyFormatter(
-                    currencyCode: 'RWF',
-                    currencySymbol: 'RWF',
-                  ),
-                  selectedSeatType: SeatType.vip,
-                  selectedSeatCode: 'VIP-7',
-                  quantity: 3,
-                  paymentRoute: _route,
-                  paymentRouteMessage: null,
-                  submitting: false,
-                  onPurchaseRequest: () {},
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ClubTheme.from(
+            ClubConfig.fallback(),
+            brightness: profile.brightness,
+          ),
+          home: RepaintBoundary(
+            key: const ValueKey<String>('ticket-checkout-golden'),
+            child: AfriScreenScaffold(
+              showAppBar: false,
+              scrollable: false,
+              child: TicketCheckoutStep(
+                match: _match,
+                currency: CurrencyFormatter(
+                  currencyCode: 'RWF',
+                  currencySymbol: 'RWF',
                 ),
+                selectedSeatType: SeatType.vip,
+                selectedSeatCode: 'VIP-7',
+                quantity: 3,
+                paymentRoute: _route,
+                paymentRouteMessage: null,
+                submitting: false,
+                onPurchaseRequest: () {},
               ),
             ),
           ),
-        );
-        await tester.pumpAndSettle();
+        ),
+      );
+      await tester.pumpAndSettle();
 
-        expect(tester.takeException(), isNull);
-        await expectLater(
-          find.byKey(const ValueKey<String>('ticket-checkout-golden')),
-          matchesGoldenFile('goldens/ticket_checkout_${profile.id}.png'),
-        );
-      },
-    );
+      expect(tester.takeException(), isNull);
+      await expectLater(
+        find.byKey(const ValueKey<String>('ticket-checkout-golden')),
+        matchesGoldenFile('goldens/ticket_checkout_${profile.id}.png'),
+      );
+    });
   }
 }
 
@@ -583,51 +575,51 @@ class _StaticTicketDetailGateway implements TicketDetailGateway {
 
 const _compactGoldenProfiles =
     <({String id, Size size, Brightness brightness})>[
-  (
-    id: 'compact_dark_320x760',
-    size: Size(320, 760),
-    brightness: Brightness.dark,
-  ),
-  (
-    id: 'compact_light_374x812',
-    size: Size(374, 812),
-    brightness: Brightness.light,
-  ),
-  (
-    id: 'standard_dark_390x844',
-    size: Size(390, 844),
-    brightness: Brightness.dark,
-  ),
-  (
-    id: 'large_light_430x900',
-    size: Size(430, 900),
-    brightness: Brightness.light,
-  ),
-  (
-    id: 'wide_dark_599x900',
-    size: Size(599, 900),
-    brightness: Brightness.dark,
-  ),
-  (
-    id: 'foldable_half_light_674x842',
-    size: Size(674, 842),
-    brightness: Brightness.light,
-  ),
-  (
-    id: 'tablet_dark_834x1194',
-    size: Size(834, 1194),
-    brightness: Brightness.dark,
-  ),
-];
+      (
+        id: 'compact_dark_320x760',
+        size: Size(320, 760),
+        brightness: Brightness.dark,
+      ),
+      (
+        id: 'compact_light_374x812',
+        size: Size(374, 812),
+        brightness: Brightness.light,
+      ),
+      (
+        id: 'standard_dark_390x844',
+        size: Size(390, 844),
+        brightness: Brightness.dark,
+      ),
+      (
+        id: 'large_light_430x900',
+        size: Size(430, 900),
+        brightness: Brightness.light,
+      ),
+      (
+        id: 'wide_dark_599x900',
+        size: Size(599, 900),
+        brightness: Brightness.dark,
+      ),
+      (
+        id: 'foldable_half_light_674x842',
+        size: Size(674, 842),
+        brightness: Brightness.light,
+      ),
+      (
+        id: 'tablet_dark_834x1194',
+        size: Size(834, 1194),
+        brightness: Brightness.dark,
+      ),
+    ];
 
 void _setGoldenSurface(WidgetTester tester, Size size) {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   tester.platformDispatcher.accessibilityFeaturesTestValue =
       const FakeAccessibilityFeatures(
-    disableAnimations: true,
-    accessibleNavigation: true,
-  );
+        disableAnimations: true,
+        accessibleNavigation: true,
+      );
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
   addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
@@ -636,7 +628,7 @@ void _setGoldenSurface(WidgetTester tester, Size size) {
 void _expectInKeyboardViewport(WidgetTester tester, Finder finder) {
   final visibleBottom =
       tester.view.physicalSize.height / tester.view.devicePixelRatio -
-          tester.view.viewInsets.bottom;
+      tester.view.viewInsets.bottom;
   final rect = tester.getRect(finder);
   expect(rect.top, greaterThanOrEqualTo(0));
   expect(rect.bottom, lessThanOrEqualTo(visibleBottom));

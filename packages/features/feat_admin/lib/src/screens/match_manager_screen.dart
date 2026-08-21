@@ -424,9 +424,9 @@ class _MatchCard extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
                 context.afriL10n.adminMatchesDateKickoff(
-                  MaterialLocalizations.of(context).formatShortDate(
-                    match.matchDate,
-                  ),
+                  MaterialLocalizations.of(
+                    context,
+                  ).formatShortDate(match.matchDate),
                   _formatKickoff(match.kickoffTime),
                 ),
                 style: TypographyTokens.bodyMedium(),

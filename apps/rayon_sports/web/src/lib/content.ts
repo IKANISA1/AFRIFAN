@@ -41,7 +41,6 @@ export const adminNavigation = [
   { href: "/admin/cms/content", label: "Content" },
   { href: "/admin/cms/content-blocks", label: "Content Blocks" },
   { href: "/admin/cms/config", label: "Config" },
-  { href: "/admin/games", label: "Games" },
   { href: "/admin/matches", label: "Matches" },
   { href: "/admin/squad", label: "Squad" },
   { href: "/admin/shop", label: "Shop" },

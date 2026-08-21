@@ -169,10 +169,7 @@ void main() {
           const ValueKey<String>('profile-save-action'),
         );
         final gestureDetector = find
-            .descendant(
-              of: action,
-              matching: find.byType(GestureDetector),
-            )
+            .descendant(of: action, matching: find.byType(GestureDetector))
             .first;
         heldGesture = await tester.startGesture(
           tester.getCenter(gestureDetector),
@@ -180,15 +177,9 @@ void main() {
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 240));
         final scaleValues = find
-            .descendant(
-              of: action,
-              matching: find.byType(ScaleTransition),
-            )
+            .descendant(of: action, matching: find.byType(ScaleTransition))
             .evaluate()
-            .map(
-              (element) =>
-                  (element.widget as ScaleTransition).scale.value,
-            )
+            .map((element) => (element.widget as ScaleTransition).scale.value)
             .toList(growable: false);
         expect(
           scaleValues.any((value) => value < 1),

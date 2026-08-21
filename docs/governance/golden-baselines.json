@@ -45,7 +45,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "bc74afb3b564ba3f9a9caf030083d5ff027bfd7a10b9e389c490a692935b8b39"
+      "sha256": "8d0fb557638f4d52f7228e7f3691ed93dc84b840b6dd69d2beee816796691611"
     },
     {
       "id": "settings-compact-374-dark",
@@ -57,7 +57,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "6335808f44f035d379f1934b60b985d6a127dc453227791643d0a932756287bb"
+      "sha256": "532da8f854c2424082d5362488875839f41393589b28b9749591997a71bd6412"
     },
     {
       "id": "settings-dense-dark",
@@ -69,7 +69,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f88d94ccdf081b45708ad56390d92e73cbaa927080eeb48580aa7637c7f26505"
+      "sha256": "824bdbe63a099c8fbf2e39c646e6597590a77b40631b44707961a31cd5d581ce"
     },
     {
       "id": "settings-large-430-dark",
@@ -81,7 +81,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "9473cf85f53461c754e4023ca2f4155011229ebcf4f01ecb672378d0fc0aac0b"
+      "sha256": "c4e29746711a59580394bc44a01f881c072519229be9959df684ecd2c4d0ce26"
     },
     {
       "id": "settings-large-599-dark",
@@ -93,7 +93,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "59756161a4f402c48ff9b47f834f7261494190241c0f89d62c209c55d705be5b"
+      "sha256": "30385d0f530d2f8020c6df7a6fc0e3802068d016b807b1e617e1c6f272bd366a"
     },
     {
       "id": "settings-tablet-720-dark",
@@ -105,7 +105,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "221606b59a8afbd2f76f1b18689efb517bd7cb019445c033c02f82b4083028bc"
+      "sha256": "a58b45f2c9954fec2a11c3e98a98b8da229e6024e58b0d6316d29bbdcbac958a"
     },
     {
       "id": "universal-form-data-catalog-dark",
@@ -213,7 +213,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "94f2b1a6941c9feadb33f58d63640ecdee0cdc17eb18393c92b40ad1694ff824"
+      "sha256": "b7b1e26c6aa338387c1de8d76f8517bfc9b34df306f2b2376a440a877c228f14"
     },
     {
       "id": "fan-zone-compact-374-light",
@@ -225,7 +225,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "bdb123015682eb98454fa30ff6028c394ac1f8e282601edfbd5cb93552b0eaee"
+      "sha256": "62c655bfcb5a6781f18fa33f65135a4a4fac39968e2aeaa1bba86eb8301253d1"
     },
     {
       "id": "notifications-compact-320-dark",
@@ -381,7 +381,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "9c912f1a40e40c3dabd36402af0454a78a202b947b07c5ed107237a54f4d1054"
+      "sha256": "ef9318aeeaa7119aad818852760c4b617e867f6fa7d8dc2dddb0a28a4507983d"
     },
     {
       "id": "settings-compact-374-light",
@@ -393,7 +393,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "6426063c5d6b1a57b5a50d23b30fb9e90b4097fad776dc087021f467b3135f15"
+      "sha256": "f68ade5fa4a078720962ff0ccd9da2c77ff354684b1d920b9699e4511b9288cf"
     },
     {
       "id": "home-standard-390-dark",
@@ -477,7 +477,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d891be581ce2742822b5d3ec80e60c3e582089810826d441a2d75b402f80ee9e"
+      "sha256": "9754878eff9a1bf083ab48742b9c7ffd410c3d5368b357765dc4e2d342403fc9"
     },
     {
       "id": "fan-zone-large-430-light",
@@ -489,7 +489,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "9bf2f57dfb81bd769b89fc9cdc72e8eb5f8d63d36345a090ed2ff22adebf8952"
+      "sha256": "307699e53131a116608bd4a712b97380a6ac74e3f1fb0f7852d0bd3bd8ce1bee"
     },
     {
       "id": "fan-zone-wide-599-dark",
@@ -501,7 +501,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "420978a08533f0a5f486f320b95810c68724a914324cc8a93ade485c40404ca5"
+      "sha256": "5635919b964d4914e14aa04d5e14d3906850fa6d6a90c2f7e0b13002c46f7962"
     },
     {
       "id": "notifications-standard-390-dark",
@@ -729,7 +729,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "c9b217071b9a8850fdad3fb4d998d229f37739e69ffcd890a835967b16a3bac7"
+      "sha256": "ded917dea4c69a744ad17078e4c45999d9579a8e4ab6fc59c18dbe728ceb49e3"
     },
     {
       "id": "adaptive-shell-hinge-dark-850x900",
@@ -789,7 +789,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "b26a309b36e5448901def3715ad99329147914804c4a3d78e67bf9ce085f78a3"
+      "sha256": "0fdbe271ea27e0b7271726a804db95e11ff1a90516166c82b0ba4783fa4fc6bd"
     },
     {
       "id": "fanzone-tablet-dark-834x1194",
@@ -801,7 +801,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "cce8f007ba6bd2c281f88f80bb769f9573fa44b416d8b091240d1177fb8fe275"
+      "sha256": "a4ff2a85a2efb7ef5b7952b6c7794586a3f1edf68e1f949551b885221ec61ccb"
     },
     {
       "id": "notifications-foldable-half-light-674x842",
@@ -933,7 +933,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "57fcecbb3ef04e66c27b72398342fcf70bff9ee361d14a4be5f6b9b297615c4e"
+      "sha256": "1a4f136f26cdd6b82a1f851d2aba182dce7e7748f977732d661d96086b1d325d"
     },
     {
       "id": "settings-tablet-dark-834x1194",
@@ -945,7 +945,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d00f40dec0dc836357d4eb65a838a4a9d9feeaff5d886e1c5e94145e03da8605"
+      "sha256": "2c1666d46d296e00ddc16863730b2c7cea6ac72ee0bb700142e378f9d495b965"
     },
     {
       "id": "shop-checkout-foldable-half-light-674x842",
@@ -3801,7 +3801,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "60dc8d638c3b44ce4ce49e5e5f9d510b420ccafb8b67caa501f5a4e201c4e2d3"
+      "sha256": "c54590d1e6562c7fa470ee913163d4a64f234332d6a86b15f58b43ba2cdec184"
     },
     {
       "id": "settings-high-contrast-light-390x844",
@@ -3813,7 +3813,7 @@
       },
       "theme": "high_contrast",
       "data_source": "synthetic",
-      "sha256": "f81709c2090adefac54fd90462f0499bf4ae3214d17d25618e6f684172d3cca8"
+      "sha256": "c3b1d87de2f2a80f61aae592d780512fe337587177bcdec8e27f85aedc412f09"
     },
     {
       "id": "contrast-evidence-dark-430x900",
@@ -4101,7 +4101,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "22697c2073c42dfc94c3b5bdcff49bb2ecda065079c38f55e9422d0c2d0d2786"
+      "sha256": "be5177f12fde5b1f1df21d85018e2bf1f02944ff4648885d8dfdc3c10d169a7a"
     },
     {
       "id": "fanzone-state-error-dark-390x844",
@@ -4125,7 +4125,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "86231232b67602ed958d79cf0646614bb05f7e048a8e7042431ecac6f99bfe74"
+      "sha256": "4cab9b4fe7fbfe786f7e5b5ea80709ccefa68414d99da6c0345a9ae3b8f7f783"
     },
     {
       "id": "fanzone-state-large-text-dark-320x720",
@@ -4137,7 +4137,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e003fc03e590eb424eacc52d8c98b4fbf28bd3f1fca98b06c19c537994998f53"
+      "sha256": "46f792f4305868b379e688b747834cab03beee2a29ab133b7c26a29063bd37ab"
     },
     {
       "id": "fanzone-state-selected-dark-390x844",
@@ -4149,7 +4149,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f39790512a464fa1ce9aa1d32f976de0151fc662ca14eaf9a123072b86984478"
+      "sha256": "b07c3841d0fecf76b8dbaeb6179e06f79408f9725d861fb8816b9cd6ae033309"
     },
     {
       "id": "fanzone-state-permission-denied-dark-390x844",
@@ -4173,7 +4173,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d891be581ce2742822b5d3ec80e60c3e582089810826d441a2d75b402f80ee9e"
+      "sha256": "9754878eff9a1bf083ab48742b9c7ffd410c3d5368b357765dc4e2d342403fc9"
     },
     {
       "id": "fanzone-state-focused-dark-390x844",
@@ -4185,7 +4185,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "bce44ac95104666598b822a0b69b0f542aaa7083ea5510d58ff61d2c7551de89"
+      "sha256": "4e789a1badb36c1473be889bc317c0533bc761018abb4606a2da5eaf6ef015c2"
     },
     {
       "id": "fanzone-state-pressed-dark-390x844",
@@ -4197,7 +4197,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "5132f9765be4ba772f8f8511b0be5e56966e055b7bc2d633fd13c373dc634cc8"
+      "sha256": "f75ca46402fbb72c6e7819797e7a90cd0ae82ddf5786129872e965b60b1a4981"
     },
     {
       "id": "fanzone-state-syncing-dark-390x844",
@@ -4209,7 +4209,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e5410f822f8c4dfc2f1f31d8a3fd4840469fcd93c04fddd821d4c05a3eb576ec"
+      "sha256": "81a4709a795d323be48ec7a3dff75a510ebad61ac6fef7cf1851605b1ca84a38"
     },
     {
       "id": "fanzone-state-conflict-dark-390x844",
@@ -5745,7 +5745,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7f265a83ab8210526e54d95992c6e4c69715e216e5ffe6a2862122d39ff0566a"
+      "sha256": "6c9a2de5c4c7187c98ab4275ad64d107a8a773f1b959e1aec80b9cd3b634f6b7"
     },
     {
       "id": "settings-state-empty-dark-390x844",
@@ -5757,7 +5757,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "126be6a5237fe62fcfdaa7776b527f68d3b9e97c45da909666567c7fe5f01324"
+      "sha256": "28fb844a5f8a061ed5a162683b82371cdfc5376de5814b8afaf825c7c3786c4d"
     },
     {
       "id": "settings-state-error-dark-390x844",
@@ -5769,7 +5769,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "bbda5e1efdb6077b6e08296ba868d63f1f2c4ac6c00731e4a404140b33a09522"
+      "sha256": "06a70c6bec327fcc474c09ca5128c4b3e90abf99b8b3dbf27c4a3a654b47531c"
     },
     {
       "id": "settings-state-offline-dark-390x844",
@@ -5781,7 +5781,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "56a9f181c6fe6308f0e4c825c8d5f2eed3dcaca18d5466d2427347fe271994ca"
+      "sha256": "551aafa08380ce1012c02d2e94b92b69988790121b41a6c4e09785128766cb8c"
     },
     {
       "id": "settings-state-permission-denied-dark-390x844",
@@ -5793,7 +5793,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "fc9ef7e51ce2505fda1f05e04d1824867ab7e36ca886836adb6666fee846460d"
+      "sha256": "c2dab044a5538d7e01c9d5bedf7c183a47340d7c2e5b74983a73ce60ce0a7dc4"
     },
     {
       "id": "settings-state-disabled-dark-390x844",
@@ -5805,7 +5805,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "c0c6860223039531e637ca32976add23b8afaffd80afcf3b87f9614dae7b5118"
+      "sha256": "a419a6dc1f35cfca83ccd66c04111e3f464046afc0070395729e9fef42d52887"
     },
     {
       "id": "settings-state-focused-dark-390x844",
@@ -5817,7 +5817,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e58c4a7ce0053f72b974544e45f532fb52d02dfb1b7e68a577a22daafefd4c06"
+      "sha256": "ac2d8177d4a20c1f6277135eb6b35f20aefc9a11fc475e5ad6bf977b71600251"
     },
     {
       "id": "settings-state-pressed-dark-390x844",
@@ -5829,7 +5829,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "1c745da3dc28b7673f2fc956e6e8ee65e6702e2ba071b2ffcd0ee49b9b36cc69"
+      "sha256": "ea436e2a71d810be2b5e4fda34903d6c443817f695d5eebcf8dc94ec1733556c"
     },
     {
       "id": "settings-state-selected-dark-390x844",
@@ -5841,7 +5841,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "842f0f9da7db11541a998f755167dc57595cf24847338a273c2900622c48ab63"
+      "sha256": "320a15da9b98cfb6b0e710781e10eca3d3290fcfa06541c27514673a445e337f"
     },
     {
       "id": "settings-state-large-text-dark-320x720",
@@ -5853,7 +5853,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "6bcb87490993b22e44e98823b9c8ddf2aaceb70d0f924a649e430f7eef61a2bc"
+      "sha256": "1d8bfe08c6e75ddbc2b2072d469baa6e0a88e86eafeaf8a39426765da2df1fbf"
     },
     {
       "id": "settings-state-syncing-dark-390x844",
@@ -5865,7 +5865,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "803e1ba581d551b2de24a4c27d32bea564f005c8d9fc7211840ef3784dcd673e"
+      "sha256": "2045a8f8add0647c34a8281258be0d4e75c8b18251a6fb0d05c416f8934909c1"
     },
     {
       "id": "settings-state-conflict-dark-390x844",
@@ -5877,7 +5877,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "163da5b5ee550016f083e9859d0d3f5e4f73e20b82ed0d80c1fed630ea3e2cdc"
+      "sha256": "d136e836f5ef0524195b40cf6727fb59a93e1664089ace023ccdd8ee4f669eaf"
     },
     {
       "id": "settings-state-security-timeout-dark-390x844",
@@ -5889,7 +5889,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "585a43378d72b80518037db52eae8c457595ad9f1dbbe87384737dff585d4253"
+      "sha256": "3cce482ec04375b59049534c248475dcc9e329f181ee135e562d5d074c5f06ed"
     },
     {
       "id": "profile-state-loading-dark-390x844",
@@ -8964,390 +8964,6 @@
       "sha256": "1a4281efc2389df2f951f5078f7f06204e728f5bd2195dc2bd9283d25c9264cf"
     },
     {
-      "id": "game-join-state-conflict-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2bc9e07f84fe4442e01151e980b29c917c70f44babc26f2c4269bc890389be69"
-    },
-    {
-      "id": "game-join-state-dark-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "4b17212f0f867d0341fcb0243b974631a0816cf3e85a5acce1fda0114c49fe56"
-    },
-    {
-      "id": "game-join-state-disabled-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "33bd57f5f3adaf25dbb67198aaa26716173a6c6df4759013ecfcfd88d8cb6c4f"
-    },
-    {
-      "id": "game-join-state-empty-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "711d552e2ce8fb18e7d125ee12f046529c7727fa00d4b90ef28e32ce7687bd37"
-    },
-    {
-      "id": "game-join-state-error-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b8caddfc179ee2e804809bd03bd31659baf7663dfcb8683ac1d247d9809d4fa2"
-    },
-    {
-      "id": "game-join-state-focused-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2ba14173fff5befaa7e7f75a8d6ebde65a21942fd252586c3a378834fc74ed03"
-    },
-    {
-      "id": "game-join-state-large-text-dark-320x720",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "14dd49a0394874c1f86e1b436aef77bdf630d2bdd44bb2d6fe453e3b91dcfc49"
-    },
-    {
-      "id": "game-join-state-light-light-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "fac67dcbb729d220a7b250e81503ca39ec42136105577ca062e9b7c14b91f246"
-    },
-    {
-      "id": "game-join-state-loading-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "a749ec7f2d2a15687d30182210ac9d345d009d344a1b87ab72a2d908911f7612"
-    },
-    {
-      "id": "game-join-state-offline-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ec63d42b1b6e8b1a8b200205a0f4d4d4532ac8e36accd645d2c2267280d67a3e"
-    },
-    {
-      "id": "game-join-state-permission-denied-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e76522b4fd168eda10b5710ac05fed790435bd72b507553aced56df2f21fdc8f"
-    },
-    {
-      "id": "game-join-state-pressed-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "84c4e1514ef6f85cb7afe934bbabc461b76ffe4c22ebb8012783336f4ac9c166"
-    },
-    {
-      "id": "game-join-state-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "4b17212f0f867d0341fcb0243b974631a0816cf3e85a5acce1fda0114c49fe56"
-    },
-    {
-      "id": "game-join-state-security-timeout-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "d0a34d6e5f68544a55625f00d9951d5f943506e0a15c46528d8a40a426f60727"
-    },
-    {
-      "id": "game-join-state-selected-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "4b17212f0f867d0341fcb0243b974631a0816cf3e85a5acce1fda0114c49fe56"
-    },
-    {
-      "id": "game-join-state-syncing-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_join_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "836f395ba61f2c6a045b32591f1cd6aa033536aa40c460afb4dfdabdd6953298"
-    },
-    {
-      "id": "game-controller-state-conflict-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f96277f68164b28feb462bbb3db9e032116f728ae268c61a6c89a0774ca4c160"
-    },
-    {
-      "id": "game-controller-state-dark-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "8e9a715e32ac80df93157d43ab56d534312852fdaf3e158a55d9b12604aa6d4e"
-    },
-    {
-      "id": "game-controller-state-disabled-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b53b097d7ee331d6539cd61e433d1d9f98ded23f44c8c2b7d29cc3bf677df682"
-    },
-    {
-      "id": "game-controller-state-empty-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "45a71a5c1bb342096b2f1dedfbdbf0f0dc900efc3ba733e2305c5aff6e83caa3"
-    },
-    {
-      "id": "game-controller-state-error-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "816765f17ff253b13eaace333be628c89017bdf531942bda31f76e5fda16e72a"
-    },
-    {
-      "id": "game-controller-state-focused-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "461657543492ce1823e9842733c3b0054a392be456448d878c4b8e6233600b32"
-    },
-    {
-      "id": "game-controller-state-large-text-dark-320x720",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "05f081d616cb9b978b35c231d6326c40968a65c5bff59b2a83a1558e91eb92ae"
-    },
-    {
-      "id": "game-controller-state-light-light-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "c4ea99a079d01ecc16be89dfa4ff826e1b0cadd334340d0c30e46ed4246b1446"
-    },
-    {
-      "id": "game-controller-state-loading-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "93b303d7ae2144524c515083e0daa9d31593acd3b93e8542d7156bc5a4256aca"
-    },
-    {
-      "id": "game-controller-state-offline-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "33ed049bdeb7a5d25309b113f42c4f7e1d684c13162aa3a1ab5f6de76fe5a570"
-    },
-    {
-      "id": "game-controller-state-permission-denied-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "8deb8870c82b6f47a5fae6aeafce456ad5328e6ad9e258e63108e9d8a0b829dd"
-    },
-    {
-      "id": "game-controller-state-pressed-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "9486519c49dc7f745d5eb55e4cd33ea132694fed1875522acd96d19e79884476"
-    },
-    {
-      "id": "game-controller-state-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "8e9a715e32ac80df93157d43ab56d534312852fdaf3e158a55d9b12604aa6d4e"
-    },
-    {
-      "id": "game-controller-state-security-timeout-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "9a150a2b36cbf7c2e9a87aaa6de380df1907483f8c4b2ef9b28147100a55d361"
-    },
-    {
-      "id": "game-controller-state-selected-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "bcc39187d2540af5fb0cca73800bba516af334d67ff2d230036c260f26d9d689"
-    },
-    {
-      "id": "game-controller-state-syncing-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/game_controller_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "da8b9462bbe14e21f9f578415ccf5d1fd490071604bb5a55475de09f66272f90"
-    },
-    {
       "id": "share-card-state-conflict-dark-390x844",
       "path": "packages/features/feat_gamification/test/goldens/share_card_state_conflict_dark_390x844.png",
       "viewport": {
@@ -9549,7 +9165,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "1c059dd79a909641ce9b3dec82d10ed38bbf0e690dc1203c0356b8b1691bf3db"
+      "sha256": "9105496367b9d3ca463fdf632c56cb100a8c4413a170a8f097ff08506e1b2c62"
     },
     {
       "id": "venue-checkin-state-dark-dark-390x844",
@@ -9561,7 +9177,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "3df84c6853566ac59310a7e3722fe7d49dd77a23ab431f678fab958d881838af"
+      "sha256": "223f027022d5b6f03cc1a219ec7e4661d198272f51cb9bfd807832bad41de3b8"
     },
     {
       "id": "venue-checkin-state-disabled-dark-390x844",
@@ -9585,7 +9201,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "3eeaa4fae470fac7aa5cb595c4b25216731a86198c65b5aa551754f1a2cb425a"
+      "sha256": "a936cd7045ffba346c6932293884cb9a160fed0f08c8cb0741b6d2b4d3ced379"
     },
     {
       "id": "venue-checkin-state-error-dark-390x844",
@@ -9609,7 +9225,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "711a844d1159c6a4b5c8948f2f10a591d983df578974bd725eaa693cef181308"
+      "sha256": "65186075c9a68bcbb8c2b019727439409abb1d93df3073474e6bc7fbe4a4d06d"
     },
     {
       "id": "venue-checkin-state-large-text-dark-320x720",
@@ -9621,7 +9237,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "48fa65bceea285f8224fa1f8c9905a4611a952f4ae5414574908a7cb41686124"
+      "sha256": "5fb95287ebb23a181d29c60868d487a974f22fb5645d25a00d689b2b26517584"
     },
     {
       "id": "venue-checkin-state-light-light-390x844",
@@ -9633,7 +9249,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "961f196e94fc0d6248f989ec5ecf1d473dd409097b779d2c18bfe8d4c63c6842"
+      "sha256": "096f1d273ef4c38ada011130568fe2eeb6adeb020013ce5a7d66e82a410cc63b"
     },
     {
       "id": "venue-checkin-state-loading-dark-390x844",
@@ -9657,7 +9273,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "77dc0ac7099fc39f6099f7ec9b156940ab7588fb6aa4e893a41954e80ada494c"
+      "sha256": "6c379a0b28f091e86d646e01c2a0620b93d6fa9c3ce025998412c635f89a4bf9"
     },
     {
       "id": "venue-checkin-state-permission-denied-dark-390x844",
@@ -9681,7 +9297,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "0ff2ea910f39b9130ed961ecc30771d4cad45827a03af6ed4d336e9a9d42b3de"
+      "sha256": "73d37ca4bca4df9a047ac75cb6cceac64d611f47bfe142cf28866e375ea3762f"
     },
     {
       "id": "venue-checkin-state-reduced-motion-dark-390x844",
@@ -9693,7 +9309,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "3eeaa4fae470fac7aa5cb595c4b25216731a86198c65b5aa551754f1a2cb425a"
+      "sha256": "a936cd7045ffba346c6932293884cb9a160fed0f08c8cb0741b6d2b4d3ced379"
     },
     {
       "id": "venue-checkin-state-security-timeout-dark-390x844",
@@ -9705,7 +9321,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "3b1b87294d19d3a0fa70b75163adbe53e2e5e001c2dc8fd0bceb81572d0c914d"
+      "sha256": "abcbc4300bc4285d0944dface60d57f1f8d29d1e7de31defc0b8eff1c45cd957"
     },
     {
       "id": "venue-checkin-state-selected-dark-390x844",
@@ -9717,7 +9333,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "54d04f934dc7908a0b7b2cbcd1a79abd207f929c91c8adb0c890cd6c653922d6"
+      "sha256": "8a4252237663318847936c194222dd4589a38d6fbeea22bb3a9f0da2623d90e2"
     },
     {
       "id": "venue-checkin-state-syncing-dark-390x844",
@@ -9729,7 +9345,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "c2156193df2b0e90f4cce58d2ac46a05054730b4984d4df7824b182210090210"
+      "sha256": "f23f5205a482aca20401e23091ba49b76b121cbc630ecf2ebd6235b86f2e80c0"
     },
     {
       "id": "venue-order-state-conflict-dark-390x844",
@@ -10690,198 +10306,6 @@
       "theme": "dark",
       "data_source": "synthetic",
       "sha256": "b919cd6607a8face15f8ec1d7f786212dae2bbb645b8f3783f458368817cae15"
-    },
-    {
-      "id": "tv-session-state-loading-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_loading_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "84c150d906f275ccb6ed03ef6d665809161656e4f20f8c7b5d8d6e017f0d54a0"
-    },
-    {
-      "id": "tv-session-state-empty-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_empty_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "532f86b751c91ca713d4b8a79285f55a0eeca3ae4d821e7cab7d0368a17d76f3"
-    },
-    {
-      "id": "tv-session-state-error-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_error_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b4d1eadb56308df460d0c877b776473ec50d5567ffd5f7a05c028f2bc7fb944e"
-    },
-    {
-      "id": "tv-session-state-offline-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_offline_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "7dfafe09295dfd37d510b489fd29b7ae257e84458f12c38ac397358e166bc02c"
-    },
-    {
-      "id": "tv-session-state-permission-denied-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_permission_denied_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "7f61e18b6f49e69ecba61fe206729fd3ad226619ac8343354ff2871c035297a8"
-    },
-    {
-      "id": "tv-session-state-disabled-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_disabled_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f80fdd5f755743764308464084a04093f0f0230d4660492e38cadc8c7231f12f"
-    },
-    {
-      "id": "tv-session-state-focused-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_focused_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "aafb60ee32e4e46b467271041f1ab2fa52c2d9fba9e02cab727c36d7a7592773"
-    },
-    {
-      "id": "tv-session-state-pressed-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_pressed_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "cf7acd9a7bbcef71981b81bb14f6de45ce02ecdf55cf33cbd7d379d1f1d41240"
-    },
-    {
-      "id": "tv-session-state-selected-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_selected_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "0a6052ce7f4ad56a40a1b0ad520db564db9f1517cd7e5c69eb432124fa13d35b"
-    },
-    {
-      "id": "tv-session-state-large-text-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_large_text_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "057e21a444897ac08a742ba4077f0efc381c856ae4054a6391fa2d3663cc4602"
-    },
-    {
-      "id": "tv-session-state-reduced-motion-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_reduced_motion_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "aafb60ee32e4e46b467271041f1ab2fa52c2d9fba9e02cab727c36d7a7592773"
-    },
-    {
-      "id": "tv-session-state-dark-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_dark_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "0bf5a0d960a5cec53e8120664f3f9b62536001ebef27018a3afb7c1f876500ef"
-    },
-    {
-      "id": "tv-session-state-light-light-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_light_light_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "581549ad816b5106363a25aa7167c62d1ae9ab88a837e4784501c1c0803f5c2a"
-    },
-    {
-      "id": "tv-session-state-syncing-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_syncing_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "fbeb849226bfc6af7388194c712a28c90f74b5a26744bd2b0036d38761efec55"
-    },
-    {
-      "id": "tv-session-state-conflict-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_conflict_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "67464ebbb4387dc7e64592c3be2c269d4e5e858ce8b49428ae0d6b3a9b8b2c58"
-    },
-    {
-      "id": "tv-session-state-security-timeout-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_session_state_security_timeout_dark_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2826dfd91aedd64080c38ae9c9f5a055ab7f499b61637e28eb1eaf823c126dc9"
     },
     {
       "id": "admin-dashboard-state-loading-dark-390x844",
@@ -12996,222 +12420,6 @@
       "sha256": "bc6ecb5efff68991540b8b3c6e17380cb573a1c04c2de6760f380fb5fee0f724"
     },
     {
-      "id": "tv-locale-en-session-large-text-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_locale_en_session_large_text_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "673e548b826547e14c87f5ee29ff5c21cfdb41f551e730330b362f4375654ff2"
-    },
-    {
-      "id": "tv-locale-fr-session-large-text-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_locale_fr_session_large_text_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "7d5cea55637c9d83a6c4ef44fda339afe488b23304e6f0519a04bd4743537d3a"
-    },
-    {
-      "id": "tv-locale-rw-session-large-text-dark-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_locale_rw_session_large_text_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "70d4196747f2705d6f92c7580a0f45d990e0d53e375637fc73630d5e2eea4e0d"
-    },
-    {
-      "id": "tv-v2-pairing-challenge-rw-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_v2_pairing_challenge_rw_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "8419912d3d34e368c747f7743a1387a1795849187ac3a3fb4e0ae70c79eba4cc"
-    },
-    {
-      "id": "tv-v2-question-en-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_v2_question_en_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "39f77ddb298753128cd9ea1a011432ed2a2e8db9db36331cd3059d2a4960e647"
-    },
-    {
-      "id": "tv-v2-reveal-fr-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_v2_reveal_fr_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "022d4aae288953cf748d002156c27aa7e069802644296d9c11c6f6137dece054"
-    },
-    {
-      "id": "tv-v2-offline-retained-rw-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_v2_offline_retained_rw_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "088abc11cd88d86934380e47f6be75b82120a078b3bc63d344bf471e462f4c72"
-    },
-    {
-      "id": "tv-v2-empty-en-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_v2_empty_en_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "a012e4817bf8847e1316f399730894281ba7d3ba26341fa938b53e51ad4afb51"
-    },
-    {
-      "id": "tv-v2-completed-large-text-rw-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_v2_completed_large_text_rw_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "422872c3cc874e9e3c7424ebace6452935b1737afacaa3281201923325b200b1"
-    },
-    {
-      "id": "tv-v2-question-long-copy-rw-200-percent-1280x720",
-      "path": "apps/rayon_sports_tv/test/goldens/tv_v2_question_long_copy_rw_200_percent_1280x720.png",
-      "viewport": {
-        "width": 1280,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "3c1cf240f20479f7fe3bf8328f10fdaa6da5fd315eb90fb32ca3a18743fb2c65"
-    },
-    {
-      "id": "participant-live-game-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "07aefc1d54166d1fce8a2f806d9c21e255f53a0ae8909c2d7fdfd56010bcfe10"
-    },
-    {
-      "id": "participant-live-game-light-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "d6afb12d82462fbbe77bc3f1b038a2fe1ef016011877f8973b612b83ca7ba503"
-    },
-    {
-      "id": "participant-live-game-offline-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1df0e4a38e6c8061d5a08c6076061d745cdd607db46e5584eb1f9cb4b443bf6b"
-    },
-    {
-      "id": "participant-live-game-large-text-dark-320x720",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1672573a34f7240f0dddef621a1af2ec28d2fc53b1eaf0989add8463a8a2b81f"
-    },
-    {
-      "id": "game-operations-planner-invitation-selected-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_planner_invitation_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b00106a726dfc04d0af25d6031b2d5513ef6ce5154163715b3b1c3d07c50018f"
-    },
-    {
-      "id": "game-operations-guarded-live-controls-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_guarded_live_controls_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "9efd28a488ecb5d4c5b6aa12f0ae91b3f09fd7ec98f04b2f8ce71eb9032423cf"
-    },
-    {
-      "id": "game-operations-owner-inventory-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_owner_inventory_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "9b0ec8b2a6e90877063e5ca57d7b86f802e82808fcd9eefc7bd25c4fabba97d4"
-    },
-    {
-      "id": "game-operations-owner-management-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_owner_management_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "91c7145c22cf5f32214f40b9ccc0e0393bdc84e11cb43580226a983ed81231fd"
-    },
-    {
       "id": "club-hub-loading-dark-390x844",
       "path": "packages/features/feat_club/test/goldens/club_hub_state_loading_dark_390x844.png",
       "viewport": {
@@ -15046,1410 +14254,6 @@
       "theme": "dark",
       "data_source": "synthetic",
       "sha256": "2df5d3bf7b62b4bbc3fc313cbb3d0017c8e48fc894a1f1f40b4d0af9b4ade58e"
-    },
-    {
-      "id": "game-operations-hub-dark-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_hub_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b3cbed89c50838aa9c1a4f1548413d00e95d75b29ad50c420d0cffc4f0bcf4dd"
-    },
-    {
-      "id": "game-operations-hub-focused-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_hub_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "c99beea15370c8bc95b09f0f98c142a96138a618e6e72ba4de75297c62947c80"
-    },
-    {
-      "id": "game-operations-hub-large-text-dark-320x720",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_hub_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f0371ae2235af11a034b63618b9f76307deaa43dc620bb790cc47338cb92c135"
-    },
-    {
-      "id": "game-operations-hub-light-light-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_hub_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "2f9be5dbb53c045b41d9270924c2da8a1f4396903fb64032804f24a494f814c1"
-    },
-    {
-      "id": "game-operations-hub-pressed-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_hub_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "45dfaa3e2d58ffd1ee5097495a3b5f7c6066daa7f96ce66cc14b1fd96511d318"
-    },
-    {
-      "id": "game-operations-hub-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/game_operations_hub_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b3cbed89c50838aa9c1a4f1548413d00e95d75b29ad50c420d0cffc4f0bcf4dd"
-    },
-    {
-      "id": "managed-games-loading-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "5909441fc0112da4c02c471f2b3724b33dd551a5e6f63c487b7c4e4b14e9b716"
-    },
-    {
-      "id": "managed-games-empty-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b966edd796105475bbd8e61afec1aecfd8b02de90b55da0e8703a7603f97993f"
-    },
-    {
-      "id": "managed-games-error-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f0ce9762abcb27492df9d0e5d884807c534db0114463cd22d5c49236d436f751"
-    },
-    {
-      "id": "managed-games-offline-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "d086777802c08fd844ee197b1e0c45830ceeb634158eae4559a9aee314f5d45b"
-    },
-    {
-      "id": "managed-games-permission-denied-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "4be90c3e53ccc6cbc1a4b0acda28fbeb831d9f406883f4f4bd030c077be21532"
-    },
-    {
-      "id": "managed-games-disabled-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1625800b192b6b126cbf9a4e3be1bc0d80e48094db7077af525965349551fb51"
-    },
-    {
-      "id": "managed-games-focused-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "414dda2332faaf022b3c94535eead39b9dea27ac27cb69a6b562107211f7b224"
-    },
-    {
-      "id": "managed-games-pressed-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "7618dc25bec4354a3d9bf1cf136624fb656777cdcbdb754be2cbe8fb3efb6d7d"
-    },
-    {
-      "id": "managed-games-large-text-dark-320x720",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f6c32ed9a714de4acb9640c9568a784d8ee6dff9ac473bffeb998548e5b8ee69"
-    },
-    {
-      "id": "managed-games-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "0aa8bedcc48eb3ff12afa6684836a69b70d252d49339a4e108daa55731f42a20"
-    },
-    {
-      "id": "managed-games-dark-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "0aa8bedcc48eb3ff12afa6684836a69b70d252d49339a4e108daa55731f42a20"
-    },
-    {
-      "id": "managed-games-light-light-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "27925c8ad7e76850f503efb63cae8583f35e15dcba833c9ca82ff0cd8541a91a"
-    },
-    {
-      "id": "managed-games-syncing-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "26613b13220e274e93dc43ba1750532964dd9fe63d2d10a45ee7d476953e259e"
-    },
-    {
-      "id": "managed-games-security-timeout-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/managed_games_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ceb2b803ec7b0ccb0c83bd13234fe13b559f196517ab39a0fb5ff6081e8101ec"
-    },
-    {
-      "id": "live-control-loading-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_loading_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2e1618d0740679baef499e09417713998e35625e8c7cae48c43c54807b7c41cf"
-    },
-    {
-      "id": "live-control-error-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_error_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2a7ba30d7a9b86fb81bee3198db813e0639e03ebcb7d0cf5b19987a0033b5f40"
-    },
-    {
-      "id": "live-control-offline-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_offline_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f40408cbded6170614a089416bfe1a54a66d12264fe359b905f9fd2dca46fcd6"
-    },
-    {
-      "id": "live-control-permission-denied-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_permission_denied_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b3be54c7be1184eb5d9fff4a52c6efc63d5934d192478cee4ae4030df2a9b8dd"
-    },
-    {
-      "id": "live-control-disabled-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_disabled_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "5f66558f1a9b0cd08795f826b118f66b896963c1f9c5962287215dda24ba59d0"
-    },
-    {
-      "id": "live-control-focused-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_focused_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1aed03c4b6c089435ce9a9c47644968489819d210c6454400f2214049e65c3dd"
-    },
-    {
-      "id": "live-control-pressed-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_pressed_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "307e9b7a6d40a73ec4eae7400d9cfade859ad122a783ac30190b3ebbe4be7ba4"
-    },
-    {
-      "id": "live-control-large-text-dark-320x720",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_large_text_dark_320x720.png",
-      "viewport": { "width": 320, "height": 720, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "a8551d137f5dd6a6887e008e826e1c4dde5fb7870150a0ebb5211f897ed6c3fc"
-    },
-    {
-      "id": "live-control-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_reduced_motion_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "dc00da78ebbf273ee4b9d80f03d088b420c9d11578977d8c16150fa693d4482a"
-    },
-    {
-      "id": "live-control-dark-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_dark_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "dc00da78ebbf273ee4b9d80f03d088b420c9d11578977d8c16150fa693d4482a"
-    },
-    {
-      "id": "live-control-light-light-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_light_light_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "ec35a5f39eb5ba7a6f0620422e559eda5bd4e07392eaa8ac043835a6f91bebca"
-    },
-    {
-      "id": "live-control-syncing-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_syncing_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "c137f7c6bf7aae1263dd0f2d9f13154e287f178d2d5fbfa36dacd5f878e5b0b7"
-    },
-    {
-      "id": "live-control-conflict-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_conflict_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b56bc089a005217834470bd2045adfc75574d9578cd10b606af77d239e1a9486"
-    },
-    {
-      "id": "live-control-security-timeout-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/live_game_control_state_security_timeout_dark_390x844.png",
-      "viewport": { "width": 390, "height": 844, "device_pixel_ratio": 1 },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1569bf4449e27ccd93a6e6bee9b0c9bbaa767a5a8fef09f9b6e109796b15eaea"
-    },
-    {
-      "id": "session-planner-loading-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e3cc1abd9bb1c6f18904a2562ecdeaaf232d8ccbd41052614ae7f975ad881776"
-    },
-    {
-      "id": "session-planner-empty-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f71cd6ba8d111161bc6bf1b08a5915b7d82077f91d6bca5e4535651017a59c1a"
-    },
-    {
-      "id": "session-planner-error-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e94bc0a3b20a81c493ad61f6928b6297eb6da556d1df36e31d96a68164fc17df"
-    },
-    {
-      "id": "session-planner-offline-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "7f3c1c1b234f69f969420f65c95273bae3d97328bb22f2512149bf5912aba61b"
-    },
-    {
-      "id": "session-planner-permission-denied-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "c22a05f90081d64d77d585d5d72bbeae2a08880b7c7601bf36e947cfa2dbba5a"
-    },
-    {
-      "id": "session-planner-disabled-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "551aad171ceea51c4463182733091e4667ee4174d5c5b925ef8529cd467bb9f1"
-    },
-    {
-      "id": "session-planner-focused-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "590a144096687732fe59df65316aef971ab1df8767a0c838e8f291ad821fdec1"
-    },
-    {
-      "id": "session-planner-pressed-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "83ff7712aecf330576a07ab36c83437740c49cbdc81a82cc9b605e0ae9d2a949"
-    },
-    {
-      "id": "session-planner-selected-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ea75289e11644f0692ee340b0fe688fddc54280ef221fdef62e16a4dd8587201"
-    },
-    {
-      "id": "session-planner-large-text-dark-320x720",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "a804ec85581870d3ebab418fcc14005ea2552436ee71f2021d2b3803caa2aa34"
-    },
-    {
-      "id": "session-planner-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2d928e64a218e6b54029c3aa37418d3670f32d64cb6dfb6851275473d81aa8ae"
-    },
-    {
-      "id": "session-planner-dark-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2d928e64a218e6b54029c3aa37418d3670f32d64cb6dfb6851275473d81aa8ae"
-    },
-    {
-      "id": "session-planner-light-light-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "af26a2fdcc9f9b72658fd13a7ac18067ae43cc9be3010e0ea2e6af27ddab7f5f"
-    },
-    {
-      "id": "session-planner-syncing-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b2707a06315ed09de1fb6912e2f3f0fdbea3ef828e64c1f318e9c07c8cead91a"
-    },
-    {
-      "id": "session-planner-conflict-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2faeb504e43a7ba9bd25d060089dbbbc35e36730c0ea9c41c60310348254d547"
-    },
-    {
-      "id": "session-planner-security-timeout-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/session_planner_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "80317f65a78c634a1aa04f1f2c2a249bf66634d69d2f16904e3f24493810ff8e"
-    },
-    {
-      "id": "my-tvs-dark-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "6c039cb8bc1b46be0d27dbb08d36af0663c29b1e7243bab0b6829ebbed0282bd"
-    },
-    {
-      "id": "my-tvs-disabled-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "3a53b34418ff94817acfea29f93f185dbd5ab71470695ef886cbf61f07c48bcd"
-    },
-    {
-      "id": "my-tvs-empty-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "6a6a7142338a668470ed0556bff2da82e76bc99f86d10832b2cc9bbaea5b49af"
-    },
-    {
-      "id": "my-tvs-error-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "038f7e88b071c663464678695bc98354053692afa0fe1983aefca02327e8177f"
-    },
-    {
-      "id": "my-tvs-focused-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ff7dc00e15496c05de8988889837473fba7a46c582aa94dfd4766cb7de1d3a0e"
-    },
-    {
-      "id": "my-tvs-large-text-dark-320x720",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b3fd3265737c8b6fdfae9c53c54a620578e94dd619a49a2a48b5945e6a8e50c0"
-    },
-    {
-      "id": "my-tvs-light-light-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "7b051f9285d08934ec1ed2dc150513e26b24448048785fc8a1de1d69c7208d5c"
-    },
-    {
-      "id": "my-tvs-loading-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ff4fc65169d11b434183fff077143468ee244ea2fff0e364a63ffdea5ac7329d"
-    },
-    {
-      "id": "my-tvs-offline-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "cd8583e474b0de4450a8aab3f72763625efb0482cdb5848ef42bdca40c7d783f"
-    },
-    {
-      "id": "my-tvs-permission-denied-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "46c86039e55b5b4ed432d95aa8ba885912badfac792663c9434cfd4cdd137521"
-    },
-    {
-      "id": "my-tvs-pressed-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e9b8edd62407271bd74ad5a55460ca519bb03501de754c6c9dde1db84ea0ccae"
-    },
-    {
-      "id": "my-tvs-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "6c039cb8bc1b46be0d27dbb08d36af0663c29b1e7243bab0b6829ebbed0282bd"
-    },
-    {
-      "id": "my-tvs-security-timeout-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "5bc447edba963412e38f5145f331cd5ae31ac8045bf1d2cb0e4b42992c0d63b7"
-    },
-    {
-      "id": "my-tvs-syncing-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/my_tvs_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1fd0edb3f19a4318707ab7b1894f15c77c66ba1c67561f3548ab25ff3e00bb19"
-    },
-    {
-      "id": "pair-tv-conflict-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "63533a4e231a666cc0fb813ef06b1652b85f204f9edaf481e5d8f0f6cbe88de9"
-    },
-    {
-      "id": "pair-tv-dark-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2f8539e95992e2ae9eac1984cf1651eabcf3145b1361c02c36c480ee9e116ac0"
-    },
-    {
-      "id": "pair-tv-disabled-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "93acfb7566e9ff6ddac5aa3d661484b50a16861fe9829fedff4d21edd42e36d7"
-    },
-    {
-      "id": "pair-tv-empty-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "dc41b05501028745b643ce4efe7f5bd7fea4ba396af72507685fcfc381d909e1"
-    },
-    {
-      "id": "pair-tv-error-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "59bdfb7edde0df2726fd5690e268449e6dea36454df8549fe86ec3000bf2c84c"
-    },
-    {
-      "id": "pair-tv-focused-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ac65c327d48273992fac0f4acb76094642291c00a10bca5b875dd8f7f3a7ce9a"
-    },
-    {
-      "id": "pair-tv-large-text-dark-320x720",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2f200e336a9570c846b2688ff8c6208021bb06f0299e8a9a5963c254bd6ae299"
-    },
-    {
-      "id": "pair-tv-light-light-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "18c2875a6b90efdcb64b55a20761e03125e89a8c2bc1092c6dfe9efbe60f6d2d"
-    },
-    {
-      "id": "pair-tv-loading-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "48c284179eefa5a7d7cfc7c1abcd47efa8abece5e6759883e49ba9d6009fdd11"
-    },
-    {
-      "id": "pair-tv-offline-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "92507b2b48d02b25f04b40cac0afc28181bfd97c9db3dfa678bbdebe17947c99"
-    },
-    {
-      "id": "pair-tv-permission-denied-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "0eb204b35ddabfb83ac9924e5eac509c0f60c61af08f2dfb038e889ea0ccc3de"
-    },
-    {
-      "id": "pair-tv-pressed-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "6e9890cdf800f9635d436fb90dfab30b2c65ac68074ceecc144487ea9ecac21d"
-    },
-    {
-      "id": "pair-tv-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2f8539e95992e2ae9eac1984cf1651eabcf3145b1361c02c36c480ee9e116ac0"
-    },
-    {
-      "id": "pair-tv-security-timeout-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e19bfd6308d5688be4e1b2f46ea765593a6ad1da09f6c364eef61864718b258f"
-    },
-    {
-      "id": "pair-tv-selected-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f02400a3312e793ef11a03a73f9b9665fa4b406e19018833c6b04fdcac9d1953"
-    },
-    {
-      "id": "pair-tv-syncing-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/pair_tv_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "9c2194951bef731f2ce89466c0761df9eb220dc9469af2213b6e70d55031f60c"
-    },
-    {
-      "id": "tv-detail-conflict-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_conflict_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "6ee0d318bb05e3699f47e4e8362f57059ad6042d8000cdf6dd48f510a20b2c79"
-    },
-    {
-      "id": "tv-detail-dark-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_dark_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b0032440063cb1075e5a1ed011f6e1e50de9e0b6e6c003358730bc3849c9c25c"
-    },
-    {
-      "id": "tv-detail-disabled-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_disabled_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b0032440063cb1075e5a1ed011f6e1e50de9e0b6e6c003358730bc3849c9c25c"
-    },
-    {
-      "id": "tv-detail-empty-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_empty_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "3981c0af9e041ac9debb100a095fc1e4dc8745a05e5eb4867d94d25486ebe050"
-    },
-    {
-      "id": "tv-detail-error-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_error_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "d692f308bbc1385c02c9b52c25e39c5c4bee42196f61c2dd83af2a77007ce93e"
-    },
-    {
-      "id": "tv-detail-focused-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_focused_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "657ce5778c5fbb33dbb2e9cf9bb265d8dc6ecc8513947ad6e857790689f1bb35"
-    },
-    {
-      "id": "tv-detail-large-text-dark-320x720",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_large_text_dark_320x720.png",
-      "viewport": {"width": 320, "height": 720, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "3bb1bb6d495061a2887040c1a69a5148499232b4a7ba4c2c0d8d3286f02c82d6"
-    },
-    {
-      "id": "tv-detail-light-light-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_light_light_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "0714eb393d7f67186aa36739539a4dbeb68f01440786692d20863fffa9902c24"
-    },
-    {
-      "id": "tv-detail-loading-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_loading_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "115a32839c485b18735487f059997272199f0fcdafd946a583b5af35114dc04d"
-    },
-    {
-      "id": "tv-detail-offline-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_offline_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e0c61719781394fe496ab9e3364369ed8422ca86aebf1c87998701da1ef94300"
-    },
-    {
-      "id": "tv-detail-permission-denied-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_permission_denied_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "eebe36755c5fde6668400bae9b66a13464449751f16a5fa2016777e5891c84ac"
-    },
-    {
-      "id": "tv-detail-pressed-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_pressed_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "08ce7a9d8c22c0579c7abdfd39738fdfb13327dbae41f40c89a2c6297d498d2b"
-    },
-    {
-      "id": "tv-detail-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_reduced_motion_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b0032440063cb1075e5a1ed011f6e1e50de9e0b6e6c003358730bc3849c9c25c"
-    },
-    {
-      "id": "tv-detail-security-timeout-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_security_timeout_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "973b7a0f57a2fe74be588c49c15f0389de7d1edb55812103ac2d5cd761880d17"
-    },
-    {
-      "id": "tv-detail-selected-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_selected_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "6d9f50f99ae6d790337235c9869f0398c50faa53b154977662bcb56fb459bd6d"
-    },
-    {
-      "id": "tv-detail-syncing-dark-390x844",
-      "path": "packages/features/feat_game_operations/test/goldens/tv_detail_state_syncing_dark_390x844.png",
-      "viewport": {"width": 390, "height": 844, "device_pixel_ratio": 1},
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "625035b8a56e74c88fc828ea0f2cb8bc73b2c3bafc631148cde29b72e2db62ab"
-    },
-    {
-      "id": "participant-games-discovery-conflict-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "8415ffad765ce0bc1a34bfdd48cd698cb85dde6f15c50c018caee70b518fb696"
-    },
-    {
-      "id": "participant-games-discovery-dark-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "7eeff47f5ee7dab46a1ea22d6cebe1b2830e2fead905d4476d39b53f298602ed"
-    },
-    {
-      "id": "participant-games-discovery-disabled-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e674820d619237541bc0d6136e847407d5ca45ec5cab61d0fb07a05c418d293b"
-    },
-    {
-      "id": "participant-games-discovery-empty-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "29cf869bf0e4047fe3c260f4fcfaaf46e4d715a663b6e1b6b730209749a277df"
-    },
-    {
-      "id": "participant-games-discovery-error-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "0685440ef41b2eef611e978813e64f03019e9a86f0f5d4fe724d130a27fb5013"
-    },
-    {
-      "id": "participant-games-discovery-focused-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "d14d3c4c119b33b850d107a19010d96b9196e1a1d2da4dc1cc40d3f48625917d"
-    },
-    {
-      "id": "participant-games-discovery-large-text-dark-320x720",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "fcc84439721c19eb764727541ae74c4e2cae952de349d5d018ba5609d2381f88"
-    },
-    {
-      "id": "participant-games-discovery-light-light-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "746d1ce715f76a917dfb87f61f8171e056434b7e18b9fa8e4d119895199abc63"
-    },
-    {
-      "id": "participant-games-discovery-loading-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "a5140371b88114b1d7445c9ccaa531ce3576c455d810a34278293ebc00179c4a"
-    },
-    {
-      "id": "participant-games-discovery-offline-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e674820d619237541bc0d6136e847407d5ca45ec5cab61d0fb07a05c418d293b"
-    },
-    {
-      "id": "participant-games-discovery-permission-denied-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2cfac00c7beed14806a5d7d712e87032065bf01fe4cb9bbe9e2aaaba632755bc"
-    },
-    {
-      "id": "participant-games-discovery-pressed-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "58818b42d2b9365f9ca54c1dd8bae49acb78e6e053d55fde1e5be729d9744c83"
-    },
-    {
-      "id": "participant-games-discovery-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "7eeff47f5ee7dab46a1ea22d6cebe1b2830e2fead905d4476d39b53f298602ed"
-    },
-    {
-      "id": "participant-games-discovery-security-timeout-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "a956d15525deee38886ad81dcd56967383a300108fe5026b87939e07c6f06116"
-    },
-    {
-      "id": "participant-games-discovery-syncing-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_games_discovery_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "cc6152f178ab2a390dfc5e26390743455c4518975504a0badf4b7306e5f8833f"
-    },
-    {
-      "id": "participant-live-game-conflict-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "18f03f6efa3e716e40f56404ab1719509ed2f9fc5c500bf690dbef2ad0b05d99"
-    },
-    {
-      "id": "participant-live-game-dark-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "30289c1c903ff276e4ee0511432d779147b747f25d89a3a06a78645f5c52a108"
-    },
-    {
-      "id": "participant-live-game-disabled-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2a6570647e4b1f2fa5343fd366dec3e1992ff45668d64ce259f7f14769cf09cc"
-    },
-    {
-      "id": "participant-live-game-empty-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "29cf869bf0e4047fe3c260f4fcfaaf46e4d715a663b6e1b6b730209749a277df"
-    },
-    {
-      "id": "participant-live-game-error-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "0685440ef41b2eef611e978813e64f03019e9a86f0f5d4fe724d130a27fb5013"
-    },
-    {
-      "id": "participant-live-game-focused-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "9013a982f126ec55aaaf721434af401db36400be0ca6ad961973060be8ac4f85"
-    },
-    {
-      "id": "participant-live-game-large-text-dark-320x720",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "8b09f2d6e23737d2d0dfce580af33e637fa65a5d1f9a659ccedd1160fd462ead"
-    },
-    {
-      "id": "participant-live-game-light-light-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "2360123a6adde38b0a52850ff3e240826afdd77914e5b980c3490587ed58f7f2"
-    },
-    {
-      "id": "participant-live-game-loading-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "83e9e1ee1bdf47a318fa1484e88fd35a50f6f5bf26c0a817a83a4df1a593bfc2"
-    },
-    {
-      "id": "participant-live-game-offline-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "469d521a7a488013ae62f8e2d8717454cb8d17ade307ff06dd740aa7a4ac6d4b"
-    },
-    {
-      "id": "participant-live-game-permission-denied-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "0eb2fe73ffa193daabab29dde590840e9453f13bd8c36438c7ad89005a7d6114"
-    },
-    {
-      "id": "participant-live-game-pressed-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "5284f8c7bca712d4ad5a9f01bb768a82b0866f55082443729d95807072144543"
-    },
-    {
-      "id": "participant-live-game-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "30289c1c903ff276e4ee0511432d779147b747f25d89a3a06a78645f5c52a108"
-    },
-    {
-      "id": "participant-live-game-security-timeout-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "faf4ce312fb8ffadd1b0b1ce06ddb8f7249583b9bb0fcfb851b2260e5276f57a"
-    },
-    {
-      "id": "participant-live-game-selected-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "81794835a3d711b3ad4fc083bae2a71949e9cf7513fd7fecd7be143bcd525b6c"
-    },
-    {
-      "id": "participant-live-game-syncing-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/participant_live_game_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "868dc6cd829c2f0e7d159b7c8fa0512819e3132e9b15a515637f249f26f978f9"
     }
   ]
 }

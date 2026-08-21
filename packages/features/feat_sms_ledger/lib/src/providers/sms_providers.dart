@@ -33,10 +33,13 @@ final momoSmsAutoreadServiceProvider = Provider<MomoSmsAutoreadService>((ref) {
 });
 
 /// Provides the [MomoSmsIngestionRepository] for direct ingestion calls.
-final momoSmsIngestionRepositoryProvider =
-    Provider<MomoSmsIngestionRepository>((ref) {
-  return MomoSmsIngestionRepository(client: ref.watch(supabaseClientProvider));
-});
+final momoSmsIngestionRepositoryProvider = Provider<MomoSmsIngestionRepository>(
+  (ref) {
+    return MomoSmsIngestionRepository(
+      client: ref.watch(supabaseClientProvider),
+    );
+  },
+);
 
 /// Provides the [MomoSmsSyncStateStore] for reading sync state.
 final momoSmsSyncStateStoreProvider = Provider<MomoSmsSyncStateStore>((ref) {

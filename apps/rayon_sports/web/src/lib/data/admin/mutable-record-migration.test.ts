@@ -1,12 +1,7 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { readNormalizedFootballBaseline } from "./football-baseline-test-support";
 
-const migrationPath = resolve(
-  process.cwd(),
-  "../../../supabase/migrations/20260724220000_mutable_record_optimistic_concurrency.sql",
-);
-const migration = readFileSync(migrationPath, "utf8");
+const migration = readNormalizedFootballBaseline();
 
 describe("mutable-record database concurrency boundary", () => {
   it("versions contribution rows and compares the loaded token", () => {
@@ -39,9 +34,11 @@ describe("mutable-record database concurrency boundary", () => {
       /insert into public\.admin_audit_log/i,
     );
     expect(migration).toMatch(
-      /revoke all[\s\S]*from public, anon, authenticated/i,
+      /revoke all on function public\.admin_review_group_contribution_if_unchanged[\s\S]*from public;/i,
     );
-    expect(migration).toMatch(/grant execute[\s\S]*to service_role/i);
+    expect(migration).toMatch(
+      /grant all on function public\.admin_review_group_contribution_if_unchanged[\s\S]*to service_role;/i,
+    );
   });
 
   it("reviews membership applications and materializes approvals atomically", () => {

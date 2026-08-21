@@ -50,13 +50,15 @@ void main(List<String> arguments) {
       final channels = <String>[
         if (RegExp(
           r'\b(Text|RichText)\s*\(|\b(label|title|subtitle|message)\s*:|'
+          r'<(button|span|p|h[1-6]|dt|dd)\b|'
           r'Afri(StatusChip|StateBanner|StateView|InfoChip)|AdminStatusBadge',
         ).hasMatch(context))
           'visible_text',
         if (RegExp(r'\bIcon\s*\(|\bicon\s*:|AfriIcons\.').hasMatch(context))
           'icon',
         if (RegExp(
-          r'\bSemantics\s*\(|semanticsLabel|aria-label',
+          r'\bSemantics\s*\(|semanticsLabel|aria-label|'
+          r'role\s*=\s*["\x27](status|alert)["\x27]',
         ).hasMatch(context))
           'semantics',
         if (RegExp(r'_statusColor').hasMatch(context) &&
@@ -104,7 +106,6 @@ void main(List<String> arguments) {
     'workspace': root.path,
     'scope': <String>[
       'packages/**/lib/**/*.dart',
-      'apps/rayon_sports_tv/lib/**/*.dart',
       'apps/rayon_sports/web/src/**/*.{ts,tsx,css}',
     ],
     'summary': <String, Object?>{
@@ -161,7 +162,6 @@ Directory _repoRoot() {
 List<File> _productionSourceFiles(Directory root) {
   final roots = <Directory>[
     Directory('${root.path}/packages'),
-    Directory('${root.path}/apps/rayon_sports_tv/lib'),
     Directory('${root.path}/apps/rayon_sports/web/src'),
   ];
   final files = <File>[];
@@ -177,10 +177,7 @@ List<File> _productionSourceFiles(Directory root) {
           path.endsWith('.ts') ||
           path.endsWith('.tsx') ||
           path.endsWith('.css');
-      final isDart =
-          path.endsWith('.dart') &&
-          (path.contains('/lib/') ||
-              path.contains('/apps/rayon_sports_tv/lib/'));
+      final isDart = path.endsWith('.dart') && path.contains('/lib/');
       if ((!isWeb && !isDart) ||
           path.contains('/test/') ||
           path.contains('.test.') ||

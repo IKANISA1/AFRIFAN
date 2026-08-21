@@ -71,7 +71,12 @@ class MomoSmsBackgroundProcessor {
       try {
         driftClient = await _ensureSupabaseClient();
       } catch (error, stackTrace) {
-      AfriLogger.warn('MomoSmsBackgroundProcessor', 'Operation failed (non-critical).', error, stackTrace);
+        AfriLogger.warn(
+          'MomoSmsBackgroundProcessor',
+          'Operation failed (non-critical).',
+          error,
+          stackTrace,
+        );
         return;
       }
       if (driftClient != null) {
@@ -98,7 +103,12 @@ class MomoSmsBackgroundProcessor {
         await box.put(capture.deviceMessageKey, payload);
       }
     } catch (error, stackTrace) {
-      AfriLogger.warn('MomoSmsBackgroundProcessor', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'MomoSmsBackgroundProcessor',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       // Hive write failed — continue with ingestion attempt anyway.
     }
 
@@ -106,7 +116,12 @@ class MomoSmsBackgroundProcessor {
     try {
       client = await _ensureSupabaseClient();
     } catch (error, stackTrace) {
-      AfriLogger.warn('MomoSmsBackgroundProcessor', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'MomoSmsBackgroundProcessor',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       // Supabase init failed — capture is already queued for retry.
       return;
     }
@@ -123,7 +138,12 @@ class MomoSmsBackgroundProcessor {
         final box = await _openRetryQueueBox(momoSmsRetryQueueBoxName);
         await box.delete(capture.deviceMessageKey);
       } catch (error, stackTrace) {
-      AfriLogger.warn('MomoSmsBackgroundProcessor', 'Operation failed (non-critical).', error, stackTrace);
+        AfriLogger.warn(
+          'MomoSmsBackgroundProcessor',
+          'Operation failed (non-critical).',
+          error,
+          stackTrace,
+        );
         // Non-critical: entry will be de-duplicated on retry drain.
       }
     } catch (error) {
@@ -181,7 +201,7 @@ class MomoSmsBackgroundProcessor {
       try {
         await Supabase.initialize(
           url: EnvConfig.supabaseUrl,
-          anonKey: EnvConfig.supabaseAnonKey,
+          publishableKey: EnvConfig.supabaseAnonKey,
         );
       } catch (error) {
         final message = error.toString().toLowerCase();

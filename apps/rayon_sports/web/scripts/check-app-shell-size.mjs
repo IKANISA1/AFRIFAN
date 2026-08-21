@@ -6,7 +6,7 @@ const projectRoot = process.cwd();
 const nextDir = path.join(projectRoot, ".next");
 const manifestPath = path.join(nextDir, "build-manifest.json");
 const jsLimitKb = 170;
-// The football-first public, admin, TV, and venue surfaces currently share one
+// The football-first public, admin, and venue surfaces currently share one
 // governed global stylesheet. Keep a tight regression ceiling around the
 // measured production asset while route-level CSS extraction remains separate
 // performance work; do not let product expansion silently remove the gate.

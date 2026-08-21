@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../game_result_copy.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
+import '../prediction_result_copy.dart';
 import '../widgets/jackpot_countdown_timer.dart';
 import '../widgets/market_option_pill.dart';
 
@@ -131,7 +131,7 @@ class _JackpotChallengeScreenState
             content: Text(
               result.message.isEmpty
                   ? context.afriL10n.gameBonusEntryLive
-                  : context.localizeGameResultMessage(result.message),
+                  : context.localizePredictionResultMessage(result.message),
             ),
             actions: [
               AfriTextButton(
@@ -147,7 +147,7 @@ class _JackpotChallengeScreenState
           context,
           result.message.isEmpty
               ? context.afriL10n.gameCouldNotSubmitBonus
-              : context.localizeGameResultMessage(result.message),
+              : context.localizePredictionResultMessage(result.message),
         );
       }
     } finally {

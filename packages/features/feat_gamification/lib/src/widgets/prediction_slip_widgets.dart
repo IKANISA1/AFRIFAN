@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fanzone_slip_providers.dart';
-import '../game_result_copy.dart';
 import '../models/fanzone_slip_models.dart';
 import '../models/prediction_models.dart';
+import '../prediction_result_copy.dart';
 import '../widgets/confetti_overlay.dart';
 import '../widgets/prediction_share_card.dart';
 
@@ -242,7 +242,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
                   AfriToast.error(
                     hostContext,
                     result.messages.isNotEmpty
-                        ? hostContext.localizeGameResultMessage(
+                        ? hostContext.localizePredictionResultMessage(
                             result.messages.first,
                           )
                         : hostContext.afriL10n.gameSomeSelectionsFailed,
@@ -252,7 +252,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
                 AfriToast.error(
                   hostContext,
                   result.messages.isNotEmpty
-                      ? hostContext.localizeGameResultMessage(
+                      ? hostContext.localizePredictionResultMessage(
                           result.messages.first,
                         )
                       : hostContext.afriL10n.gameCouldNotSubmitPicks,

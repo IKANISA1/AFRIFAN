@@ -39,9 +39,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
   String? _paymentRouteLookupKey;
   late bool _wasOnline;
   CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
-        currencyCode: context.afriCurrencyCode,
-        currencySymbol: context.afriCurrencySymbol,
-      );
+    currencyCode: context.afriCurrencyCode,
+    currencySymbol: context.afriCurrencySymbol,
+  );
 
   @override
   void initState() {
@@ -117,8 +117,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!mounted || lookupKey != _paymentRouteLookupKey) return;
       setState(() {
         _paymentRoute = route;
-        _paymentRouteMessage =
-            route == null ? context.afriL10n.ticketPaymentSetupPending : null;
+        _paymentRouteMessage = route == null
+            ? context.afriL10n.ticketPaymentSetupPending
+            : null;
       });
     } catch (_) {
       if (!mounted || lookupKey != _paymentRouteLookupKey) return;
@@ -142,10 +143,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       return;
     }
     if (!ConnectivityService.isOnline) {
-      AfriToast.error(
-        context,
-        context.afriL10n.ticketConnectBeforePurchase,
-      );
+      AfriToast.error(context, context.afriL10n.ticketConnectBeforePurchase);
       return;
     }
 
@@ -164,19 +162,17 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     final total = amount * _quantity;
 
     try {
-      final route = _paymentRoute ??
-          await repo.findActivePaymentRoute(user.clubId).timeout(
-                ref.read(ticketDetailMutationTimeoutProvider),
-              );
+      final route =
+          _paymentRoute ??
+          await repo
+              .findActivePaymentRoute(user.clubId)
+              .timeout(ref.read(ticketDetailMutationTimeoutProvider));
       if (route == null) {
         if (!mounted) return;
         setState(() {
           _paymentRouteMessage = context.afriL10n.ticketPaymentSetupPending;
         });
-        AfriToast.error(
-          context,
-          context.afriL10n.ticketMomoSetupPending,
-        );
+        AfriToast.error(context, context.afriL10n.ticketMomoSetupPending);
         return;
       }
 
@@ -197,10 +193,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!mounted) return;
 
       if (tickets.isEmpty) {
-        AfriToast.error(
-          context,
-          context.afriL10n.ticketReservationFailed,
-        );
+        AfriToast.error(context, context.afriL10n.ticketReservationFailed);
         return;
       }
 
@@ -214,10 +207,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!mounted) return;
 
       if (!launched) {
-        AfriToast.error(
-          context,
-          context.afriL10n.ticketDialerOpenFailed,
-        );
+        AfriToast.error(context, context.afriL10n.ticketDialerOpenFailed);
         context.go('/tickets?tab=mine');
         return;
       }
@@ -242,17 +232,11 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       }
     } on TimeoutException {
       if (!mounted) return;
-      AfriToast.error(
-        context,
-        context.afriL10n.ticketConfirmationTimedOut,
-      );
+      AfriToast.error(context, context.afriL10n.ticketConfirmationTimedOut);
       context.go('/tickets?tab=mine');
     } catch (_) {
       if (!mounted) return;
-      AfriToast.error(
-        context,
-        context.afriL10n.ticketRequestFailed,
-      );
+      AfriToast.error(context, context.afriL10n.ticketRequestFailed);
     } finally {
       if (mounted) {
         setState(() => _submitting = false);
@@ -299,8 +283,10 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
             }
           },
         ),
-        title:
-            Text(l10n.ticketMatchDay, style: TypographyTokens.headlineLarge()),
+        title: Text(
+          l10n.ticketMatchDay,
+          style: TypographyTokens.headlineLarge(),
+        ),
       ),
       scrollable: false,
       child: !accessEnabled || !checkoutAllowed
@@ -334,24 +320,26 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
                       child: AnimatedSwitcher(
                         duration: AfriMotion.emphasized,
                         transitionBuilder: (child, animation) {
-                          final inAnimation = Tween<Offset>(
-                            begin: const Offset(1.0, 0.0),
-                            end: Offset.zero,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeOut,
-                            ),
-                          );
-                          final outAnimation = Tween<Offset>(
-                            begin: const Offset(-1.0, 0.0),
-                            end: Offset.zero,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeOut,
-                            ),
-                          );
+                          final inAnimation =
+                              Tween<Offset>(
+                                begin: const Offset(1.0, 0.0),
+                                end: Offset.zero,
+                              ).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeOut,
+                                ),
+                              );
+                          final outAnimation =
+                              Tween<Offset>(
+                                begin: const Offset(-1.0, 0.0),
+                                end: Offset.zero,
+                              ).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeOut,
+                                ),
+                              );
                           if (child.key ==
                               const ValueKey(_CheckoutWizardStep.checkout)) {
                             return SlideTransition(
@@ -479,39 +467,39 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     if (failure == null) return null;
     return switch (failure.kind) {
       TicketDetailFailureKind.conflict => _TicketDetailStatus(
-          title: l10n.ticketFixtureChangedTitle,
-          body: l10n.ticketLastConfirmedOptionsMessage,
-          tone: AfriStateBannerTone.warning,
-          actionLabel: l10n.ticketRefreshFixtureUpper,
-          onAction: () =>
-              ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
-        ),
+        title: l10n.ticketFixtureChangedTitle,
+        body: l10n.ticketLastConfirmedOptionsMessage,
+        tone: AfriStateBannerTone.warning,
+        actionLabel: l10n.ticketRefreshFixtureUpper,
+        onAction: () =>
+            ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+      ),
       TicketDetailFailureKind.securityTimeout => _TicketDetailStatus(
-          title: l10n.ticketFixtureCheckTimedOutTitle,
-          body: l10n.ticketLastConfirmedOptionsMessage,
-          tone: AfriStateBannerTone.warning,
-          actionLabel: l10n.ticketRefreshFixtureUpper,
-          onAction: () =>
-              ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
-        ),
+        title: l10n.ticketFixtureCheckTimedOutTitle,
+        body: l10n.ticketLastConfirmedOptionsMessage,
+        tone: AfriStateBannerTone.warning,
+        actionLabel: l10n.ticketRefreshFixtureUpper,
+        onAction: () =>
+            ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+      ),
       TicketDetailFailureKind.permissionDenied => _TicketDetailStatus(
-          title: l10n.ticketAccessChangedTitle,
-          body: l10n.ticketSavedFixtureReadOnlyMessage,
-          tone: AfriStateBannerTone.danger,
-        ),
+        title: l10n.ticketAccessChangedTitle,
+        body: l10n.ticketSavedFixtureReadOnlyMessage,
+        tone: AfriStateBannerTone.danger,
+      ),
       TicketDetailFailureKind.offline => _TicketDetailStatus(
-          title: l10n.ticketSavedFixtureTitle,
-          body: l10n.ticketSavedFixtureMessage,
-          tone: AfriStateBannerTone.warning,
-        ),
+        title: l10n.ticketSavedFixtureTitle,
+        body: l10n.ticketSavedFixtureMessage,
+        tone: AfriStateBannerTone.warning,
+      ),
       TicketDetailFailureKind.unknown => _TicketDetailStatus(
-          title: l10n.ticketFixtureRefreshFailedTitle,
-          body: l10n.ticketLastConfirmedOptionsMessage,
-          tone: AfriStateBannerTone.warning,
-          actionLabel: l10n.ticketRefreshFixtureUpper,
-          onAction: () =>
-              ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
-        ),
+        title: l10n.ticketFixtureRefreshFailedTitle,
+        body: l10n.ticketLastConfirmedOptionsMessage,
+        tone: AfriStateBannerTone.warning,
+        actionLabel: l10n.ticketRefreshFixtureUpper,
+        onAction: () =>
+            ref.read(ticketDetailProvider(widget.matchId).notifier).refresh(),
+      ),
     };
   }
 }

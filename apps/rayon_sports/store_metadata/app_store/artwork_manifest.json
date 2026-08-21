@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "native_icon_corrected_and_local_no_codesign_device_build_verified_new_exact_candidate_ipa_and_approval_pending",
+  "status": "recapture_required_pending_approval",
   "binary_facts": {
     "supports_iphone": true,
     "supports_ipad": true,
@@ -13,7 +13,7 @@
     "maximum_count_per_required_display": 10,
     "actual_app_ui_only": true,
     "no_real_supporter_data": true,
-    "no_real_payment_or_pairing_codes": true,
+    "no_real_payment_or_membership_codes": true,
     "capture_from_exact_candidate": false
   },
   "sets": [
@@ -23,8 +23,8 @@
       "directory": "../../ios/fastlane/screenshots/en-US",
       "accepted_portrait_sizes": ["1260x2736", "1290x2796", "1320x2868"],
       "planned_count": 4,
-      "captured_count": 4,
-      "status": "build_5_capture_ui_equivalent_to_build_6_ipa_pending_approval"
+      "captured_count": 3,
+      "status": "partial_set_exact_candidate_recapture_required"
     },
     {
       "id": "ipad_13",
@@ -32,21 +32,18 @@
       "directory": "../../ios/fastlane/screenshots/en-US",
       "accepted_portrait_sizes": ["2064x2752", "2048x2732"],
       "planned_count": 4,
-      "captured_count": 4,
-      "status": "build_5_capture_ui_equivalent_to_build_6_ipa_pending_approval"
+      "captured_count": 3,
+      "status": "partial_set_exact_candidate_recapture_required"
     }
   ],
   "capture_provenance": {
-    "capture_stage": "build-5 simulator capture retained as build-6 UI-equivalent evidence",
-    "recapture_after_source_freeze_required": false,
+    "capture_stage": "prior local build capture set; exact candidate recapture required",
+    "recapture_after_source_freeze_required": true,
     "captured_at": "2026-08-09",
     "source_commit": "d92394f47f660551701f4c65769085587cd1962b",
     "source_worktree_state": "dirty concurrent workspace preserved",
     "capture_source_authoritative_tracked_worktree_state_digest_sha256": "cca7ed5908dc33ae95e92b3c242647a1b9fc259dd51c64c47fc70738115e1e33",
     "capture_source_runtime_manifest_digest_sha256": "ecb0fdda74ff7b9fe0e81b2005861d09d5c722b83468a21519be615d22e83995",
-    "current_candidate_authoritative_tracked_worktree_state_digest_sha256": "cef8cb37fa74321a92c7d47a0d904b639f7fd5909aea66cb1fe5049c6429cca5",
-    "current_candidate_runtime_source_manifest_digest_sha256": "7ddc0399a572c6664c646a3ec13d074c15cfbd1bb1ce476c9b7d12a3c6b1f64b",
-    "runtime_source_manifest": "../frozen_tracked_source.sha256",
     "store_media_checksum_manifest": "../store_media.sha256",
     "artifact_path": "../../build/ios/iphonesimulator/Runner.app",
     "artifact_executable_sha256": "ebff12033b25c0e6a6c8694d4300e219b099b8ac490c65f17b4ba8d8267c3f4f",
@@ -54,38 +51,32 @@
     "capture_version_name": "1.0.3",
     "capture_build_number": 5,
     "build_configuration": "Flutter iOS simulator debug engine with assets/flavors/production.json",
-    "capture_fidelity_boundary": "Flutter release mode is unsupported on iOS Simulator. These genuine build-5 production-config screens remain visually equivalent for the captured in-app frames: later changes were build metadata, non-visual iOS Info.plist declarations, and a crest-free launcher replacement that is not visible inside those frames. They are not claimed as exact-current-candidate or signed-IPA captures.",
+    "capture_fidelity_boundary": "These build-5 simulator captures are not from the current candidate. New signed-candidate captures are required.",
     "exact_build_6_screenshot_capture": false,
-    "ui_equivalence_basis": [
-      "apps/rayon_sports/pubspec.yaml changed 1.0.3+5 to 1.0.3+6",
-      "apps/rayon_sports/ios/Runner/Info.plist added ITSAppUsesNonExemptEncryption=false and iPad landscape orientations",
-      "The iOS launcher set changed to the governed crest-free Gikundiro G, but the launcher icon is outside every retained in-app screenshot frame"
-    ],
+    "ui_equivalence_basis": [],
     "pre_final_artifact_executable_sha256": "01ccd6b07368d492de7352c2d03993e8d4f58d79d3d9a63b162486fbc1894fad",
-    "recapture_drift": "The rebuilt frozen-source simulator executable and all screenshot hashes changed from the pre-final reference set; visual inspection found no real supporter, payment, or pairing data.",
+    "recapture_drift": "The rebuilt frozen-source simulator executable and all screenshot hashes changed from the pre-final reference set; visual inspection found no real supporter, payment, or membership-code data.",
     "devices": [
       {
         "name": "iPhone 17 Pro Max",
         "udid": "3B6B2429-8185-44C9-84ED-7C72813AD351",
         "capture_dimensions": "1320x2868",
-        "captured_count": 4
+        "captured_count": 3
       },
       {
         "name": "iPad Pro 13-inch (M5)",
         "udid": "4AFAF6B6-24D3-48AA-A32D-1C8BD812BB8F",
         "capture_dimensions": "2064x2752",
-        "captured_count": 4
+        "captured_count": 3
       }
     ],
-    "session": "anonymous guest with no real supporter, payment, or pairing data",
+    "session": "anonymous guest with no real supporter, payment, or membership-code data",
     "files": [
       "iphone_01_home.jpg",
       "iphone_02_club.jpg",
-      "iphone_03_fanzone.jpg",
       "iphone_04_fixtures.jpg",
       "ipad_01_home.jpg",
       "ipad_02_club.jpg",
-      "ipad_03_fanzone.jpg",
       "ipad_04_fixtures.jpg"
     ]
   },

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Gikundiro mobile and Android TV store-delivery packages.
+"""Validate Gikundiro mobile store-delivery packages.
 
 The default mode checks repository-owned structure and copy. Release-ready mode
 also enforces artwork, portal-value, policy-decision, and accountable-approval
@@ -26,12 +26,9 @@ from xml.etree import ElementTree
 
 STORE_DIR = Path(__file__).resolve().parent
 MOBILE_DIR = STORE_DIR.parent
-TV_DIR = MOBILE_DIR.parent / "rayon_sports_tv"
-
 MOBILE_PLAY = "mobile-play"
 APP_STORE = "app-store"
-TV_PLAY = "tv-play"
-ALL_SURFACES = {MOBILE_PLAY, APP_STORE, TV_PLAY}
+ALL_SURFACES = {MOBILE_PLAY, APP_STORE}
 
 
 @dataclass(frozen=True)
@@ -442,13 +439,11 @@ PORTAL_TRUE_PROOF_KEYS = {
         "app_record_exists",
         "play_app_signing_enrolled",
         "version_code_available",
-        "public_google_play_tv_distribution_confirmed",
         "internal_testing_track_verified",
         "required_closed_test_completed",
         "reviewer_access_configured",
         "data_safety_published",
         "app_content_forms_complete",
-        "android_tv_opt_in_complete",
         "artifact_uploaded",
         "aab_uploaded",
     },
@@ -1219,10 +1214,23 @@ def _validate_app_store(
             STORE_DIR / "app_store" / "artwork_manifest.json",
         )
     icon_gate = artwork.get("binary_icon_gate", {})
-    if not isinstance(icon_gate, dict) or icon_gate.get("status") != "archive_icon_presence_verified":
+    accepted_icon_statuses = {
+        "approved",
+        "archive_icon_presence_verified",
+        "current_source_local_device_build_icon_presence_verified_exact_signed_archive_parity_pending",
+    }
+    if not isinstance(icon_gate, dict) or icon_gate.get("status") not in accepted_icon_statuses:
         result.add_error(
             "IPA_ICON_PROVENANCE",
-            "Exact-IPA app-icon presence must be recorded separately from rights approval",
+            "App-icon source/archive parity must use a recognized evidence status separately from rights approval",
+            STORE_DIR / "app_store" / "artwork_manifest.json",
+        )
+    elif icon_gate.get("status") == (
+        "current_source_local_device_build_icon_presence_verified_exact_signed_archive_parity_pending"
+    ) and not str(icon_gate.get("requirement", "")).strip():
+        result.add_error(
+            "IPA_ICON_PROVENANCE",
+            "Pending signed-archive icon parity must record the remaining requirement",
             STORE_DIR / "app_store" / "artwork_manifest.json",
         )
     pbxproj = _read_text(MOBILE_DIR / "ios" / "Runner.xcodeproj" / "project.pbxproj", result)
@@ -1279,95 +1287,6 @@ def _validate_app_store(
         )
 
 
-def _validate_tv_play(result: ValidationResult) -> None:
-    store = TV_DIR / "store_metadata"
-    required = [
-        store / "README.md",
-        store / "listing.md",
-        store / "release_package.json",
-        store / "approvals.json",
-        store / "portal_values.template.json",
-        store / "data_safety.md",
-        store / "app_content_answers.md",
-        store / "reviewer_access.md",
-        store / "artwork_manifest.json",
-        store / "store_media.sha256",
-        store / "localization_status.json",
-        store / "portal_entry_checklist.md",
-        store / "official_sources.md",
-        store / "source_evidence.md",
-        TV_DIR / "android" / "fastlane" / "Appfile",
-        TV_DIR / "android" / "fastlane" / "Fastfile",
-        TV_DIR / "android" / "fastlane" / "README.md",
-    ]
-    _require_files(required, result)
-    package = _read_json(store / "release_package.json", result)
-    app = package.get("app", {})
-    if app.get("preferred_distribution") != "public_google_play_tv":
-        result.add_error(
-            "TV_DISTRIBUTION_INTENT",
-            "TV distribution intent must be public Google Play TV",
-            store / "release_package.json",
-        )
-    if app.get("current_preproduction_stage") != "internal_testing":
-        result.add_error(
-            "TV_PREPRODUCTION_STAGE",
-            "TV current pre-production stage must be internal testing",
-            store / "release_package.json",
-        )
-    artwork = _read_json(store / "artwork_manifest.json", result)
-    release_artifact = artwork.get("production_release_artifact", {})
-    package_artifact = package.get("production_artifact_evidence", {})
-    for key in ("sha256", "upload_certificate_sha256"):
-        if not release_artifact.get(key) or release_artifact.get(key) != package_artifact.get(key):
-            result.add_error(
-                "TV_ARTIFACT_PROVENANCE",
-                f"TV {key} must match across release and artwork manifests",
-                store / "artwork_manifest.json",
-            )
-    if not package_artifact.get("launcher_banner_byte_parity_verified") or (
-        package_artifact.get("launcher_banner_source_sha256")
-        != package_artifact.get("launcher_banner_embedded_sha256")
-    ):
-        result.add_error(
-            "TV_BANNER_PARITY",
-            "Production AAB launcher banner must have verified source/embedded SHA-256 parity",
-            store / "release_package.json",
-        )
-    version = _pubspec_version(TV_DIR / "pubspec.yaml", result)
-    if version and (app.get("version_name"), app.get("version_code")) != version:
-        result.add_error("TV_VERSION_MISMATCH", f"Package records {app.get('version_name')}+{app.get('version_code')}, pubspec records {version[0]}+{version[1]}", store / "release_package.json")
-    gradle = _read_text(TV_DIR / "android" / "app" / "build.gradle.kts", result)
-    if app.get("package_name") not in gradle:
-        result.add_error("TV_PACKAGE_MISMATCH", "TV package is not present in build configuration", TV_DIR / "android" / "app" / "build.gradle.kts")
-    manifest = _read_text(TV_DIR / "android" / "app" / "src" / "main" / "AndroidManifest.xml", result)
-    for value in ("android.software.leanback", 'android.hardware.touchscreen', 'android:required="false"'):
-        if value not in manifest:
-            result.add_error("TV_MANIFEST", f"Required Android TV manifest contract missing: {value}", TV_DIR / "android" / "app" / "src" / "main" / "AndroidManifest.xml")
-    texts = _play_metadata(TV_DIR, {"en-US", "fr-FR"}, 1, result)
-    _check_copy(texts, result)
-    club_config = _read_text(
-        TV_DIR.parent.parent / "packages" / "clubs" / "club_rayon_sports" / "lib" / "src" / "rayon_sports_config.dart",
-        result,
-    )
-    main_dart = _read_text(TV_DIR / "lib" / "main.dart", result)
-    if "String get language => 'rw'" not in club_config:
-        result.add_error("TV_LOCALE_FACT", "Expected the audited Rayon production content locale to be rw", TV_DIR / "lib" / "main.dart")
-    if "appLocale.languageCode == 'rw' ? const Locale('en')" not in main_dart:
-        result.add_error("TV_LOCALE_FACT", "Expected the audited English Material fallback for rw", TV_DIR / "lib" / "main.dart")
-    source_only = store / "source_localizations" / "rw-RW"
-    _require_files(
-        [
-            source_only / "README.md",
-            source_only / "title.txt",
-            source_only / "short_description.txt",
-            source_only / "full_description.txt",
-            source_only / "changelog_1.txt",
-        ],
-        result,
-    )
-
-
 PREUPLOAD_PORTAL_KEYS = {
     "google_play": {
         "developer_account_type",
@@ -1389,20 +1308,6 @@ PREUPLOAD_PORTAL_KEYS = {
         "agreements_active",
         "tax_and_banking_complete_if_required",
     },
-}
-
-TV_PREUPLOAD_PORTAL_KEYS = {
-    "google_play": {
-        "developer_account_verified",
-        "app_record_exists",
-        "play_console_app_id",
-        "public_google_play_tv_distribution_confirmed",
-        "internal_testing_track_verified",
-        "play_app_signing_enrolled",
-        "registered_upload_certificate_sha256",
-        "play_app_signing_certificate_sha256",
-        "version_code_available",
-    }
 }
 
 SUBMISSION_PORTAL_KEYS = {
@@ -1447,30 +1352,6 @@ SUBMISSION_PORTAL_KEYS = {
     },
 }
 
-TV_SUBMISSION_PORTAL_KEYS = {
-    "google_play": {
-        "developer_account_verified",
-        "app_record_exists",
-        "play_console_app_id",
-        "public_google_play_tv_distribution_confirmed",
-        "internal_testing_track_verified",
-        "play_app_signing_enrolled",
-        "registered_upload_certificate_sha256",
-        "play_app_signing_certificate_sha256",
-        "version_code_available",
-        "target_countries",
-        "reviewer_access_configured",
-        "data_safety_published",
-        "app_content_forms_complete",
-        "android_tv_opt_in_complete",
-        "aab_uploaded",
-        "aab_processing_status",
-        "submission_status",
-        "verified_receipt",
-    }
-}
-
-
 def validate(
     surfaces: set[str],
     release_ready: bool = False,
@@ -1497,14 +1378,9 @@ def validate(
             artifact_path=artifact_path if surfaces == {APP_STORE} else None,
             require_submission=submission_ready,
         )
-    if TV_PLAY in surfaces:
-        _validate_tv_play(result)
-
     roots: list[Path] = []
     if surfaces & {MOBILE_PLAY, APP_STORE}:
         roots.extend([STORE_DIR, MOBILE_DIR / "android" / "fastlane", MOBILE_DIR / "ios" / "fastlane"])
-    if TV_PLAY in surfaces:
-        roots.extend([TV_DIR / "store_metadata", TV_DIR / "android" / "fastlane"])
     _check_secret_material(roots, result)
 
     if surfaces & {MOBILE_PLAY, APP_STORE}:
@@ -1543,30 +1419,6 @@ def validate(
         _check_artwork(STORE_DIR / "play_store" / "artwork_manifest.json", result)
     if APP_STORE in surfaces:
         _check_apple_screenshots(STORE_DIR / "app_store" / "artwork_manifest.json", result)
-    if TV_PLAY in surfaces:
-        store = TV_DIR / "store_metadata"
-        _check_approvals(store / "approvals.json", result)
-        _check_artwork_approval_alignment(
-            store / "artwork_manifest.json",
-            store / "approvals.json",
-            result,
-        )
-        _check_policy_blockers(store / "release_package.json", result)
-        if submission_ready:
-            portal_keys = TV_SUBMISSION_PORTAL_KEYS
-        elif release_ready:
-            portal_keys = TV_PREUPLOAD_PORTAL_KEYS
-        else:
-            portal_keys = None
-        _check_portal_values(
-            store / "portal_values.template.json",
-            result,
-            keys=portal_keys,
-            require_submission=submission_ready,
-        )
-        _check_checksum_manifest(store / "store_media.sha256", result)
-        _check_artwork(store / "artwork_manifest.json", result)
-
     if not (release_ready or submission_ready) and result.gates:
         result.add_warning(
             "RELEASE_NOT_READY",
@@ -1580,8 +1432,6 @@ def _selected_surfaces(args: argparse.Namespace) -> set[str]:
         return {args.surface}
     if args.mobile_only:
         return {MOBILE_PLAY, APP_STORE}
-    if args.tv_only:
-        return {TV_PLAY}
     return set(ALL_SURFACES)
 
 
@@ -1603,7 +1453,6 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     selection = parser.add_mutually_exclusive_group()
     selection.add_argument("--mobile-only", action="store_true", help="Validate mobile Play and App Store packages")
-    selection.add_argument("--tv-only", action="store_true", help="Validate only the Android TV package")
     selection.add_argument("--surface", choices=sorted(ALL_SURFACES), help="Validate one upload surface")
     parser.add_argument("--release-ready", action="store_true", help="Fail on pending external/approval/artwork gates")
     parser.add_argument("--submission-ready", action="store_true", help="Fail unless post-upload portal and submission evidence is complete")

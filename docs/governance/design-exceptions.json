@@ -33,36 +33,11 @@
       "physical_device_approval",
       "store_approval",
       "production_release_approval",
-      "dex_tv_001_approval",
       "canonical_admin_product_policy_approval"
     ],
     "decision": "DEC-243"
   },
-  "exceptions": [
-    {
-      "id": "DEX-TV-001",
-      "status": "proposed_pending_approval",
-      "surface": "native_tv",
-      "exact_route_or_component": "apps/rayon_sports_tv / pairing and active session display",
-      "varied_rule": "Full TV home, detail, search, and content archetypes are not implemented.",
-      "reason": "The current native TV product is a venue display companion whose controlled purpose is pairing and showing an active session; content browsing would materially expand permissions, remote navigation, moderation, and distribution scope.",
-      "approved_alternative": "Time-bound display-only TV scope with pairing, active session, expiry, revocation, error, loading, focus, and recovery states.",
-      "risk": "Stakeholders may expect an independent consumer TV app; display-only scope can be misunderstood without store copy, operations controls, and accountable approval.",
-      "evidence": [
-        "apps/rayon_sports_tv/lib/main.dart",
-        "apps/rayon_sports_tv/test/tv_app_test.dart",
-        "docs/tv_fleet_release_and_operations_runbook.md",
-        "output/implementation_goal_20260724/route_inventory_current/route-inventory.json"
-      ],
-      "owner": "TV product owner",
-      "approval": {
-        "status": "pending",
-        "approved_by": null,
-        "approved_at": null
-      },
-      "expiry_or_review_date": "2026-08-31"
-    }
-  ],
+  "exceptions": [],
   "resolved_decisions": [
     {
       "id": "DEC-THEME-001",
@@ -88,13 +63,6 @@
     }
   ],
   "pending_decisions": [
-    {
-      "id": "DEC-TV-APPROVAL-001",
-      "topic": "Approve or reject DEX-TV-001 display-only TV scope",
-      "owner": "TV product owner",
-      "due_date": null,
-      "status": "owner_and_due_date_required"
-    },
     {
       "id": "DEC-ADMIN-001",
       "topic": "Approve Next/PWA as canonical admin and classify Flutter feat_admin as internal-only or removable",
