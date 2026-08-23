@@ -1,0 +1,4 @@
+Version 1.0.4 – Football et supporters
+• Recentrage de Gikundiro sur le football et les services aux supporters de Rayon Sports
+• Amélioration des textes multilingues et de la navigation
+• Renforcement de la restauration de session, de la confidentialité et de la fiabilité

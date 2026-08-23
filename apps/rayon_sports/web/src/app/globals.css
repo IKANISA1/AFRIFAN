@@ -1,2 +1,4 @@
 @import "tailwindcss";
 @import "../ui-kit/theme.css";
+@import "../components/member-portal.css";
+@import "../components/home-blue-wall.css";

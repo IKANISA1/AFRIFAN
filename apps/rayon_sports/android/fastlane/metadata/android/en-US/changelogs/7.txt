@@ -1,0 +1,4 @@
+v1.0.4 – Football and Supporter Update
+• Focused Gikundiro on Rayon Sports football and supporter services
+• Improved multilingual copy and navigation
+• Strengthened session recovery, privacy controls, and release reliability

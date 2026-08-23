@@ -43,6 +43,11 @@ const nextConfig: NextConfig = {
         hostname: "*.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+        pathname: "/vi/**",
+      },
     ],
   },
   async headers() {
@@ -89,7 +94,7 @@ const nextConfig: NextConfig = {
               `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://*.supabase.co",
+              "img-src 'self' data: blob: https://*.supabase.co https://img.youtube.com",
               [
                 "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
                 analyticsOrigin,

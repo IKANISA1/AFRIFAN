@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   type PointerEvent,
@@ -713,10 +714,32 @@ export function HomeSurface({
     >
       <div className="page-shell section-grid pb-20">
         <header className="circles-hero home-hero">
+          <Image
+            className="blue-wall-hero-media"
+            src="https://img.youtube.com/vi/36FYr-CL0ww/maxresdefault.jpg"
+            alt="Rayon Sports players entering Amahoro Stadium for the CECAFA Kagame Cup"
+            fill
+            priority
+            sizes="100vw"
+          />
           <div>
-            <p className="circles-eyebrow">{copy.eyebrow}</p>
-            <h1>{copy.title(clubShortName)}</h1>
-            <p className="circles-description">{copy.description}</p>
+            <p className="circles-eyebrow">CECAFA Kagame Cup 2026 · Final</p>
+            <h1 aria-label="Champions again.">
+              <span>Champions</span>
+              <span>again.</span>
+            </h1>
+            <div className="blue-wall-score" aria-label="Full time: Rayon Sports 2, Gor Mahia 1">
+              <span>Full time</span>
+              <strong>Rayon Sports</strong>
+              <b>2</b>
+              <i aria-hidden="true">—</i>
+              <b>1</b>
+              <strong>Gor Mahia</strong>
+            </div>
+            <p className="circles-description">
+              {clubShortName}. Gikundiro, the beloved. Matchday, membership,
+              tickets, shop and supporter culture in one official clubhouse.
+            </p>
           </div>
           <aside
             className="home-status circles-status"
@@ -734,22 +757,22 @@ export function HomeSurface({
             </div>
           </aside>
           <div className="circles-actions">
+            <a
+              href="https://www.youtube.com/watch?v=5TPQFCu2DsE"
+              target="_blank"
+              rel="noreferrer"
+              className="home-action circles-action circles-action-primary"
+            >
+              Watch real highlights <ArrowRight aria-hidden="true" />
+            </a>
+            <Link href="/tickets" className="home-action circles-action circles-action-secondary">
+              Get tickets <Ticket aria-hidden="true" />
+            </Link>
             {hasExternalAppUrl ? (
-              <Link
-                href={fanAppHref}
-                className="home-action circles-action circles-action-primary"
-              >
+              <Link href={fanAppHref} className="home-action circles-action circles-action-secondary">
                 <Smartphone aria-hidden="true" /> {copy.app}
               </Link>
-            ) : (
-              <span
-                className="home-action circles-action circles-action-primary"
-                aria-disabled="true"
-                data-home-app-link="pending"
-              >
-                <Smartphone aria-hidden="true" /> {copy.appPending}
-              </span>
-            )}
+            ) : null}
             <button
               type="button"
               className="home-action circles-action circles-action-secondary"
@@ -784,6 +807,37 @@ export function HomeSurface({
             </div>
           </dl>
         </header>
+
+        <section className="blue-wall-feature-grid" aria-label="Gikundiro highlights">
+          <article className="blue-wall-feature blue-wall-feature-matchday">
+            <Image
+              src="https://img.youtube.com/vi/_ZVYBy0DXF8/maxresdefault.jpg"
+              alt="Rayon Sports supporters wearing the club colours"
+              fill
+              sizes="(max-width: 800px) 100vw, 58vw"
+            />
+            <div>
+              <span>Matchday</span>
+              <h2>Your place in the Blue Wall.</h2>
+              <p>Choose a fixture, stand and quantity, then complete the protected mobile ticket journey.</p>
+              <Link href="/tickets">Start ticket journey <ArrowRight aria-hidden="true" /></Link>
+            </div>
+          </article>
+          <article className="blue-wall-feature blue-wall-feature-membership">
+            <Image
+              src="https://img.youtube.com/vi/9GH2mnKXX4s/maxresdefault.jpg"
+              alt="Rayon Sports supporters presenting the official blue and white kits"
+              fill
+              sizes="(max-width: 800px) 100vw, 42vw"
+            />
+            <div>
+              <span>Membership</span>
+              <h2>The club belongs to its people.</h2>
+              <p>WhatsApp-secured membership, a private six-digit member number and confirmed contribution history.</p>
+              <Link href="/membership">Join Gikundiro <ArrowRight aria-hidden="true" /></Link>
+            </div>
+          </article>
+        </section>
 
         {isRecovery ? (
           <aside className="circles-recovery" role="status">

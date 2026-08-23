@@ -4,9 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Globe, Search, User, Menu } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { resolveFanAppHref } from "@/lib/config";
+import { MobileNavDrawer } from "@/components/mobile-nav-drawer";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
 import type { ReactNode } from "react";
@@ -21,6 +22,24 @@ interface GlobalNavProps {
   ribbon?: ReactNode;
 }
 
+const fallbackNavigationItems: SiteNavigationItem[] = [
+  ["fixtures", "Fixtures", "/fixtures"],
+  ["tickets", "Tickets", "/tickets"],
+  ["shop", "Shop", "/shop"],
+  ["membership", "Membership", "/membership"],
+  ["supporters", "Supporters", "/supporters"],
+  ["news", "News", "/news"],
+].map(([nav_key, label, href], sort_order) => ({
+  nav_key,
+  label,
+  href,
+  nav_group: "primary",
+  surface: "both",
+  feature_key: nav_key,
+  sort_order,
+  metadata: {},
+}));
+
 export function GlobalNav({
   club,
   copy: _copy,
@@ -31,6 +50,11 @@ export function GlobalNav({
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const closeMobileMenu = useCallback(
+    () => setMobileMenuOpen(false),
+    [setMobileMenuOpen],
+  );
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -40,9 +64,12 @@ export function GlobalNav({
 
   const logoUrl = club.officialLogoUrl ?? "/brand-mark.svg";
 
+  const resolvedNavigationItems =
+    navigationItems.length > 0 ? navigationItems : fallbackNavigationItems;
+
   const navItems =
-    navigationItems.length > 0
-      ? navigationItems.map((item) => ({
+    resolvedNavigationItems.length > 0
+      ? resolvedNavigationItems.map((item) => ({
           label: item.label,
           href: item.href,
           featureKey: item.feature_key ?? item.nav_key,
@@ -184,6 +211,9 @@ export function GlobalNav({
           <button
             type="button"
             aria-label="Open menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation-drawer"
+            onClick={() => setMobileMenuOpen(true)}
             className="site-menu-trigger flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-white/10 text-white xl:hidden"
           >
             <Menu size={20} />
@@ -336,6 +366,15 @@ export function GlobalNav({
             </div>
           )}
         </div>
+      </div>
+
+      <div id="mobile-navigation-drawer">
+        <MobileNavDrawer
+          isOpen={mobileMenuOpen}
+          onClose={closeMobileMenu}
+          club={club}
+          navigationItems={resolvedNavigationItems}
+        />
       </div>
     </div>
   );

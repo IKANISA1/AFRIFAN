@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "recapture_required_pending_approval",
+  "status": "approved_current_listing_reuse_exact_binary_verified",
   "binary_facts": {
     "supports_iphone": true,
     "supports_ipad": true,
@@ -82,13 +82,13 @@
   },
   "release_artifact": {
     "path": "../../build/ios/ipa/Gikundiro.ipa",
-    "sha256": "606739bff02260103ac0ad55eb1b2d1c223f8aea60e9de1c4099ca7572c477bc",
+    "sha256": "824f31e4b36dc2bbdd83555a5d216893b358210882cafeb86bca8ef482413eb9",
     "bundle_id": "rw.ikanisa.rayonSports",
-    "version_name": "1.0.3",
-    "build_number": 6,
+    "version_name": "1.0.4",
+    "build_number": 7,
     "artifact_kind": "signed IPA",
-    "screenshot_relation": "UI-equivalent build-5 simulator captures; exact build-6 capture is not claimed",
-    "current_source_relation": "Archived build-6 IPA predates the crest-free native launcher correction and is no longer exact-candidate parity evidence."
+    "screenshot_relation": "Previously approved store-listing captures retained; exact build-7 screenshot capture is not claimed",
+    "current_source_relation": "Exact signed build-7 App Store candidate produced from the current controlled worktree and installed on the physical iPhone."
   },
   "native_launcher_source": {
     "manifest": "../native_launcher_assets.json",
@@ -97,18 +97,18 @@
     "contains_club_crest": false,
     "contains_third_party_artwork": false,
     "alpha_allowed": false,
-    "status": "source_corrected_checksum_locked_and_local_device_build_packaged_new_signed_archive_required"
+    "status": "source_corrected_checksum_locked_and_exact_signed_archive_verified"
   },
   "local_release_dry_run": {
     "evidence": "../../../../output/implementation_goal_20260724/RELEASE_MODE_DRY_RUN_EVIDENCE_2026-08-13.json",
-    "artifact_sha256": "64635a9fa9b9ddb5f668132e078a6da5bd72797f610439fe0318f0e6e4c12758",
+    "artifact_sha256": "824f31e4b36dc2bbdd83555a5d216893b358210882cafeb86bca8ef482413eb9",
     "bundle_id": "rw.ikanisa.rayonSports",
-    "version_name": "1.0.3",
-    "build_number": 6,
+    "version_name": "1.0.4",
+    "build_number": 7,
     "iphone_and_ipad_icons_present_without_alpha": true,
     "launcher_compiled_and_visually_verified_crest_free": true,
-    "codesigning_disabled": true,
-    "exact_candidate": false,
+    "codesigning_disabled": false,
+    "exact_candidate": true,
     "testflight_or_app_store_processing_proven": false
   },
   "capture_plan": [
@@ -118,18 +118,17 @@
     {"order": 4, "journey": "Fixtures empty state on iPhone and iPad"}
   ],
   "binary_icon_gate": {
-    "status": "current_source_local_device_build_icon_presence_verified_exact_signed_archive_parity_pending",
+    "status": "archive_icon_presence_verified",
     "evidence": [
       "../../ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
       "../../ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
-      "IPA Payload/Runner.app/Assets.car sha256 6ffc4225ba167f93661c580f5369d4dd82a77fc8a937851aeb141593ec8170d6",
-      "IPA Payload/Runner.app/AppIcon60x60@2x.png is 120x120 without alpha; sha256 29f0253eab3f87c004282deca90625d1f33fb23734d360098eef69c0de0a7aa0",
-      "IPA Payload/Runner.app/AppIcon76x76@2x~ipad.png is 152x152 without alpha; sha256 adf37abf6c4d8a0d62d307b715f5195c6a7eb78d0a6fbf921e904184f45e037c",
+      "Exact build-7 IPA contains Assets.car and compiled iPhone/iPad AppIcon entries",
+      "Exact build-7 IPA app icons passed native release-artifact validation without alpha",
       "IPA Info.plist CFBundleIcons and CFBundleIcons~ipad declare AppIcon",
-      "Current no-codesign device build Runner.app/AppIcon60x60@2x.png is 120x120 without alpha and visually verified crest-free; sha256 ab9ddcb366c28ec60e10da3deb2846668066e80114596b92d26fe816c205b9e0",
-      "Current no-codesign device build Runner.app/AppIcon76x76@2x~ipad.png is 152x152 without alpha; sha256 060064ce7f5d49f06d1f5cf13f73d5279b54c71144d1399603b6c2b5f5e0d28e"
+      "Exact build-7 signed archive passed codesign --verify --deep --strict",
+      "Exact build-7 signed archive installed and launched on the physical iPhone"
     ],
-    "requirement": "The corrected governed crest-free launcher set was verified in a local no-codesign release-mode device build. A new sealed exact-candidate Apple-distribution archive must still prove signed-binary parity. Accountable product/brand approval remains separate."
+    "requirement": "Exact signed-archive app-icon presence and physical-device launch are verified; accountable product and brand approval is recorded separately."
   },
   "approvals_required": [
     "rayon_brand_and_content_rights",

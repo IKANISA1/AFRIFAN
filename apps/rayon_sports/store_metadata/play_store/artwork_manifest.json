@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "recapture_required_pending_approval",
+  "status": "approved_current_listing_reuse_exact_binary_verified",
   "rules": {
     "actual_app_ui_only": true,
     "no_real_supporter_data": true,
@@ -18,7 +18,7 @@
       "width": 512,
       "height": 512,
       "max_bytes": 1048576,
-      "status": "generated_pending_approval"
+      "status": "approved_current_listing_reuse"
     },
     {
       "id": "feature_graphic",
@@ -27,7 +27,7 @@
       "format": "JPEG or 24-bit PNG without alpha",
       "width": 1024,
       "height": 500,
-      "status": "generated_pending_approval"
+      "status": "approved_current_listing_reuse"
     },
     {
       "id": "phone_screenshots",
@@ -37,7 +37,7 @@
       "recommended_count": 4,
       "captured_count": 3,
       "recommended_size": "1080x1920 portrait",
-      "status": "partial_set_exact_candidate_recapture_required"
+      "status": "approved_current_listing_reuse"
     }
   ],
   "artwork_generation": {
@@ -51,17 +51,17 @@
     "asset_count": 5,
     "contains_club_crest": false,
     "contains_third_party_artwork": false,
-    "status": "source_corrected_checksum_locked_and_local_release_mode_aab_packaged_new_exact_candidate_build_required"
+    "status": "source_corrected_checksum_locked_and_exact_signed_aab_verified"
   },
   "local_release_dry_run": {
     "evidence": "../../../../output/implementation_goal_20260724/RELEASE_MODE_DRY_RUN_EVIDENCE_2026-08-13.json",
-    "artifact_sha256": "e6ea25707c2583831bb598374b663783f7a30fced73140989da2c020999586a1",
+    "artifact_sha256": "3042d0601d0bb4b0b00087c7e25761ad730a74ed4661dbfa448f64df1592d119",
     "package_id": "rw.gikundiro.app",
-    "version_name": "1.0.3",
-    "version_code": 6,
+    "version_name": "1.0.4",
+    "version_code": 7,
     "launcher_compiled_and_visually_verified_crest_free": true,
-    "ephemeral_signer_only": true,
-    "exact_candidate": false,
+    "ephemeral_signer_only": false,
+    "exact_candidate": true,
     "play_upload_or_processing_proven": false
   },
   "capture_provenance": {

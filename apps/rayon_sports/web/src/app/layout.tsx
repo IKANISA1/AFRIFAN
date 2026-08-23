@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Manrope, Space_Grotesk } from "next/font/google";
+import {
+  Barlow_Condensed,
+  Inter,
+  Manrope,
+  Space_Grotesk,
+} from "next/font/google";
 import "./globals.css";
 import { absoluteUrl, siteConfig } from "@/lib/config";
 import { buildSiteJsonLd, renderJsonLdScriptContent } from "@/lib/metadata";
@@ -19,6 +24,13 @@ const spaceGrotesk = Space_Grotesk({
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-matchday",
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
   display: "swap",
 });
 
@@ -94,7 +106,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${spaceGrotesk.variable} ${inter.variable} h-full antialiased`}
+      className={`${manrope.variable} ${spaceGrotesk.variable} ${inter.variable} ${barlowCondensed.variable} h-full antialiased`}
     >
       <head />
       <body className="min-h-full flex flex-col">

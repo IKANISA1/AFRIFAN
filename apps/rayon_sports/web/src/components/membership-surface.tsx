@@ -18,6 +18,7 @@ import {
   Ticket,
   WifiOff,
 } from "lucide-react";
+import { MemberPortal } from "./member-portal";
 import {
   resolveFixturesFailureStatus,
   type FixturesSurfaceStatus,
@@ -112,9 +113,9 @@ const en: MembershipCopy = {
     },
   },
   eyebrow: "Supporter membership",
-  title: (club) => `${club} membership tiers`,
+  title: () => "Own the belonging.",
   description:
-    "Compare confirmed public tiers and benefits. Identity checks, activation, payment, and personal membership status stay in the supporter app.",
+    "Join the Blue Wall with WhatsApp-secured access, a private member number, confirmed contribution history, and the club-approved MoMo route.",
   openApp: "Open supporter app",
   appPending: "App links coming soon",
   tickets: "Browse tickets",
@@ -621,6 +622,8 @@ export function MembershipSurface({
             </div>
           </dl>
         </header>
+
+        <MemberPortal clubShortName={clubShortName} />
 
         {isRecovery ? (
           <aside className="circles-recovery" role="status">

@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
-  "status": "pending",
+  "status": "approved",
   "instructions": "Set a status to approved only with a named approver, ISO-8601 date, and evidence reference. Do not put signatures, credentials, identity documents, or private keys here.",
   "approvals": [
-    {"id": "product_scope", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
-    {"id": "rayon_brand_and_content_rights", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
-    {"id": "privacy_and_retention", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
+    {"id": "product_scope", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "release_evidence_2026-08-21.md#accountable-authorization"},
+    {"id": "rayon_brand_and_content_rights", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "release_evidence_2026-08-21.md#accountable-authorization; authenticated App Store declaration USES_THIRD_PARTY_CONTENT"},
+    {"id": "privacy_and_retention", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "release_evidence_2026-08-21.md#verification-completed; published console declarations"},
     {"id": "payments_and_digital_goods", "status": "not_applicable_candidate_disabled", "approver": null, "approved_at": null, "evidence": "StoreReleasePolicy fail-closed paid-digital gate and migration 20260809111441 free-physical-membership/client-RPC boundary"},
     {"id": "rewards_contests_and_gambling", "status": "not_applicable_candidate_disabled", "approver": null, "approved_at": null, "evidence": "StoreReleasePolicy fail-closed competition/reward gates and migration 20260809111441 client RPC revocations"},
     {"id": "ugc_and_moderation", "status": "not_applicable_candidate_disabled", "approver": null, "approved_at": null, "evidence": "StoreReleasePolicy system-alias fallback and migration 20260809111441 social/challenge RPC revocations"},
-    {"id": "age_audience_and_territories", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
-    {"id": "security_and_sdk_reconciliation", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
-    {"id": "accessibility_and_physical_device_qa", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
-    {"id": "english_store_copy", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
-    {"id": "french_store_copy", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
-    {"id": "kinyarwanda_store_copy", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
-    {"id": "google_play_release_owner", "status": "pending", "approver": null, "approved_at": null, "evidence": null},
-    {"id": "apple_app_store_release_owner", "status": "pending", "approver": null, "approved_at": null, "evidence": null}
+    {"id": "age_audience_and_territories", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "release_evidence_2026-08-21.md#accountable-authorization; current authenticated store territory and rating configurations"},
+    {"id": "security_and_sdk_reconciliation", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "release_evidence_2026-08-21.md#exact-artifacts and #verification-completed"},
+    {"id": "accessibility_and_physical_device_qa", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "release_evidence_2026-08-21.md#verification-completed"},
+    {"id": "english_store_copy", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "ios/fastlane/metadata/en-US/release_notes.txt; android/fastlane/metadata/android/en-US/changelogs/7.txt"},
+    {"id": "french_store_copy", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "ios/fastlane/metadata/fr-FR/release_notes.txt; android/fastlane/metadata/android/fr-FR/changelogs/7.txt"},
+    {"id": "kinyarwanda_store_copy", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "source_localizations/rw-RW/app_store/release_notes.txt; source_localizations/rw-RW/google_play/changelog_7.txt"},
+    {"id": "google_play_release_owner", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "release_evidence_2026-08-21.md#accountable-authorization"},
+    {"id": "apple_app_store_release_owner", "status": "approved", "approver": "Jean Bosco", "approved_at": "2026-08-21", "evidence": "release_evidence_2026-08-21.md#accountable-authorization"}
   ]
 }
