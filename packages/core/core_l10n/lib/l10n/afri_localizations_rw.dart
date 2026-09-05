@@ -1376,7 +1376,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get authWhatsAppNumberLabel => 'Nomero ya WhatsApp';
 
   @override
-  String get authPhoneHint => '+250 7xx xxx xxx';
+  String get authPhoneHint => 'Nomero ya telefoni';
 
   @override
   String get authPhonePrivacy => 'Nomero yawe iguma mu ibanga.';

@@ -2322,7 +2322,7 @@ abstract class AfriLocalizations {
   /// No description provided for @authPhoneHint.
   ///
   /// In en, this message translates to:
-  /// **'+250 7xx xxx xxx'**
+  /// **'Phone number'**
   String get authPhoneHint;
 
   /// No description provided for @authPhonePrivacy.

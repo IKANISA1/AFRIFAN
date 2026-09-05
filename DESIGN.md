@@ -159,6 +159,10 @@ or simulate a successful financial/action outcome for visual effect.
   Payment initiation never implies confirmation. Preserve idempotency and guards.
 - Detail: one object and its actual status, metadata, primary action and history.
   Approved product images retain stable bounds, loading and failure states.
+- Phone entry: Onboarding 4 navy-to-black canvas, separate catalogue calling
+  code and tonal phone input, left-aligned anonymous entry and bottom primary
+  action above the keyboard. ISO country labels are a readable glyph adaptation.
+  Preserve E.164 paste/autofill, drafts, masking and existing WhatsApp delivery.
 - Onboarding/auth: preserve anonymous entry and real phone/OTP flows. Do not
   copy a bank passcode flow or introduce linking/payment requirements at launch.
 - Unavailable routes: generic requested-section copy, safe back/recovery, no

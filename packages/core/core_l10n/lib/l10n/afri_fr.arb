@@ -369,7 +369,7 @@
   "authEnterNumberBody": "Nous enverrons un code de connexion privé.",
   "authPhoneLabel": "Téléphone",
   "authWhatsAppNumberLabel": "Numéro WhatsApp",
-  "authPhoneHint": "+250 7xx xxx xxx",
+  "authPhoneHint": "Numéro de téléphone",
   "authPhonePrivacy": "Votre numéro reste privé.",
   "authSendCode": "Envoyer le code",
   "authGuestSessionUnavailable": "Impossible d’ouvrir une session invité. Réessayez.",

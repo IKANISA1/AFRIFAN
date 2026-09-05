@@ -417,8 +417,12 @@ class ColorTokens {
         const [0xFF43098B, 0xFF3A0A89, 0xFF180D24, 0xFF131416, 0xFF000000],
         const [0.0, 0.35, 0.45, 0.70, 1.0],
       ),
-      // Historical onboarding 4/10 establishes this separate auth cohort.
-      '/auth/phone' || '/auth/otp' => (
+      // Onboarding 4: measured canvas pixels, excluding keyboard and footer.
+      '/auth/phone' => (
+        const [0xFF1B2B8C, 0xFF1C2D7D, 0xFF0B112F, 0xFF000000],
+        const [0.0, 0.16, 0.38, 0.52],
+      ),
+      '/auth/otp' => (
         const [0xFF364FF0, 0xFF15266A, 0xFF0E113D],
         const [0.0, 0.4, 1.0],
       ),

@@ -57,6 +57,7 @@ class AfriInputField extends StatelessWidget {
     this.enableSuggestions = true,
     this.autocorrect = true,
     this.inputFormatters,
+    this.tonal = false,
   });
 
   final TextEditingController controller;
@@ -90,6 +91,9 @@ class AfriInputField extends StatelessWidget {
   final bool enableSuggestions;
   final bool autocorrect;
   final List<TextInputFormatter>? inputFormatters;
+
+  /// Quiet filled entry, with its accessible name outside the decoration.
+  final bool tonal;
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +132,7 @@ class AfriInputField extends StatelessWidget {
           : null,
       style: style ?? TypographyTokens.bodyLarge(colors.primaryText),
       decoration: InputDecoration(
-        labelText: label,
+        labelText: tonal ? null : label,
         hintText: hint,
         helperText: helperText,
         helperMaxLines: helperMaxLines,
@@ -145,7 +149,9 @@ class AfriInputField extends StatelessWidget {
         filled: true,
         fillColor: colors.inputSurface,
         labelStyle: TypographyTokens.bodyMedium(colors.secondaryText),
-        hintStyle: TypographyTokens.bodyMedium(colors.tertiaryText),
+        hintStyle: tonal
+            ? TypographyTokens.bodyLarge(colors.tertiaryText)
+            : TypographyTokens.bodyMedium(colors.tertiaryText),
         contentPadding:
             contentPadding ??
             const EdgeInsets.symmetric(
@@ -154,15 +160,17 @@ class AfriInputField extends StatelessWidget {
             ),
         border: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
-          color: colors.border,
+          color: tonal ? Colors.transparent : colors.border,
         ),
         enabledBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
-          color: colors.border,
+          color: tonal ? Colors.transparent : colors.border,
         ),
         focusedBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
-          color: colors.accent,
+          color: tonal
+              ? colors.primaryText.withValues(alpha: 0.45)
+              : colors.accent,
           width: context.afriDesignTokens.focusRingWidth,
         ),
       ),
@@ -170,7 +178,7 @@ class AfriInputField extends StatelessWidget {
     return _withAsyncErrorSemantics(
       errorText: errorText,
       fieldLabel: label ?? hint,
-      child: field,
+      child: tonal ? Semantics(label: label, child: field) : field,
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:core_auth/core_auth.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:feat_onboarding/src/screens/supporter_phone_auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -122,9 +123,95 @@ Future<void> _pumpApp(
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(loadAppFonts);
+  setUpAll(() async {
+    await loadAppFonts();
+    AfriCountryCatalog.withCountries(await loadBuiltInCountries());
+  });
+  tearDownAll(() => AfriCountryCatalog.withCountries([]));
   setUp(() => ConnectivityService.setOnlineForTest(true));
   tearDown(() => ConnectivityService.setOnlineForTest(true));
+
+  testWidgets('keeps the primary action at the bottom and above the keyboard', (
+    tester,
+  ) async {
+    await _pumpApp(tester, repository: _FakeAuthRepository());
+    final submit = find.byKey(
+      const ValueKey<String>('supporter-send-otp-button'),
+    );
+    final input = find.byKey(const ValueKey<String>('supporter-phone-input'));
+    expect(tester.getRect(submit).bottom, closeTo(828, 1));
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+    addTearDown(tester.view.resetViewInsets);
+    await tester.pumpAndSettle();
+    _expectInKeyboardViewport(tester, input);
+    _expectInKeyboardViewport(tester, submit);
+    expect(tester.getRect(submit).bottom, closeTo(528, 1));
+  });
+
+  testWidgets(
+    'splits a pasted country code without changing the OTP recipient',
+    (tester) async {
+      final repository = _FakeAuthRepository();
+      await _pumpApp(tester, repository: repository);
+      final input = find.byKey(const ValueKey<String>('supporter-phone-input'));
+      await tester.enterText(input, supporterPhoneAuthTestNumber);
+      await tester.pumpAndSettle();
+      expect(tester.widget<AfriInputField>(input).controller.text, '700000001');
+      expect(find.textContaining('+250'), findsOneWidget);
+      await tester.tap(
+        find.byKey(const ValueKey<String>('supporter-send-otp-button')),
+      );
+      await tester.pumpAndSettle();
+      expect(repository.requestedPhone, supporterPhoneAuthTestNumber);
+      expect(repository.requestedChannel, supabase.OtpChannel.whatsapp);
+    },
+  );
+
+  testWidgets('country selection normalizes a national phone number once', (
+    tester,
+  ) async {
+    final repository = _FakeAuthRepository();
+    await _pumpApp(tester, repository: repository);
+    await tester.tap(
+      find.byKey(const ValueKey<String>('supporter-phone-country')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining('Uganda').last);
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey<String>('supporter-phone-input')),
+      '772000001',
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('supporter-send-otp-button')),
+    );
+    await tester.pumpAndSettle();
+    expect(repository.requestedPhone, '+256772000001');
+    expect(repository.requestCount, 1);
+  });
+
+  testWidgets('retains international numbers outside the country catalogue', (
+    tester,
+  ) async {
+    const international = '+447700900001';
+    final repository = _FakeAuthRepository();
+    await _pumpApp(tester, repository: repository);
+    final input = find.byKey(const ValueKey<String>('supporter-phone-input'));
+    await tester.enterText(input, international);
+    await tester.pumpAndSettle();
+    expect(tester.widget<AfriInputField>(input).controller.text, international);
+    expect(
+      find.byKey(const ValueKey<String>('supporter-phone-country')),
+      findsNothing,
+    );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('supporter-send-otp-button')),
+    );
+    await tester.pumpAndSettle();
+    expect(repository.requestedPhone, international);
+    expect(repository.requestCount, 1);
+  });
 
   testWidgets('requests OTP using the WhatsApp delivery channel', (
     tester,
@@ -176,7 +263,7 @@ void main() {
           )
           .controller
           ?.text,
-      supporterPhoneAuthTestNumber,
+      '700000001',
     );
 
     requestGate.complete();
@@ -363,7 +450,7 @@ void main() {
           )
           .controller
           .text,
-      supporterPhoneAuthTestNumber,
+      '700000001',
     );
 
     tester.view.physicalSize = const Size(852, 393);
@@ -379,7 +466,7 @@ void main() {
           )
           .controller
           .text,
-      supporterPhoneAuthTestNumber,
+      '700000001',
     );
 
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
@@ -402,7 +489,7 @@ void main() {
           )
           .controller
           .text,
-      supporterPhoneAuthTestNumber,
+      '700000001',
     );
     expect(tester.takeException(), isNull);
   });
@@ -429,7 +516,7 @@ void main() {
       final textField = tester.widget<TextField>(
         find.descendant(of: phoneField, matching: find.byType(TextField)),
       );
-      expect(textField.controller?.text, supporterPhoneAuthTestNumber);
+      expect(textField.controller?.text, '700000001');
       expect(textField.autofillHints, contains(AutofillHints.telephoneNumber));
       final error = tester.widget<AfriInputField>(phoneField).errorText;
       expect(error, isNull);

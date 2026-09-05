@@ -27,6 +27,9 @@ class _SupporterPhoneAuthScreenState
   final FocusNode _phoneFocusNode = FocusNode(debugLabel: 'WhatsApp number');
   final ScrollController _phoneScrollController = ScrollController();
 
+  List<AfriCountry> _countries = AfriCountryCatalog.all;
+  AfriCountry? _selectedCountry;
+  String? _pastedInternationalPhone;
   bool _isLoading = false;
   AuthActionFailure? _phoneFailure;
   late final ValueListenable<bool> _connectivity;
@@ -56,6 +59,22 @@ class _SupporterPhoneAuthScreenState
       _phoneFailure = _offlinePhoneFailure;
     }
     _phoneController.addListener(_onChanged);
+    if (_countries.isEmpty) unawaited(_loadCountries());
+  }
+
+  Future<void> _loadCountries() async {
+    final countries = await loadBuiltInCountries();
+    if (mounted) setState(() => _countries = countries);
+  }
+
+  AfriCountry? get _phoneCountry {
+    if (_selectedCountry != null) return _selectedCountry;
+    final config = ClubConfigScope.maybeOf(context);
+    return AfriCountryCatalog.byIsoCode(
+          config?.countryCode ?? config?.country,
+          source: _countries,
+        ) ??
+        _countries.firstOrNull;
   }
 
   @override
@@ -70,6 +89,25 @@ class _SupporterPhoneAuthScreenState
   }
 
   void _onChanged() {
+    // Autofill/paste can provide a complete international number. Move a known
+    // calling code into the selector while preserving the submitted E.164 value.
+    if (_phoneValue.startsWith('+')) {
+      final compact = _phoneValue.replaceAll(RegExp(r'[\s()-]'), '');
+      final country = AfriCountryCatalog.fromPhoneNumber(
+        compact,
+        source: _countries,
+      );
+      if (country != null && compact.length > country.dialCode.length) {
+        _selectedCountry = country;
+        _pastedInternationalPhone = compact;
+        final national = compact.substring(country.dialCode.length);
+        _phoneController.value = TextEditingValue(
+          text: national,
+          selection: TextSelection.collapsed(offset: national.length),
+        );
+        return;
+      }
+    }
     if (mounted) {
       setState(() {
         _phoneFailure = _isOnline ? null : _offlinePhoneFailure;
@@ -136,13 +174,23 @@ class _SupporterPhoneAuthScreenState
     if (RegExp(r'^\+\d{10,15}$').hasMatch(compact)) {
       return compact;
     }
+    // Splitting a pasted E.164 number must not add the catalogue's MoMo
+    // number restrictions to the existing international sign-in contract.
+    final pasted = _pastedInternationalPhone;
+    if (pasted != null &&
+        pasted == '${_phoneCountry?.dialCode}$compact' &&
+        RegExp(r'^\+\d{10,15}$').hasMatch(pasted)) {
+      return pasted;
+    }
 
     final config = ClubConfigScope.maybeOf(context);
 
     try {
-      final country = AfriCountryCatalog.resolve(
-        country: config?.countryCode ?? config?.country,
-      );
+      final country =
+          _phoneCountry ??
+          AfriCountryCatalog.resolve(
+            country: config?.countryCode ?? config?.country,
+          );
       return country.buildE164Phone(value);
     } on FormatException catch (error) {
       setState(
@@ -198,10 +246,12 @@ class _SupporterPhoneAuthScreenState
 
   void _revealPhoneField() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_phoneScrollController.hasClients) return;
+      final fieldContext = _phoneFocusNode.context;
+      if (!mounted || fieldContext == null) return;
       unawaited(
-        _phoneScrollController.animateTo(
-          _phoneScrollController.position.maxScrollExtent,
+        Scrollable.ensureVisible(
+          fieldContext,
+          alignment: 0.5,
           duration: AfriMotion.resolve(context, AfriMotion.standard),
           curve: AfriMotion.enterCurve,
         ),
@@ -259,7 +309,7 @@ class _SupporterPhoneAuthScreenState
     final phoneColors = context.afriSemanticColors;
     final guestActionColor = _isLoading
         ? ColorTokens.accessibleDisabledColor(phoneColors.secondaryText)
-        : phoneColors.primaryText;
+        : ColorTokens.primaryContainer;
 
     return GradientBackground(
       routePath: '/auth/phone',
@@ -282,106 +332,177 @@ class _SupporterPhoneAuthScreenState
         ),
         scrollable: false,
 
-        child: SafeArea(
-          child: SingleChildScrollView(
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
             controller: _phoneScrollController,
             padding: const EdgeInsets.fromLTRB(
               SpacingTokens.screenPadding,
               SpacingTokens.spacing2,
               SpacingTokens.screenPadding,
-              SpacingTokens.spacing8,
+              SpacingTokens.spacing6,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _AuthStepHeader(
-                  title: l10n.authEnterNumberTitle,
-                  body: l10n.authEnterNumberBody,
-                ),
-                const SizedBox(height: SpacingTokens.spacing6),
-                if (phoneStatus != null) ...[
-                  phoneStatus,
-                  const SizedBox(height: SpacingTokens.spacing4),
-                ],
-                Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AfriInputField(
-                        key: const ValueKey<String>('supporter-phone-input'),
-                        controller: _phoneController,
-                        focusNode: _phoneFocusNode,
-                        label: usesLargeText
-                            ? l10n.authPhoneLabel
-                            : l10n.authWhatsAppNumberLabel,
-                        hint: l10n.authPhoneHint,
-                        helperText: l10n.authPhonePrivacy,
-                        helperMaxLines: 2,
-                        keyboardType: TextInputType.phone,
-                        enabled: !_isLoading,
-                        obscureText: protectPhoneValue,
-                        prefixIcon: AfriIcons.phone,
-                        maxLength: 20,
-                        autofocus: !usesLargeText,
-                        textInputAction: TextInputAction.done,
-                        errorText: _phoneError(l10n),
-                        autofillHints: const <String>[
-                          AutofillHints.telephoneNumber,
-                        ],
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        onSubmitted: (_) => _sendCode(),
-                      ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: (constraints.maxHeight - SpacingTokens.spacing8)
+                    .clamp(0, double.infinity),
+              ),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _AuthStepHeader(
+                      title: l10n.authEnterNumberTitle,
+                      body: l10n.authEnterNumberBody,
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing6),
+                    if (phoneStatus != null) ...[
+                      phoneStatus,
                       const SizedBox(height: SpacingTokens.spacing4),
-                      AfriButton(
-                        key: const ValueKey<String>(
-                          'supporter-send-otp-button',
-                        ),
-                        label: _isOnline
-                            ? l10n.authSendCode
-                            : l10n.connectionRequired,
-                        icon: AfriIcons.forward,
-                        onTap: _sendCode,
-                        isLoading: _isLoading,
-                        enabled: _isOnline && !_isLoading && _canSubmitPhone,
-                      ),
                     ],
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing4),
-                AfriTextButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () async {
-                          setState(() => _isLoading = true);
-                          await ref
-                              .read(authStateProvider.notifier)
-                              .signInAnonymously();
-                          if (!mounted || !context.mounted) return;
-                          setState(() => _isLoading = false);
+                    _buildPhoneEntry(context, protectPhoneValue, usesLargeText),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    Text(
+                      l10n.authPhonePrivacy,
+                      style: TypographyTokens.bodySmall(
+                        phoneColors.secondaryText,
+                      ),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing2),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: AfriTextButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () async {
+                                setState(() => _isLoading = true);
+                                await ref
+                                    .read(authStateProvider.notifier)
+                                    .signInAnonymously();
+                                if (!mounted || !context.mounted) return;
+                                setState(() => _isLoading = false);
 
-                          final nextState = ref.read(authStateProvider);
-                          if (nextState is AuthAuthenticated) {
-                            context.go(_postAuthDestination());
-                            return;
-                          }
+                                final nextState = ref.read(authStateProvider);
+                                if (nextState is AuthAuthenticated) {
+                                  context.go(_postAuthDestination());
+                                  return;
+                                }
 
-                          AfriToast.error(
-                            context,
-                            l10n.authGuestSessionUnavailable,
-                          );
-                        },
-                  child: Text(
-                    l10n.onboardingContinueWithoutSignIn,
-                    style: TypographyTokens.labelLarge(guestActionColor),
-                  ),
+                                AfriToast.error(
+                                  context,
+                                  l10n.authGuestSessionUnavailable,
+                                );
+                              },
+                        child: Text(
+                          l10n.onboardingContinueWithoutSignIn,
+                          style: TypographyTokens.bodyLarge(guestActionColor),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing6),
+                    const Spacer(),
+                    AfriButton(
+                      key: const ValueKey<String>('supporter-send-otp-button'),
+                      label: _isOnline
+                          ? l10n.authSendCode
+                          : l10n.connectionRequired,
+                      onTap: _sendCode,
+                      isLoading: _isLoading,
+                      enabled: _isOnline && !_isLoading && _canSubmitPhone,
+                      mutedPrimaryWhenDisabled: true,
+                      labelMaxLines: 2,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPhoneEntry(
+    BuildContext context,
+    bool protectValue,
+    bool largeText,
+  ) {
+    final l10n = context.afriL10n;
+    final input = AfriInputField(
+      key: const ValueKey<String>('supporter-phone-input'),
+      controller: _phoneController,
+      focusNode: _phoneFocusNode,
+      label: largeText ? l10n.authPhoneLabel : l10n.authWhatsAppNumberLabel,
+      hint: l10n.authPhoneHint,
+      tonal: true,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing4,
+        vertical: SpacingTokens.spacing5,
+      ),
+      keyboardType: TextInputType.phone,
+      enabled: !_isLoading,
+      obscureText: protectValue,
+      maxLength: 24,
+      autofocus: !largeText,
+      textInputAction: TextInputAction.done,
+      errorText: _phoneError(l10n),
+      autofillHints: const [AutofillHints.telephoneNumber],
+      enableSuggestions: false,
+      autocorrect: false,
+      onSubmitted: (_) => _sendCode(),
+    );
+    final country = _phoneCountry;
+    if (country == null || _phoneValue.startsWith('+')) return input;
+    final countryControl = AfriPopupMenuButton<AfriCountry>(
+      key: const ValueKey<String>('supporter-phone-country'),
+      enabled: !_isLoading,
+      tooltip: '${l10n.gameCountry}: ${country.name} ${country.dialCode}',
+      itemBuilder: (context) => [
+        for (final option in _countries)
+          PopupMenuItem(
+            value: option,
+            child: Text('${option.name} (${option.dialCode})'),
+          ),
+      ],
+      onSelected: (country) {
+        setState(() {
+          _selectedCountry = country;
+          _pastedInternationalPhone = null;
+          _phoneFailure = _isOnline ? null : _offlinePhoneFailure;
+        });
+        _phoneFocusNode.requestFocus();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing4,
+          vertical: SpacingTokens.spacing5,
+        ),
+        decoration: BoxDecoration(
+          color: context.afriSemanticColors.inputSurface,
+          borderRadius: ShapeTokens.inputRadius,
+        ),
+        child: Text(
+          '${country.isoCode} ${country.dialCode}',
+          style: TypographyTokens.bodyLarge(),
+        ),
+      ),
+    );
+    if (largeText) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Align(alignment: Alignment.centerLeft, child: countryControl),
+          const SizedBox(height: SpacingTokens.spacing2),
+          input,
+        ],
+      );
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        countryControl,
+        const SizedBox(width: SpacingTokens.spacing2),
+        Expanded(child: input),
+      ],
     );
   }
 }

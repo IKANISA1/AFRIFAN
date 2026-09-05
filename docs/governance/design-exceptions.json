@@ -2,9 +2,9 @@
   "schema_version": "1.0",
   "design_authority": {
     "path": "DESIGN.md",
-    "sha256": "8d948f079614cde7e11400948660278284f676349c51c2121a22284e6b5537ed"
+    "sha256": "91fd14704a9b0d709182eae1eaac8fe5e4bcb5259ec309cd7535dae5f24ff32c"
   },
-  "updated_at": "2026-09-05T14:47:25.926883+00:00",
+  "updated_at": "2026-09-05T15:15:59.149146+00:00",
   "exceptions": [],
   "resolved_decisions": [
     {

@@ -154,6 +154,35 @@ native visual refinement has a fresh full-workspace run recorded below.
   iOS journeys passed again, producing eight fresh 1170 × 2532 captures.
   All 1,187 baseline hashes match; the automated privacy scan passed.
 
+### Phone-entry annotation correction
+
+- The phone form now follows the historical Onboarding 4 composition: a navy
+  upper canvas fading to black, separate calling-code and softly filled phone
+  controls, a left-aligned anonymous-entry link and a bottom primary action
+  that stays above the keyboard. The previous floating label, leading phone
+  icon and submit arrow are removed from this route.
+- Measured source colours and coordinates are recorded in the reference map.
+  Its keyboard and curator footer are excluded from the gradient samples.
+  ISO country labels are a deliberate readable-glyph adaptation; the catalogue
+  menu retains the existing shared popup interaction.
+- Full international paste/autofill preserves the OTP recipient. Calling-code
+  changes normalize national input, and numbers outside the catalogue keep
+  the full international-entry fallback. WhatsApp delivery, deferred navigation,
+  anonymous entry, masking, drafts and recovery remain covered by tests.
+- **544 affected tests passed without updating baselines** across onboarding,
+  shared theme and localization. The final **48 phone/code tests passed** after
+  adding an international fallback check and primary-action visibility checks.
+  These runs overlap. All 16 changed phone-state images retain their dimensions;
+  OTP images are unchanged. English, French and Kinyarwanda phone placeholders
+  now describe the field instead of repeating a fixed calling code.
+- Strict analysis, architecture, both QA isolation contracts and the golden
+  contract passed. All 1,187 baseline hashes match. The five native iOS journeys
+  passed again (seven harness results), producing eight Flutter-layer captures
+  and one additional system capture. The system image includes status chrome
+  but omits the keypad, so native keypad appearance remains unverified.
+  Keyboard clearance is verified by widget geometry tests. The automated
+  evidence privacy scan passed.
+
 ## Route comparison register
 
 | Target route | Source reference | Mapping | Representative target |

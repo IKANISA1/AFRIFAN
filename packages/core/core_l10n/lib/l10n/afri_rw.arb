@@ -369,7 +369,7 @@
   "authEnterNumberBody": "Turakoherereza kode y’ibanga yo kwinjira.",
   "authPhoneLabel": "Telefone",
   "authWhatsAppNumberLabel": "Nomero ya WhatsApp",
-  "authPhoneHint": "+250 7xx xxx xxx",
+  "authPhoneHint": "Nomero ya telefoni",
   "authPhonePrivacy": "Nomero yawe iguma mu ibanga.",
   "authSendCode": "Ohereza kode",
   "authGuestSessionUnavailable": "Ntibyashobotse gufungura nk’umushyitsi. Ongera ugerageze.",

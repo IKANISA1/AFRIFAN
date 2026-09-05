@@ -35,6 +35,7 @@ class AfriButton extends StatefulWidget {
     this.autofocus = false,
     this.focusNode,
     this.labelMaxLines = 1,
+    this.mutedPrimaryWhenDisabled = false,
     super.key,
   });
 
@@ -49,6 +50,9 @@ class AfriButton extends StatefulWidget {
   final bool autofocus;
   final FocusNode? focusNode;
   final int labelMaxLines;
+
+  /// Keep an inverse primary action recognisable on authentication canvases.
+  final bool mutedPrimaryWhenDisabled;
 
   @override
   State<AfriButton> createState() => _AfriButtonState();
@@ -105,6 +109,16 @@ class _AfriButtonState extends State<AfriButton> {
         color: ColorTokens.accessibleChartColor(colors.borderStrong),
         width: BorderTokens.standard,
       );
+      if (widget.mutedPrimaryWhenDisabled &&
+          widget.variant == AfriButtonVariant.primary) {
+        background = Color.lerp(
+          colors.buttonPrimaryBackground,
+          colors.buttonPrimaryForeground,
+          0.35,
+        )!;
+        foreground = colors.buttonPrimaryForeground;
+        border = null;
+      }
     }
 
     final content = Row(

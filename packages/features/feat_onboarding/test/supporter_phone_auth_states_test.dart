@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:feat_onboarding/src/screens/supporter_phone_auth_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,11 @@ const supporterPhoneAuthTestOtp = '00000';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(loadAppFonts);
+  setUpAll(() async {
+    await loadAppFonts();
+    AfriCountryCatalog.withCountries(await loadBuiltInCountries());
+  });
+  tearDownAll(() => AfriCountryCatalog.withCountries([]));
 
   for (final state in _AuthGoldenState.values) {
     testWidgets('golden phone auth ${state.id} state', (tester) async {
@@ -440,6 +445,14 @@ Future<void> _captureAuthGolden(
   required _AuthGoldenState state,
 }) async {
   expect(tester.takeException(), isNull);
+  if (route == _AuthGoldenRoute.phone &&
+      (state == _AuthGoldenState.dark || state == _AuthGoldenState.light)) {
+    final action = find.byKey(
+      const ValueKey<String>('supporter-send-otp-button'),
+    );
+    expect(tester.getRect(action).bottom, lessThanOrEqualTo(844));
+    expect(action.hitTestable(), findsOneWidget);
+  }
   final viewport = state == _AuthGoldenState.largeText ? '320x720' : '390x844';
   final theme = state == _AuthGoldenState.light ? 'light' : 'dark';
   await expectLater(

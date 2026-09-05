@@ -5,7 +5,7 @@
   "cohort": {
     "id": "native-ios-dark-glow-20260905",
     "platform": "iOS",
-    "theme": "Dark \u00b7 Glow",
+    "theme": "Dark · Glow",
     "captured_on": "2026-09-05",
     "region": null,
     "build": null,
@@ -58,7 +58,7 @@
       "reference_ids": [
         "MOBBIN-ONBOARDING-010"
       ],
-      "adaptation": "Preserves anonymous entry, full international phone field, WhatsApp delivery, server OTP verification and recovery. Historical form pattern; current build/region unknown.",
+      "adaptation": "Preserves the submitted international phone value, WhatsApp code verification, resend, recovery and anonymous-entry contract. Historical code-entry pattern; source build and date unknown.",
       "required_states": [
         "loading",
         "empty",
@@ -105,7 +105,7 @@
       "reference_ids": [
         "MOBBIN-ONBOARDING-004"
       ],
-      "adaptation": "Preserves anonymous entry, full international phone field, WhatsApp delivery, server OTP verification and recovery. Historical form pattern; current build/region unknown.",
+      "adaptation": "Catalogue calling-code selector and national phone entry retain full E.164 paste/autofill and unknown-prefix fallback, WhatsApp delivery, anonymous entry and recovery. ISO country labels avoid missing emoji glyphs. Historical Onboarding 4 composition; build and date unknown.",
       "required_states": [
         "loading",
         "empty",
@@ -3604,6 +3604,45 @@
         7.53,
         6.41
       ]
+    },
+    "phone_auth": {
+      "reference": "MOBBIN-ONBOARDING-004",
+      "source_size": [
+        1179,
+        2676
+      ],
+      "excluded": "curator footer and keyboard",
+      "samples": [
+        {
+          "coordinate": [
+            590,
+            40
+          ],
+          "srgb": "#1B2B8C"
+        },
+        {
+          "coordinate": [
+            590,
+            400
+          ],
+          "srgb": "#1C2D7D"
+        },
+        {
+          "coordinate": [
+            590,
+            1000
+          ],
+          "srgb": "#0B112F"
+        },
+        {
+          "coordinate": [
+            590,
+            1300
+          ],
+          "srgb": "#000002"
+        }
+      ],
+      "method": "Original unobstructed PNG samples; vertical interpolation and black endpoint are target adapters."
     }
   },
   "retained_adaptations": [
@@ -3689,6 +3728,28 @@
       "native_screenshots": 8,
       "strict_analysis": "pass",
       "source_equivalence": "unverified for source font, build, exact viewport, current native Light and unobserved states"
+    },
+    "phone_entry_correction": {
+      "verified_at": "2026-09-05T18:15:12.291356+00:00",
+      "scope": "phone-entry annotation correction",
+      "affected_package_tests": 544,
+      "final_phone_code_tests": 48,
+      "test_counts_overlap": true,
+      "update_goldens": false,
+      "changed_baseline_images": 16,
+      "native_application_journeys": 5,
+      "native_harness_results": 7,
+      "native_flutter_captures": 8,
+      "native_system_captures": 1,
+      "native_keypad_appearance": "unverified; simulator system capture omits keypad",
+      "keyboard_clearance": "widget geometry tests passed",
+      "strict_analysis": "pass",
+      "architecture": "pass",
+      "qa_isolation": "pass",
+      "golden_contract": "pass",
+      "baseline_hashes": 1187,
+      "automated_privacy_scan": "pass",
+      "source_equivalence": "source build, date, font and unobserved states remain unverified; ISO labels are a deliberate adaptation"
     }
   }
 }

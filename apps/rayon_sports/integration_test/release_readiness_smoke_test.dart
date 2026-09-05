@@ -177,6 +177,14 @@ void main() {
       expect(find.byType(SupporterPhoneAuthScreen), findsOneWidget);
       if (const bool.fromEnvironment('AFRICLUB_CAPTURE_REFERENCE')) {
         await binding.takeScreenshot('phone-native-restored');
+        if (const bool.fromEnvironment('AFRICLUB_CAPTURE_SYSTEM_REFERENCE')) {
+          // Native screenshot callbacks run after the journey finishes. Hold
+          // this synthetic frame briefly for the host's system capture.
+          debugPrint('AFRICLUB_REFERENCE_PHONE_READY');
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(seconds: 5)),
+          );
+        }
       }
     },
   );

@@ -1386,7 +1386,7 @@ class AfriLocalizationsFr extends AfriLocalizations {
   String get authWhatsAppNumberLabel => 'Numéro WhatsApp';
 
   @override
-  String get authPhoneHint => '+250 7xx xxx xxx';
+  String get authPhoneHint => 'Numéro de téléphone';
 
   @override
   String get authPhonePrivacy => 'Votre numéro reste privé.';

@@ -457,7 +457,7 @@
   "authEnterNumberBody": "We will send a private sign-in code.",
   "authPhoneLabel": "Phone",
   "authWhatsAppNumberLabel": "WhatsApp number",
-  "authPhoneHint": "+250 7xx xxx xxx",
+  "authPhoneHint": "Phone number",
   "authPhonePrivacy": "Your number stays private.",
   "authSendCode": "Send code",
   "authGuestSessionUnavailable": "Could not start a guest session. Try again.",
