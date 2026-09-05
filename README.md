@@ -9,6 +9,8 @@ White-label football-club platform with four product surfaces:
 
 Rayon Sports is the reference club profile and seeded default. Flutter owns the full supporter experience. The web membership surface also provides authenticated member access and contribution initiation; payment confirmation remains server-controlled.
 
+Current native UI implementation: [route and state review](docs/governance/native-design-review.md) and [reference map](docs/governance/native-reference-map.json).
+
 ## Product Identity And Priority
 
 AFRICLUB is a football club app first. Product decisions follow this order:

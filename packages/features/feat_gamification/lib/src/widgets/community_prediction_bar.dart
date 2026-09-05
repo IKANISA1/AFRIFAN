@@ -69,7 +69,7 @@ class _CommunityPickRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final barColor = isUserPick
-        ? ColorTokens.clubAccent
+        ? ColorTokens.primaryContainer
         : ColorTokens.onSurfaceVariant;
     final fraction = (pick.pickPercentage / 100).clamp(0.0, 1.0);
 
@@ -85,22 +85,22 @@ class _CommunityPickRow extends StatelessWidget {
                   child: Icon(
                     AfriIcons.profile,
                     size: SpacingTokens.spacing3,
-                    color: ColorTokens.clubAccent,
+                    color: ColorTokens.primaryContainer,
                   ),
                 ),
               Flexible(
                 child: Text(
-                  pick.selectedOutcome.toUpperCase(),
+                  pick.selectedOutcome,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style:
                       TypographyTokens.labelMedium(
                         isUserPick
-                            ? ColorTokens.clubAccent
+                            ? ColorTokens.primaryContainer
                             : ColorTokens.onSurfaceVariant,
                       ).copyWith(
                         fontWeight: isUserPick
-                            ? FontWeight.w800
+                            ? FontWeight.w600
                             : FontWeight.w600,
                       ),
                 ),
@@ -134,7 +134,7 @@ class _CommunityPickRow extends StatelessWidget {
                         ),
                         border: isUserPick
                             ? BorderTokens.all(
-                                color: ColorTokens.clubAccent.withValues(
+                                color: ColorTokens.primaryContainer.withValues(
                                   alpha: 0.4,
                                 ),
                               )
@@ -161,7 +161,7 @@ class _CommunityPickRow extends StatelessWidget {
             textAlign: TextAlign.right,
             style: TypographyTokens.labelMedium(
               isUserPick
-                  ? ColorTokens.clubAccent
+                  ? ColorTokens.primaryContainer
                   : ColorTokens.onSurfaceVariant,
             ).copyWith(fontWeight: FontWeight.w700),
           ),

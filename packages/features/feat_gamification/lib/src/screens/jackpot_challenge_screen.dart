@@ -185,7 +185,7 @@ class _JackpotChallengeScreenState
           context.afriL10n.gameBonusRound,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.0,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -246,7 +246,7 @@ class _JackpotChallengeScreenState
             )
           : AfriRefreshIndicator(
               onRefresh: _load,
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               child: ListView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -271,8 +271,8 @@ class _JackpotChallengeScreenState
                                   _formatFet(round.prizePoolFet),
                                 ),
                           style: TypographyTokens.displaySmall(
-                            ColorTokens.clubAccent,
-                          ).copyWith(fontWeight: FontWeight.w900),
+                            ColorTokens.primaryContainer,
+                          ).copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
@@ -297,7 +297,7 @@ class _JackpotChallengeScreenState
                           borderRadius: BorderRadius.circular(
                             ShapeTokens.radiusFull,
                           ),
-                          color: ColorTokens.clubAccent,
+                          color: ColorTokens.primaryContainer,
                           backgroundColor: ColorTokens.surfaceContainerHighest,
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
@@ -472,7 +472,7 @@ class _LeaderRow extends StatelessWidget {
             child: Text(
               context.afriL10n.gameRankHash(rank),
               style: TypographyTokens.titleSmall().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -481,8 +481,8 @@ class _LeaderRow extends StatelessWidget {
           Text(
             total,
             style: TypographyTokens.titleSmall(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w800),
+              ColorTokens.primaryContainer,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),

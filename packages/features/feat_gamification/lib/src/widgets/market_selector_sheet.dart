@@ -222,11 +222,11 @@ class _MarketSelectorContentState
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? ColorTokens.clubAccent.withValues(alpha: 0.18)
+                        ? ColorTokens.primaryContainer.withValues(alpha: 0.18)
                         : ColorTokens.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                     border: isSelected
-                        ? BorderTokens.all(color: ColorTokens.clubAccent)
+                        ? BorderTokens.all(color: ColorTokens.primaryContainer)
                         : BorderTokens.ghost(),
                   ),
                   child: Row(
@@ -236,7 +236,7 @@ class _MarketSelectorContentState
                         _chipLabel(cat),
                         style: TypographyTokens.labelSmall(
                           isSelected
-                              ? ColorTokens.clubAccent
+                              ? ColorTokens.primaryContainer
                               : ColorTokens.onSurfaceVariant,
                         ),
                       ),
@@ -249,7 +249,9 @@ class _MarketSelectorContentState
                           ),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? ColorTokens.clubAccent.withValues(alpha: 0.25)
+                                ? ColorTokens.primaryContainer.withValues(
+                                    alpha: 0.25,
+                                  )
                                 : ColorTokens.onSurfaceVariant.withValues(
                                     alpha: 0.12,
                                   ),
@@ -261,7 +263,7 @@ class _MarketSelectorContentState
                             count.toString(),
                             style: TypographyTokens.metricLabel(
                               isSelected
-                                  ? ColorTokens.clubAccent
+                                  ? ColorTokens.primaryContainer
                                   : ColorTokens.onSurfaceVariant,
                             ).copyWith(fontWeight: FontWeight.w700),
                           ),
@@ -290,7 +292,7 @@ class _MarketSelectorContentState
                   width: SpacingTokens.spacing1,
                   height: SpacingTokens.spacing4 - SpacingTokens.spacing1 / 2,
                   decoration: BoxDecoration(
-                    color: ColorTokens.clubAccent,
+                    color: ColorTokens.primaryContainer,
                     borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                   ),
                 ),
@@ -298,9 +300,13 @@ class _MarketSelectorContentState
                 Expanded(
                   child: Text(
                     _displayCategoryLabel(_activeCategory!),
-                    style: TypographyTokens.metricLabel(
-                      ColorTokens.onSurfaceVariant,
-                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.0),
+                    style:
+                        TypographyTokens.metricLabel(
+                          ColorTokens.onSurfaceVariant,
+                        ).copyWith(
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: TypographyTokens.trackingNone,
+                        ),
                   ),
                 ),
                 Text(
@@ -422,7 +428,9 @@ class _SheetMarketCard extends ConsumerWidget {
                       vertical: SpacingTokens.spacing1,
                     ),
                     decoration: BoxDecoration(
-                      color: ColorTokens.clubAccent.withValues(alpha: 0.18),
+                      color: ColorTokens.primaryContainer.withValues(
+                        alpha: 0.18,
+                      ),
                       borderRadius: BorderRadius.circular(
                         ShapeTokens.radiusFull,
                       ),
@@ -430,7 +438,7 @@ class _SheetMarketCard extends ConsumerWidget {
                     child: Text(
                       context.afriL10n.gamePoints(market.fetValue),
                       style: TypographyTokens.labelSmall(
-                        ColorTokens.clubAccent,
+                        ColorTokens.primaryContainer,
                       ),
                     ),
                   ),
@@ -443,7 +451,7 @@ class _SheetMarketCard extends ConsumerWidget {
                             ColorTokens.onSurfaceVariant,
                           ).copyWith(
                             fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
+                            letterSpacing: TypographyTokens.trackingNone,
                           ),
                     ),
                   ],
@@ -473,7 +481,7 @@ class _SheetMarketCard extends ConsumerWidget {
                               size:
                                   SpacingTokens.spacing3 +
                                   SpacingTokens.spacing1 / 2,
-                              color: ColorTokens.clubAccent,
+                              color: ColorTokens.primaryContainer,
                             )
                           : null,
                       onTap: () {

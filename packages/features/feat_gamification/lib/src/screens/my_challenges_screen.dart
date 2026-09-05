@@ -331,7 +331,7 @@ class _LargeTextChallengeHistoryCard extends StatelessWidget {
               fixture.awayTeamName,
             ),
             style: TypographyTokens.titleMedium().copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -346,7 +346,7 @@ class _LargeTextChallengeHistoryCard extends StatelessWidget {
                   homeScore: entry.predictedHomeScore,
                   awayScore: entry.predictedAwayScore,
                   label: context.afriL10n.gameMyPick,
-                  accent: ColorTokens.clubAccent,
+                  accent: ColorTokens.primaryContainer,
                 ),
             ],
           ),

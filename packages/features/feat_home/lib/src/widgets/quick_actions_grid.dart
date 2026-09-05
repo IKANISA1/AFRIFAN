@@ -88,27 +88,6 @@ class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AfriSectionHeader(
-          title: l10n.homeShortcutsTitle,
-          padding: EdgeInsets.zero,
-          trailing: secondaryActions.isEmpty
-              ? null
-              : AfriButton(
-                  key: const ValueKey<String>('home-secondary-actions-toggle'),
-                  label: _showSecondaryActions ? l10n.homeLess : l10n.homeMore,
-                  semanticsLabel: _showSecondaryActions
-                      ? l10n.homeHideMoreShortcuts
-                      : l10n.homeShowMoreShortcuts,
-                  onTap: () {
-                    setState(() {
-                      _showSecondaryActions = !_showSecondaryActions;
-                    });
-                  },
-                  variant: AfriButtonVariant.ghost,
-                  fullWidth: false,
-                ),
-        ),
-        const SizedBox(height: SpacingTokens.spacing4),
         _PrimaryActionGrid(
           actions: primaryActions,
           resolveIcon: _resolveActionIcon,
@@ -116,6 +95,33 @@ class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
               featureService.isRouteAvailable(action.route),
           onTap: (action) => _openAction(context, action, layer: 'primary'),
         ),
+        if (secondaryActions.isNotEmpty) ...[
+          AfriSectionHeader(
+            title: l10n.homeShortcutsTitle,
+            padding: EdgeInsets.zero,
+            trailing: secondaryActions.isEmpty
+                ? null
+                : AfriButton(
+                    key: const ValueKey<String>(
+                      'home-secondary-actions-toggle',
+                    ),
+                    label: _showSecondaryActions
+                        ? l10n.homeLess
+                        : l10n.homeMore,
+                    semanticsLabel: _showSecondaryActions
+                        ? l10n.homeHideMoreShortcuts
+                        : l10n.homeShowMoreShortcuts,
+                    onTap: () {
+                      setState(() {
+                        _showSecondaryActions = !_showSecondaryActions;
+                      });
+                    },
+                    variant: AfriButtonVariant.ghost,
+                    fullWidth: false,
+                  ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+        ],
         if (_showSecondaryActions && secondaryActions.isNotEmpty) ...[
           const SizedBox(height: SpacingTokens.spacing6),
           const AfriDivider(),

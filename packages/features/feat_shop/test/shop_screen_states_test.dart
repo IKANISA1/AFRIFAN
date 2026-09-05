@@ -143,7 +143,7 @@ void main() {
       find.byKey(const ValueKey<String>('shop-add-jersey-sold-out')),
     );
     expect(addAction.onTap, isNull);
-    expect(find.text('OUT OF STOCK'), findsOneWidget);
+    expect(find.text('Out of stock'), findsOneWidget);
   });
 
   testWidgets('golden Shop route focused state', (tester) async {

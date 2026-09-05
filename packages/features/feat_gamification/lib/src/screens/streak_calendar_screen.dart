@@ -118,7 +118,7 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
           context.afriL10n.gameStreakTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.6,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -166,8 +166,8 @@ class StreakCalendarContent extends StatelessWidget {
           Text(
             context.afriL10n.gameStreakDays(currentStreak),
             style: TypographyTokens.displayLarge(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w900),
+              ColorTokens.primaryContainer,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           currentStreak == 0
@@ -232,7 +232,7 @@ class _StreakHeatCell extends StatelessWidget {
         width: SpacingTokens.spacing5,
         height: SpacingTokens.spacing5,
         decoration: BoxDecoration(
-          color: ColorTokens.clubPrimary.withValues(alpha: normalized),
+          color: ColorTokens.primary.withValues(alpha: normalized),
           borderRadius: BorderRadius.circular(
             SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
           ),
@@ -257,7 +257,7 @@ class _StreakMetric extends StatelessWidget {
         Text(
           value,
           style: TypographyTokens.headlineLarge().copyWith(
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],

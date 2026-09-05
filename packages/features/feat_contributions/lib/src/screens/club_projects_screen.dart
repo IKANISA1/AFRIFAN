@@ -97,7 +97,7 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
           context.afriL10n.contributionsClubProjectsTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.6,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -175,9 +175,9 @@ class _ProjectCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title.toUpperCase(),
+            title,
             style: TypographyTokens.headlineMedium().copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
@@ -189,7 +189,7 @@ class _ProjectCard extends StatelessWidget {
             value: progress,
             minHeight: 8,
             borderRadius: ShapeTokens.buttonRadius,
-            color: ColorTokens.clubPrimary,
+            color: ColorTokens.primary,
             backgroundColor: ColorTokens.surfaceContainerHighest,
           ),
           const SizedBox(height: SpacingTokens.spacing2),

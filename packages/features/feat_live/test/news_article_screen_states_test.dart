@@ -233,6 +233,12 @@ void main() {
           const ValueKey<String>('news-related-article-2'),
         );
         await tester.scrollUntilVisible(card, 260);
+        final restingSurface = tester.widget<AnimatedContainer>(
+          find
+              .descendant(of: card, matching: find.byType(AnimatedContainer))
+              .first,
+        );
+        final restingColor = (restingSurface.decoration as BoxDecoration).color;
         gesture = await tester.startGesture(tester.getCenter(card));
         await tester.pump(const Duration(milliseconds: 120));
         await tester.pump(const Duration(milliseconds: 40));
@@ -242,7 +248,7 @@ void main() {
         expect(
           surfaces.any(
             (surface) =>
-                (surface.decoration as BoxDecoration?)?.boxShadow?.length == 2,
+                (surface.decoration as BoxDecoration?)?.color != restingColor,
           ),
           isTrue,
         );
@@ -347,7 +353,7 @@ void main() {
       ),
       check: (_) async {
         expect(find.text('Article changed'), findsOneWidget);
-        expect(find.text('REFRESH ARTICLE'), findsOneWidget);
+        expect(find.text('Refresh article'), findsOneWidget);
       },
     );
   });

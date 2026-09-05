@@ -541,6 +541,42 @@
       "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
       "review_authority": "AFRICLUB code and localization governance",
       "reviewed_at": "2026-08-21"
+    },
+    {
+      "file": "packages/features/feat_home/lib/src/screens/home_screen.dart",
+      "field": "semanticLabel",
+      "value": "${slide.homeTeam} · ${slide.awayTeam}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "Backend-authored team names or numeric scores separated by punctuation; no fixed lexical UI copy is embedded in this composition.",
+      "review_authority": "Implementation review against the selected native design contract",
+      "reviewed_at": "2026-09-05"
+    },
+    {
+      "file": "packages/features/feat_home/lib/src/widgets/match_card.dart",
+      "field": "text",
+      "value": "${slide.homeScore} : ${slide.awayScore}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "Backend-authored team names or numeric scores separated by punctuation; no fixed lexical UI copy is embedded in this composition.",
+      "review_authority": "Implementation review against the selected native design contract",
+      "reviewed_at": "2026-09-05"
+    },
+    {
+      "file": "packages/features/feat_home/lib/src/widgets/match_card.dart",
+      "field": "text",
+      "value": "${slide.homeTeam} · ${slide.awayTeam}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "Backend-authored team names or numeric scores separated by punctuation; no fixed lexical UI copy is embedded in this composition.",
+      "review_authority": "Implementation review against the selected native design contract",
+      "reviewed_at": "2026-09-05"
+    },
+    {
+      "file": "packages/features/feat_home/lib/src/widgets/match_card.dart",
+      "field": "text",
+      "value": "${slide.homeTeam} ${slide.awayTeam}",
+      "disposition": "runtime_value_without_translatable_literal",
+      "rationale": "Backend-authored team names or numeric scores separated by punctuation; no fixed lexical UI copy is embedded in this composition.",
+      "review_authority": "Implementation review against the selected native design contract",
+      "reviewed_at": "2026-09-05"
     }
   ]
 }

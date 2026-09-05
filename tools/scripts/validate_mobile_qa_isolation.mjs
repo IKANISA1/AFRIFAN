@@ -45,7 +45,7 @@ assert.match(smokeTest, /FakeDeepLinkService\(stream: links\.stream\)/);
 assert.match(smokeTest, /links\.add\(Uri\.parse\('gikundiro:\/\/settings'\)\)/);
 assert.match(smokeTest, /ConnectivityService\.setOnlineForTest\(false\)/);
 assert.match(smokeTest, /find\.text\('Offline settings'\)/);
-assert.match(smokeTest, /find\.text\('SIGN OUT\?'\)/);
+assert.match(smokeTest, /find\.text\('Sign out\?'\)/);
 assert.match(smokeTest, /tester\.tap\(find\.text\('Stay'\)\)/);
 assert.match(androidManifest, /android:scheme="gikundiro"/);
 assert.match(androidManifest, /android:scheme="africlub"/);

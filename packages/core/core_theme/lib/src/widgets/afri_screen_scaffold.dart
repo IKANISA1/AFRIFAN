@@ -83,7 +83,7 @@ class AfriScreenScaffold extends StatelessWidget {
                 leading: showBackButton
                     ? AfriIconButton(
                         icon: AfriIcons.back,
-                        onTap: context.canPop() ? () => context.pop() : null,
+                        onTap: _backAction(context),
                         tooltip: MaterialLocalizations.of(
                           context,
                         ).backButtonTooltip,
@@ -114,11 +114,29 @@ class AfriScreenScaffold extends StatelessWidget {
       backgroundColor: backgroundColor ?? colors.appBackground,
       appBar: resolvedAppBar,
       bottomNavigationBar: bottomNavigationBar,
-      body: SafeArea(
-        top: false,
-        child: bodyWrapper?.call(hingeSafeBody) ?? hingeSafeBody,
-      ),
+      body:
+          bodyWrapper?.call(
+            SafeArea(
+              top: false,
+              bottom: !bottomNavigationAware,
+              child: hingeSafeBody,
+            ),
+          ) ??
+          SafeArea(
+            top: false,
+            bottom: !bottomNavigationAware,
+            child: hingeSafeBody,
+          ),
     );
+  }
+
+  VoidCallback? _backAction(BuildContext context) {
+    final router = GoRouter.maybeOf(context);
+    if (router != null) {
+      return router.canPop() ? router.pop : null;
+    }
+    final navigator = Navigator.maybeOf(context);
+    return navigator?.canPop() == true ? navigator!.pop : null;
   }
 }
 
@@ -151,24 +169,23 @@ class _AfriScreenBody extends StatelessWidget {
       final textScale = MediaQuery.textScalerOf(context).scale(1);
       final titleStyle = textScale >= 1.5
           ? theme.textTheme.headlineMedium
-          : theme.textTheme.displayMedium;
+          : theme.textTheme.headlineLarge;
       content = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Semantics(
             header: true,
             child: Text(
-              title!.toUpperCase(),
+              title!,
               style: titleStyle?.copyWith(
                 color: colors.primaryText,
-                fontWeight: FontWeight.w900,
-                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w700,
                 letterSpacing: TypographyTokens.trackingNone,
-                height: TypographyTokens.lineHeightHero,
+                height: TypographyTokens.lineHeightTight,
               ),
             ),
           ),
-          const SizedBox(height: SpacingTokens.spacing8),
+          const SizedBox(height: SpacingTokens.spacing6),
           if (scrollable) child else Expanded(child: child),
         ],
       );
@@ -182,7 +199,8 @@ class _AfriScreenBody extends StatelessWidget {
           final maxWidth = AfriResponsive.maxContentWidthForWidth(
             constraints.maxWidth,
           );
-          resolvedContent = Center(
+          resolvedContent = Align(
+            alignment: Alignment.topCenter,
             child: SizedBox(width: maxWidth, child: resolvedContent),
           );
         }
@@ -210,6 +228,9 @@ class _AfriScreenBody extends StatelessWidget {
             ),
             child: resolvedContent,
           );
+        }
+        if (title != null) {
+          resolvedContent = Padding(padding: padding, child: resolvedContent);
         }
         return resolvedContent;
       },

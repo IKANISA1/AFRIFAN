@@ -169,7 +169,7 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
       child: AfriRefreshIndicator(
         onRefresh: () =>
             ref.read(newsArticleProvider(widget.articleId).notifier).refresh(),
-        color: ColorTokens.clubAccent,
+        color: ColorTokens.primaryContainer,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
@@ -380,8 +380,8 @@ class _ArticleHeroFallback extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: ColorTokens.universalGradient(
           colors: [
-            ColorTokens.clubPrimary.withValues(alpha: 0.4),
-            ColorTokens.clubSecondary,
+            ColorTokens.primary.withValues(alpha: 0.4),
+            ColorTokens.surfaceContainerHigh,
             ColorTokens.surfaceContainerLowest,
           ],
         ),

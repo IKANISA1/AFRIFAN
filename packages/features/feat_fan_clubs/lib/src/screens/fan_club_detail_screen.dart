@@ -129,7 +129,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
 
   Widget _buildReady(FanClubDetailState detail, FanClubDetailData data) {
     final club = data.club;
-    final primary = ColorTokens.clubAccent;
+    final primary = ColorTokens.primaryContainer;
     final name =
         club['name']?.toString() ?? context.afriL10n.fanClubFallbackName;
     final description = club['description']?.toString() ?? '';
@@ -165,15 +165,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
             ),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                decoration: BoxDecoration(
-                  gradient: ColorTokens.universalGradient(
-                    colors: [
-                      ColorTokens.clubPrimary.withValues(alpha: 0.6),
-                      ColorTokens.surfaceContainerLow,
-                      ColorTokens.surfaceContainerLowest,
-                    ],
-                  ),
-                ),
+                color: ColorTokens.surfaceContainerLow,
                 child: Padding(
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
                   child: Column(
@@ -195,7 +187,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                             ),
                             decoration: BoxDecoration(
                               color: isActive
-                                  ? ColorTokens.clubAccent.withValues(
+                                  ? ColorTokens.primaryContainer.withValues(
                                       alpha: 0.14,
                                     )
                                   : ColorTokens.warning.withValues(alpha: 0.14),
@@ -207,7 +199,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                                   : context.afriL10n.fanClubPendingReview,
                               style: TypographyTokens.labelMedium(
                                 isActive
-                                    ? ColorTokens.clubAccent
+                                    ? ColorTokens.primaryContainer
                                     : ColorTokens.warning,
                               ).copyWith(fontWeight: FontWeight.w700),
                             ),
@@ -219,9 +211,9 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         selected: true,
                         label: context.afriL10n.fanClubCurrentSemantic(name),
                         child: Text(
-                          name.toUpperCase(),
+                          name,
                           style: TypographyTokens.displaySmall().copyWith(
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w600,
                             height: TypographyTokens.lineHeightSolid,
                           ),
                         ),
@@ -725,8 +717,8 @@ class _DetailStat extends StatelessWidget {
           Text(
             value,
             style: TypographyTokens.headlineLarge(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w800),
+              ColorTokens.onSurface,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),

@@ -72,12 +72,12 @@ class _JackpotCountdownTimerState extends State<JackpotCountdownTimer> {
           ),
           decoration: BoxDecoration(
             gradient: ColorTokens.universalSurfaceGradient(
-              from: ColorTokens.clubAccent.withValues(alpha: 0.12),
+              from: ColorTokens.primaryContainer.withValues(alpha: 0.12),
               to: ColorTokens.surfaceContainerLow,
             ),
             borderRadius: ShapeTokens.cardRadius,
             border: BorderTokens.all(
-              color: ColorTokens.clubAccent.withValues(alpha: 0.25),
+              color: ColorTokens.primaryContainer.withValues(alpha: 0.25),
             ),
           ),
           child: Column(
@@ -86,9 +86,13 @@ class _JackpotCountdownTimerState extends State<JackpotCountdownTimer> {
                 isExpired
                     ? context.afriL10n.gameEntriesClosed
                     : context.afriL10n.gameEntriesCloseIn,
-                style: TypographyTokens.metricLabel(
-                  ColorTokens.onSurfaceVariant,
-                ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 2),
+                style:
+                    TypographyTokens.metricLabel(
+                      ColorTokens.onSurfaceVariant,
+                    ).copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: TypographyTokens.trackingNone,
+                    ),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               Row(
@@ -139,15 +143,17 @@ class _TimeUnit extends StatelessWidget {
         Text(
           value.toString().padLeft(2, '0'),
           style: TypographyTokens.metricValue(
-            highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
-          ).copyWith(fontWeight: FontWeight.w900),
+            highlight ? ColorTokens.primaryContainer : ColorTokens.onSurface,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: SpacingTokens.spacing1 / 2),
         Text(
           label,
-          style: TypographyTokens.metricLabel(
-            ColorTokens.onSurfaceVariant,
-          ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+          style: TypographyTokens.metricLabel(ColorTokens.onSurfaceVariant)
+              .copyWith(
+                fontWeight: FontWeight.w700,
+                letterSpacing: TypographyTokens.trackingNone,
+              ),
         ),
       ],
     );

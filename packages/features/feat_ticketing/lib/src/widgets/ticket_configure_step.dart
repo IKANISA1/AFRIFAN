@@ -80,7 +80,7 @@ class TicketConfigureStep extends StatelessWidget {
                 Text(
                   AfriDateFormatter.formatDate(match.matchDate),
                   style: TypographyTokens.bodyLarge().copyWith(
-                    color: ColorTokens.clubAccent,
+                    color: ColorTokens.primaryContainer,
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
@@ -217,7 +217,7 @@ class _OfficialTicketCategoryReference extends StatelessWidget {
                         Text(
                           currency.format(category.priceRwf),
                           style: TypographyTokens.labelMedium(
-                            ColorTokens.clubAccent,
+                            ColorTokens.primaryContainer,
                           ),
                         ),
                       ],
@@ -235,7 +235,7 @@ class _OfficialTicketCategoryReference extends StatelessWidget {
                         Text(
                           currency.format(category.priceRwf),
                           style: TypographyTokens.labelMedium(
-                            ColorTokens.clubAccent,
+                            ColorTokens.primaryContainer,
                           ),
                         ),
                       ],

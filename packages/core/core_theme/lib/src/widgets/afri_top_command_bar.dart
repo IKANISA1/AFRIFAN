@@ -5,7 +5,6 @@ import '../tokens/border_tokens.dart';
 import '../tokens/chrome_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/icon_tokens.dart';
-import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -14,12 +13,14 @@ import 'afri_press_feedback.dart';
 
 class AfriTopCommandAction {
   const AfriTopCommandAction({
+    this.key,
     required this.icon,
     required this.label,
     this.onTap,
     this.showDot = false,
   });
 
+  final Key? key;
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
@@ -76,7 +77,10 @@ class AfriTopCommandBar extends StatelessWidget {
             const SizedBox(width: SpacingTokens.spacing3),
           for (var index = 0; index < visibleActions.length; index += 1) ...[
             if (index > 0) const SizedBox(width: SpacingTokens.spacing2),
-            _CommandCircle(action: visibleActions[index]),
+            _CommandCircle(
+              key: visibleActions[index].key,
+              action: visibleActions[index],
+            ),
           ],
         ],
       ),
@@ -104,27 +108,12 @@ class _CommandAvatar extends StatelessWidget {
             height: AfriChromeTokens.commandControlSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  ColorTokens.referenceRewardsViolet.withValues(
-                    alpha: AfriChromeTokens.commandGradientStartOpacity,
-                  ),
-                  ColorTokens.referenceChromeBlack.withValues(
-                    alpha: AfriChromeTokens.chromeGradientEndOpacity,
-                  ),
-                ],
+              color: ColorTokens.onSurface.withValues(
+                alpha: AfriChromeTokens.commandAvatarFillOpacity,
               ),
-              border: BorderTokens.all(
-                color: state.isFocused
-                    ? ColorTokens.primaryContainer
-                    : ColorTokens.chromeBorder,
-                width: state.isFocused
-                    ? BorderTokens.chromeFocus
-                    : BorderTokens.standard,
-              ),
-              boxShadow: AfriShadows.commandAvatar(),
+              border: state.isFocused
+                  ? BorderTokens.focusAll(color: ColorTokens.onSurface)
+                  : null,
             ),
             child: const Center(
               child: AfriBrandMark(
@@ -190,17 +179,16 @@ class _CommandSearchButton extends StatelessWidget {
                   : SpacingTokens.spacing3,
             ),
             decoration: BoxDecoration(
-              color: ColorTokens.chrome,
+              color: ColorTokens.inkBase.withValues(
+                alpha: AfriChromeTokens.commandFillOpacity,
+              ),
               borderRadius: ShapeTokens.buttonRadius,
               border: state.isFocused
                   ? BorderTokens.focusAll(
                       color: ColorTokens.primaryContainer,
                       width: context.afriDesignTokens.focusRingWidth,
                     )
-                  : BorderTokens.all(
-                      color: ColorTokens.chromeBorder,
-                      width: BorderTokens.chrome,
-                    ),
+                  : null,
             ),
             child: Row(
               mainAxisAlignment: showLabel
@@ -220,9 +208,9 @@ class _CommandSearchButton extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.clip,
                       softWrap: false,
-                      style: TypographyTokens.titleLarge(
+                      style: TypographyTokens.bodyLarge(
                         ColorTokens.chromeForeground,
-                      ).copyWith(fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ),
                 ],
@@ -236,7 +224,7 @@ class _CommandSearchButton extends StatelessWidget {
 }
 
 class _CommandCircle extends StatelessWidget {
-  const _CommandCircle({required this.action});
+  const _CommandCircle({super.key, required this.action});
 
   final AfriTopCommandAction action;
 
@@ -253,7 +241,9 @@ class _CommandCircle extends StatelessWidget {
             width: AfriChromeTokens.commandControlSize,
             height: AfriChromeTokens.commandControlSize,
             decoration: BoxDecoration(
-              color: ColorTokens.chrome,
+              color: ColorTokens.inkBase.withValues(
+                alpha: AfriChromeTokens.commandFillOpacity,
+              ),
               shape: BoxShape.circle,
               border: BorderTokens.all(
                 color: state.isFocused

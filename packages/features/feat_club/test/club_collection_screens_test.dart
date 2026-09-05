@@ -21,9 +21,7 @@ void main() {
 
     final l10n = lookupAfriLocalizations(const Locale('en'));
     expect(
-      find.bySemanticsLabel(
-        l10n.splashLoadingSemantic(l10n.clubNewsTitle.toUpperCase()),
-      ),
+      find.bySemanticsLabel(l10n.splashLoadingSemantic(l10n.clubNewsTitle)),
       findsOneWidget,
     );
 

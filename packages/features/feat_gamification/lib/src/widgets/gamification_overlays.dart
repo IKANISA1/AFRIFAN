@@ -21,15 +21,15 @@ Future<void> showXpLevelUpModal(
             Text(
               context.afriL10n.gameLevelUp,
               style: TypographyTokens.displayMedium().copyWith(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             Text(
               tierName.toUpperCase(),
               style: TypographyTokens.headlineLarge(
-                ColorTokens.clubAccent,
-              ).copyWith(fontWeight: FontWeight.w800),
+                ColorTokens.primaryContainer,
+              ).copyWith(fontWeight: FontWeight.w600),
             ),
             if (perksText.isNotEmpty) ...[
               const SizedBox(height: SpacingTokens.spacing2),
@@ -70,11 +70,11 @@ Future<void> showBadgeEarnedModal(
               height: SpacingTokens.spacing20 + SpacingTokens.spacing2,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: ColorTokens.clubAccent.withValues(alpha: 0.16),
+                color: ColorTokens.primaryContainer.withValues(alpha: 0.16),
               ),
               child: Icon(
                 AfriIcons.premium,
-                color: ColorTokens.clubAccent,
+                color: ColorTokens.primaryContainer,
                 size: SpacingTokens.spacing10 + SpacingTokens.spacing1,
               ),
             ),
@@ -82,7 +82,7 @@ Future<void> showBadgeEarnedModal(
             Text(
               badgeName,
               style: TypographyTokens.headlineLarge().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing2),

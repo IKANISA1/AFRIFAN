@@ -99,7 +99,7 @@ void main() {
       ),
       check: (_) async {
         expect(find.text('E-ticket access denied'), findsOneWidget);
-        expect(find.text('REFRESH TICKET'), findsNothing);
+        expect(find.text('Refresh ticket'), findsNothing);
       },
     );
   });
@@ -156,7 +156,7 @@ void main() {
       ),
       check: (tester) async {
         gesture = await tester.startGesture(
-          tester.getCenter(find.text('REFRESH TICKET')),
+          tester.getCenter(find.text('Refresh ticket')),
         );
         await tester.pump(const Duration(milliseconds: 120));
         await tester.pump(const Duration(milliseconds: 40));
@@ -252,7 +252,7 @@ void main() {
       ),
       check: (_) async {
         expect(find.text('Ticket changed'), findsOneWidget);
-        expect(find.text('REFRESH TICKET'), findsOneWidget);
+        expect(find.text('Refresh ticket'), findsOneWidget);
       },
     );
   });

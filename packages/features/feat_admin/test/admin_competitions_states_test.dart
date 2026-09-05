@@ -89,7 +89,7 @@ void main() {
 
     expect(find.text('Competition access unavailable'), findsOneWidget);
     expect(find.text('NATIONAL LEAGUE'), findsNothing);
-    expect(find.text('SEASONS'), findsNothing);
+    expect(find.text('Seasons'), findsNothing);
     await _expectStateGolden(tester, 'permission_denied');
   });
 
@@ -114,12 +114,12 @@ void main() {
   ) async {
     await _pumpCompetitions(tester, gateway: _Gateway(<Object>[_workspace]));
 
-    await tester.tap(find.text('EUROPE'));
+    await tester.tap(find.text('Europe'));
     await tester.pumpAndSettle();
 
     expect(find.text('No competitions match'), findsOneWidget);
     final selected = tester.widget<AfriChoiceChip>(
-      find.widgetWithText(AfriChoiceChip, 'EUROPE'),
+      find.widgetWithText(AfriChoiceChip, 'Europe'),
     );
     expect(selected.selected, isTrue);
     await _expectStateGolden(tester, 'selected');
@@ -204,7 +204,7 @@ void main() {
         brightness: brightness,
       );
 
-      expect(find.text('COMPETITIONS'), findsOneWidget);
+      expect(find.text('Competitions'), findsOneWidget);
       expect(
         Theme.of(
           tester.element(find.byType(CompetitionManagerScreen)),

@@ -2,15 +2,15 @@
   "schema_version": "1.0",
   "design_authority": {
     "path": "DESIGN.md",
-    "sha256": "eb3ec978f14358f63ecbd3fc9f4bbdcd9dd6e39e91585cc573f86f0acaa449d2"
+    "sha256": "d4a6dc529ac4d1f461e7a56176cb78622fde211c64bff3546abfbca2d07decc7"
   },
-  "updated_at": "2026-09-05T09:07:59.381612Z",
+  "updated_at": "2026-09-05T12:15:13.384038+00:00",
   "exceptions": [],
   "resolved_decisions": [
     {
       "id": "DEC-THEME-001",
-      "topic": "Light-mode parity",
-      "outcome": "implemented_no_exception",
+      "topic": "Target light-mode implementation",
+      "outcome": "implemented; source-native-light-fidelity-unverified",
       "evidence": [
         "packages/core/core_theme/lib/src/club_theme.dart",
         "packages/core/core_theme/lib/src/theme_mode_notifier.dart",
@@ -18,7 +18,8 @@
         "packages/features/feat_settings/lib/src/screens/settings_screen.dart",
         "packages/core/core_theme/test/theme_mode_notifier_test.dart",
         "packages/core/core_theme/test/ui_tokens_test.dart"
-      ]
+      ],
+      "scope_note": "The target light theme remains functional and tested. No current native reference-light equivalence is asserted; see native-reference-map.json."
     }
   ],
   "pending_decisions": [

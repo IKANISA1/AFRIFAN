@@ -1676,7 +1676,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Fan club details are not enabled for this build or club.';
 
   @override
-  String get fanClubBackToSupporters => 'BACK TO SUPPORTERS';
+  String get fanClubBackToSupporters => 'Back to supporters';
 
   @override
   String get fanClubUnavailableTitle => 'Fan club unavailable';
@@ -1695,10 +1695,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get fanClubProtectedRequestPath => 'Protected request path';
 
   @override
-  String get fanClubActive => 'ACTIVE';
+  String get fanClubActive => 'Active';
 
   @override
-  String get fanClubPendingReview => 'PENDING REVIEW';
+  String get fanClubPendingReview => 'Pending review';
 
   @override
   String fanClubCurrentSemantic(String name) {
@@ -1706,7 +1706,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get fanClubAboutTitle => 'ABOUT THIS CLUB';
+  String get fanClubAboutTitle => 'About this club';
 
   @override
   String fanClubRegionValue(String region) {
@@ -1714,7 +1714,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get fanClubSnapshotTitle => 'GROUP SNAPSHOT';
+  String get fanClubSnapshotTitle => 'Group snapshot';
 
   @override
   String get fanClubAwaitingApproval =>
@@ -1756,10 +1756,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Refresh before continuing to Supporters.';
 
   @override
-  String get fanClubRefreshAction => 'REFRESH CLUB';
+  String get fanClubRefreshAction => 'Refresh club';
 
   @override
-  String get fanClubTryAgainAction => 'TRY AGAIN';
+  String get fanClubTryAgainAction => 'Try again';
 
   @override
   String get fanClubSecurityTimeoutTitle => 'Fan club security check timed out';
@@ -1807,7 +1807,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get fanClubRefreshFailedTitle => 'Fan club refresh failed';
 
   @override
-  String get fanClubMatchdayAgenda => 'MATCHDAY AGENDA';
+  String get fanClubMatchdayAgenda => 'Matchday agenda';
 
   @override
   String fanClubMatchMeta(String competition, String venue) {
@@ -1820,13 +1820,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get fanClubMembersLabel => 'MEMBERS';
+  String get fanClubMembersLabel => 'Members';
 
   @override
-  String get fanClubStatusLabel => 'STATUS';
+  String get fanClubStatusLabel => 'Status';
 
   @override
-  String get fanClubRegionLabel => 'REGION';
+  String get fanClubRegionLabel => 'Region';
 
   @override
   String get fanClubOpenSupportersSemantic => 'Open Supporters area';
@@ -1835,13 +1835,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get fanClubPendingReviewSemantic => 'Fan club pending review';
 
   @override
-  String get fanClubSupportersAction => 'SUPPORTERS';
+  String get fanClubSupportersAction => 'Supporters';
 
   @override
-  String get fanClubOpenSupportersAction => 'OPEN SUPPORTERS';
+  String get fanClubOpenSupportersAction => 'Open supporters';
 
   @override
-  String get fanClubCopyLink => 'COPY LINK';
+  String get fanClubCopyLink => 'Copy link';
 
   @override
   String get fanClubCopyLinkSemantic => 'Copy fan club link';
@@ -1867,16 +1867,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Request sent for admin review. You are not joined until the club approves it.';
 
   @override
-  String get fanClubsCommunityEyebrow => 'THE COMMUNITY';
+  String get fanClubsCommunityEyebrow => 'The community';
 
   @override
-  String get fanClubsTitle => 'FAN CLUBS';
+  String get fanClubsTitle => 'Fan clubs';
 
   @override
   String get fanClubsSearchHint => 'Search clubs or locations';
 
   @override
-  String get fanClubsFeaturedChapter => 'FEATURED CHAPTER';
+  String get fanClubsFeaturedChapter => 'Featured chapter';
 
   @override
   String get fanClubOfficialChapterFallback => 'Official supporter chapter.';
@@ -1908,22 +1908,22 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get liveStatusLive => 'LIVE';
 
   @override
-  String get liveStatusHalfTime => 'HALF-TIME';
+  String get liveStatusHalfTime => 'Half-time';
 
   @override
-  String get liveStatusFullTime => 'FULL-TIME';
+  String get liveStatusFullTime => 'Full-time';
 
   @override
-  String get liveStatusPostponed => 'POSTPONED';
+  String get liveStatusPostponed => 'Postponed';
 
   @override
-  String get liveStatusCancelled => 'CANCELLED';
+  String get liveStatusCancelled => 'Cancelled';
 
   @override
-  String get liveStatusUpcoming => 'UPCOMING';
+  String get liveStatusUpcoming => 'Upcoming';
 
   @override
-  String get liveStatusFinal => 'FINAL';
+  String get liveStatusFinal => 'Final';
 
   @override
   String liveTimeVenue(String time, String venue) {
@@ -1942,13 +1942,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get liveModeActive => 'Live mode active. Events appear in real time.';
 
   @override
-  String get liveMatchReport => 'MATCH REPORT';
+  String get liveMatchReport => 'Match report';
 
   @override
   String get liveMatchFinishedPending => 'Match finished. Summary pending.';
 
   @override
-  String get liveMatchdayIntel => 'MATCHDAY INTEL';
+  String get liveMatchdayIntel => 'Matchday intel';
 
   @override
   String get liveFixturePublished =>
@@ -2002,7 +2002,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get liveMatchCopied => 'Match update copied to clipboard.';
 
   @override
-  String get liveCenterUnavailable => 'LIVE CENTER UNAVAILABLE';
+  String get liveCenterUnavailable => 'Live center unavailable';
 
   @override
   String get liveRefresh => 'Refresh';
@@ -2063,7 +2063,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get newsRelatedIntel => 'Related intel';
 
   @override
-  String get newsRefreshArticle => 'REFRESH ARTICLE';
+  String get newsRefreshArticle => 'Refresh article';
 
   @override
   String get newsConnectionRestored => 'Connection restored';
@@ -2257,7 +2257,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get shopUnavailableMessage => 'Could not load merchandise right now.';
 
   @override
-  String get shopOutOfStockUpper => 'OUT OF STOCK';
+  String get shopOutOfStockUpper => 'Out of stock';
 
   @override
   String get shopOutOfStock => 'Out of stock';
@@ -2366,7 +2366,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Loading official merchandise details from the armoury...';
 
   @override
-  String get shopLoadingBadge => 'LOADING';
+  String get shopLoadingBadge => 'Loading';
 
   @override
   String get shopOfficialMerchandise => 'Official club merchandise.';
@@ -2580,7 +2580,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Official matchday jersey with a premium woven club mark, breathable stadium fabric, and club-blue trim for everyday supporters.';
 
   @override
-  String get shopOfficialBadge => 'OFFICIAL';
+  String get shopOfficialBadge => 'Official';
 
   @override
   String get shopSampleProductSummary =>
@@ -2623,13 +2623,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Present only to an authorized matchday scanner.';
 
   @override
-  String get ticketDateLabel => 'DATE';
+  String get ticketDateLabel => 'Date';
 
   @override
-  String get ticketTimeLabel => 'TIME';
+  String get ticketTimeLabel => 'Time';
 
   @override
-  String get ticketVenueLabel => 'VENUE';
+  String get ticketVenueLabel => 'Venue';
 
   @override
   String get ticketAppleWallet => 'Apple Wallet';
@@ -2650,10 +2650,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Your confirmed ticket can be added to Google Wallet.';
 
   @override
-  String get ticketGoogleWalletAdding => 'ADDING TO GOOGLE WALLET…';
+  String get ticketGoogleWalletAdding => 'Adding to Google Wallet…';
 
   @override
-  String get ticketGoogleWalletAdded => 'ADDED TO GOOGLE WALLET';
+  String get ticketGoogleWalletAdded => 'Added to Google Wallet';
 
   @override
   String get ticketGoogleWalletAddingMessage =>
@@ -2762,7 +2762,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Refresh before relying on this entry code.';
 
   @override
-  String get ticketRefreshUpper => 'REFRESH TICKET';
+  String get ticketRefreshUpper => 'Refresh ticket';
 
   @override
   String get ticketWalletUnavailableTitle => 'Ticket wallet unavailable';
@@ -2772,16 +2772,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'We could not load your ticket wallet right now. Check your connection and try again.';
 
   @override
-  String get ticketMyTickets => 'MY TICKETS';
+  String get ticketMyTickets => 'My tickets';
 
   @override
   String get ticketRefreshTickets => 'Refresh tickets';
 
   @override
-  String get ticketUpcoming => 'UPCOMING';
+  String get ticketUpcoming => 'Upcoming';
 
   @override
-  String get ticketPast => 'PAST';
+  String get ticketPast => 'Past';
 
   @override
   String get ticketBrowseMatches => 'Browse matches';
@@ -2804,7 +2804,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Payment received on your phone still needs verification before the QR unlocks.';
 
   @override
-  String get ticketCheckoutSummary => 'CHECKOUT SUMMARY';
+  String get ticketCheckoutSummary => 'Checkout summary';
 
   @override
   String get ticketMatchLabel => 'Match';
@@ -2840,25 +2840,25 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Confirm payment after completing the MOMO prompt.';
 
   @override
-  String get ticketConfirmPurchase => 'CONFIRM PURCHASE';
+  String get ticketConfirmPurchase => 'Confirm purchase';
 
   @override
-  String get ticketMatchUpper => 'MATCH';
+  String get ticketMatchUpper => 'Match';
 
   @override
-  String get ticketZoneUpper => 'ZONE';
+  String get ticketZoneUpper => 'Zone';
 
   @override
-  String get ticketSeatUpper => 'SEAT';
+  String get ticketSeatUpper => 'Seat';
 
   @override
-  String get ticketQuantityUpper => 'QUANTITY';
+  String get ticketQuantityUpper => 'Quantity';
 
   @override
-  String get ticketServiceFeeUpper => 'SERVICE FEE';
+  String get ticketServiceFeeUpper => 'Service fee';
 
   @override
-  String get ticketTotalUpper => 'TOTAL';
+  String get ticketTotalUpper => 'Total';
 
   @override
   String get ticketIncluded => 'Included';
@@ -2894,10 +2894,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get ticketChooseAccess => 'CHOOSE ACCESS';
+  String get ticketChooseAccess => 'Choose access';
 
   @override
-  String get ticketGeneral => 'GENERAL';
+  String get ticketGeneral => 'General';
 
   @override
   String get ticketGeneralSubtitle => 'Open stands / Bleachers area';
@@ -2909,10 +2909,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get ticketVipSubtitle => 'Premium lounge seating';
 
   @override
-  String get ticketChooseSeat => 'CHOOSE SPECIFIC SEAT';
+  String get ticketChooseSeat => 'Choose specific seat';
 
   @override
-  String get ticketChangeSeat => 'CHANGE SELECTED SEAT';
+  String get ticketChangeSeat => 'Change selected seat';
 
   @override
   String get ticketReview => 'Review';
@@ -2921,14 +2921,14 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get ticketReviewReservation => 'Review reservation';
 
   @override
-  String get ticketOfficialCategories => 'OFFICIAL CATEGORIES';
+  String get ticketOfficialCategories => 'Official categories';
 
   @override
   String get ticketOfficialCategoriesMessage =>
       'Approved public ticket tiers. Sale-specific availability appears when the club activates an official sale.';
 
   @override
-  String get ticketListTitle => 'TICKETS';
+  String get ticketListTitle => 'Tickets';
 
   @override
   String get ticketFilterMatches => 'Filter matches';
@@ -2962,10 +2962,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Connection required to refresh matches';
 
   @override
-  String get ticketNext => 'NEXT';
+  String get ticketNext => 'Next';
 
   @override
-  String get ticketMine => 'MINE';
+  String get ticketMine => 'Mine';
 
   @override
   String get ticketUpcomingSemantic => 'Upcoming tickets';
@@ -3008,13 +3008,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get ticketRefresh => 'Refresh';
 
   @override
-  String get ticketStatusSoldOut => 'SOLD OUT';
+  String get ticketStatusSoldOut => 'Sold out';
 
   @override
-  String get ticketStatusAvailable => 'AVAILABLE';
+  String get ticketStatusAvailable => 'Available';
 
   @override
-  String get ticketFrom => 'FROM';
+  String get ticketFrom => 'From';
 
   @override
   String get ticketBuyAction => 'Buy ticket';
@@ -3120,7 +3120,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Ticket request failed. Your selection is still available.';
 
   @override
-  String get ticketMatchDay => 'MATCH DAY';
+  String get ticketMatchDay => 'Match day';
 
   @override
   String get ticketSalesUnavailableTitle => 'Ticket sales unavailable';
@@ -3174,10 +3174,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'The fixture could not be confirmed. Try again.';
 
   @override
-  String get ticketTryAgainUpper => 'TRY AGAIN';
+  String get ticketTryAgainUpper => 'Try again';
 
   @override
-  String get ticketRefreshFixtureUpper => 'REFRESH FIXTURE';
+  String get ticketRefreshFixtureUpper => 'Refresh fixture';
 
   @override
   String get ticketSavedFixtureTitle => 'Showing saved fixture';
@@ -3214,7 +3214,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get ticketFixtureRefreshFailedTitle => 'Fixture refresh failed';
 
   @override
-  String get ticketSeatMapTitle => 'SELECT SEAT';
+  String get ticketSeatMapTitle => 'Select seat';
 
   @override
   String get ticketConfirm => 'Confirm';
@@ -3228,7 +3228,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Seat selection is not enabled for this build or club.';
 
   @override
-  String get ticketBackToTicketUpper => 'BACK TO TICKET';
+  String get ticketBackToTicketUpper => 'Back to ticket';
 
   @override
   String get ticketSeatMapUnavailableTitle => 'Seat map unavailable';
@@ -3266,7 +3266,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Refresh the fixture before selecting a seat.';
 
   @override
-  String get ticketRefreshSeatMapUpper => 'REFRESH SEAT MAP';
+  String get ticketRefreshSeatMapUpper => 'Refresh seat map';
 
   @override
   String get ticketSeatMapLoadFailedTitle => 'Unable to load seat map';
@@ -3307,7 +3307,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get ticketSeatMapRefreshFailedTitle => 'Seat map refresh failed';
 
   @override
-  String get ticketSelectedSeatUpper => 'SELECTED SEAT';
+  String get ticketSelectedSeatUpper => 'Selected seat';
 
   @override
   String get ticketSeatMapSemantic => 'Interactive stadium seat map';
@@ -3354,7 +3354,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get ticketLegendTribune => 'Tribune';
 
   @override
-  String get contributionsClubProjectsTitle => 'CLUB PROJECTS';
+  String get contributionsClubProjectsTitle => 'Club projects';
 
   @override
   String get contributionsProjectsUnavailableTitle => 'Projects unavailable';
@@ -3470,7 +3470,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'SMS sync failed. Check your connection and try again.';
 
   @override
-  String get contributionsHubTitle => 'CONTRIBUTE';
+  String get contributionsHubTitle => 'Contribute';
 
   @override
   String get contributionsRefreshingTitle => 'Refreshing contributions';
@@ -3487,7 +3487,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Totals may be out of date. Reconnect before making or syncing a contribution.';
 
   @override
-  String get contributionsTeamProjects => 'TEAM PROJECTS';
+  String get contributionsTeamProjects => 'Team projects';
 
   @override
   String contributionsRaised(String current, String target) {
@@ -3500,7 +3500,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsCommunitiesUpper => 'COMMUNITIES';
+  String get contributionsCommunitiesUpper => 'Communities';
 
   @override
   String contributionsInitiativesActive(int count) {
@@ -3519,7 +3519,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsCommunityUpper => 'COMMUNITY';
+  String get contributionsCommunityUpper => 'Community';
 
   @override
   String get contributionsFanClubsChapters => 'Fan clubs & local chapters.';
@@ -3534,7 +3534,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get contributionsUnavailableBuild => 'Unavailable in this build.';
 
   @override
-  String get contributionsActiveUpper => 'ACTIVE';
+  String get contributionsActiveUpper => 'Active';
 
   @override
   String get contributionsSyncing => 'Syncing…';
@@ -3582,7 +3582,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsInitiativeTitle => 'PUBLIC INITIATIVE';
+  String get contributionsInitiativeTitle => 'Public initiative';
 
   @override
   String get contributionsInitiativeLoadingTitle => 'Loading public initiative';
@@ -3620,7 +3620,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Reconnect and refresh before starting a payment or relying on the latest total.';
 
   @override
-  String get contributionsRefreshInitiativeUpper => 'REFRESH INITIATIVE';
+  String get contributionsRefreshInitiativeUpper => 'Refresh initiative';
 
   @override
   String get contributionsClosedTitle => 'Contributions are closed';
@@ -3670,10 +3670,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsTypeUpper => 'TYPE';
+  String get contributionsTypeUpper => 'Type';
 
   @override
-  String get contributionsContributorsUpper => 'CONTRIBUTORS';
+  String get contributionsContributorsUpper => 'Contributors';
 
   @override
   String contributionsContributeToSemantic(String group) {
@@ -3686,7 +3686,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsPublicLedgerTitle => 'PUBLIC LEDGER';
+  String get contributionsPublicLedgerTitle => 'Public ledger';
 
   @override
   String get contributionsPublicLedgerPrivacy =>
@@ -3715,19 +3715,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsStatusConfirmed => 'CONFIRMED';
+  String get contributionsStatusConfirmed => 'Confirmed';
 
   @override
-  String get contributionsStatusProcessing => 'PROCESSING';
+  String get contributionsStatusProcessing => 'Processing';
 
   @override
-  String get contributionsStatusFailed => 'FAILED';
+  String get contributionsStatusFailed => 'Failed';
 
   @override
-  String get contributionsTypeProject => 'TEAM PROJECT';
+  String get contributionsTypeProject => 'Team project';
 
   @override
-  String get contributionsTypeCommunity => 'COMMUNITY';
+  String get contributionsTypeCommunity => 'Community';
 
   @override
   String get contributionsConnectionRestoredTitle => 'Connection restored';
@@ -3784,7 +3784,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get contributionsCsvCopied => 'Privacy-safe CSV copied to clipboard.';
 
   @override
-  String get contributionsStatementTitle => 'PUBLIC STATEMENT';
+  String get contributionsStatementTitle => 'Public statement';
 
   @override
   String get contributionsStatementLoadingTitle => 'Loading public statement';
@@ -3819,7 +3819,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Reconnect and refresh before exporting or relying on the latest total.';
 
   @override
-  String get contributionsRefreshStatementUpper => 'REFRESH STATEMENT';
+  String get contributionsRefreshStatementUpper => 'Refresh statement';
 
   @override
   String get contributionsCopyCsvSemantic => 'Copy privacy-safe CSV statement';
@@ -3830,10 +3830,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsFromUpper => 'FROM';
+  String get contributionsFromUpper => 'From';
 
   @override
-  String get contributionsToUpper => 'TO';
+  String get contributionsToUpper => 'To';
 
   @override
   String get contributionsAllTime => 'All time';
@@ -3842,22 +3842,22 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get contributionsNow => 'Now';
 
   @override
-  String get contributionsSortUpper => 'SORT';
+  String get contributionsSortUpper => 'Sort';
 
   @override
-  String get contributionsSortDate => 'BY DATE';
+  String get contributionsSortDate => 'By date';
 
   @override
-  String get contributionsSortAmount => 'BY AMOUNT';
+  String get contributionsSortAmount => 'By amount';
 
   @override
-  String get contributionsSortAlias => 'BY ALIAS';
+  String get contributionsSortAlias => 'By alias';
 
   @override
-  String get contributionsPdf => 'PDF';
+  String get contributionsPdf => 'Pdf';
 
   @override
-  String get contributionsCsv => 'CSV';
+  String get contributionsCsv => 'Csv';
 
   @override
   String get contributionsComingSoon => 'Coming soon';
@@ -3890,7 +3890,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsConfirmedTotalUpper => 'CONFIRMED TOTAL';
+  String get contributionsConfirmedTotalUpper => 'Confirmed total';
 
   @override
   String contributionsPublicEntriesInRange(int count) {
@@ -3913,7 +3913,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsPreviewUpper => 'PREVIEW';
+  String get contributionsPreviewUpper => 'Preview';
 
   @override
   String contributionsPreviewShowing(int count) {
@@ -3988,7 +3988,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsAmountPrompt => 'HOW MUCH TO CONTRIBUTE?';
+  String get contributionsAmountPrompt => 'How much to contribute?';
 
   @override
   String contributionsQuickAmount(int thousands) {
@@ -3999,7 +3999,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get contributionsLaunchMomoDialer => 'Launch MOMO dialer';
 
   @override
-  String get contributionsLaunchingMomo => 'LAUNCHING MOMO';
+  String get contributionsLaunchingMomo => 'Launching MoMo';
 
   @override
   String get contributionsChangeAmount => 'Change amount';
@@ -4011,7 +4011,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get contributionsCancel => 'Cancel contribution';
 
   @override
-  String get contributionsPaymentConfirmedTitle => 'PAYMENT CONFIRMED';
+  String get contributionsPaymentConfirmedTitle => 'Payment confirmed';
 
   @override
   String contributionsPaymentConfirmedMessage(String amount) {
@@ -4019,28 +4019,28 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get contributionsPaymentFailedTitle => 'PAYMENT FAILED';
+  String get contributionsPaymentFailedTitle => 'Payment failed';
 
   @override
   String get contributionsPaymentFailedMessage =>
       'The payment could not be verified. Check your MoMo balance and try again, or contact support.';
 
   @override
-  String get contributionsPaymentProcessingTitle => 'STILL PROCESSING';
+  String get contributionsPaymentProcessingTitle => 'Still processing';
 
   @override
   String get contributionsPaymentProcessingMessage =>
       'Your payment is taking longer than usual. Check the Group ledger for your updated status. If you completed the MoMo transfer, it will appear shortly.';
 
   @override
-  String get contributionsRecordFailedTitle => 'COULD NOT RECORD';
+  String get contributionsRecordFailedTitle => 'Could not record';
 
   @override
   String get contributionsRecordFailedMessage =>
       'The MoMo dialer was launched but the contribution could not be saved. Return to the Group and try again.';
 
   @override
-  String get contributionsAwaitingPaymentTitle => 'AWAITING PAYMENT';
+  String get contributionsAwaitingPaymentTitle => 'Awaiting payment';
 
   @override
   String get contributionsAwaitingPaymentMessage =>
@@ -4050,7 +4050,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get contributionsCheckingPaymentStatus => 'Checking payment status…';
 
   @override
-  String get contributionsVerifiedUpper => 'VERIFIED';
+  String get contributionsVerifiedUpper => 'Verified';
 
   @override
   String get contributionsDone => 'Done';
@@ -4059,7 +4059,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get contributionsBackToGroup => 'Back to group';
 
   @override
-  String get contributionsEnableMomoSmsTitle => 'ENABLE MOMO SMS SYNC';
+  String get contributionsEnableMomoSmsTitle => 'Enable MoMo SMS sync';
 
   @override
   String contributionsSmsPrivacyMessage(String app) {
@@ -4073,7 +4073,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get contributionsEnable => 'Enable';
 
   @override
-  String get contributionsNotNowUpper => 'NOT NOW';
+  String get contributionsNotNowUpper => 'Not now';
 
   @override
   String get settingsTitle => 'Settings';
@@ -4219,26 +4219,26 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get settingsWhatsAppFailed => 'Could not open WhatsApp.';
 
   @override
-  String get settingsDeleteAccountTitle => 'DELETE YOUR ACCOUNT?';
+  String get settingsDeleteAccountTitle => 'DELETE your account?';
 
   @override
   String get settingsDeleteAccountMessage =>
       'Permanently deletes your profile, FET, badges, and history. Cannot be undone.';
 
   @override
-  String get settingsDeleteAccountConfirmPrompt => 'TYPE DELETE TO CONFIRM';
+  String get settingsDeleteAccountConfirmPrompt => 'Type DELETE to confirm';
 
   @override
   String get settingsDeleteAccountConfirmValue => 'DELETE';
 
   @override
-  String get settingsCancelUpper => 'CANCEL';
+  String get settingsCancelUpper => 'Cancel';
 
   @override
   String get settingsDeletePermanently => 'Delete permanently';
 
   @override
-  String get settingsNotificationPermissionTitle => 'STAY WITH THE CLUB';
+  String get settingsNotificationPermissionTitle => 'Stay with the club';
 
   @override
   String get settingsNotificationPermissionMessage =>
@@ -4257,10 +4257,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get settingsEnableNotifications => 'Enable notifications';
 
   @override
-  String get settingsMaybeLaterUpper => 'MAYBE LATER';
+  String get settingsMaybeLaterUpper => 'Maybe later';
 
   @override
-  String get settingsSignOutTitle => 'SIGN OUT?';
+  String get settingsSignOutTitle => 'Sign out?';
 
   @override
   String get settingsSignOutMessage =>
@@ -4270,14 +4270,14 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get settingsStay => 'Stay';
 
   @override
-  String get settingsSignOutOthersTitle => 'SIGN OUT OTHER DEVICES?';
+  String get settingsSignOutOthersTitle => 'Sign out other devices?';
 
   @override
   String get settingsSignOutOthersMessage =>
       'This device stays signed in. Other sessions are revoked.';
 
   @override
-  String get settingsSignOutOthersAction => 'SIGN OUT OTHERS';
+  String get settingsSignOutOthersAction => 'Sign out others';
 
   @override
   String get settingsCancel => 'Cancel';
@@ -4640,10 +4640,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Checking device notification permissions…';
 
   @override
-  String get notificationPreferencesTitle => 'NOTIFICATIONS';
+  String get notificationPreferencesTitle => 'Notifications';
 
   @override
-  String get notificationPreferencesDeliverySection => 'NOTIFICATION DELIVERY';
+  String get notificationPreferencesDeliverySection => 'Notification delivery';
 
   @override
   String get notificationPreferencesAlertsEnabled => 'Alerts enabled.';
@@ -4657,16 +4657,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get notificationPreferencesConnectionRequiredUpper =>
-      'CONNECTION REQUIRED';
+      'Connection required';
 
   @override
-  String get notificationPreferencesDisableAlerts => 'DISABLE ALERTS';
+  String get notificationPreferencesDisableAlerts => 'Disable alerts';
 
   @override
-  String get notificationPreferencesEnableAlerts => 'ENABLE ALERTS';
+  String get notificationPreferencesEnableAlerts => 'Enable alerts';
 
   @override
-  String get notificationPreferencesDeliveryModel => 'DELIVERY MODEL';
+  String get notificationPreferencesDeliveryModel => 'Delivery model';
 
   @override
   String notificationPreferencesFullStream(String app) {
@@ -4862,10 +4862,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Your saved choices remain visible in this build.';
 
   @override
-  String get privacySettingsTitle => 'PRIVACY';
+  String get privacySettingsTitle => 'Privacy';
 
   @override
-  String get privacySettingsControls => 'PRIVACY CONTROLS';
+  String get privacySettingsControls => 'Privacy controls';
 
   @override
   String get privacySettingsControlsDescription =>
@@ -4896,7 +4896,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get privacySettingsSave => 'Save privacy settings';
 
   @override
-  String get privacySettingsYourData => 'YOUR DATA';
+  String get privacySettingsYourData => 'Your data';
 
   @override
   String get privacySettingsExportDescription =>
@@ -4933,7 +4933,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Privacy policy is not available yet.';
 
   @override
-  String get privacySettingsActiveSessions => 'ACTIVE SESSIONS';
+  String get privacySettingsActiveSessions => 'Active sessions';
 
   @override
   String get privacySettingsActiveSessionsDescription =>
@@ -4949,28 +4949,28 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminLoadingMessage => 'Checking current club operations.';
 
   @override
-  String get adminClubAdmin => 'CLUB ADMIN';
+  String get adminClubAdmin => 'Club admin';
 
   @override
-  String get adminExit => 'Exit Admin';
+  String get adminExit => 'Exit admin';
 
   @override
-  String get adminCommandCenter => 'COMMAND CENTER';
+  String get adminCommandCenter => 'Command center';
 
   @override
-  String get adminTotalUsers => 'TOTAL USERS';
+  String get adminTotalUsers => 'Total users';
 
   @override
-  String get adminActiveGroups => 'ACTIVE GROUPS';
+  String get adminActiveGroups => 'Active groups';
 
   @override
-  String get adminTransactionsToday => 'TX TODAY';
+  String get adminTransactionsToday => 'Tx today';
 
   @override
-  String get adminTicketsSold => 'TICKETS SOLD';
+  String get adminTicketsSold => 'Tickets sold';
 
   @override
-  String get adminQuickActions => 'QUICK ACTIONS';
+  String get adminQuickActions => 'Quick actions';
 
   @override
   String get adminManageCms => 'Manage CMS';
@@ -4980,56 +4980,56 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'News articles, banners, and content surfaces';
 
   @override
-  String get adminCreateMatch => 'Create Match';
+  String get adminCreateMatch => 'Create match';
 
   @override
   String get adminCreateMatchDescription =>
       'Fixture setup, zoning, and ticket controls';
 
   @override
-  String get adminViewContributions => 'View Contributions';
+  String get adminViewContributions => 'View contributions';
 
   @override
   String get adminViewContributionsDescription =>
       'Monitor club and community fundraising';
 
   @override
-  String get adminSendNotification => 'Send Notification';
+  String get adminSendNotification => 'Send notification';
 
   @override
   String get adminSendNotificationDescription =>
       'Tier, group, and all-fan push delivery';
 
   @override
-  String get adminSettleFixtures => 'Settle Fixtures';
+  String get adminSettleFixtures => 'Settle fixtures';
 
   @override
   String get adminSettleFixturesDescription =>
       'Enter results and grade prediction markets';
 
   @override
-  String get adminManageCompetitions => 'Manage Competitions';
+  String get adminManageCompetitions => 'Manage competitions';
 
   @override
   String get adminManageCompetitionsDescription =>
       'Add, edit, and toggle supported leagues and cups';
 
   @override
-  String get adminSmsSyncMonitor => 'SMS Sync Monitor';
+  String get adminSmsSyncMonitor => 'SMS sync monitor';
 
   @override
   String get adminSmsSyncMonitorDescription =>
       'MoMo SMS ingestion pipeline health';
 
   @override
-  String get adminFeatureManager => 'Feature Manager';
+  String get adminFeatureManager => 'Feature manager';
 
   @override
   String get adminFeatureManagerDashboardDescription =>
       'Toggle features, visibility, and scheduling';
 
   @override
-  String get adminRecentActivity => 'RECENT ACTIVITY';
+  String get adminRecentActivity => 'Recent activity';
 
   @override
   String get adminRecentActivityUnavailable => 'Recent activity unavailable';
@@ -5105,14 +5105,14 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Showing the last confirmed dashboard. Actions are paused until refresh succeeds.';
 
   @override
-  String get adminAccessRequired => 'ADMIN ACCESS REQUIRED';
+  String get adminAccessRequired => 'Admin access required';
 
   @override
   String get adminAccessRequiredMessage =>
       'This workspace is limited to verified club administrators for the active club.';
 
   @override
-  String get adminChallengesTitle => 'CHALLENGE OPS';
+  String get adminChallengesTitle => 'Challenge ops';
 
   @override
   String get adminBack => 'Back';
@@ -5128,19 +5128,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminChallengesFilterLabel => 'Challenge status filter';
 
   @override
-  String get adminChallengesFilterAll => 'ALL';
+  String get adminChallengesFilterAll => 'All';
 
   @override
-  String get adminChallengesFilterOpen => 'OPEN';
+  String get adminChallengesFilterOpen => 'Open';
 
   @override
-  String get adminChallengesFilterLocked => 'LOCKED';
+  String get adminChallengesFilterLocked => 'Locked';
 
   @override
-  String get adminChallengesFilterSettled => 'SETTLED';
+  String get adminChallengesFilterSettled => 'Settled';
 
   @override
-  String get adminChallengesFilterVoid => 'VOID';
+  String get adminChallengesFilterVoid => 'Void';
 
   @override
   String get adminChallengesEmptyTitle => 'No challenge operations';
@@ -5163,10 +5163,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminCancelUpper => 'CANCEL';
+  String get adminCancelUpper => 'Cancel';
 
   @override
-  String get adminRetryUpper => 'RETRY';
+  String get adminRetryUpper => 'Retry';
 
   @override
   String get adminChallengesSettlementPending =>
@@ -5239,35 +5239,35 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Showing the last confirmed list. Actions are paused until refresh succeeds.';
 
   @override
-  String get adminChallengesVoidReasonRecorded => 'VOID REASON RECORDED';
+  String get adminChallengesVoidReasonRecorded => 'Void reason recorded';
 
   @override
-  String get adminChallengesNoVoidReason => 'NO VOID REASON';
+  String get adminChallengesNoVoidReason => 'No void reason';
 
   @override
   String adminChallengesSettlementMode(String mode) {
-    return 'SETTLEMENT $mode';
+    return 'Settlement $mode';
   }
 
   @override
   String adminChallengesAuditState(String state) {
-    return 'AUDIT $state';
+    return 'Audit $state';
   }
 
   @override
-  String get adminChallengesRetryingAction => 'RETRYING SETTLEMENT';
+  String get adminChallengesRetryingAction => 'Retrying settlement';
 
   @override
-  String get adminChallengesRetryAction => 'RETRY SETTLEMENT';
+  String get adminChallengesRetryAction => 'Retry settlement';
 
   @override
-  String get adminChallengesCreator => 'CREATOR';
+  String get adminChallengesCreator => 'Creator';
 
   @override
-  String get adminChallengesPool => 'POOL';
+  String get adminChallengesPool => 'Pool';
 
   @override
-  String get adminChallengesParticipants => 'PARTICIPANTS';
+  String get adminChallengesParticipants => 'Participants';
 
   @override
   String adminVersus(String home, String away) {
@@ -5280,7 +5280,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminSettlementConfirmTitle => 'SETTLE THIS FIXTURE?';
+  String get adminSettlementConfirmTitle => 'Settle this fixture?';
 
   @override
   String adminSettlementConfirmMessage(
@@ -5293,7 +5293,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminSettlementSettleUpper => 'SETTLE';
+  String get adminSettlementSettleUpper => 'Settle';
 
   @override
   String adminSettlementReceipt(String score, int markets, int won, int lost) {
@@ -5309,7 +5309,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Fixture settlement was not confirmed.';
 
   @override
-  String get adminSettlementTitle => 'SETTLE FIXTURES';
+  String get adminSettlementTitle => 'Settle fixtures';
 
   @override
   String get adminSettlementLoadingTitle => 'Loading settlement workspace';
@@ -5319,16 +5319,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Checking controlled fixture information.';
 
   @override
-  String get adminSettlementFilterScheduled => 'SCHEDULED';
+  String get adminSettlementFilterScheduled => 'Scheduled';
 
   @override
-  String get adminSettlementFilterFinished => 'FINISHED';
+  String get adminSettlementFilterFinished => 'Finished';
 
   @override
-  String get adminSettlementFilterAll => 'ALL';
+  String get adminSettlementFilterAll => 'All';
 
   @override
-  String get adminSettlementControlTitle => 'OFFICIAL RESULT CONTROL';
+  String get adminSettlementControlTitle => 'Official result control';
 
   @override
   String get adminSettlementControlMessage =>
@@ -5342,7 +5342,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Switch filters or wait for controlled fixture information.';
 
   @override
-  String get adminSettlementVersusShort => 'VS';
+  String get adminSettlementVersusShort => 'Vs';
 
   @override
   String get adminSettlementOpenHint => 'Open official result confirmation';
@@ -5351,16 +5351,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminSettlementUnavailableHint => 'Settlement unavailable';
 
   @override
-  String get adminSettlementEnterOfficialResult => 'ENTER OFFICIAL RESULT';
+  String get adminSettlementEnterOfficialResult => 'Enter official result';
 
   @override
-  String get adminSettlementPaused => 'SETTLEMENT PAUSED';
+  String get adminSettlementPaused => 'Settlement paused';
 
   @override
-  String get adminSettlementSettled => 'SETTLED';
+  String get adminSettlementSettled => 'Settled';
 
   @override
-  String get adminSettlementNotSettleable => 'NOT SETTLEABLE';
+  String get adminSettlementNotSettleable => 'Not settleable';
 
   @override
   String get adminSettlementManagementUnavailable =>
@@ -5437,7 +5437,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminSettlementShowHalfTime => 'Show half-time score fields';
 
   @override
-  String get adminSettlementHalfTimeOptional => 'HALF-TIME SCORE (OPTIONAL)';
+  String get adminSettlementHalfTimeOptional => 'Half-time score (optional)';
 
   @override
   String adminSettlementHalfTimeLabel(String team) {
@@ -5448,19 +5448,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminSettlementReviewAction => 'Review settlement';
 
   @override
-  String get adminStatusFinished => 'FINISHED';
+  String get adminStatusFinished => 'Finished';
 
   @override
-  String get adminStatusScheduled => 'SCHEDULED';
+  String get adminStatusScheduled => 'Scheduled';
 
   @override
-  String get adminStatusLive => 'LIVE';
+  String get adminStatusLive => 'Live';
 
   @override
-  String get adminStatusCancelled => 'CANCELLED';
+  String get adminStatusCancelled => 'Cancelled';
 
   @override
-  String get adminStatusPostponed => 'POSTPONED';
+  String get adminStatusPostponed => 'Postponed';
 
   @override
   String adminScore(int home, int away) {
@@ -5468,7 +5468,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminFeatureDetailTitle => 'FEATURE DETAIL';
+  String get adminFeatureDetailTitle => 'Feature detail';
 
   @override
   String get adminFeatureLoadingTitle => 'Loading feature settings';
@@ -5488,7 +5488,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminBackToFeatures => 'Back to features';
 
   @override
-  String get adminFeatureGlobalState => 'GLOBAL STATE';
+  String get adminFeatureGlobalState => 'Global state';
 
   @override
   String adminFeatureDisableTooltip(String feature) {
@@ -5522,19 +5522,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminFeatureTapEnable => 'Tap to enable this feature globally';
 
   @override
-  String get adminFeatureVisibility => 'VISIBILITY';
+  String get adminFeatureVisibility => 'Visibility';
 
   @override
-  String get adminFeatureVisibilityVisible => 'VISIBLE';
+  String get adminFeatureVisibilityVisible => 'Visible';
 
   @override
-  String get adminFeatureVisibilityHidden => 'HIDDEN';
+  String get adminFeatureVisibilityHidden => 'Hidden';
 
   @override
-  String get adminFeatureVisibilityMaintenance => 'MAINTENANCE';
+  String get adminFeatureVisibilityMaintenance => 'Maintenance';
 
   @override
-  String get adminFeatureChannelConfig => 'CHANNEL CONFIG';
+  String get adminFeatureChannelConfig => 'Channel config';
 
   @override
   String get adminFeatureNoChannelOverrides => 'No channel overrides';
@@ -5544,10 +5544,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'This feature uses its confirmed global state.';
 
   @override
-  String get adminFeatureScheduling => 'SCHEDULING';
+  String get adminFeatureScheduling => 'Scheduling';
 
   @override
-  String get adminFeatureAccessRules => 'ACCESS RULES';
+  String get adminFeatureAccessRules => 'Access rules';
 
   @override
   String get adminFeatureAuthRequired => 'Authentication required';
@@ -5608,10 +5608,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Last confirmed settings remain visible. Controls are paused.';
 
   @override
-  String get adminFeatureChannelMobile => 'MOBILE';
+  String get adminFeatureChannelMobile => 'Mobile';
 
   @override
-  String get adminFeatureChannelWeb => 'WEB';
+  String get adminFeatureChannelWeb => 'Web';
 
   @override
   String get adminFeatureChannelEnabled => 'Enabled';
@@ -5667,7 +5667,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminFeatureOpenDateTime => 'Opens date and time selection';
 
   @override
-  String get adminMatchesTitle => 'MATCHES';
+  String get adminMatchesTitle => 'Matches';
 
   @override
   String get adminMatchesLoadingTitle => 'Loading match workspace';
@@ -5681,28 +5681,28 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Manage fixtures, sale status, ticket allocation, and live scores from confirmed data.';
 
   @override
-  String get adminMatchesFixtures => 'FIXTURES';
+  String get adminMatchesFixtures => 'Fixtures';
 
   @override
-  String get adminMatchesOnSale => 'ON SALE';
+  String get adminMatchesOnSale => 'On sale';
 
   @override
-  String get adminMatchesStatus => 'STATUS';
+  String get adminMatchesStatus => 'Status';
 
   @override
-  String get adminMatchesFilterAll => 'ALL';
+  String get adminMatchesFilterAll => 'All';
 
   @override
-  String get adminMatchesFilterLive => 'LIVE';
+  String get adminMatchesFilterLive => 'Live';
 
   @override
-  String get adminMatchesFilterUpcoming => 'UPCOMING';
+  String get adminMatchesFilterUpcoming => 'Upcoming';
 
   @override
-  String get adminMatchesFilterOnSale => 'ON SALE';
+  String get adminMatchesFilterOnSale => 'On sale';
 
   @override
-  String get adminMatchesFilterCompleted => 'COMPLETED';
+  String get adminMatchesFilterCompleted => 'Completed';
 
   @override
   String get adminMatchesNoneConfigured => 'No fixtures configured';
@@ -5810,7 +5810,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String adminMatchesPrices(String symbol, String general, String vip) {
-    return 'GENERAL $symbol $general • VIP $symbol $vip';
+    return 'General $symbol $general • VIP $symbol $vip';
   }
 
   @override
@@ -5824,19 +5824,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminMatchesEditOnSale => 'EDIT ON-SALE FIXTURE';
+  String get adminMatchesEditOnSale => 'Edit on-sale fixture';
 
   @override
-  String get adminMatchesEdit => 'EDIT FIXTURE';
+  String get adminMatchesEdit => 'Edit fixture';
 
   @override
-  String get adminStatusHalfTime => 'HALF-TIME';
+  String get adminStatusHalfTime => 'Half-time';
 
   @override
-  String get adminStatusFullTime => 'FULL-TIME';
+  String get adminStatusFullTime => 'Full-time';
 
   @override
-  String get adminStatusUpcoming => 'UPCOMING';
+  String get adminStatusUpcoming => 'Upcoming';
 
   @override
   String adminMatchesLiveMinute(int minute) {
@@ -5856,16 +5856,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'The match was not saved. Try again after refreshing.';
 
   @override
-  String get adminMatchCreateTitle => 'CREATE MATCH';
+  String get adminMatchCreateTitle => 'Create match';
 
   @override
-  String get adminMatchUpdateTitle => 'UPDATE MATCH';
+  String get adminMatchUpdateTitle => 'Update match';
 
   @override
-  String get adminMatchHomeTeam => 'Home Team';
+  String get adminMatchHomeTeam => 'Home team';
 
   @override
-  String get adminMatchAwayTeam => 'Away Team';
+  String get adminMatchAwayTeam => 'Away team';
 
   @override
   String get adminMatchCompetition => 'Competition';
@@ -5929,7 +5929,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminMatchUpdate => 'Update match';
 
   @override
-  String get adminFeatureManagerTitle => 'FEATURE MANAGER';
+  String get adminFeatureManagerTitle => 'Feature manager';
 
   @override
   String get adminFeatureRegistryLoading => 'Loading feature registry';
@@ -5943,19 +5943,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Control club-scoped feature availability with confirmed, bounded configuration.';
 
   @override
-  String get adminFeatureRegistered => 'REGISTERED';
+  String get adminFeatureRegistered => 'Registered';
 
   @override
-  String get adminFeatureEnabledUpper => 'ENABLED';
+  String get adminFeatureEnabledUpper => 'Enabled';
 
   @override
-  String get adminFeatureDisabledUpper => 'DISABLED';
+  String get adminFeatureDisabledUpper => 'Disabled';
 
   @override
-  String get adminFeatureStatus => 'STATUS';
+  String get adminFeatureStatus => 'Status';
 
   @override
-  String get adminFeatureFilterAll => 'ALL';
+  String get adminFeatureFilterAll => 'All';
 
   @override
   String get adminFeatureNoneConfigured => 'No features configured';
@@ -6035,7 +6035,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminFeatureChangeVisibility => 'Change visibility';
 
   @override
-  String get adminCompetitionsTitle => 'COMPETITIONS';
+  String get adminCompetitionsTitle => 'Competitions';
 
   @override
   String get adminCompetitionsAdd => 'Add competition';
@@ -6144,10 +6144,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCompetitionUpdated => 'Competition updated';
 
   @override
-  String get adminCompetitionActivateQuestion => 'ACTIVATE COMPETITION?';
+  String get adminCompetitionActivateQuestion => 'Activate competition?';
 
   @override
-  String get adminCompetitionDeactivateQuestion => 'DEACTIVATE?';
+  String get adminCompetitionDeactivateQuestion => 'Deactivate?';
 
   @override
   String adminCompetitionActivateMessage(String competition) {
@@ -6160,10 +6160,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminActivateUpper => 'ACTIVATE';
+  String get adminActivateUpper => 'Activate';
 
   @override
-  String get adminDeactivateUpper => 'DEACTIVATE';
+  String get adminDeactivateUpper => 'Deactivate';
 
   @override
   String get adminCompetitionActivated => 'Competition activated';
@@ -6172,64 +6172,64 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCompetitionDeactivated => 'Competition deactivated';
 
   @override
-  String get adminCompetitionsTotal => 'TOTAL';
+  String get adminCompetitionsTotal => 'Total';
 
   @override
-  String get adminCompetitionsActive => 'ACTIVE';
+  String get adminCompetitionsActive => 'Active';
 
   @override
-  String get adminCompetitionsInactive => 'INACTIVE';
+  String get adminCompetitionsInactive => 'Inactive';
 
   @override
   String get adminCompetitionFilters => 'Competition filters';
 
   @override
-  String get adminCompetitionRegion => 'REGION';
+  String get adminCompetitionRegion => 'Region';
 
   @override
-  String get adminCompetitionKind => 'KIND';
+  String get adminCompetitionKind => 'Kind';
 
   @override
-  String get adminCompetitionSeasons => 'SEASONS';
+  String get adminCompetitionSeasons => 'Seasons';
 
   @override
-  String get adminEditUpper => 'EDIT';
+  String get adminEditUpper => 'Edit';
 
   @override
-  String get adminCompetitionFilterAll => 'ALL';
+  String get adminCompetitionFilterAll => 'All';
 
   @override
-  String get adminCompetitionRegionAfrica => 'AFRICA';
+  String get adminCompetitionRegionAfrica => 'Africa';
 
   @override
-  String get adminCompetitionRegionEurope => 'EUROPE';
+  String get adminCompetitionRegionEurope => 'Europe';
 
   @override
-  String get adminCompetitionRegionInternational => 'INTL';
+  String get adminCompetitionRegionInternational => 'Intl';
 
   @override
-  String get adminCompetitionRegionGlobal => 'GLOBAL';
+  String get adminCompetitionRegionGlobal => 'Global';
 
   @override
-  String get adminCompetitionKindLeague => 'LEAGUE';
+  String get adminCompetitionKindLeague => 'League';
 
   @override
-  String get adminCompetitionKindCup => 'CUP';
+  String get adminCompetitionKindCup => 'Cup';
 
   @override
-  String get adminCompetitionKindTournament => 'TOURNAMENT';
+  String get adminCompetitionKindTournament => 'Tournament';
 
   @override
-  String get adminCompetitionEdit => 'EDIT COMPETITION';
+  String get adminCompetitionEdit => 'Edit competition';
 
   @override
-  String get adminCompetitionAdd => 'ADD COMPETITION';
+  String get adminCompetitionAdd => 'Add competition';
 
   @override
   String get adminCompetitionName => 'Name';
 
   @override
-  String get adminCompetitionShortName => 'Short Name';
+  String get adminCompetitionShortName => 'Short name';
 
   @override
   String get adminCompetitionSlug => 'Slug';
@@ -6244,19 +6244,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminOptional => 'Optional';
 
   @override
-  String get adminCompetitionCountryCode => 'Country Code';
+  String get adminCompetitionCountryCode => 'Country code';
 
   @override
-  String get adminCompetitionCountryCodeHint => 'RW';
+  String get adminCompetitionCountryCodeHint => 'Rw';
 
   @override
-  String get adminCompetitionCountryName => 'Country Name';
+  String get adminCompetitionCountryName => 'Country name';
 
   @override
   String get adminCompetitionCountryNameHint => 'Rwanda';
 
   @override
-  String get adminCompetitionFormatNotes => 'Format Notes';
+  String get adminCompetitionFormatNotes => 'Format notes';
 
   @override
   String get adminCompetitionValidationMessage =>
@@ -6293,10 +6293,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminSeasonCreated => 'Season created';
 
   @override
-  String get adminSeasonActivateQuestion => 'ACTIVATE SEASON?';
+  String get adminSeasonActivateQuestion => 'Activate season?';
 
   @override
-  String get adminSeasonDeactivateQuestion => 'DEACTIVATE SEASON?';
+  String get adminSeasonDeactivateQuestion => 'Deactivate season?';
 
   @override
   String adminSeasonAvailabilityMessage(String season, String availability) {
@@ -6326,7 +6326,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Check the season slug, label, and years.';
 
   @override
-  String get adminSeasonAddUpper => 'ADD SEASON';
+  String get adminSeasonAddUpper => 'Add season';
 
   @override
   String get adminSeasonSlugHint => 'e.g. league-2026';
@@ -6338,28 +6338,28 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminSeasonLabelHint => 'e.g. 2025/2026';
 
   @override
-  String get adminSeasonYearStart => 'Year Start';
+  String get adminSeasonYearStart => 'Year start';
 
   @override
-  String get adminSeasonYearEnd => 'Year End';
+  String get adminSeasonYearEnd => 'Year end';
 
   @override
-  String get adminCreateUpper => 'CREATE';
+  String get adminCreateUpper => 'Create';
 
   @override
-  String get adminSeasonStatusPlanned => 'PLANNED';
+  String get adminSeasonStatusPlanned => 'Planned';
 
   @override
-  String get adminSeasonStatusActive => 'ACTIVE';
+  String get adminSeasonStatusActive => 'Active';
 
   @override
-  String get adminSeasonStatusFinished => 'FINISHED';
+  String get adminSeasonStatusFinished => 'Finished';
 
   @override
-  String get adminSeasonStatusArchived => 'ARCHIVED';
+  String get adminSeasonStatusArchived => 'Archived';
 
   @override
-  String get adminNotificationSendTitle => 'SEND NOTIFICATION';
+  String get adminNotificationSendTitle => 'Send notification';
 
   @override
   String get adminNotificationLoading => 'Loading notification workspace';
@@ -6369,35 +6369,35 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Checking controlled delivery information.';
 
   @override
-  String get adminNotificationDeliveryStatus => 'DELIVERY STATUS';
+  String get adminNotificationDeliveryStatus => 'Delivery status';
 
   @override
   String get adminNotificationDeliveryStatusMessage =>
       'Delivery via Edge Functions. Scheduled sends dispatch on cron.';
 
   @override
-  String get adminNotificationAudience => 'AUDIENCE';
+  String get adminNotificationAudience => 'Audience';
 
   @override
-  String get adminNotificationAudienceAllFans => 'ALL FANS';
+  String get adminNotificationAudienceAllFans => 'All fans';
 
   @override
-  String get adminNotificationAudienceByTier => 'BY TIER';
+  String get adminNotificationAudienceByTier => 'By tier';
 
   @override
-  String get adminNotificationAudienceByGroup => 'BY GROUP';
+  String get adminNotificationAudienceByGroup => 'By group';
 
   @override
-  String get adminNotificationTierFan => 'FAN';
+  String get adminNotificationTierFan => 'Fan';
 
   @override
-  String get adminNotificationTierBronze => 'BRONZE';
+  String get adminNotificationTierBronze => 'Bronze';
 
   @override
-  String get adminNotificationTierGold => 'GOLD';
+  String get adminNotificationTierGold => 'Gold';
 
   @override
-  String get adminNotificationTierPlatinum => 'PLATINUM';
+  String get adminNotificationTierPlatinum => 'Platinum';
 
   @override
   String get adminNotificationSelectGroup => 'Select group';
@@ -6417,10 +6417,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminNotificationImageUrl => 'Optional image URL';
 
   @override
-  String get adminNotificationSchedule => 'SCHEDULE';
+  String get adminNotificationSchedule => 'Schedule';
 
   @override
-  String get adminNotificationSendNow => 'SEND NOW';
+  String get adminNotificationSendNow => 'Send now';
 
   @override
   String get adminNotificationPickDateTime => 'Pick date & time';
@@ -6432,10 +6432,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminNotificationSendAction => 'Send notification';
 
   @override
-  String get adminNotificationCopyPayload => 'COPY PAYLOAD';
+  String get adminNotificationCopyPayload => 'Copy payload';
 
   @override
-  String get adminNotificationSendHistory => 'SEND HISTORY';
+  String get adminNotificationSendHistory => 'Send history';
 
   @override
   String get adminNotificationHistoryEmpty => 'No notification history';
@@ -6579,26 +6579,26 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminNotificationAllSupporters => 'All supporters';
 
   @override
-  String get adminNotificationPreview => 'PREVIEW';
+  String get adminNotificationPreview => 'Preview';
 
   @override
   String get adminNotificationPreviewBody =>
       'Your message preview appears here.';
 
   @override
-  String get adminNotificationStatusScheduled => 'SCHEDULED';
+  String get adminNotificationStatusScheduled => 'Scheduled';
 
   @override
-  String get adminNotificationStatusSent => 'SENT';
+  String get adminNotificationStatusSent => 'Sent';
 
   @override
-  String get adminNotificationStatusPartial => 'PARTIAL';
+  String get adminNotificationStatusPartial => 'Partial';
 
   @override
-  String get adminNotificationStatusFailed => 'FAILED';
+  String get adminNotificationStatusFailed => 'Failed';
 
   @override
-  String get adminContributionsTitle => 'CONTRIBUTIONS';
+  String get adminContributionsTitle => 'Contributions';
 
   @override
   String get adminContributionsLoading => 'Loading contributions';
@@ -6612,7 +6612,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Review club-scoped group totals without exposing supporter or payment identifiers.';
 
   @override
-  String get adminContributionsMonthlyTotal => 'TOTAL RECORDED THIS MONTH';
+  String get adminContributionsMonthlyTotal => 'Total recorded this month';
 
   @override
   String adminContributionsSummary(int groups, int records) {
@@ -6690,34 +6690,34 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Last confirmed totals remain visible. Controls are paused until refresh succeeds.';
 
   @override
-  String get adminContributionsGroupType => 'GROUP TYPE';
+  String get adminContributionsGroupType => 'Group type';
 
   @override
-  String get adminContributionsSort => 'SORT';
+  String get adminContributionsSort => 'Sort';
 
   @override
-  String get adminContributionsFilterAll => 'ALL';
+  String get adminContributionsFilterAll => 'All';
 
   @override
-  String get adminContributionsTeamProjects => 'TEAM PROJECTS';
+  String get adminContributionsTeamProjects => 'Team projects';
 
   @override
-  String get adminContributionsCommunity => 'COMMUNITY';
+  String get adminContributionsCommunity => 'Community';
 
   @override
-  String get adminContributionsRecent => 'RECENT';
+  String get adminContributionsRecent => 'Recent';
 
   @override
-  String get adminContributionsTotal => 'TOTAL';
+  String get adminContributionsTotal => 'Total';
 
   @override
-  String get adminContributionsClosed => 'CLOSED';
+  String get adminContributionsClosed => 'Closed';
 
   @override
-  String get adminContributionsActive => 'ACTIVE';
+  String get adminContributionsActive => 'Active';
 
   @override
-  String get adminContributionsTeamProject => 'TEAM PROJECT';
+  String get adminContributionsTeamProject => 'Team project';
 
   @override
   String adminContributionsRecordMembers(int records, int members) {
@@ -6733,7 +6733,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminSmsTitle => 'SMS OPERATIONS';
+  String get adminSmsTitle => 'SMS operations';
 
   @override
   String get adminSmsLoading => 'Loading SMS operations';
@@ -6750,17 +6750,17 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'No controlled health signals or synchronization runs are available yet.';
 
   @override
-  String get adminSmsControlledHealth => 'CONTROLLED HEALTH VIEW';
+  String get adminSmsControlledHealth => 'Controlled health view';
 
   @override
   String get adminSmsControlledHealthMessage =>
       'Review device synchronization, message checks, contribution matching, sender drift, retries, and privacy cleanup without displaying message bodies or supporter identifiers.';
 
   @override
-  String get adminSmsPipelineHealth => 'PIPELINE HEALTH';
+  String get adminSmsPipelineHealth => 'Pipeline health';
 
   @override
-  String get adminSmsRecentSync => 'RECENT DEVICE SYNCHRONIZATION';
+  String get adminSmsRecentSync => 'Recent device synchronization';
 
   @override
   String get adminSmsNoRecentRuns => 'No recent synchronization runs';
@@ -6833,34 +6833,34 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Last confirmed operational information remains visible. Controls are paused.';
 
   @override
-  String get adminSmsStatusHealthy => 'HEALTHY';
+  String get adminSmsStatusHealthy => 'Healthy';
 
   @override
-  String get adminSmsStatusSucceeded => 'SUCCEEDED';
+  String get adminSmsStatusSucceeded => 'Succeeded';
 
   @override
-  String get adminSmsStatusDegraded => 'DEGRADED';
+  String get adminSmsStatusDegraded => 'Degraded';
 
   @override
-  String get adminSmsStatusRunning => 'RUNNING';
+  String get adminSmsStatusRunning => 'Running';
 
   @override
-  String get adminSmsStatusRateLimited => 'RATE LIMITED';
+  String get adminSmsStatusRateLimited => 'Rate limited';
 
   @override
-  String get adminSmsStatusFailing => 'FAILING';
+  String get adminSmsStatusFailing => 'Failing';
 
   @override
-  String get adminSmsStatusFailed => 'FAILED';
+  String get adminSmsStatusFailed => 'Failed';
 
   @override
-  String get adminSmsTriggerInitial => 'INITIAL HISTORY';
+  String get adminSmsTriggerInitial => 'Initial history';
 
   @override
-  String get adminSmsTriggerManual => 'MANUAL';
+  String get adminSmsTriggerManual => 'Manual';
 
   @override
-  String get adminSmsTriggerControlled => 'CONTROLLED';
+  String get adminSmsTriggerControlled => 'Controlled';
 
   @override
   String adminSmsRunTitle(String status, String trigger) {
@@ -6873,7 +6873,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminCmsTitle => 'CONTENT MANAGER';
+  String get adminCmsTitle => 'Content manager';
 
   @override
   String get adminCmsDescription =>
@@ -6974,10 +6974,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'The CMS change could not be completed. Review and try again.';
 
   @override
-  String get adminCmsAddContentBlock => 'ADD CONTENT BLOCK';
+  String get adminCmsAddContentBlock => 'Add content block';
 
   @override
-  String get adminCmsEditContentBlock => 'EDIT CONTENT BLOCK';
+  String get adminCmsEditContentBlock => 'Edit content block';
 
   @override
   String get adminCmsBlockKey => 'Block key (e.g. home_hero_1)';
@@ -6986,10 +6986,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsBlockType => 'Block type (e.g. banner)';
 
   @override
-  String get adminCmsTargetChannel => 'Target Channel';
+  String get adminCmsTargetChannel => 'Target channel';
 
   @override
-  String get adminCmsPlacementKey => 'Placement Key';
+  String get adminCmsPlacementKey => 'Placement key';
 
   @override
   String get adminCmsTitleField => 'Title';
@@ -6998,7 +6998,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsSubtitleField => 'Subtitle';
 
   @override
-  String get adminCmsContentComponent => 'Content Component Name';
+  String get adminCmsContentComponent => 'Content component name';
 
   @override
   String get adminCmsFeatureField => 'Feature';
@@ -7013,13 +7013,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsActive => 'Active';
 
   @override
-  String get adminCmsCreate => 'CREATE';
+  String get adminCmsCreate => 'Create';
 
   @override
-  String get adminCmsSave => 'SAVE';
+  String get adminCmsSave => 'Save';
 
   @override
-  String get adminCmsNewArticle => 'NEW ARTICLE';
+  String get adminCmsNewArticle => 'New article';
 
   @override
   String get adminCmsArticleTitle => 'Article title';
@@ -7028,10 +7028,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsArticleBody => 'Article body';
 
   @override
-  String get adminCmsAddQuickAction => 'ADD QUICK ACTION';
+  String get adminCmsAddQuickAction => 'Add quick action';
 
   @override
-  String get adminCmsEditQuickAction => 'EDIT QUICK ACTION';
+  String get adminCmsEditQuickAction => 'Edit quick action';
 
   @override
   String get adminCmsActionKey => 'Action key';
@@ -7049,10 +7049,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsCountry => 'Country';
 
   @override
-  String get adminCmsAddPartner => 'ADD PARTNER';
+  String get adminCmsAddPartner => 'Add partner';
 
   @override
-  String get adminCmsEditPartner => 'EDIT PARTNER';
+  String get adminCmsEditPartner => 'Edit partner';
 
   @override
   String get adminCmsName => 'Name';
@@ -7073,10 +7073,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsCreatePartnerFirst => 'Create a partner first.';
 
   @override
-  String get adminCmsAddPartnerService => 'ADD PARTNER SERVICE';
+  String get adminCmsAddPartnerService => 'Add partner service';
 
   @override
-  String get adminCmsEditPartnerService => 'EDIT PARTNER SERVICE';
+  String get adminCmsEditPartnerService => 'Edit partner service';
 
   @override
   String get adminCmsPartner => 'Partner';
@@ -7095,10 +7095,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'All active competitions are already in the prediction catalog.';
 
   @override
-  String get adminCmsAddPredictionCompetition => 'ADD PREDICTION COMPETITION';
+  String get adminCmsAddPredictionCompetition => 'Add prediction competition';
 
   @override
-  String get adminCmsEditPredictionCompetition => 'EDIT PREDICTION COMPETITION';
+  String get adminCmsEditPredictionCompetition => 'Edit prediction competition';
 
   @override
   String get adminCmsCompetition => 'Competition';
@@ -7140,7 +7140,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsSectionNews => 'News';
 
   @override
-  String get adminCmsSectionQuickActions => 'Quick Actions';
+  String get adminCmsSectionQuickActions => 'Quick actions';
 
   @override
   String get adminCmsSectionPartners => 'Partners';
@@ -7155,46 +7155,46 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsSectionPlacements => 'Placements';
 
   @override
-  String get adminCmsSectionAuditLogs => 'Audit Logs';
+  String get adminCmsSectionAuditLogs => 'Audit logs';
 
   @override
-  String get adminCmsNewsArticles => 'News Articles';
+  String get adminCmsNewsArticles => 'News articles';
 
   @override
-  String get adminCmsAddArticle => 'ADD ARTICLE';
+  String get adminCmsAddArticle => 'Add article';
 
   @override
-  String get adminCmsHomeQuickActions => 'Home Quick Actions';
+  String get adminCmsHomeQuickActions => 'Home quick actions';
 
   @override
-  String get adminCmsAddAction => 'ADD ACTION';
+  String get adminCmsAddAction => 'Add action';
 
   @override
   String get adminCmsPartners => 'Partners';
 
   @override
-  String get adminCmsAddPartnerAction => 'ADD PARTNER';
+  String get adminCmsAddPartnerAction => 'Add partner';
 
   @override
-  String get adminCmsPartnerServices => 'Partner Services';
+  String get adminCmsPartnerServices => 'Partner services';
 
   @override
-  String get adminCmsAddService => 'ADD SERVICE';
+  String get adminCmsAddService => 'Add service';
 
   @override
-  String get adminCmsPredictionCompetitions => 'Prediction Competitions';
+  String get adminCmsPredictionCompetitions => 'Prediction competitions';
 
   @override
-  String get adminCmsAddCompetition => 'ADD COMPETITION';
+  String get adminCmsAddCompetition => 'Add competition';
 
   @override
-  String get adminCmsContentBlocks => 'Platform Content Blocks';
+  String get adminCmsContentBlocks => 'Platform content blocks';
 
   @override
-  String get adminCmsAddBlock => 'ADD BLOCK';
+  String get adminCmsAddBlock => 'Add block';
 
   @override
-  String get adminCmsAuditLogs => 'FEATURE MANAGEMENT AUDIT LOGS';
+  String get adminCmsAuditLogs => 'Feature management audit logs';
 
   @override
   String get adminCmsQuickActionFallback => 'Quick action';
@@ -7209,25 +7209,25 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsContentBlockFallback => 'Content block';
 
   @override
-  String get adminCmsActiveUpper => 'ACTIVE';
+  String get adminCmsActiveUpper => 'Active';
 
   @override
-  String get adminCmsInactiveUpper => 'INACTIVE';
+  String get adminCmsInactiveUpper => 'Inactive';
 
   @override
-  String get adminCmsGamificationUpper => 'GAMIFICATION';
+  String get adminCmsGamificationUpper => 'Gamification';
 
   @override
-  String get adminCmsDirectUpper => 'DIRECT';
+  String get adminCmsDirectUpper => 'Direct';
 
   @override
-  String get adminCmsStandardUpper => 'STANDARD';
+  String get adminCmsStandardUpper => 'Standard';
 
   @override
-  String get adminCmsDeactivate => 'DEACTIVATE';
+  String get adminCmsDeactivate => 'Deactivate';
 
   @override
-  String get adminCmsActivate => 'ACTIVATE';
+  String get adminCmsActivate => 'Activate';
 
   @override
   String get adminCmsCtaPending => 'CTA pending';
@@ -7241,22 +7241,22 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminCmsCatalog => 'CATALOG';
+  String get adminCmsCatalog => 'Catalog';
 
   @override
-  String get adminCmsSupported => 'SUPPORTED';
+  String get adminCmsSupported => 'Supported';
 
   @override
   String get adminCmsUnknown => 'unknown';
 
   @override
-  String get adminCmsUnknownFeature => 'Unknown Feature';
+  String get adminCmsUnknownFeature => 'Unknown feature';
 
   @override
   String get adminCmsUnknownDate => 'Unknown date';
 
   @override
-  String get adminCmsActionFallback => 'ACTION';
+  String get adminCmsActionFallback => 'Action';
 
   @override
   String adminCmsFeatureName(String feature) {
@@ -7268,7 +7268,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Actor details are withheld in the mobile workspace.';
 
   @override
-  String get adminCmsEdit => 'EDIT';
+  String get adminCmsEdit => 'Edit';
 
   @override
   String get adminCmsUntitled => 'Untitled';
@@ -7277,16 +7277,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get adminCmsNewsFallback => 'News';
 
   @override
-  String get adminCmsLive => 'LIVE';
+  String get adminCmsLive => 'Live';
 
   @override
-  String get adminCmsDraft => 'DRAFT';
+  String get adminCmsDraft => 'Draft';
 
   @override
   String get adminCmsNotPublished => 'Not published';
 
   @override
-  String get adminCmsFeatured => 'FEATURED';
+  String get adminCmsFeatured => 'Featured';
 
   @override
   String adminCmsArticleMeta(String category, String date, String featured) {
@@ -7294,10 +7294,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get adminCmsUnpublish => 'UNPUBLISH';
+  String get adminCmsUnpublish => 'Unpublish';
 
   @override
-  String get adminCmsPublish => 'PUBLISH';
+  String get adminCmsPublish => 'Publish';
 
   @override
   String adminCmsPair(String first, String second) {
@@ -7305,7 +7305,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameCommunityPicks => 'COMMUNITY PICKS';
+  String get gameCommunityPicks => 'Community picks';
 
   @override
   String get gameFetProgress => 'FET progress';
@@ -7314,7 +7314,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameFet => 'FET';
 
   @override
-  String get gameLevelUp => 'LEVEL UP!';
+  String get gameLevelUp => 'Level up!';
 
   @override
   String get gameAwesome => 'Awesome';
@@ -7336,43 +7336,43 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameDaysShort => 'DAYS';
+  String get gameDaysShort => 'Days';
 
   @override
-  String get gameHoursShort => 'HRS';
+  String get gameHoursShort => 'Hrs';
 
   @override
-  String get gameMinutesShort => 'MIN';
+  String get gameMinutesShort => 'Min';
 
   @override
-  String get gameSecondsShort => 'SEC';
+  String get gameSecondsShort => 'Sec';
 
   @override
   String get gameDismissNotification => 'Dismiss notification';
 
   @override
-  String get gamePredictions => 'PREDICTIONS';
+  String get gamePredictions => 'Predictions';
 
   @override
-  String get gameAccuracy => 'ACCURACY';
+  String get gameAccuracy => 'Accuracy';
 
   @override
-  String get gamePointsEarned => 'POINTS EARNED';
+  String get gamePointsEarned => 'Points earned';
 
   @override
-  String get gameRank => 'RANK';
+  String get gameRank => 'Rank';
 
   @override
-  String get gameTopScorers => 'TOP SCORERS';
+  String get gameTopScorers => 'Top scorers';
 
   @override
   String get gameGoals => 'Goals';
 
   @override
-  String get gameEntriesClosed => 'ENTRIES CLOSED';
+  String get gameEntriesClosed => 'Entries closed';
 
   @override
-  String get gameEntriesCloseIn => 'ENTRIES CLOSE IN';
+  String get gameEntriesCloseIn => 'Entries close in';
 
   @override
   String gameFetProgressValue(int current, int maximum, String tier) {
@@ -7411,10 +7411,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameRetry => 'Retry';
 
   @override
-  String get gameOpenPredictionAlert => 'OPEN';
+  String get gameOpenPredictionAlert => 'Open';
 
   @override
-  String get gameBadgesTitle => 'YOUR BADGES';
+  String get gameBadgesTitle => 'Your badges';
 
   @override
   String get gameBadgesUnavailable => 'Badges unavailable';
@@ -7432,7 +7432,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameOpenBadgeDetails => 'Open badge details';
 
   @override
-  String get gamePredictionAlertsTitle => 'PREDICTION ALERTS';
+  String get gamePredictionAlertsTitle => 'Prediction alerts';
 
   @override
   String get gameAlertsUnavailable => 'Alerts unavailable';
@@ -7460,7 +7460,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameJustNow => 'Just now';
 
   @override
-  String get gameStreakTitle => 'YOUR STREAK';
+  String get gameStreakTitle => 'Your streak';
 
   @override
   String gameStreakDays(int count) {
@@ -7471,13 +7471,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameStreakActive => 'Streak active.';
 
   @override
-  String get gameCurrent => 'CURRENT';
+  String get gameCurrent => 'Current';
 
   @override
-  String get gameBest => 'BEST';
+  String get gameBest => 'Best';
 
   @override
-  String get gameNextBonus => 'NEXT BONUS';
+  String get gameNextBonus => 'Next bonus';
 
   @override
   String gameWins(int count) {
@@ -7496,7 +7496,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameVerifyToPredict => 'VERIFY TO PREDICT';
+  String get gameVerifyToPredict => 'Verify to predict';
 
   @override
   String get gameMakePicks => 'Make Picks';
@@ -7628,13 +7628,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameVerificationManual => 'Manual partner review';
 
   @override
-  String get gameSettingsUpper => 'SETTINGS';
+  String get gameSettingsUpper => 'Settings';
 
   @override
-  String get gamePrivacyUpper => 'PRIVACY';
+  String get gamePrivacyUpper => 'Privacy';
 
   @override
-  String get gameCoreGuarantees => 'CORE GUARANTEES';
+  String get gameCoreGuarantees => 'Core guarantees';
 
   @override
   String get gamePhoneNumberHidden => 'Phone Number Hidden';
@@ -7651,7 +7651,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'MoMo contributions to fan clubs are logged using only your Fan ID and amount bracket. Exact amounts and phone numbers are not recorded.';
 
   @override
-  String get gameVisibilityControls => 'VISIBILITY CONTROLS';
+  String get gameVisibilityControls => 'Visibility controls';
 
   @override
   String get gameShowRealName => 'Show Real Name';
@@ -7676,7 +7676,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameRewardsStoreTitle => 'REWARDS STORE';
+  String get gameRewardsStoreTitle => 'Rewards store';
 
   @override
   String get gameRewardsUnavailable => 'Rewards unavailable';
@@ -7686,7 +7686,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Rewards are temporarily unavailable.';
 
   @override
-  String get gameAvailableBalance => 'AVAILABLE BALANCE';
+  String get gameAvailableBalance => 'Available balance';
 
   @override
   String gameRewardsStoreDescription(String appName) {
@@ -7762,7 +7762,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameOnline => 'Online';
 
   @override
-  String get gameFixturesTitle => 'FIXTURES';
+  String get gameFixturesTitle => 'Fixtures';
 
   @override
   String get gameFixturesUnavailable => 'Fixtures unavailable';
@@ -7799,7 +7799,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameMyActivity => 'MY ACTIVITY';
+  String get gameMyActivity => 'My activity';
 
   @override
   String gameActiveCount(int count) {
@@ -7827,22 +7827,22 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameCouldNotCancelPick => 'Could not cancel this pick.';
 
   @override
-  String get gameWon => 'WON';
+  String get gameWon => 'Won';
 
   @override
-  String get gameLost => 'LOST';
+  String get gameLost => 'Lost';
 
   @override
-  String get gameCancelled => 'CANCELLED';
+  String get gameCancelled => 'Cancelled';
 
   @override
-  String get gameVoid => 'VOID';
+  String get gameVoid => 'Void';
 
   @override
-  String get gamePendingUpper => 'PENDING';
+  String get gamePendingUpper => 'Pending';
 
   @override
-  String get gameTbd => 'TBD';
+  String get gameTbd => 'Tbd';
 
   @override
   String gameVersusShort(String home, String away) {
@@ -7869,7 +7869,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameOpenActivityDetail => 'Open activity detail';
 
   @override
-  String get gameNotificationsUpper => 'NOTIFICATIONS';
+  String get gameNotificationsUpper => 'Notifications';
 
   @override
   String get gameKickoffAlerts => 'Match Kick-off Alerts';
@@ -7881,19 +7881,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameFriendChallenges => 'Friend Challenges';
 
   @override
-  String get gameLineupsUpper => 'LINEUPS';
+  String get gameLineupsUpper => 'Lineups';
 
   @override
-  String get gameSubstitutes => 'SUBS';
+  String get gameSubstitutes => 'Subs';
 
   @override
-  String get gameActiveUpper => 'ACTIVE';
+  String get gameActiveUpper => 'Active';
 
   @override
-  String get gameWinRate => 'WIN RATE';
+  String get gameWinRate => 'Win rate';
 
   @override
-  String get gameYouUpper => 'YOU';
+  String get gameYouUpper => 'You';
 
   @override
   String gameWalletSignedPoints(String sign, String amount) {
@@ -7934,13 +7934,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameMyPick => 'My pick';
 
   @override
-  String get gameOpenUpper => 'OPEN';
+  String get gameOpenUpper => 'Open';
 
   @override
-  String get gameLockedUpper => 'LOCKED';
+  String get gameLockedUpper => 'Locked';
 
   @override
-  String get gameSettledUpper => 'SETTLED';
+  String get gameSettledUpper => 'Settled';
 
   @override
   String gameDaysLeft(int count) {
@@ -8042,16 +8042,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameMarketUpper => 'MARKET';
+  String get gameMarketUpper => 'Market';
 
   @override
-  String get gamePickUpper => 'PICK';
+  String get gamePickUpper => 'Pick';
 
   @override
-  String get gameEarnedUpper => 'EARNED';
+  String get gameEarnedUpper => 'Earned';
 
   @override
-  String get gamePotentialUpper => 'POTENTIAL';
+  String get gamePotentialUpper => 'Potential';
 
   @override
   String gameShareTagline(String appName) {
@@ -8167,10 +8167,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Supporter rankings are temporarily unavailable.';
 
   @override
-  String get gameNotSignedIn => 'NOT SIGNED IN';
+  String get gameNotSignedIn => 'Not signed in';
 
   @override
-  String get gameTierFan => 'FAN';
+  String get gameTierFan => 'Fan';
 
   @override
   String get gameDisplayNameOn => 'Display Name On';
@@ -8273,10 +8273,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Deleting your account removes your personal data and Fan ID mapping from the active profile.';
 
   @override
-  String get gameFanIdTitle => 'FAN ID';
+  String get gameFanIdTitle => 'Fan id';
 
   @override
-  String get gameYourFanId => 'YOUR FAN ID';
+  String get gameYourFanId => 'Your fan id';
 
   @override
   String get gameAliasOnlyProfile => 'Alias-only profile';
@@ -8288,17 +8288,17 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameCopyToClipboard => 'Copy to clipboard';
 
   @override
-  String get gamePrivacyBadges => 'PRIVACY BADGES';
+  String get gamePrivacyBadges => 'Privacy badges';
 
   @override
-  String get gameIdentityRules => 'IDENTITY RULES';
+  String get gameIdentityRules => 'Identity rules';
 
   @override
   String get gameIdentityRulesDescription =>
       'How your Fan ID works based on your current profile settings.';
 
   @override
-  String get gameStandingsTitle => 'STANDINGS';
+  String get gameStandingsTitle => 'Standings';
 
   @override
   String get gameCompetitionNotFound => 'Competition not found.';
@@ -8311,16 +8311,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameStandingsUnavailable => 'Standings unavailable';
 
   @override
-  String get gamePositionShort => 'POS';
+  String get gamePositionShort => 'Pos';
 
   @override
-  String get gameTeamUpper => 'TEAM';
+  String get gameTeamUpper => 'Team';
 
   @override
-  String get gamePointsShort => 'PTS';
+  String get gamePointsShort => 'Pts';
 
   @override
-  String get gamePointsUpper => 'POINTS';
+  String get gamePointsUpper => 'Points';
 
   @override
   String gameStandingRecord(
@@ -8333,7 +8333,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameHeadToHead => 'HEAD TO HEAD';
+  String get gameHeadToHead => 'Head to head';
 
   @override
   String gameHeadToHeadEmpty(String home, String away) {
@@ -8341,10 +8341,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameWinDistribution => 'WIN DISTRIBUTION';
+  String get gameWinDistribution => 'Win distribution';
 
   @override
-  String get gameDraws => 'DRAWS';
+  String get gameDraws => 'Draws';
 
   @override
   String gameTeamGoals(String team) {
@@ -8352,7 +8352,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameRecentEncounters => 'RECENT ENCOUNTERS';
+  String get gameRecentEncounters => 'Recent encounters';
 
   @override
   String gameScore(int home, int away) {
@@ -8360,7 +8360,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameTokenHistoryTitle => 'TOKEN HISTORY';
+  String get gameTokenHistoryTitle => 'Token history';
 
   @override
   String get gameTokenHistoryTemporarilyUnavailable =>
@@ -8376,13 +8376,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameSpent => 'Spent';
 
   @override
-  String get gameAllUpper => 'ALL';
+  String get gameAllUpper => 'All';
 
   @override
-  String get gameEarnedUpperFilter => 'EARNED';
+  String get gameEarnedUpperFilter => 'Earned';
 
   @override
-  String get gameSpentUpper => 'SPENT';
+  String get gameSpentUpper => 'Spent';
 
   @override
   String get gameCredit => 'Credit';
@@ -8409,7 +8409,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameUnknownTime => 'Unknown time';
 
   @override
-  String get gameClubFanZoneTitle => 'CLUB FAN ZONE';
+  String get gameClubFanZoneTitle => 'Club fan zone';
 
   @override
   String get gameClubFanZoneTemporarilyUnavailable =>
@@ -8419,14 +8419,14 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameFanZoneUnavailable => 'Fan zone unavailable';
 
   @override
-  String get gameSupporterPulse => 'SUPPORTER PULSE';
+  String get gameSupporterPulse => 'Supporter pulse';
 
   @override
   String get gameSupporterPulseDescription =>
       'Real supporter momentum around active competitions, fixture picks, and top clubs.';
 
   @override
-  String get gameTopClubs => 'TOP CLUBS';
+  String get gameTopClubs => 'Top clubs';
 
   @override
   String gameRankHash(int rank) {
@@ -8434,7 +8434,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameSupporterLeans => 'SUPPORTER LEANS';
+  String get gameSupporterLeans => 'Supporter leans';
 
   @override
   String gameSupporterLeansEmpty(String appName) {
@@ -8452,7 +8452,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameLeagueHubTitle => 'LEAGUE HUB';
+  String get gameLeagueHubTitle => 'League hub';
 
   @override
   String get gameLeagueDataTemporarilyUnavailable =>
@@ -8462,7 +8462,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameLeagueUnavailable => 'League unavailable';
 
   @override
-  String get gameCompetition => 'COMPETITION';
+  String get gameCompetition => 'Competition';
 
   @override
   String get gameRegion => 'Region';
@@ -8480,7 +8480,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameLeader => 'Leader';
 
   @override
-  String get gameTopTable => 'TOP TABLE';
+  String get gameTopTable => 'Top table';
 
   @override
   String get gameFullStandings => 'Full standings';
@@ -8702,7 +8702,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameEnterValidAmount => 'Enter a valid amount.';
 
   @override
-  String get gameTeamProfileTitle => 'TEAM PROFILE';
+  String get gameTeamProfileTitle => 'Team profile';
 
   @override
   String get gameTeamUnavailable => 'Team unavailable';
@@ -8731,7 +8731,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameAbout => 'About';
 
   @override
-  String get gameLeaguePosition => 'LEAGUE POSITION';
+  String get gameLeaguePosition => 'League position';
 
   @override
   String get gamePlayedShort => 'P';
@@ -8746,10 +8746,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameLostShort => 'L';
 
   @override
-  String get gameGoalDifferenceShort => 'GD';
+  String get gameGoalDifferenceShort => 'Gd';
 
   @override
-  String get gameMomoContributionRoute => 'MOMO CONTRIBUTION ROUTE';
+  String get gameMomoContributionRoute => 'MoMo contribution route';
 
   @override
   String gameUseProviderForClub(String provider, String club) {
@@ -8767,7 +8767,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameMembersUnavailable => 'Members unavailable';
 
   @override
-  String get gameClubMembers => 'CLUB MEMBERS';
+  String get gameClubMembers => 'Club members';
 
   @override
   String get gameTierGold => 'Gold';
@@ -8782,10 +8782,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameTierImena => 'Imena';
 
   @override
-  String get gameTopContributors => 'TOP CONTRIBUTORS';
+  String get gameTopContributors => 'Top contributors';
 
   @override
-  String get gameMomoContribution => 'MOMO CONTRIBUTION';
+  String get gameMomoContribution => 'MoMo contribution';
 
   @override
   String gameUseProviderInCountry(String provider, String country) {
@@ -8827,7 +8827,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameThisClubUpper => 'THIS CLUB';
+  String get gameThisClubUpper => 'This club';
 
   @override
   String get gameLocation => 'Location';
@@ -8911,7 +8911,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Add picks from any fixture and lock them in from here.';
 
   @override
-  String get gamePickRoundUpper => 'PICK ROUND';
+  String get gamePickRoundUpper => 'Pick round';
 
   @override
   String get gameAcca => 'Acca';
@@ -8932,7 +8932,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameCouldNotSubmitPicks => 'Could not submit your picks.';
 
   @override
-  String get gameConfirmPicks => 'CONFIRM PICKS';
+  String get gameConfirmPicks => 'Confirm picks';
 
   @override
   String gameLockingCombo(int count) {
@@ -8956,10 +8956,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameTotalPotential => 'TOTAL POTENTIAL';
+  String get gameTotalPotential => 'Total potential';
 
   @override
-  String get gameGoBack => 'GO BACK';
+  String get gameGoBack => 'Go back';
 
   @override
   String gamePredictionsLocked(int count) {
@@ -8978,16 +8978,16 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameShareUpper => 'SHARE';
+  String get gameShareUpper => 'Share';
 
   @override
-  String get gameCopyUpper => 'COPY';
+  String get gameCopyUpper => 'Copy';
 
   @override
-  String get gameViewMyPredictions => 'VIEW MY PREDICTIONS';
+  String get gameViewMyPredictions => 'View my predictions';
 
   @override
-  String get gameKeepBrowsing => 'KEEP BROWSING';
+  String get gameKeepBrowsing => 'Keep browsing';
 
   @override
   String get gameRemovePick => 'Remove pick';
@@ -9002,7 +9002,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameMore => 'More';
 
   @override
-  String get gameRoundUpper => 'ROUND';
+  String get gameRoundUpper => 'Round';
 
   @override
   String gameAccuracyRounds(String accuracy, int count) {
@@ -9051,7 +9051,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameChallengesTitle => 'CHALLENGES';
+  String get gameChallengesTitle => 'Challenges';
 
   @override
   String get gameChallengesTemporarilyUnavailable =>
@@ -9061,13 +9061,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameChallengesUnavailable => 'Challenges unavailable';
 
   @override
-  String get gameDaily => 'DAILY';
+  String get gameDaily => 'Daily';
 
   @override
-  String get gameWeeklyUpper => 'WEEKLY';
+  String get gameWeeklyUpper => 'Weekly';
 
   @override
-  String get gameSeasonal => 'SEASONAL';
+  String get gameSeasonal => 'Seasonal';
 
   @override
   String get gameCompleted => 'Completed';
@@ -9077,37 +9077,37 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Challenges appear once your supporter profile is active.';
 
   @override
-  String get gameWhatIsFet => 'WHAT IS FET?';
+  String get gameWhatIsFet => 'What is FET?';
 
   @override
   String get gameWhatIsFetBody =>
       'FET (Fan Engagement Tokens) are your supporter currency. Earn them by engaging with your club—attending matches, completing challenges, making predictions, and supporting the community.';
 
   @override
-  String get gameHowPredictionsWork => 'HOW PREDICTIONS WORK';
+  String get gameHowPredictionsWork => 'How predictions work';
 
   @override
   String get gameHowPredictionsWorkBody =>
       'Browse upcoming fixtures, choose pick types such as Match Result, Goals, and Scorers, then lock in picks before kick-off. Correct picks earn points based on difficulty.';
 
   @override
-  String get gameEarnLevelRedeem => 'EARN, LEVEL UP & REDEEM';
+  String get gameEarnLevelRedeem => 'Earn, level up & redeem';
 
   @override
   String get gameEarnLevelRedeemBody =>
       'Your points balance grows as you engage. Climb the leaderboard, unlock membership tiers, and redeem rewards from the club store. Every action counts.';
 
   @override
-  String get gameBackUpper => 'BACK';
+  String get gameBackUpper => 'Back';
 
   @override
-  String get gameGetStarted => 'GET STARTED';
+  String get gameGetStarted => 'Get started';
 
   @override
-  String get gameNext => 'NEXT';
+  String get gameNext => 'Next';
 
   @override
-  String get gameMyChallenges => 'MY CHALLENGES';
+  String get gameMyChallenges => 'My challenges';
 
   @override
   String get gameOpen => 'Open';
@@ -9154,7 +9154,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Reconnect and refresh before opening a pool or checking a newer status.';
 
   @override
-  String get gameRefreshHistory => 'REFRESH HISTORY';
+  String get gameRefreshHistory => 'Refresh history';
 
   @override
   String gameNoFilteredChallenges(String filter) {
@@ -9468,7 +9468,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'This governed feature is disabled for the current club or build.';
 
   @override
-  String get venueBackToFanZone => 'BACK TO FAN ZONE';
+  String get venueBackToFanZone => 'Back to fan zone';
 
   @override
   String get venueOrderAccessDenied => 'Venue order access denied';
@@ -9489,7 +9489,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'A confirmed venue check-in is required before the approved drinks menu can be loaded.';
 
   @override
-  String get venueCheckInFirst => 'CHECK IN FIRST';
+  String get venueCheckInFirst => 'Check in first';
 
   @override
   String get venueNoDrinksAvailable => 'No drinks available';
@@ -9499,7 +9499,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'The checked-in venue has no approved active drinks right now.';
 
   @override
-  String get venueRefreshMenu => 'REFRESH MENU';
+  String get venueRefreshMenu => 'Refresh menu';
 
   @override
   String get venueMenuUnavailableOffline => 'Venue menu unavailable offline';
@@ -9509,7 +9509,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Reconnect before loading the venue menu. No order is queued offline.';
 
   @override
-  String get venueTryAgain => 'TRY AGAIN';
+  String get venueTryAgain => 'Try again';
 
   @override
   String get venueMenuCheckTimedOut => 'Venue menu check timed out';
@@ -9554,10 +9554,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Confirm only if you meet the venueʼs legal age requirement. Venue staff may still verify eligibility.';
 
   @override
-  String get venueRemoveConfirmation => 'REMOVE CONFIRMATION';
+  String get venueRemoveConfirmation => 'Remove confirmation';
 
   @override
-  String get venueConfirmLegalAge => 'CONFIRM LEGAL AGE';
+  String get venueConfirmLegalAge => 'Confirm legal age';
 
   @override
   String get venuePayAtVenue => 'Pay at the venue';
@@ -9567,13 +9567,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'This app creates the drinks order only. It does not take payment or claim that payment succeeded.';
 
   @override
-  String get venueCreatingOrderUpper => 'CREATING ORDER';
+  String get venueCreatingOrderUpper => 'Creating order';
 
   @override
-  String get venueOrderConfirmedUpper => 'ORDER CONFIRMED';
+  String get venueOrderConfirmedUpper => 'Order confirmed';
 
   @override
-  String get venueReviewCreateOrder => 'REVIEW AND CREATE ORDER';
+  String get venueReviewCreateOrder => 'Review and create order';
 
   @override
   String get venueOrderProtections => 'Order protections';
@@ -9774,10 +9774,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get venueCheckinInputHint => 'Enter at least 4 characters';
 
   @override
-  String get venueCheckinCheckingCodeUpper => 'CHECKING CODE';
+  String get venueCheckinCheckingCodeUpper => 'Checking code';
 
   @override
-  String get venueCheckinActionUpper => 'CHECK IN';
+  String get venueCheckinActionUpper => 'Check in';
 
   @override
   String get venueCheckinLocationConsentSemantics => 'Location review consent';
@@ -9794,10 +9794,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Precise location is not collected in this build. You may mark consent, but location-required campaigns remain pending review.';
 
   @override
-  String get venueCheckinRemoveConsentUpper => 'REMOVE CONSENT';
+  String get venueCheckinRemoveConsentUpper => 'Remove consent';
 
   @override
-  String get venueCheckinMarkConsentUpper => 'MARK CONSENT';
+  String get venueCheckinMarkConsentUpper => 'Mark consent';
 
   @override
   String get venueCheckinPrivacyBoundary => 'Privacy boundary';
@@ -9897,15 +9897,15 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'The server did not confirm the attempt. Dismiss this warning before retrying.';
 
   @override
-  String get challengeConfirmTitle => 'CONFIRM CHALLENGE';
+  String get challengeConfirmTitle => 'Confirm challenge';
 
   @override
   String challengeConfirmPoints(int count) {
-    return 'CONFIRM $count pts';
+    return 'Confirm $count pts';
   }
 
   @override
-  String get challengeCreateTitle => 'CREATE CHALLENGE';
+  String get challengeCreateTitle => 'Create challenge';
 
   @override
   String get challengeFindingFixtures => 'Finding upcoming fixtures';
@@ -9946,7 +9946,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Reconnect and refresh before changing the score or creating a challenge.';
 
   @override
-  String get challengeRefreshFixturesUpper => 'REFRESH FIXTURES';
+  String get challengeRefreshFixturesUpper => 'Refresh fixtures';
 
   @override
   String get challengeExactScore => 'Exact score';
@@ -9957,7 +9957,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get challengeVersusUpper => 'VERSUS';
+  String get challengeVersusUpper => 'Versus';
 
   @override
   String get challengeEntryPoints => 'Entry points';
@@ -9983,7 +9983,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Your current points balance does not cover this entry.';
 
   @override
-  String get challengeCreatingUpper => 'CREATING CHALLENGE';
+  String get challengeCreatingUpper => 'Creating challenge';
 
   @override
   String get challengeCreationOffline => 'Challenge creation offline';
@@ -10031,7 +10031,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get challengePreview => 'CHALLENGE PREVIEW';
+  String get challengePreview => 'Challenge preview';
 
   @override
   String get challengeYourPick => 'Your pick';
@@ -10174,14 +10174,14 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'The last confirmed balance stays visible until refresh succeeds.';
 
   @override
-  String get feedChallengeTitle => 'CHALLENGE';
+  String get feedChallengeTitle => 'Challenge';
 
   @override
   String get feedDescription =>
       'Exact-score pools for real fixtures. Create one, join once, and settle automatically from the official final score.';
 
   @override
-  String get feedCreateNew => 'CREATE A NEW CHALLENGE';
+  String get feedCreateNew => 'Create a new challenge';
 
   @override
   String get feedOpening => 'Opening challenges';
@@ -10297,7 +10297,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Current challenge pools could not be loaded safely.';
 
   @override
-  String get detailTitle => 'CHALLENGE DETAIL';
+  String get detailTitle => 'Challenge detail';
 
   @override
   String get detailOpening => 'Opening challenge';
@@ -10332,23 +10332,23 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Reconnect and refresh before joining, changing a score, or cancelling this pool.';
 
   @override
-  String get detailRefreshUpper => 'REFRESH CHALLENGE';
+  String get detailRefreshUpper => 'Refresh challenge';
 
   @override
-  String get detailMyPickUpper => 'MY PICK';
+  String get detailMyPickUpper => 'My pick';
 
   @override
   String get detailMyEntry => 'My entry';
 
   @override
-  String get detailJoinUpper => 'JOIN THIS CHALLENGE';
+  String get detailJoinUpper => 'Join this challenge';
 
   @override
   String get detailPickScoreBody =>
       'Pick the exact score before the fixture locks.';
 
   @override
-  String get detailResults => 'RESULTS';
+  String get detailResults => 'Results';
 
   @override
   String get detailOfficialScore => 'Official score';
@@ -10363,7 +10363,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get detailPointsPerWinner => 'Points / winner';
 
   @override
-  String get detailEntries => 'ENTRIES';
+  String get detailEntries => 'Entries';
 
   @override
   String get detailEntryCancelled => 'Entry cancelled';
@@ -10414,18 +10414,18 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get detailRefreshing => 'Refreshing challenge';
 
   @override
-  String get detailJoiningUpper => 'JOINING CHALLENGE';
+  String get detailJoiningUpper => 'Joining challenge';
 
   @override
   String detailJoinWithPoints(int count) {
-    return 'JOIN WITH $count pts';
+    return 'Join with $count pts';
   }
 
   @override
-  String get detailCancellingUpper => 'CANCELLING CHALLENGE';
+  String get detailCancellingUpper => 'Cancelling challenge';
 
   @override
-  String get detailCancelUpper => 'CANCEL CHALLENGE';
+  String get detailCancelUpper => 'Cancel challenge';
 
   @override
   String get detailConnectionRestored => 'Connection restored';
@@ -10442,19 +10442,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Reconnect to check the current pool before joining or cancelling.';
 
   @override
-  String get detailEntryActive => 'ACTIVE';
+  String get detailEntryActive => 'Active';
 
   @override
-  String get detailEntryWinner => 'WINNER';
+  String get detailEntryWinner => 'Winner';
 
   @override
-  String get detailEntryLoser => 'LOSER';
+  String get detailEntryLoser => 'Loser';
 
   @override
-  String get detailEntryRefunded => 'REFUNDED';
+  String get detailEntryRefunded => 'Refunded';
 
   @override
-  String get detailEntryCancelledStatus => 'CANCELLED';
+  String get detailEntryCancelledStatus => 'Cancelled';
 
   @override
   String get gameShareOptionsClosed =>
@@ -10468,7 +10468,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'You can return to Fan Zone, but sharing is disabled for this build.';
 
   @override
-  String get gameBackToFanZoneUpper => 'BACK TO FAN ZONE';
+  String get gameBackToFanZoneUpper => 'Back to fan zone';
 
   @override
   String get gamePredictionAccessDenied => 'Prediction access denied';
@@ -10485,7 +10485,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Share cards unlock after a matchday pick.';
 
   @override
-  String get gameBackToPicksUpper => 'BACK TO PICKS';
+  String get gameBackToPicksUpper => 'Back to picks';
 
   @override
   String get gameShareCardsOffline => 'Share cards offline';
@@ -10502,7 +10502,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'The app could not confirm a safe prediction history in time. Try one bounded refresh.';
 
   @override
-  String get gameTryAgainUpper => 'TRY AGAIN';
+  String get gameTryAgainUpper => 'Try again';
 
   @override
   String get gameShareCardsUnavailable => 'Share cards unavailable';
@@ -10606,22 +10606,22 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gamePredictionStatusWon => 'WON';
+  String get gamePredictionStatusWon => 'Won';
 
   @override
-  String get gamePredictionStatusLost => 'LOST';
+  String get gamePredictionStatusLost => 'Lost';
 
   @override
-  String get gamePredictionStatusCancelled => 'CANCELLED';
+  String get gamePredictionStatusCancelled => 'Cancelled';
 
   @override
-  String get gamePredictionStatusVoid => 'VOID';
+  String get gamePredictionStatusVoid => 'Void';
 
   @override
-  String get gamePredictionStatusPending => 'PENDING';
+  String get gamePredictionStatusPending => 'Pending';
 
   @override
-  String get gamePredictionDateTbd => 'TBD';
+  String get gamePredictionDateTbd => 'Tbd';
 
   @override
   String gamePredictionDateTime(String date, String time) {
@@ -10689,7 +10689,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Reconnect and refresh before cancelling this pick.';
 
   @override
-  String get gamePredictionActivityDetailTitle => 'ACTIVITY DETAIL';
+  String get gamePredictionActivityDetailTitle => 'Activity detail';
 
   @override
   String gamePredictionShortTeams(String home, String away) {
@@ -10697,19 +10697,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gamePredictionVenueTbc => 'VENUE TBC';
+  String get gamePredictionVenueTbc => 'Venue tbc';
 
   @override
-  String get gamePredictionPickType => 'PICK TYPE';
+  String get gamePredictionPickType => 'Pick type';
 
   @override
-  String get gamePredictionSelection => 'SELECTION';
+  String get gamePredictionSelection => 'Selection';
 
   @override
-  String get gamePredictionEarned => 'EARNED';
+  String get gamePredictionEarned => 'Earned';
 
   @override
-  String get gamePredictionPotential => 'POTENTIAL';
+  String get gamePredictionPotential => 'Potential';
 
   @override
   String gamePredictionPositiveValue(int count) {
@@ -10717,7 +10717,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gamePredictionSettlement => 'SETTLEMENT';
+  String get gamePredictionSettlement => 'Settlement';
 
   @override
   String get gamePredictionPlaced => 'Placed';
@@ -10732,22 +10732,22 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gamePredictionOfficialOutcome => 'Official outcome';
 
   @override
-  String get gamePredictionCancelPick => 'CANCEL PICK';
+  String get gamePredictionCancelPick => 'Cancel pick';
 
   @override
-  String get gamePredictionCopyResult => 'COPY RESULT';
+  String get gamePredictionCopyResult => 'Copy result';
 
   @override
-  String get gamePredictionCopySummary => 'COPY SUMMARY';
+  String get gamePredictionCopySummary => 'Copy summary';
 
   @override
-  String get gamePredictionShareCard => 'SHARE CARD';
+  String get gamePredictionShareCard => 'Share card';
 
   @override
-  String get gamePredictionBrowseFixtures => 'BROWSE FIXTURES';
+  String get gamePredictionBrowseFixtures => 'Browse fixtures';
 
   @override
-  String get gamePredictionRefreshActivity => 'REFRESH ACTIVITY';
+  String get gamePredictionRefreshActivity => 'Refresh activity';
 
   @override
   String get gamePredictionConnectionRestored => 'Connection restored';
@@ -10816,61 +10816,61 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'This fixture may have ended, been removed, or no longer be available.';
 
   @override
-  String get gameWeekdayMon => 'MON';
+  String get gameWeekdayMon => 'Mon';
 
   @override
-  String get gameWeekdayTue => 'TUE';
+  String get gameWeekdayTue => 'Tue';
 
   @override
-  String get gameWeekdayWed => 'WED';
+  String get gameWeekdayWed => 'Wed';
 
   @override
-  String get gameWeekdayThu => 'THU';
+  String get gameWeekdayThu => 'Thu';
 
   @override
-  String get gameWeekdayFri => 'FRI';
+  String get gameWeekdayFri => 'Fri';
 
   @override
-  String get gameWeekdaySat => 'SAT';
+  String get gameWeekdaySat => 'Sat';
 
   @override
-  String get gameWeekdaySun => 'SUN';
+  String get gameWeekdaySun => 'Sun';
 
   @override
-  String get gameMonthJan => 'JAN';
+  String get gameMonthJan => 'Jan';
 
   @override
-  String get gameMonthFeb => 'FEB';
+  String get gameMonthFeb => 'Feb';
 
   @override
-  String get gameMonthMar => 'MAR';
+  String get gameMonthMar => 'Mar';
 
   @override
-  String get gameMonthApr => 'APR';
+  String get gameMonthApr => 'Apr';
 
   @override
-  String get gameMonthMay => 'MAY';
+  String get gameMonthMay => 'May';
 
   @override
-  String get gameMonthJun => 'JUN';
+  String get gameMonthJun => 'Jun';
 
   @override
-  String get gameMonthJul => 'JUL';
+  String get gameMonthJul => 'Jul';
 
   @override
-  String get gameMonthAug => 'AUG';
+  String get gameMonthAug => 'Aug';
 
   @override
-  String get gameMonthSep => 'SEP';
+  String get gameMonthSep => 'Sep';
 
   @override
-  String get gameMonthOct => 'OCT';
+  String get gameMonthOct => 'Oct';
 
   @override
-  String get gameMonthNov => 'NOV';
+  String get gameMonthNov => 'Nov';
 
   @override
-  String get gameMonthDec => 'DEC';
+  String get gameMonthDec => 'Dec';
 
   @override
   String gameMatchKickoffDateTime(
@@ -10889,7 +10889,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameStatsTab => 'Stats';
 
   @override
-  String get gameH2hTab => 'H2H';
+  String get gameH2hTab => 'H2h';
 
   @override
   String get gameLineupsTab => 'Lineups';
@@ -10970,7 +10970,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gamePoolJoinUnavailable => 'Pool entry could not be confirmed.';
 
   @override
-  String get gameRefreshMatch => 'REFRESH MATCH';
+  String get gameRefreshMatch => 'Refresh match';
 
   @override
   String get gameMatchConnectionRestored => 'Connection restored';
@@ -11031,4 +11031,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String gamePartnerPoolsOnly(String home, String away) {
     return '$home vs $away uses partner-funded WDW pools only.';
   }
+
+  @override
+  String get settingsThemePreview => 'Theme preview';
+
+  @override
+  String get settingsApplyTheme => 'Apply';
 }

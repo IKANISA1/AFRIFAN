@@ -413,7 +413,7 @@ void main() {
       ),
       beforeCapture: (tester) async {
         expect(find.text('Challenge history changed'), findsOneWidget);
-        expect(find.text('REFRESH HISTORY'), findsOneWidget);
+        expect(find.text('Refresh history'), findsOneWidget);
       },
     );
   });

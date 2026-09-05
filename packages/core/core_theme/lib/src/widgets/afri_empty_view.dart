@@ -85,7 +85,7 @@ class AfriEmptyView extends StatelessWidget {
         textAlign: TextAlign.center,
         style: Theme.of(
           context,
-        ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
+        ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
       );
       if (!reduceMotion) {
         titleWidget = titleWidget

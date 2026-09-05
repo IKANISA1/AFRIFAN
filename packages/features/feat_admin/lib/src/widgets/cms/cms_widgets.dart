@@ -41,8 +41,10 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.8;
     final heading = Text(
-      title.toUpperCase(),
-      style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.1),
+      title,
+      style: TypographyTokens.titleMedium().copyWith(
+        letterSpacing: TypographyTokens.trackingNone,
+      ),
     );
     final action = AfriTextIconButton(
       key: ValueKey<String>(
@@ -123,7 +125,7 @@ class _EntityCard extends StatelessWidget {
         children: [
           if (largeText) ...[
             Text(
-              title.toUpperCase(),
+              title,
               style: TypographyTokens.titleLarge().copyWith(
                 color: ColorTokens.onSurface,
               ),
@@ -136,7 +138,7 @@ class _EntityCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    title.toUpperCase(),
+                    title,
                     style: TypographyTokens.titleLarge().copyWith(
                       color: ColorTokens.onSurface,
                     ),
@@ -226,7 +228,7 @@ class _ArticleCard extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: isPublished
-            ? ColorTokens.clubAccent.withValues(alpha: 0.15)
+            ? ColorTokens.primaryContainer.withValues(alpha: 0.15)
             : ColorTokens.surfaceContainerLow,
         borderRadius: ShapeTokens.buttonRadius,
       ),
@@ -240,7 +242,7 @@ class _ArticleCard extends StatelessWidget {
         children: [
           if (largeText) ...[
             Text(
-              title.toUpperCase(),
+              title,
               style: TypographyTokens.titleLarge().copyWith(
                 color: ColorTokens.onSurface,
               ),
@@ -253,7 +255,7 @@ class _ArticleCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    title.toUpperCase(),
+                    title,
                     style: TypographyTokens.titleLarge().copyWith(
                       color: ColorTokens.onSurface,
                     ),

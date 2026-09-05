@@ -72,7 +72,7 @@ class _PredictionDetailScreenState
       PredictionStatus.lost => ColorTokens.error,
       PredictionStatus.cancelled => ColorTokens.onSurfaceVariant,
       PredictionStatus.void_ => ColorTokens.warning,
-      _ => ColorTokens.clubAccent,
+      _ => ColorTokens.primaryContainer,
     };
   }
 
@@ -103,9 +103,7 @@ class _PredictionDetailScreenState
     if (detail.isLost) {
       return detail.correctOutcome == null || detail.correctOutcome!.isEmpty
           ? l10n.gamePredictionLostSettlement
-          : l10n.gamePredictionOfficialOutcomeMessage(
-              detail.correctOutcome!.toUpperCase(),
-            );
+          : l10n.gamePredictionOfficialOutcomeMessage(detail.correctOutcome!);
     }
     if (detail.status == PredictionStatus.cancelled) {
       return l10n.gamePredictionCancelledSettlement;
@@ -229,7 +227,7 @@ class _PredictionDetailScreenState
                         predictionDetailProvider(widget.predictionId).notifier,
                       )
                       .refresh(),
-                  color: ColorTokens.clubAccent,
+                  color: ColorTokens.primaryContainer,
                   child: CustomScrollView(
                     physics: const BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics(),
@@ -345,7 +343,8 @@ class _PredictionDetailScreenState
                                   style: TypographyTokens.headlineSmall()
                                       .copyWith(
                                         fontWeight: FontWeight.w700,
-                                        letterSpacing: 1.6,
+                                        letterSpacing:
+                                            TypographyTokens.trackingNone,
                                       ),
                                 ),
                               ),
@@ -363,7 +362,7 @@ class _PredictionDetailScreenState
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        detail.competitionName.toUpperCase(),
+                                        detail.competitionName,
                                         style: TypographyTokens.labelMedium(
                                           ColorTokens.onSurfaceVariant,
                                         ),
@@ -399,7 +398,7 @@ class _PredictionDetailScreenState
                                   ),
                                   textAlign: TextAlign.center,
                                   style: TypographyTokens.titleLarge().copyWith(
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 const SizedBox(height: SpacingTokens.spacing3),
@@ -413,13 +412,13 @@ class _PredictionDetailScreenState
                                   style: TypographyTokens.metricValue(
                                     detail.hasScoreline
                                         ? ColorTokens.onSurface
-                                        : ColorTokens.clubAccent,
-                                  ).copyWith(fontWeight: FontWeight.w900),
+                                        : ColorTokens.primaryContainer,
+                                  ).copyWith(fontWeight: FontWeight.w700),
                                 ),
                                 const SizedBox(height: SpacingTokens.spacing2),
                                 Text(
                                   detail.venueName?.trim().isNotEmpty == true
-                                      ? detail.venueName!.toUpperCase()
+                                      ? detail.venueName!
                                       : l10n.gamePredictionVenueTbc,
                                   style: TypographyTokens.bodySmall(),
                                 ),
@@ -579,7 +578,7 @@ class _PredictionDetailScreenState
                                   ),
                                   _TimelineRow(
                                     label: l10n.gamePredictionOfficialOutcome,
-                                    value: detail.correctOutcome!.toUpperCase(),
+                                    value: detail.correctOutcome!,
                                   ),
                                 ],
                               ],
@@ -798,8 +797,8 @@ class _DetailMetric extends StatelessWidget {
             Text(
               value,
               style: TypographyTokens.titleLarge(
-                accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
-              ).copyWith(fontWeight: FontWeight.w800),
+                accent ? ColorTokens.primaryContainer : ColorTokens.onSurface,
+              ).copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -822,7 +821,7 @@ class _TimelineRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label.toUpperCase(),
+            label,
             style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing1),
@@ -834,7 +833,7 @@ class _TimelineRow extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            label.toUpperCase(),
+            label,
             style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
           ),
         ),

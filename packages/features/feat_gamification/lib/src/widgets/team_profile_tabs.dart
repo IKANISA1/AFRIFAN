@@ -15,6 +15,7 @@ import '../models/fanzone_models.dart';
 import '../models/prediction_models.dart';
 import '../models/team_profile_models.dart';
 import 'team_profile_widgets.dart';
+import 'tier_label.dart';
 
 // ═══════════════════════════════════════════════════════════════════
 // TEAM PROFILE TABS
@@ -60,9 +61,13 @@ class TeamOverviewTab extends StatelessWidget {
               children: [
                 Text(
                   context.afriL10n.gameLeaguePosition,
-                  style: TypographyTokens.metricLabel(
-                    ColorTokens.onSurfaceVariant,
-                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+                  style:
+                      TypographyTokens.metricLabel(
+                        ColorTokens.onSurfaceVariant,
+                      ).copyWith(
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: TypographyTokens.trackingNone,
+                      ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 Row(
@@ -121,10 +126,10 @@ class TeamContributionRouteBanner extends StatelessWidget {
     return Container(
           padding: const EdgeInsets.all(SpacingTokens.spacing4),
           decoration: BoxDecoration(
-            color: ColorTokens.clubAccent.withValues(alpha: 0.08),
+            color: ColorTokens.primaryContainer.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
             border: BorderTokens.all(
-              color: ColorTokens.clubAccent.withValues(alpha: 0.2),
+              color: ColorTokens.primaryContainer.withValues(alpha: 0.2),
             ),
           ),
           child: Column(
@@ -132,16 +137,22 @@ class TeamContributionRouteBanner extends StatelessWidget {
             children: [
               Text(
                 context.afriL10n.gameMomoContributionRoute,
-                style: TypographyTokens.labelSmall(
-                  ColorTokens.clubAccent,
-                ).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.4),
+                style: TypographyTokens.labelSmall(ColorTokens.primaryContainer)
+                    .copyWith(
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: TypographyTokens.trackingNone,
+                    ),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
                 paymentRoute.payToLabel,
-                style: TypographyTokens.titleMedium(
-                  ColorTokens.clubAccent,
-                ).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1),
+                style:
+                    TypographyTokens.titleMedium(
+                      ColorTokens.primaryContainer,
+                    ).copyWith(
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: TypographyTokens.trackingNone,
+                    ),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
@@ -371,8 +382,8 @@ class TeamMembersContent extends StatelessWidget {
         Text(
           context.afriL10n.gameClubMembers,
           style: TypographyTokens.titleLarge().copyWith(
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.2,
+            fontWeight: FontWeight.w600,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
@@ -411,9 +422,11 @@ class TeamMembersContent extends StatelessWidget {
           Text(
             context.afriL10n.gameTopContributors,
             key: const ValueKey<String>('team-members-contributors-title'),
-            style: TypographyTokens.metricLabel(
-              ColorTokens.onSurfaceVariant,
-            ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+            style: TypographyTokens.metricLabel(ColorTokens.onSurfaceVariant)
+                .copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: TypographyTokens.trackingNone,
+                ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           ...contributors
@@ -425,7 +438,7 @@ class TeamMembersContent extends StatelessWidget {
                 (entry) => MemberRow(
                   rank: entry.key + 1,
                   fanId: entry.value.displayLabel,
-                  tier: entry.value.tier.toUpperCase(),
+                  tier: fanTierLabel(context.afriL10n, entry.value.tier),
                   fetLabel: context.afriL10n.gamePointBalance(
                     entry.value.points,
                   ),
@@ -497,8 +510,8 @@ class TeamFixturesTab extends StatelessWidget {
                     style: TypographyTokens.titleMedium(
                       fixture.isLive
                           ? ColorTokens.success
-                          : ColorTokens.clubAccent,
-                    ).copyWith(fontWeight: FontWeight.w800),
+                          : ColorTokens.primaryContainer,
+                    ).copyWith(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -546,8 +559,8 @@ class TeamContributeTab extends StatelessWidget {
         Text(
           context.afriL10n.gameMomoContribution,
           style: TypographyTokens.titleLarge().copyWith(
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.2,
+            fontWeight: FontWeight.w600,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing5),
@@ -637,11 +650,11 @@ class TeamAboutTab extends StatelessWidget {
       children: [
         Text(
           context.afriL10n.gameAboutTeam(
-            team?.name.toUpperCase() ?? context.afriL10n.gameThisClubUpper,
+            team?.name ?? context.afriL10n.gameThisClubUpper,
           ),
           style: TypographyTokens.titleLarge().copyWith(
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.2,
+            fontWeight: FontWeight.w600,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),

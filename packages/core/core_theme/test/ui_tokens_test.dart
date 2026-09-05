@@ -170,12 +170,12 @@ void main() {
   });
 
   group('Shape Tokens — tactile rounding', () {
-    test('shared card radius follows root DESIGN.md 8dp ceiling', () {
+    test('shared groups use the native rounded surface contract', () {
       final tokens = AfriDesignTokens.standard();
 
-      expect(tokens.cardRadius, equals(8.0));
-      expect(tokens.panelRadius, equals(8.0));
-      expect(tokens.cardRadius, lessThanOrEqualTo(8.0));
+      expect(tokens.cardRadius, equals(24.0));
+      expect(tokens.panelRadius, equals(24.0));
+      expect(tokens.cardRadius, lessThan(tokens.sheetRadius + 1));
     });
 
     test('larger radii remain available for sheets and platform chrome', () {
@@ -329,14 +329,14 @@ void main() {
 
     test('shared command and navigation chrome use one semantic contract', () {
       expect(AfriChromeTokens.maxTopCommandActions, 2);
-      expect(AfriChromeTokens.commandControlSize, greaterThanOrEqualTo(48));
+      expect(AfriChromeTokens.commandControlSize, equals(44));
       expect(
         AfriChromeTokens.navigationCompactHeight,
         greaterThanOrEqualTo(SizeTokens.touchTargetMin),
       );
       expect(
         AfriChromeTokens.navigationRegularHeight,
-        greaterThan(AfriChromeTokens.navigationCompactHeight),
+        equals(AfriChromeTokens.navigationCompactHeight),
       );
       expect(
         AfriClubBottomNav.compactHeight,

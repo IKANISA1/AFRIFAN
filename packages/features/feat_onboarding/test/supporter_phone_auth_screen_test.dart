@@ -480,7 +480,7 @@ void main() {
       );
       expect(textField.controller?.text, supporterPhoneAuthTestOtp);
       expect(textField.autofillHints, contains(AutofillHints.oneTimeCode));
-      final error = tester.widget<AfriInputField>(otpField).errorText;
+      final error = tester.widget<AfriCodeInput>(otpField).errorText;
       expect(error, isNotNull);
       expect(error, 'Request a new code.');
       expect(

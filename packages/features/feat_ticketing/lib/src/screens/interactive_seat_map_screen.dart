@@ -251,12 +251,12 @@ class _InteractiveSeatMapScreenState
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _buildLegendItem(
-                        ColorTokens.clubAccent,
+                        ColorTokens.primaryContainer,
                         l10n.ticketLegendVip,
                       ),
                       const SizedBox(width: SpacingTokens.spacing4),
                       _buildLegendItem(
-                        ColorTokens.clubPrimary,
+                        ColorTokens.primary,
                         l10n.ticketLegendTribune,
                       ),
                       const SizedBox(width: SpacingTokens.spacing4),
@@ -669,7 +669,7 @@ class StadiumPainter extends CustomPainter {
       math.pi / 2 + 0.2, // startAngle
       math.pi - 0.4, // sweepAngle
       false,
-      paint..color = ColorTokens.clubAccent,
+      paint..color = ColorTokens.primaryContainer,
     );
 
     // East (Standing)
@@ -687,7 +687,7 @@ class StadiumPainter extends CustomPainter {
       -math.pi / 2 - 0.2,
       0.4,
       false,
-      paint..color = ColorTokens.clubPrimary,
+      paint..color = ColorTokens.primary,
     );
 
     // South (Tribune Red)
@@ -696,7 +696,7 @@ class StadiumPainter extends CustomPainter {
       math.pi / 2 - 0.2,
       0.4,
       false,
-      paint..color = ColorTokens.clubPrimary,
+      paint..color = ColorTokens.primary,
     );
 
     // Pitch

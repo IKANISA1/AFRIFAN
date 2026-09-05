@@ -77,7 +77,7 @@ void main() {
         );
 
         expect(find.text('No challenges yet'), findsNothing);
-        expect(find.text('CREATE A NEW CHALLENGE'), findsOneWidget);
+        expect(find.text('Create a new challenge'), findsOneWidget);
       },
     );
 
@@ -193,12 +193,12 @@ void main() {
         findsOneWidget,
       );
 
-      final createButton = find.widgetWithText(AfriButton, 'CREATE CHALLENGE');
+      final createButton = find.widgetWithText(AfriButton, 'Create challenge');
       await _scrollTo(tester, createButton);
       await tester.tap(createButton);
       await tester.pumpAndSettle();
 
-      expect(find.text('CONFIRM CHALLENGE'), findsNothing);
+      expect(find.text('Confirm challenge'), findsNothing);
       expect(challengeRepository.lastCreateRequest, isNull);
     });
 
@@ -255,13 +255,13 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final createButton = find.widgetWithText(AfriButton, 'CREATE CHALLENGE');
+      final createButton = find.widgetWithText(AfriButton, 'Create challenge');
       await _scrollTo(tester, createButton);
       await tester.tap(createButton);
       await tester.pumpAndSettle();
-      expect(find.text('CONFIRM CHALLENGE'), findsOneWidget);
+      expect(find.text('Confirm challenge'), findsOneWidget);
 
-      final lockButton = find.widgetWithText(AfriButton, 'CONFIRM 1000 pts');
+      final lockButton = find.widgetWithText(AfriButton, 'Confirm 1000 pts');
       await _scrollTo(tester, lockButton);
       await tester.tap(lockButton);
       await tester.pumpAndSettle();
@@ -328,10 +328,10 @@ void main() {
         ],
       );
 
-      await _scrollTo(tester, find.text('RESULTS'));
-      expect(find.text('MY PICK'), findsOneWidget);
+      await _scrollTo(tester, find.text('Results'));
+      expect(find.text('My pick'), findsOneWidget);
       expect(find.text('Earned 9000 pts'), findsOneWidget);
-      expect(find.text('RESULTS'), findsOneWidget);
+      expect(find.text('Results'), findsOneWidget);
       expect(find.text('Official score'), findsOneWidget);
       expect(find.text('Points / winner'), findsOneWidget);
       await _scrollTo(tester, find.text('Aimable'));
@@ -375,8 +375,8 @@ void main() {
         ],
       );
 
-      await _scrollTo(tester, find.text('JOIN WITH 3000 pts'));
-      await tester.tap(find.text('JOIN WITH 3000 pts'));
+      await _scrollTo(tester, find.text('Join with 3000 pts'));
+      await tester.tap(find.text('Join with 3000 pts'));
       await tester.pumpAndSettle();
 
       expect(challengeRepository.lastJoinRequest?['challengeId'], 'joinable');

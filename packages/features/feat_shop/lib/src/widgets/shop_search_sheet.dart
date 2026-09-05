@@ -92,7 +92,7 @@ void showShopSearchSheet({
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      name.toUpperCase(),
+                                      name,
                                       style: TypographyTokens.headlineSmall()
                                           .copyWith(
                                             fontWeight: FontWeight.w700,
@@ -112,8 +112,8 @@ void showShopSearchSheet({
                               Text(
                                 currency.format(price),
                                 style: TypographyTokens.headlineSmall(
-                                  ColorTokens.clubAccent,
-                                ).copyWith(fontWeight: FontWeight.w800),
+                                  ColorTokens.primaryContainer,
+                                ).copyWith(fontWeight: FontWeight.w600),
                               ),
                             ],
                           ),

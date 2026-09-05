@@ -6,6 +6,7 @@ import 'package:core_app/bootstrap.dart';
 import 'package:core_app/core_app.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:feat_home/src/widgets/quick_actions_grid.dart';
@@ -66,10 +67,10 @@ void main() {
                 heroSlides: [
                   MatchSlide(
                     homeTeam: 'RAYON SPORTS',
-                    awayTeam: 'Rayon Sports FC',
+                    awayTeam: 'Visiting club',
                     venue: 'AMAHORO STADIUM',
                     status: 'ON SALE',
-                    dateInfo: '12 Rayon Sports • 18:00',
+                    dateInfo: 'Saturday • 18:00',
                     route: '/tickets',
                   ),
                 ],
@@ -96,6 +97,24 @@ void main() {
     );
 
     await _pumpAppStartup(tester);
+    if (const bool.fromEnvironment('AFRICLUB_CAPTURE_REFERENCE')) {
+      await binding.takeScreenshot('home-native-initial');
+      for (final destination in ['Club', 'Fan Zone', 'Membership', 'Home']) {
+        await tester.tap(
+          find.descendant(
+            of: find.byType(AfriClubBottomNav),
+            matching: find.text(destination),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+        expect(find.byType(AfriClubBottomNav), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await binding.takeScreenshot(
+          '${destination.toLowerCase().replaceAll(' ', '-')}-native',
+        );
+      }
+    }
     await _scrollHomeUntilVisible(tester, find.byType(QuickActionsGrid));
 
     expect(find.byType(QuickActionsGrid), findsOneWidget);
@@ -123,10 +142,10 @@ void main() {
                   heroSlides: [
                     MatchSlide(
                       homeTeam: 'RAYON SPORTS',
-                      awayTeam: 'Rayon Sports FC',
+                      awayTeam: 'Visiting club',
                       venue: 'AMAHORO STADIUM',
                       status: 'ON SALE',
-                      dateInfo: '12 Rayon Sports • 18:00',
+                      dateInfo: 'Saturday • 18:00',
                       route: '/tickets',
                     ),
                   ],
@@ -156,6 +175,9 @@ void main() {
       await _pumpUntilVisible(tester, find.byType(SupporterPhoneAuthScreen));
 
       expect(find.byType(SupporterPhoneAuthScreen), findsOneWidget);
+      if (const bool.fromEnvironment('AFRICLUB_CAPTURE_REFERENCE')) {
+        await binding.takeScreenshot('phone-native-restored');
+      }
     },
   );
 
@@ -200,6 +222,23 @@ void main() {
       await _pumpUntilVisible(tester, find.text('Settings'), maxPumps: 60);
       await _pumpUntilVisible(tester, find.text('Edit profile'), maxPumps: 60);
       expect(find.text('Privacy'), findsOneWidget);
+      if (const bool.fromEnvironment('AFRICLUB_CAPTURE_REFERENCE')) {
+        await binding.takeScreenshot('settings-native');
+        await tester.scrollUntilVisible(
+          find.text('Appearance'),
+          160,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.tap(find.text('Appearance'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Dark').last);
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        await binding.takeScreenshot('appearance-native-dark-draft');
+        await tester.tap(find.text('Cancel'));
+        await tester.pumpAndSettle();
+        expect(find.text('Settings'), findsOneWidget);
+      }
 
       await tester.scrollUntilVisible(
         find.text('Help & support'),
@@ -295,7 +334,7 @@ void main() {
       await tester.tap(find.text('Sign out'));
       await tester.pumpAndSettle();
 
-      expect(find.text('SIGN OUT?'), findsOneWidget);
+      expect(find.text('Sign out?'), findsOneWidget);
       await tester.tap(find.text('Stay'));
       await tester.pumpAndSettle();
 

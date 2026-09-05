@@ -28,8 +28,8 @@ void main() {
       ),
     );
 
-    expect(find.text('CLUB MEMBERS'), findsOneWidget);
-    expect(find.text('TOP CONTRIBUTORS'), findsNothing);
+    expect(find.text('Club members'), findsOneWidget);
+    expect(find.text('Top contributors'), findsNothing);
     expect(find.text('No contributors yet'), findsNothing);
     expect(
       find.byKey(const ValueKey<String>('team-members-contributors-title')),
@@ -65,8 +65,8 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('#123456', skipOffstage: false), findsOneWidget);
-    expect(find.text('GOLD', skipOffstage: false), findsNWidgets(2));
+    expect(find.text('Gold', skipOffstage: false), findsNWidgets(2));
     expect(find.text('900 pts', skipOffstage: false), findsOneWidget);
-    expect(find.text('YOU', skipOffstage: false), findsOneWidget);
+    expect(find.text('You', skipOffstage: false), findsOneWidget);
   });
 }

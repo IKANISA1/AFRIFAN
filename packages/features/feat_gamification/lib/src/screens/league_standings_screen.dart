@@ -87,7 +87,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
               context.afriL10n.gameStandingsTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -117,7 +117,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
             )
           : AfriRefreshIndicator(
               onRefresh: _load,
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               child: ListView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -172,9 +172,9 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                                       entry.position.toString(),
                                       style: TypographyTokens.titleLarge(
                                         entry.position <= 3
-                                            ? ColorTokens.clubAccent
+                                            ? ColorTokens.primaryContainer
                                             : ColorTokens.onSurface,
-                                      ).copyWith(fontWeight: FontWeight.w800),
+                                      ).copyWith(fontWeight: FontWeight.w600),
                                     ),
                                   ),
                                   Expanded(
@@ -205,7 +205,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                                   Text(
                                     entry.points.toString(),
                                     style: TypographyTokens.titleLarge()
-                                        .copyWith(fontWeight: FontWeight.w900),
+                                        .copyWith(fontWeight: FontWeight.w700),
                                   ),
                                 ],
                               ),

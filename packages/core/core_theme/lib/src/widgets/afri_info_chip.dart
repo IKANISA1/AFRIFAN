@@ -16,7 +16,7 @@ import 'afri_press_feedback.dart';
 ///
 /// ```dart
 /// AfriInfoChip(label: 'LIVE 3', color: ColorTokens.success)
-/// AfriInfoChip(label: '125 FET', color: ColorTokens.clubAccent)
+/// AfriInfoChip(label: '125 FET', color: ColorTokens.primaryContainer)
 /// ```
 class AfriInfoChip extends StatelessWidget {
   const AfriInfoChip({

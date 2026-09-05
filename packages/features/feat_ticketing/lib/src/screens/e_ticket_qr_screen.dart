@@ -265,7 +265,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                         key: const Key('qr_scanner_overlay'),
                                         width: qrSize,
                                         height: 2,
-                                        color: ColorTokens.clubPrimary,
+                                        color: ColorTokens.primary,
                                       ),
                                     );
                                   },
@@ -297,13 +297,13 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         child: Column(
                           children: [
                             Text(
-                              ticket.matchTitle.toUpperCase(),
+                              ticket.matchTitle,
                               style:
                                   TypographyTokens.headlineMedium(
                                     ColorTokens.inkBase,
                                   ).copyWith(
-                                    fontWeight: FontWeight.w900,
-                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w700,
+                                    fontStyle: FontStyle.normal,
                                     height: 1,
                                   ),
                               textAlign: TextAlign.center,
@@ -315,7 +315,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                 vertical: SpacingTokens.spacing1,
                               ),
                               decoration: BoxDecoration(
-                                color: ColorTokens.clubAccent.withValues(
+                                color: ColorTokens.primaryContainer.withValues(
                                   alpha: 0.1,
                                 ),
                                 borderRadius: BorderRadius.circular(
@@ -323,10 +323,10 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                 ),
                               ),
                               child: Text(
-                                ticket.seatType.label.toUpperCase(),
+                                ticket.seatType.label,
                                 style: TypographyTokens.titleMedium(
-                                  ColorTokens.clubAccent,
-                                ).copyWith(fontWeight: FontWeight.w900),
+                                  ColorTokens.primaryContainer,
+                                ).copyWith(fontWeight: FontWeight.w700),
                               ),
                             ),
                             const SizedBox(height: SpacingTokens.spacing6),
@@ -362,7 +362,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                             const SizedBox(height: SpacingTokens.spacing4),
                             _buildPassMeta(
                               l10n.ticketVenueLabel,
-                              ticket.match.venue.toUpperCase(),
+                              ticket.match.venue,
                             ),
                           ],
                         ),
@@ -591,15 +591,15 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
         Text(
           label,
           style: TypographyTokens.labelSmall(
-            ColorTokens.inkFaint,
-          ).copyWith(fontWeight: FontWeight.w900),
+            ColorTokens.inkBase.withValues(alpha: 0.66),
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: SpacingTokens.spacing1 / 2),
         Text(
           value,
           style: TypographyTokens.labelMedium(
             ColorTokens.inkBase,
-          ).copyWith(fontWeight: FontWeight.w900),
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
       ],
     );
@@ -700,7 +700,7 @@ class _QrState extends StatelessWidget {
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: SpacingTokens.spacing5),
               AfriButton(
-                label: actionLabel!.toUpperCase(),
+                label: actionLabel!,
                 icon: AfriIcons.refresh,
                 onTap: onAction!,
               ),

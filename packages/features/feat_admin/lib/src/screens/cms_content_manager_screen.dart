@@ -1204,7 +1204,7 @@ class _CmsContentManagerScreenState
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }
@@ -1264,12 +1264,9 @@ class _CmsContentManagerScreenState
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title: context.afriL10n.adminCmsTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          context.afriL10n.adminCmsTitle,
-          style: TypographyTokens.titleLarge(),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -1280,7 +1277,9 @@ class _CmsContentManagerScreenState
       constrainContent: true,
       child: !enabled
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.empty(
                 key: const ValueKey<String>('admin-cms-state-disabled'),
                 title: context.afriL10n.adminCmsUnavailable,
@@ -1296,7 +1295,9 @@ class _CmsContentManagerScreenState
             )
           : cms.isLoading && cms.valueOrNull == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-cms-state-loading'),
                 title: context.afriL10n.adminCmsLoading,
@@ -1308,7 +1309,9 @@ class _CmsContentManagerScreenState
           : AfriRefreshIndicator(
               onRefresh: _loadContent,
               child: ListView(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                padding: const EdgeInsets.symmetric(
+                  vertical: SpacingTokens.spacing4,
+                ),
                 children: [
                   if (_statusBanner(cms) case final banner?) ...[
                     banner,

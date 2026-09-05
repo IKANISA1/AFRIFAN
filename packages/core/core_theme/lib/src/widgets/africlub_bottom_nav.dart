@@ -101,21 +101,6 @@ class AfriClubBottomNav extends StatelessWidget {
             height: isLargeText ? compactHeight : regularHeight,
             decoration: BoxDecoration(
               color: ColorTokens.chrome,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  ColorTokens.onDark.withValues(
-                    alpha: AfriChromeTokens.navigationGradientHighlightOpacity,
-                  ),
-                  ColorTokens.referencePaymentsPurple.withValues(
-                    alpha: AfriChromeTokens.navigationGradientMidOpacity,
-                  ),
-                  ColorTokens.referenceChromeBlack.withValues(
-                    alpha: AfriChromeTokens.chromeGradientEndOpacity,
-                  ),
-                ],
-              ),
               borderRadius: ShapeTokens.chromeRadius,
               border: BorderTokens.all(
                 color: ColorTokens.chromeBorder,

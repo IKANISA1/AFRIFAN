@@ -23,15 +23,9 @@ class ChallengeOpsScreen extends ConsumerWidget {
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title: context.afriL10n.adminChallengesTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          context.afriL10n.adminChallengesTitle,
-          style: TypographyTokens.titleLarge().copyWith(
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1,
-          ),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -52,7 +46,9 @@ class ChallengeOpsScreen extends ConsumerWidget {
             )
           : challenges.isLoading && challenges.valueOrNull == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-challenges-state-loading'),
                 title: context.afriL10n.adminChallengesLoadingTitle,
@@ -80,7 +76,7 @@ class ChallengeOpsScreen extends ConsumerWidget {
       onRefresh: ref.read(adminChallengesProvider.notifier).refresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         children: [
           if (_statusBanner(context, challenges) case final banner?) ...[
             banner,
@@ -184,7 +180,7 @@ class ChallengeOpsScreen extends ConsumerWidget {
 
   Widget _disabled(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-challenges-state-disabled'),
         title: context.afriL10n.adminChallengesUnavailable,
@@ -244,7 +240,7 @@ class ChallengeOpsScreen extends ConsumerWidget {
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }
@@ -340,7 +336,7 @@ class _ChallengeCard extends StatelessWidget {
             Text(
               context.afriL10n.adminVersus(item.homeTeam, item.awayTeam),
               style: TypographyTokens.titleMedium().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing2),
@@ -469,7 +465,7 @@ class _OpsChip extends StatelessWidget {
         color: ColorTokens.surfaceContainerHigh,
         borderRadius: ShapeTokens.buttonRadius,
       ),
-      child: Text(label.toUpperCase(), style: TypographyTokens.labelSmall()),
+      child: Text(label, style: TypographyTokens.labelSmall()),
     );
   }
 }

@@ -231,12 +231,12 @@ void main() {
         (
           locale: Locale('fr'),
           title: 'Enregistrement sur place',
-          action: 'S’ENREGISTRER',
+          action: 'S’enregistrer',
         ),
         (
           locale: Locale('rw'),
           title: 'Kwiyandikisha aho uri',
-          action: 'IYANDIKISHE',
+          action: 'Iyandikishe',
         ),
       ]) {
     testWidgets(

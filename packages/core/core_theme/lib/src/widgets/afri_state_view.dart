@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../extensions.dart';
-import '../tokens/border_tokens.dart';
 import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
-import '../tokens/shape_tokens.dart';
 import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -153,14 +151,6 @@ class AfriStateView extends StatelessWidget {
     AfriStateTone.success => colors.accent,
   };
 
-  Color _backgroundColor(colors) => switch (tone) {
-    AfriStateTone.loading => colors.accent.withValues(alpha: 0.08),
-    AfriStateTone.empty => colors.cardSurface,
-    AfriStateTone.offline => colors.warning.withValues(alpha: 0.08),
-    AfriStateTone.error => colors.danger.withValues(alpha: 0.08),
-    AfriStateTone.success => colors.accent.withValues(alpha: 0.08),
-  };
-
   @override
   Widget build(BuildContext context) {
     final colors = context.afriSemanticColors;
@@ -173,15 +163,6 @@ class AfriStateView extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         horizontal: compact ? SpacingTokens.spacing4 : SpacingTokens.spacing5,
         vertical: compact ? SpacingTokens.spacing4 : SpacingTokens.spacing6,
-      ),
-      decoration: BoxDecoration(
-        color: _backgroundColor(colors),
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-        border: BorderTokens.all(
-          color: accentColor.withValues(
-            alpha: tone == AfriStateTone.empty ? 0.2 : 0.28,
-          ),
-        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

@@ -161,7 +161,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final primary = ColorTokens.clubPrimary;
+    final primary = ColorTokens.primary;
     final featuredClub = _clubs.isEmpty ? null : _clubs.first;
     final filters = _buildFilters(_clubs);
 

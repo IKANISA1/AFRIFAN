@@ -38,7 +38,7 @@ void main() {
     );
 
     expect(find.text('Loading content manager'), findsOneWidget);
-    expect(find.text('SEASON LAUNCH'), findsNothing);
+    expect(find.text('Season launch'), findsNothing);
     await _expectStateGolden(tester, 'loading');
     pending.complete(_workspace);
     await tester.pumpAndSettle();
@@ -51,7 +51,7 @@ void main() {
     );
 
     expect(find.text('No managed content'), findsOneWidget);
-    expect(find.text('ADD ARTICLE'), findsOneWidget);
+    expect(find.text('Add article'), findsOneWidget);
     await _expectStateGolden(tester, 'empty');
   });
 
@@ -65,7 +65,7 @@ void main() {
 
     expect(find.text('Content manager unavailable'), findsOneWidget);
     expect(find.textContaining('private-account-991'), findsNothing);
-    expect(find.text('SEASON LAUNCH'), findsNothing);
+    expect(find.text('Season launch'), findsNothing);
     await _expectStateGolden(tester, 'error');
   });
 
@@ -77,7 +77,7 @@ void main() {
     );
 
     expect(find.text('Content manager offline'), findsOneWidget);
-    expect(find.text('SEASON LAUNCH'), findsNothing);
+    expect(find.text('Season launch'), findsNothing);
     await _expectStateGolden(tester, 'offline');
   });
 
@@ -92,8 +92,8 @@ void main() {
     );
 
     expect(find.text('Content access unavailable'), findsOneWidget);
-    expect(find.text('SEASON LAUNCH'), findsNothing);
-    expect(find.text('ADD ARTICLE'), findsNothing);
+    expect(find.text('Season launch'), findsNothing);
+    expect(find.text('Add article'), findsNothing);
     await _expectStateGolden(tester, 'permission_denied');
   });
 
@@ -109,7 +109,7 @@ void main() {
       find.textContaining('disabled for this controlled build'),
       findsOneWidget,
     );
-    expect(find.text('SEASON LAUNCH'), findsNothing);
+    expect(find.text('Season launch'), findsNothing);
     await _expectStateGolden(tester, 'disabled');
   });
 
@@ -118,14 +118,14 @@ void main() {
   ) async {
     await _pumpCms(tester, gateway: _CmsGateway(<Object>[_workspace]));
 
-    expect(find.text('SEASON LAUNCH'), findsOneWidget);
-    expect(find.text('UNPUBLISH'), findsOneWidget);
-    expect(find.text('ADD ARTICLE'), findsOneWidget);
+    expect(find.text('Season launch'), findsOneWidget);
+    expect(find.text('Unpublish'), findsOneWidget);
+    expect(find.text('Add article'), findsOneWidget);
   });
 
   for (final localeCase in <(Locale, String, String)>[
-    (const Locale('fr'), 'GESTIONNAIRE DE CONTENU', 'RETIRER'),
-    (const Locale('rw'), 'AHAGENZURIRWA IBIRIMO', 'KURAHO'),
+    (const Locale('fr'), 'Gestionnaire de contenu', 'Retirer'),
+    (const Locale('rw'), 'Ahagenzurirwa ibirimo', 'Kuraho'),
   ]) {
     testWidgets(
       'renders CMS article dates and actions in ${localeCase.$1.languageCode}',
@@ -154,7 +154,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Refreshing content'), findsOneWidget);
-    expect(find.text('SEASON LAUNCH'), findsOneWidget);
+    expect(find.text('Season launch'), findsOneWidget);
     expect(
       tester
           .widget<AfriTextIconButton>(
@@ -181,7 +181,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Content changed'), findsOneWidget);
-    expect(find.text('SEASON LAUNCH'), findsOneWidget);
+    expect(find.text('Season launch'), findsOneWidget);
     expect(find.textContaining('Actions are paused'), findsOneWidget);
     await _expectStateGolden(tester, 'conflict');
   });
@@ -199,7 +199,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Security check timed out'), findsOneWidget);
-    expect(find.text('SEASON LAUNCH'), findsOneWidget);
+    expect(find.text('Season launch'), findsOneWidget);
     expect(find.textContaining('private-account-991'), findsNothing);
     await _expectStateGolden(tester, 'security_timeout');
   });
@@ -209,12 +209,12 @@ void main() {
   ) async {
     await _pumpCms(tester, gateway: _CmsGateway(<Object>[_workspace]));
 
-    await tester.tap(find.text('Quick Actions'));
+    await tester.tap(find.text('Quick actions'));
     await tester.pumpAndSettle();
 
-    expect(find.text('HOME QUICK ACTIONS'), findsOneWidget);
+    expect(find.text('Home quick actions'), findsOneWidget);
     final selectedChip = tester.widget<AfriChoiceChip>(
-      find.widgetWithText(AfriChoiceChip, 'Quick Actions'),
+      find.widgetWithText(AfriChoiceChip, 'Quick actions'),
     );
     expect(selectedChip.selected, isTrue);
     await _expectStateGolden(tester, 'selected');
@@ -258,8 +258,8 @@ void main() {
     await _expectStateGolden(tester, 'focused');
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    expect(find.text('NEW ARTICLE'), findsOneWidget);
-    await tester.tap(find.text('CANCEL'));
+    expect(find.text('New article'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
   });
 
@@ -302,7 +302,7 @@ void main() {
         brightness: brightness,
       );
 
-      expect(find.text('CONTENT MANAGER'), findsOneWidget);
+      expect(find.text('Content manager'), findsOneWidget);
       expect(
         Theme.of(
           tester.element(find.byType(CmsContentManagerScreen)),

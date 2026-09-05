@@ -89,7 +89,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
           context.afriL10n.gameMyActivity,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.6,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -207,7 +207,7 @@ class MyPredictionsList extends StatelessWidget {
 
     return AfriRefreshIndicator(
       onRefresh: onRefresh,
-      color: ColorTokens.clubAccent,
+      color: ColorTokens.primaryContainer,
       child: ListView.separated(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
@@ -303,7 +303,7 @@ class _PredictionCard extends StatelessWidget {
         ),
         const SizedBox(height: SpacingTokens.spacing2),
         Text(
-          prediction.marketName.toUpperCase(),
+          prediction.marketName,
           style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
         ),
         const SizedBox(height: SpacingTokens.spacing2),
@@ -384,7 +384,7 @@ class _PredictionChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
-        label.toUpperCase(),
+        label,
         style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
       ),
     );

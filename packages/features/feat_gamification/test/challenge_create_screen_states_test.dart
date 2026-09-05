@@ -189,6 +189,10 @@ void main() {
       online: false,
       beforeCapture: (tester) async {
         expect(find.text('Showing saved fixtures'), findsOneWidget);
+        await tester.scrollUntilVisible(
+          find.byKey(const ValueKey<String>('challenge-create-action')),
+          180,
+        );
         expect(
           tester
               .widget<AfriButton>(
@@ -389,7 +393,13 @@ void main() {
       ),
       settle: false,
       beforeCapture: (tester) async {
-        expect(find.text('Creating challenge'), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byType(AfriStateBanner),
+            matching: find.text('Creating challenge'),
+          ),
+          findsOneWidget,
+        );
       },
     );
   });
@@ -409,7 +419,7 @@ void main() {
       ),
       beforeCapture: (tester) async {
         expect(find.text('Challenge details changed'), findsOneWidget);
-        expect(find.text('REFRESH FIXTURES'), findsOneWidget);
+        expect(find.text('Refresh fixtures'), findsOneWidget);
       },
     );
   });

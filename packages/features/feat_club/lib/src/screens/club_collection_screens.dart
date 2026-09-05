@@ -19,7 +19,7 @@ class ClubTeamScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final state = ref.watch(clubSquadProvider);
     return _ClubCollectionScaffold(
-      title: l10n.clubTeamTitle.toUpperCase(),
+      title: l10n.clubTeamTitle,
       state: state,
       emptyTitle: l10n.clubTeamEmptyTitle,
       emptyMessage: l10n.clubTeamEmptyMessage,
@@ -46,7 +46,7 @@ class ClubNewsScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final state = ref.watch(clubNewsProvider);
     return _ClubCollectionScaffold(
-      title: l10n.clubNewsTitle.toUpperCase(),
+      title: l10n.clubNewsTitle,
       state: state,
       emptyTitle: l10n.clubNewsEmptyTitle,
       emptyMessage: l10n.clubNewsEmptyMessage,
@@ -76,7 +76,7 @@ class ClubNewsDetailScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final state = ref.watch(clubNewsProvider);
     return _ClubDetailScaffold(
-      title: l10n.clubNewsTitle.toUpperCase(),
+      title: l10n.clubNewsTitle,
       state: state,
       onRetry: () => ref.invalidate(clubNewsProvider),
       select: (items) =>
@@ -97,7 +97,7 @@ class ClubNewsDetailScreen extends ConsumerWidget {
             Text(
               article.title,
               style: TypographyTokens.headlineLarge().copyWith(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             if (article.subtitle.isNotEmpty) ...[
@@ -143,7 +143,7 @@ class ClubFixturesScreen extends ConsumerWidget {
         .watch(clubMatchesProvider)
         .whenData((items) => items.where((item) => !item.isCompleted).toList());
     return _ClubCollectionScaffold(
-      title: l10n.clubFixturesTitle.toUpperCase(),
+      title: l10n.clubFixturesTitle,
       state: state,
       emptyTitle: l10n.clubFixturesEmptyTitle,
       emptyMessage: l10n.clubFixturesEmptyMessage,
@@ -182,7 +182,7 @@ class ClubResultsScreen extends ConsumerWidget {
               .toList(),
         );
     return _ClubCollectionScaffold(
-      title: l10n.clubResultsTitle.toUpperCase(),
+      title: l10n.clubResultsTitle,
       state: state,
       emptyTitle: l10n.clubResultsEmptyTitle,
       emptyMessage: l10n.clubResultsEmptyMessage,
@@ -214,7 +214,7 @@ class ClubFixtureDetailScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final state = ref.watch(clubMatchesProvider);
     return _ClubDetailScaffold(
-      title: l10n.clubMatchTitle.toUpperCase(),
+      title: l10n.clubMatchTitle,
       state: state,
       onRetry: () => ref.invalidate(clubMatchesProvider),
       select: (items) => _firstWhereOrNull(items, (item) => item.id == matchId),
@@ -234,7 +234,7 @@ class ClubFixtureDetailScreen extends ConsumerWidget {
             Text(
               l10n.clubFixtureTitle(fixture.homeTeam, fixture.awayTeam),
               style: TypographyTokens.headlineLarge().copyWith(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
@@ -247,7 +247,7 @@ class ClubFixtureDetailScreen extends ConsumerWidget {
               Text(
                 l10n.clubScore(fixture.homeScore, fixture.awayScore),
                 style: TypographyTokens.displayMedium().copyWith(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],
@@ -274,7 +274,7 @@ class ClubStandingsScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final state = ref.watch(clubStandingsProvider);
     return _ClubCollectionScaffold(
-      title: l10n.clubStandingsTitle.toUpperCase(),
+      title: l10n.clubStandingsTitle,
       state: state,
       emptyTitle: l10n.clubStandingsEmptyTitle,
       emptyMessage: l10n.clubStandingsEmptyMessage,
@@ -288,7 +288,7 @@ class ClubStandingsScreen extends ConsumerWidget {
               child: Text(
                 '${row.position}',
                 style: TypographyTokens.titleMedium().copyWith(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -327,7 +327,7 @@ class ClubHistoryScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final state = ref.watch(clubHistoryProvider);
     return _ClubCollectionScaffold(
-      title: l10n.clubHistoryTitle.toUpperCase(),
+      title: l10n.clubHistoryTitle,
       state: state,
       emptyTitle: l10n.clubHistoryEmptyTitle,
       emptyMessage: l10n.clubHistoryEmptyMessage,
@@ -340,7 +340,7 @@ class ClubHistoryScreen extends ConsumerWidget {
             Text(
               item.title,
               style: TypographyTokens.titleLarge().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
             if (item.subtitle.isNotEmpty) ...[
@@ -371,7 +371,7 @@ class ClubProjectsScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final state = ref.watch(clubProjectsProvider);
     return _ClubCollectionScaffold(
-      title: l10n.clubProjectsTitle.toUpperCase(),
+      title: l10n.clubProjectsTitle,
       state: state,
       emptyTitle: l10n.clubProjectsEmptyTitle,
       emptyMessage: l10n.clubProjectsEmptyMessage,
@@ -388,7 +388,7 @@ class ClubProjectsScreen extends ConsumerWidget {
             Text(
               project.name,
               style: TypographyTokens.titleLarge().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
             if (project.description.isNotEmpty) ...[
@@ -428,7 +428,7 @@ class ClubProjectDetailScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final state = ref.watch(clubProjectsProvider);
     return _ClubDetailScaffold(
-      title: l10n.clubProjectTitle.toUpperCase(),
+      title: l10n.clubProjectTitle,
       state: state,
       onRetry: () => ref.invalidate(clubProjectsProvider),
       select: (items) =>
@@ -443,7 +443,7 @@ class ClubProjectDetailScreen extends ConsumerWidget {
             Text(
               project.name,
               style: TypographyTokens.headlineLarge().copyWith(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             if (project.description.isNotEmpty) ...[
@@ -699,7 +699,7 @@ class _StandingValue extends StatelessWidget {
           Text(
             '$value',
             style: TypographyTokens.titleSmall().copyWith(
-              fontWeight: strong ? FontWeight.w900 : FontWeight.w700,
+              fontWeight: strong ? FontWeight.w700 : FontWeight.w700,
             ),
           ),
         ],

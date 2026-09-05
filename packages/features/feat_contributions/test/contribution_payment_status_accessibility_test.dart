@@ -99,8 +99,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Contribution flow idle'), findsOneWidget);
-    expect(find.text('HOW MUCH TO CONTRIBUTE?'), findsNothing);
-    expect(find.text('LAUNCHING MOMO'), findsNothing);
+    expect(find.text('How much to contribute?'), findsNothing);
+    expect(find.text('Launching MoMo'), findsNothing);
   });
 
   testWidgets(

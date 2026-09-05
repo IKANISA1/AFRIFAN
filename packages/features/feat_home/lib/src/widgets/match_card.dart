@@ -1,27 +1,12 @@
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  ⛔ LOCKED FILE — HERO SECTION FRONTEND IS FROZEN              ║
-// ║  DO NOT modify the visual layout, structure, sizing,           ║
-// ║  typography, or widget tree of MatchScoreCard / _HeroSlide.    ║
-// ║  Only backend data changes (routes, URLs, slide content)       ║
-// ║  are permitted. See /HERO_LOCK.md for full rules.              ║
-// ║  Approved: 2026-03-30 by Product Owner.                        ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-import 'dart:async';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core_l10n/core_l10n.dart';
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// Keeps carousel content legible when the user enlarges text.
 double homeHeroHeight(BuildContext context) {
-  final size = MediaQuery.sizeOf(context);
-  if (size.width > size.height) {
-    return (size.height * 0.62).clamp(176.0, 240.0);
-  }
-  return size.height * 0.333;
+  final scale = MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.5);
+  return 252 * scale;
 }
 
 /// A single match/event slide — CMS-managed, admin-controlled.
@@ -44,7 +29,6 @@ class MatchSlide {
     this.imageUrl,
     this.imageProvenanceId,
     this.imageRightsApproved = false,
-    // §2.4 LOCKED — no hardcoded club/venue names.
     this.homeTeam = '',
     this.awayTeam = '',
     this.venue = '',
@@ -56,280 +40,146 @@ class MatchSlide {
   });
 }
 
-/// Hero event card — floating rounded card on dark background.
-///
-/// Reference shape analysis:
-/// - Small horizontal margin (~16px) on left/right
-/// - Rounded corners all around (~20px)
-/// - Card floats/is detached from the background
-/// - Image fills the card, clipped by rounded corners
-/// - Uses ClipRRect plus margin instead of a custom clipper.
+/// Centred match identity on the overview glow (LIVE-020/021 pattern).
+/// The carousel is user-controlled, so scores never move while being read.
 class MatchScoreCard extends StatefulWidget {
+  const MatchScoreCard({super.key, this.slides = const []});
   final List<MatchSlide> slides;
-  final Duration autoSlideInterval;
-
-  const MatchScoreCard({
-    super.key,
-    // §2.4 LOCKED — default slides load from CMS; empty list = no hero.
-    this.slides = const [],
-    this.autoSlideInterval = const Duration(seconds: 5),
-  });
 
   @override
   State<MatchScoreCard> createState() => _MatchScoreCardState();
 }
 
 class _MatchScoreCardState extends State<MatchScoreCard> {
-  late final PageController _pageController;
-  Timer? _autoSlideTimer;
   int _currentPage = 0;
-
-  static Color get _heroAccent => ColorTokens.clubPrimary;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-    if (widget.slides.length > 1) _startAutoSlide();
-  }
-
-  @override
-  void dispose() {
-    _autoSlideTimer?.cancel();
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  void _startAutoSlide() {
-    _autoSlideTimer = Timer.periodic(widget.autoSlideInterval, (_) {
-      if (!mounted) return;
-      final next = (_currentPage + 1) % widget.slides.length;
-      unawaited(
-        _pageController.animateToPage(
-          next,
-          duration: AfriMotion.atmospheric,
-          curve: Curves.easeInOut,
-        ),
-      );
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     if (widget.slides.isEmpty) return const SizedBox.shrink();
-
-    return SizedBox(
-      height: homeHeroHeight(context),
-      child: Stack(
-        fit: StackFit.expand,
+    // Large text keeps the complete object in the main vertical scroll flow.
+    // A one-item carousel also needs no fixed viewport or page machinery.
+    if (widget.slides.length == 1 ||
+        MediaQuery.textScalerOf(context).scale(1) > 1.3) {
+      return Column(
         children: [
-          // ── Sliding image pages ──
-          PageView.builder(
-            controller: _pageController,
+          for (final slide in widget.slides)
+            ConstrainedBox(
+              constraints: BoxConstraints(minHeight: homeHeroHeight(context)),
+              child: AfriPressFeedback(
+                onTap: slide.route == null
+                    ? null
+                    : () => context.push(slide.route!),
+                semanticsLabel: context.afriL10n.homeOpenMatchDetails,
+                child: _MatchOverview(slide: slide),
+              ),
+            ),
+        ],
+      );
+    }
+    return Column(
+      children: [
+        SizedBox(
+          height: homeHeroHeight(context),
+          child: PageView.builder(
             itemCount: widget.slides.length,
-            onPageChanged: (i) => setState(() => _currentPage = i),
-            itemBuilder: (context, i) {
-              final slide = widget.slides[i];
+            onPageChanged: (page) => setState(() => _currentPage = page),
+            itemBuilder: (context, index) {
+              final slide = widget.slides[index];
               return AfriPressFeedback(
                 onTap: slide.route == null
                     ? null
-                    : () => unawaited(context.push(slide.route!)),
-                haptic: slide.route != null,
-                scaleEnd: 0.99,
-                opacityEnd: 0.98,
+                    : () => context.push(slide.route!),
                 semanticsLabel: context.afriL10n.homeOpenMatchDetails,
-                tooltip: context.afriL10n.homeOpenMatchDetails,
-                excludeChildSemantics: false,
-                child: _HeroSlide(slide: slide, accentColor: _heroAccent),
+                child: _MatchOverview(slide: slide),
               );
             },
           ),
-
-          // ── Page indicator dots (bottom center) ──
-          if (widget.slides.length > 1)
-            Positioned(
-              bottom: 12,
-              left: 0,
-              right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  widget.slides.length,
-                  (i) => AnimatedContainer(
-                    duration: AfriMotion.standard,
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: i == _currentPage ? 24 : 8,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: i == _currentPage
-                          ? _heroAccent
-                          : ColorTokens.onDarkSoft,
-                      borderRadius: BorderRadius.circular(
-                        ShapeTokens.radiusSm / 4,
-                      ),
-                    ),
+        ),
+        if (widget.slides.length > 1)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              widget.slides.length,
+              (index) => Container(
+                margin: const EdgeInsets.all(4),
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: ColorTokens.onSurface.withValues(
+                    alpha: index == _currentPage ? 1 : 0.3,
                   ),
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
 
-/// A single hero slide — full-bleed image with text overlay.
-class _HeroSlide extends StatelessWidget {
+class _MatchOverview extends StatelessWidget {
+  const _MatchOverview({required this.slide});
   final MatchSlide slide;
-  final Color accentColor;
-
-  const _HeroSlide({required this.slide, required this.accentColor});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        // ── Background image ──
-        _buildBackground(),
-
-        // ── Gradient overlay (using primary as allowed) ──
-        DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: ColorTokens.imageScrimGradient(
-              color: ColorTokens.clubPrimary,
-              alphas: const [0.0, 0.27, 0.8, 1.0],
-              stops: const [0.0, 0.3, 0.7, 1.0],
+    final colors = context.afriSemanticColors;
+    final hasScore = slide.homeScore != null && slide.awayScore != null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.screenPadding,
+        vertical: SpacingTokens.spacing4,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (slide.status.isNotEmpty) ...[
+            Text(
+              slide.status,
+              textAlign: TextAlign.center,
+              style: TypographyTokens.bodyLarge(colors.primaryText),
             ),
-          ),
-        ),
-
-        // ── Content overlay ──
-        SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(22, 16, 22, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Spacer(flex: 4),
-
-                // ── Massive team names ──
-                // Forced to exactly 2 lines using explicit \n and softWrap: false.
-                // FittedBox dynamically scales the text down if "TEAM A VS" is too wide.
-                SizedBox(
-                  width: double.infinity,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: RichText(
-                      softWrap: false,
-                      maxLines: 2,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '${slide.homeTeam.toUpperCase()} ',
-                            style:
-                                TypographyTokens.displayLarge(
-                                  ColorTokens.onDark,
-                                ).copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  height: 0.90,
-                                  letterSpacing: 0,
-                                ),
-                          ),
-                          TextSpan(
-                            text: 'VS\n',
-                            style: TypographyTokens.displayLarge(accentColor)
-                                .copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  height: 0.90,
-                                  letterSpacing: 0,
-                                ),
-                          ),
-                          TextSpan(
-                            text: slide.awayTeam.toUpperCase(),
-                            style:
-                                TypographyTokens.displayLarge(
-                                  ColorTokens.onDark,
-                                ).copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  height: 0.90,
-                                  letterSpacing: 0,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                // ── Date/time row ──
-                Row(
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: accentColor,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        slide.dateInfo,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            TypographyTokens.bodyLarge(
-                              ColorTokens.onDarkSubtle,
-                            ).copyWith(
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 1.5,
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const Spacer(flex: 1),
-              ],
-            ),
-          ),
-        ), // End SafeArea
-      ],
-    );
-  }
-
-  Widget _buildBackground() {
-    if (slide.imageUrl != null && slide.imageUrl!.isNotEmpty) {
-      return CachedNetworkImage(
-        imageUrl: slide.imageUrl!,
-        cacheManager: AfriImageCacheManager.instance,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-        placeholder: (_, __) => _gradient(),
-        errorWidget: (_, __, ___) => _gradient(),
-      );
-    }
-    return _gradient();
-  }
-
-  Widget _gradient() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: ColorTokens.universalGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            ColorTokens.surfaceContainerHigh,
-            ColorTokens.clubPrimary.withValues(alpha: 0.3),
+            const SizedBox(height: SpacingTokens.spacing3),
           ],
-        ),
+          if (hasScore) ...[
+            Text(
+              '${slide.homeScore} : ${slide.awayScore}',
+              style: TypographyTokens.displayLarge(
+                colors.primaryText,
+              ).copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            Text(
+              '${slide.homeTeam} · ${slide.awayTeam}',
+              textAlign: TextAlign.center,
+              style: TypographyTokens.bodyLarge(colors.primaryText),
+            ),
+          ] else
+            Text(
+              '${slide.homeTeam}\n${slide.awayTeam}',
+              textAlign: TextAlign.center,
+              style: TypographyTokens.displaySmall(
+                colors.primaryText,
+              ).copyWith(fontWeight: FontWeight.w600, height: 1.15),
+            ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          if (slide.dateInfo.isNotEmpty)
+            Text(
+              slide.dateInfo,
+              textAlign: TextAlign.center,
+              style: TypographyTokens.bodyMedium(colors.primaryText),
+            ),
+          if (slide.venue.isNotEmpty) ...[
+            const SizedBox(height: SpacingTokens.spacing1),
+            Text(
+              slide.venue,
+              textAlign: TextAlign.center,
+              style: TypographyTokens.bodySmall(colors.primaryText),
+            ),
+          ],
+        ],
       ),
     );
   }

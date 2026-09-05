@@ -87,7 +87,7 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.tap(find.text('OPEN'));
+      await tester.tap(find.text('Open'));
       await tester.pump();
 
       expect(openedNotification, notification);

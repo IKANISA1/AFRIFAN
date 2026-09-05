@@ -27,13 +27,24 @@ class AfriComponentSizes {
   static const double compactVerticalPadding = 6;
   static const double infoChipVerticalPadding = 5;
   static const double buttonVerticalPadding = 14;
+  static const double buttonHeight = 52;
+  static const double listRowHeight = 56;
+  static const double listIcon = 24;
+  static const double listChevron = 20;
+  static const double membershipCardMinHeight = 220;
+  static const double profileAvatar = 88;
+  static const double themePreviewCommand = 24;
+  static const double themePreviewViewportFraction = 0.60;
+  static const double themePreviewMinHeight = 260;
+  static const double themePreviewMaxHeight = 470;
 
   static const double timelineRailWidth = 28;
   static const double timelineMarker = 14;
   static const double timelineStemWidth = 2;
   static const double timelineStemHeight = 54;
 
-  static const double quickActionDiameter = 64;
+  static const double quickActionDiameter = 48;
+  static const double quickActionIcon = 24;
   static const double listLeading = 40;
   static const double leaderboardRankWidth = 40;
   static const double stateBannerCompact = 36;

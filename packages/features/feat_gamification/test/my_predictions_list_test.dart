@@ -72,8 +72,8 @@ void main() {
     );
 
     expect(find.text('RAY vs APR'), findsOneWidget);
-    expect(find.text('MATCH RESULT'), findsOneWidget);
-    expect(find.text('RAYON SPORTS'), findsOneWidget);
+    expect(find.text('Match Result'), findsOneWidget);
+    expect(find.text('Rayon Sports'), findsOneWidget);
 
     await tester.tap(find.text('RAY vs APR'));
     await tester.pump();

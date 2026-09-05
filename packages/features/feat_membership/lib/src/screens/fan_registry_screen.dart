@@ -183,7 +183,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
-    final primary = ColorTokens.clubPrimary;
+    final primary = ColorTokens.primary;
     final allowsCrossUserText = ref.watch(
       storeReleasePolicyProvider.select((policy) => policy.allowsCrossUserText),
     );
@@ -203,7 +203,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
         title: Text(
-          l10n.fanRegistryTitle.toUpperCase(),
+          l10n.fanRegistryTitle,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -211,7 +211,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
       ),
       scrollable: false,
       child: AfriRefreshIndicator(
-        color: ColorTokens.clubAccent,
+        color: ColorTokens.primaryContainer,
         onRefresh: _reloadFans,
         child: CustomScrollView(
           controller: _scrollController,
@@ -252,7 +252,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              fansLabel.toUpperCase(),
+                              fansLabel,
                               style: TypographyTokens.titleMedium().copyWith(
                                 fontWeight: FontWeight.w700,
                               ),
@@ -457,7 +457,7 @@ class _FanRegistryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      fan.displayName.toUpperCase(),
+                      fan.displayName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TypographyTokens.titleMedium().copyWith(
@@ -482,7 +482,7 @@ class _FanRegistryCard extends StatelessWidget {
                     ? l10n.fanRegistryPending
                     : l10n.fanRegistryActivity(fan.points),
                 style: TypographyTokens.titleSmall(
-                  ColorTokens.clubAccent,
+                  ColorTokens.primaryContainer,
                 ).copyWith(fontWeight: FontWeight.w700),
               ),
             ],
@@ -493,17 +493,11 @@ class _FanRegistryCard extends StatelessWidget {
             runSpacing: SpacingTokens.spacing2,
             children: [
               _RegistryChip(
-                label: officialMembershipLabel(fan.tier.value).toUpperCase(),
+                label: officialMembershipLabel(fan.tier.value),
                 color: tierColor,
               ),
-              _RegistryChip(
-                label: fan.paymentStatus.label.toUpperCase(),
-                color: statusColor,
-              ),
-              _RegistryChip(
-                label: fan.chapter.toUpperCase(),
-                color: ColorTokens.info,
-              ),
+              _RegistryChip(label: fan.paymentStatus.label, color: statusColor),
+              _RegistryChip(label: fan.chapter, color: ColorTokens.info),
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -527,7 +521,7 @@ class _FanRegistryCard extends StatelessWidget {
 
   Color _tierColor(FanTier tier) {
     return switch (normalizeMembershipSlug(tier.value)) {
-      'gold' => ColorTokens.clubAccent,
+      'gold' => ColorTokens.primaryContainer,
       'silver' => ColorTokens.success,
       'bronze' => ColorTokens.warning,
       _ => ColorTokens.info,

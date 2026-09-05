@@ -186,7 +186,7 @@ void main() {
       ),
     );
 
-    final title = find.text('SEARCH');
+    final title = find.text('Search');
     expect(title, findsOneWidget);
     expect(
       tester.widget<Text>(title).style?.fontSize,

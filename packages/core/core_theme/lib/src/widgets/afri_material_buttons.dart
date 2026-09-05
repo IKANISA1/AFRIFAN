@@ -45,7 +45,7 @@ class AfriTextButton extends StatelessWidget {
 
   static ButtonStyle _textStyle() {
     return TextButton.styleFrom(
-      foregroundColor: ColorTokens.chromeForeground,
+      foregroundColor: ColorTokens.onSurface,
       disabledForegroundColor: ColorTokens.onSurfaceVariant,
       textStyle: TypographyTokens.labelLarge(),
       minimumSize: const Size(0, SizeTokens.touchTargetMin),
@@ -131,7 +131,7 @@ class AfriOutlinedButton extends StatelessWidget {
 
   static ButtonStyle _outlineStyle() {
     return OutlinedButton.styleFrom(
-      foregroundColor: ColorTokens.chromeForeground,
+      foregroundColor: ColorTokens.onSurface,
       disabledForegroundColor: ColorTokens.onSurfaceVariant,
       side: BorderTokens.side(color: ColorTokens.chromeBorder),
       textStyle: TypographyTokens.labelLarge(),
@@ -213,8 +213,8 @@ class AfriElevatedButton extends StatelessWidget {
 
   static ButtonStyle _elevatedStyle() {
     return ElevatedButton.styleFrom(
-      backgroundColor: ColorTokens.primary,
-      foregroundColor: ColorTokens.chromeForeground,
+      backgroundColor: ColorTokens.onSurface,
+      foregroundColor: ColorTokens.background,
       disabledBackgroundColor: ColorTokens.surfaceContainerHigh,
       disabledForegroundColor: ColorTokens.onSurfaceVariant,
       textStyle: TypographyTokens.labelLarge(),

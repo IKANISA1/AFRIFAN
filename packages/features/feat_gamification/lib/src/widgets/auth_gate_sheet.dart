@@ -93,8 +93,8 @@ class AuthGateSheet extends StatelessWidget {
           Text(
             context.afriL10n.gameVerifyToPredict,
             style: TypographyTokens.headlineSmall().copyWith(
-              fontWeight: FontWeight.w800,
-              letterSpacing: 1.4,
+              fontWeight: FontWeight.w600,
+              letterSpacing: TypographyTokens.trackingNone,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -187,14 +187,14 @@ class _BenefitRow extends StatelessWidget {
           width: SpacingTokens.spacing10,
           height: SpacingTokens.spacing10,
           decoration: BoxDecoration(
-            color: ColorTokens.clubAccent.withValues(alpha: 0.12),
+            color: ColorTokens.primaryContainer.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
           ),
           alignment: Alignment.center,
           child: Icon(
             icon,
             size: SpacingTokens.spacing5,
-            color: ColorTokens.clubAccent,
+            color: ColorTokens.primaryContainer,
           ),
         ),
         const SizedBox(width: SpacingTokens.spacing3),

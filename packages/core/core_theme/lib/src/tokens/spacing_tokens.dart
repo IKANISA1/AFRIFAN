@@ -28,16 +28,16 @@ class SpacingTokens {
   // ── Semantic  ──
 
   /// Horizontal inset for screen-level content (left/right padding).
-  static const double screenPadding = spacing6; // 24
+  static const double screenPadding = spacing4; // 16
 
   /// Vertical gap between major sections on a screen.
-  static const double sectionGap = spacing8; // 32
+  static const double sectionGap = spacing6; // 24
 
   /// Internal padding inside cards and containers.
-  static const double cardPadding = spacing5; // 20
+  static const double cardPadding = spacing4; // 16
 
   /// Gap between sibling list items or card rows.
-  static const double listItemGap = spacing3; // 12
+  static const double listItemGap = spacing2; // 8
 
   /// Tight inline gap (icon-to-label, chip-to-chip).
   static const double inlineGap = spacing2; // 8

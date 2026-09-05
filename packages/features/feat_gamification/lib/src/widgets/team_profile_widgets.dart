@@ -36,7 +36,7 @@ class TeamMetric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AfriMetricTile(label: label.toUpperCase(), value: value);
+    return AfriMetricTile(label: label, value: value);
   }
 }
 
@@ -54,7 +54,7 @@ class MiniStat extends StatelessWidget {
         Text(
           value,
           style: TypographyTokens.titleMedium().copyWith(
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing1),
@@ -90,21 +90,23 @@ class TierCountCard extends StatelessWidget {
           Icon(
             icon,
             size: SpacingTokens.spacing7,
-            color: ColorTokens.clubAccent,
+            color: ColorTokens.primaryContainer,
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             count.toString(),
             style: TypographyTokens.metricValue().copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
-            label.toUpperCase(),
-            style: TypographyTokens.labelSmall(
-              ColorTokens.onSurfaceVariant,
-            ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+            label,
+            style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)
+                .copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: TypographyTokens.trackingNone,
+                ),
           ),
         ],
       ),
@@ -135,17 +137,17 @@ class ContributeStep extends StatelessWidget {
           height: SpacingTokens.spacing10 + SpacingTokens.spacing1,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: ColorTokens.clubAccent.withValues(alpha: 0.12),
+            color: ColorTokens.primaryContainer.withValues(alpha: 0.12),
             border: BorderTokens.all(
-              color: ColorTokens.clubAccent.withValues(alpha: 0.3),
+              color: ColorTokens.primaryContainer.withValues(alpha: 0.3),
             ),
           ),
           alignment: Alignment.center,
           child: Text(
             stepNumber.toString(),
             style: TypographyTokens.titleLarge(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w800),
+              ColorTokens.primaryContainer,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ),
         const SizedBox(width: SpacingTokens.spacing3),
@@ -188,10 +190,10 @@ class MemberRow extends StatelessWidget {
       child: AfriPanelCard(
         padding: const EdgeInsets.all(SpacingTokens.spacing3),
         backgroundColor: isMe
-            ? ColorTokens.clubAccent.withValues(alpha: 0.10)
+            ? ColorTokens.primaryContainer.withValues(alpha: 0.10)
             : ColorTokens.surfaceContainerHigh,
         borderColor: isMe
-            ? ColorTokens.clubAccent.withValues(alpha: 0.3)
+            ? ColorTokens.primaryContainer.withValues(alpha: 0.3)
             : ColorTokens.ghostBorder,
         child: Row(
           children: [
@@ -218,7 +220,7 @@ class MemberRow extends StatelessWidget {
                         const SizedBox(width: SpacingTokens.spacing2),
                         AfriInfoChip(
                           label: context.afriL10n.gameYouUpper,
-                          color: ColorTokens.clubAccent,
+                          color: ColorTokens.primaryContainer,
                         ),
                       ],
                     ],
@@ -226,7 +228,7 @@ class MemberRow extends StatelessWidget {
                   Text(
                     tier,
                     style: TypographyTokens.labelSmall(
-                      ColorTokens.clubAccent,
+                      ColorTokens.primaryContainer,
                     ).copyWith(fontWeight: FontWeight.w600),
                   ),
                 ],
@@ -235,8 +237,8 @@ class MemberRow extends StatelessWidget {
             Text(
               fetLabel,
               style: TypographyTokens.titleSmall(
-                ColorTokens.clubAccent,
-              ).copyWith(fontWeight: FontWeight.w800),
+                ColorTokens.primaryContainer,
+              ).copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -284,10 +286,12 @@ class TeamInfoRow extends StatelessWidget {
           SizedBox(
             width: SpacingTokens.spacing20 + SpacingTokens.spacing10,
             child: Text(
-              label.toUpperCase(),
-              style: TypographyTokens.labelSmall(
-                ColorTokens.onSurfaceVariant,
-              ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1),
+              label,
+              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)
+                  .copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: TypographyTokens.trackingNone,
+                  ),
             ),
           ),
           Expanded(child: Text(value, style: TypographyTokens.bodyMedium())),

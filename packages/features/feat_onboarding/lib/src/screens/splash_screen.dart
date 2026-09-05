@@ -124,7 +124,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     }
 
     return AfriScreenScaffold(
-      backgroundColor: ColorTokens.clubPrimary,
+      backgroundColor: ColorTokens.background,
       showAppBar: false,
       showBackButton: false,
       scrollable: false,

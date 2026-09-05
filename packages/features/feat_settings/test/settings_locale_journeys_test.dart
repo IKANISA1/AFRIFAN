@@ -21,11 +21,11 @@ void main() {
   ) async {
     await _pumpNotificationSettings(tester, const Locale('fr'));
 
-    expect(find.text('NOTIFICATIONS'), findsOneWidget);
-    expect(find.text('RÉCEPTION DES NOTIFICATIONS'), findsOneWidget);
+    expect(find.text('Notifications'), findsOneWidget);
+    expect(find.text('Réception des notifications'), findsOneWidget);
     expect(find.text('Alertes activées.'), findsNothing);
     expect(find.text('Enregistrer'), findsOneWidget);
-    expect(find.text('NOTIFICATION DELIVERY'), findsNothing);
+    expect(find.text('Notification delivery'), findsNothing);
   });
 
   testWidgets('Kinyarwanda notification-settings journey uses the RW catalog', (
@@ -33,10 +33,10 @@ void main() {
   ) async {
     await _pumpNotificationSettings(tester, const Locale('rw'));
 
-    expect(find.text('AMATANGAZO'), findsOneWidget);
-    expect(find.text('KWAKIRA AMATANGAZO'), findsOneWidget);
+    expect(find.text('Amatangazo'), findsOneWidget);
+    expect(find.text('Kwakira amatangazo'), findsOneWidget);
     expect(find.text('Bika'), findsOneWidget);
-    expect(find.text('NOTIFICATION DELIVERY'), findsNothing);
+    expect(find.text('Notification delivery'), findsNothing);
   });
 }
 

@@ -26,12 +26,9 @@ class MatchManagerScreen extends ConsumerWidget {
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title: context.afriL10n.adminMatchesTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          context.afriL10n.adminMatchesTitle,
-          style: TypographyTokens.titleLarge(),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -52,7 +49,9 @@ class MatchManagerScreen extends ConsumerWidget {
             )
           : matches.isLoading && snapshot == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-matches-state-loading'),
                 title: context.afriL10n.adminMatchesLoadingTitle,
@@ -80,15 +79,13 @@ class MatchManagerScreen extends ConsumerWidget {
     final canCreate = controlsEnabled && snapshot.partnerId != null;
     final currency = NumberFormat.decimalPattern(context.afriL10n.localeName);
     final currencySymbol = context.afriCurrencySymbol;
-    final metricColor = Theme.of(context).brightness == Brightness.dark
-        ? ColorTokens.clubAccent
-        : ColorTokens.onSurface;
+    final metricColor = ColorTokens.onSurface;
 
     return AfriRefreshIndicator(
       onRefresh: ref.read(adminMatchesProvider.notifier).refresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         children: [
           if (_statusBanner(context, matches) case final banner?) ...[
             banner,
@@ -215,7 +212,7 @@ class MatchManagerScreen extends ConsumerWidget {
 
   Widget _disabled(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-matches-state-disabled'),
         title: context.afriL10n.adminMatchesManagementUnavailable,
@@ -273,7 +270,7 @@ class MatchManagerScreen extends ConsumerWidget {
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }
@@ -367,10 +364,10 @@ class _MatchCard extends StatelessWidget {
         : '';
     final statusColor = switch (match.status) {
       'live' => ColorTokens.success,
-      'halftime' => ColorTokens.clubAccent,
+      'halftime' => ColorTokens.primaryContainer,
       'fulltime' => ColorTokens.surfaceContainerHigh,
       'postponed' || 'cancelled' => ColorTokens.error,
-      _ => ColorTokens.clubAccent,
+      _ => ColorTokens.primaryContainer,
     };
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -398,9 +395,10 @@ class _MatchCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      context.afriL10n
-                          .adminVersus(match.homeTeam, match.awayTeam)
-                          .toUpperCase(),
+                      context.afriL10n.adminVersus(
+                        match.homeTeam,
+                        match.awayTeam,
+                      ),
                       style: TypographyTokens.titleLarge().copyWith(
                         color: ColorTokens.onSurface,
                       ),

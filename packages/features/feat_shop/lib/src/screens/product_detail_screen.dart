@@ -468,7 +468,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         product['image_rights_approved'] == true &&
         imageProvenanceId.isNotEmpty;
     final badge = product['badge_label']?.toString();
-    final primary = ColorTokens.clubAccent;
+    final primary = ColorTokens.primaryContainer;
     final sizes = _availableSizes(product);
     final inStock = _isInStock(product);
     final stockCount = _stockCount(product);
@@ -553,10 +553,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           placeholder: Container(
                             color: ColorTokens.surfaceContainerLow,
                           ),
-                          errorFallback: _ImageFallback(primary: primary),
+                          errorFallback: const _ImageFallback(),
                         )
                       else
-                        _ImageFallback(primary: primary),
+                        const _ImageFallback(),
                       Positioned(
                         bottom: 0,
                         left: 0,
@@ -901,7 +901,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ),
         Text(
           currency.format(total),
-          style: TypographyTokens.titleLarge(ColorTokens.clubAccent),
+          style: TypographyTokens.titleLarge(ColorTokens.primaryContainer),
         ),
       ],
     );
@@ -965,12 +965,12 @@ class _AuditSampleProductSummary extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: ColorTokens.clubAccent.withValues(alpha: 0.16),
+              color: ColorTokens.primaryContainer.withValues(alpha: 0.16),
               borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
             ),
             child: Icon(
               AfriIcons.shop,
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               size: SpacingTokens.spacing8,
             ),
           ),
@@ -1001,73 +1001,29 @@ class _AuditSampleProductSummary extends StatelessWidget {
 }
 
 class _ImageFallback extends StatelessWidget {
-  const _ImageFallback({required this.primary});
-
-  final Color primary;
+  const _ImageFallback();
 
   @override
   Widget build(BuildContext context) {
-    final usesLargeTextLayout =
-        MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    return Container(
-      decoration: BoxDecoration(
-        gradient: ColorTokens.universalGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            ColorTokens.surfaceContainerLow,
-            primary.withValues(alpha: 0.22),
-            ColorTokens.background,
-          ],
-        ),
-      ),
+    return ColoredBox(
+      color: ColorTokens.surfaceContainerLow,
       child: Center(
-        child: Container(
-          margin: const EdgeInsets.symmetric(
-            horizontal: SpacingTokens.spacing8,
-          ),
-          padding: EdgeInsets.all(
-            usesLargeTextLayout
-                ? SpacingTokens.spacing4
-                : SpacingTokens.spacing6,
-          ),
-          decoration: BoxDecoration(
-            color: ColorTokens.glassFill,
-            borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
-            border: BorderTokens.ghost(),
-          ),
+        child: Padding(
+          padding: const EdgeInsets.all(SpacingTokens.screenPadding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 AfriIcons.shop,
-                size: usesLargeTextLayout ? 40 : 56,
-                color: primary.withValues(alpha: 0.9),
+                size: SizeTokens.iconXl,
+                color: ColorTokens.onSurfaceVariant,
               ),
-              SizedBox(
-                height: usesLargeTextLayout
-                    ? SpacingTokens.spacing2
-                    : SpacingTokens.spacing4,
-              ),
+              const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                usesLargeTextLayout
-                    ? context.afriL10n.shopProductImageUnavailable
-                    : context.afriL10n.shopOfficialKit,
+                context.afriL10n.shopProductImageUnavailable,
                 textAlign: TextAlign.center,
-                style: usesLargeTextLayout
-                    ? TypographyTokens.titleMedium(ColorTokens.onSurface)
-                    : TypographyTokens.titleLarge(ColorTokens.onSurface),
+                style: TypographyTokens.bodyLarge(ColorTokens.onSurfaceVariant),
               ),
-              if (!usesLargeTextLayout) ...[
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  context.afriL10n.shopPremiumMerchandise,
-                  textAlign: TextAlign.center,
-                  style: TypographyTokens.bodyMedium().copyWith(
-                    color: ColorTokens.onSurfaceVariant,
-                  ),
-                ),
-              ],
             ],
           ),
         ),

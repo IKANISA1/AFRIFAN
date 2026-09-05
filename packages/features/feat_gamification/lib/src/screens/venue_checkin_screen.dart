@@ -161,7 +161,7 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
               Text(
                 l10n.venueCheckinHero,
                 style: TypographyTokens.headlineLarge().copyWith(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   height: TypographyTokens.lineHeightCompact,
                 ),
               ),

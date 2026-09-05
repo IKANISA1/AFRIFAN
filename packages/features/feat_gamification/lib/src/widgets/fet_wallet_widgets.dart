@@ -140,7 +140,7 @@ class WalletTransactionRow extends StatelessWidget {
                 ),
                 style: TypographyTokens.titleLarge(
                   color,
-                ).copyWith(fontWeight: FontWeight.w800),
+                ).copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: SpacingTokens.spacing1),
               Text(

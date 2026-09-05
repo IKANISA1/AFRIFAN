@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
+import '../widgets/tier_label.dart';
 
 class SocialHubScreen extends ConsumerStatefulWidget {
   const SocialHubScreen({super.key});
@@ -45,7 +46,7 @@ class _SocialHubScreenState extends ConsumerState<SocialHubScreen>
           context.afriL10n.gameSocialHub,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.0,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -174,7 +175,7 @@ class _FriendsTabState extends ConsumerState<_FriendsTab> {
 
     return AfriRefreshIndicator(
       onRefresh: _load,
-      color: ColorTokens.clubAccent,
+      color: ColorTokens.primaryContainer,
       child: ListView(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
@@ -265,7 +266,7 @@ class SocialHubFriendsSection extends StatelessWidget {
   String _friendDetails(BuildContext context, FetFriendProfile friend) {
     final parts = <String>[
       if (friend.publicUserId != null) '#${friend.publicUserId}',
-      friend.tier.toUpperCase(),
+      fanTierLabel(context.afriL10n, friend.tier),
       context.afriL10n.gamePointBalance(friend.balance),
     ];
     return parts.join(' · ');
@@ -414,7 +415,7 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
 
     return AfriRefreshIndicator(
       onRefresh: _load,
-      color: ColorTokens.clubAccent,
+      color: ColorTokens.primaryContainer,
       child: ListView(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
@@ -437,8 +438,8 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
                       ? context.afriL10n.gameUnranked
                       : context.afriL10n.gameRankHash(userEntry.rank),
                   style: TypographyTokens.displaySmall(
-                    ColorTokens.clubAccent,
-                  ).copyWith(fontWeight: FontWeight.w900),
+                    ColorTokens.primaryContainer,
+                  ).copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
@@ -519,7 +520,9 @@ class _FanLeaderboardRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
       decoration: BoxDecoration(
-        color: isMe ? ColorTokens.clubAccent.withValues(alpha: 0.06) : null,
+        color: isMe
+            ? ColorTokens.primaryContainer.withValues(alpha: 0.06)
+            : null,
         borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
       ),
       child: Row(
@@ -530,9 +533,9 @@ class _FanLeaderboardRow extends StatelessWidget {
               context.afriL10n.gameRankHash(rank),
               style: TypographyTokens.titleSmall(
                 rank <= 3
-                    ? ColorTokens.clubAccent
+                    ? ColorTokens.primaryContainer
                     : ColorTokens.onSurfaceVariant,
-              ).copyWith(fontWeight: FontWeight.w800),
+              ).copyWith(fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -540,15 +543,15 @@ class _FanLeaderboardRow extends StatelessWidget {
             child: Text(
               isMe ? context.afriL10n.gameNameYou(name) : name,
               style: TypographyTokens.titleSmall().copyWith(
-                color: isMe ? ColorTokens.clubAccent : null,
+                color: isMe ? ColorTokens.primaryContainer : null,
               ),
             ),
           ),
           Text(
             points,
             style: TypographyTokens.titleSmall(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w800),
+              ColorTokens.primaryContainer,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),

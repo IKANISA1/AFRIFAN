@@ -49,22 +49,34 @@ class StatsPanel extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  homeLabel!.toUpperCase(),
-                  style: TypographyTokens.metricLabel(
-                    ColorTokens.clubAccent,
-                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+                  homeLabel!,
+                  style:
+                      TypographyTokens.metricLabel(
+                        ColorTokens.primaryContainer,
+                      ).copyWith(
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: TypographyTokens.trackingNone,
+                      ),
                 ),
                 Text(
                   title,
-                  style: TypographyTokens.titleSmall(
-                    ColorTokens.onSurfaceVariant,
-                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
+                  style:
+                      TypographyTokens.titleSmall(
+                        ColorTokens.onSurfaceVariant,
+                      ).copyWith(
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: TypographyTokens.trackingNone,
+                      ),
                 ),
                 Text(
-                  awayLabel!.toUpperCase(),
-                  style: TypographyTokens.metricLabel(
-                    ColorTokens.onSurfaceVariant,
-                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+                  awayLabel!,
+                  style:
+                      TypographyTokens.metricLabel(
+                        ColorTokens.onSurfaceVariant,
+                      ).copyWith(
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: TypographyTokens.trackingNone,
+                      ),
                 ),
               ],
             ),
@@ -72,9 +84,11 @@ class StatsPanel extends StatelessWidget {
           ] else ...[
             Text(
               title,
-              style: TypographyTokens.titleMedium(
-                ColorTokens.onSurfaceVariant,
-              ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
+              style: TypographyTokens.titleMedium(ColorTokens.onSurfaceVariant)
+                  .copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: TypographyTokens.trackingNone,
+                  ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
           ],
@@ -123,10 +137,12 @@ class _StatComparisonRow extends StatelessWidget {
               ).copyWith(fontWeight: FontWeight.w700),
             ),
             Text(
-              stat.label.toUpperCase(),
-              style: TypographyTokens.labelSmall(
-                ColorTokens.onSurfaceVariant,
-              ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.0),
+              stat.label,
+              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)
+                  .copyWith(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: TypographyTokens.trackingNone,
+                  ),
             ),
             Text(
               stat.rightDisplay,
@@ -149,7 +165,7 @@ class _StatComparisonRow extends StatelessWidget {
               children: [
                 Flexible(
                   flex: (leftPct * 1000).round().clamp(1, 999),
-                  child: Container(color: ColorTokens.clubAccent)
+                  child: Container(color: ColorTokens.primaryContainer)
                       .afriAnimate(context, delay: delay.ms)
                       .scaleX(
                         begin: 0,

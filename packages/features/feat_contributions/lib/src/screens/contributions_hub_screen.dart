@@ -276,7 +276,7 @@ class _ContributionsHubScreenState
                     l10n.contributionsHubTitle,
                     style: TypographyTokens.headlineSmall().copyWith(
                       fontWeight: FontWeight.w700,
-                      letterSpacing: 1.4,
+                      letterSpacing: TypographyTokens.trackingNone,
                     ),
                   ),
                 ),
@@ -307,7 +307,7 @@ class _ContributionsHubScreenState
                   currency.format(totalRaised),
                   currency.format(totalTarget),
                 ),
-                accent: ColorTokens.clubPrimary,
+                accent: ColorTokens.primary,
                 metricLabel: l10n.contributionsOpenMetric(_groups.length),
                 onTap: () => context.push('/contribute/projects'),
               ),
@@ -508,7 +508,7 @@ class _HubCard extends StatelessWidget {
                     child: Text(
                       title,
                       style: TypographyTokens.headlineMedium().copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -528,7 +528,7 @@ class _HubCard extends StatelessWidget {
                             ColorTokens.onSurfaceVariant,
                           ).copyWith(
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 1.1,
+                            letterSpacing: TypographyTokens.trackingNone,
                           ),
                     ),
                   ),

@@ -136,21 +136,19 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
     cardSurfaceStrong: ColorTokens.surfaceContainerHighest,
     overlaySurface: ColorTokens.surfaceBright,
     // ── Input surfaces ──
-    inputSurface: ColorTokens.surfaceContainerLowest,
+    inputSurface: ColorTokens.surfaceContainerHigh,
     // ── Text hierarchy ──
     primaryText: ColorTokens.onSurface,
     secondaryText: ColorTokens.onSurfaceVariant,
-    tertiaryText: ColorTokens.onSurfaceVariant.withValues(alpha: 0.72),
+    tertiaryText: ColorTokens.onSurfaceVariant.withValues(alpha: 0.80),
     // ── Borders ──
     border: ColorTokens.ghostBorder,
     borderStrong: ColorTokens.primaryContainer.withValues(alpha: 0.28),
     // ── Interactive ──
     accent: ColorTokens.primaryContainer,
     accentSoft: ColorTokens.primaryContainer.withValues(alpha: 0.18),
-    buttonPrimaryBackground: ColorTokens.primaryContainer,
-    buttonPrimaryForeground: ColorTokens.contrastForeground(
-      ColorTokens.primaryContainer,
-    ),
+    buttonPrimaryBackground: ColorTokens.onSurface,
+    buttonPrimaryForeground: ColorTokens.background,
     // ── Semantic status ──
     danger: ColorTokens.error,
     warning: ColorTokens.warning,
@@ -194,10 +192,8 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
     borderStrong: ColorTokens.outlineVariant.withValues(alpha: 0.6),
     accent: ColorTokens.primary,
     accentSoft: ColorTokens.primary.withValues(alpha: 0.12),
-    buttonPrimaryBackground: ColorTokens.primary,
-    buttonPrimaryForeground: ColorTokens.contrastForeground(
-      ColorTokens.primary,
-    ),
+    buttonPrimaryBackground: ColorTokens.onSurface,
+    buttonPrimaryForeground: ColorTokens.background,
     danger: ColorTokens.error,
     warning: ColorTokens.warning,
     info: ColorTokens.info,

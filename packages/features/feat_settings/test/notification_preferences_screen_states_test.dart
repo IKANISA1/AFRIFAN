@@ -230,7 +230,7 @@ void main() {
       settings: _enabledSettings,
       beforeCapture: (tester) async {
         expect(find.text('Alerts enabled.'), findsOneWidget);
-        expect(find.text('DISABLE ALERTS'), findsOneWidget);
+        expect(find.text('Disable alerts'), findsOneWidget);
         final selectedSemantics = find
             .ancestor(
               of: find.byKey(
@@ -372,7 +372,7 @@ void main() {
           find.text('Notification settings changed elsewhere'),
           findsOneWidget,
         );
-        expect(find.text('NOTIFICATION DELIVERY'), findsOneWidget);
+        expect(find.text('Notification delivery'), findsOneWidget);
       },
     );
   });

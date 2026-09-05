@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/touch_target_audit.dart';
@@ -12,6 +13,59 @@ import 'package:test_support/touch_target_audit.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+
+  testWidgets(
+    'appearance keeps a local draft until Apply and discards Cancel',
+    (tester) async {
+      _setMobileSurface(tester);
+      await tester.pumpWidget(_buildSettingsApp());
+      await tester.pumpAndSettle();
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(SettingsScreen)),
+      );
+      final original = container.read(themeModeProvider);
+      final other = original == ThemeMode.light
+          ? ThemeMode.dark
+          : ThemeMode.light;
+      final appearance = find.byKey(
+        const ValueKey('settings-appearance-action'),
+      );
+      await tester.ensureVisible(appearance);
+      await tester.tap(appearance);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(ValueKey('appearance-mode-${other.name}')));
+      await tester.pumpAndSettle();
+      expect(container.read(themeModeProvider), original);
+      expect(
+        tester
+            .widget<AfriButton>(find.byKey(const ValueKey('appearance-apply')))
+            .enabled,
+        isTrue,
+      );
+      expectTapTargetsMeetMinimum(tester);
+      await tester.tap(find.byKey(const ValueKey('appearance-cancel')));
+      await tester.pumpAndSettle();
+      expect(container.read(themeModeProvider), original);
+      await tester.tap(appearance);
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<AfriButton>(find.byKey(const ValueKey('appearance-apply')))
+            .enabled,
+        isFalse,
+      );
+      await tester.tap(find.byKey(ValueKey('appearance-mode-${other.name}')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('appearance-apply')));
+      await tester.pumpAndSettle();
+      expect(container.read(themeModeProvider), other);
+      expect(find.byKey(const ValueKey('appearance-apply')), findsNothing);
+      await container
+          .read(themeModeProvider.notifier)
+          .setThemeMode(original, systemBrightness: Brightness.dark);
+    },
+  );
 
   testWidgets('settings shows streamlined menu items', (tester) async {
     await tester.pumpWidget(_buildSettingsApp());

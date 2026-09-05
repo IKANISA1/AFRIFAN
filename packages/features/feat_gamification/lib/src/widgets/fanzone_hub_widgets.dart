@@ -24,32 +24,59 @@ class HubHeroStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // ── Stat row ──
-        AfriStatRow(
-          stats: [
-            AfriStat(
-              label: context.afriL10n.gameActiveUpper,
-              value: (dashboard?.activeCount ?? 0).toString(),
-              icon: AfriIcons.live,
-              accentColor: ColorTokens.success,
+    final l10n = context.afriL10n;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing6),
+      child: Column(
+        children: [
+          Text(l10n.navFanZone, style: TypographyTokens.bodyLarge()),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            wallet == null ? '—' : wallet!.balance.toString(),
+            style: TypographyTokens.displayLarge().copyWith(
+              fontWeight: FontWeight.w600,
             ),
-            AfriStat(
-              label: context.afriL10n.gameAccuracy,
-              value: '${dashboard?.winRate.toStringAsFixed(0) ?? '0'}%',
-              icon: AfriIcons.predict,
-            ),
-            AfriStat(
-              label: context.afriL10n.gamePointsUpper,
-              value: (wallet?.balance ?? 0).toString(),
-              icon: AfriIcons.earn,
-              accentColor: ColorTokens.clubAccent,
-            ),
-          ],
-        ),
-      ],
+          ),
+          const SizedBox(height: SpacingTokens.spacing5),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: SpacingTokens.spacing6,
+            runSpacing: SpacingTokens.spacing3,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    dashboard == null ? '—' : dashboard!.activeCount.toString(),
+                    style: TypographyTokens.titleLarge(),
+                  ),
+                  Text(
+                    l10n.gameActiveUpper,
+                    style: TypographyTokens.bodySmall(
+                      context.afriSemanticColors.secondaryText,
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Text(
+                    dashboard == null
+                        ? '—'
+                        : '${dashboard!.winRate.toStringAsFixed(0)}%',
+                    style: TypographyTokens.titleLarge(),
+                  ),
+                  Text(
+                    l10n.gameAccuracy,
+                    style: TypographyTokens.bodySmall(
+                      context.afriSemanticColors.secondaryText,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -123,14 +150,14 @@ class HubQuickRoutes extends StatelessWidget {
               (item) => AfriInfoChip(
                 label: item.label,
                 icon: item.icon,
-                color: ColorTokens.onSurfaceVariant,
+                color: context.afriSemanticColors.secondaryText,
                 onTap: () => context.push(item.route),
               ),
             ),
             AfriInfoChip(
               label: context.afriL10n.gameMore,
               icon: AfriIcons.more,
-              color: ColorTokens.onSurfaceVariant,
+              color: context.afriSemanticColors.secondaryText,
               onTap: onMore,
             ),
           ],
@@ -205,7 +232,9 @@ class HubFixtureRow extends StatelessWidget {
                             fixture.competitionName,
                             _kickoffTime(context),
                           ),
-                    style: TypographyTokens.bodySmall(),
+                    style: TypographyTokens.bodySmall(
+                      context.afriSemanticColors.secondaryText,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -219,7 +248,7 @@ class HubFixtureRow extends StatelessWidget {
                   fixture.awayScore!,
                 ),
                 style: TypographyTokens.titleLarge().copyWith(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               )
             else
@@ -227,7 +256,9 @@ class HubFixtureRow extends StatelessWidget {
                 label: isLive
                     ? context.afriL10n.gameLive
                     : context.afriL10n.gameRoundUpper,
-                color: isLive ? ColorTokens.success : ColorTokens.clubAccent,
+                color: isLive
+                    ? ColorTokens.success
+                    : ColorTokens.primaryContainer,
               ),
           ],
         ),
@@ -255,8 +286,10 @@ class HubLeaderboardRow extends StatelessWidget {
           child: Text(
             context.afriL10n.gameRankHash(entry.rank),
             style: TypographyTokens.titleLarge(
-              entry.rank == 1 ? ColorTokens.clubAccent : ColorTokens.onSurface,
-            ).copyWith(fontWeight: FontWeight.w800),
+              entry.rank == 1
+                  ? ColorTokens.primaryContainer
+                  : ColorTokens.onSurface,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ),
         const SizedBox(width: SpacingTokens.inlineGap),
@@ -270,7 +303,9 @@ class HubLeaderboardRow extends StatelessWidget {
                   entry.winRate.toStringAsFixed(0),
                   entry.totalSettled,
                 ),
-                style: TypographyTokens.bodySmall(),
+                style: TypographyTokens.bodySmall(
+                  context.afriSemanticColors.secondaryText,
+                ),
               ),
             ],
           ),
@@ -278,8 +313,8 @@ class HubLeaderboardRow extends StatelessWidget {
         Text(
           context.afriL10n.gamePoints(entry.totalFetEarned),
           style: TypographyTokens.titleLarge(
-            ColorTokens.clubAccent,
-          ).copyWith(fontWeight: FontWeight.w800),
+            ColorTokens.primaryContainer,
+          ).copyWith(fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -308,14 +343,14 @@ class HubPartnerPoolRow extends StatelessWidget {
               width: SpacingTokens.spacing9,
               height: SpacingTokens.spacing9,
               decoration: BoxDecoration(
-                color: ColorTokens.clubAccent.withValues(alpha: 0.18),
+                color: ColorTokens.primaryContainer.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
               ),
               alignment: Alignment.center,
               child: Icon(
                 AfriIcons.predict,
                 size: SpacingTokens.spacing5,
-                color: ColorTokens.clubAccent,
+                color: ColorTokens.primaryContainer,
               ),
             ),
             const SizedBox(width: SpacingTokens.listItemGap),
@@ -333,7 +368,9 @@ class HubPartnerPoolRow extends StatelessWidget {
                         pool.eligibilityMode,
                       ),
                     ),
-                    style: TypographyTokens.bodySmall(),
+                    style: TypographyTokens.bodySmall(
+                      context.afriSemanticColors.secondaryText,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -347,8 +384,8 @@ class HubPartnerPoolRow extends StatelessWidget {
                   Text(
                     pool.partnerStakeFet.toString(),
                     style: TypographyTokens.titleMedium(
-                      ColorTokens.clubAccent,
-                    ).copyWith(fontWeight: FontWeight.w800),
+                      ColorTokens.primaryContainer,
+                    ).copyWith(fontWeight: FontWeight.w600),
                   ),
                   Text(
                     context.afriL10n.gamePointsRoundLabel,
@@ -363,8 +400,8 @@ class HubPartnerPoolRow extends StatelessWidget {
           Text(
             context.afriL10n.gamePointsRound(pool.partnerStakeFet),
             style: TypographyTokens.titleMedium(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w800),
+              ColorTokens.primaryContainer,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
         const SizedBox(height: SpacingTokens.spacing3),
@@ -379,7 +416,7 @@ class HubPartnerPoolRow extends StatelessWidget {
             ),
             AfriInfoChip(
               label: context.afriL10n.gameFansCount(pool.totalEntries),
-              color: ColorTokens.onSurfaceVariant,
+              color: context.afriSemanticColors.secondaryText,
             ),
             if (viewerEntry != null)
               AfriInfoChip(
@@ -394,13 +431,13 @@ class HubPartnerPoolRow extends StatelessWidget {
               AfriInfoChip(
                 label: context.afriL10n.gameChooseWdw,
                 icon: AfriIcons.forward,
-                color: ColorTokens.clubAccent,
+                color: ColorTokens.primaryContainer,
                 onTap: onJoin,
               )
             else
               AfriInfoChip(
-                label: pool.status.toUpperCase(),
-                color: ColorTokens.onSurfaceVariant,
+                label: pool.status,
+                color: context.afriSemanticColors.secondaryText,
               ),
           ],
         ),
@@ -432,7 +469,9 @@ class PartnerPoolOutcomeOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected ? ColorTokens.clubAccent : ColorTokens.ghostBorder;
+    final color = isSelected
+        ? ColorTokens.primaryContainer
+        : ColorTokens.ghostBorder;
     final label = partnerPoolOutcomeLabel(context.afriL10n, outcome);
 
     return Semantics(
@@ -447,7 +486,7 @@ class PartnerPoolOutcomeOption extends StatelessWidget {
           padding: const EdgeInsets.all(SpacingTokens.spacing4),
           decoration: BoxDecoration(
             color: isSelected
-                ? ColorTokens.clubAccent.withValues(alpha: 0.14)
+                ? ColorTokens.primaryContainer.withValues(alpha: 0.14)
                 : ColorTokens.surfaceContainerLow,
             border: BorderTokens.all(color: color),
             borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
@@ -457,8 +496,8 @@ class PartnerPoolOutcomeOption extends StatelessWidget {
               Icon(
                 isSelected ? AfriIcons.check : AfriIcons.predict,
                 color: isSelected
-                    ? ColorTokens.clubAccent
-                    : ColorTokens.onSurfaceVariant,
+                    ? ColorTokens.primaryContainer
+                    : context.afriSemanticColors.secondaryText,
                 size: SpacingTokens.spacing5,
               ),
               const SizedBox(width: SpacingTokens.spacing3),
@@ -466,7 +505,9 @@ class PartnerPoolOutcomeOption extends StatelessWidget {
                 child: Text(
                   label,
                   style: TypographyTokens.titleSmall(
-                    isSelected ? ColorTokens.clubAccent : ColorTokens.onSurface,
+                    isSelected
+                        ? ColorTokens.primaryContainer
+                        : ColorTokens.onSurface,
                   ),
                 ),
               ),
@@ -497,14 +538,14 @@ class HubChallengeRow extends StatelessWidget {
           width: SpacingTokens.spacing9,
           height: SpacingTokens.spacing9,
           decoration: BoxDecoration(
-            color: ColorTokens.clubAccent.withValues(alpha: 0.18),
+            color: ColorTokens.primaryContainer.withValues(alpha: 0.18),
             borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
           ),
           alignment: Alignment.center,
           child: Icon(
             AfriIcons.earn,
             size: SpacingTokens.spacing5,
-            color: ColorTokens.clubAccent,
+            color: ColorTokens.primaryContainer,
           ),
         ),
         const SizedBox(width: SpacingTokens.listItemGap),
@@ -518,7 +559,9 @@ class HubChallengeRow extends StatelessWidget {
                 item.description.isEmpty
                     ? item.triggerCondition
                     : item.description,
-                style: TypographyTokens.bodySmall(),
+                style: TypographyTokens.bodySmall(
+                  context.afriSemanticColors.secondaryText,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -528,8 +571,8 @@ class HubChallengeRow extends StatelessWidget {
         Text(
           context.afriL10n.gamePoints(item.fetValue),
           style: TypographyTokens.titleMedium(
-            ColorTokens.clubAccent,
-          ).copyWith(fontWeight: FontWeight.w800),
+            ColorTokens.primaryContainer,
+          ).copyWith(fontWeight: FontWeight.w600),
         ),
       ],
     );

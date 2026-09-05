@@ -1687,7 +1687,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ibisobanuro bya fan club ntibyafunguwe muri iyi verisiyo cyangwa kuri iyi club.';
 
   @override
-  String get fanClubBackToSupporters => 'SUBIRA KU BAFANA';
+  String get fanClubBackToSupporters => 'Subira ku bafana';
 
   @override
   String get fanClubUnavailableTitle => 'Fan club ntiboneka';
@@ -1706,10 +1706,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get fanClubProtectedRequestPath => 'Inzira irinzwe';
 
   @override
-  String get fanClubActive => 'IRAKORA';
+  String get fanClubActive => 'Irakora';
 
   @override
-  String get fanClubPendingReview => 'ITEGEREJE KWEMEZWA';
+  String get fanClubPendingReview => 'Itegereje kwemezwa';
 
   @override
   String fanClubCurrentSemantic(String name) {
@@ -1717,7 +1717,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get fanClubAboutTitle => 'IBYEREKEYE IYI CLUB';
+  String get fanClubAboutTitle => 'Ibyerekeye iyi club';
 
   @override
   String fanClubRegionValue(String region) {
@@ -1725,7 +1725,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get fanClubSnapshotTitle => 'INCAMAKE Y’ITSINDA';
+  String get fanClubSnapshotTitle => 'Incamake y’itsinda';
 
   @override
   String get fanClubAwaitingApproval =>
@@ -1768,10 +1768,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Vugurura mbere yo gukomeza ku Bafana.';
 
   @override
-  String get fanClubRefreshAction => 'VUGURURA CLUB';
+  String get fanClubRefreshAction => 'Vugurura club';
 
   @override
-  String get fanClubTryAgainAction => 'ONGERA UGERAGEZE';
+  String get fanClubTryAgainAction => 'Ongera ugerageze';
 
   @override
   String get fanClubSecurityTimeoutTitle =>
@@ -1822,7 +1822,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get fanClubRefreshFailedTitle => 'Kuvugurura fan club byanze';
 
   @override
-  String get fanClubMatchdayAgenda => 'GAHUNDA Y’UMUNSI W’UMUKINO';
+  String get fanClubMatchdayAgenda => 'Gahunda y’umunsi w’umukino';
 
   @override
   String fanClubMatchMeta(String competition, String venue) {
@@ -1835,13 +1835,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get fanClubMembersLabel => 'ABANYAMURYANGO';
+  String get fanClubMembersLabel => 'Abanyamuryango';
 
   @override
-  String get fanClubStatusLabel => 'IMITERERE';
+  String get fanClubStatusLabel => 'Imiterere';
 
   @override
-  String get fanClubRegionLabel => 'AKARERE';
+  String get fanClubRegionLabel => 'Akarere';
 
   @override
   String get fanClubOpenSupportersSemantic => 'Fungura igice cy’Abafana';
@@ -1850,13 +1850,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get fanClubPendingReviewSemantic => 'Fan club itegereje kwemezwa';
 
   @override
-  String get fanClubSupportersAction => 'ABAFANA';
+  String get fanClubSupportersAction => 'Abafana';
 
   @override
-  String get fanClubOpenSupportersAction => 'FUNGURA ABAFANA';
+  String get fanClubOpenSupportersAction => 'Fungura abafana';
 
   @override
-  String get fanClubCopyLink => 'KOPORORA IHUZA';
+  String get fanClubCopyLink => 'Koporora ihuza';
 
   @override
   String get fanClubCopyLinkSemantic => 'Koporora ihuza rya fan club';
@@ -1882,16 +1882,16 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ubusabe bwo kwemezwa bwoherejwe. Ntuba winjiye club itarabwemeza.';
 
   @override
-  String get fanClubsCommunityEyebrow => 'UMURYANGO';
+  String get fanClubsCommunityEyebrow => 'Umuryango';
 
   @override
-  String get fanClubsTitle => 'AMAKIPE Y’ABAFANA';
+  String get fanClubsTitle => 'Amakipe y’abafana';
 
   @override
   String get fanClubsSearchHint => 'Shakisha clubs cyangwa ahantu';
 
   @override
-  String get fanClubsFeaturedChapter => 'ITSINDA RYATORANYIJWE';
+  String get fanClubsFeaturedChapter => 'Itsinda ryatoranyijwe';
 
   @override
   String get fanClubOfficialChapterFallback => 'Itsinda ryemewe ry’abafana.';
@@ -1920,25 +1920,25 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ntitwashoboye gufungura amakuru y’umukino uri kuba ubu.';
 
   @override
-  String get liveStatusLive => 'URI KUBA';
+  String get liveStatusLive => 'Uri kuba';
 
   @override
-  String get liveStatusHalfTime => 'AKARUHUKO';
+  String get liveStatusHalfTime => 'Akaruhuko';
 
   @override
-  String get liveStatusFullTime => 'WARANGIYE';
+  String get liveStatusFullTime => 'Warangiye';
 
   @override
-  String get liveStatusPostponed => 'WASUBITSWE';
+  String get liveStatusPostponed => 'Wasubitswe';
 
   @override
-  String get liveStatusCancelled => 'WAHAGARITSWE';
+  String get liveStatusCancelled => 'Wahagaritswe';
 
   @override
-  String get liveStatusUpcoming => 'UTEGANYIJWE';
+  String get liveStatusUpcoming => 'Uteganyijwe';
 
   @override
-  String get liveStatusFinal => 'WARANGIYE';
+  String get liveStatusFinal => 'Warangiye';
 
   @override
   String liveTimeVenue(String time, String venue) {
@@ -1958,14 +1958,14 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amakuru y’umukino uri kuba arakora. Ibiba bigaragara ako kanya.';
 
   @override
-  String get liveMatchReport => 'RAPORO Y’UMUKINO';
+  String get liveMatchReport => 'Raporo y’umukino';
 
   @override
   String get liveMatchFinishedPending =>
       'Umukino warangiye. Incamake irategerejwe.';
 
   @override
-  String get liveMatchdayIntel => 'AMAKURU Y’UMUNSI W’UMUKINO';
+  String get liveMatchdayIntel => 'Amakuru y’umunsi w’umukino';
 
   @override
   String get liveFixturePublished =>
@@ -1981,7 +1981,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get liveStatCorners => 'Koruneri';
 
   @override
-  String get liveStatPending => 'BIRATEGEREJWE';
+  String get liveStatPending => 'Birategerejwe';
 
   @override
   String get liveMatchCenter => 'Amakuru y’umukino';
@@ -2019,7 +2019,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get liveMatchCopied => 'Amakuru y’umukino yakoporowe.';
 
   @override
-  String get liveCenterUnavailable => 'AMAKURU Y’UMUKINO NTABONEKA';
+  String get liveCenterUnavailable => 'Amakuru y’umukino ntaboneka';
 
   @override
   String get liveRefresh => 'Vugurura';
@@ -2080,7 +2080,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get newsRelatedIntel => 'Izindi nkuru zijyanye';
 
   @override
-  String get newsRefreshArticle => 'VUGURURA INKURU';
+  String get newsRefreshArticle => 'Vugurura inkuru';
 
   @override
   String get newsConnectionRestored => 'Murandasi yagarutse';
@@ -2278,7 +2278,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ntibishobotse gufungura ibicuruzwa ubu.';
 
   @override
-  String get shopOutOfStockUpper => 'CYASHIZE MU BUBIKO';
+  String get shopOutOfStockUpper => 'Cyashize mu bubiko';
 
   @override
   String get shopOutOfStock => 'Cyashize mu bubiko';
@@ -2389,7 +2389,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amakuru y’ibicuruzwa byemewe ari gufungurwa...';
 
   @override
-  String get shopLoadingBadge => 'BIRAFUNGURWA';
+  String get shopLoadingBadge => 'Birafungurwa';
 
   @override
   String get shopOfficialMerchandise => 'Igicuruzwa cyemewe cy’ikipe.';
@@ -2412,7 +2412,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongera uhuze uvugurure igiciro, ingano n’uko gihari mbere yo kugura.';
 
   @override
-  String get shopInStock => 'KIRAHARI';
+  String get shopInStock => 'Kirahari';
 
   @override
   String shopStockAvailable(int count) {
@@ -2604,7 +2604,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Umwenda wemewe w’umunsi w’umukino ufite ikirango cy’ikipe, umwenda uhumesha n’umurimbo w’ubururu.';
 
   @override
-  String get shopOfficialBadge => 'BYEMEWE';
+  String get shopOfficialBadge => 'Byemewe';
 
   @override
   String get shopSampleProductSummary =>
@@ -2648,13 +2648,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Yereke gusa umusomyi wemewe ku munsi w’umukino.';
 
   @override
-  String get ticketDateLabel => 'ITARIKI';
+  String get ticketDateLabel => 'Itariki';
 
   @override
-  String get ticketTimeLabel => 'ISAHA';
+  String get ticketTimeLabel => 'Isaha';
 
   @override
-  String get ticketVenueLabel => 'AHABERA';
+  String get ticketVenueLabel => 'Ahabera';
 
   @override
   String get ticketAppleWallet => 'Apple Wallet';
@@ -2674,10 +2674,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Tike yawe yemejwe ishobora kongerwa muri Google Wallet.';
 
   @override
-  String get ticketGoogleWalletAdding => 'IRI KONGERWA MURI GOOGLE WALLET…';
+  String get ticketGoogleWalletAdding => 'Iri kongerwa muri Google Wallet…';
 
   @override
-  String get ticketGoogleWalletAdded => 'YONGEWE MURI GOOGLE WALLET';
+  String get ticketGoogleWalletAdded => 'Yongewe muri Google Wallet';
 
   @override
   String get ticketGoogleWalletAddingMessage =>
@@ -2788,7 +2788,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Vugurura mbere yo gukoresha iyi kode yo kwinjira.';
 
   @override
-  String get ticketRefreshUpper => 'VUGURURA TIKE';
+  String get ticketRefreshUpper => 'Vugurura tike';
 
   @override
   String get ticketWalletUnavailableTitle => 'Ububiko bwa tike ntibuboneka';
@@ -2798,16 +2798,16 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ububiko bwa tike ntibwashoboye gufunguka. Reba interineti wongere ugerageze.';
 
   @override
-  String get ticketMyTickets => 'TIKE ZANJYE';
+  String get ticketMyTickets => 'Tike zanjye';
 
   @override
   String get ticketRefreshTickets => 'Vugurura tike';
 
   @override
-  String get ticketUpcoming => 'IZAZA';
+  String get ticketUpcoming => 'Izaza';
 
   @override
-  String get ticketPast => 'IZAHISE';
+  String get ticketPast => 'Izahise';
 
   @override
   String get ticketBrowseMatches => 'Shakisha imikino';
@@ -2830,7 +2830,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ubwishyu bwakiriwe kuri telefoni bugomba kwemezwa mbere y’uko QR ifunguka.';
 
   @override
-  String get ticketCheckoutSummary => 'INCAMAKE YO KWISHYURA';
+  String get ticketCheckoutSummary => 'Incamake yo kwishyura';
 
   @override
   String get ticketMatchLabel => 'Umukino';
@@ -2866,25 +2866,25 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Emeza ubwishyu nyuma yo kurangiza ubusabe bwa MOMO.';
 
   @override
-  String get ticketConfirmPurchase => 'EMEZA UBUGUZI';
+  String get ticketConfirmPurchase => 'Emeza ubuguzi';
 
   @override
-  String get ticketMatchUpper => 'UMUKINO';
+  String get ticketMatchUpper => 'Umukino';
 
   @override
-  String get ticketZoneUpper => 'AGACE';
+  String get ticketZoneUpper => 'Agace';
 
   @override
-  String get ticketSeatUpper => 'ICYICARO';
+  String get ticketSeatUpper => 'Icyicaro';
 
   @override
-  String get ticketQuantityUpper => 'UMUBARE';
+  String get ticketQuantityUpper => 'Umubare';
 
   @override
-  String get ticketServiceFeeUpper => 'AMAFARANGA YA SERIVISI';
+  String get ticketServiceFeeUpper => 'Amafaranga ya serivisi';
 
   @override
-  String get ticketTotalUpper => 'IGITERANYO';
+  String get ticketTotalUpper => 'Igiteranyo';
 
   @override
   String get ticketIncluded => 'Arimo';
@@ -2920,10 +2920,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get ticketChooseAccess => 'HITAMO AHANTU';
+  String get ticketChooseAccess => 'Hitamo ahantu';
 
   @override
-  String get ticketGeneral => 'RUSANGE';
+  String get ticketGeneral => 'Rusange';
 
   @override
   String get ticketGeneralSubtitle => 'Imyanya rusange';
@@ -2935,10 +2935,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get ticketVipSubtitle => 'Imyanya myiza ya VIP';
 
   @override
-  String get ticketChooseSeat => 'HITAMO ICYICARO';
+  String get ticketChooseSeat => 'Hitamo icyicaro';
 
   @override
-  String get ticketChangeSeat => 'HINDURA ICYICARO';
+  String get ticketChangeSeat => 'Hindura icyicaro';
 
   @override
   String get ticketReview => 'Suzuma';
@@ -2947,14 +2947,14 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get ticketReviewReservation => 'Suzuma ubusabe';
 
   @override
-  String get ticketOfficialCategories => 'IBYICIRO BYEMEWE';
+  String get ticketOfficialCategories => 'Ibyiciro byemewe';
 
   @override
   String get ticketOfficialCategoriesMessage =>
       'Ibyiciro bya tike byemewe. Imyanya igaragara ikipe ifunguye igurisha ryemewe.';
 
   @override
-  String get ticketListTitle => 'AMATIKE';
+  String get ticketListTitle => 'Amatike';
 
   @override
   String get ticketFilterMatches => 'Shungura imikino';
@@ -2988,10 +2988,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Internet irakenewe kugira ngo uvugurure imikino';
 
   @override
-  String get ticketNext => 'IKURIKIRA';
+  String get ticketNext => 'Ikurikira';
 
   @override
-  String get ticketMine => 'AYANJYE';
+  String get ticketMine => 'Ayanjye';
 
   @override
   String get ticketUpcomingSemantic => 'Amatike y\'imikino iri imbere';
@@ -3034,13 +3034,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get ticketRefresh => 'Vugurura';
 
   @override
-  String get ticketStatusSoldOut => 'YAGURISHIJWE YOSE';
+  String get ticketStatusSoldOut => 'Yagurishijwe yose';
 
   @override
-  String get ticketStatusAvailable => 'ARAHARI';
+  String get ticketStatusAvailable => 'Arahari';
 
   @override
-  String get ticketFrom => 'GUHERA KU';
+  String get ticketFrom => 'Guhera ku';
 
   @override
   String get ticketBuyAction => 'Gura itike';
@@ -3049,7 +3049,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get ticketSalesNotOpen => 'Igurisha ntirirafungurwa';
 
   @override
-  String get ticketVersusUpper => 'NA';
+  String get ticketVersusUpper => 'Na';
 
   @override
   String get ticketListOfflineTitle => 'Huza internet urebe amatike';
@@ -3148,7 +3148,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ubusabe bw\'itike ntibwakunze. Ibyo wahisemo biracyabitswe.';
 
   @override
-  String get ticketMatchDay => 'UMUNSI W\'UMUKINO';
+  String get ticketMatchDay => 'Umunsi w\'umukino';
 
   @override
   String get ticketSalesUnavailableTitle => 'Igurishwa ry\'amatike ntirihari';
@@ -3204,10 +3204,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Umukino ntiwashoboye kwemezwa. Ongera ugerageze.';
 
   @override
-  String get ticketTryAgainUpper => 'ONGERA UGERAGEZE';
+  String get ticketTryAgainUpper => 'Ongera ugerageze';
 
   @override
-  String get ticketRefreshFixtureUpper => 'VUGURURA UMUKINO';
+  String get ticketRefreshFixtureUpper => 'Vugurura umukino';
 
   @override
   String get ticketSavedFixtureTitle => 'Kwerekana umukino wabitswe';
@@ -3246,7 +3246,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Kuvugurura umukino ntibyakunze';
 
   @override
-  String get ticketSeatMapTitle => 'HITAMO ICYICARO';
+  String get ticketSeatMapTitle => 'Hitamo icyicaro';
 
   @override
   String get ticketConfirm => 'Emeza';
@@ -3260,7 +3260,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Guhitamo icyicaro ntibifunguye kuri iyi porogaramu cyangwa iyi kipe.';
 
   @override
-  String get ticketBackToTicketUpper => 'SUBIRA KU ITIKE';
+  String get ticketBackToTicketUpper => 'Subira ku itike';
 
   @override
   String get ticketSeatMapUnavailableTitle =>
@@ -3301,7 +3301,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Vugurura umukino mbere yo guhitamo icyicaro.';
 
   @override
-  String get ticketRefreshSeatMapUpper => 'VUGURURA IKARITA';
+  String get ticketRefreshSeatMapUpper => 'Vugurura ikarita';
 
   @override
   String get ticketSeatMapLoadFailedTitle => 'Ikarita y\'imyanya ntiyafungutse';
@@ -3345,7 +3345,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Kuvugurura ikarita ntibyakunze';
 
   @override
-  String get ticketSelectedSeatUpper => 'ICYICARO CYAHISWEMO';
+  String get ticketSelectedSeatUpper => 'Icyicaro cyahiswemo';
 
   @override
   String get ticketSeatMapSemantic =>
@@ -3393,7 +3393,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get ticketLegendTribune => 'Igice';
 
   @override
-  String get contributionsClubProjectsTitle => 'IMISHINGA Y\'IKIPE';
+  String get contributionsClubProjectsTitle => 'Imishinga y\'ikipe';
 
   @override
   String get contributionsProjectsUnavailableTitle =>
@@ -3510,7 +3510,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Guhuza SMS ntibyakunze. Reba internet wongere ugerageze.';
 
   @override
-  String get contributionsHubTitle => 'TANGA INKUNGA';
+  String get contributionsHubTitle => 'Tanga inkunga';
 
   @override
   String get contributionsRefreshingTitle => 'Kuvugurura inkunga';
@@ -3527,7 +3527,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amafaranga yose ashobora kuba ashaje. Ongera uhuze internet mbere yo gutanga cyangwa guhuza inkunga.';
 
   @override
-  String get contributionsTeamProjects => 'IMISHINGA Y\'IKIPE';
+  String get contributionsTeamProjects => 'Imishinga y\'ikipe';
 
   @override
   String contributionsRaised(String current, String target) {
@@ -3540,7 +3540,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsCommunitiesUpper => 'IMIRYANGO';
+  String get contributionsCommunitiesUpper => 'Imiryango';
 
   @override
   String contributionsInitiativesActive(int count) {
@@ -3559,14 +3559,14 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsCommunityUpper => 'UMURYANGO';
+  String get contributionsCommunityUpper => 'Umuryango';
 
   @override
   String get contributionsFanClubsChapters =>
       'Amatsinda y\'abafana n\'amashami yo hafi.';
 
   @override
-  String get contributionsLive => 'BIRAKORA';
+  String get contributionsLive => 'Birakora';
 
   @override
   String get contributionsMomoSmsSync => 'Guhuza SMS za MoMo';
@@ -3576,7 +3576,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ntibiboneka muri iyi porogaramu.';
 
   @override
-  String get contributionsActiveUpper => 'BIRAKORA';
+  String get contributionsActiveUpper => 'Birakora';
 
   @override
   String get contributionsSyncing => 'Birimo guhuzwa…';
@@ -3624,7 +3624,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsInitiativeTitle => 'IGIKORWA RUSANGE';
+  String get contributionsInitiativeTitle => 'Igikorwa rusange';
 
   @override
   String get contributionsInitiativeLoadingTitle =>
@@ -3663,7 +3663,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongera uhuze internet uvugurure mbere yo kwishyura cyangwa kwizera amafaranga aheruka.';
 
   @override
-  String get contributionsRefreshInitiativeUpper => 'VUGURURA IGIKORWA';
+  String get contributionsRefreshInitiativeUpper => 'Vugurura igikorwa';
 
   @override
   String get contributionsClosedTitle => 'Gutanga inkunga byarafunzwe';
@@ -3713,10 +3713,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsTypeUpper => 'UBWOKO';
+  String get contributionsTypeUpper => 'Ubwoko';
 
   @override
-  String get contributionsContributorsUpper => 'ABATANZE INKUNGA';
+  String get contributionsContributorsUpper => 'Abatanze inkunga';
 
   @override
   String contributionsContributeToSemantic(String group) {
@@ -3729,7 +3729,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsPublicLedgerTitle => 'URUTONDE RUSANGE';
+  String get contributionsPublicLedgerTitle => 'Urutonde rusange';
 
   @override
   String get contributionsPublicLedgerPrivacy =>
@@ -3758,19 +3758,19 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsStatusConfirmed => 'BYEMEJWE';
+  String get contributionsStatusConfirmed => 'Byemejwe';
 
   @override
-  String get contributionsStatusProcessing => 'BIRACYAKORWA';
+  String get contributionsStatusProcessing => 'Biracyakorwa';
 
   @override
-  String get contributionsStatusFailed => 'NTIBYAKUNZE';
+  String get contributionsStatusFailed => 'Ntibyakunze';
 
   @override
-  String get contributionsTypeProject => 'UMUSHINGA W\'IKIPE';
+  String get contributionsTypeProject => 'Umushinga w\'ikipe';
 
   @override
-  String get contributionsTypeCommunity => 'UMURYANGO';
+  String get contributionsTypeCommunity => 'Umuryango';
 
   @override
   String get contributionsConnectionRestoredTitle => 'Internet yagarutse';
@@ -3827,7 +3827,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get contributionsCsvCopied => 'CSV irinda ibanga yakoporowe.';
 
   @override
-  String get contributionsStatementTitle => 'RAPORO RUSANGE';
+  String get contributionsStatementTitle => 'Raporo rusange';
 
   @override
   String get contributionsStatementLoadingTitle => 'Gufungura raporo rusange';
@@ -3862,7 +3862,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongera uhuze internet uvugurure mbere yo kohereza cyangwa kwizera amafaranga aheruka.';
 
   @override
-  String get contributionsRefreshStatementUpper => 'VUGURURA RAPORO';
+  String get contributionsRefreshStatementUpper => 'Vugurura raporo';
 
   @override
   String get contributionsCopyCsvSemantic =>
@@ -3874,10 +3874,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsFromUpper => 'KUVA';
+  String get contributionsFromUpper => 'Kuva';
 
   @override
-  String get contributionsToUpper => 'KUGEZA';
+  String get contributionsToUpper => 'Kugeza';
 
   @override
   String get contributionsAllTime => 'Igihe cyose';
@@ -3886,22 +3886,22 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get contributionsNow => 'Ubu';
 
   @override
-  String get contributionsSortUpper => 'TONDEKA';
+  String get contributionsSortUpper => 'Tondeka';
 
   @override
-  String get contributionsSortDate => 'KU ITARIKI';
+  String get contributionsSortDate => 'Ku itariki';
 
   @override
-  String get contributionsSortAmount => 'KU MAFARANGA';
+  String get contributionsSortAmount => 'Ku mafaranga';
 
   @override
-  String get contributionsSortAlias => 'KU IZINA RUSANGE';
+  String get contributionsSortAlias => 'Ku izina rusange';
 
   @override
-  String get contributionsPdf => 'PDF';
+  String get contributionsPdf => 'Pdf';
 
   @override
-  String get contributionsCsv => 'CSV';
+  String get contributionsCsv => 'Csv';
 
   @override
   String get contributionsComingSoon => 'Biraza vuba';
@@ -3935,7 +3935,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsConfirmedTotalUpper => 'AMAFARANGA YEMEJWE';
+  String get contributionsConfirmedTotalUpper => 'Amafaranga yemejwe';
 
   @override
   String contributionsPublicEntriesInRange(int count) {
@@ -3958,7 +3958,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsPreviewUpper => 'IBIZAGARAGARA';
+  String get contributionsPreviewUpper => 'Ibizagaragara';
 
   @override
   String contributionsPreviewShowing(int count) {
@@ -4035,7 +4035,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsAmountPrompt => 'URASHAKA GUTANGA ANGAHE?';
+  String get contributionsAmountPrompt => 'Urashaka gutanga angahe?';
 
   @override
   String contributionsQuickAmount(int thousands) {
@@ -4046,7 +4046,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get contributionsLaunchMomoDialer => 'Fungura MOMO kuri telefoni';
 
   @override
-  String get contributionsLaunchingMomo => 'GUFUNGURA MOMO';
+  String get contributionsLaunchingMomo => 'Gufungura MoMo';
 
   @override
   String get contributionsChangeAmount => 'Hindura amafaranga';
@@ -4058,7 +4058,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get contributionsCancel => 'Hagarika inkunga';
 
   @override
-  String get contributionsPaymentConfirmedTitle => 'KWISHYURA BYEMEJWE';
+  String get contributionsPaymentConfirmedTitle => 'Kwishyura byemejwe';
 
   @override
   String contributionsPaymentConfirmedMessage(String amount) {
@@ -4066,28 +4066,28 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get contributionsPaymentFailedTitle => 'KWISHYURA NTIBYAKUNZE';
+  String get contributionsPaymentFailedTitle => 'Kwishyura ntibyakunze';
 
   @override
   String get contributionsPaymentFailedMessage =>
       'Kwishyura ntikwashoboye kwemezwa. Reba amafaranga ya MoMo wongere ugerageze cyangwa uvugane n\'abafasha.';
 
   @override
-  String get contributionsPaymentProcessingTitle => 'BIRACYAKORWA';
+  String get contributionsPaymentProcessingTitle => 'Biracyakorwa';
 
   @override
   String get contributionsPaymentProcessingMessage =>
       'Kwishyura biratinze. Reba urutonde rw\'itsinda kugira ngo ubone uko bimeze. Niba wohereje kuri MoMo, biraza kugaragara.';
 
   @override
-  String get contributionsRecordFailedTitle => 'NTIBYASHOBOYE KUBIKWA';
+  String get contributionsRecordFailedTitle => 'Ntibyashoboye kubikwa';
 
   @override
   String get contributionsRecordFailedMessage =>
       'MOMO yafungutse ariko inkunga ntiyabitswe. Subira ku itsinda wongere ugerageze.';
 
   @override
-  String get contributionsAwaitingPaymentTitle => 'GUTEGEREZA KWISHYURA';
+  String get contributionsAwaitingPaymentTitle => 'Gutegereza kwishyura';
 
   @override
   String get contributionsAwaitingPaymentMessage =>
@@ -4098,7 +4098,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Kugenzura uko kwishyura kumeze…';
 
   @override
-  String get contributionsVerifiedUpper => 'BYEMEJWE';
+  String get contributionsVerifiedUpper => 'Byemejwe';
 
   @override
   String get contributionsDone => 'Byarangiye';
@@ -4107,7 +4107,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get contributionsBackToGroup => 'Subira ku itsinda';
 
   @override
-  String get contributionsEnableMomoSmsTitle => 'FUNGURA GUHUZA SMS ZA MOMO';
+  String get contributionsEnableMomoSmsTitle => 'Fungura guhuza SMS za MoMo';
 
   @override
   String contributionsSmsPrivacyMessage(String app) {
@@ -4121,7 +4121,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get contributionsEnable => 'Fungura';
 
   @override
-  String get contributionsNotNowUpper => 'SI UBU';
+  String get contributionsNotNowUpper => 'Si ubu';
 
   @override
   String get settingsTitle => 'Igenamiterere';
@@ -4267,7 +4267,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get settingsWhatsAppFailed => 'WhatsApp ntiyashoboye gufunguka.';
 
   @override
-  String get settingsDeleteAccountTitle => 'USHAKA GUSIBA KONTI YAWE?';
+  String get settingsDeleteAccountTitle => 'Ushaka gusiba konti yawe?';
 
   @override
   String get settingsDeleteAccountMessage =>
@@ -4275,7 +4275,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
 
   @override
   String get settingsDeleteAccountConfirmPrompt =>
-      'ANDIKA DELETE KUGIRA NGO WEMEZE';
+      'Andika DELETE kugira ngo wemeze';
 
   @override
   String get settingsDeleteAccountConfirmValue => 'DELETE';
@@ -4287,7 +4287,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get settingsDeletePermanently => 'Siba burundu';
 
   @override
-  String get settingsNotificationPermissionTitle => 'GUMA HAMWE N\'IKIPE';
+  String get settingsNotificationPermissionTitle => 'Guma hamwe n\'ikipe';
 
   @override
   String get settingsNotificationPermissionMessage =>
@@ -4306,10 +4306,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get settingsEnableNotifications => 'Fungura amatangazo';
 
   @override
-  String get settingsMaybeLaterUpper => 'NYUMA';
+  String get settingsMaybeLaterUpper => 'Nyuma';
 
   @override
-  String get settingsSignOutTitle => 'USHAKA GUSOHOKA?';
+  String get settingsSignOutTitle => 'Ushaka gusohoka?';
 
   @override
   String get settingsSignOutMessage =>
@@ -4319,14 +4319,14 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get settingsStay => 'Guma hano';
 
   @override
-  String get settingsSignOutOthersTitle => 'USHAKA GUSOHORA IZINDI TELEFONI?';
+  String get settingsSignOutOthersTitle => 'Ushaka gusohora izindi telefoni?';
 
   @override
   String get settingsSignOutOthersMessage =>
       'Iyi telefoni irakomeza kwinjiyemo. Izindi sesiyo zirafungwa.';
 
   @override
-  String get settingsSignOutOthersAction => 'SOHORA IZINDI';
+  String get settingsSignOutOthersAction => 'Sohora izindi';
 
   @override
   String get settingsCancel => 'Reka';
@@ -4692,10 +4692,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Uruhushya rw’amatangazo rw’igikoresho ruri kugenzurwa…';
 
   @override
-  String get notificationPreferencesTitle => 'AMATANGAZO';
+  String get notificationPreferencesTitle => 'Amatangazo';
 
   @override
-  String get notificationPreferencesDeliverySection => 'KWAKIRA AMATANGAZO';
+  String get notificationPreferencesDeliverySection => 'Kwakira amatangazo';
 
   @override
   String get notificationPreferencesAlertsEnabled => 'Amatangazo yemerewe.';
@@ -4710,16 +4710,16 @@ class AfriLocalizationsRw extends AfriLocalizations {
 
   @override
   String get notificationPreferencesConnectionRequiredUpper =>
-      'INTERINETI IRASABWA';
+      'Interineti irasabwa';
 
   @override
-  String get notificationPreferencesDisableAlerts => 'HAGARIKA AMATANGAZO';
+  String get notificationPreferencesDisableAlerts => 'Hagarika amatangazo';
 
   @override
-  String get notificationPreferencesEnableAlerts => 'EMERERA AMATANGAZO';
+  String get notificationPreferencesEnableAlerts => 'Emerera amatangazo';
 
   @override
-  String get notificationPreferencesDeliveryModel => 'UBURYO BWO KWAKIRA';
+  String get notificationPreferencesDeliveryModel => 'Uburyo bwo kwakira';
 
   @override
   String notificationPreferencesFullStream(String app) {
@@ -4924,10 +4924,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amahitamo yawe yabitswe akomeza kugaragara muri iyi verisiyo.';
 
   @override
-  String get privacySettingsTitle => 'IBANGA';
+  String get privacySettingsTitle => 'Ibanga';
 
   @override
-  String get privacySettingsControls => 'IGENZURA RY’IBANGA';
+  String get privacySettingsControls => 'Igenzura ry’ibanga';
 
   @override
   String get privacySettingsControlsDescription =>
@@ -4959,7 +4959,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get privacySettingsSave => 'Bika igenamiterere ry’ibanga';
 
   @override
-  String get privacySettingsYourData => 'AMAKURU YAWE';
+  String get privacySettingsYourData => 'Amakuru yawe';
 
   @override
   String get privacySettingsExportDescription =>
@@ -4997,7 +4997,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Politiki y’ibanga ntiraboneka.';
 
   @override
-  String get privacySettingsActiveSessions => 'SESIYO ZIKORA';
+  String get privacySettingsActiveSessions => 'Sesiyo zikora';
 
   @override
   String get privacySettingsActiveSessionsDescription =>
@@ -5013,28 +5013,28 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminLoadingMessage => 'Ibikorwa bya klabu biri kugenzurwa.';
 
   @override
-  String get adminClubAdmin => 'UBUYOBOZI BWA KLABU';
+  String get adminClubAdmin => 'Ubuyobozi bwa klabu';
 
   @override
   String get adminExit => 'Sohoka mu buyobozi';
 
   @override
-  String get adminCommandCenter => 'IKIGO CY’UBUYOBOZI';
+  String get adminCommandCenter => 'Ikigo cy’ubuyobozi';
 
   @override
-  String get adminTotalUsers => 'ABAKORESHA BOSE';
+  String get adminTotalUsers => 'Abakoresha bose';
 
   @override
-  String get adminActiveGroups => 'AMATSINDA AKORA';
+  String get adminActiveGroups => 'Amatsinda akora';
 
   @override
-  String get adminTransactionsToday => 'IBIKORWA BY’UYU MUNSI';
+  String get adminTransactionsToday => 'Ibikorwa by’uyu munsi';
 
   @override
-  String get adminTicketsSold => 'AMATIKE YAGURISHIJWE';
+  String get adminTicketsSold => 'Amatike yagurishijwe';
 
   @override
-  String get adminQuickActions => 'IBIKORWA BYIHUSE';
+  String get adminQuickActions => 'Ibikorwa byihuse';
 
   @override
   String get adminManageCms => 'Cunga CMS';
@@ -5093,7 +5093,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Emerera ibiranga, uko bigaragara n’igihe bikorera';
 
   @override
-  String get adminRecentActivity => 'IBIKORWA BIHERUKA';
+  String get adminRecentActivity => 'Ibikorwa biheruka';
 
   @override
   String get adminRecentActivityUnavailable => 'Ibikorwa biheruka ntibiboneka';
@@ -5170,14 +5170,14 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ikibaho giheruka kwemezwa kiracyagaragara. Ibikorwa byahagaze kugeza kuvugurura bikunze.';
 
   @override
-  String get adminAccessRequired => 'UBURENGANZIRA BW’UBUYOBOZI BURASABWA';
+  String get adminAccessRequired => 'Uburenganzira bw’ubuyobozi burasabwa';
 
   @override
   String get adminAccessRequiredMessage =>
       'Aha hantu ni ah’abayobozi ba klabu bemejwe gusa kuri klabu ikora.';
 
   @override
-  String get adminChallengesTitle => 'IBIKORWA BY’IMBOGAMIZI';
+  String get adminChallengesTitle => 'Ibikorwa by’imbogamizi';
 
   @override
   String get adminBack => 'Subira inyuma';
@@ -5195,19 +5195,19 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Muyunguruzi w’imiterere y’imbogamizi';
 
   @override
-  String get adminChallengesFilterAll => 'ZOSE';
+  String get adminChallengesFilterAll => 'Zose';
 
   @override
-  String get adminChallengesFilterOpen => 'ZIFUNGUYE';
+  String get adminChallengesFilterOpen => 'Zifunguye';
 
   @override
-  String get adminChallengesFilterLocked => 'ZIFUNZE';
+  String get adminChallengesFilterLocked => 'Zifunze';
 
   @override
-  String get adminChallengesFilterSettled => 'ZEMEJWE';
+  String get adminChallengesFilterSettled => 'Zemejwe';
 
   @override
-  String get adminChallengesFilterVoid => 'ZAHAGARITSWE';
+  String get adminChallengesFilterVoid => 'Zahagaritswe';
 
   @override
   String get adminChallengesEmptyTitle => 'Nta bikorwa by’imbogamizi';
@@ -5229,10 +5229,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminCancelUpper => 'REKA';
+  String get adminCancelUpper => 'Reka';
 
   @override
-  String get adminRetryUpper => 'ONGERA UGERAGEZE';
+  String get adminRetryUpper => 'Ongera ugerageze';
 
   @override
   String get adminChallengesSettlementPending =>
@@ -5309,35 +5309,35 @@ class AfriLocalizationsRw extends AfriLocalizations {
 
   @override
   String get adminChallengesVoidReasonRecorded =>
-      'IMPAMVU YO GUHAGARIKA YANDITSWE';
+      'Impamvu yo guhagarika yanditswe';
 
   @override
-  String get adminChallengesNoVoidReason => 'NTA MPAMVU YO GUHAGARIKA';
+  String get adminChallengesNoVoidReason => 'Nta mpamvu yo guhagarika';
 
   @override
   String adminChallengesSettlementMode(String mode) {
-    return 'KWEMEZA $mode';
+    return 'Kwemeza $mode';
   }
 
   @override
   String adminChallengesAuditState(String state) {
-    return 'IGENZURA $state';
+    return 'Igenzura $state';
   }
 
   @override
-  String get adminChallengesRetryingAction => 'KWEMEZA BIRI KONGERWA';
+  String get adminChallengesRetryingAction => 'Kwemeza biri kongerwa';
 
   @override
-  String get adminChallengesRetryAction => 'ONGERA WEMEZE';
+  String get adminChallengesRetryAction => 'Ongera wemeze';
 
   @override
-  String get adminChallengesCreator => 'UWABIKOZE';
+  String get adminChallengesCreator => 'Uwabikoze';
 
   @override
-  String get adminChallengesPool => 'IKIGEGA';
+  String get adminChallengesPool => 'Ikigega';
 
   @override
-  String get adminChallengesParticipants => 'ABITABIRIYE';
+  String get adminChallengesParticipants => 'Abitabiriye';
 
   @override
   String adminVersus(String home, String away) {
@@ -5350,7 +5350,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminSettlementConfirmTitle => 'EMEZA UYU MUKINO?';
+  String get adminSettlementConfirmTitle => 'Emeza uyu mukino?';
 
   @override
   String adminSettlementConfirmMessage(
@@ -5363,7 +5363,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminSettlementSettleUpper => 'EMEZA';
+  String get adminSettlementSettleUpper => 'Emeza';
 
   @override
   String adminSettlementReceipt(String score, int markets, int won, int lost) {
@@ -5378,7 +5378,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminSettlementNotConfirmed => 'Kwemeza umukino ntibyemejwe.';
 
   @override
-  String get adminSettlementTitle => 'EMEZA IMIKINO';
+  String get adminSettlementTitle => 'Emeza imikino';
 
   @override
   String get adminSettlementLoadingTitle => 'Ahantu ho kwemeza hari kwinjizwa';
@@ -5388,16 +5388,16 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amakuru y’umukino agenzurwa ari kugenzurwa.';
 
   @override
-  String get adminSettlementFilterScheduled => 'ITEGANYIJWE';
+  String get adminSettlementFilterScheduled => 'Iteganyijwe';
 
   @override
-  String get adminSettlementFilterFinished => 'YARANGIYE';
+  String get adminSettlementFilterFinished => 'Yarangiye';
 
   @override
-  String get adminSettlementFilterAll => 'YOSE';
+  String get adminSettlementFilterAll => 'Yose';
 
   @override
-  String get adminSettlementControlTitle => 'IGENZURA RY’IGISUBIZO CYEMEWE';
+  String get adminSettlementControlTitle => 'Igenzura ry’igisubizo cyemewe';
 
   @override
   String get adminSettlementControlMessage =>
@@ -5411,7 +5411,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Hindura muyunguruzi cyangwa utegereze amakuru y’umukino agenzurwa.';
 
   @override
-  String get adminSettlementVersusShort => 'NA';
+  String get adminSettlementVersusShort => 'Na';
 
   @override
   String get adminSettlementOpenHint => 'Fungura kwemeza igisubizo cyemewe';
@@ -5420,16 +5420,16 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminSettlementUnavailableHint => 'Kwemeza ntibiboneka';
 
   @override
-  String get adminSettlementEnterOfficialResult => 'ANDIKA IGISUBIZO CYEMEWE';
+  String get adminSettlementEnterOfficialResult => 'Andika igisubizo cyemewe';
 
   @override
-  String get adminSettlementPaused => 'KWEMEZA BYAHAGAZE';
+  String get adminSettlementPaused => 'Kwemeza byahagaze';
 
   @override
-  String get adminSettlementSettled => 'BYEMEJWE';
+  String get adminSettlementSettled => 'Byemejwe';
 
   @override
-  String get adminSettlementNotSettleable => 'NTIBISHOBORA KWEMEZWA';
+  String get adminSettlementNotSettleable => 'Ntibishobora kwemezwa';
 
   @override
   String get adminSettlementManagementUnavailable =>
@@ -5511,7 +5511,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
 
   @override
   String get adminSettlementHalfTimeOptional =>
-      'AMANOTA YO MU KIRUHUKO (SI NGOMBWA)';
+      'Amanota yo mu kiruhuko (si ngombwa)';
 
   @override
   String adminSettlementHalfTimeLabel(String team) {
@@ -5522,19 +5522,19 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminSettlementReviewAction => 'Suzuma kwemeza';
 
   @override
-  String get adminStatusFinished => 'YARANGIYE';
+  String get adminStatusFinished => 'Yarangiye';
 
   @override
-  String get adminStatusScheduled => 'ITEGANYIJWE';
+  String get adminStatusScheduled => 'Iteganyijwe';
 
   @override
-  String get adminStatusLive => 'IMBONANKUBONE';
+  String get adminStatusLive => 'Imbonankubone';
 
   @override
-  String get adminStatusCancelled => 'YAHAGARITSWE';
+  String get adminStatusCancelled => 'Yahagaritswe';
 
   @override
-  String get adminStatusPostponed => 'YASUBITSWE';
+  String get adminStatusPostponed => 'Yasubitswe';
 
   @override
   String adminScore(int home, int away) {
@@ -5542,7 +5542,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminFeatureDetailTitle => 'IBIRAMBUYE BY’IKIRANGA';
+  String get adminFeatureDetailTitle => 'Ibirambuye by’ikiranga';
 
   @override
   String get adminFeatureLoadingTitle =>
@@ -5563,7 +5563,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminBackToFeatures => 'Subira ku biranga';
 
   @override
-  String get adminFeatureGlobalState => 'IMITERERE RUSANGE';
+  String get adminFeatureGlobalState => 'Imiterere rusange';
 
   @override
   String adminFeatureDisableTooltip(String feature) {
@@ -5599,19 +5599,19 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Kanda kugira ngo wemerere iki kiranga hose';
 
   @override
-  String get adminFeatureVisibility => 'UKO KIGARAGARA';
+  String get adminFeatureVisibility => 'Uko kigaragara';
 
   @override
-  String get adminFeatureVisibilityVisible => 'KIRAGARAGARA';
+  String get adminFeatureVisibilityVisible => 'Kiragaragara';
 
   @override
-  String get adminFeatureVisibilityHidden => 'GIHISHWE';
+  String get adminFeatureVisibilityHidden => 'Gihishwe';
 
   @override
-  String get adminFeatureVisibilityMaintenance => 'KIRI GUSANWA';
+  String get adminFeatureVisibilityMaintenance => 'Kiri gusanwa';
 
   @override
-  String get adminFeatureChannelConfig => 'IGENAMITERERE RY’IMIYOBORO';
+  String get adminFeatureChannelConfig => 'Igenamiterere ry’imiyoboro';
 
   @override
   String get adminFeatureNoChannelOverrides => 'Nta mpinduka z’umuyoboro';
@@ -5621,10 +5621,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Iki kiranga gikoresha imiterere rusange yemejwe.';
 
   @override
-  String get adminFeatureScheduling => 'GAHUNDA';
+  String get adminFeatureScheduling => 'Gahunda';
 
   @override
-  String get adminFeatureAccessRules => 'AMATEGEKO Y’UBURENGANZIRA';
+  String get adminFeatureAccessRules => 'Amategeko y’uburenganzira';
 
   @override
   String get adminFeatureAuthRequired => 'Kwinjira birasabwa';
@@ -5690,10 +5690,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Igenamiterere riheruka kwemezwa rikomeza kugaragara. Igenzura ryahagaze.';
 
   @override
-  String get adminFeatureChannelMobile => 'TELEFONI';
+  String get adminFeatureChannelMobile => 'Telefoni';
 
   @override
-  String get adminFeatureChannelWeb => 'URUBUGA';
+  String get adminFeatureChannelWeb => 'Urubuga';
 
   @override
   String get adminFeatureChannelEnabled => 'Cyemerewe';
@@ -5749,7 +5749,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminFeatureOpenDateTime => 'Fungura guhitamo itariki n’isaha';
 
   @override
-  String get adminMatchesTitle => 'IMIKINO';
+  String get adminMatchesTitle => 'Imikino';
 
   @override
   String get adminMatchesLoadingTitle => 'Ahantu h’imikino hari kwinjizwa';
@@ -5763,28 +5763,28 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Cunga imikino, uko amatike agurishwa, itangwa ry’amatike n’amanota imbonankubone ukoresheje amakuru yemejwe.';
 
   @override
-  String get adminMatchesFixtures => 'IMIKINO';
+  String get adminMatchesFixtures => 'Imikino';
 
   @override
-  String get adminMatchesOnSale => 'IRI KUGURISHWA';
+  String get adminMatchesOnSale => 'Iri kugurishwa';
 
   @override
-  String get adminMatchesStatus => 'IMITERERE';
+  String get adminMatchesStatus => 'Imiterere';
 
   @override
-  String get adminMatchesFilterAll => 'YOSE';
+  String get adminMatchesFilterAll => 'Yose';
 
   @override
-  String get adminMatchesFilterLive => 'IMBONANKUBONE';
+  String get adminMatchesFilterLive => 'Imbonankubone';
 
   @override
-  String get adminMatchesFilterUpcoming => 'ITEGANYIJWE';
+  String get adminMatchesFilterUpcoming => 'Iteganyijwe';
 
   @override
-  String get adminMatchesFilterOnSale => 'IRI KUGURISHWA';
+  String get adminMatchesFilterOnSale => 'Iri kugurishwa';
 
   @override
-  String get adminMatchesFilterCompleted => 'YARANGIYE';
+  String get adminMatchesFilterCompleted => 'Yarangiye';
 
   @override
   String get adminMatchesNoneConfigured => 'Nta mikino yashyizweho';
@@ -5895,7 +5895,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
 
   @override
   String adminMatchesPrices(String symbol, String general, String vip) {
-    return 'RUSANGE $symbol $general • VIP $symbol $vip';
+    return 'Rusange $symbol $general • VIP $symbol $vip';
   }
 
   @override
@@ -5909,19 +5909,19 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminMatchesEditOnSale => 'HINDURA UMUKINO URI KUGURISHWA';
+  String get adminMatchesEditOnSale => 'Hindura umukino uri kugurishwa';
 
   @override
-  String get adminMatchesEdit => 'HINDURA UMUKINO';
+  String get adminMatchesEdit => 'Hindura umukino';
 
   @override
-  String get adminStatusHalfTime => 'IKIRUHUKO';
+  String get adminStatusHalfTime => 'Ikiruhuko';
 
   @override
-  String get adminStatusFullTime => 'WARANGIYE';
+  String get adminStatusFullTime => 'Warangiye';
 
   @override
-  String get adminStatusUpcoming => 'UTEGANYIJWE';
+  String get adminStatusUpcoming => 'Uteganyijwe';
 
   @override
   String adminMatchesLiveMinute(int minute) {
@@ -5941,10 +5941,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Umukino ntiwabitswe. Vugurura wongere ugerageze.';
 
   @override
-  String get adminMatchCreateTitle => 'KORA UMUKINO';
+  String get adminMatchCreateTitle => 'Kora umukino';
 
   @override
-  String get adminMatchUpdateTitle => 'VUGURURA UMUKINO';
+  String get adminMatchUpdateTitle => 'Vugurura umukino';
 
   @override
   String get adminMatchHomeTeam => 'Ikipe yo mu rugo';
@@ -6014,7 +6014,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminMatchUpdate => 'Vugurura umukino';
 
   @override
-  String get adminFeatureManagerTitle => 'IGENZURA RY’IBIRANGA';
+  String get adminFeatureManagerTitle => 'Igenzura ry’ibiranga';
 
   @override
   String get adminFeatureRegistryLoading =>
@@ -6029,19 +6029,19 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Cunga uko ibiranga bya klabu biboneka ukoresheje igenamiterere ryemejwe kandi rigarukira.';
 
   @override
-  String get adminFeatureRegistered => 'BYANDITSWE';
+  String get adminFeatureRegistered => 'Byanditswe';
 
   @override
-  String get adminFeatureEnabledUpper => 'BYEMEWE';
+  String get adminFeatureEnabledUpper => 'Byemewe';
 
   @override
-  String get adminFeatureDisabledUpper => 'BYAHAGARITSWE';
+  String get adminFeatureDisabledUpper => 'Byahagaritswe';
 
   @override
-  String get adminFeatureStatus => 'IMITERERE';
+  String get adminFeatureStatus => 'Imiterere';
 
   @override
-  String get adminFeatureFilterAll => 'BYOSE';
+  String get adminFeatureFilterAll => 'Byose';
 
   @override
   String get adminFeatureNoneConfigured => 'Nta biranga byashyizweho';
@@ -6124,7 +6124,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminFeatureChangeVisibility => 'Hindura uko kigaragara';
 
   @override
-  String get adminCompetitionsTitle => 'AMARUSHANWA';
+  String get adminCompetitionsTitle => 'Amarushanwa';
 
   @override
   String get adminCompetitionsAdd => 'Ongeraho irushanwa';
@@ -6235,10 +6235,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCompetitionUpdated => 'Irushanwa ryavuguruwe';
 
   @override
-  String get adminCompetitionActivateQuestion => 'IRUSHANWA RIKORESHE?';
+  String get adminCompetitionActivateQuestion => 'Irushanwa rikoreshe?';
 
   @override
-  String get adminCompetitionDeactivateQuestion => 'IRUSHANWA RIHAGARARE?';
+  String get adminCompetitionDeactivateQuestion => 'Irushanwa rihagarare?';
 
   @override
   String adminCompetitionActivateMessage(String competition) {
@@ -6251,10 +6251,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminActivateUpper => 'KORA';
+  String get adminActivateUpper => 'Kora';
 
   @override
-  String get adminDeactivateUpper => 'HAGARIKA';
+  String get adminDeactivateUpper => 'Hagarika';
 
   @override
   String get adminCompetitionActivated => 'Irushanwa ryatangiye gukoreshwa';
@@ -6263,58 +6263,58 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCompetitionDeactivated => 'Irushanwa ryahagaritswe';
 
   @override
-  String get adminCompetitionsTotal => 'YOSE';
+  String get adminCompetitionsTotal => 'Yose';
 
   @override
-  String get adminCompetitionsActive => 'AKORA';
+  String get adminCompetitionsActive => 'Akora';
 
   @override
-  String get adminCompetitionsInactive => 'NTAKORA';
+  String get adminCompetitionsInactive => 'Ntakora';
 
   @override
   String get adminCompetitionFilters => 'Muyungurura w’amarushanwa';
 
   @override
-  String get adminCompetitionRegion => 'AKARERE';
+  String get adminCompetitionRegion => 'Akarere';
 
   @override
-  String get adminCompetitionKind => 'UBWOKO';
+  String get adminCompetitionKind => 'Ubwoko';
 
   @override
-  String get adminCompetitionSeasons => 'IBIHEMBWE';
+  String get adminCompetitionSeasons => 'Ibihembwe';
 
   @override
-  String get adminEditUpper => 'HINDURA';
+  String get adminEditUpper => 'Hindura';
 
   @override
-  String get adminCompetitionFilterAll => 'YOSE';
+  String get adminCompetitionFilterAll => 'Yose';
 
   @override
-  String get adminCompetitionRegionAfrica => 'AFURIKA';
+  String get adminCompetitionRegionAfrica => 'Afurika';
 
   @override
-  String get adminCompetitionRegionEurope => 'UBURAYI';
+  String get adminCompetitionRegionEurope => 'Uburayi';
 
   @override
-  String get adminCompetitionRegionInternational => 'MPUZAMAHANGA';
+  String get adminCompetitionRegionInternational => 'Mpuzamahanga';
 
   @override
-  String get adminCompetitionRegionGlobal => 'ISI YOSE';
+  String get adminCompetitionRegionGlobal => 'Isi yose';
 
   @override
-  String get adminCompetitionKindLeague => 'SHAMPIYONA';
+  String get adminCompetitionKindLeague => 'Shampiyona';
 
   @override
-  String get adminCompetitionKindCup => 'IGIKOMBE';
+  String get adminCompetitionKindCup => 'Igikombe';
 
   @override
-  String get adminCompetitionKindTournament => 'IRUSHANWA';
+  String get adminCompetitionKindTournament => 'Irushanwa';
 
   @override
-  String get adminCompetitionEdit => 'HINDURA IRUSHANWA';
+  String get adminCompetitionEdit => 'Hindura irushanwa';
 
   @override
-  String get adminCompetitionAdd => 'ONGERAHO IRUSHANWA';
+  String get adminCompetitionAdd => 'Ongeraho irushanwa';
 
   @override
   String get adminCompetitionName => 'Izina';
@@ -6338,7 +6338,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCompetitionCountryCode => 'Kode y’igihugu';
 
   @override
-  String get adminCompetitionCountryCodeHint => 'RW';
+  String get adminCompetitionCountryCodeHint => 'Rw';
 
   @override
   String get adminCompetitionCountryName => 'Izina ry’igihugu';
@@ -6384,10 +6384,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminSeasonCreated => 'Igihembwe cyakozwe';
 
   @override
-  String get adminSeasonActivateQuestion => 'IGIHEMBWE GIKORESHE?';
+  String get adminSeasonActivateQuestion => 'Igihembwe gikoreshe?';
 
   @override
-  String get adminSeasonDeactivateQuestion => 'IGIHEMBWE GIHAGARARE?';
+  String get adminSeasonDeactivateQuestion => 'Igihembwe gihagarare?';
 
   @override
   String adminSeasonAvailabilityMessage(String season, String availability) {
@@ -6417,7 +6417,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Genzura ikiranga, izina n’imyaka by’igihembwe.';
 
   @override
-  String get adminSeasonAddUpper => 'ONGERAHO IGIHEMBWE';
+  String get adminSeasonAddUpper => 'Ongeraho igihembwe';
 
   @override
   String get adminSeasonSlugHint => 'urugero: shampiyona-2026';
@@ -6435,22 +6435,22 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminSeasonYearEnd => 'Umwaka wo kurangira';
 
   @override
-  String get adminCreateUpper => 'KORA';
+  String get adminCreateUpper => 'Kora';
 
   @override
-  String get adminSeasonStatusPlanned => 'CYATEGUWE';
+  String get adminSeasonStatusPlanned => 'Cyateguwe';
 
   @override
-  String get adminSeasonStatusActive => 'GIKORA';
+  String get adminSeasonStatusActive => 'Gikora';
 
   @override
-  String get adminSeasonStatusFinished => 'CYARANGIYE';
+  String get adminSeasonStatusFinished => 'Cyarangiye';
 
   @override
-  String get adminSeasonStatusArchived => 'CYABITSWE';
+  String get adminSeasonStatusArchived => 'Cyabitswe';
 
   @override
-  String get adminNotificationSendTitle => 'OHEREZA UBUTUMWA';
+  String get adminNotificationSendTitle => 'Ohereza ubutumwa';
 
   @override
   String get adminNotificationLoading =>
@@ -6461,35 +6461,35 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amakuru agenzurwa y’iyohereza ari kugenzurwa.';
 
   @override
-  String get adminNotificationDeliveryStatus => 'UKO BYOHEREJWE';
+  String get adminNotificationDeliveryStatus => 'Uko byoherejwe';
 
   @override
   String get adminNotificationDeliveryStatusMessage =>
       'Ubutumwa bwoherezwa na Edge Functions. Ubwateguwe bwoherezwa ku gihe.';
 
   @override
-  String get adminNotificationAudience => 'ABAKIRA';
+  String get adminNotificationAudience => 'Abakira';
 
   @override
-  String get adminNotificationAudienceAllFans => 'ABAFANA BOSE';
+  String get adminNotificationAudienceAllFans => 'Abafana bose';
 
   @override
-  String get adminNotificationAudienceByTier => 'KU RWEGO';
+  String get adminNotificationAudienceByTier => 'Ku rwego';
 
   @override
-  String get adminNotificationAudienceByGroup => 'KU ITSINDA';
+  String get adminNotificationAudienceByGroup => 'Ku itsinda';
 
   @override
-  String get adminNotificationTierFan => 'UMUFANA';
+  String get adminNotificationTierFan => 'Umufana';
 
   @override
-  String get adminNotificationTierBronze => 'UMURINGA';
+  String get adminNotificationTierBronze => 'Umuringa';
 
   @override
-  String get adminNotificationTierGold => 'ZAHABU';
+  String get adminNotificationTierGold => 'Zahabu';
 
   @override
-  String get adminNotificationTierPlatinum => 'PLATINUM';
+  String get adminNotificationTierPlatinum => 'Platinum';
 
   @override
   String get adminNotificationSelectGroup => 'Hitamo itsinda';
@@ -6509,10 +6509,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminNotificationImageUrl => 'URL y’ishusho si ngombwa';
 
   @override
-  String get adminNotificationSchedule => 'TEGANYA';
+  String get adminNotificationSchedule => 'Teganya';
 
   @override
-  String get adminNotificationSendNow => 'OHEREZA NONAHA';
+  String get adminNotificationSendNow => 'Ohereza nonaha';
 
   @override
   String get adminNotificationPickDateTime => 'Hitamo itariki n’isaha';
@@ -6524,10 +6524,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminNotificationSendAction => 'Ohereza ubutumwa';
 
   @override
-  String get adminNotificationCopyPayload => 'KOPORORA AMAKURU';
+  String get adminNotificationCopyPayload => 'Koporora amakuru';
 
   @override
-  String get adminNotificationSendHistory => 'AMATEKA Y’IYOHEREZA';
+  String get adminNotificationSendHistory => 'Amateka y’iyohereza';
 
   @override
   String get adminNotificationHistoryEmpty => 'Nta mateka y’ubutumwa';
@@ -6672,26 +6672,26 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminNotificationAllSupporters => 'Abafana bose';
 
   @override
-  String get adminNotificationPreview => 'UKO BIZAGARAGARA';
+  String get adminNotificationPreview => 'Uko bizagaragara';
 
   @override
   String get adminNotificationPreviewBody =>
       'Uko ubutumwa buzagaragara biri hano.';
 
   @override
-  String get adminNotificationStatusScheduled => 'BWATEGANYIJWE';
+  String get adminNotificationStatusScheduled => 'Bwateganyijwe';
 
   @override
-  String get adminNotificationStatusSent => 'BWOHEREJWE';
+  String get adminNotificationStatusSent => 'Bwoherejwe';
 
   @override
-  String get adminNotificationStatusPartial => 'BWAGEZE KURI BAMWE';
+  String get adminNotificationStatusPartial => 'Bwageze kuri bamwe';
 
   @override
-  String get adminNotificationStatusFailed => 'BWANZE';
+  String get adminNotificationStatusFailed => 'Bwanze';
 
   @override
-  String get adminContributionsTitle => 'IMISANZU';
+  String get adminContributionsTitle => 'Imisanzu';
 
   @override
   String get adminContributionsLoading => 'Imisanzu iri kwinjizwa';
@@ -6706,7 +6706,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
 
   @override
   String get adminContributionsMonthlyTotal =>
-      'IGITERANYO CYANDITSWE UKU KWEZI';
+      'Igiteranyo cyanditswe uku kwezi';
 
   @override
   String adminContributionsSummary(int groups, int records) {
@@ -6785,34 +6785,34 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ibiteranyo biheruka kwemezwa biracyagaragara. Igenzura ryahagaze kugeza ivugurura rishobotse.';
 
   @override
-  String get adminContributionsGroupType => 'UBWOKO BW’ITSINDA';
+  String get adminContributionsGroupType => 'Ubwoko bw’itsinda';
 
   @override
-  String get adminContributionsSort => 'TONDEKA';
+  String get adminContributionsSort => 'Tondeka';
 
   @override
-  String get adminContributionsFilterAll => 'YOSE';
+  String get adminContributionsFilterAll => 'Yose';
 
   @override
-  String get adminContributionsTeamProjects => 'IMISHINGA Y’ITSINDA';
+  String get adminContributionsTeamProjects => 'Imishinga y’itsinda';
 
   @override
-  String get adminContributionsCommunity => 'UMURYANGO';
+  String get adminContributionsCommunity => 'Umuryango';
 
   @override
-  String get adminContributionsRecent => 'IBYA VUBA';
+  String get adminContributionsRecent => 'Ibya vuba';
 
   @override
-  String get adminContributionsTotal => 'IGITERANYO';
+  String get adminContributionsTotal => 'Igiteranyo';
 
   @override
-  String get adminContributionsClosed => 'RYAFUNZWE';
+  String get adminContributionsClosed => 'Ryafunzwe';
 
   @override
-  String get adminContributionsActive => 'RIKORA';
+  String get adminContributionsActive => 'Rikora';
 
   @override
-  String get adminContributionsTeamProject => 'UMUSHINGA W’ITSINDA';
+  String get adminContributionsTeamProject => 'Umushinga w’itsinda';
 
   @override
   String adminContributionsRecordMembers(int records, int members) {
@@ -6829,7 +6829,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminSmsTitle => 'IBIKORWA BYA SMS';
+  String get adminSmsTitle => 'Ibikorwa bya SMS';
 
   @override
   String get adminSmsLoading => 'Ibikorwa bya SMS biri kwinjizwa';
@@ -6846,17 +6846,17 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Nta bimenyetso by’imikorere cyangwa iyoherezanya ryagenzuwe biraboneka.';
 
   @override
-  String get adminSmsControlledHealth => 'IMIKORERE IGENZURWA';
+  String get adminSmsControlledHealth => 'Imikorere igenzurwa';
 
   @override
   String get adminSmsControlledHealthMessage =>
       'Reba iyoherezanya ry’ibikoresho, igenzura ry’ubutumwa, guhuza imisanzu, ihinduka ry’abohereza, kongera kugerageza no gusukura amakuru bwite utagaragaje ubutumwa cyangwa ibiranga abafana.';
 
   @override
-  String get adminSmsPipelineHealth => 'IMIKORERE Y’INZIRA';
+  String get adminSmsPipelineHealth => 'Imikorere y’inzira';
 
   @override
-  String get adminSmsRecentSync => 'IYOHEREZANYA RYA VUBA RY’IBIKORESHO';
+  String get adminSmsRecentSync => 'Iyoherezanya rya vuba ry’ibikoresho';
 
   @override
   String get adminSmsNoRecentRuns => 'Nta yoherezanya rya vuba';
@@ -6930,34 +6930,34 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amakuru y’ibikorwa aheruka kwemezwa aracyagaragara. Igenzura ryahagaze.';
 
   @override
-  String get adminSmsStatusHealthy => 'BIRAKORA NEZA';
+  String get adminSmsStatusHealthy => 'Birakora neza';
 
   @override
-  String get adminSmsStatusSucceeded => 'BYAGENZE NEZA';
+  String get adminSmsStatusSucceeded => 'Byagenze neza';
 
   @override
-  String get adminSmsStatusDegraded => 'BIRAGABANYIRIJWE';
+  String get adminSmsStatusDegraded => 'Biragabanyirijwe';
 
   @override
-  String get adminSmsStatusRunning => 'BIRI GUKORA';
+  String get adminSmsStatusRunning => 'Biri gukora';
 
   @override
-  String get adminSmsStatusRateLimited => 'UMUVUDUKO WAGABANYIJWE';
+  String get adminSmsStatusRateLimited => 'Umuvuduko wagabanyijwe';
 
   @override
-  String get adminSmsStatusFailing => 'BIRI KWANGA';
+  String get adminSmsStatusFailing => 'Biri kwanga';
 
   @override
-  String get adminSmsStatusFailed => 'BYANZE';
+  String get adminSmsStatusFailed => 'Byanze';
 
   @override
-  String get adminSmsTriggerInitial => 'AMATEKA YA MBERE';
+  String get adminSmsTriggerInitial => 'Amateka ya mbere';
 
   @override
-  String get adminSmsTriggerManual => 'BYAKOZWE N’UMUNTU';
+  String get adminSmsTriggerManual => 'Byakozwe n’umuntu';
 
   @override
-  String get adminSmsTriggerControlled => 'BIGENZURWA';
+  String get adminSmsTriggerControlled => 'Bigenzurwa';
 
   @override
   String adminSmsRunTitle(String status, String trigger) {
@@ -6970,7 +6970,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminCmsTitle => 'AHAGENZURIRWA IBIRIMO';
+  String get adminCmsTitle => 'Ahagenzurirwa ibirimo';
 
   @override
   String get adminCmsDescription =>
@@ -7072,10 +7072,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Impinduka ya CMS ntiyarangiye. Genzura wongere ugerageze.';
 
   @override
-  String get adminCmsAddContentBlock => 'ONGERAHO IGICE CY’IBIRIMO';
+  String get adminCmsAddContentBlock => 'Ongeraho igice cy’ibirimo';
 
   @override
-  String get adminCmsEditContentBlock => 'HINDURA IGICE CY’IBIRIMO';
+  String get adminCmsEditContentBlock => 'Hindura igice cy’ibirimo';
 
   @override
   String get adminCmsBlockKey => 'Ikiranga igice (urugero: home_hero_1)';
@@ -7111,13 +7111,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCmsActive => 'Gikora';
 
   @override
-  String get adminCmsCreate => 'KORA';
+  String get adminCmsCreate => 'Kora';
 
   @override
-  String get adminCmsSave => 'BIKA';
+  String get adminCmsSave => 'Bika';
 
   @override
-  String get adminCmsNewArticle => 'INKURU NSHYA';
+  String get adminCmsNewArticle => 'Inkuru nshya';
 
   @override
   String get adminCmsArticleTitle => 'Umutwe w’inkuru';
@@ -7126,10 +7126,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCmsArticleBody => 'Ibirimo by’inkuru';
 
   @override
-  String get adminCmsAddQuickAction => 'ONGERAHO IGIKORWA CYIHUSE';
+  String get adminCmsAddQuickAction => 'Ongeraho igikorwa cyihuse';
 
   @override
-  String get adminCmsEditQuickAction => 'HINDURA IGIKORWA CYIHUSE';
+  String get adminCmsEditQuickAction => 'Hindura igikorwa cyihuse';
 
   @override
   String get adminCmsActionKey => 'Ikiranga igikorwa';
@@ -7147,10 +7147,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCmsCountry => 'Igihugu';
 
   @override
-  String get adminCmsAddPartner => 'ONGERAHO UMUFATANYABIKORWA';
+  String get adminCmsAddPartner => 'Ongeraho umufatanyabikorwa';
 
   @override
-  String get adminCmsEditPartner => 'HINDURA UMUFATANYABIKORWA';
+  String get adminCmsEditPartner => 'Hindura umufatanyabikorwa';
 
   @override
   String get adminCmsName => 'Izina';
@@ -7172,11 +7172,11 @@ class AfriLocalizationsRw extends AfriLocalizations {
 
   @override
   String get adminCmsAddPartnerService =>
-      'ONGERAHO SERIVISI Y’UMUFATANYABIKORWA';
+      'Ongeraho serivisi y’umufatanyabikorwa';
 
   @override
   String get adminCmsEditPartnerService =>
-      'HINDURA SERIVISI Y’UMUFATANYABIKORWA';
+      'Hindura serivisi y’umufatanyabikorwa';
 
   @override
   String get adminCmsPartner => 'Umufatanyabikorwa';
@@ -7196,11 +7196,11 @@ class AfriLocalizationsRw extends AfriLocalizations {
 
   @override
   String get adminCmsAddPredictionCompetition =>
-      'ONGERAHO IRUSHANWA RYO GUHANURA';
+      'Ongeraho irushanwa ryo guhanura';
 
   @override
   String get adminCmsEditPredictionCompetition =>
-      'HINDURA IRUSHANWA RYO GUHANURA';
+      'Hindura irushanwa ryo guhanura';
 
   @override
   String get adminCmsCompetition => 'Irushanwa';
@@ -7263,40 +7263,40 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCmsNewsArticles => 'Inkuru z’amakuru';
 
   @override
-  String get adminCmsAddArticle => 'ONGERAHO INKURU';
+  String get adminCmsAddArticle => 'Ongeraho inkuru';
 
   @override
   String get adminCmsHomeQuickActions => 'Ibikorwa byihuse byo ku ntangiriro';
 
   @override
-  String get adminCmsAddAction => 'ONGERAHO IGIKORWA';
+  String get adminCmsAddAction => 'Ongeraho igikorwa';
 
   @override
   String get adminCmsPartners => 'Abafatanyabikorwa';
 
   @override
-  String get adminCmsAddPartnerAction => 'ONGERAHO UMUFATANYABIKORWA';
+  String get adminCmsAddPartnerAction => 'Ongeraho umufatanyabikorwa';
 
   @override
   String get adminCmsPartnerServices => 'Serivisi z’abafatanyabikorwa';
 
   @override
-  String get adminCmsAddService => 'ONGERAHO SERIVISI';
+  String get adminCmsAddService => 'Ongeraho serivisi';
 
   @override
   String get adminCmsPredictionCompetitions => 'Amarushanwa yo guhanura';
 
   @override
-  String get adminCmsAddCompetition => 'ONGERAHO IRUSHANWA';
+  String get adminCmsAddCompetition => 'Ongeraho irushanwa';
 
   @override
   String get adminCmsContentBlocks => 'Ibice by’ibirimo bya pulatifomu';
 
   @override
-  String get adminCmsAddBlock => 'ONGERAHO IGICE';
+  String get adminCmsAddBlock => 'Ongeraho igice';
 
   @override
-  String get adminCmsAuditLogs => 'AMATEKA Y’IGENZURA RY’IBIRANGA';
+  String get adminCmsAuditLogs => 'Amateka y’igenzura ry’ibiranga';
 
   @override
   String get adminCmsQuickActionFallback => 'Igikorwa cyihuse';
@@ -7311,25 +7311,25 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCmsContentBlockFallback => 'Igice cy’ibirimo';
 
   @override
-  String get adminCmsActiveUpper => 'GIKORA';
+  String get adminCmsActiveUpper => 'Gikora';
 
   @override
-  String get adminCmsInactiveUpper => 'NTIGIKORA';
+  String get adminCmsInactiveUpper => 'Ntigikora';
 
   @override
-  String get adminCmsGamificationUpper => 'IMIKINO';
+  String get adminCmsGamificationUpper => 'Imikino';
 
   @override
-  String get adminCmsDirectUpper => 'BITAZIGUYE';
+  String get adminCmsDirectUpper => 'Bitaziguye';
 
   @override
-  String get adminCmsStandardUpper => 'BISANZWE';
+  String get adminCmsStandardUpper => 'Bisanzwe';
 
   @override
-  String get adminCmsDeactivate => 'HAGARIKA';
+  String get adminCmsDeactivate => 'Hagarika';
 
   @override
-  String get adminCmsActivate => 'KORA';
+  String get adminCmsActivate => 'Kora';
 
   @override
   String get adminCmsCtaPending => 'Igikorwa kirategerejwe';
@@ -7343,10 +7343,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminCmsCatalog => 'URUTONDE';
+  String get adminCmsCatalog => 'Urutonde';
 
   @override
-  String get adminCmsSupported => 'RYEMEWE';
+  String get adminCmsSupported => 'Ryemewe';
 
   @override
   String get adminCmsUnknown => 'ntibizwi';
@@ -7358,7 +7358,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCmsUnknownDate => 'Itariki itazwi';
 
   @override
-  String get adminCmsActionFallback => 'IGIKORWA';
+  String get adminCmsActionFallback => 'Igikorwa';
 
   @override
   String adminCmsFeatureName(String feature) {
@@ -7370,7 +7370,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amakuru y’uwakoze igikorwa arahishwa muri telefoni.';
 
   @override
-  String get adminCmsEdit => 'HINDURA';
+  String get adminCmsEdit => 'Hindura';
 
   @override
   String get adminCmsUntitled => 'Nta mutwe';
@@ -7379,16 +7379,16 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get adminCmsNewsFallback => 'Amakuru';
 
   @override
-  String get adminCmsLive => 'YATANGAJWE';
+  String get adminCmsLive => 'Yatangajwe';
 
   @override
-  String get adminCmsDraft => 'INYANDIKO';
+  String get adminCmsDraft => 'Inyandiko';
 
   @override
   String get adminCmsNotPublished => 'Ntiyatangajwe';
 
   @override
-  String get adminCmsFeatured => 'YASHYIZWE IMBERE';
+  String get adminCmsFeatured => 'Yashyizwe imbere';
 
   @override
   String adminCmsArticleMeta(String category, String date, String featured) {
@@ -7396,10 +7396,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get adminCmsUnpublish => 'KURAHO';
+  String get adminCmsUnpublish => 'Kuraho';
 
   @override
-  String get adminCmsPublish => 'TANGAZA';
+  String get adminCmsPublish => 'Tangaza';
 
   @override
   String adminCmsPair(String first, String second) {
@@ -7407,7 +7407,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameCommunityPicks => 'AMAHITAMO Y’ABAFANA';
+  String get gameCommunityPicks => 'Amahitamo y’abafana';
 
   @override
   String get gameFetProgress => 'Aho FET igeze';
@@ -7416,7 +7416,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameFet => 'FET';
 
   @override
-  String get gameLevelUp => 'URWEGO RUSHYA!';
+  String get gameLevelUp => 'Urwego rushya!';
 
   @override
   String get gameAwesome => 'Ni byiza';
@@ -7425,7 +7425,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameKeepGoing => 'Komeza';
 
   @override
-  String get gameLive => 'IMBONANKUBONE';
+  String get gameLive => 'Imbonankubone';
 
   @override
   String gameOutcomePick(String outcome) {
@@ -7438,43 +7438,43 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameDaysShort => 'IMINSI';
+  String get gameDaysShort => 'Iminsi';
 
   @override
-  String get gameHoursShort => 'MAS';
+  String get gameHoursShort => 'Mas';
 
   @override
-  String get gameMinutesShort => 'MIN';
+  String get gameMinutesShort => 'Min';
 
   @override
-  String get gameSecondsShort => 'SEG';
+  String get gameSecondsShort => 'Seg';
 
   @override
   String get gameDismissNotification => 'Funga itangazo';
 
   @override
-  String get gamePredictions => 'GUHANURA';
+  String get gamePredictions => 'Guhanura';
 
   @override
-  String get gameAccuracy => 'UKURI';
+  String get gameAccuracy => 'Ukuri';
 
   @override
-  String get gamePointsEarned => 'AMANOTA YABONETSE';
+  String get gamePointsEarned => 'Amanota yabonetse';
 
   @override
-  String get gameRank => 'UMWANYA';
+  String get gameRank => 'Umwanya';
 
   @override
-  String get gameTopScorers => 'ABATSINZE IBITEGO BYINSHI';
+  String get gameTopScorers => 'Abatsinze ibitego byinshi';
 
   @override
   String get gameGoals => 'Ibitego';
 
   @override
-  String get gameEntriesClosed => 'KWIYANDIKISHA BYARAFUNZWE';
+  String get gameEntriesClosed => 'Kwiyandikisha byarafunzwe';
 
   @override
-  String get gameEntriesCloseIn => 'KWIYANDIKISHA BIRAFUNGWA MU';
+  String get gameEntriesCloseIn => 'Kwiyandikisha birafungwa mu';
 
   @override
   String gameFetProgressValue(int current, int maximum, String tier) {
@@ -7515,10 +7515,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameRetry => 'Ongera ugerageze';
 
   @override
-  String get gameOpenPredictionAlert => 'FUNGURA';
+  String get gameOpenPredictionAlert => 'Fungura';
 
   @override
-  String get gameBadgesTitle => 'IMIDARI YAWE';
+  String get gameBadgesTitle => 'Imidari yawe';
 
   @override
   String get gameBadgesUnavailable => 'Imidari ntiboneka';
@@ -7536,7 +7536,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameOpenBadgeDetails => 'Fungura ibisobanuro by’umudari';
 
   @override
-  String get gamePredictionAlertsTitle => 'AMATANGAZO YO GUHANURA';
+  String get gamePredictionAlertsTitle => 'Amatangazo yo guhanura';
 
   @override
   String get gameAlertsUnavailable => 'Amatangazo ntaboneka';
@@ -7564,7 +7564,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameJustNow => 'Ubu';
 
   @override
-  String get gameStreakTitle => 'URUKURIKIRANE RWAWE';
+  String get gameStreakTitle => 'Urukurikirane rwawe';
 
   @override
   String gameStreakDays(int count) {
@@ -7575,13 +7575,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameStreakActive => 'Urukurikirane rurakomeje.';
 
   @override
-  String get gameCurrent => 'URUGEZEHO';
+  String get gameCurrent => 'Urugezeho';
 
   @override
-  String get gameBest => 'URUSUMBA AYANDI';
+  String get gameBest => 'Urusumba ayandi';
 
   @override
-  String get gameNextBonus => 'IGIHEMBO GIKURIKIRA';
+  String get gameNextBonus => 'Igihembo gikurikira';
 
   @override
   String gameWins(int count) {
@@ -7600,7 +7600,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameVerifyToPredict => 'EMEZA KUGIRA NGO UHANURE';
+  String get gameVerifyToPredict => 'Emeza kugira ngo uhanure';
 
   @override
   String get gameMakePicks => 'Hitamo';
@@ -7731,13 +7731,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameVerificationManual => 'Kugenzurwa n’umufatanyabikorwa';
 
   @override
-  String get gameSettingsUpper => 'IGENAMITERERE';
+  String get gameSettingsUpper => 'Igenamiterere';
 
   @override
-  String get gamePrivacyUpper => 'UBUZIMA BWITE';
+  String get gamePrivacyUpper => 'Ubuzima bwite';
 
   @override
-  String get gameCoreGuarantees => 'IBYEMEZO BY’INGENZI';
+  String get gameCoreGuarantees => 'Ibyemezo by’ingenzi';
 
   @override
   String get gamePhoneNumberHidden => 'Nomero ya telefoni irahishwa';
@@ -7754,7 +7754,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Imisanzu ya MoMo yo mu matsinda y’abafana ibikwa hakoreshejwe Fan ID yawe n’icyiciro cy’amafaranga gusa. Umubare nyawo na nomero ya telefoni ntibibikwa.';
 
   @override
-  String get gameVisibilityControls => 'KUGENA IBIGARAGARA';
+  String get gameVisibilityControls => 'Kugena ibigaragara';
 
   @override
   String get gameShowRealName => 'Erekana amazina nyayo';
@@ -7779,7 +7779,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameRewardsStoreTitle => 'IDUKA RY’IBIHEMBO';
+  String get gameRewardsStoreTitle => 'Iduka ry’ibihembo';
 
   @override
   String get gameRewardsUnavailable => 'Ibihembo ntibiboneka';
@@ -7789,7 +7789,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ibihembo ntibiboneka muri aka kanya.';
 
   @override
-  String get gameAvailableBalance => 'AMANOTA ASIGAYE';
+  String get gameAvailableBalance => 'Amanota asigaye';
 
   @override
   String gameRewardsStoreDescription(String appName) {
@@ -7864,7 +7864,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameOnline => 'Arahari';
 
   @override
-  String get gameFixturesTitle => 'IMIKINO';
+  String get gameFixturesTitle => 'Imikino';
 
   @override
   String get gameFixturesUnavailable => 'Imikino ntiboneka';
@@ -7902,7 +7902,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameMyActivity => 'IBIKORWA BYANJYE';
+  String get gameMyActivity => 'Ibikorwa byanjye';
 
   @override
   String gameActiveCount(int count) {
@@ -7930,22 +7930,22 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameCouldNotCancelPick => 'Ntibyashobotse guhagarika iri hitamo.';
 
   @override
-  String get gameWon => 'YATSINZE';
+  String get gameWon => 'Yatsinze';
 
   @override
-  String get gameLost => 'YATSINZWE';
+  String get gameLost => 'Yatsinzwe';
 
   @override
-  String get gameCancelled => 'YAHAGARITSWE';
+  String get gameCancelled => 'Yahagaritswe';
 
   @override
-  String get gameVoid => 'YAVANYWEHO';
+  String get gameVoid => 'Yavanyweho';
 
   @override
-  String get gamePendingUpper => 'IRATEGEREJWE';
+  String get gamePendingUpper => 'Irategerejwe';
 
   @override
-  String get gameTbd => 'BIRATEGEREJWE';
+  String get gameTbd => 'Birategerejwe';
 
   @override
   String gameVersusShort(String home, String away) {
@@ -7972,7 +7972,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameOpenActivityDetail => 'Fungura ibisobanuro by’igikorwa';
 
   @override
-  String get gameNotificationsUpper => 'AMATANGAZO';
+  String get gameNotificationsUpper => 'Amatangazo';
 
   @override
   String get gameKickoffAlerts => 'Amatangazo yo gutangira umukino';
@@ -7984,19 +7984,19 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameFriendChallenges => 'Guhiganwa n’inshuti';
 
   @override
-  String get gameLineupsUpper => 'ABAKINNYI';
+  String get gameLineupsUpper => 'Abakinnyi';
 
   @override
-  String get gameSubstitutes => 'ABASIMBURA';
+  String get gameSubstitutes => 'Abasimbura';
 
   @override
-  String get gameActiveUpper => 'IBIKORA';
+  String get gameActiveUpper => 'Ibikora';
 
   @override
-  String get gameWinRate => 'IGIPIMO CY’INTSINZI';
+  String get gameWinRate => 'Igipimo cy’intsinzi';
 
   @override
-  String get gameYouUpper => 'WOWE';
+  String get gameYouUpper => 'Wowe';
 
   @override
   String gameWalletSignedPoints(String sign, String amount) {
@@ -8009,7 +8009,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameVersus => 'NA';
+  String get gameVersus => 'Na';
 
   @override
   String get gameKickoffSoon => 'Umukino uri hafi gutangira';
@@ -8037,13 +8037,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameMyPick => 'Ihitamo ryanjye';
 
   @override
-  String get gameOpenUpper => 'IRAFUNGUYE';
+  String get gameOpenUpper => 'Irafunguye';
 
   @override
-  String get gameLockedUpper => 'IRAFUNZE';
+  String get gameLockedUpper => 'Irafunze';
 
   @override
-  String get gameSettledUpper => 'YARANGIYE';
+  String get gameSettledUpper => 'Yarangiye';
 
   @override
   String gameDaysLeft(int count) {
@@ -8145,16 +8145,16 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameMarketUpper => 'UBWOKO';
+  String get gameMarketUpper => 'Ubwoko';
 
   @override
-  String get gamePickUpper => 'IHITAMO';
+  String get gamePickUpper => 'Ihitamo';
 
   @override
-  String get gameEarnedUpper => 'WABONYE';
+  String get gameEarnedUpper => 'Wabonye';
 
   @override
-  String get gamePotentialUpper => 'ASHOBOKA';
+  String get gamePotentialUpper => 'Ashoboka';
 
   @override
   String gameShareTagline(String appName) {
@@ -8271,10 +8271,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Intonde z’abafana ntiziboneka muri aka kanya.';
 
   @override
-  String get gameNotSignedIn => 'NTIWINJIYE';
+  String get gameNotSignedIn => 'Ntiwinjiye';
 
   @override
-  String get gameTierFan => 'UMUFANA';
+  String get gameTierFan => 'Umufana';
 
   @override
   String get gameDisplayNameOn => 'Amazina aragaragara';
@@ -8377,10 +8377,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Gusiba konti yawe bikuraho amakuru bwite n’ihuriro rya Fan ID ku mwirondoro ukora.';
 
   @override
-  String get gameFanIdTitle => 'FAN ID';
+  String get gameFanIdTitle => 'Fan id';
 
   @override
-  String get gameYourFanId => 'FAN ID YAWE';
+  String get gameYourFanId => 'Fan id yawe';
 
   @override
   String get gameAliasOnlyProfile => 'Umwirondoro w’izina ry’irihimbano gusa';
@@ -8392,17 +8392,17 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameCopyToClipboard => 'Shyira mu bubiko';
 
   @override
-  String get gamePrivacyBadges => 'IBIMENYETSO BY’UBUZIMA BWITE';
+  String get gamePrivacyBadges => 'Ibimenyetso by’ubuzima bwite';
 
   @override
-  String get gameIdentityRules => 'AMATEGEKO Y’UMWIRONDORO';
+  String get gameIdentityRules => 'Amategeko y’umwirondoro';
 
   @override
   String get gameIdentityRulesDescription =>
       'Uko Fan ID yawe ikora hakurikijwe igenamiterere ry’umwirondoro wawe.';
 
   @override
-  String get gameStandingsTitle => 'URUTONDE';
+  String get gameStandingsTitle => 'Urutonde';
 
   @override
   String get gameCompetitionNotFound => 'Irushanwa ntiryabonetse.';
@@ -8415,16 +8415,16 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameStandingsUnavailable => 'Urutonde ntiruboneka';
 
   @override
-  String get gamePositionShort => 'UMW';
+  String get gamePositionShort => 'Umw';
 
   @override
-  String get gameTeamUpper => 'IKIPE';
+  String get gameTeamUpper => 'Ikipe';
 
   @override
-  String get gamePointsShort => 'AMN';
+  String get gamePointsShort => 'Amn';
 
   @override
-  String get gamePointsUpper => 'AMANOTA';
+  String get gamePointsUpper => 'Amanota';
 
   @override
   String gameStandingRecord(
@@ -8437,7 +8437,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameHeadToHead => 'UKO BAHURANYE';
+  String get gameHeadToHead => 'Uko bahuranye';
 
   @override
   String gameHeadToHeadEmpty(String home, String away) {
@@ -8445,10 +8445,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameWinDistribution => 'IGABANA RY’INTSINZI';
+  String get gameWinDistribution => 'Igabana ry’intsinzi';
 
   @override
-  String get gameDraws => 'BANGANYIJE';
+  String get gameDraws => 'Banganyije';
 
   @override
   String gameTeamGoals(String team) {
@@ -8456,7 +8456,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameRecentEncounters => 'IMIKINO IHERUKA';
+  String get gameRecentEncounters => 'Imikino iheruka';
 
   @override
   String gameScore(int home, int away) {
@@ -8464,7 +8464,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameTokenHistoryTitle => 'AMATEKA Y’AMANOTA';
+  String get gameTokenHistoryTitle => 'Amateka y’amanota';
 
   @override
   String get gameTokenHistoryTemporarilyUnavailable =>
@@ -8480,13 +8480,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameSpent => 'Yakoreshejwe';
 
   @override
-  String get gameAllUpper => 'BYOSE';
+  String get gameAllUpper => 'Byose';
 
   @override
-  String get gameEarnedUpperFilter => 'YABONETSE';
+  String get gameEarnedUpperFilter => 'Yabonetse';
 
   @override
-  String get gameSpentUpper => 'YAKORESHEJWE';
+  String get gameSpentUpper => 'Yakoreshejwe';
 
   @override
   String get gameCredit => 'Yinjiye';
@@ -8513,7 +8513,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameUnknownTime => 'Igihe ntikizwi';
 
   @override
-  String get gameClubFanZoneTitle => 'AHO ABAFANA BA KLABU BAHURIRA';
+  String get gameClubFanZoneTitle => 'Aho abafana ba klabu bahurira';
 
   @override
   String get gameClubFanZoneTemporarilyUnavailable =>
@@ -8523,14 +8523,14 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameFanZoneUnavailable => 'Aho abafana bahurira ntihaboneka';
 
   @override
-  String get gameSupporterPulse => 'IMBARAGA Z’ABAFANA';
+  String get gameSupporterPulse => 'Imbaraga z’abafana';
 
   @override
   String get gameSupporterPulseDescription =>
       'Imbaraga nyazo z’abafana mu marushanwa akora, amahitamo y’imikino n’amakipe ayoboye.';
 
   @override
-  String get gameTopClubs => 'AMAKIPE AYOBORA';
+  String get gameTopClubs => 'Amakipe ayobora';
 
   @override
   String gameRankHash(int rank) {
@@ -8538,7 +8538,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameSupporterLeans => 'IBYO ABAFANA BAHITAMO';
+  String get gameSupporterLeans => 'Ibyo abafana bahitamo';
 
   @override
   String gameSupporterLeansEmpty(String appName) {
@@ -8556,7 +8556,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameLeagueHubTitle => 'AMAKURU Y’IRUSHANWA';
+  String get gameLeagueHubTitle => 'Amakuru y’irushanwa';
 
   @override
   String get gameLeagueDataTemporarilyUnavailable =>
@@ -8566,7 +8566,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameLeagueUnavailable => 'Irushanwa ntiriboneka';
 
   @override
-  String get gameCompetition => 'IRUSHANWA';
+  String get gameCompetition => 'Irushanwa';
 
   @override
   String get gameRegion => 'Akarere';
@@ -8584,7 +8584,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameLeader => 'Iyoboye';
 
   @override
-  String get gameTopTable => 'ABAYOBOYE URUTONDE';
+  String get gameTopTable => 'Abayoboye urutonde';
 
   @override
   String get gameFullStandings => 'Urutonde rwose';
@@ -8804,7 +8804,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameEnterValidAmount => 'Andika umubare wemewe.';
 
   @override
-  String get gameTeamProfileTitle => 'UMWIRONDORO W’IKIPE';
+  String get gameTeamProfileTitle => 'Umwirondoro w’ikipe';
 
   @override
   String get gameTeamUnavailable => 'Ikipe ntiboneka';
@@ -8833,7 +8833,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameAbout => 'Ibyerekeye';
 
   @override
-  String get gameLeaguePosition => 'UMWANYA MURI SHAMPIYONA';
+  String get gameLeaguePosition => 'Umwanya muri shampiyona';
 
   @override
   String get gamePlayedShort => 'M';
@@ -8848,10 +8848,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameLostShort => 'Y';
 
   @override
-  String get gameGoalDifferenceShort => 'IB';
+  String get gameGoalDifferenceShort => 'Ib';
 
   @override
-  String get gameMomoContributionRoute => 'INZIRA Y’UMUSANZU MOMO';
+  String get gameMomoContributionRoute => 'Inzira y’umusanzu MoMo';
 
   @override
   String gameUseProviderForClub(String provider, String club) {
@@ -8869,7 +8869,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameMembersUnavailable => 'Abanyamuryango ntibaboneka';
 
   @override
-  String get gameClubMembers => 'ABANYAMURYANGO BA KLABU';
+  String get gameClubMembers => 'Abanyamuryango ba klabu';
 
   @override
   String get gameTierGold => 'Zahabu';
@@ -8884,10 +8884,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameTierImena => 'Imena';
 
   @override
-  String get gameTopContributors => 'ABATANZE IMISANZU MYINSHI';
+  String get gameTopContributors => 'Abatanze imisanzu myinshi';
 
   @override
-  String get gameMomoContribution => 'UMUSANZU MOMO';
+  String get gameMomoContribution => 'Umusanzu MoMo';
 
   @override
   String gameUseProviderInCountry(String provider, String country) {
@@ -8929,7 +8929,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameThisClubUpper => 'IYI KLABU';
+  String get gameThisClubUpper => 'Iyi klabu';
 
   @override
   String get gameLocation => 'Aho iherereye';
@@ -9013,7 +9013,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongeramo amahitamo avuye ku mukino uwo ari wo wose maze uyemeze hano.';
 
   @override
-  String get gamePickRoundUpper => 'ICYICIRO CY’AMAHITAMO';
+  String get gamePickRoundUpper => 'Icyiciro cy’amahitamo';
 
   @override
   String get gameAcca => 'Urwunge';
@@ -9034,7 +9034,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ntibyashobotse kohereza amahitamo yawe.';
 
   @override
-  String get gameConfirmPicks => 'EMEZA AMAHITAMO';
+  String get gameConfirmPicks => 'Emeza amahitamo';
 
   @override
   String gameLockingCombo(int count) {
@@ -9058,10 +9058,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameTotalPotential => 'AMANOTA YOSE ASHOBOKA';
+  String get gameTotalPotential => 'Amanota yose ashoboka';
 
   @override
-  String get gameGoBack => 'SUBIRA INYUMA';
+  String get gameGoBack => 'Subira inyuma';
 
   @override
   String gamePredictionsLocked(int count) {
@@ -9080,16 +9080,16 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameShareUpper => 'SANGIZA';
+  String get gameShareUpper => 'Sangiza';
 
   @override
-  String get gameCopyUpper => 'KOPI';
+  String get gameCopyUpper => 'Kopi';
 
   @override
-  String get gameViewMyPredictions => 'REBA AMAHANURA YANJYE';
+  String get gameViewMyPredictions => 'Reba amahanura yanjye';
 
   @override
-  String get gameKeepBrowsing => 'KOMEZA GUSHAKISHA';
+  String get gameKeepBrowsing => 'Komeza gushakisha';
 
   @override
   String get gameRemovePick => 'Kuraho ihitamo';
@@ -9104,7 +9104,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameMore => 'Ibindi';
 
   @override
-  String get gameRoundUpper => 'ICYICIRO';
+  String get gameRoundUpper => 'Icyiciro';
 
   @override
   String gameAccuracyRounds(String accuracy, int count) {
@@ -9153,7 +9153,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gameChallengesTitle => 'GUHIGANWA';
+  String get gameChallengesTitle => 'Guhiganwa';
 
   @override
   String get gameChallengesTemporarilyUnavailable =>
@@ -9163,13 +9163,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gameChallengesUnavailable => 'Guhiganwa ntibiboneka';
 
   @override
-  String get gameDaily => 'BURI MUNSI';
+  String get gameDaily => 'Buri munsi';
 
   @override
-  String get gameWeeklyUpper => 'BURI CYUMWERU';
+  String get gameWeeklyUpper => 'Buri cyumweru';
 
   @override
-  String get gameSeasonal => 'BURI GIHEMBWE';
+  String get gameSeasonal => 'Buri gihembwe';
 
   @override
   String get gameCompleted => 'Byarangiye';
@@ -9179,37 +9179,37 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Guhiganwa bigaragara umwirondoro wawe w’umufana umaze gukora.';
 
   @override
-  String get gameWhatIsFet => 'FET NI IKI?';
+  String get gameWhatIsFet => 'FET ni iki?';
 
   @override
   String get gameWhatIsFetBody =>
       'FET ni amanota y’imikoranire y’abafana. Uyabona witabira ibikorwa bya klabu, ujya ku mikino, urangiza uguhiganwa, uhanura kandi ugafasha umuryango.';
 
   @override
-  String get gameHowPredictionsWork => 'UKO GUHANURA BIKORA';
+  String get gameHowPredictionsWork => 'Uko guhanura bikora';
 
   @override
   String get gameHowPredictionsWorkBody =>
       'Reba imikino iri imbere, hitamo ubwoko bwo guhanura, maze wemeze amahitamo mbere y’umukino. Amahitamo nyayo atanga amanota hakurikijwe uburemere.';
 
   @override
-  String get gameEarnLevelRedeem => 'BONA, ZAMUKA KANDI UGURANE';
+  String get gameEarnLevelRedeem => 'Bona, zamuka kandi ugurane';
 
   @override
   String get gameEarnLevelRedeemBody =>
       'Amanota yawe yiyongera uko witabira. Zamuka ku rutonde, fungura ibyiciro by’ubunyamuryango kandi ugurane ibihembo mu iduka rya klabu.';
 
   @override
-  String get gameBackUpper => 'SUBIRA INYUMA';
+  String get gameBackUpper => 'Subira inyuma';
 
   @override
-  String get gameGetStarted => 'TANGIRA';
+  String get gameGetStarted => 'Tangira';
 
   @override
-  String get gameNext => 'BIKURIKIRA';
+  String get gameNext => 'Bikurikira';
 
   @override
-  String get gameMyChallenges => 'GUHIGANWA KWANJYE';
+  String get gameMyChallenges => 'Guhiganwa kwanjye';
 
   @override
   String get gameOpen => 'Birafunguye';
@@ -9257,7 +9257,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongera uhuze kandi uvugurure mbere yo gufungura icyuho cyangwa kugenzura imimerere mishya.';
 
   @override
-  String get gameRefreshHistory => 'VUGURURA AMATEKA';
+  String get gameRefreshHistory => 'Vugurura amateka';
 
   @override
   String gameNoFilteredChallenges(String filter) {
@@ -9579,7 +9579,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Iyi serivisi igenzurwa yahagaritswe kuri iyi kipe cyangwa iyi verisiyo.';
 
   @override
-  String get venueBackToFanZone => 'SUBIRA MURI FAN ZONE';
+  String get venueBackToFanZone => 'Subira muri fan zone';
 
   @override
   String get venueOrderAccessDenied => 'Ntiwemerewe gutumiza';
@@ -9601,7 +9601,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Kwiyandikisha byemejwe birakenewe mbere yo gufungura urutonde rw’ibinyobwa byemewe.';
 
   @override
-  String get venueCheckInFirst => 'BANZA WIYANDIKISHE';
+  String get venueCheckInFirst => 'Banza wiyandikishe';
 
   @override
   String get venueNoDrinksAvailable => 'Nta binyobwa bihari';
@@ -9611,7 +9611,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Aho wiyandikishije nta binyobwa byemewe bihari ubu.';
 
   @override
-  String get venueRefreshMenu => 'VUGURURA URUTONDE';
+  String get venueRefreshMenu => 'Vugurura urutonde';
 
   @override
   String get venueMenuUnavailableOffline =>
@@ -9622,7 +9622,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongera uhuze mbere yo gufungura urutonde. Nta komande ibikwa ngo izoherezwe nyuma.';
 
   @override
-  String get venueTryAgain => 'ONGERA UGERAGEZE';
+  String get venueTryAgain => 'Ongera ugerageze';
 
   @override
   String get venueMenuCheckTimedOut => 'Kugenzura urutonde byarengeje igihe';
@@ -9667,10 +9667,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Emeza gusa niba wujuje imyaka yemewe aho uri. Abakozi bashobora kongera kubigenzura.';
 
   @override
-  String get venueRemoveConfirmation => 'KURAHO KWEMEZA';
+  String get venueRemoveConfirmation => 'Kuraho kwemeza';
 
   @override
-  String get venueConfirmLegalAge => 'EMEZA IMYAKA YEMEWE';
+  String get venueConfirmLegalAge => 'Emeza imyaka yemewe';
 
   @override
   String get venuePayAtVenue => 'Ishyura aho uri';
@@ -9680,13 +9680,13 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Iyi porogaramu ikora komande gusa. Ntiyakira ubwishyu kandi ntiyemeza ko bwakozwe.';
 
   @override
-  String get venueCreatingOrderUpper => 'KOHEREZA KOMANDE';
+  String get venueCreatingOrderUpper => 'Kohereza komande';
 
   @override
-  String get venueOrderConfirmedUpper => 'KOMANDE YEMEJWE';
+  String get venueOrderConfirmedUpper => 'Komande yemejwe';
 
   @override
-  String get venueReviewCreateOrder => 'SUZUMA MAZE UTUMIZE';
+  String get venueReviewCreateOrder => 'Suzuma maze utumize';
 
   @override
   String get venueOrderProtections => 'Umutekano wa komande';
@@ -9883,10 +9883,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get venueCheckinInputHint => 'Injiza nibura inyuguti 4';
 
   @override
-  String get venueCheckinCheckingCodeUpper => 'KUGENZURA KODE';
+  String get venueCheckinCheckingCodeUpper => 'Kugenzura kode';
 
   @override
-  String get venueCheckinActionUpper => 'IYANDIKISHE';
+  String get venueCheckinActionUpper => 'Iyandikishe';
 
   @override
   String get venueCheckinLocationConsentSemantics =>
@@ -9905,10 +9905,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Aho uri nyakuri ntihakusanywa muri iyi verisiyo. Ushobora kwemera, ariko kampanye zisaba aho uri ziracyategereje gusuzumwa.';
 
   @override
-  String get venueCheckinRemoveConsentUpper => 'KURAHO KWEMERA';
+  String get venueCheckinRemoveConsentUpper => 'Kuraho kwemera';
 
   @override
-  String get venueCheckinMarkConsentUpper => 'EMERA';
+  String get venueCheckinMarkConsentUpper => 'Emera';
 
   @override
   String get venueCheckinPrivacyBoundary => 'Imbibi z’ibanga';
@@ -10009,15 +10009,15 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Seriveri ntiyemeje uku kugerageza. Funga umuburo mbere yo kongera kugerageza.';
 
   @override
-  String get challengeConfirmTitle => 'EMEZA GUHIGANWA';
+  String get challengeConfirmTitle => 'Emeza guhiganwa';
 
   @override
   String challengeConfirmPoints(int count) {
-    return 'EMEZA AMANOTA $count';
+    return 'Emeza amanota $count';
   }
 
   @override
-  String get challengeCreateTitle => 'KORA GUHIGANWA';
+  String get challengeCreateTitle => 'Kora guhiganwa';
 
   @override
   String get challengeFindingFixtures => 'Gushaka imikino iri imbere';
@@ -10058,7 +10058,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongera uhuze kandi uvugurure mbere yo guhindura igitego cyangwa gukora guhiganwa.';
 
   @override
-  String get challengeRefreshFixturesUpper => 'VUGURURA IMIKINO';
+  String get challengeRefreshFixturesUpper => 'Vugurura imikino';
 
   @override
   String get challengeExactScore => 'Igitego nyacyo';
@@ -10069,7 +10069,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get challengeVersusUpper => 'NA';
+  String get challengeVersusUpper => 'Na';
 
   @override
   String get challengeEntryPoints => 'Amanota yo kwinjira';
@@ -10095,7 +10095,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amanota usigaranye ntahagije kuri uku kwinjira.';
 
   @override
-  String get challengeCreatingUpper => 'GUKORA GUHIGANWA';
+  String get challengeCreatingUpper => 'Gukora guhiganwa';
 
   @override
   String get challengeCreationOffline => 'Gukora guhiganwa nta interineti';
@@ -10144,7 +10144,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get challengePreview => 'IGARAGAZA RY’IRUSHANWA';
+  String get challengePreview => 'Igaragaza ry’irushanwa';
 
   @override
   String get challengeYourPick => 'Ibyo wahisemo';
@@ -10287,14 +10287,14 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amanota aheruka kwemezwa arakomeza kugaragara kugeza kuvugurura bikunze.';
 
   @override
-  String get feedChallengeTitle => 'GUHIGANWA';
+  String get feedChallengeTitle => 'Guhiganwa';
 
   @override
   String get feedDescription =>
       'Amatsinda yo guhanura igitego nyacyo ku mikino nyayo. Kora rimwe, winjire rimwe, ibisubizo bishingire ku byemejwe.';
 
   @override
-  String get feedCreateNew => 'KORA GUHIGANWA GUSHYA';
+  String get feedCreateNew => 'Kora guhiganwa gushya';
 
   @override
   String get feedOpening => 'Gufungura amarushanwa';
@@ -10410,7 +10410,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amatsinda ariho ntashoboye gufungurwa mu buryo butekanye.';
 
   @override
-  String get detailTitle => 'AMAKURU YO GUHIGANWA';
+  String get detailTitle => 'Amakuru yo guhiganwa';
 
   @override
   String get detailOpening => 'Gufungura guhiganwa';
@@ -10445,23 +10445,23 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongera uhuze kandi uvugurure mbere yo kwinjira, guhindura igitego cyangwa guhagarika.';
 
   @override
-  String get detailRefreshUpper => 'VUGURURA GUHIGANWA';
+  String get detailRefreshUpper => 'Vugurura guhiganwa';
 
   @override
-  String get detailMyPickUpper => 'IBYO NAHISEMO';
+  String get detailMyPickUpper => 'Ibyo nahisemo';
 
   @override
   String get detailMyEntry => 'Uko ninjiye';
 
   @override
-  String get detailJoinUpper => 'INJIRA MURI UKU GUHIGANWA';
+  String get detailJoinUpper => 'Injira muri uku guhiganwa';
 
   @override
   String get detailPickScoreBody =>
       'Hitamo igitego nyacyo mbere y’uko umukino ufungwa.';
 
   @override
-  String get detailResults => 'IBISUBIZO';
+  String get detailResults => 'Ibisubizo';
 
   @override
   String get detailOfficialScore => 'Igitego cyemejwe';
@@ -10476,7 +10476,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get detailPointsPerWinner => 'Amanota y’uwatsinze';
 
   @override
-  String get detailEntries => 'ABINJIYE';
+  String get detailEntries => 'Abinjiye';
 
   @override
   String get detailEntryCancelled => 'Kwinjira byahagaritswe';
@@ -10527,18 +10527,18 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get detailRefreshing => 'Kuvugurura guhiganwa';
 
   @override
-  String get detailJoiningUpper => 'KWINJIRA BIRAKORWA';
+  String get detailJoiningUpper => 'Kwinjira birakorwa';
 
   @override
   String detailJoinWithPoints(int count) {
-    return 'INJIRA N’AMANOTA $count';
+    return 'Injira n’amanota $count';
   }
 
   @override
-  String get detailCancellingUpper => 'GUHAGARIKA BIRAKORWA';
+  String get detailCancellingUpper => 'Guhagarika birakorwa';
 
   @override
-  String get detailCancelUpper => 'HAGARIKA GUHIGANWA';
+  String get detailCancelUpper => 'Hagarika guhiganwa';
 
   @override
   String get detailConnectionRestored => 'Interineti yongeye kugaruka';
@@ -10555,19 +10555,19 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongera uhuze urebe itsinda rigezweho mbere yo kwinjira cyangwa guhagarika.';
 
   @override
-  String get detailEntryActive => 'ARACYARIMO';
+  String get detailEntryActive => 'Aracyarimo';
 
   @override
-  String get detailEntryWinner => 'UWATSINZE';
+  String get detailEntryWinner => 'Uwatsinze';
 
   @override
-  String get detailEntryLoser => 'UWATSINZWE';
+  String get detailEntryLoser => 'Uwatsinzwe';
 
   @override
-  String get detailEntryRefunded => 'YASUBIJWE';
+  String get detailEntryRefunded => 'Yasubijwe';
 
   @override
-  String get detailEntryCancelledStatus => 'YAHAGARITSWE';
+  String get detailEntryCancelledStatus => 'Yahagaritswe';
 
   @override
   String get gameShareOptionsClosed =>
@@ -10581,7 +10581,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ushobora gusubira muri Fan Zone, ariko gusangiza ntibikora muri iyi verisiyo.';
 
   @override
-  String get gameBackToFanZoneUpper => 'SUBIRA MURI FAN ZONE';
+  String get gameBackToFanZoneUpper => 'Subira muri fan zone';
 
   @override
   String get gamePredictionAccessDenied => 'Ntiwemerewe kureba ibyo wahisemo';
@@ -10598,7 +10598,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Amakarita yo gusangiza aboneka nyuma yo guhitamo umukino w’umunsi.';
 
   @override
-  String get gameBackToPicksUpper => 'SUBIRA KU BYO WAHISEMO';
+  String get gameBackToPicksUpper => 'Subira ku byo wahisemo';
 
   @override
   String get gameShareCardsOffline => 'Amakarita yo gusangiza nta interineti';
@@ -10615,7 +10615,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Porogaramu ntiyashoboye kwemeza amateka yizewe y’ibyo wahisemo ku gihe. Gerageza kuvugurura rimwe.';
 
   @override
-  String get gameTryAgainUpper => 'ONGERA UGERAGEZE';
+  String get gameTryAgainUpper => 'Ongera ugerageze';
 
   @override
   String get gameShareCardsUnavailable => 'Amakarita yo gusangiza ntaboneka';
@@ -10720,22 +10720,22 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gamePredictionStatusWon => 'WATSINZE';
+  String get gamePredictionStatusWon => 'Watsinze';
 
   @override
-  String get gamePredictionStatusLost => 'WATSINZWE';
+  String get gamePredictionStatusLost => 'Watsinzwe';
 
   @override
-  String get gamePredictionStatusCancelled => 'RYAHAGARITSWE';
+  String get gamePredictionStatusCancelled => 'Ryahagaritswe';
 
   @override
-  String get gamePredictionStatusVoid => 'RYATESHEJWE AGACIRO';
+  String get gamePredictionStatusVoid => 'Ryateshejwe agaciro';
 
   @override
-  String get gamePredictionStatusPending => 'RIRATEGEREJE';
+  String get gamePredictionStatusPending => 'Rirategereje';
 
   @override
-  String get gamePredictionDateTbd => 'BIRATEGEREJWE';
+  String get gamePredictionDateTbd => 'Birategerejwe';
 
   @override
   String gamePredictionDateTime(String date, String time) {
@@ -10804,7 +10804,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Ongera uhuze kandi uvugurure mbere yo guhagarika iri hanura.';
 
   @override
-  String get gamePredictionActivityDetailTitle => 'IBISOBANURO BY’IGIKORWA';
+  String get gamePredictionActivityDetailTitle => 'Ibisobanuro by’igikorwa';
 
   @override
   String gamePredictionShortTeams(String home, String away) {
@@ -10812,19 +10812,19 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gamePredictionVenueTbc => 'AHABERA UMUKINO HARATEGEREJWE';
+  String get gamePredictionVenueTbc => 'Ahabera umukino harategerejwe';
 
   @override
-  String get gamePredictionPickType => 'UBWOKO BW’IHANURA';
+  String get gamePredictionPickType => 'Ubwoko bw’ihanura';
 
   @override
-  String get gamePredictionSelection => 'ICYAHISWEMO';
+  String get gamePredictionSelection => 'Icyahiswemo';
 
   @override
-  String get gamePredictionEarned => 'YABONETSE';
+  String get gamePredictionEarned => 'Yabonetse';
 
   @override
-  String get gamePredictionPotential => 'ASHOBOKA';
+  String get gamePredictionPotential => 'Ashoboka';
 
   @override
   String gamePredictionPositiveValue(int count) {
@@ -10832,7 +10832,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
   }
 
   @override
-  String get gamePredictionSettlement => 'KWEMEZA';
+  String get gamePredictionSettlement => 'Kwemeza';
 
   @override
   String get gamePredictionPlaced => 'Ryashyizweho';
@@ -10847,22 +10847,22 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String get gamePredictionOfficialOutcome => 'Igisubizo cyemewe';
 
   @override
-  String get gamePredictionCancelPick => 'HAGARIKA IHANURA';
+  String get gamePredictionCancelPick => 'Hagarika ihanura';
 
   @override
-  String get gamePredictionCopyResult => 'KOPORORA IGISUBIZO';
+  String get gamePredictionCopyResult => 'Koporora igisubizo';
 
   @override
-  String get gamePredictionCopySummary => 'KOPORORA INCAMAKE';
+  String get gamePredictionCopySummary => 'Koporora incamake';
 
   @override
-  String get gamePredictionShareCard => 'SANGIZA IKARITA';
+  String get gamePredictionShareCard => 'Sangiza ikarita';
 
   @override
-  String get gamePredictionBrowseFixtures => 'REBA IMIKINO';
+  String get gamePredictionBrowseFixtures => 'Reba imikino';
 
   @override
-  String get gamePredictionRefreshActivity => 'VUGURURA IGIKORWA';
+  String get gamePredictionRefreshActivity => 'Vugurura igikorwa';
 
   @override
   String get gamePredictionConnectionRestored => 'Umuyoboro wongeye kuboneka';
@@ -10932,61 +10932,61 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Uyu mukino ushobora kuba wararangiye, warakuweho cyangwa utakiboneka.';
 
   @override
-  String get gameWeekdayMon => 'MBE';
+  String get gameWeekdayMon => 'Mbe';
 
   @override
-  String get gameWeekdayTue => 'KAB';
+  String get gameWeekdayTue => 'Kab';
 
   @override
-  String get gameWeekdayWed => 'GAT';
+  String get gameWeekdayWed => 'Gat';
 
   @override
-  String get gameWeekdayThu => 'KAN';
+  String get gameWeekdayThu => 'Kan';
 
   @override
-  String get gameWeekdayFri => 'GAT';
+  String get gameWeekdayFri => 'Gat';
 
   @override
-  String get gameWeekdaySat => 'GAT';
+  String get gameWeekdaySat => 'Gat';
 
   @override
-  String get gameWeekdaySun => 'CYA';
+  String get gameWeekdaySun => 'Cya';
 
   @override
-  String get gameMonthJan => 'MUT';
+  String get gameMonthJan => 'Mut';
 
   @override
-  String get gameMonthFeb => 'GAS';
+  String get gameMonthFeb => 'Gas';
 
   @override
-  String get gameMonthMar => 'WER';
+  String get gameMonthMar => 'Wer';
 
   @override
-  String get gameMonthApr => 'MAT';
+  String get gameMonthApr => 'Mat';
 
   @override
-  String get gameMonthMay => 'GIC';
+  String get gameMonthMay => 'Gic';
 
   @override
-  String get gameMonthJun => 'KAM';
+  String get gameMonthJun => 'Kam';
 
   @override
-  String get gameMonthJul => 'NYA';
+  String get gameMonthJul => 'Nya';
 
   @override
-  String get gameMonthAug => 'KAN';
+  String get gameMonthAug => 'Kan';
 
   @override
-  String get gameMonthSep => 'NZE';
+  String get gameMonthSep => 'Nze';
 
   @override
-  String get gameMonthOct => 'UKW';
+  String get gameMonthOct => 'Ukw';
 
   @override
-  String get gameMonthNov => 'UGU';
+  String get gameMonthNov => 'Ugu';
 
   @override
-  String get gameMonthDec => 'UKU';
+  String get gameMonthDec => 'Uku';
 
   @override
   String gameMatchKickoffDateTime(
@@ -11089,7 +11089,7 @@ class AfriLocalizationsRw extends AfriLocalizations {
       'Kwinjira mu kigega ntikwashoboye kwemezwa.';
 
   @override
-  String get gameRefreshMatch => 'VUGURURA UMUKINO';
+  String get gameRefreshMatch => 'Vugurura umukino';
 
   @override
   String get gameMatchConnectionRestored => 'Umuyoboro wongeye kuboneka';
@@ -11153,4 +11153,10 @@ class AfriLocalizationsRw extends AfriLocalizations {
   String gamePartnerPoolsOnly(String home, String away) {
     return '$home na $away bakoresha gusa ibigega WDW byatewe inkunga n’abafatanyabikorwa.';
   }
+
+  @override
+  String get settingsThemePreview => 'Reba insanganyamatsiko';
+
+  @override
+  String get settingsApplyTheme => 'Koresha';
 }

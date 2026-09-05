@@ -16,7 +16,7 @@ void main() {
   ) async {
     await tester.pumpWidget(buildSubject(error: null, onRetry: () {}));
 
-    expect(find.text('LIVE CENTER UNAVAILABLE'), findsNothing);
+    expect(find.text('Live center unavailable'), findsNothing);
     expect(find.textContaining('No live or upcoming'), findsNothing);
     expect(find.byType(SizedBox), findsOneWidget);
   });
@@ -35,7 +35,7 @@ void main() {
       ),
     );
 
-    expect(find.text('LIVE CENTER UNAVAILABLE'), findsOneWidget);
+    expect(find.text('Live center unavailable'), findsOneWidget);
     expect(
       find.text('Could not load the live match center right now.'),
       findsOneWidget,

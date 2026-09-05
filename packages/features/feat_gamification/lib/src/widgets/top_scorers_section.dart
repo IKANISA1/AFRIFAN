@@ -22,8 +22,8 @@ class TopScorersSection extends StatelessWidget {
         Text(
           context.afriL10n.gameTopScorers,
           style: TypographyTokens.titleLarge().copyWith(
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.2,
+            fontWeight: FontWeight.w600,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
@@ -47,9 +47,9 @@ class TopScorersSection extends StatelessWidget {
                             '${scorer.rank}',
                             style: TypographyTokens.titleSmall(
                               scorer.rank <= 3
-                                  ? ColorTokens.clubAccent
+                                  ? ColorTokens.primaryContainer
                                   : ColorTokens.onSurfaceVariant,
-                            ).copyWith(fontWeight: FontWeight.w800),
+                            ).copyWith(fontWeight: FontWeight.w600),
                           ),
                         ),
                         const SizedBox(width: SpacingTokens.spacing3),
@@ -68,7 +68,8 @@ class TopScorersSection extends StatelessWidget {
                                       ColorTokens.onSurfaceVariant,
                                     ).copyWith(
                                       fontWeight: FontWeight.w600,
-                                      letterSpacing: 1.2,
+                                      letterSpacing:
+                                          TypographyTokens.trackingNone,
                                     ),
                               ),
                             ],
@@ -80,8 +81,8 @@ class TopScorersSection extends StatelessWidget {
                             Text(
                               '${scorer.goals}',
                               style: TypographyTokens.headlineSmall(
-                                ColorTokens.clubAccent,
-                              ).copyWith(fontWeight: FontWeight.w900),
+                                ColorTokens.primaryContainer,
+                              ).copyWith(fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(width: SpacingTokens.spacing1),
                             Text(
@@ -91,7 +92,8 @@ class TopScorersSection extends StatelessWidget {
                                     ColorTokens.onSurfaceVariant,
                                   ).copyWith(
                                     fontWeight: FontWeight.w600,
-                                    letterSpacing: 1,
+                                    letterSpacing:
+                                        TypographyTokens.trackingNone,
                                   ),
                             ),
                           ],

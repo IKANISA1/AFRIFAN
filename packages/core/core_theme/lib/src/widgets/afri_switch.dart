@@ -24,12 +24,11 @@ class AfriSwitch extends StatelessWidget {
       button: false,
       selected: value,
       child: IgnorePointer(
-        child: Switch(
+        child: Switch.adaptive(
           value: value,
           onChanged: onChanged,
-          activeThumbColor: activeThumbColor ?? ColorTokens.clubAccent,
-          activeTrackColor: (activeThumbColor ?? ColorTokens.clubAccent)
-              .withValues(alpha: 0.32),
+          activeThumbColor: activeThumbColor ?? ColorTokens.onDark,
+          activeTrackColor: ColorTokens.primary,
           inactiveThumbColor: ColorTokens.onSurfaceVariant,
           inactiveTrackColor: ColorTokens.surfaceContainerHigh,
         ),

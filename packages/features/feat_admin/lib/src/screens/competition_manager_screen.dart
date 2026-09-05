@@ -29,12 +29,9 @@ class CompetitionManagerScreen extends ConsumerWidget {
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title: context.afriL10n.adminCompetitionsTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          context.afriL10n.adminCompetitionsTitle,
-          style: TypographyTokens.titleLarge(),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -67,7 +64,9 @@ class CompetitionManagerScreen extends ConsumerWidget {
             )
           : competitions.isLoading && snapshot == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-competitions-state-loading'),
                 title: context.afriL10n.adminCompetitionsLoading,
@@ -96,7 +95,7 @@ class CompetitionManagerScreen extends ConsumerWidget {
       onRefresh: ref.read(adminCompetitionsProvider.notifier).refresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         children: [
           if (_statusBanner(context, competitions) case final banner?) ...[
             banner,
@@ -156,7 +155,7 @@ class CompetitionManagerScreen extends ConsumerWidget {
 
   Widget _disabled(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-competitions-state-disabled'),
         title: context.afriL10n.adminCompetitionsManagementUnavailable,
@@ -220,7 +219,7 @@ class CompetitionManagerScreen extends ConsumerWidget {
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }
@@ -377,13 +376,11 @@ class _CompetitionStats extends StatelessWidget {
         icon: AfriIcons.rank,
         label: context.afriL10n.adminCompetitionsTotal,
         value: '$total',
-        valueColor: ColorTokens.clubAccent,
       ),
       _StatCard(
         icon: AfriIcons.statusSuccess,
         label: context.afriL10n.adminCompetitionsActive,
         value: '$active',
-        valueColor: ColorTokens.success,
       ),
     ];
     if (MediaQuery.textScalerOf(context).scale(1) >= 1.8) {
@@ -413,13 +410,11 @@ class _StatCard extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.value,
-    required this.valueColor,
   });
 
   final IconData icon;
   final String label;
   final String value;
-  final Color valueColor;
 
   @override
   Widget build(BuildContext context) {
@@ -436,10 +431,7 @@ class _StatCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing2),
-          Text(
-            value,
-            style: TypographyTokens.headlineLarge().copyWith(color: valueColor),
-          ),
+          Text(value, style: TypographyTokens.headlineLarge()),
         ],
       ),
     );

@@ -368,7 +368,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
               context.afriL10n.gameTeamProfileTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -408,10 +408,9 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            team?.name.toUpperCase() ??
-                                context.afriL10n.gameTeamUpper,
+                            team?.name ?? context.afriL10n.gameTeamUpper,
                             style: TypographyTokens.headlineLarge().copyWith(
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               height: TypographyTokens.lineHeightCompact,
                             ),
                           ),

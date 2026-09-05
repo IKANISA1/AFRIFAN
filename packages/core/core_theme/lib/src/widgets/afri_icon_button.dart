@@ -23,7 +23,7 @@ class AfriIconButton extends StatelessWidget {
     required this.icon,
     this.onTap,
     this.tooltip,
-    this.filled = true,
+    this.filled = false,
     this.isLoading = false,
   });
 
@@ -32,6 +32,8 @@ class AfriIconButton extends StatelessWidget {
     return AfriPressFeedback(
       onTap: isLoading ? null : onTap,
       tooltip: tooltip,
+      semanticsLabel: tooltip,
+      excludeChildSemantics: tooltip != null,
       builder: (context, state) => AnimatedContainer(
         duration: AfriMotion.surfaceResponse,
         width: SizeTokens.touchTargetMin,
@@ -39,14 +41,14 @@ class AfriIconButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: filled ? ColorTokens.surfaceContainerLow : Colors.transparent,
-          borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
           border: state.isFocused
               ? BorderTokens.focusAll(
                   color: ColorTokens.primaryContainer,
                   opacity: 0.9,
                   width: context.afriDesignTokens.focusRingWidth,
                 )
-              : BorderTokens.ghost(width: BorderTokens.standard),
+              : null,
         ),
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing2),

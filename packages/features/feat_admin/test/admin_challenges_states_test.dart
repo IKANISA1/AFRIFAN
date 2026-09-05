@@ -96,7 +96,7 @@ void main() {
 
     expect(find.text('Challenge access unavailable'), findsOneWidget);
     expect(find.text('2400 FET'), findsNothing);
-    expect(find.text('RETRY SETTLEMENT'), findsNothing);
+    expect(find.text('Retry settlement'), findsNothing);
     await _expectStateGolden(tester, 'permission_denied');
   });
 
@@ -126,7 +126,7 @@ void main() {
 
     expect(find.text('Rayon vs Police'), findsOneWidget);
     expect(find.textContaining('2400 FET'), findsOneWidget);
-    expect(find.text('RETRY SETTLEMENT'), findsOneWidget);
+    expect(find.text('Retry settlement'), findsOneWidget);
   });
 
   testWidgets('syncing retains confirmed items and pauses actions', (
@@ -209,9 +209,9 @@ void main() {
         .selectFilter(AdminChallengeFilter.settled);
     await tester.pumpAndSettle();
 
-    expect(find.text('SETTLED'), findsWidgets);
+    expect(find.text('Settled'), findsWidgets);
     final selectedChip = tester.widget<AfriChoiceChip>(
-      find.widgetWithText(AfriChoiceChip, 'SETTLED'),
+      find.widgetWithText(AfriChoiceChip, 'Settled'),
     );
     expect(selectedChip.selected, isTrue);
     await _expectStateGolden(tester, 'selected');
@@ -246,7 +246,7 @@ void main() {
     expect(tester.widget<AfriButton>(actionKey).enabled, isTrue);
     expect(
       tester.widget<AfriPressFeedback>(pressTarget).semanticsLabel,
-      'RETRY SETTLEMENT',
+      'Retry settlement',
     );
     expect(tester.widget<AfriPressFeedback>(pressTarget).enabled, isTrue);
 
@@ -278,7 +278,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(find.text('Retry settlement?'), findsOneWidget);
-    await tester.tap(find.text('CANCEL'));
+    await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
   });
 
@@ -321,7 +321,7 @@ void main() {
         brightness: brightness,
       );
 
-      expect(find.text('CHALLENGE OPS'), findsOneWidget);
+      expect(find.text('Challenge ops'), findsOneWidget);
       expect(
         Theme.of(tester.element(find.byType(ChallengeOpsScreen))).brightness,
         brightness,

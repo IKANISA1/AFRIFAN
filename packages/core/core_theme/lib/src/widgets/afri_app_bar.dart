@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 
 /// Shared universal route chrome for secondary Flutter screens.
@@ -41,10 +40,10 @@ class AfriAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final foreground = theme.colorScheme.onSurface;
     final effectiveBackground =
-        backgroundColor == Colors.transparent || backgroundColor == null
-        ? ColorTokens.chrome.withValues(alpha: 0.82)
-        : backgroundColor!.withValues(alpha: 0.88);
+        backgroundColor ?? theme.scaffoldBackgroundColor;
 
     final effectiveTitle = switch (title) {
       final Text text => _chromeTextTitle(context, text),
@@ -54,15 +53,17 @@ class AfriAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       automaticallyImplyLeading: automaticallyImplyLeading,
       backgroundColor: effectiveBackground,
-      elevation: elevation == null ? 0 : 0,
+      elevation: 0,
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
-      systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
-      foregroundColor: ColorTokens.chromeForeground,
-      iconTheme: IconThemeData(color: ColorTokens.chromeForeground),
-      titleSpacing: leading == null ? SpacingTokens.spacing5 : 0,
+      systemOverlayStyle:
+          (theme.brightness == Brightness.dark
+                  ? SystemUiOverlayStyle.light
+                  : SystemUiOverlayStyle.dark)
+              .copyWith(statusBarColor: Colors.transparent),
+      foregroundColor: foreground,
+      iconTheme: IconThemeData(color: foreground),
+      titleSpacing: leading == null ? SpacingTokens.screenPadding : 0,
       centerTitle: centerTitle ?? false,
       title: effectiveTitle,
       leading: leading,
@@ -74,7 +75,7 @@ class AfriAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Text _chromeTextTitle(BuildContext context, Text text) {
     final style = (text.style ?? DefaultTextStyle.of(context).style).copyWith(
-      color: ColorTokens.chromeForeground,
+      color: Theme.of(context).colorScheme.onSurface,
     );
     final span = text.textSpan;
     if (span != null) {

@@ -436,7 +436,7 @@ class _StatementSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
     final metricAccent = ColorTokens.accessibleMetricColor(
-      ColorTokens.clubAccent,
+      ColorTokens.primaryContainer,
     );
     return GlassCard(
       key: const ValueKey<String>('statement-summary-card'),
@@ -454,7 +454,7 @@ class _StatementSummaryCard extends StatelessWidget {
             Text(
               groupName,
               style: TypographyTokens.headlineMedium().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
@@ -467,7 +467,7 @@ class _StatementSummaryCard extends StatelessWidget {
               confirmedTotal,
               style: TypographyTokens.displayLarge(
                 metricAccent,
-              ).copyWith(fontWeight: FontWeight.w900),
+              ).copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
@@ -561,14 +561,14 @@ class _FormatCard extends StatelessWidget {
       child: GlassCard(
         animate: false,
         borderColor: selected
-            ? ColorTokens.clubPrimary.withValues(alpha: 0.8)
+            ? ColorTokens.primary.withValues(alpha: 0.8)
             : ColorTokens.ghostBorder,
         child: Column(
           children: [
             Icon(
               icon,
               color: selected
-                  ? ColorTokens.accessibleChartColor(ColorTokens.clubPrimary)
+                  ? ColorTokens.accessibleChartColor(ColorTokens.primary)
                   : ColorTokens.onSurfaceVariant,
             ),
             const SizedBox(height: SpacingTokens.spacing2),
@@ -613,7 +613,7 @@ class _StatementPreview extends StatelessWidget {
           l10n.contributionsPreviewUpper,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.2,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing2),
@@ -685,8 +685,10 @@ class _StatementEntryRow extends StatelessWidget {
               Text(
                 amount,
                 style: TypographyTokens.headlineMedium(
-                  ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
-                ).copyWith(fontWeight: FontWeight.w800),
+                  ColorTokens.accessibleMetricColor(
+                    ColorTokens.primaryContainer,
+                  ),
+                ).copyWith(fontWeight: FontWeight.w600),
               ),
             ] else
               Row(
@@ -705,9 +707,9 @@ class _StatementEntryRow extends StatelessWidget {
                       textAlign: TextAlign.end,
                       style: TypographyTokens.headlineMedium(
                         ColorTokens.accessibleMetricColor(
-                          ColorTokens.clubAccent,
+                          ColorTokens.primaryContainer,
                         ),
-                      ).copyWith(fontWeight: FontWeight.w800),
+                      ).copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],

@@ -37,7 +37,7 @@ class AfriRefreshIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: onRefresh,
-      color: color ?? ColorTokens.clubAccent,
+      color: color ?? ColorTokens.primaryContainer,
       backgroundColor: backgroundColor ?? ColorTokens.surfaceContainerHigh,
       displacement: displacement,
       edgeOffset: edgeOffset,

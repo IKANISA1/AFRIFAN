@@ -255,7 +255,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
           l10n.gameMatchTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
       ),
@@ -329,7 +329,10 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
               (usesAccessibleChrome
                       ? TypographyTokens.titleMedium()
                       : TypographyTokens.titleLarge())
-                  .copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
+                  .copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: TypographyTokens.trackingNone,
+                  ),
         ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
@@ -468,8 +471,8 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                               ? '${fixture.homeScore} - ${fixture.awayScore}'
                               : l10n.gameVsUpper,
                           style: TypographyTokens.titleLarge(
-                            ColorTokens.clubAccent,
-                          ).copyWith(fontWeight: FontWeight.w800),
+                            ColorTokens.primaryContainer,
+                          ).copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
                       Expanded(
@@ -644,7 +647,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
                   partnerPoolEligibilityLabel(l10n, pool.eligibilityMode),
-                  style: TypographyTokens.labelMedium(ColorTokens.clubAccent),
+                  style: TypographyTokens.labelMedium(
+                    ColorTokens.primaryContainer,
+                  ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing5),
                 ...outcomes.map(

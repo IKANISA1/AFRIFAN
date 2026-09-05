@@ -183,14 +183,14 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                 ColorTokens.onSurfaceVariant,
                               ).copyWith(
                                 fontWeight: FontWeight.w700,
-                                letterSpacing: 1.6,
+                                letterSpacing: TypographyTokens.trackingNone,
                               ),
                         ),
                         Text(
                           context.afriL10n.gamePrivacyUpper,
                           style: TypographyTokens.headlineSmall().copyWith(
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 1.6,
+                            letterSpacing: TypographyTokens.trackingNone,
                           ),
                         ),
                       ],
@@ -209,9 +209,13 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                   // ══════════ Core Guarantees ══════════
                   Text(
                     context.afriL10n.gameCoreGuarantees,
-                    style: TypographyTokens.metricLabel(
-                      ColorTokens.onSurfaceVariant,
-                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
+                    style:
+                        TypographyTokens.metricLabel(
+                          ColorTokens.onSurfaceVariant,
+                        ).copyWith(
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: TypographyTokens.trackingNone,
+                        ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   AfriSurfaceCard(
@@ -228,7 +232,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                             const AfriDivider(),
                             _GuaranteeRow(
                               icon: AfriIcons.privacy,
-                              iconColor: ColorTokens.clubAccent,
+                              iconColor: ColorTokens.primaryContainer,
                               title:
                                   context.afriL10n.gameAnonymousContributions,
                               description: context
@@ -247,9 +251,13 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                   // ══════════ Visibility Controls ══════════
                   Text(
                     context.afriL10n.gameVisibilityControls,
-                    style: TypographyTokens.metricLabel(
-                      ColorTokens.onSurfaceVariant,
-                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
+                    style:
+                        TypographyTokens.metricLabel(
+                          ColorTokens.onSurfaceVariant,
+                        ).copyWith(
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: TypographyTokens.trackingNone,
+                        ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   AfriSurfaceCard(
@@ -271,7 +279,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                             ] else ...[
                               _GuaranteeRow(
                                 icon: AfriIcons.visibilityOff,
-                                iconColor: ColorTokens.clubAccent,
+                                iconColor: ColorTokens.primaryContainer,
                                 title: context.afriL10n.gameAliasOnly,
                                 description:
                                     context.afriL10n.gameAliasOnlyDescription,

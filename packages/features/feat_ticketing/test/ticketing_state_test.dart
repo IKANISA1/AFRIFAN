@@ -218,7 +218,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final summary = find.text('CHECKOUT SUMMARY');
+      final summary = find.text('Checkout summary');
       _expectInKeyboardViewport(tester, summary);
       final submit = find.widgetWithText(AfriButton, 'Pay via MOMO');
       await tester.ensureVisible(submit);
@@ -263,7 +263,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('CHECKOUT SUMMARY'), findsOneWidget);
+      expect(find.text('Checkout summary'), findsOneWidget);
       expect(find.text('VIP-7'), findsOneWidget);
       final warning = find.byType(AfriStateBanner);
       final action = find.widgetWithText(AfriButton, 'Payment route not ready');
@@ -308,7 +308,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        final summary = find.text('CHECKOUT SUMMARY');
+        final summary = find.text('Checkout summary');
         final warning = find.byType(AfriStateBanner);
         final action = find.widgetWithText(
           AfriButton,
@@ -459,7 +459,7 @@ void main() {
     await tester.tap(find.text('East Stand'));
     await tester.pumpAndSettle();
 
-    expect(find.text('SELECTED SEAT'), findsOneWidget);
+    expect(find.text('Selected seat'), findsOneWidget);
     expect(find.text('East Stand, Seat 1'), findsOneWidget);
   });
 

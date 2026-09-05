@@ -37,6 +37,7 @@ export 'src/widgets/afri_bottom_sheet.dart';
 export 'src/widgets/afri_brand_mark.dart';
 export 'src/widgets/afri_button.dart';
 export 'src/widgets/afri_chip.dart';
+export 'src/widgets/afri_code_input.dart';
 export 'src/widgets/afri_data_display.dart';
 export 'src/widgets/afri_deep_link_recovery.dart';
 export 'src/widgets/afri_dialog.dart';

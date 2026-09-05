@@ -26,7 +26,7 @@ class ContributionHistorySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          context.afriL10n.contributionHistory.toUpperCase(),
+          context.afriL10n.contributionHistory,
           style: TypographyTokens.titleMedium().copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -99,9 +99,9 @@ class _ContributionRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  record.label.toUpperCase(),
+                  record.label,
                   style: TypographyTokens.labelMedium(
-                    ColorTokens.clubAccent,
+                    ColorTokens.primaryContainer,
                   ).copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: SpacingTokens.spacing1 / 2),

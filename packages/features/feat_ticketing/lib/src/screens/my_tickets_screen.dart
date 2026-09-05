@@ -175,7 +175,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
               borderRadius: ShapeTokens.cardRadius,
               border: BorderTokens.all(
                 color: isActive
-                    ? ColorTokens.clubPrimary.withValues(alpha: 0.5)
+                    ? ColorTokens.primary.withValues(alpha: 0.5)
                     : ColorTokens.ghostBorder,
                 width: isActive ? 1.5 : BorderTokens.standard,
               ),
@@ -195,7 +195,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                       Text(
                         AfriDateFormatter.formatDate(ticket.match.matchDate),
                         style: TypographyTokens.bodyMedium().copyWith(
-                          color: ColorTokens.clubAccent,
+                          color: ColorTokens.primaryContainer,
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
@@ -230,7 +230,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                           borderRadius: ShapeTokens.chipRadius,
                         ),
                         child: Text(
-                          ticket.status.label.toUpperCase(),
+                          ticket.status.label,
                           style: TypographyTokens.labelSmall().copyWith(
                             color: statusColor,
                           ),

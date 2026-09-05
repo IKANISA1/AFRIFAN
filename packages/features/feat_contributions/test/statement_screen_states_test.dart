@@ -407,7 +407,7 @@ void main() {
       ),
       beforeCapture: (tester) async {
         expect(find.text('Statement changed'), findsOneWidget);
-        expect(find.text('REFRESH STATEMENT'), findsOneWidget);
+        expect(find.text('Refresh statement'), findsOneWidget);
       },
     );
   });

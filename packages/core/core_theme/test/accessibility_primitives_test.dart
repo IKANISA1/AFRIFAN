@@ -306,12 +306,12 @@ void main() {
       ),
     );
 
-    final activeTop = tester.getTopLeft(find.text('ACTIVE')).dy;
-    final accuracyTop = tester.getTopLeft(find.text('ACCURACY')).dy;
-    final pointsTop = tester.getTopLeft(find.text('POINTS')).dy;
+    final activeTop = tester.getTopLeft(find.text('Active')).dy;
+    final accuracyTop = tester.getTopLeft(find.text('Accuracy')).dy;
+    final pointsTop = tester.getTopLeft(find.text('Points')).dy;
     expect(accuracyTop, greaterThan(activeTop));
     expect(pointsTop, greaterThan(accuracyTop));
-    for (final label in const <String>['ACTIVE', 'ACCURACY', 'POINTS']) {
+    for (final label in const <String>['Active', 'Accuracy', 'Points']) {
       final paragraph = tester.renderObject<RenderParagraph>(find.text(label));
       expect(
         paragraph.didExceedMaxLines,

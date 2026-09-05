@@ -488,7 +488,7 @@ void main() {
           await tester.pump(const Duration(milliseconds: 300));
           await tester.pumpAndSettle();
 
-          expect(find.byType(PageView), findsOneWidget);
+          expect(find.byType(MatchScoreCard), findsOneWidget);
           final primary = find.text('Open matchday');
           final findCommand = find.text('Find');
           await tester.ensureVisible(findCommand);
@@ -554,6 +554,34 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
     });
+  });
+
+  testWidgets('golden Home populated football overview', (tester) async {
+    await _pumpHomeStateGolden(
+      tester,
+      id: 'populated',
+      homeRepository: const _FakeHomeFeedRepository(
+        snapshot: HomeFeedSnapshot(
+          status: HomeFeedStatus.success,
+          heroSlides: [
+            MatchSlide(
+              homeTeam: 'Home club',
+              awayTeam: 'Visiting club',
+              homeScore: 2,
+              awayScore: 1,
+              status: 'Full time',
+              dateInfo: 'Saturday · 18:00',
+              venue: 'Club stadium',
+              route: '/fanzone',
+            ),
+          ],
+          quickActions: homeFeedLocalFallbackActions,
+          membershipTier: 'Gold',
+          membershipPaymentStatus: 'confirmed',
+        ),
+      ),
+      featureConfigSnapshot: const PlatformConfigSnapshot(),
+    );
   });
 
   for (final profile in _compactGoldenProfiles) {

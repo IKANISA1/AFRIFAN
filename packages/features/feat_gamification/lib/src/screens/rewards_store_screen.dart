@@ -151,7 +151,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
           context.afriL10n.gameRewardsStoreTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -193,7 +193,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
             )
           : AfriRefreshIndicator(
               onRefresh: _load,
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               child: ListView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -216,8 +216,8 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                             wallet?.balance ?? 0,
                           ),
                           style: TypographyTokens.displaySmall(
-                            ColorTokens.clubAccent,
-                          ).copyWith(fontWeight: FontWeight.w900),
+                            ColorTokens.primaryContainer,
+                          ).copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
@@ -257,9 +257,8 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                                   ),
                                   decoration: BoxDecoration(
                                     color: affordable
-                                        ? ColorTokens.clubAccent.withValues(
-                                            alpha: 0.14,
-                                          )
+                                        ? ColorTokens.primaryContainer
+                                              .withValues(alpha: 0.14)
                                         : ColorTokens.surfaceContainerHigh,
                                     borderRadius: BorderRadius.circular(
                                       ShapeTokens.radiusFull,
@@ -269,7 +268,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                                     option.cost,
                                     style: TypographyTokens.labelSmall(
                                       affordable
-                                          ? ColorTokens.clubAccent
+                                          ? ColorTokens.primaryContainer
                                           : ColorTokens.onSurfaceVariant,
                                     ),
                                   ),

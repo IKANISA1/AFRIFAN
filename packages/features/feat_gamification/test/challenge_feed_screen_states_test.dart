@@ -222,7 +222,7 @@ void main() {
           const ValueKey<String>('challenge-create-action'),
         );
         heldGesture = await tester.press(
-          find.bySemanticsLabel('CREATE A NEW CHALLENGE'),
+          find.bySemanticsLabel('Create a new challenge'),
         );
         await tester.pump(const Duration(milliseconds: 120));
         await tester.pump(const Duration(milliseconds: 100));
@@ -249,11 +249,11 @@ void main() {
       id: 'selected',
       value: AsyncData<ChallengeFeedState>(_populatedFeed()),
       beforeCapture: (tester) async {
-        await tester.tap(find.text('Open'));
+        await tester.tap(find.text('Open').first);
         await tester.pumpAndSettle();
         final selected = tester.widget<AfriChoiceChip>(
           find.ancestor(
-            of: find.text('Open'),
+            of: find.text('Open').first,
             matching: find.byType(AfriChoiceChip),
           ),
         );
@@ -279,7 +279,7 @@ void main() {
       textScale: 2,
       beforeCapture: (tester) async {
         expect(
-          find.text('CREATE A NEW CHALLENGE', findRichText: true),
+          find.text('Create a new challenge', findRichText: true),
           findsOneWidget,
         );
       },

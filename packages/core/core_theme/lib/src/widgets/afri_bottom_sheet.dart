@@ -25,51 +25,37 @@ class AfriBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.afriSemanticColors;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colors.appBackground.withValues(alpha: 0.72),
-      ),
+    return AfriSurfaceCard(
+      backgroundColor: colors.overlaySurface,
+      borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadius)),
+      padding: EdgeInsets.zero,
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            SpacingTokens.spacing3,
-            SpacingTokens.spacing0,
-            SpacingTokens.spacing3,
-            SpacingTokens.spacing3,
-          ),
-          child: AfriSurfaceCard(
-            backgroundColor: colors.overlaySurface,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(borderRadius),
-            ),
-            padding:
-                padding ??
-                const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing5,
-                  SpacingTokens.spacing3,
-                  SpacingTokens.spacing5,
-                  SpacingTokens.spacing5,
-                ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Center(
-                  child: Container(
-                    width: AfriComponentSizes.compactSheetHandleWidth,
-                    height: SizeTokens.sheetHandleHeight,
-                    margin: const EdgeInsets.only(
-                      bottom: SpacingTokens.spacing4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colors.tertiaryText.withValues(alpha: 0.5),
-                      borderRadius: ShapeTokens.buttonRadius,
-                    ),
+          padding:
+              padding ??
+              const EdgeInsets.fromLTRB(
+                SpacingTokens.screenPadding,
+                SpacingTokens.spacing3,
+                SpacingTokens.screenPadding,
+                SpacingTokens.screenPadding,
+              ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  width: AfriComponentSizes.compactSheetHandleWidth,
+                  height: SizeTokens.sheetHandleHeight,
+                  margin: const EdgeInsets.only(bottom: SpacingTokens.spacing4),
+                  decoration: BoxDecoration(
+                    color: colors.tertiaryText,
+                    borderRadius: ShapeTokens.buttonRadius,
                   ),
                 ),
-                Flexible(fit: FlexFit.loose, child: child),
-              ],
-            ),
+              ),
+              Flexible(fit: FlexFit.loose, child: child),
+            ],
           ),
         ),
       ),

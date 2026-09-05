@@ -39,7 +39,7 @@ class _ConfettiBurst extends StatefulWidget {
 class _ConfettiBurstState extends State<_ConfettiBurst> {
   static const _particleCount = 24;
   static final _colors = <Color>[
-    ColorTokens.clubAccent,
+    ColorTokens.primaryContainer,
     ColorTokens.success,
     ...ExternalBrandColors.confettiPalette.take(2), // gold + indigo
   ];

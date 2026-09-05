@@ -130,10 +130,7 @@ class PredictionShareService {
       buffer.writeln(l10n.gameFinalScore(data.homeScore!, data.awayScore!));
     }
     buffer.writeln(
-      l10n.gameMarketSelection(
-        data.marketName,
-        data.selectedOutcome.toUpperCase(),
-      ),
+      l10n.gameMarketSelection(data.marketName, data.selectedOutcome),
     );
     if (data.status == PredictionStatus.won) {
       buffer.writeln(l10n.gameEarnedShare(data.fetEarned));
@@ -224,12 +221,13 @@ class PredictionShareCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
-                  data.competitionName.toUpperCase(),
+                  data.competitionName,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TypographyTokens.labelSmall(
-                    accessibleAccent,
-                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+                  style: TypographyTokens.labelSmall(accessibleAccent).copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: TypographyTokens.trackingNone,
+                  ),
                 ),
               ),
               Container(
@@ -243,9 +241,10 @@ class PredictionShareCard extends StatelessWidget {
                 ),
                 child: Text(
                   _statusLabel(context),
-                  style: TypographyTokens.labelSmall(
-                    color,
-                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.0),
+                  style: TypographyTokens.labelSmall(color).copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: TypographyTokens.trackingNone,
+                  ),
                 ),
               ),
             ],
@@ -257,7 +256,7 @@ class PredictionShareCard extends StatelessWidget {
                 Text(
                   data.homeTeamShort.toUpperCase(),
                   style: TypographyTokens.headlineMedium().copyWith(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 Padding(
@@ -272,13 +271,13 @@ class PredictionShareCard extends StatelessWidget {
                         (data.homeScore != null
                                 ? TypographyTokens.headlineSmall(color)
                                 : TypographyTokens.titleSmall(color))
-                            .copyWith(fontWeight: FontWeight.w800),
+                            .copyWith(fontWeight: FontWeight.w600),
                   ),
                 ),
                 Text(
                   data.awayTeamShort.toUpperCase(),
                   style: TypographyTokens.headlineMedium().copyWith(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -290,12 +289,12 @@ class PredictionShareCard extends StatelessWidget {
               children: [
                 _ShareMetric(
                   label: context.afriL10n.gameMarketUpper,
-                  value: data.marketName.toUpperCase(),
+                  value: data.marketName,
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 _ShareMetric(
                   label: context.afriL10n.gamePickUpper,
-                  value: data.selectedOutcome.toUpperCase(),
+                  value: data.selectedOutcome,
                   accent: true,
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
@@ -317,14 +316,14 @@ class PredictionShareCard extends StatelessWidget {
                 Expanded(
                   child: _ShareMetric(
                     label: context.afriL10n.gameMarketUpper,
-                    value: data.marketName.toUpperCase(),
+                    value: data.marketName,
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
                   child: _ShareMetric(
                     label: context.afriL10n.gamePickUpper,
-                    value: data.selectedOutcome.toUpperCase(),
+                    value: data.selectedOutcome,
                     accent: true,
                   ),
                 ),
@@ -345,15 +344,15 @@ class PredictionShareCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing4),
           Center(
             child: Text(
-              context.afriL10n.gameShareTagline(
-                RuntimeBranding.displayAppName.toUpperCase(),
-              ),
+              context.afriL10n.gameShareTagline(RuntimeBranding.displayAppName),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
-              style: TypographyTokens.labelSmall(
-                ColorTokens.onSurfaceVariant,
-              ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.2),
+              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)
+                  .copyWith(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: TypographyTokens.trackingNone,
+                  ),
             ),
           ),
         ],
@@ -388,15 +387,17 @@ class _ShareMetric extends StatelessWidget {
                     context.afriSemanticColors.accent,
                   )
                 : ColorTokens.onSurface,
-          ).copyWith(fontWeight: FontWeight.w800),
+          ).copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: SpacingTokens.spacing1),
         Text(
           label,
           textAlign: TextAlign.center,
-          style: TypographyTokens.labelSmall(
-            ColorTokens.onSurfaceVariant,
-          ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1),
+          style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)
+              .copyWith(
+                fontWeight: FontWeight.w600,
+                letterSpacing: TypographyTokens.trackingNone,
+              ),
         ),
       ],
     );

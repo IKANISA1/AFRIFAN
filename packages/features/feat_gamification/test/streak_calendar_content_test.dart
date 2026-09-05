@@ -38,7 +38,7 @@ void main() {
     expect(find.text('No activity streak has started yet.'), findsNothing);
     expect(find.byKey(const ValueKey<String>('streak-status-empty')), findsOne);
     expect(find.text('0 DAYS'), findsOneWidget);
-    expect(find.text('NEXT BONUS'), findsOneWidget);
+    expect(find.text('Next bonus'), findsOneWidget);
     expect(find.text('3'), findsOneWidget);
   });
 
@@ -62,7 +62,7 @@ void main() {
       );
       expect(find.text('3 DAYS'), findsOneWidget);
       expect(find.text('Streak active.'), findsOneWidget);
-      expect(find.text('BEST'), findsOneWidget);
+      expect(find.text('Best'), findsOneWidget);
       expect(find.text('8'), findsOneWidget);
       expect(find.bySemanticsLabel('Streak day 2: 1 win'), findsOneWidget);
       expect(find.bySemanticsLabel('Streak day 3: 3 wins'), findsOneWidget);

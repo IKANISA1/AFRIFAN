@@ -45,7 +45,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
               )
             : dashboard.isLoading && dashboard.valueOrNull == null
             ? Padding(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                padding: const EdgeInsets.all(SpacingTokens.spacing4),
                 child: AfriStateView.loading(
                   key: const ValueKey<String>('admin-dashboard-state-loading'),
                   title: context.afriL10n.adminLoadingTitle,
@@ -60,7 +60,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                 onRefresh: ref.read(adminDashboardProvider.notifier).refresh,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                  padding: const EdgeInsets.all(SpacingTokens.spacing4),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -100,7 +100,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                 child: Text(
                   context.afriL10n.adminClubAdmin,
                   style: TypographyTokens.titleSmall().copyWith(
-                    letterSpacing: 2,
+                    letterSpacing: TypographyTokens.trackingNone,
                   ),
                 ),
               ),
@@ -114,9 +114,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             context.afriL10n.adminCommandCenter,
-            style: TypographyTokens.displaySmall(
-              ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
-            ),
+            style: TypographyTokens.displaySmall(ColorTokens.onSurface),
           ),
         ],
       );
@@ -130,13 +128,13 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             children: [
               Text(
                 context.afriL10n.adminClubAdmin,
-                style: TypographyTokens.titleSmall().copyWith(letterSpacing: 2),
+                style: TypographyTokens.titleSmall().copyWith(
+                  letterSpacing: TypographyTokens.trackingNone,
+                ),
               ),
               Text(
                 context.afriL10n.adminCommandCenter,
-                style: TypographyTokens.displaySmall(
-                  ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
-                ),
+                style: TypographyTokens.displaySmall(ColorTokens.onSurface),
               ),
             ],
           ),
@@ -194,103 +192,104 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       children: [
         Text(
           context.afriL10n.adminQuickActions,
-          style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.4),
+          style: TypographyTokens.titleMedium().copyWith(
+            letterSpacing: TypographyTokens.trackingNone,
+          ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
-        _AdminActionTile(
-          route: '/admin/cms',
-          title: context.afriL10n.adminManageCms,
-          subtitle: context.afriL10n.adminManageCmsDescription,
-          icon: AfriIcons.article,
-          enabled: enabled,
-          focusNode: widget.firstActionFocusNode,
-          selected:
-              ref.watch(adminDashboardSelectedActionProvider) == '/admin/cms',
-          onTap: () => _openAdminRoute('/admin/cms'),
-        ),
-        const SizedBox(height: SpacingTokens.spacing3),
-        _AdminActionTile(
-          route: '/admin/matches',
-          title: context.afriL10n.adminCreateMatch,
-          subtitle: context.afriL10n.adminCreateMatchDescription,
-          icon: AfriIcons.predict,
-          enabled: enabled,
-          selected:
-              ref.watch(adminDashboardSelectedActionProvider) ==
-              '/admin/matches',
-          onTap: () => _openAdminRoute('/admin/matches'),
-        ),
-        const SizedBox(height: SpacingTokens.spacing3),
-        _AdminActionTile(
-          route: '/admin/contributions',
-          title: context.afriL10n.adminViewContributions,
-          subtitle: context.afriL10n.adminViewContributionsDescription,
-          icon: AfriIcons.contribute,
-          enabled: enabled,
-          selected:
-              ref.watch(adminDashboardSelectedActionProvider) ==
-              '/admin/contributions',
-          onTap: () => _openAdminRoute('/admin/contributions'),
-        ),
-        const SizedBox(height: SpacingTokens.spacing3),
-        _AdminActionTile(
-          route: '/admin/notifications',
-          title: context.afriL10n.adminSendNotification,
-          subtitle: context.afriL10n.adminSendNotificationDescription,
-          icon: AfriIcons.notificationsActive,
-          enabled: enabled,
-          selected:
-              ref.watch(adminDashboardSelectedActionProvider) ==
-              '/admin/notifications',
-          onTap: () => _openAdminRoute('/admin/notifications'),
-        ),
-        const SizedBox(height: SpacingTokens.spacing3),
-        _AdminActionTile(
-          route: '/admin/settle',
-          title: context.afriL10n.adminSettleFixtures,
-          subtitle: context.afriL10n.adminSettleFixturesDescription,
-          icon: AfriIcons.scoreboard,
-          enabled: enabled,
-          selected:
-              ref.watch(adminDashboardSelectedActionProvider) ==
-              '/admin/settle',
-          onTap: () => _openAdminRoute('/admin/settle'),
-        ),
-        const SizedBox(height: SpacingTokens.spacing3),
-        _AdminActionTile(
-          route: '/admin/competitions',
-          title: context.afriL10n.adminManageCompetitions,
-          subtitle: context.afriL10n.adminManageCompetitionsDescription,
-          icon: AfriIcons.rank,
-          enabled: enabled,
-          selected:
-              ref.watch(adminDashboardSelectedActionProvider) ==
-              '/admin/competitions',
-          onTap: () => _openAdminRoute('/admin/competitions'),
-        ),
-        const SizedBox(height: SpacingTokens.spacing3),
-        _AdminActionTile(
-          route: '/admin/sms-monitor',
-          title: context.afriL10n.adminSmsSyncMonitor,
-          subtitle: context.afriL10n.adminSmsSyncMonitorDescription,
-          icon: AfriIcons.sms,
-          enabled: enabled,
-          selected:
-              ref.watch(adminDashboardSelectedActionProvider) ==
-              '/admin/sms-monitor',
-          onTap: () => _openAdminRoute('/admin/sms-monitor'),
-        ),
-        const SizedBox(height: SpacingTokens.spacing3),
-        _AdminActionTile(
-          route: '/admin/features',
-          title: context.afriL10n.adminFeatureManager,
-          subtitle: context.afriL10n.adminFeatureManagerDashboardDescription,
-          icon: AfriIcons.settings,
-          enabled: enabled,
-          selected:
-              ref.watch(adminDashboardSelectedActionProvider) ==
-              '/admin/features',
-          onTap: () => _openAdminRoute('/admin/features'),
+        AfriListGroup(
+          children: [
+            _AdminActionTile(
+              route: '/admin/cms',
+              title: context.afriL10n.adminManageCms,
+              subtitle: context.afriL10n.adminManageCmsDescription,
+              icon: AfriIcons.article,
+              enabled: enabled,
+              focusNode: widget.firstActionFocusNode,
+              selected:
+                  ref.watch(adminDashboardSelectedActionProvider) ==
+                  '/admin/cms',
+              onTap: () => _openAdminRoute('/admin/cms'),
+            ),
+            _AdminActionTile(
+              route: '/admin/matches',
+              title: context.afriL10n.adminCreateMatch,
+              subtitle: context.afriL10n.adminCreateMatchDescription,
+              icon: AfriIcons.predict,
+              enabled: enabled,
+              selected:
+                  ref.watch(adminDashboardSelectedActionProvider) ==
+                  '/admin/matches',
+              onTap: () => _openAdminRoute('/admin/matches'),
+            ),
+            _AdminActionTile(
+              route: '/admin/contributions',
+              title: context.afriL10n.adminViewContributions,
+              subtitle: context.afriL10n.adminViewContributionsDescription,
+              icon: AfriIcons.contribute,
+              enabled: enabled,
+              selected:
+                  ref.watch(adminDashboardSelectedActionProvider) ==
+                  '/admin/contributions',
+              onTap: () => _openAdminRoute('/admin/contributions'),
+            ),
+            _AdminActionTile(
+              route: '/admin/notifications',
+              title: context.afriL10n.adminSendNotification,
+              subtitle: context.afriL10n.adminSendNotificationDescription,
+              icon: AfriIcons.notificationsActive,
+              enabled: enabled,
+              selected:
+                  ref.watch(adminDashboardSelectedActionProvider) ==
+                  '/admin/notifications',
+              onTap: () => _openAdminRoute('/admin/notifications'),
+            ),
+            _AdminActionTile(
+              route: '/admin/settle',
+              title: context.afriL10n.adminSettleFixtures,
+              subtitle: context.afriL10n.adminSettleFixturesDescription,
+              icon: AfriIcons.scoreboard,
+              enabled: enabled,
+              selected:
+                  ref.watch(adminDashboardSelectedActionProvider) ==
+                  '/admin/settle',
+              onTap: () => _openAdminRoute('/admin/settle'),
+            ),
+            _AdminActionTile(
+              route: '/admin/competitions',
+              title: context.afriL10n.adminManageCompetitions,
+              subtitle: context.afriL10n.adminManageCompetitionsDescription,
+              icon: AfriIcons.rank,
+              enabled: enabled,
+              selected:
+                  ref.watch(adminDashboardSelectedActionProvider) ==
+                  '/admin/competitions',
+              onTap: () => _openAdminRoute('/admin/competitions'),
+            ),
+            _AdminActionTile(
+              route: '/admin/sms-monitor',
+              title: context.afriL10n.adminSmsSyncMonitor,
+              subtitle: context.afriL10n.adminSmsSyncMonitorDescription,
+              icon: AfriIcons.sms,
+              enabled: enabled,
+              selected:
+                  ref.watch(adminDashboardSelectedActionProvider) ==
+                  '/admin/sms-monitor',
+              onTap: () => _openAdminRoute('/admin/sms-monitor'),
+            ),
+            _AdminActionTile(
+              route: '/admin/features',
+              title: context.afriL10n.adminFeatureManager,
+              subtitle:
+                  context.afriL10n.adminFeatureManagerDashboardDescription,
+              icon: AfriIcons.settings,
+              enabled: enabled,
+              selected:
+                  ref.watch(adminDashboardSelectedActionProvider) ==
+                  '/admin/features',
+              onTap: () => _openAdminRoute('/admin/features'),
+            ),
+          ],
         ),
       ],
     );
@@ -304,7 +303,9 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         children: [
           Text(
             context.afriL10n.adminRecentActivity,
-            style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
+            style: TypographyTokens.titleMedium().copyWith(
+              letterSpacing: TypographyTokens.trackingNone,
+            ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           if (snapshot.activityUnavailable)
@@ -343,7 +344,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
 
   Widget _buildDisabled() {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.all(SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-dashboard-state-disabled'),
         title: context.afriL10n.adminWorkspaceUnavailable,
@@ -399,7 +400,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.all(SpacingTokens.spacing4),
       child: state,
     );
   }
@@ -478,9 +479,7 @@ class _MetricCard extends StatelessWidget {
             Text(
               value,
               style: TypographyTokens.headlineLarge().copyWith(
-                color: ColorTokens.accessibleMetricColor(
-                  ColorTokens.clubAccent,
-                ),
+                color: ColorTokens.onSurface,
               ),
             ),
           ],
@@ -517,8 +516,10 @@ class _AdminActionTile extends StatelessWidget {
       key: ValueKey<String>('admin-dashboard-action-$route'),
       selected: selected,
       child: AfriSurfaceCard(
+        borderRadius: BorderRadius.zero,
+        padding: const EdgeInsets.all(SpacingTokens.spacing4),
         backgroundColor: selected
-            ? ColorTokens.clubAccent.withValues(alpha: 0.14)
+            ? context.afriSemanticColors.cardSurfaceStrong
             : null,
         enabled: enabled,
         onTap: onTap,
@@ -529,24 +530,25 @@ class _AdminActionTile extends StatelessWidget {
             : 'Unavailable while dashboard data is being checked',
         child: Row(
           children: [
-            Icon(
-              icon,
-              size: 24,
-              color: ColorTokens.accessibleChartColor(ColorTokens.clubAccent),
-            ),
+            Icon(icon, size: 24, color: ColorTokens.onSurface),
             const SizedBox(width: SpacingTokens.spacing4),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title.toUpperCase(),
-                    style: TypographyTokens.titleLarge().copyWith(
+                    title,
+                    style: TypographyTokens.bodyLarge().copyWith(
                       color: ColorTokens.onSurface,
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
-                  Text(subtitle, style: TypographyTokens.bodyMedium()),
+                  Text(
+                    subtitle,
+                    style: TypographyTokens.bodyMedium(
+                      ColorTokens.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -554,7 +556,9 @@ class _AdminActionTile extends StatelessWidget {
             Icon(
               selected ? AfriIcons.statusSuccess : AfriIcons.forward,
               color: selected
-                  ? ColorTokens.accessibleChartColor(ColorTokens.clubAccent)
+                  ? ColorTokens.accessibleChartColor(
+                      ColorTokens.primaryContainer,
+                    )
                   : null,
             ),
           ],

@@ -5,7 +5,6 @@ import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/component_size_tokens.dart';
 import '../tokens/motion_tokens.dart';
-import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
@@ -56,19 +55,19 @@ class AfriQuickAction extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: state.isPressed
-                    ? colors.elevatedBackground
-                    : ColorTokens.surfaceContainerHigh,
+                    ? colors.cardSurfaceStrong
+                    : ColorTokens.onSurface.withValues(alpha: 0.16),
                 border: state.isFocused
                     ? BorderTokens.focusAll(
                         color: ColorTokens.primaryContainer,
                         width: context.afriDesignTokens.focusRingWidth,
                       )
-                    : BorderTokens.all(color: colors.border),
+                    : null,
               ),
               alignment: Alignment.center,
               child: Icon(
                 icon,
-                size: SizeTokens.iconLg,
+                size: AfriComponentSizes.quickActionIcon,
                 color: state.isFocused
                     ? ColorTokens.primaryContainer
                     : colors.primaryText,
@@ -81,7 +80,7 @@ class AfriQuickAction extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: TypographyTokens.labelMedium().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w500,
                 height: TypographyTokens.lineHeightTight,
               ),
             ),

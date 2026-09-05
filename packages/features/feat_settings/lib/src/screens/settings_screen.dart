@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import '../settings_actions.dart';
 import '../settings_route_content_provider.dart';
 import '../widgets/settings_overlays.dart';
+import 'appearance_screen.dart';
 
 export '../support_whatsapp_provider.dart' show supportWhatsAppProvider;
 
@@ -62,47 +63,37 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: SpacingTokens.spacing5),
           ],
 
-          // ── Profile summary ──
-          GlassCard(
+          // The profile is the page identity, followed by one membership row.
+          Center(
             child: Column(
               children: [
-                Row(
-                  children: [
-                    AfriAvatar(
-                      semanticLabel: alias,
-                      initials: l10n.settingsRoleSupporter,
-                      size: SizeTokens.avatarMd,
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing4),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(alias, style: TypographyTokens.titleLarge()),
-                          const SizedBox(height: SpacingTokens.spacing1),
-                          AfriStatusChip(
-                            label: profile?.isAdmin == true
-                                ? l10n.settingsRoleAdmin
-                                : l10n.settingsRoleSupporter,
-                            tone: AfriStatusTone.live,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                AfriAvatar(
+                  semanticLabel: alias,
+                  initials: l10n.settingsRoleSupporter,
+                  size: AfriComponentSizes.profileAvatar,
                 ),
-                const SizedBox(height: SpacingTokens.spacing5),
-                AfriButton(
-                  key: const ValueKey<String>('settings-membership-action'),
-                  label: l10n.settingsMembershipDetails,
-                  labelMaxLines: 2,
-                  onTap: () => context.push('/membership'),
-                  variant: AfriButtonVariant.primary,
+                const SizedBox(height: SpacingTokens.spacing4),
+                Text(alias, style: TypographyTokens.headlineLarge()),
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  profile?.isAdmin == true
+                      ? l10n.settingsRoleAdmin
+                      : l10n.settingsRoleSupporter,
+                  style: TypographyTokens.bodyLarge(
+                    ColorTokens.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: SpacingTokens.spacing8),
+          const SizedBox(height: SpacingTokens.spacing6),
+          AfriListRow(
+            key: const ValueKey<String>('settings-membership-action'),
+            icon: AfriIcons.membership,
+            title: l10n.settingsMembershipDetails,
+            onTap: () => context.push('/membership'),
+          ),
+          const SizedBox(height: SpacingTokens.spacing6),
 
           // ── Account ──
           _buildMinimalistSection(l10n.settingsSectionAccount, [
@@ -123,7 +114,7 @@ class SettingsScreen extends ConsumerWidget {
               icon: AfriIcons.appearance,
               title: l10n.settingsAppearance,
               subtitle: _themeModeLabel(l10n, themeMode),
-              onTap: () => _showAppearanceSheet(context, ref, themeMode),
+              onTap: () => _showAppearance(context, ref, themeMode),
             ),
             AfriListRow(
               key: const ValueKey<String>('settings-notifications-action'),
@@ -309,10 +300,7 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         AfriSectionHeader(title: title, padding: EdgeInsets.zero),
         const SizedBox(height: SpacingTokens.spacing3),
-        ...children.map(
-          (child) =>
-              Padding(padding: const EdgeInsets.only(bottom: 4), child: child),
-        ),
+        AfriListGroup(children: children),
       ],
     );
   }
@@ -325,60 +313,23 @@ class SettingsScreen extends ConsumerWidget {
     };
   }
 
-  Future<void> _showAppearanceSheet(
+  Future<void> _showAppearance(
     BuildContext context,
     WidgetRef ref,
     ThemeMode selectedMode,
   ) async {
-    final l10n = context.afriL10n;
-    final selectedIndex = switch (selectedMode) {
-      ThemeMode.system => 0,
-      ThemeMode.light => 1,
-      ThemeMode.dark => 2,
-    };
-    await showAfriBottomSheet<void>(
-      context: context,
-      useSafeArea: true,
-      builder: (sheetContext) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.settingsAppearance, style: TypographyTokens.titleLarge()),
-          const SizedBox(height: SpacingTokens.spacing2),
-          Text(
-            l10n.settingsAppearanceMessage,
-            style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          AfriSegmentedControl(
-            items: [
-              AfriSegment(label: l10n.settingsThemeSystem),
-              AfriSegment(label: l10n.settingsThemeLight),
-              AfriSegment(label: l10n.settingsThemeDark),
-            ],
-            selectedIndex: selectedIndex,
-            onChanged: (index) {
-              final mode = switch (index) {
-                1 => ThemeMode.light,
-                2 => ThemeMode.dark,
-                _ => ThemeMode.system,
-              };
-              unawaited(
-                ref
-                    .read(themeModeProvider.notifier)
-                    .setThemeMode(
-                      mode,
-                      systemBrightness: MediaQuery.platformBrightnessOf(
-                        context,
-                      ),
-                    ),
-              );
-              Navigator.of(sheetContext).pop();
-            },
-          ),
-        ],
+    final mode = await Navigator.of(context).push<ThemeMode>(
+      MaterialPageRoute(
+        builder: (_) => AppearanceScreen(initialMode: selectedMode),
       ),
     );
+    if (mode == null || !context.mounted) return;
+    await ref
+        .read(themeModeProvider.notifier)
+        .setThemeMode(
+          mode,
+          systemBrightness: MediaQuery.platformBrightnessOf(context),
+        );
   }
 
   Future<void> _openWhatsApp(

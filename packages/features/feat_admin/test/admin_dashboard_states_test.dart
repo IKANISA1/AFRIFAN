@@ -97,7 +97,7 @@ void main() {
 
     expect(find.text('Admin access unavailable'), findsOneWidget);
     expect(find.text('42'), findsNothing);
-    expect(find.text('MANAGE CMS'), findsNothing);
+    expect(find.text('Manage CMS'), findsNothing);
     await _expectStateGolden(tester, 'permission_denied');
   });
 
@@ -124,7 +124,7 @@ void main() {
 
     expect(find.text('42'), findsOneWidget);
     expect(find.text('Season launch'), findsOneWidget);
-    expect(find.text('MANAGE CMS'), findsOneWidget);
+    expect(find.text('Manage CMS'), findsOneWidget);
     final cms = tester.widget<Semantics>(
       find.byKey(const ValueKey<String>('admin-dashboard-action-/admin/cms')),
     );
@@ -293,7 +293,7 @@ void main() {
         brightness: brightness,
       );
 
-      expect(find.text('COMMAND CENTER'), findsOneWidget);
+      expect(find.text('Command center'), findsOneWidget);
       expect(
         Theme.of(tester.element(find.byType(AdminDashboardScreen))).brightness,
         brightness,

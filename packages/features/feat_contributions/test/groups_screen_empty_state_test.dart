@@ -97,7 +97,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Active initiatives'), findsOneWidget);
-      expect(find.text('AWAY DAY SUPPORT'), findsOneWidget);
+      expect(find.text('Away Day Support'), findsOneWidget);
       expect(find.byType(AfriMetricTile), findsNWidgets(2));
     });
   });
@@ -230,7 +230,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('CLUB PROJECTS'), findsOneWidget);
+      expect(find.text('Club projects'), findsOneWidget);
       expect(find.textContaining('No campaigns'), findsNothing);
       expect(find.textContaining('Start a new Group'), findsNothing);
     });
@@ -259,7 +259,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('AWAY DAY SUPPORT'), findsOneWidget);
+      expect(find.text('Away Day Support'), findsOneWidget);
       expect(find.text('Travel support'), findsOneWidget);
       expect(find.textContaining('No campaigns'), findsNothing);
     });
@@ -289,7 +289,7 @@ void main() {
         ConnectivityService.setOnlineForTest(false);
         await tester.pump();
 
-        expect(find.text('AWAY DAY SUPPORT'), findsOneWidget);
+        expect(find.text('Away Day Support'), findsOneWidget);
         final blocked = find.widgetWithText(AfriButton, 'Connection required');
         expect(blocked, findsOneWidget);
         expect(tester.widget<AfriButton>(blocked).enabled, isFalse);

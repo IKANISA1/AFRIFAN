@@ -119,7 +119,7 @@ class _StatTile extends StatelessWidget {
             const SizedBox(height: SpacingTokens.spacing2),
           ],
           Text(
-            stat.label.toUpperCase(),
+            stat.label,
             style: TypographyTokens.metricLabel(supporting),
             maxLines: allowTwoLineLabel ? 2 : 1,
             overflow: allowTwoLineLabel
@@ -173,10 +173,7 @@ class _CompactStat extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            stat.label.toUpperCase(),
-            style: TypographyTokens.metricLabel(supporting),
-          ),
+          Text(stat.label, style: TypographyTokens.metricLabel(supporting)),
           const SizedBox(width: SpacingTokens.spacing2),
           Text(
             stat.value,

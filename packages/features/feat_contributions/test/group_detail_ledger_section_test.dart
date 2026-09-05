@@ -25,7 +25,7 @@ void main() {
     await tester.pumpWidget(buildSubject(const <GroupLedgerEntry>[]));
 
     expect(find.byKey(const ValueKey<String>('group-ledger-empty')), findsOne);
-    expect(find.text('PUBLIC LEDGER'), findsOneWidget);
+    expect(find.text('Public ledger'), findsOneWidget);
     expect(find.text('No contributions yet'), findsOneWidget);
   });
 
@@ -47,8 +47,8 @@ void main() {
       find.byKey(const ValueKey<String>('group-ledger-empty')),
       findsNothing,
     );
-    expect(find.text('PUBLIC LEDGER'), findsOneWidget);
+    expect(find.text('Public ledger'), findsOneWidget);
     expect(find.text('#123456'), findsOneWidget);
-    expect(find.textContaining('CONFIRMED'), findsOneWidget);
+    expect(find.textContaining('Confirmed'), findsOneWidget);
   });
 }

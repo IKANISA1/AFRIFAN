@@ -8,7 +8,6 @@ import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/component_size_tokens.dart';
 import '../tokens/motion_tokens.dart';
-import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
@@ -105,7 +104,7 @@ class AfriSegmentedControl extends StatelessWidget {
       padding: const EdgeInsets.all(AfriComponentSizes.segmentedInset),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+        borderRadius: ShapeTokens.buttonRadius,
       ),
       child: segmentedContent,
     );
@@ -163,7 +162,7 @@ class AfriSegmentedControl extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: isSelected
-                ? ColorTokens.surfaceContainerLowest
+                ? ColorTokens.surfaceContainerHighest
                 : Colors.transparent,
             borderRadius: ShapeTokens.segmentedInnerRadius,
             border: state.isFocused
@@ -172,7 +171,6 @@ class AfriSegmentedControl extends StatelessWidget {
                     width: context.afriDesignTokens.focusRingWidth,
                   )
                 : null,
-            boxShadow: isSelected ? AfriShadows.selectedControl() : null,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
+import 'tier_label.dart';
 
 /// Formats a number with comma separators (e.g. 1,234).
 String formatLeaderboardNumber(int value) {
@@ -56,12 +57,12 @@ class LeaderboardPeriodChip extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: selected
-              ? ColorTokens.clubAccent.withValues(alpha: 0.15)
+              ? ColorTokens.primaryContainer.withValues(alpha: 0.15)
               : ColorTokens.surfaceContainerLow,
           borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
           border: selected
               ? BorderTokens.all(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.4),
+                  color: ColorTokens.primaryContainer.withValues(alpha: 0.4),
                 )
               : BorderTokens.ghost(),
         ),
@@ -70,11 +71,11 @@ class LeaderboardPeriodChip extends StatelessWidget {
           style:
               TypographyTokens.labelSmall(
                 selected
-                    ? ColorTokens.clubAccent
+                    ? ColorTokens.primaryContainer
                     : ColorTokens.onSurfaceVariant,
               ).copyWith(
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                letterSpacing: 0.8,
+                letterSpacing: TypographyTokens.trackingNone,
               ),
         ),
       ),
@@ -111,11 +112,13 @@ class FetPodiumCard extends StatelessWidget {
                   ),
             style:
                 (featured
-                        ? TypographyTokens.headlineLarge(ColorTokens.clubAccent)
+                        ? TypographyTokens.headlineLarge(
+                            ColorTokens.primaryContainer,
+                          )
                         : TypographyTokens.headlineMedium(
                             ColorTokens.onSurfaceVariant,
                           ))
-                    .copyWith(fontWeight: FontWeight.w800),
+                    .copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
@@ -132,9 +135,13 @@ class FetPodiumCard extends StatelessWidget {
                 : context.afriL10n.gamePoints(entry!.totalFetEarned),
             style:
                 (featured
-                        ? TypographyTokens.headlineSmall(ColorTokens.clubAccent)
-                        : TypographyTokens.titleLarge(ColorTokens.clubAccent))
-                    .copyWith(fontWeight: FontWeight.w800),
+                        ? TypographyTokens.headlineSmall(
+                            ColorTokens.primaryContainer,
+                          )
+                        : TypographyTokens.titleLarge(
+                            ColorTokens.primaryContainer,
+                          ))
+                    .copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -153,10 +160,10 @@ class FetUserRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(SpacingTokens.spacing3),
       decoration: BoxDecoration(
-        color: ColorTokens.clubAccent.withValues(alpha: 0.10),
+        color: ColorTokens.primaryContainer.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: BorderTokens.all(
-          color: ColorTokens.clubAccent.withValues(alpha: 0.3),
+          color: ColorTokens.primaryContainer.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -168,8 +175,8 @@ class FetUserRow extends StatelessWidget {
                 entry.rank.toString().padLeft(2, '0'),
               ),
               style: TypographyTokens.headlineSmall(
-                ColorTokens.clubAccent,
-              ).copyWith(fontWeight: FontWeight.w800),
+                ColorTokens.primaryContainer,
+              ).copyWith(fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -204,8 +211,8 @@ class FetUserRow extends StatelessWidget {
           Text(
             context.afriL10n.gamePoints(entry.totalFetEarned),
             style: TypographyTokens.titleLarge(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w800),
+              ColorTokens.primaryContainer,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -226,12 +233,12 @@ class FetListRow extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing3),
       decoration: BoxDecoration(
         color: isMe
-            ? ColorTokens.clubAccent.withValues(alpha: 0.10)
+            ? ColorTokens.primaryContainer.withValues(alpha: 0.10)
             : ColorTokens.surfaceContainerLow,
         borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: isMe
             ? BorderTokens.all(
-                color: ColorTokens.clubAccent.withValues(alpha: 0.3),
+                color: ColorTokens.primaryContainer.withValues(alpha: 0.3),
               )
             : BorderTokens.ghost(),
       ),
@@ -245,9 +252,9 @@ class FetListRow extends StatelessWidget {
               ),
               style: TypographyTokens.headlineSmall(
                 entry.rank <= 3
-                    ? ColorTokens.clubAccent
+                    ? ColorTokens.primaryContainer
                     : ColorTokens.onSurface,
-              ).copyWith(fontWeight: FontWeight.w800),
+              ).copyWith(fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -290,8 +297,8 @@ class FetListRow extends StatelessWidget {
               Text(
                 context.afriL10n.gamePoints(entry.totalFetEarned),
                 style: TypographyTokens.titleLarge(
-                  ColorTokens.clubAccent,
-                ).copyWith(fontWeight: FontWeight.w800),
+                  ColorTokens.primaryContainer,
+                ).copyWith(fontWeight: FontWeight.w600),
               ),
               Text(
                 context.afriL10n.gameSettledCount(entry.totalSettled),
@@ -338,11 +345,13 @@ class SupporterPodiumCard extends StatelessWidget {
                   ),
             style:
                 (featured
-                        ? TypographyTokens.headlineLarge(ColorTokens.clubAccent)
+                        ? TypographyTokens.headlineLarge(
+                            ColorTokens.primaryContainer,
+                          )
                         : TypographyTokens.headlineMedium(
                             ColorTokens.onSurfaceVariant,
                           ))
-                    .copyWith(fontWeight: FontWeight.w800),
+                    .copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
@@ -361,13 +370,19 @@ class SupporterPodiumCard extends StatelessWidget {
                   ),
             style:
                 (featured
-                        ? TypographyTokens.headlineSmall(ColorTokens.clubAccent)
-                        : TypographyTokens.titleLarge(ColorTokens.clubAccent))
-                    .copyWith(fontWeight: FontWeight.w800),
+                        ? TypographyTokens.headlineSmall(
+                            ColorTokens.primaryContainer,
+                          )
+                        : TypographyTokens.titleLarge(
+                            ColorTokens.primaryContainer,
+                          ))
+                    .copyWith(fontWeight: FontWeight.w600),
           ),
           if (entry != null) ...[
             const SizedBox(height: SpacingTokens.spacing1),
-            _LeaderboardBadge(label: entry!.tier.toUpperCase()),
+            _LeaderboardBadge(
+              label: fanTierLabel(context.afriL10n, entry!.tier),
+            ),
           ],
         ],
       ),
@@ -386,10 +401,10 @@ class SupporterUserRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(SpacingTokens.spacing3),
       decoration: BoxDecoration(
-        color: ColorTokens.clubAccent.withValues(alpha: 0.10),
+        color: ColorTokens.primaryContainer.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: BorderTokens.all(
-          color: ColorTokens.clubAccent.withValues(alpha: 0.3),
+          color: ColorTokens.primaryContainer.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -401,8 +416,8 @@ class SupporterUserRow extends StatelessWidget {
                 entry.rank.toString().padLeft(2, '0'),
               ),
               style: TypographyTokens.headlineSmall(
-                ColorTokens.clubAccent,
-              ).copyWith(fontWeight: FontWeight.w800),
+                ColorTokens.primaryContainer,
+              ).copyWith(fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -426,7 +441,7 @@ class SupporterUserRow extends StatelessWidget {
                 const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
                   context.afriL10n.gameTierAlias(
-                    entry.tier.toUpperCase(),
+                    fanTierLabel(context.afriL10n, entry.tier),
                     entry.supporterAlias,
                   ),
                   style: TypographyTokens.bodySmall(),
@@ -439,8 +454,8 @@ class SupporterUserRow extends StatelessWidget {
               formatLeaderboardNumber(entry.totalFet),
             ),
             style: TypographyTokens.titleLarge(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w800),
+              ColorTokens.primaryContainer,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -461,12 +476,12 @@ class SupporterListRow extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing3),
       decoration: BoxDecoration(
         color: isMe
-            ? ColorTokens.clubAccent.withValues(alpha: 0.10)
+            ? ColorTokens.primaryContainer.withValues(alpha: 0.10)
             : ColorTokens.surfaceContainerLow,
         borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: isMe
             ? BorderTokens.all(
-                color: ColorTokens.clubAccent.withValues(alpha: 0.3),
+                color: ColorTokens.primaryContainer.withValues(alpha: 0.3),
               )
             : BorderTokens.ghost(),
       ),
@@ -480,9 +495,9 @@ class SupporterListRow extends StatelessWidget {
               ),
               style: TypographyTokens.headlineSmall(
                 entry.rank <= 3
-                    ? ColorTokens.clubAccent
+                    ? ColorTokens.primaryContainer
                     : ColorTokens.onSurface,
-              ).copyWith(fontWeight: FontWeight.w800),
+              ).copyWith(fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -511,7 +526,7 @@ class SupporterListRow extends StatelessWidget {
                 const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
                   context.afriL10n.gameTierAlias(
-                    entry.tier.toUpperCase(),
+                    fanTierLabel(context.afriL10n, entry.tier),
                     entry.supporterAlias,
                   ),
                   style: TypographyTokens.bodySmall(),
@@ -524,8 +539,8 @@ class SupporterListRow extends StatelessWidget {
               formatLeaderboardNumber(entry.totalFet),
             ),
             style: TypographyTokens.titleLarge(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w800),
+              ColorTokens.primaryContainer,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -551,7 +566,7 @@ class _RankBadge extends StatelessWidget {
         AfriIcons.rank,
         size: SpacingTokens.spacing7,
         color: rank == 1
-            ? ColorTokens.clubAccent
+            ? ColorTokens.primaryContainer
             : ColorTokens.onSurfaceVariant,
       ),
     );
@@ -573,7 +588,7 @@ class _LeaderboardBadge extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: selected
-            ? ColorTokens.clubAccent
+            ? ColorTokens.primaryContainer
             : ColorTokens.surfaceContainerLow,
         borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
       ),
@@ -583,7 +598,7 @@ class _LeaderboardBadge extends StatelessWidget {
             TypographyTokens.labelSmall(
               selected ? ColorTokens.background : ColorTokens.onSurfaceVariant,
             ).copyWith(
-              fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w700,
               letterSpacing: selected ? 1.2 : 1.0,
             ),
       ),

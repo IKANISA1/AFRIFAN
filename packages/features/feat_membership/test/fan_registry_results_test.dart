@@ -52,9 +52,9 @@ void main() {
         ),
       );
 
-      expect(find.text('SUPPORTER 1024'), findsOneWidget);
+      expect(find.text('Supporter 1024'), findsOneWidget);
       expect(find.text('2400 activity'), findsOneWidget);
-      expect(find.text('GOLD'), findsOneWidget);
+      expect(find.text('Gold'), findsOneWidget);
       expect(find.textContaining('No registered fans'), findsNothing);
     });
   });

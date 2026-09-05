@@ -109,14 +109,14 @@ void main() {
   testWidgets('selected filter exposes current selection', (tester) async {
     await _pumpMatches(tester, gateway: _Gateway(<Object>[_workspace]));
 
-    await tester.tap(find.widgetWithText(AfriChoiceChip, 'LIVE'));
+    await tester.tap(find.widgetWithText(AfriChoiceChip, 'Live'));
     await tester.pumpAndSettle();
 
     final selected = tester.widget<AfriChoiceChip>(
-      find.widgetWithText(AfriChoiceChip, 'LIVE'),
+      find.widgetWithText(AfriChoiceChip, 'Live'),
     );
     expect(selected.selected, isTrue);
-    expect(find.textContaining('POLICE FC'), findsOneWidget);
+    expect(find.textContaining('Police FC'), findsOneWidget);
     expect(find.textContaining('APR FC'), findsNothing);
     await _expectStateGolden(tester, 'selected');
   });
@@ -189,7 +189,7 @@ void main() {
         brightness: brightness,
       );
 
-      expect(find.text('MATCHES'), findsOneWidget);
+      expect(find.text('Matches'), findsOneWidget);
       expect(
         Theme.of(tester.element(find.byType(MatchManagerScreen))).brightness,
         brightness,

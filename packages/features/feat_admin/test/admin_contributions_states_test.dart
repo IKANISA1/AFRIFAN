@@ -37,7 +37,7 @@ void main() {
     );
 
     expect(find.text('Loading contributions'), findsOneWidget);
-    expect(find.text('STADIUM LIGHTS'), findsNothing);
+    expect(find.text('Stadium Lights'), findsNothing);
     await _expectStateGolden(tester, 'loading');
     pending.complete(_workspace);
     await tester.pumpAndSettle();
@@ -74,7 +74,7 @@ void main() {
     );
 
     expect(find.text('Contribution monitor offline'), findsOneWidget);
-    expect(find.text('STADIUM LIGHTS'), findsNothing);
+    expect(find.text('Stadium Lights'), findsNothing);
     await _expectStateGolden(tester, 'offline');
   });
 
@@ -89,7 +89,7 @@ void main() {
     );
 
     expect(find.text('Contribution access unavailable'), findsOneWidget);
-    expect(find.text('STADIUM LIGHTS'), findsNothing);
+    expect(find.text('Stadium Lights'), findsNothing);
     expect(find.text('Export privacy-safe report'), findsNothing);
     await _expectStateGolden(tester, 'permission_denied');
   });
@@ -106,7 +106,7 @@ void main() {
       find.textContaining('disabled for this controlled build'),
       findsOneWidget,
     );
-    expect(find.text('STADIUM LIGHTS'), findsNothing);
+    expect(find.text('Stadium Lights'), findsNothing);
     await _expectStateGolden(tester, 'disabled');
   });
 
@@ -115,12 +115,12 @@ void main() {
   ) async {
     await _pumpContributions(tester, gateway: _Gateway(<Object>[_workspace]));
 
-    await tester.tap(find.text('COMMUNITY'));
+    await tester.tap(find.text('Community'));
     await tester.pumpAndSettle();
 
     expect(find.text('No groups match'), findsOneWidget);
     final selected = tester.widget<AfriChoiceChip>(
-      find.widgetWithText(AfriChoiceChip, 'COMMUNITY'),
+      find.widgetWithText(AfriChoiceChip, 'Community'),
     );
     expect(selected.selected, isTrue);
     await _expectStateGolden(tester, 'selected');
@@ -200,7 +200,7 @@ void main() {
         brightness: brightness,
       );
 
-      expect(find.text('CONTRIBUTIONS'), findsOneWidget);
+      expect(find.text('Contributions'), findsOneWidget);
       expect(
         Theme.of(
           tester.element(find.byType(ContributionsMonitorScreen)),
@@ -223,11 +223,11 @@ void main() {
     await tester.pump();
 
     expect(find.text('Refreshing contributions'), findsOneWidget);
-    expect(find.text('STADIUM LIGHTS'), findsOneWidget);
+    expect(find.text('Stadium Lights'), findsOneWidget);
     expect(
       tester
           .widget<AfriChoiceChip>(
-            find.widgetWithText(AfriChoiceChip, 'COMMUNITY'),
+            find.widgetWithText(AfriChoiceChip, 'Community'),
           )
           .onSelected,
       isNull,
@@ -248,7 +248,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Contribution data changed'), findsOneWidget);
-    expect(find.text('STADIUM LIGHTS'), findsOneWidget);
+    expect(find.text('Stadium Lights'), findsOneWidget);
     expect(find.textContaining('Controls are paused'), findsOneWidget);
     await _expectStateGolden(tester, 'conflict');
   });
@@ -266,7 +266,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Security check timed out'), findsOneWidget);
-    expect(find.text('STADIUM LIGHTS'), findsOneWidget);
+    expect(find.text('Stadium Lights'), findsOneWidget);
     expect(find.textContaining('private-payment-reference'), findsNothing);
     await _expectStateGolden(tester, 'security_timeout');
   });

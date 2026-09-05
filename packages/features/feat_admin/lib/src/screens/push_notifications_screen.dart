@@ -258,12 +258,9 @@ class _PushNotificationsScreenState
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title: context.afriL10n.adminNotificationSendTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          context.afriL10n.adminNotificationSendTitle,
-          style: TypographyTokens.titleLarge(),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -282,7 +279,9 @@ class _PushNotificationsScreenState
             )
           : notifications.isLoading && snapshot == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>(
                   'admin-notifications-state-loading',
@@ -323,7 +322,7 @@ class _PushNotificationsScreenState
       onRefresh: ref.read(adminNotificationsProvider.notifier).refresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         children: [
           if (_statusBanner(notifications) case final banner?) ...[
             banner,
@@ -533,7 +532,9 @@ class _PushNotificationsScreenState
           const SizedBox(height: SpacingTokens.spacing6),
           Text(
             context.afriL10n.adminNotificationSendHistory,
-            style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
+            style: TypographyTokens.titleMedium().copyWith(
+              letterSpacing: TypographyTokens.trackingNone,
+            ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           if (snapshot.history.isEmpty)
@@ -560,7 +561,7 @@ class _PushNotificationsScreenState
 
   Widget _disabled() {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-notifications-state-disabled'),
         title: context.afriL10n.adminNotificationManagementUnavailable,
@@ -618,7 +619,7 @@ class _PushNotificationsScreenState
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }

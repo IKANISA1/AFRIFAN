@@ -301,7 +301,7 @@ class MatchMarketCard extends ConsumerWidget {
                             ColorTokens.onSurfaceVariant,
                           ).copyWith(
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 0.8,
+                            letterSpacing: TypographyTokens.trackingNone,
                           ),
                     ),
                   ),
@@ -336,7 +336,9 @@ class MatchMarketCard extends ConsumerWidget {
               const SizedBox(width: SpacingTokens.spacing3),
               Text(
                 context.afriL10n.gamePoints(market.fetValue),
-                style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
+                style: TypographyTokens.labelSmall(
+                  ColorTokens.primaryContainer,
+                ),
               ),
             ],
           ),
@@ -361,7 +363,7 @@ class MatchMarketCard extends ConsumerWidget {
                               size:
                                   SpacingTokens.spacing3 +
                                   SpacingTokens.spacing1 / 2,
-                              color: ColorTokens.clubAccent,
+                              color: ColorTokens.primaryContainer,
                             )
                           : null,
                       onTap: () {

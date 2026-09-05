@@ -88,7 +88,7 @@ class _TierDetailScreenState extends ConsumerState<TierDetailScreen> {
           ? _TierConsequence(
               title: l10n.tierUnavailableTitle,
               body: l10n.tierDisabledMessage,
-              actionLabel: l10n.backToMembership.toUpperCase(),
+              actionLabel: l10n.backToMembership,
               onAction: _close,
             )
           : asyncDetail.when(
@@ -103,7 +103,7 @@ class _TierDetailScreenState extends ConsumerState<TierDetailScreen> {
                   return _TierConsequence(
                     title: l10n.tierNotFoundTitle,
                     body: l10n.tierNotFoundMessage,
-                    actionLabel: l10n.backToMembership.toUpperCase(),
+                    actionLabel: l10n.backToMembership,
                     onAction: _close,
                   );
                 }
@@ -120,34 +120,34 @@ class _TierDetailScreenState extends ConsumerState<TierDetailScreen> {
       TierDetailFailureKind.offline => _TierConsequence(
         title: l10n.tierOfflineTitle,
         body: l10n.tierOfflineMessage,
-        actionLabel: l10n.backToMembership.toUpperCase(),
+        actionLabel: l10n.backToMembership,
         onAction: _close,
         offline: true,
       ),
       TierDetailFailureKind.permissionDenied => _TierConsequence(
         title: l10n.tierAccessDeniedTitle,
         body: l10n.tierAccessDeniedMessage,
-        actionLabel: l10n.backToMembership.toUpperCase(),
+        actionLabel: l10n.backToMembership,
         onAction: _close,
       ),
       TierDetailFailureKind.securityTimeout => _TierConsequence(
         title: l10n.tierTimeoutTitle,
         body: l10n.tierTimeoutMessage,
-        actionLabel: l10n.tryAgain.toUpperCase(),
+        actionLabel: l10n.tryAgain,
         onAction: () =>
             ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
       ),
       TierDetailFailureKind.conflict => _TierConsequence(
         title: l10n.tierChangedTitle,
         body: l10n.tierChangedMessage,
-        actionLabel: l10n.tryAgain.toUpperCase(),
+        actionLabel: l10n.tryAgain,
         onAction: () =>
             ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
       ),
       TierDetailFailureKind.unknown => _TierConsequence(
         title: l10n.tierUnavailableTitle,
         body: l10n.tierLoadUnavailableMessage,
-        actionLabel: l10n.tryAgain.toUpperCase(),
+        actionLabel: l10n.tryAgain,
         onAction: () =>
             ref.read(tierDetailProvider(widget.tierId).notifier).refresh(),
       ),
@@ -185,8 +185,8 @@ class _TierDetailScreenState extends ConsumerState<TierDetailScreen> {
                       shape: BoxShape.circle,
                       gradient: ColorTokens.universalGradient(
                         colors: [
-                          ColorTokens.clubAccent.withValues(alpha: 0.9),
-                          ColorTokens.clubPrimary,
+                          ColorTokens.primaryContainer.withValues(alpha: 0.9),
+                          ColorTokens.primary,
                         ],
                       ),
                     ),
@@ -198,7 +198,7 @@ class _TierDetailScreenState extends ConsumerState<TierDetailScreen> {
                     detail.title,
                     textAlign: TextAlign.center,
                     style: TypographyTokens.headlineSmall().copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
@@ -349,7 +349,7 @@ class _PerkCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title.toUpperCase(),
+            title,
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -391,7 +391,7 @@ class _TierPriceLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = TypographyTokens.headlineLarge().copyWith(
-      fontWeight: FontWeight.w800,
+      fontWeight: FontWeight.w600,
     );
     final parts = label.split(' / ');
     final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;

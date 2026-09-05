@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../extensions.dart';
+import '../tokens/afri_semantic_colors.dart';
 import '../tokens/color_tokens.dart';
 
 /// Full-screen route background using universal premium mobile gradient families.
@@ -18,30 +20,52 @@ class GradientBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gradient = colors == null
-        ? ColorTokens.screenGradientForPath(routePath)
+        ? ColorTokens.screenGradientForPath(
+            routePath,
+            Theme.of(context).brightness,
+          )
         : LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: colors!,
           );
 
+    final route = Uri.tryParse(routePath ?? '')?.path;
+    final overview = const ['/home', '/club', '/fanzone'].contains(route);
+    final auth = const ['/auth/phone', '/auth/otp'].contains(route);
+    final theme = Theme.of(context);
+    final semantic = context.afriSemanticColors;
+    final content = (overview || auth) && theme.brightness == Brightness.dark
+        ? Theme(
+            data: theme.copyWith(
+              extensions: [
+                for (final extension in theme.extensions.values)
+                  if (extension is! AfriSemanticColors) extension,
+                semantic.copyWith(
+                  cardSurface: overview
+                      ? ColorTokens.overviewSurfaceForPath(route!)
+                      : semantic.cardSurface,
+                  cardSurfaceStrong: overview
+                      ? Color.alphaBlend(
+                          ColorTokens.onDark.withValues(alpha: 0.12),
+                          ColorTokens.overviewSurfaceForPath(route!),
+                        )
+                      : semantic.cardSurfaceStrong,
+                  secondaryText: ColorTokens.onDark.withValues(
+                    alpha: auth ? 0.85 : 0.8,
+                  ),
+                  tertiaryText: ColorTokens.onDark.withValues(alpha: 0.75),
+                ),
+              ],
+            ),
+            child: child,
+          )
+        : child;
     return Stack(
       fit: StackFit.expand,
       children: [
         DecoratedBox(decoration: BoxDecoration(gradient: gradient)),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.black.withValues(alpha: 0.02),
-                Colors.black.withValues(alpha: 0.18),
-              ],
-            ),
-          ),
-        ),
-        child,
+        content,
       ],
     );
   }

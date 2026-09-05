@@ -215,7 +215,7 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
                 Text(
                   l10n.venueOrderHero,
                   style: TypographyTokens.headlineLarge().copyWith(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     height: TypographyTokens.lineHeightCompact,
                   ),
                 ),
@@ -395,7 +395,7 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
     return Text(
       _money(state.currencyCode, state.totalAmount),
       style: TypographyTokens.headlineSmall().copyWith(
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w600,
       ),
     );
   }

@@ -32,13 +32,13 @@ class GroupCard extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.15),
+                  color: ColorTokens.primaryContainer.withValues(alpha: 0.15),
                   borderRadius: ShapeTokens.chipRadius,
                 ),
                 child: Center(
                   child: Icon(
                     AfriIcons.groups,
-                    color: ColorTokens.clubAccent,
+                    color: ColorTokens.primaryContainer,
                     size: 20,
                   ),
                 ),
@@ -49,10 +49,10 @@ class GroupCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name.toUpperCase(),
+                      name,
                       style: TypographyTokens.titleMedium().copyWith(
                         fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
+                        letterSpacing: TypographyTokens.trackingNone,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -82,7 +82,7 @@ class GroupCard extends StatelessWidget {
                 value: progress,
                 minHeight: 4,
                 backgroundColor: ColorTokens.surfaceContainerHigh,
-                color: ColorTokens.clubAccent,
+                color: ColorTokens.primaryContainer,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing1),

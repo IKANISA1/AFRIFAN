@@ -60,20 +60,10 @@ class FanzoneHubScreen extends ConsumerWidget {
     final l10n = context.afriL10n;
     final asyncHub = ref.watch(fanzoneHubProvider);
     final notifier = ref.read(fanzoneHubProvider.notifier);
-    final storePolicy = ref.watch(storeReleasePolicyProvider);
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AfriAppBar(
-        title: Text(l10n.navFanZone, style: TypographyTokens.headlineSmall()),
-        actions: [
-          AfriIconButton(
-            icon: AfriIcons.more,
-            onTap: () => _showOverflow(context, storePolicy),
-            tooltip: l10n.gameMoreOptions,
-          ),
-        ],
-      ),
+      showAppBar: false,
       scrollable: false,
       constrainContent: false,
       bottomNavigationAware: true,
@@ -118,11 +108,32 @@ class FanzoneHubScreen extends ConsumerWidget {
     );
 
     return GradientBackground(
+      routePath: '/fanzone',
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
         slivers: [
+          SliverToBoxAdapter(
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                child: AfriTopCommandBar(
+                  searchHint: context.afriL10n.homeSearchHint,
+                  onSearchTap: () => context.push('/search'),
+                  onAvatarTap: () => context.go('/settings'),
+                  actions: [
+                    AfriTopCommandAction(
+                      icon: AfriIcons.more,
+                      label: context.afriL10n.gameMoreOptions,
+                      onTap: () => _showOverflow(context, storePolicy),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -185,14 +196,35 @@ class FanzoneHubScreen extends ConsumerWidget {
     final profile = ref.watch(currentUserProvider);
 
     return GradientBackground(
+      routePath: '/fanzone',
       child: AfriRefreshIndicator(
         onRefresh: () => notifier.refresh(),
-        color: ColorTokens.clubAccent,
+        color: ColorTokens.primaryContainer,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),
           ),
           slivers: [
+            SliverToBoxAdapter(
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                  child: AfriTopCommandBar(
+                    searchHint: context.afriL10n.homeSearchHint,
+                    onSearchTap: () => context.push('/search'),
+                    onAvatarTap: () => context.go('/settings'),
+                    actions: [
+                      AfriTopCommandAction(
+                        icon: AfriIcons.more,
+                        label: context.afriL10n.gameMoreOptions,
+                        onTap: () => _showOverflow(context, storePolicy),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             if (isRefreshing)
               SliverToBoxAdapter(
                 child: Padding(
@@ -770,7 +802,9 @@ class FanzoneHubScreen extends ConsumerWidget {
                     parentContext.afriL10n,
                     pool.eligibilityMode,
                   ),
-                  style: TypographyTokens.labelMedium(ColorTokens.clubAccent),
+                  style: TypographyTokens.labelMedium(
+                    ColorTokens.primaryContainer,
+                  ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing5),
                 ...outcomes.map(
@@ -959,7 +993,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                   label: context.afriL10n.gameStreakLabel,
                   value: '$streak',
                   icon: AfriIcons.streak,
-                  accentColor: ColorTokens.clubAccent,
+                  accentColor: ColorTokens.primaryContainer,
                 ),
                 AfriStat(
                   label: context.afriL10n.gameAccuracyLabel,
@@ -1048,7 +1082,7 @@ class _AchievementRail extends StatelessWidget {
           label: context.afriL10n.gameStreakLabel,
           value: '$streak',
           icon: AfriIcons.streak,
-          accentColor: ColorTokens.clubAccent,
+          accentColor: ColorTokens.primaryContainer,
           onTap: onTap,
         ),
         AfriStat(
@@ -1101,7 +1135,7 @@ class _HubActionList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final featureConfig = ref.watch(featureConfigServiceProvider);
-    return Column(
+    return AfriListGroup(
       children: actions
           .map((action) {
             final featureKey = action.featureKey;
@@ -1112,23 +1146,20 @@ class _HubActionList extends ConsumerWidget {
               return const SizedBox.shrink();
             }
             final enabled = access?.isAvailable ?? true;
-            final row = Padding(
-              padding: const EdgeInsets.only(bottom: SpacingTokens.listItemGap),
-              child: AfriListRow(
-                icon: action.icon,
-                title: action.title,
-                subtitle: enabled
-                    ? action.subtitle
-                    : context.afriL10n.gameActionUnavailable(action.subtitle),
-                trailing: enabled
-                    ? null
-                    : AfriInfoChip(
-                        label: context.afriL10n.settingsUnavailable,
-                        color: ColorTokens.warning,
-                      ),
-                onTap: enabled ? action.onTap : null,
-                enabled: enabled,
-              ),
+            final row = AfriListRow(
+              icon: action.icon,
+              title: action.title,
+              subtitle: enabled
+                  ? action.subtitle
+                  : context.afriL10n.gameActionUnavailable(action.subtitle),
+              trailing: enabled
+                  ? null
+                  : AfriInfoChip(
+                      label: context.afriL10n.settingsUnavailable,
+                      color: ColorTokens.warning,
+                    ),
+              onTap: enabled ? action.onTap : null,
+              enabled: enabled,
             );
             return row;
           })

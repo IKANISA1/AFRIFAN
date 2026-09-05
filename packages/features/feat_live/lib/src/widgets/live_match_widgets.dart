@@ -97,8 +97,8 @@ class _AbbreviationFallback extends StatelessWidget {
         label,
         style: TypographyTokens.monolithFont(
           fontSize: size * 0.38,
-          fontWeight: FontWeight.w900,
-          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.w700,
+          fontStyle: FontStyle.normal,
           color: ColorTokens.onDark,
         ),
       ),
@@ -265,14 +265,14 @@ class LiveStatBox extends StatelessWidget {
                   label,
                   style: TypographyTokens.labelSmall(
                     ColorTokens.onDarkFaint,
-                  ).copyWith(fontWeight: FontWeight.w900),
+                  ).copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
                   value,
                   style: TypographyTokens.metricValue(
                     ColorTokens.onDark,
-                  ).copyWith(fontStyle: FontStyle.italic),
+                  ).copyWith(fontStyle: FontStyle.normal),
                 ),
               ],
             ),
@@ -311,13 +311,15 @@ class CommentaryCard extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: ColorTokens.clubAccent.withValues(alpha: 0.1),
+                color: ColorTokens.primaryContainer.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
               ),
               alignment: Alignment.center,
               child: Text(
                 minute,
-                style: TypographyTokens.labelMedium(ColorTokens.clubAccent),
+                style: TypographyTokens.labelMedium(
+                  ColorTokens.primaryContainer,
+                ),
               ),
             ),
           const SizedBox(width: SpacingTokens.spacing4),

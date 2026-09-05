@@ -54,8 +54,8 @@ void main() {
         ),
       );
 
-      expect(find.text('IKIPE YACU NYARUGENGE'), findsOneWidget);
-      expect(find.text('KIGALI • 42 MEMBERS'), findsOneWidget);
+      expect(find.text('Ikipe Yacu Nyarugenge'), findsOneWidget);
+      expect(find.text('Kigali • 42 members'), findsOneWidget);
       expect(find.text('Request review'), findsOneWidget);
       expect(find.textContaining('No fan clubs'), findsNothing);
     });

@@ -121,7 +121,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
               context.afriL10n.gameLeagueHubTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -151,7 +151,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
             )
           : AfriRefreshIndicator(
               onRefresh: () => _load(competition?.slug),
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               child: ListView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -178,7 +178,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: selected
-                                    ? ColorTokens.clubAccent.withValues(
+                                    ? ColorTokens.primaryContainer.withValues(
                                         alpha: 0.16,
                                       )
                                     : ColorTokens.surfaceContainerHigh,
@@ -190,7 +190,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                                 item.shortName.toUpperCase(),
                                 style: TypographyTokens.labelSmall(
                                   selected
-                                      ? ColorTokens.clubAccent
+                                      ? ColorTokens.primaryContainer
                                       : ColorTokens.onSurfaceVariant,
                                 ),
                               ),
@@ -205,10 +205,9 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          competition?.name.toUpperCase() ??
-                              context.afriL10n.gameCompetition,
+                          competition?.name ?? context.afriL10n.gameCompetition,
                           style: TypographyTokens.headlineLarge().copyWith(
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             height: TypographyTokens.lineHeightCompact,
                           ),
                         ),
@@ -341,8 +340,8 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                                         style: TypographyTokens.titleMedium(
                                           fixture.isLive
                                               ? ColorTokens.success
-                                              : ColorTokens.clubAccent,
-                                        ).copyWith(fontWeight: FontWeight.w800),
+                                              : ColorTokens.primaryContainer,
+                                        ).copyWith(fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
@@ -374,14 +373,14 @@ class _LeagueMetric extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label.toUpperCase(),
+            label,
             style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
             value,
             style: TypographyTokens.titleLarge().copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -446,9 +445,9 @@ class _LeagueStandingRow extends StatelessWidget {
                 entry.position.toString(),
                 style: TypographyTokens.titleMedium(
                   entry.position <= 3
-                      ? ColorTokens.clubAccent
+                      ? ColorTokens.primaryContainer
                       : ColorTokens.onSurface,
-                ).copyWith(fontWeight: FontWeight.w800),
+                ).copyWith(fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(width: SpacingTokens.spacing3),
@@ -473,7 +472,7 @@ class _LeagueStandingRow extends StatelessWidget {
             Text(
               context.afriL10n.gamePointBalance(entry.points),
               style: TypographyTokens.titleMedium().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],

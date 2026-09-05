@@ -68,7 +68,7 @@ void main() {
         ],
         'packages/features/feat_onboarding/lib/src/screens/onboarding_screen.dart':
             [
-              'if (!AfriMotion.reduceMotion(context))',
+              'if (AfriMotion.reduceMotion(context))',
               '_pageController.jumpToPage(next)',
               'AfriMotion.resolve(context, AfriMotion.standard)',
             ],

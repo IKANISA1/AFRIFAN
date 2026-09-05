@@ -51,7 +51,7 @@ class StatsRow extends StatelessWidget {
             label: context.afriL10n.homeRankLabel,
             value: '#${fanRank.toString().padLeft(3, '0')}',
             icon: AfriIcons.rank,
-            accentColor: ColorTokens.clubAccent,
+            accentColor: ColorTokens.primaryContainer,
             onTap: onRankTap,
           ),
       ],

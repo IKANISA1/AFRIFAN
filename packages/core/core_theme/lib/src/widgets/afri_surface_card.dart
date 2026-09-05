@@ -4,7 +4,6 @@ import '../extensions.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/motion_tokens.dart';
-import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_press_feedback.dart';
@@ -49,8 +48,7 @@ class AfriSurfaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveColor =
-        backgroundColor ??
-        ColorTokens.surfaceContainerLow.withValues(alpha: 0.78);
+        backgroundColor ?? context.afriSemanticColors.cardSurface;
     final effectiveRadius = borderRadius ?? ShapeTokens.cardRadius;
 
     final surface = Opacity(
@@ -135,9 +133,14 @@ class _AfriSurface extends StatelessWidget {
       curve: Curves.easeOutCubic,
       width: width,
       height: height,
-      padding: padding ?? const EdgeInsets.all(SpacingTokens.spacing5),
+      padding: padding ?? const EdgeInsets.all(SpacingTokens.cardPadding),
       decoration: BoxDecoration(
-        color: color,
+        color: isPressed
+            ? Color.alphaBlend(
+                colors.primaryText.withValues(alpha: 0.06),
+                color,
+              )
+            : color,
         borderRadius: radius,
         border: isFocused
             ? BorderTokens.focusAll(
@@ -149,11 +152,7 @@ class _AfriSurface extends StatelessWidget {
               )
             : highContrast
             ? BorderTokens.all(color: colors.border, width: BorderTokens.strong)
-            : BorderTokens.ghost(width: BorderTokens.standard),
-        boxShadow: [
-          ...AfriShadows.floating(Brightness.dark, strength: 0.82),
-          if (isPressed) AfriShadows.pressedInner(),
-        ],
+            : null,
       ),
       child: child,
     );

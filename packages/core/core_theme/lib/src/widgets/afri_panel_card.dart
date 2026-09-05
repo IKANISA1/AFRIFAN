@@ -51,19 +51,25 @@ class AfriPanelCard extends StatelessWidget {
           duration: AfriMotion.surfaceResponse,
           width: width,
           height: height,
-          padding: padding ?? const EdgeInsets.all(SpacingTokens.spacing5),
+          padding: padding ?? const EdgeInsets.all(SpacingTokens.cardPadding),
           decoration: BoxDecoration(
-            color: backgroundColor ?? ColorTokens.surface,
+            color: backgroundColor ?? colors.cardSurface,
             borderRadius: ShapeTokens.cardRadius,
-            border: BorderTokens.all(
-              color: state.isFocused
-                  ? (highContrast ? colors.primaryText : ColorTokens.clubAccent)
-                  : (borderColor ??
-                        (highContrast
-                            ? colors.border
-                            : ColorTokens.ghostBorder)),
-              width: highContrast ? BorderTokens.strong : BorderTokens.standard,
-            ),
+            border: state.isFocused || highContrast || borderColor != null
+                ? BorderTokens.all(
+                    color: state.isFocused
+                        ? (highContrast
+                              ? colors.primaryText
+                              : ColorTokens.primaryContainer)
+                        : (borderColor ??
+                              (highContrast
+                                  ? colors.border
+                                  : ColorTokens.ghostBorder)),
+                    width: highContrast
+                        ? BorderTokens.strong
+                        : BorderTokens.standard,
+                  )
+                : null,
           ),
           child: builder != null ? builder!(context, state) : child!,
         ),

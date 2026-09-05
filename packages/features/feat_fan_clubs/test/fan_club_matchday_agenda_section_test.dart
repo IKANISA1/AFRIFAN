@@ -28,7 +28,7 @@ void main() {
       find.byKey(const ValueKey<String>('fan-club-matchday-agenda-empty')),
       findsOneWidget,
     );
-    expect(find.text('MATCHDAY AGENDA'), findsNothing);
+    expect(find.text('Matchday agenda'), findsNothing);
     expect(find.textContaining('unlock'), findsNothing);
   });
 
@@ -39,7 +39,7 @@ void main() {
       find.byKey(const ValueKey<String>('fan-club-matchday-agenda-empty')),
       findsOneWidget,
     );
-    expect(find.text('MATCHDAY AGENDA'), findsNothing);
+    expect(find.text('Matchday agenda'), findsNothing);
     expect(find.textContaining('No upcoming club fixture'), findsNothing);
   });
 
@@ -50,7 +50,7 @@ void main() {
       find.byKey(const ValueKey<String>('fan-club-matchday-agenda-empty')),
       findsNothing,
     );
-    expect(find.text('MATCHDAY AGENDA'), findsOneWidget);
+    expect(find.text('Matchday agenda'), findsOneWidget);
     expect(find.text('Rayon Sports vs APR'), findsOneWidget);
     expect(find.text('Primus League  •  Amahoro Stadium'), findsOneWidget);
     expect(find.text('2026-07-01  •  18:00'), findsOneWidget);
@@ -62,14 +62,14 @@ void main() {
     await tester.pumpWidget(
       buildSubject(isActive: true, match: _match, locale: const Locale('fr')),
     );
-    expect(find.text('PROGRAMME DU JOUR DE MATCH'), findsOneWidget);
+    expect(find.text('Programme du jour de match'), findsOneWidget);
     expect(find.text('Rayon Sports contre APR'), findsOneWidget);
 
     await tester.pumpWidget(
       buildSubject(isActive: true, match: _match, locale: const Locale('rw')),
     );
     await tester.pump();
-    expect(find.text('GAHUNDA Y’UMUNSI W’UMUKINO'), findsOneWidget);
+    expect(find.text('Gahunda y’umunsi w’umukino'), findsOneWidget);
     expect(find.text('Rayon Sports na APR'), findsOneWidget);
   });
 }

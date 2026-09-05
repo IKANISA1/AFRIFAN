@@ -87,7 +87,7 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
           context.afriL10n.gameTokenHistoryTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -117,7 +117,7 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
             )
           : AfriRefreshIndicator(
               onRefresh: _load,
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               child: ListView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -289,7 +289,7 @@ class _TokenHistoryTransactionCard extends StatelessWidget {
                     ),
                     style: TypographyTokens.titleMedium(
                       color,
-                    ).copyWith(fontWeight: FontWeight.w800),
+                    ).copyWith(fontWeight: FontWeight.w600),
                   ),
                   Text(
                     context.afriL10n.gameWalletBalance(
@@ -331,14 +331,14 @@ class _HistoryMetric extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label.toUpperCase(),
+            label,
             style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
             value,
             style: TypographyTokens.titleLarge().copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -369,14 +369,16 @@ class _HistoryFilterChip extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: selected
-              ? ColorTokens.clubAccent.withValues(alpha: 0.16)
+              ? ColorTokens.primaryContainer.withValues(alpha: 0.16)
               : ColorTokens.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
         ),
         child: Text(
           label,
           style: TypographyTokens.labelSmall(
-            selected ? ColorTokens.clubAccent : ColorTokens.onSurfaceVariant,
+            selected
+                ? ColorTokens.primaryContainer
+                : ColorTokens.onSurfaceVariant,
           ),
         ),
       ),

@@ -17,19 +17,19 @@ void main() {
   testWidgets('French Admin journey uses the FR catalog', (tester) async {
     await _pumpFeatureManager(tester, const Locale('fr'));
 
-    expect(find.text('GESTIONNAIRE DE FONCTIONNALITÉS'), findsOneWidget);
-    expect(find.text('ENREGISTRÉES'), findsOneWidget);
-    expect(find.text('ACTIVÉES'), findsWidgets);
-    expect(find.text('FEATURE MANAGER'), findsNothing);
+    expect(find.text('Gestionnaire de fonctionnalités'), findsOneWidget);
+    expect(find.text('Enregistrées'), findsOneWidget);
+    expect(find.text('Activées'), findsWidgets);
+    expect(find.text('Feature manager'), findsNothing);
   });
 
   testWidgets('Kinyarwanda Admin journey uses the RW catalog', (tester) async {
     await _pumpFeatureManager(tester, const Locale('rw'));
 
-    expect(find.text('IGENZURA RY’IBIRANGA'), findsOneWidget);
-    expect(find.text('BYANDITSWE'), findsOneWidget);
-    expect(find.text('BYEMEWE'), findsWidgets);
-    expect(find.text('FEATURE MANAGER'), findsNothing);
+    expect(find.text('Igenzura ry’ibiranga'), findsOneWidget);
+    expect(find.text('Byanditswe'), findsOneWidget);
+    expect(find.text('Byemewe'), findsWidgets);
+    expect(find.text('Feature manager'), findsNothing);
   });
 }
 

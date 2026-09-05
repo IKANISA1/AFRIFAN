@@ -101,7 +101,7 @@ void main() {
       ),
       check: (_) async {
         expect(find.text('Seat map access denied'), findsOneWidget);
-        expect(find.text('TRY AGAIN'), findsNothing);
+        expect(find.text('Try again'), findsNothing);
       },
     );
   });
@@ -158,7 +158,7 @@ void main() {
       ),
       check: (tester) async {
         gesture = await tester.startGesture(
-          tester.getCenter(find.text('REFRESH SEAT MAP')),
+          tester.getCenter(find.text('Refresh seat map')),
         );
         await tester.pump(const Duration(milliseconds: 120));
         await tester.pump(const Duration(milliseconds: 40));
@@ -265,7 +265,7 @@ void main() {
       ),
       check: (_) async {
         expect(find.text('Seat map changed'), findsOneWidget);
-        expect(find.text('REFRESH SEAT MAP'), findsOneWidget);
+        expect(find.text('Refresh seat map'), findsOneWidget);
       },
     );
   });

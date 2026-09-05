@@ -176,10 +176,18 @@ void main() {
           find.byKey(const ValueKey<String>('settings-appearance-action')),
         );
         await tester.pumpAndSettle();
-        final selector = tester.widget<AfriSegmentedControl>(
-          find.byType(AfriSegmentedControl),
+        expect(
+          find.byKey(const ValueKey('appearance-mode-system')),
+          findsOneWidget,
         );
-        expect(selector.selectedIndex, 0);
+        expect(
+          tester
+              .widget<AfriButton>(
+                find.byKey(const ValueKey('appearance-apply')),
+              )
+              .enabled,
+          isFalse,
+        );
         expect(
           find.text('Choose a theme or follow your device setting.'),
           findsOneWidget,

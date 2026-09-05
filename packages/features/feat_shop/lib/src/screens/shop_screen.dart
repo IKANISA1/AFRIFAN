@@ -264,7 +264,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(SpacingTokens.spacing1),
                     decoration: BoxDecoration(
-                      color: ColorTokens.clubAccent,
+                      color: ColorTokens.primaryContainer,
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(
@@ -480,18 +480,18 @@ class ShopCatalogSlivers extends StatelessWidget {
                     label: Text(cat == 'All' ? l10n.shopAllCategory : cat),
                     selected: isSelected,
                     onSelected: (_) => onCategorySelected(cat),
-                    selectedColor: ColorTokens.clubAccent.withValues(
+                    selectedColor: ColorTokens.primaryContainer.withValues(
                       alpha: 0.2,
                     ),
                     labelStyle: TypographyTokens.labelSmall(
                       isSelected
-                          ? ColorTokens.clubAccent
+                          ? ColorTokens.primaryContainer
                           : ColorTokens.onSurfaceVariant,
                     ),
                     backgroundColor: ColorTokens.transparent,
                     side: BorderTokens.side(
                       color: isSelected
-                          ? ColorTokens.clubAccent
+                          ? ColorTokens.primaryContainer
                           : ColorTokens.ghostBorder,
                     ),
                     shape: RoundedRectangleBorder(

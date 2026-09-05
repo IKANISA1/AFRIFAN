@@ -32,7 +32,6 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _isSubmitting = false;
   final PageController _pageController = PageController();
-  Timer? _slideTimer;
   int _currentSlide = 0;
 
   List<_WelcomeSlide> _slidesFor({
@@ -70,30 +69,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _slideTimer?.cancel();
-    if (!AfriMotion.reduceMotion(context)) {
-      _slideTimer = Timer.periodic(AfriMotion.carouselInterval, (_) {
-        if (!mounted || !_pageController.hasClients) return;
-        final next = (_currentSlide + 1) % 3;
-        unawaited(
-          _pageController.animateToPage(
-            next,
-            duration: AfriMotion.resolve(
-              context,
-              AfriMotion.carouselTransition,
-            ),
-            curve: Curves.easeInOutCubic,
-          ),
-        );
-      });
-    }
-  }
-
-  @override
   void dispose() {
-    _slideTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -415,7 +391,7 @@ class _WelcomeBackground extends StatelessWidget {
             (constraints.maxHeight * MediaQuery.devicePixelRatioOf(context))
                 .ceil(),
         errorFallback: ColoredBox(
-          color: ColorTokens.clubPrimary,
+          color: ColorTokens.primary,
           child: isLargeText
               ? null
               : const Center(

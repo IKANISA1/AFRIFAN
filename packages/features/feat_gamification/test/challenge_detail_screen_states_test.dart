@@ -288,7 +288,7 @@ void main() {
           scrollable: _routeScrollable(),
         );
         heldGesture = await tester.press(
-          find.bySemanticsLabel('JOIN WITH 3000 pts'),
+          find.bySemanticsLabel('Join with 3000 pts'),
         );
         await tester.pump(const Duration(milliseconds: 120));
         await tester.pump(const Duration(milliseconds: 100));
@@ -431,7 +431,7 @@ void main() {
       ),
       settle: false,
       beforeCapture: (tester) async {
-        expect(find.text('Joining challenge'), findsOneWidget);
+        expect(find.text('Joining challenge'), findsNWidgets(2));
         expect(find.text('RAY'), findsWidgets);
       },
     );
@@ -452,7 +452,7 @@ void main() {
       ),
       beforeCapture: (tester) async {
         expect(find.text('Challenge data changed'), findsOneWidget);
-        expect(find.text('REFRESH CHALLENGE'), findsOneWidget);
+        expect(find.text('Refresh challenge'), findsOneWidget);
         expect(find.text('RAY'), findsWidgets);
       },
     );

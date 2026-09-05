@@ -271,12 +271,12 @@ void main() {
         PredictionDetailState(detail: _pendingDetail(selectedOutcome: 'Draw')),
       ),
       beforeCapture: (tester) async {
-        await tester.scrollUntilVisible(find.text('SELECTION').first, 260);
+        await tester.scrollUntilVisible(find.text('Selection').first, 260);
         final selectedMetric = find.byWidgetPredicate(
           (widget) =>
               widget is Semantics &&
               widget.properties.selected == true &&
-              widget.properties.label == 'Selected SELECTION DRAW',
+              widget.properties.label == 'Selected Selection DRAW',
           description: 'selected prediction detail metric semantics',
         );
         expect(selectedMetric, findsOneWidget);
@@ -298,7 +298,7 @@ void main() {
           const ValueKey<String>('prediction-detail-browse-action'),
         );
         await tester.scrollUntilVisible(action, 220);
-        expect(find.text('BROWSE FIXTURES'), findsOneWidget);
+        expect(find.text('Browse fixtures'), findsOneWidget);
         expect(find.textContaining('private-slip'), findsNothing);
       },
     );
@@ -308,18 +308,18 @@ void main() {
       in const <({Locale locale, String title, String browse})>[
         (
           locale: Locale('en'),
-          title: 'ACTIVITY DETAIL',
-          browse: 'BROWSE FIXTURES',
+          title: 'Activity detail',
+          browse: 'Browse fixtures',
         ),
         (
           locale: Locale('fr'),
-          title: 'DÉTAIL DE L’ACTIVITÉ',
-          browse: 'PARCOURIR LES MATCHS',
+          title: 'Détail de l’activité',
+          browse: 'Parcourir les matchs',
         ),
         (
           locale: Locale('rw'),
-          title: 'IBISOBANURO BY’IGIKORWA',
-          browse: 'REBA IMIKINO',
+          title: 'Ibisobanuro by’igikorwa',
+          browse: 'Reba imikino',
         ),
       ]) {
     testWidgets(
@@ -423,7 +423,7 @@ void main() {
       ),
       beforeCapture: (tester) async {
         expect(find.text('Activity data changed'), findsOneWidget);
-        expect(find.text('REFRESH ACTIVITY'), findsOneWidget);
+        expect(find.text('Refresh activity'), findsOneWidget);
       },
     );
   });

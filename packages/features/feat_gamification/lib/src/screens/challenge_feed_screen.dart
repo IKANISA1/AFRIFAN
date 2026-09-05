@@ -72,9 +72,13 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                   backgroundColor: ColorTokens.transparent,
                   title: Text(
                     l10n.feedChallengeTitle,
-                    style: TypographyTokens.headlineSmall(
-                      ColorTokens.chromeForeground,
-                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
+                    style:
+                        TypographyTokens.headlineSmall(
+                          ColorTokens.chromeForeground,
+                        ).copyWith(
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: TypographyTokens.trackingNone,
+                        ),
                   ),
                   actions: [
                     AfriIconButton(

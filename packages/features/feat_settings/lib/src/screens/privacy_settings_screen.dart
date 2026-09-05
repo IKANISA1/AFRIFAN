@@ -614,7 +614,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                             Text(
                               _localStatusMessage!,
                               style: TypographyTokens.bodySmall(
-                                ColorTokens.clubAccent,
+                                ColorTokens.primaryContainer,
                               ),
                             ),
                           ],

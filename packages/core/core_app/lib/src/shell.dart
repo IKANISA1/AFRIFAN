@@ -11,9 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 /// Navigation shell — hosts the bottom nav and manages tab switching.
-///
-/// "Icon-only by default. On press: icon scales up (1.2x),
-/// label appears below, haptic 'pop' triggered."
+/// Labels stay visible at ordinary text sizes; enlarged text retains
+/// accessible destination names with compact icons.
 class AppShell extends ConsumerWidget {
   final StatefulNavigationShell shell;
   final ClubConfig config;

@@ -36,12 +36,9 @@ class ContributionsMonitorScreen extends ConsumerWidget {
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title: context.afriL10n.adminContributionsTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          context.afriL10n.adminContributionsTitle,
-          style: TypographyTokens.titleLarge(),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -62,7 +59,9 @@ class ContributionsMonitorScreen extends ConsumerWidget {
             )
           : contributions.isLoading && snapshot == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>(
                   'admin-contributions-state-loading',
@@ -93,15 +92,13 @@ class ContributionsMonitorScreen extends ConsumerWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final currency = NumberFormat.decimalPattern(locale);
     final currencySymbol = context.afriCurrencySymbol;
-    final metricColor = Theme.of(context).brightness == Brightness.dark
-        ? ColorTokens.clubAccent
-        : ColorTokens.onSurface;
+    final metricColor = ColorTokens.onSurface;
 
     return AfriRefreshIndicator(
       onRefresh: ref.read(adminContributionsProvider.notifier).refresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         children: [
           if (_statusBanner(context, contributions) case final banner?) ...[
             banner,
@@ -219,7 +216,7 @@ class ContributionsMonitorScreen extends ConsumerWidget {
 
   Widget _disabled(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-contributions-state-disabled'),
         title: context.afriL10n.adminContributionsUnavailable,
@@ -281,7 +278,7 @@ class ContributionsMonitorScreen extends ConsumerWidget {
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }
@@ -420,7 +417,7 @@ class _ContributionGroupCard extends StatelessWidget {
               alignment: WrapAlignment.spaceBetween,
               children: [
                 Text(
-                  item.name.toUpperCase(),
+                  item.name,
                   style: TypographyTokens.titleLarge().copyWith(
                     color: ColorTokens.onSurface,
                   ),
@@ -514,7 +511,7 @@ class _StateChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: active
-            ? ColorTokens.clubAccent.withValues(alpha: 0.15)
+            ? ColorTokens.primaryContainer.withValues(alpha: 0.15)
             : ColorTokens.surfaceContainerLow,
         borderRadius: ShapeTokens.buttonRadius,
       ),

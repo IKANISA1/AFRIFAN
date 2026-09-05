@@ -24,20 +24,14 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(
-          find.text(l10n.contributionConfirmTitle.toUpperCase()),
-          findsOneWidget,
-        );
+        expect(find.text(l10n.contributionConfirmTitle), findsOneWidget);
         expect(
           find.text(l10n.contributionConfirmQuestion('Gold')),
           findsOneWidget,
         );
         expect(find.text(l10n.contributionNotYet), findsOneWidget);
         expect(find.text(l10n.contributionYesPaid), findsOneWidget);
-        expect(
-          find.text(l10n.contributionPrivacy.toUpperCase()),
-          findsOneWidget,
-        );
+        expect(find.text(l10n.contributionPrivacy), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
@@ -61,8 +55,8 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(find.text(l10n.membershipBrandWatermark), findsOneWidget);
-        expect(find.text(l10n.share.toUpperCase()), findsOneWidget);
+        expect(find.text('Rayon Sports FC'), findsOneWidget);
+        expect(find.byTooltip(l10n.shareMembershipCard), findsOneWidget);
         expect(find.text(l10n.membershipSince('2026')), findsOneWidget);
         expect(find.bySemanticsLabel(l10n.shareMembershipCard), findsOneWidget);
         expect(tester.takeException(), isNull);

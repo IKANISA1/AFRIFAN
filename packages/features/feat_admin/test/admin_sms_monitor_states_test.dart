@@ -241,6 +241,7 @@ Future<ProviderContainer> _pump(
           return ClubConfigScope(
             config: ClubConfig.fallback(),
             child: MaterialApp.router(
+              debugShowCheckedModeBanner: false,
               theme: ClubTheme.from(
                 ClubConfig.fallback(),
                 brightness: brightness,

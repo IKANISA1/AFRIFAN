@@ -120,33 +120,32 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
 
         return AfriScreenScaffold(
           backgroundColor: ColorTokens.background,
-          appBar: AfriAppBar(
-            title: Text(
-              l10n.challengeCreateTitle,
-              style: TypographyTokens.titleLarge(
-                ColorTokens.chromeForeground,
-              ).copyWith(fontWeight: FontWeight.w700),
-            ),
-          ),
+          title: l10n.challengeCreateTitle,
           scrollable: false,
           constrainContent: true,
           child: createAsync.when(
             loading: () => Padding(
-              padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.screenPadding,
+              ),
               child: AfriStateView.loading(
                 title: l10n.challengeFindingFixtures,
                 message: l10n.challengeFindingFixturesBody,
               ),
             ),
             error: (error, _) => Padding(
-              padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.screenPadding,
+              ),
               child: _buildFailureView(error, isOnline),
             ),
             data: (state) {
               if (state.fixtures.isEmpty) {
                 return ListView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: SpacingTokens.screenPadding,
+                  ),
                   children: [
                     AfriStateView.empty(
                       title: l10n.challengeNoFixtures,
@@ -241,7 +240,9 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
       child: ListView(
         key: const ValueKey<String>('challenge-create-scroll-view'),
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+        padding: const EdgeInsets.symmetric(
+          vertical: SpacingTokens.screenPadding,
+        ),
         children: [
           if (isRefreshing || isSubmitting) ...[
             AfriStateBanner(
@@ -323,8 +324,8 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                       Text(
                         l10n.challengeVersusUpper,
                         style: TypographyTokens.labelSmall(
-                          ColorTokens.clubAccent,
-                        ).copyWith(fontWeight: FontWeight.w800),
+                          ColorTokens.primaryContainer,
+                        ).copyWith(fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: SpacingTokens.spacing3),
                       _ScoreCounter(
@@ -358,8 +359,8 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                         child: Text(
                           ':',
                           style: TypographyTokens.metricValue(
-                            ColorTokens.clubAccent,
-                          ).copyWith(fontWeight: FontWeight.w900),
+                            ColorTokens.primaryContainer,
+                          ).copyWith(fontWeight: FontWeight.w700),
                         ),
                       ),
                       Expanded(
@@ -569,7 +570,7 @@ class _SummaryCard extends StatelessWidget {
                   fixture.awayTeamName,
                 ),
                 style: TypographyTokens.titleMedium().copyWith(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
@@ -589,7 +590,7 @@ class _SummaryCard extends StatelessWidget {
                     homeScore: homeScore,
                     awayScore: awayScore,
                     label: l10n.challengeYourPick,
-                    accent: ColorTokens.clubAccent,
+                    accent: ColorTokens.primaryContainer,
                   ),
                   _MetaChip(label: l10n.challengeBalancePoints(balance)),
                   _MetaChip(label: l10n.challengeLocksAtKickoff),
@@ -634,7 +635,7 @@ class _SummaryCard extends StatelessWidget {
               homeScore: homeScore,
               awayScore: awayScore,
               label: l10n.challengeYourPick,
-              accent: ColorTokens.clubAccent,
+              accent: ColorTokens.primaryContainer,
             ),
             _MetaChip(label: l10n.challengeBalancePoints(balance)),
             _MetaChip(label: l10n.challengeLocksAtKickoff),
@@ -746,7 +747,7 @@ class _ScoreCounter extends StatelessWidget {
             Text(
               '$value',
               style: TypographyTokens.headlineLarge().copyWith(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             AfriIconButton(

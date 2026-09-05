@@ -33,12 +33,9 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title: context.afriL10n.adminSmsTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          context.afriL10n.adminSmsTitle,
-          style: TypographyTokens.titleLarge(),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -57,7 +54,9 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
             )
           : monitor.isLoading && snapshot == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-sms-state-loading'),
                 title: context.afriL10n.adminSmsLoading,
@@ -78,7 +77,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
         onRefresh: ref.read(adminSmsMonitorProvider.notifier).refresh,
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
           children: [
             if (_statusBanner(monitor) case final banner?) ...[
               banner,
@@ -99,7 +98,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
       onRefresh: ref.read(adminSmsMonitorProvider.notifier).refresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         children: [
           if (_statusBanner(monitor) case final banner?) ...[
             banner,
@@ -214,7 +213,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        metric.label.toUpperCase(),
+                        metric.label,
                         style: TypographyTokens.titleMedium(),
                       ),
                     ),
@@ -269,7 +268,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
 
   Widget _disabled() {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-sms-state-disabled'),
         title: context.afriL10n.adminSmsUnavailable,
@@ -323,7 +322,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }
@@ -377,9 +376,7 @@ class _MetricValue extends StatelessWidget {
         children: [
           Text(
             '$value',
-            style: TypographyTokens.headlineSmall(
-              ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
-            ),
+            style: TypographyTokens.headlineSmall(ColorTokens.onSurface),
           ),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(label, style: TypographyTokens.labelSmall()),

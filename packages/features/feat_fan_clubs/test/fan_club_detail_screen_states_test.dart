@@ -100,7 +100,7 @@ void main() {
       ),
       check: (_) async {
         expect(find.text('Fan club access denied'), findsOneWidget);
-        expect(find.text('TRY AGAIN'), findsNothing);
+        expect(find.text('Try again'), findsNothing);
       },
     );
   });
@@ -159,7 +159,7 @@ void main() {
       ),
       check: (tester) async {
         gesture = await tester.startGesture(
-          tester.getCenter(find.text('REFRESH CLUB')),
+          tester.getCenter(find.text('Refresh club')),
         );
         await tester.pump(const Duration(milliseconds: 120));
         await tester.pump(const Duration(milliseconds: 40));
@@ -192,13 +192,13 @@ void main() {
       size: const Size(320, 720),
       textScale: 2,
       check: (tester) async {
-        final action = find.text('SUPPORTERS');
+        final action = find.text('Supporters');
         await tester.ensureVisible(action);
         await tester.pumpAndSettle();
         final actionRect = tester.getRect(action);
         expect(actionRect.top, greaterThanOrEqualTo(0));
         expect(actionRect.bottom, lessThanOrEqualTo(720));
-        expect(find.text('COPY LINK'), findsOneWidget);
+        expect(find.text('Copy link'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
@@ -262,7 +262,7 @@ void main() {
       ),
       check: (_) async {
         expect(find.text('Fan club details changed'), findsOneWidget);
-        expect(find.text('REFRESH CLUB'), findsOneWidget);
+        expect(find.text('Refresh club'), findsOneWidget);
       },
     );
   });

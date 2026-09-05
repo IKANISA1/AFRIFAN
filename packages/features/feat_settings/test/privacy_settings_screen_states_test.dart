@@ -346,7 +346,7 @@ void main() {
         );
         await tester.pump();
         expect(find.text('Saving privacy settings'), findsOneWidget);
-        expect(find.text('PRIVACY CONTROLS'), findsOneWidget);
+        expect(find.text('Privacy controls'), findsOneWidget);
         expect(writer.saveCount, 1);
       },
       afterCapture: (tester) async {
@@ -373,7 +373,7 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(find.text('Privacy settings changed elsewhere'), findsOneWidget);
-        expect(find.text('PRIVACY CONTROLS'), findsOneWidget);
+        expect(find.text('Privacy controls'), findsOneWidget);
       },
     );
   });

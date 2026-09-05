@@ -11,7 +11,6 @@ import '../repositories/home_content_repository.dart';
 import '../widgets/contributor_leaderboard.dart';
 import '../widgets/latest_intel_section.dart';
 import '../widgets/match_card.dart';
-import '../widgets/match_strip.dart';
 import '../widgets/quick_actions_grid.dart';
 import '../widgets/stats_row.dart';
 
@@ -35,14 +34,14 @@ const List<ContentBlock> _localHomeContentBlocks = <ContentBlock>[
     blockType: 'widget',
     placementKey: 'home_mid',
     content: <String, dynamic>{'widget': 'membership_status'},
-    sortOrder: 3,
+    sortOrder: 4,
   ),
   ContentBlock(
     blockKey: 'local_home_quick_actions',
     blockType: 'widget',
     placementKey: 'home_mid',
     content: <String, dynamic>{'widget': 'quick_actions_grid'},
-    sortOrder: 4,
+    sortOrder: 3,
   ),
   ContentBlock(
     blockKey: 'local_home_stats',
@@ -91,17 +90,16 @@ class HomeScreen extends ConsumerWidget {
       scrollable: false,
       constrainContent: false,
       bottomNavigationAware: true,
-      child: GradientBackground(
-        routePath: '/home',
-        child: AfriRefreshIndicator(
-          onRefresh: () => notifier.refresh(),
-          color: ColorTokens.clubAccent,
-          child: asyncFeed.when(
-            loading: () => _buildLoadingView(context),
-            error: (error, _) => _buildErrorView(context, ref, error),
-            data: (snapshot) =>
-                _buildContent(context, ref, snapshot, asyncFeed.isRefreshing),
-          ),
+      bodyWrapper: (child) =>
+          GradientBackground(routePath: '/home', child: child),
+      child: AfriRefreshIndicator(
+        onRefresh: () => notifier.refresh(),
+        color: ColorTokens.primaryContainer,
+        child: asyncFeed.when(
+          loading: () => _buildLoadingView(context),
+          error: (error, _) => _buildErrorView(context, ref, error),
+          data: (snapshot) =>
+              _buildContent(context, ref, snapshot, asyncFeed.isRefreshing),
         ),
       ),
     );
@@ -258,9 +256,11 @@ class HomeScreen extends ConsumerWidget {
                 SpacingTokens.screenPadding,
                 0,
               ),
-              child: AfriStateView.offline(
+              child: AfriStateBanner(
+                icon: AfriIcons.offline,
                 title: l10n.homeUpdatesPausedTitle,
-                message: statusMessage,
+                subtitle: statusMessage,
+                tone: AfriStateBannerTone.warning,
                 compact: true,
               ),
             ),
@@ -304,20 +304,23 @@ class HomeScreen extends ConsumerWidget {
         content = Padding(
           padding: const EdgeInsets.fromLTRB(
             SpacingTokens.screenPadding,
-            SpacingTokens.sectionGap,
+            SpacingTokens.spacing2,
             SpacingTokens.screenPadding,
-            0,
+            SpacingTokens.spacing4,
           ),
-          child: AfriButton(
-            label: fanZoneAccess.isAvailable
-                ? context.afriL10n.homeOpenMatchday
-                : context.afriL10n.homeMatchdayUnavailable,
-            semanticsLabel: fanZoneAccess.isAvailable
-                ? context.afriL10n.homeOpenMatchdaySemantic
-                : context.afriL10n.homeMatchdayUnavailableSemantic,
-            enabled: fanZoneAccess.isAvailable,
-            onTap: () => context.push(heroRoute),
-            variant: AfriButtonVariant.primary,
+          child: Center(
+            child: AfriButton(
+              label: fanZoneAccess.isAvailable
+                  ? context.afriL10n.homeOpenMatchday
+                  : context.afriL10n.homeMatchdayUnavailable,
+              semanticsLabel: fanZoneAccess.isAvailable
+                  ? context.afriL10n.homeOpenMatchdaySemantic
+                  : context.afriL10n.homeMatchdayUnavailableSemantic,
+              enabled: fanZoneAccess.isAvailable,
+              onTap: () => context.push(heroRoute),
+              variant: AfriButtonVariant.secondary,
+              fullWidth: false,
+            ),
           ),
         );
         break;
@@ -348,21 +351,18 @@ class HomeScreen extends ConsumerWidget {
             SpacingTokens.screenPadding,
             0,
           ),
-          child: AfriSectionCard(
-            title: context.afriL10n.membershipTitle,
-            child: AfriListRow(
-              icon: AfriIcons.membership,
-              title: snapshot.hasMembership
-                  ? context.afriL10n.membershipCurrentStatus(
-                      snapshot.membershipTier!.trim(),
-                    )
-                  : context.afriL10n.homeMembershipAction,
-              subtitle: reviewPending
-                  ? context.afriL10n.profileMembershipReviewPending
-                  : context.afriL10n.searchMembershipDescription,
-              trailing: const Icon(AfriIcons.chevronRight),
-              onTap: () => context.go('/membership'),
-            ),
+          child: AfriListRow(
+            icon: AfriIcons.membership,
+            title: snapshot.hasMembership
+                ? context.afriL10n.membershipCurrentStatus(
+                    snapshot.membershipTier!.trim(),
+                  )
+                : context.afriL10n.homeMembershipAction,
+            subtitle: reviewPending
+                ? context.afriL10n.profileMembershipReviewPending
+                : context.afriL10n.searchMembershipDescription,
+            trailing: const Icon(AfriIcons.chevronRight),
+            onTap: () => context.go('/membership'),
           ),
         );
         break;
@@ -483,7 +483,9 @@ class HomeScreen extends ConsumerWidget {
         key: const ValueKey<String>('home-hero-state-compact'),
         compactHeight: true,
         child: Padding(
-          padding: const EdgeInsets.all(SpacingTokens.spacing5),
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.screenPadding,
+          ),
           child: AfriStateView.empty(
             title: l10n.homeMatchdayTitle,
             message: snapshot.showFixturePlaceholder
@@ -498,39 +500,38 @@ class HomeScreen extends ConsumerWidget {
       );
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(ShapeTokens.radiusXl),
-            ),
-          ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              bottom: Radius.circular(ShapeTokens.radiusXl),
-            ),
-            child: RepaintBoundary(
-              child: _animationsEnabled(context)
-                  ? MatchScoreCard(slides: slides)
-                        .afriAnimate(context)
-                        .fadeIn(duration: 500.ms, curve: Curves.easeOut)
-                  : MatchScoreCard(slides: slides),
-            ),
-          ),
-        ),
-        if (slides.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 12),
-            child: MatchStrip(
-              slide: slides.first,
-              onTap: slides.first.route != null
-                  ? () => context.push(slides.first.route!)
-                  : null,
-            ),
-          ),
-      ],
+    return RepaintBoundary(
+      child: Column(
+        children: [
+          MatchScoreCard(slides: slides),
+          // Approved editorial media remains in its CMS-governed match block.
+          // It is a separate object so score text never competes with a photo.
+          for (final slide in slides)
+            if (slide.imageRightsApproved &&
+                (slide.imageUrl?.trim().isNotEmpty ?? false) &&
+                (slide.imageProvenanceId?.trim().isNotEmpty ?? false))
+              Padding(
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                child: LayoutBuilder(
+                  builder: (context, constraints) => AfriPressFeedback(
+                    onTap: slide.route == null
+                        ? null
+                        : () => context.push(slide.route!),
+                    semanticsLabel: l10n.homeOpenMatchDetails,
+                    child: AfriGovernedImage(
+                      image: NetworkImage(slide.imageUrl!),
+                      width: constraints.maxWidth,
+                      height: constraints.maxWidth / (16 / 9),
+                      borderRadius: ShapeTokens.radiusXl,
+                      semanticLabel: '${slide.homeTeam} · ${slide.awayTeam}',
+                      provenanceId: slide.imageProvenanceId!,
+                      rightsApproved: true,
+                    ),
+                  ),
+                ),
+              ),
+        ],
+      ),
     );
   }
 }
@@ -546,7 +547,8 @@ List<ContentBlock> _homeBlocksForPlacement(
 
   return _localHomeContentBlocks
       .where((block) => block.placementKey == placementKey)
-      .toList(growable: false);
+      .toList(growable: false)
+    ..sort((a, b) => (a.sortOrder ?? 0).compareTo(b.sortOrder ?? 0));
 }
 
 class _HomeTopChrome extends StatelessWidget {
@@ -667,13 +669,13 @@ class _HomeHeroStateCard extends StatelessWidget {
     final height = homeHeroHeight(context);
     return Container(
       constraints: BoxConstraints(minHeight: compactHeight ? 0 : height),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(ShapeTokens.radiusXl),
         ),
-        color: ColorTokens.surface,
+        color: ColorTokens.transparent,
       ),
-      child: SafeArea(bottom: false, child: child),
+      child: child,
     );
   }
 }

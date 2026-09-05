@@ -5,7 +5,6 @@ import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/component_size_tokens.dart';
 import '../tokens/motion_tokens.dart';
-import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
@@ -69,17 +68,14 @@ class _AfriButtonState extends State<AfriButton> {
     late Color background;
     late Color foreground;
     Border? border;
-    List<BoxShadow>? shadows;
 
     switch (widget.variant) {
       case AfriButtonVariant.primary:
         background = colors.buttonPrimaryBackground;
         foreground = colors.buttonPrimaryForeground;
-        shadows = AfriShadows.primaryAction(background);
       case AfriButtonVariant.secondary:
         background = colors.cardSurfaceStrong;
         foreground = colors.primaryText;
-        border = BorderTokens.ghost(width: BorderTokens.standard);
       case AfriButtonVariant.outline:
         background = Colors.transparent;
         foreground = colors.primaryText;
@@ -92,12 +88,10 @@ class _AfriButtonState extends State<AfriButton> {
         foreground = colors.secondaryText;
       case AfriButtonVariant.accent:
         background = colors.accent;
-        foreground = ColorTokens.background;
-        shadows = AfriShadows.semanticAction(colors.accent);
+        foreground = ColorTokens.contrastForeground(colors.accent);
       case AfriButtonVariant.destructive:
         background = colors.danger;
         foreground = ColorTokens.contrastForeground(colors.danger);
-        shadows = AfriShadows.semanticAction(colors.danger);
     }
 
     if (!_isActive) {
@@ -111,7 +105,6 @@ class _AfriButtonState extends State<AfriButton> {
         color: ColorTokens.accessibleChartColor(colors.borderStrong),
         width: BorderTokens.standard,
       );
-      shadows = null;
     }
 
     final content = Row(
@@ -155,7 +148,9 @@ class _AfriButtonState extends State<AfriButton> {
       builder: (context, state) => AnimatedContainer(
         duration: AfriMotion.resolve(context, AfriMotion.quick),
         curve: AfriMotion.enterCurve,
-        constraints: const BoxConstraints(minHeight: SizeTokens.touchTargetMin),
+        constraints: const BoxConstraints(
+          minHeight: AfriComponentSizes.buttonHeight,
+        ),
         padding: const EdgeInsets.symmetric(
           horizontal: SpacingTokens.spacing5,
           vertical: AfriComponentSizes.buttonVerticalPadding,
@@ -173,7 +168,6 @@ class _AfriButtonState extends State<AfriButton> {
                   width: context.afriDesignTokens.focusRingWidth,
                 )
               : border,
-          boxShadow: shadows,
         ),
         child: content,
       ),

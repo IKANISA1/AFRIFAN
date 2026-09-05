@@ -86,7 +86,7 @@ class _ContributorRow extends StatelessWidget {
               style: TypographyTokens.labelMedium(
                 isFirst
                     ? ColorTokens.primaryContainer
-                    : ColorTokens.onSurfaceVariant,
+                    : context.afriSemanticColors.secondaryText,
               ),
             ),
           ),
@@ -105,7 +105,7 @@ class _ContributorRow extends StatelessWidget {
             style: TypographyTokens.bodySmall(
               isFirst
                   ? ColorTokens.primaryContainer
-                  : ColorTokens.onSurfaceVariant,
+                  : context.afriSemanticColors.secondaryText,
             ),
           ),
         ],

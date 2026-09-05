@@ -33,7 +33,7 @@ void main() {
     final circle = tester.getSize(
       find.byKey(const ValueKey<String>('afri-quick-action-circle')),
     );
-    expect(circle, const Size.square(64));
+    expect(circle, const Size.square(48));
     final semantics = tester
         .getSemantics(find.byType(AfriQuickAction))
         .getSemanticsData();

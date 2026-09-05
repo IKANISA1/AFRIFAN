@@ -5,8 +5,8 @@ import '../club_config.dart';
 /// Shared color tokens for the AFRICLUB universal mobile system.
 ///
 /// Club identity remains available as accents, but the app canvas follows the
-/// Universal premium mobile pattern: vertical dark gradients, black glass chrome,
-/// compact readable panels, and route families instead of screen-local colors.
+/// September 2026 native Dark · Glow reference: neutral task surfaces, tonal
+/// groups, and colour fields reserved for the four supporter overviews.
 class ColorTokens {
   ColorTokens._();
 
@@ -50,20 +50,6 @@ class ColorTokens {
         ? secondLuminance
         : firstLuminance;
     return (lighter + 0.05) / (darker + 0.05);
-  }
-
-  static Color _ensureContrast(
-    Color candidate,
-    Color background, {
-    required double minimum,
-    required Color toward,
-  }) {
-    if (_contrastRatio(candidate, background) >= minimum) return candidate;
-    for (var step = 1; step <= 20; step += 1) {
-      final adjusted = Color.lerp(candidate, toward, step / 20)!;
-      if (_contrastRatio(adjusted, background) >= minimum) return adjusted;
-    }
-    return toward;
   }
 
   /// Resolves a metric/text accent that remains readable across the common
@@ -115,34 +101,6 @@ class ColorTokens {
     return whiteRatio >= inkRatio ? Colors.white : _inkBase;
   }
 
-  static Color _stackColor(
-    Color base, {
-    double primaryAlpha = 0.0,
-    double secondaryAlpha = 0.0,
-    double whiteAlpha = 0.0,
-  }) {
-    var current = base;
-    if (secondaryAlpha > 0) {
-      current = Color.alphaBlend(
-        _secondary.withValues(alpha: secondaryAlpha.clamp(0.0, 1.0)),
-        current,
-      );
-    }
-    if (primaryAlpha > 0) {
-      current = Color.alphaBlend(
-        _primary.withValues(alpha: primaryAlpha.clamp(0.0, 1.0)),
-        current,
-      );
-    }
-    if (whiteAlpha > 0) {
-      current = Color.alphaBlend(
-        Colors.white.withValues(alpha: whiteAlpha.clamp(0.0, 1.0)),
-        current,
-      );
-    }
-    return current;
-  }
-
   static void init(ClubColors colors) {
     _primary = _isWhite(colors.primary) ? _defaultPrimary : colors.primary;
     _secondary = _isWhite(colors.secondary)
@@ -153,89 +111,38 @@ class ColorTokens {
         ? colors.gradient
         : [_secondary, _primary];
 
-    _darkBackground = Color.alphaBlend(
-      _primary.withValues(alpha: 0.10),
-      referencePaymentsPurpleDeep,
-    );
-    _darkSurfaceDim = _darkBackground;
-    _darkSurfaceContainerLowest = Color.alphaBlend(
-      _primary.withValues(alpha: 0.06),
-      referenceChromeBlack,
-    );
-    _darkSurfaceContainerLow = Color.alphaBlend(
-      _primary.withValues(alpha: 0.08),
-      referencePaymentsPurpleDeep,
-    );
-    _darkSurfaceContainer = Color.alphaBlend(
-      _primary.withValues(alpha: 0.10),
-      referencePaymentsPurple,
-    );
-    _darkSurface = Color.alphaBlend(
-      _primary.withValues(alpha: 0.08),
-      referenceAssetNavy,
-    );
-    _darkSurfaceContainerHigh = _stackColor(
-      const Color(0xFF1C2D49),
-      primaryAlpha: 0.06,
-      whiteAlpha: 0.01,
-    );
-    _darkSurfaceContainerHighest = _stackColor(
-      const Color(0xFF233755),
-      primaryAlpha: 0.08,
-      whiteAlpha: 0.02,
-    );
-    _darkSurfaceBright = _stackColor(
-      const Color(0xFF2C4364),
-      primaryAlpha: 0.10,
-      whiteAlpha: 0.04,
-    );
-    _darkPrimary = _ensureContrast(
-      Color.lerp(_primary, Colors.white, 0.10)!,
-      _darkBackground,
-      minimum: 3,
-      toward: Colors.white,
-    );
-    _darkPrimaryContainer = _ensureContrast(
-      Color.lerp(_primary, Colors.white, 0.24)!,
-      _darkBackground,
-      minimum: 3,
-      toward: Colors.white,
-    );
-    _darkSecondaryContainer = Color.alphaBlend(
-      _accent.withValues(alpha: 0.12),
-      _darkSurfaceContainerHigh,
-    );
-    _darkOutlineVariant = Color.alphaBlend(
-      Colors.white.withValues(alpha: 0.04),
-      _darkPrimary.withValues(alpha: 0.10),
-    );
+    // Provisional visual adapters measured from LIVE-007 and LIVE-020.
+    // Club identity never tints a neutral task canvas or an ordinary list group.
+    _darkBackground = Colors.black;
+    _darkSurfaceDim = Colors.black;
+    _darkSurfaceContainerLowest = const Color(0xFF101012);
+    _darkSurfaceContainerLow = const Color(0xFF161618);
+    _darkSurfaceContainer = const Color(0xFF161618);
+    _darkSurface = const Color(0xFF161618);
+    _darkSurfaceContainerHigh = const Color(0xFF161618);
+    _darkSurfaceContainerHighest = const Color(0xFF242426);
+    _darkSurfaceBright = const Color(0xFF2C2C2E);
+    // Provisional native blue control role (LIVE-033/055), independent of
+    // the club's artwork palette. Focus/status adaptations are contrast-tested.
+    _darkPrimary = const Color(0xFF4D8DFF);
+    _darkPrimaryContainer = const Color(0xFF4D8DFF);
+    _darkSecondaryContainer = _darkSurfaceContainerHigh;
+    _darkOutlineVariant = const Color(0x1FFFFFFF);
 
-    _lightBackground = const Color(0xFFF7F9FC);
+    _lightBackground = const Color(0xFFF5F5F7);
     _lightSurfaceDim = _lightBackground;
     _lightSurfaceContainerLowest = const Color(0xFFFFFFFF);
-    _lightSurfaceContainerLow = const Color(0xFFF3F6FA);
-    _lightSurfaceContainer = const Color(0xFFEDF2F8);
-    _lightSurface = const Color(0xFFE7EEF6);
-    _lightSurfaceContainerHigh = const Color(0xFFDEE8F3);
-    _lightSurfaceContainerHighest = const Color(0xFFD5E0ED);
-    _lightSurfaceBright = const Color(0xFFF9FBFE);
-    _lightPrimary = _ensureContrast(
-      _primary,
-      _lightBackground,
-      minimum: 3,
-      toward: _inkBase,
-    );
-    _lightPrimaryContainer = _ensureContrast(
-      Color.lerp(_primary, Colors.white, 0.22)!,
-      _lightBackground,
-      minimum: 3,
-      toward: _inkBase,
-    );
-    _lightSecondaryContainer = Color.alphaBlend(
-      _accent.withValues(alpha: 0.14),
-      _lightSurfaceContainerHigh,
-    );
-    _lightOutlineVariant = const Color(0x14334C70);
+    _lightSurfaceContainerLow = const Color(0xFFF3F3F5);
+    _lightSurfaceContainer = const Color(0xFFEFEFF1);
+    _lightSurface = const Color(0xFFEAEAEC);
+    _lightSurfaceContainerHigh = const Color(0xFFE6E6E8);
+    _lightSurfaceContainerHighest = const Color(0xFFDEDEE0);
+    _lightSurfaceBright = const Color(0xFFFAFAFC);
+    // Accessible light adaptation; a current light native comparator is open.
+    _lightPrimary = const Color(0xFF0063D9);
+    _lightPrimaryContainer = const Color(0xFF0063D9);
+    _lightSecondaryContainer = _lightSurfaceContainerHigh;
+    _lightOutlineVariant = const Color(0x1F191C1F);
 
     _initialized = true;
   }
@@ -262,32 +169,32 @@ class ColorTokens {
   static Color get clubAccent => _accent;
   static List<Color> get clubGradient => _gradient;
 
-  static Color _darkBackground = _inkBase;
-  static Color _darkSurfaceDim = _inkBase;
-  static Color _darkSurface = const Color(0xFF18181B);
-  static Color _darkSurfaceContainerLowest = const Color(0xFF09090B);
-  static Color _darkSurfaceContainerLow = const Color(0xFF121215);
-  static Color _darkSurfaceContainer = const Color(0xFF18181B);
-  static Color _darkSurfaceContainerHigh = const Color(0xFF27272A);
-  static Color _darkSurfaceContainerHighest = const Color(0xFF3F3F46);
-  static Color _darkSurfaceBright = const Color(0xFF52525B);
-  static Color _darkPrimary = _defaultPrimary;
-  static Color _darkPrimaryContainer = const Color(0xFF4E8CFF);
-  static Color _darkSecondaryContainer = const Color(0xFF294160);
+  static Color _darkBackground = Colors.black;
+  static Color _darkSurfaceDim = Colors.black;
+  static Color _darkSurface = const Color(0xFF161618);
+  static Color _darkSurfaceContainerLowest = const Color(0xFF101012);
+  static Color _darkSurfaceContainerLow = const Color(0xFF161618);
+  static Color _darkSurfaceContainer = const Color(0xFF161618);
+  static Color _darkSurfaceContainerHigh = const Color(0xFF161618);
+  static Color _darkSurfaceContainerHighest = const Color(0xFF242426);
+  static Color _darkSurfaceBright = const Color(0xFF2C2C2E);
+  static Color _darkPrimary = const Color(0xFF4D8DFF);
+  static Color _darkPrimaryContainer = const Color(0xFF4D8DFF);
+  static Color _darkSecondaryContainer = const Color(0xFF161618);
   static Color _darkOutlineVariant = const Color(0x223F5A81);
 
-  static Color _lightBackground = const Color(0xFFF7F9FC);
-  static Color _lightSurfaceDim = const Color(0xFFF7F9FC);
-  static Color _lightSurface = const Color(0xFFE7EEF6);
+  static Color _lightBackground = const Color(0xFFF5F5F7);
+  static Color _lightSurfaceDim = const Color(0xFFF5F5F7);
+  static Color _lightSurface = const Color(0xFFEAEAEC);
   static Color _lightSurfaceContainerLowest = Colors.white;
-  static Color _lightSurfaceContainerLow = const Color(0xFFF3F6FA);
-  static Color _lightSurfaceContainer = const Color(0xFFEDF2F8);
-  static Color _lightSurfaceContainerHigh = const Color(0xFFDEE8F3);
-  static Color _lightSurfaceContainerHighest = const Color(0xFFD5E0ED);
-  static Color _lightSurfaceBright = const Color(0xFFF9FBFE);
-  static Color _lightPrimary = _defaultPrimary;
-  static Color _lightPrimaryContainer = const Color(0xFF4E8CFF);
-  static Color _lightSecondaryContainer = const Color(0xFFEEF3FB);
+  static Color _lightSurfaceContainerLow = const Color(0xFFF3F3F5);
+  static Color _lightSurfaceContainer = const Color(0xFFEFEFF1);
+  static Color _lightSurfaceContainerHigh = const Color(0xFFE6E6E8);
+  static Color _lightSurfaceContainerHighest = const Color(0xFFDEDEE0);
+  static Color _lightSurfaceBright = const Color(0xFFFAFAFC);
+  static Color _lightPrimary = const Color(0xFF0063D9);
+  static Color _lightPrimaryContainer = const Color(0xFF0063D9);
+  static Color _lightSecondaryContainer = const Color(0xFFE6E6E8);
   static Color _lightOutlineVariant = const Color(0x14334C70);
 
   static Color get background => isDark ? _darkBackground : _lightBackground;
@@ -315,18 +222,18 @@ class ColorTokens {
       isDark ? _darkOutlineVariant : _lightOutlineVariant;
 
   static Color get onSurface =>
-      isDark ? const Color(0xFFF6F8FC) : const Color(0xFF121A27);
+      isDark ? const Color(0xFFF4F4F4) : const Color(0xFF191C1F);
   static Color get onSurfaceVariant =>
-      isDark ? const Color(0xFF9EABC2) : const Color(0xFF5E6B80);
+      isDark ? const Color(0xFFA1A1A3) : const Color(0xFF626266);
 
   static Color get glassFill =>
       Colors.white.withValues(alpha: isDark ? 0.075 : 0.10);
   static Color get ghostBorder =>
-      Colors.white.withValues(alpha: isDark ? 0.18 : 0.14);
+      (isDark ? Colors.white : _inkBase).withValues(alpha: 0.12);
 
   static const double glassBlurSigma = 22.0;
-  static Color get chrome => referenceChromeBlack.withValues(alpha: 0.94);
-  static Color get chromeBorder => Colors.white.withValues(alpha: 0.28);
+  static Color get chrome => inkBase.withValues(alpha: 0.94);
+  static Color get chromeBorder => Colors.white.withValues(alpha: 0.12);
   static Color get chromeForeground => const Color(0xFFFFFDFB);
 
   static const Color transparent = Color(0x00000000);
@@ -447,99 +354,91 @@ class ColorTokens {
       primary.withValues(alpha: alpha.clamp(0.0, 1.0));
 
   static Color accentTint(double alpha) =>
-      clubAccent.withValues(alpha: alpha.clamp(0.0, 1.0));
+      primaryContainer.withValues(alpha: alpha.clamp(0.0, 1.0));
 
-  static LinearGradient screenGradientForPath([String? path]) {
-    final normalized = (path ?? '').trim().toLowerCase();
-    if (!isDark) {
-      final tint =
-          normalized.contains('membership') ||
-              normalized.contains('wallet') ||
-              normalized.contains('contribute') ||
-              normalized.contains('payment')
-          ? primary
-          : normalized.contains('settings') ||
-                normalized.contains('profile') ||
-                normalized.contains('privacy')
-          ? referencePaymentsPurpleDeep
-          : normalized.contains('shop') ||
-                normalized.contains('tickets') ||
-                normalized.contains('rewards')
-          ? referenceRewardsViolet
-          : normalized.contains('live') ||
-                normalized.contains('fanzone') ||
-                normalized.contains('league')
-          ? referenceWealthTeal
-          : primary;
-      return _verticalGradient(
-        Color.alphaBlend(tint.withValues(alpha: 0.06), surfaceContainerHigh),
-        Color.alphaBlend(tint.withValues(alpha: 0.03), surfaceContainerLow),
-        background,
-      );
-    }
-    if (normalized.contains('membership') ||
-        normalized.contains('wallet') ||
-        normalized.contains('contribute') ||
-        normalized.contains('payment')) {
-      return _verticalGradient(
-        referenceAssetNavyMid,
-        referenceAssetNavy,
-        referenceChromeBlack,
-      );
-    }
-    if (normalized.contains('settings') ||
-        normalized.contains('profile') ||
-        normalized.contains('privacy')) {
-      return _verticalGradient(
-        referenceContentDark,
-        referencePaymentsPurpleDeep,
-        referenceChromeBlack,
-      );
-    }
-    if (normalized.contains('shop') ||
-        normalized.contains('tickets') ||
-        normalized.contains('rewards')) {
-      return _verticalGradient(
-        referenceRewardsVioletHot,
-        referenceRewardsViolet,
-        referencePaymentsPurpleDeep,
-      );
-    }
-    if (normalized.contains('live') ||
-        normalized.contains('fanzone') ||
-        normalized.contains('league')) {
-      return _verticalGradient(
-        referenceWealthTealMid,
-        referenceWealthTeal,
-        referenceStockTealBlack,
-      );
-    }
-    if (normalized.contains('onboarding') || normalized.contains('auth')) {
-      return _verticalGradient(
-        Color.alphaBlend(
-          _primary.withValues(alpha: 0.28),
-          referenceAccountBlue,
-        ),
-        referenceAccountNavy,
-        referenceChromeBlack,
-      );
-    }
-    return _verticalGradient(
-      Color.alphaBlend(
-        _primary.withValues(alpha: 0.18),
-        referencePaymentsPurpleMid,
+  /// Only overview routes receive a glow. Detail, search, forms and settings
+  /// use a neutral canvas; substring matching would leak a glow into tasks.
+  static LinearGradient screenGradientForPath([
+    String? path,
+    Brightness? brightness,
+  ]) {
+    final dark = (brightness ?? _brightness) == Brightness.dark;
+    final canvas = dark ? _darkBackground : _lightBackground;
+    final route = Uri.tryParse((path ?? '').trim())?.path;
+    // Measured sRGB canvas samples from the original September captures,
+    // excluding the Mirroring frame. Stops model each family's own extent;
+    // they are rendered adapters, not exported native design tokens.
+    final (values, stops) = switch (route) {
+      '/home' => (
+        const [
+          0xFF557FFC,
+          0xFF304DF8,
+          0xFF1121CA,
+          0xFF05129A,
+          0xFF060862,
+          0xFF000445,
+        ],
+        const [0.0, 0.13, 0.24, 0.35, 0.45, 0.56],
       ),
-      referencePaymentsPurple,
-      referencePaymentsPurpleDeep,
-    );
-  }
-
-  static LinearGradient _verticalGradient(Color top, Color mid, Color bottom) {
+      '/club' => (
+        const [
+          0xFF2F9CAE,
+          0xFF186479,
+          0xFF0D4052,
+          0xFF093240,
+          0xFF051B24,
+          0xFF03181F,
+        ],
+        const [0.0, 0.13, 0.24, 0.35, 0.56, 0.82],
+      ),
+      '/fanzone' => (
+        const [
+          0xFFA827F6,
+          0xFF9939F6,
+          0xFF814BF3,
+          0xFF7051F3,
+          0xFF5D4DE3,
+          0xFF3B328D,
+          0xFF352B7D,
+        ],
+        const [0.0, 0.13, 0.24, 0.35, 0.45, 0.56, 0.82],
+      ),
+      '/membership' => (
+        const [0xFF43098B, 0xFF3A0A89, 0xFF180D24, 0xFF131416, 0xFF000000],
+        const [0.0, 0.35, 0.45, 0.70, 1.0],
+      ),
+      // Historical onboarding 4/10 establishes this separate auth cohort.
+      '/auth/phone' || '/auth/otp' => (
+        const [0xFF364FF0, 0xFF15266A, 0xFF0E113D],
+        const [0.0, 0.4, 1.0],
+      ),
+      _ => (const <int>[], const <double>[]),
+    };
+    if (values.isEmpty) {
+      return LinearGradient(colors: [canvas, canvas]);
+    }
+    final colors = values
+        .map((value) {
+          final color = Color(value);
+          return dark
+              ? color
+              : Color.alphaBlend(color.withValues(alpha: 0.06), canvas);
+        })
+        .toList(growable: false);
     return LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [top, mid, bottom],
-      stops: const [0, 0.52, 1],
+      colors: colors,
+      stops: stops,
     );
   }
+
+  /// Tonal list groups inherit their overview canvas; task surfaces stay neutral.
+  static Color overviewSurfaceForPath(String path) =>
+      switch (Uri.tryParse(path)?.path) {
+        '/home' => const Color(0xFF181A53),
+        '/club' => const Color(0xFF192E35),
+        '/fanzone' => const Color(0xFF463D8A),
+        _ => surfaceContainerHigh,
+      };
 }

@@ -91,9 +91,11 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
             backgroundColor: ColorTokens.transparent,
             title: Text(
               l10n.detailTitle,
-              style: TypographyTokens.titleLarge(
-                ColorTokens.chromeForeground,
-              ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1),
+              style: TypographyTokens.titleLarge(ColorTokens.chromeForeground)
+                  .copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: TypographyTokens.trackingNone,
+                  ),
             ),
             leading: AfriIconButton(
               icon: AfriIcons.back,
@@ -290,7 +292,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                     homeScore: myEntry.predictedHomeScore,
                     awayScore: myEntry.predictedAwayScore,
                     label: l10n.detailMyEntry,
-                    accent: ColorTokens.clubAccent,
+                    accent: ColorTokens.primaryContainer,
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(
@@ -339,8 +341,8 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                               Text(
                                 l10n.challengeVersusUpper,
                                 style: TypographyTokens.labelSmall(
-                                  ColorTokens.clubAccent,
-                                ).copyWith(fontWeight: FontWeight.w800),
+                                  ColorTokens.primaryContainer,
+                                ).copyWith(fontWeight: FontWeight.w600),
                               ),
                               const SizedBox(height: SpacingTokens.spacing3),
                               _ScoreAdjuster(
@@ -378,8 +380,8 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                                 child: Text(
                                   ':',
                                   style: TypographyTokens.metricValue(
-                                    ColorTokens.clubAccent,
-                                  ).copyWith(fontWeight: FontWeight.w900),
+                                    ColorTokens.primaryContainer,
+                                  ).copyWith(fontWeight: FontWeight.w700),
                                 ),
                               ),
                               Expanded(
@@ -520,7 +522,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
         ? ColorTokens.success
         : entry.isLoser
         ? ColorTokens.error
-        : ColorTokens.clubAccent;
+        : ColorTokens.primaryContainer;
   }
 
   String _entrySummary(AfriLocalizations l10n, ChallengeEntry entry) {
@@ -569,7 +571,7 @@ class _ScoreAdjuster extends StatelessWidget {
               child: Text(
                 '$value',
                 style: TypographyTokens.headlineMedium().copyWith(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

@@ -391,6 +391,7 @@ void main() {
           .widget<AfriSegmentedControl>(find.byType(AfriSegmentedControl));
 
       expect(selectedControl().selectedIndex, 1);
+      await _scrollFanzoneTo(tester, find.text('Live Now'));
       expect(find.text('Live Now'), findsOneWidget);
 
       final scrollable = find.byType(Scrollable).first;
@@ -429,6 +430,7 @@ void main() {
       tester.state<ScrollableState>(scrollable).position.jumpTo(0);
       await tester.pumpAndSettle();
       expect(selectedControl().selectedIndex, 1);
+      await _scrollFanzoneTo(tester, find.text('Live Now'));
       expect(find.text('Live Now'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
@@ -508,6 +510,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(FanzoneHubScreen), findsOneWidget);
+      await _scrollFanzoneTo(tester, find.byType(AfriSegmentedControl));
       expect(find.byType(AfriSegmentedControl), findsOneWidget);
       await _scrollFanzoneTo(tester, find.text('Supporters'));
       expect(find.text('Supporters'), findsOneWidget);

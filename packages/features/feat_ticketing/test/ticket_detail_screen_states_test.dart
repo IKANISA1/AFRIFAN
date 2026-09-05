@@ -104,7 +104,7 @@ void main() {
       ),
       check: (_) async {
         expect(find.text('Ticket access denied'), findsOneWidget);
-        expect(find.text('TRY AGAIN'), findsNothing);
+        expect(find.text('Try again'), findsNothing);
       },
     );
   });
@@ -161,7 +161,7 @@ void main() {
       ),
       check: (tester) async {
         gesture = await tester.startGesture(
-          tester.getCenter(find.text('REFRESH FIXTURE')),
+          tester.getCenter(find.text('Refresh fixture')),
         );
         await tester.pump(const Duration(milliseconds: 120));
         await tester.pump(const Duration(milliseconds: 40));
@@ -180,7 +180,7 @@ void main() {
             (widget) =>
                 widget is Semantics &&
                 widget.properties.selected == true &&
-                widget.properties.label == 'Selected ticket access GENERAL',
+                widget.properties.label == 'Selected ticket access General',
           ),
           findsOneWidget,
         );
@@ -261,7 +261,7 @@ void main() {
       ),
       check: (_) async {
         expect(find.text('Fixture changed'), findsOneWidget);
-        expect(find.text('REFRESH FIXTURE'), findsOneWidget);
+        expect(find.text('Refresh fixture'), findsOneWidget);
       },
     );
   });

@@ -67,7 +67,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
           context.afriL10n.gameBadgesTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.6,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -141,12 +141,12 @@ class BadgesGrid extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: ColorTokens.clubAccent.withValues(alpha: 0.18),
-                border: BorderTokens.all(color: ColorTokens.clubAccent),
+                color: ColorTokens.primaryContainer.withValues(alpha: 0.18),
+                border: BorderTokens.all(color: ColorTokens.primaryContainer),
               ),
               child: Icon(
                 _iconForBadge(badge.badgeSlug),
-                color: ColorTokens.clubAccent,
+                color: ColorTokens.primaryContainer,
               ),
             ),
           );

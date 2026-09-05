@@ -137,7 +137,7 @@ class _AfriScannerShellState extends State<AfriScannerShell>
 
   Color _toneColor() {
     return switch (widget.tone) {
-      AfriScannerTone.searching => ColorTokens.clubAccent,
+      AfriScannerTone.searching => ColorTokens.primaryContainer,
       AfriScannerTone.ready => ColorTokens.success,
       AfriScannerTone.blocked => ColorTokens.warning,
       AfriScannerTone.error => ColorTokens.error,
@@ -163,7 +163,7 @@ class _AfriScannerShellState extends State<AfriScannerShell>
               : DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: ColorTokens.heroGradient(
-                      from: ColorTokens.clubSecondary,
+                      from: ColorTokens.surfaceContainerHigh,
                       to: ColorTokens.background,
                     ),
                   ),

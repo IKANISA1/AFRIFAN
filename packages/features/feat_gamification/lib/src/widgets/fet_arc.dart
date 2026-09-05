@@ -22,9 +22,11 @@ class FetArc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final metricColor = ColorTokens.accessibleMetricColor(
-      ColorTokens.clubAccent,
+      ColorTokens.primaryContainer,
     );
-    final chartColor = ColorTokens.accessibleChartColor(ColorTokens.clubAccent);
+    final chartColor = ColorTokens.accessibleChartColor(
+      ColorTokens.primaryContainer,
+    );
     final supporting = ColorTokens.accessibleMetricColor(
       ColorTokens.onSurfaceVariant,
     );
@@ -58,17 +60,18 @@ class FetArc extends StatelessWidget {
                   Text(
                     currentFet.toString(),
                     style: TypographyTokens.displayLarge(metricColor).copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                       height: TypographyTokens.lineHeightSolid,
-                      letterSpacing: 0,
+                      letterSpacing: TypographyTokens.trackingNone,
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing1 / 2),
                   Text(
                     context.afriL10n.gameFet,
-                    style: TypographyTokens.labelLarge(
-                      supporting,
-                    ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 2.0),
+                    style: TypographyTokens.labelLarge(supporting).copyWith(
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: TypographyTokens.trackingNone,
+                    ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
                   Container(
@@ -84,7 +87,7 @@ class FetArc extends StatelessWidget {
                       tier,
                       style: TypographyTokens.labelLarge(metricColor).copyWith(
                         fontWeight: FontWeight.w700,
-                        letterSpacing: 1.5,
+                        letterSpacing: TypographyTokens.trackingNone,
                       ),
                     ),
                   ),

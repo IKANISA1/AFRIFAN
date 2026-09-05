@@ -17,7 +17,6 @@ import '../providers/membership_mutation_gateway.dart';
 import '../providers/membership_provider.dart';
 import '../widgets/contribution_history.dart';
 import '../widgets/digital_membership_card.dart';
-import '../widgets/membership_card.dart';
 import '../widgets/tier_progress.dart';
 
 typedef MembershipPackageActivator =
@@ -332,19 +331,8 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AfriAppBar(
-        backgroundColor: ColorTokens.transparent,
-        elevation: 0,
-        leading: AfriIconButton(
-          icon: AfriIcons.back,
-          onTap: () => context.pop(),
-          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-        ),
-        title: Text(
-          l10n.membershipTitle,
-          style: TypographyTokens.headlineSmall(),
-        ),
-      ),
+      showAppBar: false,
+      bottomNavigationAware: true,
       scrollable: false,
       bodyWrapper: (child) =>
           GradientBackground(routePath: '/membership', child: child),
@@ -353,55 +341,26 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
           parent: AlwaysScrollableScrollPhysics(),
         ),
         slivers: [
-          // Digital membership card
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                SpacingTokens.spacing6,
-                SpacingTokens.spacing4,
-                SpacingTokens.spacing6,
-                SpacingTokens.spacing6,
-              ),
-              child: MembershipCard(
-                tierLabel: currentTier,
-                fet: currentFet,
-                paymentStatus: paymentStatus,
-              ),
-            ),
-          ),
-
-          // Tier progress
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.spacing6,
-              ),
-              child: TierProgress(currentFet: currentFet),
-            ),
-          ),
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing8),
-          ),
-
-          if (snapshot?.isStale == true)
-            SliverToBoxAdapter(
+            child: SafeArea(
+              bottom: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
-                  0,
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing6,
-                ),
-                child: AfriStateBanner(
-                  icon: AfriIcons.statusWarning,
-                  title: l10n.membershipSavedDetails,
-                  subtitle: snapshot?.recoveryMessage,
-                  tone: AfriStateBannerTone.warning,
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                child: AfriTopCommandBar(
+                  searchHint: l10n.homeSearchHint,
+                  onSearchTap: () => context.push('/search'),
+                  onAvatarTap: () => context.go('/settings'),
+                  actions: [
+                    AfriTopCommandAction(
+                      icon: AfriIcons.notifications,
+                      label: l10n.homeNotifications,
+                      onTap: () => context.push('/settings/notifications'),
+                    ),
+                  ],
                 ),
               ),
             ),
-
+          ),
           // ── Digital card ──
           SliverToBoxAdapter(
             child: Padding(
@@ -420,7 +379,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                       onTap: () async {
                         final supporterId = user?.publicUserId != null
                             ? AliasGenerator.format(user!.publicUserId!)
-                            : '000000';
+                            : '------';
                         await Clipboard.setData(
                           ClipboardData(
                             text: l10n.membershipShareText(
@@ -439,11 +398,15 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   DigitalMembershipCardFull(
+                    statusLabel:
+                        paymentStatus == PaymentStatus.pendingVerification
+                        ? l10n.contributionPendingVerification
+                        : null,
                     clubName: RuntimeBranding.displayHomeTeamName,
                     tier: currentTier,
                     fanId: user?.publicUserId != null
                         ? AliasGenerator.format(user!.publicUserId!)
-                        : '#000000',
+                        : '#------',
                     memberSince: membership?['joined_at'] != null
                         ? _formatMembershipDate(
                             membership?['joined_at']?.toString(),
@@ -456,16 +419,30 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
             ),
           ),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing8),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+              child: TierProgress(currentFet: currentFet),
+            ),
           ),
-
+          if (snapshot?.isStale == true)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                child: AfriStateBanner(
+                  icon: AfriIcons.statusWarning,
+                  title: l10n.membershipSavedDetails,
+                  subtitle: snapshot?.recoveryMessage,
+                  tone: AfriStateBannerTone.warning,
+                ),
+              ),
+            ),
           // ── Status summary ──
           if (!isLoading && errorMessage == null)
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
+                  horizontal: SpacingTokens.screenPadding,
                 ),
                 child: latestPendingApplication != null
                     ? AfriStateBanner(
@@ -489,7 +466,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                                   Text(
                                     currentTier,
                                     style: TypographyTokens.metricValue(
-                                      ColorTokens.clubAccent,
+                                      ColorTokens.primaryContainer,
                                     ),
                                   ),
                                   const SizedBox(
@@ -538,7 +515,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
+                  horizontal: SpacingTokens.screenPadding,
                 ),
                 child: _PaymentStatusCard(
                   application: latestPendingApplication,
@@ -578,7 +555,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.spacing6,
+                horizontal: SpacingTokens.screenPadding,
               ),
               child: ContributionHistorySection(
                 contributions: contributions,
@@ -665,7 +642,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               value: asyncMembership,
               loading: (_) => const Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
+                  horizontal: SpacingTokens.screenPadding,
                 ),
                 child: AfriSkeletonList(),
               ),
@@ -674,7 +651,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                   if (!isOnline) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
+                        horizontal: SpacingTokens.screenPadding,
                       ),
                       child: AfriStateView.offline(
                         title: l10n.membershipOfflineTitle,
@@ -685,7 +662,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                   }
                   return Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: SpacingTokens.spacing6,
+                      horizontal: SpacingTokens.screenPadding,
                     ),
                     child: _MembershipFailureView(
                       failure: MembershipFailure.fromError(error),
@@ -701,7 +678,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                       ? const SizedBox.shrink()
                       : Padding(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: SpacingTokens.spacing6,
+                            horizontal: SpacingTokens.screenPadding,
                           ),
                           child: AfriStateView.empty(
                             title: l10n.membershipSetupPending,
@@ -1011,7 +988,7 @@ class _MembershipPackageTile extends StatelessWidget {
                     Text(
                       packagePriceLabel(pkg),
                       style: TypographyTokens.titleMedium(
-                        ColorTokens.clubAccent,
+                        ColorTokens.primaryContainer,
                       ),
                     ),
                     if (user != null) ...[
@@ -1027,7 +1004,7 @@ class _MembershipPackageTile extends StatelessWidget {
                       child: Text(
                         packagePriceLabel(pkg),
                         style: TypographyTokens.titleMedium(
-                          ColorTokens.clubAccent,
+                          ColorTokens.primaryContainer,
                         ),
                       ),
                     ),
@@ -1101,7 +1078,7 @@ class _PaymentStatusCard extends StatelessWidget {
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: Text(
-                  l10n.membershipRequestTitle(tierLabel).toUpperCase(),
+                  l10n.membershipRequestTitle(tierLabel),
                   style: TypographyTokens.labelMedium(ColorTokens.warning),
                 ),
               ),
@@ -1200,7 +1177,7 @@ class _PaymentStatusCard extends StatelessWidget {
 
           // Contact support CTA
           AfriButton(
-            label: l10n.contactSupport.toUpperCase(),
+            label: l10n.contactSupport,
             variant: AfriButtonVariant.secondary,
             icon: AfriIcons.chat,
             onTap: onContactSupport,

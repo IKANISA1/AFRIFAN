@@ -144,10 +144,10 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
 
   Color _colorForType(String type) {
     return switch (type) {
-      'challenge_received' => ColorTokens.clubAccent,
+      'challenge_received' => ColorTokens.primaryContainer,
       'challenge_settled' => ColorTokens.success,
       'settlement' => ColorTokens.success,
-      'earn' => ColorTokens.clubAccent,
+      'earn' => ColorTokens.primaryContainer,
       _ => ColorTokens.onSurfaceVariant,
     };
   }

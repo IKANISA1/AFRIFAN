@@ -28,7 +28,7 @@ void main() {
 
     await tester.tap(find.text('Open sign-out'));
     await tester.pumpAndSettle();
-    expect(find.text('SIGN OUT?'), findsOneWidget);
+    expect(find.text('Sign out?'), findsOneWidget);
 
     await tester.tap(find.text('Stay'));
     await tester.pumpAndSettle();
@@ -48,7 +48,7 @@ void main() {
 
     await tester.tap(find.text('Open delete'));
     await tester.pumpAndSettle();
-    expect(find.text('DELETE YOUR ACCOUNT?'), findsOneWidget);
+    expect(find.text('DELETE your account?'), findsOneWidget);
     expect(
       tester
           .widget<AfriButton>(
@@ -69,7 +69,7 @@ void main() {
       isTrue,
     );
 
-    await tester.tap(find.text('CANCEL'));
+    await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
     expect(find.text('Result: cancelled'), findsOneWidget);
   });
@@ -99,7 +99,7 @@ void main() {
       await tester.tap(find.text('Open delete'));
       await tester.pumpAndSettle();
       final input = find.byType(TextField);
-      final cancel = find.text('CANCEL');
+      final cancel = find.text('Cancel');
       final delete = find.widgetWithText(AfriButton, 'Delete permanently');
       await tester.ensureVisible(input);
       await tester.ensureVisible(cancel);
@@ -111,7 +111,7 @@ void main() {
       await tester.tap(find.text('Open notifications'));
       await tester.pumpAndSettle();
       final enable = find.widgetWithText(AfriButton, 'Enable notifications');
-      final later = find.text('MAYBE LATER');
+      final later = find.text('Maybe later');
       await tester.ensureVisible(enable);
       await tester.ensureVisible(later);
       expect(tester.takeException(), isNull);
@@ -350,7 +350,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('ENABLE ALERTS'));
+    await tester.tap(find.text('Enable alerts'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Enable notifications'));
     await tester.pumpAndSettle();
@@ -401,7 +401,7 @@ void main() {
 
     await tester.tap(find.text('Retry'));
     await tester.pumpAndSettle();
-    expect(find.text('YOUR DATA'), findsOneWidget);
+    expect(find.text('Your data'), findsOneWidget);
     expect(attempts, 2);
   });
 
@@ -436,7 +436,7 @@ void main() {
     await tester.tap(find.text('Retry'));
     await tester.pumpAndSettle();
 
-    expect(find.text('NOTIFICATION DELIVERY'), findsOneWidget);
+    expect(find.text('Notification delivery'), findsOneWidget);
     expect(attempts, 2);
   });
 
@@ -503,9 +503,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Saved notification settings'), findsOneWidget);
-      expect(find.text('CONNECTION REQUIRED'), findsOneWidget);
+      expect(find.text('Connection required'), findsOneWidget);
       final toggle = tester.widget<AfriButton>(
-        find.widgetWithText(AfriButton, 'CONNECTION REQUIRED'),
+        find.widgetWithText(AfriButton, 'Connection required'),
       );
       expect(toggle.enabled, isFalse);
     },

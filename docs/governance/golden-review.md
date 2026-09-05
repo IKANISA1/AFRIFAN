@@ -8,7 +8,9 @@ evidence archive.
 Golden images may cover only the football-platform boundary defined in
 `docs/blueprint.md`: supporter home, club, fixtures, results, standings,
 predictions, membership, contributions, tickets, shop, venue utilities,
-settings, and shared design primitives.
+settings, role-gated internal mobile administration, and shared design primitives.
+Internal admin workflows keep their role boundary and operational confirmation
+contracts; their visual comparison uses shared component patterns.
 
 Every baseline listed in `docs/governance/golden-baselines.json` must:
 

@@ -2856,7 +2856,7 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubBackToSupporters.
   ///
   /// In en, this message translates to:
-  /// **'BACK TO SUPPORTERS'**
+  /// **'Back to supporters'**
   String get fanClubBackToSupporters;
 
   /// No description provided for @fanClubUnavailableTitle.
@@ -2892,13 +2892,13 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubActive.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE'**
+  /// **'Active'**
   String get fanClubActive;
 
   /// No description provided for @fanClubPendingReview.
   ///
   /// In en, this message translates to:
-  /// **'PENDING REVIEW'**
+  /// **'Pending review'**
   String get fanClubPendingReview;
 
   /// No description provided for @fanClubCurrentSemantic.
@@ -2910,7 +2910,7 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubAboutTitle.
   ///
   /// In en, this message translates to:
-  /// **'ABOUT THIS CLUB'**
+  /// **'About this club'**
   String get fanClubAboutTitle;
 
   /// No description provided for @fanClubRegionValue.
@@ -2922,7 +2922,7 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubSnapshotTitle.
   ///
   /// In en, this message translates to:
-  /// **'GROUP SNAPSHOT'**
+  /// **'Group snapshot'**
   String get fanClubSnapshotTitle;
 
   /// No description provided for @fanClubAwaitingApproval.
@@ -2988,13 +2988,13 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubRefreshAction.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH CLUB'**
+  /// **'Refresh club'**
   String get fanClubRefreshAction;
 
   /// No description provided for @fanClubTryAgainAction.
   ///
   /// In en, this message translates to:
-  /// **'TRY AGAIN'**
+  /// **'Try again'**
   String get fanClubTryAgainAction;
 
   /// No description provided for @fanClubSecurityTimeoutTitle.
@@ -3078,7 +3078,7 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubMatchdayAgenda.
   ///
   /// In en, this message translates to:
-  /// **'MATCHDAY AGENDA'**
+  /// **'Matchday agenda'**
   String get fanClubMatchdayAgenda;
 
   /// No description provided for @fanClubMatchMeta.
@@ -3096,19 +3096,19 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubMembersLabel.
   ///
   /// In en, this message translates to:
-  /// **'MEMBERS'**
+  /// **'Members'**
   String get fanClubMembersLabel;
 
   /// No description provided for @fanClubStatusLabel.
   ///
   /// In en, this message translates to:
-  /// **'STATUS'**
+  /// **'Status'**
   String get fanClubStatusLabel;
 
   /// No description provided for @fanClubRegionLabel.
   ///
   /// In en, this message translates to:
-  /// **'REGION'**
+  /// **'Region'**
   String get fanClubRegionLabel;
 
   /// No description provided for @fanClubOpenSupportersSemantic.
@@ -3126,19 +3126,19 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubSupportersAction.
   ///
   /// In en, this message translates to:
-  /// **'SUPPORTERS'**
+  /// **'Supporters'**
   String get fanClubSupportersAction;
 
   /// No description provided for @fanClubOpenSupportersAction.
   ///
   /// In en, this message translates to:
-  /// **'OPEN SUPPORTERS'**
+  /// **'Open supporters'**
   String get fanClubOpenSupportersAction;
 
   /// No description provided for @fanClubCopyLink.
   ///
   /// In en, this message translates to:
-  /// **'COPY LINK'**
+  /// **'Copy link'**
   String get fanClubCopyLink;
 
   /// No description provided for @fanClubCopyLinkSemantic.
@@ -3180,13 +3180,13 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubsCommunityEyebrow.
   ///
   /// In en, this message translates to:
-  /// **'THE COMMUNITY'**
+  /// **'The community'**
   String get fanClubsCommunityEyebrow;
 
   /// No description provided for @fanClubsTitle.
   ///
   /// In en, this message translates to:
-  /// **'FAN CLUBS'**
+  /// **'Fan clubs'**
   String get fanClubsTitle;
 
   /// No description provided for @fanClubsSearchHint.
@@ -3198,7 +3198,7 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubsFeaturedChapter.
   ///
   /// In en, this message translates to:
-  /// **'FEATURED CHAPTER'**
+  /// **'Featured chapter'**
   String get fanClubsFeaturedChapter;
 
   /// No description provided for @fanClubOfficialChapterFallback.
@@ -3252,37 +3252,37 @@ abstract class AfriLocalizations {
   /// No description provided for @liveStatusHalfTime.
   ///
   /// In en, this message translates to:
-  /// **'HALF-TIME'**
+  /// **'Half-time'**
   String get liveStatusHalfTime;
 
   /// No description provided for @liveStatusFullTime.
   ///
   /// In en, this message translates to:
-  /// **'FULL-TIME'**
+  /// **'Full-time'**
   String get liveStatusFullTime;
 
   /// No description provided for @liveStatusPostponed.
   ///
   /// In en, this message translates to:
-  /// **'POSTPONED'**
+  /// **'Postponed'**
   String get liveStatusPostponed;
 
   /// No description provided for @liveStatusCancelled.
   ///
   /// In en, this message translates to:
-  /// **'CANCELLED'**
+  /// **'Cancelled'**
   String get liveStatusCancelled;
 
   /// No description provided for @liveStatusUpcoming.
   ///
   /// In en, this message translates to:
-  /// **'UPCOMING'**
+  /// **'Upcoming'**
   String get liveStatusUpcoming;
 
   /// No description provided for @liveStatusFinal.
   ///
   /// In en, this message translates to:
-  /// **'FINAL'**
+  /// **'Final'**
   String get liveStatusFinal;
 
   /// No description provided for @liveTimeVenue.
@@ -3312,7 +3312,7 @@ abstract class AfriLocalizations {
   /// No description provided for @liveMatchReport.
   ///
   /// In en, this message translates to:
-  /// **'MATCH REPORT'**
+  /// **'Match report'**
   String get liveMatchReport;
 
   /// No description provided for @liveMatchFinishedPending.
@@ -3324,7 +3324,7 @@ abstract class AfriLocalizations {
   /// No description provided for @liveMatchdayIntel.
   ///
   /// In en, this message translates to:
-  /// **'MATCHDAY INTEL'**
+  /// **'Matchday intel'**
   String get liveMatchdayIntel;
 
   /// No description provided for @liveFixturePublished.
@@ -3415,7 +3415,7 @@ abstract class AfriLocalizations {
   /// No description provided for @liveCenterUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'LIVE CENTER UNAVAILABLE'**
+  /// **'Live center unavailable'**
   String get liveCenterUnavailable;
 
   /// No description provided for @liveRefresh.
@@ -3517,7 +3517,7 @@ abstract class AfriLocalizations {
   /// No description provided for @newsRefreshArticle.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH ARTICLE'**
+  /// **'Refresh article'**
   String get newsRefreshArticle;
 
   /// No description provided for @newsConnectionRestored.
@@ -3859,7 +3859,7 @@ abstract class AfriLocalizations {
   /// No description provided for @shopOutOfStockUpper.
   ///
   /// In en, this message translates to:
-  /// **'OUT OF STOCK'**
+  /// **'Out of stock'**
   String get shopOutOfStockUpper;
 
   /// No description provided for @shopOutOfStock.
@@ -4051,7 +4051,7 @@ abstract class AfriLocalizations {
   /// No description provided for @shopLoadingBadge.
   ///
   /// In en, this message translates to:
-  /// **'LOADING'**
+  /// **'Loading'**
   String get shopLoadingBadge;
 
   /// No description provided for @shopOfficialMerchandise.
@@ -4417,7 +4417,7 @@ abstract class AfriLocalizations {
   /// No description provided for @shopOfficialBadge.
   ///
   /// In en, this message translates to:
-  /// **'OFFICIAL'**
+  /// **'Official'**
   String get shopOfficialBadge;
 
   /// No description provided for @shopSampleProductSummary.
@@ -4495,19 +4495,19 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketDateLabel.
   ///
   /// In en, this message translates to:
-  /// **'DATE'**
+  /// **'Date'**
   String get ticketDateLabel;
 
   /// No description provided for @ticketTimeLabel.
   ///
   /// In en, this message translates to:
-  /// **'TIME'**
+  /// **'Time'**
   String get ticketTimeLabel;
 
   /// No description provided for @ticketVenueLabel.
   ///
   /// In en, this message translates to:
-  /// **'VENUE'**
+  /// **'Venue'**
   String get ticketVenueLabel;
 
   /// No description provided for @ticketAppleWallet.
@@ -4543,13 +4543,13 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketGoogleWalletAdding.
   ///
   /// In en, this message translates to:
-  /// **'ADDING TO GOOGLE WALLET…'**
+  /// **'Adding to Google Wallet…'**
   String get ticketGoogleWalletAdding;
 
   /// No description provided for @ticketGoogleWalletAdded.
   ///
   /// In en, this message translates to:
-  /// **'ADDED TO GOOGLE WALLET'**
+  /// **'Added to Google Wallet'**
   String get ticketGoogleWalletAdded;
 
   /// No description provided for @ticketGoogleWalletAddingMessage.
@@ -4729,7 +4729,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketRefreshUpper.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH TICKET'**
+  /// **'Refresh ticket'**
   String get ticketRefreshUpper;
 
   /// No description provided for @ticketWalletUnavailableTitle.
@@ -4747,7 +4747,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketMyTickets.
   ///
   /// In en, this message translates to:
-  /// **'MY TICKETS'**
+  /// **'My tickets'**
   String get ticketMyTickets;
 
   /// No description provided for @ticketRefreshTickets.
@@ -4759,13 +4759,13 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketUpcoming.
   ///
   /// In en, this message translates to:
-  /// **'UPCOMING'**
+  /// **'Upcoming'**
   String get ticketUpcoming;
 
   /// No description provided for @ticketPast.
   ///
   /// In en, this message translates to:
-  /// **'PAST'**
+  /// **'Past'**
   String get ticketPast;
 
   /// No description provided for @ticketBrowseMatches.
@@ -4801,7 +4801,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketCheckoutSummary.
   ///
   /// In en, this message translates to:
-  /// **'CHECKOUT SUMMARY'**
+  /// **'Checkout summary'**
   String get ticketCheckoutSummary;
 
   /// No description provided for @ticketMatchLabel.
@@ -4867,43 +4867,43 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketConfirmPurchase.
   ///
   /// In en, this message translates to:
-  /// **'CONFIRM PURCHASE'**
+  /// **'Confirm purchase'**
   String get ticketConfirmPurchase;
 
   /// No description provided for @ticketMatchUpper.
   ///
   /// In en, this message translates to:
-  /// **'MATCH'**
+  /// **'Match'**
   String get ticketMatchUpper;
 
   /// No description provided for @ticketZoneUpper.
   ///
   /// In en, this message translates to:
-  /// **'ZONE'**
+  /// **'Zone'**
   String get ticketZoneUpper;
 
   /// No description provided for @ticketSeatUpper.
   ///
   /// In en, this message translates to:
-  /// **'SEAT'**
+  /// **'Seat'**
   String get ticketSeatUpper;
 
   /// No description provided for @ticketQuantityUpper.
   ///
   /// In en, this message translates to:
-  /// **'QUANTITY'**
+  /// **'Quantity'**
   String get ticketQuantityUpper;
 
   /// No description provided for @ticketServiceFeeUpper.
   ///
   /// In en, this message translates to:
-  /// **'SERVICE FEE'**
+  /// **'Service fee'**
   String get ticketServiceFeeUpper;
 
   /// No description provided for @ticketTotalUpper.
   ///
   /// In en, this message translates to:
-  /// **'TOTAL'**
+  /// **'Total'**
   String get ticketTotalUpper;
 
   /// No description provided for @ticketIncluded.
@@ -4957,13 +4957,13 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketChooseAccess.
   ///
   /// In en, this message translates to:
-  /// **'CHOOSE ACCESS'**
+  /// **'Choose access'**
   String get ticketChooseAccess;
 
   /// No description provided for @ticketGeneral.
   ///
   /// In en, this message translates to:
-  /// **'GENERAL'**
+  /// **'General'**
   String get ticketGeneral;
 
   /// No description provided for @ticketGeneralSubtitle.
@@ -4987,13 +4987,13 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketChooseSeat.
   ///
   /// In en, this message translates to:
-  /// **'CHOOSE SPECIFIC SEAT'**
+  /// **'Choose specific seat'**
   String get ticketChooseSeat;
 
   /// No description provided for @ticketChangeSeat.
   ///
   /// In en, this message translates to:
-  /// **'CHANGE SELECTED SEAT'**
+  /// **'Change selected seat'**
   String get ticketChangeSeat;
 
   /// No description provided for @ticketReview.
@@ -5011,7 +5011,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketOfficialCategories.
   ///
   /// In en, this message translates to:
-  /// **'OFFICIAL CATEGORIES'**
+  /// **'Official categories'**
   String get ticketOfficialCategories;
 
   /// No description provided for @ticketOfficialCategoriesMessage.
@@ -5023,7 +5023,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketListTitle.
   ///
   /// In en, this message translates to:
-  /// **'TICKETS'**
+  /// **'Tickets'**
   String get ticketListTitle;
 
   /// No description provided for @ticketFilterMatches.
@@ -5089,13 +5089,13 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketNext.
   ///
   /// In en, this message translates to:
-  /// **'NEXT'**
+  /// **'Next'**
   String get ticketNext;
 
   /// No description provided for @ticketMine.
   ///
   /// In en, this message translates to:
-  /// **'MINE'**
+  /// **'Mine'**
   String get ticketMine;
 
   /// No description provided for @ticketUpcomingSemantic.
@@ -5173,19 +5173,19 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketStatusSoldOut.
   ///
   /// In en, this message translates to:
-  /// **'SOLD OUT'**
+  /// **'Sold out'**
   String get ticketStatusSoldOut;
 
   /// No description provided for @ticketStatusAvailable.
   ///
   /// In en, this message translates to:
-  /// **'AVAILABLE'**
+  /// **'Available'**
   String get ticketStatusAvailable;
 
   /// No description provided for @ticketFrom.
   ///
   /// In en, this message translates to:
-  /// **'FROM'**
+  /// **'From'**
   String get ticketFrom;
 
   /// No description provided for @ticketBuyAction.
@@ -5353,7 +5353,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketMatchDay.
   ///
   /// In en, this message translates to:
-  /// **'MATCH DAY'**
+  /// **'Match day'**
   String get ticketMatchDay;
 
   /// No description provided for @ticketSalesUnavailableTitle.
@@ -5449,13 +5449,13 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketTryAgainUpper.
   ///
   /// In en, this message translates to:
-  /// **'TRY AGAIN'**
+  /// **'Try again'**
   String get ticketTryAgainUpper;
 
   /// No description provided for @ticketRefreshFixtureUpper.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH FIXTURE'**
+  /// **'Refresh fixture'**
   String get ticketRefreshFixtureUpper;
 
   /// No description provided for @ticketSavedFixtureTitle.
@@ -5521,7 +5521,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketSeatMapTitle.
   ///
   /// In en, this message translates to:
-  /// **'SELECT SEAT'**
+  /// **'Select seat'**
   String get ticketSeatMapTitle;
 
   /// No description provided for @ticketConfirm.
@@ -5545,7 +5545,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketBackToTicketUpper.
   ///
   /// In en, this message translates to:
-  /// **'BACK TO TICKET'**
+  /// **'Back to ticket'**
   String get ticketBackToTicketUpper;
 
   /// No description provided for @ticketSeatMapUnavailableTitle.
@@ -5611,7 +5611,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketRefreshSeatMapUpper.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH SEAT MAP'**
+  /// **'Refresh seat map'**
   String get ticketRefreshSeatMapUpper;
 
   /// No description provided for @ticketSeatMapLoadFailedTitle.
@@ -5683,7 +5683,7 @@ abstract class AfriLocalizations {
   /// No description provided for @ticketSelectedSeatUpper.
   ///
   /// In en, this message translates to:
-  /// **'SELECTED SEAT'**
+  /// **'Selected seat'**
   String get ticketSelectedSeatUpper;
 
   /// No description provided for @ticketSeatMapSemantic.
@@ -5761,7 +5761,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsClubProjectsTitle.
   ///
   /// In en, this message translates to:
-  /// **'CLUB PROJECTS'**
+  /// **'Club projects'**
   String get contributionsClubProjectsTitle;
 
   /// No description provided for @contributionsProjectsUnavailableTitle.
@@ -5923,7 +5923,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsHubTitle.
   ///
   /// In en, this message translates to:
-  /// **'CONTRIBUTE'**
+  /// **'Contribute'**
   String get contributionsHubTitle;
 
   /// No description provided for @contributionsRefreshingTitle.
@@ -5953,7 +5953,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsTeamProjects.
   ///
   /// In en, this message translates to:
-  /// **'TEAM PROJECTS'**
+  /// **'Team projects'**
   String get contributionsTeamProjects;
 
   /// No description provided for @contributionsRaised.
@@ -5971,7 +5971,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsCommunitiesUpper.
   ///
   /// In en, this message translates to:
-  /// **'COMMUNITIES'**
+  /// **'Communities'**
   String get contributionsCommunitiesUpper;
 
   /// No description provided for @contributionsInitiativesActive.
@@ -5989,7 +5989,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsCommunityUpper.
   ///
   /// In en, this message translates to:
-  /// **'COMMUNITY'**
+  /// **'Community'**
   String get contributionsCommunityUpper;
 
   /// No description provided for @contributionsFanClubsChapters.
@@ -6019,7 +6019,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsActiveUpper.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE'**
+  /// **'Active'**
   String get contributionsActiveUpper;
 
   /// No description provided for @contributionsSyncing.
@@ -6103,7 +6103,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsInitiativeTitle.
   ///
   /// In en, this message translates to:
-  /// **'PUBLIC INITIATIVE'**
+  /// **'Public initiative'**
   String get contributionsInitiativeTitle;
 
   /// No description provided for @contributionsInitiativeLoadingTitle.
@@ -6169,7 +6169,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsRefreshInitiativeUpper.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH INITIATIVE'**
+  /// **'Refresh initiative'**
   String get contributionsRefreshInitiativeUpper;
 
   /// No description provided for @contributionsClosedTitle.
@@ -6253,13 +6253,13 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsTypeUpper.
   ///
   /// In en, this message translates to:
-  /// **'TYPE'**
+  /// **'Type'**
   String get contributionsTypeUpper;
 
   /// No description provided for @contributionsContributorsUpper.
   ///
   /// In en, this message translates to:
-  /// **'CONTRIBUTORS'**
+  /// **'Contributors'**
   String get contributionsContributorsUpper;
 
   /// No description provided for @contributionsContributeToSemantic.
@@ -6277,7 +6277,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsPublicLedgerTitle.
   ///
   /// In en, this message translates to:
-  /// **'PUBLIC LEDGER'**
+  /// **'Public ledger'**
   String get contributionsPublicLedgerTitle;
 
   /// No description provided for @contributionsPublicLedgerPrivacy.
@@ -6318,31 +6318,31 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsStatusConfirmed.
   ///
   /// In en, this message translates to:
-  /// **'CONFIRMED'**
+  /// **'Confirmed'**
   String get contributionsStatusConfirmed;
 
   /// No description provided for @contributionsStatusProcessing.
   ///
   /// In en, this message translates to:
-  /// **'PROCESSING'**
+  /// **'Processing'**
   String get contributionsStatusProcessing;
 
   /// No description provided for @contributionsStatusFailed.
   ///
   /// In en, this message translates to:
-  /// **'FAILED'**
+  /// **'Failed'**
   String get contributionsStatusFailed;
 
   /// No description provided for @contributionsTypeProject.
   ///
   /// In en, this message translates to:
-  /// **'TEAM PROJECT'**
+  /// **'Team project'**
   String get contributionsTypeProject;
 
   /// No description provided for @contributionsTypeCommunity.
   ///
   /// In en, this message translates to:
-  /// **'COMMUNITY'**
+  /// **'Community'**
   String get contributionsTypeCommunity;
 
   /// No description provided for @contributionsConnectionRestoredTitle.
@@ -6438,7 +6438,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsStatementTitle.
   ///
   /// In en, this message translates to:
-  /// **'PUBLIC STATEMENT'**
+  /// **'Public statement'**
   String get contributionsStatementTitle;
 
   /// No description provided for @contributionsStatementLoadingTitle.
@@ -6498,7 +6498,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsRefreshStatementUpper.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH STATEMENT'**
+  /// **'Refresh statement'**
   String get contributionsRefreshStatementUpper;
 
   /// No description provided for @contributionsCopyCsvSemantic.
@@ -6516,13 +6516,13 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsFromUpper.
   ///
   /// In en, this message translates to:
-  /// **'FROM'**
+  /// **'From'**
   String get contributionsFromUpper;
 
   /// No description provided for @contributionsToUpper.
   ///
   /// In en, this message translates to:
-  /// **'TO'**
+  /// **'To'**
   String get contributionsToUpper;
 
   /// No description provided for @contributionsAllTime.
@@ -6540,37 +6540,37 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsSortUpper.
   ///
   /// In en, this message translates to:
-  /// **'SORT'**
+  /// **'Sort'**
   String get contributionsSortUpper;
 
   /// No description provided for @contributionsSortDate.
   ///
   /// In en, this message translates to:
-  /// **'BY DATE'**
+  /// **'By date'**
   String get contributionsSortDate;
 
   /// No description provided for @contributionsSortAmount.
   ///
   /// In en, this message translates to:
-  /// **'BY AMOUNT'**
+  /// **'By amount'**
   String get contributionsSortAmount;
 
   /// No description provided for @contributionsSortAlias.
   ///
   /// In en, this message translates to:
-  /// **'BY ALIAS'**
+  /// **'By alias'**
   String get contributionsSortAlias;
 
   /// No description provided for @contributionsPdf.
   ///
   /// In en, this message translates to:
-  /// **'PDF'**
+  /// **'Pdf'**
   String get contributionsPdf;
 
   /// No description provided for @contributionsCsv.
   ///
   /// In en, this message translates to:
-  /// **'CSV'**
+  /// **'Csv'**
   String get contributionsCsv;
 
   /// No description provided for @contributionsComingSoon.
@@ -6628,7 +6628,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsConfirmedTotalUpper.
   ///
   /// In en, this message translates to:
-  /// **'CONFIRMED TOTAL'**
+  /// **'Confirmed total'**
   String get contributionsConfirmedTotalUpper;
 
   /// No description provided for @contributionsPublicEntriesInRange.
@@ -6652,7 +6652,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsPreviewUpper.
   ///
   /// In en, this message translates to:
-  /// **'PREVIEW'**
+  /// **'Preview'**
   String get contributionsPreviewUpper;
 
   /// No description provided for @contributionsPreviewShowing.
@@ -6772,7 +6772,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsAmountPrompt.
   ///
   /// In en, this message translates to:
-  /// **'HOW MUCH TO CONTRIBUTE?'**
+  /// **'How much to contribute?'**
   String get contributionsAmountPrompt;
 
   /// No description provided for @contributionsQuickAmount.
@@ -6790,7 +6790,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsLaunchingMomo.
   ///
   /// In en, this message translates to:
-  /// **'LAUNCHING MOMO'**
+  /// **'Launching MoMo'**
   String get contributionsLaunchingMomo;
 
   /// No description provided for @contributionsChangeAmount.
@@ -6814,7 +6814,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsPaymentConfirmedTitle.
   ///
   /// In en, this message translates to:
-  /// **'PAYMENT CONFIRMED'**
+  /// **'Payment confirmed'**
   String get contributionsPaymentConfirmedTitle;
 
   /// No description provided for @contributionsPaymentConfirmedMessage.
@@ -6826,7 +6826,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsPaymentFailedTitle.
   ///
   /// In en, this message translates to:
-  /// **'PAYMENT FAILED'**
+  /// **'Payment failed'**
   String get contributionsPaymentFailedTitle;
 
   /// No description provided for @contributionsPaymentFailedMessage.
@@ -6838,7 +6838,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsPaymentProcessingTitle.
   ///
   /// In en, this message translates to:
-  /// **'STILL PROCESSING'**
+  /// **'Still processing'**
   String get contributionsPaymentProcessingTitle;
 
   /// No description provided for @contributionsPaymentProcessingMessage.
@@ -6850,7 +6850,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsRecordFailedTitle.
   ///
   /// In en, this message translates to:
-  /// **'COULD NOT RECORD'**
+  /// **'Could not record'**
   String get contributionsRecordFailedTitle;
 
   /// No description provided for @contributionsRecordFailedMessage.
@@ -6862,7 +6862,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsAwaitingPaymentTitle.
   ///
   /// In en, this message translates to:
-  /// **'AWAITING PAYMENT'**
+  /// **'Awaiting payment'**
   String get contributionsAwaitingPaymentTitle;
 
   /// No description provided for @contributionsAwaitingPaymentMessage.
@@ -6880,7 +6880,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsVerifiedUpper.
   ///
   /// In en, this message translates to:
-  /// **'VERIFIED'**
+  /// **'Verified'**
   String get contributionsVerifiedUpper;
 
   /// No description provided for @contributionsDone.
@@ -6898,7 +6898,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsEnableMomoSmsTitle.
   ///
   /// In en, this message translates to:
-  /// **'ENABLE MOMO SMS SYNC'**
+  /// **'Enable MoMo SMS sync'**
   String get contributionsEnableMomoSmsTitle;
 
   /// No description provided for @contributionsSmsPrivacyMessage.
@@ -6922,7 +6922,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsNotNowUpper.
   ///
   /// In en, this message translates to:
-  /// **'NOT NOW'**
+  /// **'Not now'**
   String get contributionsNotNowUpper;
 
   /// No description provided for @settingsTitle.
@@ -7186,7 +7186,7 @@ abstract class AfriLocalizations {
   /// No description provided for @settingsDeleteAccountTitle.
   ///
   /// In en, this message translates to:
-  /// **'DELETE YOUR ACCOUNT?'**
+  /// **'DELETE your account?'**
   String get settingsDeleteAccountTitle;
 
   /// No description provided for @settingsDeleteAccountMessage.
@@ -7198,7 +7198,7 @@ abstract class AfriLocalizations {
   /// No description provided for @settingsDeleteAccountConfirmPrompt.
   ///
   /// In en, this message translates to:
-  /// **'TYPE DELETE TO CONFIRM'**
+  /// **'Type DELETE to confirm'**
   String get settingsDeleteAccountConfirmPrompt;
 
   /// No description provided for @settingsDeleteAccountConfirmValue.
@@ -7210,7 +7210,7 @@ abstract class AfriLocalizations {
   /// No description provided for @settingsCancelUpper.
   ///
   /// In en, this message translates to:
-  /// **'CANCEL'**
+  /// **'Cancel'**
   String get settingsCancelUpper;
 
   /// No description provided for @settingsDeletePermanently.
@@ -7222,7 +7222,7 @@ abstract class AfriLocalizations {
   /// No description provided for @settingsNotificationPermissionTitle.
   ///
   /// In en, this message translates to:
-  /// **'STAY WITH THE CLUB'**
+  /// **'Stay with the club'**
   String get settingsNotificationPermissionTitle;
 
   /// No description provided for @settingsNotificationPermissionMessage.
@@ -7258,13 +7258,13 @@ abstract class AfriLocalizations {
   /// No description provided for @settingsMaybeLaterUpper.
   ///
   /// In en, this message translates to:
-  /// **'MAYBE LATER'**
+  /// **'Maybe later'**
   String get settingsMaybeLaterUpper;
 
   /// No description provided for @settingsSignOutTitle.
   ///
   /// In en, this message translates to:
-  /// **'SIGN OUT?'**
+  /// **'Sign out?'**
   String get settingsSignOutTitle;
 
   /// No description provided for @settingsSignOutMessage.
@@ -7282,7 +7282,7 @@ abstract class AfriLocalizations {
   /// No description provided for @settingsSignOutOthersTitle.
   ///
   /// In en, this message translates to:
-  /// **'SIGN OUT OTHER DEVICES?'**
+  /// **'Sign out other devices?'**
   String get settingsSignOutOthersTitle;
 
   /// No description provided for @settingsSignOutOthersMessage.
@@ -7294,7 +7294,7 @@ abstract class AfriLocalizations {
   /// No description provided for @settingsSignOutOthersAction.
   ///
   /// In en, this message translates to:
-  /// **'SIGN OUT OTHERS'**
+  /// **'Sign out others'**
   String get settingsSignOutOthersAction;
 
   /// No description provided for @settingsCancel.
@@ -7882,13 +7882,13 @@ abstract class AfriLocalizations {
   /// No description provided for @notificationPreferencesTitle.
   ///
   /// In en, this message translates to:
-  /// **'NOTIFICATIONS'**
+  /// **'Notifications'**
   String get notificationPreferencesTitle;
 
   /// No description provided for @notificationPreferencesDeliverySection.
   ///
   /// In en, this message translates to:
-  /// **'NOTIFICATION DELIVERY'**
+  /// **'Notification delivery'**
   String get notificationPreferencesDeliverySection;
 
   /// No description provided for @notificationPreferencesAlertsEnabled.
@@ -7912,25 +7912,25 @@ abstract class AfriLocalizations {
   /// No description provided for @notificationPreferencesConnectionRequiredUpper.
   ///
   /// In en, this message translates to:
-  /// **'CONNECTION REQUIRED'**
+  /// **'Connection required'**
   String get notificationPreferencesConnectionRequiredUpper;
 
   /// No description provided for @notificationPreferencesDisableAlerts.
   ///
   /// In en, this message translates to:
-  /// **'DISABLE ALERTS'**
+  /// **'Disable alerts'**
   String get notificationPreferencesDisableAlerts;
 
   /// No description provided for @notificationPreferencesEnableAlerts.
   ///
   /// In en, this message translates to:
-  /// **'ENABLE ALERTS'**
+  /// **'Enable alerts'**
   String get notificationPreferencesEnableAlerts;
 
   /// No description provided for @notificationPreferencesDeliveryModel.
   ///
   /// In en, this message translates to:
-  /// **'DELIVERY MODEL'**
+  /// **'Delivery model'**
   String get notificationPreferencesDeliveryModel;
 
   /// No description provided for @notificationPreferencesFullStream.
@@ -8248,13 +8248,13 @@ abstract class AfriLocalizations {
   /// No description provided for @privacySettingsTitle.
   ///
   /// In en, this message translates to:
-  /// **'PRIVACY'**
+  /// **'Privacy'**
   String get privacySettingsTitle;
 
   /// No description provided for @privacySettingsControls.
   ///
   /// In en, this message translates to:
-  /// **'PRIVACY CONTROLS'**
+  /// **'Privacy controls'**
   String get privacySettingsControls;
 
   /// No description provided for @privacySettingsControlsDescription.
@@ -8308,7 +8308,7 @@ abstract class AfriLocalizations {
   /// No description provided for @privacySettingsYourData.
   ///
   /// In en, this message translates to:
-  /// **'YOUR DATA'**
+  /// **'Your data'**
   String get privacySettingsYourData;
 
   /// No description provided for @privacySettingsExportDescription.
@@ -8368,7 +8368,7 @@ abstract class AfriLocalizations {
   /// No description provided for @privacySettingsActiveSessions.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE SESSIONS'**
+  /// **'Active sessions'**
   String get privacySettingsActiveSessions;
 
   /// No description provided for @privacySettingsActiveSessionsDescription.
@@ -8398,49 +8398,49 @@ abstract class AfriLocalizations {
   /// No description provided for @adminClubAdmin.
   ///
   /// In en, this message translates to:
-  /// **'CLUB ADMIN'**
+  /// **'Club admin'**
   String get adminClubAdmin;
 
   /// No description provided for @adminExit.
   ///
   /// In en, this message translates to:
-  /// **'Exit Admin'**
+  /// **'Exit admin'**
   String get adminExit;
 
   /// No description provided for @adminCommandCenter.
   ///
   /// In en, this message translates to:
-  /// **'COMMAND CENTER'**
+  /// **'Command center'**
   String get adminCommandCenter;
 
   /// No description provided for @adminTotalUsers.
   ///
   /// In en, this message translates to:
-  /// **'TOTAL USERS'**
+  /// **'Total users'**
   String get adminTotalUsers;
 
   /// No description provided for @adminActiveGroups.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE GROUPS'**
+  /// **'Active groups'**
   String get adminActiveGroups;
 
   /// No description provided for @adminTransactionsToday.
   ///
   /// In en, this message translates to:
-  /// **'TX TODAY'**
+  /// **'Tx today'**
   String get adminTransactionsToday;
 
   /// No description provided for @adminTicketsSold.
   ///
   /// In en, this message translates to:
-  /// **'TICKETS SOLD'**
+  /// **'Tickets sold'**
   String get adminTicketsSold;
 
   /// No description provided for @adminQuickActions.
   ///
   /// In en, this message translates to:
-  /// **'QUICK ACTIONS'**
+  /// **'Quick actions'**
   String get adminQuickActions;
 
   /// No description provided for @adminManageCms.
@@ -8458,7 +8458,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCreateMatch.
   ///
   /// In en, this message translates to:
-  /// **'Create Match'**
+  /// **'Create match'**
   String get adminCreateMatch;
 
   /// No description provided for @adminCreateMatchDescription.
@@ -8470,7 +8470,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminViewContributions.
   ///
   /// In en, this message translates to:
-  /// **'View Contributions'**
+  /// **'View contributions'**
   String get adminViewContributions;
 
   /// No description provided for @adminViewContributionsDescription.
@@ -8482,7 +8482,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSendNotification.
   ///
   /// In en, this message translates to:
-  /// **'Send Notification'**
+  /// **'Send notification'**
   String get adminSendNotification;
 
   /// No description provided for @adminSendNotificationDescription.
@@ -8494,7 +8494,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSettleFixtures.
   ///
   /// In en, this message translates to:
-  /// **'Settle Fixtures'**
+  /// **'Settle fixtures'**
   String get adminSettleFixtures;
 
   /// No description provided for @adminSettleFixturesDescription.
@@ -8506,7 +8506,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminManageCompetitions.
   ///
   /// In en, this message translates to:
-  /// **'Manage Competitions'**
+  /// **'Manage competitions'**
   String get adminManageCompetitions;
 
   /// No description provided for @adminManageCompetitionsDescription.
@@ -8518,7 +8518,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSmsSyncMonitor.
   ///
   /// In en, this message translates to:
-  /// **'SMS Sync Monitor'**
+  /// **'SMS sync monitor'**
   String get adminSmsSyncMonitor;
 
   /// No description provided for @adminSmsSyncMonitorDescription.
@@ -8530,7 +8530,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureManager.
   ///
   /// In en, this message translates to:
-  /// **'Feature Manager'**
+  /// **'Feature manager'**
   String get adminFeatureManager;
 
   /// No description provided for @adminFeatureManagerDashboardDescription.
@@ -8542,7 +8542,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminRecentActivity.
   ///
   /// In en, this message translates to:
-  /// **'RECENT ACTIVITY'**
+  /// **'Recent activity'**
   String get adminRecentActivity;
 
   /// No description provided for @adminRecentActivityUnavailable.
@@ -8674,7 +8674,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminAccessRequired.
   ///
   /// In en, this message translates to:
-  /// **'ADMIN ACCESS REQUIRED'**
+  /// **'Admin access required'**
   String get adminAccessRequired;
 
   /// No description provided for @adminAccessRequiredMessage.
@@ -8686,7 +8686,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminChallengesTitle.
   ///
   /// In en, this message translates to:
-  /// **'CHALLENGE OPS'**
+  /// **'Challenge ops'**
   String get adminChallengesTitle;
 
   /// No description provided for @adminBack.
@@ -8716,31 +8716,31 @@ abstract class AfriLocalizations {
   /// No description provided for @adminChallengesFilterAll.
   ///
   /// In en, this message translates to:
-  /// **'ALL'**
+  /// **'All'**
   String get adminChallengesFilterAll;
 
   /// No description provided for @adminChallengesFilterOpen.
   ///
   /// In en, this message translates to:
-  /// **'OPEN'**
+  /// **'Open'**
   String get adminChallengesFilterOpen;
 
   /// No description provided for @adminChallengesFilterLocked.
   ///
   /// In en, this message translates to:
-  /// **'LOCKED'**
+  /// **'Locked'**
   String get adminChallengesFilterLocked;
 
   /// No description provided for @adminChallengesFilterSettled.
   ///
   /// In en, this message translates to:
-  /// **'SETTLED'**
+  /// **'Settled'**
   String get adminChallengesFilterSettled;
 
   /// No description provided for @adminChallengesFilterVoid.
   ///
   /// In en, this message translates to:
-  /// **'VOID'**
+  /// **'Void'**
   String get adminChallengesFilterVoid;
 
   /// No description provided for @adminChallengesEmptyTitle.
@@ -8776,13 +8776,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCancelUpper.
   ///
   /// In en, this message translates to:
-  /// **'CANCEL'**
+  /// **'Cancel'**
   String get adminCancelUpper;
 
   /// No description provided for @adminRetryUpper.
   ///
   /// In en, this message translates to:
-  /// **'RETRY'**
+  /// **'Retry'**
   String get adminRetryUpper;
 
   /// No description provided for @adminChallengesSettlementPending.
@@ -8902,55 +8902,55 @@ abstract class AfriLocalizations {
   /// No description provided for @adminChallengesVoidReasonRecorded.
   ///
   /// In en, this message translates to:
-  /// **'VOID REASON RECORDED'**
+  /// **'Void reason recorded'**
   String get adminChallengesVoidReasonRecorded;
 
   /// No description provided for @adminChallengesNoVoidReason.
   ///
   /// In en, this message translates to:
-  /// **'NO VOID REASON'**
+  /// **'No void reason'**
   String get adminChallengesNoVoidReason;
 
   /// No description provided for @adminChallengesSettlementMode.
   ///
   /// In en, this message translates to:
-  /// **'SETTLEMENT {mode}'**
+  /// **'Settlement {mode}'**
   String adminChallengesSettlementMode(String mode);
 
   /// No description provided for @adminChallengesAuditState.
   ///
   /// In en, this message translates to:
-  /// **'AUDIT {state}'**
+  /// **'Audit {state}'**
   String adminChallengesAuditState(String state);
 
   /// No description provided for @adminChallengesRetryingAction.
   ///
   /// In en, this message translates to:
-  /// **'RETRYING SETTLEMENT'**
+  /// **'Retrying settlement'**
   String get adminChallengesRetryingAction;
 
   /// No description provided for @adminChallengesRetryAction.
   ///
   /// In en, this message translates to:
-  /// **'RETRY SETTLEMENT'**
+  /// **'Retry settlement'**
   String get adminChallengesRetryAction;
 
   /// No description provided for @adminChallengesCreator.
   ///
   /// In en, this message translates to:
-  /// **'CREATOR'**
+  /// **'Creator'**
   String get adminChallengesCreator;
 
   /// No description provided for @adminChallengesPool.
   ///
   /// In en, this message translates to:
-  /// **'POOL'**
+  /// **'Pool'**
   String get adminChallengesPool;
 
   /// No description provided for @adminChallengesParticipants.
   ///
   /// In en, this message translates to:
-  /// **'PARTICIPANTS'**
+  /// **'Participants'**
   String get adminChallengesParticipants;
 
   /// No description provided for @adminVersus.
@@ -8968,7 +8968,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSettlementConfirmTitle.
   ///
   /// In en, this message translates to:
-  /// **'SETTLE THIS FIXTURE?'**
+  /// **'Settle this fixture?'**
   String get adminSettlementConfirmTitle;
 
   /// No description provided for @adminSettlementConfirmMessage.
@@ -8985,7 +8985,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSettlementSettleUpper.
   ///
   /// In en, this message translates to:
-  /// **'SETTLE'**
+  /// **'Settle'**
   String get adminSettlementSettleUpper;
 
   /// No description provided for @adminSettlementReceipt.
@@ -9009,7 +9009,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSettlementTitle.
   ///
   /// In en, this message translates to:
-  /// **'SETTLE FIXTURES'**
+  /// **'Settle fixtures'**
   String get adminSettlementTitle;
 
   /// No description provided for @adminSettlementLoadingTitle.
@@ -9027,25 +9027,25 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSettlementFilterScheduled.
   ///
   /// In en, this message translates to:
-  /// **'SCHEDULED'**
+  /// **'Scheduled'**
   String get adminSettlementFilterScheduled;
 
   /// No description provided for @adminSettlementFilterFinished.
   ///
   /// In en, this message translates to:
-  /// **'FINISHED'**
+  /// **'Finished'**
   String get adminSettlementFilterFinished;
 
   /// No description provided for @adminSettlementFilterAll.
   ///
   /// In en, this message translates to:
-  /// **'ALL'**
+  /// **'All'**
   String get adminSettlementFilterAll;
 
   /// No description provided for @adminSettlementControlTitle.
   ///
   /// In en, this message translates to:
-  /// **'OFFICIAL RESULT CONTROL'**
+  /// **'Official result control'**
   String get adminSettlementControlTitle;
 
   /// No description provided for @adminSettlementControlMessage.
@@ -9069,7 +9069,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSettlementVersusShort.
   ///
   /// In en, this message translates to:
-  /// **'VS'**
+  /// **'Vs'**
   String get adminSettlementVersusShort;
 
   /// No description provided for @adminSettlementOpenHint.
@@ -9087,25 +9087,25 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSettlementEnterOfficialResult.
   ///
   /// In en, this message translates to:
-  /// **'ENTER OFFICIAL RESULT'**
+  /// **'Enter official result'**
   String get adminSettlementEnterOfficialResult;
 
   /// No description provided for @adminSettlementPaused.
   ///
   /// In en, this message translates to:
-  /// **'SETTLEMENT PAUSED'**
+  /// **'Settlement paused'**
   String get adminSettlementPaused;
 
   /// No description provided for @adminSettlementSettled.
   ///
   /// In en, this message translates to:
-  /// **'SETTLED'**
+  /// **'Settled'**
   String get adminSettlementSettled;
 
   /// No description provided for @adminSettlementNotSettleable.
   ///
   /// In en, this message translates to:
-  /// **'NOT SETTLEABLE'**
+  /// **'Not settleable'**
   String get adminSettlementNotSettleable;
 
   /// No description provided for @adminSettlementManagementUnavailable.
@@ -9231,7 +9231,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSettlementHalfTimeOptional.
   ///
   /// In en, this message translates to:
-  /// **'HALF-TIME SCORE (OPTIONAL)'**
+  /// **'Half-time score (optional)'**
   String get adminSettlementHalfTimeOptional;
 
   /// No description provided for @adminSettlementHalfTimeLabel.
@@ -9249,31 +9249,31 @@ abstract class AfriLocalizations {
   /// No description provided for @adminStatusFinished.
   ///
   /// In en, this message translates to:
-  /// **'FINISHED'**
+  /// **'Finished'**
   String get adminStatusFinished;
 
   /// No description provided for @adminStatusScheduled.
   ///
   /// In en, this message translates to:
-  /// **'SCHEDULED'**
+  /// **'Scheduled'**
   String get adminStatusScheduled;
 
   /// No description provided for @adminStatusLive.
   ///
   /// In en, this message translates to:
-  /// **'LIVE'**
+  /// **'Live'**
   String get adminStatusLive;
 
   /// No description provided for @adminStatusCancelled.
   ///
   /// In en, this message translates to:
-  /// **'CANCELLED'**
+  /// **'Cancelled'**
   String get adminStatusCancelled;
 
   /// No description provided for @adminStatusPostponed.
   ///
   /// In en, this message translates to:
-  /// **'POSTPONED'**
+  /// **'Postponed'**
   String get adminStatusPostponed;
 
   /// No description provided for @adminScore.
@@ -9285,7 +9285,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureDetailTitle.
   ///
   /// In en, this message translates to:
-  /// **'FEATURE DETAIL'**
+  /// **'Feature detail'**
   String get adminFeatureDetailTitle;
 
   /// No description provided for @adminFeatureLoadingTitle.
@@ -9321,7 +9321,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureGlobalState.
   ///
   /// In en, this message translates to:
-  /// **'GLOBAL STATE'**
+  /// **'Global state'**
   String get adminFeatureGlobalState;
 
   /// No description provided for @adminFeatureDisableTooltip.
@@ -9375,31 +9375,31 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureVisibility.
   ///
   /// In en, this message translates to:
-  /// **'VISIBILITY'**
+  /// **'Visibility'**
   String get adminFeatureVisibility;
 
   /// No description provided for @adminFeatureVisibilityVisible.
   ///
   /// In en, this message translates to:
-  /// **'VISIBLE'**
+  /// **'Visible'**
   String get adminFeatureVisibilityVisible;
 
   /// No description provided for @adminFeatureVisibilityHidden.
   ///
   /// In en, this message translates to:
-  /// **'HIDDEN'**
+  /// **'Hidden'**
   String get adminFeatureVisibilityHidden;
 
   /// No description provided for @adminFeatureVisibilityMaintenance.
   ///
   /// In en, this message translates to:
-  /// **'MAINTENANCE'**
+  /// **'Maintenance'**
   String get adminFeatureVisibilityMaintenance;
 
   /// No description provided for @adminFeatureChannelConfig.
   ///
   /// In en, this message translates to:
-  /// **'CHANNEL CONFIG'**
+  /// **'Channel config'**
   String get adminFeatureChannelConfig;
 
   /// No description provided for @adminFeatureNoChannelOverrides.
@@ -9417,13 +9417,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureScheduling.
   ///
   /// In en, this message translates to:
-  /// **'SCHEDULING'**
+  /// **'Scheduling'**
   String get adminFeatureScheduling;
 
   /// No description provided for @adminFeatureAccessRules.
   ///
   /// In en, this message translates to:
-  /// **'ACCESS RULES'**
+  /// **'Access rules'**
   String get adminFeatureAccessRules;
 
   /// No description provided for @adminFeatureAuthRequired.
@@ -9525,13 +9525,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureChannelMobile.
   ///
   /// In en, this message translates to:
-  /// **'MOBILE'**
+  /// **'Mobile'**
   String get adminFeatureChannelMobile;
 
   /// No description provided for @adminFeatureChannelWeb.
   ///
   /// In en, this message translates to:
-  /// **'WEB'**
+  /// **'Web'**
   String get adminFeatureChannelWeb;
 
   /// No description provided for @adminFeatureChannelEnabled.
@@ -9627,7 +9627,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminMatchesTitle.
   ///
   /// In en, this message translates to:
-  /// **'MATCHES'**
+  /// **'Matches'**
   String get adminMatchesTitle;
 
   /// No description provided for @adminMatchesLoadingTitle.
@@ -9651,49 +9651,49 @@ abstract class AfriLocalizations {
   /// No description provided for @adminMatchesFixtures.
   ///
   /// In en, this message translates to:
-  /// **'FIXTURES'**
+  /// **'Fixtures'**
   String get adminMatchesFixtures;
 
   /// No description provided for @adminMatchesOnSale.
   ///
   /// In en, this message translates to:
-  /// **'ON SALE'**
+  /// **'On sale'**
   String get adminMatchesOnSale;
 
   /// No description provided for @adminMatchesStatus.
   ///
   /// In en, this message translates to:
-  /// **'STATUS'**
+  /// **'Status'**
   String get adminMatchesStatus;
 
   /// No description provided for @adminMatchesFilterAll.
   ///
   /// In en, this message translates to:
-  /// **'ALL'**
+  /// **'All'**
   String get adminMatchesFilterAll;
 
   /// No description provided for @adminMatchesFilterLive.
   ///
   /// In en, this message translates to:
-  /// **'LIVE'**
+  /// **'Live'**
   String get adminMatchesFilterLive;
 
   /// No description provided for @adminMatchesFilterUpcoming.
   ///
   /// In en, this message translates to:
-  /// **'UPCOMING'**
+  /// **'Upcoming'**
   String get adminMatchesFilterUpcoming;
 
   /// No description provided for @adminMatchesFilterOnSale.
   ///
   /// In en, this message translates to:
-  /// **'ON SALE'**
+  /// **'On sale'**
   String get adminMatchesFilterOnSale;
 
   /// No description provided for @adminMatchesFilterCompleted.
   ///
   /// In en, this message translates to:
-  /// **'COMPLETED'**
+  /// **'Completed'**
   String get adminMatchesFilterCompleted;
 
   /// No description provided for @adminMatchesNoneConfigured.
@@ -9867,7 +9867,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminMatchesPrices.
   ///
   /// In en, this message translates to:
-  /// **'GENERAL {symbol} {general} • VIP {symbol} {vip}'**
+  /// **'General {symbol} {general} • VIP {symbol} {vip}'**
   String adminMatchesPrices(String symbol, String general, String vip);
 
   /// No description provided for @adminMatchesScore.
@@ -9885,31 +9885,31 @@ abstract class AfriLocalizations {
   /// No description provided for @adminMatchesEditOnSale.
   ///
   /// In en, this message translates to:
-  /// **'EDIT ON-SALE FIXTURE'**
+  /// **'Edit on-sale fixture'**
   String get adminMatchesEditOnSale;
 
   /// No description provided for @adminMatchesEdit.
   ///
   /// In en, this message translates to:
-  /// **'EDIT FIXTURE'**
+  /// **'Edit fixture'**
   String get adminMatchesEdit;
 
   /// No description provided for @adminStatusHalfTime.
   ///
   /// In en, this message translates to:
-  /// **'HALF-TIME'**
+  /// **'Half-time'**
   String get adminStatusHalfTime;
 
   /// No description provided for @adminStatusFullTime.
   ///
   /// In en, this message translates to:
-  /// **'FULL-TIME'**
+  /// **'Full-time'**
   String get adminStatusFullTime;
 
   /// No description provided for @adminStatusUpcoming.
   ///
   /// In en, this message translates to:
-  /// **'UPCOMING'**
+  /// **'Upcoming'**
   String get adminStatusUpcoming;
 
   /// No description provided for @adminMatchesLiveMinute.
@@ -9939,25 +9939,25 @@ abstract class AfriLocalizations {
   /// No description provided for @adminMatchCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'CREATE MATCH'**
+  /// **'Create match'**
   String get adminMatchCreateTitle;
 
   /// No description provided for @adminMatchUpdateTitle.
   ///
   /// In en, this message translates to:
-  /// **'UPDATE MATCH'**
+  /// **'Update match'**
   String get adminMatchUpdateTitle;
 
   /// No description provided for @adminMatchHomeTeam.
   ///
   /// In en, this message translates to:
-  /// **'Home Team'**
+  /// **'Home team'**
   String get adminMatchHomeTeam;
 
   /// No description provided for @adminMatchAwayTeam.
   ///
   /// In en, this message translates to:
-  /// **'Away Team'**
+  /// **'Away team'**
   String get adminMatchAwayTeam;
 
   /// No description provided for @adminMatchCompetition.
@@ -10077,7 +10077,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureManagerTitle.
   ///
   /// In en, this message translates to:
-  /// **'FEATURE MANAGER'**
+  /// **'Feature manager'**
   String get adminFeatureManagerTitle;
 
   /// No description provided for @adminFeatureRegistryLoading.
@@ -10101,31 +10101,31 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureRegistered.
   ///
   /// In en, this message translates to:
-  /// **'REGISTERED'**
+  /// **'Registered'**
   String get adminFeatureRegistered;
 
   /// No description provided for @adminFeatureEnabledUpper.
   ///
   /// In en, this message translates to:
-  /// **'ENABLED'**
+  /// **'Enabled'**
   String get adminFeatureEnabledUpper;
 
   /// No description provided for @adminFeatureDisabledUpper.
   ///
   /// In en, this message translates to:
-  /// **'DISABLED'**
+  /// **'Disabled'**
   String get adminFeatureDisabledUpper;
 
   /// No description provided for @adminFeatureStatus.
   ///
   /// In en, this message translates to:
-  /// **'STATUS'**
+  /// **'Status'**
   String get adminFeatureStatus;
 
   /// No description provided for @adminFeatureFilterAll.
   ///
   /// In en, this message translates to:
-  /// **'ALL'**
+  /// **'All'**
   String get adminFeatureFilterAll;
 
   /// No description provided for @adminFeatureNoneConfigured.
@@ -10251,7 +10251,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCompetitionsTitle.
   ///
   /// In en, this message translates to:
-  /// **'COMPETITIONS'**
+  /// **'Competitions'**
   String get adminCompetitionsTitle;
 
   /// No description provided for @adminCompetitionsAdd.
@@ -10431,13 +10431,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCompetitionActivateQuestion.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVATE COMPETITION?'**
+  /// **'Activate competition?'**
   String get adminCompetitionActivateQuestion;
 
   /// No description provided for @adminCompetitionDeactivateQuestion.
   ///
   /// In en, this message translates to:
-  /// **'DEACTIVATE?'**
+  /// **'Deactivate?'**
   String get adminCompetitionDeactivateQuestion;
 
   /// No description provided for @adminCompetitionActivateMessage.
@@ -10455,13 +10455,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminActivateUpper.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVATE'**
+  /// **'Activate'**
   String get adminActivateUpper;
 
   /// No description provided for @adminDeactivateUpper.
   ///
   /// In en, this message translates to:
-  /// **'DEACTIVATE'**
+  /// **'Deactivate'**
   String get adminDeactivateUpper;
 
   /// No description provided for @adminCompetitionActivated.
@@ -10479,19 +10479,19 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCompetitionsTotal.
   ///
   /// In en, this message translates to:
-  /// **'TOTAL'**
+  /// **'Total'**
   String get adminCompetitionsTotal;
 
   /// No description provided for @adminCompetitionsActive.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE'**
+  /// **'Active'**
   String get adminCompetitionsActive;
 
   /// No description provided for @adminCompetitionsInactive.
   ///
   /// In en, this message translates to:
-  /// **'INACTIVE'**
+  /// **'Inactive'**
   String get adminCompetitionsInactive;
 
   /// No description provided for @adminCompetitionFilters.
@@ -10503,85 +10503,85 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCompetitionRegion.
   ///
   /// In en, this message translates to:
-  /// **'REGION'**
+  /// **'Region'**
   String get adminCompetitionRegion;
 
   /// No description provided for @adminCompetitionKind.
   ///
   /// In en, this message translates to:
-  /// **'KIND'**
+  /// **'Kind'**
   String get adminCompetitionKind;
 
   /// No description provided for @adminCompetitionSeasons.
   ///
   /// In en, this message translates to:
-  /// **'SEASONS'**
+  /// **'Seasons'**
   String get adminCompetitionSeasons;
 
   /// No description provided for @adminEditUpper.
   ///
   /// In en, this message translates to:
-  /// **'EDIT'**
+  /// **'Edit'**
   String get adminEditUpper;
 
   /// No description provided for @adminCompetitionFilterAll.
   ///
   /// In en, this message translates to:
-  /// **'ALL'**
+  /// **'All'**
   String get adminCompetitionFilterAll;
 
   /// No description provided for @adminCompetitionRegionAfrica.
   ///
   /// In en, this message translates to:
-  /// **'AFRICA'**
+  /// **'Africa'**
   String get adminCompetitionRegionAfrica;
 
   /// No description provided for @adminCompetitionRegionEurope.
   ///
   /// In en, this message translates to:
-  /// **'EUROPE'**
+  /// **'Europe'**
   String get adminCompetitionRegionEurope;
 
   /// No description provided for @adminCompetitionRegionInternational.
   ///
   /// In en, this message translates to:
-  /// **'INTL'**
+  /// **'Intl'**
   String get adminCompetitionRegionInternational;
 
   /// No description provided for @adminCompetitionRegionGlobal.
   ///
   /// In en, this message translates to:
-  /// **'GLOBAL'**
+  /// **'Global'**
   String get adminCompetitionRegionGlobal;
 
   /// No description provided for @adminCompetitionKindLeague.
   ///
   /// In en, this message translates to:
-  /// **'LEAGUE'**
+  /// **'League'**
   String get adminCompetitionKindLeague;
 
   /// No description provided for @adminCompetitionKindCup.
   ///
   /// In en, this message translates to:
-  /// **'CUP'**
+  /// **'Cup'**
   String get adminCompetitionKindCup;
 
   /// No description provided for @adminCompetitionKindTournament.
   ///
   /// In en, this message translates to:
-  /// **'TOURNAMENT'**
+  /// **'Tournament'**
   String get adminCompetitionKindTournament;
 
   /// No description provided for @adminCompetitionEdit.
   ///
   /// In en, this message translates to:
-  /// **'EDIT COMPETITION'**
+  /// **'Edit competition'**
   String get adminCompetitionEdit;
 
   /// No description provided for @adminCompetitionAdd.
   ///
   /// In en, this message translates to:
-  /// **'ADD COMPETITION'**
+  /// **'Add competition'**
   String get adminCompetitionAdd;
 
   /// No description provided for @adminCompetitionName.
@@ -10593,7 +10593,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCompetitionShortName.
   ///
   /// In en, this message translates to:
-  /// **'Short Name'**
+  /// **'Short name'**
   String get adminCompetitionShortName;
 
   /// No description provided for @adminCompetitionSlug.
@@ -10623,19 +10623,19 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCompetitionCountryCode.
   ///
   /// In en, this message translates to:
-  /// **'Country Code'**
+  /// **'Country code'**
   String get adminCompetitionCountryCode;
 
   /// No description provided for @adminCompetitionCountryCodeHint.
   ///
   /// In en, this message translates to:
-  /// **'RW'**
+  /// **'Rw'**
   String get adminCompetitionCountryCodeHint;
 
   /// No description provided for @adminCompetitionCountryName.
   ///
   /// In en, this message translates to:
-  /// **'Country Name'**
+  /// **'Country name'**
   String get adminCompetitionCountryName;
 
   /// No description provided for @adminCompetitionCountryNameHint.
@@ -10647,7 +10647,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCompetitionFormatNotes.
   ///
   /// In en, this message translates to:
-  /// **'Format Notes'**
+  /// **'Format notes'**
   String get adminCompetitionFormatNotes;
 
   /// No description provided for @adminCompetitionValidationMessage.
@@ -10713,13 +10713,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSeasonActivateQuestion.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVATE SEASON?'**
+  /// **'Activate season?'**
   String get adminSeasonActivateQuestion;
 
   /// No description provided for @adminSeasonDeactivateQuestion.
   ///
   /// In en, this message translates to:
-  /// **'DEACTIVATE SEASON?'**
+  /// **'Deactivate season?'**
   String get adminSeasonDeactivateQuestion;
 
   /// No description provided for @adminSeasonAvailabilityMessage.
@@ -10773,7 +10773,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSeasonAddUpper.
   ///
   /// In en, this message translates to:
-  /// **'ADD SEASON'**
+  /// **'Add season'**
   String get adminSeasonAddUpper;
 
   /// No description provided for @adminSeasonSlugHint.
@@ -10797,49 +10797,49 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSeasonYearStart.
   ///
   /// In en, this message translates to:
-  /// **'Year Start'**
+  /// **'Year start'**
   String get adminSeasonYearStart;
 
   /// No description provided for @adminSeasonYearEnd.
   ///
   /// In en, this message translates to:
-  /// **'Year End'**
+  /// **'Year end'**
   String get adminSeasonYearEnd;
 
   /// No description provided for @adminCreateUpper.
   ///
   /// In en, this message translates to:
-  /// **'CREATE'**
+  /// **'Create'**
   String get adminCreateUpper;
 
   /// No description provided for @adminSeasonStatusPlanned.
   ///
   /// In en, this message translates to:
-  /// **'PLANNED'**
+  /// **'Planned'**
   String get adminSeasonStatusPlanned;
 
   /// No description provided for @adminSeasonStatusActive.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE'**
+  /// **'Active'**
   String get adminSeasonStatusActive;
 
   /// No description provided for @adminSeasonStatusFinished.
   ///
   /// In en, this message translates to:
-  /// **'FINISHED'**
+  /// **'Finished'**
   String get adminSeasonStatusFinished;
 
   /// No description provided for @adminSeasonStatusArchived.
   ///
   /// In en, this message translates to:
-  /// **'ARCHIVED'**
+  /// **'Archived'**
   String get adminSeasonStatusArchived;
 
   /// No description provided for @adminNotificationSendTitle.
   ///
   /// In en, this message translates to:
-  /// **'SEND NOTIFICATION'**
+  /// **'Send notification'**
   String get adminNotificationSendTitle;
 
   /// No description provided for @adminNotificationLoading.
@@ -10857,7 +10857,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminNotificationDeliveryStatus.
   ///
   /// In en, this message translates to:
-  /// **'DELIVERY STATUS'**
+  /// **'Delivery status'**
   String get adminNotificationDeliveryStatus;
 
   /// No description provided for @adminNotificationDeliveryStatusMessage.
@@ -10869,49 +10869,49 @@ abstract class AfriLocalizations {
   /// No description provided for @adminNotificationAudience.
   ///
   /// In en, this message translates to:
-  /// **'AUDIENCE'**
+  /// **'Audience'**
   String get adminNotificationAudience;
 
   /// No description provided for @adminNotificationAudienceAllFans.
   ///
   /// In en, this message translates to:
-  /// **'ALL FANS'**
+  /// **'All fans'**
   String get adminNotificationAudienceAllFans;
 
   /// No description provided for @adminNotificationAudienceByTier.
   ///
   /// In en, this message translates to:
-  /// **'BY TIER'**
+  /// **'By tier'**
   String get adminNotificationAudienceByTier;
 
   /// No description provided for @adminNotificationAudienceByGroup.
   ///
   /// In en, this message translates to:
-  /// **'BY GROUP'**
+  /// **'By group'**
   String get adminNotificationAudienceByGroup;
 
   /// No description provided for @adminNotificationTierFan.
   ///
   /// In en, this message translates to:
-  /// **'FAN'**
+  /// **'Fan'**
   String get adminNotificationTierFan;
 
   /// No description provided for @adminNotificationTierBronze.
   ///
   /// In en, this message translates to:
-  /// **'BRONZE'**
+  /// **'Bronze'**
   String get adminNotificationTierBronze;
 
   /// No description provided for @adminNotificationTierGold.
   ///
   /// In en, this message translates to:
-  /// **'GOLD'**
+  /// **'Gold'**
   String get adminNotificationTierGold;
 
   /// No description provided for @adminNotificationTierPlatinum.
   ///
   /// In en, this message translates to:
-  /// **'PLATINUM'**
+  /// **'Platinum'**
   String get adminNotificationTierPlatinum;
 
   /// No description provided for @adminNotificationSelectGroup.
@@ -10947,13 +10947,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminNotificationSchedule.
   ///
   /// In en, this message translates to:
-  /// **'SCHEDULE'**
+  /// **'Schedule'**
   String get adminNotificationSchedule;
 
   /// No description provided for @adminNotificationSendNow.
   ///
   /// In en, this message translates to:
-  /// **'SEND NOW'**
+  /// **'Send now'**
   String get adminNotificationSendNow;
 
   /// No description provided for @adminNotificationPickDateTime.
@@ -10977,13 +10977,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminNotificationCopyPayload.
   ///
   /// In en, this message translates to:
-  /// **'COPY PAYLOAD'**
+  /// **'Copy payload'**
   String get adminNotificationCopyPayload;
 
   /// No description provided for @adminNotificationSendHistory.
   ///
   /// In en, this message translates to:
-  /// **'SEND HISTORY'**
+  /// **'Send history'**
   String get adminNotificationSendHistory;
 
   /// No description provided for @adminNotificationHistoryEmpty.
@@ -11205,7 +11205,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminNotificationPreview.
   ///
   /// In en, this message translates to:
-  /// **'PREVIEW'**
+  /// **'Preview'**
   String get adminNotificationPreview;
 
   /// No description provided for @adminNotificationPreviewBody.
@@ -11217,31 +11217,31 @@ abstract class AfriLocalizations {
   /// No description provided for @adminNotificationStatusScheduled.
   ///
   /// In en, this message translates to:
-  /// **'SCHEDULED'**
+  /// **'Scheduled'**
   String get adminNotificationStatusScheduled;
 
   /// No description provided for @adminNotificationStatusSent.
   ///
   /// In en, this message translates to:
-  /// **'SENT'**
+  /// **'Sent'**
   String get adminNotificationStatusSent;
 
   /// No description provided for @adminNotificationStatusPartial.
   ///
   /// In en, this message translates to:
-  /// **'PARTIAL'**
+  /// **'Partial'**
   String get adminNotificationStatusPartial;
 
   /// No description provided for @adminNotificationStatusFailed.
   ///
   /// In en, this message translates to:
-  /// **'FAILED'**
+  /// **'Failed'**
   String get adminNotificationStatusFailed;
 
   /// No description provided for @adminContributionsTitle.
   ///
   /// In en, this message translates to:
-  /// **'CONTRIBUTIONS'**
+  /// **'Contributions'**
   String get adminContributionsTitle;
 
   /// No description provided for @adminContributionsLoading.
@@ -11265,7 +11265,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminContributionsMonthlyTotal.
   ///
   /// In en, this message translates to:
-  /// **'TOTAL RECORDED THIS MONTH'**
+  /// **'Total recorded this month'**
   String get adminContributionsMonthlyTotal;
 
   /// No description provided for @adminContributionsSummary.
@@ -11391,61 +11391,61 @@ abstract class AfriLocalizations {
   /// No description provided for @adminContributionsGroupType.
   ///
   /// In en, this message translates to:
-  /// **'GROUP TYPE'**
+  /// **'Group type'**
   String get adminContributionsGroupType;
 
   /// No description provided for @adminContributionsSort.
   ///
   /// In en, this message translates to:
-  /// **'SORT'**
+  /// **'Sort'**
   String get adminContributionsSort;
 
   /// No description provided for @adminContributionsFilterAll.
   ///
   /// In en, this message translates to:
-  /// **'ALL'**
+  /// **'All'**
   String get adminContributionsFilterAll;
 
   /// No description provided for @adminContributionsTeamProjects.
   ///
   /// In en, this message translates to:
-  /// **'TEAM PROJECTS'**
+  /// **'Team projects'**
   String get adminContributionsTeamProjects;
 
   /// No description provided for @adminContributionsCommunity.
   ///
   /// In en, this message translates to:
-  /// **'COMMUNITY'**
+  /// **'Community'**
   String get adminContributionsCommunity;
 
   /// No description provided for @adminContributionsRecent.
   ///
   /// In en, this message translates to:
-  /// **'RECENT'**
+  /// **'Recent'**
   String get adminContributionsRecent;
 
   /// No description provided for @adminContributionsTotal.
   ///
   /// In en, this message translates to:
-  /// **'TOTAL'**
+  /// **'Total'**
   String get adminContributionsTotal;
 
   /// No description provided for @adminContributionsClosed.
   ///
   /// In en, this message translates to:
-  /// **'CLOSED'**
+  /// **'Closed'**
   String get adminContributionsClosed;
 
   /// No description provided for @adminContributionsActive.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE'**
+  /// **'Active'**
   String get adminContributionsActive;
 
   /// No description provided for @adminContributionsTeamProject.
   ///
   /// In en, this message translates to:
-  /// **'TEAM PROJECT'**
+  /// **'Team project'**
   String get adminContributionsTeamProject;
 
   /// No description provided for @adminContributionsRecordMembers.
@@ -11469,7 +11469,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSmsTitle.
   ///
   /// In en, this message translates to:
-  /// **'SMS OPERATIONS'**
+  /// **'SMS operations'**
   String get adminSmsTitle;
 
   /// No description provided for @adminSmsLoading.
@@ -11499,7 +11499,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSmsControlledHealth.
   ///
   /// In en, this message translates to:
-  /// **'CONTROLLED HEALTH VIEW'**
+  /// **'Controlled health view'**
   String get adminSmsControlledHealth;
 
   /// No description provided for @adminSmsControlledHealthMessage.
@@ -11511,13 +11511,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSmsPipelineHealth.
   ///
   /// In en, this message translates to:
-  /// **'PIPELINE HEALTH'**
+  /// **'Pipeline health'**
   String get adminSmsPipelineHealth;
 
   /// No description provided for @adminSmsRecentSync.
   ///
   /// In en, this message translates to:
-  /// **'RECENT DEVICE SYNCHRONIZATION'**
+  /// **'Recent device synchronization'**
   String get adminSmsRecentSync;
 
   /// No description provided for @adminSmsNoRecentRuns.
@@ -11637,61 +11637,61 @@ abstract class AfriLocalizations {
   /// No description provided for @adminSmsStatusHealthy.
   ///
   /// In en, this message translates to:
-  /// **'HEALTHY'**
+  /// **'Healthy'**
   String get adminSmsStatusHealthy;
 
   /// No description provided for @adminSmsStatusSucceeded.
   ///
   /// In en, this message translates to:
-  /// **'SUCCEEDED'**
+  /// **'Succeeded'**
   String get adminSmsStatusSucceeded;
 
   /// No description provided for @adminSmsStatusDegraded.
   ///
   /// In en, this message translates to:
-  /// **'DEGRADED'**
+  /// **'Degraded'**
   String get adminSmsStatusDegraded;
 
   /// No description provided for @adminSmsStatusRunning.
   ///
   /// In en, this message translates to:
-  /// **'RUNNING'**
+  /// **'Running'**
   String get adminSmsStatusRunning;
 
   /// No description provided for @adminSmsStatusRateLimited.
   ///
   /// In en, this message translates to:
-  /// **'RATE LIMITED'**
+  /// **'Rate limited'**
   String get adminSmsStatusRateLimited;
 
   /// No description provided for @adminSmsStatusFailing.
   ///
   /// In en, this message translates to:
-  /// **'FAILING'**
+  /// **'Failing'**
   String get adminSmsStatusFailing;
 
   /// No description provided for @adminSmsStatusFailed.
   ///
   /// In en, this message translates to:
-  /// **'FAILED'**
+  /// **'Failed'**
   String get adminSmsStatusFailed;
 
   /// No description provided for @adminSmsTriggerInitial.
   ///
   /// In en, this message translates to:
-  /// **'INITIAL HISTORY'**
+  /// **'Initial history'**
   String get adminSmsTriggerInitial;
 
   /// No description provided for @adminSmsTriggerManual.
   ///
   /// In en, this message translates to:
-  /// **'MANUAL'**
+  /// **'Manual'**
   String get adminSmsTriggerManual;
 
   /// No description provided for @adminSmsTriggerControlled.
   ///
   /// In en, this message translates to:
-  /// **'CONTROLLED'**
+  /// **'Controlled'**
   String get adminSmsTriggerControlled;
 
   /// No description provided for @adminSmsRunTitle.
@@ -11709,7 +11709,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsTitle.
   ///
   /// In en, this message translates to:
-  /// **'CONTENT MANAGER'**
+  /// **'Content manager'**
   String get adminCmsTitle;
 
   /// No description provided for @adminCmsDescription.
@@ -11877,13 +11877,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsAddContentBlock.
   ///
   /// In en, this message translates to:
-  /// **'ADD CONTENT BLOCK'**
+  /// **'Add content block'**
   String get adminCmsAddContentBlock;
 
   /// No description provided for @adminCmsEditContentBlock.
   ///
   /// In en, this message translates to:
-  /// **'EDIT CONTENT BLOCK'**
+  /// **'Edit content block'**
   String get adminCmsEditContentBlock;
 
   /// No description provided for @adminCmsBlockKey.
@@ -11901,13 +11901,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsTargetChannel.
   ///
   /// In en, this message translates to:
-  /// **'Target Channel'**
+  /// **'Target channel'**
   String get adminCmsTargetChannel;
 
   /// No description provided for @adminCmsPlacementKey.
   ///
   /// In en, this message translates to:
-  /// **'Placement Key'**
+  /// **'Placement key'**
   String get adminCmsPlacementKey;
 
   /// No description provided for @adminCmsTitleField.
@@ -11925,7 +11925,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsContentComponent.
   ///
   /// In en, this message translates to:
-  /// **'Content Component Name'**
+  /// **'Content component name'**
   String get adminCmsContentComponent;
 
   /// No description provided for @adminCmsFeatureField.
@@ -11955,19 +11955,19 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsCreate.
   ///
   /// In en, this message translates to:
-  /// **'CREATE'**
+  /// **'Create'**
   String get adminCmsCreate;
 
   /// No description provided for @adminCmsSave.
   ///
   /// In en, this message translates to:
-  /// **'SAVE'**
+  /// **'Save'**
   String get adminCmsSave;
 
   /// No description provided for @adminCmsNewArticle.
   ///
   /// In en, this message translates to:
-  /// **'NEW ARTICLE'**
+  /// **'New article'**
   String get adminCmsNewArticle;
 
   /// No description provided for @adminCmsArticleTitle.
@@ -11985,13 +11985,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsAddQuickAction.
   ///
   /// In en, this message translates to:
-  /// **'ADD QUICK ACTION'**
+  /// **'Add quick action'**
   String get adminCmsAddQuickAction;
 
   /// No description provided for @adminCmsEditQuickAction.
   ///
   /// In en, this message translates to:
-  /// **'EDIT QUICK ACTION'**
+  /// **'Edit quick action'**
   String get adminCmsEditQuickAction;
 
   /// No description provided for @adminCmsActionKey.
@@ -12027,13 +12027,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsAddPartner.
   ///
   /// In en, this message translates to:
-  /// **'ADD PARTNER'**
+  /// **'Add partner'**
   String get adminCmsAddPartner;
 
   /// No description provided for @adminCmsEditPartner.
   ///
   /// In en, this message translates to:
-  /// **'EDIT PARTNER'**
+  /// **'Edit partner'**
   String get adminCmsEditPartner;
 
   /// No description provided for @adminCmsName.
@@ -12075,13 +12075,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsAddPartnerService.
   ///
   /// In en, this message translates to:
-  /// **'ADD PARTNER SERVICE'**
+  /// **'Add partner service'**
   String get adminCmsAddPartnerService;
 
   /// No description provided for @adminCmsEditPartnerService.
   ///
   /// In en, this message translates to:
-  /// **'EDIT PARTNER SERVICE'**
+  /// **'Edit partner service'**
   String get adminCmsEditPartnerService;
 
   /// No description provided for @adminCmsPartner.
@@ -12117,13 +12117,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsAddPredictionCompetition.
   ///
   /// In en, this message translates to:
-  /// **'ADD PREDICTION COMPETITION'**
+  /// **'Add prediction competition'**
   String get adminCmsAddPredictionCompetition;
 
   /// No description provided for @adminCmsEditPredictionCompetition.
   ///
   /// In en, this message translates to:
-  /// **'EDIT PREDICTION COMPETITION'**
+  /// **'Edit prediction competition'**
   String get adminCmsEditPredictionCompetition;
 
   /// No description provided for @adminCmsCompetition.
@@ -12207,7 +12207,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsSectionQuickActions.
   ///
   /// In en, this message translates to:
-  /// **'Quick Actions'**
+  /// **'Quick actions'**
   String get adminCmsSectionQuickActions;
 
   /// No description provided for @adminCmsSectionPartners.
@@ -12237,31 +12237,31 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsSectionAuditLogs.
   ///
   /// In en, this message translates to:
-  /// **'Audit Logs'**
+  /// **'Audit logs'**
   String get adminCmsSectionAuditLogs;
 
   /// No description provided for @adminCmsNewsArticles.
   ///
   /// In en, this message translates to:
-  /// **'News Articles'**
+  /// **'News articles'**
   String get adminCmsNewsArticles;
 
   /// No description provided for @adminCmsAddArticle.
   ///
   /// In en, this message translates to:
-  /// **'ADD ARTICLE'**
+  /// **'Add article'**
   String get adminCmsAddArticle;
 
   /// No description provided for @adminCmsHomeQuickActions.
   ///
   /// In en, this message translates to:
-  /// **'Home Quick Actions'**
+  /// **'Home quick actions'**
   String get adminCmsHomeQuickActions;
 
   /// No description provided for @adminCmsAddAction.
   ///
   /// In en, this message translates to:
-  /// **'ADD ACTION'**
+  /// **'Add action'**
   String get adminCmsAddAction;
 
   /// No description provided for @adminCmsPartners.
@@ -12273,49 +12273,49 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsAddPartnerAction.
   ///
   /// In en, this message translates to:
-  /// **'ADD PARTNER'**
+  /// **'Add partner'**
   String get adminCmsAddPartnerAction;
 
   /// No description provided for @adminCmsPartnerServices.
   ///
   /// In en, this message translates to:
-  /// **'Partner Services'**
+  /// **'Partner services'**
   String get adminCmsPartnerServices;
 
   /// No description provided for @adminCmsAddService.
   ///
   /// In en, this message translates to:
-  /// **'ADD SERVICE'**
+  /// **'Add service'**
   String get adminCmsAddService;
 
   /// No description provided for @adminCmsPredictionCompetitions.
   ///
   /// In en, this message translates to:
-  /// **'Prediction Competitions'**
+  /// **'Prediction competitions'**
   String get adminCmsPredictionCompetitions;
 
   /// No description provided for @adminCmsAddCompetition.
   ///
   /// In en, this message translates to:
-  /// **'ADD COMPETITION'**
+  /// **'Add competition'**
   String get adminCmsAddCompetition;
 
   /// No description provided for @adminCmsContentBlocks.
   ///
   /// In en, this message translates to:
-  /// **'Platform Content Blocks'**
+  /// **'Platform content blocks'**
   String get adminCmsContentBlocks;
 
   /// No description provided for @adminCmsAddBlock.
   ///
   /// In en, this message translates to:
-  /// **'ADD BLOCK'**
+  /// **'Add block'**
   String get adminCmsAddBlock;
 
   /// No description provided for @adminCmsAuditLogs.
   ///
   /// In en, this message translates to:
-  /// **'FEATURE MANAGEMENT AUDIT LOGS'**
+  /// **'Feature management audit logs'**
   String get adminCmsAuditLogs;
 
   /// No description provided for @adminCmsQuickActionFallback.
@@ -12345,43 +12345,43 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsActiveUpper.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE'**
+  /// **'Active'**
   String get adminCmsActiveUpper;
 
   /// No description provided for @adminCmsInactiveUpper.
   ///
   /// In en, this message translates to:
-  /// **'INACTIVE'**
+  /// **'Inactive'**
   String get adminCmsInactiveUpper;
 
   /// No description provided for @adminCmsGamificationUpper.
   ///
   /// In en, this message translates to:
-  /// **'GAMIFICATION'**
+  /// **'Gamification'**
   String get adminCmsGamificationUpper;
 
   /// No description provided for @adminCmsDirectUpper.
   ///
   /// In en, this message translates to:
-  /// **'DIRECT'**
+  /// **'Direct'**
   String get adminCmsDirectUpper;
 
   /// No description provided for @adminCmsStandardUpper.
   ///
   /// In en, this message translates to:
-  /// **'STANDARD'**
+  /// **'Standard'**
   String get adminCmsStandardUpper;
 
   /// No description provided for @adminCmsDeactivate.
   ///
   /// In en, this message translates to:
-  /// **'DEACTIVATE'**
+  /// **'Deactivate'**
   String get adminCmsDeactivate;
 
   /// No description provided for @adminCmsActivate.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVATE'**
+  /// **'Activate'**
   String get adminCmsActivate;
 
   /// No description provided for @adminCmsCtaPending.
@@ -12405,13 +12405,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsCatalog.
   ///
   /// In en, this message translates to:
-  /// **'CATALOG'**
+  /// **'Catalog'**
   String get adminCmsCatalog;
 
   /// No description provided for @adminCmsSupported.
   ///
   /// In en, this message translates to:
-  /// **'SUPPORTED'**
+  /// **'Supported'**
   String get adminCmsSupported;
 
   /// No description provided for @adminCmsUnknown.
@@ -12423,7 +12423,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsUnknownFeature.
   ///
   /// In en, this message translates to:
-  /// **'Unknown Feature'**
+  /// **'Unknown feature'**
   String get adminCmsUnknownFeature;
 
   /// No description provided for @adminCmsUnknownDate.
@@ -12435,7 +12435,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsActionFallback.
   ///
   /// In en, this message translates to:
-  /// **'ACTION'**
+  /// **'Action'**
   String get adminCmsActionFallback;
 
   /// No description provided for @adminCmsFeatureName.
@@ -12453,7 +12453,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsEdit.
   ///
   /// In en, this message translates to:
-  /// **'EDIT'**
+  /// **'Edit'**
   String get adminCmsEdit;
 
   /// No description provided for @adminCmsUntitled.
@@ -12471,13 +12471,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsLive.
   ///
   /// In en, this message translates to:
-  /// **'LIVE'**
+  /// **'Live'**
   String get adminCmsLive;
 
   /// No description provided for @adminCmsDraft.
   ///
   /// In en, this message translates to:
-  /// **'DRAFT'**
+  /// **'Draft'**
   String get adminCmsDraft;
 
   /// No description provided for @adminCmsNotPublished.
@@ -12489,7 +12489,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsFeatured.
   ///
   /// In en, this message translates to:
-  /// **'FEATURED'**
+  /// **'Featured'**
   String get adminCmsFeatured;
 
   /// No description provided for @adminCmsArticleMeta.
@@ -12501,13 +12501,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminCmsUnpublish.
   ///
   /// In en, this message translates to:
-  /// **'UNPUBLISH'**
+  /// **'Unpublish'**
   String get adminCmsUnpublish;
 
   /// No description provided for @adminCmsPublish.
   ///
   /// In en, this message translates to:
-  /// **'PUBLISH'**
+  /// **'Publish'**
   String get adminCmsPublish;
 
   /// No description provided for @adminCmsPair.
@@ -12519,7 +12519,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameCommunityPicks.
   ///
   /// In en, this message translates to:
-  /// **'COMMUNITY PICKS'**
+  /// **'Community picks'**
   String get gameCommunityPicks;
 
   /// No description provided for @gameFetProgress.
@@ -12537,7 +12537,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameLevelUp.
   ///
   /// In en, this message translates to:
-  /// **'LEVEL UP!'**
+  /// **'Level up!'**
   String get gameLevelUp;
 
   /// No description provided for @gameAwesome.
@@ -12573,25 +12573,25 @@ abstract class AfriLocalizations {
   /// No description provided for @gameDaysShort.
   ///
   /// In en, this message translates to:
-  /// **'DAYS'**
+  /// **'Days'**
   String get gameDaysShort;
 
   /// No description provided for @gameHoursShort.
   ///
   /// In en, this message translates to:
-  /// **'HRS'**
+  /// **'Hrs'**
   String get gameHoursShort;
 
   /// No description provided for @gameMinutesShort.
   ///
   /// In en, this message translates to:
-  /// **'MIN'**
+  /// **'Min'**
   String get gameMinutesShort;
 
   /// No description provided for @gameSecondsShort.
   ///
   /// In en, this message translates to:
-  /// **'SEC'**
+  /// **'Sec'**
   String get gameSecondsShort;
 
   /// No description provided for @gameDismissNotification.
@@ -12603,31 +12603,31 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePredictions.
   ///
   /// In en, this message translates to:
-  /// **'PREDICTIONS'**
+  /// **'Predictions'**
   String get gamePredictions;
 
   /// No description provided for @gameAccuracy.
   ///
   /// In en, this message translates to:
-  /// **'ACCURACY'**
+  /// **'Accuracy'**
   String get gameAccuracy;
 
   /// No description provided for @gamePointsEarned.
   ///
   /// In en, this message translates to:
-  /// **'POINTS EARNED'**
+  /// **'Points earned'**
   String get gamePointsEarned;
 
   /// No description provided for @gameRank.
   ///
   /// In en, this message translates to:
-  /// **'RANK'**
+  /// **'Rank'**
   String get gameRank;
 
   /// No description provided for @gameTopScorers.
   ///
   /// In en, this message translates to:
-  /// **'TOP SCORERS'**
+  /// **'Top scorers'**
   String get gameTopScorers;
 
   /// No description provided for @gameGoals.
@@ -12639,13 +12639,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gameEntriesClosed.
   ///
   /// In en, this message translates to:
-  /// **'ENTRIES CLOSED'**
+  /// **'Entries closed'**
   String get gameEntriesClosed;
 
   /// No description provided for @gameEntriesCloseIn.
   ///
   /// In en, this message translates to:
-  /// **'ENTRIES CLOSE IN'**
+  /// **'Entries close in'**
   String get gameEntriesCloseIn;
 
   /// No description provided for @gameFetProgressValue.
@@ -12711,13 +12711,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gameOpenPredictionAlert.
   ///
   /// In en, this message translates to:
-  /// **'OPEN'**
+  /// **'Open'**
   String get gameOpenPredictionAlert;
 
   /// No description provided for @gameBadgesTitle.
   ///
   /// In en, this message translates to:
-  /// **'YOUR BADGES'**
+  /// **'Your badges'**
   String get gameBadgesTitle;
 
   /// No description provided for @gameBadgesUnavailable.
@@ -12747,7 +12747,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePredictionAlertsTitle.
   ///
   /// In en, this message translates to:
-  /// **'PREDICTION ALERTS'**
+  /// **'Prediction alerts'**
   String get gamePredictionAlertsTitle;
 
   /// No description provided for @gameAlertsUnavailable.
@@ -12788,7 +12788,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameStreakTitle.
   ///
   /// In en, this message translates to:
-  /// **'YOUR STREAK'**
+  /// **'Your streak'**
   String get gameStreakTitle;
 
   /// No description provided for @gameStreakDays.
@@ -12806,19 +12806,19 @@ abstract class AfriLocalizations {
   /// No description provided for @gameCurrent.
   ///
   /// In en, this message translates to:
-  /// **'CURRENT'**
+  /// **'Current'**
   String get gameCurrent;
 
   /// No description provided for @gameBest.
   ///
   /// In en, this message translates to:
-  /// **'BEST'**
+  /// **'Best'**
   String get gameBest;
 
   /// No description provided for @gameNextBonus.
   ///
   /// In en, this message translates to:
-  /// **'NEXT BONUS'**
+  /// **'Next bonus'**
   String get gameNextBonus;
 
   /// No description provided for @gameWins.
@@ -12836,7 +12836,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameVerifyToPredict.
   ///
   /// In en, this message translates to:
-  /// **'VERIFY TO PREDICT'**
+  /// **'Verify to predict'**
   String get gameVerifyToPredict;
 
   /// No description provided for @gameMakePicks.
@@ -13070,19 +13070,19 @@ abstract class AfriLocalizations {
   /// No description provided for @gameSettingsUpper.
   ///
   /// In en, this message translates to:
-  /// **'SETTINGS'**
+  /// **'Settings'**
   String get gameSettingsUpper;
 
   /// No description provided for @gamePrivacyUpper.
   ///
   /// In en, this message translates to:
-  /// **'PRIVACY'**
+  /// **'Privacy'**
   String get gamePrivacyUpper;
 
   /// No description provided for @gameCoreGuarantees.
   ///
   /// In en, this message translates to:
-  /// **'CORE GUARANTEES'**
+  /// **'Core guarantees'**
   String get gameCoreGuarantees;
 
   /// No description provided for @gamePhoneNumberHidden.
@@ -13112,7 +13112,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameVisibilityControls.
   ///
   /// In en, this message translates to:
-  /// **'VISIBILITY CONTROLS'**
+  /// **'Visibility controls'**
   String get gameVisibilityControls;
 
   /// No description provided for @gameShowRealName.
@@ -13154,7 +13154,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameRewardsStoreTitle.
   ///
   /// In en, this message translates to:
-  /// **'REWARDS STORE'**
+  /// **'Rewards store'**
   String get gameRewardsStoreTitle;
 
   /// No description provided for @gameRewardsUnavailable.
@@ -13172,7 +13172,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameAvailableBalance.
   ///
   /// In en, this message translates to:
-  /// **'AVAILABLE BALANCE'**
+  /// **'Available balance'**
   String get gameAvailableBalance;
 
   /// No description provided for @gameRewardsStoreDescription.
@@ -13298,7 +13298,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameFixturesTitle.
   ///
   /// In en, this message translates to:
-  /// **'FIXTURES'**
+  /// **'Fixtures'**
   String get gameFixturesTitle;
 
   /// No description provided for @gameFixturesUnavailable.
@@ -13352,7 +13352,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameMyActivity.
   ///
   /// In en, this message translates to:
-  /// **'MY ACTIVITY'**
+  /// **'My activity'**
   String get gameMyActivity;
 
   /// No description provided for @gameActiveCount.
@@ -13394,37 +13394,37 @@ abstract class AfriLocalizations {
   /// No description provided for @gameWon.
   ///
   /// In en, this message translates to:
-  /// **'WON'**
+  /// **'Won'**
   String get gameWon;
 
   /// No description provided for @gameLost.
   ///
   /// In en, this message translates to:
-  /// **'LOST'**
+  /// **'Lost'**
   String get gameLost;
 
   /// No description provided for @gameCancelled.
   ///
   /// In en, this message translates to:
-  /// **'CANCELLED'**
+  /// **'Cancelled'**
   String get gameCancelled;
 
   /// No description provided for @gameVoid.
   ///
   /// In en, this message translates to:
-  /// **'VOID'**
+  /// **'Void'**
   String get gameVoid;
 
   /// No description provided for @gamePendingUpper.
   ///
   /// In en, this message translates to:
-  /// **'PENDING'**
+  /// **'Pending'**
   String get gamePendingUpper;
 
   /// No description provided for @gameTbd.
   ///
   /// In en, this message translates to:
-  /// **'TBD'**
+  /// **'Tbd'**
   String get gameTbd;
 
   /// No description provided for @gameVersusShort.
@@ -13466,7 +13466,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameNotificationsUpper.
   ///
   /// In en, this message translates to:
-  /// **'NOTIFICATIONS'**
+  /// **'Notifications'**
   String get gameNotificationsUpper;
 
   /// No description provided for @gameKickoffAlerts.
@@ -13490,31 +13490,31 @@ abstract class AfriLocalizations {
   /// No description provided for @gameLineupsUpper.
   ///
   /// In en, this message translates to:
-  /// **'LINEUPS'**
+  /// **'Lineups'**
   String get gameLineupsUpper;
 
   /// No description provided for @gameSubstitutes.
   ///
   /// In en, this message translates to:
-  /// **'SUBS'**
+  /// **'Subs'**
   String get gameSubstitutes;
 
   /// No description provided for @gameActiveUpper.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE'**
+  /// **'Active'**
   String get gameActiveUpper;
 
   /// No description provided for @gameWinRate.
   ///
   /// In en, this message translates to:
-  /// **'WIN RATE'**
+  /// **'Win rate'**
   String get gameWinRate;
 
   /// No description provided for @gameYouUpper.
   ///
   /// In en, this message translates to:
-  /// **'YOU'**
+  /// **'You'**
   String get gameYouUpper;
 
   /// No description provided for @gameWalletSignedPoints.
@@ -13568,19 +13568,19 @@ abstract class AfriLocalizations {
   /// No description provided for @gameOpenUpper.
   ///
   /// In en, this message translates to:
-  /// **'OPEN'**
+  /// **'Open'**
   String get gameOpenUpper;
 
   /// No description provided for @gameLockedUpper.
   ///
   /// In en, this message translates to:
-  /// **'LOCKED'**
+  /// **'Locked'**
   String get gameLockedUpper;
 
   /// No description provided for @gameSettledUpper.
   ///
   /// In en, this message translates to:
-  /// **'SETTLED'**
+  /// **'Settled'**
   String get gameSettledUpper;
 
   /// No description provided for @gameDaysLeft.
@@ -13724,25 +13724,25 @@ abstract class AfriLocalizations {
   /// No description provided for @gameMarketUpper.
   ///
   /// In en, this message translates to:
-  /// **'MARKET'**
+  /// **'Market'**
   String get gameMarketUpper;
 
   /// No description provided for @gamePickUpper.
   ///
   /// In en, this message translates to:
-  /// **'PICK'**
+  /// **'Pick'**
   String get gamePickUpper;
 
   /// No description provided for @gameEarnedUpper.
   ///
   /// In en, this message translates to:
-  /// **'EARNED'**
+  /// **'Earned'**
   String get gameEarnedUpper;
 
   /// No description provided for @gamePotentialUpper.
   ///
   /// In en, this message translates to:
-  /// **'POTENTIAL'**
+  /// **'Potential'**
   String get gamePotentialUpper;
 
   /// No description provided for @gameShareTagline.
@@ -13916,13 +13916,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gameNotSignedIn.
   ///
   /// In en, this message translates to:
-  /// **'NOT SIGNED IN'**
+  /// **'Not signed in'**
   String get gameNotSignedIn;
 
   /// No description provided for @gameTierFan.
   ///
   /// In en, this message translates to:
-  /// **'FAN'**
+  /// **'Fan'**
   String get gameTierFan;
 
   /// No description provided for @gameDisplayNameOn.
@@ -14078,13 +14078,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gameFanIdTitle.
   ///
   /// In en, this message translates to:
-  /// **'FAN ID'**
+  /// **'Fan id'**
   String get gameFanIdTitle;
 
   /// No description provided for @gameYourFanId.
   ///
   /// In en, this message translates to:
-  /// **'YOUR FAN ID'**
+  /// **'Your fan id'**
   String get gameYourFanId;
 
   /// No description provided for @gameAliasOnlyProfile.
@@ -14108,13 +14108,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePrivacyBadges.
   ///
   /// In en, this message translates to:
-  /// **'PRIVACY BADGES'**
+  /// **'Privacy badges'**
   String get gamePrivacyBadges;
 
   /// No description provided for @gameIdentityRules.
   ///
   /// In en, this message translates to:
-  /// **'IDENTITY RULES'**
+  /// **'Identity rules'**
   String get gameIdentityRules;
 
   /// No description provided for @gameIdentityRulesDescription.
@@ -14126,7 +14126,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameStandingsTitle.
   ///
   /// In en, this message translates to:
-  /// **'STANDINGS'**
+  /// **'Standings'**
   String get gameStandingsTitle;
 
   /// No description provided for @gameCompetitionNotFound.
@@ -14150,25 +14150,25 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePositionShort.
   ///
   /// In en, this message translates to:
-  /// **'POS'**
+  /// **'Pos'**
   String get gamePositionShort;
 
   /// No description provided for @gameTeamUpper.
   ///
   /// In en, this message translates to:
-  /// **'TEAM'**
+  /// **'Team'**
   String get gameTeamUpper;
 
   /// No description provided for @gamePointsShort.
   ///
   /// In en, this message translates to:
-  /// **'PTS'**
+  /// **'Pts'**
   String get gamePointsShort;
 
   /// No description provided for @gamePointsUpper.
   ///
   /// In en, this message translates to:
-  /// **'POINTS'**
+  /// **'Points'**
   String get gamePointsUpper;
 
   /// No description provided for @gameStandingRecord.
@@ -14185,7 +14185,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameHeadToHead.
   ///
   /// In en, this message translates to:
-  /// **'HEAD TO HEAD'**
+  /// **'Head to head'**
   String get gameHeadToHead;
 
   /// No description provided for @gameHeadToHeadEmpty.
@@ -14197,13 +14197,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gameWinDistribution.
   ///
   /// In en, this message translates to:
-  /// **'WIN DISTRIBUTION'**
+  /// **'Win distribution'**
   String get gameWinDistribution;
 
   /// No description provided for @gameDraws.
   ///
   /// In en, this message translates to:
-  /// **'DRAWS'**
+  /// **'Draws'**
   String get gameDraws;
 
   /// No description provided for @gameTeamGoals.
@@ -14215,7 +14215,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameRecentEncounters.
   ///
   /// In en, this message translates to:
-  /// **'RECENT ENCOUNTERS'**
+  /// **'Recent encounters'**
   String get gameRecentEncounters;
 
   /// No description provided for @gameScore.
@@ -14227,7 +14227,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameTokenHistoryTitle.
   ///
   /// In en, this message translates to:
-  /// **'TOKEN HISTORY'**
+  /// **'Token history'**
   String get gameTokenHistoryTitle;
 
   /// No description provided for @gameTokenHistoryTemporarilyUnavailable.
@@ -14257,19 +14257,19 @@ abstract class AfriLocalizations {
   /// No description provided for @gameAllUpper.
   ///
   /// In en, this message translates to:
-  /// **'ALL'**
+  /// **'All'**
   String get gameAllUpper;
 
   /// No description provided for @gameEarnedUpperFilter.
   ///
   /// In en, this message translates to:
-  /// **'EARNED'**
+  /// **'Earned'**
   String get gameEarnedUpperFilter;
 
   /// No description provided for @gameSpentUpper.
   ///
   /// In en, this message translates to:
-  /// **'SPENT'**
+  /// **'Spent'**
   String get gameSpentUpper;
 
   /// No description provided for @gameCredit.
@@ -14312,7 +14312,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameClubFanZoneTitle.
   ///
   /// In en, this message translates to:
-  /// **'CLUB FAN ZONE'**
+  /// **'Club fan zone'**
   String get gameClubFanZoneTitle;
 
   /// No description provided for @gameClubFanZoneTemporarilyUnavailable.
@@ -14330,7 +14330,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameSupporterPulse.
   ///
   /// In en, this message translates to:
-  /// **'SUPPORTER PULSE'**
+  /// **'Supporter pulse'**
   String get gameSupporterPulse;
 
   /// No description provided for @gameSupporterPulseDescription.
@@ -14342,7 +14342,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameTopClubs.
   ///
   /// In en, this message translates to:
-  /// **'TOP CLUBS'**
+  /// **'Top clubs'**
   String get gameTopClubs;
 
   /// No description provided for @gameRankHash.
@@ -14354,7 +14354,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameSupporterLeans.
   ///
   /// In en, this message translates to:
-  /// **'SUPPORTER LEANS'**
+  /// **'Supporter leans'**
   String get gameSupporterLeans;
 
   /// No description provided for @gameSupporterLeansEmpty.
@@ -14378,7 +14378,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameLeagueHubTitle.
   ///
   /// In en, this message translates to:
-  /// **'LEAGUE HUB'**
+  /// **'League hub'**
   String get gameLeagueHubTitle;
 
   /// No description provided for @gameLeagueDataTemporarilyUnavailable.
@@ -14396,7 +14396,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameCompetition.
   ///
   /// In en, this message translates to:
-  /// **'COMPETITION'**
+  /// **'Competition'**
   String get gameCompetition;
 
   /// No description provided for @gameRegion.
@@ -14432,7 +14432,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameTopTable.
   ///
   /// In en, this message translates to:
-  /// **'TOP TABLE'**
+  /// **'Top table'**
   String get gameTopTable;
 
   /// No description provided for @gameFullStandings.
@@ -14798,7 +14798,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameTeamProfileTitle.
   ///
   /// In en, this message translates to:
-  /// **'TEAM PROFILE'**
+  /// **'Team profile'**
   String get gameTeamProfileTitle;
 
   /// No description provided for @gameTeamUnavailable.
@@ -14852,7 +14852,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameLeaguePosition.
   ///
   /// In en, this message translates to:
-  /// **'LEAGUE POSITION'**
+  /// **'League position'**
   String get gameLeaguePosition;
 
   /// No description provided for @gamePlayedShort.
@@ -14882,13 +14882,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gameGoalDifferenceShort.
   ///
   /// In en, this message translates to:
-  /// **'GD'**
+  /// **'Gd'**
   String get gameGoalDifferenceShort;
 
   /// No description provided for @gameMomoContributionRoute.
   ///
   /// In en, this message translates to:
-  /// **'MOMO CONTRIBUTION ROUTE'**
+  /// **'MoMo contribution route'**
   String get gameMomoContributionRoute;
 
   /// No description provided for @gameUseProviderForClub.
@@ -14918,7 +14918,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameClubMembers.
   ///
   /// In en, this message translates to:
-  /// **'CLUB MEMBERS'**
+  /// **'Club members'**
   String get gameClubMembers;
 
   /// No description provided for @gameTierGold.
@@ -14948,13 +14948,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gameTopContributors.
   ///
   /// In en, this message translates to:
-  /// **'TOP CONTRIBUTORS'**
+  /// **'Top contributors'**
   String get gameTopContributors;
 
   /// No description provided for @gameMomoContribution.
   ///
   /// In en, this message translates to:
-  /// **'MOMO CONTRIBUTION'**
+  /// **'MoMo contribution'**
   String get gameMomoContribution;
 
   /// No description provided for @gameUseProviderInCountry.
@@ -15020,7 +15020,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameThisClubUpper.
   ///
   /// In en, this message translates to:
-  /// **'THIS CLUB'**
+  /// **'This club'**
   String get gameThisClubUpper;
 
   /// No description provided for @gameLocation.
@@ -15134,7 +15134,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePickRoundUpper.
   ///
   /// In en, this message translates to:
-  /// **'PICK ROUND'**
+  /// **'Pick round'**
   String get gamePickRoundUpper;
 
   /// No description provided for @gameAcca.
@@ -15170,7 +15170,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameConfirmPicks.
   ///
   /// In en, this message translates to:
-  /// **'CONFIRM PICKS'**
+  /// **'Confirm picks'**
   String get gameConfirmPicks;
 
   /// No description provided for @gameLockingCombo.
@@ -15194,13 +15194,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gameTotalPotential.
   ///
   /// In en, this message translates to:
-  /// **'TOTAL POTENTIAL'**
+  /// **'Total potential'**
   String get gameTotalPotential;
 
   /// No description provided for @gameGoBack.
   ///
   /// In en, this message translates to:
-  /// **'GO BACK'**
+  /// **'Go back'**
   String get gameGoBack;
 
   /// No description provided for @gamePredictionsLocked.
@@ -15218,25 +15218,25 @@ abstract class AfriLocalizations {
   /// No description provided for @gameShareUpper.
   ///
   /// In en, this message translates to:
-  /// **'SHARE'**
+  /// **'Share'**
   String get gameShareUpper;
 
   /// No description provided for @gameCopyUpper.
   ///
   /// In en, this message translates to:
-  /// **'COPY'**
+  /// **'Copy'**
   String get gameCopyUpper;
 
   /// No description provided for @gameViewMyPredictions.
   ///
   /// In en, this message translates to:
-  /// **'VIEW MY PREDICTIONS'**
+  /// **'View my predictions'**
   String get gameViewMyPredictions;
 
   /// No description provided for @gameKeepBrowsing.
   ///
   /// In en, this message translates to:
-  /// **'KEEP BROWSING'**
+  /// **'Keep browsing'**
   String get gameKeepBrowsing;
 
   /// No description provided for @gameRemovePick.
@@ -15266,7 +15266,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameRoundUpper.
   ///
   /// In en, this message translates to:
-  /// **'ROUND'**
+  /// **'Round'**
   String get gameRoundUpper;
 
   /// No description provided for @gameAccuracyRounds.
@@ -15320,7 +15320,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameChallengesTitle.
   ///
   /// In en, this message translates to:
-  /// **'CHALLENGES'**
+  /// **'Challenges'**
   String get gameChallengesTitle;
 
   /// No description provided for @gameChallengesTemporarilyUnavailable.
@@ -15338,19 +15338,19 @@ abstract class AfriLocalizations {
   /// No description provided for @gameDaily.
   ///
   /// In en, this message translates to:
-  /// **'DAILY'**
+  /// **'Daily'**
   String get gameDaily;
 
   /// No description provided for @gameWeeklyUpper.
   ///
   /// In en, this message translates to:
-  /// **'WEEKLY'**
+  /// **'Weekly'**
   String get gameWeeklyUpper;
 
   /// No description provided for @gameSeasonal.
   ///
   /// In en, this message translates to:
-  /// **'SEASONAL'**
+  /// **'Seasonal'**
   String get gameSeasonal;
 
   /// No description provided for @gameCompleted.
@@ -15368,7 +15368,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameWhatIsFet.
   ///
   /// In en, this message translates to:
-  /// **'WHAT IS FET?'**
+  /// **'What is FET?'**
   String get gameWhatIsFet;
 
   /// No description provided for @gameWhatIsFetBody.
@@ -15380,7 +15380,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameHowPredictionsWork.
   ///
   /// In en, this message translates to:
-  /// **'HOW PREDICTIONS WORK'**
+  /// **'How predictions work'**
   String get gameHowPredictionsWork;
 
   /// No description provided for @gameHowPredictionsWorkBody.
@@ -15392,7 +15392,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameEarnLevelRedeem.
   ///
   /// In en, this message translates to:
-  /// **'EARN, LEVEL UP & REDEEM'**
+  /// **'Earn, level up & redeem'**
   String get gameEarnLevelRedeem;
 
   /// No description provided for @gameEarnLevelRedeemBody.
@@ -15404,25 +15404,25 @@ abstract class AfriLocalizations {
   /// No description provided for @gameBackUpper.
   ///
   /// In en, this message translates to:
-  /// **'BACK'**
+  /// **'Back'**
   String get gameBackUpper;
 
   /// No description provided for @gameGetStarted.
   ///
   /// In en, this message translates to:
-  /// **'GET STARTED'**
+  /// **'Get started'**
   String get gameGetStarted;
 
   /// No description provided for @gameNext.
   ///
   /// In en, this message translates to:
-  /// **'NEXT'**
+  /// **'Next'**
   String get gameNext;
 
   /// No description provided for @gameMyChallenges.
   ///
   /// In en, this message translates to:
-  /// **'MY CHALLENGES'**
+  /// **'My challenges'**
   String get gameMyChallenges;
 
   /// No description provided for @gameOpen.
@@ -15506,7 +15506,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameRefreshHistory.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH HISTORY'**
+  /// **'Refresh history'**
   String get gameRefreshHistory;
 
   /// No description provided for @gameNoFilteredChallenges.
@@ -16034,7 +16034,7 @@ abstract class AfriLocalizations {
   /// No description provided for @venueBackToFanZone.
   ///
   /// In en, this message translates to:
-  /// **'BACK TO FAN ZONE'**
+  /// **'Back to fan zone'**
   String get venueBackToFanZone;
 
   /// No description provided for @venueOrderAccessDenied.
@@ -16070,7 +16070,7 @@ abstract class AfriLocalizations {
   /// No description provided for @venueCheckInFirst.
   ///
   /// In en, this message translates to:
-  /// **'CHECK IN FIRST'**
+  /// **'Check in first'**
   String get venueCheckInFirst;
 
   /// No description provided for @venueNoDrinksAvailable.
@@ -16088,7 +16088,7 @@ abstract class AfriLocalizations {
   /// No description provided for @venueRefreshMenu.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH MENU'**
+  /// **'Refresh menu'**
   String get venueRefreshMenu;
 
   /// No description provided for @venueMenuUnavailableOffline.
@@ -16106,7 +16106,7 @@ abstract class AfriLocalizations {
   /// No description provided for @venueTryAgain.
   ///
   /// In en, this message translates to:
-  /// **'TRY AGAIN'**
+  /// **'Try again'**
   String get venueTryAgain;
 
   /// No description provided for @venueMenuCheckTimedOut.
@@ -16184,13 +16184,13 @@ abstract class AfriLocalizations {
   /// No description provided for @venueRemoveConfirmation.
   ///
   /// In en, this message translates to:
-  /// **'REMOVE CONFIRMATION'**
+  /// **'Remove confirmation'**
   String get venueRemoveConfirmation;
 
   /// No description provided for @venueConfirmLegalAge.
   ///
   /// In en, this message translates to:
-  /// **'CONFIRM LEGAL AGE'**
+  /// **'Confirm legal age'**
   String get venueConfirmLegalAge;
 
   /// No description provided for @venuePayAtVenue.
@@ -16208,19 +16208,19 @@ abstract class AfriLocalizations {
   /// No description provided for @venueCreatingOrderUpper.
   ///
   /// In en, this message translates to:
-  /// **'CREATING ORDER'**
+  /// **'Creating order'**
   String get venueCreatingOrderUpper;
 
   /// No description provided for @venueOrderConfirmedUpper.
   ///
   /// In en, this message translates to:
-  /// **'ORDER CONFIRMED'**
+  /// **'Order confirmed'**
   String get venueOrderConfirmedUpper;
 
   /// No description provided for @venueReviewCreateOrder.
   ///
   /// In en, this message translates to:
-  /// **'REVIEW AND CREATE ORDER'**
+  /// **'Review and create order'**
   String get venueReviewCreateOrder;
 
   /// No description provided for @venueOrderProtections.
@@ -16556,13 +16556,13 @@ abstract class AfriLocalizations {
   /// No description provided for @venueCheckinCheckingCodeUpper.
   ///
   /// In en, this message translates to:
-  /// **'CHECKING CODE'**
+  /// **'Checking code'**
   String get venueCheckinCheckingCodeUpper;
 
   /// No description provided for @venueCheckinActionUpper.
   ///
   /// In en, this message translates to:
-  /// **'CHECK IN'**
+  /// **'Check in'**
   String get venueCheckinActionUpper;
 
   /// No description provided for @venueCheckinLocationConsentSemantics.
@@ -16592,13 +16592,13 @@ abstract class AfriLocalizations {
   /// No description provided for @venueCheckinRemoveConsentUpper.
   ///
   /// In en, this message translates to:
-  /// **'REMOVE CONSENT'**
+  /// **'Remove consent'**
   String get venueCheckinRemoveConsentUpper;
 
   /// No description provided for @venueCheckinMarkConsentUpper.
   ///
   /// In en, this message translates to:
-  /// **'MARK CONSENT'**
+  /// **'Mark consent'**
   String get venueCheckinMarkConsentUpper;
 
   /// No description provided for @venueCheckinPrivacyBoundary.
@@ -16766,19 +16766,19 @@ abstract class AfriLocalizations {
   /// No description provided for @challengeConfirmTitle.
   ///
   /// In en, this message translates to:
-  /// **'CONFIRM CHALLENGE'**
+  /// **'Confirm challenge'**
   String get challengeConfirmTitle;
 
   /// No description provided for @challengeConfirmPoints.
   ///
   /// In en, this message translates to:
-  /// **'CONFIRM {count} pts'**
+  /// **'Confirm {count} pts'**
   String challengeConfirmPoints(int count);
 
   /// No description provided for @challengeCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'CREATE CHALLENGE'**
+  /// **'Create challenge'**
   String get challengeCreateTitle;
 
   /// No description provided for @challengeFindingFixtures.
@@ -16850,7 +16850,7 @@ abstract class AfriLocalizations {
   /// No description provided for @challengeRefreshFixturesUpper.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH FIXTURES'**
+  /// **'Refresh fixtures'**
   String get challengeRefreshFixturesUpper;
 
   /// No description provided for @challengeExactScore.
@@ -16868,7 +16868,7 @@ abstract class AfriLocalizations {
   /// No description provided for @challengeVersusUpper.
   ///
   /// In en, this message translates to:
-  /// **'VERSUS'**
+  /// **'Versus'**
   String get challengeVersusUpper;
 
   /// No description provided for @challengeEntryPoints.
@@ -16910,7 +16910,7 @@ abstract class AfriLocalizations {
   /// No description provided for @challengeCreatingUpper.
   ///
   /// In en, this message translates to:
-  /// **'CREATING CHALLENGE'**
+  /// **'Creating challenge'**
   String get challengeCreatingUpper;
 
   /// No description provided for @challengeCreationOffline.
@@ -16983,7 +16983,7 @@ abstract class AfriLocalizations {
   /// No description provided for @challengePreview.
   ///
   /// In en, this message translates to:
-  /// **'CHALLENGE PREVIEW'**
+  /// **'Challenge preview'**
   String get challengePreview;
 
   /// No description provided for @challengeYourPick.
@@ -17211,7 +17211,7 @@ abstract class AfriLocalizations {
   /// No description provided for @feedChallengeTitle.
   ///
   /// In en, this message translates to:
-  /// **'CHALLENGE'**
+  /// **'Challenge'**
   String get feedChallengeTitle;
 
   /// No description provided for @feedDescription.
@@ -17223,7 +17223,7 @@ abstract class AfriLocalizations {
   /// No description provided for @feedCreateNew.
   ///
   /// In en, this message translates to:
-  /// **'CREATE A NEW CHALLENGE'**
+  /// **'Create a new challenge'**
   String get feedCreateNew;
 
   /// No description provided for @feedOpening.
@@ -17433,7 +17433,7 @@ abstract class AfriLocalizations {
   /// No description provided for @detailTitle.
   ///
   /// In en, this message translates to:
-  /// **'CHALLENGE DETAIL'**
+  /// **'Challenge detail'**
   String get detailTitle;
 
   /// No description provided for @detailOpening.
@@ -17493,13 +17493,13 @@ abstract class AfriLocalizations {
   /// No description provided for @detailRefreshUpper.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH CHALLENGE'**
+  /// **'Refresh challenge'**
   String get detailRefreshUpper;
 
   /// No description provided for @detailMyPickUpper.
   ///
   /// In en, this message translates to:
-  /// **'MY PICK'**
+  /// **'My pick'**
   String get detailMyPickUpper;
 
   /// No description provided for @detailMyEntry.
@@ -17511,7 +17511,7 @@ abstract class AfriLocalizations {
   /// No description provided for @detailJoinUpper.
   ///
   /// In en, this message translates to:
-  /// **'JOIN THIS CHALLENGE'**
+  /// **'Join this challenge'**
   String get detailJoinUpper;
 
   /// No description provided for @detailPickScoreBody.
@@ -17523,7 +17523,7 @@ abstract class AfriLocalizations {
   /// No description provided for @detailResults.
   ///
   /// In en, this message translates to:
-  /// **'RESULTS'**
+  /// **'Results'**
   String get detailResults;
 
   /// No description provided for @detailOfficialScore.
@@ -17553,7 +17553,7 @@ abstract class AfriLocalizations {
   /// No description provided for @detailEntries.
   ///
   /// In en, this message translates to:
-  /// **'ENTRIES'**
+  /// **'Entries'**
   String get detailEntries;
 
   /// No description provided for @detailEntryCancelled.
@@ -17643,25 +17643,25 @@ abstract class AfriLocalizations {
   /// No description provided for @detailJoiningUpper.
   ///
   /// In en, this message translates to:
-  /// **'JOINING CHALLENGE'**
+  /// **'Joining challenge'**
   String get detailJoiningUpper;
 
   /// No description provided for @detailJoinWithPoints.
   ///
   /// In en, this message translates to:
-  /// **'JOIN WITH {count} pts'**
+  /// **'Join with {count} pts'**
   String detailJoinWithPoints(int count);
 
   /// No description provided for @detailCancellingUpper.
   ///
   /// In en, this message translates to:
-  /// **'CANCELLING CHALLENGE'**
+  /// **'Cancelling challenge'**
   String get detailCancellingUpper;
 
   /// No description provided for @detailCancelUpper.
   ///
   /// In en, this message translates to:
-  /// **'CANCEL CHALLENGE'**
+  /// **'Cancel challenge'**
   String get detailCancelUpper;
 
   /// No description provided for @detailConnectionRestored.
@@ -17691,31 +17691,31 @@ abstract class AfriLocalizations {
   /// No description provided for @detailEntryActive.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVE'**
+  /// **'Active'**
   String get detailEntryActive;
 
   /// No description provided for @detailEntryWinner.
   ///
   /// In en, this message translates to:
-  /// **'WINNER'**
+  /// **'Winner'**
   String get detailEntryWinner;
 
   /// No description provided for @detailEntryLoser.
   ///
   /// In en, this message translates to:
-  /// **'LOSER'**
+  /// **'Loser'**
   String get detailEntryLoser;
 
   /// No description provided for @detailEntryRefunded.
   ///
   /// In en, this message translates to:
-  /// **'REFUNDED'**
+  /// **'Refunded'**
   String get detailEntryRefunded;
 
   /// No description provided for @detailEntryCancelledStatus.
   ///
   /// In en, this message translates to:
-  /// **'CANCELLED'**
+  /// **'Cancelled'**
   String get detailEntryCancelledStatus;
 
   /// No description provided for @gameShareOptionsClosed.
@@ -17739,7 +17739,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameBackToFanZoneUpper.
   ///
   /// In en, this message translates to:
-  /// **'BACK TO FAN ZONE'**
+  /// **'Back to fan zone'**
   String get gameBackToFanZoneUpper;
 
   /// No description provided for @gamePredictionAccessDenied.
@@ -17769,7 +17769,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameBackToPicksUpper.
   ///
   /// In en, this message translates to:
-  /// **'BACK TO PICKS'**
+  /// **'Back to picks'**
   String get gameBackToPicksUpper;
 
   /// No description provided for @gameShareCardsOffline.
@@ -17799,7 +17799,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameTryAgainUpper.
   ///
   /// In en, this message translates to:
-  /// **'TRY AGAIN'**
+  /// **'Try again'**
   String get gameTryAgainUpper;
 
   /// No description provided for @gameShareCardsUnavailable.
@@ -17966,37 +17966,37 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePredictionStatusWon.
   ///
   /// In en, this message translates to:
-  /// **'WON'**
+  /// **'Won'**
   String get gamePredictionStatusWon;
 
   /// No description provided for @gamePredictionStatusLost.
   ///
   /// In en, this message translates to:
-  /// **'LOST'**
+  /// **'Lost'**
   String get gamePredictionStatusLost;
 
   /// No description provided for @gamePredictionStatusCancelled.
   ///
   /// In en, this message translates to:
-  /// **'CANCELLED'**
+  /// **'Cancelled'**
   String get gamePredictionStatusCancelled;
 
   /// No description provided for @gamePredictionStatusVoid.
   ///
   /// In en, this message translates to:
-  /// **'VOID'**
+  /// **'Void'**
   String get gamePredictionStatusVoid;
 
   /// No description provided for @gamePredictionStatusPending.
   ///
   /// In en, this message translates to:
-  /// **'PENDING'**
+  /// **'Pending'**
   String get gamePredictionStatusPending;
 
   /// No description provided for @gamePredictionDateTbd.
   ///
   /// In en, this message translates to:
-  /// **'TBD'**
+  /// **'Tbd'**
   String get gamePredictionDateTbd;
 
   /// No description provided for @gamePredictionDateTime.
@@ -18104,7 +18104,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePredictionActivityDetailTitle.
   ///
   /// In en, this message translates to:
-  /// **'ACTIVITY DETAIL'**
+  /// **'Activity detail'**
   String get gamePredictionActivityDetailTitle;
 
   /// No description provided for @gamePredictionShortTeams.
@@ -18116,31 +18116,31 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePredictionVenueTbc.
   ///
   /// In en, this message translates to:
-  /// **'VENUE TBC'**
+  /// **'Venue tbc'**
   String get gamePredictionVenueTbc;
 
   /// No description provided for @gamePredictionPickType.
   ///
   /// In en, this message translates to:
-  /// **'PICK TYPE'**
+  /// **'Pick type'**
   String get gamePredictionPickType;
 
   /// No description provided for @gamePredictionSelection.
   ///
   /// In en, this message translates to:
-  /// **'SELECTION'**
+  /// **'Selection'**
   String get gamePredictionSelection;
 
   /// No description provided for @gamePredictionEarned.
   ///
   /// In en, this message translates to:
-  /// **'EARNED'**
+  /// **'Earned'**
   String get gamePredictionEarned;
 
   /// No description provided for @gamePredictionPotential.
   ///
   /// In en, this message translates to:
-  /// **'POTENTIAL'**
+  /// **'Potential'**
   String get gamePredictionPotential;
 
   /// No description provided for @gamePredictionPositiveValue.
@@ -18152,7 +18152,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePredictionSettlement.
   ///
   /// In en, this message translates to:
-  /// **'SETTLEMENT'**
+  /// **'Settlement'**
   String get gamePredictionSettlement;
 
   /// No description provided for @gamePredictionPlaced.
@@ -18182,37 +18182,37 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePredictionCancelPick.
   ///
   /// In en, this message translates to:
-  /// **'CANCEL PICK'**
+  /// **'Cancel pick'**
   String get gamePredictionCancelPick;
 
   /// No description provided for @gamePredictionCopyResult.
   ///
   /// In en, this message translates to:
-  /// **'COPY RESULT'**
+  /// **'Copy result'**
   String get gamePredictionCopyResult;
 
   /// No description provided for @gamePredictionCopySummary.
   ///
   /// In en, this message translates to:
-  /// **'COPY SUMMARY'**
+  /// **'Copy summary'**
   String get gamePredictionCopySummary;
 
   /// No description provided for @gamePredictionShareCard.
   ///
   /// In en, this message translates to:
-  /// **'SHARE CARD'**
+  /// **'Share card'**
   String get gamePredictionShareCard;
 
   /// No description provided for @gamePredictionBrowseFixtures.
   ///
   /// In en, this message translates to:
-  /// **'BROWSE FIXTURES'**
+  /// **'Browse fixtures'**
   String get gamePredictionBrowseFixtures;
 
   /// No description provided for @gamePredictionRefreshActivity.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH ACTIVITY'**
+  /// **'Refresh activity'**
   String get gamePredictionRefreshActivity;
 
   /// No description provided for @gamePredictionConnectionRestored.
@@ -18326,115 +18326,115 @@ abstract class AfriLocalizations {
   /// No description provided for @gameWeekdayMon.
   ///
   /// In en, this message translates to:
-  /// **'MON'**
+  /// **'Mon'**
   String get gameWeekdayMon;
 
   /// No description provided for @gameWeekdayTue.
   ///
   /// In en, this message translates to:
-  /// **'TUE'**
+  /// **'Tue'**
   String get gameWeekdayTue;
 
   /// No description provided for @gameWeekdayWed.
   ///
   /// In en, this message translates to:
-  /// **'WED'**
+  /// **'Wed'**
   String get gameWeekdayWed;
 
   /// No description provided for @gameWeekdayThu.
   ///
   /// In en, this message translates to:
-  /// **'THU'**
+  /// **'Thu'**
   String get gameWeekdayThu;
 
   /// No description provided for @gameWeekdayFri.
   ///
   /// In en, this message translates to:
-  /// **'FRI'**
+  /// **'Fri'**
   String get gameWeekdayFri;
 
   /// No description provided for @gameWeekdaySat.
   ///
   /// In en, this message translates to:
-  /// **'SAT'**
+  /// **'Sat'**
   String get gameWeekdaySat;
 
   /// No description provided for @gameWeekdaySun.
   ///
   /// In en, this message translates to:
-  /// **'SUN'**
+  /// **'Sun'**
   String get gameWeekdaySun;
 
   /// No description provided for @gameMonthJan.
   ///
   /// In en, this message translates to:
-  /// **'JAN'**
+  /// **'Jan'**
   String get gameMonthJan;
 
   /// No description provided for @gameMonthFeb.
   ///
   /// In en, this message translates to:
-  /// **'FEB'**
+  /// **'Feb'**
   String get gameMonthFeb;
 
   /// No description provided for @gameMonthMar.
   ///
   /// In en, this message translates to:
-  /// **'MAR'**
+  /// **'Mar'**
   String get gameMonthMar;
 
   /// No description provided for @gameMonthApr.
   ///
   /// In en, this message translates to:
-  /// **'APR'**
+  /// **'Apr'**
   String get gameMonthApr;
 
   /// No description provided for @gameMonthMay.
   ///
   /// In en, this message translates to:
-  /// **'MAY'**
+  /// **'May'**
   String get gameMonthMay;
 
   /// No description provided for @gameMonthJun.
   ///
   /// In en, this message translates to:
-  /// **'JUN'**
+  /// **'Jun'**
   String get gameMonthJun;
 
   /// No description provided for @gameMonthJul.
   ///
   /// In en, this message translates to:
-  /// **'JUL'**
+  /// **'Jul'**
   String get gameMonthJul;
 
   /// No description provided for @gameMonthAug.
   ///
   /// In en, this message translates to:
-  /// **'AUG'**
+  /// **'Aug'**
   String get gameMonthAug;
 
   /// No description provided for @gameMonthSep.
   ///
   /// In en, this message translates to:
-  /// **'SEP'**
+  /// **'Sep'**
   String get gameMonthSep;
 
   /// No description provided for @gameMonthOct.
   ///
   /// In en, this message translates to:
-  /// **'OCT'**
+  /// **'Oct'**
   String get gameMonthOct;
 
   /// No description provided for @gameMonthNov.
   ///
   /// In en, this message translates to:
-  /// **'NOV'**
+  /// **'Nov'**
   String get gameMonthNov;
 
   /// No description provided for @gameMonthDec.
   ///
   /// In en, this message translates to:
-  /// **'DEC'**
+  /// **'Dec'**
   String get gameMonthDec;
 
   /// No description provided for @gameMatchKickoffDateTime.
@@ -18463,7 +18463,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameH2hTab.
   ///
   /// In en, this message translates to:
-  /// **'H2H'**
+  /// **'H2h'**
   String get gameH2hTab;
 
   /// No description provided for @gameLineupsTab.
@@ -18607,7 +18607,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameRefreshMatch.
   ///
   /// In en, this message translates to:
-  /// **'REFRESH MATCH'**
+  /// **'Refresh match'**
   String get gameRefreshMatch;
 
   /// No description provided for @gameMatchConnectionRestored.
@@ -18711,6 +18711,18 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'{home} vs {away} uses partner-funded WDW pools only.'**
   String gamePartnerPoolsOnly(String home, String away);
+
+  /// No description provided for @settingsThemePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme preview'**
+  String get settingsThemePreview;
+
+  /// No description provided for @settingsApplyTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get settingsApplyTheme;
 }
 
 class _AfriLocalizationsDelegate

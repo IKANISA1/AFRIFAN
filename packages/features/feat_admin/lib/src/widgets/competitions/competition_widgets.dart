@@ -117,7 +117,7 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
                     ? context.afriL10n.adminCompetitionEdit
                     : context.afriL10n.adminCompetitionAdd,
                 style: TypographyTokens.titleLarge().copyWith(
-                  letterSpacing: 1.5,
+                  letterSpacing: TypographyTokens.trackingNone,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing5),
@@ -299,7 +299,7 @@ class _SeasonManagerSheet extends ConsumerWidget {
                           Text(
                             context.afriL10n.adminCompetitionSeasons,
                             style: TypographyTokens.titleLarge().copyWith(
-                              letterSpacing: 1.5,
+                              letterSpacing: TypographyTokens.trackingNone,
                             ),
                           ),
                           Text(
@@ -536,7 +536,9 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
     return AfriAlertDialog(
       title: Text(
         context.afriL10n.adminSeasonAddUpper,
-        style: TypographyTokens.titleLarge().copyWith(letterSpacing: 1.5),
+        style: TypographyTokens.titleLarge().copyWith(
+          letterSpacing: TypographyTokens.trackingNone,
+        ),
       ),
       content: SingleChildScrollView(
         child: Column(

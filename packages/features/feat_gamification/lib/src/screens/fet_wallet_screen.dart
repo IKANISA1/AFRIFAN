@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import '../providers/fet_wallet_provider.dart';
 import '../widgets/fet_split_model.dart';
 import '../widgets/fet_wallet_widgets.dart';
+import '../widgets/tier_label.dart';
 
 enum _WalletSection {
   earn('earn', AfriIcons.rewards),
@@ -231,9 +232,9 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       onRefresh: () => ref.read(fetWalletRouteProvider.notifier).refresh(),
       child: ListView(
         padding: const EdgeInsets.fromLTRB(
-          SpacingTokens.spacing6,
+          SpacingTokens.screenPadding,
           SpacingTokens.spacing4,
-          SpacingTokens.spacing6,
+          SpacingTokens.screenPadding,
           SpacingTokens.spacing12,
         ),
         children: [
@@ -241,7 +242,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             status,
             const SizedBox(height: SpacingTokens.spacing4),
           ],
-          GlassCard(
+          Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: SpacingTokens.spacing6,
               vertical: SpacingTokens.spacing8,
@@ -257,15 +258,16 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                 const SizedBox(height: SpacingTokens.spacing3),
                 Text(
                   l10n.walletBalanceValue(_formatPoints(wallet?.balance ?? 0)),
-                  style: TypographyTokens.metricValue(
-                    ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
+                  style: TypographyTokens.displayLarge(
+                    context.afriSemanticColors.primaryText,
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
-                AfriStatusChip(
-                  label: wallet?.tier ?? 'imena',
-                  tone: AfriStatusTone.live,
-                ),
+                if (wallet != null)
+                  AfriStatusChip(
+                    label: fanTierLabel(l10n, wallet.tier),
+                    tone: AfriStatusTone.neutral,
+                  ),
                 const SizedBox(height: SpacingTokens.spacing8),
                 Wrap(
                   alignment: WrapAlignment.spaceAround,

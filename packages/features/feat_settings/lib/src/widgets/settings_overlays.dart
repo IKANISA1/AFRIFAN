@@ -55,7 +55,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                   child: Text(
                     l10n.settingsDeleteAccountTitle,
                     style: TypographyTokens.headlineMedium().copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -122,14 +122,14 @@ Future<bool> showNotificationPermissionModal(BuildContext context) async {
             children: [
               Icon(
                 AfriIcons.notificationsActive,
-                color: ColorTokens.clubPrimary,
+                color: ColorTokens.primary,
                 size: SizeTokens.iconXxl,
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
                 l10n.settingsNotificationPermissionTitle,
                 style: TypographyTokens.headlineLarge().copyWith(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
@@ -186,7 +186,7 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
             Text(
               l10n.settingsSignOutTitle,
               style: TypographyTokens.headlineMedium().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
@@ -240,7 +240,7 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
             Text(
               l10n.settingsSignOutOthersTitle,
               style: TypographyTokens.headlineMedium().copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),

@@ -38,7 +38,7 @@ void main() {
       ),
     );
 
-    expect(find.text('MOMO CONTRIBUTION ROUTE'), findsNothing);
+    expect(find.text('MoMo contribution route'), findsNothing);
     expect(find.text('Contribution route not configured'), findsNothing);
     expect(find.text('Contribution route unavailable.'), findsNothing);
   });
@@ -60,7 +60,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('MOMO CONTRIBUTION ROUTE'), findsOneWidget);
+    expect(find.text('MoMo contribution route'), findsOneWidget);
     expect(find.text('MTN MoMo code 1828'), findsOneWidget);
     expect(find.text('Rayon contribution reference'), findsOneWidget);
   });
@@ -115,7 +115,7 @@ void main() {
       find.byKey(const ValueKey<String>('team-contribute-empty')),
       findsNothing,
     );
-    expect(find.text('MOMO CONTRIBUTION'), findsOneWidget);
+    expect(find.text('MoMo contribution'), findsOneWidget);
     expect(find.text('MTN MoMo code 1828'), findsOneWidget);
     expect(find.text('Rayon contribution reference'), findsOneWidget);
 
@@ -162,8 +162,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('MOMO CONTRIBUTION ROUTE'), findsNothing);
-    expect(find.text('MOMO CONTRIBUTION'), findsNothing);
+    expect(find.text('MoMo contribution route'), findsNothing);
+    expect(find.text('MoMo contribution'), findsNothing);
     expect(find.text('MTN MoMo code 1828'), findsNothing);
     expect(find.text('Rayon contribution reference'), findsNothing);
     expect(find.text('Enter amount & dial'), findsNothing);

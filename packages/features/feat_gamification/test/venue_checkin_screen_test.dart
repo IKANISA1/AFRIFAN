@@ -36,7 +36,7 @@ void main() {
     expect(find.textContaining('Consent is marked'), findsNothing);
     await tester.drag(find.byType(Scrollable).first, const Offset(0, -500));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('MARK CONSENT'));
+    await tester.tap(find.text('Mark consent'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Consent is marked'), findsOneWidget);

@@ -94,7 +94,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(controller.submitCalls, 1);
-    expect(find.text('ORDER CONFIRMED'), findsOneWidget);
+    expect(find.text('Order confirmed'), findsOneWidget);
     await tester.drag(find.byType(Scrollable).first, const Offset(0, 1200));
     await tester.pumpAndSettle();
     expect(find.text('Order created'), findsOneWidget);

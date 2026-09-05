@@ -169,16 +169,13 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     final matchDate = DateTime.tryParse(match['match_date']?.toString() ?? '');
 
     if ((status == 'live' || status == 'halftime') && liveMinute != null) {
-      return context.afriL10n.liveTimeVenue(
-        "$liveMinute'",
-        venue.toUpperCase(),
-      );
+      return context.afriL10n.liveTimeVenue("$liveMinute'", venue);
     }
 
     if (status == 'fulltime') {
       return context.afriL10n.liveTimeVenue(
         context.afriL10n.liveStatusFinal,
-        venue.toUpperCase(),
+        venue,
       );
     }
 
@@ -186,13 +183,10 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       final local = matchDate.toLocal();
       final hour = local.hour.toString().padLeft(2, '0');
       final minute = local.minute.toString().padLeft(2, '0');
-      return context.afriL10n.liveTimeVenue(
-        '$hour:$minute',
-        venue.toUpperCase(),
-      );
+      return context.afriL10n.liveTimeVenue('$hour:$minute', venue);
     }
 
-    return venue.toUpperCase();
+    return venue;
   }
 
   List<MatchIntelEvent> _eventsFor(Map<String, dynamic> match) {
@@ -232,10 +226,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
           minute: liveMinute == null
               ? context.afriL10n.liveStatusLive
               : "$liveMinute'",
-          title: context.afriL10n.liveMatchTeamsUpper(
-            homeTeam.toUpperCase(),
-            awayTeam.toUpperCase(),
-          ),
+          title: context.afriL10n.liveMatchTeamsUpper(homeTeam, awayTeam),
           body: summary.isEmpty ? context.afriL10n.liveModeActive : summary,
         ),
       ];
@@ -406,7 +397,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       constrainContent: false,
       child: AfriRefreshIndicator(
         onRefresh: _loadMatch,
-        color: ColorTokens.clubAccent,
+        color: ColorTokens.primaryContainer,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),
@@ -469,7 +460,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                         _timeAndVenue(match, status).replaceAll('•', '·'),
                         textAlign: TextAlign.center,
                         style: TypographyTokens.bodyMedium(
-                          ColorTokens.clubAccent,
+                          ColorTokens.primaryContainer,
                         ),
                       ),
                     ],
@@ -657,8 +648,8 @@ class LiveMatchFallbackContent extends StatelessWidget {
               context.afriL10n.liveCenterUnavailable,
               style: TypographyTokens.headlineMedium(ColorTokens.onDark)
                   .copyWith(
-                    fontWeight: FontWeight.w900,
-                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w700,
+                    fontStyle: FontStyle.normal,
                   ),
               textAlign: TextAlign.center,
             ),

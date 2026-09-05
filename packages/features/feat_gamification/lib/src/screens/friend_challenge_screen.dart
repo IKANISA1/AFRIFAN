@@ -194,7 +194,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
           context.afriL10n.gameChallenge,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.0,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -253,7 +253,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
             )
           : AfriRefreshIndicator(
               onRefresh: _load,
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               child: ListView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -408,12 +408,12 @@ class _SelectionChip extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? ColorTokens.clubAccent.withValues(alpha: 0.12)
+              ? ColorTokens.primaryContainer.withValues(alpha: 0.12)
               : ColorTokens.surfaceContainerLow,
           borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
           border: BorderTokens.all(
             color: isSelected
-                ? ColorTokens.clubAccent
+                ? ColorTokens.primaryContainer
                 : ColorTokens.ghostBorder,
             opacity: isSelected ? 0.35 : 1,
           ),
@@ -421,7 +421,9 @@ class _SelectionChip extends StatelessWidget {
         child: Text(
           label,
           style: TypographyTokens.labelSmall(
-            isSelected ? ColorTokens.clubAccent : ColorTokens.onSurfaceVariant,
+            isSelected
+                ? ColorTokens.primaryContainer
+                : ColorTokens.onSurfaceVariant,
           ),
         ),
       ),
@@ -471,7 +473,7 @@ class _FixtureRow extends StatelessWidget {
                   : context.afriL10n.gameChoose,
               style: TypographyTokens.labelSmall(
                 isSelected
-                    ? ColorTokens.clubAccent
+                    ? ColorTokens.primaryContainer
                     : ColorTokens.onSurfaceVariant,
               ),
             ),

@@ -24,12 +24,9 @@ class FeatureManagerScreen extends ConsumerWidget {
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title: context.afriL10n.adminFeatureManagerTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          context.afriL10n.adminFeatureManagerTitle,
-          style: TypographyTokens.titleLarge(),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -50,7 +47,9 @@ class FeatureManagerScreen extends ConsumerWidget {
             )
           : features.isLoading && snapshot == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-features-state-loading'),
                 title: context.afriL10n.adminFeatureRegistryLoading,
@@ -75,15 +74,13 @@ class FeatureManagerScreen extends ConsumerWidget {
     final snapshot = features.requireValue;
     final visible = snapshot.visibleFeatures;
     final controlsEnabled = snapshot.actionsEnabled && !features.isLoading;
-    final metricColor = Theme.of(context).brightness == Brightness.dark
-        ? ColorTokens.clubAccent
-        : ColorTokens.onSurface;
+    final metricColor = ColorTokens.onSurface;
 
     return AfriRefreshIndicator(
       onRefresh: ref.read(adminFeaturesProvider.notifier).refresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         children: [
           if (_statusBanner(context, features) case final banner?) ...[
             banner,
@@ -175,7 +172,7 @@ class FeatureManagerScreen extends ConsumerWidget {
 
   Widget _disabled(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-features-state-disabled'),
         title: context.afriL10n.adminFeatureManagementUnavailable,
@@ -233,7 +230,7 @@ class FeatureManagerScreen extends ConsumerWidget {
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }

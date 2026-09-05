@@ -587,7 +587,7 @@ class _NotificationPreferencesScreenState
                             Text(
                               _localStatusMessage!,
                               style: TypographyTokens.bodySmall(
-                                ColorTokens.clubAccent,
+                                ColorTokens.primaryContainer,
                               ),
                             ),
                           ],

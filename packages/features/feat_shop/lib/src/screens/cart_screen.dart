@@ -345,7 +345,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       value: currency.format(total),
                       labelStyle: TypographyTokens.titleMedium(),
                       valueStyle: TypographyTokens.titleLarge(
-                        ColorTokens.clubAccent,
+                        ColorTokens.primaryContainer,
                       ),
                     ),
                   ],
@@ -553,7 +553,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           value: currency.format(total),
                           labelStyle: TypographyTokens.titleMedium(),
                           valueStyle: TypographyTokens.titleLarge(
-                            ColorTokens.clubAccent,
+                            ColorTokens.primaryContainer,
                           ),
                         ),
                       ],

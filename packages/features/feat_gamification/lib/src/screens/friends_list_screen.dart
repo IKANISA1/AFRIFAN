@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
 import '../prediction_result_copy.dart';
+import '../widgets/tier_label.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
   const FriendsListScreen({super.key});
@@ -199,7 +200,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
           context.afriL10n.gameFriendsTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.0,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -229,7 +230,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
             )
           : AfriRefreshIndicator(
               onRefresh: _refreshVisibleData,
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               child: ListView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -326,7 +327,7 @@ class FriendSupportersSection extends StatelessWidget {
   String _supporterDetails(BuildContext context, FetFriendProfile supporter) {
     final parts = <String>[
       if (supporter.publicUserId != null) '#${supporter.publicUserId}',
-      supporter.tier.toUpperCase(),
+      fanTierLabel(context.afriL10n, supporter.tier),
       context.afriL10n.gamePointBalance(supporter.balance),
     ];
     return parts.join(' · ');

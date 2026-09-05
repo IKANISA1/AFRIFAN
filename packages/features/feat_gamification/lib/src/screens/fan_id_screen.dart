@@ -226,7 +226,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
           context.afriL10n.gameFanIdTitle,
           style: TypographyTokens.headlineMedium().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.6,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -262,8 +262,8 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                   shape: BoxShape.circle,
                                   gradient: ColorTokens.universalGradient(
                                     colors: [
-                                      ColorTokens.clubAccent,
-                                      ColorTokens.clubAccent.withValues(
+                                      ColorTokens.primaryContainer,
+                                      ColorTokens.primaryContainer.withValues(
                                         alpha: 0.5,
                                       ),
                                     ],
@@ -293,7 +293,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                   ColorTokens.onSurfaceVariant,
                                 ).copyWith(
                                   fontWeight: FontWeight.w600,
-                                  letterSpacing: 2,
+                                  letterSpacing: TypographyTokens.trackingNone,
                                 ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
@@ -302,8 +302,8 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                 ? context.afriL10n.gameNotSignedIn
                                 : _fanId,
                             style: TypographyTokens.displaySmall().copyWith(
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 4,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: TypographyTokens.trackingNone,
                             ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
@@ -313,7 +313,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                               vertical: SpacingTokens.spacing1,
                             ),
                             decoration: BoxDecoration(
-                              color: ColorTokens.clubAccent.withValues(
+                              color: ColorTokens.primaryContainer.withValues(
                                 alpha: 0.14,
                               ),
                               borderRadius: BorderRadius.circular(
@@ -325,7 +325,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                   ? context.afriL10n.gameTierFan
                                   : _tier.toUpperCase(),
                               style: TypographyTokens.labelSmall(
-                                ColorTokens.clubAccent,
+                                ColorTokens.primaryContainer,
                               ),
                             ),
                           ),
@@ -367,13 +367,13 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                   Icon(
                                     AfriIcons.copy,
                                     size: SpacingTokens.spacing4,
-                                    color: ColorTokens.clubAccent,
+                                    color: ColorTokens.primaryContainer,
                                   ),
                                   const SizedBox(width: SpacingTokens.spacing2),
                                   Text(
                                     context.afriL10n.gameCopyToClipboard,
                                     style: TypographyTokens.labelSmall(
-                                      ColorTokens.clubAccent,
+                                      ColorTokens.primaryContainer,
                                     ),
                                   ),
                                 ],
@@ -395,7 +395,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                             context.afriL10n.gamePrivacyBadges,
                             style: TypographyTokens.titleMedium().copyWith(
                               fontWeight: FontWeight.w700,
-                              letterSpacing: 1.2,
+                              letterSpacing: TypographyTokens.trackingNone,
                             ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
@@ -431,7 +431,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                             context.afriL10n.gameIdentityRules,
                             style: TypographyTokens.titleMedium().copyWith(
                               fontWeight: FontWeight.w700,
-                              letterSpacing: 1.2,
+                              letterSpacing: TypographyTokens.trackingNone,
                             ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
@@ -501,13 +501,13 @@ class _PrivacyBadge extends StatelessWidget {
             width: SpacingTokens.spacing10,
             height: SpacingTokens.spacing10,
             decoration: BoxDecoration(
-              color: ColorTokens.clubAccent.withValues(alpha: 0.14),
+              color: ColorTokens.primaryContainer.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
             ),
             child: Icon(
               icon,
               size: SpacingTokens.spacing5,
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -516,10 +516,12 @@ class _PrivacyBadge extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  label.toUpperCase(),
-                  style: TypographyTokens.labelSmall(
-                    ColorTokens.onSurface,
-                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+                  label,
+                  style: TypographyTokens.labelSmall(ColorTokens.onSurface)
+                      .copyWith(
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: TypographyTokens.trackingNone,
+                      ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing1),
                 Text(description, style: TypographyTokens.bodySmall()),
@@ -547,15 +549,15 @@ class _IdentityRuleRow extends StatelessWidget {
           width: SpacingTokens.spacing7,
           height: SpacingTokens.spacing7,
           decoration: BoxDecoration(
-            color: ColorTokens.clubAccent.withValues(alpha: 0.16),
+            color: ColorTokens.primaryContainer.withValues(alpha: 0.16),
             borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
           ),
           alignment: Alignment.center,
           child: Text(
             index.toString(),
             style: TypographyTokens.labelMedium(
-              ColorTokens.clubAccent,
-            ).copyWith(fontWeight: FontWeight.w800),
+              ColorTokens.primaryContainer,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ),
         const SizedBox(width: SpacingTokens.spacing3),

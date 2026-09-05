@@ -318,9 +318,6 @@ class _GroupSummaryCard extends StatelessWidget {
     );
     final description = group.description?.trim();
     final progress = group.progress;
-    final metricAccent = ColorTokens.accessibleMetricColor(
-      ColorTokens.clubAccent,
-    );
 
     return GlassCard(
       key: const ValueKey<String>('group-detail-summary-card'),
@@ -331,7 +328,7 @@ class _GroupSummaryCard extends StatelessWidget {
           Text(
             group.name,
             style: TypographyTokens.headlineMedium().copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           if (description != null && description.isNotEmpty) ...[
@@ -347,8 +344,8 @@ class _GroupSummaryCard extends StatelessWidget {
           Text(
             currency.format(group.currentTotal),
             style: TypographyTokens.displayLarge(
-              metricAccent,
-            ).copyWith(fontWeight: FontWeight.w900),
+              context.afriSemanticColors.primaryText,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
@@ -365,7 +362,9 @@ class _GroupSummaryCard extends StatelessWidget {
               value: progress,
               minHeight: 10,
               borderRadius: ShapeTokens.buttonRadius,
-              color: ColorTokens.accessibleChartColor(ColorTokens.clubAccent),
+              color: ColorTokens.accessibleChartColor(
+                ColorTokens.primaryContainer,
+              ),
               backgroundColor: ColorTokens.surfaceContainerHighest,
             ),
           ),
@@ -429,7 +428,7 @@ class GroupLedgerSection extends StatelessWidget {
           l10n.contributionsPublicLedgerTitle,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.2,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing2),
@@ -501,7 +500,7 @@ class _LedgerRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
     final metricAccent = ColorTokens.accessibleMetricColor(
-      ColorTokens.clubAccent,
+      ColorTokens.primaryContainer,
     );
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     final tone = switch (entry.status) {
@@ -535,7 +534,7 @@ class _LedgerRow extends StatelessWidget {
                 amount,
                 style: TypographyTokens.headlineMedium(
                   metricAccent,
-                ).copyWith(fontWeight: FontWeight.w800),
+                ).copyWith(fontWeight: FontWeight.w600),
               ),
             ] else
               Row(
@@ -554,7 +553,7 @@ class _LedgerRow extends StatelessWidget {
                       textAlign: TextAlign.end,
                       style: TypographyTokens.headlineMedium(
                         metricAccent,
-                      ).copyWith(fontWeight: FontWeight.w800),
+                      ).copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],

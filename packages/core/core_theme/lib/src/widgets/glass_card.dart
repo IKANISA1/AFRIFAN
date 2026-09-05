@@ -1,13 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 import '../extensions.dart';
 import '../tokens/border_tokens.dart';
-import '../tokens/color_tokens.dart';
 import '../tokens/motion_tokens.dart';
-import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_press_feedback.dart';
@@ -90,15 +85,21 @@ class GlassCard extends StatelessWidget {
       return card;
     }
 
-    return card
-        .animate()
-        .fadeIn(duration: AfriMotion.surfaceEntrance, curve: Curves.easeOut)
-        .slideY(
-          begin: 0.02,
-          end: 0,
-          duration: AfriMotion.surfaceEntrance,
-          curve: Curves.easeOut,
-        );
+    // A widget-owned ticker cancels with the surface. Delayed animation
+    // restarts can otherwise survive a route or async-state replacement.
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: AfriMotion.surfaceEntrance,
+      curve: Curves.easeOut,
+      child: card,
+      builder: (context, value, child) => Opacity(
+        opacity: value,
+        child: FractionalTranslation(
+          translation: Offset(0, 0.02 * (1 - value)),
+          child: child,
+        ),
+      ),
+    );
   }
 }
 
@@ -124,46 +125,32 @@ class _GlassSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final radius = ShapeTokens.cardRadius;
-    final effectiveBorderColor = borderColor ?? ColorTokens.ghostBorder;
-
-    return ClipRRect(
-      borderRadius: radius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: ColorTokens.glassBlurSigma,
-          sigmaY: ColorTokens.glassBlurSigma,
-        ),
-        child: AnimatedContainer(
-          duration: AfriMotion.resolve(context, AfriMotion.surfaceResponse),
-          curve: Curves.easeOutCubic,
-          width: width,
-          height: height,
-          padding: padding ?? const EdgeInsets.all(SpacingTokens.spacing5),
-          decoration: BoxDecoration(
-            color: ColorTokens.glassFill,
-            borderRadius: radius,
-            border: isFocused
-                ? BorderTokens.focusAll(
-                    color: ColorTokens.primaryContainer,
-                    opacity: 0.9,
-                    width: context.afriDesignTokens.focusRingWidth,
-                  )
-                : BorderTokens.all(
-                    color: effectiveBorderColor,
-                    width: BorderTokens.standard,
-                  ),
-            boxShadow: [
-              ...AfriShadows.glass(
-                Theme.of(context).brightness,
-                strength: isPressed ? 0.65 : 1.0,
-              ),
-              if (isFocused)
-                AfriShadows.focusGlow(ColorTokens.primaryContainer),
-            ],
-          ),
-          child: child,
-        ),
+    final colors = context.afriSemanticColors;
+    final highContrast = MediaQuery.highContrastOf(context);
+    return AnimatedContainer(
+      duration: AfriMotion.resolve(context, AfriMotion.surfaceResponse),
+      curve: Curves.easeOutCubic,
+      width: width,
+      height: height,
+      padding: padding ?? const EdgeInsets.all(SpacingTokens.cardPadding),
+      decoration: BoxDecoration(
+        color: isPressed ? colors.cardSurfaceStrong : colors.cardSurface,
+        borderRadius: radius,
+        border: isFocused
+            ? BorderTokens.focusAll(
+                color: colors.primaryText,
+                width: context.afriDesignTokens.focusRingWidth,
+              )
+            : highContrast || borderColor != null
+            ? BorderTokens.all(
+                color: borderColor ?? colors.border,
+                width: highContrast
+                    ? BorderTokens.strong
+                    : BorderTokens.standard,
+              )
+            : null,
       ),
+      child: child,
     );
   }
 }

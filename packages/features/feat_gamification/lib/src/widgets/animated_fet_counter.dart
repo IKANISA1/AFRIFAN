@@ -90,8 +90,8 @@ class _AnimatedFetCounterState extends State<AnimatedFetCounter>
           '${widget.prefix}$displayValue${widget.suffix}',
           style: TypographyTokens.monolithFont(
             fontSize: widget.fontSize,
-            fontWeight: FontWeight.w900,
-            color: widget.color ?? ColorTokens.clubAccent,
+            fontWeight: FontWeight.w700,
+            color: widget.color ?? ColorTokens.primaryContainer,
           ),
         );
       },

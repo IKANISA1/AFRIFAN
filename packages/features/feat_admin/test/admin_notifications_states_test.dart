@@ -75,13 +75,13 @@ void main() {
   });
   testWidgets('selected audience', (tester) async {
     await _pump(tester, _Gateway(<Object>[_workspace]));
-    await tester.tap(find.widgetWithText(AfriChoiceChip, 'BY TIER'));
+    await tester.tap(find.widgetWithText(AfriChoiceChip, 'By tier'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(AfriChoiceChip, 'GOLD'));
+    await tester.tap(find.widgetWithText(AfriChoiceChip, 'Gold'));
     await tester.pumpAndSettle();
     expect(
       tester
-          .widget<AfriChoiceChip>(find.widgetWithText(AfriChoiceChip, 'GOLD'))
+          .widget<AfriChoiceChip>(find.widgetWithText(AfriChoiceChip, 'Gold'))
           .selected,
       isTrue,
     );
@@ -236,6 +236,7 @@ Future<ProviderContainer> _pump(
           return ClubConfigScope(
             config: ClubConfig.fallback(),
             child: MaterialApp.router(
+              debugShowCheckedModeBanner: false,
               theme: ClubTheme.from(
                 ClubConfig.fallback(),
                 brightness: brightness,

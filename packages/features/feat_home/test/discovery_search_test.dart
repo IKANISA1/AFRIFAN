@@ -514,7 +514,7 @@ void main() {
           );
           await tester.pumpAndSettle();
 
-          expect(find.text(testCase.title.toUpperCase()), findsOneWidget);
+          expect(find.text(testCase.title), findsOneWidget);
           await tester.enterText(
             find.byKey(const ValueKey<String>('discovery-search-input')),
             testCase.query,
@@ -634,9 +634,9 @@ void main() {
   }
 
   for (final testCase in <({String id, Locale locale, String expectedTitle})>[
-    (id: 'en', locale: const Locale('en'), expectedTitle: 'SEARCH'),
-    (id: 'fr', locale: const Locale('fr'), expectedTitle: 'CHERCHER'),
-    (id: 'rw', locale: const Locale('rw'), expectedTitle: 'SHAKISHA'),
+    (id: 'en', locale: const Locale('en'), expectedTitle: 'Search'),
+    (id: 'fr', locale: const Locale('fr'), expectedTitle: 'Chercher'),
+    (id: 'rw', locale: const Locale('rw'), expectedTitle: 'Shakisha'),
   ]) {
     testWidgets(
       'golden localized Search ${testCase.id} at compact 200 percent text',

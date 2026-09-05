@@ -25,7 +25,9 @@ class NotificationPreviewCard extends StatelessWidget {
         children: [
           Text(
             context.afriL10n.adminNotificationPreview,
-            style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
+            style: TypographyTokens.titleMedium().copyWith(
+              letterSpacing: TypographyTokens.trackingNone,
+            ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Container(
@@ -103,7 +105,7 @@ class NotificationHistoryCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title.toUpperCase(),
+              title,
               style: TypographyTokens.titleLarge().copyWith(
                 color: ColorTokens.onSurface,
               ),

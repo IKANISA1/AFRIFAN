@@ -29,13 +29,11 @@ class FeatureDetailScreen extends ConsumerWidget {
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title:
+          snapshot?.feature?.displayName ??
+          context.afriL10n.adminFeatureDetailTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          snapshot?.feature?.displayName.toUpperCase() ??
-              context.afriL10n.adminFeatureDetailTitle,
-          style: TypographyTokens.titleLarge(),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -56,7 +54,9 @@ class FeatureDetailScreen extends ConsumerWidget {
             )
           : detail.isLoading && snapshot == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>(
                   'admin-feature-detail-state-loading',
@@ -85,7 +85,7 @@ class FeatureDetailScreen extends ConsumerWidget {
     final controlsEnabled = snapshot.actionsEnabled && !detail.isLoading;
     if (feature == null) {
       return Padding(
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         child: AfriStateView.empty(
           key: const ValueKey<String>('admin-feature-detail-state-empty'),
           title: context.afriL10n.adminFeatureNotFound,
@@ -101,7 +101,7 @@ class FeatureDetailScreen extends ConsumerWidget {
       onRefresh: notifier.refresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         children: [
           if (_statusBanner(context, detail) case final banner?) ...[
             banner,
@@ -291,7 +291,7 @@ class FeatureDetailScreen extends ConsumerWidget {
 
   Widget _disabled(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-feature-detail-state-disabled'),
         title: context.afriL10n.adminFeatureSettingsUnavailable,
@@ -354,7 +354,7 @@ class FeatureDetailScreen extends ConsumerWidget {
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }
@@ -405,14 +405,12 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).brightness == Brightness.dark
-        ? ColorTokens.clubAccent
-        : ColorTokens.onSurface;
+    final color = ColorTokens.onSurface;
     return Text(
       title,
       style: TypographyTokens.titleSmall().copyWith(
         color: color,
-        letterSpacing: 1.5,
+        letterSpacing: TypographyTokens.trackingNone,
       ),
     );
   }

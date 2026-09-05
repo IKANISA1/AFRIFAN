@@ -128,7 +128,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
           context.afriL10n.gameClubFanZoneTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -157,7 +157,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
             )
           : AfriRefreshIndicator(
               onRefresh: () => _load(_selectedCompetition?.slug),
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               child: ListView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -185,7 +185,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: selected
-                                    ? ColorTokens.clubAccent.withValues(
+                                    ? ColorTokens.primaryContainer.withValues(
                                         alpha: 0.16,
                                       )
                                     : ColorTokens.surfaceContainerHigh,
@@ -197,7 +197,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                 item.shortName.toUpperCase(),
                                 style: TypographyTokens.labelSmall(
                                   selected
-                                      ? ColorTokens.clubAccent
+                                      ? ColorTokens.primaryContainer
                                       : ColorTokens.onSurfaceVariant,
                                 ),
                               ),
@@ -212,10 +212,10 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _selectedCompetition?.name.toUpperCase() ??
+                          _selectedCompetition?.name ??
                               context.afriL10n.gameSupporterPulse,
                           style: TypographyTokens.headlineLarge().copyWith(
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             height: TypographyTokens.lineHeightCompact,
                           ),
                         ),
@@ -258,7 +258,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                         ),
                                         style: TypographyTokens.titleSmall()
                                             .copyWith(
-                                              fontWeight: FontWeight.w800,
+                                              fontWeight: FontWeight.w600,
                                             ),
                                       ),
                                     ),
@@ -273,8 +273,8 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                         entry.points,
                                       ),
                                       style: TypographyTokens.titleSmall(
-                                        ColorTokens.clubAccent,
-                                      ).copyWith(fontWeight: FontWeight.w800),
+                                        ColorTokens.primaryContainer,
+                                      ).copyWith(fontWeight: FontWeight.w600),
                                     ),
                                   ],
                                 ),
@@ -326,8 +326,8 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                       ),
                                       Text(
                                         context.afriL10n.gamePair(
-                                          pulse.marketName.toUpperCase(),
-                                          pulse.leadingOutcome.toUpperCase(),
+                                          pulse.marketName,
+                                          pulse.leadingOutcome,
                                         ),
                                         style: TypographyTokens.bodySmall(),
                                       ),
@@ -343,7 +343,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                         borderRadius: BorderRadius.circular(
                                           ShapeTokens.radiusFull,
                                         ),
-                                        color: ColorTokens.clubAccent,
+                                        color: ColorTokens.primaryContainer,
                                         backgroundColor:
                                             ColorTokens.surfaceContainerHighest,
                                       ),

@@ -51,8 +51,8 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
     minTouchTarget: AfriTapTargets.minimum,
     minDenseIconTarget: 44,
     comfortableTouchTarget: AfriTapTargets.comfortable,
-    cardRadius: ShapeTokens.radiusSm,
-    panelRadius: ShapeTokens.radiusSm,
+    cardRadius: ShapeTokens.radiusXl,
+    panelRadius: ShapeTokens.radiusXl,
     sheetRadius: ShapeTokens.radiusXl,
     pillRadius: ShapeTokens.radiusFull,
     fastMotion: AfriMotion.quick,
@@ -174,11 +174,11 @@ class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
         vertical: SpacingTokens.spacing4,
       ),
       AfriViewportBand.standardPhone => const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing5,
+        horizontal: SpacingTokens.spacing4,
         vertical: SpacingTokens.spacing4,
       ),
       AfriViewportBand.largePhone => const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing6,
+        horizontal: SpacingTokens.spacing4,
         vertical: SpacingTokens.spacing5,
       ),
       AfriViewportBand.smallTablet => const EdgeInsets.symmetric(

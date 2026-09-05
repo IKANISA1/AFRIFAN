@@ -19,13 +19,13 @@ Future<bool> showSmsPermissionModal(BuildContext context) async {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: ColorTokens.clubPrimary.withValues(alpha: 0.14),
+                    color: ColorTokens.primary.withValues(alpha: 0.14),
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
                   child: Icon(
                     AfriIcons.sms,
-                    color: ColorTokens.clubPrimary,
+                    color: ColorTokens.primary,
                     size: 30,
                   ),
                 ),
@@ -33,7 +33,7 @@ Future<bool> showSmsPermissionModal(BuildContext context) async {
                 Text(
                   context.afriL10n.contributionsEnableMomoSmsTitle,
                   style: TypographyTokens.headlineLarge().copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -48,7 +48,7 @@ Future<bool> showSmsPermissionModal(BuildContext context) async {
                 const SizedBox(height: SpacingTokens.spacing4),
                 AfriSwitchListTile(
                   value: allowReading,
-                  activeThumbColor: ColorTokens.clubPrimary,
+                  activeThumbColor: ColorTokens.primary,
                   title: Text(context.afriL10n.contributionsAllowSmsReading),
                   onChanged: (value) => setState(() => allowReading = value),
                 ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/component_size_tokens.dart';
-import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -87,10 +86,10 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
     return TabBar(
       controller: controller,
       isScrollable: isScrollable,
-      indicatorColor: ColorTokens.clubAccent,
+      indicatorColor: ColorTokens.primaryContainer,
       indicatorWeight: BorderTokens.tabIndicator,
       indicatorSize: TabBarIndicatorSize.label,
-      labelColor: ColorTokens.clubAccent,
+      labelColor: ColorTokens.primaryContainer,
       unselectedLabelColor: ColorTokens.onSurfaceVariant,
       labelStyle: TypographyTokens.labelSmall().copyWith(
         fontWeight: FontWeight.w700,
@@ -108,15 +107,14 @@ class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
       padding: const EdgeInsets.all(AfriComponentSizes.segmentedInset),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+        borderRadius: ShapeTokens.buttonRadius,
       ),
       child: TabBar(
         controller: controller,
         isScrollable: isScrollable,
         indicator: BoxDecoration(
-          color: ColorTokens.surfaceContainerLowest,
+          color: ColorTokens.surfaceContainerHighest,
           borderRadius: ShapeTokens.segmentedInnerRadius,
-          boxShadow: AfriShadows.selectedControl(),
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         labelColor: ColorTokens.onSurface,

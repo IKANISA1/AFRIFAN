@@ -326,7 +326,7 @@ void main() {
       },
       afterCapture: (tester) async {
         Navigator.of(
-          tester.element(find.text('HOW MUCH TO CONTRIBUTE?')),
+          tester.element(find.text('How much to contribute?')),
         ).pop();
         await tester.pumpAndSettle();
       },
@@ -415,7 +415,7 @@ void main() {
       ),
       beforeCapture: (tester) async {
         expect(find.text('Initiative changed'), findsOneWidget);
-        expect(find.text('REFRESH INITIATIVE'), findsOneWidget);
+        expect(find.text('Refresh initiative'), findsOneWidget);
       },
     );
   });

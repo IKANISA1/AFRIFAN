@@ -1,12 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
-import '../tokens/border_tokens.dart';
-import '../tokens/color_tokens.dart';
-import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
+import 'glass_card.dart';
 
 /// Unified section wrapper — title + optional trailing action + child.
 ///
@@ -124,39 +121,24 @@ class AfriSectionCard extends StatelessWidget {
       );
     }
 
-    return ClipRRect(
-      borderRadius: ShapeTokens.inputRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: ColorTokens.glassBlurSigma / 2,
-          sigmaY: ColorTokens.glassBlurSigma / 2,
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(SpacingTokens.cardPadding),
-          decoration: BoxDecoration(
-            color: ColorTokens.surfaceContainerHigh.withValues(alpha: 0.6),
-            borderRadius: ShapeTokens.inputRadius,
-            border: BorderTokens.ghost(width: BorderTokens.standard),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(title, style: TypographyTokens.sectionTitle()),
-                  ),
-                  if (trailingWidget != null) ...[
-                    const SizedBox(width: SpacingTokens.spacing3),
-                    trailingWidget,
-                  ],
-                ],
+              Expanded(
+                child: Text(title, style: TypographyTokens.sectionTitle()),
               ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              child,
+              if (trailingWidget != null) ...[
+                const SizedBox(width: SpacingTokens.spacing3),
+                trailingWidget,
+              ],
             ],
           ),
-        ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          child,
+        ],
       ),
     );
   }

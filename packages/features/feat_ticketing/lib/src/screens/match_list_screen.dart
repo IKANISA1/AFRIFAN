@@ -411,7 +411,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
               ),
               const SizedBox(height: SpacingTokens.spacing1),
               Text(
-                match.competition.toUpperCase(),
+                match.competition,
                 style: TypographyTokens.labelMedium().copyWith(
                   color: ColorTokens.onSurfaceVariant,
                 ),
@@ -435,7 +435,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                       Text(
                         price,
                         style: TypographyTokens.headlineMedium().copyWith(
-                          color: ColorTokens.clubAccent,
+                          color: ColorTokens.primaryContainer,
                         ),
                       ),
                     ],
@@ -490,7 +490,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
       width: 36,
       height: 36,
       decoration: BoxDecoration(
-        color: ColorTokens.clubSecondary,
+        color: ColorTokens.surfaceContainerHigh,
         shape: BoxShape.circle,
       ),
       child: Icon(

@@ -30,7 +30,7 @@ class ChallengeCard extends StatelessWidget {
     final hasCountdown =
         challenge.status == ChallengeStatus.open && countdown.inSeconds > 0;
     final accentTextColor = ColorTokens.isDark
-        ? ColorTokens.clubAccent
+        ? ColorTokens.primaryContainer
         : ColorTokens.onSurface;
     final countdownTextColor = ColorTokens.isDark
         ? ColorTokens.warning
@@ -44,7 +44,7 @@ class ChallengeCard extends StatelessWidget {
               : context.afriL10n.gameVersus,
           style: TypographyTokens.titleLarge(
             fixture.status == 'live' ? ColorTokens.error : accentTextColor,
-          ).copyWith(fontWeight: FontWeight.w900),
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: SpacingTokens.spacing1),
         if (hasCountdown)
@@ -167,7 +167,7 @@ class ChallengeCard extends StatelessWidget {
                     homeScore: challenge.myEntry!.predictedHomeScore,
                     awayScore: challenge.myEntry!.predictedAwayScore,
                     label: context.afriL10n.gameMyPick,
-                    accent: ColorTokens.clubAccent,
+                    accent: ColorTokens.primaryContainer,
                   ),
               ],
             ),
@@ -211,7 +211,7 @@ class ChallengeStatusChip extends StatelessWidget {
     final color = switch (status) {
       ChallengeStatus.open => ColorTokens.success,
       ChallengeStatus.locked => ColorTokens.warning,
-      ChallengeStatus.settled => ColorTokens.clubAccent,
+      ChallengeStatus.settled => ColorTokens.primaryContainer,
       ChallengeStatus.void_ => ColorTokens.onSurfaceVariant,
       ChallengeStatus.cancelled => ColorTokens.error,
     };
@@ -235,9 +235,10 @@ class ChallengeStatusChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TypographyTokens.metricLabel(
-          textColor,
-        ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
+        style: TypographyTokens.metricLabel(textColor).copyWith(
+          fontWeight: FontWeight.w700,
+          letterSpacing: TypographyTokens.trackingNone,
+        ),
       ),
     );
   }
@@ -251,7 +252,7 @@ class StakeBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = ColorTokens.isDark
-        ? ColorTokens.clubAccent
+        ? ColorTokens.primaryContainer
         : ColorTokens.onSurface;
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -259,14 +260,15 @@ class StakeBadge extends StatelessWidget {
         vertical: SpacingTokens.spacing3 / 2,
       ),
       decoration: BoxDecoration(
-        color: ColorTokens.clubAccent.withValues(alpha: 0.14),
+        color: ColorTokens.primaryContainer.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
         context.afriL10n.gamePointBalance(stakeFet),
-        style: TypographyTokens.metricLabel(
-          textColor,
-        ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
+        style: TypographyTokens.metricLabel(textColor).copyWith(
+          fontWeight: FontWeight.w700,
+          letterSpacing: TypographyTokens.trackingNone,
+        ),
       ),
     );
   }
@@ -303,9 +305,10 @@ class ScorePredictionPill extends StatelessWidget {
       ),
       child: Text(
         context.afriL10n.gameScorePrediction(label, homeScore, awayScore),
-        style: TypographyTokens.metricLabel(
-          textColor,
-        ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.7),
+        style: TypographyTokens.metricLabel(textColor).copyWith(
+          fontWeight: FontWeight.w700,
+          letterSpacing: TypographyTokens.trackingNone,
+        ),
       ),
     );
   }
@@ -414,7 +417,7 @@ class _AvatarBadge extends StatelessWidget {
       child: Text(
         trimmed.isEmpty ? '?' : trimmed.substring(0, 1).toUpperCase(),
         style: TypographyTokens.labelSmall().copyWith(
-          fontWeight: FontWeight.w900,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -433,9 +436,9 @@ class _TeamColumn extends StatelessWidget {
       crossAxisAlignment: alignment,
       children: [
         Text(
-          name.toUpperCase(),
+          name,
           style: TypographyTokens.titleMedium().copyWith(
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ],

@@ -49,7 +49,7 @@ class InlineMatchCard extends ConsumerWidget {
           borderRadius: ShapeTokens.cardRadius,
           border: isLive
               ? BorderTokens.all(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.4),
+                  color: ColorTokens.primaryContainer.withValues(alpha: 0.4),
                 )
               : BorderTokens.ghost(),
           boxShadow: AfriShadows.standard(Theme.of(context).brightness),
@@ -61,8 +61,8 @@ class InlineMatchCard extends ConsumerWidget {
               height: SpacingTokens.spacing1,
               decoration: BoxDecoration(
                 color: isLive
-                    ? ColorTokens.clubAccent
-                    : ColorTokens.clubAccent.withValues(alpha: 0.35),
+                    ? ColorTokens.primaryContainer
+                    : ColorTokens.primaryContainer.withValues(alpha: 0.35),
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(ShapeTokens.radiusXl),
                 ),
@@ -88,7 +88,7 @@ class InlineMatchCard extends ConsumerWidget {
                               ColorTokens.onSurfaceVariant,
                             ).copyWith(
                               fontWeight: FontWeight.w700,
-                              letterSpacing: 1.5,
+                              letterSpacing: TypographyTokens.trackingNone,
                             ),
                       ),
                       const SizedBox(width: SpacingTokens.spacing1),
@@ -106,14 +106,14 @@ class InlineMatchCard extends ConsumerWidget {
                               ColorTokens.onSurfaceVariant,
                             ).copyWith(
                               fontWeight: FontWeight.w600,
-                              letterSpacing: 1,
+                              letterSpacing: TypographyTokens.trackingNone,
                             ),
                       ),
                       const Spacer(),
                       if (isLive) ...[
                         AfriInfoChip(
                           label: context.afriL10n.gameLive,
-                          color: ColorTokens.clubAccent,
+                          color: ColorTokens.primaryContainer,
                         ),
                       ],
                     ],
@@ -134,7 +134,7 @@ class InlineMatchCard extends ConsumerWidget {
                             (hasScore
                                     ? TypographyTokens.headlineLarge()
                                     : TypographyTokens.headlineMedium())
-                                .copyWith(fontWeight: FontWeight.w900),
+                                .copyWith(fontWeight: FontWeight.w700),
                       ),
                       _TeamColumn(name: fixture.awayTeamShort),
                     ],
@@ -182,9 +182,9 @@ class _TeamColumn extends StatelessWidget {
         const _TeamAvatar(),
         const SizedBox(height: SpacingTokens.spacing2),
         Text(
-          name.toUpperCase(),
+          name,
           style: TypographyTokens.titleSmall().copyWith(
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
@@ -280,11 +280,11 @@ class _InlinePredictionGrid extends ConsumerWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? ColorTokens.clubAccent.withValues(alpha: 0.2)
+                      ? ColorTokens.primaryContainer.withValues(alpha: 0.2)
                       : ColorTokens.surfaceContainerHigh,
                   borderRadius: ShapeTokens.aliasPillRadius,
                   border: isSelected
-                      ? BorderTokens.all(color: ColorTokens.clubAccent)
+                      ? BorderTokens.all(color: ColorTokens.primaryContainer)
                       : BorderTokens.ghost(),
                 ),
                 child: Column(
@@ -293,22 +293,22 @@ class _InlinePredictionGrid extends ConsumerWidget {
                       outcome.label,
                       style: TypographyTokens.labelSmall(
                         isSelected
-                            ? ColorTokens.clubAccent
+                            ? ColorTokens.primaryContainer
                             : ColorTokens.onSurfaceVariant,
-                      ).copyWith(fontWeight: FontWeight.w800),
+                      ).copyWith(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
                       outcome.label, // Display mapped label
                       style: TypographyTokens.titleSmall().copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
                       context.afriL10n.gamePoints(market.fetValue),
                       style: TypographyTokens.labelSmall(
-                        ColorTokens.clubAccent,
+                        ColorTokens.primaryContainer,
                       ).copyWith(fontWeight: FontWeight.w700),
                     ),
                   ],

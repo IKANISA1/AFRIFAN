@@ -103,12 +103,9 @@ class _FixtureSettlementScreenState
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
+      title: context.afriL10n.adminSettlementTitle,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text(
-          context.afriL10n.adminSettlementTitle,
-          style: TypographyTokens.titleLarge(),
-        ),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -127,7 +124,9 @@ class _FixtureSettlementScreenState
             )
           : settlement.isLoading && snapshot == null
           ? Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.symmetric(
+                vertical: SpacingTokens.spacing4,
+              ),
               child: AfriStateView.loading(
                 key: const ValueKey<String>('admin-settlement-state-loading'),
                 title: context.afriL10n.adminSettlementLoadingTitle,
@@ -154,7 +153,7 @@ class _FixtureSettlementScreenState
       onRefresh: ref.read(adminSettlementProvider.notifier).refresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
         children: [
           if (_statusBanner(settlement) case final banner?) ...[
             banner,
@@ -349,7 +348,7 @@ class _FixtureSettlementScreenState
 
   Widget _disabled() {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: AfriStateView.empty(
         key: const ValueKey<String>('admin-settlement-state-disabled'),
         title: context.afriL10n.adminSettlementManagementUnavailable,
@@ -403,7 +402,7 @@ class _FixtureSettlementScreenState
       ),
     };
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing4),
       child: view,
     );
   }

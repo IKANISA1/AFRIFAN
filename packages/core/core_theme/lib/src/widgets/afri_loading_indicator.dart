@@ -30,7 +30,7 @@ class AfriLoadingIndicator extends StatelessWidget {
           value: value,
           strokeWidth: strokeWidth,
           valueColor: AlwaysStoppedAnimation<Color>(
-            color ?? ColorTokens.clubAccent,
+            color ?? ColorTokens.primaryContainer,
           ),
         ),
       ),
@@ -60,7 +60,7 @@ class AfriLinearProgressIndicator extends StatelessWidget {
     return LinearProgressIndicator(
       value: value,
       minHeight: minHeight,
-      color: color ?? ColorTokens.clubAccent,
+      color: color ?? ColorTokens.primaryContainer,
       backgroundColor: backgroundColor ?? ColorTokens.surfaceContainerHighest,
       borderRadius:
           borderRadius ?? BorderRadius.circular(ShapeTokens.radiusFull),

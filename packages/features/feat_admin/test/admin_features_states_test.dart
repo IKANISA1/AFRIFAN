@@ -106,11 +106,11 @@ void main() {
   testWidgets('selected filter exposes current selection', (tester) async {
     await _pumpFeatures(tester, gateway: _Gateway(<Object>[_registry]));
 
-    await tester.tap(find.text('DISABLED'));
+    await tester.tap(find.text('Disabled'));
     await tester.pumpAndSettle();
 
     final selected = tester.widget<AfriChoiceChip>(
-      find.widgetWithText(AfriChoiceChip, 'DISABLED'),
+      find.widgetWithText(AfriChoiceChip, 'Disabled'),
     );
     expect(selected.selected, isTrue);
     expect(find.text('Tickets'), findsOneWidget);
@@ -186,7 +186,7 @@ void main() {
         brightness: brightness,
       );
 
-      expect(find.text('FEATURE MANAGER'), findsOneWidget);
+      expect(find.text('Feature manager'), findsOneWidget);
       expect(
         Theme.of(tester.element(find.byType(FeatureManagerScreen))).brightness,
         brightness,

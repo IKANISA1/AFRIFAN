@@ -29,23 +29,22 @@ class FanClubFeaturedCard extends StatelessWidget {
               vertical: SpacingTokens.spacing1,
             ),
             decoration: BoxDecoration(
-              color: ColorTokens.clubAccent.withValues(alpha: 0.15),
+              color: ColorTokens.primaryContainer.withValues(alpha: 0.15),
               borderRadius: ShapeTokens.chipRadius,
             ),
             child: Text(
               context.afriL10n.fanClubsFeaturedChapter,
               style: TypographyTokens.labelSmall(
-                ColorTokens.clubAccent,
-              ).copyWith(fontWeight: FontWeight.w900),
+                ColorTokens.primaryContainer,
+              ).copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           Text(
-            (club['name']?.toString() ?? context.afriL10n.fanClubFallbackName)
-                .toUpperCase(),
+            (club['name']?.toString() ?? context.afriL10n.fanClubFallbackName),
             style: TypographyTokens.displaySmall(ColorTokens.inkBase).copyWith(
-              fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.normal,
               height: TypographyTokens.lineHeightHero,
             ),
           ),
@@ -88,14 +87,14 @@ class FanClubFeaturedCard extends StatelessWidget {
           label,
           style: TypographyTokens.labelSmall(
             ColorTokens.inkFaint,
-          ).copyWith(fontWeight: FontWeight.w900),
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: SpacingTokens.spacing1),
         Text(
-          value.toUpperCase(),
+          value,
           style: TypographyTokens.titleSmall(
             ColorTokens.inkBase,
-          ).copyWith(fontWeight: FontWeight.w900),
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
       ],
     );
@@ -140,30 +139,27 @@ class FanClubListItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   (club['name']?.toString() ??
-                          context.afriL10n.fanClubFallbackName)
-                      .toUpperCase(),
+                      context.afriL10n.fanClubFallbackName),
                   style: TypographyTokens.headlineSmall().copyWith(
-                    fontWeight: FontWeight.w900,
-                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w700,
+                    fontStyle: FontStyle.normal,
                   ),
                 ),
               ),
               if (isOfficial)
                 Icon(
                   AfriIcons.verified,
-                  color: ColorTokens.clubAccent,
+                  color: ColorTokens.primaryContainer,
                   size: SizeTokens.iconMd,
                 ),
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
-            context.afriL10n
-                .fanClubRegionMembers(region, memberCopy)
-                .toUpperCase(),
+            context.afriL10n.fanClubRegionMembers(region, memberCopy),
             style: TypographyTokens.labelSmall(
               ColorTokens.onSurfaceVariant,
-            ).copyWith(fontWeight: FontWeight.w900),
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           Row(

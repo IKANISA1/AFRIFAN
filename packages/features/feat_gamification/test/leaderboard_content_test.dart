@@ -75,7 +75,7 @@ void main() {
     );
     expect(find.text('Jean'), findsOneWidget);
     expect(find.text('Aline'), findsWidgets);
-    expect(find.text('YOU'), findsWidgets);
+    expect(find.text('You'), findsWidgets);
   });
 
   testWidgets('returns SizedBox.shrink when supporter leaderboard is empty', (
@@ -146,6 +146,6 @@ void main() {
     expect(find.text('Diane'), findsWidgets);
     expect(find.text('Claude'), findsWidgets);
     expect(find.text('Grace'), findsWidgets);
-    expect(find.text('YOU'), findsWidgets);
+    expect(find.text('You'), findsWidgets);
   });
 }

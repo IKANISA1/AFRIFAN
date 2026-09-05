@@ -53,7 +53,7 @@ void main() {
     testWidgets('renders rank label', (tester) async {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
-      expect(find.text('RANK'), findsOneWidget);
+      expect(find.text('Rank'), findsOneWidget);
     });
 
     testWidgets('renders formatted FET number with commas', (tester) async {
@@ -75,7 +75,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('2,140'), findsOneWidget);
-      expect(find.text('RANK'), findsNothing);
+      expect(find.text('Rank'), findsNothing);
       expect(find.text('#000'), findsNothing);
     });
   });

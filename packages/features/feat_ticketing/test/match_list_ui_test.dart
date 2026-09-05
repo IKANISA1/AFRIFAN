@@ -125,7 +125,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('BILLETS'), findsOneWidget);
+    expect(find.text('Billets'), findsOneWidget);
     expect(find.text('Aucun match avec billetterie à venir'), findsOneWidget);
     expect(find.text('Actualiser'), findsWidgets);
   });
@@ -143,7 +143,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('AMATIKE'), findsOneWidget);
+    expect(find.text('Amatike'), findsOneWidget);
     expect(find.text('Nta mukino uri imbere ufite amatike'), findsOneWidget);
     expect(find.text('Vugurura'), findsWidgets);
   });
@@ -248,12 +248,12 @@ void main() {
         (ref) async => <ClubMatch>[_pastFixture()],
       ),
       afterPump: (tester) async {
-        await tester.tap(find.text('PAST'));
+        await tester.tap(find.text('Past'));
         await tester.pumpAndSettle();
       },
     );
 
-    final selectedTab = find.text('PAST');
+    final selectedTab = find.text('Past');
     final semantics = tester.getSemantics(selectedTab);
     expect(semantics.flagsCollection.isSelected.toBoolOrNull(), isTrue);
   });

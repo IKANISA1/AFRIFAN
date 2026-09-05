@@ -339,7 +339,9 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
       children: [
         Text(
           context.afriL10n.adminCmsAuditLogs,
-          style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.1),
+          style: TypographyTokens.titleMedium().copyWith(
+            letterSpacing: TypographyTokens.trackingNone,
+          ),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         if (_auditLogs.isNotEmpty)
@@ -380,7 +382,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                             log['action']?.toString().toUpperCase() ??
                                 context.afriL10n.adminCmsActionFallback,
                             style: TypographyTokens.labelLarge().copyWith(
-                              color: ColorTokens.clubAccent,
+                              color: ColorTokens.primaryContainer,
                             ),
                           ),
                         ),

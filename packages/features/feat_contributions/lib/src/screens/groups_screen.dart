@@ -117,7 +117,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                         child: AfriMetricTile(
                           label: l10n.contributionsInitiatives,
                           value: '${_groups.length}',
-                          accentColor: ColorTokens.clubAccent,
+                          accentColor: ColorTokens.primaryContainer,
                         ),
                       ),
                       const SizedBox(width: SpacingTokens.spacing3),

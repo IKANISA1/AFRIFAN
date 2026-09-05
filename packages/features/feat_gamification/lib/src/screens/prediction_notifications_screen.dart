@@ -88,7 +88,7 @@ class _PredictionNotificationsScreenState
           context.afriL10n.gamePredictionAlertsTitle,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: TypographyTokens.trackingNone,
           ),
         ),
         leading: AfriIconButton(
@@ -117,7 +117,7 @@ class _PredictionNotificationsScreenState
             )
           : AfriRefreshIndicator(
               onRefresh: _load,
-              color: ColorTokens.clubAccent,
+              color: ColorTokens.primaryContainer,
               child: PredictionNotificationsList(
                 notifications: _notifications,
                 onOpenNotification: _openNotification,
@@ -177,7 +177,9 @@ class _PredictionNotificationCard extends StatelessWidget {
     final openNotification = onOpen;
     final canOpen = openNotification != null;
     final isPositive = notification.earned > 0;
-    final accent = isPositive ? ColorTokens.success : ColorTokens.clubAccent;
+    final accent = isPositive
+        ? ColorTokens.success
+        : ColorTokens.primaryContainer;
     final dateLabel = _formatPredictionNotificationDate(
       context,
       notification.createdAt,
@@ -261,7 +263,7 @@ class _PredictionNotificationCard extends StatelessWidget {
                                 ColorTokens.success,
                               ).copyWith(
                                 fontWeight: FontWeight.w700,
-                                letterSpacing: 0.9,
+                                letterSpacing: TypographyTokens.trackingNone,
                               ),
                         ),
                       ),

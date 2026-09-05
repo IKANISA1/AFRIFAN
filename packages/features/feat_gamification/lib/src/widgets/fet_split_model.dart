@@ -37,12 +37,14 @@ class FetSplitModel extends StatelessWidget {
                   vertical: SpacingTokens.spacing1,
                 ),
                 decoration: BoxDecoration(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.16),
+                  color: ColorTokens.primaryContainer.withValues(alpha: 0.16),
                   borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
                   _tierName(context, currentTier),
-                  style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
+                  style: TypographyTokens.labelSmall(
+                    ColorTokens.primaryContainer,
+                  ),
                 ),
               ),
             ],
@@ -64,13 +66,13 @@ class FetSplitModel extends StatelessWidget {
                   Expanded(
                     flex: personalPct,
                     child: Container(
-                      color: ColorTokens.clubAccent,
+                      color: ColorTokens.primaryContainer,
                       alignment: Alignment.center,
                       child: Text(
                         context.afriL10n.gamePersonalPercentage(personalPct),
                         style: TypographyTokens.metricLabel(
                           ColorTokens.background,
-                        ).copyWith(fontWeight: FontWeight.w800),
+                        ).copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -83,7 +85,7 @@ class FetSplitModel extends StatelessWidget {
                         child: Text(
                           context.afriL10n.gameClubPercentage(clubPct),
                           style: TypographyTokens.metricLabel().copyWith(
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -108,12 +110,14 @@ class FetSplitModel extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isCurrent
-                      ? ColorTokens.clubAccent.withValues(alpha: 0.10)
+                      ? ColorTokens.primaryContainer.withValues(alpha: 0.10)
                       : ColorTokens.transparent,
                   borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                   border: isCurrent
                       ? BorderTokens.all(
-                          color: ColorTokens.clubAccent.withValues(alpha: 0.3),
+                          color: ColorTokens.primaryContainer.withValues(
+                            alpha: 0.3,
+                          ),
                         )
                       : null,
                 ),
@@ -123,7 +127,7 @@ class FetSplitModel extends StatelessWidget {
                       tier.icon,
                       size: SpacingTokens.spacing5,
                       color: isCurrent
-                          ? ColorTokens.clubAccent
+                          ? ColorTokens.primaryContainer
                           : ColorTokens.onSurfaceVariant,
                     ),
                     const SizedBox(width: SpacingTokens.spacing3),
@@ -135,7 +139,7 @@ class FetSplitModel extends StatelessWidget {
                             _tierName(context, tier.slug),
                             style: TypographyTokens.labelMedium(
                               isCurrent
-                                  ? ColorTokens.clubAccent
+                                  ? ColorTokens.primaryContainer
                                   : ColorTokens.onSurface,
                             ).copyWith(fontWeight: FontWeight.w700),
                           ),
@@ -153,9 +157,9 @@ class FetSplitModel extends StatelessWidget {
                       ),
                       style: TypographyTokens.titleSmall(
                         isCurrent
-                            ? ColorTokens.clubAccent
+                            ? ColorTokens.primaryContainer
                             : ColorTokens.onSurfaceVariant,
-                      ).copyWith(fontWeight: FontWeight.w800),
+                      ).copyWith(fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),

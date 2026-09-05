@@ -11,7 +11,7 @@ void main() {
         ),
       );
 
-      expect(find.text('CONTRIBUTION HISTORY'), findsNothing);
+      expect(find.text('Contribution history'), findsNothing);
       expect(find.textContaining('No contributions'), findsNothing);
       expect(find.byType(SizedBox), findsWidgets);
     });
@@ -35,9 +35,9 @@ void main() {
         ),
       );
 
-      expect(find.text('CONTRIBUTION HISTORY'), findsOneWidget);
+      expect(find.text('Contribution history'), findsOneWidget);
       expect(find.text('25000 RWF'), findsOneWidget);
-      expect(find.text('MEMBERSHIP'), findsOneWidget);
+      expect(find.text('Membership'), findsOneWidget);
       expect(find.text('verified'), findsOneWidget);
       expect(find.textContaining('No contributions'), findsNothing);
     });

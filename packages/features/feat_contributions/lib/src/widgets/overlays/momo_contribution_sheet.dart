@@ -244,7 +244,7 @@ class _ContributionDialerRecoveryDialog extends StatelessWidget {
               Text(
                 heading,
                 style: TypographyTokens.headlineLarge().copyWith(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -329,67 +329,50 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
       currencySymbol: context.afriCurrencySymbol,
     );
 
-    return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing4),
-      child: SingleChildScrollView(
-        child: GlassCard(
-          animate: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 42,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-                  borderRadius: ShapeTokens.buttonRadius,
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              Text(
-                context.afriL10n.contributionsAmountPrompt,
-                style: TypographyTokens.headlineMedium().copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing2),
-              Text(widget.title, style: TypographyTokens.bodySmall()),
-              const SizedBox(height: SpacingTokens.spacing4),
-              Text(
-                currency.format(_amount),
-                style: TypographyTokens.displayLarge(
-                  ColorTokens.accessibleMetricColor(ColorTokens.clubAccent),
-                ).copyWith(fontWeight: FontWeight.w900),
-              ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              Wrap(
-                spacing: SpacingTokens.spacing2,
-                runSpacing: SpacingTokens.spacing2,
-                alignment: WrapAlignment.center,
-                children: [1000, 2000, 5000, 10000]
-                    .map(
-                      (value) => AfriChoiceChip(
-                        selected: _amount == value,
-                        label: Text(
-                          context.afriL10n.contributionsQuickAmount(
-                            value ~/ 1000,
-                          ),
-                          semanticsLabel: currency.format(value),
-                        ),
-                        onSelected: (_) => setState(() => _amount = value),
-                      ),
-                    )
-                    .toList(),
-              ),
-              const SizedBox(height: SpacingTokens.spacing5),
-              AfriButton(
-                label: context.afriL10n.contributionsLaunchMomoDialer,
-                fullWidth: true,
-                onTap: () => Navigator.of(context).pop(_amount),
-              ),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            context.afriL10n.contributionsAmountPrompt,
+            style: TypographyTokens.headlineMedium().copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(widget.title, style: TypographyTokens.bodySmall()),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Text(
+            currency.format(_amount),
+            style: TypographyTokens.displayLarge(
+              context.afriSemanticColors.primaryText,
+            ).copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Wrap(
+            spacing: SpacingTokens.spacing2,
+            runSpacing: SpacingTokens.spacing2,
+            alignment: WrapAlignment.center,
+            children: [1000, 2000, 5000, 10000]
+                .map(
+                  (value) => AfriChoiceChip(
+                    selected: _amount == value,
+                    label: Text(
+                      context.afriL10n.contributionsQuickAmount(value ~/ 1000),
+                      semanticsLabel: currency.format(value),
+                    ),
+                    onSelected: (_) => setState(() => _amount = value),
+                  ),
+                )
+                .toList(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing5),
+          AfriButton(
+            label: context.afriL10n.contributionsLaunchMomoDialer,
+            fullWidth: true,
+            onTap: () => Navigator.of(context).pop(_amount),
+          ),
+        ],
       ),
     );
   }
@@ -420,55 +403,49 @@ class _UssdConfirmationSheet extends StatelessWidget {
       amount: amount,
     );
 
-    return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing4),
-      child: SingleChildScrollView(
-        child: GlassCard(
-          animate: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            l10n.contributionsLaunchingMomo,
+            style: TypographyTokens.headlineMedium().copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Text(
+            ussdCode,
+            style: TypographyTokens.titleMedium(),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(title, style: TypographyTokens.bodySmall()),
+          const SizedBox(height: SpacingTokens.spacing5),
+          Row(
             children: [
-              Text(
-                l10n.contributionsLaunchingMomo,
-                style: TypographyTokens.headlineMedium().copyWith(
-                  fontWeight: FontWeight.w800,
+              Expanded(
+                child: AfriButton(
+                  label: l10n.contributionsChangeAmount,
+                  variant: AfriButtonVariant.outline,
+                  onTap: () => Navigator.of(context).pop(false),
                 ),
               ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              Text(
-                ussdCode,
-                style: TypographyTokens.titleMedium(),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: SpacingTokens.spacing2),
-              Text(title, style: TypographyTokens.bodySmall()),
-              const SizedBox(height: SpacingTokens.spacing5),
-              Row(
-                children: [
-                  Expanded(
-                    child: AfriButton(
-                      label: l10n.contributionsChangeAmount,
-                      variant: AfriButtonVariant.outline,
-                      onTap: () => Navigator.of(context).pop(false),
-                    ),
-                  ),
-                  const SizedBox(width: SpacingTokens.spacing3),
-                  Expanded(
-                    child: AfriButton(
-                      label: l10n.contributionsDialNow,
-                      onTap: () => Navigator.of(context).pop(true),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              AfriTextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(l10n.contributionsCancel),
+              const SizedBox(width: SpacingTokens.spacing3),
+              Expanded(
+                child: AfriButton(
+                  label: l10n.contributionsDialNow,
+                  onTap: () => Navigator.of(context).pop(true),
+                ),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          AfriTextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.contributionsCancel),
+          ),
+        ],
       ),
     );
   }
@@ -644,7 +621,7 @@ class _ContributionSuccessDialogState
                   Text(
                     heading,
                     style: TypographyTokens.headlineLarge().copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -652,8 +629,8 @@ class _ContributionSuccessDialogState
                   Text(
                     currency.format(widget.amount),
                     style: TypographyTokens.displaySmall(
-                      ColorTokens.clubAccent,
-                    ).copyWith(fontWeight: FontWeight.w800),
+                      ColorTokens.primaryContainer,
+                    ).copyWith(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(widget.title, style: TypographyTokens.bodySmall()),

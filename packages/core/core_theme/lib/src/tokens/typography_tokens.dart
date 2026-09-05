@@ -17,6 +17,7 @@ class TypographyTokens {
   static const double lineHeightDense = 1.05;
   static const double lineHeightTight = 1.1;
   static const double lineHeightBody = 1.45;
+  static const double lineHeightRow = 1.25;
   static const double lineHeightRelaxed = 1.5;
   static const double lineHeightSpacious = 1.6;
   static const double trackingNone = 0;
@@ -27,7 +28,7 @@ class TypographyTokens {
     'displayLarge': 48.0,
     'displayMedium': 40.0,
     'displaySmall': 32.0,
-    'headlineLarge': 28.0,
+    'headlineLarge': 32.0,
     'headlineMedium': 24.0,
     'headlineSmall': 20.0,
     'titleLarge': 18.0,
@@ -36,7 +37,7 @@ class TypographyTokens {
     'bodyLarge': 16.0,
     'bodyMedium': 14.0,
     'bodySmall': 13.0,
-    'labelLarge': 14.0,
+    'labelLarge': 16.0,
     'labelMedium': 13.0,
     'labelSmall': 12.0,
   };
@@ -213,7 +214,7 @@ class TypographyTokens {
     fontSize: semanticSizes['displayLarge'],
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
-    height: 0.96,
+    height: 1.05,
     letterSpacing: 0,
   );
 
@@ -221,7 +222,7 @@ class TypographyTokens {
     fontSize: semanticSizes['displayMedium'],
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
-    height: 0.98,
+    height: 1.05,
     letterSpacing: 0,
   );
 
@@ -282,28 +283,28 @@ class TypographyTokens {
 
   static TextStyle bodyLarge([Color? color]) => editorialFont(
     fontSize: semanticSizes['bodyLarge'],
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     color: color ?? ColorTokens.onSurface,
     height: 1.48,
   );
 
   static TextStyle bodyMedium([Color? color]) => editorialFont(
     fontSize: semanticSizes['bodyMedium'],
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     color: color ?? ColorTokens.onSurface,
     height: 1.46,
   );
 
   static TextStyle bodySmall([Color? color]) => editorialFont(
     fontSize: semanticSizes['bodySmall'],
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     color: color ?? ColorTokens.onSurfaceVariant,
     height: 1.42,
   );
 
   static TextStyle labelLarge([Color? color]) => utilityFont(
     fontSize: semanticSizes['labelLarge'],
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w500,
     color: color ?? ColorTokens.onSurface,
     height: 1.18,
     letterSpacing: 0,
@@ -347,7 +348,7 @@ class TypographyTokens {
   /// Large metric value (wallet balance, score, stat hero).
   static TextStyle metricValue([Color? color]) => monolithFont(
     fontSize: 28,
-    fontWeight: FontWeight.w800,
+    fontWeight: FontWeight.w600,
     color: color ?? ColorTokens.onSurface,
     height: lineHeightSolid,
     letterSpacing: 0,
@@ -377,7 +378,7 @@ class TypographyTokens {
     required bool selected,
   }) => utilityFont(
     fontSize: 11,
-    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
     color: color,
     letterSpacing: 0,
   );

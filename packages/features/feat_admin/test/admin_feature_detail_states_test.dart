@@ -37,7 +37,7 @@ void main() {
     );
 
     expect(find.text('Loading feature settings'), findsOneWidget);
-    expect(find.text('GLOBAL STATE'), findsNothing);
+    expect(find.text('Global state'), findsNothing);
     await _expectStateGolden(tester, 'loading');
     pending.complete(_detail);
     await tester.pumpAndSettle();
@@ -74,7 +74,7 @@ void main() {
     );
 
     expect(find.text('Feature settings offline'), findsOneWidget);
-    expect(find.text('GLOBAL STATE'), findsNothing);
+    expect(find.text('Global state'), findsNothing);
     await _expectStateGolden(tester, 'offline');
   });
 
@@ -89,7 +89,7 @@ void main() {
     );
 
     expect(find.text('Feature access unavailable'), findsOneWidget);
-    expect(find.text('GLOBAL STATE'), findsNothing);
+    expect(find.text('Global state'), findsNothing);
     await _expectStateGolden(tester, 'permission_denied');
   });
 
@@ -122,7 +122,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final selected = tester.widget<AfriChoiceChip>(
-      find.widgetWithText(AfriChoiceChip, 'HIDDEN'),
+      find.widgetWithText(AfriChoiceChip, 'Hidden'),
     );
     expect(selected.selected, isTrue);
     expect(gateway.mutationCount, 1);
@@ -203,7 +203,7 @@ void main() {
         brightness: brightness,
       );
 
-      expect(find.text('PREDICTIONS'), findsOneWidget);
+      expect(find.text('Predictions'), findsOneWidget);
       expect(
         Theme.of(tester.element(find.byType(FeatureDetailScreen))).brightness,
         brightness,
@@ -228,7 +228,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Checking feature settings'), findsOneWidget);
-    expect(find.text('GLOBAL STATE'), findsOneWidget);
+    expect(find.text('Global state'), findsOneWidget);
     await _expectStateGolden(tester, 'syncing');
     pending.complete(_detail);
     await tester.pumpAndSettle();
@@ -249,7 +249,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Feature settings changed'), findsOneWidget);
-    expect(find.text('GLOBAL STATE'), findsOneWidget);
+    expect(find.text('Global state'), findsOneWidget);
     expect(find.textContaining('Controls are paused'), findsOneWidget);
     await _expectStateGolden(tester, 'conflict');
   });
@@ -269,7 +269,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Security check timed out'), findsOneWidget);
-    expect(find.text('GLOBAL STATE'), findsOneWidget);
+    expect(find.text('Global state'), findsOneWidget);
     expect(find.textContaining('private-rollout-rule'), findsNothing);
     await _expectStateGolden(tester, 'security_timeout');
   });

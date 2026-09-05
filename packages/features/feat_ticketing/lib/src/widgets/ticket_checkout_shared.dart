@@ -31,7 +31,7 @@ class SeatTypeCard extends StatelessWidget {
     final price = Text(
       amount,
       style: TypographyTokens.headlineMedium().copyWith(
-        color: selected ? ColorTokens.clubPrimary : ColorTokens.clubAccent,
+        color: selected ? ColorTokens.primary : ColorTokens.primaryContainer,
       ),
     );
 
@@ -49,13 +49,11 @@ class SeatTypeCard extends StatelessWidget {
             duration: AfriMotion.quick,
             decoration: BoxDecoration(
               color: selected
-                  ? ColorTokens.clubPrimary.withValues(alpha: 0.1)
+                  ? ColorTokens.primary.withValues(alpha: 0.1)
                   : ColorTokens.transparent,
               borderRadius: ShapeTokens.cardRadius,
               border: BorderTokens.all(
-                color: selected
-                    ? ColorTokens.clubPrimary
-                    : ColorTokens.transparent,
+                color: selected ? ColorTokens.primary : ColorTokens.transparent,
               ),
             ),
             padding: const EdgeInsets.all(SpacingTokens.spacing2),
@@ -109,7 +107,7 @@ class TicketSummaryRow extends StatelessWidget {
               textAlign: TextAlign.end,
               style: highlighted
                   ? TypographyTokens.headlineMedium().copyWith(
-                      color: ColorTokens.clubAccent,
+                      color: ColorTokens.primaryContainer,
                     )
                   : TypographyTokens.labelLarge(),
             ),

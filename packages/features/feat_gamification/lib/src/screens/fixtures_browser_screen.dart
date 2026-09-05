@@ -218,7 +218,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                   Icon(
                     AfriIcons.calendar,
                     size: SpacingTokens.spacing4,
-                    color: ColorTokens.clubAccent,
+                    color: ColorTokens.primaryContainer,
                   ),
                   const SizedBox(width: SpacingTokens.spacing2),
                   Expanded(
@@ -305,7 +305,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
 
     return AfriRefreshIndicator(
       onRefresh: _loadData,
-      color: ColorTokens.clubAccent,
+      color: ColorTokens.primaryContainer,
       child: ListView.builder(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),

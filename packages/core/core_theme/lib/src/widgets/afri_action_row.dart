@@ -116,7 +116,7 @@ class AfriActionRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
                     style: TypographyTokens.labelMedium().copyWith(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                       height: TypographyTokens.lineHeightDense,
                       letterSpacing: TypographyTokens.trackingNone,
                     ),

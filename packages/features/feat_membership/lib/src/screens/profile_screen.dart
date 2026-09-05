@@ -33,7 +33,7 @@ class ProfileScreen extends ConsumerWidget {
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
         title: Text(
-          l10n.profileTitle.toUpperCase(),
+          l10n.profileTitle,
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -67,14 +67,13 @@ class ProfileScreen extends ConsumerWidget {
                         alias,
                         style:
                             TypographyTokens.displayMedium(
-                              ColorTokens.clubAccent,
+                              ColorTokens.primaryContainer,
                             ).copyWith(
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               shadows: [
                                 Shadow(
-                                  color: ColorTokens.clubAccent.withValues(
-                                    alpha: 0.3,
-                                  ),
+                                  color: ColorTokens.primaryContainer
+                                      .withValues(alpha: 0.3),
                                   blurRadius: 10,
                                   offset: const Offset(0, 2),
                                 ),
@@ -141,7 +140,7 @@ class ProfileScreen extends ConsumerWidget {
                   horizontal: SpacingTokens.spacing6,
                 ),
                 child: Text(
-                  l10n.profileMyClub.toUpperCase(),
+                  l10n.profileMyClub,
                   style: TypographyTokens.labelMedium(
                     ColorTokens.onSurfaceVariant,
                   ).copyWith(fontWeight: FontWeight.w700),
@@ -213,7 +212,7 @@ class ProfileScreen extends ConsumerWidget {
                   horizontal: SpacingTokens.spacing6,
                 ),
                 child: Text(
-                  l10n.profileApp.toUpperCase(),
+                  l10n.profileApp,
                   style: TypographyTokens.labelMedium(
                     ColorTokens.onSurfaceVariant,
                   ).copyWith(fontWeight: FontWeight.w700),
@@ -311,15 +310,19 @@ class _ProfileAvatar extends StatelessWidget {
       height: 72,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorTokens.clubAccent.withValues(alpha: 0.15),
+        color: ColorTokens.primaryContainer.withValues(alpha: 0.15),
         border: BorderTokens.all(
-          color: ColorTokens.clubAccent,
+          color: ColorTokens.primaryContainer,
           width: BorderTokens.strong,
           opacity: 0.3,
         ),
       ),
       child: Center(
-        child: Icon(AfriIcons.profile, size: 36, color: ColorTokens.clubAccent),
+        child: Icon(
+          AfriIcons.profile,
+          size: 36,
+          color: ColorTokens.primaryContainer,
+        ),
       ),
     );
   }
@@ -341,14 +344,14 @@ class _TierBadge extends StatelessWidget {
         height: 24,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: ColorTokens.clubAccent.withValues(alpha: 0.15),
+          color: ColorTokens.primaryContainer.withValues(alpha: 0.15),
           borderRadius: ShapeTokens.chipRadius,
         ),
         child: const AfriLoadingIndicator(size: 12),
       );
     }
 
-    return AfriInfoChip(label: label, color: ColorTokens.clubAccent);
+    return AfriInfoChip(label: label, color: ColorTokens.primaryContainer);
   }
 }
 

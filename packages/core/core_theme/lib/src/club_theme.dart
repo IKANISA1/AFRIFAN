@@ -43,10 +43,6 @@ class ClubTheme {
         (isDark ? AfriSemanticColors.dark : AfriSemanticColors.light).copyWith(
           accent: ColorTokens.primaryContainer,
           accentSoft: ColorTokens.primaryContainer.withValues(alpha: 0.18),
-          buttonPrimaryBackground: ColorTokens.primaryContainer,
-          buttonPrimaryForeground: ColorTokens.contrastForeground(
-            ColorTokens.primaryContainer,
-          ),
         );
     final highContrastBoundary = isDark ? Colors.white : ColorTokens.onSurface;
     final semanticColors = highContrast
@@ -76,7 +72,7 @@ class ClubTheme {
       onPrimaryContainer: ColorTokens.contrastForeground(
         ColorTokens.primaryContainer,
       ),
-      secondary: ColorTokens.clubAccent,
+      secondary: ColorTokens.primaryContainer,
       onSecondary: ColorTokens.background,
       secondaryContainer: ColorTokens.secondaryContainer,
       onSecondaryContainer: ColorTokens.onSurface,
@@ -154,8 +150,9 @@ class ClubTheme {
       textTheme: _buildTextTheme(),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: ColorTokens.primaryContainer,
+          backgroundColor: semanticColors.buttonPrimaryBackground,
           foregroundColor: semanticColors.buttonPrimaryForeground,
+          minimumSize: const Size(0, 52),
           elevation: 0,
           shadowColor: ColorTokens.primary.withValues(alpha: 0.18),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -165,8 +162,9 @@ class ClubTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: ColorTokens.primaryContainer,
+          backgroundColor: semanticColors.buttonPrimaryBackground,
           foregroundColor: semanticColors.buttonPrimaryForeground,
+          minimumSize: const Size(0, 52),
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.spacing6,
             vertical: SpacingTokens.spacing4,
@@ -185,7 +183,7 @@ class ClubTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: ColorTokens.surfaceContainerLowest,
+        fillColor: semanticColors.inputSurface,
         border: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
           color: boundaryColor,

@@ -75,17 +75,17 @@ void main() {
 
   testWidgets('selected finished filter', (tester) async {
     await _pump(tester, _Gateway(<Object>[_workspace]));
-    await tester.tap(find.widgetWithText(AfriChoiceChip, 'FINISHED'));
+    await tester.tap(find.widgetWithText(AfriChoiceChip, 'Finished'));
     await tester.pumpAndSettle();
     expect(
       tester
           .widget<AfriChoiceChip>(
-            find.widgetWithText(AfriChoiceChip, 'FINISHED'),
+            find.widgetWithText(AfriChoiceChip, 'Finished'),
           )
           .selected,
       isTrue,
     );
-    expect(find.text('SETTLED'), findsOneWidget);
+    expect(find.text('Settled'), findsOneWidget);
     await _golden(tester, 'selected');
   });
 
@@ -246,6 +246,7 @@ Future<ProviderContainer> _pump(
           return ClubConfigScope(
             config: ClubConfig.fallback(),
             child: MaterialApp.router(
+              debugShowCheckedModeBanner: false,
               theme: ClubTheme.from(
                 ClubConfig.fallback(),
                 brightness: brightness,

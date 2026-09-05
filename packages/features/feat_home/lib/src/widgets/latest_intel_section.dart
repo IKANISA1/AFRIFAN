@@ -150,7 +150,7 @@ class _IntelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = ColorTokens.clubAccent;
+    final primaryColor = ColorTokens.primaryContainer;
     final articleId = article['id']?.toString();
     final title = article['title']?.toString() ?? '';
     final subtitle = article['subtitle']?.toString() ?? '';
@@ -276,7 +276,7 @@ class _GradientFallback extends StatelessWidget {
         gradient: ColorTokens.universalGradient(
           colors: [
             primaryColor.withValues(alpha: 0.35),
-            ColorTokens.clubSecondary.withValues(alpha: 0.4),
+            ColorTokens.surfaceContainerHigh.withValues(alpha: 0.4),
             ColorTokens.surfaceContainerHigh,
           ],
           stops: const [0.0, 0.5, 1.0],

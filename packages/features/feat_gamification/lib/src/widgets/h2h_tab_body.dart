@@ -49,9 +49,11 @@ class H2hTabBody extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
                 context.afriL10n.gameHeadToHead,
-                style: TypographyTokens.titleLarge(
-                  ColorTokens.onSurfaceVariant,
-                ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
+                style: TypographyTokens.titleLarge(ColorTokens.onSurfaceVariant)
+                    .copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: TypographyTokens.trackingNone,
+                    ),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
@@ -83,9 +85,13 @@ class H2hTabBody extends StatelessWidget {
                 children: [
                   Text(
                     context.afriL10n.gameWinDistribution,
-                    style: TypographyTokens.metricLabel(
-                      ColorTokens.onSurfaceVariant,
-                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+                    style:
+                        TypographyTokens.metricLabel(
+                          ColorTokens.onSurfaceVariant,
+                        ).copyWith(
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: TypographyTokens.trackingNone,
+                        ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   Row(
@@ -114,7 +120,9 @@ class H2hTabBody extends StatelessWidget {
                           if (homeWins > 0)
                             Expanded(
                               flex: homeWins,
-                              child: Container(color: ColorTokens.clubAccent),
+                              child: Container(
+                                color: ColorTokens.primaryContainer,
+                              ),
                             ),
                           if (draws > 0)
                             Expanded(
@@ -158,8 +166,8 @@ class H2hTabBody extends StatelessWidget {
                           .fold<int>(0, (sum, e) => sum + e.homeScore)
                           .toString(),
                       style: TypographyTokens.headlineMedium(
-                        ColorTokens.clubAccent,
-                      ).copyWith(fontWeight: FontWeight.w800),
+                        ColorTokens.primaryContainer,
+                      ).copyWith(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1 / 2),
                     Text(
@@ -183,7 +191,7 @@ class H2hTabBody extends StatelessWidget {
                           .fold<int>(0, (sum, e) => sum + e.awayScore)
                           .toString(),
                       style: TypographyTokens.headlineMedium().copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1 / 2),
@@ -204,9 +212,11 @@ class H2hTabBody extends StatelessWidget {
 
         Text(
           context.afriL10n.gameRecentEncounters,
-          style: TypographyTokens.metricLabel(
-            ColorTokens.onSurfaceVariant,
-          ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+          style: TypographyTokens.metricLabel(ColorTokens.onSurfaceVariant)
+              .copyWith(
+                fontWeight: FontWeight.w700,
+                letterSpacing: TypographyTokens.trackingNone,
+              ),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
 
@@ -237,7 +247,7 @@ class H2hTabBody extends StatelessWidget {
                     child: Text(
                       context.afriL10n.gameScore(e.homeScore, e.awayScore),
                       style: TypographyTokens.titleMedium().copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -276,8 +286,8 @@ class _DistMetric extends StatelessWidget {
         Text(
           value,
           style: TypographyTokens.headlineMedium(
-            highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
-          ).copyWith(fontWeight: FontWeight.w800),
+            highlight ? ColorTokens.primaryContainer : ColorTokens.onSurface,
+          ).copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: SpacingTokens.spacing1 / 2),
         Text(

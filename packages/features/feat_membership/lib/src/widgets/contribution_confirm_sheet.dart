@@ -88,15 +88,15 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                 height: 64,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.14),
+                  color: ColorTokens.primaryContainer.withValues(alpha: 0.14),
                   border: BorderTokens.all(
-                    color: ColorTokens.clubAccent.withValues(alpha: 0.3),
+                    color: ColorTokens.primaryContainer.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Icon(
                   AfriIcons.checkGroup,
                   size: 32,
-                  color: ColorTokens.clubAccent,
+                  color: ColorTokens.primaryContainer,
                 ),
               )
               .afriAnimate(context)
@@ -111,9 +111,9 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
           const SizedBox(height: SpacingTokens.spacing4),
 
           Text(
-            l10n.contributionConfirmTitle.toUpperCase(),
+            l10n.contributionConfirmTitle,
             style: TypographyTokens.headlineSmall().copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
@@ -135,16 +135,16 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.contributionSelectedTier.toUpperCase(),
+                      l10n.contributionSelectedTier,
                       style: TypographyTokens.labelSmall(
                         ColorTokens.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
-                      widget.tierLabel.toUpperCase(),
+                      widget.tierLabel,
                       style: TypographyTokens.titleMedium().copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -155,14 +155,14 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                     vertical: SpacingTokens.spacing2,
                   ),
                   decoration: BoxDecoration(
-                    color: ColorTokens.clubAccent.withValues(alpha: 0.14),
+                    color: ColorTokens.primaryContainer.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                   ),
                   child: Text(
-                    l10n.contributionPendingVerification.toUpperCase(),
+                    l10n.contributionPendingVerification,
                     style: TypographyTokens.labelSmall(
-                      ColorTokens.clubAccent,
-                    ).copyWith(fontWeight: FontWeight.w800),
+                      ColorTokens.primaryContainer,
+                    ).copyWith(fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
@@ -198,7 +198,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
           const SizedBox(height: SpacingTokens.spacing4),
 
           Text(
-            l10n.contributionPrivacy.toUpperCase(),
+            l10n.contributionPrivacy,
             textAlign: TextAlign.center,
             style: TypographyTokens.labelSmall(
               ColorTokens.onSurfaceVariant,

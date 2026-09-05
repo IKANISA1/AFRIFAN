@@ -36,12 +36,12 @@ class MarketOptionPill extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? ColorTokens.clubAccent.withValues(alpha: 0.18)
+              ? ColorTokens.primaryContainer.withValues(alpha: 0.18)
               : ColorTokens.surfaceContainerLow,
           borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
           border: isSelected
               ? BorderTokens.all(
-                  color: ColorTokens.clubAccent,
+                  color: ColorTokens.primaryContainer,
                   width: BorderTokens.strong,
                 )
               : BorderTokens.ghost(),
@@ -54,11 +54,11 @@ class MarketOptionPill extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  label.toUpperCase(),
+                  label,
                   style:
                       TypographyTokens.labelMedium(
                         isSelected
-                            ? ColorTokens.clubAccent
+                            ? ColorTokens.primaryContainer
                             : ColorTokens.onSurfaceVariant,
                       ).copyWith(
                         fontWeight: isSelected

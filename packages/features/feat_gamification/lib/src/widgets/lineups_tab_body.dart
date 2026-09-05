@@ -54,9 +54,11 @@ class LineupsTabBody extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
                 context.afriL10n.gameLineupsUpper,
-                style: TypographyTokens.titleLarge(
-                  ColorTokens.onSurfaceVariant,
-                ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
+                style: TypographyTokens.titleLarge(ColorTokens.onSurfaceVariant)
+                    .copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: TypographyTokens.trackingNone,
+                    ),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
@@ -139,16 +141,18 @@ class _FormationChip extends StatelessWidget {
         children: [
           Text(
             team,
-            style: TypographyTokens.metricLabel(
-              ColorTokens.onSurfaceVariant,
-            ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1),
+            style: TypographyTokens.metricLabel(ColorTokens.onSurfaceVariant)
+                .copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: TypographyTokens.trackingNone,
+                ),
           ),
           const SizedBox(width: SpacingTokens.spacing2),
           Text(
             formation,
             style: TypographyTokens.titleSmall(
               ColorTokens.onSurface,
-            ).copyWith(fontWeight: FontWeight.w800),
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -177,9 +181,13 @@ class _TeamLineup extends StatelessWidget {
       children: [
         Text(
           teamName,
-          style: TypographyTokens.titleSmall(
-            isHome ? ColorTokens.clubAccent : ColorTokens.onSurface,
-          ).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.2),
+          style:
+              TypographyTokens.titleSmall(
+                isHome ? ColorTokens.primaryContainer : ColorTokens.onSurface,
+              ).copyWith(
+                fontWeight: FontWeight.w600,
+                letterSpacing: TypographyTokens.trackingNone,
+              ),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
 
@@ -192,9 +200,11 @@ class _TeamLineup extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           Text(
             context.afriL10n.gameSubstitutes,
-            style: TypographyTokens.labelSmall(
-              ColorTokens.onSurfaceVariant,
-            ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
+            style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)
+                .copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: TypographyTokens.trackingNone,
+                ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           ...subs.asMap().entries.map((entry) {
@@ -230,7 +240,7 @@ class _PlayerRow extends StatelessWidget {
                   style: TypographyTokens.labelMedium(
                     isSub
                         ? ColorTokens.onSurfaceVariant
-                        : ColorTokens.clubAccent,
+                        : ColorTokens.primaryContainer,
                   ).copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
@@ -248,9 +258,13 @@ class _PlayerRow extends StatelessWidget {
               if (player.position != null)
                 Text(
                   player.position!,
-                  style: TypographyTokens.labelSmall(
-                    ColorTokens.onSurfaceVariant,
-                  ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+                  style:
+                      TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
+                      ).copyWith(
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: TypographyTokens.trackingNone,
+                      ),
                 ),
             ],
           ),

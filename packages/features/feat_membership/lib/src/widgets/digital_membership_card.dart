@@ -1,21 +1,16 @@
-import 'dart:ui';
-
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
-/// Glassmorphic Digital Membership Card — enhanced version with generated
-/// club mark text, tier badge, Fan ID, member-since date, and watermark.
-///
-/// Mirrors the fanafrika `DigitalMembershipCard.tsx`.
+/// The actual club member card using the LIVE-048 object-card pattern.
+/// Own club identity and membership fields replace the reference financial card.
 class DigitalMembershipCardFull extends StatelessWidget {
   const DigitalMembershipCardFull({
     super.key,
     required this.clubName,
     required this.tier,
     required this.fanId,
-    this.brandMarkText,
+    this.statusLabel,
     this.memberSince,
     this.accentColor,
     this.onShare,
@@ -24,7 +19,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
   final String clubName;
   final String tier;
   final String fanId;
-  final String? brandMarkText;
+  final String? statusLabel;
   final String? memberSince;
   final Color? accentColor;
   final VoidCallback? onShare;
@@ -32,170 +27,86 @@ class DigitalMembershipCardFull extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
-    final accent = accentColor ?? ColorTokens.clubAccent;
-    final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
-
+    final accent = accentColor ?? ColorTokens.clubPrimary;
+    final cardColor =
+        ColorTokens.contrastForeground(accent) == ColorTokens.onDark
+        ? accent
+        : Color.alphaBlend(ColorTokens.inkBase.withValues(alpha: 0.65), accent);
     return Container(
-      height: isLargeText ? 360 : 220,
+      constraints: const BoxConstraints(
+        minHeight: AfriComponentSizes.membershipCardMinHeight,
+      ),
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
       decoration: BoxDecoration(
         borderRadius: ShapeTokens.cardRadius,
-        gradient: ColorTokens.universalSurfaceGradient(
-          from: accent.withValues(alpha: 0.35),
-          to: ColorTokens.surfaceContainer,
+        gradient: ColorTokens.heroGradient(
+          from: cardColor,
+          to: Color.alphaBlend(
+            ColorTokens.inkBase.withValues(alpha: 0.25),
+            cardColor,
+          ),
         ),
-        boxShadow: AfriShadows.primaryGlow(accent),
       ),
-      child: ClipRRect(
-        borderRadius: ShapeTokens.cardRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-          child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              // Gikundiro watermark
-              Positioned(
-                bottom: -20,
-                right: -8,
+              Expanded(
                 child: Text(
-                  l10n.membershipBrandWatermark,
-                  style: TypographyTokens.displayLarge(
-                    ColorTokens.onSurface.withValues(alpha: 0.04),
-                  ).copyWith(fontWeight: FontWeight.w900),
+                  clubName,
+                  style: TypographyTokens.bodyLarge(ColorTokens.onDark),
                 ),
               ),
-
-              // Content
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: ShapeTokens.cardRadius,
-                  border: BorderTokens.ghost(),
+              if (onShare != null)
+                AfriIconButton(
+                  icon: AfriIcons.share,
+                  tooltip: l10n.shareMembershipCard,
+                  onTap: onShare,
                 ),
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+            ],
+          ),
+          if (statusLabel != null) ...[
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(
+              statusLabel!,
+              style: TypographyTokens.bodySmall(ColorTokens.onDark),
+            ),
+          ],
+          const SizedBox(height: SpacingTokens.spacing10),
+          Text(
+            fanId,
+            style: TypographyTokens.headlineLarge(
+              ColorTokens.onDark,
+            ).copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Top row: Club name + Share button
-                    Wrap(
-                      spacing: SpacingTokens.spacing3,
-                      runSpacing: SpacingTokens.spacing2,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        if (brandMarkText != null) ...[
-                          Text(
-                            brandMarkText!,
-                            style: TypographyTokens.headlineMedium(),
-                          ),
-                        ],
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 230),
-                          child: Text(
-                            clubName.toUpperCase(),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TypographyTokens.labelLarge(
-                              ColorTokens.onSurface.withValues(alpha: 0.7),
-                            ).copyWith(fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                        if (onShare != null)
-                          AfriPressFeedback(
-                            onTap: onShare,
-                            tooltip: l10n.shareMembershipCard,
-                            semanticsLabel: l10n.shareMembershipCard,
-                            semanticsHint: l10n.shareMembershipCardHint,
-                            excludeChildSemantics: true,
-                            child: Container(
-                              constraints: const BoxConstraints(
-                                minHeight:
-                                    SpacingTokens.spacing10 +
-                                    SpacingTokens.spacing1,
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: SpacingTokens.spacing3,
-                                vertical: SpacingTokens.spacing2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: accent.withValues(alpha: 0.16),
-                                borderRadius: BorderRadius.circular(
-                                  ShapeTokens.radiusFull,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    AfriIcons.share,
-                                    size: 12,
-                                    color: accent,
-                                  ),
-                                  const SizedBox(width: SpacingTokens.spacing1),
-                                  Text(
-                                    l10n.share.toUpperCase(),
-                                    style: TypographyTokens.labelSmall(
-                                      accent,
-                                    ).copyWith(fontWeight: FontWeight.w800),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-
-                    const Spacer(),
-
-                    // Fan ID — large prominent display
                     Text(
-                          fanId,
-                          style: TypographyTokens.displaySmall().copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
-                        )
-                        .afriAnimate(context)
-                        .fadeIn(duration: 400.ms)
-                        .slideX(begin: -0.03, end: 0, duration: 400.ms),
-
-                    const SizedBox(height: SpacingTokens.spacing2),
-
-                    // Bottom row: Tier badge + Member Since
-                    Wrap(
-                      spacing: SpacingTokens.spacing3,
-                      runSpacing: SpacingTokens.spacing2,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: accent.withValues(alpha: 0.2),
-                            borderRadius: ShapeTokens.chipRadius,
-                            border: BorderTokens.all(
-                              color: accent.withValues(alpha: 0.4),
-                            ),
-                          ),
-                          child: Text(
-                            tier.toUpperCase(),
-                            style: TypographyTokens.labelMedium(
-                              accent,
-                            ).copyWith(fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                        if (memberSince != null)
-                          Text(
-                            l10n.membershipSince(memberSince!),
-                            style: TypographyTokens.bodySmall(
-                              ColorTokens.onSurfaceVariant,
-                            ).copyWith(fontWeight: FontWeight.w500),
-                          ),
-                      ],
+                      tier,
+                      style: TypographyTokens.bodyLarge(ColorTokens.onDark),
                     ),
+                    if (memberSince != null) ...[
+                      const SizedBox(height: SpacingTokens.spacing1),
+                      Text(
+                        l10n.membershipSince(memberSince!),
+                        style: TypographyTokens.bodySmall(ColorTokens.onDark),
+                      ),
+                    ],
                   ],
                 ),
               ),
+              const SizedBox(width: SpacingTokens.spacing4),
+              const AfriBrandMark(size: 40, showBorder: false),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

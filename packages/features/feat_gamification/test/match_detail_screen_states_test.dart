@@ -420,7 +420,7 @@ void main() {
       ),
       beforeCapture: (tester) async {
         expect(find.text('Match data changed'), findsOneWidget);
-        expect(find.text('REFRESH MATCH'), findsOneWidget);
+        expect(find.text('Refresh match'), findsOneWidget);
       },
     );
   });

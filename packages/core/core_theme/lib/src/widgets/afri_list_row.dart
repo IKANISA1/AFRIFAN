@@ -1,17 +1,43 @@
 import 'package:flutter/material.dart';
 
 import '../extensions.dart';
+import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
 import '../tokens/shape_tokens.dart';
-import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
-import 'afri_surface_card.dart';
 
-/// Reusable icon-led list row for settings and menu-style screens.
+/// A single rounded tonal group, shared by settings and task menus.
+/// Rows inside it keep one continuous surface without nested cards.
+class AfriListGroup extends StatelessWidget {
+  const AfriListGroup({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: ShapeTokens.cardRadius,
+    child: ColoredBox(
+      color: context.afriSemanticColors.cardSurface,
+      child: _AfriListGroupScope(
+        child: Column(mainAxisSize: MainAxisSize.min, children: children),
+      ),
+    ),
+  );
+}
+
+class _AfriListGroupScope extends InheritedWidget {
+  const _AfriListGroupScope({required super.child});
+
+  @override
+  bool updateShouldNotify(_AfriListGroupScope oldWidget) => false;
+}
+
+/// Native icon-led row: 56 minimum height, plain icon, normal-weight title.
+/// Additional lines and enlarged text expand naturally beyond that minimum.
 class AfriListRow extends StatelessWidget {
   const AfriListRow({
     super.key,
@@ -33,41 +59,45 @@ class AfriListRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.afriSemanticColors;
-    final disabledForeground = ColorTokens.accessibleDisabledColor(
-      colors.secondaryText,
-    );
-    final primaryForeground = enabled ? colors.primaryText : disabledForeground;
-    final secondaryForeground = enabled
+    final grouped =
+        context.dependOnInheritedWidgetOfExactType<_AfriListGroupScope>() !=
+        null;
+    final foreground = enabled
+        ? colors.primaryText
+        : ColorTokens.accessibleDisabledColor(colors.secondaryText);
+    final secondary = enabled
         ? colors.secondaryText
-        : disabledForeground;
-    final focusAccent = ColorTokens.accessibleChartColor(colors.accent);
+        : ColorTokens.accessibleDisabledColor(colors.secondaryText);
     return AfriPressFeedback(
       enabled: enabled,
       onTap: onTap,
-      semanticsLabel: title,
+      semanticsLabel: [title, if (subtitle != null) subtitle!].join(', '),
       tooltip: title,
-      excludeChildSemantics: true,
-      builder: (context, state) => AfriSurfaceCard(
+      // A custom trailing control may have its own accessible action.
+      excludeChildSemantics: trailing == null,
+      builder: (context, state) => Container(
+        constraints: const BoxConstraints(
+          minHeight: AfriComponentSizes.listRowHeight,
+        ),
         padding: const EdgeInsets.symmetric(
           horizontal: SpacingTokens.spacing4,
-          vertical: SpacingTokens.spacing4,
+          vertical: SpacingTokens.spacing3,
+        ),
+        decoration: BoxDecoration(
+          color: state.isPressed
+              ? colors.cardSurfaceStrong
+              : colors.cardSurface,
+          borderRadius: grouped ? null : ShapeTokens.cardRadius,
+          border: state.isFocused || MediaQuery.highContrastOf(context)
+              ? BorderTokens.all(
+                  color: colors.primaryText,
+                  width: context.afriDesignTokens.focusRingWidth,
+                )
+              : null,
         ),
         child: Row(
           children: [
-            Container(
-              width: AfriComponentSizes.listLeading,
-              height: AfriComponentSizes.listLeading,
-              decoration: BoxDecoration(
-                color: ColorTokens.surfaceContainer,
-                borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-              ),
-              alignment: Alignment.center,
-              child: Icon(
-                icon,
-                size: SizeTokens.iconSm,
-                color: primaryForeground,
-              ),
-            ),
+            Icon(icon, size: AfriComponentSizes.listIcon, color: foreground),
             const SizedBox(width: SpacingTokens.spacing4),
             Expanded(
               child: Column(
@@ -75,24 +105,29 @@ class AfriListRow extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TypographyTokens.titleMedium(primaryForeground),
+                    style: TypographyTokens.bodyLarge(
+                      foreground,
+                    ).copyWith(height: TypographyTokens.lineHeightRow),
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
                       subtitle!,
-                      style: TypographyTokens.bodySmall(secondaryForeground),
+                      style: TypographyTokens.bodySmall(secondary),
                     ),
                   ],
                 ],
               ),
             ),
-            const SizedBox(width: SpacingTokens.spacing3),
-            trailing ??
-                Icon(
-                  AfriIcons.chevronRight,
-                  color: state.isFocused ? focusAccent : secondaryForeground,
-                ),
+            if (trailing != null || onTap != null) ...[
+              const SizedBox(width: SpacingTokens.spacing3),
+              trailing ??
+                  Icon(
+                    AfriIcons.chevronRight,
+                    size: AfriComponentSizes.listChevron,
+                    color: secondary,
+                  ),
+            ],
           ],
         ),
       ),
@@ -196,13 +231,14 @@ class AfriSwitchListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       type: MaterialType.transparency,
-      child: SwitchListTile(
+      child: SwitchListTile.adaptive(
         value: value,
         onChanged: onChanged,
         title: title,
         subtitle: subtitle,
         secondary: secondary,
-        activeThumbColor: activeThumbColor ?? ColorTokens.primaryContainer,
+        activeThumbColor: activeThumbColor ?? ColorTokens.onDark,
+        activeTrackColor: ColorTokens.primary,
         contentPadding:
             contentPadding ??
             const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing2),
