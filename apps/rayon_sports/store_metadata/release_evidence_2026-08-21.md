@@ -37,8 +37,14 @@ This record proves local preparation and exact-candidate validation. Store uploa
 
 ## Portal upload receipts
 
-- Google Play accepted and decoded the production AAB as `7 (1.0.4)`, API level 26+, target SDK 36. English and French release notes were saved with a 100% rollout across all targeted countries. The release is in Publishing overview but has not been sent for review.
+- Google Play accepted and decoded the production AAB as `7 (1.0.4)`, API level 26+, target SDK 36. English and French release notes were saved with a 100% rollout across all targeted countries.
 - App Store Connect accepted build `1.0.4 (7)` and completed processing with status `Ready to Submit`; build resource `ca4b9523-483a-4c4a-a26c-2353a1f853d5`.
 - Xcode reported non-blocking missing-dSYM warnings for FirebaseAnalytics, GoogleAdsOnDeviceConversion, GoogleAppMeasurement, and GoogleAppMeasurementIdentitySupport. The binary upload completed; third-party crash-symbol detail for those frameworks may be limited.
 - Apple accepted the confirmed cancellation request for version `1.0.3 (6)` and showed the submission as Processing. The App Store Connect session then expired before cancellation completion and creation of version `1.0.4` could be verified.
-- Google Play's automated pre-review check blocks submission on one reviewer-access warning and three stale DNS warnings. The configured privacy and deletion URLs both returned HTTP 200 on 2026-08-21. The reviewer-access declaration currently says no part is restricted, while Play detected a restricted sign-in surface in build 7; no reviewer credential was invented or transmitted.
+- On 2026-08-21, Google Play's automated pre-review check blocked submission on one reviewer-access warning and three stale DNS warnings. The configured privacy and deletion URLs both returned HTTP 200 that day. The reviewer-access declaration then said no part was restricted, while Play detected a restricted sign-in surface in build 7; no reviewer credential was invented or transmitted.
+
+## Final review submissions observed on 2026-08-28
+
+- App Store Connect version `1.0.4` was saved with build `7`, automatic release after approval, the confirmed review contact, and guest-session review notes. Submission `3593785c-bef7-46d2-9360-fb2a24806d8c` was submitted at 10:16 AM and the authenticated console showed `Waiting for Review`. This is review-queue acceptance, not approval or public availability.
+- Google Play reviewer access was updated to explain the unrestricted guest review path. The privacy-policy URL was set to `https://gikundiro.com/privacy`; account- and data-deletion URLs were set to `https://gikundiro.com/account-deletion`; and the Data safety form was reconciled to the controlled declaration for personal information, financial information, app activity, user-generated content, and device identifiers.
+- The unrelated `FANZONE` Alpha tester-list change was removed before submission. Google then accepted the remaining five-change batch, including production `7 (1.0.4)` at full rollout, and showed `Changes in review` plus `5 changes sent for review`. This is review-queue acceptance, not approval or public availability.

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "portal_only",
+  "status": "SUBMITTED_FOR_STORE_REVIEW",
   "warning": "Populate from authenticated consoles immediately before submission. Never store passwords, API keys, one-time codes, private keys, identity documents, or reviewer credentials in this file.",
   "google_play": {
     "developer_account_type": "ORGANIZATION_IKANISA_LTD",
@@ -19,7 +19,7 @@
     "app_content_forms_complete": true,
     "artifact_uploaded": true,
     "artifact_processing_status": "ACCEPTED_PRODUCTION_RELEASE_SAVED",
-    "submission_status": "PUBLISHING_OVERVIEW_BLOCKED_BY_FOUR_AUTOMATED_CHECKS",
+    "submission_status": "CHANGES_IN_REVIEW",
     "verified_receipt": {
       "observed_on": "2026-08-21",
       "package_name": "rw.gikundiro.app",
@@ -49,7 +49,7 @@
         "replacement_certificate_valid_from": "2026-08-11T11:24:08Z",
         "draft_cleanup": "NOT_APPLICABLE_ACCEPTED_CANDIDATE_RETAINED"
       },
-      "dashboard_status": "NOT_YET_SENT_FOR_REVIEW",
+      "dashboard_status": "CHANGES_IN_REVIEW",
       "production_setup_tasks_completed": 3,
       "production_setup_tasks_total": 5,
       "existing_pending_release": {
@@ -59,29 +59,28 @@
       },
       "countries_and_regions_shown": 177,
       "publishing_overview": {
-        "unsent_changes": 4,
+        "unsent_changes": 0,
+        "changes_in_review": 5,
         "submit_enabled": false,
         "production_release": "7 (1.0.4) START_FULL_ROLLOUT_100_PERCENT_ALL_TARGETED_COUNTRIES",
         "release_notes_locales": ["en-US", "fr-FR"],
-        "reviewer_access_issue": "CURRENT_DECLARATION_SAYS_NO_RESTRICTED_ACCESS_BUT_BUILD_7_DETECTED_SIGN_IN_SURFACE",
-        "portal_url_validation_issue_count": 3,
-        "portal_url_validation_issues": [
-          {
-            "field": "privacy_policy",
-            "configured_url": "https://gikundiro.com/privacy",
-            "portal_result": "DNS_NOT_FOUND"
-          },
-          {
-            "field": "account_deletion",
-            "configured_url": "https://gikundiro.com/account-deletion",
-            "portal_result": "DNS_NOT_FOUND"
-          },
-          {
-            "field": "data_deletion",
-            "configured_url": "https://gikundiro.com/account-deletion",
-            "portal_result": "DNS_NOT_FOUND"
-          }
-        ]
+        "reviewer_access": "GUEST_SESSION_INSTRUCTIONS_SAVED_NO_CREDENTIAL_REQUIRED",
+        "privacy_policy_url": "https://gikundiro.com/privacy",
+        "account_deletion_url": "https://gikundiro.com/account-deletion",
+        "data_deletion_url": "https://gikundiro.com/account-deletion",
+        "data_safety_questionnaire": "RECONCILED_AND_SENT_FOR_REVIEW",
+        "unrelated_alpha_change_excluded": "FANZONE_TESTER_LIST_REMOVED_BEFORE_SUBMISSION",
+        "portal_confirmation": "5_CHANGES_SENT_FOR_REVIEW"
+      },
+      "review_submission": {
+        "observed_on": "2026-08-28",
+        "version_name": "1.0.4",
+        "version_code": 7,
+        "track": "PRODUCTION",
+        "rollout": "FULL_ROLLOUT_100_PERCENT",
+        "changes_sent_for_review": 5,
+        "review_state": "CHANGES_IN_REVIEW",
+        "unrelated_alpha_change_included": false
       },
       "current_live_url_probe": {
         "dns_resolves": true,
@@ -97,7 +96,7 @@
         "content_status": "RELEASE_WORKER_ACTIVE_ALL_FOUR_CUSTOM_DOMAINS",
         "admin_api_probe": "401_JSON_ADMIN_AUTHENTICATION_REQUIRED"
       },
-      "boundary": "The exact code-7 AAB is accepted and saved as a 100% production rollout with English and French notes. Google blocks review submission on one reviewer-access warning and three stale DNS warnings; the public URLs currently return HTTP 200."
+      "boundary": "The exact code-7 AAB and four associated app-content and territory change groups were sent to Google and the portal showed Changes in review. This is not approval or public availability."
     }
   },
   "app_store_connect": {
@@ -118,7 +117,7 @@
     "build_uploaded": true,
     "build_processing_status": "READY_TO_SUBMIT",
     "testflight_validation_complete": false,
-    "submission_status": "1.0.3_CANCELLATION_REQUESTED_PROCESSING_APP_STORE_SESSION_EXPIRED",
+    "submission_status": "WAITING_FOR_REVIEW",
     "verified_upload_receipt": {
       "observed_on": "2026-08-21",
       "bundle_id": "rw.ikanisa.rayonSports",
@@ -138,6 +137,21 @@
       "confirmed": true,
       "last_observed_state": "PROCESSING",
       "verification_boundary": "App Store Connect session expired before the cancellation result and replacement version creation could be verified."
+    },
+    "final_review_submission": {
+      "observed_on": "2026-08-28",
+      "review_submission_id": "3593785c-bef7-46d2-9360-fb2a24806d8c",
+      "version": "1.0.4",
+      "build_number": 7,
+      "build_resource_id": "ca4b9523-483a-4c4a-a26c-2353a1f853d5",
+      "release_type": "AUTOMATIC_AFTER_APPROVAL",
+      "submitted_by": "Jean Bosco Ahorukkmeye",
+      "date_submitted_portal_display": "2026-08-28 10:16 AM",
+      "review_submission_state": "WAITING_FOR_REVIEW",
+      "version_item_attached_to_review_submission": true,
+      "submit_for_review_completed": true,
+      "draft_submissions_remaining": 0,
+      "boundary": "The portal accepted iOS 1.0.4 (7) into App Review and showed Waiting for Review. This is not approval or public availability."
     },
     "verified_receipt": {
       "observed_on": "2026-08-10",
