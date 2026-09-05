@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "node scripts/run-next-build-stable.mjs && node scripts/ensure-next-build-artifacts.mjs && node scripts/fix-route-group-manifests.mjs",
-    "check:dependencies": "node scripts/validate-package-manager.mjs",
+    "check:dependencies": "node scripts/validate-package-manager.mjs && node --test scripts/dependency-security.node-test.mjs",
     "dev": "next dev",
     "start": "next start",
     "lint": "eslint --max-warnings=0 .",
@@ -94,7 +94,7 @@
       "brace-expansion": "^5.0.6"
     },
     "postcss": "^8.5.10",
-    "qs": "^6.15.3",
+    "qs": "^6.16.0",
     "tmp": "^0.2.7",
     "uuid": "^11.1.1",
     "vite": "^8.1.0",
