@@ -54,10 +54,6 @@ void main() {
         expect(profile.momoNumber, '+250788000000');
         expect(profile.displayName, 'Legacy User');
         expect(profile.countryCode, 'MT');
-        // Verify legacy getters
-        expect(profile.phone, profile.momoNumber);
-        expect(profile.fullName, profile.displayName);
-        expect(profile.country, profile.countryCode);
       });
 
       test('handles minimal/null fields gracefully', () {

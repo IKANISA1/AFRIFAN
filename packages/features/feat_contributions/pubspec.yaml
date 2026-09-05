@@ -22,22 +22,20 @@ dependencies:
     path: ../../core/core_utils
   core_auth:
     path: ../../core/core_auth
-  feat_club:
-    path: ../feat_club
+  club_data:
+    path: ../../data/club_data
   feat_sms_ledger:
     path: ../feat_sms_ledger
   flutter_riverpod: ^2.6.1
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
-  flutter_animate: ^4.5.2
   intl: ^0.20.2
-  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   test_support:
-    path: ../test_support
+    path: ../../testing/test_support
   mocktail: ^1.0.4
 
 resolution: workspace

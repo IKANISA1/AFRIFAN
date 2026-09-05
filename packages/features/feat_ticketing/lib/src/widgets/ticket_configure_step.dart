@@ -1,7 +1,7 @@
+import 'package:club_data/club_data.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
-import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 
 import '../official_ticket_categories.dart';

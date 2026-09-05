@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:feat_club/feat_club.dart';
+import 'package:club_data/club_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -29,7 +29,7 @@ void main() {
         (packageSource.existsSync()
                 ? packageSource
                 : File(
-                    'packages/features/feat_club/lib/src/repositories/'
+                    'packages/data/club_data/lib/src/repositories/'
                     'club_repository.dart',
                   ))
             .readAsStringSync();

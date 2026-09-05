@@ -72,7 +72,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       final error = await ref
           .read(authStateProvider.notifier)
           .updateProfile(
-            profile.copyWith(fullName: _nicknameController.text.trim()),
+            profile.copyWith(displayName: _nicknameController.text.trim()),
           )
           .timeout(widget.operationTimeout);
       if (error != null) {

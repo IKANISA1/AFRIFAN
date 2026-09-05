@@ -64,8 +64,6 @@ class AppStartupCoordinator {
     }
     if (options.initializePersistence) {
       await _initializePersistence();
-      // Delegate legacy cache purge to feature initializer.
-      await options.featureInitializer.onPurgeLegacyCache?.call();
     }
     if (options.initializeBackend) {
       await _initializeCriticalBackend(config);

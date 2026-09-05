@@ -1,5 +1,5 @@
+import 'package:club_data/club_data.dart';
 import 'package:core_utils/core_utils.dart';
-import 'package:feat_club/feat_club.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final shopCartProvider =

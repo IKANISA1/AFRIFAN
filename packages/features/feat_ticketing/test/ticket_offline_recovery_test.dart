@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:club_data/club_data.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_club/feat_club.dart';
 import 'package:feat_ticketing/src/screens/match_list_screen.dart';
 import 'package:feat_ticketing/src/ticketing_providers.dart';
 import 'package:flutter/material.dart';

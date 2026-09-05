@@ -1,5 +1,5 @@
 name: feat_club
-description: White-label club feature module — membership, shop, tickets, contributions, gamification.
+description: Club information, fixtures, results, standings, news, and projects.
 version: 0.1.0
 publish_to: none
 
@@ -10,14 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  core_utils:
-    path: ../../core/core_utils
   core_network:
     path: ../../core/core_network
-  core_feature_config:
-    path: ../../core/core_feature_config
-  core_auth:
-    path: ../../core/core_auth
   core_router:
     path: ../../core/core_router
   core_theme:
@@ -34,6 +28,6 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   test_support:
-    path: ../test_support
+    path: ../../testing/test_support
 
 resolution: workspace

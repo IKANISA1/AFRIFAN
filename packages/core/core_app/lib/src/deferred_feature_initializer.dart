@@ -5,13 +5,9 @@
 /// to orchestrate startup without depending on feature packages directly.
 class DeferredFeatureInitializer {
   const DeferredFeatureInitializer({
-    this.onPurgeLegacyCache,
     this.onRegisterAuthLifecycleObservers,
     this.onInitializeSmsAutoread,
   });
-
-  /// Purge legacy caches from optional feature packages.
-  final Future<void> Function()? onPurgeLegacyCache;
 
   /// Register auth lifecycle observers for optional feature packages.
   final Future<void> Function()? onRegisterAuthLifecycleObservers;

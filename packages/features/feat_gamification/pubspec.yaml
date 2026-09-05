@@ -30,7 +30,6 @@ dependencies:
   supabase_flutter: ^2.12.2
   flutter_animate: ^4.5.2
   share_plus: ^11.1.0
-  url_launcher: ^6.3.1
 
 resolution: workspace
 
@@ -40,4 +39,4 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   mocktail: ^1.0.4
   test_support:
-    path: ../test_support
+    path: ../../testing/test_support

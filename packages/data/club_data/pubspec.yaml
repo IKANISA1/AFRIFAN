@@ -1,0 +1,25 @@
+name: club_data
+description: Shared club membership, commerce, ticketing, and contribution data contracts.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  core_feature_config:
+    path: ../../core/core_feature_config
+  core_network:
+    path: ../../core/core_network
+  core_utils:
+    path: ../../core/core_utils
+  equatable: ^2.0.7
+  flutter_riverpod: ^2.6.1
+  supabase_flutter: ^2.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+resolution: workspace

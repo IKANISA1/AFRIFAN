@@ -355,7 +355,6 @@ class ShopCatalogSlivers extends StatelessWidget {
     this.isStale = false,
     this.isOnline = true,
     this.failure,
-    this.error,
     required this.products,
     required this.filteredProducts,
     required this.categories,
@@ -373,8 +372,6 @@ class ShopCatalogSlivers extends StatelessWidget {
   final bool isOnline;
   final ShopCatalogFailure? failure;
 
-  /// Legacy direct-harness seam retained for catalog layout tests.
-  final String? error;
   final List<Map<String, dynamic>> products;
   final List<Map<String, dynamic>> filteredProducts;
   final List<String> categories;
@@ -389,21 +386,16 @@ class ShopCatalogSlivers extends StatelessWidget {
   Widget build(BuildContext context) {
     final usesLargeTextLayout =
         MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    final effectiveFailure =
-        failure ??
-        (error == null
-            ? null
-            : const ShopCatalogFailure(ShopCatalogFailureKind.unknown));
     final l10n = context.afriL10n;
 
     if (isLoading) {
       return const SliverToBoxAdapter(child: ShopLoadingSkeleton());
     }
 
-    if (effectiveFailure != null) {
+    if (failure != null) {
       return SliverToBoxAdapter(
         child: _ShopFailureState(
-          failure: effectiveFailure,
+          failure: failure!,
           isOnline: isOnline,
           onRetry: onRetry,
         ),

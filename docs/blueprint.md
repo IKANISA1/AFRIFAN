@@ -31,9 +31,12 @@ apps/
   <club>/                thin white-label Flutter shells
 
 packages/
+  app_registry/          feature composition injected into the app shell
   core/                  app shell, auth, routing, networking, theme
+  data/                  club data contracts, repositories, and providers
   features/              shared football and club capabilities
   clubs/                 club identity and configuration
+  testing/               development-only shared test infrastructure
 
 supabase/
   migrations/            baseline and forward migrations
@@ -47,6 +50,34 @@ tools/
 The Flutter workspace is managed from the root `pubspec.yaml` with Melos.
 Applications remain thin: shared behavior belongs in packages, while club
 shells select identity, configuration, and allowed feature composition.
+
+### Package dependency boundaries
+
+- Each Flutter app imports `core_app`, `app_registry`, its own club package,
+  and any directly used platform bootstrap SDK. Feature and test dependencies
+  used only by app tests belong in `dev_dependencies`.
+- `app_registry` composes feature modules and injects them into `core_app`.
+  Core packages do not import features or club configurations.
+- `club_data` owns shared membership, shop, ticket, and contribution models,
+  the club repository, and its providers. It depends on core infrastructure.
+  `feat_club` owns official club content and screens; commerce and membership
+  features import the shared data package directly.
+- Features depend on core and data packages. The two explicit cross-feature
+  dependencies are settings and contributions using `feat_sms_ledger` for
+  receipt handling. New feature coupling requires an explicit boundary change.
+- `packages/testing/test_support` contains shared test harnesses. Production
+  packages may reference it only in `dev_dependencies`.
+- Cross-package production imports use public library entry points. Runtime
+  dependencies must be declared directly, and the runtime graph must be acyclic.
+
+`dart run tools/scripts/validate_workspace_architecture.dart` enforces these
+boundaries in CI alongside strict analysis and tests. Its regression tests run
+with `dart run tools/scripts/validate_workspace_architecture_test.dart`.
+
+The Next.js application remains a separate npm package under the reference
+club app. Its public site, membership, admin, and venue routes share server-side
+tenant resolution; Flutter applications do not import its source. Moving that
+package is not required to isolate the two runtimes.
 
 ## Product Surfaces
 

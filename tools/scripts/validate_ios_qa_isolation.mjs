@@ -20,7 +20,6 @@ const releaseConfig = read("Flutter/Release.xcconfig");
 const infoPlist = read("Runner/Info.plist");
 const qaEntitlements = read("Runner/RunnerQA.entitlements");
 const productionEntitlements = read("Runner/Runner.entitlements");
-const podfile = read("Podfile");
 
 const productionId = "rw.ikanisa.rayonSports";
 const qaId = "rw.ikanisa.rayonSports.qa.codex";
@@ -38,7 +37,12 @@ assert.doesNotMatch(productionScheme, /Debug-qa/);
 assert.match(qaConfig, /PRODUCT_BUNDLE_IDENTIFIER=rw\.ikanisa\.rayonSports\.qa\.codex/);
 assert.match(qaConfig, /AFRICLUB_DISPLAY_NAME=Gikundiro QA/);
 assert.match(qaConfig, /CODE_SIGN_ENTITLEMENTS=Runner\/RunnerQA\.entitlements/);
-assert.match(qaConfig, /Pods-Runner\.debug-qa\.xcconfig/);
+assert.match(qaConfig, /#include "Debug\.xcconfig"/);
+assert.doesNotMatch(qaConfig, /Pods[/-]/);
+assert.match(project, /FlutterGeneratedPluginSwiftPackage/);
+assert.match(project, /XCLocalSwiftPackageReference/);
+assert.match(qaScheme, /xcode_backend\.sh&quot; prepare/);
+assert.equal(fs.existsSync(path.join(ios, "Podfile")), false);
 assert.match(debugConfig, /AFRICLUB_DISPLAY_NAME=Gikundiro/);
 assert.match(releaseConfig, /AFRICLUB_DISPLAY_NAME=Gikundiro/);
 
@@ -50,7 +54,6 @@ assert.match(qaEntitlements, /<dict\s*\/>/);
 assert.doesNotMatch(qaEntitlements, /aps-environment|associated-domains|appattest/);
 assert.match(productionEntitlements, /aps-environment/);
 assert.match(productionEntitlements, /com\.apple\.developer\.associated-domains/);
-assert.match(podfile, /'Debug-qa' => :debug/);
 
 console.log(
   `iOS QA isolation valid: ${qaId}, empty QA entitlements, production identity preserved`,

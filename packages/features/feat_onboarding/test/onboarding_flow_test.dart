@@ -212,7 +212,6 @@ void main() {
           id: 'user-1',
           clubId: '24',
           publicUserId: '483912',
-          phone: '0781234567',
           momoNumber: '0781234567',
           momoProvider: 'MoMo',
         ),

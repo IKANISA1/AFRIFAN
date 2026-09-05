@@ -31,7 +31,8 @@ The authoritative architecture and evidence gates are in
 - One Melos monorepo for mobile, web, shared packages, and Supabase migrations.
 - Melos 8 configuration lives in the root `pubspec.yaml`; workspace dependency
   resolution starts with `flutter pub get`, and repository commands run through
-  `dart run melos`.
+  `dart run melos`. The committed root `pubspec.lock` pins the shared Flutter
+  dependency graph; CI resolves it with `--enforce-lockfile`.
 - One shared Supabase backend with club-scoped tenancy.
 - One canonical tenant model:
   - `club_id` for database scoping.
@@ -92,9 +93,12 @@ apps/
   <club apps>/            Flutter fan apps
 
 packages/
+  app_registry/           feature composition and registration
   core/                   shared app shell, routing, auth, network, theme
+  data/                   shared club data models, repositories, providers
   features/               shared product features
   clubs/                  per-club config packages
+  testing/                test helpers, never a production dependency
 
 supabase/
   migrations/             baseline and forward migrations
@@ -124,6 +128,7 @@ supabase/
 flutter pub get
 dart run melos run analyze --no-select
 dart run melos run test_all --no-select
+dart run tools/scripts/validate_workspace_architecture.dart
 (cd apps/rayon_sports/web && corepack npm run typecheck && corepack npm test && corepack npm run lint && corepack npm run build)
 node tools/scripts/validate_repository_boundary.mjs
 node tools/scripts/validate_supabase_local_only_migrations.mjs

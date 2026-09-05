@@ -61,7 +61,6 @@ Widget buildClubShellSmokeApp({
           id: 'user-1',
           clubId: config.clubId,
           publicUserId: '483912',
-          phone: '0788123456',
           momoNumber: '0788123456',
           momoProvider: 'MoMo',
         ),

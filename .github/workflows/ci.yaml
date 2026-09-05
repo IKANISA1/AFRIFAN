@@ -84,10 +84,15 @@ jobs:
         run: bash tools/scripts/validate_flutter_runtime_pins.sh --runtime
 
       - name: Resolve workspace tooling
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
 
       - name: Bootstrap workspace
         run: dart run melos bootstrap
+
+      - name: Enforce workspace architecture
+        run: |
+          dart run tools/scripts/validate_workspace_architecture_test.dart
+          dart run tools/scripts/validate_workspace_architecture.dart
 
       - name: Generate route inventory and validate design source compliance
         env:
@@ -139,7 +144,7 @@ jobs:
         run: bash tools/scripts/validate_club_release.sh rayon_sports
 
       - name: Analyze (fatal infos + warnings)
-        run: dart run melos exec -- flutter analyze --fatal-infos --fatal-warnings
+        run: dart run melos run analyze --no-select
 
       - name: Run unit & widget tests with coverage
         run: >-

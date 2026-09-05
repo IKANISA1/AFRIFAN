@@ -28,7 +28,6 @@ dependencies:
   flutter_animate: ^4.5.2
   cached_network_image: ^3.4.1
   flutter_secure_storage: ^10.3.1
-  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +38,6 @@ dev_dependencies:
     path: ../../core/core_auth
   flutter_lints: ^5.0.0
   test_support:
-    path: ../test_support
+    path: ../../testing/test_support
 
 resolution: workspace

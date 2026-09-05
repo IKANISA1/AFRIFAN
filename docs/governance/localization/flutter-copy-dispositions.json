@@ -165,7 +165,7 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_club/lib/src/repositories/club_repository.dart",
+      "file": "packages/data/club_data/lib/src/repositories/club_repository.dart",
       "field": "message",
       "value": "Fan membership created",
       "disposition": "internal_operational_diagnostic",
@@ -174,7 +174,7 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_club/lib/src/repositories/club_repository.dart",
+      "file": "packages/data/club_data/lib/src/repositories/club_repository.dart",
       "field": "message",
       "value": "Fan membership activated",
       "disposition": "internal_operational_diagnostic",

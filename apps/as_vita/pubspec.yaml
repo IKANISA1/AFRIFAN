@@ -10,71 +10,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-
   app_registry:
     path: ../../packages/app_registry
-
-  # Core packages
   core_app:
     path: ../../packages/core/core_app
-  core_theme:
-    path: ../../packages/core/core_theme
-  core_auth:
-    path: ../../packages/core/core_auth
-  core_network:
-    path: ../../packages/core/core_network
-  core_router:
-    path: ../../packages/core/core_router
-  core_utils:
-    path: ../../packages/core/core_utils
-
-  # Club config
   club_as_vita:
     path: ../../packages/clubs/club_as_vita
-
-  # Feature packages
-  feat_home:
-    path: ../../packages/features/feat_home
-  feat_membership:
-    path: ../../packages/features/feat_membership
-  feat_gamification:
-    path: ../../packages/features/feat_gamification
-  feat_contributions:
-    path: ../../packages/features/feat_contributions
-  feat_shop:
-    path: ../../packages/features/feat_shop
-  feat_sms_ledger:
-    path: ../../packages/features/feat_sms_ledger
-  feat_settings:
-    path: ../../packages/features/feat_settings
-  feat_onboarding:
-    path: ../../packages/features/feat_onboarding
-  feat_ticketing:
-    path: ../../packages/features/feat_ticketing
-  feat_fan_clubs:
-    path: ../../packages/features/feat_fan_clubs
-  feat_live:
-    path: ../../packages/features/feat_live
-  feat_admin:
-    path: ../../packages/features/feat_admin
-
-  # Third-party
-  go_router: ^14.8.1
-  supabase_flutter: ^2.12.2
-  flutter_animate: ^4.5.2
-  url_launcher: ^6.3.1
-  intl: ^0.20.2
-  flutter_riverpod: ^2.6.1
-  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   test_support:
-    path: ../../packages/features/test_support
+    path: ../../packages/testing/test_support
   flutter_lints: ^5.0.0
+  core_router:
+    path: ../../packages/core/core_router
 
 flutter:
   uses-material-design: true

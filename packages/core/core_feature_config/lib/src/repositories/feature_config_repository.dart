@@ -8,7 +8,6 @@ class FeatureConfigRepository {
   FeatureConfigRepository();
 
   static const _cacheKeyPrefix = 'africlub_platform_config';
-  static const _legacyCacheKey = 'africlub_platform_config';
   static const _tag = 'FeatureConfigRepo';
 
   Future<PlatformConfigSnapshot> loadConfig({
@@ -75,9 +74,7 @@ class FeatureConfigRepository {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final raw =
-          prefs.getString(_cacheKey(clubId: clubId, channel: channel)) ??
-          prefs.getString(_legacyCacheKey);
+      final raw = prefs.getString(_cacheKey(clubId: clubId, channel: channel));
       if (raw == null) return null;
       return PlatformConfigSnapshot.fromJson(
         jsonDecode(raw) as Map<String, dynamic>,

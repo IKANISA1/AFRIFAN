@@ -13,7 +13,6 @@ void main() {
         _CatalogHarness(
           child: ShopCatalogSlivers(
             isLoading: false,
-            error: null,
             products: const [],
             filteredProducts: const [],
             categories: const ['All'],
@@ -50,7 +49,6 @@ void main() {
         _CatalogHarness(
           child: ShopCatalogSlivers(
             isLoading: false,
-            error: null,
             products: products,
             filteredProducts: const [],
             categories: const ['All', 'Jerseys', 'Scarves'],
@@ -85,7 +83,6 @@ void main() {
         _CatalogHarness(
           child: ShopCatalogSlivers(
             isLoading: false,
-            error: null,
             products: products,
             filteredProducts: products,
             categories: const ['All', 'Jerseys'],
@@ -121,7 +118,6 @@ void main() {
           child: ShopCatalogSlivers(
             isLoading: false,
             isStale: true,
-            error: null,
             products: products,
             filteredProducts: products,
             categories: const ['All', 'Jerseys'],
@@ -162,7 +158,6 @@ void main() {
           child: ShopCatalogSlivers(
             isLoading: false,
             isRefreshing: true,
-            error: null,
             products: products,
             filteredProducts: products,
             categories: const ['All', 'Jerseys'],

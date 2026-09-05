@@ -13,8 +13,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../l10n/app_localizations.dart';
-
 import 'deep_link_service.dart';
 import 'shell.dart';
 
@@ -547,7 +545,6 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
       supportedLocales: widget.supportedLocales,
       localizationsDelegates: const [
         AfriLocalizations.delegate,
-        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

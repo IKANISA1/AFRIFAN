@@ -8,20 +8,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  flutter_riverpod: ^2.6.1
-  flutter_secure_storage: ^10.3.1
-  equatable: ^2.0.7
-  hive: ^2.2.3
-  crypto: ^3.0.6
-  url_launcher: ^6.3.1
-  cached_network_image: ^3.4.1
 
 dev_dependencies:
+  flutter_lints: ^5.0.0
   core_network:
     path: packages/core/core_network
   melos: 8.1.0
+  yaml: ^3.1.3
 
 # Dart workspaces treat this root manifest as the primary Flutter package.
 # Keep Material icon generation aligned with every AFRICLUB app and core_theme.
@@ -74,7 +67,9 @@ workspace:
   - packages/features/feat_settings
   - packages/features/feat_onboarding
   - packages/features/feat_ticketing
-  - packages/features/test_support
+  # ── Shared data and test infrastructure ──
+  - packages/data/club_data
+  - packages/testing/test_support
   # ── Club config packages ──
   - packages/clubs/club_rayon_sports
   - packages/clubs/club_vitalo
@@ -114,8 +109,8 @@ melos:
 
   scripts:
     analyze:
-      exec: flutter analyze --fatal-infos --fatal-warnings
-      description: Analyze all packages
+      run: flutter analyze --no-pub --fatal-infos --fatal-warnings
+      description: Analyze the complete workspace in one analyzer session
 
     format:
       exec: dart format .

@@ -23,9 +23,7 @@ dependencies:
   core_theme:
     path: ../../core/core_theme
   feat_home:
-    path: ../feat_home
+    path: ../../features/feat_home
   flutter_riverpod: ^2.6.1
-  path_provider_platform_interface: ^2.1.2
-  plugin_platform_interface: ^2.1.8
 
 resolution: workspace

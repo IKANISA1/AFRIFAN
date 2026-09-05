@@ -1,8 +1,8 @@
+import 'package:club_data/club_data.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_club/feat_club.dart';
 import 'package:feat_ticketing/src/providers/ticket_detail_provider.dart';
 import 'package:feat_ticketing/src/screens/match_detail_screen.dart';
 import 'package:feat_ticketing/src/widgets/ticket_configure_step.dart';

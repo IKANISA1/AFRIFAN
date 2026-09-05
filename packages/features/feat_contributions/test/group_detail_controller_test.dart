@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:club_data/club_data.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_utils/core_utils.dart';
-import 'package:feat_club/feat_club.dart';
 import 'package:feat_contributions/src/controllers/group_detail_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 

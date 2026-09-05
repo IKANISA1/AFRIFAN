@@ -34,4 +34,4 @@ dev_dependencies:
   flutter_localizations:
     sdk: flutter
   test_support:
-    path: ../test_support
+    path: ../../testing/test_support

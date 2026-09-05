@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:club_data/club_data.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
-import 'package:feat_club/feat_club.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

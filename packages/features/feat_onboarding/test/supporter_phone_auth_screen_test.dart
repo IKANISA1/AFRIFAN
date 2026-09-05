@@ -192,7 +192,6 @@ void main() {
         id: 'supporter-1',
         clubId: '24',
         publicUserId: '483912',
-        phone: supporterPhoneAuthTestNumber,
         momoNumber: supporterPhoneAuthTestNumber,
       ),
     );

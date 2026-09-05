@@ -35,6 +35,7 @@ const dispositionInput = resolve(
 );
 
 const roots = [
+  "packages/data",
   "packages/features",
   "apps/rayon_sports/lib",
 ].map((path) => resolve(repoRoot, path));

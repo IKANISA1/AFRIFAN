@@ -84,6 +84,7 @@ apps/*/assets/flavors/*.local.json
 # Additional ignores
 .dart_tool/
 pubspec.lock
+!/pubspec.lock
 output/
 *.log
 firebase-debug.log

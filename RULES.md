@@ -8,7 +8,8 @@ existing authorization does not need to be requested again.
 - `README.md`: repository entry point and development commands.
 - `docs/blueprint.md`: product boundary, architecture, and tenancy.
 - `DESIGN.md`: visual and interaction requirements.
-- Root `pubspec.yaml`: Flutter workspace and Melos commands.
+- Root `pubspec.yaml` and `pubspec.lock`: Flutter workspace, resolved dependencies,
+  and Melos commands.
 - `.fvmrc`, `.nvmrc`, and the web `package.json` and lockfile: toolchain versions.
 - `supabase/migrations/` and `supabase/tests/`: database history and contracts.
 - `docs/rayon_sports_release_checklist.md`: release procedure.
@@ -52,6 +53,12 @@ The workspace currently uses Riverpod 2.x, as declared in package manifests.
 Use its existing providers for shared state and GoRouter for application
 navigation. Keep business logic and data access in providers, repositories,
 and services. Keep app shells thin and shared behavior club-configurable.
+
+Follow the dependency boundaries in `docs/blueprint.md`. Shared club data lives
+in `packages/data/club_data`; shared test harnesses live in `packages/testing`.
+Keep test dependencies in `dev_dependencies`, use public package entry points,
+and run `dart run tools/scripts/validate_workspace_architecture.dart` after
+changing workspace layout, imports, or dependencies.
 
 Use `core_l10n` for interface copy, runtime club configuration for identity,
 and approved backend data for dynamic content. Respect runtime feature flags.

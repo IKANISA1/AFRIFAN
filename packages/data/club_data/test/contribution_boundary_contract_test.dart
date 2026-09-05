@@ -9,7 +9,7 @@ void main() {
         (packageSource.existsSync()
                 ? packageSource
                 : File(
-                    'packages/features/feat_club/lib/src/repositories/'
+                    'packages/data/club_data/lib/src/repositories/'
                     'club_repository.dart',
                   ))
             .readAsStringSync();
@@ -42,7 +42,7 @@ void main() {
         (packageSource.existsSync()
                 ? packageSource
                 : File(
-                    'packages/features/feat_club/lib/src/repositories/'
+                    'packages/data/club_data/lib/src/repositories/'
                     'club_repository.dart',
                   ))
             .readAsStringSync();
@@ -63,7 +63,7 @@ void main() {
         (packageSource.existsSync()
                 ? packageSource
                 : File(
-                    'packages/features/feat_club/lib/src/repositories/'
+                    'packages/data/club_data/lib/src/repositories/'
                     'club_repository.dart',
                   ))
             .readAsStringSync();

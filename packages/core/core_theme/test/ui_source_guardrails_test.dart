@@ -1605,10 +1605,10 @@ bool _isGeneratedPath(String normalizedPath) {
 
 bool _isTouchTargetAuditTool(String normalizedPath) {
   return normalizedPath.endsWith(
-        '/packages/features/test_support/lib/touch_target_audit.dart',
+        '/packages/testing/test_support/lib/touch_target_audit.dart',
       ) ||
       normalizedPath.endsWith(
-        '/packages/features/test_support/test/touch_target_audit_test.dart',
+        '/packages/testing/test_support/test/touch_target_audit_test.dart',
       );
 }
 

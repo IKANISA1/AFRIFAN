@@ -11,8 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: ^14.8.1
-  core_auth:
-    path: ../core_auth
   core_theme:
     path: ../core_theme
 

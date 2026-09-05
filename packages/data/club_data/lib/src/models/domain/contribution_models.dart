@@ -41,7 +41,7 @@ class ContributionGroup extends Equatable {
   bool get isExpired => deadline != null && deadline!.isBefore(DateTime.now());
 
   factory ContributionGroup.fromJson(Map<String, dynamic> json) {
-    // Handle both legacy (is_closed) and new (is_active) schema
+    // The groups table and contribution_groups view expose both state fields.
     final isClosed = json.containsKey('is_active')
         ? !(json['is_active'] as bool? ?? true) // is_active inverts is_closed
         : (json['is_closed'] as bool? ?? false);

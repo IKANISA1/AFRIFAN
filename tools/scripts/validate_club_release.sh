@@ -184,7 +184,7 @@ if [ -n "$STALE_RELEASE_HITS" ]; then
   exit 1
 fi
 
-python3 - "$ROOT/packages/features" "$APP_DIR/lib" <<'PY'
+python3 - "$ROOT/packages/features" "$ROOT/packages/data" "$APP_DIR/lib" <<'PY'
 import pathlib
 import re
 import sys

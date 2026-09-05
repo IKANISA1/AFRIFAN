@@ -7,23 +7,18 @@ class UserProfile extends Equatable {
   const UserProfile({
     required this.id,
     required this.clubId,
-    String? momoNumber,
-    String? phone,
-    String? displayName,
-    String? fullName,
+    this.momoNumber,
+    this.displayName,
     this.publicUserId,
     this.favoriteTeamSlug,
-    String? country,
-    String? countryCode,
+    this.countryCode,
     this.languageCode,
     this.avatarUrl,
     this.momoProvider,
     this.isActive = true,
     this.isAdmin = false,
     this.updatedAt,
-  }) : momoNumber = momoNumber ?? phone,
-       displayName = displayName ?? fullName,
-       countryCode = countryCode ?? country;
+  });
 
   final String id;
   final String clubId;
@@ -56,15 +51,6 @@ class UserProfile extends Equatable {
 
   /// Whether the user has MoMo configured.
   bool get hasMomo => momoNumber != null && momoNumber!.trim().isNotEmpty;
-
-  /// Legacy alias kept for compatibility with older feature code.
-  String? get phone => momoNumber;
-
-  /// Legacy alias kept for compatibility with older feature code.
-  String? get fullName => displayName;
-
-  /// Legacy alias kept for compatibility with older feature code.
-  String? get country => countryCode;
 
   // ─── Serialization ──────────────────────────────────────────
 
@@ -132,12 +118,9 @@ class UserProfile extends Equatable {
     String? id,
     String? clubId,
     String? momoNumber,
-    String? phone,
     String? displayName,
-    String? fullName,
     String? publicUserId,
     String? favoriteTeamSlug,
-    String? country,
     String? countryCode,
     String? languageCode,
     String? avatarUrl,
@@ -149,11 +132,11 @@ class UserProfile extends Equatable {
     return UserProfile(
       id: id ?? this.id,
       clubId: clubId ?? this.clubId,
-      momoNumber: momoNumber ?? phone ?? this.momoNumber,
-      displayName: displayName ?? fullName ?? this.displayName,
+      momoNumber: momoNumber ?? this.momoNumber,
+      displayName: displayName ?? this.displayName,
       publicUserId: publicUserId ?? this.publicUserId,
       favoriteTeamSlug: favoriteTeamSlug ?? this.favoriteTeamSlug,
-      countryCode: countryCode ?? country ?? this.countryCode,
+      countryCode: countryCode ?? this.countryCode,
       languageCode: languageCode ?? this.languageCode,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       momoProvider: momoProvider ?? this.momoProvider,

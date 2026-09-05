@@ -14,23 +14,12 @@ dependencies:
     path: ../../core/core_utils
   core_network:
     path: ../../core/core_network
-  core_auth:
-    path: ../../core/core_auth
   core_theme:
     path: ../../core/core_theme
-
-  # State management & DI
   flutter_riverpod: ^2.6.1
-
-  # Core functional
-  equatable: ^2.0.7
   crypto: ^3.0.7
-  uuid: ^4.5.3
-
-  # Target Dependencies
   another_telephony: ^0.4.1
   permission_handler: ^12.0.3
-  hive: ^2.2.3
   hive_flutter: ^1.1.0
   supabase_flutter: ^2.9.0
 
@@ -38,5 +27,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  hive: ^2.2.3
 
 resolution: workspace

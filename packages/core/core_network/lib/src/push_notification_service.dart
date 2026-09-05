@@ -401,45 +401,8 @@ class PushNotificationService {
       'last_seen_at': DateTime.now().toUtc().toIso8601String(),
     };
 
-    try {
-      await SupabaseClientFactory.client
-          .from('user_fcm_tokens')
-          .upsert(payload, onConflict: 'token');
-    } on PostgrestException catch (error) {
-      // Older environments can lack the unique index required by ON CONFLICT.
-      if (error.code != '42P10') rethrow;
-      AfriLogger.warn(
-        'Push',
-        'Falling back to legacy token sync path while token uniqueness is repaired.',
-      );
-      await _upsertTokenLegacy(userId: user.id, payload: payload);
-    }
-  }
-
-  static Future<void> _upsertTokenLegacy({
-    required String userId,
-    required Map<String, dynamic> payload,
-  }) async {
-    final table = SupabaseClientFactory.client.from('user_fcm_tokens');
-    final devicePlatform = payload['device_platform'];
-
-    final updatedByToken = await table
-        .update(payload)
-        .eq('token', payload['token'])
-        .select('id');
-    if (updatedByToken.isNotEmpty) {
-      return;
-    }
-
-    final updatedByDevice = await table
-        .update(payload)
-        .eq('user_id', userId)
-        .eq('device_platform', devicePlatform)
-        .select('id');
-    if (updatedByDevice.isNotEmpty) {
-      return;
-    }
-
-    await table.insert(payload);
+    await SupabaseClientFactory.client
+        .from('user_fcm_tokens')
+        .upsert(payload, onConflict: 'token');
   }
 }
