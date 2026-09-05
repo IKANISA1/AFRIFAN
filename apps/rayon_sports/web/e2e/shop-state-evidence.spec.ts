@@ -152,7 +152,7 @@ async function runStateMatrix(
 ) {
   const evidenceDirectory = path.resolve(
     process.cwd(),
-    `../../../output/implementation_goal_20260724/consumer_web_${config.key}_states`,
+    `../../../output/evidence/consumer_web_${config.key}_states`,
   );
   fs.mkdirSync(evidenceDirectory, { recursive: true });
 

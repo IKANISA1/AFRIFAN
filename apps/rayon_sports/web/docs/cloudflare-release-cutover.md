@@ -1,8 +1,10 @@
 # Gikundiro Cloudflare release and rollback runbook
 
-This runbook moves the four controlled hostnames from the legacy Pages shell to
-the `gikundiro-web` Worker without deleting the Pages project. It is designed
-for one-host-at-a-time execution and evidence capture.
+This runbook verifies and promotes the `gikundiro-web` Worker declared in this
+checkout. Inspect current routing before choosing a cutover. The hostname
+procedure below applies only when the intended domains are still attached to
+an existing Pages deployment; it is not a statement of current DNS ownership.
+Preserve any active origin until its replacement and rollback are verified.
 
 ## Candidate gate
 

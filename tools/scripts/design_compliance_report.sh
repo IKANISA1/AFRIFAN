@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-SOURCE_DESIGN="${SOURCE_DESIGN:-/Volumes/PRO-G40/DESIGN/DESIGN.md}"
+SOURCE_DESIGN="${SOURCE_DESIGN:-$ROOT/DESIGN.md}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 OUT_DIR="${OUT_DIR:-$ROOT/output/design_compliance/$STAMP}"
@@ -13,10 +13,10 @@ MATRIX="$OUT_DIR/route_evidence_matrix.md"
 VIOLATIONS="$OUT_DIR/violations.txt"
 WARNINGS="$OUT_DIR/warnings.txt"
 EXCEPTIONS_REGISTER="${EXCEPTIONS_REGISTER:-$ROOT/docs/governance/design-exceptions.json}"
-ROUTE_INVENTORY_JSON="${ROUTE_INVENTORY_JSON:-$ROOT/output/implementation_goal_20260724/route_inventory_current/route-inventory.json}"
+ROUTE_INVENTORY_JSON="${ROUTE_INVENTORY_JSON:-$ROOT/output/route_inventory/current/route-inventory.json}"
 ROUTE_STATE_CLOSURE_JSON="${ROUTE_STATE_CLOSURE_JSON:-$(dirname "$ROUTE_INVENTORY_JSON")/route-state-closure.json}"
 SCREEN_ARCHETYPE_COVERAGE_JSON="${SCREEN_ARCHETYPE_COVERAGE_JSON:-$(dirname "$ROUTE_INVENTORY_JSON")/screen-archetype-coverage.json}"
-COMPONENT_INVENTORY_JSON="${COMPONENT_INVENTORY_JSON:-$ROOT/output/implementation_goal_20260724/component_inventory_current/universal-component-inventory.json}"
+COMPONENT_INVENTORY_JSON="${COMPONENT_INVENTORY_JSON:-$ROOT/output/component_inventory/current/universal-component-inventory.json}"
 GOLDEN_BASELINES_JSON="${GOLDEN_BASELINES_JSON:-$ROOT/docs/governance/golden-baselines.json}"
 NATIVE_LAUNCHER_ASSETS_JSON="${NATIVE_LAUNCHER_ASSETS_JSON:-$ROOT/apps/rayon_sports/store_metadata/native_launcher_assets.json}"
 
@@ -90,7 +90,7 @@ governed_store_release_media() {
 
   [ -f "$manifest" ] &&
     jq -e '
-      (.status | type == "string" and test("pending"; "i")) and
+      (.status | type == "string" and (test("pending"; "i") or . == "approved_current_listing_reuse_exact_binary_verified")) and
       (.rules.capture_from_exact_candidate | type == "boolean") and
       (.approvals_required | type == "array") and
       (.approvals_required | index("rayon_brand_and_content_rights") != null)
@@ -445,7 +445,7 @@ play_store_manifest="$ROOT/apps/rayon_sports/store_metadata/play_store/artwork_m
 if [ -f "$play_store_manifest" ] &&
   jq -e '
     ((.status | type) == "string") and
-    ((.status | ascii_downcase) | contains("pending")) and
+    ((.status | ascii_downcase) | (contains("pending") or . == "approved_current_listing_reuse_exact_binary_verified")) and
     ((.approvals_required | type) == "array") and
     (.approvals_required | contains(["rayon_brand_and_content_rights"])) and
     ((.rules | type) == "object") and
@@ -459,7 +459,7 @@ app_store_manifest="$ROOT/apps/rayon_sports/store_metadata/app_store/artwork_man
 if [ -f "$app_store_manifest" ] &&
   jq -e '
     ((.status | type) == "string") and
-    ((.status | ascii_downcase) | contains("pending")) and
+    ((.status | ascii_downcase) | (contains("pending") or . == "approved_current_listing_reuse_exact_binary_verified")) and
     ((.approvals_required | type) == "array") and
     (.approvals_required | contains(["rayon_brand_and_content_rights"])) and
     ((.rules | type) == "object") and

@@ -1,25 +1,26 @@
-# AfriClub Platform: rayon_sports
+# Rayon Sports / Gikundiro
 
-This is the Rayon Sports club application generated from the monorepo architecture.
+Reference Flutter supporter app for the AFRICLUB workspace. Shared behavior
+lives in `packages/core` and `packages/features`; club identity is provided by
+`packages/clubs/club_rayon_sports` and runtime configuration.
 
-## Multi-Tenant Architecture
-
-This application acts as a "flavor" or "tenant" of the greater platform:
-- **No Duplicate Business Logic**: All features (Ticketing, Contributions, Gamification, Shop) live in `packages/features/`.
-- **Dynamic UI Tokens**: Colors and branding are not hardcoded. At bootstrap, the app retrieves its club name and semantic colors from `ClubConfig`, initializes `ColorTokens` under `DESIGN.md`, and renders the generated brand mark from those runtime tokens.
-- **The White-Drop Rule**: To follow `DESIGN.md`, any club colors that are white or near-white are automatically dropped and replaced with system defaults so dark surfaces retain readable contrast.
-
-## Building and Running
-
-Because this app relies on the monorepo structure and dynamic configuration, do not run it like a standalone Flutter project.
-
-To build or run this specific club's app, use the Melos commands from the root directory:
+Resolve dependencies from the repository root:
 
 ```bash
-# Build the APK for this club
-CLUB=rayon_sports melos build_club
+flutter pub get
 ```
 
-All backend data is scoped via the Supabase `club_id` column enforcing Row Level Security (RLS). You cannot read another club's data from this application.
+Then run from this directory with your ignored local configuration:
 
-For more details on the architecture, please refer to the root `README.md` and `docs/blueprint.md`.
+```bash
+flutter run --dart-define-from-file=assets/flavors/production.local.json
+flutter build appbundle --dart-define-from-file=assets/flavors/production.local.json
+```
+
+See [flavor setup](../../docs/flutter_flavor_setup.md), the
+[release checklist](../../docs/rayon_sports_release_checklist.md), and
+[store metadata](store_metadata/README.md). The [web application](web/README.md)
+contains the public site, membership access, admin PWA, and venue portal.
+
+[Architecture](../../docs/blueprint.md) governs product ownership;
+[DESIGN.md](../../DESIGN.md) governs presentation.

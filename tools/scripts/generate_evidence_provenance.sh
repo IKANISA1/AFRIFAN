@@ -9,8 +9,13 @@ GENERATED_AT="${EVIDENCE_MANIFEST_GENERATED_AT:-$(date -u '+%Y-%m-%dT%H:%M:%SZ')
 jq -e '
   (.schema_version | type == "string") and
   (.manifest_name == "build-provenance.json") and
-  (.bundles | type == "array" and length > 0)
+  (.bundles | type == "array")
 ' "$REGISTRY" >/dev/null
+
+if [ "$(jq '[.bundles[] | select((.admission_status // "admitted") == "admitted")] | length' "$REGISTRY")" -eq 0 ]; then
+  printf 'No admitted evidence bundles; no provenance or completion is claimed.\n'
+  exit 0
+fi
 
 while IFS= read -r bundle; do
   relative_directory="$(jq -r '.directory' <<<"$bundle")"
@@ -23,7 +28,7 @@ while IFS= read -r bundle; do
   while IFS= read -r -d '' artifact_path; do
     relative_artifact="${artifact_path#"$ROOT/"}"
     artifact_sha="$(shasum -a 256 "$artifact_path" | awk '{print $1}')"
-    artifact_bytes="$(stat -f '%z' "$artifact_path")"
+    artifact_bytes="$(wc -c <"$artifact_path" | tr -d '[:space:]')"
     artifacts="$(
       jq -c \
         --arg path "$relative_artifact" \

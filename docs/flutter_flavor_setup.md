@@ -19,12 +19,17 @@ editing a tracked production config directly.
 4. Build or run with:
 
 ```bash
+cd apps/rayon_sports
 flutter run \
-  --dart-define-from-file=apps/rayon_sports/assets/flavors/production.local.json
+  --dart-define-from-file=assets/flavors/production.local.json
 
 flutter build appbundle \
-  --dart-define-from-file=apps/rayon_sports/assets/flavors/production.local.json
+  --dart-define-from-file=assets/flavors/production.local.json
 ```
+
+For another registered club, use its directory under `apps/` and the same
+local-config workflow. The root `pubspec.yaml` lists the supported apps; do not
+regenerate existing club shells with scaffolding scripts.
 
 ## Notes
 

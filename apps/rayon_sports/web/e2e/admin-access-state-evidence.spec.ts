@@ -115,7 +115,7 @@ async function settleVisuals(page: Page) {
 async function runAdminAccessMatrix(browser: Browser) {
   const evidenceDirectory = path.resolve(
     process.cwd(),
-    "../../../output/implementation_goal_20260724/admin_pwa_access_states",
+    "../../../output/evidence/admin_pwa_access_states",
   );
   fs.mkdirSync(evidenceDirectory, { recursive: true });
   const context = await browser.newContext({

@@ -14,8 +14,8 @@ const migrationNames = (await readdir(migrationsUrl))
   .sort();
 
 assert(
-  migrationNames.length === 1,
-  `Expected one reproducible baseline, found ${migrationNames.length}.`,
+  migrationNames.length >= 1,
+  'The reproducible baseline is missing.',
 );
 
 const baselineName = '20260820080202_football_only_baseline.sql';
@@ -23,6 +23,14 @@ assert(
   migrationNames[0] === baselineName,
   `Unexpected baseline name: ${migrationNames[0] ?? '<missing>'}.`,
 );
+
+const versions = new Set();
+for (const name of migrationNames) {
+  assert(/^\d{14}_[a-z0-9_]+\.sql$/.test(name), `Invalid migration name: ${name}.`);
+  const version = name.slice(0, 14);
+  assert(!versions.has(version), `Duplicate migration version: ${version}.`);
+  versions.add(version);
+}
 
 const baseline = await readFile(
   new URL(`../../supabase/migrations/${baselineName}`, import.meta.url),
@@ -111,5 +119,5 @@ for (const job of [
 }
 
 console.log(
-  `Validated ${baselineName}, football and prediction preservation, RLS/ACL hardening, and replayable structural/catalog seed data.`,
+  `Validated ${baselineName} and ${migrationNames.length - 1} forward migration filenames, baseline football/prediction preservation, RLS/ACL hardening, and replayable seed data. Run the full migration chain and pgTAP suite in an isolated database to validate resulting behavior.`,
 );

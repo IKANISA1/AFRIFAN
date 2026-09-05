@@ -7,7 +7,7 @@ White-label football-club platform with four product surfaces:
 3. Centralized admin PWA for club operators.
 4. White-label public website for each club.
 
-Rayon Sports is the reference club profile and seeded default. The platform is not a browser fan portal. Authenticated fan journeys belong in Flutter.
+Rayon Sports is the reference club profile and seeded default. Flutter owns the full supporter experience. The web membership surface also provides authenticated member access and contribution initiation; payment confirmation remains server-controlled.
 
 ## Product Identity And Priority
 
@@ -36,14 +36,14 @@ The authoritative architecture and evidence gates are in
 - One canonical tenant model:
   - `club_id` for database scoping.
   - `club_slug` for routing, host mapping, and branding resolution.
-  - `partner_id` retained only for archived migration compatibility.
+  - `partner_id` describes business partners where required; it does not replace club scope.
 
 ### Current repository boundary
 
 - AFRICLUB contains only football, club, membership, supporter, commerce,
   contribution, ticketing, venue, and free-prediction capabilities.
-- Supabase uses one reproducible football-platform baseline plus governed seed
-  data for fresh environments.
+- Supabase uses a reproducible football-platform baseline, subsequent forward migrations,
+  and governed seed data for fresh environments.
 - Existing deployed databases require approved forward-only reconciliation;
   this repository state is not authorization to reset or rewrite production.
 
@@ -79,7 +79,8 @@ The authoritative architecture and evidence gates are in
 - White-label public club website.
 - Lives in `apps/rayon_sports/web/src/app/(site)`.
 - Club branding and content resolve from hostname, slug, and club configuration.
-- Website hands users off to the supporter app instead of hosting a fan portal.
+- Website links to the supporter app and provides the implemented membership
+  access and contribution-intent journey at `/membership`.
 - Approved venues can be discovered publicly, but check-in and ordering stay in the supporter app.
 
 ## Repo Structure
@@ -96,13 +97,14 @@ packages/
   clubs/                  per-club config packages
 
 supabase/
-  migrations/             reproducible football-platform baseline
+  migrations/             baseline and forward migrations
 ```
 
 ## Platform Rules
 
 - No unscoped club queries on app data.
-- No fan web portal surface.
+- Web membership access uses authenticated server checks. The browser cannot
+  confirm payments or grant paid membership from a client claim.
 - No public browser check-in or live venue order queues.
 - No broad admin or venue-staff console in the supporter app; the `/admin`
   route family remains excluded from consumer builds.
@@ -122,18 +124,23 @@ supabase/
 flutter pub get
 dart run melos run analyze --no-select
 dart run melos run test_all --no-select
-(cd apps/rayon_sports/web && npm run typecheck && npm test && npm run lint && npm run build)
-npx --yes supabase test db
+(cd apps/rayon_sports/web && corepack npm run typecheck && corepack npm test && corepack npm run lint && corepack npm run build)
+node tools/scripts/validate_repository_boundary.mjs
+node tools/scripts/validate_supabase_local_only_migrations.mjs
+corepack npm exec --yes --package=supabase -- supabase test db --local
 ```
+
+Generated evidence belongs in ignored `output/` directories and must be captured
+for the candidate being reviewed. Tracked tests and golden baselines remain
+source controls; old task reports are not current release status.
 
 ## Key Docs
 
-- [docs/blueprint.md](/Volumes/PRO-G40/AFRICLUB/docs/blueprint.md)
-- [docs/venue_app_architecture.md](/Volumes/PRO-G40/AFRICLUB/docs/venue_app_architecture.md)
-- [docs/fet_ledger_and_rewards_policy.md](/Volumes/PRO-G40/AFRICLUB/docs/fet_ledger_and_rewards_policy.md)
-- [docs/release/rayon_fullstack_uat_matrix.md](/Volumes/PRO-G40/AFRICLUB/docs/release/rayon_fullstack_uat_matrix.md)
-- [DESIGN.md](/Volumes/PRO-G40/AFRICLUB/DESIGN.md)
-- [apps/rayon_sports/web/README.md](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/web/README.md)
-- [1supabase.md](/Volumes/PRO-G40/AFRICLUB/1supabase.md)
+- [docs/blueprint.md](docs/blueprint.md)
+- [docs/venue_app_architecture.md](docs/venue_app_architecture.md)
+- [docs/fet_ledger_and_rewards_policy.md](docs/fet_ledger_and_rewards_policy.md)
+- [docs/release/rayon_fullstack_uat_matrix.md](docs/release/rayon_fullstack_uat_matrix.md)
+- [DESIGN.md](DESIGN.md)
+- [apps/rayon_sports/web/README.md](apps/rayon_sports/web/README.md)
 
 Confidential & Proprietary — IKANISA Ltd.

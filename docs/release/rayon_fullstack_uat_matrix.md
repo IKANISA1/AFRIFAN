@@ -57,8 +57,8 @@ approval and evidence.
 
 The local database gate passes only when:
 
-1. `supabase db reset --local` rebuilds from the single committed baseline and
-   seed;
+1. `supabase db reset --local` rebuilds from the committed baseline, forward migrations,
+   and seed;
 2. every pgTAP file passes;
 3. schema lint reports no errors;
 4. schema diff for `public` and `football` is empty;

@@ -10,40 +10,18 @@ Build a world-class product suite that feels calm, fast, premium, trustworthy, a
 
 The standard is intentionally universal. Product teams must replace domain examples with their own truthful product data, but must keep the system principles, token model, component contracts, state requirements, quality gates, and Flutter implementation rules.
 
-## Source Evidence And Research Baseline
+## Design references and verification
 
-This file is grounded in these evidence inputs:
+The design principles below govern the current product. Reference apps inform
+interaction quality, not AFRICLUB content, financial semantics, or release
+status. The implementation is in `packages/core/core_theme`, the app shell,
+and the feature packages.
 
-- Fresh Rayon iOS evidence captured on 2026-07-30 from the installed `rw.ikanisa.rayonSports` build on iPhone 17 Simulator under `output/revolut_rayon_visual_audit_20260730/screenshots/rayon/`.
-- Fresh Revolut iOS evidence captured on 2026-07-30 through iPhone Mirroring under `output/revolut_rayon_visual_audit_20260730/screenshots/revolut/`: 44 screenshots covering the five primary roots plus Home/account, statement, converter, catalogue, search, Wallet/card, Analytics, Payments, payment group, Profile/identity, documents, support, transaction, contact, Crypto settings, and appearance branches.
-- Current AFRICLUB implementation evidence in `packages/core/core_theme`, `packages/core/core_app`, `packages/core/core_router`, the feature packages, and the governed route/state closure outputs.
-- Current official Revolut public evidence: the App Store listing and accessibility declarations, Revolut 10 product-design statements, and the 2026 Open Banking brand colour guidance.
-- Fresh public user research checked on 2026-07-30, including current praise for fluid iOS motion and transaction scanning and current complaints about renamed actions, feature discovery, navigation complexity, and unwanted product prominence.
-- Current platform guidance checked for this profile: Flutter adaptive/responsive design and accessibility, Apple Human Interface Guidelines and accessibility, Material 3, and WCAG 2.2.
-
-### Evidence Status On 2026-07-30
-
-- The requested iPhone Mirroring session connected to `iPhone (2)`. After the user unlocked the device, the current logged-in Revolut app was explored read-only. Eight privacy-safe screens and 36 user-authorized personal reference screens were accepted and inspected locally. The personal set includes balances, account identifiers, merchants, contacts, payment history, group links, profile, address, phone, email, and card suffixes; it must not be published, attached to public issues, or used in shared design tools without redaction.
-- Financial actions and high-risk branches were not activated: no transfer, trade, investment, payment, card-detail, security-setting, support-conversation, or offer action was submitted or changed.
-- The former local path `/Users/jeanbosco/Downloads/Revolut10/` is not present. Any earlier notes derived from that pack are historical design context only, not fresh evidence.
-- Current Revolut brand colours below come from Revolut's official Open Banking guidance. They are brand-reference values, not proof of every colour used by the current retail iOS app.
-- Current Rayon screenshots prove the visible installed build only. The audited
-  checkout now produces an unsigned iOS release artifact with bundle
-  `rw.ikanisa.rayonSports`, Firebase project `gen-lang-client-0172279957`, and
-  minimum iOS 15.5 after the generated Swift-package target is refreshed.
-- Static Flutter task copy now has zero pending candidates across 292 scanned
-  production Dart files, with exact 3,183-message EN/FR/RW catalog parity and
-  deterministic compact/200-percent Gamification journeys. This is local
-  source and layout evidence, not named linguistic or approved localized
-  visual review.
-- Therefore `revolut_live_capture_partial=true`,
-  `revolut_live_capture_complete=false`,
-  `unsigned_ios_release_build=true`, `clean_controlled_candidate=false`, and
-  `design_complete=false`. The exact Revolut build/version, submitted or
-  hidden transactional branches, full card detail, motion, physical
-  accessibility modes, authenticated production behavior, clean-candidate CI,
-  distribution signing, stores, and full state coverage remain open. No
-  document, screenshot count, or local green test may override these gates.
+Validate source, screenshots, accessibility, and responsive states against the
+candidate under review. Generated route and component inventories are coverage
+reports, not approval. Capture evidence afresh when source or runtime changes;
+missing captures and named reviews remain open. This design standard does not
+assert a build, deployment, store, or full-design completion status.
 
 Authoritative external references:
 

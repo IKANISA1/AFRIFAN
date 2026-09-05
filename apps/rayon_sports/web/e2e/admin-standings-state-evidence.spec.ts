@@ -144,7 +144,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 async function runAdminStandingsMatrix(browser: Browser) {
   const evidenceDirectory = path.resolve(
     process.cwd(),
-    "../../../output/implementation_goal_20260724/admin_pwa_standings_states",
+    "../../../output/evidence/admin_pwa_standings_states",
   );
   fs.mkdirSync(evidenceDirectory, { recursive: true });
   const context = await browser.newContext({

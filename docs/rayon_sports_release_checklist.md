@@ -12,12 +12,12 @@ validation is necessary but does not authorize deployment or store release.
 - repository-boundary, golden, privacy, provenance, store, secret, and shell
   validators pass;
 - no generated dependency, cache, build, coverage, or evidence-output
-  directory remains in the worktree;
+  directory is tracked in the candidate commit;
 - the exact candidate commit and configuration are recorded.
 
 ## 2. Database Gates
 
-- a fresh local Supabase reset applies the single baseline and governed seed;
+- a fresh local Supabase reset applies the baseline, forward migrations, and governed seed;
 - all pgTAP contract tests pass;
 - database lint reports no schema errors;
 - schema diff for `public` and `football` is empty;

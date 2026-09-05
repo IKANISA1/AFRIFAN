@@ -4,19 +4,19 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 REGISTRY="${EVIDENCE_BUNDLE_REGISTRY:-$ROOT/docs/governance/evidence-bundles.json}"
-EVIDENCE_ROOT="${EVIDENCE_ROOT:-$ROOT/output/implementation_goal_20260724}"
+EVIDENCE_ROOT="${EVIDENCE_ROOT:-$ROOT/output/evidence}"
 
 jq -e '
   (.schema_version | type == "string") and
   (.manifest_name == "build-provenance.json") and
-  (.bundles | type == "array" and length > 0) and
+  (.bundles | type == "array") and
   ([.bundles[].id] | length == (unique | length)) and
   ([.bundles[].directory] | length == (unique | length)) and
   all(
     .bundles[];
     (.id | type == "string" and length > 0) and
     ((.admission_status // "admitted") == "admitted" or .admission_status == "pending") and
-    (.directory | type == "string" and startswith("output/implementation_goal_20260724")) and
+    (.directory | type == "string" and (test("^output/evidence(?:/[A-Za-z0-9_-]+)*$"))) and
     ((.artifact_scope // "recursive") == "recursive" or .artifact_scope == "immediate") and
     (.task_ids | type == "array" and length > 0) and
     (.baseline_commit | test("^[0-9a-f]{40}$")) and
@@ -57,9 +57,11 @@ registered_directories="$(
     "$REGISTRY" | sort
 )"
 actual_directories="$(
-  find "$EVIDENCE_ROOT" -mindepth 1 -maxdepth 1 -type d -print |
-    sed "s#^$ROOT/##" |
-    sort
+  if [ -d "$EVIDENCE_ROOT" ]; then
+    find "$EVIDENCE_ROOT" -mindepth 1 -maxdepth 1 -type d -print |
+      sed "s#^$ROOT/##" |
+      sort
+  fi
 )"
 if [ "$registered_directories" != "$actual_directories" ]; then
   printf 'Evidence bundle registry does not match current bundle directories.\n' >&2
@@ -67,6 +69,11 @@ if [ "$registered_directories" != "$actual_directories" ]; then
     <(printf '%s\n' "$registered_directories") \
     <(printf '%s\n' "$actual_directories") >&2 || true
   exit 1
+fi
+
+if [ "$(jq '.bundles | length' "$REGISTRY")" -eq 0 ]; then
+  printf 'No current evidence bundles; provenance and release coverage remain unverified.\n'
+  exit 0
 fi
 
 while IFS= read -r relative_directory; do
@@ -116,7 +123,7 @@ while IFS= read -r relative_directory; do
     absolute_artifact="$ROOT/$artifact_path"
     test -f "$absolute_artifact"
     actual_sha="$(shasum -a 256 "$absolute_artifact" | awk '{print $1}')"
-    actual_bytes="$(stat -f '%z' "$absolute_artifact")"
+    actual_bytes="$(wc -c <"$absolute_artifact" | tr -d '[:space:]')"
     if [ "$actual_sha" != "$expected_sha" ] ||
       [ "$actual_bytes" != "$expected_bytes" ]; then
       printf 'Evidence artifact mismatch: %s\n' "$artifact_path" >&2

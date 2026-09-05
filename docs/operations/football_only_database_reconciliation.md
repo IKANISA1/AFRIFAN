@@ -6,8 +6,9 @@ live database change.
 ## Baseline Meaning
 
 `supabase/migrations/20260820080202_football_only_baseline.sql` is the complete
-schema baseline for a fresh environment. It replaces the repository's local
-incremental history and is verified with `supabase db reset --local`.
+schema baseline for a fresh environment. Subsequent committed migrations apply
+in filename order. Validate the complete chain with `supabase db reset --local`
+and the database contract suite.
 
 Do not push or replay this baseline over an existing production database.
 Existing environments already contain their own applied migration ledger, user

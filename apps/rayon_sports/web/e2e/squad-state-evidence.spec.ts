@@ -138,7 +138,7 @@ test("/squad proves all sixteen applicable rendered states", async ({
 
   const evidenceDirectory = path.resolve(
     process.cwd(),
-    "../../../output/implementation_goal_20260724/consumer_web_squad_states",
+    "../../../output/evidence/consumer_web_squad_states",
   );
   fs.mkdirSync(evidenceDirectory, { recursive: true });
 

@@ -20,7 +20,7 @@ const outputPath = process.env.ADMIN_PERFORMANCE_OUTPUT_PATH
   ? resolve(process.env.ADMIN_PERFORMANCE_OUTPUT_PATH)
   : resolve(
       workspace,
-      "output/implementation_goal_20260724/admin-high-volume-performance.json",
+      "output/evidence/admin-high-volume-performance.json",
     );
 const recordCount = 50_000;
 const iterations = 7;

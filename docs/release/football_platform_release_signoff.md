@@ -19,7 +19,7 @@ Database reconciliation change record:
 | Flutter analysis and tests |  |  |  |
 | Web typecheck, tests, lint, and build |  |  |  |
 | Fresh database reset, pgTAP, lint, and drift |  |  |  |
-| Repository boundary and generated-output scan |  |  |  |
+| Repository boundary and tracked generated-output scan |  |  |  |
 | Android physical-device UAT |  |  |  |
 | iOS physical-device UAT |  |  |  |
 | Public web and domain UAT |  |  |  |

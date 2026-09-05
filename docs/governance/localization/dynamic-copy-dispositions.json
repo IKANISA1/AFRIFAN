@@ -5,7 +5,7 @@
   "rules": [
     {
       "id": "source-authored-names-and-football-identities",
-      "expected_match_count": 144,
+      "expected_match_count": 142,
       "source_keys": [
         "author_name",
         "away_team",
@@ -29,7 +29,7 @@
     },
     {
       "id": "source-authored-editorial-and-catalog-content",
-      "expected_match_count": 120,
+      "expected_match_count": 119,
       "source_keys": [
         "benefits",
         "bio",

@@ -43,6 +43,12 @@ jobs:
           jq -e '.summary.pending_dynamic_copy_candidates == 0' \
             "${{ runner.temp }}/africlub-localization-inventory/dynamic-copy-inventory.json"
 
+      - name: Test repository and evidence validation
+        run: >-
+          node --test tools/scripts/validate_repository_boundary.test.mjs
+          tools/scripts/validate_evidence_provenance.test.mjs
+          tools/scripts/validate_supabase_local_only_migrations.test.mjs
+
       - name: Enforce football-only repository boundary
         run: node tools/scripts/validate_repository_boundary.mjs
 

@@ -1,6 +1,5 @@
 /**
  * Admin RBAC — role resolution, access derivation, and permission checks.
- * Extracted from admin-legacy.ts for focused domain ownership.
  */
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 import { siteConfig } from "@/lib/config";

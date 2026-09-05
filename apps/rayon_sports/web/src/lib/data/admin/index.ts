@@ -3,7 +3,7 @@
  *
  * Stable import path: `@/lib/data/admin`
  *
- * All 13 domain modules are now fully extracted from admin-legacy.ts:
+ * Domain modules:
  *   ✅ access.ts         — RBAC / role resolution
  *   ✅ cms.ts            — news article CRUD
  *   ✅ dashboard.ts      — metrics snapshot & activity

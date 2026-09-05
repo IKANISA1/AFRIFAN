@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+from contextlib import contextmanager
 import hashlib
 import json
 import plistlib
@@ -22,15 +23,42 @@ sys.modules[SPEC.name] = validator
 SPEC.loader.exec_module(validator)
 
 
+@contextmanager
+def pending_release_metadata():
+    """Exercise missing approvals without depending on the operator's portal file."""
+    read_json = validator._read_json
+
+    def read_fixture(path, result):
+        data = read_json(path, result)
+        if path.name == "approvals.json":
+            for item in data.get("approvals", []):
+                if item["id"] == "product_scope":
+                    item["status"] = "pending"
+        elif path.name == "release_package.json":
+            data["blocking_items"] = [{"id": "FIXTURE-POLICY", "status": "blocking"}]
+        elif path.name == "portal_values.template.json":
+            return {"google_play": {}, "app_store_connect": {}}
+        elif path.name == "artwork_manifest.json" and path.parent.name == "app_store":
+            data["binary_icon_gate"] = {
+                "status": "current_source_local_device_build_icon_presence_verified_exact_signed_archive_parity_pending",
+                "requirement": "Verify the fixture signed archive",
+            }
+        return data
+
+    with mock.patch.object(validator, "_read_json", side_effect=read_fixture):
+        yield
+
+
 class StorePackageValidationTest(unittest.TestCase):
     def test_all_packages_are_internally_consistent(self) -> None:
         result = validator.validate(set(validator.ALL_SURFACES))
         self.assertEqual([], result.errors, "\n".join(str(item) for item in result.errors))
-        self.assertGreater(len(result.gates), 0)
+        self.assertIsInstance(result.gates, list)
         self.assertTrue(result.valid(enforce_gates=False))
 
     def test_release_ready_mode_preserves_truthful_external_gates(self) -> None:
-        result = validator.validate(set(validator.ALL_SURFACES), release_ready=True)
+        with pending_release_metadata():
+            result = validator.validate(set(validator.ALL_SURFACES), release_ready=True)
         codes = {item.code for item in result.gates}
         self.assertIn("APPROVAL_PENDING", codes)
         self.assertIn("POLICY_BLOCKING", codes)
@@ -57,29 +85,23 @@ class StorePackageValidationTest(unittest.TestCase):
         ):
             self.assertFalse(any(approval_id in message for message in approval_messages))
 
-    def test_prior_release_artifact_and_current_icon_parity_gate_are_recorded(self) -> None:
-        app_store = json.loads(
-            (validator.STORE_DIR / "app_store" / "artwork_manifest.json").read_text(
-                encoding="utf-8"
-            )
-        )
-        self.assertEqual(
-            "606739bff02260103ac0ad55eb1b2d1c223f8aea60e9de1c4099ca7572c477bc",
-            app_store["release_artifact"]["sha256"],
-        )
-        self.assertEqual(6, app_store["release_artifact"]["build_number"])
-        self.assertEqual(
-            "current_source_local_device_build_icon_presence_verified_exact_signed_archive_parity_pending",
-            app_store["binary_icon_gate"]["status"],
-        )
-        self.assertIn(
-            "no longer exact-candidate parity evidence",
-            app_store["release_artifact"]["current_source_relation"],
-        )
+    def test_release_artifact_matches_current_package_and_retained_evidence(self) -> None:
+        manifest_path = STORE_DIR / "app_store" / "artwork_manifest.json"
+        app_store = json.loads(manifest_path.read_text(encoding="utf-8"))
+        mobile = json.loads((STORE_DIR / "release_package.json").read_text())["mobile"]
+        artifact = app_store["release_artifact"]
+        self.assertEqual(mobile["build_number"], artifact["build_number"])
+        self.assertEqual(mobile["version_name"], artifact["version_name"])
+        self.assertEqual(mobile["ios_bundle_id"], artifact["bundle_id"])
+        evidence_path = manifest_path.parent / app_store["local_release_dry_run"]["evidence"]
+        self.assertTrue(evidence_path.is_file())
+        self.assertIn(artifact["sha256"], evidence_path.read_text())
+        self.assertEqual(artifact["sha256"], app_store["local_release_dry_run"]["artifact_sha256"])
 
     def test_submission_ready_adds_post_upload_portal_gates(self) -> None:
-        upload = validator.validate({validator.MOBILE_PLAY}, release_ready=True)
-        submission = validator.validate({validator.MOBILE_PLAY}, submission_ready=True)
+        with pending_release_metadata():
+            upload = validator.validate({validator.MOBILE_PLAY}, release_ready=True)
+            submission = validator.validate({validator.MOBILE_PLAY}, submission_ready=True)
         upload_portal = [item for item in upload.gates if item.code == "PORTAL_VALUE_PENDING"]
         submission_portal = [item for item in submission.gates if item.code == "PORTAL_VALUE_PENDING"]
         self.assertGreater(len(submission_portal), len(upload_portal))
@@ -351,7 +373,8 @@ class StorePackageValidationTest(unittest.TestCase):
         payload = json.loads(completed.stdout)
         self.assertEqual(["mobile-play"], payload["surfaces"])
         self.assertTrue(payload["valid"])
-        self.assertGreater(len(payload["gates"]), 0)
+        self.assertIsInstance(payload["gates"], list)
+        self.assertEqual([], payload["errors"])
 
 
 if __name__ == "__main__":

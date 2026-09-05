@@ -27,7 +27,7 @@ void main() {
 
       expect(gate.existsSync(), isTrue);
       final content = gate.readAsStringSync();
-      expect(content, contains('/Volumes/PRO-G40/DESIGN/DESIGN.md'));
+      expect(content, contains(r'${SOURCE_DESIGN:-$ROOT/DESIGN.md}'));
       expect(content, contains('output/design_compliance'));
       expect(content, contains('route_evidence_matrix.md'));
     });
@@ -1329,7 +1329,8 @@ bool _isGovernedStoreReleaseMedia(Directory repoRoot, File mediaFile) {
     final status = '${decoded['status']}'.toLowerCase();
     final approvals = decoded['approvals_required'];
     final content = manifest.readAsStringSync();
-    return status.contains('pending') &&
+    return (status.contains('pending') ||
+            status == 'approved_current_listing_reuse_exact_binary_verified') &&
         approvals is List<dynamic> &&
         approvals.contains('rayon_brand_and_content_rights') &&
         content.contains('capture_from_exact_candidate');

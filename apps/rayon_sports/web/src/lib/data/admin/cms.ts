@@ -1,6 +1,5 @@
 /**
  * Admin CMS — news article CRUD operations.
- * Extracted from admin-legacy.ts for focused domain ownership.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fallbackClubProfile } from "@/lib/content";

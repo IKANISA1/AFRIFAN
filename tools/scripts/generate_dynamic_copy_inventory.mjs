@@ -26,12 +26,12 @@ const sourceRoots = (
 const jsonOutput = resolve(
   repoRoot,
   args.get("--json") ??
-    "output/implementation_goal_20260724/localization_copy_matrix/dynamic-copy-inventory.json",
+    "output/evidence/localization_copy_matrix/dynamic-copy-inventory.json",
 );
 const markdownOutput = resolve(
   repoRoot,
   args.get("--markdown") ??
-    "output/implementation_goal_20260724/localization_copy_matrix/dynamic-copy-inventory.md",
+    "output/evidence/localization_copy_matrix/dynamic-copy-inventory.md",
 );
 const dispositionInput = resolve(
   repoRoot,

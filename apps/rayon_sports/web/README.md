@@ -2,12 +2,16 @@
 
 This app is the shared white-label web surface for AfriClub. Rayon Sports remains the reference club profile and seeded default.
 
-The repo now contains two web surfaces only:
+This application contains:
 
-- a public, SEO-friendly website for club discovery
-- a centralized admin PWA at `/admin`
+- the public club website;
+- authenticated membership access and contribution initiation at `/membership`;
+- the club admin PWA at `/admin`;
+- the venue operator portal at `/venue`.
 
-Fan journeys now live in the Flutter mobile app. The website can hand users off to the native supporter app without hosting a browser fan portal.
+Flutter remains the full supporter app. Web membership actions require trusted
+server-side identity and club scope. Opening a MoMo route or creating an intent
+does not confirm payment; backend reconciliation owns payment finality.
 
 ## Stack
 
@@ -46,7 +50,7 @@ The site will run on `http://localhost:3000`.
 
 Behavior:
 
-- if server Supabase env vars are present, public pages and admin APIs can read live club data server-side
+- if server Supabase env vars are present, public pages and authorized member/admin/venue APIs can read club data server-side
 - club resolution can be driven by `CLUB_HOST_MAP_JSON` / `NEXT_PUBLIC_CLUB_HOST_MAP_JSON`
 - if env vars are absent, the site falls back to embedded reference content so the app still builds and renders
 
@@ -92,6 +96,12 @@ Admin PWA:
 - `/admin/settings`
 - `/admin/matches`
 - `/admin/cms`
+- additional operator domains under `src/app/admin`
+
+Venue portal:
+
+- `/venue`
+- assigned-venue operations and ticket verification under `src/app/venue`
 
 ## Deployment notes
 
@@ -124,27 +134,13 @@ The worker uses:
 
 Local preview envs are generated from `.env.local` into `.dev.vars` by `scripts/sync-cloudflare-dev-vars.mjs`.
 
-### Custom domain cutover status
+### Release verification
 
-`gikundiro.com` is still delegated to Vercel DNS (`ns1.vercel-dns.com`, `ns2.vercel-dns.com`), and the current apex responds with `x-vercel-error: DEPLOYMENT_DISABLED`.
+`wrangler.jsonc` declares this checkout's deployment targets. Verify actual
+DNS, domains, Worker version, backend project, and release approval at release
+time. A repository README does not establish current hosting or serving status.
+Do not infer deployment ownership for another Gikundiro checkout from the
+shared product name.
 
-The Cloudflare worker is live and verified at:
-
-- `https://gikundiro-web.ikanisa.workers.dev`
-
-Cloudflare-side cutover is now prepared:
-
-- zone created in account `Ikanisa`
-- zone id: `6ea1b5005cb4305055062be88a5d65a8`
-- assigned Cloudflare nameservers:
-  - `robert.ns.cloudflare.com`
-  - `stephane.ns.cloudflare.com`
-- worker custom domains attached:
-  - `gikundiro.com`
-  - `www.gikundiro.com`
-
-The remaining step is registrar-side only: update the authoritative nameservers at `Name.com` from Vercel DNS to the Cloudflare pair above. No usable `Name.com` credentials or API keys were present on this machine during the migration, so that final registrar change was not automated here.
-
-## Current implementation boundary
-
-The public site and admin PWA share one codebase and are club-scoped by hostname and club configuration. Device-native supporter workflows such as NFC, face capture, SMS auto-read, and authenticated fan journeys remain Flutter-only.
+Use [the release and rollback runbook](docs/cloudflare-release-cutover.md) and
+[the repository release checklist](../../../docs/rayon_sports_release_checklist.md).

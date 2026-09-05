@@ -62,7 +62,6 @@ jobs:
           packages/core/core_theme/test
           packages/features/feat_home/test
           packages/features/feat_settings/test
-          packages/features/feat_BioPay/test
 
       - name: Run Rayon app tests
         run: >

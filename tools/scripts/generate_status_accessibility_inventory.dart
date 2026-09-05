@@ -6,7 +6,7 @@ void main(List<String> arguments) {
   final root = _repoRoot();
   final outputDirectory = Directory(
     arguments.isEmpty
-        ? '${root.path}/output/implementation_goal_20260724/status_accessibility_inventory'
+        ? '${root.path}/output/evidence/status_accessibility_inventory'
         : arguments.first,
   )..createSync(recursive: true);
   final files = _productionSourceFiles(root);

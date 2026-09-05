@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-OUT_DIR="${OUT_DIR:-$ROOT/output/route_inventory/$(date -u +%Y%m%dT%H%M%SZ)}"
+OUT_DIR="${OUT_DIR:-$ROOT/output/route_inventory/current}"
 
 cd "$ROOT"
 flutter test \

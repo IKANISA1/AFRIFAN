@@ -54,7 +54,7 @@
     "status": "source_corrected_checksum_locked_and_exact_signed_aab_verified"
   },
   "local_release_dry_run": {
-    "evidence": "../../../../output/implementation_goal_20260724/RELEASE_MODE_DRY_RUN_EVIDENCE_2026-08-13.json",
+    "evidence": "../release_evidence_2026-08-21.md",
     "artifact_sha256": "3042d0601d0bb4b0b00087c7e25761ad730a74ed4661dbfa448f64df1592d119",
     "package_id": "rw.gikundiro.app",
     "version_name": "1.0.4",

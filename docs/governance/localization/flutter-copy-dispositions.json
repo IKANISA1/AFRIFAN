@@ -489,15 +489,6 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_shop/lib/src/widgets/shop_top_bar.dart",
-      "field": "text",
-      "value": "$cartItemCount",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
       "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_autoread_service.dart",
       "field": "message",
       "value": "SMS retry queue drain failed before all captures could retry.",

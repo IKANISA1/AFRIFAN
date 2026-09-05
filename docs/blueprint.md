@@ -34,10 +34,9 @@ packages/
   core/                  app shell, auth, routing, networking, theme
   features/              shared football and club capabilities
   clubs/                 club identity and configuration
-  shared/                reusable non-product utilities
 
 supabase/
-  migrations/            one reproducible football-platform baseline
+  migrations/            baseline and forward migrations
   functions/             governed backend entry points
   tests/                 database security and behavior contracts
 
@@ -53,7 +52,7 @@ shells select identity, configuration, and allowed feature composition.
 
 ### Supporter App
 
-The native Flutter app owns authenticated supporter journeys. The primary
+The native Flutter app owns the full supporter experience. The primary
 navigation is:
 
 `Home · Club · Fan Zone · Membership`
@@ -74,9 +73,11 @@ or club destinations in primary navigation.
 ### Public Club Site
 
 The public website resolves club branding and approved content from hostname,
-slug, and club configuration. It provides club discovery and hands
-authenticated supporter work to the native app. It must not duplicate private
-supporter journeys.
+slug, and club configuration. It provides club discovery and links to the
+native app. The implemented `/membership` surface also supports WhatsApp
+authentication, explicit membership activation, private member details, and
+pending contribution intents. Server-side identity and tenant checks protect
+these operations; only provider/SMS reconciliation can confirm a contribution.
 
 ### Club Administration
 
@@ -104,8 +105,9 @@ not an independent primary product.
 
 ## Backend Contract
 
-The committed Supabase migration is the reproducible baseline for a fresh
-environment. It contains the final `public` and `football` schema state. Static
+The first committed Supabase migration is the reproducible baseline for a fresh
+environment. Apply subsequent migrations in filename order to reach the current
+`public` and `football` schema state. Preserve applied migration history. Static
 football catalog and structural configuration data are replayed from
 `supabase/seed.sql`.
 
@@ -163,8 +165,7 @@ Repository validation must fail when any of these occurs:
 - a route or navigation item points to an unsupported product surface;
 - a database schema, routine, relation, policy, seed row, or publication
   restores unsupported ownership;
-- generated build output or an obsolete evidence directory is committed or
-  left in the validated worktree;
+- generated dependency, build, or evidence output is tracked as source;
 - a historical document reintroduces superseded architecture as current
   authority.
 
@@ -181,13 +182,13 @@ Before merge:
 2. Flutter workspace dependency resolution, strict analysis, and all tests
    pass;
 3. web typecheck, unit tests, lint, and production build pass;
-4. a fresh local Supabase reset applies the single baseline and seed;
+4. a fresh local Supabase reset applies the baseline, forward migrations, and seed;
 5. all database contract tests and schema lint pass;
 6. database drift is empty for `public` and `football`;
 7. prediction routes, packages, schema objects, and tests are present;
 8. Android and iOS build checks pass in the available local environment;
-9. the working tree contains no generated dependency, cache, build, coverage,
-   or evidence-output directory.
+9. generated dependencies, caches, build output, coverage, and evidence stay
+   ignored and are absent from the candidate commit.
 
 Local validation is not deployment evidence. Production data reconciliation,
 signing, physical-device accessibility, store processing, deployment,

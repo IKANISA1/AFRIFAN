@@ -655,7 +655,6 @@ const componentSeeds = <ComponentSeed>[
     ComponentImplementationStatus.implemented,
     sourcePaths: [
       'packages/core/core_theme/lib/src/widgets/afri_data_display.dart',
-      'apps/rayon_sports/web/src/components/engagement/match-timeline.tsx',
     ],
     testPaths: [
       'packages/core/core_theme/test/universal_component_primitives_test.dart',
@@ -699,7 +698,6 @@ const componentSeeds = <ComponentSeed>[
     ComponentImplementationStatus.implemented,
     sourcePaths: [
       'packages/core/core_theme/lib/src/widgets/afri_navigation_primitives.dart',
-      'apps/rayon_sports/web/src/components/breadcrumbs.tsx',
     ],
     testPaths: [
       'packages/core/core_theme/test/universal_component_primitives_test.dart',

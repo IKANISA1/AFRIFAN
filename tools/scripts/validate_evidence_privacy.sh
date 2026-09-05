@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-EVIDENCE_ROOT="${EVIDENCE_ROOT:-$ROOT/output/implementation_goal_20260724}"
+EVIDENCE_ROOT="${EVIDENCE_ROOT:-$ROOT/output/evidence}"
 GOLDEN_DIR="${GOLDEN_DIR:-$ROOT/packages}"
 GOLDEN_MANIFEST="${GOLDEN_MANIFEST:-$ROOT/docs/governance/golden-baselines.json}"
 REPORT="${REPORT:-$EVIDENCE_ROOT/evidence-privacy-validation.json}"

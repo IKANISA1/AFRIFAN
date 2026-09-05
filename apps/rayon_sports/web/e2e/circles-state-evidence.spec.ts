@@ -197,7 +197,7 @@ for (const surfaceCase of surfaceCases) {
 
     const evidenceDirectory = path.resolve(
       process.cwd(),
-      `../../../output/implementation_goal_20260724/${surfaceCase.evidenceDirectory}`,
+      `../../../output/evidence/${surfaceCase.evidenceDirectory}`,
     );
     fs.mkdirSync(evidenceDirectory, { recursive: true });
 

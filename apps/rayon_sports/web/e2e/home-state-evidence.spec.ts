@@ -137,7 +137,7 @@ async function expectNoSeriousAxeViolations(page: Page) {
 async function runHomeMatrix(browser: Browser) {
   const evidenceDirectory = path.resolve(
     process.cwd(),
-    "../../../output/implementation_goal_20260724/consumer_web_home_states",
+    "../../../output/evidence/consumer_web_home_states",
   );
   fs.mkdirSync(evidenceDirectory, { recursive: true });
   const context = await browser.newContext({

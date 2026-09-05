@@ -171,7 +171,7 @@ for (const configuration of routeConfigurations) {
 
     const evidenceDirectory = path.resolve(
       process.cwd(),
-      `../../../output/implementation_goal_20260724/${configuration.directory}`,
+      `../../../output/evidence/${configuration.directory}`,
     );
     fs.mkdirSync(evidenceDirectory, { recursive: true });
 

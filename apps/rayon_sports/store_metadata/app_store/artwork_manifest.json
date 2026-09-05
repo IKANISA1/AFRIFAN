@@ -100,7 +100,7 @@
     "status": "source_corrected_checksum_locked_and_exact_signed_archive_verified"
   },
   "local_release_dry_run": {
-    "evidence": "../../../../output/implementation_goal_20260724/RELEASE_MODE_DRY_RUN_EVIDENCE_2026-08-13.json",
+    "evidence": "../release_evidence_2026-08-21.md",
     "artifact_sha256": "824f31e4b36dc2bbdd83555a5d216893b358210882cafeb86bca8ef482413eb9",
     "bundle_id": "rw.ikanisa.rayonSports",
     "version_name": "1.0.4",

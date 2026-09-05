@@ -142,7 +142,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 async function runAdminCmsMatrix(browser: Browser) {
   const evidenceDirectory = path.resolve(
     process.cwd(),
-    "../../../output/implementation_goal_20260724/admin_pwa_cms_states",
+    "../../../output/evidence/admin_pwa_cms_states",
   );
   fs.mkdirSync(evidenceDirectory, { recursive: true });
   const context = await browser.newContext({

@@ -4,9 +4,9 @@ import {
   existsSync,
   lstatSync,
   readFileSync,
-  readdirSync,
 } from 'node:fs';
-import { extname, join, relative } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { extname, join } from 'node:path';
 
 const root = process.cwd();
 
@@ -66,8 +66,6 @@ const generatedDirectoryNames = new Set([
   'test-results',
   'xcuserdata',
 ]);
-
-const ignoredDirectoryNames = new Set(['.git']);
 
 const textExtensions = new Set([
   '',
@@ -140,41 +138,30 @@ function inspectText(relativePath, source) {
 
 }
 
-function walk(directory) {
-  for (const entry of readdirSync(directory, { withFileTypes: true })) {
-    const absolutePath = join(directory, entry.name);
-    const relativePath = relative(root, absolutePath);
+// Inspect tracked and new source, including tracked files covered by ignores.
+// Normal ignored dependencies and build caches are not repository contents.
+const sourcePaths = execFileSync(
+  'git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
+  { cwd: root, encoding: 'utf8' },
+).split('\0').filter(Boolean);
 
-    if (entry.isDirectory()) {
-      if (ignoredDirectoryNames.has(entry.name)) continue;
-      if (generatedDirectoryNames.has(entry.name)) {
-        violations.push(`${relativePath}: generated directory remains`);
-        continue;
-      }
-      walk(absolutePath);
-      continue;
-    }
-
-    if (entry.isSymbolicLink()) {
-      const stat = lstatSync(absolutePath);
-      if (!stat.isSymbolicLink()) {
-        violations.push(`${relativePath}: unreadable filesystem entry`);
-      }
-      continue;
-    }
-
-    inspectText(relativePath, '');
-    if (!textExtensions.has(extname(entry.name).toLowerCase())) continue;
-
-    const contents = readFileSync(absolutePath);
-    if (contents.includes(0)) continue;
-
-    checkedFiles += 1;
-    inspectText(relativePath, contents.toString('utf8'));
+for (const relativePath of new Set(sourcePaths)) {
+  const absolutePath = join(root, relativePath);
+  if (!existsSync(absolutePath)) continue; // Deleted in the current worktree.
+  if (relativePath.split('/').slice(0, -1).some(
+    (name) => generatedDirectoryNames.has(name) || name === 'output',
+  )) {
+    violations.push(`${relativePath}: generated output must not be tracked`);
+    continue;
   }
+  inspectText(relativePath, '');
+  const stat = lstatSync(absolutePath);
+  if (!stat.isFile() || !textExtensions.has(extname(relativePath).toLowerCase())) continue;
+  const contents = readFileSync(absolutePath);
+  if (contents.includes(0)) continue;
+  checkedFiles += 1;
+  inspectText(relativePath, contents.toString('utf8'));
 }
-
-walk(root);
 
 const requiredPaths = [
   'packages/features/feat_gamification/lib/src/fanzone_module.dart',

@@ -85,11 +85,8 @@ apps/*/assets/flavors/*.local.json
 .dart_tool/
 pubspec.lock
 output/
-flutter_01.log
 *.log
-1supabase.md
 firebase-debug.log
-fix_stateful_widgets.py
 .gemini/
 node_modules/
 .next/
@@ -109,3 +106,8 @@ supabase/recovery/*
 **/google-services.json
 !**/android/app/google-services.json
 supabase/.temp/
+
+# Local Supabase branch selection and language caches
+supabase/.branches/
+__pycache__/
+*.pyc

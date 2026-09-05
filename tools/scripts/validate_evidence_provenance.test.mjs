@@ -51,7 +51,7 @@ function createFixture(t, baselineCommit, manifestBaselineCommit = baselineCommi
   fs.copyFileSync(sourceScript, fixtureScript);
 
   const relativeDirectory =
-    "output/implementation_goal_20260724/fixture_bundle";
+    "output/evidence/fixture_bundle";
   const artifactPath = `${relativeDirectory}/artifact.txt`;
   const artifact = Buffer.from("controlled evidence\n");
   fs.mkdirSync(path.join(fixtureRoot, relativeDirectory), { recursive: true });
@@ -159,4 +159,26 @@ test("rejects a nonexistent commit recorded by an admitted manifest", (t) => {
       `Evidence manifest baseline commit does not exist: fixture-bundle \\(${nonexistentCommit}\\)`,
     ),
   );
+});
+
+test("an empty registry reports unverified coverage without requiring old artifacts", (t) => {
+  const { fixtureRoot, fixtureScript } = createFixture(t, "HEAD");
+  writeJson(path.join(fixtureRoot, "docs/governance/evidence-bundles.json"), {
+    schema_version: "1.0", manifest_name: "build-provenance.json", bundles: [],
+  });
+  fs.rmSync(path.join(fixtureRoot, "output"), { recursive: true });
+  const result = runValidator(fixtureRoot, fixtureScript);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /coverage remain unverified/);
+  assert.doesNotMatch(result.stdout, /Evidence provenance valid/);
+});
+
+test("an empty registry rejects unregistered evidence directories", (t) => {
+  const { fixtureRoot, fixtureScript } = createFixture(t, "HEAD");
+  writeJson(path.join(fixtureRoot, "docs/governance/evidence-bundles.json"), {
+    schema_version: "1.0", manifest_name: "build-provenance.json", bundles: [],
+  });
+  const result = runValidator(fixtureRoot, fixtureScript);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /does not match current bundle directories/);
 });

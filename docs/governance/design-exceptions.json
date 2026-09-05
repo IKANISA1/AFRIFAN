@@ -1,42 +1,10 @@
 {
   "schema_version": "1.0",
   "design_authority": {
-    "path": "/Volumes/PRO-G40/DESIGN/DESIGN.md",
-    "sha256": "ddc967348608fd5ab113de90ecfdb2486cc7f400aa54e045bff2be069fab70ee"
+    "path": "DESIGN.md",
+    "sha256": "eb3ec978f14358f63ecbd3fc9f4bbdcd9dd6e39e91585cc573f86f0acaa449d2"
   },
-  "updated_at": "2026-08-08T14:30:47Z",
-  "project_owner_execution_authority": {
-    "status": "authorized",
-    "authority_type": "project_owner_execution_authority_only",
-    "authorized_by": "Jean Bosco",
-    "authorized_role": "project owner",
-    "authorized_on": "2026-08-08",
-    "scope": [
-      "in_scope_technical_implementation",
-      "configuration",
-      "validation",
-      "git_commit_and_push_to_main",
-      "permitted_external_execution"
-    ],
-    "removes_blockers": [
-      "generic_authority_to_act"
-    ],
-    "does_not_constitute": [
-      "specialist_approval",
-      "legal_approval",
-      "design_approval",
-      "accessibility_approval",
-      "privacy_approval",
-      "security_approval",
-      "operations_approval",
-      "linguistic_approval",
-      "physical_device_approval",
-      "store_approval",
-      "production_release_approval",
-      "canonical_admin_product_policy_approval"
-    ],
-    "decision": "DEC-243"
-  },
+  "updated_at": "2026-09-05T09:07:59.381612Z",
   "exceptions": [],
   "resolved_decisions": [
     {
@@ -50,15 +18,6 @@
         "packages/features/feat_settings/lib/src/screens/settings_screen.dart",
         "packages/core/core_theme/test/theme_mode_notifier_test.dart",
         "packages/core/core_theme/test/ui_tokens_test.dart"
-      ]
-    },
-    {
-      "id": "DEC-PLATFORM-001",
-      "topic": "Platform-specific component differences",
-      "outcome": "no_unapproved_differences_recorded",
-      "evidence": [
-        "packages/core/core_theme/test/ui_source_guardrails_test.dart",
-        "output/implementation_goal_20260724/design_compliance_current/VALIDATION.json"
       ]
     }
   ],
@@ -75,7 +34,7 @@
       "topic": "Approve route-specific not-applicable state and archetype entries after route evidence population",
       "owner": "Product design lead",
       "due_date": null,
-      "status": "route_evidence_dependency_resolved_approval_pending"
+      "status": "current_route_evidence_and_approval_required"
     }
   ]
 }

@@ -5,9 +5,7 @@ import 'package:core_network/src/privacy_safe_analytics.dart';
 
 void main() {
   final root = _workspaceRoot();
-  final output = File(
-    '$root/output/implementation_goal_20260724/analytics-reviewed-output.json',
-  );
+  final output = File('$root/output/evidence/analytics-reviewed-output.json');
   final policyFile = File(
     '$root/packages/core/core_network/lib/src/privacy_safe_analytics.dart',
   );

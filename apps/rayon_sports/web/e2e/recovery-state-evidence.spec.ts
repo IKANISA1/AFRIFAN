@@ -5,7 +5,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 const evidenceDirectory = path.resolve(
   process.cwd(),
-  "../../../output/implementation_goal_20260724/consumer_web_recovery_states",
+  "../../../output/evidence/consumer_web_recovery_states",
 );
 
 const recoveryRoutes = [

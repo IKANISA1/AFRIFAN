@@ -9,7 +9,7 @@ const root = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
-const evidenceRoot = "output/implementation_goal_20260724";
+const evidenceRoot = "output/evidence";
 const toWholeSecondIso = (value) =>
   new Date(value).toISOString().replace(/\.\d{3}Z$/, "Z");
 const generatedAt = toWholeSecondIso(Date.now());

@@ -115,7 +115,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 async function captureRoute(browser: Browser, route: VenueRoute) {
   const evidenceDirectory = path.resolve(
     process.cwd(),
-    `../../../output/implementation_goal_20260724/venue_portal_${route.slug}_states`,
+    `../../../output/evidence/venue_portal_${route.slug}_states`,
   );
   fs.mkdirSync(evidenceDirectory, { recursive: true });
   let context = await browser.newContext({
