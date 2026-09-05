@@ -4,7 +4,7 @@ import '../club_config.dart';
 
 /// Shared color tokens for the AFRICLUB universal mobile system.
 ///
-/// Club identity remains available as accents, but the app canvas follows the
+/// Club palette metadata remains available for identity, but UI styling follows the
 /// September 2026 native Dark · Glow reference: neutral task surfaces, tonal
 /// groups, and colour fields reserved for the four supporter overviews.
 class ColorTokens {

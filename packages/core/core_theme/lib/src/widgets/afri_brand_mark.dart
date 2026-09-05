@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../extensions.dart';
 import '../runtime_branding.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/chrome_tokens.dart';
 import '../tokens/color_tokens.dart';
-import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
-/// Token-driven brand mark generated from runtime club identity.
+/// Club initials on a native tonal surface; actual logo assets remain unchanged.
 class AfriBrandMark extends StatelessWidget {
   const AfriBrandMark({
     super.key,
@@ -27,6 +27,7 @@ class AfriBrandMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.afriSemanticColors;
     final initials =
         (label?.trim().isNotEmpty == true
                 ? _initialsFor(label!)
@@ -43,26 +44,18 @@ class AfriBrandMark extends StatelessWidget {
           height: size,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                ColorTokens.clubPrimary.withValues(alpha: 0.98),
-                ColorTokens.referencePaymentsPurpleDeep.withValues(alpha: 0.98),
-              ],
-            ),
+            color: colors.cardSurfaceStrong,
             borderRadius: borderRadius ?? ShapeTokens.chipRadius,
             border: showBorder
                 ? BorderTokens.all(color: ColorTokens.chromeBorder)
                 : null,
-            boxShadow: AfriShadows.brandMark(size),
           ),
           child: Text(
             resolvedLabel,
             maxLines: 1,
             textAlign: TextAlign.center,
             style: TypographyTokens.labelLarge(
-              ColorTokens.chromeForeground,
+              colors.primaryText,
             ).copyWith(fontSize: (size * 0.28).clamp(13, 34).toDouble()),
           ),
         ),

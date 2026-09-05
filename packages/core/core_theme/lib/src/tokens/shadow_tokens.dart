@@ -6,14 +6,6 @@ import 'color_tokens.dart';
 class AfriShadows {
   AfriShadows._();
 
-  static List<BoxShadow> brandMark(double size) => [
-    BoxShadow(
-      color: ColorTokens.ambientShadow.withValues(alpha: 0.24),
-      blurRadius: size * 0.32,
-      offset: Offset(0, size * 0.14),
-    ),
-  ];
-
   static List<BoxShadow> commandAvatar() => [
     BoxShadow(
       color: ColorTokens.ambientShadow.withValues(alpha: 0.28),

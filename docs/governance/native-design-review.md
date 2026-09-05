@@ -78,6 +78,10 @@ routes. Web/PWA and venue-operator web surfaces are outside this native scope.
 
 ## Verification
 
+The full workspace counts below describe the initial mobile reimplementation.
+The subsequent semantic-colour and launch-screen follow-up is verified by the
+additional affected-package run recorded after that list.
+
 - Workspace regression: **2,689 tests across 44 packages passed** without
   updating baselines. All 20 club shell route graphs passed.
 - Affected admin, gamification and localization rerun: **741 tests passed**.
@@ -94,6 +98,30 @@ routes. Web/PWA and venue-operator web surfaces are outside this native scope.
   zero pending**. English, French and Kinyarwanda catalogs are generated.
 - Formatting and whitespace checks passed. No deployment or store release is
   represented by this local implementation evidence.
+
+### Semantic-colour and native launch follow-up
+
+- Generated club initials now use the shared tonal surface and theme-aware text.
+  The membership card's default accent uses the UI primary role. A production
+  source sweep found no remaining callers of club-palette colour getters in UI
+  widgets. Actual club artwork and metadata remain unchanged.
+- All 20 iOS launch screens use the system background. The primary Android shell
+  now uses neutral day/night launch resources, including Android 12. The other
+  Android shells already used neutral platform launch backgrounds. XML parsing
+  passed for all 20 storyboards and the eight primary Android resources; the
+  Rayon Sports QA iOS build compiled successfully. Other club binaries and the
+  Android launch transition were not separately built in this follow-up.
+- **931 affected tests passed without updating baselines** across theme, app,
+  Home, Club, Membership and onboarding. These overlap the earlier workspace
+  count. Strict analysis, architecture and both QA isolation contracts passed.
+- **67 changed regression images** retain their dimensions; visual review covered
+  generated initials in Home, Club, Membership, onboarding and the shared chrome,
+  including light and enlarged-text cases. All **1,187 manifest hashes** were
+  reconciled and the golden contract passed.
+- The five native iOS journeys passed again, producing eight fresh synthetic
+  captures at 390 × 844 logical pixels, DPR 3. Source-font, source-build,
+  current-native-Light and other unobserved source-state gaps remain as stated
+  above; this follow-up does not convert them into verified fidelity.
 
 ## Route comparison register
 

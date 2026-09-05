@@ -27,7 +27,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
-    final accent = accentColor ?? ColorTokens.clubPrimary;
+    final accent = accentColor ?? ColorTokens.primary;
     final cardColor =
         ColorTokens.contrastForeground(accent) == ColorTokens.onDark
         ? accent
