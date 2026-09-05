@@ -29,6 +29,10 @@ class ColorTokens {
   static const Color referencePaymentsPurple = Color(0xFF181038);
   static const Color referencePaymentsPurpleMid = Color(0xFF302848);
   static const Color referencePaymentsPurpleDeep = Color(0xFF100820);
+  // Colour-managed LIVE-048 card samples, 5 September 2026. These are
+  // rendered observations used for our generated member card, not source tokens.
+  static const Color membershipCardViolet = Color(0xFF6219E5);
+  static const Color membershipCardVioletLight = Color(0xFF8017EE);
   static const Color referenceAssetNavy = Color(0xFF101830);
   static const Color referenceAssetNavyMid = Color(0xFF303870);
   static const Color referenceRewardsViolet = Color(0xFF302878);
@@ -282,6 +286,12 @@ class ColorTokens {
       stops: const [0.0, 1.0],
     );
   }
+
+  static LinearGradient membershipCardGradient() => const LinearGradient(
+    begin: Alignment.bottomLeft,
+    end: Alignment.topRight,
+    colors: [membershipCardViolet, membershipCardVioletLight],
+  );
 
   /// Resolves an inactive-control foreground that stays visibly unavailable
   /// without falling below the design contract's 3:1 disabled-state floor.

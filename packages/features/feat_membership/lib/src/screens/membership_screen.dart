@@ -296,8 +296,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
-    final theme = Theme.of(context);
-    final primary = theme.colorScheme.primary;
     final user = ref.watch(currentUserProvider);
 
     // M-3: Data from AsyncNotifier provider.
@@ -412,305 +410,328 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                             membership?['joined_at']?.toString(),
                           )
                         : null,
-                    accentColor: primary,
                   ),
                 ],
               ),
             ),
           ),
 
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-              child: TierProgress(currentFet: currentFet),
-            ),
-          ),
-          if (snapshot?.isStale == true)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-                child: AfriStateBanner(
-                  icon: AfriIcons.statusWarning,
-                  title: l10n.membershipSavedDetails,
-                  subtitle: snapshot?.recoveryMessage,
-                  tone: AfriStateBannerTone.warning,
-                ),
-              ),
-            ),
-          // ── Status summary ──
-          if (!isLoading && errorMessage == null)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.screenPadding,
-                ),
-                child: latestPendingApplication != null
-                    ? AfriStateBanner(
-                        icon: AfriIcons.statusWarning,
-                        title: l10n.membershipReviewTitle,
-                        subtitle: l10n.membershipReviewSubtitle(
-                          _membershipPackageLabel(
-                            latestPendingApplication['tier']?.toString() ??
-                                'imena',
-                          ),
-                        ),
-                        tone: AfriStateBannerTone.warning,
-                      )
-                    : GlassCard(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    currentTier,
-                                    style: TypographyTokens.metricValue(
-                                      ColorTokens.primaryContainer,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: SpacingTokens.spacing2,
-                                  ),
-                                  Text(
-                                    currentFet == 0
-                                        ? l10n.membershipActivityPending
-                                        : l10n.membershipActivityRecorded(
-                                            currentFet,
-                                          ),
-                                    style: TypographyTokens.bodyMedium(),
-                                  ),
-                                  if (membership?['expires_at'] != null) ...[
-                                    const SizedBox(
-                                      height: SpacingTokens.spacing2,
-                                    ),
-                                    Text(
-                                      l10n.membershipRenewsOn(
-                                        _formatMembershipDate(
-                                          membership?['expires_at']?.toString(),
-                                        ),
-                                      ),
-                                      style: TypographyTokens.bodySmall(
-                                        ColorTokens.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-              ),
-            ),
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing6),
-          ),
-
-          // ── B-3: Payment Lifecycle Status Card ──
-          if (!isLoading &&
-              errorMessage == null &&
-              latestPendingApplication != null)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.screenPadding,
-                ),
-                child: _PaymentStatusCard(
-                  application: latestPendingApplication,
-                  tierLabel: _membershipPackageLabel(
-                    latestPendingApplication['tier']?.toString() ?? 'imena',
-                  ),
-                  formatDate: _formatMembershipDate,
-                  onContactSupport: () {
-                    final phoneNumber = _supportWhatsApp.trim();
-                    if (phoneNumber.isNotEmpty) {
-                      final sanitizedPhoneNumber = phoneNumber.replaceAll(
-                        '+',
-                        '',
-                      );
-                      final uri = Uri.parse(
-                        'https://wa.me/$sanitizedPhoneNumber?text=${Uri.encodeComponent(l10n.membershipSupportMessage)}',
-                      );
-                      unawaited(
-                        launchUrl(
-                          uri,
-                          mode: LaunchMode.externalApplication,
-                        ).then((launched) {
-                          if (!launched && mounted) {
-                            _showError(l10n.membershipWhatsAppUnavailable);
-                          }
-                        }),
-                      );
-                    } else {
-                      _showInfo(l10n.membershipSupportNotConfigured);
-                    }
-                  },
-                ),
-              ),
-            ),
-
-          // ── Contribution History ──
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.screenPadding,
-              ),
-              child: ContributionHistorySection(
-                contributions: contributions,
-                currencySymbol: context.afriCurrencySymbol,
-              ),
-            ),
-          ),
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing8),
-          ),
-
-          // ── Registry ──
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.screenPadding,
-              ),
-              child: AfriListRow(
-                icon: AfriIcons.clubZone,
-                title: l10n.fanRegistryTitle,
-                subtitle: l10n.fanRegistryBrowseAll,
-                onTap: () => context.go('/fanzone?section=supporters'),
-              ),
-            ),
-          ),
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing8),
-          ),
-
-          // ── Packages ──
-          SliverToBoxAdapter(
-            child: AfriSectionHeader(title: l10n.membershipPackagesTitle),
-          ),
-
           const SliverToBoxAdapter(
             child: SizedBox(height: SpacingTokens.spacing4),
           ),
-
-          if (_isJoining || isSyncing)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
-                  0,
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing4,
-                ),
-                child: AfriStateView.loading(
-                  key: const ValueKey<String>('membership-syncing'),
-                  title: _isJoining
-                      ? l10n.membershipSubmittingTitle
-                      : l10n.membershipUpdatingTitle,
-                  message: _isJoining
-                      ? l10n.membershipSubmittingMessage
-                      : l10n.membershipUpdatingMessage,
-                  compact: true,
-                ),
+          DecoratedSliver(
+            decoration: BoxDecoration(
+              color: ColorTokens.surfaceContainerLowest,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(ShapeTokens.radiusXl),
               ),
             ),
-
-          if (_activationFailure case final failure?)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
-                  0,
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing4,
+            sliver: SliverMainAxisGroup(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                    child: TierProgress(currentFet: currentFet),
+                  ),
                 ),
-                child: _MembershipFailureView(
-                  failure: failure,
-                  onRefresh: () {
-                    setState(() => _activationFailure = null);
-                    unawaited(_refreshMembership());
-                  },
-                ),
-              ),
-            ),
-
-          SliverToBoxAdapter(
-            child: AfriAsyncStateView<MembershipSnapshot>(
-              value: asyncMembership,
-              loading: (_) => const Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.screenPadding,
-                ),
-                child: AfriSkeletonList(),
-              ),
-              error: (_, error, stackTrace) => ConnectivityBuilder(
-                builder: (context, isOnline) {
-                  if (!isOnline) {
-                    return Padding(
+                if (snapshot?.isStale == true)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(
+                        SpacingTokens.screenPadding,
+                      ),
+                      child: AfriStateBanner(
+                        icon: AfriIcons.statusWarning,
+                        title: l10n.membershipSavedDetails,
+                        subtitle: snapshot?.recoveryMessage,
+                        tone: AfriStateBannerTone.warning,
+                      ),
+                    ),
+                  ),
+                // ── Status summary ──
+                if (!isLoading && errorMessage == null)
+                  SliverToBoxAdapter(
+                    child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: SpacingTokens.screenPadding,
                       ),
-                      child: AfriStateView.offline(
-                        title: l10n.membershipOfflineTitle,
-                        message: l10n.membershipOfflineMessage,
-                        actionLabel: l10n.connectionRequired,
+                      child: latestPendingApplication != null
+                          ? AfriStateBanner(
+                              icon: AfriIcons.statusWarning,
+                              title: l10n.membershipReviewTitle,
+                              subtitle: l10n.membershipReviewSubtitle(
+                                _membershipPackageLabel(
+                                  latestPendingApplication['tier']
+                                          ?.toString() ??
+                                      'imena',
+                                ),
+                              ),
+                              tone: AfriStateBannerTone.warning,
+                            )
+                          : GlassCard(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          currentTier,
+                                          style: TypographyTokens.metricValue(
+                                            ColorTokens.primaryContainer,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: SpacingTokens.spacing2,
+                                        ),
+                                        Text(
+                                          currentFet == 0
+                                              ? l10n.membershipActivityPending
+                                              : l10n.membershipActivityRecorded(
+                                                  currentFet,
+                                                ),
+                                          style: TypographyTokens.bodyMedium(),
+                                        ),
+                                        if (membership?['expires_at'] !=
+                                            null) ...[
+                                          const SizedBox(
+                                            height: SpacingTokens.spacing2,
+                                          ),
+                                          Text(
+                                            l10n.membershipRenewsOn(
+                                              _formatMembershipDate(
+                                                membership?['expires_at']
+                                                    ?.toString(),
+                                              ),
+                                            ),
+                                            style: TypographyTokens.bodySmall(
+                                              ColorTokens.onSurfaceVariant,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                    ),
+                  ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing6),
+                ),
+
+                // ── B-3: Payment Lifecycle Status Card ──
+                if (!isLoading &&
+                    errorMessage == null &&
+                    latestPendingApplication != null)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: SpacingTokens.screenPadding,
                       ),
-                    );
-                  }
-                  return Padding(
+                      child: _PaymentStatusCard(
+                        application: latestPendingApplication,
+                        tierLabel: _membershipPackageLabel(
+                          latestPendingApplication['tier']?.toString() ??
+                              'imena',
+                        ),
+                        formatDate: _formatMembershipDate,
+                        onContactSupport: () {
+                          final phoneNumber = _supportWhatsApp.trim();
+                          if (phoneNumber.isNotEmpty) {
+                            final sanitizedPhoneNumber = phoneNumber.replaceAll(
+                              '+',
+                              '',
+                            );
+                            final uri = Uri.parse(
+                              'https://wa.me/$sanitizedPhoneNumber?text=${Uri.encodeComponent(l10n.membershipSupportMessage)}',
+                            );
+                            unawaited(
+                              launchUrl(
+                                uri,
+                                mode: LaunchMode.externalApplication,
+                              ).then((launched) {
+                                if (!launched && mounted) {
+                                  _showError(
+                                    l10n.membershipWhatsAppUnavailable,
+                                  );
+                                }
+                              }),
+                            );
+                          } else {
+                            _showInfo(l10n.membershipSupportNotConfigured);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+
+                // ── Contribution History ──
+                SliverToBoxAdapter(
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: SpacingTokens.screenPadding,
                     ),
-                    child: _MembershipFailureView(
-                      failure: MembershipFailure.fromError(error),
-                      onRefresh: _refreshMembership,
+                    child: ContributionHistorySection(
+                      contributions: contributions,
+                      currencySymbol: context.afriCurrencySymbol,
                     ),
-                  );
-                },
-              ),
-              data: (context, resolvedSnapshot) {
-                final resolvedPackages = resolvedSnapshot.packages;
-                if (resolvedPackages.isEmpty) {
-                  return emptyMessage == null
-                      ? const SizedBox.shrink()
-                      : Padding(
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing8),
+                ),
+
+                // ── Registry ──
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.screenPadding,
+                    ),
+                    child: AfriListRow(
+                      icon: AfriIcons.clubZone,
+                      title: l10n.fanRegistryTitle,
+                      subtitle: l10n.fanRegistryBrowseAll,
+                      onTap: () => context.go('/fanzone?section=supporters'),
+                    ),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing8),
+                ),
+
+                // ── Packages ──
+                SliverToBoxAdapter(
+                  child: AfriSectionHeader(title: l10n.membershipPackagesTitle),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing4),
+                ),
+
+                if (_isJoining || isSyncing)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        SpacingTokens.spacing6,
+                        0,
+                        SpacingTokens.spacing6,
+                        SpacingTokens.spacing4,
+                      ),
+                      child: AfriStateView.loading(
+                        key: const ValueKey<String>('membership-syncing'),
+                        title: _isJoining
+                            ? l10n.membershipSubmittingTitle
+                            : l10n.membershipUpdatingTitle,
+                        message: _isJoining
+                            ? l10n.membershipSubmittingMessage
+                            : l10n.membershipUpdatingMessage,
+                        compact: true,
+                      ),
+                    ),
+                  ),
+
+                if (_activationFailure case final failure?)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        SpacingTokens.spacing6,
+                        0,
+                        SpacingTokens.spacing6,
+                        SpacingTokens.spacing4,
+                      ),
+                      child: _MembershipFailureView(
+                        failure: failure,
+                        onRefresh: () {
+                          setState(() => _activationFailure = null);
+                          unawaited(_refreshMembership());
+                        },
+                      ),
+                    ),
+                  ),
+
+                SliverToBoxAdapter(
+                  child: AfriAsyncStateView<MembershipSnapshot>(
+                    value: asyncMembership,
+                    loading: (_) => const Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: SpacingTokens.screenPadding,
+                      ),
+                      child: AfriSkeletonList(),
+                    ),
+                    error: (_, error, stackTrace) => ConnectivityBuilder(
+                      builder: (context, isOnline) {
+                        if (!isOnline) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: SpacingTokens.screenPadding,
+                            ),
+                            child: AfriStateView.offline(
+                              title: l10n.membershipOfflineTitle,
+                              message: l10n.membershipOfflineMessage,
+                              actionLabel: l10n.connectionRequired,
+                            ),
+                          );
+                        }
+                        return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: SpacingTokens.screenPadding,
                           ),
-                          child: AfriStateView.empty(
-                            title: l10n.membershipSetupPending,
-                            message: emptyMessage,
+                          child: _MembershipFailureView(
+                            failure: MembershipFailure.fromError(error),
+                            onRefresh: _refreshMembership,
                           ),
                         );
-                }
+                      },
+                    ),
+                    data: (context, resolvedSnapshot) {
+                      final resolvedPackages = resolvedSnapshot.packages;
+                      if (resolvedPackages.isEmpty) {
+                        return emptyMessage == null
+                            ? const SizedBox.shrink()
+                            : Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: SpacingTokens.screenPadding,
+                                ),
+                                child: AfriStateView.empty(
+                                  title: l10n.membershipSetupPending,
+                                  message: emptyMessage,
+                                ),
+                              );
+                      }
 
-                return _MembershipPackageList(
-                  packages: resolvedPackages,
-                  user: user,
-                  changesBlocked:
-                      _activationFailure?.kind ==
-                          MembershipFailureKind.permissionDenied ||
-                      _activationFailure?.kind ==
-                          MembershipFailureKind.securityTimeout,
-                  autofocusTier: widget.autofocusTier,
-                  packagePriceLabel: _packagePriceLabel,
-                  packageLabel: _membershipPackageLabel,
-                  actionLabel: _membershipActionLabel,
-                  isCurrentJoiningTier: (tierId) =>
-                      _isJoining && _joiningTier == tierId,
-                  isCurrentTier: _isCurrentTier,
-                  hasPendingApplication: _hasPendingApplicationForTier,
-                  onActivatePackage: _activatePackage,
-                );
-              },
+                      return _MembershipPackageList(
+                        packages: resolvedPackages,
+                        user: user,
+                        changesBlocked:
+                            _activationFailure?.kind ==
+                                MembershipFailureKind.permissionDenied ||
+                            _activationFailure?.kind ==
+                                MembershipFailureKind.securityTimeout,
+                        autofocusTier: widget.autofocusTier,
+                        packagePriceLabel: _packagePriceLabel,
+                        packageLabel: _membershipPackageLabel,
+                        actionLabel: _membershipActionLabel,
+                        isCurrentJoiningTier: (tierId) =>
+                            _isJoining && _joiningTier == tierId,
+                        isCurrentTier: _isCurrentTier,
+                        hasPendingApplication: _hasPendingApplicationForTier,
+                        onActivatePackage: _activatePackage,
+                      );
+                    },
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing20),
+                ),
+              ],
             ),
-          ),
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing20),
           ),
         ],
       ),

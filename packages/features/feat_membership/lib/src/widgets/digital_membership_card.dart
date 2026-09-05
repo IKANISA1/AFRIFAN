@@ -12,7 +12,6 @@ class DigitalMembershipCardFull extends StatelessWidget {
     required this.fanId,
     this.statusLabel,
     this.memberSince,
-    this.accentColor,
     this.onShare,
   });
 
@@ -21,17 +20,11 @@ class DigitalMembershipCardFull extends StatelessWidget {
   final String fanId;
   final String? statusLabel;
   final String? memberSince;
-  final Color? accentColor;
   final VoidCallback? onShare;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
-    final accent = accentColor ?? ColorTokens.primary;
-    final cardColor =
-        ColorTokens.contrastForeground(accent) == ColorTokens.onDark
-        ? accent
-        : Color.alphaBlend(ColorTokens.inkBase.withValues(alpha: 0.65), accent);
     return Container(
       constraints: const BoxConstraints(
         minHeight: AfriComponentSizes.membershipCardMinHeight,
@@ -39,13 +32,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       decoration: BoxDecoration(
         borderRadius: ShapeTokens.cardRadius,
-        gradient: ColorTokens.heroGradient(
-          from: cardColor,
-          to: Color.alphaBlend(
-            ColorTokens.inkBase.withValues(alpha: 0.25),
-            cardColor,
-          ),
-        ),
+        gradient: ColorTokens.membershipCardGradient(),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

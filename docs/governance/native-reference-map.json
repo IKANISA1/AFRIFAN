@@ -2205,6 +2205,7 @@
       "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
       "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
       "target_baselines": [
+        "packages/features/feat_membership/test/goldens/membership_standard_dark_390x844.png",
         "packages/features/feat_membership/test/goldens/membership_state_conflict_dark_390x844.png",
         "packages/features/feat_membership/test/goldens/membership_state_disabled_dark_390x844.png",
         "packages/features/feat_membership/test/goldens/membership_state_empty_dark_390x844.png",
@@ -2223,7 +2224,7 @@
         "packages/features/feat_membership/test/membership_screen_ui_test.dart"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_membership/test/goldens/membership_state_selected_dark_390x844.png"
+      "representative_capture": "packages/features/feat_membership/test/goldens/membership_standard_dark_390x844.png"
     },
     {
       "route": "/membership/fans",
@@ -2440,6 +2441,7 @@
       "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
       "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
       "target_baselines": [
+        "packages/features/feat_settings/test/goldens/settings_standard_dark_390x844.png",
         "packages/features/feat_settings/test/goldens/settings_state_conflict_dark_390x844.png",
         "packages/features/feat_settings/test/goldens/settings_state_disabled_dark_390x844.png",
         "packages/features/feat_settings/test/goldens/settings_state_empty_dark_390x844.png",
@@ -2455,10 +2457,11 @@
         "packages/features/feat_settings/test/goldens/settings_state_syncing_dark_390x844.png"
       ],
       "test_evidence": [
-        "packages/features/feat_settings/test/settings_screen_states_test.dart"
+        "packages/features/feat_settings/test/settings_screen_states_test.dart",
+        "packages/features/feat_settings/test/settings_goldens_test.dart"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_settings/test/goldens/settings_state_selected_dark_390x844.png"
+      "representative_capture": "packages/features/feat_settings/test/goldens/settings_standard_dark_390x844.png"
     },
     {
       "route": "/settings/edit-profile",
@@ -3577,7 +3580,31 @@
         730
       ]
     ],
-    "ui_adapter": "packages/core/core_theme/lib/src/tokens/color_tokens.dart"
+    "ui_adapter": "packages/core/core_theme/lib/src/tokens/color_tokens.dart",
+    "membership_card": {
+      "reference": "LIVE-048",
+      "method": "Embedded ICC converted to sRGB; individual unobstructed card pixels. Gradient is a target adapter, not a native token export.",
+      "samples": [
+        {
+          "coordinate": [
+            50,
+            220
+          ],
+          "srgb": "#6219E5"
+        },
+        {
+          "coordinate": [
+            350,
+            220
+          ],
+          "srgb": "#8017EE"
+        }
+      ],
+      "white_text_contrast": [
+        7.53,
+        6.41
+      ]
+    }
   },
   "retained_adaptations": [
     "Own club logos, names, data, football flows and routes.",
@@ -3608,12 +3635,13 @@
     "Current native light and every accessibility/state variant are not captured in the reference cohort.",
     "Football match, contribution, venue and ticket artifacts have explicit product adaptations rather than one-to-one banking screens."
   ],
-  "verified_at": "2026-09-05T13:00:12.444127+00:00",
+  "verified_at": "2026-09-05T14:56:19.645549+00:00",
   "verification": {
     "workspace_tests": {
       "packages": 44,
       "tests": 2689,
-      "result": "pass"
+      "result": "pass",
+      "update_goldens": false
     },
     "affected_package_rerun": {
       "tests": 741,
@@ -3648,6 +3676,19 @@
       "result": "pass",
       "screenshots": 8,
       "cohort": "iPhone 13, iOS 26.5, 390x844, DPR 3; synthetic backend-disabled fixture"
+    },
+    "native_visual_refinement": {
+      "verified_at": "2026-09-05T14:56:19.645549+00:00",
+      "workspace_tests": 2689,
+      "packages": 44,
+      "update_goldens": false,
+      "changed_baseline_images": 1054,
+      "route_baseline_images": 868,
+      "native_application_journeys": 5,
+      "native_harness_results": 7,
+      "native_screenshots": 8,
+      "strict_analysis": "pass",
+      "source_equivalence": "unverified for source font, build, exact viewport, current native Light and unobserved states"
     }
   }
 }

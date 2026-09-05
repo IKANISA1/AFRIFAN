@@ -123,7 +123,7 @@ source definitions. Revise them through matched captures and component tests.
 | Shapes | 24 ordinary card/group, 32 large hero, 24 input, full pill for buttons/search/chips/navigation. |
 | Spacing | 16 screen and card inset, 24 section gap, 8 sibling gap; use one alignment column. |
 | Type | 48 value, 40 proposition, 32 page title, 20 section title, 16 body/row, 13 support, 11 navigation. Normal casing and restrained weight; no blanket uppercase/italic style. |
-| Font | Native platform system font adapter. `GoldenRoboto` is deterministic test-only output and is not proof of exact iOS font parity. |
+| Font | Zero default tracking, with explicit semantic overrides retained. Native platform system font adapter. `GoldenRoboto` is deterministic test-only output and is not proof of exact iOS font parity. |
 | Elevation | Flat tonal content; translucency/blur confined to evidenced floating chrome and overlays. Focus/high contrast and explicit semantic boundaries remain visible. |
 
 Motion uses the existing interruptible duration tokens and reduced-motion paths.
@@ -140,9 +140,11 @@ or simulate a successful financial/action outcome for visual effect.
   team, news, fixtures, results, standings, history, projects, tickets and shop.
 - Fan Zone: centred engagement value only when available, appropriate local
   segments, then discoveries and supporter tasks. Venue utilities remain secondary.
-- Membership: own digital card/status followed by benefits, tier, fan clubs,
-  contributions, projects and history. Mask identity in shared evidence.
-- Profile/settings: centred own identity where applicable, a membership row,
+- Membership: own digital card/status uses the LIVE-048 purple card treatment
+  (`#6219E5` to `#8017EE`, colour-managed rendered samples, not source tokens),
+  followed by a continuous neutral surface with rounded top corners for benefits,
+  tier, fan clubs, contributions, projects and history. Mask identity in shared evidence.
+- Profile/settings: centred own identity at 24 with 13 support text where applicable, a membership row,
   then full-width continuous groups. Task pages use large left-aligned titles
   and neutral surfaces. No unrelated decorative hero.
 - Appearance: preview current app canvases with a local Light/Dark/System draft.

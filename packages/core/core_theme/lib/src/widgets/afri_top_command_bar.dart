@@ -108,9 +108,6 @@ class _CommandAvatar extends StatelessWidget {
             height: AfriChromeTokens.commandControlSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: ColorTokens.onSurface.withValues(
-                alpha: AfriChromeTokens.commandAvatarFillOpacity,
-              ),
               border: state.isFocused
                   ? BorderTokens.focusAll(color: ColorTokens.onSurface)
                   : null,

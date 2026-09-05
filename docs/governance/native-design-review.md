@@ -47,7 +47,7 @@ The fixture is synthetic and backend startup is disabled. Unavailable live-data
 states in that journey are expected, not evidence of production availability.
 Populated states are additionally rendered by the governed route tests.
 
-There are 866 associated route-state regression images (including the populated
+There are 868 associated route-state regression images (including the populated
 Home fixture). They cover applicable loading, empty, error, offline, permission,
 disabled, focus, held press, selection, 200% text, reduced motion, light, dark,
 sync, conflict and timeout variants. Passing them means the implementation
@@ -79,8 +79,8 @@ routes. Web/PWA and venue-operator web surfaces are outside this native scope.
 ## Verification
 
 The full workspace counts below describe the initial mobile reimplementation.
-The subsequent semantic-colour and launch-screen follow-up is verified by the
-additional affected-package run recorded after that list.
+The semantic-colour follow-up has a separate affected-package run; the latest
+native visual refinement has a fresh full-workspace run recorded below.
 
 - Workspace regression: **2,689 tests across 44 packages passed** without
   updating baselines. All 20 club shell route graphs passed.
@@ -102,8 +102,9 @@ additional affected-package run recorded after that list.
 ### Semantic-colour and native launch follow-up
 
 - Generated club initials now use the shared tonal surface and theme-aware text.
-  The membership card's default accent uses the UI primary role. A production
-  source sweep found no remaining callers of club-palette colour getters in UI
+  In that follow-up the membership card's default accent used the UI primary
+  role. A production source sweep found no remaining callers of club-palette
+  colour getters in UI
   widgets. Actual club artwork and metadata remain unchanged.
 - All 20 iOS launch screens use the system background. The primary Android shell
   now uses neutral day/night launch resources, including Android 12. The other
@@ -122,6 +123,36 @@ additional affected-package run recorded after that list.
   captures at 390 × 844 logical pixels, DPR 3. Source-font, source-build,
   current-native-Light and other unobserved source-state gaps remain as stated
   above; this follow-up does not convert them into verified fidelity.
+
+### Native visual refinement
+
+- Shared type now defaults to zero tracking, preventing Material body/label
+  tracking from widening native text. Explicit per-style tracking remains intact.
+  The platform-font adapter and test-only GoldenRoboto distinction still apply.
+- The command avatar fills its measured 44-point circle without an additional
+  decorative ring. Its minimum hit area and keyboard focus border are retained.
+- The generated membership card now uses the selected LIVE-048 violet treatment,
+  replacing the preceding UI-primary adaptation. Embedded-profile-to-sRGB
+  samples at image coordinates (50, 220) and (350, 220) measured `#6219E5` and
+  `#8017EE`. These are rendered observations, not exported source tokens.
+  A shared semantic gradient owns the treatment. Membership details sit on one
+  continuous neutral surface with rounded top corners; status, benefits,
+  registry, contribution and package actions retain their existing contracts.
+- Profile identity uses the compact 24-point heading and 13-point role label
+  selected from the native profile hierarchy. Names, supporter IDs and actions
+  remain the app's own.
+- Visual inspection covers Home, Membership, Settings, edit-profile forms,
+  compact and light layouts, and enlarged package text. All 1,054 changed
+  regression images retain their original dimensions.
+- Membership and Settings now point to their top-level dark captures for review.
+  Scrolled package selection and the Appearance overlay remain available as
+  state evidence, rather than acting as the default route illustration.
+
+- Final verification: **2,689 tests across 44 packages passed without updating
+  baselines**, including all 20 club shell graphs. Strict analysis, architecture,
+  both QA isolation contracts and the golden contract passed. The five native
+  iOS journeys passed again, producing eight fresh 1170 × 2532 captures.
+  All 1,187 baseline hashes match; the automated privacy scan passed.
 
 ## Route comparison register
 
@@ -158,11 +189,11 @@ additional affected-package run recorded after that list.
 | `/feature-unavailable` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [feature_unavailable_state_dark_dark_390x844.png](../../packages/core/core_router/test/goldens/feature_unavailable_state_dark_dark_390x844.png) |
 | `/home` | LIVE-020 | component pattern | [home_state_populated_dark_390x844.png](../../packages/features/feat_home/test/goldens/home_state_populated_dark_390x844.png) |
 | `/live/news/:articleId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [news_article_state_dark_dark_390x844.png](../../packages/features/feat_live/test/goldens/news_article_state_dark_dark_390x844.png) |
-| `/membership` | LIVE-048, LIVE-047 | component pattern | [membership_state_selected_dark_390x844.png](../../packages/features/feat_membership/test/goldens/membership_state_selected_dark_390x844.png) |
+| `/membership` | LIVE-048, LIVE-047 | component pattern | [membership_standard_dark_390x844.png](../../packages/features/feat_membership/test/goldens/membership_standard_dark_390x844.png) |
 | `/membership/tier/:tierId` | LIVE-053, LIVE-060 | component pattern | [tier_detail_state_dark_dark_390x844.png](../../packages/features/feat_membership/test/goldens/tier_detail_state_dark_dark_390x844.png) |
 | `/onboarding` |  | unevidenced adaptation | [onboarding_state_selected_dark_390x844.png](../../packages/features/feat_onboarding/test/goldens/onboarding_state_selected_dark_390x844.png) |
 | `/search` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [search_state_selected_dark_390x844.png](../../packages/features/feat_home/test/goldens/search_state_selected_dark_390x844.png) |
-| `/settings` | LIVE-005, LIVE-007, LIVE-013 | component pattern | [settings_state_selected_dark_390x844.png](../../packages/features/feat_settings/test/goldens/settings_state_selected_dark_390x844.png) |
+| `/settings` | LIVE-005, LIVE-007, LIVE-013 | component pattern | [settings_standard_dark_390x844.png](../../packages/features/feat_settings/test/goldens/settings_standard_dark_390x844.png) |
 | `/settings/edit-profile` | LIVE-005, LIVE-007, LIVE-013 | component pattern | [profile_state_dark_dark_390x844.png](../../packages/features/feat_settings/test/goldens/profile_state_dark_dark_390x844.png) |
 | `/settings/notifications` | LIVE-005, LIVE-007, LIVE-013 | component pattern | [notifications_state_dark_dark_390x844.png](../../packages/features/feat_settings/test/goldens/notifications_state_dark_dark_390x844.png) |
 | `/settings/privacy` | LIVE-005, LIVE-007, LIVE-013 | component pattern | [privacy_state_dark_dark_390x844.png](../../packages/features/feat_settings/test/goldens/privacy_state_dark_dark_390x844.png) |

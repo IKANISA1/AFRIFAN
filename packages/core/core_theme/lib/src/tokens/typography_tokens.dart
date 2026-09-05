@@ -194,7 +194,8 @@ class TypographyTokens {
       fontSize: fontSize,
       fontWeight: fontWeight,
       fontStyle: fontStyle,
-      letterSpacing: letterSpacing,
+      // Keep native text compact instead of inheriting Material tracking.
+      letterSpacing: letterSpacing ?? textStyle?.letterSpacing ?? 0,
       wordSpacing: wordSpacing,
       textBaseline: textBaseline,
       height: height,

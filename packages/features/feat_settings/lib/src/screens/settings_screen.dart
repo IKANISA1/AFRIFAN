@@ -73,13 +73,13 @@ class SettingsScreen extends ConsumerWidget {
                   size: AfriComponentSizes.profileAvatar,
                 ),
                 const SizedBox(height: SpacingTokens.spacing4),
-                Text(alias, style: TypographyTokens.headlineLarge()),
+                Text(alias, style: TypographyTokens.headlineMedium()),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
                   profile?.isAdmin == true
                       ? l10n.settingsRoleAdmin
                       : l10n.settingsRoleSupporter,
-                  style: TypographyTokens.bodyLarge(
+                  style: TypographyTokens.bodySmall(
                     ColorTokens.onSurfaceVariant,
                   ),
                 ),

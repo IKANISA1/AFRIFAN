@@ -10,7 +10,7 @@ class AfriChromeTokens {
   // September 2026 native Dark · Glow: measured visual bounds. Interactive
   // wrappers retain the platform minimum target independently of the artwork.
   static const double commandControlSize = 44;
-  static const double commandBrandSize = 40;
+  static const double commandBrandSize = commandControlSize;
   static const double commandSearchLabelMinWidth = 112;
   static const double commandSearchIconSize = 20;
   static const double commandActionIconSize = 22;
@@ -35,7 +35,6 @@ class AfriChromeTokens {
   static const double navigationIconSize = 22;
   static const double navigationLabelGap = 2;
 
-  static const double commandAvatarFillOpacity = 0.12;
   static const double commandFillOpacity = 0.94;
   static const double commandGradientStartOpacity = 0.96;
   static const double chromeGradientEndOpacity = 0.98;
