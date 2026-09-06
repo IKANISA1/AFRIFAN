@@ -20,38 +20,42 @@
     "data_safety_published": true,
     "app_content_forms_complete": true,
     "artifact_uploaded": true,
-    "artifact_processing_status": "ACCEPTED_PRODUCTION_RELEASE_SAVED",
-    "submission_status": "CHANGES_IN_REVIEW",
-    "verified_receipt": {
-      "observed_on": "2026-08-21",
-      "package_name": "rw.gikundiro.app",
-      "intended_candidate_version_name": "1.0.4",
-      "intended_candidate_version_code": 7,
-      "valid_candidate_aab_present": true,
-      "candidate_aab": {
-        "sha256": "3042d0601d0bb4b0b00087c7e25761ad730a74ed4661dbfa448f64df1592d119",
-        "bytes": 151044448,
-        "embedded_package_name": "rw.gikundiro.app",
-        "embedded_version_name": "1.0.4",
-        "embedded_version_code": 7,
-        "upload_certificate_sha256": "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10"
+  "artifact_processing_status": "ACCEPTED_INTERNAL_TESTING_RELEASE_PUBLISHED",
+  "submission_status": "INTERNAL_TESTING_PUBLISHED",
+  "verified_receipt": {
+    "observed_on": "2026-09-06",
+    "package_name": "rw.gikundiro.app",
+    "intended_candidate_version_name": "1.0.5",
+    "intended_candidate_version_code": 8,
+    "valid_candidate_aab_present": true,
+    "candidate_aab": {
+      "sha256": "e20ce35509f6c36e2ba3181e4cbad7cdda1ae6532fc89d441d96b555aa609de4",
+      "bytes": 150086195,
+      "embedded_package_name": "rw.gikundiro.app",
+      "embedded_version_name": "1.0.5",
+      "embedded_version_code": 8,
+      "upload_certificate_sha256": "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10"
       },
       "upload_key_reset": {
         "status": "REPLACEMENT_CERTIFICATE_ACTIVE",
         "previously_registered_certificate_sha256": "3B:26:95:2C:19:86:A2:E4:BD:EF:8A:CF:65:62:05:C9:DC:4B:1F:91:70:94:5D:10:C9:27:5C:B7:FE:3D:EA:36",
         "certificate_panel_sha256": "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10",
         "requested_replacement_certificate_sha256": "18:0C:F8:B8:D4:F0:A5:A3:8D:51:D9:C9:E2:FF:51:23:FB:49:CD:CE:6D:93:BD:01:08:E1:D1:29:86:97:D5:10"
-      },
-      "candidate_upload_attempt": {
-        "observed_on": "2026-08-21",
-        "track": "production_draft",
-        "aab_sha256": "3042d0601d0bb4b0b00087c7e25761ad730a74ed4661dbfa448f64df1592d119",
-        "accepted": true,
-        "portal_result": "ACCEPTED_AND_DECODED_AS_7_1.0.4_TARGET_SDK_36",
-        "replacement_certificate_valid_from": "2026-08-11T11:24:08Z",
-        "draft_cleanup": "NOT_APPLICABLE_ACCEPTED_CANDIDATE_RETAINED"
-      },
-      "dashboard_status": "CHANGES_IN_REVIEW",
+    },
+    "candidate_upload_attempt": {
+      "observed_on": "2026-09-06",
+      "track": "internal_testing",
+      "aab_sha256": "e20ce35509f6c36e2ba3181e4cbad7cdda1ae6532fc89d441d96b555aa609de4",
+      "accepted": true,
+      "portal_result": "ACCEPTED_AND_DECODED_AS_8_1.0.5_TARGET_SDK_36",
+      "replacement_certificate_valid_from": "2026-08-11T11:24:08Z",
+      "draft_cleanup": "OLD_INTERNAL_DRAFT_VERSION_4_REMOVED_BEFORE_PUBLICATION"
+    },
+    "dashboard_status": "INTERNAL_TESTING_RELEASE_PUBLISHED",
+    "release_name": "1.0.5 English-only update",
+    "release_details_url": "https://play.google.com/console/u/0/developers/8574763943591248082/app/4975567299527059359/tracks/4700902292187475822/releases/2/details",
+    "availability": "AVAILABLE_TO_INTERNAL_TESTERS",
+    "available_devices": 17872,
       "production_setup_tasks_completed": 3,
       "production_setup_tasks_total": 5,
       "existing_pending_release": {
@@ -76,7 +80,7 @@
         "unrelated_alpha_change_excluded": "FANZONE_TESTER_LIST_REMOVED_BEFORE_SUBMISSION",
         "portal_confirmation": "5_CHANGES_SENT_FOR_REVIEW"
       },
-      "review_submission": {
+    "historical_production_review_submission": {
         "observed_on": "2026-08-28",
         "version_name": "1.0.4",
         "version_code": 7,
