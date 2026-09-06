@@ -59,7 +59,7 @@ void main() {
       );
 
       expect(policy.allowsStakedCompetitions, isTrue);
-      expect(policy.isRouteAllowed('/challenge/create'), isTrue);
+      expect(policy.isRouteAllowed('/predict'), isTrue);
     });
 
     test('reward redemption requires approved no-real-value catalog', () {
@@ -161,7 +161,7 @@ void main() {
     test('sensitive routes are blocked while physical routes remain open', () {
       const policy = StoreReleasePolicy(isEnforced: true);
 
-      expect(policy.isRouteAllowed('/challenge/123'), isFalse);
+      expect(policy.isRouteAllowed('/predict'), isFalse);
       expect(policy.isRouteAllowed('/fanzone/jackpot'), isFalse);
       expect(policy.isRouteAllowed('/fanzone/friends/create'), isFalse);
       expect(policy.isRouteAllowed('/fanzone/rewards'), isFalse);

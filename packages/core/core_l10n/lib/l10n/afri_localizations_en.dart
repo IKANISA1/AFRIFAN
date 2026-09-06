@@ -5112,162 +5112,13 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'This workspace is limited to verified club administrators for the active club.';
 
   @override
-  String get adminChallengesTitle => 'Challenge ops';
-
-  @override
   String get adminBack => 'Back';
-
-  @override
-  String get adminChallengesLoadingTitle => 'Loading challenge operations';
-
-  @override
-  String get adminChallengesLoadingMessage =>
-      'Checking current settlement work.';
-
-  @override
-  String get adminChallengesFilterLabel => 'Challenge status filter';
-
-  @override
-  String get adminChallengesFilterAll => 'All';
-
-  @override
-  String get adminChallengesFilterOpen => 'Open';
-
-  @override
-  String get adminChallengesFilterLocked => 'Locked';
-
-  @override
-  String get adminChallengesFilterSettled => 'Settled';
-
-  @override
-  String get adminChallengesFilterVoid => 'Void';
-
-  @override
-  String get adminChallengesEmptyTitle => 'No challenge operations';
-
-  @override
-  String get adminChallengesEmptyAllMessage =>
-      'No challenges are currently queued.';
-
-  @override
-  String adminChallengesEmptyFilteredMessage(String status) {
-    return 'No $status challenges are currently queued.';
-  }
-
-  @override
-  String get adminChallengesRetryTitle => 'Retry settlement?';
-
-  @override
-  String adminChallengesRetryMessage(String home, String away) {
-    return 'Recheck $home vs $away. Do not retry again until the refreshed status is confirmed.';
-  }
 
   @override
   String get adminCancelUpper => 'Cancel';
 
   @override
-  String get adminRetryUpper => 'Retry';
-
-  @override
-  String get adminChallengesSettlementPending =>
-      'Settlement remains pending. Review the refreshed status.';
-
-  @override
-  String get adminChallengesSettlementRefreshed =>
-      'Settlement status refreshed.';
-
-  @override
-  String get adminChallengesUnavailable => 'Challenge operations unavailable';
-
-  @override
-  String get adminChallengesDisabledMessage =>
-      'Challenge settlement controls are disabled for this controlled build.';
-
-  @override
   String get adminBackToAdmin => 'Back to admin';
-
-  @override
-  String get adminChallengesOffline => 'Challenge operations offline';
-
-  @override
-  String get adminChallengesOfflineMessage =>
-      'Reconnect before loading private settlement work.';
-
-  @override
-  String get adminChallengesAccessUnavailable => 'Challenge access unavailable';
-
-  @override
-  String get adminChallengesAccessUnavailableMessage =>
-      'This account cannot view or retry club challenge settlements.';
-
-  @override
-  String get adminChallengesStatusChanged => 'Challenge status changed';
-
-  @override
-  String get adminChallengesStatusChangedMessage =>
-      'Refresh before continuing with settlement work.';
-
-  @override
-  String get adminChallengesSecurityTimeoutMessage =>
-      'No challenge data was shown. Check your connection and retry.';
-
-  @override
-  String get adminChallengesPrivateDataHidden =>
-      'Private settlement data remains hidden. Try again.';
-
-  @override
-  String get adminChallengesRetryingTitle => 'Retrying settlement';
-
-  @override
-  String get adminChallengesRetryingMessage =>
-      'Controls are paused until the current result is confirmed.';
-
-  @override
-  String get adminChallengesRefreshingTitle =>
-      'Refreshing challenge operations';
-
-  @override
-  String get adminChallengesRefreshingMessage =>
-      'Showing the last confirmed list while current status is checked.';
-
-  @override
-  String get adminChallengesOutcomeUnconfirmed =>
-      'The retry outcome is not confirmed. Refresh before taking another action.';
-
-  @override
-  String get adminChallengesLastConfirmedMessage =>
-      'Showing the last confirmed list. Actions are paused until refresh succeeds.';
-
-  @override
-  String get adminChallengesVoidReasonRecorded => 'Void reason recorded';
-
-  @override
-  String get adminChallengesNoVoidReason => 'No void reason';
-
-  @override
-  String adminChallengesSettlementMode(String mode) {
-    return 'Settlement $mode';
-  }
-
-  @override
-  String adminChallengesAuditState(String state) {
-    return 'Audit $state';
-  }
-
-  @override
-  String get adminChallengesRetryingAction => 'Retrying settlement';
-
-  @override
-  String get adminChallengesRetryAction => 'Retry settlement';
-
-  @override
-  String get adminChallengesCreator => 'Creator';
-
-  @override
-  String get adminChallengesPool => 'Pool';
-
-  @override
-  String get adminChallengesParticipants => 'Participants';
 
   @override
   String adminVersus(String home, String away) {
@@ -7906,61 +7757,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get gameVersus => 'VS';
-
-  @override
-  String get gameKickoffSoon => 'Kick-off soon';
-
-  @override
-  String gameJoinedCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count joined',
-      one: '1 joined',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String gameTotalPoolPoints(int count) {
-    return '$count pts total';
-  }
-
-  @override
-  String get gameCreator => 'Creator';
-
-  @override
-  String get gameMyPick => 'My pick';
-
-  @override
   String get gameOpenUpper => 'Open';
-
-  @override
-  String get gameLockedUpper => 'Locked';
-
-  @override
-  String get gameSettledUpper => 'Settled';
-
-  @override
-  String gameDaysLeft(int count) {
-    return '${count}d left';
-  }
-
-  @override
-  String gameHoursMinutes(int hours, int minutes) {
-    return '${hours}h ${minutes}m';
-  }
-
-  @override
-  String gameMinutesLeft(int count) {
-    return '${count}m left';
-  }
-
-  @override
-  String gameScorePrediction(String label, int home, int away) {
-    return '$label  $home-$away';
-  }
 
   @override
   String get gamePointsShare => 'Points share';
@@ -9107,153 +8904,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameNext => 'Next';
 
   @override
-  String get gameMyChallenges => 'My challenges';
-
-  @override
   String get gameOpen => 'Open';
 
   @override
-  String get gameLocked => 'Locked';
-
-  @override
-  String get gameSettled => 'Settled';
-
-  @override
-  String get gameRefunded => 'Refunded';
-
-  @override
-  String get gameLoadingChallenges => 'Loading your challenges';
-
-  @override
-  String get gameLoadingChallengesDescription =>
-      'Checking the pools you created or joined for this status.';
-
-  @override
   String get gameRefresh => 'Refresh';
-
-  @override
-  String get gameRefreshingChallengeHistory => 'Refreshing challenge history';
-
-  @override
-  String get gameRefreshingChallengeHistoryDescription =>
-      'Keeping your confirmed pools visible while the latest status is checked.';
-
-  @override
-  String get gameChallengeHistoryReadOnly => 'Challenge history is read-only';
-
-  @override
-  String get gameChallengeHistoryReadOnlyDescription =>
-      'Your confirmed pools remain visible, but opening challenge details is disabled for this build.';
-
-  @override
-  String get gameShowingSavedChallengeHistory =>
-      'Showing saved challenge history';
-
-  @override
-  String get gameShowingSavedChallengeHistoryDescription =>
-      'Reconnect and refresh before opening a pool or checking a newer status.';
-
-  @override
-  String get gameRefreshHistory => 'Refresh history';
-
-  @override
-  String gameNoFilteredChallenges(String filter) {
-    return 'No $filter challenges';
-  }
-
-  @override
-  String get gameCreateChallenge => 'Create challenge';
-
-  @override
-  String gameChallengeCardSemantics(String home, String away, String summary) {
-    return '$home versus $away. $summary. Open challenge details.';
-  }
-
-  @override
-  String get gameOpensChallenge => 'Opens this challenge';
-
-  @override
-  String get gameChallengeDetailsUnavailable =>
-      'Challenge details are unavailable';
-
-  @override
-  String gameTeamsVersusMultiline(String home, String away) {
-    return '$home\nversus\n$away';
-  }
-
-  @override
-  String get gameConnectionRestored => 'Connection restored';
-
-  @override
-  String get gameChallengeHistoryOffline => 'Challenge history offline';
-
-  @override
-  String get gameRefreshLatestChallengeStatus =>
-      'Refresh to check the latest status of your challenges.';
-
-  @override
-  String get gameReconnectChallengePools =>
-      'Reconnect to load the pools you created or joined.';
-
-  @override
-  String get gameChallengeHistoryUnavailable => 'Challenge history unavailable';
-
-  @override
-  String get gameChallengeHistoryPermissionDenied =>
-      'Your current club access does not allow this challenge history.';
-
-  @override
-  String get gameChallengeHistoryChanged => 'Challenge history changed';
-
-  @override
-  String get gameChallengeHistoryChangedDescription =>
-      'Refresh and review the latest pool status before opening a challenge.';
-
-  @override
-  String get gameChallengeHistoryTimedOut =>
-      'Challenge history check timed out';
-
-  @override
-  String get gameChallengeHistoryTimedOutDescription =>
-      'No status was confirmed. Refresh before opening a challenge.';
-
-  @override
-  String get gameChallengeHistoryTryAgain =>
-      'Refresh and try again when your challenge history is ready.';
-
-  @override
-  String get gameOpenChallengesEmpty =>
-      'Create or join a pool to see an active exact-score challenge here.';
-
-  @override
-  String get gameLockedChallengesEmpty =>
-      'No joined challenge is currently waiting for a final score.';
-
-  @override
-  String get gameSettledChallengesEmpty =>
-      'Completed challenge results and points will appear here.';
-
-  @override
-  String get gameRefundedChallengesEmpty =>
-      'Cancelled or refunded challenges will appear here.';
-
-  @override
-  String gameEarnedPoints(int count) {
-    return 'Earned $count pts';
-  }
-
-  @override
-  String get gameNoResultCredit => 'No result credit';
-
-  @override
-  String gameReturnedPoints(int count) {
-    return 'Returned $count pts';
-  }
-
-  @override
-  String gameMyPickScore(int home, int away) {
-    return 'My pick $home-$away';
-  }
 
   @override
   String get gameMoreOptions => 'More options';
@@ -9897,169 +9551,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'The server did not confirm the attempt. Dismiss this warning before retrying.';
 
   @override
-  String get challengeConfirmTitle => 'Confirm challenge';
-
-  @override
-  String challengeConfirmPoints(int count) {
-    return 'Confirm $count pts';
-  }
-
-  @override
-  String get challengeCreateTitle => 'Create challenge';
-
-  @override
-  String get challengeFindingFixtures => 'Finding upcoming fixtures';
-
-  @override
-  String get challengeFindingFixturesBody =>
-      'Checking the matches that are still open for exact-score challenges.';
-
-  @override
-  String get challengeNoFixtures => 'No fixtures available';
-
-  @override
-  String get challengeNoFixturesBody =>
-      'There are no upcoming matches open for a new challenge yet.';
-
-  @override
-  String get challengeRefreshFixtures => 'Refresh fixtures';
-
-  @override
-  String get challengeCreating => 'Creating challenge';
-
-  @override
-  String get challengeCreatingBody =>
-      'Keeping your fixture, score, and entry points visible while confirmation is pending.';
-
-  @override
-  String get challengeCreationUnavailable => 'Challenge creation unavailable';
-
-  @override
-  String get challengeCreationDisabledBody =>
-      'You can review the form, but creating a pool is disabled for this build.';
-
-  @override
-  String get challengeShowingSavedFixtures => 'Showing saved fixtures';
-
-  @override
-  String get challengeShowingSavedFixturesBody =>
-      'Reconnect and refresh before changing the score or creating a challenge.';
-
-  @override
-  String get challengeRefreshFixturesUpper => 'Refresh fixtures';
-
-  @override
-  String get challengeExactScore => 'Exact score';
-
-  @override
-  String challengeSelectedScore(int home, int away) {
-    return 'Selected exact score $home to $away';
-  }
-
-  @override
-  String get challengeVersusUpper => 'Versus';
-
-  @override
-  String get challengeEntryPoints => 'Entry points';
-
-  @override
-  String get challengeEntryOptionsUnavailable =>
-      'Challenge entry options are not available yet.';
-
-  @override
-  String challengeStakePoints(int count) {
-    return '$count pts';
-  }
-
-  @override
-  String get challengeCheckingBalance => 'Checking your points balance.';
-
-  @override
-  String get challengeBalanceUnavailable =>
-      'Your points balance is unavailable. Refresh before creating this challenge.';
-
-  @override
-  String get challengeBalanceInsufficient =>
-      'Your current points balance does not cover this entry.';
-
-  @override
-  String get challengeCreatingUpper => 'Creating challenge';
-
-  @override
-  String get challengeCreationOffline => 'Challenge creation offline';
-
-  @override
-  String get challengeRefreshLatestFixtures =>
-      'Refresh to check the latest fixtures before creating a challenge.';
-
-  @override
-  String get challengeReconnectFixtures =>
-      'Reconnect to load the fixtures available for a new challenge.';
-
-  @override
-  String get challengeAccessDeniedBody =>
-      'Your current club access does not allow a new challenge.';
-
-  @override
-  String get challengeDetailsChanged => 'Challenge details changed';
-
-  @override
-  String get challengeDetailsChangedBody =>
-      'Refresh the fixtures and review your choice before trying again.';
-
-  @override
-  String get challengeSecurityTimedOut => 'Challenge security check timed out';
-
-  @override
-  String get challengeSecurityTimedOutBody =>
-      'No challenge was confirmed. Refresh before trying again.';
-
-  @override
-  String get challengeTryAgainBody =>
-      'Refresh and try again when the fixtures are available.';
-
-  @override
-  String challengePreviewSemantics(
-    String homeTeam,
-    String awayTeam,
-    int homeScore,
-    int awayScore,
-    int stake,
-    int balance,
-  ) {
-    return 'Challenge preview. $homeTeam versus $awayTeam. Your pick $homeScore to $awayScore. Entry $stake points. Balance $balance points.';
-  }
-
-  @override
-  String get challengePreview => 'Challenge preview';
-
-  @override
-  String get challengeYourPick => 'Your pick';
-
-  @override
-  String challengeBalancePoints(int count) {
-    return 'Balance $count pts';
-  }
-
-  @override
-  String get challengeLocksAtKickoff => 'Locks at kickoff';
-
-  @override
-  String challengeFixtureOption(String home, String away, String competition) {
-    return '$home vs $away • $competition';
-  }
-
-  @override
-  String challengeDecrease(String label) {
-    return 'Decrease $label';
-  }
-
-  @override
-  String challengeIncrease(String label) {
-    return 'Increase $label';
-  }
-
-  @override
   String get walletRewardsUnavailable => 'Rewards unavailable';
 
   @override
@@ -10172,289 +9663,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
   @override
   String get walletSavedUntilRefresh =>
       'The last confirmed balance stays visible until refresh succeeds.';
-
-  @override
-  String get feedChallengeTitle => 'Challenge';
-
-  @override
-  String get feedDescription =>
-      'Exact-score pools for real fixtures. Create one, join once, and settle automatically from the official final score.';
-
-  @override
-  String get feedCreateNew => 'Create a new challenge';
-
-  @override
-  String get feedOpening => 'Opening challenges';
-
-  @override
-  String get feedOpeningBody =>
-      'Checking current fixtures, pools, and your joined challenges.';
-
-  @override
-  String get feedRefreshing => 'Refreshing challenges';
-
-  @override
-  String get feedRefreshingBody =>
-      'Keeping current fixtures, pools, and joined challenges visible.';
-
-  @override
-  String get feedActionsUnavailable => 'Challenge actions unavailable';
-
-  @override
-  String get feedActionsUnavailableBody =>
-      'You can review current pools, but creating and joining are disabled for this build.';
-
-  @override
-  String get feedShowingSaved => 'Showing saved challenges';
-
-  @override
-  String get feedShowingSavedBody =>
-      'Reconnect before creating or joining a pool.';
-
-  @override
-  String get feedUpdatesPaused => 'Live challenge updates paused';
-
-  @override
-  String get feedEmpty => 'No challenges available';
-
-  @override
-  String get feedEmptyBody =>
-      'New exact-score pools will appear when eligible fixtures open.';
-
-  @override
-  String get feedFeatured => 'Featured / Popular Challenges';
-
-  @override
-  String get feedSeeAll => 'See all';
-
-  @override
-  String get feedOpenChallenges => 'Open Challenges';
-
-  @override
-  String get feedEndingSoon => 'Ending Soon';
-
-  @override
-  String get feedEndingSoonAction => 'Ending soon';
-
-  @override
-  String get feedMyChallenges => 'My Challenges';
-
-  @override
-  String get feedSettledChallenges => 'Settled Challenges';
-
-  @override
-  String get feedResults => 'Results';
-
-  @override
-  String get feedNoFilterMatches => 'Nothing matches this filter';
-
-  @override
-  String get feedNoFilterMatchesBody =>
-      'Try another view or create a new pool.';
-
-  @override
-  String get feedAll => 'All';
-
-  @override
-  String get feedHighPool => 'High Pool';
-
-  @override
-  String get feedMostParticipants => 'Most Participants';
-
-  @override
-  String get feedMyJoined => 'My Joined';
-
-  @override
-  String get feedChallengesOffline => 'Challenges unavailable offline';
-
-  @override
-  String get feedChallengesOfflineBody =>
-      'Reconnect to load current fixtures and challenge pools.';
-
-  @override
-  String get feedAccessUnavailable => 'Challenge access unavailable';
-
-  @override
-  String get feedAccessUnavailableBody =>
-      'Your access does not currently allow these challenge pools.';
-
-  @override
-  String get feedDataChanged => 'Challenge data changed';
-
-  @override
-  String get feedDataChangedBody =>
-      'Refresh before reviewing or joining the latest pools.';
-
-  @override
-  String get feedSecurityTimedOutBody =>
-      'No challenge action was completed. Refresh before trying again.';
-
-  @override
-  String get feedUnavailable => 'Challenge feed unavailable';
-
-  @override
-  String get feedUnavailableBody =>
-      'Current challenge pools could not be loaded safely.';
-
-  @override
-  String get detailTitle => 'Challenge detail';
-
-  @override
-  String get detailOpening => 'Opening challenge';
-
-  @override
-  String get detailOpeningBody =>
-      'Checking the current pool, entries, and official result status.';
-
-  @override
-  String get detailNotFound => 'Challenge not found';
-
-  @override
-  String get detailNotFoundBody =>
-      'This pool may have ended, been removed, or no longer be available to your club.';
-
-  @override
-  String get detailBack => 'Back to challenges';
-
-  @override
-  String get detailPendingBody =>
-      'Keeping the current pool and score choice visible while confirmation is pending.';
-
-  @override
-  String get detailActionsUnavailableBody =>
-      'You can review this pool, but joining and cancellation are disabled for this build.';
-
-  @override
-  String get detailShowingSaved => 'Showing saved challenge';
-
-  @override
-  String get detailShowingSavedBody =>
-      'Reconnect and refresh before joining, changing a score, or cancelling this pool.';
-
-  @override
-  String get detailRefreshUpper => 'Refresh challenge';
-
-  @override
-  String get detailMyPickUpper => 'My pick';
-
-  @override
-  String get detailMyEntry => 'My entry';
-
-  @override
-  String get detailJoinUpper => 'Join this challenge';
-
-  @override
-  String get detailPickScoreBody =>
-      'Pick the exact score before the fixture locks.';
-
-  @override
-  String get detailResults => 'Results';
-
-  @override
-  String get detailOfficialScore => 'Official score';
-
-  @override
-  String get detailWinners => 'Winners';
-
-  @override
-  String get detailLosers => 'Losers';
-
-  @override
-  String get detailPointsPerWinner => 'Points / winner';
-
-  @override
-  String get detailEntries => 'Entries';
-
-  @override
-  String get detailEntryCancelled => 'Entry cancelled';
-
-  @override
-  String get detailWaitingResult => 'Waiting for official result review.';
-
-  @override
-  String detailScoreSemantics(String label, int value) {
-    return '$label score $value';
-  }
-
-  @override
-  String get detailAccessUnavailable => 'Challenge access unavailable';
-
-  @override
-  String get detailAccessUnavailableBody =>
-      'Your current account cannot review or change this challenge.';
-
-  @override
-  String get detailDataChangedBody =>
-      'Refresh before reviewing entries or changing this challenge.';
-
-  @override
-  String get detailSecurityTimedOutBody =>
-      'No challenge action was confirmed. Refresh before trying again.';
-
-  @override
-  String get detailUnavailable => 'Challenge unavailable';
-
-  @override
-  String get detailUnavailableBody =>
-      'The latest pool details could not be confirmed. Refresh to try again.';
-
-  @override
-  String get detailJoinedSuccess => 'Challenge joined successfully.';
-
-  @override
-  String get detailCancelledSuccess => 'Challenge cancelled.';
-
-  @override
-  String get detailJoining => 'Joining challenge';
-
-  @override
-  String get detailCancelling => 'Cancelling challenge';
-
-  @override
-  String get detailRefreshing => 'Refreshing challenge';
-
-  @override
-  String get detailJoiningUpper => 'Joining challenge';
-
-  @override
-  String detailJoinWithPoints(int count) {
-    return 'Join with $count pts';
-  }
-
-  @override
-  String get detailCancellingUpper => 'Cancelling challenge';
-
-  @override
-  String get detailCancelUpper => 'Cancel challenge';
-
-  @override
-  String get detailConnectionRestored => 'Connection restored';
-
-  @override
-  String get detailOffline => 'Challenge details offline';
-
-  @override
-  String get detailRefreshBeforeAction =>
-      'Refresh to check the current pool before joining or cancelling.';
-
-  @override
-  String get detailReconnectBeforeAction =>
-      'Reconnect to check the current pool before joining or cancelling.';
-
-  @override
-  String get detailEntryActive => 'Active';
-
-  @override
-  String get detailEntryWinner => 'Winner';
-
-  @override
-  String get detailEntryLoser => 'Loser';
-
-  @override
-  String get detailEntryRefunded => 'Refunded';
-
-  @override
-  String get detailEntryCancelledStatus => 'Cancelled';
 
   @override
   String get gameShareOptionsClosed =>
@@ -11037,4 +10245,190 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get settingsApplyTheme => 'Apply';
+
+  @override
+  String get predictTitle => 'Predict';
+
+  @override
+  String get predictIntro => 'Pick the result. One entry per match.';
+
+  @override
+  String get predictFixtures => 'Fixtures';
+
+  @override
+  String get predictHistory => 'My picks';
+
+  @override
+  String get predictWallet => 'FET activity';
+
+  @override
+  String get predictDraw => 'Draw';
+
+  @override
+  String get predictAll => 'All competitions';
+
+  @override
+  String get predictEmpty => 'No open fixtures';
+
+  @override
+  String get predictEmptyBody => 'Prepared matches appear here before kickoff.';
+
+  @override
+  String get predictNoHistory => 'Your picks will appear here';
+
+  @override
+  String get predictNoActivity => 'No FET activity yet';
+
+  @override
+  String get predictUnavailable => 'Couldn’t refresh Predict';
+
+  @override
+  String get predictRefresh => 'Refresh';
+
+  @override
+  String get predictLoading => 'Loading fixtures';
+
+  @override
+  String get predictDisabled => 'Predict is not open yet';
+
+  @override
+  String get predictSignIn => 'Sign in to pick';
+
+  @override
+  String get predictOffline => 'Connect to refresh or pick a result.';
+
+  @override
+  String get predictClosed =>
+      'This match is now closed. Refresh for current fixtures.';
+
+  @override
+  String get predictAlreadyEntered =>
+      'You already picked this match. Refresh to see your choice.';
+
+  @override
+  String get predictInsufficient => 'You don’t have enough FET for this entry.';
+
+  @override
+  String get predictUncertain =>
+      'Your entry hasn’t been confirmed. Refresh before trying again.';
+
+  @override
+  String get predictPending => 'Confirming your pick…';
+
+  @override
+  String get predictPicked => 'Picked';
+
+  @override
+  String get predictWon => 'Won';
+
+  @override
+  String get predictLost => 'Settled';
+
+  @override
+  String get predictRefunded => 'Refunded';
+
+  @override
+  String get predictLocked => 'Closed';
+
+  @override
+  String get predictRules =>
+      'Entries close at kickoff. Correct picks share the pool. If no one is correct, or the match is voided, entries are refunded. FET is not cash.';
+
+  @override
+  String get predictWelcome => 'Welcome FET';
+
+  @override
+  String get predictEntry => 'Predict entry';
+
+  @override
+  String get predictPayout => 'Predict payout';
+
+  @override
+  String get predictRefund => 'Predict refund';
+
+  @override
+  String get predictActivity => 'FET activity';
+
+  @override
+  String get predictAdminTitle => 'Predict operations';
+
+  @override
+  String get predictAdminIntro =>
+      'Prepare fixtures. Confirm official results. Settle or refund entries.';
+
+  @override
+  String get predictAdminSettings => 'Settings';
+
+  @override
+  String get predictAdminEnabled => 'Open Predict';
+
+  @override
+  String get predictAdminEntryPrice => 'Entry price (FET)';
+
+  @override
+  String get predictAdminSave => 'Save settings';
+
+  @override
+  String get predictAdminAll => 'All fixtures';
+
+  @override
+  String get predictAdminNoPool => 'No pool';
+
+  @override
+  String get predictAdminOpen => 'Open';
+
+  @override
+  String get predictAdminLocked => 'Locked';
+
+  @override
+  String get predictAdminSettled => 'Settled';
+
+  @override
+  String get predictAdminRefunded => 'Refunded';
+
+  @override
+  String get predictAdminPrepare => 'Prepare fixture';
+
+  @override
+  String get predictAdminConfirm => 'Confirm result';
+
+  @override
+  String get predictAdminSettle => 'Settle pool';
+
+  @override
+  String get predictAdminRefund => 'Void and refund';
+
+  @override
+  String get predictAdminSource => 'Official source URL';
+
+  @override
+  String get predictAdminReason => 'Reason for refund';
+
+  @override
+  String get predictAdminCancel => 'Cancel';
+
+  @override
+  String get predictAdminFailed =>
+      'Changes could not be confirmed. Refresh the ledger before trying again.';
+
+  @override
+  String get predictAdminDenied => 'Admin access required';
+
+  @override
+  String get predictAdminEmpty => 'No fixtures to manage';
+
+  @override
+  String get predictAdminPriceNote =>
+      'New price applies to newly prepared fixtures. Entries close automatically at kickoff.';
+
+  @override
+  String get predictAdminTotals => 'Entries / Staked / Paid';
+
+  @override
+  String get predictAdminConfirmBody =>
+      'Review the official final score before confirming.';
+
+  @override
+  String get predictAdminSettleBody =>
+      'Distribute the whole pool to correct entries. If none are correct, refund every entry.';
 }

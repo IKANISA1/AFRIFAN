@@ -5,7 +5,7 @@
   "rules": [
     {
       "id": "source-authored-names-and-football-identities",
-      "expected_match_count": 142,
+      "expected_match_count": 144,
       "source_keys": [
         "author_name",
         "away_team",

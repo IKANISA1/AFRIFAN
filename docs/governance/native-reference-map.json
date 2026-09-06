@@ -29,7 +29,7 @@
   },
   "status": "local_implementation_and_regression_verified",
   "claim_100_percent_fidelity": false,
-  "route_count": 85,
+  "route_count": 82,
   "excluded_surfaces": {
     "consumer_web": "outside native mobile reimplementation",
     "admin_pwa": "outside native mobile reimplementation",
@@ -145,200 +145,64 @@
       "representative_capture": "packages/features/feat_onboarding/test/goldens/auth_phone_state_dark_dark_390x844.png"
     },
     {
-      "route": "/challenge",
+      "route": "/predict",
       "kind": "route",
-      "source_module": "ChallengeModule",
+      "source_module": "PredictModule",
       "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
-        "LIVE-007",
-        "LIVE-026",
-        "LIVE-053"
+        "LIVE-007"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Gikundiro simplified Predict behavior, adapted to AFRICLUB native neutral task groups: prepared fixture cards, Home / Draw / Away, a fixed FET entry, confirmed picks and wallet activity. No creator, custom stake or exact-score journey.",
       "required_states": [
         "loading",
         "empty",
         "error",
         "offline",
-        "permission_denied_or_not_applicable",
+        "permission_denied",
         "large_text",
-        "reduced_motion",
         "light",
-        "dark"
+        "dark",
+        "syncing",
+        "reduced_motion",
+        "focused",
+        "pressed",
+        "selected",
+        "security_timeout",
+        "guest",
+        "history",
+        "wallet"
       ],
       "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
+      "interaction_verification": "RPC/controller and widget behavior verified with synthetic data. Native iPhone simulator journey verified for single entry, history and wallet. Live PostgREST blocked by project storage-quota HTTP 402; no live supporter availability claim.",
       "target_baselines": [
-        "packages/features/feat_gamification/test/goldens/challenge_state_conflict_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_dark_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_disabled_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_empty_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_error_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_focused_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_large_text_dark_320x720.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_light_light_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_loading_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_offline_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_permission_denied_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_pressed_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_reduced_motion_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_security_timeout_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_selected_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_state_syncing_dark_390x844.png"
+        "packages/features/feat_gamification/test/goldens/predict_state_conflict_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_dark_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_disabled_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_empty_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_error_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_focused_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_guest_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_history_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_large_text_dark_320x720.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_light_light_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_loading_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_offline_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_permission_denied_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_pressed_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_reduced_motion_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_security_timeout_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_selected_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_syncing_dark_390x844.png",
+        "packages/features/feat_gamification/test/goldens/predict_state_wallet_dark_390x844.png"
       ],
       "test_evidence": [
-        "packages/features/feat_gamification/test/challenge_feed_screen_states_test.dart"
+        "packages/features/feat_gamification/test/predict_screen_test.dart",
+        "packages/features/feat_gamification/test/predict_controller_test.dart",
+        "apps/rayon_sports/integration_test/predict_journey_test.dart"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_gamification/test/goldens/challenge_state_dark_dark_390x844.png"
-    },
-    {
-      "route": "/challenge/:id",
-      "kind": "route",
-      "source_module": "ChallengeModule",
-      "target_route": null,
-      "mapping_type": "component_pattern",
-      "reference_ids": [
-        "LIVE-007",
-        "LIVE-026",
-        "LIVE-053"
-      ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
-      "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
-      ],
-      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
-      "target_baselines": [
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_conflict_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_dark_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_disabled_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_empty_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_error_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_focused_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_large_text_dark_320x720.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_light_light_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_loading_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_offline_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_permission_denied_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_pressed_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_reduced_motion_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_security_timeout_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_selected_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_detail_state_syncing_dark_390x844.png"
-      ],
-      "test_evidence": [
-        "packages/features/feat_gamification/test/challenge_detail_screen_states_test.dart"
-      ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_gamification/test/goldens/challenge_detail_state_dark_dark_390x844.png"
-    },
-    {
-      "route": "/challenge/create",
-      "kind": "route",
-      "source_module": "ChallengeModule",
-      "target_route": null,
-      "mapping_type": "component_pattern",
-      "reference_ids": [
-        "LIVE-007",
-        "LIVE-026",
-        "LIVE-053"
-      ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
-      "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
-      ],
-      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
-      "target_baselines": [
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_conflict_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_dark_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_disabled_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_empty_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_error_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_focused_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_large_text_dark_320x720.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_light_light_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_loading_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_offline_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_permission_denied_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_pressed_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_reduced_motion_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_security_timeout_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_selected_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_create_state_syncing_dark_390x844.png"
-      ],
-      "test_evidence": [
-        "packages/features/feat_gamification/test/challenge_create_screen_states_test.dart"
-      ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_gamification/test/goldens/challenge_create_state_dark_dark_390x844.png"
-    },
-    {
-      "route": "/challenge/my",
-      "kind": "route",
-      "source_module": "ChallengeModule",
-      "target_route": null,
-      "mapping_type": "component_pattern",
-      "reference_ids": [
-        "LIVE-007",
-        "LIVE-026",
-        "LIVE-053"
-      ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
-      "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
-      ],
-      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
-      "target_baselines": [
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_conflict_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_dark_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_disabled_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_empty_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_error_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_focused_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_large_text_dark_320x720.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_light_light_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_loading_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_offline_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_permission_denied_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_pressed_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_reduced_motion_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_security_timeout_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_selected_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/challenge_my_state_syncing_dark_390x844.png"
-      ],
-      "test_evidence": [
-        "packages/features/feat_gamification/test/challenge_my_screen_states_test.dart"
-      ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_gamification/test/goldens/challenge_my_state_dark_dark_390x844.png"
+      "representative_capture": "packages/features/feat_gamification/test/goldens/predict_state_dark_dark_390x844.png"
     },
     {
       "route": "/club",
@@ -3020,54 +2884,49 @@
       "representative_capture": "packages/features/feat_admin/test/goldens/admin_dashboard_state_dark_dark_390x844.png"
     },
     {
-      "route": "/admin/challenges",
+      "route": "/admin/predict",
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
       "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
-        "LIVE-007",
-        "LIVE-053",
-        "LIVE-060"
+        "LIVE-007"
       ],
-      "adaptation": "Role-gated operational lists, filters, forms and confirmation actions use the shared native type, neutral groups and controls. No source analogue is asserted for the admin workflow. Permissions, backend data and operator actions remain unchanged.",
+      "adaptation": "Gikundiro simplified Predict behavior, adapted to AFRICLUB native neutral task groups: club-scoped fixture ledger, prepare, confirm official result, settle or refund. Automatic kickoff lock; no manual Lock action.",
       "required_states": [
         "loading",
         "empty",
         "error",
         "offline",
-        "permission_denied_or_not_applicable",
+        "permission_denied",
         "large_text",
-        "reduced_motion",
         "light",
-        "dark"
+        "dark",
+        "syncing"
       ],
       "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
+      "interaction_verification": "RPC/controller and widget behavior verified with synthetic data. Live PostgREST blocked by project storage-quota HTTP 402; no live supporter availability claim.",
       "target_baselines": [
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_conflict_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_dark_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_disabled_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_empty_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_error_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_focused_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_large_text_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_light_light_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_loading_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_offline_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_permission_denied_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_pressed_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_reduced_motion_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_security_timeout_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_selected_dark_390x844.png",
-        "packages/features/feat_admin/test/goldens/admin_challenges_state_syncing_dark_390x844.png"
+        "packages/features/feat_admin/test/goldens/admin_predict_state_confirm_result_dark_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_dark_dark_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_empty_dark_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_error_dark_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_large_text_dark_320x720.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_light_light_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_loading_dark_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_offline_dark_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_permission_denied_dark_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_refund_dark_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_settings_dark_390x844.png",
+        "packages/features/feat_admin/test/goldens/admin_predict_state_syncing_dark_390x844.png"
       ],
       "test_evidence": [
-        "packages/features/feat_admin/test/admin_challenges_states_test.dart"
+        "packages/features/feat_admin/test/predict_ops_screen_test.dart",
+        "packages/features/feat_admin/test/admin_predict_controller_test.dart"
       ],
       "review_method": "Inspect target operational route for shared native hierarchy, type, insets, grouping, action colour and product adaptation. Regression states are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_admin/test/goldens/admin_challenges_state_dark_dark_390x844.png"
+      "representative_capture": "packages/features/feat_admin/test/goldens/admin_predict_state_dark_dark_390x844.png"
     },
     {
       "route": "/admin/cms",

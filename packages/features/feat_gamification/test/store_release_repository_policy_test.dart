@@ -1,5 +1,6 @@
 import 'package:core_feature_config/core_feature_config.dart';
-import 'package:feat_gamification/src/repositories/challenge_repository.dart';
+import 'package:feat_gamification/src/predict/predict_models.dart';
+import 'package:feat_gamification/src/predict/predict_repository.dart';
 import 'package:feat_gamification/src/repositories/fet_repository.dart';
 import 'package:feat_gamification/src/repositories/partner_pool_repository.dart';
 import 'package:feat_gamification/src/repositories/prediction_repository.dart';
@@ -13,63 +14,14 @@ void main() {
   const policy = StoreReleasePolicy(isEnforced: true);
 
   group('store release repository policy', () {
-    test(
-      'challenge and pool reads fail closed without touching Supabase',
-      () async {
-        final client = _MockSupabaseClient();
-        final challenges = ChallengeRepository(
-          client: client,
-          storeReleasePolicy: policy,
-        );
-        final pools = PartnerPoolRepository(
-          client: client,
-          storeReleasePolicy: policy,
-        );
-
-        expect(await challenges.loadChallenges(), isEmpty);
-        expect(await challenges.loadMyChallenges(), isEmpty);
-        expect(await challenges.loadChallengeDetail('challenge-1'), isNull);
-        expect(await pools.loadPools(), isEmpty);
-        verifyNever(() => client.auth);
-      },
-    );
-
-    test('challenge and pool mutations reject before network access', () async {
+    test('Predict reads and mutations fail closed before network access', () async {
       final client = _MockSupabaseClient();
-      final challenges = ChallengeRepository(
-        client: client,
-        storeReleasePolicy: policy,
-      );
-      final pools = PartnerPoolRepository(
-        client: client,
-        storeReleasePolicy: policy,
-      );
-
-      await expectLater(
-        challenges.createChallenge(
-          matchId: 'match-1',
-          homeScore: 1,
-          awayScore: 0,
-          stakeFet: 50,
-        ),
-        throwsA(isA<UnsupportedError>()),
-      );
-      await expectLater(
-        challenges.joinChallenge(
-          challengeId: 'challenge-1',
-          homeScore: 1,
-          awayScore: 0,
-        ),
-        throwsA(isA<UnsupportedError>()),
-      );
-      await expectLater(
-        challenges.cancelChallenge('challenge-1'),
-        throwsA(isA<UnsupportedError>()),
-      );
-      await expectLater(
-        pools.joinPool(poolId: 'pool-1', selectedOutcome: 'home'),
-        throwsA(isA<UnsupportedError>()),
-      );
+      final predict = PredictRepository(client, storeReleasePolicy: policy);
+      expect((await predict.load()).fixtures, isEmpty);
+      await expectLater(predict.place('fixture-1', PredictSelection.home), throwsA(PredictFailure.unavailable));
+      final pools = PartnerPoolRepository(client: client, storeReleasePolicy: policy);
+      expect(await pools.loadPools(), isEmpty);
+      await expectLater(pools.joinPool(poolId: 'pool-1', selectedOutcome: 'home'), throwsA(isA<UnsupportedError>()));
       verifyNever(() => client.auth);
     });
 

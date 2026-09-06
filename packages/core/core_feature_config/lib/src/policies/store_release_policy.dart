@@ -6,7 +6,7 @@ import '../models/platform_feature_config.dart';
 /// insufficient. The matching feature must also carry every required boolean
 /// in `rules.rollout_rules` before a production store build can expose it.
 abstract final class StorePolicyFeatureKeys {
-  static const String stakedCompetitions = 'challenge';
+  static const String stakedCompetitions = 'predict';
   static const String rewardRedemption = 'reward_redemption';
   static const String crossUserText = 'cross_user_text';
   static const String paidDigitalMembership = 'paid_digital_membership';
@@ -193,7 +193,9 @@ class StoreReleasePolicy {
   bool isRouteAllowed(String path) {
     if (!isEnforced) return true;
     final normalized = _normalizePath(path);
-    if (normalized == '/challenge' ||
+    if (normalized == '/predict' ||
+        normalized.startsWith('/predict/') ||
+        normalized == '/challenge' ||
         normalized.startsWith('/challenge/') ||
         normalized == '/fanzone/jackpot' ||
         normalized.startsWith('/fanzone/jackpot/') ||

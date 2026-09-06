@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import 'screens/admin_dashboard_screen.dart';
 import 'screens/admin_route_guard.dart';
-import 'screens/challenge_ops_screen.dart';
 import 'screens/cms_content_manager_screen.dart';
 import 'screens/competition_manager_screen.dart';
 import 'screens/contributions_monitor_screen.dart';
@@ -11,6 +10,7 @@ import 'screens/feature_detail_screen.dart';
 import 'screens/feature_manager_screen.dart';
 import 'screens/fixture_settlement_screen.dart';
 import 'screens/match_manager_screen.dart';
+import 'screens/predict_ops_screen.dart';
 import 'screens/push_notifications_screen.dart';
 import 'screens/sms_sync_monitor_screen.dart';
 
@@ -69,9 +69,9 @@ class AdminModule extends FeatureModule {
               const AdminRouteGuard(child: FixtureSettlementScreen()),
         ),
         GoRoute(
-          path: 'challenges',
+          path: 'predict',
           builder: (context, state) =>
-              const AdminRouteGuard(child: ChallengeOpsScreen()),
+              const AdminRouteGuard(child: PredictOpsScreen()),
         ),
         GoRoute(
           path: 'competitions',
@@ -142,10 +142,10 @@ class AdminModule extends FeatureModule {
       rationale: 'Fixture settlement is internal tooling.',
     ),
     RoutePresentationDecision(
-      path: '/admin/challenges',
+      path: '/admin/predict',
       presentation: RoutePresentation.internalOnly,
       recommendation: 'hide from supporter app',
-      rationale: 'Challenge operations are internal tooling.',
+      rationale: 'Predict operations are internal tooling.',
     ),
     RoutePresentationDecision(
       path: '/admin/competitions',

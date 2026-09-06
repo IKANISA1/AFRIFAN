@@ -7,6 +7,7 @@ create temporary table expected_anonymous_security_definer_functions (
 ) on commit drop;
 
 insert into expected_anonymous_security_definer_functions (signature) values
+  ('public.predict_dashboard(p_club_id bigint)'),
   ('public.check_feature_enabled(p_feature_key text, p_channel text, p_club_id bigint)'),
   ('public.fet_get_catalog(p_club_id bigint, p_include_inactive boolean)'),
   ('public.fet_resolve_public_club_id(p_club_id bigint)'),
@@ -51,7 +52,7 @@ select is(
 
 select is(
   (select count(*)::integer from actual_anonymous_security_definer_functions),
-  14,
+  15,
   'anonymous execution is limited to the governed endpoint count'
 );
 
@@ -133,11 +134,15 @@ insert into expected_authenticated_security_definer_functions (signature) values
   ('is_super_admin()'),
   ('partner_fet_record_earn_event(uuid,uuid,integer,uuid,text,text,text,text,jsonb,bigint)'),
   ('prepare_google_wallet_ticket(uuid)'),
-  ('prediction_admin_get_challenges(bigint,text[],integer,integer)'),
+  ('create_member_contribution_intent(uuid,integer)'),
+  ('predict_dashboard(bigint)'),
+  ('predict_place(bigint,uuid,text)'),
+  ('predict_admin_dashboard(bigint)'),
+  ('predict_admin_settings(bigint,boolean,integer)'),
+  ('predict_admin_prepare(bigint,uuid,text)'),
+  ('predict_admin_confirm_result(uuid,integer,integer,text)'),
+  ('predict_admin_settle(uuid,text)'),
   ('prediction_cancel(uuid)'),
-  ('prediction_challenge_admin_retry_settlement(uuid)'),
-  ('prediction_challenge_cancel(uuid)'),
-  ('prediction_challenge_fixture_json(uuid)'),
   ('prediction_get_active(integer,integer)'),
   ('prediction_get_dashboard()'),
   ('prediction_get_detail(uuid)'),
@@ -168,7 +173,7 @@ where p.prosecdef
 
 select is(
   (select count(*)::integer from actual_authenticated_security_definer_functions),
-  59,
+  63,
   'authenticated execution is limited to the governed endpoint count'
 );
 

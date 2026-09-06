@@ -78,23 +78,21 @@ AFRICLUB screen hierarchy must follow these rules:
   standings, history, projects, tickets, and shop.
 - Membership makes belonging visible through the digital card, plan/status,
   fan clubs, contribution history/statements, and relevant club projects.
-- Fan Zone contains free selected-match football predictions, approved
-  competitions, points/reward context, and supporter communities.
+- Fan Zone contains Predict for prepared fixtures, FET activity, and supporter communities.
 - Matchday experiences or Places to watch contains secondary venue discovery,
   explicit check-in, a bounded drinks menu/order, and approved promotions.
 - Search must discover club, team, news, fixtures, results, standings,
   projects, tickets, products, supporter communities, and approved
   venues according to permissions and availability.
 
-Prediction presentation is safety-critical:
+Predict follows the simplified Gikundiro contract requested on 6 September 2026:
 
-- predictions are free-to-enter and available only for selected approved
-  matches from configured main leagues, the local league, or approved club
-  competitions;
-- no odds, staking, betting, cash-payout, or fantasy-squad implication is
-  permitted;
-- prediction eligibility, score, settlement state, and rewards display one
-  authoritative cross-surface truth.
+- only Home, Draw or Away on prepared, future fixtures with registered team crests;
+- a stored, fixed FET entry price per fixture (100 by default), one entry per verified supporter;
+- a 500 FET welcome grant once per supporter and club, using the existing wallet;
+- automatic kickoff closure, complete-pool payouts to correct picks, and no-winner or void refunds;
+- no cash purchase, cash payout, odds, custom stakes or supporter-created competitions;
+- existing production store-release authorization is still required.
 
 All supported club apps use the same semantic system and shared domain
 contracts. Branding and configuration may vary, but shared layouts must reserve

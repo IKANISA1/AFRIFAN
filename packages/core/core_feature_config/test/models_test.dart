@@ -50,11 +50,11 @@ void main() {
         ],
         'route_registry': [
           {
-            'route_key': 'challenge',
-            'path_pattern': '/challenge',
+            'route_key': 'predict',
+            'path_pattern': '/predict',
             'surface': 'mobile',
-            'feature_key': 'challenge',
-            'label': 'Challenge',
+            'feature_key': 'predict',
+            'label': 'Predict',
             'auth_required': true,
             'required_roles': [],
             'sort_order': 7,
@@ -102,8 +102,8 @@ void main() {
       expect(snapshot.optionSets, hasLength(1));
       expect(snapshot.runtimeCopy, hasLength(1));
       expect(
-        snapshot.routeByPath('/challenge/friend')?.featureKey,
-        'challenge',
+        snapshot.routeByPath('/predict')?.featureKey,
+        'predict',
       );
       expect(snapshot.intOptions('challenge_stake_fet'), [500, 1000]);
       expect(

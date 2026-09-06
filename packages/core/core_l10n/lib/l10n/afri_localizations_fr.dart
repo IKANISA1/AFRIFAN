@@ -5213,164 +5213,13 @@ class AfriLocalizationsFr extends AfriLocalizations {
       'Cet espace est réservé aux administrateurs de club vérifiés pour le club actif.';
 
   @override
-  String get adminChallengesTitle => 'Opérations des défis';
-
-  @override
   String get adminBack => 'Retour';
-
-  @override
-  String get adminChallengesLoadingTitle =>
-      'Chargement des opérations de défis';
-
-  @override
-  String get adminChallengesLoadingMessage =>
-      'Vérification des règlements en cours.';
-
-  @override
-  String get adminChallengesFilterLabel => 'Filtre d’état des défis';
-
-  @override
-  String get adminChallengesFilterAll => 'Tous';
-
-  @override
-  String get adminChallengesFilterOpen => 'Ouverts';
-
-  @override
-  String get adminChallengesFilterLocked => 'Verrouillés';
-
-  @override
-  String get adminChallengesFilterSettled => 'Réglés';
-
-  @override
-  String get adminChallengesFilterVoid => 'Annulés';
-
-  @override
-  String get adminChallengesEmptyTitle => 'Aucune opération de défi';
-
-  @override
-  String get adminChallengesEmptyAllMessage =>
-      'Aucun défi n’est actuellement en attente.';
-
-  @override
-  String adminChallengesEmptyFilteredMessage(String status) {
-    return 'Aucun défi $status n’est actuellement en attente.';
-  }
-
-  @override
-  String get adminChallengesRetryTitle => 'Réessayer le règlement ?';
-
-  @override
-  String adminChallengesRetryMessage(String home, String away) {
-    return 'Revérifiez $home contre $away. Ne réessayez pas avant la confirmation de l’état actualisé.';
-  }
 
   @override
   String get adminCancelUpper => 'Annuler';
 
   @override
-  String get adminRetryUpper => 'Réessayer';
-
-  @override
-  String get adminChallengesSettlementPending =>
-      'Le règlement reste en attente. Vérifiez l’état actualisé.';
-
-  @override
-  String get adminChallengesSettlementRefreshed =>
-      'État du règlement actualisé.';
-
-  @override
-  String get adminChallengesUnavailable => 'Opérations de défis indisponibles';
-
-  @override
-  String get adminChallengesDisabledMessage =>
-      'Les contrôles de règlement des défis sont désactivés dans cette version contrôlée.';
-
-  @override
   String get adminBackToAdmin => 'Retour à l’administration';
-
-  @override
-  String get adminChallengesOffline => 'Opérations de défis hors ligne';
-
-  @override
-  String get adminChallengesOfflineMessage =>
-      'Reconnectez-vous avant de charger les règlements privés.';
-
-  @override
-  String get adminChallengesAccessUnavailable => 'Accès aux défis indisponible';
-
-  @override
-  String get adminChallengesAccessUnavailableMessage =>
-      'Ce compte ne peut pas consulter ni relancer les règlements des défis du club.';
-
-  @override
-  String get adminChallengesStatusChanged => 'État du défi modifié';
-
-  @override
-  String get adminChallengesStatusChangedMessage =>
-      'Actualisez avant de poursuivre le règlement.';
-
-  @override
-  String get adminChallengesSecurityTimeoutMessage =>
-      'Aucune donnée de défi n’a été affichée. Vérifiez votre connexion et réessayez.';
-
-  @override
-  String get adminChallengesPrivateDataHidden =>
-      'Les données privées de règlement restent masquées. Réessayez.';
-
-  @override
-  String get adminChallengesRetryingTitle => 'Nouvelle tentative de règlement';
-
-  @override
-  String get adminChallengesRetryingMessage =>
-      'Les contrôles sont suspendus jusqu’à la confirmation du résultat actuel.';
-
-  @override
-  String get adminChallengesRefreshingTitle =>
-      'Actualisation des opérations de défis';
-
-  @override
-  String get adminChallengesRefreshingMessage =>
-      'La dernière liste confirmée reste affichée pendant la vérification de l’état actuel.';
-
-  @override
-  String get adminChallengesOutcomeUnconfirmed =>
-      'Le résultat de la nouvelle tentative n’est pas confirmé. Actualisez avant toute autre action.';
-
-  @override
-  String get adminChallengesLastConfirmedMessage =>
-      'La dernière liste confirmée reste affichée. Les actions sont suspendues jusqu’à la réussite de l’actualisation.';
-
-  @override
-  String get adminChallengesVoidReasonRecorded =>
-      'Motif d’annulation enregistré';
-
-  @override
-  String get adminChallengesNoVoidReason => 'Aucun motif d’annulation';
-
-  @override
-  String adminChallengesSettlementMode(String mode) {
-    return 'Règlement $mode';
-  }
-
-  @override
-  String adminChallengesAuditState(String state) {
-    return 'Audit $state';
-  }
-
-  @override
-  String get adminChallengesRetryingAction => 'Règlement en cours';
-
-  @override
-  String get adminChallengesRetryAction => 'Relancer le règlement';
-
-  @override
-  String get adminChallengesCreator => 'Créateur';
-
-  @override
-  String get adminChallengesPool => 'Cagnotte';
-
-  @override
-  String get adminChallengesParticipants => 'Participants';
 
   @override
   String adminVersus(String home, String away) {
@@ -8057,61 +7906,7 @@ class AfriLocalizationsFr extends AfriLocalizations {
   }
 
   @override
-  String get gameVersus => 'Contre';
-
-  @override
-  String get gameKickoffSoon => 'Coup d’envoi imminent';
-
-  @override
-  String gameJoinedCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count participants',
-      one: '1 participant',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String gameTotalPoolPoints(int count) {
-    return '$count pts au total';
-  }
-
-  @override
-  String get gameCreator => 'Créateur';
-
-  @override
-  String get gameMyPick => 'Mon choix';
-
-  @override
   String get gameOpenUpper => 'Ouvert';
-
-  @override
-  String get gameLockedUpper => 'Verrouillé';
-
-  @override
-  String get gameSettledUpper => 'Réglé';
-
-  @override
-  String gameDaysLeft(int count) {
-    return '$count j restants';
-  }
-
-  @override
-  String gameHoursMinutes(int hours, int minutes) {
-    return '$hours h $minutes min';
-  }
-
-  @override
-  String gameMinutesLeft(int count) {
-    return '$count min restantes';
-  }
-
-  @override
-  String gameScorePrediction(String label, int home, int away) {
-    return '$label  $home-$away';
-  }
 
   @override
   String get gamePointsShare => 'Répartition des points';
@@ -9264,156 +9059,10 @@ class AfriLocalizationsFr extends AfriLocalizations {
   String get gameNext => 'Suivant';
 
   @override
-  String get gameMyChallenges => 'Mes défis';
-
-  @override
   String get gameOpen => 'Ouverts';
 
   @override
-  String get gameLocked => 'Verrouillés';
-
-  @override
-  String get gameSettled => 'Réglés';
-
-  @override
-  String get gameRefunded => 'Remboursés';
-
-  @override
-  String get gameLoadingChallenges => 'Chargement de vos défis';
-
-  @override
-  String get gameLoadingChallengesDescription =>
-      'Vérification des pools créés ou rejoints pour ce statut.';
-
-  @override
   String get gameRefresh => 'Actualiser';
-
-  @override
-  String get gameRefreshingChallengeHistory =>
-      'Actualisation de l’historique des défis';
-
-  @override
-  String get gameRefreshingChallengeHistoryDescription =>
-      'Vos pools confirmés restent visibles pendant la vérification du statut récent.';
-
-  @override
-  String get gameChallengeHistoryReadOnly =>
-      'L’historique des défis est en lecture seule';
-
-  @override
-  String get gameChallengeHistoryReadOnlyDescription =>
-      'Vos pools confirmés restent visibles, mais l’ouverture des détails est désactivée pour cette version.';
-
-  @override
-  String get gameShowingSavedChallengeHistory =>
-      'Affichage de l’historique enregistré';
-
-  @override
-  String get gameShowingSavedChallengeHistoryDescription =>
-      'Reconnectez-vous et actualisez avant d’ouvrir un pool ou de vérifier un statut récent.';
-
-  @override
-  String get gameRefreshHistory => 'Actualiser l’historique';
-
-  @override
-  String gameNoFilteredChallenges(String filter) {
-    return 'Aucun défi $filter';
-  }
-
-  @override
-  String get gameCreateChallenge => 'Créer un défi';
-
-  @override
-  String gameChallengeCardSemantics(String home, String away, String summary) {
-    return '$home contre $away. $summary. Ouvrir les détails du défi.';
-  }
-
-  @override
-  String get gameOpensChallenge => 'Ouvre ce défi';
-
-  @override
-  String get gameChallengeDetailsUnavailable =>
-      'Les détails du défi sont indisponibles';
-
-  @override
-  String gameTeamsVersusMultiline(String home, String away) {
-    return '$home\ncontre\n$away';
-  }
-
-  @override
-  String get gameConnectionRestored => 'Connexion rétablie';
-
-  @override
-  String get gameChallengeHistoryOffline => 'Historique des défis hors ligne';
-
-  @override
-  String get gameRefreshLatestChallengeStatus =>
-      'Actualisez pour vérifier le statut récent de vos défis.';
-
-  @override
-  String get gameReconnectChallengePools =>
-      'Reconnectez-vous pour charger les pools créés ou rejoints.';
-
-  @override
-  String get gameChallengeHistoryUnavailable =>
-      'Historique des défis indisponible';
-
-  @override
-  String get gameChallengeHistoryPermissionDenied =>
-      'Votre accès actuel au club ne permet pas cet historique.';
-
-  @override
-  String get gameChallengeHistoryChanged => 'L’historique des défis a changé';
-
-  @override
-  String get gameChallengeHistoryChangedDescription =>
-      'Actualisez et vérifiez le statut récent avant d’ouvrir un défi.';
-
-  @override
-  String get gameChallengeHistoryTimedOut =>
-      'La vérification de l’historique a expiré';
-
-  @override
-  String get gameChallengeHistoryTimedOutDescription =>
-      'Aucun statut n’a été confirmé. Actualisez avant d’ouvrir un défi.';
-
-  @override
-  String get gameChallengeHistoryTryAgain =>
-      'Actualisez et réessayez lorsque l’historique est prêt.';
-
-  @override
-  String get gameOpenChallengesEmpty =>
-      'Créez ou rejoignez un pool pour voir ici un défi de score exact actif.';
-
-  @override
-  String get gameLockedChallengesEmpty =>
-      'Aucun défi rejoint n’attend actuellement de score final.';
-
-  @override
-  String get gameSettledChallengesEmpty =>
-      'Les résultats et points des défis terminés apparaîtront ici.';
-
-  @override
-  String get gameRefundedChallengesEmpty =>
-      'Les défis annulés ou remboursés apparaîtront ici.';
-
-  @override
-  String gameEarnedPoints(int count) {
-    return '$count pts gagnés';
-  }
-
-  @override
-  String get gameNoResultCredit => 'Aucun crédit de résultat';
-
-  @override
-  String gameReturnedPoints(int count) {
-    return '$count pts restitués';
-  }
-
-  @override
-  String gameMyPickScore(int home, int away) {
-    return 'Mon choix $home-$away';
-  }
 
   @override
   String get gameMoreOptions => 'Plus d’options';
@@ -10071,172 +9720,6 @@ class AfriLocalizationsFr extends AfriLocalizations {
       'Le serveur n’a pas confirmé la tentative. Fermez cet avertissement avant de réessayer.';
 
   @override
-  String get challengeConfirmTitle => 'Confirmer le défi';
-
-  @override
-  String challengeConfirmPoints(int count) {
-    return 'Confirmer $count pts';
-  }
-
-  @override
-  String get challengeCreateTitle => 'Créer un défi';
-
-  @override
-  String get challengeFindingFixtures => 'Recherche des prochaines rencontres';
-
-  @override
-  String get challengeFindingFixturesBody =>
-      'Vérification des matchs encore ouverts aux défis de score exact.';
-
-  @override
-  String get challengeNoFixtures => 'Aucune rencontre disponible';
-
-  @override
-  String get challengeNoFixturesBody =>
-      'Aucun prochain match n’est encore ouvert à un nouveau défi.';
-
-  @override
-  String get challengeRefreshFixtures => 'Actualiser les rencontres';
-
-  @override
-  String get challengeCreating => 'Création du défi';
-
-  @override
-  String get challengeCreatingBody =>
-      'Votre rencontre, score et mise restent visibles pendant la confirmation.';
-
-  @override
-  String get challengeCreationUnavailable => 'Création de défi indisponible';
-
-  @override
-  String get challengeCreationDisabledBody =>
-      'Vous pouvez consulter le formulaire, mais la création est désactivée pour cette version.';
-
-  @override
-  String get challengeShowingSavedFixtures =>
-      'Rencontres enregistrées affichées';
-
-  @override
-  String get challengeShowingSavedFixturesBody =>
-      'Reconnectez-vous et actualisez avant de modifier le score ou créer un défi.';
-
-  @override
-  String get challengeRefreshFixturesUpper => 'Actualiser les rencontres';
-
-  @override
-  String get challengeExactScore => 'Score exact';
-
-  @override
-  String challengeSelectedScore(int home, int away) {
-    return 'Score exact sélectionné : $home à $away';
-  }
-
-  @override
-  String get challengeVersusUpper => 'Contre';
-
-  @override
-  String get challengeEntryPoints => 'Points d’entrée';
-
-  @override
-  String get challengeEntryOptionsUnavailable =>
-      'Les options d’entrée au défi ne sont pas encore disponibles.';
-
-  @override
-  String challengeStakePoints(int count) {
-    return '$count pts';
-  }
-
-  @override
-  String get challengeCheckingBalance =>
-      'Vérification de votre solde de points.';
-
-  @override
-  String get challengeBalanceUnavailable =>
-      'Votre solde est indisponible. Actualisez avant de créer ce défi.';
-
-  @override
-  String get challengeBalanceInsufficient =>
-      'Votre solde actuel ne couvre pas cette entrée.';
-
-  @override
-  String get challengeCreatingUpper => 'Création du défi';
-
-  @override
-  String get challengeCreationOffline => 'Création de défi hors connexion';
-
-  @override
-  String get challengeRefreshLatestFixtures =>
-      'Actualisez les dernières rencontres avant de créer un défi.';
-
-  @override
-  String get challengeReconnectFixtures =>
-      'Reconnectez-vous pour charger les rencontres disponibles.';
-
-  @override
-  String get challengeAccessDeniedBody =>
-      'Votre accès actuel au club ne permet pas un nouveau défi.';
-
-  @override
-  String get challengeDetailsChanged => 'Les détails du défi ont changé';
-
-  @override
-  String get challengeDetailsChangedBody =>
-      'Actualisez les rencontres et vérifiez votre choix avant de réessayer.';
-
-  @override
-  String get challengeSecurityTimedOut =>
-      'La vérification de sécurité a expiré';
-
-  @override
-  String get challengeSecurityTimedOutBody =>
-      'Aucun défi n’a été confirmé. Actualisez avant de réessayer.';
-
-  @override
-  String get challengeTryAgainBody =>
-      'Actualisez et réessayez lorsque les rencontres seront disponibles.';
-
-  @override
-  String challengePreviewSemantics(
-    String homeTeam,
-    String awayTeam,
-    int homeScore,
-    int awayScore,
-    int stake,
-    int balance,
-  ) {
-    return 'Aperçu du défi. $homeTeam contre $awayTeam. Votre choix $homeScore à $awayScore. Entrée $stake points. Solde $balance points.';
-  }
-
-  @override
-  String get challengePreview => 'Aperçu du défi';
-
-  @override
-  String get challengeYourPick => 'Votre choix';
-
-  @override
-  String challengeBalancePoints(int count) {
-    return 'Solde $count pts';
-  }
-
-  @override
-  String get challengeLocksAtKickoff => 'Verrouillage au coup d’envoi';
-
-  @override
-  String challengeFixtureOption(String home, String away, String competition) {
-    return '$home vs $away • $competition';
-  }
-
-  @override
-  String challengeDecrease(String label) {
-    return 'Diminuer $label';
-  }
-
-  @override
-  String challengeIncrease(String label) {
-    return 'Augmenter $label';
-  }
-
-  @override
   String get walletRewardsUnavailable => 'Récompenses indisponibles';
 
   @override
@@ -10349,290 +9832,6 @@ class AfriLocalizationsFr extends AfriLocalizations {
   @override
   String get walletSavedUntilRefresh =>
       'Le dernier solde confirmé reste visible jusqu’à une actualisation réussie.';
-
-  @override
-  String get feedChallengeTitle => 'Défi';
-
-  @override
-  String get feedDescription =>
-      'Cagnottes de score exact pour de vraies rencontres. Créez, rejoignez une fois et obtenez le résultat officiel automatiquement.';
-
-  @override
-  String get feedCreateNew => 'Créer un nouveau défi';
-
-  @override
-  String get feedOpening => 'Ouverture des défis';
-
-  @override
-  String get feedOpeningBody =>
-      'Vérification des rencontres, cagnottes et défis rejoints.';
-
-  @override
-  String get feedRefreshing => 'Actualisation des défis';
-
-  @override
-  String get feedRefreshingBody =>
-      'Les rencontres, cagnottes et défis rejoints restent visibles.';
-
-  @override
-  String get feedActionsUnavailable => 'Actions de défi indisponibles';
-
-  @override
-  String get feedActionsUnavailableBody =>
-      'Vous pouvez consulter les cagnottes, mais créer et rejoindre sont désactivés pour cette version.';
-
-  @override
-  String get feedShowingSaved => 'Défis enregistrés affichés';
-
-  @override
-  String get feedShowingSavedBody =>
-      'Reconnectez-vous avant de créer ou rejoindre une cagnotte.';
-
-  @override
-  String get feedUpdatesPaused => 'Mises à jour des défis suspendues';
-
-  @override
-  String get feedEmpty => 'Aucun défi disponible';
-
-  @override
-  String get feedEmptyBody =>
-      'De nouvelles cagnottes apparaîtront quand des rencontres admissibles seront ouvertes.';
-
-  @override
-  String get feedFeatured => 'Défis populaires / à la une';
-
-  @override
-  String get feedSeeAll => 'Tout voir';
-
-  @override
-  String get feedOpenChallenges => 'Défis ouverts';
-
-  @override
-  String get feedEndingSoon => 'Fin prochaine';
-
-  @override
-  String get feedEndingSoonAction => 'Fin prochaine';
-
-  @override
-  String get feedMyChallenges => 'Mes défis';
-
-  @override
-  String get feedSettledChallenges => 'Défis réglés';
-
-  @override
-  String get feedResults => 'Résultats';
-
-  @override
-  String get feedNoFilterMatches => 'Aucun résultat pour ce filtre';
-
-  @override
-  String get feedNoFilterMatchesBody =>
-      'Essayez une autre vue ou créez une nouvelle cagnotte.';
-
-  @override
-  String get feedAll => 'Tous';
-
-  @override
-  String get feedHighPool => 'Cagnotte élevée';
-
-  @override
-  String get feedMostParticipants => 'Plus de participants';
-
-  @override
-  String get feedMyJoined => 'Mes participations';
-
-  @override
-  String get feedChallengesOffline => 'Défis indisponibles hors connexion';
-
-  @override
-  String get feedChallengesOfflineBody =>
-      'Reconnectez-vous pour charger les rencontres et cagnottes actuelles.';
-
-  @override
-  String get feedAccessUnavailable => 'Accès aux défis indisponible';
-
-  @override
-  String get feedAccessUnavailableBody =>
-      'Votre accès actuel ne permet pas ces cagnottes.';
-
-  @override
-  String get feedDataChanged => 'Les données des défis ont changé';
-
-  @override
-  String get feedDataChangedBody =>
-      'Actualisez avant de consulter ou rejoindre les dernières cagnottes.';
-
-  @override
-  String get feedSecurityTimedOutBody =>
-      'Aucune action n’a été effectuée. Actualisez avant de réessayer.';
-
-  @override
-  String get feedUnavailable => 'Fil des défis indisponible';
-
-  @override
-  String get feedUnavailableBody =>
-      'Les cagnottes actuelles n’ont pas pu être chargées en toute sécurité.';
-
-  @override
-  String get detailTitle => 'Détail du défi';
-
-  @override
-  String get detailOpening => 'Ouverture du défi';
-
-  @override
-  String get detailOpeningBody =>
-      'Vérification de la cagnotte, des entrées et du résultat officiel.';
-
-  @override
-  String get detailNotFound => 'Défi introuvable';
-
-  @override
-  String get detailNotFoundBody =>
-      'Cette cagnotte est peut-être terminée, supprimée ou indisponible pour votre club.';
-
-  @override
-  String get detailBack => 'Retour aux défis';
-
-  @override
-  String get detailPendingBody =>
-      'La cagnotte et le score choisi restent visibles pendant la confirmation.';
-
-  @override
-  String get detailActionsUnavailableBody =>
-      'Vous pouvez consulter cette cagnotte, mais rejoindre et annuler sont désactivés.';
-
-  @override
-  String get detailShowingSaved => 'Défi enregistré affiché';
-
-  @override
-  String get detailShowingSavedBody =>
-      'Reconnectez-vous et actualisez avant de rejoindre, modifier le score ou annuler.';
-
-  @override
-  String get detailRefreshUpper => 'Actualiser le défi';
-
-  @override
-  String get detailMyPickUpper => 'Mon choix';
-
-  @override
-  String get detailMyEntry => 'Mon entrée';
-
-  @override
-  String get detailJoinUpper => 'Rejoindre ce défi';
-
-  @override
-  String get detailPickScoreBody =>
-      'Choisissez le score exact avant le verrouillage.';
-
-  @override
-  String get detailResults => 'Résultats';
-
-  @override
-  String get detailOfficialScore => 'Score officiel';
-
-  @override
-  String get detailWinners => 'Gagnants';
-
-  @override
-  String get detailLosers => 'Perdants';
-
-  @override
-  String get detailPointsPerWinner => 'Points / gagnant';
-
-  @override
-  String get detailEntries => 'Entrées';
-
-  @override
-  String get detailEntryCancelled => 'Entrée annulée';
-
-  @override
-  String get detailWaitingResult =>
-      'En attente de la vérification du résultat officiel.';
-
-  @override
-  String detailScoreSemantics(String label, int value) {
-    return 'Score de $label : $value';
-  }
-
-  @override
-  String get detailAccessUnavailable => 'Accès au défi indisponible';
-
-  @override
-  String get detailAccessUnavailableBody =>
-      'Votre compte ne peut pas consulter ou modifier ce défi.';
-
-  @override
-  String get detailDataChangedBody =>
-      'Actualisez avant de consulter les entrées ou modifier ce défi.';
-
-  @override
-  String get detailSecurityTimedOutBody =>
-      'Aucune action n’a été confirmée. Actualisez avant de réessayer.';
-
-  @override
-  String get detailUnavailable => 'Défi indisponible';
-
-  @override
-  String get detailUnavailableBody =>
-      'Les derniers détails n’ont pas pu être confirmés. Actualisez pour réessayer.';
-
-  @override
-  String get detailJoinedSuccess => 'Défi rejoint avec succès.';
-
-  @override
-  String get detailCancelledSuccess => 'Défi annulé.';
-
-  @override
-  String get detailJoining => 'Participation au défi';
-
-  @override
-  String get detailCancelling => 'Annulation du défi';
-
-  @override
-  String get detailRefreshing => 'Actualisation du défi';
-
-  @override
-  String get detailJoiningUpper => 'Participation en cours';
-
-  @override
-  String detailJoinWithPoints(int count) {
-    return 'Rejoindre avec $count pts';
-  }
-
-  @override
-  String get detailCancellingUpper => 'Annulation en cours';
-
-  @override
-  String get detailCancelUpper => 'Annuler le défi';
-
-  @override
-  String get detailConnectionRestored => 'Connexion rétablie';
-
-  @override
-  String get detailOffline => 'Détails du défi hors connexion';
-
-  @override
-  String get detailRefreshBeforeAction =>
-      'Actualisez pour vérifier la cagnotte avant de rejoindre ou annuler.';
-
-  @override
-  String get detailReconnectBeforeAction =>
-      'Reconnectez-vous pour vérifier la cagnotte avant de rejoindre ou annuler.';
-
-  @override
-  String get detailEntryActive => 'Active';
-
-  @override
-  String get detailEntryWinner => 'Gagnant';
-
-  @override
-  String get detailEntryLoser => 'Perdant';
-
-  @override
-  String get detailEntryRefunded => 'Remboursée';
-
-  @override
-  String get detailEntryCancelledStatus => 'Annulée';
 
   @override
   String get gameShareOptionsClosed =>
@@ -11221,4 +10420,192 @@ class AfriLocalizationsFr extends AfriLocalizations {
 
   @override
   String get settingsApplyTheme => 'Appliquer';
+
+  @override
+  String get predictTitle => 'Predict';
+
+  @override
+  String get predictIntro =>
+      'Choisissez le résultat. Une participation par match.';
+
+  @override
+  String get predictFixtures => 'Matchs';
+
+  @override
+  String get predictHistory => 'Mes choix';
+
+  @override
+  String get predictWallet => 'Activité FET';
+
+  @override
+  String get predictDraw => 'Nul';
+
+  @override
+  String get predictAll => 'Toutes les compétitions';
+
+  @override
+  String get predictEmpty => 'Aucun match ouvert';
+
+  @override
+  String get predictEmptyBody =>
+      'Les matchs préparés apparaissent ici avant le coup d’envoi.';
+
+  @override
+  String get predictNoHistory => 'Vos choix apparaîtront ici';
+
+  @override
+  String get predictNoActivity => 'Aucune activité FET';
+
+  @override
+  String get predictUnavailable => 'Actualisation impossible';
+
+  @override
+  String get predictRefresh => 'Actualiser';
+
+  @override
+  String get predictLoading => 'Chargement des matchs';
+
+  @override
+  String get predictDisabled => 'Predict n’est pas encore ouvert';
+
+  @override
+  String get predictSignIn => 'Connectez-vous pour choisir';
+
+  @override
+  String get predictOffline =>
+      'Connectez-vous pour actualiser ou choisir un résultat.';
+
+  @override
+  String get predictClosed => 'Ce match est fermé. Actualisez la liste.';
+
+  @override
+  String get predictAlreadyEntered =>
+      'Vous avez déjà choisi ce match. Actualisez pour voir votre choix.';
+
+  @override
+  String get predictInsufficient => 'Votre solde FET est insuffisant.';
+
+  @override
+  String get predictUncertain =>
+      'Votre participation n’est pas confirmée. Actualisez avant de réessayer.';
+
+  @override
+  String get predictPending => 'Confirmation de votre choix…';
+
+  @override
+  String get predictPicked => 'Choisi';
+
+  @override
+  String get predictWon => 'Gagné';
+
+  @override
+  String get predictLost => 'Réglé';
+
+  @override
+  String get predictRefunded => 'Remboursé';
+
+  @override
+  String get predictLocked => 'Fermé';
+
+  @override
+  String get predictRules =>
+      'Les participations ferment au coup d’envoi. Les bons choix se partagent la cagnotte. Sans gagnant ou en cas d’annulation, les participations sont remboursées. Les FET ne sont pas de l’argent.';
+
+  @override
+  String get predictWelcome => 'FET de bienvenue';
+
+  @override
+  String get predictEntry => 'Participation Predict';
+
+  @override
+  String get predictPayout => 'Gain Predict';
+
+  @override
+  String get predictRefund => 'Remboursement Predict';
+
+  @override
+  String get predictActivity => 'Activité FET';
+
+  @override
+  String get predictAdminTitle => 'Gestion Predict';
+
+  @override
+  String get predictAdminIntro =>
+      'Préparez les matchs, confirmez les résultats officiels, réglez ou remboursez les participations.';
+
+  @override
+  String get predictAdminSettings => 'Paramètres';
+
+  @override
+  String get predictAdminEnabled => 'Ouvrir Predict';
+
+  @override
+  String get predictAdminEntryPrice => 'Participation (FET)';
+
+  @override
+  String get predictAdminSave => 'Enregistrer';
+
+  @override
+  String get predictAdminAll => 'Tous les matchs';
+
+  @override
+  String get predictAdminNoPool => 'Sans cagnotte';
+
+  @override
+  String get predictAdminOpen => 'Ouvert';
+
+  @override
+  String get predictAdminLocked => 'Fermé';
+
+  @override
+  String get predictAdminSettled => 'Réglé';
+
+  @override
+  String get predictAdminRefunded => 'Remboursé';
+
+  @override
+  String get predictAdminPrepare => 'Préparer le match';
+
+  @override
+  String get predictAdminConfirm => 'Confirmer le résultat';
+
+  @override
+  String get predictAdminSettle => 'Régler la cagnotte';
+
+  @override
+  String get predictAdminRefund => 'Annuler et rembourser';
+
+  @override
+  String get predictAdminSource => 'Lien de la source officielle';
+
+  @override
+  String get predictAdminReason => 'Motif du remboursement';
+
+  @override
+  String get predictAdminCancel => 'Annuler';
+
+  @override
+  String get predictAdminFailed =>
+      'Les modifications ne sont pas confirmées. Actualisez le registre avant de réessayer.';
+
+  @override
+  String get predictAdminDenied => 'Accès administrateur requis';
+
+  @override
+  String get predictAdminEmpty => 'Aucun match à gérer';
+
+  @override
+  String get predictAdminPriceNote =>
+      'Le nouveau prix s’applique aux matchs préparés ensuite. Les participations ferment automatiquement au coup d’envoi.';
+
+  @override
+  String get predictAdminTotals => 'Participations / Engagé / Versé';
+
+  @override
+  String get predictAdminConfirmBody =>
+      'Vérifiez le score final officiel avant de confirmer.';
+
+  @override
+  String get predictAdminSettleBody =>
+      'Distribuez toute la cagnotte aux bons choix. Sans gagnant, remboursez toutes les participations.';
 }

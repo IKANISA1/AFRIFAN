@@ -101,8 +101,8 @@ void main() {
   );
 
   const outsideSchedule = PlatformFeature(
-    featureKey: 'challenge',
-    displayName: 'Challenge',
+    featureKey: 'predict',
+    displayName: 'Predict',
     isEnabled: true,
     visibilityState: 'visible',
     rules: FeatureRuleConfig(isWithinSchedule: false),
@@ -132,16 +132,16 @@ void main() {
     ),
   );
 
-  const challengeFeature = PlatformFeature(
-    featureKey: 'challenge',
-    displayName: 'Challenge',
+  const predictFeature = PlatformFeature(
+    featureKey: 'predict',
+    displayName: 'Predict',
     isEnabled: true,
     visibilityState: 'visible',
   );
 
-  const disabledChallengeFeature = PlatformFeature(
-    featureKey: 'challenge',
-    displayName: 'Challenge',
+  const disabledPredictFeature = PlatformFeature(
+    featureKey: 'predict',
+    displayName: 'Predict',
     isEnabled: false,
     visibilityState: 'visible',
   );
@@ -263,7 +263,7 @@ void main() {
     });
 
     test('isFeatureEnabled — outside schedule returns false', () {
-      expect(service.isFeatureEnabled('challenge'), isFalse);
+      expect(service.isFeatureEnabled('predict'), isFalse);
     });
 
     test('isFeatureEnabled — unknown feature defaults to true', () {
@@ -404,7 +404,7 @@ void main() {
     });
 
     test('isInsideScheduleWindow — outside schedule returns false', () {
-      expect(service.isInsideScheduleWindow('challenge'), isFalse);
+      expect(service.isInsideScheduleWindow('predict'), isFalse);
     });
 
     test('isInsideScheduleWindow — no rules returns true', () {
@@ -536,7 +536,7 @@ void main() {
       expect(service.isRouteAvailable('/fanzone/challenges'), isFalse);
       expect(service.isRouteAvailable('/fanzone/challenge'), isFalse);
       expect(service.isRouteAvailable('/fanzone/friends'), isFalse);
-      expect(service.isRouteAvailable('/challenge/create'), isFalse);
+      expect(service.isRouteAvailable('/predict'), isFalse);
     });
 
     test('isRouteAvailable fail-closes venue check-in routes', () {
@@ -546,17 +546,17 @@ void main() {
 
     test('challenge routes require both feature and store-policy approval', () {
       final unapprovedService = FeatureConfigService(
-        buildSnapshot(features: [challengeFeature]),
+        buildSnapshot(features: [predictFeature]),
       );
       final enabledService = FeatureConfigService(
-        buildSnapshot(features: [challengeFeature]),
+        buildSnapshot(features: [predictFeature]),
         storeReleasePolicy: const StoreReleasePolicy(
           isEnforced: true,
           stakedCompetitionsAuthorized: true,
         ),
       );
       final disabledService = FeatureConfigService(
-        buildSnapshot(features: [disabledChallengeFeature]),
+        buildSnapshot(features: [disabledPredictFeature]),
         storeReleasePolicy: const StoreReleasePolicy(
           isEnforced: true,
           stakedCompetitionsAuthorized: true,
@@ -564,11 +564,11 @@ void main() {
       );
 
       expect(unapprovedService.isRouteAvailable('/fanzone/jackpot'), isFalse);
-      expect(unapprovedService.isRouteAvailable('/challenge/create'), isFalse);
-      expect(enabledService.isRouteAvailable('/fanzone/jackpot'), isTrue);
-      expect(enabledService.isRouteAvailable('/challenge/create'), isTrue);
+      expect(unapprovedService.isRouteAvailable('/predict'), isFalse);
+      expect(enabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
+      expect(enabledService.isRouteAvailable('/predict'), isTrue);
       expect(disabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
-      expect(disabledService.isRouteAvailable('/challenge/create'), isFalse);
+      expect(disabledService.isRouteAvailable('/predict'), isFalse);
     });
 
     test('isRouteAvailable allows venue check-in only when enabled', () {

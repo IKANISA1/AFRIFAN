@@ -58,23 +58,23 @@ void main() {
       expect(keys.toSet().length, keys.length);
     });
 
-    test('challenge module is not registered from club feature flags', () {
+    test('Predict module is not registered from club feature flags', () {
       final defaultModules = AppModuleRegistry.build(const _FakeClubConfig());
 
       expect(
         defaultModules.map((module) => module.featureKey),
-        isNot(contains('challenge')),
+        isNot(contains('predict')),
       );
     });
 
-    test('production remote challenge enablement is policy fail-closed', () {
+    test('production remote Predict enablement is policy fail-closed', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(environment: 'production'),
         configSnapshot: <String, dynamic>{
           'features': <Map<String, dynamic>>[
             <String, dynamic>{
-              'feature_key': 'challenge',
-              'display_name': 'Challenge',
+              'feature_key': 'predict',
+              'display_name': 'Predict',
               'is_enabled': true,
               'visibility_state': 'visible',
               'rules': <String, dynamic>{
@@ -89,18 +89,18 @@ void main() {
 
       expect(
         modules.map((module) => module.featureKey),
-        isNot(contains('challenge')),
+        isNot(contains('predict')),
       );
     });
 
-    test('production challenge needs every explicit policy authorization', () {
+    test('production Predict needs every explicit policy authorization', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(environment: 'production'),
         configSnapshot: <String, dynamic>{
           'features': <Map<String, dynamic>>[
             <String, dynamic>{
-              'feature_key': 'challenge',
-              'display_name': 'Challenge',
+              'feature_key': 'predict',
+              'display_name': 'Predict',
               'is_enabled': true,
               'visibility_state': 'visible',
               'rules': <String, dynamic>{
@@ -115,7 +115,7 @@ void main() {
         },
       );
 
-      expect(modules.map((module) => module.featureKey), contains('challenge'));
+      expect(modules.map((module) => module.featureKey), contains('predict'));
     });
   });
 

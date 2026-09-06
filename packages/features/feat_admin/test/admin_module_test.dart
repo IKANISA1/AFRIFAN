@@ -45,7 +45,7 @@ void main() {
       expect(subPaths, contains('notifications'));
       expect(subPaths, contains('sms-monitor'));
       expect(subPaths, contains('settle'));
-      expect(subPaths, contains('challenges'));
+      expect(subPaths, contains('predict'));
       expect(subPaths, contains('competitions'));
       expect(subPaths, contains('features'));
     });

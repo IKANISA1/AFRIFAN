@@ -6,16 +6,13 @@ import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
-import 'package:feat_gamification/src/models/partner_pool_models.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
-import 'package:feat_gamification/src/prediction_providers.dart';
 import 'package:feat_gamification/src/providers/fanzone_hub_provider.dart';
 import 'package:feat_gamification/src/screens/fanzone_hub_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 import 'package:test_support/app_font_loader.dart';
@@ -65,28 +62,6 @@ class _RefreshingFanzoneHubNotifier extends FanzoneHubNotifier {
   }
 }
 
-class _MockSupabaseClient extends Mock implements supabase.SupabaseClient {}
-
-class _FakePartnerPoolRepository extends PartnerPoolRepository {
-  _FakePartnerPoolRepository() : super(client: _MockSupabaseClient());
-
-  String? joinedPoolId;
-  String? selectedOutcome;
-  String? idempotencyKey;
-
-  @override
-  Future<PartnerPoolMutationResult> joinPool({
-    required String poolId,
-    required String selectedOutcome,
-    String? idempotencyKey,
-  }) async {
-    joinedPoolId = poolId;
-    this.selectedOutcome = selectedOutcome;
-    this.idempotencyKey = idempotencyKey;
-    return const PartnerPoolMutationResult(status: 'success');
-  }
-}
-
 class _FakeAuthRepository extends AuthRepository {
   _FakeAuthRepository() : super(clubId: '24');
 
@@ -112,8 +87,8 @@ class _FakeAuthRepository extends AuthRepository {
 const _enabledFanzoneFeatures = PlatformConfigSnapshot(
   features: <PlatformFeature>[
     PlatformFeature(
-      featureKey: 'challenge',
-      displayName: 'Challenge',
+      featureKey: 'predict',
+      displayName: 'Predict',
       isEnabled: true,
       visibilityState: 'visible',
     ),
@@ -129,8 +104,8 @@ const _enabledFanzoneFeatures = PlatformConfigSnapshot(
 const _disabledFanzoneFeatures = PlatformConfigSnapshot(
   features: <PlatformFeature>[
     PlatformFeature(
-      featureKey: 'challenge',
-      displayName: 'Challenge',
+      featureKey: 'predict',
+      displayName: 'Predict',
       isEnabled: true,
       visibilityState: 'visible',
     ),
@@ -246,24 +221,6 @@ FanzoneHubSnapshot _buildSnapshot() {
         winRate: 66.7,
       ),
     ],
-    partnerPools: <PartnerPredictionPool>[
-      PartnerPredictionPool(
-        id: 'pool-1',
-        clubId: 24,
-        partnerId: 'partner-1',
-        partnerName: 'Visit Rwanda',
-        partnerSlug: 'visit-rwanda',
-        fixtureId: 'fixture-upcoming',
-        title: 'Derby WDW Pool',
-        partnerStakeFet: 5000,
-        fanEntryFet: 100,
-        eligibilityMode: 'partner_earn_required',
-        status: 'open',
-        lockAt: DateTime.utc(2026, 4, 15, 18),
-        totalEntries: 12,
-        totalFanEntryFet: 1200,
-      ),
-    ],
     markets: const <PredictionMarket>[
       PredictionMarket(
         id: 'market-1',
@@ -330,7 +287,7 @@ void main() {
     );
     expect(find.text('Fan Zone'), findsOneWidget);
     expect(find.byType(AfriSegmentedControl), findsOneWidget);
-    expect(find.text('Pick'), findsOneWidget);
+    expect(find.text('Predict'), findsWidgets);
     expect(find.text('League'), findsOneWidget);
     expect(find.text('Points'), findsOneWidget);
     expect(find.text('Fans'), findsOneWidget);
@@ -338,8 +295,8 @@ void main() {
     expect(find.text('Jackpot'), findsNothing);
     expect(find.byTooltip('More options'), findsOneWidget);
     expect(find.text('Matchday rounds'), findsWidgets);
-    expect(find.text('100 point entry'), findsOneWidget);
-    expect(find.text('Join round'), findsOneWidget);
+    expect(find.text('100 point entry'), findsNothing);
+    expect(find.text('Join round'), findsNothing);
     expectTapTargetsMeetMinimum(tester);
 
     await _scrollFanzoneTo(tester, find.text('Supporters'));
@@ -605,80 +562,23 @@ void main() {
     expect(find.byType(FanzoneHubScreen), findsOneWidget);
   });
 
-  testWidgets('joins a partner WDW pool with a fixed fan FET stake', (
-    tester,
-  ) async {
-    final snapshot = _buildSnapshot();
-    final notifier = _TestFanzoneHubNotifier(snapshot);
-    final partnerPoolRepository = _FakePartnerPoolRepository();
-
-    await tester.pumpWidget(
-      _buildFanzoneApp(
-        () => notifier,
-        overrides: [
-          partnerPoolRepositoryProvider.overrideWithValue(
-            partnerPoolRepository,
-          ),
-        ],
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    await _scrollFanzoneTo(tester, find.text('Join round'));
-    await tester.tap(find.widgetWithText(AfriButton, 'Join round').first);
-    await tester.pumpAndSettle();
-
-    expect(find.text('Derby WDW Pool'), findsAtLeastNWidgets(1));
-    expect(find.textContaining('Visit Rwanda sponsors'), findsOneWidget);
-    expect(find.text('Partner earn required'), findsOneWidget);
-    expect(find.text('Home win'), findsOneWidget);
-    expect(find.text('Draw'), findsOneWidget);
-    expect(find.text('Away win'), findsOneWidget);
-
-    await tester.tap(find.text('Draw'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(AfriButton, 'Join round').last);
-    await tester.pumpAndSettle();
-
-    expect(partnerPoolRepository.joinedPoolId, 'pool-1');
-    expect(partnerPoolRepository.selectedOutcome, 'draw');
-    expect(partnerPoolRepository.idempotencyKey, startsWith('pool-1-draw-'));
-    expect(notifier.refreshCount, 1);
-    expect(find.text('Draw joined.'), findsOneWidget);
-  });
-
-  testWidgets('keeps pool choices visible but blocks joining offline', (
-    tester,
-  ) async {
-    final snapshot = _buildSnapshot();
-    final partnerPoolRepository = _FakePartnerPoolRepository();
-
-    await tester.pumpWidget(
-      _buildFanzoneApp(
-        () => _TestFanzoneHubNotifier(snapshot),
-        overrides: [
-          partnerPoolRepositoryProvider.overrideWithValue(
-            partnerPoolRepository,
-          ),
-        ],
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    ConnectivityService.setOnlineForTest(false);
-    await tester.pump();
-    await _scrollFanzoneTo(tester, find.text('Join round'));
-    await tester.tap(find.widgetWithText(AfriButton, 'Join round').first);
-    await tester.pumpAndSettle();
-
-    expect(find.text('Derby WDW Pool'), findsAtLeastNWidgets(1));
-    expect(find.text('Connection required'), findsOneWidget);
-    final submit = tester.widget<AfriButton>(
-      find.widgetWithText(AfriButton, 'Connection required'),
-    );
-    expect(submit.enabled, isFalse);
-    expect(partnerPoolRepository.joinedPoolId, isNull);
-  });
+  testWidgets(
+    'opens simplified Predict instead of a partner pool entry sheet',
+    (tester) async {
+      await tester.pumpWidget(
+        _buildFanzoneApp(() => _TestFanzoneHubNotifier(_buildSnapshot())),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Join round'), findsNothing);
+      await _scrollFanzoneTo(
+        tester,
+        find.text('Pick the result. One entry per match.'),
+      );
+      await tester.tap(find.text('Pick the result. One entry per match.'));
+      await tester.pumpAndSettle();
+      expect(find.text('Predict destination'), findsOneWidget);
+    },
+  );
 
   testWidgets('loading state still exposes fanzone route shortcuts', (
     tester,
@@ -687,7 +587,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Opening Fan Zone'), findsOneWidget);
-    expect(find.text('Pick'), findsOneWidget);
+    expect(find.text('Predict'), findsWidgets);
     expect(find.text('League'), findsOneWidget);
     expect(find.text('Points'), findsOneWidget);
     expect(find.text('Fans'), findsOneWidget);
@@ -767,7 +667,7 @@ void main() {
       tester,
       id: 'empty',
       createNotifier: () => _TestFanzoneHubNotifier(const FanzoneHubSnapshot()),
-      scrollToText: 'No matchday rounds',
+      scrollToText: 'Pick the result. One entry per match.',
     );
   });
 
@@ -1036,6 +936,10 @@ Widget _buildFanzoneApp(
   final router = GoRouter(
     initialLocation: initialLocation,
     routes: [
+      GoRoute(
+        path: '/predict',
+        builder: (_, __) => const Scaffold(body: Text('Predict destination')),
+      ),
       GoRoute(
         path: '/fanzone',
         builder: (context, state) =>

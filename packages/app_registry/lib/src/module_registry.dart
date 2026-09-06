@@ -56,7 +56,7 @@ abstract final class AppModuleRegistry {
           if (module.featureKey == 'admin' && !allowInternalMobileAdmin) {
             return false;
           }
-          if (module.featureKey == 'challenge' &&
+          if (module.featureKey == 'predict' &&
               !storePolicy.allowsStakedCompetitions) {
             return false;
           }
@@ -76,7 +76,7 @@ abstract final class AppModuleRegistry {
     ClubModule(),
     LiveModule(),
     FanzoneModule(),
-    ChallengeModule(),
+    PredictModule(),
     SettingsModule(),
     OnboardingModule(),
     MembershipModule(),

@@ -8,7 +8,7 @@ certification of exact pixel equivalence.
 
 ## Scope and implementation
 
-- 57 rendered route entries, including five tab entries and the router error and
+- 54 rendered route entries, including five tab entries and the router error and
   unavailable states; 28 existing redirects keep their registered targets.
 - Shared typography, neutral surfaces, rounded groups, inverse primary buttons,
   circular quick actions, compact search and navigation, sheets, selection,
@@ -47,7 +47,7 @@ The fixture is synthetic and backend startup is disabled. Unavailable live-data
 states in that journey are expected, not evidence of production availability.
 Populated states are additionally rendered by the governed route tests.
 
-There are 868 associated route-state regression images (including the populated
+There are 819 associated route-state regression images (including the populated
 Home fixture). They cover applicable loading, empty, error, offline, permission,
 disabled, focus, held press, selection, 200% text, reduced motion, light, dark,
 sync, conflict and timeout variants. Passing them means the implementation
@@ -73,7 +73,7 @@ passes.
 
 **100% pixel-equivalence claim: unverified.** No checklist score or passing test
 count is converted to an equivalence percentage. The implementation scope is
-57 rendered entries plus 28 redirects, including 11 role-gated internal admin
+54 rendered entries plus 28 redirects, including 11 role-gated internal admin
 routes. Web/PWA and venue-operator web surfaces are outside this native scope.
 
 ## Verification
@@ -223,10 +223,7 @@ native visual refinement has a fresh full-workspace run recorded below.
 | --- | --- | --- | --- |
 | `/auth/otp` | MOBBIN-ONBOARDING-010 | component pattern | [auth_otp_state_dark_dark_390x844.png](../../packages/features/feat_onboarding/test/goldens/auth_otp_state_dark_dark_390x844.png) |
 | `/auth/phone` | MOBBIN-ONBOARDING-004 | component pattern | [auth_phone_state_dark_dark_390x844.png](../../packages/features/feat_onboarding/test/goldens/auth_phone_state_dark_dark_390x844.png) |
-| `/challenge` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [challenge_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/challenge_state_dark_dark_390x844.png) |
-| `/challenge/:id` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [challenge_detail_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/challenge_detail_state_dark_dark_390x844.png) |
-| `/challenge/create` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [challenge_create_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/challenge_create_state_dark_dark_390x844.png) |
-| `/challenge/my` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [challenge_my_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/challenge_my_state_dark_dark_390x844.png) |
+| `/predict` | LIVE-007 | component pattern; simplified Gikundiro behavior | [predict_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/predict_state_dark_dark_390x844.png) |
 | `/club` | LIVE-021, LIVE-007 | component pattern | [club_hub_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_hub_state_dark_dark_390x844.png) |
 | `/club/fixtures` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_fixtures_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_fixtures_state_dark_dark_390x844.png) |
 | `/club/fixtures/:matchId` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_fixture_detail_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_fixture_detail_state_dark_dark_390x844.png) |
@@ -269,7 +266,7 @@ native visual refinement has a fresh full-workspace run recorded below.
 | `<router-error>` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [router_error_state_dark_dark_390x844.png](../../packages/core/core_router/test/goldens/router_error_state_dark_dark_390x844.png) |
 
 | `/admin` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_dashboard_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_dashboard_state_dark_dark_390x844.png) |
-| `/admin/challenges` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_challenges_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_challenges_state_dark_dark_390x844.png) |
+| `/admin/predict` | LIVE-007 | component pattern; fixture operations | [admin_predict_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_predict_state_dark_dark_390x844.png) |
 | `/admin/cms` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_cms_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_cms_state_dark_dark_390x844.png) |
 | `/admin/competitions` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_competitions_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_competitions_state_dark_390x844.png) |
 | `/admin/contributions` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_contributions_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_contributions_state_dark_390x844.png) |
@@ -296,3 +293,28 @@ flutter drive --no-pub --flavor qa -d <isolated-simulator-id> \
 The integration-test startup options disable the backend and supply synthetic
 state. The driver saves captures and the journey result; saved files alone do
 not certify fidelity. Normal app builds omit the capture define and driver.
+
+## Predict replacement — 6 September 2026
+
+The four Challenge routes are replaced by one `/predict` route and the internal
+operator route is `/admin/predict`. Gikundiro supplies the current behavior;
+LIVE-007 supplies the neutral native group pattern. AFRICLUB keeps its own
+identity, registered crests, localization and shared controls. The former
+creator, custom-stake, exact-score and popularity-filter flow is removed.
+
+The new evidence covers 19 supporter states and 12 operator states. Focus,
+held press, keyboard activation, semantic tap action, 200% text, offline and
+uncertain-response reconciliation are checked in route tests. Four native
+system screenshots show ready, confirmed, history and wallet states on iPhone
+13 / iOS 26.5 using a synthetic gateway. Those system captures include status
+bar artwork; earlier Flutter-layer shell captures described above do not.
+
+The affected 93-test rerun passed after the broader run exposed one stale route
+count assertion (750 other tests passed). Static analysis is clean and the
+localization inventories have no pending entries.
+
+The backend migration and football-sync version 16 are applied. Database and
+concurrency verification is recorded in [the architecture record](../architecture/predict-migration.md).
+The remote public API remains restricted by Supabase storage quota (HTTP 402),
+so neither these images nor the native synthetic journey establish live
+supporter access. Full source pixel equivalence remains unverified.

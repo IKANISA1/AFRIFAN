@@ -116,7 +116,7 @@ void main() {
         expect(subPaths, isNot(contains('challenges')));
         expect(subPaths, isNot(contains('jackpot')));
         expect(subPaths, isNot(contains('friends')));
-        expect(subPaths, isNot(contains('challenge')));
+        expect(subPaths, isNot(contains('predict')));
 
         final decisions = {
           for (final decision in fanzone.routePresentationDecisions)

@@ -9,7 +9,7 @@
     "platform": "flutter_test_macos_arm64",
     "runtime": "Flutter 3.44.4; Dart 3.12.2",
     "locale": "en",
-    "generated_at": "2026-09-06T06:17:16Z",
+    "generated_at": "2026-09-06T08:39:58Z",
     "data_source": "synthetic_non_production"
   },
   "comparison": {
@@ -214,7 +214,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "726d65b30c2a564d7b73b8aabff7c359454972d2b77de0f1232138392d935134"
+      "sha256": "7234bf4bc48bcdc6c6539609bfa66cc8019e03f7022dbcb5aa47f42b8b322e0b"
     },
     {
       "id": "fan-zone-compact-374-light",
@@ -226,7 +226,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "7cbca66b29008398307d53b671a628b17545735bb09add77e22205bcda372df3"
+      "sha256": "f5f25e672a2fb43af7125f41b0ba5d80a53263efe98fc24185043ccfcb478510"
     },
     {
       "id": "notifications-compact-320-dark",
@@ -478,7 +478,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "8c29939b34b56a9d9f50592616a69bde56fcd85e1e083ea4b4aabd28652ee7bf"
+      "sha256": "bbe76cecf780e0e4fd072ac1ce3d8aca4bf47e0e559a620b4071fbfb230f72c3"
     },
     {
       "id": "fan-zone-large-430-light",
@@ -490,7 +490,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "355222c8f1b2a12acc19dc6730ddb6410b7f98f3311734cd1caf0965ea765ff1"
+      "sha256": "219299b4b6dc38ad19de25238bbc12f484aa2c40484f5997aa98d66a7b636806"
     },
     {
       "id": "fan-zone-wide-599-dark",
@@ -502,7 +502,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "8505a500d2fcb8f1ca3da421230f72fff7e625d7c2bb28fb20e6120cb6b2d763"
+      "sha256": "31a4a23b15e75e2b71280fb2d6e17efb20094ae333c77fcf054a9284bc2485e7"
     },
     {
       "id": "notifications-standard-390-dark",
@@ -790,7 +790,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "c0b42edb883ee134c6c920b42be0ba28e15f7779e7de18cb24f62fa0530a8250"
+      "sha256": "4cd36fae813278487f43b73c9713ba2a563bcb92c7ce272e22471ee638719953"
     },
     {
       "id": "fanzone-tablet-dark-834x1194",
@@ -802,7 +802,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "09781aad78d097ce70362c488e6d21a855068fd3a246b24ac5a23b42457b78bb"
+      "sha256": "68c670a9b1c6692620bbec6c201be182cbfda3d7419668b644fe6e50212d3831"
     },
     {
       "id": "notifications-foldable-half-light-674x842",
@@ -4090,7 +4090,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "1d16eafe4e926c920befeb3cd815f4d9df333c145b5596c6ac493df93cacb582"
+      "sha256": "688dd989c8933bfbdd1c5bb7a79579732d79b72db02e72a832603e01c3734f58"
     },
     {
       "id": "fanzone-state-empty-dark-390x844",
@@ -4102,7 +4102,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d1da4b68e28edad67ba2c30f96698d2943cff236fb518d9a43ebaa643e0137eb"
+      "sha256": "962507f1f949bdb6c9dfeee28c4886aba74ea41789d9fd7d3b54d75dbe3a49a5"
     },
     {
       "id": "fanzone-state-error-dark-390x844",
@@ -4126,7 +4126,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "1ec2954f3580f8757f556961452266083aec43cbadd1f202f588bbb09a60c387"
+      "sha256": "195b23209631aba8c9985951ac8055388df27f817b4b5880f0fb45fd172b4900"
     },
     {
       "id": "fanzone-state-large-text-dark-320x720",
@@ -4138,7 +4138,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "bf391b268417b115743812d56db8fbb7266362cd1976808483b6420673cc79b7"
+      "sha256": "965b429d8dbfedcdefd471a757ab6ee93418e224c19cf5d4676b3734dbe1c8dc"
     },
     {
       "id": "fanzone-state-selected-dark-390x844",
@@ -4150,7 +4150,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "c76384495077c680b74a96a86760263f1694a77b849c62009858df9ca1b86a8e"
+      "sha256": "c8e75623a9ca8ce62d37b42f5999a11a2b78e6c1f8ced720db23a01f1ce6532a"
     },
     {
       "id": "fanzone-state-permission-denied-dark-390x844",
@@ -4174,7 +4174,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "8c29939b34b56a9d9f50592616a69bde56fcd85e1e083ea4b4aabd28652ee7bf"
+      "sha256": "1d2fe7364778f005e84432cd1c09e595e74d1ca0cdc88b8ca264deb2eed55231"
     },
     {
       "id": "fanzone-state-focused-dark-390x844",
@@ -4186,7 +4186,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4d5f75788c8ac40e291dc9d7566f3003fa8570ace05b14a2ae5e956ef406a614"
+      "sha256": "471ac9e69ecf0dd44bb94696129d37e007a99e18d2fd05873e06bcef80f3736d"
     },
     {
       "id": "fanzone-state-pressed-dark-390x844",
@@ -4198,7 +4198,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "5cf8a777f2cb1d91dde12e8b1cfb7f3d8928667887e969badce0f5b648e4bb7d"
+      "sha256": "99f027cab6432239be1f7b75d793c7b95215f189b069c5e94461b471014c6928"
     },
     {
       "id": "fanzone-state-syncing-dark-390x844",
@@ -4210,7 +4210,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "78779e15fbac2b327cfb3f20deeb88438eb3d8d3b1b90dcf64ead7f2487dc729"
+      "sha256": "7b4e0af3f8cf0a5d151e83ba83420bfca54ca08cf9df211d5e1d619dbdc932f5"
     },
     {
       "id": "fanzone-state-conflict-dark-390x844",
@@ -6467,774 +6467,6 @@
       "theme": "dark",
       "data_source": "synthetic",
       "sha256": "75d46162da27064b10d5757b39894e3c77e1f00a10361bcd08ce348f1df835bd"
-    },
-    {
-      "id": "challenge-state-conflict-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "dd1fd22459ee6ef3b1fb58c4f7d5001911909a6e5e8b0cdd6147631c318b5522"
-    },
-    {
-      "id": "challenge-state-dark-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "97b77c9ed7108fd96419992979d6303e2564c6d4cb530c5d5b35b2c34d1742b6"
-    },
-    {
-      "id": "challenge-state-disabled-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f9eb3d7274c43d50e2b6311f52eecd484321e65c9b233c958fb433d970eb5b9c"
-    },
-    {
-      "id": "challenge-state-empty-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "8c0993b35bc64c8fe38d5a3d02db74d3b83d3347dd2ac7eff5b50f8c4ebff3f3"
-    },
-    {
-      "id": "challenge-state-error-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "fda0acdfc5584f97a62455a13988a0ee0f8aa011d14b2a06acaef502e3fa55fa"
-    },
-    {
-      "id": "challenge-state-focused-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "4828d65100a883ce65cf61116f9f02bffb595d16b00d6863d7d7a4c24eb047f1"
-    },
-    {
-      "id": "challenge-state-large-text-dark-320x720",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "4c06f1af45a257136e4b094302fb4ef9cb02f35a43b613871f30e1ddb1cefb61"
-    },
-    {
-      "id": "challenge-state-light-light-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "9d51a398d2662603309fa7783b3522553fe4594531211017b8080cf0d4e59bd9"
-    },
-    {
-      "id": "challenge-state-loading-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "4750ece68ed2f7e0270d9b929e86d89a037efd586a048f45a301c07f3341912e"
-    },
-    {
-      "id": "challenge-state-offline-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "39624aef2b67314aafd92a9f15ee016eeea187719771eee2e416418c99f68945"
-    },
-    {
-      "id": "challenge-state-permission-denied-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "b0a73de7d6a96a46549fed0f5e9e2e47800db312ead31922124f3995714ee9a4"
-    },
-    {
-      "id": "challenge-state-pressed-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "270369b7e9b88163c388b532466ada8f8bbb77a5818ee09e5d035dc8479fac57"
-    },
-    {
-      "id": "challenge-state-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "97b77c9ed7108fd96419992979d6303e2564c6d4cb530c5d5b35b2c34d1742b6"
-    },
-    {
-      "id": "challenge-state-security-timeout-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e651b71377764069b2c937be798b94edc0d93301ee43dd0537b0e9dbe7d2892b"
-    },
-    {
-      "id": "challenge-state-selected-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e1a83da06209f9836184d42544c628c7700325763e24eef569a7a0b5a383d44b"
-    },
-    {
-      "id": "challenge-state-syncing-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "7c89e8a305fd02d86960ef13a80f98fb71b97681ea638a97e9de5fbd20a2d12c"
-    },
-    {
-      "id": "challenge-detail-state-conflict-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "6ac136602e9babf8e366fe366bca865ea89d8e200d5e7c0785ec023a7db357e7"
-    },
-    {
-      "id": "challenge-detail-state-dark-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f085d84297daa3febdec1ebc4888accc2267e8e1ee831a3483e321dc4b0c63e2"
-    },
-    {
-      "id": "challenge-detail-state-disabled-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "22566d69922cde4ecf799d490173ffddcad5bb0a31cd9e74c2e8f1dcbd779c0b"
-    },
-    {
-      "id": "challenge-detail-state-empty-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "94ad7651976ccbc180e6142d62ef01565aca8f326be4048bfc2562dadc38870d"
-    },
-    {
-      "id": "challenge-detail-state-error-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ed4d43f400c9a71c3b0db1b5f638ad419e04a5cd93c921e67b9f87ce4dc5bf16"
-    },
-    {
-      "id": "challenge-detail-state-focused-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f5d94eeffc99dc15e1f8e3dc42d4d9d168872f49a7b09df482c5193415b8d78d"
-    },
-    {
-      "id": "challenge-detail-state-large-text-dark-320x720",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "5dcd53756e744a36dd2d177770e99361b63d97097dfd0fa02a40838056f163ff"
-    },
-    {
-      "id": "challenge-detail-state-light-light-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "1575b15c290d263e3e513753a47175cbac5da2fbbc6c0d95a1e20f6c46f4c61c"
-    },
-    {
-      "id": "challenge-detail-state-loading-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "9a2296e990674fac15f7a98774d675315a171901a66b946f911c5787314d72c1"
-    },
-    {
-      "id": "challenge-detail-state-offline-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "845425d902afaaff41e786282f212426b4e1ee973ea106ac2c001477eb87ad8f"
-    },
-    {
-      "id": "challenge-detail-state-permission-denied-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e415f6848e6b46bc95d14170175768e0750f893ac094a9b6e3e30e4686ecf9c4"
-    },
-    {
-      "id": "challenge-detail-state-pressed-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e2c4b995ca50d8f28392f9f2620942f7af12596dba081f06c5a602293a047989"
-    },
-    {
-      "id": "challenge-detail-state-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f085d84297daa3febdec1ebc4888accc2267e8e1ee831a3483e321dc4b0c63e2"
-    },
-    {
-      "id": "challenge-detail-state-security-timeout-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "25ec9b3ae02691230bd4ee4dfa12e25ba0573d6c22720dc0014c24856a3f2a96"
-    },
-    {
-      "id": "challenge-detail-state-selected-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "a71305b44a2f6993bcb0d85aac7e96effe5d91f7515cc809ad23e55ad9d9c632"
-    },
-    {
-      "id": "challenge-detail-state-syncing-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_detail_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "8ae1881aec9249609e292e358af61c350ebdcc7d273774afd962220f64d244a2"
-    },
-    {
-      "id": "challenge-create-state-conflict-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "be97c083b010ce0d9fadd0bc192b338681a456072551fb4c739d430e4d79aa91"
-    },
-    {
-      "id": "challenge-create-state-dark-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "9c4bf5b95c08a7b10018d47f829ab75d2620f587599196c30aa4da77915343c7"
-    },
-    {
-      "id": "challenge-create-state-disabled-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1b7805e13993352ab560e6c16f4f1aa6c9701b1a7585295e1292fe4bcb661fab"
-    },
-    {
-      "id": "challenge-create-state-empty-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1e0ef3c0e0fcd661dfaa16cf2af3f8c9a5b35bf199db6490be204be3dc6c1ef2"
-    },
-    {
-      "id": "challenge-create-state-error-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "13e61dfa5957e886b2c3d29836b1bef184f3a62304bf0d6c36179349c1ea67b4"
-    },
-    {
-      "id": "challenge-create-state-focused-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "18ba536fee47717a9d883db3661000e42146735aff46fd9a4d951fdf4134c442"
-    },
-    {
-      "id": "challenge-create-state-large-text-dark-320x720",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "43d260e8c2c58d5c726db79d7c9403e4569afb43e945e02ae9cb2c16f87ae5fd"
-    },
-    {
-      "id": "challenge-create-state-light-light-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "bf0be2015742b86720195e220642cf0bd9818a6b4ae57e1285ebd4a9db391d8f"
-    },
-    {
-      "id": "challenge-create-state-loading-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "c4f86652ae839543161e36e1c6dbb456bf97a0f1c38d032b530865ace63ea92e"
-    },
-    {
-      "id": "challenge-create-state-offline-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "47df71bf20558a82eb0e8270258a3082560a6d9b1c998242f06422b6c1879ea6"
-    },
-    {
-      "id": "challenge-create-state-permission-denied-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "a5848948f76f7e54f38832672e8e937294b7b8d2e9ea066b861d21eebb211255"
-    },
-    {
-      "id": "challenge-create-state-pressed-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "98bca88cf887d61ce4bad4ac0ab17b10043e4f3984ac16a31179d9b84cad8460"
-    },
-    {
-      "id": "challenge-create-state-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "9c4bf5b95c08a7b10018d47f829ab75d2620f587599196c30aa4da77915343c7"
-    },
-    {
-      "id": "challenge-create-state-security-timeout-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "7d9095bf43e3f19e632f109a5c48797eea3a8dc1f50d379a850368f557c197b1"
-    },
-    {
-      "id": "challenge-create-state-selected-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2e592ee04d6083f6891d3bdc37eb0c2b8987adbf9116c677ee0d0aa456c6755e"
-    },
-    {
-      "id": "challenge-create-state-syncing-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_create_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "86573b13316809825af087ac8b739f194b32deb1896241159407df4e4acab02c"
-    },
-    {
-      "id": "challenge-my-state-conflict-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "a3074d7c1909869abba0d0c2928432190a4b1ed089485925a200a6440ef2a60e"
-    },
-    {
-      "id": "challenge-my-state-dark-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ea5e01ae25b4cc4590d4bc098fa117068dd16f8bdb373a7c6c024ff1f1c77c7e"
-    },
-    {
-      "id": "challenge-my-state-disabled-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "625352c8a9d00bc9991e0b696c8e51279c547fda2a65947e749850e190a9b517"
-    },
-    {
-      "id": "challenge-my-state-empty-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f0f09ae8e3b175f905ec7a7f142d332319cd55c48b06bbf9ff4b5085ab2c76e9"
-    },
-    {
-      "id": "challenge-my-state-error-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "301d1e545d823a4b4ddae61e92b3f72bd8c0a25223e78376af5ca2849ad85a38"
-    },
-    {
-      "id": "challenge-my-state-focused-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2451eb57cbf82607134ee8a43bd64b9a80f6f3fbec6498d8a34767e6f4104f91"
-    },
-    {
-      "id": "challenge-my-state-large-text-dark-320x720",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_large_text_dark_320x720.png",
-      "viewport": {
-        "width": 320,
-        "height": 720,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "d5f32a4572f295e1505b39e007222318187630b0e81d67eeebce2630099b9482"
-    },
-    {
-      "id": "challenge-my-state-light-light-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "f40d039b603a000bdfef6d048412abb2aaf8de5501770a1e2b708f58d00209bb"
-    },
-    {
-      "id": "challenge-my-state-loading-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "eb4b5496bd03b2c5d2929e14c40d609e789a88e0eb769115d0c065d663f2c721"
-    },
-    {
-      "id": "challenge-my-state-offline-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "45d6616406e8d14c8faeac5bada48f2cd92835b29515ebe53bd26d6e7c551957"
-    },
-    {
-      "id": "challenge-my-state-permission-denied-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "e49e5fe8fc55bcbab5f8f2ffd77146eab41d472bc968f690acf600ab72c46aee"
-    },
-    {
-      "id": "challenge-my-state-pressed-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "db49ec0db1858afd48fd1b11bc219c82456245c92ff12e8407f849910ef94e78"
-    },
-    {
-      "id": "challenge-my-state-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ea5e01ae25b4cc4590d4bc098fa117068dd16f8bdb373a7c6c024ff1f1c77c7e"
-    },
-    {
-      "id": "challenge-my-state-security-timeout-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "c13ef7c25996a37c2c30773fd7af6836ac2a27b71a9029dccafaf180edf2c6cd"
-    },
-    {
-      "id": "challenge-my-state-selected-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "d75ca564c9878e06be4b99973ec8f3ff77f5446fc4a1873f66a6fca59601e1e3"
-    },
-    {
-      "id": "challenge-my-state-syncing-dark-390x844",
-      "path": "packages/features/feat_gamification/test/goldens/challenge_my_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1443b95ee4ab9eb01a1b6cb62cbd0832cef65fe9364403a87b67f6c4e9198fca"
     },
     {
       "id": "match-detail-state-conflict-dark-390x844",
@@ -10499,198 +9731,6 @@
       "theme": "dark",
       "data_source": "synthetic",
       "sha256": "4029b100bf54ff649ff797a2a74e8715897e2b333aaaaf51f635e72bffe1f337"
-    },
-    {
-      "id": "admin-challenges-state-loading-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_loading_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "1967ba32d6de4572c0550e5adbe3449ff8083f02d76bf6896513a0161bc3b61f"
-    },
-    {
-      "id": "admin-challenges-state-empty-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_empty_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "ad3b64a5d9a638d9b7e0d3a83ab17f0db2ca320bb9074c4d5570295ab7004855"
-    },
-    {
-      "id": "admin-challenges-state-error-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_error_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "70e6f985c4ea0395bd9183b9f0c6598234dff77cb85f7b535ab80874c0b0252b"
-    },
-    {
-      "id": "admin-challenges-state-offline-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_offline_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "2b253246b2fcd628369965dd630c7b32309f16a0f3e4c591085c426502ce276e"
-    },
-    {
-      "id": "admin-challenges-state-permission-denied-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_permission_denied_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "17818d88475888ae970effae1b4134e817cda3aac2428ba8d179c31c8066a677"
-    },
-    {
-      "id": "admin-challenges-state-disabled-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_disabled_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "70de385ec1855dbb56f680a3eb06b3d251beefe29b09aaa7f78c41696da836e6"
-    },
-    {
-      "id": "admin-challenges-state-focused-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_focused_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "5a74e9a829a58713d4392556c4f0a2c65b3ed1bc53188ff87aee0aff32694d96"
-    },
-    {
-      "id": "admin-challenges-state-pressed-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_pressed_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "db55e3f36bae022fb0b7892a5224363d56c704070422a5f4c405214c80d129f0"
-    },
-    {
-      "id": "admin-challenges-state-selected-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_selected_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "665c037821253359fa4f1adbc4eef260fe114eeccba53634dfd34bfbffc52530"
-    },
-    {
-      "id": "admin-challenges-state-large-text-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_large_text_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "eca24f23bd485f36c8f61f837881700370481f7c9e794f0ce4c54a00cad25c76"
-    },
-    {
-      "id": "admin-challenges-state-reduced-motion-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_reduced_motion_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "52a00e821c89f70577e7f750aef0dfc90325b22d84197ea31c190bddce26a7be"
-    },
-    {
-      "id": "admin-challenges-state-dark-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_dark_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "52a00e821c89f70577e7f750aef0dfc90325b22d84197ea31c190bddce26a7be"
-    },
-    {
-      "id": "admin-challenges-state-light-light-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_light_light_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "light",
-      "data_source": "synthetic",
-      "sha256": "c8a84f533df1a7caa043417a7da0bac3d79cee5abe7d86f19f0a37bc2b3962a5"
-    },
-    {
-      "id": "admin-challenges-state-syncing-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_syncing_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "97e153f599d3ec3ec98ff5ff77fb9fc993ef0604b9103353e6f1b9ce91759659"
-    },
-    {
-      "id": "admin-challenges-state-conflict-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_conflict_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "41fb4f29d715955102c0fdb212300046b1dcbe9740bce52a5ed1f77c9ab7af0a"
-    },
-    {
-      "id": "admin-challenges-state-security-timeout-dark-390x844",
-      "path": "packages/features/feat_admin/test/goldens/admin_challenges_state_security_timeout_dark_390x844.png",
-      "viewport": {
-        "width": 390,
-        "height": 844,
-        "device_pixel_ratio": 1
-      },
-      "theme": "dark",
-      "data_source": "synthetic",
-      "sha256": "f6c6a51539a302b68752951e0634947161e594b95b68255748a3f6d8738d7c62"
     },
     {
       "id": "admin-cms-state-loading-dark-390x844",
@@ -14267,6 +13307,378 @@
       "theme": "dark",
       "data_source": "synthetic",
       "sha256": "2ee29a1c00d464944a4e7317a14325e022d561d01a84a042eddc2822e146bccf"
+    },
+    {
+      "id": "admin-predict-state-confirm-result-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_confirm_result_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "3521862a43d913365ee2ebcae88b74a820324b4d7a6f8f5a8618f722e1722830"
+    },
+    {
+      "id": "admin-predict-state-dark-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_dark_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "ae9c3d70f3cc8ab0d5b3130a6bccd42488daea2f609a45bb889f867981d0a43c"
+    },
+    {
+      "id": "admin-predict-state-empty-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_empty_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "539f8e9257c57362299e5787c3bcc1c1a09b88544694817e29d6ce83d8cfa84c"
+    },
+    {
+      "id": "admin-predict-state-error-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_error_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "01b2517c905ef0d9c7234d1459ff5f7e3b99f41d2a0a9f68b6a47524332cc2b5"
+    },
+    {
+      "id": "admin-predict-state-large-text-dark-320x720",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_large_text_dark_320x720.png",
+      "viewport": {
+        "width": 320,
+        "height": 720,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "066f1470f7f88e934e41adb7615e1fc766ebd6f35aae9d3680254fcce08015e3"
+    },
+    {
+      "id": "admin-predict-state-light-light-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_light_light_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "light",
+      "data_source": "synthetic",
+      "sha256": "220ca8ee02b4c2570fca822b2420b7a019ea186815ea93ea5dbc476ce4e50976"
+    },
+    {
+      "id": "admin-predict-state-loading-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_loading_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "5514fb152ddb8f9bab58c2118fdd4540ad041ecf448b0fd1dbfe24c8a3c3361e"
+    },
+    {
+      "id": "admin-predict-state-offline-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_offline_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "19f5a7257c9cf0f5ceb53e20cd6289fb4830e20fcd08f74e7d62d3a97f3a2e79"
+    },
+    {
+      "id": "admin-predict-state-permission-denied-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_permission_denied_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "4f327a3b8ff9baa1c990cf18eca45958b6c7adcec730e3e8d073ffa1e5c44b38"
+    },
+    {
+      "id": "admin-predict-state-refund-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_refund_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "a559470eb76f14f9b3d8a711749b98718cffbf9f34ffa8ae2b8c099376a366aa"
+    },
+    {
+      "id": "admin-predict-state-settings-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_settings_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "636edc7a4148dad9cc87338fe32337086453acb6ffb6dd8b15b7139f2d8ceb37"
+    },
+    {
+      "id": "admin-predict-state-syncing-dark-390x844",
+      "path": "packages/features/feat_admin/test/goldens/admin_predict_state_syncing_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "bba9d945b96ccdbf471f6af1ca452c59776c90c6982188d00cdd75a89b33a081"
+    },
+    {
+      "id": "predict-state-conflict-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_conflict_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "c52d0f0fb97a3dbff6c2f3bdaa2d0c27607c4bb37d07981db67b4d9f9de5b927"
+    },
+    {
+      "id": "predict-state-dark-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_dark_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "629181ae960a3f2bfdd75948616468ba7fe1bbc5097604dc209e62bf3d2a0376"
+    },
+    {
+      "id": "predict-state-disabled-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_disabled_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "7f4357556a3f094542c180d457da78b1a1dbf998a51c2a8ad003484e0cdcb5fe"
+    },
+    {
+      "id": "predict-state-empty-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_empty_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "5d73e632c946756679ce942d71cbeda978439055482f3f79cba64b967e45009b"
+    },
+    {
+      "id": "predict-state-error-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_error_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "eec9df1356f68d0791508917d14a15672c6bc00d0c415185b1bb342abbc245b9"
+    },
+    {
+      "id": "predict-state-focused-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_focused_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "629181ae960a3f2bfdd75948616468ba7fe1bbc5097604dc209e62bf3d2a0376"
+    },
+    {
+      "id": "predict-state-guest-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_guest_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "a0dc5a723164d47e12d53dabbd55f40b3e1c91bd6fea4e6e533c97c114bde420"
+    },
+    {
+      "id": "predict-state-history-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_history_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "c7d621ba3ef17179a46844e21cb004bf98598ec7f488d239ce22faf9676f0fb0"
+    },
+    {
+      "id": "predict-state-large-text-dark-320x720",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_large_text_dark_320x720.png",
+      "viewport": {
+        "width": 320,
+        "height": 720,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "1eee0c3ec598af5fb5e7e8c005d327c8d07a87028c77e7d40a402079ddadec49"
+    },
+    {
+      "id": "predict-state-light-light-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_light_light_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "light",
+      "data_source": "synthetic",
+      "sha256": "60ceee645e6edea8d82d08497b0a0c1b2623aa8c1a05307c8532e868f2623129"
+    },
+    {
+      "id": "predict-state-loading-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_loading_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "2c7e371f346f96cf0ba618d7daa23c04349bd25ca865f41ad44c20d63c0563e7"
+    },
+    {
+      "id": "predict-state-offline-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_offline_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "4bb3f347c31fb8a07af9e5ca2c06dcc51fa6bf9581ebfeb495363ad612d103c4"
+    },
+    {
+      "id": "predict-state-permission-denied-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_permission_denied_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "911276544c7d3d739977f51cd0c4714d6ac2e04cf03bcaba3263b989b636b284"
+    },
+    {
+      "id": "predict-state-pressed-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_pressed_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "629181ae960a3f2bfdd75948616468ba7fe1bbc5097604dc209e62bf3d2a0376"
+    },
+    {
+      "id": "predict-state-reduced-motion-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_reduced_motion_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "629181ae960a3f2bfdd75948616468ba7fe1bbc5097604dc209e62bf3d2a0376"
+    },
+    {
+      "id": "predict-state-security-timeout-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_security_timeout_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "b60384640d759f0c0d40c1cb55666fee631d59778dca8242a26de457ab4e1ea6"
+    },
+    {
+      "id": "predict-state-selected-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_selected_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "8c873df343b701f13964edbdd59db065f2a0c183bd86eedcbfc1dd0fc2fba2f3"
+    },
+    {
+      "id": "predict-state-syncing-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_syncing_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "ee0abfcbe010c14dd2ad6d29c61e23e3a73f274bba3b32bdf0882e0d84a5080a"
+    },
+    {
+      "id": "predict-state-wallet-dark-390x844",
+      "path": "packages/features/feat_gamification/test/goldens/predict_state_wallet_dark_390x844.png",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "device_pixel_ratio": 1
+      },
+      "theme": "dark",
+      "data_source": "synthetic",
+      "sha256": "16b2dfa5ecaf76002578653a36d3a1b64a112d3b582fa42cb954fee2d88ca2b6"
     }
   ]
 }

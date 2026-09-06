@@ -1,9 +1,10 @@
 /// AFRICLUB feat_gamification - partner-centered fan engagement surface.
 library;
 
-export 'src/challenge_module.dart';
 export 'src/fanzone_module.dart';
 export 'src/notification_providers.dart';
+export 'src/predict/predict_module.dart';
+export 'src/predict/predict_screen.dart';
 export 'src/screens/club_fan_zone_screen.dart';
 export 'src/screens/fan_id_screen.dart';
 export 'src/screens/fanzone_hub_screen.dart';

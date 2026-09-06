@@ -14,11 +14,7 @@ export interface AutoSettleResult {
   total_predictions_won: number;
   total_predictions_lost: number;
   total_fet_awarded: number;
-  challenges_locked: number;
-  challenges_voided_at_lock: number;
-  challenges_settled: number;
-  challenges_voided: number;
-  challenges_pending: number;
+  predict_pools_locked: number;
   errors: string[];
 }
 
@@ -31,26 +27,15 @@ export async function autoSettleFinishedFixtures(
     total_predictions_won: 0,
     total_predictions_lost: 0,
     total_fet_awarded: 0,
-    challenges_locked: 0,
-    challenges_voided_at_lock: 0,
-    challenges_settled: 0,
-    challenges_voided: 0,
-    challenges_pending: 0,
+    predict_pools_locked: 0,
     errors: [],
   };
 
-  const { data: lockResult, error: lockError } = await adminClient.rpc(
-    "prediction_challenge_lock_due",
-  );
-  if (lockError) {
-    result.errors.push(`Challenge lock error: ${lockError.message}`);
-  } else if (lockResult && typeof lockResult === "object") {
-    const lockData = lockResult as Record<string, unknown>;
-    result.challenges_locked += Number(lockData.locked ?? 0);
-    result.challenges_voided_at_lock += Number(
-      lockData.voided_no_opponents ?? 0,
-    );
-  }
+  // Predict locks automatically. Its payouts require a club operator to
+  // confirm the official result; fixture ingestion never authorizes a payout.
+  const { data: locked, error: lockError } = await adminClient.rpc("predict_lock_due");
+  if (lockError) result.errors.push("Predict pool locking unavailable");
+  else result.predict_pools_locked = Number(locked ?? 0);
 
   // 1. Find finished fixtures that have unsettled predictions
   const { data: finishedFixtures, error } = await adminClient
@@ -136,21 +121,6 @@ export async function autoSettleFinishedFixtures(
       console.error(`[auto-settle] Error settling ${fixture.id}:`, msg);
       result.errors.push(`Fixture ${fixture.id}: ${msg}`);
     }
-  }
-
-  const { data: challengeSettlementResult, error: challengeSettlementError } =
-    await adminClient.rpc("prediction_challenge_settle_due");
-  if (challengeSettlementError) {
-    result.errors.push(
-      `Challenge settlement error: ${challengeSettlementError.message}`,
-    );
-  } else if (
-    challengeSettlementResult && typeof challengeSettlementResult === "object"
-  ) {
-    const challengeData = challengeSettlementResult as Record<string, unknown>;
-    result.challenges_settled += Number(challengeData.settled ?? 0);
-    result.challenges_voided += Number(challengeData.voided ?? 0);
-    result.challenges_pending += Number(challengeData.pending ?? 0);
   }
 
   return result;

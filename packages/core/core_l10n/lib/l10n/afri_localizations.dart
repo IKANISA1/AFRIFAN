@@ -8683,95 +8683,11 @@ abstract class AfriLocalizations {
   /// **'This workspace is limited to verified club administrators for the active club.'**
   String get adminAccessRequiredMessage;
 
-  /// No description provided for @adminChallengesTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge ops'**
-  String get adminChallengesTitle;
-
   /// No description provided for @adminBack.
   ///
   /// In en, this message translates to:
   /// **'Back'**
   String get adminBack;
-
-  /// No description provided for @adminChallengesLoadingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Loading challenge operations'**
-  String get adminChallengesLoadingTitle;
-
-  /// No description provided for @adminChallengesLoadingMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking current settlement work.'**
-  String get adminChallengesLoadingMessage;
-
-  /// No description provided for @adminChallengesFilterLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge status filter'**
-  String get adminChallengesFilterLabel;
-
-  /// No description provided for @adminChallengesFilterAll.
-  ///
-  /// In en, this message translates to:
-  /// **'All'**
-  String get adminChallengesFilterAll;
-
-  /// No description provided for @adminChallengesFilterOpen.
-  ///
-  /// In en, this message translates to:
-  /// **'Open'**
-  String get adminChallengesFilterOpen;
-
-  /// No description provided for @adminChallengesFilterLocked.
-  ///
-  /// In en, this message translates to:
-  /// **'Locked'**
-  String get adminChallengesFilterLocked;
-
-  /// No description provided for @adminChallengesFilterSettled.
-  ///
-  /// In en, this message translates to:
-  /// **'Settled'**
-  String get adminChallengesFilterSettled;
-
-  /// No description provided for @adminChallengesFilterVoid.
-  ///
-  /// In en, this message translates to:
-  /// **'Void'**
-  String get adminChallengesFilterVoid;
-
-  /// No description provided for @adminChallengesEmptyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No challenge operations'**
-  String get adminChallengesEmptyTitle;
-
-  /// No description provided for @adminChallengesEmptyAllMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'No challenges are currently queued.'**
-  String get adminChallengesEmptyAllMessage;
-
-  /// No description provided for @adminChallengesEmptyFilteredMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'No {status} challenges are currently queued.'**
-  String adminChallengesEmptyFilteredMessage(String status);
-
-  /// No description provided for @adminChallengesRetryTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Retry settlement?'**
-  String get adminChallengesRetryTitle;
-
-  /// No description provided for @adminChallengesRetryMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Recheck {home} vs {away}. Do not retry again until the refreshed status is confirmed.'**
-  String adminChallengesRetryMessage(String home, String away);
 
   /// No description provided for @adminCancelUpper.
   ///
@@ -8779,179 +8695,11 @@ abstract class AfriLocalizations {
   /// **'Cancel'**
   String get adminCancelUpper;
 
-  /// No description provided for @adminRetryUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Retry'**
-  String get adminRetryUpper;
-
-  /// No description provided for @adminChallengesSettlementPending.
-  ///
-  /// In en, this message translates to:
-  /// **'Settlement remains pending. Review the refreshed status.'**
-  String get adminChallengesSettlementPending;
-
-  /// No description provided for @adminChallengesSettlementRefreshed.
-  ///
-  /// In en, this message translates to:
-  /// **'Settlement status refreshed.'**
-  String get adminChallengesSettlementRefreshed;
-
-  /// No description provided for @adminChallengesUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge operations unavailable'**
-  String get adminChallengesUnavailable;
-
-  /// No description provided for @adminChallengesDisabledMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge settlement controls are disabled for this controlled build.'**
-  String get adminChallengesDisabledMessage;
-
   /// No description provided for @adminBackToAdmin.
   ///
   /// In en, this message translates to:
   /// **'Back to admin'**
   String get adminBackToAdmin;
-
-  /// No description provided for @adminChallengesOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge operations offline'**
-  String get adminChallengesOffline;
-
-  /// No description provided for @adminChallengesOfflineMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect before loading private settlement work.'**
-  String get adminChallengesOfflineMessage;
-
-  /// No description provided for @adminChallengesAccessUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge access unavailable'**
-  String get adminChallengesAccessUnavailable;
-
-  /// No description provided for @adminChallengesAccessUnavailableMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'This account cannot view or retry club challenge settlements.'**
-  String get adminChallengesAccessUnavailableMessage;
-
-  /// No description provided for @adminChallengesStatusChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge status changed'**
-  String get adminChallengesStatusChanged;
-
-  /// No description provided for @adminChallengesStatusChangedMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh before continuing with settlement work.'**
-  String get adminChallengesStatusChangedMessage;
-
-  /// No description provided for @adminChallengesSecurityTimeoutMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'No challenge data was shown. Check your connection and retry.'**
-  String get adminChallengesSecurityTimeoutMessage;
-
-  /// No description provided for @adminChallengesPrivateDataHidden.
-  ///
-  /// In en, this message translates to:
-  /// **'Private settlement data remains hidden. Try again.'**
-  String get adminChallengesPrivateDataHidden;
-
-  /// No description provided for @adminChallengesRetryingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Retrying settlement'**
-  String get adminChallengesRetryingTitle;
-
-  /// No description provided for @adminChallengesRetryingMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Controls are paused until the current result is confirmed.'**
-  String get adminChallengesRetryingMessage;
-
-  /// No description provided for @adminChallengesRefreshingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Refreshing challenge operations'**
-  String get adminChallengesRefreshingTitle;
-
-  /// No description provided for @adminChallengesRefreshingMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing the last confirmed list while current status is checked.'**
-  String get adminChallengesRefreshingMessage;
-
-  /// No description provided for @adminChallengesOutcomeUnconfirmed.
-  ///
-  /// In en, this message translates to:
-  /// **'The retry outcome is not confirmed. Refresh before taking another action.'**
-  String get adminChallengesOutcomeUnconfirmed;
-
-  /// No description provided for @adminChallengesLastConfirmedMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing the last confirmed list. Actions are paused until refresh succeeds.'**
-  String get adminChallengesLastConfirmedMessage;
-
-  /// No description provided for @adminChallengesVoidReasonRecorded.
-  ///
-  /// In en, this message translates to:
-  /// **'Void reason recorded'**
-  String get adminChallengesVoidReasonRecorded;
-
-  /// No description provided for @adminChallengesNoVoidReason.
-  ///
-  /// In en, this message translates to:
-  /// **'No void reason'**
-  String get adminChallengesNoVoidReason;
-
-  /// No description provided for @adminChallengesSettlementMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Settlement {mode}'**
-  String adminChallengesSettlementMode(String mode);
-
-  /// No description provided for @adminChallengesAuditState.
-  ///
-  /// In en, this message translates to:
-  /// **'Audit {state}'**
-  String adminChallengesAuditState(String state);
-
-  /// No description provided for @adminChallengesRetryingAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Retrying settlement'**
-  String get adminChallengesRetryingAction;
-
-  /// No description provided for @adminChallengesRetryAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Retry settlement'**
-  String get adminChallengesRetryAction;
-
-  /// No description provided for @adminChallengesCreator.
-  ///
-  /// In en, this message translates to:
-  /// **'Creator'**
-  String get adminChallengesCreator;
-
-  /// No description provided for @adminChallengesPool.
-  ///
-  /// In en, this message translates to:
-  /// **'Pool'**
-  String get adminChallengesPool;
-
-  /// No description provided for @adminChallengesParticipants.
-  ///
-  /// In en, this message translates to:
-  /// **'Participants'**
-  String get adminChallengesParticipants;
 
   /// No description provided for @adminVersus.
   ///
@@ -13529,83 +13277,11 @@ abstract class AfriLocalizations {
   /// **'Bal. {amount} pts'**
   String gameWalletBalance(String amount);
 
-  /// No description provided for @gameVersus.
-  ///
-  /// In en, this message translates to:
-  /// **'VS'**
-  String get gameVersus;
-
-  /// No description provided for @gameKickoffSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Kick-off soon'**
-  String get gameKickoffSoon;
-
-  /// No description provided for @gameJoinedCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 joined} other{{count} joined}}'**
-  String gameJoinedCount(int count);
-
-  /// No description provided for @gameTotalPoolPoints.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} pts total'**
-  String gameTotalPoolPoints(int count);
-
-  /// No description provided for @gameCreator.
-  ///
-  /// In en, this message translates to:
-  /// **'Creator'**
-  String get gameCreator;
-
-  /// No description provided for @gameMyPick.
-  ///
-  /// In en, this message translates to:
-  /// **'My pick'**
-  String get gameMyPick;
-
   /// No description provided for @gameOpenUpper.
   ///
   /// In en, this message translates to:
   /// **'Open'**
   String get gameOpenUpper;
-
-  /// No description provided for @gameLockedUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Locked'**
-  String get gameLockedUpper;
-
-  /// No description provided for @gameSettledUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Settled'**
-  String get gameSettledUpper;
-
-  /// No description provided for @gameDaysLeft.
-  ///
-  /// In en, this message translates to:
-  /// **'{count}d left'**
-  String gameDaysLeft(int count);
-
-  /// No description provided for @gameHoursMinutes.
-  ///
-  /// In en, this message translates to:
-  /// **'{hours}h {minutes}m'**
-  String gameHoursMinutes(int hours, int minutes);
-
-  /// No description provided for @gameMinutesLeft.
-  ///
-  /// In en, this message translates to:
-  /// **'{count}m left'**
-  String gameMinutesLeft(int count);
-
-  /// No description provided for @gameScorePrediction.
-  ///
-  /// In en, this message translates to:
-  /// **'{label}  {home}-{away}'**
-  String gameScorePrediction(String label, int home, int away);
 
   /// No description provided for @gamePointsShare.
   ///
@@ -15419,245 +15095,17 @@ abstract class AfriLocalizations {
   /// **'Next'**
   String get gameNext;
 
-  /// No description provided for @gameMyChallenges.
-  ///
-  /// In en, this message translates to:
-  /// **'My challenges'**
-  String get gameMyChallenges;
-
   /// No description provided for @gameOpen.
   ///
   /// In en, this message translates to:
   /// **'Open'**
   String get gameOpen;
 
-  /// No description provided for @gameLocked.
-  ///
-  /// In en, this message translates to:
-  /// **'Locked'**
-  String get gameLocked;
-
-  /// No description provided for @gameSettled.
-  ///
-  /// In en, this message translates to:
-  /// **'Settled'**
-  String get gameSettled;
-
-  /// No description provided for @gameRefunded.
-  ///
-  /// In en, this message translates to:
-  /// **'Refunded'**
-  String get gameRefunded;
-
-  /// No description provided for @gameLoadingChallenges.
-  ///
-  /// In en, this message translates to:
-  /// **'Loading your challenges'**
-  String get gameLoadingChallenges;
-
-  /// No description provided for @gameLoadingChallengesDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking the pools you created or joined for this status.'**
-  String get gameLoadingChallengesDescription;
-
   /// No description provided for @gameRefresh.
   ///
   /// In en, this message translates to:
   /// **'Refresh'**
   String get gameRefresh;
-
-  /// No description provided for @gameRefreshingChallengeHistory.
-  ///
-  /// In en, this message translates to:
-  /// **'Refreshing challenge history'**
-  String get gameRefreshingChallengeHistory;
-
-  /// No description provided for @gameRefreshingChallengeHistoryDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Keeping your confirmed pools visible while the latest status is checked.'**
-  String get gameRefreshingChallengeHistoryDescription;
-
-  /// No description provided for @gameChallengeHistoryReadOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge history is read-only'**
-  String get gameChallengeHistoryReadOnly;
-
-  /// No description provided for @gameChallengeHistoryReadOnlyDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Your confirmed pools remain visible, but opening challenge details is disabled for this build.'**
-  String get gameChallengeHistoryReadOnlyDescription;
-
-  /// No description provided for @gameShowingSavedChallengeHistory.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing saved challenge history'**
-  String get gameShowingSavedChallengeHistory;
-
-  /// No description provided for @gameShowingSavedChallengeHistoryDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect and refresh before opening a pool or checking a newer status.'**
-  String get gameShowingSavedChallengeHistoryDescription;
-
-  /// No description provided for @gameRefreshHistory.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh history'**
-  String get gameRefreshHistory;
-
-  /// No description provided for @gameNoFilteredChallenges.
-  ///
-  /// In en, this message translates to:
-  /// **'No {filter} challenges'**
-  String gameNoFilteredChallenges(String filter);
-
-  /// No description provided for @gameCreateChallenge.
-  ///
-  /// In en, this message translates to:
-  /// **'Create challenge'**
-  String get gameCreateChallenge;
-
-  /// No description provided for @gameChallengeCardSemantics.
-  ///
-  /// In en, this message translates to:
-  /// **'{home} versus {away}. {summary}. Open challenge details.'**
-  String gameChallengeCardSemantics(String home, String away, String summary);
-
-  /// No description provided for @gameOpensChallenge.
-  ///
-  /// In en, this message translates to:
-  /// **'Opens this challenge'**
-  String get gameOpensChallenge;
-
-  /// No description provided for @gameChallengeDetailsUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge details are unavailable'**
-  String get gameChallengeDetailsUnavailable;
-
-  /// No description provided for @gameTeamsVersusMultiline.
-  ///
-  /// In en, this message translates to:
-  /// **'{home}\nversus\n{away}'**
-  String gameTeamsVersusMultiline(String home, String away);
-
-  /// No description provided for @gameConnectionRestored.
-  ///
-  /// In en, this message translates to:
-  /// **'Connection restored'**
-  String get gameConnectionRestored;
-
-  /// No description provided for @gameChallengeHistoryOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge history offline'**
-  String get gameChallengeHistoryOffline;
-
-  /// No description provided for @gameRefreshLatestChallengeStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh to check the latest status of your challenges.'**
-  String get gameRefreshLatestChallengeStatus;
-
-  /// No description provided for @gameReconnectChallengePools.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect to load the pools you created or joined.'**
-  String get gameReconnectChallengePools;
-
-  /// No description provided for @gameChallengeHistoryUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge history unavailable'**
-  String get gameChallengeHistoryUnavailable;
-
-  /// No description provided for @gameChallengeHistoryPermissionDenied.
-  ///
-  /// In en, this message translates to:
-  /// **'Your current club access does not allow this challenge history.'**
-  String get gameChallengeHistoryPermissionDenied;
-
-  /// No description provided for @gameChallengeHistoryChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge history changed'**
-  String get gameChallengeHistoryChanged;
-
-  /// No description provided for @gameChallengeHistoryChangedDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh and review the latest pool status before opening a challenge.'**
-  String get gameChallengeHistoryChangedDescription;
-
-  /// No description provided for @gameChallengeHistoryTimedOut.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge history check timed out'**
-  String get gameChallengeHistoryTimedOut;
-
-  /// No description provided for @gameChallengeHistoryTimedOutDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'No status was confirmed. Refresh before opening a challenge.'**
-  String get gameChallengeHistoryTimedOutDescription;
-
-  /// No description provided for @gameChallengeHistoryTryAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh and try again when your challenge history is ready.'**
-  String get gameChallengeHistoryTryAgain;
-
-  /// No description provided for @gameOpenChallengesEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Create or join a pool to see an active exact-score challenge here.'**
-  String get gameOpenChallengesEmpty;
-
-  /// No description provided for @gameLockedChallengesEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No joined challenge is currently waiting for a final score.'**
-  String get gameLockedChallengesEmpty;
-
-  /// No description provided for @gameSettledChallengesEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Completed challenge results and points will appear here.'**
-  String get gameSettledChallengesEmpty;
-
-  /// No description provided for @gameRefundedChallengesEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancelled or refunded challenges will appear here.'**
-  String get gameRefundedChallengesEmpty;
-
-  /// No description provided for @gameEarnedPoints.
-  ///
-  /// In en, this message translates to:
-  /// **'Earned {count} pts'**
-  String gameEarnedPoints(int count);
-
-  /// No description provided for @gameNoResultCredit.
-  ///
-  /// In en, this message translates to:
-  /// **'No result credit'**
-  String get gameNoResultCredit;
-
-  /// No description provided for @gameReturnedPoints.
-  ///
-  /// In en, this message translates to:
-  /// **'Returned {count} pts'**
-  String gameReturnedPoints(int count);
-
-  /// No description provided for @gameMyPickScore.
-  ///
-  /// In en, this message translates to:
-  /// **'My pick {home}-{away}'**
-  String gameMyPickScore(int home, int away);
 
   /// No description provided for @gameMoreOptions.
   ///
@@ -16763,265 +16211,6 @@ abstract class AfriLocalizations {
   /// **'The server did not confirm the attempt. Dismiss this warning before retrying.'**
   String get venueCheckinUnavailableBody;
 
-  /// No description provided for @challengeConfirmTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm challenge'**
-  String get challengeConfirmTitle;
-
-  /// No description provided for @challengeConfirmPoints.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm {count} pts'**
-  String challengeConfirmPoints(int count);
-
-  /// No description provided for @challengeCreateTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Create challenge'**
-  String get challengeCreateTitle;
-
-  /// No description provided for @challengeFindingFixtures.
-  ///
-  /// In en, this message translates to:
-  /// **'Finding upcoming fixtures'**
-  String get challengeFindingFixtures;
-
-  /// No description provided for @challengeFindingFixturesBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking the matches that are still open for exact-score challenges.'**
-  String get challengeFindingFixturesBody;
-
-  /// No description provided for @challengeNoFixtures.
-  ///
-  /// In en, this message translates to:
-  /// **'No fixtures available'**
-  String get challengeNoFixtures;
-
-  /// No description provided for @challengeNoFixturesBody.
-  ///
-  /// In en, this message translates to:
-  /// **'There are no upcoming matches open for a new challenge yet.'**
-  String get challengeNoFixturesBody;
-
-  /// No description provided for @challengeRefreshFixtures.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh fixtures'**
-  String get challengeRefreshFixtures;
-
-  /// No description provided for @challengeCreating.
-  ///
-  /// In en, this message translates to:
-  /// **'Creating challenge'**
-  String get challengeCreating;
-
-  /// No description provided for @challengeCreatingBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Keeping your fixture, score, and entry points visible while confirmation is pending.'**
-  String get challengeCreatingBody;
-
-  /// No description provided for @challengeCreationUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge creation unavailable'**
-  String get challengeCreationUnavailable;
-
-  /// No description provided for @challengeCreationDisabledBody.
-  ///
-  /// In en, this message translates to:
-  /// **'You can review the form, but creating a pool is disabled for this build.'**
-  String get challengeCreationDisabledBody;
-
-  /// No description provided for @challengeShowingSavedFixtures.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing saved fixtures'**
-  String get challengeShowingSavedFixtures;
-
-  /// No description provided for @challengeShowingSavedFixturesBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect and refresh before changing the score or creating a challenge.'**
-  String get challengeShowingSavedFixturesBody;
-
-  /// No description provided for @challengeRefreshFixturesUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh fixtures'**
-  String get challengeRefreshFixturesUpper;
-
-  /// No description provided for @challengeExactScore.
-  ///
-  /// In en, this message translates to:
-  /// **'Exact score'**
-  String get challengeExactScore;
-
-  /// No description provided for @challengeSelectedScore.
-  ///
-  /// In en, this message translates to:
-  /// **'Selected exact score {home} to {away}'**
-  String challengeSelectedScore(int home, int away);
-
-  /// No description provided for @challengeVersusUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Versus'**
-  String get challengeVersusUpper;
-
-  /// No description provided for @challengeEntryPoints.
-  ///
-  /// In en, this message translates to:
-  /// **'Entry points'**
-  String get challengeEntryPoints;
-
-  /// No description provided for @challengeEntryOptionsUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge entry options are not available yet.'**
-  String get challengeEntryOptionsUnavailable;
-
-  /// No description provided for @challengeStakePoints.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} pts'**
-  String challengeStakePoints(int count);
-
-  /// No description provided for @challengeCheckingBalance.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking your points balance.'**
-  String get challengeCheckingBalance;
-
-  /// No description provided for @challengeBalanceUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Your points balance is unavailable. Refresh before creating this challenge.'**
-  String get challengeBalanceUnavailable;
-
-  /// No description provided for @challengeBalanceInsufficient.
-  ///
-  /// In en, this message translates to:
-  /// **'Your current points balance does not cover this entry.'**
-  String get challengeBalanceInsufficient;
-
-  /// No description provided for @challengeCreatingUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Creating challenge'**
-  String get challengeCreatingUpper;
-
-  /// No description provided for @challengeCreationOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge creation offline'**
-  String get challengeCreationOffline;
-
-  /// No description provided for @challengeRefreshLatestFixtures.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh to check the latest fixtures before creating a challenge.'**
-  String get challengeRefreshLatestFixtures;
-
-  /// No description provided for @challengeReconnectFixtures.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect to load the fixtures available for a new challenge.'**
-  String get challengeReconnectFixtures;
-
-  /// No description provided for @challengeAccessDeniedBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Your current club access does not allow a new challenge.'**
-  String get challengeAccessDeniedBody;
-
-  /// No description provided for @challengeDetailsChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge details changed'**
-  String get challengeDetailsChanged;
-
-  /// No description provided for @challengeDetailsChangedBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh the fixtures and review your choice before trying again.'**
-  String get challengeDetailsChangedBody;
-
-  /// No description provided for @challengeSecurityTimedOut.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge security check timed out'**
-  String get challengeSecurityTimedOut;
-
-  /// No description provided for @challengeSecurityTimedOutBody.
-  ///
-  /// In en, this message translates to:
-  /// **'No challenge was confirmed. Refresh before trying again.'**
-  String get challengeSecurityTimedOutBody;
-
-  /// No description provided for @challengeTryAgainBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh and try again when the fixtures are available.'**
-  String get challengeTryAgainBody;
-
-  /// No description provided for @challengePreviewSemantics.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge preview. {homeTeam} versus {awayTeam}. Your pick {homeScore} to {awayScore}. Entry {stake} points. Balance {balance} points.'**
-  String challengePreviewSemantics(
-    String homeTeam,
-    String awayTeam,
-    int homeScore,
-    int awayScore,
-    int stake,
-    int balance,
-  );
-
-  /// No description provided for @challengePreview.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge preview'**
-  String get challengePreview;
-
-  /// No description provided for @challengeYourPick.
-  ///
-  /// In en, this message translates to:
-  /// **'Your pick'**
-  String get challengeYourPick;
-
-  /// No description provided for @challengeBalancePoints.
-  ///
-  /// In en, this message translates to:
-  /// **'Balance {count} pts'**
-  String challengeBalancePoints(int count);
-
-  /// No description provided for @challengeLocksAtKickoff.
-  ///
-  /// In en, this message translates to:
-  /// **'Locks at kickoff'**
-  String get challengeLocksAtKickoff;
-
-  /// No description provided for @challengeFixtureOption.
-  ///
-  /// In en, this message translates to:
-  /// **'{home} vs {away} • {competition}'**
-  String challengeFixtureOption(String home, String away, String competition);
-
-  /// No description provided for @challengeDecrease.
-  ///
-  /// In en, this message translates to:
-  /// **'Decrease {label}'**
-  String challengeDecrease(String label);
-
-  /// No description provided for @challengeIncrease.
-  ///
-  /// In en, this message translates to:
-  /// **'Increase {label}'**
-  String challengeIncrease(String label);
-
   /// No description provided for @walletRewardsUnavailable.
   ///
   /// In en, this message translates to:
@@ -17207,516 +16396,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'The last confirmed balance stays visible until refresh succeeds.'**
   String get walletSavedUntilRefresh;
-
-  /// No description provided for @feedChallengeTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge'**
-  String get feedChallengeTitle;
-
-  /// No description provided for @feedDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Exact-score pools for real fixtures. Create one, join once, and settle automatically from the official final score.'**
-  String get feedDescription;
-
-  /// No description provided for @feedCreateNew.
-  ///
-  /// In en, this message translates to:
-  /// **'Create a new challenge'**
-  String get feedCreateNew;
-
-  /// No description provided for @feedOpening.
-  ///
-  /// In en, this message translates to:
-  /// **'Opening challenges'**
-  String get feedOpening;
-
-  /// No description provided for @feedOpeningBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking current fixtures, pools, and your joined challenges.'**
-  String get feedOpeningBody;
-
-  /// No description provided for @feedRefreshing.
-  ///
-  /// In en, this message translates to:
-  /// **'Refreshing challenges'**
-  String get feedRefreshing;
-
-  /// No description provided for @feedRefreshingBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Keeping current fixtures, pools, and joined challenges visible.'**
-  String get feedRefreshingBody;
-
-  /// No description provided for @feedActionsUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge actions unavailable'**
-  String get feedActionsUnavailable;
-
-  /// No description provided for @feedActionsUnavailableBody.
-  ///
-  /// In en, this message translates to:
-  /// **'You can review current pools, but creating and joining are disabled for this build.'**
-  String get feedActionsUnavailableBody;
-
-  /// No description provided for @feedShowingSaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing saved challenges'**
-  String get feedShowingSaved;
-
-  /// No description provided for @feedShowingSavedBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect before creating or joining a pool.'**
-  String get feedShowingSavedBody;
-
-  /// No description provided for @feedUpdatesPaused.
-  ///
-  /// In en, this message translates to:
-  /// **'Live challenge updates paused'**
-  String get feedUpdatesPaused;
-
-  /// No description provided for @feedEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No challenges available'**
-  String get feedEmpty;
-
-  /// No description provided for @feedEmptyBody.
-  ///
-  /// In en, this message translates to:
-  /// **'New exact-score pools will appear when eligible fixtures open.'**
-  String get feedEmptyBody;
-
-  /// No description provided for @feedFeatured.
-  ///
-  /// In en, this message translates to:
-  /// **'Featured / Popular Challenges'**
-  String get feedFeatured;
-
-  /// No description provided for @feedSeeAll.
-  ///
-  /// In en, this message translates to:
-  /// **'See all'**
-  String get feedSeeAll;
-
-  /// No description provided for @feedOpenChallenges.
-  ///
-  /// In en, this message translates to:
-  /// **'Open Challenges'**
-  String get feedOpenChallenges;
-
-  /// No description provided for @feedEndingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Ending Soon'**
-  String get feedEndingSoon;
-
-  /// No description provided for @feedEndingSoonAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Ending soon'**
-  String get feedEndingSoonAction;
-
-  /// No description provided for @feedMyChallenges.
-  ///
-  /// In en, this message translates to:
-  /// **'My Challenges'**
-  String get feedMyChallenges;
-
-  /// No description provided for @feedSettledChallenges.
-  ///
-  /// In en, this message translates to:
-  /// **'Settled Challenges'**
-  String get feedSettledChallenges;
-
-  /// No description provided for @feedResults.
-  ///
-  /// In en, this message translates to:
-  /// **'Results'**
-  String get feedResults;
-
-  /// No description provided for @feedNoFilterMatches.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing matches this filter'**
-  String get feedNoFilterMatches;
-
-  /// No description provided for @feedNoFilterMatchesBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Try another view or create a new pool.'**
-  String get feedNoFilterMatchesBody;
-
-  /// No description provided for @feedAll.
-  ///
-  /// In en, this message translates to:
-  /// **'All'**
-  String get feedAll;
-
-  /// No description provided for @feedHighPool.
-  ///
-  /// In en, this message translates to:
-  /// **'High Pool'**
-  String get feedHighPool;
-
-  /// No description provided for @feedMostParticipants.
-  ///
-  /// In en, this message translates to:
-  /// **'Most Participants'**
-  String get feedMostParticipants;
-
-  /// No description provided for @feedMyJoined.
-  ///
-  /// In en, this message translates to:
-  /// **'My Joined'**
-  String get feedMyJoined;
-
-  /// No description provided for @feedChallengesOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenges unavailable offline'**
-  String get feedChallengesOffline;
-
-  /// No description provided for @feedChallengesOfflineBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect to load current fixtures and challenge pools.'**
-  String get feedChallengesOfflineBody;
-
-  /// No description provided for @feedAccessUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge access unavailable'**
-  String get feedAccessUnavailable;
-
-  /// No description provided for @feedAccessUnavailableBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Your access does not currently allow these challenge pools.'**
-  String get feedAccessUnavailableBody;
-
-  /// No description provided for @feedDataChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge data changed'**
-  String get feedDataChanged;
-
-  /// No description provided for @feedDataChangedBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh before reviewing or joining the latest pools.'**
-  String get feedDataChangedBody;
-
-  /// No description provided for @feedSecurityTimedOutBody.
-  ///
-  /// In en, this message translates to:
-  /// **'No challenge action was completed. Refresh before trying again.'**
-  String get feedSecurityTimedOutBody;
-
-  /// No description provided for @feedUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge feed unavailable'**
-  String get feedUnavailable;
-
-  /// No description provided for @feedUnavailableBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Current challenge pools could not be loaded safely.'**
-  String get feedUnavailableBody;
-
-  /// No description provided for @detailTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge detail'**
-  String get detailTitle;
-
-  /// No description provided for @detailOpening.
-  ///
-  /// In en, this message translates to:
-  /// **'Opening challenge'**
-  String get detailOpening;
-
-  /// No description provided for @detailOpeningBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking the current pool, entries, and official result status.'**
-  String get detailOpeningBody;
-
-  /// No description provided for @detailNotFound.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge not found'**
-  String get detailNotFound;
-
-  /// No description provided for @detailNotFoundBody.
-  ///
-  /// In en, this message translates to:
-  /// **'This pool may have ended, been removed, or no longer be available to your club.'**
-  String get detailNotFoundBody;
-
-  /// No description provided for @detailBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back to challenges'**
-  String get detailBack;
-
-  /// No description provided for @detailPendingBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Keeping the current pool and score choice visible while confirmation is pending.'**
-  String get detailPendingBody;
-
-  /// No description provided for @detailActionsUnavailableBody.
-  ///
-  /// In en, this message translates to:
-  /// **'You can review this pool, but joining and cancellation are disabled for this build.'**
-  String get detailActionsUnavailableBody;
-
-  /// No description provided for @detailShowingSaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing saved challenge'**
-  String get detailShowingSaved;
-
-  /// No description provided for @detailShowingSavedBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect and refresh before joining, changing a score, or cancelling this pool.'**
-  String get detailShowingSavedBody;
-
-  /// No description provided for @detailRefreshUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh challenge'**
-  String get detailRefreshUpper;
-
-  /// No description provided for @detailMyPickUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'My pick'**
-  String get detailMyPickUpper;
-
-  /// No description provided for @detailMyEntry.
-  ///
-  /// In en, this message translates to:
-  /// **'My entry'**
-  String get detailMyEntry;
-
-  /// No description provided for @detailJoinUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Join this challenge'**
-  String get detailJoinUpper;
-
-  /// No description provided for @detailPickScoreBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Pick the exact score before the fixture locks.'**
-  String get detailPickScoreBody;
-
-  /// No description provided for @detailResults.
-  ///
-  /// In en, this message translates to:
-  /// **'Results'**
-  String get detailResults;
-
-  /// No description provided for @detailOfficialScore.
-  ///
-  /// In en, this message translates to:
-  /// **'Official score'**
-  String get detailOfficialScore;
-
-  /// No description provided for @detailWinners.
-  ///
-  /// In en, this message translates to:
-  /// **'Winners'**
-  String get detailWinners;
-
-  /// No description provided for @detailLosers.
-  ///
-  /// In en, this message translates to:
-  /// **'Losers'**
-  String get detailLosers;
-
-  /// No description provided for @detailPointsPerWinner.
-  ///
-  /// In en, this message translates to:
-  /// **'Points / winner'**
-  String get detailPointsPerWinner;
-
-  /// No description provided for @detailEntries.
-  ///
-  /// In en, this message translates to:
-  /// **'Entries'**
-  String get detailEntries;
-
-  /// No description provided for @detailEntryCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Entry cancelled'**
-  String get detailEntryCancelled;
-
-  /// No description provided for @detailWaitingResult.
-  ///
-  /// In en, this message translates to:
-  /// **'Waiting for official result review.'**
-  String get detailWaitingResult;
-
-  /// No description provided for @detailScoreSemantics.
-  ///
-  /// In en, this message translates to:
-  /// **'{label} score {value}'**
-  String detailScoreSemantics(String label, int value);
-
-  /// No description provided for @detailAccessUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge access unavailable'**
-  String get detailAccessUnavailable;
-
-  /// No description provided for @detailAccessUnavailableBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Your current account cannot review or change this challenge.'**
-  String get detailAccessUnavailableBody;
-
-  /// No description provided for @detailDataChangedBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh before reviewing entries or changing this challenge.'**
-  String get detailDataChangedBody;
-
-  /// No description provided for @detailSecurityTimedOutBody.
-  ///
-  /// In en, this message translates to:
-  /// **'No challenge action was confirmed. Refresh before trying again.'**
-  String get detailSecurityTimedOutBody;
-
-  /// No description provided for @detailUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge unavailable'**
-  String get detailUnavailable;
-
-  /// No description provided for @detailUnavailableBody.
-  ///
-  /// In en, this message translates to:
-  /// **'The latest pool details could not be confirmed. Refresh to try again.'**
-  String get detailUnavailableBody;
-
-  /// No description provided for @detailJoinedSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge joined successfully.'**
-  String get detailJoinedSuccess;
-
-  /// No description provided for @detailCancelledSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge cancelled.'**
-  String get detailCancelledSuccess;
-
-  /// No description provided for @detailJoining.
-  ///
-  /// In en, this message translates to:
-  /// **'Joining challenge'**
-  String get detailJoining;
-
-  /// No description provided for @detailCancelling.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancelling challenge'**
-  String get detailCancelling;
-
-  /// No description provided for @detailRefreshing.
-  ///
-  /// In en, this message translates to:
-  /// **'Refreshing challenge'**
-  String get detailRefreshing;
-
-  /// No description provided for @detailJoiningUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Joining challenge'**
-  String get detailJoiningUpper;
-
-  /// No description provided for @detailJoinWithPoints.
-  ///
-  /// In en, this message translates to:
-  /// **'Join with {count} pts'**
-  String detailJoinWithPoints(int count);
-
-  /// No description provided for @detailCancellingUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancelling challenge'**
-  String get detailCancellingUpper;
-
-  /// No description provided for @detailCancelUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel challenge'**
-  String get detailCancelUpper;
-
-  /// No description provided for @detailConnectionRestored.
-  ///
-  /// In en, this message translates to:
-  /// **'Connection restored'**
-  String get detailConnectionRestored;
-
-  /// No description provided for @detailOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge details offline'**
-  String get detailOffline;
-
-  /// No description provided for @detailRefreshBeforeAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh to check the current pool before joining or cancelling.'**
-  String get detailRefreshBeforeAction;
-
-  /// No description provided for @detailReconnectBeforeAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect to check the current pool before joining or cancelling.'**
-  String get detailReconnectBeforeAction;
-
-  /// No description provided for @detailEntryActive.
-  ///
-  /// In en, this message translates to:
-  /// **'Active'**
-  String get detailEntryActive;
-
-  /// No description provided for @detailEntryWinner.
-  ///
-  /// In en, this message translates to:
-  /// **'Winner'**
-  String get detailEntryWinner;
-
-  /// No description provided for @detailEntryLoser.
-  ///
-  /// In en, this message translates to:
-  /// **'Loser'**
-  String get detailEntryLoser;
-
-  /// No description provided for @detailEntryRefunded.
-  ///
-  /// In en, this message translates to:
-  /// **'Refunded'**
-  String get detailEntryRefunded;
-
-  /// No description provided for @detailEntryCancelledStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancelled'**
-  String get detailEntryCancelledStatus;
 
   /// No description provided for @gameShareOptionsClosed.
   ///
@@ -18723,6 +17402,360 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Apply'**
   String get settingsApplyTheme;
+
+  /// No description provided for @predictTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Predict'**
+  String get predictTitle;
+
+  /// No description provided for @predictIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the result. One entry per match.'**
+  String get predictIntro;
+
+  /// No description provided for @predictFixtures.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixtures'**
+  String get predictFixtures;
+
+  /// No description provided for @predictHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'My picks'**
+  String get predictHistory;
+
+  /// No description provided for @predictWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'FET activity'**
+  String get predictWallet;
+
+  /// No description provided for @predictDraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw'**
+  String get predictDraw;
+
+  /// No description provided for @predictAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All competitions'**
+  String get predictAll;
+
+  /// No description provided for @predictEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No open fixtures'**
+  String get predictEmpty;
+
+  /// No description provided for @predictEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepared matches appear here before kickoff.'**
+  String get predictEmptyBody;
+
+  /// No description provided for @predictNoHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Your picks will appear here'**
+  String get predictNoHistory;
+
+  /// No description provided for @predictNoActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No FET activity yet'**
+  String get predictNoActivity;
+
+  /// No description provided for @predictUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t refresh Predict'**
+  String get predictUnavailable;
+
+  /// No description provided for @predictRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get predictRefresh;
+
+  /// No description provided for @predictLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading fixtures'**
+  String get predictLoading;
+
+  /// No description provided for @predictDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Predict is not open yet'**
+  String get predictDisabled;
+
+  /// No description provided for @predictSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to pick'**
+  String get predictSignIn;
+
+  /// No description provided for @predictOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to refresh or pick a result.'**
+  String get predictOffline;
+
+  /// No description provided for @predictClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'This match is now closed. Refresh for current fixtures.'**
+  String get predictClosed;
+
+  /// No description provided for @predictAlreadyEntered.
+  ///
+  /// In en, this message translates to:
+  /// **'You already picked this match. Refresh to see your choice.'**
+  String get predictAlreadyEntered;
+
+  /// No description provided for @predictInsufficient.
+  ///
+  /// In en, this message translates to:
+  /// **'You don’t have enough FET for this entry.'**
+  String get predictInsufficient;
+
+  /// No description provided for @predictUncertain.
+  ///
+  /// In en, this message translates to:
+  /// **'Your entry hasn’t been confirmed. Refresh before trying again.'**
+  String get predictUncertain;
+
+  /// No description provided for @predictPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirming your pick…'**
+  String get predictPending;
+
+  /// No description provided for @predictPicked.
+  ///
+  /// In en, this message translates to:
+  /// **'Picked'**
+  String get predictPicked;
+
+  /// No description provided for @predictWon.
+  ///
+  /// In en, this message translates to:
+  /// **'Won'**
+  String get predictWon;
+
+  /// No description provided for @predictLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled'**
+  String get predictLost;
+
+  /// No description provided for @predictRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Refunded'**
+  String get predictRefunded;
+
+  /// No description provided for @predictLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get predictLocked;
+
+  /// No description provided for @predictRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries close at kickoff. Correct picks share the pool. If no one is correct, or the match is voided, entries are refunded. FET is not cash.'**
+  String get predictRules;
+
+  /// No description provided for @predictWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome FET'**
+  String get predictWelcome;
+
+  /// No description provided for @predictEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Predict entry'**
+  String get predictEntry;
+
+  /// No description provided for @predictPayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Predict payout'**
+  String get predictPayout;
+
+  /// No description provided for @predictRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Predict refund'**
+  String get predictRefund;
+
+  /// No description provided for @predictActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'FET activity'**
+  String get predictActivity;
+
+  /// No description provided for @predictAdminTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Predict operations'**
+  String get predictAdminTitle;
+
+  /// No description provided for @predictAdminIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare fixtures. Confirm official results. Settle or refund entries.'**
+  String get predictAdminIntro;
+
+  /// No description provided for @predictAdminSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get predictAdminSettings;
+
+  /// No description provided for @predictAdminEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Predict'**
+  String get predictAdminEnabled;
+
+  /// No description provided for @predictAdminEntryPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry price (FET)'**
+  String get predictAdminEntryPrice;
+
+  /// No description provided for @predictAdminSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save settings'**
+  String get predictAdminSave;
+
+  /// No description provided for @predictAdminAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All fixtures'**
+  String get predictAdminAll;
+
+  /// No description provided for @predictAdminNoPool.
+  ///
+  /// In en, this message translates to:
+  /// **'No pool'**
+  String get predictAdminNoPool;
+
+  /// No description provided for @predictAdminOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get predictAdminOpen;
+
+  /// No description provided for @predictAdminLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get predictAdminLocked;
+
+  /// No description provided for @predictAdminSettled.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled'**
+  String get predictAdminSettled;
+
+  /// No description provided for @predictAdminRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Refunded'**
+  String get predictAdminRefunded;
+
+  /// No description provided for @predictAdminPrepare.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare fixture'**
+  String get predictAdminPrepare;
+
+  /// No description provided for @predictAdminConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm result'**
+  String get predictAdminConfirm;
+
+  /// No description provided for @predictAdminSettle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settle pool'**
+  String get predictAdminSettle;
+
+  /// No description provided for @predictAdminRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Void and refund'**
+  String get predictAdminRefund;
+
+  /// No description provided for @predictAdminSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Official source URL'**
+  String get predictAdminSource;
+
+  /// No description provided for @predictAdminReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for refund'**
+  String get predictAdminReason;
+
+  /// No description provided for @predictAdminCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get predictAdminCancel;
+
+  /// No description provided for @predictAdminFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes could not be confirmed. Refresh the ledger before trying again.'**
+  String get predictAdminFailed;
+
+  /// No description provided for @predictAdminDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin access required'**
+  String get predictAdminDenied;
+
+  /// No description provided for @predictAdminEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No fixtures to manage'**
+  String get predictAdminEmpty;
+
+  /// No description provided for @predictAdminPriceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'New price applies to newly prepared fixtures. Entries close automatically at kickoff.'**
+  String get predictAdminPriceNote;
+
+  /// No description provided for @predictAdminTotals.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries / Staked / Paid'**
+  String get predictAdminTotals;
+
+  /// No description provided for @predictAdminConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the official final score before confirming.'**
+  String get predictAdminConfirmBody;
+
+  /// No description provided for @predictAdminSettleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Distribute the whole pool to correct entries. If none are correct, refund every entry.'**
+  String get predictAdminSettleBody;
 }
 
 class _AfriLocalizationsDelegate

@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/partner_pool_models.dart';
-import '../prediction_providers.dart';
 import '../providers/fanzone_hub_provider.dart';
 import '../widgets/fanzone_hub_widgets.dart';
 
@@ -299,46 +297,22 @@ class FanzoneHubScreen extends ConsumerWidget {
             ),
 
             if (_isSection(selectedSection, {'play', 'predictions'})) ...[
-              if (storePolicy.allowsStakedCompetitions)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      SpacingTokens.screenPadding,
-                      SpacingTokens.sectionGap,
-                      SpacingTokens.screenPadding,
-                      0,
-                    ),
-                    child: AfriSectionCard(
-                      title: l10n.gameMatchdayRounds,
-                      trailingLabel: l10n.gamePicksLabel,
-                      onTrailingTap: () => context.push('/fanzone/my'),
-                      child: snapshot.partnerPools.isEmpty
-                          ? _sectionState(
-                              title: l10n.gameNoMatchdayRounds,
-                              message: context.afriL10n.fanZoneRoundsEmpty,
-                            )
-                          : Column(
-                              children: snapshot.partnerPools
-                                  .map(
-                                    (pool) => Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: SpacingTokens.listItemGap,
-                                      ),
-                                      child: HubPartnerPoolRow(
-                                        pool: pool,
-                                        onJoin: () => _showPartnerPoolJoinSheet(
-                                          context,
-                                          ref,
-                                          pool,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(growable: false),
-                            ),
-                    ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                  child: _HubActionList(
+                    actions: [
+                      _HubAction.featureGated(
+                        featureKey: 'predict',
+                        icon: AfriIcons.predict,
+                        title: l10n.predictTitle,
+                        subtitle: l10n.predictIntro,
+                        onTap: () => context.push('/predict'),
+                      ),
+                    ],
                   ),
                 ),
+              ),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
@@ -710,134 +684,12 @@ class FanzoneHubScreen extends ConsumerWidget {
   String _sectionLabel(BuildContext context, _FanzoneHubSection section) {
     final l10n = context.afriL10n;
     return switch (section) {
-      _FanzoneHubSection.predictions => l10n.gamePickSectionLabel,
+      _FanzoneHubSection.predictions => l10n.predictTitle,
       _FanzoneHubSection.league => l10n.gameLeague,
       _FanzoneHubSection.wallet => l10n.gamePointsLabel,
       _FanzoneHubSection.supporters => l10n.gameFans,
       _FanzoneHubSection.rewards => l10n.gameRewardsLabel,
     };
-  }
-
-  Future<void> _showPartnerPoolJoinSheet(
-    BuildContext parentContext,
-    WidgetRef ref,
-    PartnerPredictionPool pool,
-  ) {
-    const outcomes = <PartnerPoolOutcome>[
-      PartnerPoolOutcome.homeWin,
-      PartnerPoolOutcome.draw,
-      PartnerPoolOutcome.awayWin,
-    ];
-
-    var selectedOutcome = PartnerPoolOutcome.homeWin;
-    var isSubmitting = false;
-
-    return showAfriBottomSheet<void>(
-      context: parentContext,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            Future<void> submit() async {
-              if (isSubmitting) return;
-              if (!ConnectivityService.isOnline) {
-                AfriToast.error(
-                  sheetContext,
-                  sheetContext.afriL10n.gameConnectBeforeJoiningRound,
-                );
-                return;
-              }
-              setSheetState(() => isSubmitting = true);
-
-              final result = await ref
-                  .read(partnerPoolRepositoryProvider)
-                  .joinPool(
-                    poolId: pool.id,
-                    selectedOutcome: selectedOutcome.rpcValue,
-                    idempotencyKey:
-                        '${pool.id}-${selectedOutcome.rpcValue}-${DateTime.now().microsecondsSinceEpoch}',
-                  );
-
-              if (!sheetContext.mounted) return;
-
-              if (result.status == 'error') {
-                setSheetState(() => isSubmitting = false);
-                AfriToast.error(
-                  sheetContext,
-                  sheetContext.afriL10n.gamePoolEntryFailed,
-                );
-                return;
-              }
-
-              closeAfriBottomSheet(sheetContext);
-              await ref.read(fanzoneHubProvider.notifier).refresh();
-
-              if (!parentContext.mounted) return;
-              AfriToast.success(
-                parentContext,
-                parentContext.afriL10n.gameOutcomeJoined(
-                  partnerPoolOutcomeLabel(
-                    parentContext.afriL10n,
-                    selectedOutcome,
-                  ),
-                ),
-              );
-            }
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(pool.title, style: TypographyTokens.sectionTitle()),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  sheetContext.afriL10n.gamePartnerSponsorsRound(
-                    pool.partnerName,
-                  ),
-                  style: TypographyTokens.bodyMedium(),
-                ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  partnerPoolEligibilityLabel(
-                    parentContext.afriL10n,
-                    pool.eligibilityMode,
-                  ),
-                  style: TypographyTokens.labelMedium(
-                    ColorTokens.primaryContainer,
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing5),
-                ...outcomes.map(
-                  (outcome) => Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: SpacingTokens.spacing3,
-                    ),
-                    child: PartnerPoolOutcomeOption(
-                      outcome: outcome,
-                      isSelected: selectedOutcome == outcome,
-                      onTap: () =>
-                          setSheetState(() => selectedOutcome = outcome),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                ConnectivityBuilder(
-                  builder: (context, isOnline) => AfriButton(
-                    label: isOnline
-                        ? context.afriL10n.gameJoinRound
-                        : context.afriL10n.connectionRequired,
-                    icon: AfriIcons.predict,
-                    isLoading: isSubmitting,
-                    onTap: submit,
-                    enabled: isOnline && !isSubmitting,
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
   }
 
   void _showOverflow(BuildContext context, StoreReleasePolicy storePolicy) {

@@ -83,7 +83,7 @@ class RouteRecoveryScreen extends StatelessWidget {
       'tickets' => 'Tickets',
       'shop' => 'Shop',
       'settings' => 'Settings',
-      'challenge' => 'Challenges',
+      'predict' => 'Predict',
       'contribute' => 'Supporters',
       'live' || 'live-match' => 'Live',
       'home' => 'Home',

@@ -20,7 +20,12 @@ void main() {
   });
 
   test('every canonical Flutter route resolves through the router graph', () {
-    expect(canonicalRoutes.length, 83);
+    expect(canonicalRoutes.length, 80);
+    expect(canonicalRoutes, contains('/predict'));
+    expect(
+      canonicalRoutes.keys.any((path) => path.startsWith('/challenge')),
+      isFalse,
+    );
 
     for (final path in canonicalRoutes.keys) {
       final concreteUri = Uri.parse(_concretePath(path));

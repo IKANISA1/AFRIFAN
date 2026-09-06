@@ -54,10 +54,10 @@ select is(
     select provolatile::text
     from pg_proc
     where oid =
-      'public.prediction_challenge_summary_json(uuid,uuid)'::regprocedure
+      'public.predict_dashboard(bigint)'::regprocedure
   ),
   'v',
-  'prediction challenge summary does not claim stable execution across volatile permission helpers'
+  'Predict dashboard is volatile because it may grant welcome FET'
 );
 
 select * from finish();

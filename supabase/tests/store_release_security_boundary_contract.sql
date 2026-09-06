@@ -13,12 +13,7 @@ create temporary table expected_internal_service_function (
 insert into expected_internal_service_function values
   ('public.apply_membership_points(uuid,uuid,integer,text)'),
   ('public.rs_apply_membership_points(uuid,uuid,integer,text)'),
-  ('public.prediction_challenge_adjust_wallet(bigint,uuid,bigint,text,text,text,text,text,jsonb)'),
-  ('public.prediction_challenge_queue_notification(uuid,text,text,text,jsonb)'),
-  ('public.prediction_challenge_refund_all(uuid,text,text,text,text,integer,integer,jsonb)'),
   ('public.prediction_settle_jackpot_entries(uuid)'),
-  ('public.prediction_challenge_summary_json(uuid,uuid)'),
-  ('public.prediction_challenge_user_json(uuid,bigint)'),
   ('public.partner_prediction_pool_summary_json(uuid,uuid)'),
   ('public.partner_prediction_pool_user_eligible(uuid,uuid)'),
   ('public.fet_get_friendship_row(uuid,uuid,bigint)'),
@@ -112,12 +107,7 @@ insert into expected_store_disabled_function values
   ('public.fet_get_partner_offers(bigint,boolean,integer)'),
   ('public.prediction_create_friend_challenge(uuid,uuid,text,text)'),
   ('public.partner_prediction_pool_join(uuid,text,text)'),
-  ('public.prediction_challenge_create(uuid,integer,integer,bigint,bigint)'),
-  ('public.prediction_challenge_join(uuid,integer,integer)'),
   ('public.prediction_place_jackpot_entry(uuid,jsonb,text)'),
-  ('public.prediction_get_challenge_feed(bigint,text[],text,integer,integer,boolean)'),
-  ('public.prediction_get_my_challenges(bigint,text[],text,integer,integer)'),
-  ('public.prediction_get_challenge_detail(uuid,bigint)'),
   ('public.partner_prediction_pool_feed(bigint,text[],integer,integer)');
 
 select is(
