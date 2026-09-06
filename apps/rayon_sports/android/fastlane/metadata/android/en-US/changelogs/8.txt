@@ -1,0 +1,4 @@
+v1.0.5 – English-only Gikundiro update
+• Removed French and Kinyarwanda app and store-localization surfaces
+• Added clearer Club, squad, player, partner, membership, shop, and Predict journeys
+• Improved public browsing, recovery states, and merchandise enquiry handling

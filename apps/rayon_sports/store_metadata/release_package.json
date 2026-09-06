@@ -4,8 +4,8 @@
   "overall_status": "local_english_only_candidate",
   "mobile": {
     "name": "Gikundiro",
-    "version_name": "1.0.4",
-    "build_number": 7,
+    "version_name": "1.0.5",
+    "build_number": 8,
     "android_package": "rw.gikundiro.app",
     "ios_bundle_id": "rw.ikanisa.rayonSports",
     "apple_team_id": "63STJ5N27W",
