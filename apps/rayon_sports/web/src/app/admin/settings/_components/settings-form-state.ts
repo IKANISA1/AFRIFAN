@@ -42,8 +42,8 @@ export function profileToForm(profile: AdminClubProfile): SettingsForm {
     region: profile.region,
     currencyCode: profile.currencyCode,
     currencySymbol: profile.currencySymbol,
-    defaultLanguage: profile.defaultLanguage,
-    supportedLanguagesText: profile.supportedLanguages.join(", "),
+    defaultLanguage: "en",
+    supportedLanguagesText: "en",
     officialContact: profile.officialContact,
     facebookUrl: profile.facebookUrl ?? "",
     xUrl: profile.xUrl ?? "",
@@ -70,7 +70,7 @@ export function formToProfile(form: SettingsForm): AdminClubProfileInput {
     region: form.region.trim(),
     currencyCode: form.currencyCode.trim(),
     currencySymbol: form.currencySymbol.trim(),
-    defaultLanguage: form.defaultLanguage.trim(),
+    defaultLanguage: "en".trim(),
     supportedLanguages: form.supportedLanguagesText
       .split(",")
       .map((item) => item.trim())

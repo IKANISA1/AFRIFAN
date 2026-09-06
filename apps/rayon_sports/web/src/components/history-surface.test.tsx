@@ -94,7 +94,7 @@ describe("history surface state helpers", () => {
       "security_timeout",
     ];
 
-    for (const locale of ["en", "fr-FR", "rw", "sw", "unsupported"]) {
+    for (const locale of ["en", "en", "en", "en", "unsupported"]) {
       expect(Object.keys(resolveHistoryStateCopy(locale).status)).toEqual(
         expectedStates,
       );
@@ -348,11 +348,11 @@ describe("HistorySurface", () => {
       response(200, { code: "PUBLIC_HISTORY_EMPTY", items: [] }),
     );
 
-    renderHistory("rw-RW");
+    renderHistory("en");
 
-    await screen.findByText("Amateka ya klabu ntaratangazwa.");
+    await screen.findByText("Club history is not published yet.");
     expect(
-      screen.getByRole("button", { name: "Vugurura amateka" }),
+      screen.getByRole("button", { name: "Refresh history" }),
     ).toBeInTheDocument();
   });
 });

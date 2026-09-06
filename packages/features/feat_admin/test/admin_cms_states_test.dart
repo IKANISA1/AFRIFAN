@@ -124,8 +124,8 @@ void main() {
   });
 
   for (final localeCase in <(Locale, String, String)>[
-    (const Locale('fr'), 'Gestionnaire de contenu', 'Retirer'),
-    (const Locale('rw'), 'Ahagenzurirwa ibirimo', 'Kuraho'),
+    (const Locale('en'), 'Content manager', 'Unpublish'),
+    (const Locale('en'), 'Content manager', 'Unpublish'),
   ]) {
     testWidgets(
       'renders CMS article dates and actions in ${localeCase.$1.languageCode}',

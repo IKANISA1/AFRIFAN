@@ -8,6 +8,32 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   setUp(() => ConnectivityService.setOnlineForTest(true));
 
+  test('permission revocation clears saved personal membership', () async {
+    var calls = 0;
+    final container = ProviderContainer(
+      overrides: [
+        membershipProvider.overrideWith(
+          () => MembershipNotifier(
+            loadOverride: () async {
+              if (++calls == 1) return _snapshot('Imena');
+              throw const MembershipFailure(
+                MembershipFailureKind.permissionDenied,
+              );
+            },
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(membershipProvider.future);
+    await container.read(membershipProvider.notifier).refresh();
+    expect(container.read(membershipProvider).hasError, isTrue);
+    expect(
+      container.read(membershipProvider).valueOrNull?.hasAnyContent,
+      isNot(true),
+    );
+  });
+
   test('retains membership data and refreshes it after reconnect', () async {
     final reconnected = Completer<MembershipSnapshot>();
     var calls = 0;

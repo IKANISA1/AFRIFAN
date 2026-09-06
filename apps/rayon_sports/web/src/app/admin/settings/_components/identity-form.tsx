@@ -78,12 +78,7 @@ export function IdentityForm({
     ? normalizeLanguageList(form.supportedLanguagesText)
     : [];
   const defaultLanguage = form?.defaultLanguage.trim().toLowerCase() ?? "";
-  const defaultLanguageOptions =
-    form == null
-      ? []
-      : Array.from(
-          new Set([defaultLanguage, ...supportedLanguages].filter(Boolean)),
-        );
+
   const urlErrors =
     form == null
       ? {}
@@ -202,22 +197,7 @@ export function IdentityForm({
                   className="dashboard-input uppercase"
                 />
               </label>
-              <label className="grid gap-2 text-sm">
-                Default language
-                <select
-                  value={defaultLanguage}
-                  onChange={(e) =>
-                    updateField("defaultLanguage", e.target.value)
-                  }
-                  className="dashboard-input"
-                >
-                  {defaultLanguageOptions.map((language) => (
-                    <option key={language} value={language}>
-                      {language}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <p className="text-sm text-slate-400">Product language: English</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="grid gap-2 text-sm">
@@ -262,17 +242,7 @@ export function IdentityForm({
                   className="dashboard-input"
                 />
               </label>
-              <label className="grid gap-2 text-sm">
-                Supported languages
-                <input
-                  value={form.supportedLanguagesText}
-                  onChange={(e) =>
-                    updateField("supportedLanguagesText", e.target.value)
-                  }
-                  className="dashboard-input"
-                  placeholder="rw, en, fr"
-                />
-              </label>
+
             </div>
             <label className="grid gap-2 text-sm">
               Official contact

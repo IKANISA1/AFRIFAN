@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const locales = <Locale>[Locale('en'), Locale('fr'), Locale('rw')];
+  const locales = <Locale>[Locale('en')];
 
   for (final locale in locales) {
     testWidgets(

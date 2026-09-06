@@ -431,7 +431,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-                    child: TierProgress(currentFet: currentFet),
+                    child: TierProgress(qualification: snapshot?.qualification),
                   ),
                 ),
                 if (snapshot?.isStale == true)
@@ -596,7 +596,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                       icon: AfriIcons.clubZone,
                       title: l10n.fanRegistryTitle,
                       subtitle: l10n.fanRegistryBrowseAll,
-                      onTap: () => context.go('/fanzone?section=supporters'),
+                      onTap: () => context.go('/fan-clubs'),
                     ),
                   ),
                 ),
@@ -738,25 +738,18 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     );
   }
 
-  String _tierLabelFromFet(int fet) {
-    if (fet >= 5000) return 'Gold';
-    if (fet >= 2000) return 'Gold';
-    if (fet >= 1000) return 'Bronze';
-    return 'Imena';
-  }
-
   String _currentTierLabel(String? tierValue, int fet) {
     final trimmed = tierValue?.trim().toLowerCase();
     if (trimmed != null && trimmed.isNotEmpty) {
       return _membershipPackageLabel(trimmed);
     }
-    return _tierLabelFromFet(fet);
+    return context.afriL10n.membershipStatusUnconfirmed;
   }
 
   String _formatMembershipDate(String? rawValue) {
     final date = DateTime.tryParse(rawValue ?? '');
     if (date == null) {
-      return context.afriL10n.membershipDateNextYear;
+      return context.afriL10n.membershipDateUnconfirmed;
     }
     final local = date.toLocal();
     final l10n = context.afriL10n;

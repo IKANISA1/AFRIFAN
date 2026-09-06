@@ -14,23 +14,24 @@ void main() {
   setUp(() => ConnectivityService.setOnlineForTest(true));
   tearDown(() => ConnectivityService.setOnlineForTest(true));
 
-  testWidgets('French Admin journey uses the FR catalog', (tester) async {
-    await _pumpFeatureManager(tester, const Locale('fr'));
+  testWidgets('English Admin journey uses the English catalog', (tester) async {
+    await _pumpFeatureManager(tester, const Locale('en'));
 
-    expect(find.text('Gestionnaire de fonctionnalités'), findsOneWidget);
-    expect(find.text('Enregistrées'), findsOneWidget);
-    expect(find.text('Activées'), findsWidgets);
-    expect(find.text('Feature manager'), findsNothing);
+    expect(find.text('Feature manager'), findsOneWidget);
+    expect(find.text('Registered'), findsOneWidget);
+    expect(find.text('Enabled'), findsWidgets);
   });
 
-  testWidgets('Kinyarwanda Admin journey uses the RW catalog', (tester) async {
-    await _pumpFeatureManager(tester, const Locale('rw'));
+  testWidgets(
+    'Stored-locale fallback English Admin journey uses the English catalog',
+    (tester) async {
+      await _pumpFeatureManager(tester, const Locale('zz'));
 
-    expect(find.text('Igenzura ry’ibiranga'), findsOneWidget);
-    expect(find.text('Byanditswe'), findsOneWidget);
-    expect(find.text('Byemewe'), findsWidgets);
-    expect(find.text('Feature manager'), findsNothing);
-  });
+      expect(find.text('Feature manager'), findsOneWidget);
+      expect(find.text('Registered'), findsOneWidget);
+      expect(find.text('Enabled'), findsWidgets);
+    },
+  );
 }
 
 Future<void> _pumpFeatureManager(

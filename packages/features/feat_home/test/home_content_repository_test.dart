@@ -10,8 +10,8 @@ void main() {
     });
 
     test('routes non-live statuses to predictions', () {
-      expect(homeHeroRouteForStatus('UPCOMING'), '/fanzone?section=league');
-      expect(homeHeroRouteForStatus('SCHEDULED'), '/fanzone?section=league');
+      expect(homeHeroRouteForStatus('UPCOMING'), '/club/fixtures');
+      expect(homeHeroRouteForStatus('SCHEDULED'), '/club/fixtures');
     });
   });
 
@@ -31,7 +31,7 @@ void main() {
         snapshot.quickActions
             .firstWhere((action) => action.actionKey == 'fan_zone')
             .route,
-        '/fanzone?section=supporters',
+        '/predict',
       );
     });
   });

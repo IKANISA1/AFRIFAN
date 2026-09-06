@@ -46,6 +46,8 @@ int _homeActionRank(HomeQuickAction action) {
   if (key.contains('membership') || route.startsWith('/membership')) return 20;
   if (key == 'fan_zone' ||
       key.contains('supporter') ||
+      route == '/predict' ||
+      route.startsWith('/predict?') ||
       route == '/fanzone' ||
       route.startsWith('/fanzone?')) {
     return 30;
@@ -165,6 +167,7 @@ class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
 
   IconData _fallbackIconForRoute(String route) {
     final normalized = route.trim().toLowerCase();
+    if (normalized.startsWith('/predict')) return AfriIcons.predict;
     if (normalized.contains('/fanzone/fixtures')) return AfriIcons.predict;
     if (normalized.contains('/fanzone/my')) return AfriIcons.myPicks;
     if (normalized.contains('/live')) return AfriIcons.live;
@@ -195,7 +198,8 @@ class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
   }
 
   bool _isPrimaryTabRoute(String route) {
-    final normalized = route.trim().toLowerCase();
+    final normalized = Uri.tryParse(route.trim().toLowerCase())?.path;
+    if (normalized == '/predict') return true;
     return primaryBottomTabFeatureOrder.any((featureKey) {
       return normalized == '/$featureKey';
     });
@@ -326,6 +330,16 @@ String _localizedHomeActionTitle(
   HomeQuickAction action,
 ) {
   final configuredTitle = action.title.trim();
+  final path = Uri.tryParse(action.route.trim())?.path;
+  if ((path == '/fanzone' || path == '/challenge' || path == '/predict') &&
+      const {
+        'fan zone',
+        'fanzone',
+        'challenge',
+        'predict',
+      }.contains(configuredTitle.toLowerCase())) {
+    return l10n.predictTitle;
+  }
   if (configuredTitle.isNotEmpty) {
     return configuredTitle;
   }
@@ -339,6 +353,8 @@ String _localizedHomeActionTitle(
   }
   if (key == 'fan_zone' ||
       key.contains('supporter') ||
+      route == '/predict' ||
+      route.startsWith('/predict?') ||
       route == '/fanzone' ||
       route.startsWith('/fanzone?')) {
     return l10n.homeFanZoneAction;

@@ -3,6 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('Predict supporting copy clears 4.5:1 across the discovery canvas', () {
+    ColorTokens.setBrightness(Brightness.dark);
+    for (final background in [
+      ...ColorTokens.screenGradientForPath('/predict', Brightness.dark).colors,
+      ColorTokens.overviewSurfaceForPath('/predict'),
+    ]) {
+      expect(
+        _contrastRatio(ColorTokens.overviewSecondaryText, background),
+        greaterThanOrEqualTo(4.5),
+      );
+    }
+  });
+
   setUpAll(() {
     ColorTokens.init(
       const ClubColors(

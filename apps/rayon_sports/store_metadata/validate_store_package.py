@@ -1140,18 +1140,8 @@ def _validate_mobile_play(
     if mobile.get("android_package") not in gradle:
         result.add_error("PACKAGE_MISMATCH", "Android package is not present in build configuration", MOBILE_DIR / "android" / "app" / "build.gradle.kts")
     current_build = version[1] if version else int(mobile.get("build_number", 0))
-    texts = _play_metadata(MOBILE_DIR, {"en-US", "fr-FR"}, current_build, result)
+    texts = _play_metadata(MOBILE_DIR, {"en-US"}, current_build, result)
     _check_copy(texts, result)
-    source_only = STORE_DIR / "source_localizations" / "rw-RW" / "google_play"
-    _require_files(
-        [
-            source_only / "title.txt",
-            source_only / "short_description.txt",
-            source_only / "full_description.txt",
-            source_only / f"changelog_{current_build}.txt",
-        ],
-        result,
-    )
     if artifact_path is not None:
         _check_android_release_artifact(
             STORE_DIR / "portal_values.template.json",
@@ -1242,7 +1232,7 @@ def _validate_app_store(
         for path in metadata_root.iterdir()
         if path.is_dir() and any(path.rglob("*.txt"))
     } if metadata_root.is_dir() else set()
-    expected_locales = {"en-US", "fr-FR"}
+    expected_locales = {"en-US"}
     if locales != expected_locales:
         result.add_error("APPLE_LOCALES", f"Expected upload locales {sorted(expected_locales)}, found {sorted(locales)}", metadata_root)
     texts: list[Path] = []
@@ -1268,8 +1258,6 @@ def _validate_app_store(
             if path.is_file():
                 _check_url_file(path, result)
     _check_copy(texts, result)
-    source_only = STORE_DIR / "source_localizations" / "rw-RW" / "app_store"
-    _require_files([source_only / name for name in ("name.txt", "subtitle.txt", "promotional_text.txt", "description.txt", "keywords.txt", "release_notes.txt")], result)
     if artifact_path is not None:
         _check_ios_release_artifact(
             STORE_DIR / "app_store" / "artwork_manifest.json",

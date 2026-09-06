@@ -44,7 +44,7 @@ class PredictRepository implements PredictGateway {
   @override
   Future<PredictDashboard> load() async {
     if (!storeReleasePolicy.allowsStakedCompetitions) {
-      return const PredictDashboard();
+      throw PredictFailure.unavailable;
     }
     try {
       final data = await client.rpc(

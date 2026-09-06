@@ -25,7 +25,7 @@ Kigali” and “Gikundiro”. Their record identifiers, source labels and sourc
 are retained in the database. Disputed founding dates and unverified honours
 are omitted. Gikundiro's own fan platform is not represented as an official
 club website. Published dynamic content remains in its source language (English);
-the new interface labels are translated into English, French and Kinyarwanda.
+the new interface labels are translated into English.
 
 The prior crest URL pointed to an HTML page. It is replaced by Gikundiro's
 registered blue-and-white competition crest. Its exact public bytes are also

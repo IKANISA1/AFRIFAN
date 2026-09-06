@@ -27,11 +27,11 @@ Reference source directory (local/private):
 Selected skill: `/Users/jeanbosco/.codex/skills/revolut-design/SKILL.md`.
 
 Use LIVE-020 for Home anatomy, LIVE-021 for a centred club proposition,
-LIVE-026 for Fan Zone discovery, LIVE-047/048 for membership/card anatomy,
+LIVE-026 for Predict discovery, LIVE-047/048 for membership/card anatomy,
 LIVE-005/007 for profile/settings, LIVE-010/011 for theme preview,
 LIVE-033–041/051/052 for discovery lists, LIVE-053–058 for forms and
 LIVE-060/062/063 for amount entry. Open each actual source before applying it.
-A static frame establishes its depicted state only. Football matches, free
+A static frame establishes its depicted state only. Football matches,
 predictions, ticket seats, QR admission and contributions require explicit
 product adaptations; no source frame proves their entire journeys.
 
@@ -64,8 +64,8 @@ The mandatory product priority is:
 4. Secondary matchday utilities such as venues, check-in, drinks ordering,
    promotions, and venue-hosted football events.
 
-The target mobile primary navigation is `Home · Club · Fan Zone · Membership`.
-Settings, privacy, notifications, support, language, theme, and account
+The target mobile primary navigation is `Home · Club · Predict · Membership`.
+Settings, privacy, notifications, support, theme, and account
 controls belong behind profile. A venue, wallet, generic entertainment, or
 settings surface must not displace Club or Membership in the primary shell.
 
@@ -78,7 +78,7 @@ AFRICLUB screen hierarchy must follow these rules:
   standings, history, projects, tickets, and shop.
 - Membership makes belonging visible through the digital card, plan/status,
   fan clubs, contribution history/statements, and relevant club projects.
-- Fan Zone contains Predict for prepared fixtures, FET activity, and supporter communities.
+- Predict combines prepared fixtures, personal picks and FET activity. Supporter communities remain in Fan Clubs.
 - Matchday experiences or Places to watch contains secondary venue discovery,
   explicit check-in, a bounded drinks menu/order, and approved promotions.
 - Search must discover club, team, news, fixtures, results, standings,
@@ -110,7 +110,7 @@ source definitions. Revise them through matched captures and component tests.
 
 | Role | Native mobile target |
 | --- | --- |
-| Canvas | Neutral black tasks/settings; Home blue to deep navy, Club cyan to petrol, Fan Zone violet through blue-violet, Membership purple to neutral. Each has its own measured extent. Exact route matching keeps child tasks neutral. |
+| Canvas | Neutral black tasks/settings; Home blue to deep navy, Club cyan to petrol, Predict violet through blue-violet, Membership purple to neutral. Each has its own measured extent. Exact route matching keeps child tasks neutral. |
 | Tonal group | Approximately `#161618` dark, stronger `#242426`; one rounded group, no separate border/shadow around each row. |
 | Text | Neutral white and grey on tasks; light secondary text on tinted overview groups. UI action colours are independent of club artwork; contrast normalization remains for charts and status. |
 | Command bar | 44 visual circles/search height with at least 48 hit area, own crest inside, maximum two trailing actions. |
@@ -136,8 +136,14 @@ or simulate a successful financial/action outcome for visual effect.
   match, score, image or club metadata.
 - Club: own identity and concise proposition followed by grouped routes for
   team, news, fixtures, results, standings, history, projects, tickets and shop.
-- Fan Zone: centred engagement value only when available, appropriate local
-  segments, then discoveries and supporter tasks. Venue utilities remain secondary.
+- Predict: one canonical `/predict` shell destination replaces the separate
+  Predict, Challenge and Fan Zone hubs. Use LIVE-026 violet/blue-violet discovery
+  chrome and tonal cards, with Fixtures, My picks and FET activity sections.
+  The available FET balance is server-derived; only future open fixtures accept
+  Home / Draw / Away entries. Old `/challenge` and `/fanzone` links resolve to the
+  consolidated journey or the actual Club/Fan Clubs content. Match detail and
+  venue utilities remain focused secondary routes. Preserve existing
+  authorization, pending/reconciliation, ledger and kickoff rules.
 - Membership: own digital card/status uses the LIVE-048 purple card treatment
   (`#6219E5` to `#8017EE`, colour-managed rendered samples, not source tokens),
   followed by a continuous neutral surface with rounded top corners for benefits,
@@ -150,6 +156,17 @@ or simulate a successful financial/action outcome for visual effect.
   is indicated semantically and by a visible ring. Follow system brightness.
 - Lists/search: one query surface, relevant filters and grouped results; retain
   loading, no results, offline and retry paths. Use bounded/lazy result rendering.
+- Shop discovery: the owner's 6 September 2026 `Cards.png` RevPoints reference
+  selects the scrolled editorial treatment for `/shop`: deep purple-to-indigo
+  canvas, compact brand/search/back/cart commands, 16 dp insets, and full-width
+  rounded product cards with category above and name/subtitle/price over a lower
+  image fade. Use approved catalogue product media; absent or unapproved media
+  retains the visible fallback. Preserve category filters and independent product
+  and add-to-cart actions. Enlarged text expands cards and uses an icon-only
+  search control. Shop remains a pushed route with its existing checkout bar;
+  primary destinations remain Home, Club, Predict and Membership. Cart/product
+  sheets keep their existing neutral task treatment. Source image date, build,
+  region and exact font are unknown; light and enlarged-text layouts are adapters.
 - Forms: clear title, persistent field labels, tonal fields, platform keyboard,
   inline validation, draft preservation and reachable submit/cancel actions.
 - Checkout/contribution/membership changes: amount and counterparty, review,
@@ -169,6 +186,15 @@ or simulate a successful financial/action outcome for visual effect.
   copy a bank passcode flow or introduce linking/payment requirements at launch.
 - Unavailable routes: generic requested-section copy, safe back/recovery, no
   hidden entitlement or provider details.
+
+## English-only product policy
+
+All maintained application code, static copy, runtime copy, tests, configuration,
+store metadata and documentation use English. Only the English catalog ships.
+The device locale and old profile preferences cannot change app language.
+Official club, person and place names and ISO country identifiers retain their
+identity. Public content must have an approved English edition before publishing.
+This policy supersedes previous multilingual requirements as of 6 September 2026.
 
 ## Copy and interaction
 

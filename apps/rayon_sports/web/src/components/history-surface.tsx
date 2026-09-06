@@ -43,7 +43,7 @@ type HistoryStateCopy = {
   noHistoryDetail: string;
 };
 
-const historyStateCopy: Record<"en" | "fr" | "rw" | "sw", HistoryStateCopy> = {
+const historyStateCopy: Record<"en", HistoryStateCopy> = {
   en: {
     status: {
       loading: {
@@ -91,147 +91,6 @@ const historyStateCopy: Record<"en" | "fr" | "rw" | "sw", HistoryStateCopy> = {
     noHistory: "Club history is not published yet.",
     noHistoryDetail: "Return later for the confirmed public club record.",
   },
-  fr: {
-    status: {
-      loading: {
-        label: "Chargement de l’histoire du club",
-        detail: "En attente du premier historique confirmé.",
-      },
-      ready: {
-        label: "Historique confirmé",
-        detail: "Ces chapitres proviennent du dernier historique confirmé du club.",
-      },
-      empty: {
-        label: "Historique non publié",
-        detail: "Aucun chapitre public confirmé n’est encore disponible.",
-      },
-      error: {
-        label: "Historique indisponible",
-        detail: "Les chapitres confirmés restent visibles. Réessayez plus tard.",
-      },
-      offline: {
-        label: "Vous êtes hors ligne",
-        detail: "Les chapitres confirmés restent visibles jusqu’au retour du réseau.",
-      },
-      permission_denied: {
-        label: "Accès à l’historique refusé",
-        detail: "L’historique public n’est pas disponible pour ce visiteur.",
-      },
-      syncing: {
-        label: "Actualisation de l’historique",
-        detail: "Les chapitres confirmés restent visibles pendant la mise à jour.",
-      },
-      conflict: {
-        label: "L’historique a changé",
-        detail: "Actualisez pour charger la version confirmée actuelle.",
-      },
-      security_timeout: {
-        label: "Délai de l’historique dépassé",
-        detail: "Aucun nouveau chapitre n’est supposé. Les chapitres confirmés restent visibles.",
-      },
-    },
-    refresh: "Actualiser l’historique",
-    retry: "Réessayer",
-    refreshDisabled: "L’actualisation est indisponible pendant le chargement.",
-    chapters: "Chapitres historiques",
-    chapter: "Chapitre",
-    noHistory: "L’histoire du club n’est pas encore publiée.",
-    noHistoryDetail: "Revenez plus tard pour consulter l’historique public confirmé.",
-  },
-  rw: {
-    status: {
-      loading: {
-        label: "Amateka ya klabu arimo gutangira",
-        detail: "Dutegereje amateka ya mbere yemejwe.",
-      },
-      ready: {
-        label: "Amateka yemejwe",
-        detail: "Ibi bice biva mu mateka ya vuba yemejwe na klabu.",
-      },
-      empty: {
-        label: "Amateka ntaratangazwa",
-        detail: "Nta gice cy’amateka rusange cyemejwe kiraboneka.",
-      },
-      error: {
-        label: "Amateka ntashobora kuboneka",
-        detail: "Ibice byemejwe biragumaho. Ongera ugerageze serivisi igarutse.",
-      },
-      offline: {
-        label: "Nta murongo wa interineti",
-        detail: "Ibice byemejwe biragumaho kugeza umurongo ugarutse.",
-      },
-      permission_denied: {
-        label: "Amateka ntiyemerewe",
-        detail: "Aya mateka rusange ntiyemerewe uyu mushyitsi.",
-      },
-      syncing: {
-        label: "Amateka arimo kuvugururwa",
-        detail: "Ibice byemejwe biragumaho mu gihe amateka avugururwa.",
-      },
-      conflict: {
-        label: "Amateka yahindutse",
-        detail: "Vugurura kugira ngo ubone amateka ya vuba yemejwe.",
-      },
-      security_timeout: {
-        label: "Igihe cyo kubona amateka cyarangiye",
-        detail: "Nta gice gishya cyemezwa. Ibice byemejwe biragumaho.",
-      },
-    },
-    refresh: "Vugurura amateka",
-    retry: "Ongera ugerageze",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe amateka arimo gutangira.",
-    chapters: "Ibice by’amateka",
-    chapter: "Igice",
-    noHistory: "Amateka ya klabu ntaratangazwa.",
-    noHistoryDetail: "Garuka nyuma urebe amateka rusange yemejwe.",
-  },
-  sw: {
-    status: {
-      loading: {
-        label: "Historia ya klabu inapakiwa",
-        detail: "Tunasubiri rekodi ya kwanza iliyothibitishwa.",
-      },
-      ready: {
-        label: "Historia imethibitishwa",
-        detail: "Sura hizi zinatoka kwenye rekodi ya sasa ya klabu.",
-      },
-      empty: {
-        label: "Historia haijachapishwa",
-        detail: "Hakuna sura ya umma iliyothibitishwa kwa sasa.",
-      },
-      error: {
-        label: "Historia haipatikani",
-        detail: "Sura zilizothibitishwa zinabaki. Jaribu tena huduma ikirejea.",
-      },
-      offline: {
-        label: "Huna mtandao",
-        detail: "Sura zilizothibitishwa zinabaki hadi mtandao urejee.",
-      },
-      permission_denied: {
-        label: "Ufikiaji wa historia umekataliwa",
-        detail: "Rekodi ya umma haipatikani kwa mgeni huyu.",
-      },
-      syncing: {
-        label: "Historia inasasishwa",
-        detail: "Sura zilizothibitishwa zinabaki wakati rekodi inasasishwa.",
-      },
-      conflict: {
-        label: "Historia imebadilika",
-        detail: "Sasisha ili kupakia toleo la sasa lililothibitishwa.",
-      },
-      security_timeout: {
-        label: "Muda wa historia umeisha",
-        detail: "Hakuna sura mpya inayodhaniwa. Sura zilizothibitishwa zinabaki.",
-      },
-    },
-    refresh: "Sasisha historia",
-    retry: "Jaribu tena",
-    refreshDisabled: "Usasishaji haupatikani wakati historia inapakiwa.",
-    chapters: "Sura za historia",
-    chapter: "Sura",
-    noHistory: "Historia ya klabu haijachapishwa bado.",
-    noHistoryDetail: "Rudi baadaye kwa rekodi ya umma iliyothibitishwa.",
-  },
 };
 
 type HistorySurfaceProps = {
@@ -258,8 +117,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-export function resolveHistoryStateCopy(locale: string): HistoryStateCopy {
-  const normalized = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveHistoryStateCopy(_locale: string): HistoryStateCopy {
+  const normalized = "en";
   return historyStateCopy[normalized as keyof typeof historyStateCopy] ??
     historyStateCopy.en;
 }

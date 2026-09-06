@@ -25,7 +25,7 @@ class AcLeopardsConfig implements ClubConfig {
   String get countryCode => 'CG';
 
   @override
-  String get language => 'fr';
+  String get language => 'en';
 
   @override
   String get momoPrefix => '*144*';
@@ -56,7 +56,7 @@ class AcLeopardsConfig implements ClubConfig {
   );
 
   @override
-  List<String> get supportedLanguages => const ['fr', 'ln', 'en'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;

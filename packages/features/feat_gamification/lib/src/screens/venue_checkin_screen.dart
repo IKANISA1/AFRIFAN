@@ -54,7 +54,7 @@ class _VenueCheckinScreenState extends ConsumerState<VenueCheckinScreen> {
     if (context.canPop()) {
       context.pop();
     } else {
-      context.go('/fanzone');
+      context.go('/predict');
     }
   }
 

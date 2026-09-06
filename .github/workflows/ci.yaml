@@ -26,6 +26,9 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Validate English-only product policy
+        run: node tools/scripts/validate_english_only.mjs
+
       - name: Validate localization inventory controls
         run: node --test tools/scripts/generate_dynamic_copy_inventory.test.mjs
 

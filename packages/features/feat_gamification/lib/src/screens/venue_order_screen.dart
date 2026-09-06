@@ -52,7 +52,7 @@ class _VenueOrderScreenState extends ConsumerState<VenueOrderScreen> {
     if (context.canPop()) {
       context.pop();
     } else {
-      context.go('/fanzone');
+      context.go('/predict');
     }
   }
 

@@ -35,7 +35,7 @@ class _PredictionDetailScreenState
     if (context.canPop()) {
       context.pop();
     } else {
-      context.go('/fanzone?section=predictions');
+      context.go('/predict?section=history');
     }
   }
 

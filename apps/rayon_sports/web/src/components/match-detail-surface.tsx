@@ -92,7 +92,7 @@ type StateCopy = {
   confirmedOnly: string;
 };
 
-const stateCopy: Record<"en" | "fr" | "rw" | "sw", StateCopy> = {
+const stateCopy: Record<"en", StateCopy> = {
   en: {
     status: {
       loading: { label: "Loading match details", detail: "Waiting for the first confirmed match record." },
@@ -123,99 +123,6 @@ const stateCopy: Record<"en" | "fr" | "rw" | "sw", StateCopy> = {
     viewFixture: "View fixture detail",
     viewTickets: "View ticket access",
     confirmedOnly: "Lineups, live events, and operational notes appear only after the club confirms them.",
-  },
-  fr: {
-    status: {
-      loading: { label: "Chargement du match", detail: "En attente du premier dossier confirmé." },
-      ready: { label: "Détails du match confirmés", detail: "Ces informations viennent du dernier dossier public confirmé." },
-      empty: { label: "Match introuvable", detail: "Aucun dossier public confirmé ne correspond à ce match." },
-      error: { label: "Détails indisponibles", detail: "Les détails confirmés restent visibles. Réessayez plus tard." },
-      offline: { label: "Vous êtes hors ligne", detail: "Les détails confirmés restent visibles jusqu’au retour du réseau." },
-      permission_denied: { label: "Accès au match refusé", detail: "Ce dossier public n’est pas disponible pour ce visiteur." },
-      syncing: { label: "Actualisation du match", detail: "Les détails confirmés restent visibles pendant la mise à jour." },
-      conflict: { label: "Les détails ont changé", detail: "Actualisez pour charger le dossier confirmé actuel." },
-      security_timeout: { label: "Délai du match dépassé", detail: "Aucun changement n’est supposé. Les détails confirmés restent visibles." },
-    },
-    refresh: "Actualiser",
-    retry: "Réessayer",
-    refreshDisabled: "L’actualisation est indisponible pendant le chargement.",
-    overview: "Aperçu",
-    access: "Accès",
-    kickoff: "Coup d’envoi",
-    venue: "Stade",
-    general: "Admission générale",
-    vip: "Accès VIP",
-    onSale: "En vente",
-    unavailable: "Pas encore en vente",
-    noDetail: "Aucun détail confirmé n’est disponible.",
-    noDetailBody: "Revenez à la liste des matchs ou réessayez plus tard.",
-    fixtureDetail: "Détail du match",
-    ticketDetail: "Détail du billet",
-    viewFixture: "Voir le match",
-    viewTickets: "Voir les billets",
-    confirmedOnly: "Les compositions, événements et notes apparaissent seulement après confirmation du club.",
-  },
-  rw: {
-    status: {
-      loading: { label: "Amakuru y’umukino arimo gutangira", detail: "Dutegereje amakuru ya mbere yemejwe." },
-      ready: { label: "Amakuru y’umukino yemejwe", detail: "Aya makuru ava ku nyandiko rusange ya vuba yemejwe." },
-      empty: { label: "Umukino ntiwabonetse", detail: "Nta nyandiko rusange yemejwe ijyanye n’uyu mukino." },
-      error: { label: "Amakuru y’umukino ntaboneka", detail: "Ayemejwe aragumaho. Ongera ugerageze serivisi igarutse." },
-      offline: { label: "Nta murongo wa interineti", detail: "Ayemejwe aragumaho kugeza umurongo ugarutse." },
-      permission_denied: { label: "Amakuru ntiyemerewe", detail: "Iyi nyandiko rusange ntiyemerewe uyu mushyitsi." },
-      syncing: { label: "Amakuru arimo kuvugururwa", detail: "Ayemejwe aragumaho mu gihe avugururwa." },
-      conflict: { label: "Amakuru yahindutse", detail: "Vugurura kugira ngo ubone ayemejwe ya vuba." },
-      security_timeout: { label: "Igihe cyo gusaba amakuru cyarangiye", detail: "Nta gihindutse cyemezwa. Ayemejwe aragumaho." },
-    },
-    refresh: "Vugurura amakuru",
-    retry: "Ongera ugerageze",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe amakuru arimo gutangira.",
-    overview: "Incamake",
-    access: "Kwinjira",
-    kickoff: "Itangira",
-    venue: "Ikibuga",
-    general: "Ahantu rusange",
-    vip: "Ahantu VIP",
-    onSale: "Iragurishwa",
-    unavailable: "Ntiratangira kugurishwa",
-    noDetail: "Nta makuru y’umukino yemejwe ahari.",
-    noDetailBody: "Subira ku rutonde cyangwa ugerageze nyuma.",
-    fixtureDetail: "Amakuru y’umukino",
-    ticketDetail: "Amakuru y’itike",
-    viewFixture: "Reba umukino",
-    viewTickets: "Reba amatike",
-    confirmedOnly: "Abakinnyi n’ibikorwa bya live bigaragara nyuma yo kwemezwa n’ikipe.",
-  },
-  sw: {
-    status: {
-      loading: { label: "Inapakia maelezo ya mechi", detail: "Inasubiri rekodi ya kwanza iliyothibitishwa." },
-      ready: { label: "Maelezo ya mechi yamethibitishwa", detail: "Taarifa hizi zinatoka kwenye rekodi ya umma iliyothibitishwa." },
-      empty: { label: "Mechi haikupatikana", detail: "Hakuna rekodi ya umma iliyothibitishwa kwa mechi hii." },
-      error: { label: "Maelezo hayapatikani", detail: "Maelezo yaliyothibitishwa yanaendelea kuonekana. Jaribu tena baadaye." },
-      offline: { label: "Huna mtandao", detail: "Maelezo yaliyothibitishwa yanaendelea kuonekana hadi mtandao urudi." },
-      permission_denied: { label: "Ufikiaji umekataliwa", detail: "Rekodi hii ya umma haipatikani kwa mgeni huyu." },
-      syncing: { label: "Inasasisha maelezo", detail: "Maelezo yaliyothibitishwa yanaendelea kuonekana wakati wa kusasisha." },
-      conflict: { label: "Maelezo yamebadilika", detail: "Sasisha ili kuona rekodi iliyothibitishwa ya sasa." },
-      security_timeout: { label: "Ombi limepitwa na muda", detail: "Hakuna badiliko linalodhaniwa. Maelezo yaliyothibitishwa yanaendelea kuonekana." },
-    },
-    refresh: "Sasisha maelezo",
-    retry: "Jaribu tena",
-    refreshDisabled: "Huwezi kusasisha wakati maelezo yanapakia.",
-    overview: "Muhtasari",
-    access: "Ufikiaji",
-    kickoff: "Mwanzo",
-    venue: "Uwanja",
-    general: "Kiingilio cha kawaida",
-    vip: "Ufikiaji wa VIP",
-    onSale: "Inauzwa",
-    unavailable: "Haijaanza kuuzwa",
-    noDetail: "Hakuna maelezo yaliyothibitishwa.",
-    noDetailBody: "Rudi kwenye orodha ya mechi au ujaribu baadaye.",
-    fixtureDetail: "Maelezo ya mechi",
-    ticketDetail: "Maelezo ya tiketi",
-    viewFixture: "Tazama mechi",
-    viewTickets: "Tazama tiketi",
-    confirmedOnly: "Vikosi na matukio ya moja kwa moja huonekana baada ya kuthibitishwa na klabu.",
   },
 };
 
@@ -293,21 +200,21 @@ export function resolveMatchDetailFailureStatus(
   return "error";
 }
 
-export function resolveMatchDetailStateCopy(locale: string): StateCopy {
-  const language = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveMatchDetailStateCopy(_locale: string): StateCopy {
+  const language = "en";
   return stateCopy[language as keyof typeof stateCopy] ?? stateCopy.en;
 }
 
 function formatMoney(value: number, locale: string, currencyCode: string) {
-  return new Intl.NumberFormat(locale, {
+  return new Intl.NumberFormat("en", {
     style: "currency",
     currency: currencyCode,
     maximumFractionDigits: 0,
   }).format(value);
 }
 
-function formatMatchDate(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
+function formatMatchDate(value: string, _locale: string) {
+  return new Intl.DateTimeFormat("en", {
     dateStyle: "full",
     timeStyle: "short",
   }).format(new Date(value));

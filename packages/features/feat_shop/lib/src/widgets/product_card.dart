@@ -4,7 +4,8 @@ import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 
-/// Compact product card used in the shop grid.
+/// Full-width discovery card. Product media, category and copy share one
+/// continuous surface; the add action remains independently accessible.
 class ArmouryProductCard extends StatelessWidget {
   final Map<String, dynamic> product;
   final VoidCallback? onTap;
@@ -29,6 +30,7 @@ class ArmouryProductCard extends StatelessWidget {
       currencySymbol: context.afriCurrencySymbol,
     );
     final l10n = context.afriL10n;
+    final enquiry = product['commerce_mode'] == 'enquiry';
     final name = product['name']?.toString() ?? l10n.shopProductFallback;
     final price = (product['price'] as num?)?.toDouble() ?? 0;
     final subtitle = product['subtitle']?.toString() ?? '';
@@ -50,105 +52,177 @@ class ArmouryProductCard extends StatelessWidget {
     final category = product['category']?.toString() ?? '';
     final usesLargeTextLayout =
         MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    final imagePanel = Stack(
-      children: [
-        Positioned.fill(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(ShapeTokens.radiusXl),
-            ),
-            child: _ProductImage(
-              imageUrl: imageUrl,
-              category: category,
-              semanticLabel: l10n.shopProductImageSemantic(name),
-              provenanceId: imageProvenanceId.isEmpty
-                  ? 'shop:${product['id'] ?? 'unknown'}:unapproved'
-                  : imageProvenanceId,
-              rightsApproved: imageRightsApproved,
-            ),
-          ),
-        ),
-        if (visibleBadge != null && visibleBadge.isNotEmpty)
-          Positioned(
-            top: SpacingTokens.spacing3,
-            left: SpacingTokens.spacing3,
-            child: AfriStatusChip(
-              label: visibleBadge,
-              tone: isAvailable ? AfriStatusTone.live : AfriStatusTone.neutral,
-            ),
-          ),
-        Positioned(
-          right: SpacingTokens.spacing3,
-          bottom: SpacingTokens.spacing3,
-          child: AfriIconButton(
-            key: ValueKey<String>('shop-add-${product['id'] ?? index}'),
-            icon: AfriIcons.add,
-            tooltip: isAvailable ? l10n.shopAddToCart : l10n.shopOutOfStock,
-            onTap: isAvailable ? onAddToCart : null,
-          ),
-        ),
-      ],
-    );
+    const foreground = ColorTokens.shopEditorialText;
+    const secondary = ColorTokens.shopEditorialSecondaryText;
 
-    return AfriSurfaceCard(
-      onTap: onTap,
-      autofocus: autofocus,
-      semanticsLabel: isAvailable
-          ? name
-          : l10n.shopProductUnavailableSemantic(name),
-      semanticsHint: l10n.shopOpenProduct,
-      padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (usesLargeTextLayout)
-            SizedBox(
-              height: AfriComponentSizes.commerceCardMediaHeight,
-              child: imagePanel,
-            )
-          else
-            Expanded(child: imagePanel),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              SpacingTokens.spacing4,
-              SpacingTokens.spacing4,
-              SpacingTokens.spacing4,
-              SpacingTokens.spacing4,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  maxLines: usesLargeTextLayout ? 3 : 2,
-                  overflow: usesLargeTextLayout
-                      ? TextOverflow.visible
-                      : TextOverflow.ellipsis,
-                  style: TypographyTokens.titleMedium(),
-                ),
-                if (subtitle.isNotEmpty) ...[
-                  const SizedBox(height: SpacingTokens.spacing1),
-                  Text(
-                    subtitle,
-                    maxLines: usesLargeTextLayout ? 3 : 1,
-                    overflow: usesLargeTextLayout
-                        ? TextOverflow.visible
-                        : TextOverflow.ellipsis,
-                    style: TypographyTokens.bodySmall(
-                      ColorTokens.onSurfaceVariant,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        return Stack(
+          children: [
+            AfriSurfaceCard(
+              onTap: onTap,
+              autofocus: autofocus,
+              semanticsLabel:
+                  '${isAvailable ? name : l10n.shopProductUnavailableSemantic(name)}, ${currency.format(price)}',
+              semanticsHint: l10n.shopOpenProduct,
+              backgroundColor: ColorTokens.shopEditorialSurface,
+              padding: EdgeInsets.zero,
+              child: ClipRRect(
+                borderRadius: ShapeTokens.cardRadius,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: _ProductImage(
+                        imageUrl: imageUrl,
+                        semanticLabel: l10n.shopProductImageSemantic(name),
+                        provenanceId: imageProvenanceId.isEmpty
+                            ? 'shop:${product['id'] ?? 'unknown'}:unapproved'
+                            : imageProvenanceId,
+                        rightsApproved: imageRightsApproved,
+                      ),
                     ),
-                  ),
-                ],
-                const SizedBox(height: SpacingTokens.spacing3),
-                Text(
-                  currency.format(price),
-                  style: TypographyTokens.titleLarge(),
+                    Positioned.fill(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: ColorTokens.imageScrimGradient(
+                            color: ColorTokens.inkBase,
+                            alphas: const [0.38, 0.0, 0.15, 0.88, 0.98],
+                            stops: const [0.0, 0.24, 0.45, 0.78, 1.0],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(SpacingTokens.spacing4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(
+                                AfriIcons.shop,
+                                color: foreground,
+                                size: SizeTokens.iconMd,
+                              ),
+                              const SizedBox(width: SpacingTokens.spacing2),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      category.isEmpty
+                                          ? l10n.shopClubStore
+                                          : category,
+                                      style: TypographyTokens.bodyLarge(
+                                        foreground,
+                                      ),
+                                    ),
+                                    if (usesLargeTextLayout &&
+                                        visibleBadge != null &&
+                                        visibleBadge.isNotEmpty)
+                                      Text(
+                                        visibleBadge,
+                                        style: TypographyTokens.labelSmall(
+                                          secondary,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              if (!usesLargeTextLayout &&
+                                  visibleBadge != null &&
+                                  visibleBadge.isNotEmpty)
+                                Flexible(
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: Text(
+                                      visibleBadge,
+                                      textAlign: TextAlign.end,
+                                      style: TypographyTokens.labelSmall(
+                                        secondary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: usesLargeTextLayout
+                              ? width * 0.42
+                              : width * 0.72,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            SpacingTokens.spacing4,
+                            SpacingTokens.spacing2,
+                            usesLargeTextLayout
+                                ? SpacingTokens.spacing4
+                                : SpacingTokens.spacing4 +
+                                      SizeTokens.touchTargetMin,
+                            usesLargeTextLayout
+                                ? SpacingTokens.spacing4 +
+                                      SizeTokens.touchTargetMin
+                                : SpacingTokens.spacing4,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style:
+                                    TypographyTokens.headlineSmall(
+                                      foreground,
+                                    ).copyWith(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                              if (subtitle.isNotEmpty) ...[
+                                const SizedBox(height: SpacingTokens.spacing1),
+                                Text(
+                                  subtitle,
+                                  style: TypographyTokens.bodyMedium(secondary),
+                                ),
+                              ],
+                              const SizedBox(height: SpacingTokens.spacing1),
+                              Text(
+                                currency.format(price),
+                                style: TypographyTokens.bodyLarge(foreground),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
-      ),
+            Positioned(
+              right: SpacingTokens.spacing3,
+              bottom: SpacingTokens.spacing3,
+              child: AfriIconButton(
+                key: ValueKey<String>('shop-add-${product['id'] ?? index}'),
+                icon: enquiry ? AfriIcons.chevronRight : AfriIcons.add,
+                filled: true,
+                tooltip: enquiry
+                    ? l10n.shopEnquiryOptions
+                    : isAvailable
+                    ? l10n.shopAddToCart
+                    : l10n.shopOutOfStock,
+                onTap: enquiry
+                    ? onTap
+                    : isAvailable
+                    ? onAddToCart
+                    : null,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -156,21 +230,24 @@ class ArmouryProductCard extends StatelessWidget {
 class _ProductImage extends StatelessWidget {
   const _ProductImage({
     required this.imageUrl,
-    required this.category,
     required this.semanticLabel,
     required this.provenanceId,
     required this.rightsApproved,
   });
 
   final String? imageUrl;
-  final String category;
   final String semanticLabel;
   final String provenanceId;
   final bool rightsApproved;
 
   @override
   Widget build(BuildContext context) {
-    final gradient = ColorTokens.productFallbackGradient(category);
+    final gradient = ColorTokens.universalGradient(
+      colors: [
+        ColorTokens.referencePaymentsPurpleMid,
+        ColorTokens.shopEditorialSurface,
+      ],
+    );
 
     if (imageUrl != null && imageUrl!.isNotEmpty) {
       return AfriGovernedCachedImage(
@@ -190,11 +267,12 @@ class _ProductImage extends StatelessWidget {
   Widget _fallback(Gradient gradient) {
     return DecoratedBox(
       decoration: BoxDecoration(gradient: gradient),
-      child: Center(
+      child: Align(
+        alignment: const Alignment(0, -0.3),
         child: Icon(
           AfriIcons.shop,
           size: SizeTokens.iconHero,
-          color: ColorTokens.onSurface.withValues(alpha: 0.7),
+          color: ColorTokens.shopEditorialSecondaryText.withValues(alpha: 0.7),
         ),
       ),
     );

@@ -99,7 +99,7 @@ void main() {
     await _pumpAppStartup(tester);
     if (const bool.fromEnvironment('AFRICLUB_CAPTURE_REFERENCE')) {
       await binding.takeScreenshot('home-native-initial');
-      for (final destination in ['Club', 'Fan Zone', 'Membership', 'Home']) {
+      for (final destination in ['Club', 'Predict', 'Membership', 'Home']) {
         await tester.tap(
           find.descendant(
             of: find.byType(AfriClubBottomNav),
@@ -119,11 +119,11 @@ void main() {
 
     expect(find.byType(QuickActionsGrid), findsOneWidget);
     expect(find.text('Tickets'), findsAtLeastNWidgets(1));
-    expect(find.text('Fan Zone'), findsAtLeastNWidgets(1));
+    expect(find.text('Predict'), findsAtLeastNWidgets(1));
   });
 
   testWidgets(
-    'recovers an unrestorable session through phone and code verification',
+    'keeps public browsing available and verifies a private membership action',
     (tester) async {
       await _startSmokeApp(
         AfriClubBootstrapOptions(
@@ -172,6 +172,14 @@ void main() {
       );
 
       await _pumpAppStartup(tester);
+      await _pumpUntilVisible(tester, find.byType(AfriClubBottomNav));
+      expect(find.byType(SupporterPhoneAuthScreen), findsNothing);
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AfriClubBottomNav),
+          matching: find.text('Membership'),
+        ),
+      );
       await _pumpUntilVisible(tester, find.byType(SupporterPhoneAuthScreen));
 
       expect(find.byType(SupporterPhoneAuthScreen), findsOneWidget);
@@ -216,8 +224,13 @@ void main() {
       );
       await tester.ensureVisible(verify);
       await tester.tap(verify);
-      await _pumpUntilVisible(tester, find.text('Home'));
+      await _pumpUntilVisible(tester, find.byType(AfriClubBottomNav));
       expect(find.byType(SupporterOtpVerificationScreen), findsNothing);
+      final nav = find.byType(AfriClubBottomNav);
+      expect(
+        find.descendant(of: nav, matching: find.text('Membership')),
+        findsOneWidget,
+      );
     },
   );
 

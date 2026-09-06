@@ -6,33 +6,235 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/club_content_models.dart';
 import '../providers/club_content_providers.dart';
 import 'club_content_state_widgets.dart';
 
-class ClubTeamScreen extends ConsumerWidget {
-  const ClubTeamScreen({super.key});
-
+class ClubTeamScreen extends ConsumerStatefulWidget {
+  const ClubTeamScreen({super.key, this.group});
+  final String? group;
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ClubTeamScreen> createState() => _ClubTeamScreenState();
+}
+
+class _ClubTeamScreenState extends ConsumerState<ClubTeamScreen> {
+  String? _position;
+  late String? _group = widget.group;
+  String _groupLabel(String? group) => switch (group) {
+    'first_team' => context.afriL10n.clubSquadFirstTeam,
+    'women' => context.afriL10n.clubSquadWomen,
+    'academy' => context.afriL10n.clubSquadAcademy,
+    'staff' => context.afriL10n.clubSquadStaff,
+    _ => context.afriL10n.clubSquadAllTeams,
+  };
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.afriL10n;
     final state = ref.watch(clubSquadProvider);
-    return _ClubCollectionScaffold(
+    final positions = <String>{
+      for (final player in state.valueOrNull ?? <ClubSquadMember>[])
+        if (player.position.isNotEmpty) player.position,
+    }.toList()..sort();
+    final groups = <String>{
+      for (final p in state.valueOrNull ?? <ClubSquadMember>[]) p.squadGroup,
+      if (_group != null) _group!,
+    }.toList();
+    final selected = positions.contains(_position) ? _position : null;
+    return ClubCollectionScaffold<ClubSquadMember>(
       title: l10n.clubTeamTitle,
-      state: state,
+      state: state.whenData(
+        (players) => players
+            .where(
+              (p) =>
+                  (_group == null || p.squadGroup == _group) &&
+                  (selected == null || p.position == selected),
+            )
+            .toList(),
+      ),
       emptyTitle: l10n.clubTeamEmptyTitle,
       emptyMessage: l10n.clubTeamEmptyMessage,
       onRetry: () => ref.invalidate(clubSquadProvider),
-      itemBuilder: (context, player) => AfriListRow(
-        icon: AfriIcons.people,
-        title: player.shirtNumber > 0
-            ? '${player.shirtNumber}  ${player.name}'
-            : player.name,
-        subtitle: <String>[
-          player.position,
-          player.nationality,
-        ].where((value) => value.isNotEmpty).join(' • '),
+      columns:
+          MediaQuery.textScalerOf(context).scale(1) >= 1.5 ||
+              MediaQuery.sizeOf(context).width < 360
+          ? 1
+          : 2,
+      header: positions.isEmpty
+          ? null
+          : Padding(
+              padding: const EdgeInsets.only(bottom: SpacingTokens.spacing4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (final group in <String?>[null, ...groups])
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: SpacingTokens.spacing2,
+                            ),
+                            child: AfriChoiceChip(
+                              label: Text(_groupLabel(group)),
+                              selected: _group == group,
+                              onSelected: (_) => setState(() {
+                                _group = group;
+                                _position = null;
+                              }),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (final position in <String?>[null, ...positions])
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: SpacingTokens.spacing2,
+                            ),
+                            child: AfriChoiceChip(
+                              label: Text(position ?? l10n.clubAllPlayers),
+                              selected: selected == position,
+                              onSelected: (_) =>
+                                  setState(() => _position = position),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+      itemBuilder: (context, player) => _ClubPortraitCard(
+        player: player,
+        onTap: () =>
+            context.push('/club/team/${Uri.encodeComponent(player.id)}'),
+      ),
+    );
+  }
+}
+
+class _ClubPortraitCard extends StatelessWidget {
+  const _ClubPortraitCard({required this.player, required this.onTap});
+  final ClubSquadMember player;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) => Material(
+    color: ColorTokens.surfaceContainer,
+    borderRadius: ShapeTokens.cardRadius,
+    clipBehavior: Clip.antiAlias,
+    child: AfriPressFeedback(
+      onTap: onTap,
+      semanticsLabel: player.name,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AspectRatio(
+            aspectRatio: 4 / 3,
+            child: _ClubPlayerImage(player: player),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(SpacingTokens.spacing4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(player.name, style: TypographyTokens.titleMedium()),
+                const SizedBox(height: SpacingTokens.spacing1),
+                Text(
+                  [
+                    player.position,
+                    if (player.shirtNumber > 0) '#${player.shirtNumber}',
+                  ].where((p) => p.isNotEmpty).join(' · '),
+                  style: TypographyTokens.bodySmall(
+                    ColorTokens.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class _ClubPlayerImage extends StatelessWidget {
+  const _ClubPlayerImage({required this.player});
+  final ClubSquadMember player;
+  @override
+  Widget build(BuildContext context) {
+    final url = player.imageUrl;
+    Widget fallback() => ColoredBox(
+      color: ColorTokens.surfaceContainerHigh,
+      child: Center(
+        child: Text(
+          player.shirtNumber > 0 ? '#${player.shirtNumber}' : '—',
+          style: TypographyTokens.displaySmall(ColorTokens.onSurfaceVariant),
+        ),
+      ),
+    );
+    if (url == null || Uri.tryParse(url)?.scheme != 'https') return fallback();
+    return Image.network(
+      url,
+      fit: BoxFit.cover,
+      alignment: Alignment.topCenter,
+      cacheWidth: 720,
+      semanticLabel: player.name,
+      loadingBuilder: (context, child, progress) =>
+          progress == null ? child : fallback(),
+      errorBuilder: (context, error, stack) => fallback(),
+    );
+  }
+}
+
+class ClubPlayerDetailScreen extends ConsumerWidget {
+  const ClubPlayerDetailScreen({super.key, required this.playerId});
+  final String playerId;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.afriL10n;
+    final state = ref.watch(clubPlayerProvider(playerId));
+    return _ClubDetailScaffold<ClubSquadMember>(
+      title: l10n.clubPlayerProfile,
+      state: state.whenData((player) => player == null ? [] : [player]),
+      select: (items) => items.firstOrNull,
+      onRetry: () => ref.invalidate(clubPlayerProvider(playerId)),
+      notFoundTitle: l10n.clubTeamEmptyTitle,
+      notFoundMessage: l10n.clubTeamEmptyMessage,
+      builder: (player) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: ShapeTokens.cardRadius,
+            child: AspectRatio(
+              aspectRatio: 4 / 3,
+              child: _ClubPlayerImage(player: player),
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.sectionGap),
+          Text(player.name, style: TypographyTokens.headlineLarge()),
+          const SizedBox(height: SpacingTokens.spacing3),
+          Text(
+            [
+              player.position,
+              if (player.shirtNumber > 0) '#${player.shirtNumber}',
+              player.nationality,
+            ].where((v) => v.isNotEmpty).join(' · '),
+            style: TypographyTokens.bodyMedium(),
+          ),
+          const SizedBox(height: SpacingTokens.sectionGap),
+          Text(
+            player.bio.isEmpty ? l10n.clubPlayerBioPending : player.bio,
+            style: TypographyTokens.bodyLarge(),
+          ),
+        ],
       ),
     );
   }
@@ -45,22 +247,45 @@ class ClubNewsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.afriL10n;
     final state = ref.watch(clubNewsProvider);
-    return _ClubCollectionScaffold(
+    return ClubCollectionScaffold(
       title: l10n.clubNewsTitle,
       state: state,
       emptyTitle: l10n.clubNewsEmptyTitle,
       emptyMessage: l10n.clubNewsEmptyMessage,
       onRetry: () => ref.invalidate(clubNewsProvider),
-      itemBuilder: (context, article) => AfriListRow(
-        icon: AfriIcons.article,
-        title: article.title,
-        subtitle: <String>[
-          article.category,
-          _shortDate(context, article.publishedAt),
-        ].where((value) => value.isNotEmpty).join(' • '),
-        onTap: article.id.isEmpty
-            ? null
-            : () => context.push('/club/news/${article.id}'),
+      itemBuilder: (context, article) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (article.imageUrl != null)
+            AfriPressFeedback(
+              semanticsLabel: article.title,
+              onTap: () => context.push('/club/news/${article.id}'),
+              child: ClipRRect(
+                borderRadius: ShapeTokens.cardRadius,
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.network(
+                    article.imageUrl!,
+                    fit: BoxFit.cover,
+                    cacheWidth: 960,
+                    semanticLabel: article.title,
+                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  ),
+                ),
+              ),
+            ),
+          AfriListRow(
+            icon: AfriIcons.article,
+            title: article.title,
+            subtitle: <String>[
+              article.category,
+              _shortDate(context, article.publishedAt),
+            ].where((value) => value.isNotEmpty).join(' • '),
+            onTap: article.id.isEmpty
+                ? null
+                : () => context.push('/club/news/${article.id}'),
+          ),
+        ],
       ),
     );
   }
@@ -74,11 +299,11 @@ class ClubNewsDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.afriL10n;
-    final state = ref.watch(clubNewsProvider);
-    return _ClubDetailScaffold(
+    final state = ref.watch(clubArticleProvider(articleId));
+    return _ClubDetailScaffold<ClubNewsItem>(
       title: l10n.clubNewsTitle,
-      state: state,
-      onRetry: () => ref.invalidate(clubNewsProvider),
+      state: state.whenData((article) => article == null ? [] : [article]),
+      onRetry: () => ref.invalidate(clubArticleProvider(articleId)),
       select: (items) =>
           _firstWhereOrNull(items, (item) => item.id == articleId),
       notFoundTitle: l10n.clubArticleUnavailableTitle,
@@ -88,6 +313,22 @@ class ClubNewsDetailScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (article.imageUrl != null) ...[
+              ClipRRect(
+                borderRadius: ShapeTokens.cardRadius,
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.network(
+                    article.imageUrl!,
+                    fit: BoxFit.cover,
+                    cacheWidth: 1080,
+                    semanticLabel: article.title,
+                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: SpacingTokens.sectionGap),
+            ],
             if (article.category.isNotEmpty)
               AfriStatusChip(
                 label: article.category,
@@ -126,6 +367,22 @@ class ClubNewsDetailScreen extends ConsumerWidget {
                   : article.body,
               style: TypographyTokens.bodyLarge(),
             ),
+            if (article.sourceUrl != null) ...[
+              const SizedBox(height: SpacingTokens.sectionGap),
+              AfriButton(
+                label: l10n.clubArticleOriginal,
+                variant: AfriButtonVariant.secondary,
+                onTap: () async {
+                  final opened = await launchUrl(
+                    Uri.parse(article.sourceUrl!),
+                    mode: LaunchMode.externalApplication,
+                  );
+                  if (!opened && context.mounted) {
+                    AfriToast.error(context, l10n.clubArticleUnavailableTitle);
+                  }
+                },
+              ),
+            ],
           ],
         ),
       ),
@@ -142,7 +399,7 @@ class ClubFixturesScreen extends ConsumerWidget {
     final state = ref
         .watch(clubMatchesProvider)
         .whenData((items) => items.where((item) => !item.isCompleted).toList());
-    return _ClubCollectionScaffold(
+    return ClubCollectionScaffold(
       title: l10n.clubFixturesTitle,
       state: state,
       emptyTitle: l10n.clubFixturesEmptyTitle,
@@ -181,7 +438,7 @@ class ClubResultsScreen extends ConsumerWidget {
               .reversed
               .toList(),
         );
-    return _ClubCollectionScaffold(
+    return ClubCollectionScaffold(
       title: l10n.clubResultsTitle,
       state: state,
       emptyTitle: l10n.clubResultsEmptyTitle,
@@ -273,7 +530,7 @@ class ClubStandingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.afriL10n;
     final state = ref.watch(clubStandingsProvider);
-    return _ClubCollectionScaffold(
+    return ClubCollectionScaffold(
       title: l10n.clubStandingsTitle,
       state: state,
       emptyTitle: l10n.clubStandingsEmptyTitle,
@@ -326,7 +583,7 @@ class ClubHistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.afriL10n;
     final state = ref.watch(clubHistoryProvider);
-    return _ClubCollectionScaffold(
+    return ClubCollectionScaffold(
       title: l10n.clubHistoryTitle,
       state: state,
       emptyTitle: l10n.clubHistoryEmptyTitle,
@@ -370,7 +627,7 @@ class ClubProjectsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.afriL10n;
     final state = ref.watch(clubProjectsProvider);
-    return _ClubCollectionScaffold(
+    return ClubCollectionScaffold(
       title: l10n.clubProjectsTitle,
       state: state,
       emptyTitle: l10n.clubProjectsEmptyTitle,
@@ -475,14 +732,17 @@ class ClubProjectDetailScreen extends ConsumerWidget {
   }
 }
 
-class _ClubCollectionScaffold<T> extends StatelessWidget {
-  const _ClubCollectionScaffold({
+class ClubCollectionScaffold<T> extends StatelessWidget {
+  const ClubCollectionScaffold({
+    super.key,
     required this.title,
     required this.state,
     required this.emptyTitle,
     required this.emptyMessage,
     required this.onRetry,
     required this.itemBuilder,
+    this.header,
+    this.columns = 1,
   });
 
   final String title;
@@ -491,6 +751,8 @@ class _ClubCollectionScaffold<T> extends StatelessWidget {
   final String emptyMessage;
   final VoidCallback onRetry;
   final Widget Function(BuildContext context, T item) itemBuilder;
+  final Widget? header;
+  final int columns;
 
   @override
   Widget build(BuildContext context) {
@@ -509,6 +771,15 @@ class _ClubCollectionScaffold<T> extends StatelessWidget {
       child: ValueListenableBuilder<bool>(
         valueListenable: ConnectivityService.onlineNotifier,
         builder: (context, isOnline, _) {
+          if (state.hasError &&
+              ClubContentFailure.fromError(state.error!, isOnline: true).kind ==
+                  ClubContentFailureKind.permissionDenied) {
+            return const ClubContentFailureView(
+              failure: ClubContentFailure(
+                ClubContentFailureKind.permissionDenied,
+              ),
+            );
+          }
           final items = state.valueOrNull;
           if (items != null) {
             final failure = state.hasError
@@ -518,6 +789,7 @@ class _ClubCollectionScaffold<T> extends StatelessWidget {
                 : null;
             return Column(
               children: [
+                if (header != null) header!,
                 if (state.isRefreshing || failure != null) ...[
                   ClubContentStatusBanner(
                     refreshing: state.isRefreshing,
@@ -539,11 +811,36 @@ class _ClubCollectionScaffold<T> extends StatelessWidget {
                           padding: const EdgeInsets.only(
                             bottom: SpacingTokens.spacing6,
                           ),
-                          itemCount: items.length,
+                          itemCount: (items.length / columns).ceil(),
                           separatorBuilder: (_, __) =>
                               const SizedBox(height: SpacingTokens.spacing3),
-                          itemBuilder: (context, index) =>
-                              itemBuilder(context, items[index]),
+                          itemBuilder: (context, index) => columns == 1
+                              ? itemBuilder(context, items[index])
+                              : Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    for (
+                                      var column = 0;
+                                      column < columns;
+                                      column++
+                                    ) ...[
+                                      if (column > 0)
+                                        const SizedBox(
+                                          width: SpacingTokens.spacing3,
+                                        ),
+                                      Expanded(
+                                        child:
+                                            index * columns + column <
+                                                items.length
+                                            ? itemBuilder(
+                                                context,
+                                                items[index * columns + column],
+                                              )
+                                            : const SizedBox.shrink(),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                         ),
                 ),
               ],
@@ -618,6 +915,15 @@ class _ClubDetailScaffold<T> extends StatelessWidget {
       child: ValueListenableBuilder<bool>(
         valueListenable: ConnectivityService.onlineNotifier,
         builder: (context, isOnline, _) {
+          if (state.hasError &&
+              ClubContentFailure.fromError(state.error!, isOnline: true).kind ==
+                  ClubContentFailureKind.permissionDenied) {
+            return const ClubContentFailureView(
+              failure: ClubContentFailure(
+                ClubContentFailureKind.permissionDenied,
+              ),
+            );
+          }
           final items = state.valueOrNull;
           if (items != null) {
             final selected = select(items);

@@ -181,215 +181,8 @@ const en: HomeCopy = {
     "This page exposes no supporter identity, private membership state, ticket booking, cart, order, delivery address, payment detail, receipt, internal lineup, or authenticated mutation.",
 };
 
-function localizedCopy(locale: string): HomeCopy {
-  const language = locale.trim().toLowerCase().split(/[-_]/)[0];
-  if (language === "fr") {
-    return {
-      ...en,
-      status: {
-        loading: {
-          label: "Chargement de l’accueil officiel",
-          detail: "En attente du premier aperçu public confirmé.",
-        },
-        ready: {
-          label: "Accueil du club confirmé",
-          detail: "Les aperçus publics sont à jour.",
-        },
-        empty: {
-          label: "Aucun temps fort public",
-          detail: "Aucun aperçu n’est confirmé pour le moment.",
-        },
-        error: {
-          label: "Accueil indisponible",
-          detail: "Les temps forts confirmés restent visibles.",
-        },
-        offline: {
-          label: "Vous êtes hors ligne",
-          detail: "Les temps forts confirmés restent visibles.",
-        },
-        permission_denied: {
-          label: "Accès à l’accueil refusé",
-          detail: "Les temps forts précédents ont été effacés.",
-        },
-        syncing: {
-          label: "Actualisation des temps forts",
-          detail: "Les données confirmées restent visibles.",
-        },
-        conflict: {
-          label: "Les temps forts ont changé",
-          detail: "Actualisez pour charger l’aperçu actuel.",
-        },
-        security_timeout: {
-          label: "Délai de demande dépassé",
-          detail: "Aucune réservation, adhésion ou paiement n’est présumé.",
-        },
-      },
-      eyebrow: "Accueil officiel du club",
-      title: (club) => `${club}. Le match commence ici.`,
-      description:
-        "Un aperçu public confirmé des matchs, actualités, adhésions et articles.",
-      refresh: "Actualiser les temps forts",
-      retry: "Réessayer",
-      app: "Ouvrir l’app supporters",
-      appPending: "App supporters bientôt disponible",
-      confirmed: "Temps forts publics confirmés",
-      nextMatch: "Prochain match",
-      latestNews: "Dernières nouvelles",
-      shop: "Aperçu boutique",
-      membership: "Aperçu adhésion",
-      noContent: "Aucun temps fort public",
-      noContentDetail: "Les éléments apparaissent après confirmation du club.",
-      quickActions: "Choisissez la suite",
-      chooseAction: "Sélectionner une action",
-      openSelected: "Ouvrir la sélection",
-      fixtures: "Matchs",
-      tickets: "Billets",
-      supporters: "Supporters",
-      selected: "Sélection",
-      boundaryEyebrow: "Limite de l’accueil public",
-      boundaryTitle: "Découvrez ici. Finalisez dans les canaux approuvés.",
-      boundaryDetail:
-        "Cette page n’expose aucune identité, adhésion privée, réservation, commande, paiement, reçu ou mutation authentifiée.",
-    };
-  }
-  if (language === "rw") {
-    return {
-      ...en,
-      status: {
-        loading: {
-          label: "Ahabanza hemewe hari gutwarwa",
-          detail: "Hategerejwe amakuru rusange ya mbere yemejwe.",
-        },
-        ready: {
-          label: "Ahabanza ha club hemejwe",
-          detail: "Amakuru rusange yemejwe ari ku gihe.",
-        },
-        empty: {
-          label: "Nta makuru rusange",
-          detail: "Club ntiremeza amakuru yo kugaragaza.",
-        },
-        error: {
-          label: "Ahabanza ntihaboneka",
-          detail: "Amakuru yemejwe aragumaho.",
-        },
-        offline: {
-          label: "Nta murongo wa interineti",
-          detail: "Amakuru yemejwe aragumaho.",
-        },
-        permission_denied: {
-          label: "Uburenganzira bwanzwe",
-          detail: "Amakuru yari yafunguwe yasibwe.",
-        },
-        syncing: {
-          label: "Amakuru arimo kuvugururwa",
-          detail: "Amakuru yemejwe aragumaho.",
-        },
-        conflict: {
-          label: "Amakuru yarahindutse",
-          detail: "Vugurura ubone amakuru mashya.",
-        },
-        security_timeout: {
-          label: "Igihe cyo gutegereza cyarangiye",
-          detail: "Nta tike, ubunyamuryango cyangwa ubwishyu bifatwa nk’ibyabaye.",
-        },
-      },
-      eyebrow: "Ahabanza hemewe ha club",
-      title: (club) => `${club}. Umunsi w’umukino utangirira hano.`,
-      description:
-        "Reba imikino, amakuru, ubunyamuryango n’ibicuruzwa byemejwe.",
-      refresh: "Vugurura amakuru",
-      retry: "Ongera ugerageze",
-      app: "Fungura app y’abafana",
-      appPending: "App y’abafana izaza vuba",
-      confirmed: "Amakuru rusange yemejwe",
-      nextMatch: "Umukino ukurikira",
-      latestNews: "Amakuru mashya",
-      shop: "Ibicuruzwa",
-      membership: "Ubunyamuryango",
-      noContent: "Nta makuru rusange",
-      noContentDetail: "Amakuru agaragara nyuma yo kwemezwa na club.",
-      quickActions: "Hitamo igikurikira",
-      chooseAction: "Hitamo igikorwa",
-      openSelected: "Fungura icyatoranyijwe",
-      fixtures: "Imikino",
-      tickets: "Amatike",
-      supporters: "Abafana",
-      selected: "Byatoranyijwe",
-      boundaryEyebrow: "Umupaka w’ahabanza rusange",
-      boundaryTitle: "Menya hano. Soza mu miyoboro yemewe.",
-      boundaryDetail:
-        "Nta mwirondoro, bunyamuryango bwihariye, tike, komande, ubwishyu cyangwa igikorwa gisaba kwinjira bigaragara hano.",
-    };
-  }
-  if (language === "sw") {
-    return {
-      ...en,
-      status: {
-        loading: {
-          label: "Inapakia ukurasa rasmi",
-          detail: "Inasubiri muhtasari wa kwanza uliothibitishwa.",
-        },
-        ready: {
-          label: "Ukurasa wa klabu umethibitishwa",
-          detail: "Muhtasari wa umma ni wa sasa.",
-        },
-        empty: {
-          label: "Hakuna muhtasari wa umma",
-          detail: "Klabu haijathibitisha maudhui bado.",
-        },
-        error: {
-          label: "Ukurasa haupatikani",
-          detail: "Maudhui yaliyothibitishwa yanaendelea kuonekana.",
-        },
-        offline: {
-          label: "Huna mtandao",
-          detail: "Maudhui yaliyothibitishwa yanaendelea kuonekana.",
-        },
-        permission_denied: {
-          label: "Ruhusa imekataliwa",
-          detail: "Maudhui yaliyopakiwa yameondolewa.",
-        },
-        syncing: {
-          label: "Inasasisha maudhui",
-          detail: "Maudhui yaliyothibitishwa yanaendelea kuonekana.",
-        },
-        conflict: {
-          label: "Maudhui yamebadilika",
-          detail: "Sasisha ili kupakia muhtasari wa sasa.",
-        },
-        security_timeout: {
-          label: "Ombi limepitwa na muda",
-          detail: "Hakuna tiketi, uanachama au malipo yanayodhaniwa.",
-        },
-      },
-      eyebrow: "Ukurasa rasmi wa klabu",
-      title: (club) => `${club}. Siku ya mechi inaanzia hapa.`,
-      description:
-        "Tazama mechi, habari, uanachama na bidhaa zilizothibitishwa.",
-      refresh: "Sasisha maudhui",
-      retry: "Jaribu tena",
-      app: "Fungua programu",
-      appPending: "Programu ya mashabiki inakuja",
-      confirmed: "Maudhui ya umma yaliyothibitishwa",
-      nextMatch: "Mechi inayofuata",
-      latestNews: "Habari mpya",
-      shop: "Bidhaa",
-      membership: "Uanachama",
-      noContent: "Hakuna muhtasari wa umma",
-      noContentDetail: "Maudhui huonekana baada ya uthibitisho wa klabu.",
-      quickActions: "Chagua hatua inayofuata",
-      chooseAction: "Chagua kitendo",
-      openSelected: "Fungua ulichochagua",
-      fixtures: "Mechi",
-      tickets: "Tiketi",
-      supporters: "Mashabiki",
-      selected: "Iliyochaguliwa",
-      boundaryEyebrow: "Mpaka wa ukurasa wa umma",
-      boundaryTitle: "Gundua hapa. Kamilisha kupitia njia zilizoidhinishwa.",
-      boundaryDetail:
-        "Ukurasa huu hauonyeshi utambulisho, uanachama binafsi, tiketi, oda, malipo, risiti au mabadiliko yanayohitaji kuingia.",
-    };
-  }
+function localizedCopy(_locale: string): HomeCopy {
+  const _language = "en";
   return en;
 }
 
@@ -637,9 +430,9 @@ function useHomeResource() {
   return { snapshot, status, load };
 }
 
-function formatPrice(value: number, locale: string) {
+function formatPrice(value: number, _locale: string) {
   try {
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat("en", {
       style: "currency",
       currency: "RWF",
       maximumFractionDigits: 0,
@@ -649,11 +442,11 @@ function formatPrice(value: number, locale: string) {
   }
 }
 
-function formatMatchDate(value: string, locale: string) {
+function formatMatchDate(value: string, _locale: string) {
   const date = new Date(value);
   if (!Number.isFinite(date.getTime())) return value;
   try {
-    return new Intl.DateTimeFormat(locale, {
+    return new Intl.DateTimeFormat("en", {
       dateStyle: "medium",
       timeStyle: "short",
     }).format(date);

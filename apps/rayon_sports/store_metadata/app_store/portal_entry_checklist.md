@@ -16,7 +16,7 @@
 
 ## Metadata and compliance
 
-- [ ] English, French, and Kinyarwanda metadata approvals recorded.
+- [ ] English metadata approvals recorded.
 - [ ] iPhone and iPad screenshot sets pass the artwork manifest.
 - [x] App icon presence is verified in exact IPA SHA-256 `606739bff02260103ac0ad55eb1b2d1c223f8aea60e9de1c4099ca7572c477bc`; brand/content-rights approval remains separate.
 - [ ] Privacy/support/marketing URLs verified live.

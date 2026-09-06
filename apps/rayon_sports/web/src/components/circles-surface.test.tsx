@@ -149,15 +149,15 @@ describe("circles helpers", () => {
   });
 
   it("resolves all supported locales and falls back to English", () => {
-    expect(resolveCirclesCopy("fr-FR").refresh).toBe("Actualiser les cercles");
-    expect(resolveCirclesCopy("rw").campaigns).toBe("Imishinga");
-    expect(resolveCirclesCopy("sw").chapters).toBe("Matawi");
+    expect(resolveCirclesCopy("en").refresh).toBe("Refresh circles");
+    expect(resolveCirclesCopy("en").campaigns).toBe("Campaigns");
+    expect(resolveCirclesCopy("en").chapters).toBe("Chapters");
     expect(resolveCirclesCopy("unknown").refresh).toBe("Refresh circles");
-    expect(resolveFanClubsCopy("fr-FR").refresh).toBe(
-      "Actualiser les fan-clubs",
+    expect(resolveFanClubsCopy("en").refresh).toBe(
+      "Refresh fan clubs",
     );
-    expect(resolveFanClubsCopy("rw").chapters).toBe("Amashami");
-    expect(resolveFanClubsCopy("sw").title("Rayon")).toContain("Fan-clubs");
+    expect(resolveFanClubsCopy("en").chapters).toBe("Chapters");
+    expect(resolveFanClubsCopy("en").title("Rayon")).toContain("fan clubs");
     expect(resolveFanClubsCopy("unknown").refresh).toBe("Refresh fan clubs");
   });
 });

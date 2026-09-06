@@ -3,6 +3,29 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('DeepLinkParser', () {
+    test(
+      'translates website routes and resolves entity identities explicitly',
+      () {
+        final parser = DeepLinkParser(
+          websiteUri: Uri.parse('https://gikundiro.com'),
+        );
+        expect(
+          parser.toInternalUri(Uri.parse('https://gikundiro.com/squad'))?.path,
+          '/club/team',
+        );
+        expect(
+          parser
+              .toInternalUri(Uri.parse('https://gikundiro.com/fanclubs/find'))
+              ?.path,
+          '/fan-clubs',
+        );
+        final story = parser.toInternalUri(
+          Uri.parse('https://gikundiro.com/news/club-story'),
+        )!;
+        expect(story.path, '/club/open-web');
+        expect(story.queryParameters['path'], '/news/club-story');
+      },
+    );
     test('maps matching website links into internal routes', () {
       final parser = DeepLinkParser(
         websiteUri: Uri.parse('https://gikundiro.com'),

@@ -292,10 +292,18 @@ void main() {
       );
       if (heldPress != null) {
         await heldPress.up();
+        await tester.pumpAndSettle();
+        expect(c.attempts, 0);
+        await tester.tap(find.byKey(const ValueKey('predict-confirm-pick')));
+        await tester.pumpAndSettle();
         expect(c.attempts, 1);
       }
       if (entry.key == 'focused') {
         await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(c.attempts, 0);
+        await tester.tap(find.byKey(const ValueKey('predict-confirm-pick')));
+        await tester.pumpAndSettle();
         expect(c.attempts, 1);
       }
       if (entry.key == 'guest') {
@@ -311,7 +319,7 @@ void main() {
         'conflict',
         'security_timeout',
       ].contains(entry.key)) {
-        final control = tester.widget<OutlinedButton>(
+        final control = tester.widget<AfriOutlinedButton>(
           find.byKey(const ValueKey('predict-fixture-home')),
         );
         expect(control.onPressed, isNull);

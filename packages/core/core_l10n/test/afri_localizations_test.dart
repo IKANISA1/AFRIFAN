@@ -7,9 +7,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const locales = <Locale>[Locale('en'), Locale('fr'), Locale('rw')];
+  const locales = <Locale>[Locale('en')];
 
-  test('ships complete EN, FR, and RW task-copy catalogs', () {
+  test('ships complete English task-copy catalogs', () {
     for (final locale in locales) {
       final l10n = lookupAfriLocalizations(locale);
       final taskMessages = <String>[
@@ -62,91 +62,10 @@ void main() {
     }
   });
 
-  test('RW and FR are real catalogs rather than English fallbacks', () {
-    final en = lookupAfriLocalizations(const Locale('en'));
-    final fr = lookupAfriLocalizations(const Locale('fr'));
-    final rw = lookupAfriLocalizations(const Locale('rw'));
-
-    expect(fr.onboardingContinueWhatsApp, isNot(en.onboardingContinueWhatsApp));
-    expect(rw.onboardingContinueWhatsApp, isNot(en.onboardingContinueWhatsApp));
-    expect(fr.searchTitle, isNot(en.searchTitle));
-    expect(rw.searchTitle, isNot(en.searchTitle));
-    expect(fr.searchTicketsTitle, isNot(en.searchTicketsTitle));
-    expect(rw.searchTicketsTitle, isNot(en.searchTicketsTitle));
-    expect(fr.membershipTitle, isNot(en.membershipTitle));
-    expect(rw.membershipTitle, isNot(en.membershipTitle));
-    expect(fr.navHome, isNot(en.navHome));
-    expect(rw.navHome, isNot(en.navHome));
-    expect(fr.clubTeamTitle, isNot(en.clubTeamTitle));
-    expect(rw.clubTeamTitle, isNot(en.clubTeamTitle));
-    expect(fr.clubFixturesTitle, isNot(en.clubFixturesTitle));
-    expect(rw.clubFixturesTitle, isNot(en.clubFixturesTitle));
-    expect(fr.authEnterNumberTitle, isNot(en.authEnterNumberTitle));
-    expect(rw.authEnterNumberTitle, isNot(en.authEnterNumberTitle));
-    expect(fr.onboardingRefreshingTitle, isNot(en.onboardingRefreshingTitle));
-    expect(rw.onboardingRefreshingTitle, isNot(en.onboardingRefreshingTitle));
-    expect(fr.homeRefreshingTitle, isNot(en.homeRefreshingTitle));
-    expect(rw.homeRefreshingTitle, isNot(en.homeRefreshingTitle));
-    expect(fr.homeTicketsAction, isNot(en.homeTicketsAction));
-    expect(rw.homeTicketsAction, isNot(en.homeTicketsAction));
-    expect(fr.fanClubsTitle, isNot(en.fanClubsTitle));
-    expect(rw.fanClubsTitle, isNot(en.fanClubsTitle));
-    expect(fr.fanClubRefreshAction, isNot(en.fanClubRefreshAction));
-    expect(rw.fanClubRefreshAction, isNot(en.fanClubRefreshAction));
-    expect(fr.liveMatchCenter, isNot(en.liveMatchCenter));
-    expect(rw.liveMatchCenter, isNot(en.liveMatchCenter));
-    expect(fr.newsArticleNotFoundTitle, isNot(en.newsArticleNotFoundTitle));
-    expect(rw.newsArticleNotFoundTitle, isNot(en.newsArticleNotFoundTitle));
-    expect(fr.shopNoProductsTitle, isNot(en.shopNoProductsTitle));
-    expect(rw.shopNoProductsTitle, isNot(en.shopNoProductsTitle));
-    expect(fr.shopCheckoutViaMomo, isNot(en.shopCheckoutViaMomo));
-    expect(rw.shopCheckoutViaMomo, isNot(en.shopCheckoutViaMomo));
-    expect(fr.ticketListTitle, isNot(en.ticketListTitle));
-    expect(rw.ticketListTitle, isNot(en.ticketListTitle));
-    expect(fr.ticketSeatMapTitle, isNot(en.ticketSeatMapTitle));
-    expect(rw.ticketSeatMapTitle, isNot(en.ticketSeatMapTitle));
-    expect(fr.contributionsHubTitle, isNot(en.contributionsHubTitle));
-    expect(rw.contributionsHubTitle, isNot(en.contributionsHubTitle));
-    expect(
-      fr.contributionsStatementTitle,
-      isNot(en.contributionsStatementTitle),
-    );
-    expect(
-      rw.contributionsStatementTitle,
-      isNot(en.contributionsStatementTitle),
-    );
-    expect(
-      fr.contributionsPaymentConfirmedTitle,
-      isNot(en.contributionsPaymentConfirmedTitle),
-    );
-    expect(
-      rw.contributionsPaymentConfirmedTitle,
-      isNot(en.contributionsPaymentConfirmedTitle),
-    );
-    expect(fr.settingsTitle, isNot(en.settingsTitle));
-    expect(rw.settingsTitle, isNot(en.settingsTitle));
-    expect(
-      fr.notificationPreferencesDeliverySection,
-      isNot(en.notificationPreferencesDeliverySection),
-    );
-    expect(
-      rw.notificationPreferencesDeliverySection,
-      isNot(en.notificationPreferencesDeliverySection),
-    );
-    expect(fr.privacySettingsTitle, isNot(en.privacySettingsTitle));
-    expect(rw.privacySettingsTitle, isNot(en.privacySettingsTitle));
-    expect(fr.adminFeatureManagerTitle, isNot(en.adminFeatureManagerTitle));
-    expect(rw.adminFeatureManagerTitle, isNot(en.adminFeatureManagerTitle));
-    expect(fr.adminCompetitionsTitle, isNot(en.adminCompetitionsTitle));
-    expect(rw.adminCompetitionsTitle, isNot(en.adminCompetitionsTitle));
-    expect(fr.adminCmsTitle, isNot(en.adminCmsTitle));
-    expect(rw.adminCmsTitle, isNot(en.adminCmsTitle));
-    expect(fr.gameRewardsStoreTitle, isNot(en.gameRewardsStoreTitle));
-    expect(rw.gameRewardsStoreTitle, isNot(en.gameRewardsStoreTitle));
-    expect(
-      rw.onboardingBelongBody('Rayon Sports FC'),
-      contains('Rayon Sports FC'),
-    );
+  test('the shipped catalog supports English only', () {
+    expect(AfriLocalizations.supportedLocales, const <Locale>[Locale('en')]);
+    expect(AfriLocalizations.delegate.isSupported(const Locale('en')), isTrue);
+    expect(AfriLocalizations.delegate.isSupported(const Locale('zz')), isFalse);
   });
 
   test('task recovery messages stay within governed copy bounds', () {
@@ -171,10 +90,10 @@ void main() {
     }
   });
 
-  test('EN, FR, and RW ARB catalogs reject duplicate top-level keys', () {
+  test('English ARB catalogs reject duplicate top-level keys', () {
     final topLevelKey = RegExp(r'^  "([^"]+)"\s*:', multiLine: true);
 
-    for (final language in const <String>['en', 'fr', 'rw']) {
+    for (final language in const <String>['en']) {
       final source = _arbCatalog(language).readAsStringSync();
       final seen = <String>{};
       final duplicates = <String>{};
@@ -193,9 +112,9 @@ void main() {
     }
   });
 
-  test('Settings EN, FR, and RW ARB catalogs have exhaustive key parity', () {
+  test('Settings English ARB catalogs have exhaustive key parity', () {
     final catalogs = <String, Map<String, dynamic>>{
-      for (final language in <String>['en', 'fr', 'rw'])
+      for (final language in <String>['en'])
         language:
             jsonDecode(_arbCatalog(language).readAsStringSync())
                 as Map<String, dynamic>,
@@ -235,9 +154,9 @@ void main() {
     }
   });
 
-  test('Admin EN, FR, and RW ARB catalogs have exhaustive key parity', () {
+  test('Admin English ARB catalogs have exhaustive key parity', () {
     final catalogs = <String, Map<String, dynamic>>{
-      for (final language in <String>['en', 'fr', 'rw'])
+      for (final language in <String>['en'])
         language:
             jsonDecode(_arbCatalog(language).readAsStringSync())
                 as Map<String, dynamic>,
@@ -270,9 +189,9 @@ void main() {
     }
   });
 
-  test('football feature EN, FR, and RW catalogs have key parity', () {
+  test('football feature English catalogs have key parity', () {
     final catalogs = <String, Map<String, dynamic>>{
-      for (final language in <String>['en', 'fr', 'rw'])
+      for (final language in <String>['en'])
         language:
             jsonDecode(_arbCatalog(language).readAsStringSync())
                 as Map<String, dynamic>,
@@ -309,7 +228,7 @@ void main() {
   });
 
   testWidgets(
-    'app-copy locale can be RW while Flutter framework strings remain supported',
+    'app and framework remain English with an unsupported stored locale',
     (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -322,7 +241,7 @@ void main() {
             GlobalCupertinoLocalizations.delegate,
           ],
           builder: (context, child) => AfriLocalizationsScope(
-            locale: const Locale('rw'),
+            locale: const Locale('zz'),
             child: child ?? const SizedBox.shrink(),
           ),
           home: Builder(
@@ -336,10 +255,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(
-        find.textContaining('en:Komeza ukoresheje WhatsApp:'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('en:Continue with WhatsApp:'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -1426,8 +1342,8 @@ List<String> _settingsMessages(AfriLocalizations l10n) => <String>[
   l10n.editProfileNicknameLabel,
   l10n.editProfileSaveChanges,
   l10n.editProfileLanguageEnglish,
-  l10n.editProfileLanguageFrench,
-  l10n.editProfileLanguageKinyarwanda,
+  l10n.editProfileLanguageEnglish,
+  l10n.editProfileLanguageEnglish,
   l10n.notificationPreferencesTitle,
   l10n.notificationPreferencesLoadingTitle,
   l10n.notificationPreferencesOfflineTitle,
@@ -1451,7 +1367,7 @@ List<String> _settingsMessages(AfriLocalizations l10n) => <String>[
 
 List<String> _adminMessages(AfriLocalizations l10n) => <String>[
   l10n.adminClubAdmin,
-  l10n.adminChallengesTitle,
+  l10n.predictAdminTitle,
   l10n.adminSettlementTitle,
   l10n.adminMatchesTitle,
   l10n.adminFeatureManagerTitle,

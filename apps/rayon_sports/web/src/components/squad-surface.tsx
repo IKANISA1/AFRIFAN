@@ -76,7 +76,7 @@ type SquadStateCopy = {
   players: string;
 };
 
-const stateCopy: Record<"en" | "fr" | "rw" | "sw", SquadStateCopy> = {
+const stateCopy: Record<"en", SquadStateCopy> = {
   en: {
     status: {
       loading: {
@@ -121,141 +121,6 @@ const stateCopy: Record<"en" | "fr" | "rw" | "sw", SquadStateCopy> = {
     refreshDisabled: "Refresh is unavailable while the squad is loading.",
     noNumber: "Unassigned",
     players: "players",
-  },
-  fr: {
-    status: {
-      loading: {
-        label: "Chargement de l’effectif confirmé",
-        detail: "En attente de la première liste publique confirmée.",
-      },
-      ready: {
-        label: "Effectif confirmé",
-        detail: "Ces joueurs viennent du dernier effectif public confirmé.",
-      },
-      empty: {
-        label: "Aucun effectif listé",
-        detail: "Aucun profil public confirmé n’est encore disponible.",
-      },
-      error: {
-        label: "Effectif indisponible",
-        detail: "Les joueurs confirmés restent visibles. Réessayez plus tard.",
-      },
-      offline: {
-        label: "Vous êtes hors ligne",
-        detail: "Les joueurs confirmés restent visibles jusqu’au retour du réseau.",
-      },
-      permission_denied: {
-        label: "Accès à l’effectif refusé",
-        detail: "La liste publique n’est pas disponible pour ce visiteur.",
-      },
-      syncing: {
-        label: "Actualisation de l’effectif",
-        detail: "Les joueurs confirmés restent visibles pendant la mise à jour.",
-      },
-      conflict: {
-        label: "L’effectif a changé",
-        detail: "Actualisez pour charger les profils actuellement confirmés.",
-      },
-      security_timeout: {
-        label: "Délai de l’effectif dépassé",
-        detail: "Aucun changement n’est supposé. Les joueurs restent visibles.",
-      },
-    },
-    refresh: "Actualiser l’effectif",
-    retry: "Réessayer",
-    refreshDisabled: "L’actualisation est indisponible pendant le chargement.",
-    noNumber: "Non attribué",
-    players: "joueurs",
-  },
-  rw: {
-    status: {
-      loading: {
-        label: "Abakinnyi barimo gutangira",
-        detail: "Dutegereje urutonde rwa mbere rwemejwe rw’abakinnyi.",
-      },
-      ready: {
-        label: "Abakinnyi bemejwe",
-        detail: "Aba bakinnyi bava ku rutonde rusange rwa vuba rwemejwe.",
-      },
-      empty: {
-        label: "Nta bakinnyi bari ku rutonde",
-        detail: "Nta myirondoro y’abakinnyi yemejwe iraboneka.",
-      },
-      error: {
-        label: "Urutonde ntiruboneka",
-        detail: "Abakinnyi bemejwe baragumaho. Ongera ugerageze nyuma.",
-      },
-      offline: {
-        label: "Nta murongo wa interineti",
-        detail: "Abakinnyi bemejwe baragumaho kugeza umurongo ugarutse.",
-      },
-      permission_denied: {
-        label: "Urutonde ntirwemerewe",
-        detail: "Urutonde rusange ntirwemerewe uyu mushyitsi.",
-      },
-      syncing: {
-        label: "Abakinnyi barimo kuvugururwa",
-        detail: "Abakinnyi bemejwe baragumaho mu gihe bavugururwa.",
-      },
-      conflict: {
-        label: "Urutonde rwahindutse",
-        detail: "Vugurura kugira ngo ubone abakinnyi bemejwe ba vuba.",
-      },
-      security_timeout: {
-        label: "Igihe cyo gusaba abakinnyi cyarangiye",
-        detail: "Nta gihindutse cyemezwa. Abakinnyi baragumaho.",
-      },
-    },
-    refresh: "Vugurura abakinnyi",
-    retry: "Ongera ugerageze",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe urutonde rutangira.",
-    noNumber: "Nta nomero",
-    players: "abakinnyi",
-  },
-  sw: {
-    status: {
-      loading: {
-        label: "Inapakia kikosi kilichothibitishwa",
-        detail: "Inasubiri orodha ya kwanza ya wachezaji iliyothibitishwa.",
-      },
-      ready: {
-        label: "Kikosi kimethibitishwa",
-        detail: "Wachezaji hawa wanatoka kwenye orodha ya umma iliyothibitishwa.",
-      },
-      empty: {
-        label: "Hakuna kikosi",
-        detail: "Hakuna wasifu wa wachezaji uliothibitishwa kwa sasa.",
-      },
-      error: {
-        label: "Kikosi hakipatikani",
-        detail: "Wachezaji waliothibitishwa wanaendelea kuonekana. Jaribu tena.",
-      },
-      offline: {
-        label: "Huna mtandao",
-        detail: "Wachezaji waliothibitishwa wanaonekana hadi mtandao urudi.",
-      },
-      permission_denied: {
-        label: "Ufikiaji wa kikosi umekataliwa",
-        detail: "Orodha ya umma haipatikani kwa mgeni huyu.",
-      },
-      syncing: {
-        label: "Inasasisha kikosi",
-        detail: "Wachezaji waliothibitishwa wanaonekana wakati wa kusasisha.",
-      },
-      conflict: {
-        label: "Kikosi kimebadilika",
-        detail: "Sasisha ili kuona wasifu uliothibitishwa wa sasa.",
-      },
-      security_timeout: {
-        label: "Ombi la kikosi limepitwa na muda",
-        detail: "Hakuna badiliko linalodhaniwa. Wachezaji wanaendelea kuonekana.",
-      },
-    },
-    refresh: "Sasisha kikosi",
-    retry: "Jaribu tena",
-    refreshDisabled: "Huwezi kusasisha wakati kikosi kinapakia.",
-    noNumber: "Haijapangwa",
-    players: "wachezaji",
   },
 };
 
@@ -335,20 +200,20 @@ export function normalizeSquad(value: unknown): PublicSquadPlayer[] {
 
 export function classifySquadPlayer(role: string): SquadUnitKey {
   const normalized = role.trim().toLowerCase();
-  if (/keeper|goalie|gardien|umuzamu|kipa/.test(normalized)) {
+  if (/keeper|goalie/.test(normalized)) {
     return "goalkeepers";
   }
-  if (/back|defender|défenseur|myugariro|beki/.test(normalized)) {
+  if (/back|defender/.test(normalized)) {
     return "defenders";
   }
-  if (/mid|milieu|mukina.*hagati|kiungo/.test(normalized)) {
+  if (/mid/.test(normalized)) {
     return "midfielders";
   }
   return "attackers";
 }
 
-export function resolveSquadStateCopy(locale: string) {
-  const language = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveSquadStateCopy(_locale: string) {
+  const language = "en";
   return stateCopy[language as keyof typeof stateCopy] ?? stateCopy.en;
 }
 

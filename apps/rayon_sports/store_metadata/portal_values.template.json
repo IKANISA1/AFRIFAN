@@ -13,7 +13,9 @@
     "version_code_available": true,
     "production_access_status": "ACTIVE",
     "required_closed_test_completed": true,
-    "target_countries": ["177 countries / regions"],
+    "target_countries": [
+      "177 countries / regions"
+    ],
     "reviewer_access_configured": true,
     "data_safety_published": true,
     "app_content_forms_complete": true,
@@ -63,7 +65,9 @@
         "changes_in_review": 5,
         "submit_enabled": false,
         "production_release": "7 (1.0.4) START_FULL_ROLLOUT_100_PERCENT_ALL_TARGETED_COUNTRIES",
-        "release_notes_locales": ["en-US", "fr-FR"],
+        "release_notes_locales": [
+          "en-US"
+        ],
         "reviewer_access": "GUEST_SESSION_INSTRUCTIONS_SAVED_NO_CREDENTIAL_REQUIRED",
         "privacy_policy_url": "https://gikundiro.com/privacy",
         "account_deletion_url": "https://gikundiro.com/account-deletion",

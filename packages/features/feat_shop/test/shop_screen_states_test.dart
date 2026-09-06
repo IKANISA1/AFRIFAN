@@ -120,12 +120,15 @@ void main() {
       id: 'selected',
       productLoader: () async => _products,
       afterPump: (tester) async {
-        await tester.tap(find.text('Jerseys'));
+        await tester.tap(find.widgetWithText(AfriChoiceChip, 'Jerseys'));
         await tester.pumpAndSettle();
       },
     );
 
-    final selectedCategory = find.text('Jerseys');
+    final selectedCategory = find.descendant(
+      of: find.widgetWithText(AfriChoiceChip, 'Jerseys'),
+      matching: find.text('Jerseys'),
+    );
     final semantics = tester.getSemantics(selectedCategory);
     expect(semantics.flagsCollection.isSelected.toBoolOrNull(), isTrue);
     expect(find.text('Home Match Jersey'), findsOneWidget);

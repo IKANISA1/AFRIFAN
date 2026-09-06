@@ -46,7 +46,7 @@ type SearchStateCopy = {
   resultCount: (count: number) => string;
 };
 
-const stateCopy: Record<"en" | "fr" | "rw" | "sw", SearchStateCopy> = {
+const stateCopy: Record<"en", SearchStateCopy> = {
   en: {
     status: {
       loading: {
@@ -93,144 +93,6 @@ const stateCopy: Record<"en" | "fr" | "rw" | "sw", SearchStateCopy> = {
     suggestionValues: ["Fixtures", "Tickets", "Membership"],
     resultCount: (count) => `${count} ${count === 1 ? "result" : "results"}`,
   },
-  fr: {
-    status: {
-      loading: {
-        label: "Chargement de la recherche",
-        detail: "En attente du premier index de recherche confirmé.",
-      },
-      ready: {
-        label: "Recherche prête",
-        detail: "Les résultats proviennent du dernier index confirmé du club.",
-      },
-      empty: {
-        label: "Aucun résultat",
-        detail: "Essayez un autre sujet du club ou une suggestion.",
-      },
-      error: {
-        label: "Recherche indisponible",
-        detail: "Les résultats confirmés restent visibles. Réessayez plus tard.",
-      },
-      offline: {
-        label: "Vous êtes hors ligne",
-        detail: "Les résultats confirmés restent visibles jusqu’au retour du réseau.",
-      },
-      permission_denied: {
-        label: "Accès à la recherche refusé",
-        detail: "Cet index de recherche n’est pas disponible pour ce visiteur.",
-      },
-      syncing: {
-        label: "Actualisation des résultats",
-        detail: "Les résultats confirmés restent visibles pendant la mise à jour.",
-      },
-      conflict: {
-        label: "L’index a changé",
-        detail: "Actualisez pour charger la version confirmée actuelle.",
-      },
-      security_timeout: {
-        label: "Délai de recherche dépassé",
-        detail: "Aucun nouveau résultat n’est supposé. Les résultats confirmés restent visibles.",
-      },
-    },
-    refresh: "Actualiser les résultats",
-    refreshDisabled: "L’actualisation est indisponible pendant une mise à jour.",
-    retry: "Réessayer",
-    suggestions: "Recherches suggérées",
-    suggestionValues: ["Matchs", "Billets", "Adhésion"],
-    resultCount: (count) => `${count} résultat${count === 1 ? "" : "s"}`,
-  },
-  rw: {
-    status: {
-      loading: {
-        label: "Ishakisha ririmo gutangira",
-        detail: "Dutegereje urutonde rwa mbere rwemejwe.",
-      },
-      ready: {
-        label: "Ishakisha ririteguye",
-        detail: "Ibisubizo biva ku rutonde rwa vuba rwemejwe na klabu.",
-      },
-      empty: {
-        label: "Nta bisubizo",
-        detail: "Gerageza indi ngingo ya klabu cyangwa kimwe mu bitekerezo.",
-      },
-      error: {
-        label: "Ishakisha ntiriboneka",
-        detail: "Ibisubizo byemejwe biragumaho. Ongera ugerageze serivisi igarutse.",
-      },
-      offline: {
-        label: "Nta murongo wa interineti",
-        detail: "Ibisubizo byemejwe biragumaho kugeza umurongo ugarutse.",
-      },
-      permission_denied: {
-        label: "Ishakisha ntiryemerewe",
-        detail: "Uru rutonde ntirwemerewe uyu mushyitsi.",
-      },
-      syncing: {
-        label: "Ibisubizo birimo kuvugururwa",
-        detail: "Ibisubizo byemejwe biragumaho mu gihe urutonde ruvugururwa.",
-      },
-      conflict: {
-        label: "Urutonde rwahindutse",
-        detail: "Vugurura kugira ngo ubone urutonde ruheruka kwemezwa.",
-      },
-      security_timeout: {
-        label: "Igihe cyo gushakisha cyarangiye",
-        detail: "Nta gisubizo gishya cyemezwa. Ibisubizo byemejwe biragumaho.",
-      },
-    },
-    refresh: "Vugurura ibisubizo",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe ishakisha ririmo gukora.",
-    retry: "Ongera ugerageze",
-    suggestions: "Ibyo washakisha",
-    suggestionValues: ["Imikino", "Amatike", "Ubunyamuryango"],
-    resultCount: (count) => `Ibisubizo ${count}`,
-  },
-  sw: {
-    status: {
-      loading: {
-        label: "Utafutaji unapakiwa",
-        detail: "Tunasubiri faharasa ya kwanza iliyothibitishwa.",
-      },
-      ready: {
-        label: "Utafutaji uko tayari",
-        detail: "Matokeo yanatoka kwenye faharasa ya klabu iliyothibitishwa.",
-      },
-      empty: {
-        label: "Hakuna matokeo",
-        detail: "Jaribu mada nyingine ya klabu au pendekezo.",
-      },
-      error: {
-        label: "Utafutaji haupatikani",
-        detail: "Matokeo yaliyothibitishwa yanabaki. Jaribu tena huduma ikirejea.",
-      },
-      offline: {
-        label: "Huna mtandao",
-        detail: "Matokeo yaliyothibitishwa yanabaki hadi mtandao urejee.",
-      },
-      permission_denied: {
-        label: "Ufikiaji wa utafutaji umekataliwa",
-        detail: "Faharasa hii haipatikani kwa mgeni wa sasa.",
-      },
-      syncing: {
-        label: "Matokeo yanasasishwa",
-        detail: "Matokeo yaliyothibitishwa yanabaki wakati faharasa inasasishwa.",
-      },
-      conflict: {
-        label: "Faharasa imebadilika",
-        detail: "Sasisha ili kupakia toleo la sasa lililothibitishwa.",
-      },
-      security_timeout: {
-        label: "Muda wa utafutaji umeisha",
-        detail: "Hakuna matokeo mapya yanayodhaniwa. Matokeo yaliyothibitishwa yanabaki.",
-      },
-    },
-    refresh: "Sasisha matokeo",
-    refreshDisabled: "Usasishaji haupatikani wakati utafutaji unaendelea.",
-    retry: "Jaribu tena",
-    suggestions: "Utafutaji uliopendekezwa",
-    suggestionValues: ["Mechi", "Tiketi", "Uanachama"],
-    resultCount: (count) => `Matokeo ${count}`,
-  },
 };
 
 type SearchPageClientProps = {
@@ -250,8 +112,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-export function resolveSearchPageStateCopy(locale: string): SearchStateCopy {
-  const normalized = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveSearchPageStateCopy(_locale: string): SearchStateCopy {
+  const normalized = "en";
   return stateCopy[normalized as keyof typeof stateCopy] ?? stateCopy.en;
 }
 

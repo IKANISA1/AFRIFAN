@@ -109,7 +109,7 @@ void main() {
         await _scrollHomeTo(tester, find.text('Tickets'));
         expect(find.text('Tickets'), findsOneWidget);
         expect(find.text('Join Gikundiro'), findsWidgets);
-        expect(find.text('Fan Zone'), findsOneWidget);
+        expect(find.text('Predict\nUnavailable'), findsOneWidget);
         expect(find.text('Shop'), findsOneWidget);
       },
     );
@@ -174,29 +174,26 @@ void main() {
           findsOneWidget,
         );
         expect(find.text('Matchday'), findsOneWidget);
-        expect(find.text('Open Fan Zone'), findsOneWidget);
+        expect(find.text('Open Predict'), findsOneWidget);
         await _scrollHomeTo(tester, find.text('Tickets'));
         expect(find.text('Tickets'), findsOneWidget);
         expect(find.text('Join Gikundiro'), findsWidgets);
-        expect(find.text('Fan Zone'), findsOneWidget);
+        expect(find.text('Predict\nUnavailable'), findsOneWidget);
         expect(find.text('Shop'), findsOneWidget);
       },
     );
 
-    testWidgets('renders Home task surfaces in French and Kinyarwanda', (
-      tester,
-    ) async {
+    testWidgets('renders Home task surfaces in English', (tester) async {
       for (final testCase in <({Locale locale, String ticket, String notice})>[
         (
-          locale: const Locale('fr'),
-          ticket: 'Billets',
-          notice:
-              'Les données du club sont temporairement indisponibles. Tirez pour actualiser.',
+          locale: const Locale('en'),
+          ticket: 'Tickets',
+          notice: 'Live club data is temporarily unavailable. Pull to refresh.',
         ),
         (
-          locale: const Locale('rw'),
-          ticket: 'Amatike',
-          notice: 'Amakuru ya klabu ntari kuboneka ubu. Kurura hasi uvugurure.',
+          locale: const Locale('en'),
+          ticket: 'Tickets',
+          notice: 'Live club data is temporarily unavailable. Pull to refresh.',
         ),
       ]) {
         await tester.pumpWidget(
@@ -721,7 +718,7 @@ void main() {
       featureConfigSnapshot: _disabledHomeFeatureConfigSnapshot,
       beforeCapture: (tester) async {
         expect(find.text('Matchday unavailable'), findsOneWidget);
-        expect(find.text('Fan Zone\nUnavailable'), findsOneWidget);
+        expect(find.text('Predict\nUnavailable'), findsOneWidget);
         final fanZoneAction = tester.widget<AfriQuickAction>(
           find.descendant(
             of: find.byKey(
@@ -1034,7 +1031,7 @@ Widget _buildApp({
     child: AfriLocalizationsScope(
       locale: locale,
       child: MaterialApp(
-        locale: locale.languageCode == 'rw' ? const Locale('en') : locale,
+        locale: const Locale('en'),
         localizationsDelegates: const [
           AfriLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -1133,7 +1130,7 @@ const _testFeatureConfigSnapshot = PlatformConfigSnapshot(
     ),
     PlatformFeature(
       featureKey: 'contributions',
-      displayName: 'Contributions',
+      displayName: 'Contributed',
       channel: FeatureChannelConfig(showOnHome: true),
     ),
     PlatformFeature(
@@ -1199,7 +1196,7 @@ const _disabledHomeFeatureConfigSnapshot = PlatformConfigSnapshot(
     ),
     PlatformFeature(
       featureKey: 'contributions',
-      displayName: 'Contributions',
+      displayName: 'Contributed',
       channel: FeatureChannelConfig(showOnHome: true),
     ),
     PlatformFeature(

@@ -56,8 +56,9 @@ class FanClubFeaturedCard extends StatelessWidget {
             style: TypographyTokens.bodySmall(ColorTokens.inkMuted),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            spacing: SpacingTokens.spacing6,
+            runSpacing: SpacingTokens.spacing4,
             children: [
               _buildMeta(
                 context.afriL10n.fanClubRegionLabel,
@@ -166,14 +167,9 @@ class FanClubListItem extends StatelessWidget {
             children: [
               Expanded(
                 child: AfriButton(
-                  label: isJoined
-                      ? context.afriL10n.fanClubReviewRequested
-                      : context.afriL10n.fanClubRequestReview,
+                  label: context.afriL10n.fanClubViewJoiningOptions,
                   onTap: onJoinToggled,
-                  isLoading: isPending,
-                  variant: isJoined
-                      ? AfriButtonVariant.outline
-                      : AfriButtonVariant.primary,
+                  variant: AfriButtonVariant.secondary,
                 ),
               ),
               const SizedBox(width: SpacingTokens.spacing3),

@@ -170,7 +170,7 @@ void main() {
       value: const AsyncData<MatchDetailState>(MatchDetailState()),
       beforeCapture: (tester) async {
         expect(find.text('Match not found'), findsOneWidget);
-        expect(find.text('Back to Fan Zone'), findsOneWidget);
+        expect(find.text('Open Predict'), findsOneWidget);
       },
     );
   });
@@ -333,8 +333,8 @@ void main() {
 
   for (final localeCase
       in const <({Locale locale, String title, String stats})>[
-        (locale: Locale('fr'), title: 'Match', stats: 'Stats'),
-        (locale: Locale('rw'), title: 'Umukino', stats: 'Imibare'),
+        (locale: Locale('en'), title: 'Match', stats: 'Stats'),
+        (locale: Locale('en'), title: 'Match', stats: 'Stats'),
       ]) {
     testWidgets(
       'Match detail ${localeCase.locale.languageCode} reflows at 200 percent',

@@ -25,7 +25,7 @@ class SimbaConfig implements ClubConfig {
   String get countryCode => 'TZ';
 
   @override
-  String get language => 'sw';
+  String get language => 'en';
 
   @override
   String get momoPrefix => '*150*';
@@ -56,7 +56,7 @@ class SimbaConfig implements ClubConfig {
   );
 
   @override
-  List<String> get supportedLanguages => const ['sw', 'en'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;

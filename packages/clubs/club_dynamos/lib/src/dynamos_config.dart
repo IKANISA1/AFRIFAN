@@ -56,7 +56,7 @@ class DynamosConfig implements ClubConfig {
   );
 
   @override
-  List<String> get supportedLanguages => const ['en', 'sn'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;

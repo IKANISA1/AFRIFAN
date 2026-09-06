@@ -93,46 +93,14 @@ class _AfriClubAppState extends State<AfriClubApp> {
     );
   }
 
-  List<Locale> _buildSupportedLocales(List<String> languages) {
-    final seen = <String>{};
-    final locales = <Locale>[];
+  List<Locale> _buildSupportedLocales(List<String> languages) => const <Locale>[
+    Locale('en'),
+  ];
 
-    for (final language in languages) {
-      final code = language.trim().toLowerCase();
-      if (code.isEmpty) continue;
-      final locale = _frameworkLocaleForLanguageCode(code);
-      if (seen.add(locale.languageCode)) {
-        locales.add(locale);
-      }
-    }
+  Locale _frameworkLocaleForLanguageCode(String? languageCode) =>
+      const Locale('en');
 
-    if (locales.isEmpty) {
-      locales.add(_frameworkLocaleForLanguageCode(widget.config.language));
-    }
-
-    return locales;
-  }
-
-  Locale _frameworkLocaleForLanguageCode(String? languageCode) {
-    final code = (languageCode ?? widget.config.language).trim().toLowerCase();
-    return switch (code) {
-      // Flutter does not ship Material/Cupertino localizations for Kinyarwanda.
-      // Use English framework strings until app-specific rw localizations exist.
-      'rw' => const Locale('en'),
-      'fr' => const Locale('fr'),
-      'en' => const Locale('en'),
-      _ => Locale(code),
-    };
-  }
-
-  Locale _appLocaleForLanguageCode(String? languageCode) {
-    final code = (languageCode ?? widget.config.language).trim().toLowerCase();
-    return switch (code) {
-      'rw' => const Locale('rw'),
-      'fr' => const Locale('fr'),
-      _ => const Locale('en'),
-    };
-  }
+  Locale _appLocaleForLanguageCode(String? languageCode) => const Locale('en');
 }
 
 class _AfriClubMaterialApp extends ConsumerStatefulWidget {
@@ -207,6 +175,10 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
       redirect: _handleRedirect,
       observers: [FirebaseAnalyticsService.routeObserver],
       isFeatureEnabled: (path) {
+        // Keep the primary Predict destination in its shell when the service
+        // is unavailable. PredictController still gates every read and write
+        // on authentication and the current capability/store policy.
+        if (path == '/predict') return true;
         return ref.read(featureConfigServiceProvider).isRouteAvailable(path);
       },
       shellBuilder: (context, shell) => AppShell(
@@ -398,6 +370,8 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
   String? _handleRedirect(BuildContext context, GoRouterState state) {
     final location = state.matchedLocation;
     final authState = ref.read(authStateProvider);
+
+    if (PublicReadRoutes.allows(state.uri)) return null;
 
     if (authState is AuthInitial || authState is AuthLoading) {
       if (_isPublicPath(location)) {

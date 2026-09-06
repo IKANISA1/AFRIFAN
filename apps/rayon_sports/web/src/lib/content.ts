@@ -13,7 +13,7 @@ export const fallbackClubProfile: ClubProfile = {
   currencyCode: rayonClub.currencyCode,
   currencySymbol: rayonClub.currencySymbol,
   defaultLanguage: "en",
-  supportedLanguages: ["en", "fr"],
+  supportedLanguages: ["en"],
   officialContact: "Official club channels and matchday help desk",
   facebookUrl: "https://fb.com/RayonSportsOfficial",
   xUrl: "https://x.com/rayon_sports",

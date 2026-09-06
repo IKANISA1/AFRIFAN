@@ -19,6 +19,7 @@ const List<MapEntry<String, String>> _fallbackRouteFeatureKeys =
       MapEntry<String, String>('/squad', 'squad'),
       MapEntry<String, String>('/fanzone', 'fanzone'),
       MapEntry<String, String>('/predict', 'predict'),
+      MapEntry<String, String>('/challenge', 'predict'),
       MapEntry<String, String>('/admin', 'admin'),
     ];
 
@@ -30,6 +31,7 @@ const List<MapEntry<String, String>> _launchOptInRouteFeatureKeys =
       MapEntry<String, String>('/fanzone/friends', 'challenge'),
       MapEntry<String, String>('/fanzone/venue', 'venue_checkin'),
       MapEntry<String, String>('/predict', 'predict'),
+      MapEntry<String, String>('/challenge', 'predict'),
     ];
 
 /// Central service answering all feature-availability questions.

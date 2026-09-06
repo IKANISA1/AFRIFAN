@@ -49,6 +49,7 @@ analyzer:
     missing_return: error
     dead_code: warning
   exclude:
+    - "output/**"
     - "**/.dart_tool/**"
     - "**/build/**"
     - "**/*.g.dart"

@@ -15,8 +15,6 @@
 ## Listing
 
 - [ ] English copy approved.
-- [ ] French copy approved by a named reviewer.
-- [ ] Kinyarwanda copy approved by a named reviewer.
 - [ ] Icon, feature graphic, screenshots, and alt text pass the artwork manifest.
 - [ ] Accept the recorded build-5/build-6 UI-equivalence basis or recapture from the exact build-6 candidate; current screenshots contain no real supporter data but are not claimed as exact build-6 captures.
 - [ ] Brand/content rights approval is recorded.

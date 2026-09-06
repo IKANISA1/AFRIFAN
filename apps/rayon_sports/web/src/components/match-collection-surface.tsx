@@ -69,7 +69,7 @@ type CollectionStateCopy = {
 };
 
 const collectionStateCopy: Record<
-  "en" | "fr" | "rw" | "sw",
+  "en",
   CollectionStateCopy
 > = {
   en: {
@@ -125,165 +125,6 @@ const collectionStateCopy: Record<
     price: "General admission",
     unavailable: "Not on sale",
   },
-  fr: {
-    status: {
-      loading: {
-        label: "Chargement des matchs",
-        detail: "En attente de la première collection publique confirmée.",
-      },
-      ready: {
-        label: "Informations confirmées",
-        detail: "Ces dossiers viennent du dernier calendrier public confirmé.",
-      },
-      empty: {
-        label: "Aucun dossier correspondant",
-        detail: "Le calendrier confirmé ne contient aucun dossier pour cette vue.",
-      },
-      error: {
-        label: "Informations indisponibles",
-        detail: "Les dossiers confirmés restent visibles. Réessayez plus tard.",
-      },
-      offline: {
-        label: "Vous êtes hors ligne",
-        detail: "Les dossiers confirmés restent visibles jusqu’au retour du réseau.",
-      },
-      permission_denied: {
-        label: "Accès aux matchs refusé",
-        detail: "Cette collection publique n’est pas disponible pour ce visiteur.",
-      },
-      syncing: {
-        label: "Actualisation des matchs",
-        detail: "Les dossiers confirmés restent visibles pendant la mise à jour.",
-      },
-      conflict: {
-        label: "Les informations ont changé",
-        detail: "Actualisez pour charger la collection confirmée actuelle.",
-      },
-      security_timeout: {
-        label: "Délai de la demande dépassé",
-        detail: "Aucun changement n’est supposé. Les dossiers confirmés restent visibles.",
-      },
-    },
-    refresh: "Actualiser les matchs",
-    retry: "Réessayer",
-    refreshDisabled: "L’actualisation est indisponible pendant le chargement.",
-    listed: "Listés",
-    lowestPrice: "À partir de",
-    wins: "Victoires",
-    goals: "Buts marqués",
-    checkout: "Paiement",
-    fanApp: "App supporters",
-    venue: "Stade",
-    date: "Date",
-    price: "Admission générale",
-    unavailable: "Pas en vente",
-  },
-  rw: {
-    status: {
-      loading: {
-        label: "Amakuru y’imikino arimo gutangira",
-        detail: "Dutegereje urutonde rusange rwa mbere rwemejwe.",
-      },
-      ready: {
-        label: "Amakuru y’imikino yemejwe",
-        detail: "Aya makuru ava muri gahunda rusange ya vuba yemejwe.",
-      },
-      empty: {
-        label: "Nta makuru ahuye",
-        detail: "Gahunda yemejwe nta mukino ifite kuri uru rupapuro.",
-      },
-      error: {
-        label: "Amakuru y’imikino ntaboneka",
-        detail: "Ayemejwe aragumaho. Ongera ugerageze serivisi igarutse.",
-      },
-      offline: {
-        label: "Nta murongo wa interineti",
-        detail: "Ayemejwe aragumaho kugeza umurongo ugarutse.",
-      },
-      permission_denied: {
-        label: "Imikino ntiyemerewe",
-        detail: "Uru rutonde rusange nti rwemerewe uyu mushyitsi.",
-      },
-      syncing: {
-        label: "Amakuru arimo kuvugururwa",
-        detail: "Ayemejwe aragumaho mu gihe gahunda ivugururwa.",
-      },
-      conflict: {
-        label: "Amakuru yahindutse",
-        detail: "Vugurura kugira ngo ubone urutonde rwa vuba rwemejwe.",
-      },
-      security_timeout: {
-        label: "Igihe cyo gusaba amakuru cyarangiye",
-        detail: "Nta gihindutse cyemezwa. Ayemejwe aragumaho.",
-      },
-    },
-    refresh: "Vugurura imikino",
-    retry: "Ongera ugerageze",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe amakuru arimo gutangira.",
-    listed: "Iri ku rutonde",
-    lowestPrice: "Guhera kuri",
-    wins: "Intsinzi",
-    goals: "Ibitego yatsinze",
-    checkout: "Kwishyura",
-    fanApp: "App y’abafana",
-    venue: "Ikibuga",
-    date: "Itariki",
-    price: "Ahantu rusange",
-    unavailable: "Ntiragurishwa",
-  },
-  sw: {
-    status: {
-      loading: {
-        label: "Inapakia taarifa za mechi",
-        detail: "Inasubiri mkusanyiko wa kwanza wa umma uliothibitishwa.",
-      },
-      ready: {
-        label: "Taarifa zimethibitishwa",
-        detail: "Rekodi hizi zinatoka kwenye ratiba ya umma iliyothibitishwa.",
-      },
-      empty: {
-        label: "Hakuna rekodi zinazolingana",
-        detail: "Ratiba iliyothibitishwa haina rekodi kwa mwonekano huu.",
-      },
-      error: {
-        label: "Taarifa hazipatikani",
-        detail: "Rekodi zilizothibitishwa zinaendelea kuonekana. Jaribu tena baadaye.",
-      },
-      offline: {
-        label: "Huna mtandao",
-        detail: "Rekodi zilizothibitishwa zinaendelea kuonekana hadi mtandao urudi.",
-      },
-      permission_denied: {
-        label: "Ufikiaji umekataliwa",
-        detail: "Mkusanyiko huu wa umma haupatikani kwa mgeni huyu.",
-      },
-      syncing: {
-        label: "Inasasisha taarifa",
-        detail: "Rekodi zilizothibitishwa zinaendelea kuonekana wakati wa kusasisha.",
-      },
-      conflict: {
-        label: "Taarifa zimebadilika",
-        detail: "Sasisha ili kuona mkusanyiko uliothibitishwa wa sasa.",
-      },
-      security_timeout: {
-        label: "Ombi limepitwa na muda",
-        detail: "Hakuna badiliko linalodhaniwa. Rekodi zilizothibitishwa zinaendelea kuonekana.",
-      },
-    },
-    refresh: "Sasisha mechi",
-    retry: "Jaribu tena",
-    refreshDisabled: "Huwezi kusasisha wakati taarifa zinapakia.",
-    listed: "Zimeorodheshwa",
-    lowestPrice: "Kuanzia",
-    wins: "Ushindi",
-    goals: "Mabao",
-    checkout: "Malipo",
-    fanApp: "App ya mashabiki",
-    venue: "Uwanja",
-    date: "Tarehe",
-    price: "Kiingilio cha kawaida",
-    unavailable: "Haiuzwi",
-  },
 };
 
 function isResult(fixture: PublicFixture) {
@@ -303,16 +144,16 @@ export function filterMatchCollection(
   );
 }
 
-export function resolveMatchCollectionStateCopy(locale: string) {
-  const language = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveMatchCollectionStateCopy(_locale: string) {
+  const language = "en";
   return (
     collectionStateCopy[language as keyof typeof collectionStateCopy] ??
     collectionStateCopy.en
   );
 }
 
-function formatDate(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
+function formatDate(value: string, _locale: string) {
+  return new Intl.DateTimeFormat("en", {
     weekday: "short",
     day: "numeric",
     month: "short",
@@ -322,7 +163,7 @@ function formatDate(value: string, locale: string) {
 }
 
 function formatMoney(value: number, locale: string, currencyCode: string) {
-  return new Intl.NumberFormat(locale, {
+  return new Intl.NumberFormat("en", {
     style: "currency",
     currency: currencyCode,
     maximumFractionDigits: 0,

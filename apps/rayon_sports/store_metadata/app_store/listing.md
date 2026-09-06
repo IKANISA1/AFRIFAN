@@ -63,11 +63,5 @@ This update improves session recovery, account and privacy controls, release con
 ## Localization status
 
 - English: draft pending product, policy, and rights approval.
-- French: draft supplied in Fastlane metadata; named language approval pending.
-- Kinyarwanda: the app UI may ship in Kinyarwanda, but current App Store Connect
-  metadata does not support that language. Controlled source copy is preserved
-  under `../source_localizations/rw-RW/app_store` and must not be uploaded under
-  a different locale.
-
-No localization may be uploaded automatically until its approval is recorded in
-`../approvals.json`.
+- English is the only supported app and listing language as of 6 September 2026.
+- Revalidate this local candidate before store submission. Existing published listings are not changed by editing these files.

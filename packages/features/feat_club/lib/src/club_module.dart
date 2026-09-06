@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import 'screens/club_collection_screens.dart';
 import 'screens/club_hub_screen.dart';
+import 'screens/club_partners_screen.dart';
+import 'screens/club_public_link_screen.dart';
 
 /// Official club information module.
 ///
@@ -35,9 +37,39 @@ class ClubModule extends FeatureModule {
   @override
   List<RouteBase> get routes => <RouteBase>[
     GoRoute(
+      path: 'partners',
+      name: 'club-partners',
+      builder: (context, state) => const ClubPartnersScreen(),
+      routes: [
+        GoRoute(
+          path: ':partnerId',
+          name: 'club-partner-detail',
+          builder: (context, state) =>
+              ClubPartnersScreen(partnerId: state.pathParameters['partnerId']),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: 'open-web',
+      name: 'club-public-link',
+      builder: (context, state) => ClubPublicLinkScreen(
+        sourcePath: state.uri.queryParameters['path'] ?? '',
+      ),
+    ),
+    GoRoute(
       path: 'team',
       name: 'club-team',
-      builder: (context, state) => const ClubTeamScreen(),
+      builder: (context, state) =>
+          ClubTeamScreen(group: state.uri.queryParameters['group']),
+      routes: [
+        GoRoute(
+          path: ':playerId',
+          name: 'club-player-detail',
+          builder: (context, state) => ClubPlayerDetailScreen(
+            playerId: state.pathParameters['playerId'] ?? '',
+          ),
+        ),
+      ],
     ),
     GoRoute(
       path: 'news',
@@ -100,6 +132,37 @@ class ClubModule extends FeatureModule {
 
   @override
   List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/club/partners',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale: 'Published club partner directory.',
+      renderedStateContract: 'controlled_club_information_surface',
+    ),
+    RoutePresentationDecision(
+      path: '/club/partners/:partnerId',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale: 'Partner description and external website.',
+      renderedStateContract: 'controlled_club_information_surface',
+    ),
+    RoutePresentationDecision(
+      path: '/club/open-web',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale:
+          'Resolve website records safely with an original-page fallback.',
+      renderedStateContract: 'controlled_club_information_surface',
+    ),
+    RoutePresentationDecision(
+      path: '/club/team/:playerId',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      targetPath: '/club/team',
+      rationale:
+          'Published player identity and biography retain their canonical record.',
+      renderedStateContract: 'controlled_club_information_surface',
+    ),
     RoutePresentationDecision(
       path: '/club',
       presentation: RoutePresentation.fullScreen,

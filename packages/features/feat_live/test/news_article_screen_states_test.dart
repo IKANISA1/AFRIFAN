@@ -100,28 +100,26 @@ void main() {
     expect(find.text('Connection restored'), findsOneWidget);
   });
 
-  testWidgets('News article renders French and Kinyarwanda task copy', (
-    tester,
-  ) async {
+  testWidgets('News article renders English task copy', (tester) async {
     await _pumpRoute(
       tester,
       controller: _Controller(AsyncData<NewsArticleState>(_ready())),
-      appCopyLocale: const Locale('fr'),
+      appCopyLocale: const Locale('en'),
       capture: false,
     );
     expect(
-      find.text('Actualités du club  ·  2026-07-28  ·  Service médias'),
+      find.text('Club News  ·  2026-07-28  ·  Media Desk'),
       findsOneWidget,
     );
 
     await _pumpRoute(
       tester,
       controller: _Controller(AsyncData<NewsArticleState>(_ready())),
-      appCopyLocale: const Locale('rw'),
+      appCopyLocale: const Locale('en'),
       capture: false,
     );
     expect(
-      find.text('Amakuru ya club  ·  2026-07-28  ·  Ishami ry’itangazamakuru'),
+      find.text('Club News  ·  2026-07-28  ·  Media Desk'),
       findsOneWidget,
     );
   });

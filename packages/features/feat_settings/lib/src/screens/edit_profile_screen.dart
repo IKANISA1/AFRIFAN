@@ -372,7 +372,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final alias = AliasGenerator.format(
       profile.publicUserId ?? AliasGenerator.generate(),
     );
-    final languageLabel = _languageLabel(l10n, profile.languageCode);
+    final languageLabel = l10n.editProfileLanguageEnglish;
     final isOffline = content.status == ProfileRouteContentStatus.localFallback;
     final editingAvailable =
         content.editingEnabled &&
@@ -520,14 +520,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       ),
     );
   }
-}
-
-String _languageLabel(AfriLocalizations l10n, String? languageCode) {
-  return switch ((languageCode ?? 'en').trim().toLowerCase()) {
-    'fr' => l10n.editProfileLanguageFrench,
-    'rw' => l10n.editProfileLanguageKinyarwanda,
-    _ => l10n.editProfileLanguageEnglish,
-  };
 }
 
 // _SettingsInput removed — replaced by AfriInputField from core_theme.

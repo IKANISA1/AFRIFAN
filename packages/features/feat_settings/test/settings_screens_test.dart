@@ -300,7 +300,7 @@ class _FakeClubConfig implements ClubConfig {
   bool get hasTicketing => true;
 
   @override
-  String get language => 'rw';
+  String get language => 'en';
 
   @override
   String get momoPrefix => '*182*';
@@ -319,7 +319,7 @@ class _FakeClubConfig implements ClubConfig {
   String get supabaseUrl => 'https://example.supabase.co';
 
   @override
-  List<String> get supportedLanguages => const <String>['rw', 'fr', 'en'];
+  List<String> get supportedLanguages => const <String>['en'];
 
   @override
   String get environment => 'test';

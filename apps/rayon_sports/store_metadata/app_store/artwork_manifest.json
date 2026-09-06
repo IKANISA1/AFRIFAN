@@ -7,7 +7,11 @@
     "targeted_device_family_source": "1,2"
   },
   "rules": {
-    "formats": ["jpeg", "jpg", "png"],
+    "formats": [
+      "jpeg",
+      "jpg",
+      "png"
+    ],
     "alpha_allowed": false,
     "minimum_count_per_required_display": 1,
     "maximum_count_per_required_display": 10,
@@ -21,7 +25,11 @@
       "id": "iphone_6_9",
       "required": true,
       "directory": "../../ios/fastlane/screenshots/en-US",
-      "accepted_portrait_sizes": ["1260x2736", "1290x2796", "1320x2868"],
+      "accepted_portrait_sizes": [
+        "1260x2736",
+        "1290x2796",
+        "1320x2868"
+      ],
       "planned_count": 4,
       "captured_count": 3,
       "status": "partial_set_exact_candidate_recapture_required"
@@ -30,7 +38,10 @@
       "id": "ipad_13",
       "required": true,
       "directory": "../../ios/fastlane/screenshots/en-US",
-      "accepted_portrait_sizes": ["2064x2752", "2048x2732"],
+      "accepted_portrait_sizes": [
+        "2064x2752",
+        "2048x2732"
+      ],
       "planned_count": 4,
       "captured_count": 3,
       "status": "partial_set_exact_candidate_recapture_required"
@@ -112,10 +123,22 @@
     "testflight_or_app_store_processing_proven": false
   },
   "capture_plan": [
-    {"order": 1, "journey": "Anonymous home state"},
-    {"order": 2, "journey": "Club overview"},
-    {"order": 3, "journey": "Fan Zone anonymous state"},
-    {"order": 4, "journey": "Fixtures empty state on iPhone and iPad"}
+    {
+      "order": 1,
+      "journey": "Anonymous home state"
+    },
+    {
+      "order": 2,
+      "journey": "Club overview"
+    },
+    {
+      "order": 3,
+      "journey": "Fan Zone anonymous state"
+    },
+    {
+      "order": 4,
+      "journey": "Fixtures empty state on iPhone and iPad"
+    }
   ],
   "binary_icon_gate": {
     "status": "archive_icon_presence_verified",
@@ -134,8 +157,6 @@
     "rayon_brand_and_content_rights",
     "product_scope",
     "privacy_and_retention",
-    "english_store_copy",
-    "french_store_copy",
-    "kinyarwanda_store_copy"
+    "english_store_copy"
   ]
 }

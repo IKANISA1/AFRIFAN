@@ -15,8 +15,6 @@ class FanClubsModule extends FeatureModule {
   List<RouteBase> get routes => [
     GoRoute(
       path: '/fan-clubs',
-      redirect: (_, state) =>
-          state.uri.path == '/fan-clubs' ? '/fanzone?section=supporters' : null,
       pageBuilder: (context, state) =>
           afriSheetPage(state, const FanClubsListScreen(), fullHeight: true),
       routes: [
@@ -38,10 +36,10 @@ class FanClubsModule extends FeatureModule {
   List<RoutePresentationDecision> get routePresentationDecisions => const [
     RoutePresentationDecision(
       path: '/fan-clubs',
-      presentation: RoutePresentation.redirect,
-      recommendation: 'consolidate',
-      targetPath: '/fanzone?section=supporters',
-      rationale: 'Fan clubs belong in the Fan Zone supporters area.',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'keep',
+      rationale:
+          'Community discovery opens directly from Membership and search.',
     ),
     RoutePresentationDecision(
       path: '/fan-clubs/:clubId',

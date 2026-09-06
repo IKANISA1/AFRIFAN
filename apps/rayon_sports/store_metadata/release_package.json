@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generated_on": "2026-08-21",
-  "overall_status": "approved_release_candidate",
+  "generated_on": "2026-09-06",
+  "overall_status": "local_english_only_candidate",
   "mobile": {
     "name": "Gikundiro",
     "version_name": "1.0.4",
@@ -12,19 +12,14 @@
     "primary_market": "Rwanda",
     "primary_category": "Sports",
     "supported_app_locales": [
-      "en",
-      "fr",
-      "rw"
+      "en"
     ],
     "metadata_locales": {
-      "en-US": "approved",
-      "fr-FR": "approved"
+      "en-US": "retained_source_copy"
     },
-    "source_only_locales": {
-      "rw-RW": "runtime language retained as controlled copy; neither Google Play nor App Store Connect currently accepts Kinyarwanda listing metadata"
-    }
+    "source_only_locales": {}
   },
-  "verified_code_facts_scope": "Source capability inventory before candidate policy enforcement; effective build-6 behavior is recorded separately in effective_candidate_facts.",
+  "verified_code_facts_scope": "Historical build-7 facts below. Revalidate against the English-only candidate before submission.",
   "verified_code_facts": {
     "anonymous_session_available": true,
     "phone_otp_available": true,
@@ -104,7 +99,10 @@
       "question": "Is written authority held for Rayon Sports names, marks, photography, fixtures, and other third-party content?",
       "required_outcome": "Record the accountable rights approval and attach supporting material in the portal where requested.",
       "outcome": "Jean Bosco recorded accountable authorization for the production submission; the authenticated App Store declaration remains USES_THIRD_PARTY_CONTENT.",
-      "evidence": ["release_evidence_2026-08-21.md#accountable-authorization", "approvals.json"]
+      "evidence": [
+        "release_evidence_2026-08-21.md#accountable-authorization",
+        "approvals.json"
+      ]
     },
     {
       "id": "POLICY-AUDIENCE-01",
@@ -112,7 +110,10 @@
       "question": "Which age groups and territories are approved for the exact feature set?",
       "required_outcome": "Complete current Play/IARC and Apple questionnaires for the exact disabled-feature candidate and approved territories.",
       "outcome": "The accountable release owner approved the current authenticated console audience and territory settings for the disabled-feature candidate.",
-      "evidence": ["release_evidence_2026-08-21.md#accountable-authorization", "portal_values.template.json"]
+      "evidence": [
+        "release_evidence_2026-08-21.md#accountable-authorization",
+        "portal_values.template.json"
+      ]
     },
     {
       "id": "POLICY-PRIVACY-01",
@@ -120,7 +121,10 @@
       "question": "Do the exact AAB/IPA, bundled SDK manifests, production data flows, public privacy policy, Google Data safety, and Apple App Privacy answers agree?",
       "required_outcome": "Reconcile signed-artifact SDK/network evidence, Android advertising-ID permissions, iOS privacy manifests including Other User Content, retention/deletion, processors, and both portal declarations.",
       "outcome": "Exact build-7 artifacts passed manifest, permission, privacy-manifest, signature, and physical-device checks; current console privacy declarations remain published.",
-      "evidence": ["release_evidence_2026-08-21.md#exact-artifacts", "release_evidence_2026-08-21.md#verification-completed"]
+      "evidence": [
+        "release_evidence_2026-08-21.md#exact-artifacts",
+        "release_evidence_2026-08-21.md#verification-completed"
+      ]
     }
   ]
 }

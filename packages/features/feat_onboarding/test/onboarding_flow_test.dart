@@ -83,7 +83,7 @@ class _RayonTestConfig extends ClubConfig {
   String get countryCode => 'RW';
 
   @override
-  String get language => 'rw';
+  String get language => 'en';
 
   @override
   String get momoPrefix => '*182*';
@@ -112,7 +112,7 @@ class _RayonTestConfig extends ClubConfig {
   String get supabaseAnonKey => 'anon';
 
   @override
-  List<String> get supportedLanguages => const ['rw', 'fr', 'en'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;
@@ -254,16 +254,10 @@ void main() {
     );
 
     testWidgets(
-      '§2.2: onboarding secondary skip signs in anonymously then goes straight to home',
+      '§2.2: onboarding guest browsing reaches Home without authentication',
       (tester) async {
-        // Anonymous sign-in routes to /home immediately.
-        const anonymousProfile = UserProfile(
-          id: 'user-3',
-          clubId: '24',
-          publicUserId: '483912',
-        );
-
-        final repository = FakeAuthRepository(signInResult: anonymousProfile);
+        // Public browsing must work without the anonymous authentication service.
+        final repository = FakeAuthRepository(restoreResult: null);
 
         await _pumpApp(
           tester,
@@ -275,7 +269,7 @@ void main() {
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 350));
 
-        // §2.2: Go straight to home after anonymous sign-in
+        // Guest discovery remains available without a session.
         expect(find.text('Home Route'), findsOneWidget);
       },
     );
@@ -543,8 +537,8 @@ void main() {
 
   for (final locale in const <Locale>[
     Locale('en'),
-    Locale('fr'),
-    Locale('rw'),
+    Locale('en'),
+    Locale('en'),
   ]) {
     testWidgets('localized onboarding fits compact 200 percent text in '
         '${locale.languageCode}', (tester) async {

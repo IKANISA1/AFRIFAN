@@ -21,7 +21,7 @@ AFRICLUB is a football club app first. Product decisions follow this order:
 4. Secondary matchday utilities: venue discovery, check-in, bounded drinks
    ordering, and promotions.
 
-The target supporter navigation is `Home · Club · Fan Zone · Membership`.
+The target supporter navigation is `Home · Club · Predict · Membership`.
 Settings belongs behind profile. Venue utilities must not displace club or
 football destinations in primary navigation.
 
@@ -44,7 +44,7 @@ The authoritative architecture and evidence gates are in
 ### Current repository boundary
 
 - AFRICLUB contains only football, club, membership, supporter, commerce,
-  contribution, ticketing, venue, and free-prediction capabilities.
+  contribution, ticketing, venue, and FET prediction capabilities.
 - Supabase uses a reproducible football-platform baseline, subsequent forward migrations,
   and governed seed data for fresh environments.
 - Existing deployed databases require approved forward-only reconciliation;
@@ -55,10 +55,10 @@ The authoritative architecture and evidence gates are in
 ### Flutter Native Fan App
 
 - White-label fan app per club.
-- Target mobile hierarchy: Home, Club, Fan Zone, and Membership.
+- Target mobile hierarchy: Home, Club, Predict, and Membership.
 - Club owns official team, news, fixtures, results, standings, history,
   projects, ticket, and shop discovery.
-- Fan Zone owns selected-match football predictions and competitions.
+- Predict owns prepared-fixture picks, personal entries, and FET activity.
 - Shared features live in `packages/features/*`.
 - Per-club identity lives in `packages/clubs/*`.
 - Club apps under `apps/*` are thin shells around shared modules and configuration data.

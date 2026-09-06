@@ -425,7 +425,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
             <header className="member-dashboard-header">
               <div>
                 <span className="member-step">Active member</span>
-                <h3>Murakaza neza.</h3>
+                <h3>Welcome.</h3>
               </div>
               <button type="button" className="member-icon-action" onClick={() => void signOut()} aria-label="Sign out of member area">
                 <LogOut aria-hidden="true" />

@@ -5,7 +5,7 @@
   "cohort": {
     "id": "native-ios-dark-glow-20260905",
     "platform": "iOS",
-    "theme": "Dark · Glow",
+    "theme": "Dark \u00b7 Glow",
     "captured_on": "2026-09-05",
     "region": null,
     "build": null,
@@ -27,9 +27,9 @@
       "capture banner"
     ]
   },
-  "status": "local_implementation_and_regression_verified",
+  "status": "local_candidate_revised_english_gikundiro_acceptance_incomplete",
   "claim_100_percent_fidelity": false,
-  "route_count": 82,
+  "route_count": 90,
   "excluded_surfaces": {
     "consumer_web": "outside native mobile reimplementation",
     "admin_pwa": "outside native mobile reimplementation",
@@ -46,6 +46,18 @@
       "mapping_type": "component_pattern",
       "behavior": "draft, mode preview, cancel/back discard, apply persists",
       "verification": "iOS simulator draft and Cancel journey passed; widget tests cover Back discard and Apply persistence"
+    },
+    {
+      "parent": "/predict",
+      "name": "selection-review",
+      "references": [
+        "LIVE-007",
+        "LIVE-053"
+      ],
+      "mapping_type": "component_pattern",
+      "behavior": "selection, cost, resulting balance, explicit confirm; cancel dismisses without write",
+      "verification": "local behavior tests and synthetic native iOS journey",
+      "evidence": "output/implementation/english-gikundiro-2026-09-06/native-predict-system/predict-native-review.png"
     }
   ],
   "routes": [
@@ -146,14 +158,16 @@
     },
     {
       "route": "/predict",
-      "kind": "route",
-      "source_module": "PredictModule",
+      "kind": "tab",
+      "source_module": "FanzoneModule",
       "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
-        "LIVE-007"
+        "LIVE-026",
+        "LIVE-007",
+        "LIVE-053"
       ],
-      "adaptation": "Gikundiro simplified Predict behavior, adapted to AFRICLUB native neutral task groups: prepared fixture cards, Home / Draw / Away, a fixed FET entry, confirmed picks and wallet activity. No creator, custom stake or exact-score journey.",
+      "adaptation": "One Gikundiro-style fixture journey in the third AFRICLUB tab: Fixtures, My picks and FET activity. RevPoints discovery canvas, compact top commands, rounded task cards and floating app navigation; own identity, English copy, rules and backend authority. Selection opens an explicit cost and resulting-balance review before commitment. The tab retains its shell in an unavailable state while the capability gateway denies reads and writes.",
       "required_states": [
         "loading",
         "empty",
@@ -174,8 +188,9 @@
         "wallet"
       ],
       "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "RPC/controller and widget behavior verified with synthetic data. Native iPhone simulator journey verified for single entry, history and wallet. Live PostgREST blocked by project storage-quota HTTP 402; no live supporter availability claim.",
+      "interaction_verification": "Native iOS synthetic single-entry/history/activity journey passed. Widget checks cover aliases, persistent shell, connectivity recovery, 19 route states and large text. Store authorization and actual programme availability remain separately governed.",
       "target_baselines": [
+        "packages/features/feat_gamification/test/goldens/predict_shell_dark_390x844.png",
         "packages/features/feat_gamification/test/goldens/predict_state_conflict_dark_390x844.png",
         "packages/features/feat_gamification/test/goldens/predict_state_dark_dark_390x844.png",
         "packages/features/feat_gamification/test/goldens/predict_state_disabled_dark_390x844.png",
@@ -198,11 +213,13 @@
       ],
       "test_evidence": [
         "packages/features/feat_gamification/test/predict_screen_test.dart",
+        "packages/features/feat_gamification/test/fanzone_hub_screen_test.dart",
         "packages/features/feat_gamification/test/predict_controller_test.dart",
+        "packages/app_registry/test/canonical_route_navigation_test.dart",
         "apps/rayon_sports/integration_test/predict_journey_test.dart"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_gamification/test/goldens/predict_state_dark_dark_390x844.png"
+      "representative_capture": "packages/features/feat_gamification/test/goldens/predict_shell_dark_390x844.png"
     },
     {
       "route": "/club",
@@ -699,7 +716,7 @@
         "LIVE-051",
         "LIVE-053"
       ],
-      "adaptation": "grouped discovery, content and task form patterns; football-specific objects",
+      "adaptation": "Compact portrait directory with position and squad-group filters; neutral child page, canonical player navigation, and 200% text reflow. Source mapping is a component-pattern adaptation.",
       "required_states": [
         "loading",
         "empty",
@@ -737,15 +754,14 @@
     },
     {
       "route": "/contribute",
-      "kind": "redirect",
+      "kind": "route",
       "source_module": "ContributionsModule",
-      "target_route": "/fanzone?section=supporters",
-      "mapping_type": "redirect",
+      "target_route": null,
+      "mapping_type": "component_pattern",
       "reference_ids": [
-        "LIVE-053",
-        "LIVE-060"
+        "LIVE-007"
       ],
-      "adaptation": "actual contribution or checkout review with authoritative outcomes",
+      "adaptation": "Existing community or club-initiative discovery opens directly as a full-height contextual screen; removed the circular dependency on Fan Zone.",
       "required_states": [
         "loading",
         "empty",
@@ -757,8 +773,22 @@
         "light",
         "dark"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
+      "interaction_verification": "Direct navigation, route graph and available widget state tests verified locally; production API not established by synthetic captures.",
+      "target_baselines": [
+        "packages/features/feat_contributions/test/goldens/contributions_compact_dark_320x760.png",
+        "packages/features/feat_contributions/test/goldens/contributions_compact_light_374x812.png",
+        "packages/features/feat_contributions/test/goldens/contributions_foldable_half_light_674x842.png",
+        "packages/features/feat_contributions/test/goldens/contributions_large_light_430x900.png",
+        "packages/features/feat_contributions/test/goldens/contributions_standard_dark_390x844.png",
+        "packages/features/feat_contributions/test/goldens/contributions_tablet_dark_834x1194.png",
+        "packages/features/feat_contributions/test/goldens/contributions_wide_dark_599x900.png"
+      ],
+      "test_evidence": [
+        "packages/features/feat_contributions/test/groups_screen_empty_state_test.dart",
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": "packages/features/feat_contributions/test/goldens/contributions_standard_dark_390x844.png"
     },
     {
       "route": "/contribute/group/:groupId",
@@ -860,51 +890,45 @@
       "route": "/contribute/groups",
       "kind": "redirect",
       "source_module": "ContributionsModule",
-      "target_route": "/fanzone?section=supporters",
-      "mapping_type": "redirect",
+      "target_route": "/contribute",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-053",
         "LIVE-060"
       ],
-      "adaptation": "actual contribution or checkout review with authoritative outcomes",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/contribute/projects",
       "kind": "redirect",
       "source_module": "ContributionsModule",
-      "target_route": "/fanzone?section=supporters",
-      "mapping_type": "redirect",
+      "target_route": "/contribute",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-053",
         "LIVE-060"
       ],
-      "adaptation": "actual contribution or checkout review with authoritative outcomes",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/e-ticket/:id",
@@ -955,16 +979,14 @@
     },
     {
       "route": "/fan-clubs",
-      "kind": "redirect",
+      "kind": "route",
       "source_module": "FanClubsModule",
-      "target_route": "/fanzone?section=supporters",
-      "mapping_type": "redirect",
+      "target_route": null,
+      "mapping_type": "component_pattern",
       "reference_ids": [
-        "LIVE-007",
-        "LIVE-026",
-        "LIVE-053"
+        "LIVE-007"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Existing community or club-initiative discovery opens directly as a full-height contextual screen; removed the circular dependency on Fan Zone.",
       "required_states": [
         "loading",
         "empty",
@@ -976,8 +998,21 @@
         "light",
         "dark"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
+      "interaction_verification": "Direct navigation, route graph and available widget state tests verified locally; production API not established by synthetic captures.",
+      "target_baselines": [
+        "packages/features/feat_fan_clubs/test/goldens/fan_clubs_list_state_dark_dark_390x844.png",
+        "packages/features/feat_fan_clubs/test/goldens/fan_clubs_list_state_empty_dark_390x844.png",
+        "packages/features/feat_fan_clubs/test/goldens/fan_clubs_list_state_error_dark_390x844.png",
+        "packages/features/feat_fan_clubs/test/goldens/fan_clubs_list_state_large_text_dark_320x720.png",
+        "packages/features/feat_fan_clubs/test/goldens/fan_clubs_list_state_light_light_390x844.png",
+        "packages/features/feat_fan_clubs/test/goldens/fan_clubs_list_state_loading_dark_390x844.png"
+      ],
+      "test_evidence": [
+        "packages/features/feat_fan_clubs/test/fan_clubs_list_screen_test.dart",
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": "packages/features/feat_fan_clubs/test/goldens/fan_clubs_list_state_dark_dark_390x844.png"
     },
     {
       "route": "/fan-clubs/:clubId",
@@ -1030,281 +1065,232 @@
     },
     {
       "route": "/fanzone",
-      "kind": "tab",
+      "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": null,
-      "mapping_type": "component_pattern",
+      "target_route": "/predict",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-026"
       ],
-      "adaptation": "real football engagement and points replace source rewards",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
-      "target_baselines": [
-        "packages/features/feat_gamification/test/goldens/fanzone_state_conflict_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_disabled_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_empty_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_error_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_focused_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_large_text_dark_320x720.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_loading_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_offline_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_permission_denied_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_pressed_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_security_timeout_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_selected_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fanzone_state_syncing_dark_390x844.png"
-      ],
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
       "test_evidence": [
-        "packages/features/feat_gamification/test/fanzone_hub_screen_test.dart"
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_gamification/test/goldens/fanzone_state_selected_dark_390x844.png"
+      "representative_capture": null
     },
     {
       "route": "/fanzone/badges",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=rewards",
-      "mapping_type": "redirect",
+      "target_route": "/predict?section=wallet",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/club-zone",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=supporters",
-      "mapping_type": "redirect",
+      "target_route": "/fan-clubs",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/fan-id",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=supporters",
-      "mapping_type": "redirect",
+      "target_route": "/fan-clubs",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/fixtures",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=league",
-      "mapping_type": "redirect",
+      "target_route": "/club/fixtures",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/history",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=wallet",
-      "mapping_type": "redirect",
+      "target_route": "/predict?section=wallet",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/leaderboard",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=league",
-      "mapping_type": "redirect",
+      "target_route": "/club/fixtures",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/league",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=league",
-      "mapping_type": "redirect",
+      "target_route": "/club/fixtures",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/league/:competitionSlug",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=league",
-      "mapping_type": "redirect",
+      "target_route": "/club/fixtures",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/live",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=league",
-      "mapping_type": "redirect",
+      "target_route": "/club/fixtures",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/match/:fixtureId",
@@ -1359,27 +1345,24 @@
       "route": "/fanzone/my",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=predictions",
-      "mapping_type": "redirect",
+      "target_route": "/predict?section=history",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/my/:predictionId",
@@ -1435,130 +1418,115 @@
       "kind": "redirect",
       "source_module": "FanzoneModule",
       "target_route": "/fanzone/my/:predictionId",
-      "mapping_type": "redirect",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/notifications",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=predictions",
-      "mapping_type": "redirect",
+      "target_route": "/predict?section=history",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/offers",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=rewards",
-      "mapping_type": "redirect",
+      "target_route": "/predict?section=wallet",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/privacy",
       "kind": "redirect",
       "source_module": "FanzoneModule",
       "target_route": "/settings/privacy",
-      "mapping_type": "redirect",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/rewards",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=rewards",
-      "mapping_type": "redirect",
+      "target_route": "/predict?section=wallet",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/share",
@@ -1613,105 +1581,93 @@
       "route": "/fanzone/social",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=supporters",
-      "mapping_type": "redirect",
+      "target_route": "/fan-clubs",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/standings/:competitionSlug",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=league",
-      "mapping_type": "redirect",
+      "target_route": "/club/fixtures",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/streak",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=rewards",
-      "mapping_type": "redirect",
+      "target_route": "/predict?section=wallet",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/team/:teamSlug",
       "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": "/fanzone?section=league",
-      "mapping_type": "redirect",
+      "target_route": "/club/fixtures",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/fanzone/venue",
@@ -1813,52 +1769,27 @@
     },
     {
       "route": "/fanzone/wallet",
-      "kind": "route",
+      "kind": "redirect",
       "source_module": "FanzoneModule",
-      "target_route": null,
-      "mapping_type": "component_pattern",
+      "target_route": "/predict?section=wallet",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
-      "target_baselines": [
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_conflict_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_dark_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_disabled_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_empty_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_error_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_focused_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_large_text_dark_320x720.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_light_light_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_loading_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_offline_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_permission_denied_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_pressed_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_reduced_motion_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_security_timeout_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_selected_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/fet_wallet_state_syncing_dark_390x844.png"
-      ],
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
       "test_evidence": [
-        "packages/features/feat_gamification/test/fet_wallet_screen_states_test.dart"
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_gamification/test/goldens/fet_wallet_state_dark_dark_390x844.png"
+      "representative_capture": null
     },
     {
       "route": "/feature-unavailable",
@@ -1955,52 +1886,46 @@
       "kind": "redirect",
       "source_module": "LiveModule",
       "target_route": "/fanzone/match/live",
-      "mapping_type": "redirect",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/live-match",
       "kind": "redirect",
       "source_module": "LiveModule",
       "target_route": "/fanzone/match/live",
-      "mapping_type": "redirect",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/live/news/:articleId",
@@ -2101,27 +2026,24 @@
       "route": "/membership/fans",
       "kind": "redirect",
       "source_module": "MembershipModule",
-      "target_route": "/fanzone?section=supporters",
-      "mapping_type": "redirect",
+      "target_route": "/fan-clubs",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/membership/tier/:tierId",
@@ -2176,26 +2098,23 @@
       "kind": "redirect",
       "source_module": "TicketingModule",
       "target_route": "/tickets?tab=mine",
-      "mapping_type": "redirect",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/onboarding",
@@ -2488,12 +2407,9 @@
       "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
-        "LIVE-007",
-        "LIVE-033",
-        "LIVE-051",
-        "LIVE-053"
+        "USER-CARDS-20260906"
       ],
-      "adaptation": "grouped discovery, content and task form patterns; football-specific objects",
+      "adaptation": "Owner-selected full-width editorial cards, deep purple-to-indigo canvas and compact search/commands. Club products, prices, filters, independent add/cart actions, pushed-route navigation and image approval remain authoritative. No source artwork or financial destinations copied. Runtime sample inventory was removed. Missing approved images have a compact fallback. Enquiry-only goods open a draft and cannot enter native checkout.",
       "required_states": [
         "loading",
         "empty",
@@ -2505,7 +2421,7 @@
         "light",
         "dark"
       ],
-      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
+      "visual_comparison": "user_supplied_cards_reference_reviewed; missing_product_photography_and_native_font_parity_unverified",
       "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
       "target_baselines": [
         "packages/features/feat_shop/test/goldens/shop_state_conflict_dark_390x844.png",
@@ -2526,10 +2442,25 @@
         "packages/features/feat_shop/test/goldens/shop_state_syncing_dark_390x844.png"
       ],
       "test_evidence": [
-        "packages/features/feat_shop/test/shop_screen_states_test.dart"
+        "packages/features/feat_shop/test/shop_screen_states_test.dart",
+        "packages/features/feat_shop/test/shop_screen_catalog_test.dart"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_shop/test/goldens/shop_state_selected_dark_390x844.png"
+      "representative_capture": "packages/features/feat_shop/test/goldens/shop_state_dark_390x844.png",
+      "source_override": {
+        "path": "/Users/jeanbosco/Desktop/Revolut/Cards.png",
+        "supplied_on": "2026-09-06",
+        "state": "RevPoints scrolled editorial discovery",
+        "platform": "iOS",
+        "build": null,
+        "capture_date": null,
+        "region": null,
+        "frame_pixels": [
+          408,
+          857
+        ],
+        "theme": "Dark appearance; selected theme not displayed"
+      }
     },
     {
       "route": "/shop/cart",
@@ -2630,26 +2561,23 @@
       "kind": "redirect",
       "source_module": "OnboardingModule",
       "target_route": "/onboarding",
-      "mapping_type": "redirect",
+      "mapping_type": "navigation_consolidation",
       "reference_ids": [
         "LIVE-007",
         "LIVE-026",
         "LIVE-053"
       ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
       "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
+        "redirect_resolution"
       ],
-      "visual_comparison": "unverified",
-      "interaction_verification": "covered_by_registered_route_graph_tests"
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "representative_capture": null
     },
     {
       "route": "/tickets",
@@ -3383,6 +3311,294 @@
       ],
       "review_method": "Inspect target operational route for shared native hierarchy, type, insets, grouping, action colour and product adaptation. Regression states are not source pixel comparisons.",
       "representative_capture": "packages/features/feat_admin/test/goldens/admin_sms_state_dark_390x844.png"
+    },
+    {
+      "route": "/challenge",
+      "kind": "redirect",
+      "source_module": "FanzoneModule",
+      "target_route": "/predict",
+      "mapping_type": "navigation_consolidation",
+      "reference_ids": [
+        "LIVE-026"
+      ],
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
+      "required_states": [
+        "redirect_resolution"
+      ],
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
+      "representative_capture": null
+    },
+    {
+      "route": "/challenge/:id",
+      "kind": "redirect",
+      "source_module": "FanzoneModule",
+      "target_route": "/predict",
+      "mapping_type": "navigation_consolidation",
+      "reference_ids": [
+        "LIVE-026"
+      ],
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
+      "required_states": [
+        "redirect_resolution"
+      ],
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
+      "representative_capture": null
+    },
+    {
+      "route": "/challenge/create",
+      "kind": "redirect",
+      "source_module": "FanzoneModule",
+      "target_route": "/predict",
+      "mapping_type": "navigation_consolidation",
+      "reference_ids": [
+        "LIVE-026"
+      ],
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
+      "required_states": [
+        "redirect_resolution"
+      ],
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
+      "representative_capture": null
+    },
+    {
+      "route": "/challenge/my",
+      "kind": "redirect",
+      "source_module": "FanzoneModule",
+      "target_route": "/predict?section=history",
+      "mapping_type": "navigation_consolidation",
+      "reference_ids": [
+        "LIVE-026"
+      ],
+      "adaptation": "Compatibility link resolves to the current canonical destination; no independent supporter screen.",
+      "required_states": [
+        "redirect_resolution"
+      ],
+      "visual_comparison": "not_applicable_redirect",
+      "interaction_verification": "Cross-module redirect graph and feature contracts verified locally.",
+      "target_baselines": [],
+      "test_evidence": [
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
+      "representative_capture": null
+    },
+    {
+      "route": "/club/team/:playerId",
+      "kind": "route",
+      "source_module": "ClubModule",
+      "target_route": "/club/news",
+      "mapping_type": "component_pattern",
+      "reference_ids": [
+        "LIVE-007",
+        "LIVE-033",
+        "LIVE-051",
+        "LIVE-053"
+      ],
+      "adaptation": "Neutral task detail with an approved player portrait or honest shirt-number fallback, verified facts and biography. Football-specific content uses the selected grouped detail pattern; no exact source player-profile comparator exists.",
+      "required_states": [
+        "loading",
+        "empty",
+        "error",
+        "offline",
+        "permission_denied_or_not_applicable",
+        "large_text",
+        "reduced_motion",
+        "light",
+        "dark"
+      ],
+      "visual_comparison": "current target states inspected; exact source-state equivalence unverified",
+      "interaction_verification": "local route and failure-state tests; production content and Android unverified",
+      "target_baselines": [
+        "packages/features/feat_club/test/goldens/club_player_state_conflict_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_dark_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_empty_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_error_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_focused_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_large_text_dark_320x720.png",
+        "packages/features/feat_club/test/goldens/club_player_state_light_light_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_loading_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_offline_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_permission_denied_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_pressed_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_reduced_motion_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_security_timeout_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_player_state_syncing_dark_390x844.png"
+      ],
+      "test_evidence": [
+        "packages/features/feat_club/test/club_route_state_goldens_test.dart",
+        "packages/features/feat_club/test/public_content_contract_test.dart",
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
+      "representative_capture": "packages/features/feat_club/test/goldens/club_news_detail_state_dark_dark_390x844.png"
+    },
+    {
+      "route": "/club/partners",
+      "kind": "route",
+      "source_module": "ClubModule",
+      "target_route": "/club/news",
+      "mapping_type": "component_pattern",
+      "reference_ids": [
+        "LIVE-007",
+        "LIVE-033",
+        "LIVE-051",
+        "LIVE-053"
+      ],
+      "adaptation": "Neutral grouped partner cards, explicit category, approved logos and detail actions. Sponsorship recognition is separate from reward eligibility.",
+      "required_states": [
+        "loading",
+        "empty",
+        "error",
+        "offline",
+        "permission_denied_or_not_applicable",
+        "large_text",
+        "reduced_motion",
+        "light",
+        "dark"
+      ],
+      "visual_comparison": "current target states inspected; exact source-state equivalence unverified",
+      "interaction_verification": "local route and failure-state tests; production content and Android unverified",
+      "target_baselines": [
+        "packages/features/feat_club/test/goldens/club_partners_state_conflict_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_dark_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_empty_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_error_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_focused_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_large_text_dark_320x720.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_light_light_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_loading_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_offline_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_permission_denied_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_pressed_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_reduced_motion_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_security_timeout_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partners_state_syncing_dark_390x844.png"
+      ],
+      "test_evidence": [
+        "packages/features/feat_club/test/club_route_state_goldens_test.dart",
+        "packages/features/feat_club/test/public_content_contract_test.dart",
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
+      "representative_capture": "packages/features/feat_club/test/goldens/club_news_detail_state_dark_dark_390x844.png"
+    },
+    {
+      "route": "/club/partners/:partnerId",
+      "kind": "route",
+      "source_module": "ClubModule",
+      "target_route": "/club/news",
+      "mapping_type": "component_pattern",
+      "reference_ids": [
+        "LIVE-007",
+        "LIVE-033",
+        "LIVE-051",
+        "LIVE-053"
+      ],
+      "adaptation": "Neutral partner detail with published description and official website action. Links do not create a message, payment or redemption.",
+      "required_states": [
+        "loading",
+        "empty",
+        "error",
+        "offline",
+        "permission_denied_or_not_applicable",
+        "large_text",
+        "reduced_motion",
+        "light",
+        "dark"
+      ],
+      "visual_comparison": "current target states inspected; exact source-state equivalence unverified",
+      "interaction_verification": "local route and failure-state tests; production content and Android unverified",
+      "target_baselines": [
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_conflict_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_dark_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_empty_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_error_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_focused_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_large_text_dark_320x720.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_light_light_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_loading_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_offline_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_permission_denied_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_pressed_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_reduced_motion_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_security_timeout_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_partner_detail_state_syncing_dark_390x844.png"
+      ],
+      "test_evidence": [
+        "packages/features/feat_club/test/club_route_state_goldens_test.dart",
+        "packages/features/feat_club/test/public_content_contract_test.dart",
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
+      "representative_capture": "packages/features/feat_club/test/goldens/club_news_detail_state_dark_dark_390x844.png"
+    },
+    {
+      "route": "/club/open-web",
+      "kind": "route",
+      "source_module": "ClubModule",
+      "target_route": "/club/news",
+      "mapping_type": "component_pattern",
+      "reference_ids": [
+        "LIVE-007",
+        "LIVE-033",
+        "LIVE-051",
+        "LIVE-053"
+      ],
+      "adaptation": "Neutral public-link lookup, retry and explicit website fallback. Lookup failure, missing mapping, permissions and offline conditions remain distinct.",
+      "required_states": [
+        "loading",
+        "empty",
+        "error",
+        "offline",
+        "permission_denied_or_not_applicable",
+        "large_text",
+        "reduced_motion",
+        "light",
+        "dark"
+      ],
+      "visual_comparison": "current target states inspected; exact source-state equivalence unverified",
+      "interaction_verification": "local route and failure-state tests; production content and Android unverified",
+      "target_baselines": [
+        "packages/features/feat_club/test/goldens/club_public_link_state_conflict_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_dark_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_empty_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_error_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_focused_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_large_text_dark_320x720.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_light_light_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_loading_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_offline_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_permission_denied_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_pressed_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_reduced_motion_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_security_timeout_dark_390x844.png",
+        "packages/features/feat_club/test/goldens/club_public_link_state_syncing_dark_390x844.png"
+      ],
+      "test_evidence": [
+        "packages/features/feat_club/test/club_route_state_goldens_test.dart",
+        "packages/features/feat_club/test/public_content_contract_test.dart",
+        "packages/app_registry/test/canonical_route_navigation_test.dart"
+      ],
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
+      "representative_capture": "packages/features/feat_club/test/goldens/club_news_detail_state_dark_dark_390x844.png"
     }
   ],
   "additional_cohorts": [
@@ -3558,8 +3774,8 @@
     "Large text replaces horizontal match paging with vertical content; target state verified separately.",
     "Native light, accessibility focus and status variants use documented target contrast adaptations where current source evidence is absent."
   ],
-  "implementation_status": "shared_mobile_presentation_reimplemented",
-  "review_report": "docs/governance/native-design-review.md",
+  "implementation_status": "english_only_gikundiro_improvements_local_candidate",
+  "review_report": "docs/architecture/english-gikundiro-implementation.md",
   "target_capture": {
     "platform": "iOS Simulator 26.5",
     "device": "iPhone 13",
@@ -3680,6 +3896,142 @@
       "baseline_hashes": 1187,
       "source_equivalence": "historical composition adapter; source font/build and unobserved states unverified; explicit Verify and inline error recovery retained",
       "automated_privacy_scan": "pass; separate human review pending"
+    },
+    "english_gikundiro_implementation": {
+      "generated_at": "2026-09-06T12:56:11.926784+00:00",
+      "scope": "local candidate; pre-existing dirty work preserved",
+      "head": "3f13a12db5f9e866b1f538bac53afb5ae5a25582",
+      "english": {
+        "catalogues": [
+          "en"
+        ],
+        "club_configurations": 20,
+        "static_copy_reviewed": 77,
+        "dynamic_copy_reviewed": 323,
+        "pending_copy_candidates": 0,
+        "native_projects_english_and_base_only": 20
+      },
+      "flutter": {
+        "combined_tests": 2601,
+        "result": "pass",
+        "log": "complete-flutter-verification.log",
+        "focused_predict_rerun_tests": 29,
+        "focused_counts_overlap": true,
+        "focused_log": "predict-capability-final.log"
+      },
+      "analysis": {
+        "result": "pass",
+        "log": "analysis-final.log"
+      },
+      "web": {
+        "runtime": "Node 22.23.2",
+        "tests": 258,
+        "files": 31,
+        "result": "pass",
+        "typescript": "pass",
+        "eslint": "pass",
+        "logs": [
+          "web-english-tests-node22.log",
+          "web-types-node22.log",
+          "web-lint-node22.log"
+        ]
+      },
+      "native": {
+        "platform": "iOS Simulator 26.5",
+        "device": "iPhone 13",
+        "logical_viewport": [
+          390,
+          844
+        ],
+        "raster": [
+          1170,
+          2532
+        ],
+        "club_journey": "pass",
+        "predict_journey": "pass",
+        "system_captures": 10,
+        "full_smoke_application_tests": 5,
+        "full_smoke_harness_results": 7,
+        "full_smoke_log": "native-policy-final.log",
+        "data": "synthetic; no real financial writes or message sends",
+        "full_smoke_result": "pass"
+      },
+      "goldens": {
+        "manifest_baselines": 1199,
+        "new_club_route_state_cases": 56,
+        "result": "pass",
+        "purpose": "target regression; not exact source equivalence"
+      },
+      "store_metadata_tests": 12,
+      "controls": [
+        {
+          "check": "english-policy-final",
+          "exit_code": 0,
+          "log": "english-policy-final.log"
+        },
+        {
+          "check": "flutter-copy-final",
+          "exit_code": 0,
+          "log": "flutter-copy-final.log"
+        },
+        {
+          "check": "dynamic-copy-final",
+          "exit_code": 0,
+          "log": "dynamic-copy-final.log"
+        },
+        {
+          "check": "repository-boundary-final",
+          "exit_code": 0,
+          "log": "repository-boundary-final.log"
+        },
+        {
+          "check": "migration-boundary-final",
+          "exit_code": 0,
+          "log": "migration-boundary-final.log"
+        },
+        {
+          "check": "golden-contract-current",
+          "exit_code": 0,
+          "log": "golden-contract-current.log"
+        },
+        {
+          "check": "architecture-final",
+          "exit_code": 0,
+          "log": "architecture-final.log"
+        }
+      ],
+      "database": {
+        "migrations": 3,
+        "syntax": "SQL and 6 PL/pgSQL functions parsed",
+        "pgtap": "prepared, not executed",
+        "execution": "blocked by unresponsive Docker; no PostgreSQL runtime installed",
+        "deployment": "not performed"
+      },
+      "source_fidelity": {
+        "target": "selected Revolut patterns, own product identity and English content",
+        "100_percent_certified": false,
+        "remaining": [
+          "missing source font/build/exact viewport",
+          "unmatched source states",
+          "Android and physical device evidence",
+          "screen-reader task proof"
+        ]
+      },
+      "publication": {
+        "remote_content_changes": false,
+        "store_submission": false,
+        "production_deployment": false
+      },
+      "preview": {
+        "title": "Rayon Sports \u00b7 Implementation review",
+        "findings": 28,
+        "filterPartial": 6,
+        "galleryFrames": 10,
+        "pageErrors": [],
+        "horizontalOverflowAt390": false
+      },
+      "evidence_directory": "output/implementation/english-gikundiro-2026-09-06"
     }
-  }
+  },
+  "updated_at": "2026-09-06T12:56:11.926784+00:00"
 }

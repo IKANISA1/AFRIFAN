@@ -8,14 +8,18 @@
   "onboardingBelongBody": "Follow {clubName} wherever the blue family gathers.",
   "@onboardingBelongBody": {
     "placeholders": {
-      "clubName": {"type": "String"}
+      "clubName": {
+        "type": "String"
+      }
     }
   },
   "onboardingKnowTitle": "Every moment.\nOne blue family.",
   "onboardingKnowBody": "Get official {appName} news, fixtures, tickets, and membership.",
   "@onboardingKnowBody": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
   "onboardingLiveTitle": "Closer to\nGikundiro.",
@@ -28,8 +32,12 @@
   "onboardingWelcomeImage": "Welcome image {current} of {total}",
   "@onboardingWelcomeImage": {
     "placeholders": {
-      "current": {"type": "int"},
-      "total": {"type": "int"}
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "supportUnavailable": "Support is unavailable in this build.",
@@ -75,14 +83,18 @@
   "searchForTooltip": "Search for {query}",
   "@searchForTooltip": {
     "placeholders": {
-      "query": {"type": "String"}
+      "query": {
+        "type": "String"
+      }
     }
   },
   "searchNoResultsTitle": "No results",
   "searchNoResultsMessage": "No result matches “{query}”.",
   "@searchNoResultsMessage": {
     "placeholders": {
-      "query": {"type": "String"}
+      "query": {
+        "type": "String"
+      }
     }
   },
   "searchShowAllCategories": "Show all categories",
@@ -91,13 +103,15 @@
   "searchResultCount": "{count, plural, =0{No results} =1{1 result} other{{count} results}}",
   "@searchResultCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "searchSupporterDirectoryTitle": "Find supporters",
   "searchSupporterDirectoryDescription": "Search public supporter aliases and manage friends.",
-  "searchFanZoneTitle": "Fan Zone",
-  "searchFanZoneDescription": "Predictions, community, rewards, and matchday activity.",
+  "searchFanZoneTitle": "Predict",
+  "searchFanZoneDescription": "Match picks, prediction history and FET activity.",
   "searchFanRegistryTitle": "Fan registry",
   "searchFanRegistryDescription": "Browse the club supporter registry.",
   "searchFixturesTitle": "Fixtures",
@@ -130,26 +144,36 @@
   "searchMatchTitle": "{home} vs {away}",
   "@searchMatchTitle": {
     "placeholders": {
-      "home": {"type": "String"},
-      "away": {"type": "String"}
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
     }
   },
   "searchFixtureOnSaleDescription": "{competition} fixture with ticket sales available.",
   "@searchFixtureOnSaleDescription": {
     "placeholders": {
-      "competition": {"type": "String"}
+      "competition": {
+        "type": "String"
+      }
     }
   },
   "searchFixtureDescription": "{competition} fixture.",
   "@searchFixtureDescription": {
     "placeholders": {
-      "competition": {"type": "String"}
+      "competition": {
+        "type": "String"
+      }
     }
   },
   "searchProductDescription": "Official club shop item in {category}.",
   "@searchProductDescription": {
     "placeholders": {
-      "category": {"type": "String"}
+      "category": {
+        "type": "String"
+      }
     }
   },
   "searchHomeTeamFallback": "Home",
@@ -163,9 +187,21 @@
   "share": "Share",
   "membershipReviewTitle": "Membership review",
   "membershipReviewSubtitle": "{tier} request is awaiting payment verification.",
-  "@membershipReviewSubtitle": {"placeholders": {"tier": {"type": "String"}}},
+  "@membershipReviewSubtitle": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "membershipRenewsOn": "Renews on {date}",
-  "@membershipRenewsOn": {"placeholders": {"date": {"type": "String"}}},
+  "@membershipRenewsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "fanRegistryTitle": "Fan registry",
   "fanRegistryBrowseAll": "Browse all supporters",
   "membershipPackagesTitle": "Packages",
@@ -183,30 +219,84 @@
   "membershipPaymentVerifying": "Verifying payment",
   "membershipConfirmed": "Membership confirmed",
   "membershipRequestTitle": "{tier} membership request",
-  "@membershipRequestTitle": {"placeholders": {"tier": {"type": "String"}}},
+  "@membershipRequestTitle": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "membershipAmount": "Amount: {currency} {amount}",
-  "@membershipAmount": {"placeholders": {"currency": {"type": "String"}, "amount": {"type": "String"}}},
+  "@membershipAmount": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "membershipVerificationTime": "Verification typically takes 1–24 hours. You will be notified once confirmed.",
   "membershipRequestedOn": "Requested: {date}",
-  "@membershipRequestedOn": {"placeholders": {"date": {"type": "String"}}},
+  "@membershipRequestedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "contactSupport": "Contact support",
   "membershipPackageEmpty": "Membership packages will appear once the club publishes them.",
   "fanRegistrySearchHint": "Search fans by name",
   "fanRegistryUnavailable": "Registry unavailable",
   "fanRegistryUnavailableMessage": "Fan registry is temporarily unavailable.",
   "fanRegistryLoaded": "{count, plural, =0{No fans loaded} =1{1 fan loaded} other{{count} fans loaded}}",
-  "@fanRegistryLoaded": {"placeholders": {"count": {"type": "int"}}},
+  "@fanRegistryLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "fanRegistrySummary": "This registry mirrors the club membership roster.",
   "fanRegistryFiltered": "Filtered results for “{query}”.",
-  "@fanRegistryFiltered": {"placeholders": {"query": {"type": "String"}}},
+  "@fanRegistryFiltered": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
   "fanRegistryLoadMoreFailure": "Could not load more fans right now.",
   "fanRegistryPending": "Pending",
   "fanRegistryActivity": "{count, plural, =0{No activity} =1{1 activity} other{{count} activity}}",
-  "@fanRegistryActivity": {"placeholders": {"count": {"type": "int"}}},
+  "@fanRegistryActivity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "fanRegistryJoined": "Joined {date}",
-  "@fanRegistryJoined": {"placeholders": {"date": {"type": "String"}}},
+  "@fanRegistryJoined": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "fanRegistryJoinedRenews": "Joined {joined} • Renews {renews}",
-  "@fanRegistryJoinedRenews": {"placeholders": {"joined": {"type": "String"}, "renews": {"type": "String"}}},
+  "@fanRegistryJoinedRenews": {
+    "placeholders": {
+      "joined": {
+        "type": "String"
+      },
+      "renews": {
+        "type": "String"
+      }
+    }
+  },
   "profileTitle": "Profile",
   "profileLoadingMembership": "Loading membership…",
   "profileMembershipReviewPending": "Membership review pending",
@@ -220,7 +310,13 @@
   "profileNotifications": "Notifications",
   "profileActivityHistory": "Activity history",
   "profileActivityPoints": "{count, plural, =0{No activity points} =1{1 activity point} other{{count} activity points}}",
-  "@profileActivityPoints": {"placeholders": {"count": {"type": "int"}}},
+  "@profileActivityPoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "tierTitle": "Membership tier",
   "tierUnavailableTitle": "Tier details unavailable",
   "tierDisabledMessage": "Membership tier details are disabled for this build. No membership request can be started here.",
@@ -238,7 +334,13 @@
   "tierChangedMessage": "The current tier could not be confirmed because its details changed elsewhere.",
   "tierLoadUnavailableMessage": "The membership tier could not be loaded. No private service details were shown.",
   "tierSelected": "{tier} membership tier selected",
-  "@tierSelected": {"placeholders": {"tier": {"type": "String"}}},
+  "@tierSelected": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "tierPerks": "Tier perks",
   "tierAccess": "Membership access",
   "tierShowingOfficialTitle": "Showing official tier details",
@@ -255,7 +357,13 @@
   "tierDegradedMessage": "The last available category details remain visible until refresh succeeds.",
   "contributionConfirmTitle": "Confirm contribution",
   "contributionConfirmQuestion": "Did you complete the MoMo USSD payment for the {tier} tier?",
-  "@contributionConfirmQuestion": {"placeholders": {"tier": {"type": "String"}}},
+  "@contributionConfirmQuestion": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "contributionSelectedTier": "Selected tier",
   "contributionPendingVerification": "Pending verification",
   "contributionNotYet": "Not yet",
@@ -266,37 +374,91 @@
   "shareMembershipCard": "Share membership card",
   "shareMembershipCardHint": "Share your digital membership card",
   "membershipSince": "Since {date}",
-  "@membershipSince": {"placeholders": {"date": {"type": "String"}}},
+  "@membershipSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "membershipFanCard": "Fan card",
   "membershipReviewPendingUpper": "Review pending",
   "membershipBrandWatermark": "GIKUNDIRO",
   "navHome": "Home",
   "navClub": "Club",
-  "navFanZone": "Fan Zone",
+  "navFanZone": "Predict",
   "navMembership": "Membership",
   "membershipConnectBeforeChange": "Connect before changing membership.",
   "membershipSignInFirst": "Sign in first to activate membership.",
   "membershipRequestSubmitted": "{tier} membership request submitted.",
-  "@membershipRequestSubmitted": {"placeholders": {"tier": {"type": "String"}}},
+  "@membershipRequestSubmitted": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "membershipAlreadyPending": "{tier} membership is already pending payment verification.",
-  "@membershipAlreadyPending": {"placeholders": {"tier": {"type": "String"}}},
+  "@membershipAlreadyPending": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "membershipStarted": "{tier} membership started.",
-  "@membershipStarted": {"placeholders": {"tier": {"type": "String"}}},
+  "@membershipStarted": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "membershipPaymentSetupPending": "Membership payment setup is pending club activation.",
   "membershipDialerFailed": "{tier} request was saved, but the MoMo dialer could not open.",
-  "@membershipDialerFailed": {"placeholders": {"tier": {"type": "String"}}},
+  "@membershipDialerFailed": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "membershipSubmittedBackground": "{tier} request submitted. Payment verification happens in the background.",
-  "@membershipSubmittedBackground": {"placeholders": {"tier": {"type": "String"}}},
+  "@membershipSubmittedBackground": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "membershipPendingReviewAction": "Pending review",
   "membershipActivateAction": "Activate",
   "membershipRenewAction": "Renew",
   "membershipSwitchAction": "Switch",
   "membershipCopied": "Membership details copied.",
   "membershipShareText": "{club} membership\nTier: {tier}\nSupporter ID: #{supporter}",
-  "@membershipShareText": {"placeholders": {"club": {"type": "String"}, "tier": {"type": "String"}, "supporter": {"type": "String"}}},
+  "@membershipShareText": {
+    "placeholders": {
+      "club": {
+        "type": "String"
+      },
+      "tier": {
+        "type": "String"
+      },
+      "supporter": {
+        "type": "String"
+      }
+    }
+  },
   "membershipActivityPending": "Membership activity appears after ticket, fanclub, and contribution reviews.",
   "membershipActivityRecorded": "{count, plural, =0{No activity points recorded.} =1{1 activity point recorded.} other{{count} activity points recorded.}}",
-  "@membershipActivityRecorded": {"placeholders": {"count": {"type": "int"}}},
+  "@membershipActivityRecorded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "membershipSupportMessage": "Hi, I need help with my membership payment verification.",
   "membershipWhatsAppUnavailable": "Could not open WhatsApp. Please contact support.",
   "membershipSupportNotConfigured": "Support contact is not configured yet.",
@@ -306,16 +468,40 @@
   "membershipUpdatingMessage": "Refreshing packages and current membership details.",
   "membershipRefreshAction": "Refresh",
   "membershipCurrentStatus": "{tier} · Current",
-  "@membershipCurrentStatus": {"placeholders": {"tier": {"type": "String"}}},
+  "@membershipCurrentStatus": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "membershipRefreshRequired": "Refresh required",
   "membershipSubmittingAction": "Submitting",
   "membershipPackageCurrentSemantic": "{tier} membership package, current",
-  "@membershipPackageCurrentSemantic": {"placeholders": {"tier": {"type": "String"}}},
+  "@membershipPackageCurrentSemantic": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "membershipPackageFallback": "Package",
   "membershipFanFallback": "Fan",
   "membershipDateNextYear": "next year",
   "membershipDate": "{day} {month} {year}",
-  "@membershipDate": {"placeholders": {"day": {"type": "int"}, "month": {"type": "String"}, "year": {"type": "int"}}},
+  "@membershipDate": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
   "membershipMonthJan": "Jan",
   "membershipMonthFeb": "Feb",
   "membershipMonthMar": "Mar",
@@ -330,7 +516,13 @@
   "membershipMonthDec": "Dec",
   "clubTitle": "Club",
   "clubOfficialOverviewSemantic": "{club} official club overview",
-  "@clubOfficialOverviewSemantic": {"placeholders": {"club": {"type": "String"}}},
+  "@clubOfficialOverviewSemantic": {
+    "placeholders": {
+      "club": {
+        "type": "String"
+      }
+    }
+  },
   "clubLiveIdentityUnavailable": "Live club identity unavailable",
   "clubIdentityFallbackMessage": "Showing the verified app identity while the current club record cannot be refreshed.",
   "clubOfficialSection": "Official club",
@@ -350,19 +542,52 @@
   "clubFixturesEmptyTitle": "No upcoming fixtures",
   "clubFixturesEmptyMessage": "The club has not published another fixture yet.",
   "clubFixtureTitle": "{home} vs {away}",
-  "@clubFixtureTitle": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@clubFixtureTitle": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "clubTicketsTitle": "Tickets",
   "clubResultsTitle": "Results",
   "clubResultsSubtitle": "Completed match scores",
   "clubResultsEmptyTitle": "No results published",
   "clubResultsEmptyMessage": "Completed club matches will appear here.",
   "clubResultTitle": "{home} {homeScore} – {awayScore} {away}",
-  "@clubResultTitle": {"placeholders": {"home": {"type": "String"}, "homeScore": {"type": "int"}, "awayScore": {"type": "int"}, "away": {"type": "String"}}},
+  "@clubResultTitle": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "homeScore": {
+        "type": "int"
+      },
+      "awayScore": {
+        "type": "int"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "clubMatchTitle": "Match",
   "clubMatchUnavailableTitle": "Match unavailable",
   "clubMatchUnavailableMessage": "This match is not published for the active club or the link is no longer current.",
   "clubScore": "{homeScore} – {awayScore}",
-  "@clubScore": {"placeholders": {"homeScore": {"type": "int"}, "awayScore": {"type": "int"}}},
+  "@clubScore": {
+    "placeholders": {
+      "homeScore": {
+        "type": "int"
+      },
+      "awayScore": {
+        "type": "int"
+      }
+    }
+  },
   "clubViewAvailableTickets": "View available tickets",
   "clubStandingsTitle": "Standings",
   "clubStandingsSubtitle": "Current published league table",
@@ -380,12 +605,24 @@
   "clubProjectsEmptyTitle": "No projects published",
   "clubProjectsEmptyMessage": "Governed supporter projects will appear after club approval.",
   "clubSupporters": "{count, plural, =0{No supporters} =1{1 supporter} other{{count} supporters}}",
-  "@clubSupporters": {"placeholders": {"count": {"type": "int"}}},
+  "@clubSupporters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "clubProjectTitle": "Club project",
   "clubProjectUnavailableTitle": "Project unavailable",
   "clubProjectUnavailableMessage": "This project is not active for the current club or the link is no longer current.",
   "clubSupportersParticipate": "{count, plural, =0{No supporters currently participate.} =1{1 supporter currently participates.} other{{count} supporters currently participate.}}",
-  "@clubSupportersParticipate": {"placeholders": {"count": {"type": "int"}}},
+  "@clubSupportersParticipate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "clubOpenContribution": "Open contribution workflow",
   "clubInformationUnavailable": "Club information unavailable",
   "clubInformationLoadMessage": "The current club data could not be loaded. Existing app content has not been replaced.",
@@ -405,15 +642,51 @@
   "clubShopTitle": "Shop",
   "clubShopSubtitle": "Official products and availability",
   "onboardingBelongImageSemantic": "{club} players applauding supporters after a match",
-  "@onboardingBelongImageSemantic": {"placeholders": {"club": {"type": "String"}}},
+  "@onboardingBelongImageSemantic": {
+    "placeholders": {
+      "club": {
+        "type": "String"
+      }
+    }
+  },
   "onboardingKnowImageSemantic": "{club} players celebrating together",
-  "@onboardingKnowImageSemantic": {"placeholders": {"club": {"type": "String"}}},
+  "@onboardingKnowImageSemantic": {
+    "placeholders": {
+      "club": {
+        "type": "String"
+      }
+    }
+  },
   "onboardingLiveImageSemantic": "{club} player portrait",
-  "@onboardingLiveImageSemantic": {"placeholders": {"club": {"type": "String"}}},
+  "@onboardingLiveImageSemantic": {
+    "placeholders": {
+      "club": {
+        "type": "String"
+      }
+    }
+  },
   "onboardingIdentitySemantic": "{club} identity",
-  "@onboardingIdentitySemantic": {"placeholders": {"club": {"type": "String"}}},
+  "@onboardingIdentitySemantic": {
+    "placeholders": {
+      "club": {
+        "type": "String"
+      }
+    }
+  },
   "onboardingImageSemantic": "{description}. Image {index} of {count}",
-  "@onboardingImageSemantic": {"placeholders": {"description": {"type": "String"}, "index": {"type": "int"}, "count": {"type": "int"}}},
+  "@onboardingImageSemantic": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      },
+      "index": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "onboardingAnonymousSessionUnavailable": "Could not start a guest session. Try again.",
   "onboardingRefreshingTitle": "Refreshing welcome",
   "onboardingRefreshingMessage": "Keeping the current welcome and choices visible while updates are checked.",
@@ -435,7 +708,13 @@
   "onboardingUnavailableMessage": "The welcome could not be loaded safely. Try again or continue without signing in.",
   "onboardingRefresh": "Refresh",
   "splashLoadingSemantic": "{app} loading",
-  "@splashLoadingSemantic": {"placeholders": {"app": {"type": "String"}}},
+  "@splashLoadingSemantic": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
   "authBack": "Back",
   "authCountryUnavailable": "Country details are unavailable for this build.",
   "authSendingCodeTitle": "Sending code",
@@ -481,7 +760,13 @@
   "authPhoneMissingMessage": "Start again to request a WhatsApp code.",
   "authChangeNumber": "Change number",
   "authResendIn": "Resend in {seconds}s",
-  "@authResendIn": {"placeholders": {"seconds": {"type": "int"}}},
+  "@authResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "authResendCode": "Resend code",
   "authCheckWhatsAppEyebrow": "Check WhatsApp",
   "authEnterCodeTitle": "Enter code",
@@ -508,7 +793,7 @@
   "homeMatchdayTitle": "Matchday",
   "homeNextFixturePending": "The next fixture will appear here when it is published.",
   "homeFixturesUnavailable": "Club fixtures are not available yet.",
-  "homeOpenFanZone": "Open Fan Zone",
+  "homeOpenFanZone": "Open Predict",
   "homeSearchHint": "Find",
   "homeSearchSemantic": "Search fans, fixtures, wallet",
   "homeNotifications": "Notifications",
@@ -524,13 +809,28 @@
   "homeSupportersTitle": "Supporters",
   "homeSupportersSubtitle": "Top active",
   "homePoints": "{count, plural, =0{0 pts} =1{1 pt} other{{count} pts}}",
-  "@homePoints": {"placeholders": {"count": {"type": "int"}}},
+  "@homePoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "homeNewsTitle": "News",
   "homeLatestUpdates": "Latest club updates",
   "homeLatestUnavailable": "Latest Intel is temporarily unavailable. Pull to refresh.",
   "homeOpenMatchDetails": "Open match details",
   "homeMatchTitle": "{home} vs {away}",
-  "@homeMatchTitle": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@homeMatchTitle": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "homeShortcutsTitle": "Shortcuts",
   "homeLess": "Less",
   "homeMore": "More",
@@ -538,16 +838,40 @@
   "homeShowMoreShortcuts": "Show more shortcuts",
   "homeMoreShortcuts": "More shortcuts",
   "homeActionUnavailable": "{action}\nUnavailable",
-  "@homeActionUnavailable": {"placeholders": {"action": {"type": "String"}}},
+  "@homeActionUnavailable": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "homeActionUnavailableInline": "{action} · Unavailable",
-  "@homeActionUnavailableInline": {"placeholders": {"action": {"type": "String"}}},
+  "@homeActionUnavailableInline": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "homeActionOpensHint": "Opens {action}",
-  "@homeActionOpensHint": {"placeholders": {"action": {"type": "String"}}},
+  "@homeActionOpensHint": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "homeActionUnavailableHint": "{action} is unavailable",
-  "@homeActionUnavailableHint": {"placeholders": {"action": {"type": "String"}}},
+  "@homeActionUnavailableHint": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "homeTicketsAction": "Tickets",
   "homeMembershipAction": "Join Gikundiro",
-  "homeFanZoneAction": "Fan Zone",
+  "homeFanZoneAction": "Predict",
   "homeShopAction": "Shop",
   "homeFetLabel": "FET",
   "homeRankLabel": "Rank",
@@ -562,17 +886,41 @@
   "fanClubActive": "Active",
   "fanClubPendingReview": "Pending review",
   "fanClubCurrentSemantic": "Current fan club, {name}",
-  "@fanClubCurrentSemantic": {"placeholders": {"name": {"type": "String"}}},
+  "@fanClubCurrentSemantic": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubAboutTitle": "About this club",
   "fanClubRegionValue": "Region: {region}",
-  "@fanClubRegionValue": {"placeholders": {"region": {"type": "String"}}},
+  "@fanClubRegionValue": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubSnapshotTitle": "Group snapshot",
   "fanClubAwaitingApproval": "This fan club is waiting for admin approval.",
   "fanClubJoinRequestsReviewed": "Join requests are reviewed in the Supporters area.",
   "fanClubRegionSentence": "Region: {region}.",
-  "@fanClubRegionSentence": {"placeholders": {"region": {"type": "String"}}},
+  "@fanClubRegionSentence": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubPublicSupporters": "{members} supporters listed publicly.",
-  "@fanClubPublicSupporters": {"placeholders": {"members": {"type": "String"}}},
+  "@fanClubPublicSupporters": {
+    "placeholders": {
+      "members": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubUnavailableOfflineTitle": "Fan club unavailable offline",
   "fanClubUnavailableOfflineMessage": "Connect to confirm the latest approved club details.",
   "fanClubAccessDeniedTitle": "Fan club access denied",
@@ -596,9 +944,27 @@
   "fanClubRefreshFailedTitle": "Fan club refresh failed",
   "fanClubMatchdayAgenda": "Matchday agenda",
   "fanClubMatchMeta": "{competition}  •  {venue}",
-  "@fanClubMatchMeta": {"placeholders": {"competition": {"type": "String"}, "venue": {"type": "String"}}},
+  "@fanClubMatchMeta": {
+    "placeholders": {
+      "competition": {
+        "type": "String"
+      },
+      "venue": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubMatchSchedule": "{date}  •  {time}",
-  "@fanClubMatchSchedule": {"placeholders": {"date": {"type": "String"}, "time": {"type": "String"}}},
+  "@fanClubMatchSchedule": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubMembersLabel": "Members",
   "fanClubStatusLabel": "Status",
   "fanClubRegionLabel": "Region",
@@ -609,9 +975,24 @@
   "fanClubCopyLink": "Copy link",
   "fanClubCopyLinkSemantic": "Copy fan club link",
   "fanClubShareFallback": "Open {appName} and visit the Fan Clubs section.",
-  "@fanClubShareFallback": {"placeholders": {"appName": {"type": "String"}}},
+  "@fanClubShareFallback": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubShareText": "Join this {appName} fan club: {target}",
-  "@fanClubShareText": {"placeholders": {"appName": {"type": "String"}, "target": {"type": "String"}}},
+  "@fanClubShareText": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubLinkCopied": "Fan club link copied.",
   "fanClubsLoadError": "Could not load fan clubs right now.",
   "fanClubReviewRequestSent": "Request sent for admin review. You are not joined until the club approves it.",
@@ -621,9 +1002,24 @@
   "fanClubsFeaturedChapter": "Featured chapter",
   "fanClubOfficialChapterFallback": "Official supporter chapter.",
   "fanClubMembersValue": "{members} members",
-  "@fanClubMembersValue": {"placeholders": {"members": {"type": "String"}}},
+  "@fanClubMembersValue": {
+    "placeholders": {
+      "members": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubRegionMembers": "{region} • {members}",
-  "@fanClubRegionMembers": {"placeholders": {"region": {"type": "String"}, "members": {"type": "String"}}},
+  "@fanClubRegionMembers": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      },
+      "members": {
+        "type": "String"
+      }
+    }
+  },
   "fanClubReviewRequested": "Review requested",
   "fanClubRequestReview": "Request review",
   "fanClubDetailsAction": "Details",
@@ -636,10 +1032,28 @@
   "liveStatusUpcoming": "Upcoming",
   "liveStatusFinal": "Final",
   "liveTimeVenue": "{time}  •  {venue}",
-  "@liveTimeVenue": {"placeholders": {"time": {"type": "String"}, "venue": {"type": "String"}}},
+  "@liveTimeVenue": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "venue": {
+        "type": "String"
+      }
+    }
+  },
   "liveMatchUpdate": "Match update",
   "liveMatchTeamsUpper": "{home} VS {away}",
-  "@liveMatchTeamsUpper": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@liveMatchTeamsUpper": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "liveModeActive": "Live mode active. Events appear in real time.",
   "liveMatchReport": "Match report",
   "liveMatchFinishedPending": "Match finished. Summary pending.",
@@ -652,12 +1066,42 @@
   "liveMatchCenter": "Match Center",
   "liveMyPredictions": "My Predictions",
   "liveScore": "{homeScore} - {awayScore}",
-  "@liveScore": {"placeholders": {"homeScore": {"type": "int"}, "awayScore": {"type": "int"}}},
+  "@liveScore": {
+    "placeholders": {
+      "homeScore": {
+        "type": "int"
+      },
+      "awayScore": {
+        "type": "int"
+      }
+    }
+  },
   "liveMatchIntel": "Match Intel",
   "liveBrowsePredictions": "Browse predictions",
   "liveShareMatch": "Share match",
   "liveShareText": "{appName}: {homeTeam} {homeScore}-{awayScore} {awayTeam} ({status})",
-  "@liveShareText": {"placeholders": {"appName": {"type": "String"}, "homeTeam": {"type": "String"}, "homeScore": {"type": "int"}, "awayScore": {"type": "int"}, "awayTeam": {"type": "String"}, "status": {"type": "String"}}},
+  "@liveShareText": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      },
+      "homeTeam": {
+        "type": "String"
+      },
+      "homeScore": {
+        "type": "int"
+      },
+      "awayScore": {
+        "type": "int"
+      },
+      "awayTeam": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "liveMatchCopied": "Match update copied to clipboard.",
   "liveCenterUnavailable": "Live center unavailable",
   "liveRefresh": "Refresh",
@@ -666,7 +1110,13 @@
   "newsBackToLiveMatch": "Back to live match",
   "newsClubNews": "Club news",
   "newsArticleImageSemantic": "{title} article image",
-  "@newsArticleImageSemantic": {"placeholders": {"title": {"type": "String"}}},
+  "@newsArticleImageSemantic": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "newsRefreshingTitle": "Refreshing article",
   "newsRefreshingMessage": "Keeping the confirmed story visible while the latest version is checked.",
   "newsRelatedUnavailableTitle": "Related stories unavailable",
@@ -674,10 +1124,22 @@
   "newsShowingSavedTitle": "Showing saved article",
   "newsShowingSavedMessage": "Reconnect and refresh before opening another story.",
   "newsSelectedSemantic": "Selected article {title}",
-  "@newsSelectedSemantic": {"placeholders": {"title": {"type": "String"}}},
+  "@newsSelectedSemantic": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "newsToday": "Today",
   "newsMetadata": "Club News  ·  {date}  ·  Media Desk",
-  "@newsMetadata": {"placeholders": {"date": {"type": "String"}}},
+  "@newsMetadata": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "newsRelatedIntel": "Related intel",
   "newsRefreshArticle": "Refresh article",
   "newsConnectionRestored": "Connection restored",
@@ -693,21 +1155,48 @@
   "newsUnavailableTitle": "Article unavailable",
   "newsUnavailableMessage": "The latest story could not be confirmed. Refresh to try again.",
   "liveTeamLogoSemantic": "{label} team logo",
-  "@liveTeamLogoSemantic": {"placeholders": {"label": {"type": "String"}}},
+  "@liveTeamLogoSemantic": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "liveTeamFallback": "Team",
   "liveMatchEventSemantic": "Match event: {event}",
-  "@liveMatchEventSemantic": {"placeholders": {"event": {"type": "String"}}},
+  "@liveMatchEventSemantic": {
+    "placeholders": {
+      "event": {
+        "type": "String"
+      }
+    }
+  },
   "liveEventGoal": "goal",
   "liveEventCard": "card",
   "liveEventSubstitution": "substitution",
   "liveEventVarReview": "VAR review",
   "liveEventUpdate": "update",
   "liveStatSemantic": "{label} {value}",
-  "@liveStatSemantic": {"placeholders": {"label": {"type": "String"}, "value": {"type": "String"}}},
+  "@liveStatSemantic": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "shopAllCategory": "All",
   "shopProductFallback": "Product",
   "shopProductAdded": "{name} added to cart.",
-  "@shopProductAdded": {"placeholders": {"name": {"type": "String"}}},
+  "@shopProductAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "shopStoreTitle": "Store",
   "shopTitle": "Shop",
   "shopSearch": "Search",
@@ -717,7 +1206,13 @@
   "shopBack": "Back",
   "shopNoProductsTitle": "No products available",
   "shopNoProductsCategoryTitle": "No products in {category}",
-  "@shopNoProductsCategoryTitle": {"placeholders": {"category": {"type": "String"}}},
+  "@shopNoProductsCategoryTitle": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
   "shopNoProductsMessage": "Official merchandise will appear here when the club publishes store inventory.",
   "shopNoProductsCategoryMessage": "Try another category or clear the filter to see the full store.",
   "shopRetry": "Retry",
@@ -731,7 +1226,13 @@
   "shopSavedSemantic": "Warning status: Saved store content. Inventory may be out of date. Reconnect to refresh before checkout.",
   "shopClubStore": "Club store",
   "shopItemsAvailable": "{count} items available now.",
-  "@shopItemsAvailable": {"placeholders": {"count": {"type": "int"}}},
+  "@shopItemsAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "shopOfflineTitle": "Store offline",
   "shopOfflineMessage": "Connect to load current club merchandise.",
   "shopAccessTitle": "Store access not available",
@@ -746,14 +1247,32 @@
   "shopOutOfStock": "Out of stock",
   "shopAddToCart": "Add to cart",
   "shopProductImageSemantic": "{name} product image",
-  "@shopProductImageSemantic": {"placeholders": {"name": {"type": "String"}}},
+  "@shopProductImageSemantic": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "shopProductUnavailableSemantic": "{name}, currently out of stock",
-  "@shopProductUnavailableSemantic": {"placeholders": {"name": {"type": "String"}}},
+  "@shopProductUnavailableSemantic": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "shopOpenProduct": "Open product",
   "shopSearchHint": "Search kits, scarves, and drops",
   "shopMerchFallback": "Merch",
   "shopQuantityValue": "Qty {quantity}",
-  "@shopQuantityValue": {"placeholders": {"quantity": {"type": "int"}}},
+  "@shopQuantityValue": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
   "shopDecreaseQuantity": "Decrease quantity",
   "shopIncreaseQuantity": "Increase quantity",
   "shopRemove": "Remove",
@@ -786,10 +1305,22 @@
   "shopSavedProductMessage": "Reconnect to refresh price, sizes, and availability before buying.",
   "shopInStock": "Available now",
   "shopStockAvailable": "{count} available now",
-  "@shopStockAvailable": {"placeholders": {"count": {"type": "int"}}},
+  "@shopStockAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "shopSelectSize": "Select size",
   "shopSizeTooltip": "Size {size}",
-  "@shopSizeTooltip": {"placeholders": {"size": {"type": "String"}}},
+  "@shopSizeTooltip": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "shopSizeSelectedHint": "Selected",
   "shopSizeAvailableHint": "Available",
   "shopQuantity": "Quantity",
@@ -802,14 +1333,41 @@
   "shopAddressRequired": "Enter a delivery address first.",
   "shopMomoSetupPending": "MOMO checkout setup is pending club activation.",
   "shopOrderDialerFailure": "Order {orderId} was saved, but the MOMO dialer could not open.",
-  "@shopOrderDialerFailure": {"placeholders": {"orderId": {"type": "String"}}},
+  "@shopOrderDialerFailure": {
+    "placeholders": {
+      "orderId": {
+        "type": "String"
+      }
+    }
+  },
   "shopOrderCreated": "Order {orderId} created. Payment verification is still pending.",
-  "@shopOrderCreated": {"placeholders": {"orderId": {"type": "String"}}},
+  "@shopOrderCreated": {
+    "placeholders": {
+      "orderId": {
+        "type": "String"
+      }
+    }
+  },
   "shopReviewOrder": "Review order",
   "shopItemQuantitySummary": "{name} x{quantity}",
-  "@shopItemQuantitySummary": {"placeholders": {"name": {"type": "String"}, "quantity": {"type": "int"}}},
+  "@shopItemQuantitySummary": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
   "shopMoreItems": "+{count} more items",
-  "@shopMoreItems": {"placeholders": {"count": {"type": "int"}}},
+  "@shopMoreItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "shopDeliverTo": "Deliver to",
   "shopPaymentInstructions": "Approve the MOMO prompt on your device, then confirm here. Orders remain pending until verification is complete.",
   "shopPaymentSubmitted": "I submitted the payment",
@@ -821,14 +1379,26 @@
   "shopDeliveryAddress": "Delivery address",
   "shopEnterDeliveryAddress": "Enter your delivery address",
   "shopStreetCityCountry": "Street, city, {country}",
-  "@shopStreetCityCountry": {"placeholders": {"country": {"type": "String"}}},
+  "@shopStreetCityCountry": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
   "shopSubtotal": "Subtotal",
   "shopCheckingPayment": "Checking payment",
   "shopCheckingPaymentMessage": "Confirming the current MOMO route for this club.",
   "shopPaymentCheckFailed": "Payment check failed",
   "shopCheckoutUnavailable": "Checkout unavailable",
   "shopPayTo": "Pay to {label}",
-  "@shopPayTo": {"placeholders": {"label": {"type": "String"}}},
+  "@shopPayTo": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "shopReviewCart": "Review cart",
   "shopConnectionRequired": "Connection required",
   "shopPaymentRouteNotReady": "Payment route not ready",
@@ -879,7 +1449,13 @@
   "ticketGoogleWalletTimeout": "The secure Wallet request timed out. No save is confirmed; try again.",
   "ticketGoogleWalletFailed": "The ticket could not be added to Google Wallet. Try again later.",
   "ticketSelectedSemantic": "Selected e-ticket {match}",
-  "@ticketSelectedSemantic": {"placeholders": {"match": {"type": "String"}}},
+  "@ticketSelectedSemantic": {
+    "placeholders": {
+      "match": {
+        "type": "String"
+      }
+    }
+  },
   "ticketOfflineTitle": "E-ticket unavailable offline",
   "ticketOfflineMessage": "Reconnect before loading this entry code.",
   "ticketAccessDeniedTitle": "E-ticket access denied",
@@ -909,9 +1485,30 @@
   "ticketBrowseMatches": "Browse matches",
   "ticketOpenQr": "Open ticket QR code",
   "ticketWalletSemantic": "{match}, {status} ticket, {seat}",
-  "@ticketWalletSemantic": {"placeholders": {"match": {"type": "String"}, "status": {"type": "String"}, "seat": {"type": "String"}}},
+  "@ticketWalletSemantic": {
+    "placeholders": {
+      "match": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "seat": {
+        "type": "String"
+      }
+    }
+  },
   "ticketSeatPrice": "{seat} • {price}",
-  "@ticketSeatPrice": {"placeholders": {"seat": {"type": "String"}, "price": {"type": "String"}}},
+  "@ticketSeatPrice": {
+    "placeholders": {
+      "seat": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "ticketPendingQrMessage": "Payment received on your phone still needs verification before the QR unlocks.",
   "ticketCheckoutSummary": "Checkout summary",
   "ticketMatchLabel": "Match",
@@ -921,7 +1518,13 @@
   "ticketTotalLabel": "Total",
   "ticketPaymentRouteLabel": "Payment route",
   "ticketPayToDialer": "Pay to {label}\nDialer will open USSD prompt.",
-  "@ticketPayToDialer": {"placeholders": {"label": {"type": "String"}}},
+  "@ticketPayToDialer": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "ticketSoldOut": "Sold out",
   "ticketPayViaMomo": "Pay via MOMO",
   "ticketConfirmAfterMomo": "Confirm payment after completing the MOMO prompt.",
@@ -934,16 +1537,46 @@
   "ticketTotalUpper": "Total",
   "ticketIncluded": "Included",
   "ticketMomoValue": "MOMO: {label}",
-  "@ticketMomoValue": {"placeholders": {"label": {"type": "String"}}},
+  "@ticketMomoValue": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "ticketConfirmPaymentWarning": "Confirm only after completing the MoMo payment on your phone.",
   "ticketCompletedPayment": "I completed payment",
   "ticketDidNotPay": "I did not pay",
   "ticketMatchVersus": "{home} vs {away}",
-  "@ticketMatchVersus": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@ticketMatchVersus": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "ticketCompetitionVenue": "{competition}  •  {venue}",
-  "@ticketCompetitionVenue": {"placeholders": {"competition": {"type": "String"}, "venue": {"type": "String"}}},
+  "@ticketCompetitionVenue": {
+    "placeholders": {
+      "competition": {
+        "type": "String"
+      },
+      "venue": {
+        "type": "String"
+      }
+    }
+  },
   "ticketRemainingCapacity": "Remaining capacity: {count}",
-  "@ticketRemainingCapacity": {"placeholders": {"count": {"type": "int"}}},
+  "@ticketRemainingCapacity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "ticketChooseAccess": "Choose access",
   "ticketGeneral": "General",
   "ticketGeneralSubtitle": "Open stands / Bleachers area",
@@ -1008,7 +1641,13 @@
   "ticketReservationFailed": "Ticket reservation failed. Please try again from the match screen.",
   "ticketDialerOpenFailed": "Ticket request was saved, but the MOMO dialer could not open.",
   "ticketRequestsSubmitted": "{count, plural, =1{Ticket request submitted — pending payment verification.} other{{count} ticket requests submitted — pending verification.}}",
-  "@ticketRequestsSubmitted": {"placeholders": {"count": {"type": "int"}}},
+  "@ticketRequestsSubmitted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "ticketConfirmationTimedOut": "Ticket confirmation timed out. Check My Tickets before trying again.",
   "ticketRequestFailed": "Ticket request failed. Your selection is still available.",
   "ticketMatchDay": "Match day",
@@ -1069,14 +1708,41 @@
   "ticketSelectedSeatUpper": "Selected seat",
   "ticketSeatMapSemantic": "Interactive stadium seat map",
   "ticketSeatMapSelectedSemantic": "Interactive stadium seat map, selected {seat}",
-  "@ticketSeatMapSelectedSemantic": {"placeholders": {"seat": {"type": "String"}}},
+  "@ticketSeatMapSelectedSemantic": {
+    "placeholders": {
+      "seat": {
+        "type": "String"
+      }
+    }
+  },
   "ticketSeatMapHint": "Tap a stand to select a seat",
   "ticketSelectedStandSemantic": "Selected {stand} stand",
-  "@ticketSelectedStandSemantic": {"placeholders": {"stand": {"type": "String"}}},
+  "@ticketSelectedStandSemantic": {
+    "placeholders": {
+      "stand": {
+        "type": "String"
+      }
+    }
+  },
   "ticketSelectStandSemantic": "Select {stand} stand",
-  "@ticketSelectStandSemantic": {"placeholders": {"stand": {"type": "String"}}},
+  "@ticketSelectStandSemantic": {
+    "placeholders": {
+      "stand": {
+        "type": "String"
+      }
+    }
+  },
   "ticketSeatCode": "{stand}, Seat {number}",
-  "@ticketSeatCode": {"placeholders": {"stand": {"type": "String"}, "number": {"type": "int"}}},
+  "@ticketSeatCode": {
+    "placeholders": {
+      "stand": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "ticketStandVipGold": "VIP Gold",
   "ticketStandEast": "East Stand",
   "ticketStandTribuneRed": "Tribune Red",
@@ -1088,9 +1754,24 @@
   "contributionsProjectsUnavailableMessage": "Club projects are temporarily unavailable.",
   "contributionsProjectFallback": "Project",
   "contributionsFundingProgress": "{current} / {target}",
-  "@contributionsFundingProgress": {"placeholders": {"current": {"type": "String"}, "target": {"type": "String"}}},
+  "@contributionsFundingProgress": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsSupporters": "{count, plural, =0{No supporters} =1{1 supporter} other{{count} supporters}}",
-  "@contributionsSupporters": {"placeholders": {"count": {"type": "int"}}},
+  "@contributionsSupporters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsContributeAction": "Contribute",
   "contributionsCommunitiesTitle": "Communities",
   "contributionsCommunitiesLoadError": "Could not load public communities right now.",
@@ -1102,9 +1783,21 @@
   "contributionsCommunityQuietMessage": "Public contribution communities will appear here when the club opens the next supporter initiative.",
   "contributionsPublicGroupFallback": "Public group",
   "contributionsContributors": "{count, plural, =0{No contributors} =1{1 contributor} other{{count} contributors}}",
-  "@contributionsContributors": {"placeholders": {"count": {"type": "int"}}},
+  "@contributionsContributors": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsGoalPercent": "{percent}% of goal",
-  "@contributionsGoalPercent": {"placeholders": {"percent": {"type": "int"}}},
+  "@contributionsGoalPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsConnectToLoad": "Connect to load contribution initiatives.",
   "contributionsInitiativesUnavailableMessage": "Contribution initiatives are temporarily unavailable.",
   "contributionsSmsEnabled": "MoMo SMS sync enabled for this device.",
@@ -1113,7 +1806,16 @@
   "contributionsSmsDisabled": "MoMo SMS sync disabled.",
   "contributionsConnectBeforeSmsSync": "Connect before syncing MoMo messages.",
   "contributionsSmsSyncComplete": "SMS sync complete: {uploaded} uploaded, {duplicates} duplicates.",
-  "@contributionsSmsSyncComplete": {"placeholders": {"uploaded": {"type": "int"}, "duplicates": {"type": "int"}}},
+  "@contributionsSmsSyncComplete": {
+    "placeholders": {
+      "uploaded": {
+        "type": "int"
+      },
+      "duplicates": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsSmsSyncFailed": "SMS sync failed. Check your connection and try again.",
   "contributionsHubTitle": "Contribute",
   "contributionsRefreshingTitle": "Refreshing contributions",
@@ -1122,14 +1824,41 @@
   "contributionsSavedMessage": "Totals may be out of date. Reconnect before making or syncing a contribution.",
   "contributionsTeamProjects": "Team projects",
   "contributionsRaised": "{current} of {target} raised.",
-  "@contributionsRaised": {"placeholders": {"current": {"type": "String"}, "target": {"type": "String"}}},
+  "@contributionsRaised": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsOpenMetric": "{count} OPEN",
-  "@contributionsOpenMetric": {"placeholders": {"count": {"type": "int"}}},
+  "@contributionsOpenMetric": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsCommunitiesUpper": "Communities",
   "contributionsInitiativesActive": "{count, plural, =1{1 initiative is active.} other{{count} initiatives are active.}}",
-  "@contributionsInitiativesActive": {"placeholders": {"count": {"type": "int"}}},
+  "@contributionsInitiativesActive": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsLiveMetric": "{count} LIVE",
-  "@contributionsLiveMetric": {"placeholders": {"count": {"type": "int"}}},
+  "@contributionsLiveMetric": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsCommunityUpper": "Community",
   "contributionsFanClubsChapters": "Fan clubs & local chapters.",
   "contributionsLive": "LIVE",
@@ -1145,13 +1874,34 @@
   "contributionsGroupsUnavailableTitle": "Groups unavailable",
   "contributionsGroupFallback": "Group",
   "contributionsAmountOfTarget": "{current} of {target}",
-  "@contributionsAmountOfTarget": {"placeholders": {"current": {"type": "String"}, "target": {"type": "String"}}},
+  "@contributionsAmountOfTarget": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsSeeAllGroups": "See all contribution groups",
   "contributionsSeeAllGroupsSemantic": "See all {count} contribution groups",
-  "@contributionsSeeAllGroupsSemantic": {"placeholders": {"count": {"type": "int"}}},
+  "@contributionsSeeAllGroupsSemantic": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsOpenGroupsHint": "Open contribution groups",
   "contributionsSeeAll": "See all {count}",
-  "@contributionsSeeAll": {"placeholders": {"count": {"type": "int"}}},
+  "@contributionsSeeAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsInitiativeTitle": "Public initiative",
   "contributionsInitiativeLoadingTitle": "Loading public initiative",
   "contributionsInitiativeLoadingMessage": "Checking the confirmed total and public contribution ledger.",
@@ -1176,23 +1926,74 @@
   "contributionsContributeNow": "Contribute now",
   "contributionsConfirmedTotal": "Confirmed total",
   "contributionsTargetProgress": "Target {target} · {percent}%",
-  "@contributionsTargetProgress": {"placeholders": {"target": {"type": "String"}, "percent": {"type": "int"}}},
+  "@contributionsTargetProgress": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsProgressSemantic": "{percent} percent of the contribution target confirmed",
-  "@contributionsProgressSemantic": {"placeholders": {"percent": {"type": "int"}}},
+  "@contributionsProgressSemantic": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsTypeUpper": "Type",
   "contributionsContributorsUpper": "Contributors",
   "contributionsContributeToSemantic": "Contribute to {group}",
-  "@contributionsContributeToSemantic": {"placeholders": {"group": {"type": "String"}}},
+  "@contributionsContributeToSemantic": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsPaymentUnavailableSemantic": "{action}. Payment is unavailable.",
-  "@contributionsPaymentUnavailableSemantic": {"placeholders": {"action": {"type": "String"}}},
+  "@contributionsPaymentUnavailableSemantic": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsPublicLedgerTitle": "Public ledger",
   "contributionsPublicLedgerPrivacy": "Public supporter aliases only. Payment references and account details are never shown.",
   "contributionsLedgerEmptyTitle": "No contributions yet",
   "contributionsLedgerEmptyMessage": "Confirmed public activity will appear here without exposing payment details.",
   "contributionsMetaSemantic": "{label}, {value}",
-  "@contributionsMetaSemantic": {"placeholders": {"label": {"type": "String"}, "value": {"type": "String"}}},
+  "@contributionsMetaSemantic": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsLedgerEntrySemantic": "{alias}, {amount}, {status}, {date}",
-  "@contributionsLedgerEntrySemantic": {"placeholders": {"alias": {"type": "String"}, "amount": {"type": "String"}, "status": {"type": "String"}, "date": {"type": "String"}}},
+  "@contributionsLedgerEntrySemantic": {
+    "placeholders": {
+      "alias": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsStatusConfirmed": "Confirmed",
   "contributionsStatusProcessing": "Processing",
   "contributionsStatusFailed": "Failed",
@@ -1226,7 +2027,13 @@
   "contributionsRefreshStatementUpper": "Refresh statement",
   "contributionsCopyCsvSemantic": "Copy privacy-safe CSV statement",
   "contributionsExportUnavailableSemantic": "Statement export unavailable. {reason}",
-  "@contributionsExportUnavailableSemantic": {"placeholders": {"reason": {"type": "String"}}},
+  "@contributionsExportUnavailableSemantic": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsFromUpper": "From",
   "contributionsToUpper": "To",
   "contributionsAllTime": "All time",
@@ -1245,16 +2052,49 @@
   "contributionsRefreshBeforeExporting": "Refresh before exporting",
   "contributionsCopyCsvStatement": "Copy CSV statement",
   "contributionsStatementSummarySemantic": "{group} public statement, {count} entries, confirmed total {total}",
-  "@contributionsStatementSummarySemantic": {"placeholders": {"group": {"type": "String"}, "count": {"type": "int"}, "total": {"type": "String"}}},
+  "@contributionsStatementSummarySemantic": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsConfirmedTotalUpper": "Confirmed total",
   "contributionsPublicEntriesInRange": "{count, plural, =1{1 public entry in this range} other{{count} public entries in this range}}",
-  "@contributionsPublicEntriesInRange": {"placeholders": {"count": {"type": "int"}}},
+  "@contributionsPublicEntriesInRange": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsStatementPrivacy": "Public supporter aliases only. Names, phone numbers, payment references, and account identifiers are excluded.",
   "contributionsFormatSemantic": "{label} export format, {helper}",
-  "@contributionsFormatSemantic": {"placeholders": {"label": {"type": "String"}, "helper": {"type": "String"}}},
+  "@contributionsFormatSemantic": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "helper": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsPreviewUpper": "Preview",
   "contributionsPreviewShowing": "Showing 5 of {count} entries. The CSV includes the full bounded range.",
-  "@contributionsPreviewShowing": {"placeholders": {"count": {"type": "int"}}},
+  "@contributionsPreviewShowing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsPreviewPublicFields": "The CSV includes only the public fields shown below.",
   "contributionsNoStatementEntriesTitle": "No statement entries",
   "contributionsNoStatementEntriesMessage": "No public contributions match this date range. Choose another range and refresh.",
@@ -1273,10 +2113,25 @@
   "contributionsConnectBeforeContributing": "Connect before contributing. No payment or contribution was submitted.",
   "contributionsDialerFailed": "Could not open the MOMO dialer. Contribution was not submitted.",
   "contributionsStatusAnnouncement": "{heading}. {message}",
-  "@contributionsStatusAnnouncement": {"placeholders": {"heading": {"type": "String"}, "message": {"type": "String"}}},
+  "@contributionsStatusAnnouncement": {
+    "placeholders": {
+      "heading": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsAmountPrompt": "How much to contribute?",
   "contributionsQuickAmount": "+{thousands}K",
-  "@contributionsQuickAmount": {"placeholders": {"thousands": {"type": "int"}}},
+  "@contributionsQuickAmount": {
+    "placeholders": {
+      "thousands": {
+        "type": "int"
+      }
+    }
+  },
   "contributionsLaunchMomoDialer": "Launch MOMO dialer",
   "contributionsLaunchingMomo": "Launching MoMo",
   "contributionsChangeAmount": "Change amount",
@@ -1284,7 +2139,13 @@
   "contributionsCancel": "Cancel contribution",
   "contributionsPaymentConfirmedTitle": "Payment confirmed",
   "contributionsPaymentConfirmedMessage": "Your contribution of {amount} has been verified and recorded.",
-  "@contributionsPaymentConfirmedMessage": {"placeholders": {"amount": {"type": "String"}}},
+  "@contributionsPaymentConfirmedMessage": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsPaymentFailedTitle": "Payment failed",
   "contributionsPaymentFailedMessage": "The payment could not be verified. Check your MoMo balance and try again, or contact support.",
   "contributionsPaymentProcessingTitle": "Still processing",
@@ -1299,7 +2160,13 @@
   "contributionsBackToGroup": "Back to group",
   "contributionsEnableMomoSmsTitle": "Enable MoMo SMS sync",
   "contributionsSmsPrivacyMessage": "{app} reads only MoMo confirmations to auto-log receipts. Other messages are not accessed.",
-  "@contributionsSmsPrivacyMessage": {"placeholders": {"app": {"type": "String"}}},
+  "@contributionsSmsPrivacyMessage": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
   "contributionsAllowSmsReading": "Allow SMS reading",
   "contributionsEnable": "Enable",
   "contributionsNotNowUpper": "Not now",
@@ -1345,7 +2212,13 @@
   "settingsThemeSystem": "System",
   "settingsSupportNotConfigured": "Support contact is not configured.",
   "settingsSupportGreeting": "Hi, I need help with {app}.",
-  "@settingsSupportGreeting": {"placeholders": {"app": {"type": "String"}}},
+  "@settingsSupportGreeting": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
   "settingsWhatsAppFailed": "Could not open WhatsApp.",
   "settingsDeleteAccountTitle": "DELETE your account?",
   "settingsDeleteAccountMessage": "Permanently deletes your profile, FET, badges, and history. Cannot be undone.",
@@ -1400,7 +2273,13 @@
   "editProfileUnavailableTitle": "Profile unavailable",
   "editProfileUnavailableMessage": "Your profile is unavailable. Sign in again to recover your account.",
   "editProfileAlias": "#{alias}",
-  "@editProfileAlias": {"placeholders": {"alias": {"type": "String"}}},
+  "@editProfileAlias": {
+    "placeholders": {
+      "alias": {
+        "type": "String"
+      }
+    }
+  },
   "editProfileNicknameLabel": "Nickname",
   "editProfileNicknameHint": "Optional supporter nickname",
   "editProfileSaving": "Saving…",
@@ -1409,8 +2288,6 @@
   "editProfileDeleteHint": "Permanently delete this supporter account",
   "editProfileDeleteFailed": "Account could not be deleted. Try again.",
   "editProfileLanguageEnglish": "English",
-  "editProfileLanguageFrench": "Français",
-  "editProfileLanguageKinyarwanda": "Kinyarwanda",
   "notificationPreferencesConnectionRestoredReview": "Connection restored. Review your kept changes, then save.",
   "notificationPreferencesConnectionRestoredRefreshing": "Connection restored. Refreshing preferences.",
   "notificationPreferencesConnectBeforeChanging": "Connect before changing notification delivery on this device.",
@@ -1474,7 +2351,13 @@
   "notificationPreferencesEnableAlerts": "Enable alerts",
   "notificationPreferencesDeliveryModel": "Delivery model",
   "notificationPreferencesFullStream": "When alerts are enabled, this release delivers the full {app} notification stream available for your account.",
-  "@notificationPreferencesFullStream": {"placeholders": {"app": {"type": "String"}}},
+  "@notificationPreferencesFullStream": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
   "notificationPreferencesPerCategory": "Per-category tuning is not configurable on this build yet, so this switch controls the entire device delivery state.",
   "notificationPreferencesSave": "Save",
   "privacySettingsConnectionRestoredReview": "Connection restored. Review your kept changes, then save.",
@@ -1540,9 +2423,21 @@
   "privacySettingsExportDescription": "Request an account export through a configured support channel.",
   "privacySettingsExportAction": "Request data export",
   "privacySettingsExportWhatsAppMessage": "Data export request for {app}. Please send me a copy of my account data.",
-  "@privacySettingsExportWhatsAppMessage": {"placeholders": {"app": {"type": "String"}}},
+  "@privacySettingsExportWhatsAppMessage": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
   "privacySettingsExportEmailSubject": "{app} data export request",
-  "@privacySettingsExportEmailSubject": {"placeholders": {"app": {"type": "String"}}},
+  "@privacySettingsExportEmailSubject": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
   "privacySettingsExportEmailBody": "Please send me a copy of my account data.",
   "privacySettingsMailFailed": "Could not open your mail app.",
   "privacySettingsOpenPolicy": "Open privacy policy",
@@ -1605,15 +2500,63 @@
   "adminCancelUpper": "Cancel",
   "adminBackToAdmin": "Back to admin",
   "adminVersus": "{home} vs {away}",
-  "@adminVersus": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@adminVersus": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "adminMetricSemantic": "{label} {value}",
-  "@adminMetricSemantic": {"placeholders": {"label": {"type": "String"}, "value": {"type": "String"}}},
+  "@adminMetricSemantic": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "adminSettlementConfirmTitle": "Settle this fixture?",
   "adminSettlementConfirmMessage": "{home} {homeScore} – {awayScore} {away}\n\nThis grades prediction markets and may trigger supporter rewards. Confirm only from the official result.",
-  "@adminSettlementConfirmMessage": {"placeholders": {"home": {"type": "String"}, "homeScore": {"type": "int"}, "awayScore": {"type": "int"}, "away": {"type": "String"}}},
+  "@adminSettlementConfirmMessage": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "homeScore": {
+        "type": "int"
+      },
+      "awayScore": {
+        "type": "int"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "adminSettlementSettleUpper": "Settle",
   "adminSettlementReceipt": "Settled {score} • {markets} markets • {won} won • {lost} lost",
-  "@adminSettlementReceipt": {"placeholders": {"score": {"type": "String"}, "markets": {"type": "int"}, "won": {"type": "int"}, "lost": {"type": "int"}}},
+  "@adminSettlementReceipt": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      },
+      "markets": {
+        "type": "int"
+      },
+      "won": {
+        "type": "int"
+      },
+      "lost": {
+        "type": "int"
+      }
+    }
+  },
   "adminSettlementReviewOfficialResult": "Review the official result and try again.",
   "adminSettlementNotConfirmed": "Fixture settlement was not confirmed.",
   "adminSettlementTitle": "Settle fixtures",
@@ -1655,7 +2598,13 @@
   "adminSettlementShowHalfTime": "Show half-time score fields",
   "adminSettlementHalfTimeOptional": "Half-time score (optional)",
   "adminSettlementHalfTimeLabel": "{team} HT",
-  "@adminSettlementHalfTimeLabel": {"placeholders": {"team": {"type": "String"}}},
+  "@adminSettlementHalfTimeLabel": {
+    "placeholders": {
+      "team": {
+        "type": "String"
+      }
+    }
+  },
   "adminSettlementReviewAction": "Review settlement",
   "adminStatusFinished": "Finished",
   "adminStatusScheduled": "Scheduled",
@@ -1663,7 +2612,16 @@
   "adminStatusCancelled": "Cancelled",
   "adminStatusPostponed": "Postponed",
   "adminScore": "{home} – {away}",
-  "@adminScore": {"placeholders": {"home": {"type": "int"}, "away": {"type": "int"}}},
+  "@adminScore": {
+    "placeholders": {
+      "home": {
+        "type": "int"
+      },
+      "away": {
+        "type": "int"
+      }
+    }
+  },
   "adminFeatureDetailTitle": "Feature detail",
   "adminFeatureLoadingTitle": "Loading feature settings",
   "adminFeatureLoadingMessage": "Checking controlled channel and access rules.",
@@ -1672,11 +2630,32 @@
   "adminBackToFeatures": "Back to features",
   "adminFeatureGlobalState": "Global state",
   "adminFeatureDisableTooltip": "Disable {feature}",
-  "@adminFeatureDisableTooltip": {"placeholders": {"feature": {"type": "String"}}},
+  "@adminFeatureDisableTooltip": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
   "adminFeatureEnableTooltip": "Enable {feature}",
-  "@adminFeatureEnableTooltip": {"placeholders": {"feature": {"type": "String"}}},
+  "@adminFeatureEnableTooltip": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
   "adminFeatureStateSemantic": "{feature} is {state}",
-  "@adminFeatureStateSemantic": {"placeholders": {"feature": {"type": "String"}, "state": {"type": "String"}}},
+  "@adminFeatureStateSemantic": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
   "adminFeatureChangesGlobalState": "Changes the global feature state",
   "adminFeatureEnabled": "Enabled",
   "adminFeatureDisabled": "Disabled",
@@ -1722,9 +2701,24 @@
   "adminFeatureClearSchedule": "Clear schedule",
   "adminFeatureNotSet": "Not set",
   "adminFeatureSetTooltip": "Set {label}",
-  "@adminFeatureSetTooltip": {"placeholders": {"label": {"type": "String"}}},
+  "@adminFeatureSetTooltip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "adminFeatureDateSemantic": "{label}: {value}",
-  "@adminFeatureDateSemantic": {"placeholders": {"label": {"type": "String"}, "value": {"type": "String"}}},
+  "@adminFeatureDateSemantic": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "adminFeatureOpenDateTime": "Opens date and time selection",
   "adminMatchesTitle": "Matches",
   "adminMatchesLoadingTitle": "Loading match workspace",
@@ -1762,27 +2756,105 @@
   "adminMatchesOutcomeUnconfirmed": "The last change is unconfirmed. Controls stay paused until refresh succeeds.",
   "adminMatchesLastConfirmed": "Last confirmed fixture information remains visible. Controls are paused.",
   "adminMatchesOpenTooltip": "Open {home} versus {away}",
-  "@adminMatchesOpenTooltip": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@adminMatchesOpenTooltip": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "adminMatchesFixtureSemantic": "{home} versus {away} fixture",
-  "@adminMatchesFixtureSemantic": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@adminMatchesFixtureSemantic": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "adminMatchesOpenHint": "Opens controlled fixture settings",
   "adminMatchesCompetitionVenue": "{competition} • {venue}",
-  "@adminMatchesCompetitionVenue": {"placeholders": {"competition": {"type": "String"}, "venue": {"type": "String"}}},
+  "@adminMatchesCompetitionVenue": {
+    "placeholders": {
+      "competition": {
+        "type": "String"
+      },
+      "venue": {
+        "type": "String"
+      }
+    }
+  },
   "adminMatchesDateKickoff": "{date} • {time}",
-  "@adminMatchesDateKickoff": {"placeholders": {"date": {"type": "String"}, "time": {"type": "String"}}},
+  "@adminMatchesDateKickoff": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "adminMatchesPrices": "General {symbol} {general} • VIP {symbol} {vip}",
-  "@adminMatchesPrices": {"placeholders": {"symbol": {"type": "String"}, "general": {"type": "String"}, "vip": {"type": "String"}}},
+  "@adminMatchesPrices": {
+    "placeholders": {
+      "symbol": {
+        "type": "String"
+      },
+      "general": {
+        "type": "String"
+      },
+      "vip": {
+        "type": "String"
+      }
+    }
+  },
   "adminMatchesScore": "Score {home}-{away}{minute}",
-  "@adminMatchesScore": {"placeholders": {"home": {"type": "int"}, "away": {"type": "int"}, "minute": {"type": "String"}}},
+  "@adminMatchesScore": {
+    "placeholders": {
+      "home": {
+        "type": "int"
+      },
+      "away": {
+        "type": "int"
+      },
+      "minute": {
+        "type": "String"
+      }
+    }
+  },
   "adminMatchesAllocation": "{percent}% allocation • {sold} / {capacity} tickets",
-  "@adminMatchesAllocation": {"placeholders": {"percent": {"type": "int"}, "sold": {"type": "int"}, "capacity": {"type": "int"}}},
+  "@adminMatchesAllocation": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "sold": {
+        "type": "int"
+      },
+      "capacity": {
+        "type": "int"
+      }
+    }
+  },
   "adminMatchesEditOnSale": "Edit on-sale fixture",
   "adminMatchesEdit": "Edit fixture",
   "adminStatusHalfTime": "Half-time",
   "adminStatusFullTime": "Full-time",
   "adminStatusUpcoming": "Upcoming",
   "adminMatchesLiveMinute": " • {minute}'",
-  "@adminMatchesLiveMinute": {"placeholders": {"minute": {"type": "int"}}},
+  "@adminMatchesLiveMinute": {
+    "placeholders": {
+      "minute": {
+        "type": "int"
+      }
+    }
+  },
   "adminMatchSaveNotConfirmed": "The match was not saved. Review the confirmed workspace state.",
   "adminMatchReviewFields": "Review every match field and enter valid values.",
   "adminMatchSaveFailedRefresh": "The match was not saved. Try again after refreshing.",
@@ -1793,9 +2865,21 @@
   "adminMatchCompetition": "Competition",
   "adminMatchVenue": "Venue",
   "adminMatchGeneralPrice": "General {symbol}",
-  "@adminMatchGeneralPrice": {"placeholders": {"symbol": {"type": "String"}}},
+  "@adminMatchGeneralPrice": {
+    "placeholders": {
+      "symbol": {
+        "type": "String"
+      }
+    }
+  },
   "adminMatchVipPrice": "VIP {symbol}",
-  "@adminMatchVipPrice": {"placeholders": {"symbol": {"type": "String"}}},
+  "@adminMatchVipPrice": {
+    "placeholders": {
+      "symbol": {
+        "type": "String"
+      }
+    }
+  },
   "adminMatchCapacity": "Capacity",
   "adminMatchTicketsOnSale": "Tickets on sale",
   "adminMatchStatus": "Match status",
@@ -1836,12 +2920,30 @@
   "adminFeatureConfigurationChecking": "Checking feature configuration",
   "adminFeatureConfigurationLastConfirmed": "Last confirmed configuration remains visible. Controls are paused.",
   "adminFeatureOpenTooltip": "Open {feature}",
-  "@adminFeatureOpenTooltip": {"placeholders": {"feature": {"type": "String"}}},
+  "@adminFeatureOpenTooltip": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
   "adminFeatureSettingsSemantic": "{feature} feature settings",
-  "@adminFeatureSettingsSemantic": {"placeholders": {"feature": {"type": "String"}}},
+  "@adminFeatureSettingsSemantic": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
   "adminFeatureOpenSettingsHint": "Opens controlled feature settings",
   "adminFeatureChangeVisibilityTooltip": "Change {feature} visibility",
-  "@adminFeatureChangeVisibilityTooltip": {"placeholders": {"feature": {"type": "String"}}},
+  "@adminFeatureChangeVisibilityTooltip": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
   "adminFeatureChangeVisibility": "Change visibility",
   "adminCompetitionsTitle": "Competitions",
   "adminCompetitionsAdd": "Add competition",
@@ -1876,9 +2978,21 @@
   "adminCompetitionActivateQuestion": "Activate competition?",
   "adminCompetitionDeactivateQuestion": "Deactivate?",
   "adminCompetitionActivateMessage": "{competition} will become available to configured prediction journeys.",
-  "@adminCompetitionActivateMessage": {"placeholders": {"competition": {"type": "String"}}},
+  "@adminCompetitionActivateMessage": {
+    "placeholders": {
+      "competition": {
+        "type": "String"
+      }
+    }
+  },
   "adminCompetitionDeactivateMessage": "{competition} will stop being available to configured prediction journeys.",
-  "@adminCompetitionDeactivateMessage": {"placeholders": {"competition": {"type": "String"}}},
+  "@adminCompetitionDeactivateMessage": {
+    "placeholders": {
+      "competition": {
+        "type": "String"
+      }
+    }
+  },
   "adminActivateUpper": "Activate",
   "adminDeactivateUpper": "Deactivate",
   "adminCompetitionActivated": "Competition activated",
@@ -1925,7 +3039,16 @@
   "adminSeasonActivateQuestion": "Activate season?",
   "adminSeasonDeactivateQuestion": "Deactivate season?",
   "adminSeasonAvailabilityMessage": "{season} will be {availability} to configured competition journeys.",
-  "@adminSeasonAvailabilityMessage": {"placeholders": {"season": {"type": "String"}, "availability": {"type": "String"}}},
+  "@adminSeasonAvailabilityMessage": {
+    "placeholders": {
+      "season": {
+        "type": "String"
+      },
+      "availability": {
+        "type": "String"
+      }
+    }
+  },
   "adminAvailable": "available",
   "adminUnavailable": "unavailable",
   "adminSeasonActivated": "Season activated",
@@ -1961,7 +3084,13 @@
   "adminNotificationTitleLabel": "Notification title",
   "adminNotificationBodyLabel": "Message body",
   "adminNotificationCharacterCount": "{count} characters",
-  "@adminNotificationCharacterCount": {"placeholders": {"count": {"type": "int"}}},
+  "@adminNotificationCharacterCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "adminNotificationImageUrl": "Optional image URL",
   "adminNotificationSchedule": "Schedule",
   "adminNotificationSendNow": "Send now",
@@ -1993,24 +3122,72 @@
   "adminNotificationValidationSchedule": "Pick the delivery date and time first.",
   "adminNotificationQueued": "Notification queued for scheduled delivery.",
   "adminNotificationScheduledFor": "Notification scheduled for {date}.",
-  "@adminNotificationScheduledFor": {"placeholders": {"date": {"type": "String"}}},
+  "@adminNotificationScheduledFor": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "adminNotificationSentSummary": "Sent to {requested} supporters. {sent} delivered.",
-  "@adminNotificationSentSummary": {"placeholders": {"requested": {"type": "int"}, "sent": {"type": "int"}}},
+  "@adminNotificationSentSummary": {
+    "placeholders": {
+      "requested": {
+        "type": "int"
+      },
+      "sent": {
+        "type": "int"
+      }
+    }
+  },
   "adminNotificationPartialSummary": "Partial: {sent} delivered, {failed} failed.",
-  "@adminNotificationPartialSummary": {"placeholders": {"sent": {"type": "int"}, "failed": {"type": "int"}}},
+  "@adminNotificationPartialSummary": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
   "adminNotificationDeliveryFailed": "Notification delivery failed.",
   "adminNotificationRequestRecorded": "Notification request recorded.",
   "adminNotificationHistoryMetrics": " • {requested} targets • {sent} sent • {failed} failed",
-  "@adminNotificationHistoryMetrics": {"placeholders": {"requested": {"type": "int"}, "sent": {"type": "int"}, "failed": {"type": "int"}}},
+  "@adminNotificationHistoryMetrics": {
+    "placeholders": {
+      "requested": {
+        "type": "int"
+      },
+      "sent": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
   "adminNotificationFieldsInvalid": "Review the notification fields and try again.",
   "adminNotificationRequestUnconfirmed": "Notification request was not confirmed.",
   "adminNotificationPayloadCopied": "Payload copied to clipboard.",
   "adminNotificationTierNotSelected": "Tier not selected",
   "adminNotificationTierPreview": "Tier • {tier}",
-  "@adminNotificationTierPreview": {"placeholders": {"tier": {"type": "String"}}},
+  "@adminNotificationTierPreview": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "adminNotificationGroupNotSelected": "Group not selected",
   "adminNotificationGroupPreview": "Group • {group}",
-  "@adminNotificationGroupPreview": {"placeholders": {"group": {"type": "String"}}},
+  "@adminNotificationGroupPreview": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
   "adminNotificationAllSupporters": "All supporters",
   "adminNotificationPreview": "Preview",
   "adminNotificationPreviewBody": "Your message preview appears here.",
@@ -2024,7 +3201,16 @@
   "adminContributionsDescription": "Review club-scoped group totals without exposing supporter or payment identifiers.",
   "adminContributionsMonthlyTotal": "Total recorded this month",
   "adminContributionsSummary": "{groups} groups • {records} bounded records",
-  "@adminContributionsSummary": {"placeholders": {"groups": {"type": "int"}, "records": {"type": "int"}}},
+  "@adminContributionsSummary": {
+    "placeholders": {
+      "groups": {
+        "type": "int"
+      },
+      "records": {
+        "type": "int"
+      }
+    }
+  },
   "adminContributionsNoGroups": "No contribution groups",
   "adminContributionsNoMatch": "No groups match",
   "adminContributionsNoGroupsMessage": "Confirmed club-scoped contribution groups will appear here.",
@@ -2055,10 +3241,25 @@
   "adminContributionsActive": "Active",
   "adminContributionsTeamProject": "Team project",
   "adminContributionsRecordMembers": "{records} bounded records • {members} registered members",
-  "@adminContributionsRecordMembers": {"placeholders": {"records": {"type": "int"}, "members": {"type": "int"}}},
+  "@adminContributionsRecordMembers": {
+    "placeholders": {
+      "records": {
+        "type": "int"
+      },
+      "members": {
+        "type": "int"
+      }
+    }
+  },
   "adminContributionsActivityPending": "Payment activity pending",
   "adminContributionsLastActivity": "Last activity {date}",
-  "@adminContributionsLastActivity": {"placeholders": {"date": {"type": "String"}}},
+  "@adminContributionsLastActivity": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "adminSmsTitle": "SMS operations",
   "adminSmsLoading": "Loading SMS operations",
   "adminSmsLoadingMessage": "Checking controlled pipeline health information.",
@@ -2071,11 +3272,26 @@
   "adminSmsNoRecentRuns": "No recent synchronization runs",
   "adminSmsNoRecentRunsMessage": "The health summary remains available above.",
   "adminSmsMetricSemantics": "{label}, {status}",
-  "@adminSmsMetricSemantics": {"placeholders": {"label": {"type": "String"}, "status": {"type": "String"}}},
+  "@adminSmsMetricSemantics": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "adminSmsCollapseDetails": "Collapse health details",
   "adminSmsExpandDetails": "Expand health details",
   "adminSmsLastSignal": "Last confirmed signal {date}",
-  "@adminSmsLastSignal": {"placeholders": {"date": {"type": "String"}}},
+  "@adminSmsLastSignal": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "adminSmsUnavailable": "SMS operations unavailable",
   "adminSmsDisabled": "SMS operations monitoring is disabled for this build.",
   "adminSmsOffline": "SMS operations offline",
@@ -2100,9 +3316,30 @@
   "adminSmsTriggerManual": "Manual",
   "adminSmsTriggerControlled": "Controlled",
   "adminSmsRunTitle": "{status} • {trigger}",
-  "@adminSmsRunTitle": {"placeholders": {"status": {"type": "String"}, "trigger": {"type": "String"}}},
+  "@adminSmsRunTitle": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "trigger": {
+        "type": "String"
+      }
+    }
+  },
   "adminSmsRunMetrics": "{scanned} scanned • {uploaded} uploaded • {duplicates} duplicates",
-  "@adminSmsRunMetrics": {"placeholders": {"scanned": {"type": "int"}, "uploaded": {"type": "int"}, "duplicates": {"type": "int"}}},
+  "@adminSmsRunMetrics": {
+    "placeholders": {
+      "scanned": {
+        "type": "int"
+      },
+      "uploaded": {
+        "type": "int"
+      },
+      "duplicates": {
+        "type": "int"
+      }
+    }
+  },
   "adminCmsTitle": "Content manager",
   "adminCmsDescription": "Manage home shortcuts, partner catalogs, and supported prediction competitions.",
   "adminCmsLoading": "Loading content manager",
@@ -2219,7 +3456,16 @@
   "adminCmsCtaPending": "CTA pending",
   "adminCmsNotAvailable": "n/a",
   "adminCmsCompetitionSummary": "{kind} • {count} fixtures",
-  "@adminCmsCompetitionSummary": {"placeholders": {"kind": {"type": "String"}, "count": {"type": "int"}}},
+  "@adminCmsCompetitionSummary": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "adminCmsCatalog": "Catalog",
   "adminCmsSupported": "Supported",
   "adminCmsUnknown": "unknown",
@@ -2227,7 +3473,13 @@
   "adminCmsUnknownDate": "Unknown date",
   "adminCmsActionFallback": "Action",
   "adminCmsFeatureName": "Feature: {feature}",
-  "@adminCmsFeatureName": {"placeholders": {"feature": {"type": "String"}}},
+  "@adminCmsFeatureName": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
   "adminCmsActorWithheld": "Actor details are withheld in the mobile workspace.",
   "adminCmsEdit": "Edit",
   "adminCmsUntitled": "Untitled",
@@ -2237,11 +3489,32 @@
   "adminCmsNotPublished": "Not published",
   "adminCmsFeatured": "Featured",
   "adminCmsArticleMeta": "{category} • {date}{featured}",
-  "@adminCmsArticleMeta": {"placeholders": {"category": {"type": "String"}, "date": {"type": "String"}, "featured": {"type": "String"}}},
+  "@adminCmsArticleMeta": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "featured": {
+        "type": "String"
+      }
+    }
+  },
   "adminCmsUnpublish": "Unpublish",
   "adminCmsPublish": "Publish",
   "adminCmsPair": "{first} • {second}",
-  "@adminCmsPair": {"placeholders": {"first": {"type": "String"}, "second": {"type": "String"}}},
+  "@adminCmsPair": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
   "gameCommunityPicks": "Community picks",
   "gameFetProgress": "FET progress",
   "gameFet": "FET",
@@ -2250,9 +3523,21 @@
   "gameKeepGoing": "Keep going",
   "gameLive": "LIVE",
   "gameOutcomePick": "{outcome} pick",
-  "@gameOutcomePick": {"placeholders": {"outcome": {"type": "String"}}},
+  "@gameOutcomePick": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
   "gamePoints": "+{count} pts",
-  "@gamePoints": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameDaysShort": "Days",
   "gameHoursShort": "Hrs",
   "gameMinutesShort": "Min",
@@ -2267,13 +3552,46 @@
   "gameEntriesClosed": "Entries closed",
   "gameEntriesCloseIn": "Entries close in",
   "gameFetProgressValue": "{current} of {maximum}, {tier} tier",
-  "@gameFetProgressValue": {"placeholders": {"current": {"type": "int"}, "maximum": {"type": "int"}, "tier": {"type": "String"}}},
+  "@gameFetProgressValue": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "maximum": {
+        "type": "int"
+      },
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "gamePickForTeams": "{outcome} pick for {home} versus {away}",
-  "@gamePickForTeams": {"placeholders": {"outcome": {"type": "String"}, "home": {"type": "String"}, "away": {"type": "String"}}},
+  "@gamePickForTeams": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      },
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "gameSelectedPick": "Selected pick",
   "gameAddPickToRound": "Add pick to round",
   "gameNotificationSemantics": "Notification: {title}. {message}",
-  "@gameNotificationSemantics": {"placeholders": {"title": {"type": "String"}, "message": {"type": "String"}}},
+  "@gameNotificationSemantics": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
   "gameDismissNotificationHint": "Tap or swipe up to dismiss",
   "gameClubContextRequired": "Club context is required.",
   "gameUnexpectedResponse": "Unexpected response from server.",
@@ -2284,27 +3602,75 @@
   "gameBadgesUnavailable": "Badges unavailable",
   "gameBadgesTemporarilyUnavailable": "Badges are temporarily unavailable.",
   "gameBadgeSemantics": "{name} badge",
-  "@gameBadgeSemantics": {"placeholders": {"name": {"type": "String"}}},
+  "@gameBadgeSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "gameOpenBadgeDetails": "Open badge details",
   "gamePredictionAlertsTitle": "Prediction alerts",
   "gameAlertsUnavailable": "Alerts unavailable",
   "gamePredictionAlertsTemporarilyUnavailable": "Prediction alerts are temporarily unavailable.",
   "gamePredictionAlertSemantics": "Prediction alert, {title}, {message}, {date}{reward}",
-  "@gamePredictionAlertSemantics": {"placeholders": {"title": {"type": "String"}, "message": {"type": "String"}, "date": {"type": "String"}, "reward": {"type": "String"}}},
+  "@gamePredictionAlertSemantics": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "reward": {
+        "type": "String"
+      }
+    }
+  },
   "gameRewardPointsSemantics": ", reward {count} points",
-  "@gameRewardPointsSemantics": {"placeholders": {"count": {"type": "int"}}},
+  "@gameRewardPointsSemantics": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameJustNow": "Just now",
   "gameStreakTitle": "Your streak",
   "gameStreakDays": "{count} DAYS",
-  "@gameStreakDays": {"placeholders": {"count": {"type": "int"}}},
+  "@gameStreakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameStreakActive": "Streak active.",
   "gameCurrent": "Current",
   "gameBest": "Best",
   "gameNextBonus": "Next bonus",
   "gameWins": "{count, plural, =1{1 win} other{{count} wins}}",
-  "@gameWins": {"placeholders": {"count": {"type": "int"}}},
+  "@gameWins": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameStreakDaySemantics": "Streak day {day}: {wins}",
-  "@gameStreakDaySemantics": {"placeholders": {"day": {"type": "int"}, "wins": {"type": "String"}}},
+  "@gameStreakDaySemantics": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "wins": {
+        "type": "String"
+      }
+    }
+  },
   "gameVerifyToPredict": "Verify to predict",
   "gameMakePicks": "Make Picks",
   "gameMakePicksDescription": "Pick matches across all leagues",
@@ -2322,7 +3688,13 @@
   "gameBalance": "Balance",
   "gameAvailable": "Available",
   "gameActiveOffers": "{count, plural, =1{1 active offer} other{{count} active offers}}",
-  "@gameActiveOffers": {"placeholders": {"count": {"type": "int"}}},
+  "@gameActiveOffers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameFeatured": "Featured",
   "gameMatchDay": "Match Day",
   "gameAlwaysOn": "Always On",
@@ -2333,9 +3705,21 @@
   "gameClose": "Close",
   "gameDetails": "Details",
   "gamePointBalance": "{count} pts",
-  "@gamePointBalance": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePointBalance": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameFormattedPoints": "{amount} pts",
-  "@gameFormattedPoints": {"placeholders": {"amount": {"type": "String"}}},
+  "@gameFormattedPoints": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "gameVerificationApi": "Partner API confirmation",
   "gameVerificationRenewal": "Renewal confirmation",
   "gameVerificationReferral": "Referral conversion",
@@ -2361,23 +3745,65 @@
   "gameFindableByPhoneDescription": "Allows friends to find you by phone number. Your number stays private.",
   "gamePrivacyFirst": "Privacy First",
   "gamePrivacyFirstDescription": "{appName} does not sell, share, or expose your personal data. All identifiers on the platform are anonymized.",
-  "@gamePrivacyFirstDescription": {"placeholders": {"appName": {"type": "String"}}},
+  "@gamePrivacyFirstDescription": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "gameRewardsStoreTitle": "Rewards store",
   "gameRewardsUnavailable": "Rewards unavailable",
   "gameRewardsTemporarilyUnavailable": "Rewards are temporarily unavailable.",
   "gameAvailableBalance": "Available balance",
   "gameRewardsStoreDescription": "Redeem {appName} rewards without leaving the consolidated wallet flow.",
-  "@gameRewardsStoreDescription": {"placeholders": {"appName": {"type": "String"}}},
+  "@gameRewardsStoreDescription": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "gameRewardMeta": "{category} · {notes}",
-  "@gameRewardMeta": {"placeholders": {"category": {"type": "String"}, "notes": {"type": "String"}}},
+  "@gameRewardMeta": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "notes": {
+        "type": "String"
+      }
+    }
+  },
   "gameRedeemCost": "Redeem {cost}",
-  "@gameRedeemCost": {"placeholders": {"cost": {"type": "String"}}},
+  "@gameRedeemCost": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
   "gameNeedCost": "Need {cost}",
-  "@gameNeedCost": {"placeholders": {"cost": {"type": "String"}}},
+  "@gameNeedCost": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
   "gameRewardConfigurationMissing": "Reward configuration is missing. Try again later.",
   "gameRewardAlreadyRedeemed": "That reward redemption already completed.",
   "gameRewardRedeemed": "Redeemed {reward} for {cost}.",
-  "@gameRewardRedeemed": {"placeholders": {"reward": {"type": "String"}, "cost": {"type": "String"}}},
+  "@gameRewardRedeemed": {
+    "placeholders": {
+      "reward": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
   "gameRewardCouldNotRedeem": "Could not redeem this reward.",
   "gameFriendsTitle": "Friends",
   "gameSupportersUnavailable": "Supporters unavailable",
@@ -2399,16 +3825,49 @@
   "gameTomorrow": "Tomorrow",
   "gameYesterday": "Yesterday",
   "gameRelativeDate": "{relative} · {date}",
-  "@gameRelativeDate": {"placeholders": {"relative": {"type": "String"}, "date": {"type": "String"}}},
+  "@gameRelativeDate": {
+    "placeholders": {
+      "relative": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "gameMatchCount": "{count, plural, =1{1 match} other{{count} matches}}",
-  "@gameMatchCount": {"placeholders": {"count": {"type": "int"}}},
+  "@gameMatchCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameMyActivity": "My activity",
   "gameActiveCount": "ACTIVE ({count})",
-  "@gameActiveCount": {"placeholders": {"count": {"type": "int"}}},
+  "@gameActiveCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameSettledTabCount": "SETTLED ({count})",
-  "@gameSettledTabCount": {"placeholders": {"count": {"type": "int"}}},
+  "@gameSettledTabCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameHistoryCount": "HISTORY ({count})",
-  "@gameHistoryCount": {"placeholders": {"count": {"type": "int"}}},
+  "@gameHistoryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameActivityUnavailable": "Activity unavailable",
   "gameActivityCouldNotLoad": "Could not load your activity right now.",
   "gameCouldNotCancelPick": "Could not cancel this pick.",
@@ -2419,13 +3878,40 @@
   "gamePendingUpper": "Pending",
   "gameTbd": "Tbd",
   "gameVersusShort": "{home} vs {away}",
-  "@gameVersusShort": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@gameVersusShort": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "gameRound": "Round",
   "gameCompetitionTime": "{competition} • {time}",
-  "@gameCompetitionTime": {"placeholders": {"competition": {"type": "String"}, "time": {"type": "String"}}},
+  "@gameCompetitionTime": {
+    "placeholders": {
+      "competition": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "gameCancel": "Cancel",
   "gameActivitySemantics": "{home} versus {away} activity",
-  "@gameActivitySemantics": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@gameActivitySemantics": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "gameOpenActivityDetail": "Open activity detail",
   "gameNotificationsUpper": "Notifications",
   "gameKickoffAlerts": "Match Kick-off Alerts",
@@ -2437,18 +3923,54 @@
   "gameWinRate": "Win rate",
   "gameYouUpper": "You",
   "gameWalletSignedPoints": "{sign}{amount} pts",
-  "@gameWalletSignedPoints": {"placeholders": {"sign": {"type": "String"}, "amount": {"type": "String"}}},
+  "@gameWalletSignedPoints": {
+    "placeholders": {
+      "sign": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "gameWalletBalance": "Bal. {amount} pts",
-  "@gameWalletBalance": {"placeholders": {"amount": {"type": "String"}}},
+  "@gameWalletBalance": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "gameOpenUpper": "Open",
   "gamePointsShare": "Points share",
   "gamePointsShareDescription": "Tier rules decide how earned points support you and collective club rewards.",
   "gamePersonalPercentage": "{count}% you",
-  "@gamePersonalPercentage": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePersonalPercentage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameClubPercentage": "{count}% club",
-  "@gameClubPercentage": {"placeholders": {"count": {"type": "int"}}},
+  "@gameClubPercentage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameTierSplit": "{personal}/{club}",
-  "@gameTierSplit": {"placeholders": {"personal": {"type": "int"}, "club": {"type": "int"}}},
+  "@gameTierSplit": {
+    "placeholders": {
+      "personal": {
+        "type": "int"
+      },
+      "club": {
+        "type": "int"
+      }
+    }
+  },
   "gamePointsShareExplanation": "Your points are shared by tier: the personal share stays with you and the club share supports collective rewards.",
   "gameTierSupporter": "Supporter",
   "gameTierMember": "Member",
@@ -2456,39 +3978,126 @@
   "gameTierLegend": "Legend",
   "gameFree": "Free",
   "gameMonthlyPrice": "{amount} RWF / month",
-  "@gameMonthlyPrice": {"placeholders": {"amount": {"type": "String"}}},
+  "@gameMonthlyPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "gameShareTitle": "{appName} Pick",
-  "@gameShareTitle": {"placeholders": {"appName": {"type": "String"}}},
+  "@gameShareTitle": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "gameShareCopied": "Share text copied to clipboard.",
   "gameShareStatusLine": "{status}: {home} vs {away}",
-  "@gameShareStatusLine": {"placeholders": {"status": {"type": "String"}, "home": {"type": "String"}, "away": {"type": "String"}}},
+  "@gameShareStatusLine": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "gameFinalScore": "Final score: {home}-{away}",
-  "@gameFinalScore": {"placeholders": {"home": {"type": "int"}, "away": {"type": "int"}}},
+  "@gameFinalScore": {
+    "placeholders": {
+      "home": {
+        "type": "int"
+      },
+      "away": {
+        "type": "int"
+      }
+    }
+  },
   "gameMarketSelection": "{market}: {selection}",
-  "@gameMarketSelection": {"placeholders": {"market": {"type": "String"}, "selection": {"type": "String"}}},
+  "@gameMarketSelection": {
+    "placeholders": {
+      "market": {
+        "type": "String"
+      },
+      "selection": {
+        "type": "String"
+      }
+    }
+  },
   "gameEarnedShare": "Earned: +{count} pts",
-  "@gameEarnedShare": {"placeholders": {"count": {"type": "int"}}},
+  "@gameEarnedShare": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gamePotentialShare": "Potential: +{count} pts",
-  "@gamePotentialShare": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePotentialShare": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameMarketUpper": "Market",
   "gamePickUpper": "Pick",
   "gameEarnedUpper": "Earned",
   "gamePotentialUpper": "Potential",
   "gameShareTagline": "{appName} · PLAY. PICK. EARN.",
-  "@gameShareTagline": {"placeholders": {"appName": {"type": "String"}}},
+  "@gameShareTagline": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "gamePickTypeCount": "{count, plural, =1{1 pick type} other{{count} pick types}}",
-  "@gamePickTypeCount": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePickTypeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameSearchPickTypes": "Search pick types",
   "gameClearSearch": "Clear search",
   "gameAddPicksToUnlock": "Add picks to unlock round",
   "gameOpenRoundSummary": "Open Round · {count} picks · {points} pts",
-  "@gameOpenRoundSummary": {"placeholders": {"count": {"type": "int"}, "points": {"type": "int"}}},
+  "@gameOpenRoundSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "points": {
+        "type": "int"
+      }
+    }
+  },
   "gameLiveOnly": "Live only",
   "gameOutcomeAddedToRound": "{outcome} added to your round.",
-  "@gameOutcomeAddedToRound": {"placeholders": {"outcome": {"type": "String"}}},
+  "@gameOutcomeAddedToRound": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
   "gameMarkets": "Markets",
   "gameMarketCount": "{count, plural, =1{1 market} other{{count} markets}}",
-  "@gameMarketCount": {"placeholders": {"count": {"type": "int"}}},
+  "@gameMarketCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameStatsNotAvailableYet": "Stats not yet available",
   "gameLiveStatsUpdating": "Live stats update automatically during the match.",
   "gameLiveMatchDataUpdating": "Live match-center data is updating for this fixture.",
@@ -2496,7 +4105,19 @@
   "gameTotalGoals": "Total Goals",
   "gameFinalMatchStats": "Final match statistics.",
   "gameFixtureMarketTitle": "{home} vs {away} · {market}",
-  "@gameFixtureMarketTitle": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}, "market": {"type": "String"}}},
+  "@gameFixtureMarketTitle": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      },
+      "market": {
+        "type": "String"
+      }
+    }
+  },
   "gamePickTypeLocked": "Pick type locked for this fixture state.",
   "gameLeaderboardTitle": "Leaderboard",
   "gameFetRanking": "FET Ranking",
@@ -2513,7 +4134,13 @@
   "gameDisplayNameOn": "Display Name On",
   "gameAliasOnly": "Alias Only",
   "gameDisplayNameOnDescription": "Leaderboards can show {name} instead of only your Fan ID.",
-  "@gameDisplayNameOnDescription": {"placeholders": {"name": {"type": "String"}}},
+  "@gameDisplayNameOnDescription": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "gameAliasOnlyDescription": "Leaderboards show your Fan ID or alias instead of your real name.",
   "gamePhoneHidden": "Phone Hidden",
   "gamePhoneHiddenDescription": "Your phone number stays on the server and is never shown to other supporters or club administrators.",
@@ -2524,22 +4151,58 @@
   "gameVerified": "Verified",
   "gameVerificationPending": "Verification Pending",
   "gameVerifiedDescription": "Your phone identity is verified for {appName} earning and social flows.",
-  "@gameVerifiedDescription": {"placeholders": {"appName": {"type": "String"}}},
+  "@gameVerifiedDescription": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "gameVerificationPendingDescription": "Verify your phone to unlock the full {appName} social experience.",
-  "@gameVerificationPendingDescription": {"placeholders": {"appName": {"type": "String"}}},
+  "@gameVerificationPendingDescription": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "gameFanIdPersistentRule": "Your Fan ID comes from your profile and remains the same when you return.",
   "gameDisplayNameVisibleRule": "Your display name “{name}” can appear on leaderboards until you turn that off.",
-  "@gameDisplayNameVisibleRule": {"placeholders": {"name": {"type": "String"}}},
+  "@gameDisplayNameVisibleRule": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "gameRealNameHiddenRule": "Your real name stays hidden on leaderboards until you explicitly enable display-name visibility.",
   "gamePhoneEncryptedRule": "Your phone number is encrypted and stored only on the server.",
   "gamePhoneDiscoveryEnabledRule": "Phone-based friend discovery is enabled on your account right now.",
   "gamePhoneDiscoveryDisabledRule": "Phone-based friend discovery is disabled on your account right now.",
   "gamePhoneVerifiedRule": "Your phone identity is verified for {appName} features and rewards.",
-  "@gamePhoneVerifiedRule": {"placeholders": {"appName": {"type": "String"}}},
+  "@gamePhoneVerifiedRule": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "gamePhonePendingRule": "Phone verification is still pending for your {appName} profile.",
-  "@gamePhonePendingRule": {"placeholders": {"appName": {"type": "String"}}},
+  "@gamePhonePendingRule": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "gameTeamLinkedRule": "Your profile is linked to {team} for personalization.",
-  "@gameTeamLinkedRule": {"placeholders": {"team": {"type": "String"}}},
+  "@gameTeamLinkedRule": {
+    "placeholders": {
+      "team": {
+        "type": "String"
+      }
+    }
+  },
   "gameLinkTeamRule": "You can link a favorite team from onboarding or profile setup for personalization.",
   "gameDeleteAccountRule": "Deleting your account removes your personal data and Fan ID mapping from the active profile.",
   "gameFanIdTitle": "Fan id",
@@ -2559,17 +4222,56 @@
   "gamePointsShort": "Pts",
   "gamePointsUpper": "Points",
   "gameStandingRecord": "{played}P · {goalsFor}:{goalsAgainst} · GD {difference}",
-  "@gameStandingRecord": {"placeholders": {"played": {"type": "int"}, "goalsFor": {"type": "int"}, "goalsAgainst": {"type": "int"}, "difference": {"type": "int"}}},
+  "@gameStandingRecord": {
+    "placeholders": {
+      "played": {
+        "type": "int"
+      },
+      "goalsFor": {
+        "type": "int"
+      },
+      "goalsAgainst": {
+        "type": "int"
+      },
+      "difference": {
+        "type": "int"
+      }
+    }
+  },
   "gameHeadToHead": "Head to head",
   "gameHeadToHeadEmpty": "Historical head-to-head records between {home} and {away} will appear here.",
-  "@gameHeadToHeadEmpty": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@gameHeadToHeadEmpty": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "gameWinDistribution": "Win distribution",
   "gameDraws": "Draws",
   "gameTeamGoals": "{team} GOALS",
-  "@gameTeamGoals": {"placeholders": {"team": {"type": "String"}}},
+  "@gameTeamGoals": {
+    "placeholders": {
+      "team": {
+        "type": "String"
+      }
+    }
+  },
   "gameRecentEncounters": "Recent encounters",
   "gameScore": "{home} - {away}",
-  "@gameScore": {"placeholders": {"home": {"type": "int"}, "away": {"type": "int"}}},
+  "@gameScore": {
+    "placeholders": {
+      "home": {
+        "type": "int"
+      },
+      "away": {
+        "type": "int"
+      }
+    }
+  },
   "gameTokenHistoryTitle": "Token history",
   "gameTokenHistoryTemporarilyUnavailable": "Token history is temporarily unavailable.",
   "gameHistoryUnavailable": "History unavailable",
@@ -2582,7 +4284,28 @@
   "gameDebit": "Debit",
   "gameLedgerUpdate": "Ledger update",
   "gameTransactionSemantics": "{direction} transaction, {headline}, {detail}, {amount} points, balance {balance} points, {date}",
-  "@gameTransactionSemantics": {"placeholders": {"direction": {"type": "String"}, "headline": {"type": "String"}, "detail": {"type": "String"}, "amount": {"type": "int"}, "balance": {"type": "int"}, "date": {"type": "String"}}},
+  "@gameTransactionSemantics": {
+    "placeholders": {
+      "direction": {
+        "type": "String"
+      },
+      "headline": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      },
+      "balance": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "gameUnknownTime": "Unknown time",
   "gameClubFanZoneTitle": "Club fan zone",
   "gameClubFanZoneTemporarilyUnavailable": "Club fan zone is temporarily unavailable.",
@@ -2591,14 +4314,41 @@
   "gameSupporterPulseDescription": "Real supporter momentum around active competitions, fixture picks, and top clubs.",
   "gameTopClubs": "Top clubs",
   "gameRankHash": "#{rank}",
-  "@gameRankHash": {"placeholders": {"rank": {"type": "int"}}},
+  "@gameRankHash": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
   "gameSupporterLeans": "Supporter leans",
   "gameSupporterLeansEmpty": "Community pick distribution will appear once this competition has active {appName} predictions.",
-  "@gameSupporterLeansEmpty": {"placeholders": {"appName": {"type": "String"}}},
+  "@gameSupporterLeansEmpty": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "gamePair": "{first} · {second}",
-  "@gamePair": {"placeholders": {"first": {"type": "String"}, "second": {"type": "String"}}},
+  "@gamePair": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
   "gameSupporterLeanPercentage": "{percentage}% of supporters currently lean this way.",
-  "@gameSupporterLeanPercentage": {"placeholders": {"percentage": {"type": "String"}}},
+  "@gameSupporterLeanPercentage": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
   "gameLeagueHubTitle": "League hub",
   "gameLeagueDataTemporarilyUnavailable": "League data is temporarily unavailable.",
   "gameLeagueUnavailable": "League unavailable",
@@ -2611,7 +4361,22 @@
   "gameTopTable": "Top table",
   "gameFullStandings": "Full standings",
   "gameLeagueStandingRecord": "{played}P · {won}W {drawn}D {lost}L",
-  "@gameLeagueStandingRecord": {"placeholders": {"played": {"type": "int"}, "won": {"type": "int"}, "drawn": {"type": "int"}, "lost": {"type": "int"}}},
+  "@gameLeagueStandingRecord": {
+    "placeholders": {
+      "played": {
+        "type": "int"
+      },
+      "won": {
+        "type": "int"
+      },
+      "drawn": {
+        "type": "int"
+      },
+      "lost": {
+        "type": "int"
+      }
+    }
+  },
   "gameEntrySubmitted": "Entry submitted",
   "gameBonusEntryLive": "Your bonus entry is now live.",
   "gameCouldNotSubmitBonus": "Could not submit the bonus entry right now.",
@@ -2626,9 +4391,24 @@
   "gamePointsPool": "Points pool",
   "gamePickAllFeatured": "Pick every featured fixture before the round locks.",
   "gamePicksComplete": "{selected} of {total} picks complete",
-  "@gamePicksComplete": {"placeholders": {"selected": {"type": "int"}, "total": {"type": "int"}}},
+  "@gamePicksComplete": {
+    "placeholders": {
+      "selected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "gameEntriesRemaining": "{count, plural, =1{1 entry remaining} other{{count} entries remaining}}",
-  "@gameEntriesRemaining": {"placeholders": {"count": {"type": "int"}}},
+  "@gameEntriesRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameLeaders": "Leaders",
   "gameSocialHub": "Social Hub",
   "gameClub": "Club",
@@ -2641,12 +4421,36 @@
   "gameUnranked": "Unranked",
   "gameEarnPointsForClubTable": "Earn points to appear in the club table.",
   "gamePointsEarnedSoFar": "{count} pts earned so far.",
-  "@gamePointsEarnedSoFar": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePointsEarnedSoFar": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameNameYou": "{name} (You)",
-  "@gameNameYou": {"placeholders": {"name": {"type": "String"}}},
+  "@gameNameYou": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "gameChallengeFlowTemporarilyUnavailable": "Challenge flow is temporarily unavailable.",
   "gameHeadToHeadMessage": "{appName} head-to-head on {home} vs {away}",
-  "@gameHeadToHeadMessage": {"placeholders": {"appName": {"type": "String"}, "home": {"type": "String"}, "away": {"type": "String"}}},
+  "@gameHeadToHeadMessage": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      },
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "gameChallengeSent": "Challenge sent",
   "gameChallengeWaiting": "Your challenge is waiting for a response.",
   "gameCouldNotSendChallenge": "Could not send the challenge right now.",
@@ -2672,15 +4476,36 @@
   "gameDialerLaunchFailed": "Dialer launch failed.",
   "gameEnterContributionAmount": "Enter contribution amount",
   "gamePaymentRouteDescription": "You will pay {recipient} via {provider}.",
-  "@gamePaymentRouteDescription": {"placeholders": {"recipient": {"type": "String"}, "provider": {"type": "String"}}},
+  "@gamePaymentRouteDescription": {
+    "placeholders": {
+      "recipient": {
+        "type": "String"
+      },
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
   "gameAmountCurrency": "Amount ({currency})",
-  "@gameAmountCurrency": {"placeholders": {"currency": {"type": "String"}}},
+  "@gameAmountCurrency": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
   "gameDialNow": "Dial now",
   "gameEnterValidAmount": "Enter a valid amount.",
   "gameTeamProfileTitle": "Team profile",
   "gameTeamUnavailable": "Team unavailable",
   "gameFoundedYear": "Founded {year}",
-  "@gameFoundedYear": {"placeholders": {"year": {"type": "int"}}},
+  "@gameFoundedYear": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
   "gameTable": "Table",
   "gameSquad": "Squad",
   "gameOverview": "Overview",
@@ -2695,7 +4520,16 @@
   "gameGoalDifferenceShort": "Gd",
   "gameMomoContributionRoute": "MoMo contribution route",
   "gameUseProviderForClub": "Use {provider} to contribute to {club}.",
-  "@gameUseProviderForClub": {"placeholders": {"provider": {"type": "String"}, "club": {"type": "String"}}},
+  "@gameUseProviderForClub": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      },
+      "club": {
+        "type": "String"
+      }
+    }
+  },
   "gameThisClub": "this club",
   "gameSupporterRegistryCurrentClubOnly": "Supporter registry is available only for the current app club.",
   "gameMembersUnavailable": "Members unavailable",
@@ -2707,19 +4541,46 @@
   "gameTopContributors": "Top contributors",
   "gameMomoContribution": "MoMo contribution",
   "gameUseProviderInCountry": "Use {provider} in {country} to contribute to this club.",
-  "@gameUseProviderInCountry": {"placeholders": {"provider": {"type": "String"}, "country": {"type": "String"}}},
+  "@gameUseProviderInCountry": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      },
+      "country": {
+        "type": "String"
+      }
+    }
+  },
   "gameEnterAmount": "Enter amount",
   "gameEnterAmountDescription": "Choose how much you want to send through {provider}.",
-  "@gameEnterAmountDescription": {"placeholders": {"provider": {"type": "String"}}},
+  "@gameEnterAmountDescription": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
   "gameConfirmInDialer": "Confirm in dialer",
   "gameConfirmInDialerDescription": "We will open the mobile money dialer for code {code}.",
-  "@gameConfirmInDialerDescription": {"placeholders": {"code": {"type": "String"}}},
+  "@gameConfirmInDialerDescription": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
   "gameReconciliation": "Reconciliation",
   "gameReconciliationDescription": "Your contribution is matched back to your club activity once payment is confirmed.",
   "gameOpeningDialer": "Opening dialer…",
   "gameEnterAmountAndDial": "Enter amount & dial",
   "gameAboutTeam": "ABOUT {team}",
-  "@gameAboutTeam": {"placeholders": {"team": {"type": "String"}}},
+  "@gameAboutTeam": {
+    "placeholders": {
+      "team": {
+        "type": "String"
+      }
+    }
+  },
   "gameThisClubUpper": "This club",
   "gameLocation": "Location",
   "gameCountry": "Country",
@@ -2729,43 +4590,130 @@
   "gameSelectedLeaderboardPeriod": "Selected leaderboard period",
   "gameSelectPeriod": "Select period",
   "gameRankLabel": "#{rank}",
-  "@gameRankLabel": {"placeholders": {"rank": {"type": "String"}}},
+  "@gameRankLabel": {
+    "placeholders": {
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
   "gameRankPending": "Rank pending",
   "gameAccuracyWins": "{accuracy}% accuracy · {wins, plural, =1{1 win} other{{wins} wins}}",
-  "@gameAccuracyWins": {"placeholders": {"accuracy": {"type": "String"}, "wins": {"type": "int"}}},
+  "@gameAccuracyWins": {
+    "placeholders": {
+      "accuracy": {
+        "type": "String"
+      },
+      "wins": {
+        "type": "int"
+      }
+    }
+  },
   "gameSettledCount": "{count} settled",
-  "@gameSettledCount": {"placeholders": {"count": {"type": "int"}}},
+  "@gameSettledCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameTierAlias": "{tier} tier · {alias}",
-  "@gameTierAlias": {"placeholders": {"tier": {"type": "String"}, "alias": {"type": "String"}}},
+  "@gameTierAlias": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      },
+      "alias": {
+        "type": "String"
+      }
+    }
+  },
   "gamePodiumRank": "Podium rank {rank}",
-  "@gamePodiumRank": {"placeholders": {"rank": {"type": "int"}}},
+  "@gamePodiumRank": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
   "gamePickRound": "Pick round",
   "gameActivePicks": "{count, plural, =1{1 pick active} other{{count} picks active}}",
-  "@gameActivePicks": {"placeholders": {"count": {"type": "int"}}},
+  "@gameActivePicks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameEarnUpToPoints": "Earn up to {count} pts",
-  "@gameEarnUpToPoints": {"placeholders": {"count": {"type": "int"}}},
+  "@gameEarnUpToPoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gamePickRoundEmpty": "Pick round is empty",
   "gamePickRoundEmptyDescription": "Add picks from any fixture and lock them in from here.",
   "gamePickRoundUpper": "Pick round",
   "gameAcca": "Acca",
   "gamePotentialPoints": "Potential points: {count} pts",
-  "@gamePotentialPoints": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePotentialPoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameLockInPicks": "Lock In Picks",
   "gameSomeSelectionsFailed": "Some selections could not be submitted.",
   "gameCouldNotSubmitPicks": "Could not submit your picks.",
   "gameConfirmPicks": "Confirm picks",
   "gameLockingCombo": "You are locking {count} picks as a combo.",
-  "@gameLockingCombo": {"placeholders": {"count": {"type": "int"}}},
+  "@gameLockingCombo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameLockingPicks": "{count, plural, =1{You are locking 1 pick.} other{You are locking {count} picks.}}",
-  "@gameLockingPicks": {"placeholders": {"count": {"type": "int"}}},
+  "@gameLockingPicks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameOutcomePotential": "{outcome} · +{count} pts",
-  "@gameOutcomePotential": {"placeholders": {"outcome": {"type": "String"}, "count": {"type": "int"}}},
+  "@gameOutcomePotential": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameTotalPotential": "Total potential",
   "gameGoBack": "Go back",
   "gamePredictionsLocked": "{count, plural, =1{Prediction Locked} other{{count} Predictions Locked}}",
-  "@gamePredictionsLocked": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePredictionsLocked": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameRoundId": "Round ID: {id}",
-  "@gameRoundId": {"placeholders": {"id": {"type": "String"}}},
+  "@gameRoundId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "gameShareUpper": "Share",
   "gameCopyUpper": "Copy",
   "gameViewMyPredictions": "View my predictions",
@@ -2776,18 +4724,51 @@
   "gameMore": "More",
   "gameRoundUpper": "Round",
   "gameAccuracyRounds": "{accuracy}% · {count, plural, =1{1 round} other{{count} rounds}}",
-  "@gameAccuracyRounds": {"placeholders": {"accuracy": {"type": "String"}, "count": {"type": "int"}}},
+  "@gameAccuracyRounds": {
+    "placeholders": {
+      "accuracy": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gamePointsRound": "{count} points round",
-  "@gamePointsRound": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePointsRound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gamePointsRoundLabel": "points round",
   "gamePointEntry": "{count} point entry",
-  "@gamePointEntry": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePointEntry": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameFansCount": "{count, plural, =1{1 fan} other{{count} fans}}",
-  "@gameFansCount": {"placeholders": {"count": {"type": "int"}}},
+  "@gameFansCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameChooseWdw": "Choose W/D/W",
   "gameJoinRound": "Join round",
   "gameSelectedOutcome": "Selected {outcome}",
-  "@gameSelectedOutcome": {"placeholders": {"outcome": {"type": "String"}}},
+  "@gameSelectedOutcome": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
   "gameChallengesTitle": "Challenges",
   "gameChallengesTemporarilyUnavailable": "Challenges are temporarily unavailable.",
   "gameChallengesUnavailable": "Challenges unavailable",
@@ -2838,9 +4819,21 @@
   "gameConnectBeforeJoiningRound": "Connect before joining this round.",
   "gamePoolEntryFailed": "Pool entry could not be recorded.",
   "gameOutcomeJoined": "{outcome} joined.",
-  "@gameOutcomeJoined": {"placeholders": {"outcome": {"type": "String"}}},
+  "@gameOutcomeJoined": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
   "gamePartnerSponsorsRound": "{partner} sponsors this matchday round. Pick once before the round locks.",
-  "@gamePartnerSponsorsRound": {"placeholders": {"partner": {"type": "String"}}},
+  "@gamePartnerSponsorsRound": {
+    "placeholders": {
+      "partner": {
+        "type": "String"
+      }
+    }
+  },
   "gameProjects": "Projects",
   "gameProjectsDescription": "Club initiatives and campaign needs",
   "gameGroups": "Groups",
@@ -2851,9 +4844,21 @@
   "gameBadgesEarnedDescription": "Earned from picks, attendance, and support actions",
   "gameStartStreak": "Join your next round to start a streak",
   "gameActivePlayDays": "{count} active play days",
-  "@gameActivePlayDays": {"placeholders": {"count": {"type": "int"}}},
+  "@gameActivePlayDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gameActionUnavailable": "{description}. Unavailable.",
-  "@gameActionUnavailable": {"placeholders": {"description": {"type": "String"}}},
+  "@gameActionUnavailable": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
   "gameFanZoneAccessUnavailable": "Fan Zone access not available",
   "gameFanZoneAccessUnavailableDescription": "Your account cannot open Fan Zone right now. Contact support if this should be available.",
   "gameFanZoneChanged": "Fan Zone changed",
@@ -2894,7 +4899,16 @@
   "venueApprovedDrinks": "Approved drinks",
   "venueOrderReview": "Order review",
   "venueOrderReviewValue": "{count} items, {total}",
-  "@venueOrderReviewValue": {"placeholders": {"count": {"type": "int"}, "total": {"type": "String"}}},
+  "@venueOrderReviewValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "venueLegalAgeConfirmation": "Legal age confirmation",
   "venueNotSelected": "Not selected",
   "venueAgeConfirmationRequired": "Age confirmation required",
@@ -2914,14 +4928,29 @@
   "venueStaffControls": "Staff controls",
   "venueStaffControlsBody": "Venue portal only",
   "venueItemsSelected": "{count, plural, =1{1 item selected} other{{count} items selected}}",
-  "@venueItemsSelected": {"placeholders": {"count": {"type": "int"}}},
+  "@venueItemsSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "venueShowingSavedMenu": "Showing saved venue menu",
   "venueShowingSavedMenuBody": "Reconnect before creating the order. Nothing is queued or replayed offline.",
   "venueCreatingOrder": "Creating venue order",
   "venueCreatingOrderBody": "Wait for server confirmation. Do not repeat this order attempt.",
   "venueOrderCreated": "Order created",
   "venueOrderCreatedSummary": "{status} · {total}. Payment remains external at the venue.",
-  "@venueOrderCreatedSummary": {"placeholders": {"status": {"type": "String"}, "total": {"type": "String"}}},
+  "@venueOrderCreatedSummary": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "venueChooseDrink": "Choose at least one drink",
   "venueChooseDrinkBody": "The order cannot be created with an empty selection.",
   "venueCheckInRequired": "Check-in required",
@@ -2936,17 +4965,53 @@
   "venueOrderNotConfirmed": "Order not confirmed",
   "venueOrderNotConfirmedBody": "The server did not confirm this order. Dismiss the warning before retrying.",
   "venueLatestOrder": "Latest order: {status}",
-  "@venueLatestOrder": {"placeholders": {"status": {"type": "String"}}},
+  "@venueLatestOrder": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "venueLatestOrderSummary": "{total} · {payment}.",
-  "@venueLatestOrderSummary": {"placeholders": {"total": {"type": "String"}, "payment": {"type": "String"}}},
+  "@venueLatestOrderSummary": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      },
+      "payment": {
+        "type": "String"
+      }
+    }
+  },
   "venueReadyToOrder": "Ready to order",
   "venueReadyToOrderBody": "Choose approved drinks, review the total, then create once.",
   "venueRemoveItem": "Remove {item}",
-  "@venueRemoveItem": {"placeholders": {"item": {"type": "String"}}},
+  "@venueRemoveItem": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
   "venueAddItem": "Add {item}",
-  "@venueAddItem": {"placeholders": {"item": {"type": "String"}}},
+  "@venueAddItem": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
   "venueDrinkSemantics": "{count} selected, {price} each",
-  "@venueDrinkSemantics": {"placeholders": {"count": {"type": "int"}, "price": {"type": "String"}}},
+  "@venueDrinkSemantics": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "venueAgeRestricted": "Age restricted",
   "venueWaitingForVenue": "Waiting for venue",
   "venueAccepted": "Accepted",
@@ -2986,7 +5051,13 @@
   "venueCheckinConfirmed": "Check-in confirmed",
   "venueCheckinPendingReviewBody": "The venue code was accepted, but a governed location or campaign check still needs review.",
   "venueCheckinFetRecorded": "+{count} FET recorded for this check-in.",
-  "@venueCheckinFetRecorded": {"placeholders": {"count": {"type": "int"}}},
+  "@venueCheckinFetRecorded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "venueCheckinConfirmedNoReward": "The venue accepted this check-in. No reward was promised.",
   "venueCheckinReady": "Ready for venue check-in",
   "venueCheckinReadyBody": "Use the current code only after you arrive on site.",
@@ -3016,10 +5087,22 @@
   "walletCheckTimedOutBody": "The app could not confirm your private points ledger in time. Try one bounded refresh.",
   "walletUnavailableBody": "Your points ledger could not be loaded. No private activity details were shown.",
   "walletBalanceValue": "{points} pts",
-  "@walletBalanceValue": {"placeholders": {"points": {"type": "String"}}},
+  "@walletBalanceValue": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      }
+    }
+  },
   "walletUsed": "Used",
   "walletHistoricalPoints": "{points} points come from earlier rewards before activity history was enabled.",
-  "@walletHistoricalPoints": {"placeholders": {"points": {"type": "String"}}},
+  "@walletHistoricalPoints": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      }
+    }
+  },
   "walletEarn": "Earn",
   "walletEarnBody": "Earn points from partner initiatives and promotions.",
   "walletUseBody": "Use points in rewards, matchday activities, and fan-zone challenges.",
@@ -3069,16 +5152,58 @@
   "gameBackToPicks": "Back to picks",
   "gameChoosePick": "Choose pick",
   "gameSharePredictionSemantics": "{home} versus {away}, {market}, {outcome}",
-  "@gameSharePredictionSemantics": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}, "market": {"type": "String"}, "outcome": {"type": "String"}}},
+  "@gameSharePredictionSemantics": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      },
+      "market": {
+        "type": "String"
+      },
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
   "gameShareMarketSelection": "{market} · {selection}",
-  "@gameShareMarketSelection": {"placeholders": {"market": {"type": "String"}, "selection": {"type": "String"}}},
+  "@gameShareMarketSelection": {
+    "placeholders": {
+      "market": {
+        "type": "String"
+      },
+      "selection": {
+        "type": "String"
+      }
+    }
+  },
   "gameCurrentlySelectedShareCard": "Currently selected share card",
   "gameSelectThisShareCard": "Select this share card",
   "gamePredictionPickCancelled": "Pick cancelled.",
   "gamePredictionSummaryCopied": "Activity summary copied to clipboard.",
   "gamePredictionScorePending": "pending",
   "gamePredictionSummaryClipboard": "{home} vs {away} · {market} · {outcome} · {score}",
-  "@gamePredictionSummaryClipboard": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}, "market": {"type": "String"}, "outcome": {"type": "String"}, "score": {"type": "String"}}},
+  "@gamePredictionSummaryClipboard": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      },
+      "market": {
+        "type": "String"
+      },
+      "outcome": {
+        "type": "String"
+      },
+      "score": {
+        "type": "String"
+      }
+    }
+  },
   "gamePredictionStatusWon": "Won",
   "gamePredictionStatusLost": "Lost",
   "gamePredictionStatusCancelled": "Cancelled",
@@ -3086,12 +5211,33 @@
   "gamePredictionStatusPending": "Pending",
   "gamePredictionDateTbd": "Tbd",
   "gamePredictionDateTime": "{date} • {time}",
-  "@gamePredictionDateTime": {"placeholders": {"date": {"type": "String"}, "time": {"type": "String"}}},
+  "@gamePredictionDateTime": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "gamePredictionWonSettlement": "This pick settled successfully and credited {count} points.",
-  "@gamePredictionWonSettlement": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePredictionWonSettlement": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gamePredictionLostSettlement": "This pick did not settle in your favour.",
   "gamePredictionOfficialOutcomeMessage": "Official outcome: {outcome}.",
-  "@gamePredictionOfficialOutcomeMessage": {"placeholders": {"outcome": {"type": "String"}}},
+  "@gamePredictionOfficialOutcomeMessage": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
   "gamePredictionCancelledSettlement": "This pick was cancelled before the fixture locked.",
   "gamePredictionVoidSettlement": "This pick was voided and no points were awarded.",
   "gamePredictionPendingSettlement": "This pick is locked and will settle when official results arrive.",
@@ -3107,14 +5253,29 @@
   "gamePredictionReconnectBeforeCancelling": "Reconnect and refresh before cancelling this pick.",
   "gamePredictionActivityDetailTitle": "Activity detail",
   "gamePredictionShortTeams": "{home}  •  {away}",
-  "@gamePredictionShortTeams": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@gamePredictionShortTeams": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "gamePredictionVenueTbc": "Venue tbc",
   "gamePredictionPickType": "Pick type",
   "gamePredictionSelection": "Selection",
   "gamePredictionEarned": "Earned",
   "gamePredictionPotential": "Potential",
   "gamePredictionPositiveValue": "+{count}",
-  "@gamePredictionPositiveValue": {"placeholders": {"count": {"type": "int"}}},
+  "@gamePredictionPositiveValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gamePredictionSettlement": "Settlement",
   "gamePredictionPlaced": "Placed",
   "gamePredictionKickoff": "Kickoff",
@@ -3139,9 +5300,27 @@
   "gamePredictionUnavailable": "Activity unavailable",
   "gamePredictionUnavailableDescription": "The latest pick details could not be confirmed. Refresh to try again.",
   "gamePredictionSelectedMetricSemantics": "Selected {label} {value}",
-  "@gamePredictionSelectedMetricSemantics": {"placeholders": {"label": {"type": "String"}, "value": {"type": "String"}}},
+  "@gamePredictionSelectedMetricSemantics": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "gamePredictionMetricSemantics": "{label} {value}",
-  "@gamePredictionMetricSemantics": {"placeholders": {"label": {"type": "String"}, "value": {"type": "String"}}},
+  "@gamePredictionMetricSemantics": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "gameMatchTitle": "Match",
   "gameBackToFanZoneTitleCase": "Back to Fan Zone",
   "gameMatchNotFound": "Match not found",
@@ -3166,13 +5345,37 @@
   "gameMonthNov": "Nov",
   "gameMonthDec": "Dec",
   "gameMatchKickoffDateTime": "{weekday} {day} {month} · {time}",
-  "@gameMatchKickoffDateTime": {"placeholders": {"weekday": {"type": "String"}, "day": {"type": "int"}, "month": {"type": "String"}, "time": {"type": "String"}}},
+  "@gameMatchKickoffDateTime": {
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      },
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "gamePoolsTab": "Pools",
   "gameStatsTab": "Stats",
   "gameH2hTab": "H2h",
   "gameLineupsTab": "Lineups",
   "gameMatchTeamsVs": "{home} vs {away}",
-  "@gameMatchTeamsVs": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@gameMatchTeamsVs": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "gamePartnerPoolsTooltip": "Partner pools",
   "gameJoiningPartnerPool": "Joining partner pool",
   "gameRefreshingMatch": "Refreshing match",
@@ -3212,7 +5415,16 @@
   "gameNoPartnerPoolDescription": "Football predictions open only when a partner creates a fixed-entry WDW pool for this fixture.",
   "gameViewFanZone": "View Fan Zone",
   "gamePartnerPoolsOnly": "{home} vs {away} uses partner-funded WDW pools only.",
-  "@gamePartnerPoolsOnly": {"placeholders": {"home": {"type": "String"}, "away": {"type": "String"}}},
+  "@gamePartnerPoolsOnly": {
+    "placeholders": {
+      "home": {
+        "type": "String"
+      },
+      "away": {
+        "type": "String"
+      }
+    }
+  },
   "settingsThemePreview": "Theme preview",
   "settingsApplyTheme": "Apply",
   "predictTitle": "Predict",
@@ -3280,5 +5492,115 @@
   "clubColoursLabel": "Colours",
   "clubRootsSubtitle": "Our story",
   "clubExploreTitle": "Explore the club",
-  "clubMembershipAction": "Membership"
+  "clubMembershipAction": "Membership",
+  "membershipStatusUnconfirmed": "Not confirmed",
+  "membershipDateUnconfirmed": "Not provided",
+  "membershipProgrammeTitle": "Your membership",
+  "membershipProgrammeBody": "Your category is based on confirmed club contributions. FET activity is separate and does not determine your membership tier.",
+  "predictReviewTitle": "Review your pick",
+  "predictConfirmPick": "Confirm pick",
+  "predictReviewRule": "One pick per fixture. Your pick cannot be changed after confirmation. The fixture closes at kickoff.",
+  "predictEntryCost": "Entry cost",
+  "predictBalanceAfter": "Balance after entry",
+  "predictCancelPick": "Cancel",
+  "fanClubViewJoiningOptions": "View joining options",
+  "clubAllPlayers": "All players",
+  "clubPlayerProfile": "Player profile",
+  "clubPlayerBioPending": "A player biography has not been published yet.",
+  "clubNextMatch": "Next match",
+  "clubLatestNews": "Latest news",
+  "clubPartners": "Partners",
+  "clubPartnersSubtitle": "The organisations supporting your club",
+  "clubPartnersEmpty": "Club partners will appear when their details are published.",
+  "clubPartnerWebsite": "Visit partner website",
+  "clubArticleOriginal": "Read original article",
+  "clubSourceLabel": "Source",
+  "predictEarnUse": "Earn and use FET",
+  "predictEarnUseBody": "FET is your supporter activity balance. Eligible members receive the published welcome grant once. You can use available FET to enter enabled fixtures; confirmed payouts and refunds appear in FET activity. FET cannot be bought or withdrawn as cash.",
+  "predictNoRedemptions": "Partner recognition does not create a FET offer. Only published, eligible offers can be redeemed.",
+  "searchPartialTitle": "Some results are unavailable",
+  "searchPartialMessage": "Available results are shown. Refresh to try the remaining sources.",
+  "clubLinkUnavailable": "Continue on the club website",
+  "clubLinkUnavailableBody": "This website record is not available in the app yet. You can open the original page or browse the club.",
+  "clubOpenWebsite": "Open website",
+  "clubLinkLoading": "Opening club content",
+  "clubLinkRetry": "Try again",
+  "clubPartnersTitle": "Partners",
+  "clubPartnersIntro": "The organisations supporting our club. Partner recognition does not include a FET reward or redemption offer.",
+  "clubPartnersUnavailable": "Partner details are temporarily unavailable.",
+  "clubPartnerDetails": "View partner",
+  "clubFootballNow": "Football now",
+  "clubFootballUpcoming": "Next fixture",
+  "clubFootballRecent": "Latest result",
+  "membershipQualificationUnavailable": "Contribution qualification is not yet available for this club.",
+  "membershipQualificationWindow": "Rolling 12 months · membership contributions only",
+  "predictInsufficientReview": "Insufficient FET. No charge will be made.",
+  "shopEnquire": "Enquire on WhatsApp",
+  "shopEnquiryExplanation": "Confirm size, availability and delivery with the club. Opening WhatsApp does not place an order or make a payment.",
+  "clubFixtureTeams": "{homeTeam} · {awayTeam}",
+  "@clubFixtureTeams": {
+    "placeholders": {
+      "homeTeam": {
+        "type": "String"
+      },
+      "awayTeam": {
+        "type": "String"
+      }
+    }
+  },
+  "predictFetAmount": "{amount} FET",
+  "@predictFetAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "membershipConfirmedTotal": "{amount} RWF confirmed",
+  "@membershipConfirmedTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "membershipRemainingTotal": "{amount} RWF to {tier}",
+  "@membershipRemainingTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
+  "shopEnquiryMessage": "Hello, I would like to enquire about {productName} (product {productId}), size {size}, quantity {quantity}.",
+  "@shopEnquiryMessage": {
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      },
+      "productId": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "fanClubsSavedRetry": "Showing saved fan clubs. Tap to retry.",
+  "shopSizeNotSelected": "Not selected",
+  "clubSquadFirstTeam": "First team",
+  "clubSquadWomen": "Women",
+  "clubSquadAcademy": "Academy",
+  "clubSquadStaff": "Staff",
+  "clubSquadAllTeams": "All teams",
+  "shopEnquiryOptions": "View enquiry options"
 }

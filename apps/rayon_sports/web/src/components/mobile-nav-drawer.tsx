@@ -261,30 +261,7 @@ export function MobileNavDrawer({
             </div>
           </div>
 
-          {/* Utility row */}
-          <div className="mt-auto">
-            <div
-              className={`${ui.panelInset} flex items-center justify-between rounded-[24px] p-4 text-sm`}
-            >
-              <span className="text-slate-300">Language</span>
-              <div className="flex items-center gap-3 font-semibold text-slate-300">
-                {club.supportedLanguages.map((language, index) => (
-                  <span
-                    key={language}
-                    className={cn(
-                      "hover:text-white transition",
-                      index === 0 && "text-white",
-                    )}
-                  >
-                    {language.toUpperCase()}
-                    {index < club.supportedLanguages.length - 1 ? (
-                      <span className="ml-2 text-slate-600">/</span>
-                    ) : null}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </>

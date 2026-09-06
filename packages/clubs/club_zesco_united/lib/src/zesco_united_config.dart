@@ -56,7 +56,7 @@ class ZescoUnitedConfig implements ClubConfig {
   );
 
   @override
-  List<String> get supportedLanguages => const ['en', 'bem'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;

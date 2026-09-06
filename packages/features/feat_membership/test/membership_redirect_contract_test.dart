@@ -4,9 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  testWidgets('/membership/fans resolves to Fan Zone Supporters', (
-    tester,
-  ) async {
+  testWidgets('/membership/fans resolves to Fan Clubs', (tester) async {
     final module = MembershipModule();
     final redirect = module.routes.whereType<GoRoute>().singleWhere(
       (route) => route.path == 'fans',
@@ -20,7 +18,7 @@ void main() {
           routes: <RouteBase>[redirect],
         ),
         GoRoute(
-          path: '/fanzone',
+          path: '/fan-clubs',
           builder: (context, state) =>
               Scaffold(body: Text('Target: ${state.uri}')),
         ),
@@ -31,11 +29,8 @@ void main() {
     await tester.pumpWidget(MaterialApp.router(routerConfig: router));
     await tester.pumpAndSettle();
 
-    expect(find.text('Target: /fanzone?section=supporters'), findsOneWidget);
-    expect(
-      router.routeInformationProvider.value.uri.toString(),
-      '/fanzone?section=supporters',
-    );
+    expect(find.text('Target: /fan-clubs'), findsOneWidget);
+    expect(router.routeInformationProvider.value.uri.toString(), '/fan-clubs');
   });
 
   test('presentation decision declares the exact registered target', () {
@@ -43,6 +38,6 @@ void main() {
       (candidate) => candidate.path == '/membership/fans',
     );
 
-    expect(decision.targetPath, '/fanzone?section=supporters');
+    expect(decision.targetPath, '/fan-clubs');
   });
 }

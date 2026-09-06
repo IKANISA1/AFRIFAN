@@ -19,6 +19,7 @@ dependencies:
   supabase_flutter: ^2.9.0
 
 dev_dependencies:
+  http: ^1.6.0
   flutter_test:
     sdk: flutter
 

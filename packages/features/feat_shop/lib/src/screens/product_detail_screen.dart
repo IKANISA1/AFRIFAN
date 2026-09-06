@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../shop_cart_provider.dart';
 
@@ -85,8 +86,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       'id, partner_id, club_id, name, subtitle, description, category, '
       'price, stock, is_active, is_new, image_url, sizes, available_sizes, '
       'badge_label, collection, sort_order, product_id, product_type, '
-      'currency, image_rights_approved, image_provenance_id';
-  static const _auditSampleProductId = 'sample-product';
+      'currency, image_rights_approved, image_provenance_id, commerce_mode, enquiry_phone';
 
   bool _isLoading = true;
   bool _isRefreshing = false;
@@ -213,9 +213,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
       if (response == null) {
         setState(() {
-          if (_usesAuditSampleFallback) {
-            _applyAuditSampleProduct();
-          } else if (_product != null) {
+          if (_product != null) {
             _isLoading = false;
             _isRefreshing = false;
             _isStale = true;
@@ -260,9 +258,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       );
       if (mounted) {
         setState(() {
-          if (_usesAuditSampleFallback) {
-            _applyAuditSampleProduct();
-          } else if (_product != null) {
+          if (_product != null) {
             _isLoading = false;
             _isRefreshing = false;
             _isStale = true;
@@ -299,32 +295,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     return response == null ? null : Map<String, dynamic>.from(response);
   }
 
-  bool get _usesAuditSampleFallback =>
-      widget.productId == _auditSampleProductId;
-
-  void _applyAuditSampleProduct() {
-    final product = <String, dynamic>{
-      'id': _auditSampleProductId,
-      'name': context.afriL10n.shopSampleProductName,
-      'price': 25000,
-      'description': context.afriL10n.shopSampleProductDescription,
-      'image_url': '',
-      'badge_label': context.afriL10n.shopOfficialBadge,
-      'available_sizes': const ['S', 'M', 'L', 'XL'],
-      'inventory_count': 47,
-      'in_stock': true,
-    };
-    _product = product;
-    _selectedSize = 'M';
-    _quantity = 1;
-    _failure = null;
-    _isRefreshing = false;
-    _isStale = false;
-    _isOffline = false;
-    _isNotFound = false;
-    _isLoading = false;
-  }
-
   void _increment() {
     final maxQuantity = _maxQuantityFor(_product);
     if (_quantity < maxQuantity) {
@@ -340,27 +310,38 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     }
   }
 
-  void _addToCart() {
+  bool _addToCart() {
     final product = _product;
     final user = ref.read(currentUserProvider);
 
-    if (product == null) return;
+    if (product == null ||
+        product['commerce_mode'] == 'enquiry' ||
+        _isStale ||
+        _isRefreshing ||
+        _isOffline) {
+      return false;
+    }
 
     if (user == null) {
-      context.go('/onboarding');
-      return;
+      context.go(
+        Uri(
+          path: '/auth/phone',
+          queryParameters: {'from': '/shop/product/${widget.productId}'},
+        ).toString(),
+      );
+      return false;
     }
 
     if (!_isInStock(product)) {
       AfriToast.error(context, context.afriL10n.shopItemOutOfStockToast);
-      return;
+      return false;
     }
 
     final sizes = _availableSizes(product);
     if (sizes.isNotEmpty &&
         (_selectedSize == null || !sizes.contains(_selectedSize))) {
       AfriToast.info(context, context.afriL10n.shopSelectSizeToast);
-      return;
+      return false;
     }
 
     final quantity = _quantity
@@ -385,6 +366,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       actionLabel: context.afriL10n.shopViewCartAction,
       onAction: () => context.push('/shop/cart'),
     );
+    return true;
   }
 
   @override
@@ -467,6 +449,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final imageRightsApproved =
         product['image_rights_approved'] == true &&
         imageProvenanceId.isNotEmpty;
+    final hasApprovedImage =
+        imageRightsApproved &&
+        (Uri.tryParse(imageUrl ?? '')?.scheme == 'https');
     final badge = product['badge_label']?.toString();
     final primary = ColorTokens.primaryContainer;
     final sizes = _availableSizes(product);
@@ -504,7 +489,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             physics: const BouncingScrollPhysics(),
             slivers: [
               AfriSliverAppBar(
-                expandedHeight: usesLargeTextLayout ? 220 : 320,
+                expandedHeight: hasApprovedImage
+                    ? (usesLargeTextLayout ? 220 : 320)
+                    : (usesLargeTextLayout ? 240 : 172),
                 pinned: true,
                 backgroundColor: ColorTokens.background,
                 leading: Padding(
@@ -540,7 +527,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   background: Stack(
                     fit: StackFit.expand,
                     children: [
-                      if (imageUrl != null && imageUrl.isNotEmpty)
+                      if (hasApprovedImage && imageUrl != null)
                         AfriGovernedCachedImage(
                           imageUrl: imageUrl,
                           semanticLabel: l10n.shopProductImageSemantic(name),
@@ -557,19 +544,20 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         )
                       else
                         const _ImageFallback(),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: 120,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: ColorTokens.imageScrimGradient(
-                              color: ColorTokens.background,
+                      if (hasApprovedImage)
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: 120,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: ColorTokens.imageScrimGradient(
+                                color: ColorTokens.background,
+                              ),
                             ),
                           ),
                         ),
-                      ),
                       if (badge != null && badge.isNotEmpty)
                         Positioned(
                           left: SpacingTokens.spacing6,
@@ -747,16 +735,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               ),
             ],
           ),
-          if (_usesAuditSampleFallback && !_isLoading && _product != null)
-            const Positioned(
-              left: SpacingTokens.spacing6,
-              right: SpacingTokens.spacing6,
-              bottom:
-                  SpacingTokens.spacing20 +
-                  SpacingTokens.spacing20 +
-                  SpacingTokens.spacing12,
-              child: _AuditSampleProductSummary(),
-            ),
           Positioned(
             left: 0,
             right: 0,
@@ -891,6 +869,41 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     required bool inStock,
     required bool usesLargeTextLayout,
   }) {
+    if (_product?['commerce_mode'] == 'enquiry') {
+      final phone = _product?['enquiry_phone']?.toString() ?? '';
+      final available = RegExp(r'^[1-9][0-9]{7,14}$').hasMatch(phone);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            context.afriL10n.shopEnquiryExplanation,
+            style: TypographyTokens.bodyMedium(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          AfriButton(
+            label: context.afriL10n.shopEnquire,
+            enabled: available && !_isStale && !_isOffline && !_isRefreshing,
+            onTap: () async {
+              final message = context.afriL10n.shopEnquiryMessage(
+                _product?['name']?.toString() ??
+                    context.afriL10n.shopProductFallback,
+                widget.productId,
+                _selectedSize ?? context.afriL10n.shopSizeNotSelected,
+                _quantity,
+              );
+              final opened = await launchUrl(
+                Uri.https('wa.me', '/$phone', {'text': message}),
+                mode: LaunchMode.externalApplication,
+              );
+              if (!opened && mounted) {
+                AfriToast.error(context, context.afriL10n.genericError);
+              }
+            },
+          ),
+        ],
+      );
+    }
     final totalSummary = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -913,7 +926,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           label: context.afriL10n.shopAddToCart,
           icon: AfriIcons.cart,
           onTap: _addToCart,
-          enabled: inStock,
+          enabled: inStock && !_isStale && !_isOffline && !_isRefreshing,
         ),
         const SizedBox(height: SpacingTokens.spacing2),
         AfriButton(
@@ -921,10 +934,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           label: context.afriL10n.shopBuyNow,
           variant: AfriButtonVariant.outline,
           onTap: () {
-            _addToCart();
-            unawaited(context.push('/shop/cart'));
+            if (_addToCart()) unawaited(context.push('/shop/cart'));
           },
-          enabled: inStock,
+          enabled: inStock && !_isStale && !_isOffline && !_isRefreshing,
         ),
       ],
     );
@@ -947,55 +959,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         const SizedBox(width: SpacingTokens.spacing4),
         Expanded(flex: 2, child: actions),
       ],
-    );
-  }
-}
-
-class _AuditSampleProductSummary extends StatelessWidget {
-  const _AuditSampleProductSummary();
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      padding: const EdgeInsets.all(SpacingTokens.spacing5),
-      child: Row(
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: ColorTokens.primaryContainer.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-            ),
-            child: Icon(
-              AfriIcons.shop,
-              color: ColorTokens.primaryContainer,
-              size: SpacingTokens.spacing8,
-            ),
-          ),
-          const SizedBox(width: SpacingTokens.spacing4),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  context.afriL10n.shopSampleProductName,
-                  style: TypographyTokens.titleMedium(),
-                ),
-                const SizedBox(height: SpacingTokens.spacing1),
-                Text(
-                  context.afriL10n.shopSampleProductSummary,
-                  style: TypographyTokens.bodySmall().copyWith(
-                    color: ColorTokens.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

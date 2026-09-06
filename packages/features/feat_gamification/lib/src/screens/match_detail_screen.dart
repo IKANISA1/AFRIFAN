@@ -11,10 +11,10 @@ import 'package:go_router/go_router.dart';
 import '../models/partner_pool_models.dart';
 import '../models/prediction_models.dart';
 import '../providers/match_detail_provider.dart';
-import '../widgets/fanzone_hub_widgets.dart';
 import '../widgets/h2h_tab_body.dart';
 import '../widgets/lineups_tab_body.dart';
 import '../widgets/match_detail_widgets.dart';
+import '../widgets/partner_pool_widgets.dart';
 import '../widgets/stats_panel.dart';
 
 class MatchDetailScreen extends ConsumerStatefulWidget {
@@ -59,7 +59,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
     if (context.canPop()) {
       context.pop();
     } else {
-      context.go('/fanzone');
+      context.go('/predict');
     }
   }
 
@@ -204,7 +204,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
         title: l10n.gameMatchNotFound,
         message: l10n.gameMatchNotFoundDescription,
         icon: AfriIcons.versus,
-        actionLabel: l10n.gameBackToFanZoneTitleCase,
+        actionLabel: l10n.homeOpenFanZone,
         onAction: _leaveDetail,
       ),
     );
@@ -344,7 +344,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
             : [
                 AfriIconButton(
                   icon: AfriIcons.predict,
-                  onTap: () => context.go('/fanzone'),
+                  onTap: () => context.go('/predict'),
                   tooltip: l10n.gamePartnerPoolsTooltip,
                 ),
               ],
@@ -813,8 +813,8 @@ class _MatchPartnerPoolsTabBody extends StatelessWidget {
                   title: l10n.gameNoPartnerPool,
                   message: l10n.gameNoPartnerPoolDescription,
                   icon: AfriIcons.predict,
-                  actionLabel: l10n.gameViewFanZone,
-                  onAction: () => context.go('/fanzone'),
+                  actionLabel: l10n.homeOpenFanZone,
+                  onAction: () => context.go('/predict'),
                 )
               : Column(
                   children: pools

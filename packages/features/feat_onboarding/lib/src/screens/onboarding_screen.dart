@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
 import 'package:core_l10n/core_l10n.dart';
+import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +31,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  bool _isSubmitting = false;
+  final bool _isSubmitting = false;
   final PageController _pageController = PageController();
   int _currentSlide = 0;
 
@@ -96,27 +97,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Future<void> _continueWithoutSignIn() async {
     if (_isSubmitting) return;
-
-    final authState = ref.read(authStateProvider);
-    if (authState is AuthAuthenticated) {
-      context.go(_postAuthDestination());
-      return;
-    }
-
-    setState(() => _isSubmitting = true);
-    await ref.read(authStateProvider.notifier).signInAnonymously();
-    if (!mounted) return;
-    setState(() => _isSubmitting = false);
-
-    final nextState = ref.read(authStateProvider);
-    if (nextState is AuthAuthenticated) {
-      context.go(_postAuthDestination());
-      return;
-    }
-
-    AfriToast.error(
-      context,
-      context.afriL10n.onboardingAnonymousSessionUnavailable,
+    final destination = _postAuthDestination();
+    final signedIn = ref.read(authStateProvider) is AuthAuthenticated;
+    context.go(
+      signedIn || PublicReadRoutes.allows(Uri.parse(destination))
+          ? destination
+          : '/home',
     );
   }
 

@@ -29,6 +29,7 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
     String? selectedVariant,
     int quantity = 1,
   }) {
+    if (rawProduct['commerce_mode'] == 'enquiry') return;
     final product = _toClubProduct(
       rawProduct,
       partnerId: partnerId,

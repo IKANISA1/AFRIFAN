@@ -12,5 +12,5 @@ approve live CMS wording, translations, screenshots, or store listings.
   locale channel with fail-closed expected match counts.
 
 Any source change that adds, removes, or changes a candidate must update the
-relevant registry through code and localization review. French and Kinyarwanda
-linguistic approval remains an accountable external gate.
+relevant registry through code and localization review. English editorial
+approval remains an accountable external gate.

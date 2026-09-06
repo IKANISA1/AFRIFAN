@@ -4,6 +4,8 @@ import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_club/feat_club.dart';
+import 'package:feat_club/src/screens/club_partners_screen.dart';
+import 'package:feat_club/src/screens/club_public_link_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,6 +58,18 @@ const _clubStates = <String>[
 const _clubRoutes = <_ClubRouteSpec>[
   _ClubRouteSpec('/club', '/club', 'hub', hasEmptyState: false),
   _ClubRouteSpec('/club/team', '/club/team', 'team'),
+  _ClubRouteSpec('/club/team/:playerId', '/club/team/player-1', 'player'),
+  _ClubRouteSpec('/club/partners', '/club/partners', 'partners'),
+  _ClubRouteSpec(
+    '/club/partners/:partnerId',
+    '/club/partners/partner-1',
+    'partner_detail',
+  ),
+  _ClubRouteSpec(
+    '/club/open-web',
+    '/club/open-web?path=%2Fnews%2Fpublished-story',
+    'public_link',
+  ),
   _ClubRouteSpec('/club/news', '/club/news', 'news'),
   _ClubRouteSpec(
     '/club/news/:articleId',
@@ -207,7 +221,7 @@ _ClubGatewayMode _modeFor(String state) {
 
 Widget _buildClubApp({
   required String initialLocation,
-  required ClubContentGateway gateway,
+  required _ClubStateGateway gateway,
   required Brightness brightness,
   required bool reducedMotion,
 }) {
@@ -236,6 +250,13 @@ Widget _buildClubApp({
   return ProviderScope(
     overrides: <Override>[
       clubContentGatewayProvider.overrideWithValue(gateway),
+      clubPublicWebsiteProvider.overrideWithValue(
+        Uri.parse('https://club.example'),
+      ),
+      clubPartnersProvider.overrideWith((ref, id) => gateway.loadPartners(id)),
+      clubPublicLinkProvider.overrideWith(
+        (ref, path) => gateway.loadPublicLink(path),
+      ),
       clubContentLoadTimeoutProvider.overrideWithValue(
         const Duration(seconds: 12),
       ),
@@ -351,6 +372,25 @@ class _ClubStateGateway implements ClubContentGateway {
     });
     return completer.future;
   }
+
+  Future<List<Map<String, dynamic>>> loadPartners(String? id) => _load(
+    key: 'partners-${id ?? 'all'}',
+    data: [
+      {
+        'id': 'partner-1',
+        'name': 'Synthetic Community Partner',
+        'category': 'Community partner',
+        'description':
+            'Published recognition for a synthetic club partner. No redemption or financial benefit is implied.',
+        'website_url': 'https://example.test/club-partner',
+        'image_rights_approved': false,
+      },
+    ],
+    empty: <Map<String, dynamic>>[],
+  );
+
+  Future<String?> loadPublicLink(String path) =>
+      _load<String?>(key: 'public-link', data: null, empty: null);
 
   @override
   Future<ClubOverview?> loadOverview() =>

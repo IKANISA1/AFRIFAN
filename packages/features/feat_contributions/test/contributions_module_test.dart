@@ -27,12 +27,12 @@ void main() {
       expect(rootPaths, contains('/contribute'));
     });
 
-    test('root contribution hub redirects to Fan Zone Supporters', () {
+    test('root contribution hub opens directly', () {
       final rootRoute = module.routes.whereType<GoRoute>().firstWhere(
         (r) => r.path == '/contribute',
       );
 
-      expect(rootRoute.redirect, isNotNull);
+      expect(rootRoute.redirect, isNull);
     });
 
     group('/contribute sub-routes', () {
@@ -111,7 +111,7 @@ void main() {
             decision.path: decision.presentation,
         };
 
-        expect(decisions['/contribute'], RoutePresentation.redirect);
+        expect(decisions['/contribute'], RoutePresentation.fullHeightSheet);
         expect(decisions['/contribute/projects'], RoutePresentation.redirect);
         expect(decisions['/contribute/groups'], RoutePresentation.redirect);
         expect(

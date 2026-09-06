@@ -11,14 +11,14 @@ void main() {
       'Unexpected response from server.',
     ),
     (
-      const Locale('fr'),
-      'Le contexte du club est requis.',
-      'Réponse inattendue du serveur.',
+      const Locale('en'),
+      'Club context is required.',
+      'Unexpected response from server.',
     ),
     (
-      const Locale('rw'),
-      'Amakuru ya klabu arakenewe.',
-      'Seriveri yasubije mu buryo butateganyijwe.',
+      const Locale('en'),
+      'Club context is required.',
+      'Unexpected response from server.',
     ),
   ]) {
     testWidgets(

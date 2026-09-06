@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:core_network/core_network.dart';
 import 'package:feat_gamification/src/predict/predict_controller.dart';
 import 'package:feat_gamification/src/predict/predict_models.dart';
 import 'package:feat_gamification/src/predict/predict_repository.dart';
@@ -48,6 +49,33 @@ class Gateway implements PredictGateway {
 }
 
 void main() {
+  setUp(() => ConnectivityService.setOnlineForTest(true));
+  tearDown(() => ConnectivityService.setOnlineForTest(true));
+  test(
+    'offline and disabled programmes cannot submit; reconnect refreshes',
+    () async {
+      final gateway = Gateway();
+      final controller = PredictController(gateway, autoLoad: false);
+      addTearDown(controller.dispose);
+      await controller.refresh();
+      ConnectivityService.setOnlineForTest(false);
+      await controller.place(fixture(), PredictSelection.home);
+      expect(gateway.mutations, 0);
+      await controller.refresh();
+      expect(controller.state.dashboard!.balanceFet, 500);
+      expect(controller.state.needsReconciliation, isTrue);
+      gateway.data = const PredictDashboard(
+        enabled: false,
+        memberSession: true,
+        balanceFet: 450,
+      );
+      ConnectivityService.setOnlineForTest(true);
+      await Future<void>.delayed(Duration.zero);
+      expect(controller.state.dashboard!.balanceFet, 450);
+      await controller.place(fixture(), PredictSelection.home);
+      expect(gateway.mutations, 0);
+    },
+  );
   test(
     'one pending mutation; timeout requires refresh before another choice',
     () async {

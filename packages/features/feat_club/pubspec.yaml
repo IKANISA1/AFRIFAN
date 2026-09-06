@@ -8,6 +8,8 @@ environment:
   flutter: ">=3.38.0"
 
 dependencies:
+  club_data:
+    path: ../../data/club_data
   flutter:
     sdk: flutter
   core_network:
@@ -19,6 +21,7 @@ dependencies:
   core_l10n:
     path: ../../core/core_l10n
   go_router: ^14.8.1
+  url_launcher: ^6.3.1
   equatable: ^2.0.7
   flutter_riverpod: ^2.6.1
   supabase_flutter: ^2.9.0

@@ -18,7 +18,7 @@ void main() {
       expect(config.appName, 'Gikundiro');
       expect(config.country, 'Rwanda');
       expect(config.countryCode, 'RW');
-      expect(config.language, 'rw');
+      expect(config.language, 'en');
     });
 
     test('has valid currency configuration', () {
@@ -57,7 +57,7 @@ void main() {
 
     test('has supported languages', () {
       expect(config.supportedLanguages, isNotEmpty);
-      expect(config.supportedLanguages, contains('rw'));
+      expect(config.supportedLanguages, equals(const ['en']));
       expect(config.supportedLanguages, contains('en'));
     });
 

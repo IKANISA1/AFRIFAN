@@ -31,7 +31,7 @@ class RayonSportsConfig implements ClubConfig {
   String get countryCode => 'RW';
 
   @override
-  String get language => 'rw';
+  String get language => 'en';
 
   @override
   String get momoPrefix => '*182*';
@@ -71,7 +71,7 @@ class RayonSportsConfig implements ClubConfig {
   }
 
   @override
-  List<String> get supportedLanguages => const ['rw', 'fr', 'en'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;

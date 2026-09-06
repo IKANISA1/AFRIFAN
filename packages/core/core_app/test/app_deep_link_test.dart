@@ -250,7 +250,7 @@ class _ContributionsModule extends FeatureModule {
   List<RouteBase> get standaloneRoutes => <RouteBase>[
     GoRoute(
       path: '/contribute',
-      builder: (context, state) => const Scaffold(body: Text('Contributions')),
+      builder: (context, state) => const Scaffold(body: Text('Contributed')),
       routes: [
         GoRoute(
           path: 'group/:groupId',

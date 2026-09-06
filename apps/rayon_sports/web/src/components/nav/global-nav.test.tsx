@@ -19,7 +19,7 @@ const club: ClubProfile = {
   currencyCode: "RWF",
   currencySymbol: "RWF",
   defaultLanguage: "en",
-  supportedLanguages: ["en", "fr"],
+  supportedLanguages: ["en"],
   officialContact: "+250 700 000 000",
   officialLogoUrl: null,
   primaryColorHex: "#174dbb",

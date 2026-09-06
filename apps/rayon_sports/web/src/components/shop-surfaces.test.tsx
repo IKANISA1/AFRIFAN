@@ -104,9 +104,9 @@ describe("shop helpers", () => {
   });
 
   it("provides draft state parity and English fallback", () => {
-    expect(resolveShopCopy("fr-FR").refresh).toBe("Actualiser les produits");
-    expect(resolveShopCopy("rw").products).toBe("Ibicuruzwa");
-    expect(resolveShopCopy("sw").categories).toBe("Aina");
+    expect(resolveShopCopy("en").refresh).toBe("Refresh products");
+    expect(resolveShopCopy("en").products).toBe("Products");
+    expect(resolveShopCopy("en").categories).toBe("Categories");
     expect(resolveShopCopy("unknown").refresh).toBe("Refresh products");
   });
 });

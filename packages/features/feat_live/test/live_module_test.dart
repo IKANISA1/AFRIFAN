@@ -73,10 +73,7 @@ void main() {
         };
 
         expect(decisions['/live'], RoutePresentation.redirect);
-        expect(
-          decisions['/live/news/:articleId'],
-          RoutePresentation.fullHeightSheet,
-        );
+        expect(decisions['/live/news/:articleId'], RoutePresentation.redirect);
         expect(decisions['/live-match'], RoutePresentation.redirect);
       },
     );

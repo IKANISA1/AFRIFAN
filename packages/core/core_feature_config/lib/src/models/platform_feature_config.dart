@@ -138,9 +138,8 @@ class PlatformConfigSnapshot {
 
   String? copyValue(String key, {String locale = 'en'}) {
     final normalizedKey = normalizePlatformFeatureKey(key);
-    final requestedLocale = _normalizeRuntimeCopyLocale(locale);
-    final languageCode = requestedLocale.split('-').first;
-    final localeFallbacks = <String>{requestedLocale, languageCode, 'en'};
+    // Runtime configuration cannot override the English-only product policy.
+    const localeFallbacks = <String>{'en'};
     for (final candidateLocale in localeFallbacks) {
       for (final entry in runtimeCopy) {
         if (normalizePlatformFeatureKey(entry.copyKey) == normalizedKey &&

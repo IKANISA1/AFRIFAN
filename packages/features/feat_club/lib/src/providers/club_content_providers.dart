@@ -80,6 +80,36 @@ final clubSquadProvider = FutureProvider<List<ClubSquadMember>>(
       .timeout(ref.watch(clubContentLoadTimeoutProvider)),
 );
 
+final clubPlayerProvider = FutureProvider.family<ClubSquadMember?, String>((
+  ref,
+  id,
+) async {
+  final gateway = ref.watch(clubContentGatewayProvider);
+  if (gateway is ClubEntityGateway) {
+    return (gateway as ClubEntityGateway)
+        .loadPlayer(id)
+        .timeout(ref.watch(clubContentLoadTimeoutProvider));
+  }
+  return (await ref.watch(
+    clubSquadProvider.future,
+  )).where((player) => player.id == id).firstOrNull;
+});
+
+final clubArticleProvider = FutureProvider.family<ClubNewsItem?, String>((
+  ref,
+  id,
+) async {
+  final gateway = ref.watch(clubContentGatewayProvider);
+  if (gateway is ClubEntityGateway) {
+    return (gateway as ClubEntityGateway)
+        .loadArticle(id)
+        .timeout(ref.watch(clubContentLoadTimeoutProvider));
+  }
+  return (await ref.watch(
+    clubNewsProvider.future,
+  )).where((article) => article.id == id).firstOrNull;
+});
+
 final clubMatchesProvider = FutureProvider<List<ClubFixtureItem>>(
   (ref) => ref
       .watch(clubContentGatewayProvider)

@@ -56,21 +56,19 @@ void main() {
     expect(find.text('2026-07-01  •  18:00'), findsOneWidget);
   });
 
-  testWidgets('matchday agenda renders French and Kinyarwanda task copy', (
-    tester,
-  ) async {
+  testWidgets('matchday agenda renders English task copy', (tester) async {
     await tester.pumpWidget(
-      buildSubject(isActive: true, match: _match, locale: const Locale('fr')),
+      buildSubject(isActive: true, match: _match, locale: const Locale('en')),
     );
-    expect(find.text('Programme du jour de match'), findsOneWidget);
-    expect(find.text('Rayon Sports contre APR'), findsOneWidget);
+    expect(find.text('Matchday agenda'), findsOneWidget);
+    expect(find.text('Rayon Sports vs APR'), findsOneWidget);
 
     await tester.pumpWidget(
-      buildSubject(isActive: true, match: _match, locale: const Locale('rw')),
+      buildSubject(isActive: true, match: _match, locale: const Locale('en')),
     );
     await tester.pump();
-    expect(find.text('Gahunda y’umunsi w’umukino'), findsOneWidget);
-    expect(find.text('Rayon Sports na APR'), findsOneWidget);
+    expect(find.text('Matchday agenda'), findsOneWidget);
+    expect(find.text('Rayon Sports vs APR'), findsOneWidget);
   });
 }
 

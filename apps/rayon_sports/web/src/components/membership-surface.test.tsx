@@ -96,11 +96,11 @@ describe("membership helpers", () => {
   });
 
   it("provides draft state parity and English fallback", () => {
-    expect(resolveMembershipCopy("fr-FR").refresh).toBe(
-      "Actualiser les formules",
+    expect(resolveMembershipCopy("en").refresh).toBe(
+      "Refresh tiers",
     );
-    expect(resolveMembershipCopy("rw").tiers).toBe("Ibyiciro");
-    expect(resolveMembershipCopy("sw").paidPlans).toBe("Mipango ya malipo");
+    expect(resolveMembershipCopy("en").tiers).toBe("Tiers");
+    expect(resolveMembershipCopy("en").paidPlans).toBe("Paid plans");
     expect(resolveMembershipCopy("unknown").refresh).toBe("Refresh tiers");
   });
 });

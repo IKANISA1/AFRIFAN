@@ -523,13 +523,10 @@ export function getOptionSet(
 export function getRuntimeCopy(
   config: PlatformConfigSnapshot,
   copyKey: string,
-  locale = "en",
+  _locale = "en",
 ): string | null {
   const normalizedKey = normalizeFeatureKey(copyKey);
-  const normalizedLocale = normalizeRuntimeCopyLocale(locale);
-  const localeFallbacks = [
-    ...new Set([normalizedLocale, normalizedLocale.split("-")[0], "en"]),
-  ];
+  const localeFallbacks = ["en"];
   for (const candidateLocale of localeFallbacks) {
     const entry = config.runtime_copy.find(
       (copy) =>

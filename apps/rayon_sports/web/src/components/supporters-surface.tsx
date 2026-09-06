@@ -91,7 +91,7 @@ type SupportersCopy = {
   privacyDetail: string;
 };
 
-const supportersCopy: Record<"en" | "fr" | "rw" | "sw", SupportersCopy> = {
+const supportersCopy: Record<"en", SupportersCopy> = {
   en: {
     status: {
       loading: {
@@ -161,216 +161,6 @@ const supportersCopy: Record<"en" | "fr" | "rw" | "sw", SupportersCopy> = {
     privacyTitle: "Discovery here. Personal progress in the app.",
     privacyDetail:
       "Public web never exposes user IDs, supporter names, contact details, authenticated progress, or earning actions.",
-  },
-  fr: {
-    status: {
-      loading: {
-        label: "Chargement du programme supporters",
-        detail: "En attente du premier instantané public confirmé.",
-      },
-      ready: {
-        label: "Programme supporters confirmé",
-        detail: "Les récompenses et alias sûrs viennent du dernier instantané public.",
-      },
-      empty: {
-        label: "Aucune donnée publique",
-        detail: "Aucune récompense ou position publique n’est confirmée.",
-      },
-      error: {
-        label: "Programme indisponible",
-        detail: "Les données confirmées restent visibles. Réessayez plus tard.",
-      },
-      offline: {
-        label: "Vous êtes hors ligne",
-        detail: "Les données confirmées restent visibles jusqu’au retour du réseau.",
-      },
-      permission_denied: {
-        label: "Accès aux données refusé",
-        detail: "Les données publiques déjà chargées ont été effacées.",
-      },
-      syncing: {
-        label: "Actualisation du programme",
-        detail: "Les récompenses et alias confirmés restent visibles.",
-      },
-      conflict: {
-        label: "Le programme a changé",
-        detail: "Actualisez pour charger l’instantané public actuel.",
-      },
-      security_timeout: {
-        label: "Délai de la demande dépassé",
-        detail: "Aucun changement n’est supposé. Les données restent visibles.",
-      },
-    },
-    eyebrow: "Programme supporters",
-    title: (club) => `Récompenses et classement public de ${club}`,
-    description:
-      "Découvrez les récompenses confirmées et des alias publics sûrs. La progression personnelle et les actions sécurisées restent dans l’application.",
-    openApp: "Ouvrir l’application",
-    appPending: "Liens bientôt disponibles",
-    browseTickets: "Voir les billets",
-    refresh: "Actualiser le programme",
-    retry: "Réessayer",
-    refreshDisabled: "Actualisation indisponible pendant le chargement.",
-    rewards: "Récompenses",
-    publicAliases: "Alias publics",
-    selected: "Sélection",
-    selectedReward: "Récompense sélectionnée",
-    rewardCatalog: "Catalogue confirmé",
-    catalogDetail: "Choisissez une récompense pour voir son déclencheur et son moment.",
-    leaderboard: "Classement public respectueux de la vie privée",
-    leaderboardDetail: "Seuls l’alias approuvé, le rang, le niveau et le total FET apparaissent.",
-    points: "Points FET",
-    trigger: "Déclencheur",
-    timing: "Moment",
-    tier: "Niveau",
-    noRewards: "Aucune récompense publique",
-    noRewardsDetail: "Les récompenses apparaissent après confirmation du club.",
-    noRanking: "Aucun classement public",
-    noRankingDetail: "Le classement apparaît après approbation des alias sûrs.",
-    privacyEyebrow: "Limite de confidentialité",
-    privacyTitle: "Découverte ici. Progression personnelle dans l’application.",
-    privacyDetail:
-      "Le site public n’expose jamais les identifiants, noms, contacts, progression authentifiée ou actions de gain.",
-  },
-  rw: {
-    status: {
-      loading: {
-        label: "Porogaramu y’abafana irimo gutangira",
-        detail: "Dutegereje amakuru rusange ya mbere yemejwe.",
-      },
-      ready: {
-        label: "Porogaramu y’abafana yemejwe",
-        detail: "Ibihembo n’amazina arinda ibanga biva ku makuru yemejwe.",
-      },
-      empty: {
-        label: "Nta makuru rusange",
-        detail: "Nta gihembo cyangwa rutonde rusange byemejwe.",
-      },
-      error: {
-        label: "Porogaramu ntiboneka",
-        detail: "Amakuru yemejwe aragumaho. Ongera ugerageze nyuma.",
-      },
-      offline: {
-        label: "Nta murongo wa interineti",
-        detail: "Amakuru yemejwe aragumaho kugeza umurongo ugarutse.",
-      },
-      permission_denied: {
-        label: "Amakuru ntiyemerewe",
-        detail: "Amakuru rusange yari yafunguwe yasibwe.",
-      },
-      syncing: {
-        label: "Porogaramu irimo kuvugururwa",
-        detail: "Ibihembo n’amazina byemejwe biragumaho.",
-      },
-      conflict: {
-        label: "Porogaramu yahindutse",
-        detail: "Vugurura kugira ngo ubone amakuru rusange ariho.",
-      },
-      security_timeout: {
-        label: "Igihe cyo gusaba cyarangiye",
-        detail: "Nta gihindutse cyemezwa. Amakuru yemejwe aragumaho.",
-      },
-    },
-    eyebrow: "Porogaramu y’abafana",
-    title: (club) => `Ibihembo n’urutonde rusange rwa ${club}`,
-    description:
-      "Menya ibihembo byemejwe n’amazina rusange arinda ibanga. Iterambere ry’umuntu n’ibikorwa birinzwe biguma muri porogaramu.",
-    openApp: "Fungura porogaramu",
-    appPending: "Imiyoboro izaboneka vuba",
-    browseTickets: "Reba amatike",
-    refresh: "Vugurura porogaramu",
-    retry: "Ongera ugerageze",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe amakuru atangira.",
-    rewards: "Ibihembo",
-    publicAliases: "Amazina rusange",
-    selected: "Icyatoranyijwe",
-    selectedReward: "Igihembo cyatoranyijwe",
-    rewardCatalog: "Urutonde rw’ibihembo rwemejwe",
-    catalogDetail: "Hitamo igihembo urebe igikorwa n’igihe byacyo.",
-    leaderboard: "Urutonde rusange rurinda ibanga",
-    leaderboardDetail: "Hagaragara gusa izina ryemejwe, umwanya, icyiciro n’amanota FET.",
-    points: "Amanota FET",
-    trigger: "Igikorwa",
-    timing: "Igihe",
-    tier: "Icyiciro",
-    noRewards: "Nta bihembo rusange",
-    noRewardsDetail: "Ibihembo bigaragara nyuma yo kwemezwa n’ikipe.",
-    noRanking: "Nta rutonde rusange",
-    noRankingDetail: "Urutonde rugaragara amazina arinda ibanga amaze kwemezwa.",
-    privacyEyebrow: "Imipaka y’ibanga",
-    privacyTitle: "Menya hano. Iterambere ry’umuntu muri porogaramu.",
-    privacyDetail:
-      "Urubuga rusange ntirwerekana imyirondoro, amazina, amakuru yo kuvugana, iterambere ryihariye cyangwa ibikorwa byo kubona amanota.",
-  },
-  sw: {
-    status: {
-      loading: {
-        label: "Inapakia programu ya mashabiki",
-        detail: "Inasubiri picha ya kwanza ya umma iliyothibitishwa.",
-      },
-      ready: {
-        label: "Programu ya mashabiki imethibitishwa",
-        detail: "Zawadi na majina salama zinatoka kwenye picha ya umma.",
-      },
-      empty: {
-        label: "Hakuna data ya umma",
-        detail: "Hakuna zawadi au nafasi ya umma iliyothibitishwa.",
-      },
-      error: {
-        label: "Programu haipatikani",
-        detail: "Data iliyothibitishwa inaonekana. Jaribu tena baadaye.",
-      },
-      offline: {
-        label: "Huna mtandao",
-        detail: "Data iliyothibitishwa inaonekana hadi mtandao urudi.",
-      },
-      permission_denied: {
-        label: "Ufikiaji wa data umekataliwa",
-        detail: "Data ya umma iliyopakiwa imeondolewa.",
-      },
-      syncing: {
-        label: "Inasasisha programu",
-        detail: "Zawadi na majina yaliyothibitishwa yanaendelea kuonekana.",
-      },
-      conflict: {
-        label: "Programu imebadilika",
-        detail: "Sasisha ili kupakia picha ya sasa ya umma.",
-      },
-      security_timeout: {
-        label: "Ombi limepitwa na muda",
-        detail: "Hakuna badiliko linalodhaniwa. Data inaendelea kuonekana.",
-      },
-    },
-    eyebrow: "Programu ya mashabiki",
-    title: (club) => `Zawadi na nafasi za umma za ${club}`,
-    description:
-      "Gundua zawadi zilizothibitishwa na majina salama ya umma. Maendeleo binafsi na hatua salama hubaki kwenye programu.",
-    openApp: "Fungua programu",
-    appPending: "Viungo vinakuja hivi karibuni",
-    browseTickets: "Tazama tiketi",
-    refresh: "Sasisha programu",
-    retry: "Jaribu tena",
-    refreshDisabled: "Huwezi kusasisha wakati data inapakia.",
-    rewards: "Zawadi",
-    publicAliases: "Majina ya umma",
-    selected: "Iliyochaguliwa",
-    selectedReward: "Zawadi iliyochaguliwa",
-    rewardCatalog: "Catalog ya zawadi iliyothibitishwa",
-    catalogDetail: "Chagua zawadi kuona kichocheo na wakati wake.",
-    leaderboard: "Jedwali la umma linalolinda faragha",
-    leaderboardDetail: "Jina lililoidhinishwa, nafasi, daraja na jumla ya FET pekee huonekana.",
-    points: "Pointi za FET",
-    trigger: "Kichocheo",
-    timing: "Wakati",
-    tier: "Daraja",
-    noRewards: "Hakuna zawadi za umma",
-    noRewardsDetail: "Zawadi huonekana baada ya uthibitisho wa klabu.",
-    noRanking: "Hakuna jedwali la umma",
-    noRankingDetail: "Jedwali huonekana baada ya majina salama kuidhinishwa.",
-    privacyEyebrow: "Mpaka wa faragha",
-    privacyTitle: "Gundua hapa. Maendeleo binafsi kwenye programu.",
-    privacyDetail:
-      "Tovuti ya umma haionyeshi vitambulisho, majina, mawasiliano, maendeleo ya akaunti au hatua za kupata pointi.",
   },
 };
 
@@ -467,8 +257,8 @@ export function normalizeSupportersSnapshot(value: unknown): SupportersSnapshot 
   return { catalog, leaderboard };
 }
 
-export function resolveSupportersCopy(locale: string) {
-  const language = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveSupportersCopy(_locale: string) {
+  const language = "en";
   return supportersCopy[language as keyof typeof supportersCopy] ?? supportersCopy.en;
 }
 

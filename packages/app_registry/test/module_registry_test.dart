@@ -115,7 +115,14 @@ void main() {
         },
       );
 
-      expect(modules.map((module) => module.featureKey), contains('predict'));
+      expect(
+        modules.where((module) => module.tabRoute?.path == '/predict'),
+        hasLength(1),
+      );
+      expect(
+        modules.map((module) => module.featureKey),
+        isNot(contains('predict')),
+      );
     });
   });
 
@@ -136,7 +143,7 @@ void main() {
         orderedEquals(<({String path, String label})>[
           (path: '/home', label: 'Home'),
           (path: '/club', label: 'Club'),
-          (path: '/fanzone', label: 'Fan Zone'),
+          (path: '/predict', label: 'Predict'),
           (path: '/settings', label: 'Settings'),
           (path: '/membership', label: 'Membership'),
         ]),
@@ -194,59 +201,58 @@ void main() {
         orderedEquals(<({String path, String label})>[
           (path: '/home', label: 'Home'),
           (path: '/club', label: 'Club'),
-          (path: '/fanzone', label: 'Fan Zone'),
+          (path: '/predict', label: 'Predict'),
           (path: '/membership', label: 'Membership'),
         ]),
       );
     });
 
-    test(
-      'default supporter app keeps the approved 35 full-screen surfaces',
-      () {
-        final decisions = modules
-            .expand((module) => module.routePresentationDecisions)
-            .toList(growable: false);
-        final fullScreens = decisions
-            .where(
-              (decision) =>
-                  decision.presentation == RoutePresentation.fullScreen,
-            )
-            .map((decision) => decision.path)
-            .toSet();
+    test('default supporter app keeps the approved full-screen surfaces', () {
+      final decisions = modules
+          .expand((module) => module.routePresentationDecisions)
+          .toList(growable: false);
+      final fullScreens = decisions
+          .where(
+            (decision) => decision.presentation == RoutePresentation.fullScreen,
+          )
+          .map((decision) => decision.path)
+          .toSet();
 
-        expect(
-          fullScreens,
-          equals(<String>{
-            '/onboarding',
-            '/auth/phone',
-            '/auth/otp',
-            '/home',
-            '/search',
-            '/club',
-            '/club/team',
-            '/club/news',
-            '/club/news/:articleId',
-            '/club/fixtures',
-            '/club/fixtures/:matchId',
-            '/club/results',
-            '/club/standings',
-            '/club/history',
-            '/club/projects',
-            '/club/projects/:projectId',
-            '/fanzone',
-            '/fanzone/venue',
-            '/fanzone/venue/order',
-            '/fanzone/match/:fixtureId',
-            '/fanzone/wallet',
-            '/settings',
-            '/tickets',
-            '/e-ticket/:id',
-            '/membership',
-            '/shop',
-          }),
-        );
-      },
-    );
+      expect(
+        fullScreens,
+        equals(<String>{
+          '/onboarding',
+          '/auth/phone',
+          '/auth/otp',
+          '/home',
+          '/search',
+          '/club',
+          '/club/team',
+          '/club/team/:playerId',
+          '/club/partners',
+          '/club/partners/:partnerId',
+          '/club/open-web',
+          '/club/news',
+          '/club/news/:articleId',
+          '/club/fixtures',
+          '/club/fixtures/:matchId',
+          '/club/results',
+          '/club/standings',
+          '/club/history',
+          '/club/projects',
+          '/club/projects/:projectId',
+          '/predict',
+          '/fanzone/venue',
+          '/fanzone/venue/order',
+          '/fanzone/match/:fixtureId',
+          '/settings',
+          '/tickets',
+          '/e-ticket/:id',
+          '/membership',
+          '/shop',
+        }),
+      );
+    });
 
     test(
       'all registered default supporter routes have presentation decisions',
@@ -367,7 +373,7 @@ void main() {
         subPaths,
         containsAll(<String>{'projects', 'groups', 'group/:groupId'}),
       );
-      expect(root.redirect, isNotNull);
+      expect(root.redirect, isNull);
       expect(
         root.routes
             .whereType<GoRoute>()
@@ -415,7 +421,7 @@ void main() {
   });
 
   group('Fan clubs routes', () {
-    test('/fan-clubs redirects root and keeps detail only', () {
+    test('/fan-clubs opens discovery and retains detail', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
           hasFanClubs: true,
@@ -432,7 +438,7 @@ void main() {
           .map((r) => r.path)
           .toSet();
 
-      expect(root.redirect, isNotNull);
+      expect(root.redirect, isNull);
       expect(subPaths, contains(':clubId'));
       expect(subPaths, isNot(contains('create')));
     });

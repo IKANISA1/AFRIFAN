@@ -56,12 +56,12 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     if (context.canPop()) {
       context.pop();
     } else {
-      context.go('/fanzone?section=supporters');
+      context.go('/fan-clubs');
     }
   }
 
   void _openSupporters() {
-    context.go('/fanzone?section=supporters');
+    context.go('/fan-clubs');
   }
 
   Future<void> _copyShareLink() async {

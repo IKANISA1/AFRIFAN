@@ -95,6 +95,7 @@ class ClubNewsItem extends Equatable {
     required this.author,
     required this.publishedAt,
     this.imageUrl,
+    this.sourceUrl,
   });
 
   final String id;
@@ -105,6 +106,7 @@ class ClubNewsItem extends Equatable {
   final String author;
   final DateTime? publishedAt;
   final String? imageUrl;
+  final String? sourceUrl;
 
   factory ClubNewsItem.fromJson(Map<String, dynamic> json) {
     final image = _stringValue(json['image_url']);
@@ -116,7 +118,13 @@ class ClubNewsItem extends Equatable {
       category: _stringValue(json['category']),
       author: _stringValue(json['author_name']),
       publishedAt: _dateValue(json['published_at']),
-      imageUrl: image.isEmpty ? null : image,
+      imageUrl:
+          image.isEmpty ||
+              json['image_rights_approved'] != true ||
+              _stringValue(json['image_provenance_id']).isEmpty
+          ? null
+          : image,
+      sourceUrl: _publicArticleUrl(json['source_url']),
     );
   }
 
@@ -130,6 +138,7 @@ class ClubNewsItem extends Equatable {
     author,
     publishedAt,
     imageUrl,
+    sourceUrl,
   ];
 }
 
@@ -142,8 +151,10 @@ class ClubSquadMember extends Equatable {
     required this.nationality,
     required this.bio,
     this.imageUrl,
+    this.squadGroup = 'first_team',
   });
 
+  final String squadGroup;
   final String id;
   final String name;
   final String position;
@@ -156,6 +167,9 @@ class ClubSquadMember extends Equatable {
     final image = _stringValue(json['image_url'] ?? json['photo_url']);
     return ClubSquadMember(
       id: _stringValue(json['id']),
+      squadGroup: _stringValue(json['squad_group']).isEmpty
+          ? 'first_team'
+          : _stringValue(json['squad_group']),
       name: _stringValue(json['name']),
       position: _stringValue(json['position']),
       shirtNumber: _intValue(json['shirt_number'] ?? json['number']),
@@ -174,6 +188,7 @@ class ClubSquadMember extends Equatable {
     nationality,
     bio,
     imageUrl,
+    squadGroup,
   ];
 }
 
@@ -360,4 +375,44 @@ class ClubProjectItem extends Equatable {
     targetAmount,
     memberCount,
   ];
+}
+
+/// A publisher article URL is optional. Profile pages and unsafe schemes are not
+/// substitutes for an original article. Tracking fields never define identity.
+String? _publicArticleUrl(Object? value) {
+  final uri = Uri.tryParse(_stringValue(value));
+  if (uri == null ||
+      uri.scheme != 'https' ||
+      uri.host.isEmpty ||
+      uri.userInfo.isNotEmpty ||
+      uri.path.isEmpty ||
+      uri.path == '/') {
+    return null;
+  }
+  final host = uri.host.toLowerCase().replaceFirst(RegExp(r'^www\.'), '');
+  if (const {'x.com', 'twitter.com'}.contains(host) &&
+      !RegExp(r'^/[^/]+/status/[0-9]+').hasMatch(uri.path)) {
+    return null;
+  }
+  if (host == 'instagram.com' &&
+      !RegExp(r'^/(p|reel)/[^/]+').hasMatch(uri.path)) {
+    return null;
+  }
+  if (host == 'facebook.com' &&
+      !uri.path.contains('/posts/') &&
+      !uri.path.contains('/videos/') &&
+      !uri.queryParameters.containsKey('story_fbid')) {
+    return null;
+  }
+  return uri
+      .replace(
+        fragment: '',
+        queryParameters: {
+          for (final entry in uri.queryParameters.entries)
+            if (!entry.key.startsWith('utm_') && entry.key != 'fbclid')
+              entry.key: entry.value,
+        },
+      )
+      .removeFragment()
+      .toString();
 }

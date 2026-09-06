@@ -110,11 +110,11 @@ describe("home helpers", () => {
   });
 
   it("provides draft state parity and English fallback", () => {
-    expect(resolveHomeCopy("fr-FR").refresh).toBe(
-      "Actualiser les temps forts",
+    expect(resolveHomeCopy("en").refresh).toBe(
+      "Refresh highlights",
     );
-    expect(resolveHomeCopy("rw").fixtures).toBe("Imikino");
-    expect(resolveHomeCopy("sw").tickets).toBe("Tiketi");
+    expect(resolveHomeCopy("en").fixtures).toBe("Fixtures");
+    expect(resolveHomeCopy("en").tickets).toBe("Tickets");
     expect(resolveHomeCopy("unknown").refresh).toBe("Refresh highlights");
   });
 });

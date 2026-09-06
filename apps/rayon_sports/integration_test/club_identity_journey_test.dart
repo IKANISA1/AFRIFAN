@@ -56,6 +56,19 @@ void main() {
     expect(find.text('Blue and white'), findsOneWidget);
     expect(find.byType(Image), findsOneWidget);
     await capture('club-native-ready');
+    await tester.tap(find.text('Team'));
+    await tester.pumpAndSettle();
+    expect(find.text('Synthetic captain'), findsOneWidget);
+    await capture('club-native-squad');
+    await tester.tap(find.text('Synthetic captain'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Synthetic profile for native journey testing.'),
+      findsOneWidget,
+    );
+    await capture('club-native-player');
+    router.go('/club');
+    await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Club history'));
     await tester.pumpAndSettle();
     await capture('club-native-details');
@@ -119,7 +132,24 @@ class _Gateway implements ClubContentGateway {
   @override
   Future<List<ClubProjectItem>> loadProjects() async => const [];
   @override
-  Future<List<ClubSquadMember>> loadSquad() async => const [];
+  Future<List<ClubSquadMember>> loadSquad() async => const [
+    ClubSquadMember(
+      id: 'synthetic-captain',
+      name: 'Synthetic captain',
+      position: 'Midfielder',
+      shirtNumber: 8,
+      nationality: 'Rwanda',
+      bio: 'Synthetic profile for native journey testing.',
+    ),
+    ClubSquadMember(
+      id: 'synthetic-defender',
+      name: 'Synthetic defender',
+      position: 'Defender',
+      shirtNumber: 4,
+      nationality: 'Rwanda',
+      bio: 'Synthetic profile for native journey testing.',
+    ),
+  ];
   @override
   Future<List<ClubStandingItem>> loadStandings() async => const [];
 }

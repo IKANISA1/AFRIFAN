@@ -242,11 +242,11 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Search public supporter aliases and manage friends.';
 
   @override
-  String get searchFanZoneTitle => 'Fan Zone';
+  String get searchFanZoneTitle => 'Predict';
 
   @override
   String get searchFanZoneDescription =>
-      'Predictions, community, rewards, and matchday activity.';
+      'Match picks, prediction history and FET activity.';
 
   @override
   String get searchFanRegistryTitle => 'Fan registry';
@@ -759,7 +759,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get navClub => 'Club';
 
   @override
-  String get navFanZone => 'Fan Zone';
+  String get navFanZone => 'Predict';
 
   @override
   String get navMembership => 'Membership';
@@ -1534,7 +1534,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get homeFixturesUnavailable => 'Club fixtures are not available yet.';
 
   @override
-  String get homeOpenFanZone => 'Open Fan Zone';
+  String get homeOpenFanZone => 'Open Predict';
 
   @override
   String get homeSearchHint => 'Find';
@@ -1657,7 +1657,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get homeMembershipAction => 'Join Gikundiro';
 
   @override
-  String get homeFanZoneAction => 'Fan Zone';
+  String get homeFanZoneAction => 'Predict';
 
   @override
   String get homeShopAction => 'Shop';
@@ -4423,12 +4423,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get editProfileLanguageEnglish => 'English';
-
-  @override
-  String get editProfileLanguageFrench => 'Français';
-
-  @override
-  String get editProfileLanguageKinyarwanda => 'Kinyarwanda';
 
   @override
   String get notificationPreferencesConnectionRestoredReview =>
@@ -10452,4 +10446,216 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get clubMembershipAction => 'Membership';
+
+  @override
+  String get membershipStatusUnconfirmed => 'Not confirmed';
+
+  @override
+  String get membershipDateUnconfirmed => 'Not provided';
+
+  @override
+  String get membershipProgrammeTitle => 'Your membership';
+
+  @override
+  String get membershipProgrammeBody =>
+      'Your category is based on confirmed club contributions. FET activity is separate and does not determine your membership tier.';
+
+  @override
+  String get predictReviewTitle => 'Review your pick';
+
+  @override
+  String get predictConfirmPick => 'Confirm pick';
+
+  @override
+  String get predictReviewRule =>
+      'One pick per fixture. Your pick cannot be changed after confirmation. The fixture closes at kickoff.';
+
+  @override
+  String get predictEntryCost => 'Entry cost';
+
+  @override
+  String get predictBalanceAfter => 'Balance after entry';
+
+  @override
+  String get predictCancelPick => 'Cancel';
+
+  @override
+  String get fanClubViewJoiningOptions => 'View joining options';
+
+  @override
+  String get clubAllPlayers => 'All players';
+
+  @override
+  String get clubPlayerProfile => 'Player profile';
+
+  @override
+  String get clubPlayerBioPending =>
+      'A player biography has not been published yet.';
+
+  @override
+  String get clubNextMatch => 'Next match';
+
+  @override
+  String get clubLatestNews => 'Latest news';
+
+  @override
+  String get clubPartners => 'Partners';
+
+  @override
+  String get clubPartnersSubtitle => 'The organisations supporting your club';
+
+  @override
+  String get clubPartnersEmpty =>
+      'Club partners will appear when their details are published.';
+
+  @override
+  String get clubPartnerWebsite => 'Visit partner website';
+
+  @override
+  String get clubArticleOriginal => 'Read original article';
+
+  @override
+  String get clubSourceLabel => 'Source';
+
+  @override
+  String get predictEarnUse => 'Earn and use FET';
+
+  @override
+  String get predictEarnUseBody =>
+      'FET is your supporter activity balance. Eligible members receive the published welcome grant once. You can use available FET to enter enabled fixtures; confirmed payouts and refunds appear in FET activity. FET cannot be bought or withdrawn as cash.';
+
+  @override
+  String get predictNoRedemptions =>
+      'Partner recognition does not create a FET offer. Only published, eligible offers can be redeemed.';
+
+  @override
+  String get searchPartialTitle => 'Some results are unavailable';
+
+  @override
+  String get searchPartialMessage =>
+      'Available results are shown. Refresh to try the remaining sources.';
+
+  @override
+  String get clubLinkUnavailable => 'Continue on the club website';
+
+  @override
+  String get clubLinkUnavailableBody =>
+      'This website record is not available in the app yet. You can open the original page or browse the club.';
+
+  @override
+  String get clubOpenWebsite => 'Open website';
+
+  @override
+  String get clubLinkLoading => 'Opening club content';
+
+  @override
+  String get clubLinkRetry => 'Try again';
+
+  @override
+  String get clubPartnersTitle => 'Partners';
+
+  @override
+  String get clubPartnersIntro =>
+      'The organisations supporting our club. Partner recognition does not include a FET reward or redemption offer.';
+
+  @override
+  String get clubPartnersUnavailable =>
+      'Partner details are temporarily unavailable.';
+
+  @override
+  String get clubPartnerDetails => 'View partner';
+
+  @override
+  String get clubFootballNow => 'Football now';
+
+  @override
+  String get clubFootballUpcoming => 'Next fixture';
+
+  @override
+  String get clubFootballRecent => 'Latest result';
+
+  @override
+  String get membershipQualificationUnavailable =>
+      'Contribution qualification is not yet available for this club.';
+
+  @override
+  String get membershipQualificationWindow =>
+      'Rolling 12 months · membership contributions only';
+
+  @override
+  String get predictInsufficientReview =>
+      'Insufficient FET. No charge will be made.';
+
+  @override
+  String get shopEnquire => 'Enquire on WhatsApp';
+
+  @override
+  String get shopEnquiryExplanation =>
+      'Confirm size, availability and delivery with the club. Opening WhatsApp does not place an order or make a payment.';
+
+  @override
+  String clubFixtureTeams(String homeTeam, String awayTeam) {
+    return '$homeTeam · $awayTeam';
+  }
+
+  @override
+  String predictFetAmount(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString FET';
+  }
+
+  @override
+  String membershipConfirmedTotal(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString RWF confirmed';
+  }
+
+  @override
+  String membershipRemainingTotal(int amount, String tier) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString RWF to $tier';
+  }
+
+  @override
+  String shopEnquiryMessage(
+    String productName,
+    String productId,
+    String size,
+    int quantity,
+  ) {
+    return 'Hello, I would like to enquire about $productName (product $productId), size $size, quantity $quantity.';
+  }
+
+  @override
+  String get fanClubsSavedRetry => 'Showing saved fan clubs. Tap to retry.';
+
+  @override
+  String get shopSizeNotSelected => 'Not selected';
+
+  @override
+  String get clubSquadFirstTeam => 'First team';
+
+  @override
+  String get clubSquadWomen => 'Women';
+
+  @override
+  String get clubSquadAcademy => 'Academy';
+
+  @override
+  String get clubSquadStaff => 'Staff';
+
+  @override
+  String get clubSquadAllTeams => 'All teams';
+
+  @override
+  String get shopEnquiryOptions => 'View enquiry options';
 }

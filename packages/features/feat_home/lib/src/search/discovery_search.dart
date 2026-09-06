@@ -50,8 +50,7 @@ class DiscoverySearchQuery {
   final String localeName;
 
   AfriLocalizations get l10n {
-    final languageCode = localeName.split(RegExp('[-_]')).first;
-    return lookupAfriLocalizations(Locale(languageCode));
+    return lookupAfriLocalizations(const Locale('en'));
   }
 
   @override
@@ -68,10 +67,15 @@ class DiscoverySearchQuery {
 
 @immutable
 class DiscoverySearchResponse {
-  const DiscoverySearchResponse({required this.results, this.offline = false});
+  const DiscoverySearchResponse({
+    required this.results,
+    this.offline = false,
+    this.partial = false,
+  });
 
   final List<DiscoveryResult> results;
   final bool offline;
+  final bool partial;
 }
 
 enum DiscoverySearchFailureKind {

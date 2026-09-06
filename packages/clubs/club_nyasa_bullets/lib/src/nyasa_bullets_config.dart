@@ -56,7 +56,7 @@ class NyasaBulletsConfig implements ClubConfig {
   );
 
   @override
-  List<String> get supportedLanguages => const ['en', 'ny'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;

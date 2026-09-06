@@ -41,15 +41,8 @@ function mapClubRow(
       row.currency_symbol,
       fallback.currencySymbol,
     ),
-    defaultLanguage: safeString(
-      row.default_language,
-      fallback.defaultLanguage,
-    ),
-    supportedLanguages: Array.isArray(row.supported_languages)
-      ? row.supported_languages
-          .map((entry) => safeString(entry))
-          .filter(Boolean)
-      : fallback.supportedLanguages,
+    defaultLanguage: "en",
+    supportedLanguages: ["en"],
     officialContact: safeString(
       row.official_contact,
       fallback.officialContact,

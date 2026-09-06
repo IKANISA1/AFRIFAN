@@ -89,7 +89,8 @@ class _PredictOpsScreenState extends ConsumerState<PredictOpsScreen> {
               ),
               const SizedBox(height: 20),
               if (!online) Text(l.predictOffline),
-              if (state.loading || state.busy) const LinearProgressIndicator(),
+              if (state.loading || state.busy)
+                const AfriLinearProgressIndicator(),
               if (state.failed) ...[
                 Semantics(
                   liveRegion: true,
@@ -225,7 +226,7 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
       PredictAdminAction.settle => l.predictAdminSettle,
       PredictAdminAction.refund => l.predictAdminRefund,
     };
-    return AlertDialog(
+    return AfriAlertDialog(
       title: Text(label),
       scrollable: true,
       content: Column(
@@ -235,7 +236,7 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
           if (widget.fixture case final fixture?)
             Text('${fixture.home} · ${fixture.away}'),
           if (widget.action == PredictAdminAction.settings) ...[
-            SwitchListTile(
+            AfriSwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l.predictAdminEnabled),
               value: enabled,
@@ -252,7 +253,7 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
           if (widget.action == PredictAdminAction.settle)
             Text(l.predictAdminSettleBody)
           else
-            TextField(
+            AfriTextFormField(
               controller: input,
               onChanged: (_) => setState(() {}),
               keyboardType: widget.action == PredictAdminAction.settings
@@ -260,22 +261,20 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
                   : widget.action == PredictAdminAction.refund
                   ? TextInputType.text
                   : TextInputType.url,
-              decoration: InputDecoration(
-                labelText: widget.action == PredictAdminAction.settings
-                    ? l.predictAdminEntryPrice
-                    : widget.action == PredictAdminAction.refund
-                    ? l.predictAdminReason
-                    : l.predictAdminSource,
-              ),
+              label: widget.action == PredictAdminAction.settings
+                  ? l.predictAdminEntryPrice
+                  : widget.action == PredictAdminAction.refund
+                  ? l.predictAdminReason
+                  : l.predictAdminSource,
             ),
         ],
       ),
       actions: [
-        TextButton(
+        AfriTextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(l.predictAdminCancel),
         ),
-        TextButton(
+        AfriTextButton(
           onPressed: valid
               ? () => Navigator.pop(context, <String, Object?>{
                   if (widget.action == PredictAdminAction.settings) ...{

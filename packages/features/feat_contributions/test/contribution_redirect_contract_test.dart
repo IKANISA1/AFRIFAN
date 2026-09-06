@@ -4,43 +4,34 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  for (final source in <String>[
-    '/contribute',
-    '/contribute/projects',
-    '/contribute/groups',
-  ]) {
-    testWidgets(
-      '$source resolves to the canonical Fan Zone Supporters target',
-      (tester) async {
-        final router = GoRouter(
-          initialLocation: source,
-          routes: <RouteBase>[
-            ...ContributionsModule().routes,
-            GoRoute(
-              path: '/fanzone',
-              builder: (context, state) => Scaffold(
-                body: Text(
-                  state.uri.queryParameters['section'] == 'supporters'
-                      ? 'Fan Zone Supporters'
-                      : 'Unexpected Fan Zone section',
-                ),
-              ),
-            ),
-          ],
-        );
-        addTearDown(router.dispose);
+  for (final source in <String>['/contribute/projects', '/contribute/groups']) {
+    testWidgets('$source resolves to the club initiatives', (tester) async {
+      final router = GoRouter(
+        initialLocation: source,
+        routes: <RouteBase>[
+          GoRoute(
+            path: '/contribute',
+            routes: ContributionsModule().routes
+                .whereType<GoRoute>()
+                .single
+                .routes,
+            builder: (context, state) =>
+                const Scaffold(body: Text('Club initiatives')),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
 
-        await tester.pumpWidget(MaterialApp.router(routerConfig: router));
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpAndSettle();
 
-        expect(find.text('Fan Zone Supporters'), findsOneWidget);
-        expect(
-          router.routeInformationProvider.value.uri.toString(),
-          '/fanzone?section=supporters',
-        );
-        expect(router.routeInformationProvider.value.uri.path, isNot(source));
-      },
-    );
+      expect(find.text('Club initiatives'), findsOneWidget);
+      expect(
+        router.routeInformationProvider.value.uri.toString(),
+        '/contribute',
+      );
+      expect(router.routeInformationProvider.value.uri.path, isNot(source));
+    });
   }
 
   test('all contribution redirects declare the same registered target', () {
@@ -50,14 +41,10 @@ void main() {
 
     expect(
       decisions.map((decision) => decision.path),
-      containsAll(<String>[
-        '/contribute',
-        '/contribute/projects',
-        '/contribute/groups',
-      ]),
+      containsAll(<String>['/contribute/projects', '/contribute/groups']),
     );
     expect(decisions.map((decision) => decision.targetPath).toSet(), <String>{
-      '/fanzone?section=supporters',
+      '/contribute',
     });
   });
 }

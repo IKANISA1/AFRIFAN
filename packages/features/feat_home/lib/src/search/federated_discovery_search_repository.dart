@@ -11,6 +11,22 @@ abstract interface class DiscoverySearchSource {
   Future<List<DiscoveryResult>> search(DiscoverySearchQuery query);
 }
 
+/// A failed section carries the healthy results from the same source.
+class PartialDiscoverySourceFailure implements Exception {
+  const PartialDiscoverySourceFailure(this.results);
+  final List<DiscoveryResult> results;
+}
+
+String clubSearchFilter(DiscoverySearchQuery query, List<String> fields) {
+  final terms = query.text.trim().split(RegExp(r'\s+')).take(8);
+  String escape(String value) => value
+      .replaceAll('\\', '\\\\')
+      .replaceAll('"', '\\"')
+      .replaceAll('%', '\\%')
+      .replaceAll('_', '\\_');
+  return 'and(${terms.map((term) => 'or(${fields.map((field) => '$field.ilike."%${escape(term)}%"').join(',')})').join(',')})';
+}
+
 /// Combines the safe local destination catalog with bounded live sources.
 ///
 /// Each live source fails independently. When every requested live source
@@ -38,6 +54,8 @@ class FederatedDiscoverySearchRepository implements DiscoverySearchRepository {
       requestedSources.map((source) async {
         try {
           return _SourceResponse(results: await source.search(query));
+        } on PartialDiscoverySourceFailure catch (failure) {
+          return _SourceResponse(results: failure.results, failed: true);
         } catch (_) {
           return const _SourceResponse(failed: true);
         }
@@ -63,9 +81,12 @@ class FederatedDiscoverySearchRepository implements DiscoverySearchRepository {
 
     return DiscoverySearchResponse(
       results: List<DiscoveryResult>.unmodifiable(merged),
+      partial: failedCount > 0,
       offline:
           localResponse.offline ||
-          (sourceResults.isNotEmpty && failedCount == sourceResults.length),
+          (sourceResults.isNotEmpty &&
+              failedCount == sourceResults.length &&
+              sourceResults.every((source) => source.results.isEmpty)),
     );
   }
 }
@@ -130,17 +151,29 @@ final class SupabaseClubDiscoverySource extends SupabaseDiscoverySearchSource {
       throw StateError('The active club could not be resolved.');
     }
 
-    final responses = await Future.wait(<Future<List<DiscoveryResult>>>[
-      _searchIdentity(query, clubId),
-      _searchNews(query, clubId),
-      _searchSquad(query, clubId),
-      _searchHistory(query, clubId),
-      _searchProjects(query, clubId),
-    ]);
-    return responses
+    var failed = false;
+    final responses = await Future.wait(
+      <Future<List<DiscoveryResult>>>[
+        _searchIdentity(query, clubId),
+        _searchNews(query, clubId),
+        _searchSquad(query, clubId),
+        _searchHistory(query, clubId),
+        _searchProjects(query, clubId),
+      ].map((request) async {
+        try {
+          return await request;
+        } catch (_) {
+          failed = true;
+          return const <DiscoveryResult>[];
+        }
+      }),
+    );
+    final results = responses
         .expand((items) => items)
         .take(SupabaseDiscoverySearchSource.sourceLimit)
         .toList(growable: false);
+    if (failed) throw PartialDiscoverySourceFailure(results);
+    return results;
   }
 
   Future<List<DiscoveryResult>> _searchIdentity(
@@ -190,6 +223,7 @@ final class SupabaseClubDiscoverySource extends SupabaseDiscoverySearchSource {
         .select('id, title, subtitle, category')
         .eq('club_id', clubId)
         .eq('is_published', true)
+        .or(clubSearchFilter(query, ['title', 'subtitle', 'category']))
         .order('published_at', ascending: false)
         .limit(SupabaseDiscoverySearchSource.sourceLimit * 3);
     return rows
@@ -226,6 +260,7 @@ final class SupabaseClubDiscoverySource extends SupabaseDiscoverySearchSource {
         .select('id, name, position, nationality')
         .eq('club_id', clubId)
         .eq('is_active', true)
+        .or(clubSearchFilter(query, ['name', 'position', 'nationality']))
         .order('shirt_number')
         .limit(SupabaseDiscoverySearchSource.sourceLimit * 3);
     return rows
@@ -243,7 +278,8 @@ final class SupabaseClubDiscoverySource extends SupabaseDiscoverySearchSource {
             description:
                 row['position']?.toString() ?? query.l10n.clubTeamSubtitle,
             category: DiscoveryCategory.club,
-            destination: '/club/team',
+            destination:
+                '/club/team/${Uri.encodeComponent(row['id'].toString())}',
             icon: AfriIcons.people,
             keywords: const <String>['team', 'squad', 'player'],
           ),
@@ -261,6 +297,7 @@ final class SupabaseClubDiscoverySource extends SupabaseDiscoverySearchSource {
         .eq('club_id', clubId)
         .eq('content_type', 'club_history')
         .eq('is_active', true)
+        .or(clubSearchFilter(query, ['title', 'subtitle']))
         .order('sort_order')
         .limit(SupabaseDiscoverySearchSource.sourceLimit * 2);
     return rows
@@ -294,6 +331,7 @@ final class SupabaseClubDiscoverySource extends SupabaseDiscoverySearchSource {
         .select('id, name, description')
         .eq('club_id', clubId)
         .eq('is_active', true)
+        .or(clubSearchFilter(query, ['name', 'description']))
         .order('created_at', ascending: false)
         .limit(SupabaseDiscoverySearchSource.sourceLimit * 2);
     return rows
@@ -495,6 +533,14 @@ final class SupabaseCommerceDiscoverySource
         .eq('is_active', true);
     request = scopeResolver.apply(request, scope);
     final rows = await request
+        .or(
+          clubSearchFilter(query, [
+            'name',
+            'description',
+            'category',
+            'collection',
+          ]),
+        )
         .order('sort_order', ascending: true)
         .limit(SupabaseDiscoverySearchSource.sourceLimit * 5);
 

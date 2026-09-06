@@ -20,11 +20,11 @@ void main() {
   });
 
   test('every canonical Flutter route resolves through the router graph', () {
-    expect(canonicalRoutes.length, 80);
+    expect(canonicalRoutes.length, 88);
     expect(canonicalRoutes, contains('/predict'));
     expect(
       canonicalRoutes.keys.any((path) => path.startsWith('/challenge')),
-      isFalse,
+      isTrue,
     );
 
     for (final path in canonicalRoutes.keys) {
@@ -87,6 +87,55 @@ void main() {
       expect(match.isError, isFalse, reason: '${decision.path} -> $targetUri');
     }
   });
+
+  testWidgets(
+    'registered compatibility redirects reach a terminal destination',
+    (tester) async {
+      // Use the real redirects, with lightweight page bodies, so cross-module
+      // chains are exercised without authenticated repositories or network IO.
+      final router = GoRouter(
+        initialLocation: '/home',
+        routes: [
+          for (final entry in canonicalRoutes.entries)
+            GoRoute(
+              path: entry.key,
+              redirect: entry.value?.redirect,
+              builder: (_, state) => Text('Destination: ${state.uri.path}'),
+            ),
+        ],
+      );
+      addTearDown(router.dispose);
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      for (final entry in {
+        '/fanzone': '/predict',
+        '/challenge': '/predict',
+        '/challenge/create': '/predict',
+        '/challenge/my': '/predict?section=history',
+        '/fanzone?section=predictions': '/predict',
+        '/fanzone?section=supporters': '/fan-clubs',
+        '/fanzone?section=league': '/club/fixtures',
+        '/fanzone/wallet': '/predict?section=wallet',
+        '/membership/fans': '/fan-clubs',
+        '/fan-clubs': '/fan-clubs',
+        '/contribute': '/contribute',
+        '/contribute/groups': '/contribute',
+        '/contribute/projects': '/contribute',
+      }.entries) {
+        router.go(entry.key);
+        await tester.pumpAndSettle();
+        expect(
+          router.routeInformationProvider.value.uri.toString(),
+          entry.value,
+          reason: entry.key,
+        );
+        expect(tester.takeException(), isNull, reason: entry.key);
+        expect(
+          find.text('Destination: ${Uri.parse(entry.value).path}'),
+          findsOneWidget,
+        );
+      }
+    },
+  );
 }
 
 Map<String, GoRoute?> _collectCanonicalRoutes(List<FeatureModule> modules) {

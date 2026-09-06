@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'predict_controller.dart';
+import 'predict_fixture_card.dart';
 import 'predict_models.dart';
 import 'predict_repository.dart';
+import 'predict_review_sheet.dart';
+export 'predict_fixture_card.dart';
 
-/// Gikundiro's fixture-first Predict contract, using native task surfaces.
+/// One supporter journey: fixture picks, personal history and FET activity.
 class PredictScreen extends ConsumerStatefulWidget {
   const PredictScreen({super.key, this.embedded = false});
   final bool embedded;
@@ -17,22 +20,68 @@ class PredictScreen extends ConsumerStatefulWidget {
   ConsumerState<PredictScreen> createState() => _PredictScreenState();
 }
 
-class _PredictScreenState extends ConsumerState<PredictScreen> {
+class _PredictScreenState extends ConsumerState<PredictScreen>
+    with WidgetsBindingObserver {
   int _section = 0;
+  bool _reviewOpen = false;
   String? _competition;
   Timer? _clock;
+  DateTime? _nextBoundary;
   @override
   void initState() {
     super.initState();
-    _clock = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
-    });
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _clock?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(ref.read(predictControllerProvider.notifier).refresh());
+      if (mounted) setState(() {});
+    }
+  }
+
+  void _scheduleBoundary(PredictDashboard? data) {
+    final now = DateTime.now();
+    final boundaries =
+        (data?.fixtures ?? <PredictFixture>[])
+            .where((fixture) => fixture.isOpen(now))
+            .map(
+              (fixture) => fixture.locksAt.isBefore(fixture.kickoffAt)
+                  ? fixture.locksAt
+                  : fixture.kickoffAt,
+            )
+            .toList()
+          ..sort();
+    final next = boundaries.firstOrNull;
+    if (next == _nextBoundary) return;
+    _nextBoundary = next;
+    _clock?.cancel();
+    if (next != null) {
+      _clock = Timer(
+        next.difference(now) + const Duration(milliseconds: 1),
+        () {
+          if (mounted) setState(() => _nextBoundary = null);
+        },
+      );
+    }
+  }
+
+  void _selectSection(int index) {
+    final uri = Uri(
+      path: '/predict',
+      queryParameters: index == 0
+          ? null
+          : {'section': index == 1 ? 'history' : 'wallet'},
+    );
+    context.go(uri.toString());
   }
 
   void _signIn() => context.push('/auth/phone?from=%2Fpredict');
@@ -43,6 +92,13 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
     final state = ref.watch(predictControllerProvider);
     final controller = ref.read(predictControllerProvider.notifier);
     final data = state.dashboard;
+    final uri = GoRouterState.of(context).uri;
+    _section = switch (uri.queryParameters['section']) {
+      'history' || 'my' => 1,
+      'wallet' || 'activity' => 2,
+      _ => 0,
+    };
+    _scheduleBoundary(data);
     final competitions = {
       for (final f in data?.fixtures ?? <PredictFixture>[])
         f.competitionId: f.competition,
@@ -55,8 +111,9 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
         : (data?.fixtures ?? <PredictFixture>[])
               .where(
                 (f) =>
-                    selectedCompetition == null ||
-                    f.competitionId == selectedCompetition,
+                    f.isOpen(DateTime.now()) &&
+                    (selectedCompetition == null ||
+                        f.competitionId == selectedCompetition),
               )
               .toList();
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
@@ -74,55 +131,41 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(SpacingTokens.screenPadding),
             children: [
-              if (largeText) ...[
-                Text(
+              Center(
+                child: Text(
                   l.predictTitle,
-                  style: TypographyTokens.headlineLarge(ColorTokens.onSurface),
-                ),
-                if (data?.balanceFet case final balance?)
-                  Text(
-                    '$balance FET',
-                    style: TypographyTokens.titleMedium(ColorTokens.onSurface),
-                  ),
-              ] else
-                Row(
-                  children: [
-                    if (!widget.embedded && context.canPop())
-                      AfriIconButton(
-                        icon: AfriIcons.back,
-                        tooltip: MaterialLocalizations.of(
-                          context,
-                        ).backButtonTooltip,
-                        onTap: () => context.pop(),
-                      ),
-                    Expanded(
-                      child: Text(
-                        l.predictTitle,
-                        style: TypographyTokens.headlineLarge(
-                          ColorTokens.onSurface,
-                        ),
-                      ),
-                    ),
-                    if (data?.balanceFet case final balance?)
-                      Text(
-                        '$balance FET',
-                        style: TypographyTokens.titleMedium(
-                          ColorTokens.onSurface,
-                        ),
-                      ),
-                  ],
-                ),
-              const SizedBox(height: 8),
-              Text(
-                l.predictIntro,
-                style: TypographyTokens.bodyMedium(
-                  ColorTokens.onSurfaceVariant,
+                  style: TypographyTokens.displaySmall(ColorTokens.onSurface),
+                  textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: SpacingTokens.spacing2),
+              Center(
+                child: Text(
+                  l.predictIntro,
+                  textAlign: TextAlign.center,
+                  style: TypographyTokens.bodyMedium(
+                    ColorTokens.overviewSecondaryText,
+                  ),
+                ),
+              ),
+              if (data?.balanceFet case final balance?) ...[
+                const SizedBox(height: SpacingTokens.spacing4),
+                Center(
+                  child: Semantics(
+                    label: '$balance FET',
+                    child: Text(
+                      '$balance FET',
+                      style: TypographyTokens.headlineLarge(
+                        ColorTokens.onSurface,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(height: SpacingTokens.spacing6),
               Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: SpacingTokens.spacing2,
+                runSpacing: SpacingTokens.spacing2,
                 children: [
                   for (final (index, label) in [
                     l.predictFixtures,
@@ -131,17 +174,19 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
                   ].indexed)
                     AfriChoiceChip(
                       visualDensity: largeText ? VisualDensity.standard : null,
-                      padding: largeText ? const EdgeInsets.all(8) : null,
+                      padding: largeText
+                          ? const EdgeInsets.all(SpacingTokens.spacing2)
+                          : null,
                       label: Text(label),
                       selected: _section == index,
-                      onSelected: (_) => setState(() => _section = index),
+                      onSelected: (_) => _selectSection(index),
                     ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: SpacingTokens.spacing6),
               if (!online) ...[
                 _notice(l.predictOffline),
-                const SizedBox(height: 16),
+                const SizedBox(height: SpacingTokens.spacing4),
               ],
               if (state.failure case final failure?) ...[
                 _notice(switch (failure) {
@@ -152,7 +197,7 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
                   PredictFailure.uncertain => l.predictUncertain,
                   PredictFailure.unavailable => l.predictUnavailable,
                 }),
-                const SizedBox(height: 12),
+                const SizedBox(height: SpacingTokens.spacing3),
                 AfriButton(
                   label: failure == PredictFailure.signIn
                       ? l.predictSignIn
@@ -162,18 +207,18 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
                       ? _signIn
                       : controller.refresh,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: SpacingTokens.spacing6),
               ],
               if (state.loading) ...[
-                const LinearProgressIndicator(),
-                const SizedBox(height: 12),
+                const AfriLinearProgressIndicator(),
+                const SizedBox(height: SpacingTokens.spacing3),
                 Text(
                   l.predictLoading,
                   style: TypographyTokens.bodyMedium(
-                    ColorTokens.onSurfaceVariant,
+                    ColorTokens.overviewSecondaryText,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: SpacingTokens.spacing6),
               ],
               if (data != null) ...[
                 if (!data.enabled && _section == 0)
@@ -189,7 +234,7 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
                     _notice(l.predictNoActivity)
                   else
                     for (final entry in data.ledger)
-                      ListTile(
+                      AfriListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(switch (entry.type) {
                           'predict_welcome' => l.predictWelcome,
@@ -209,9 +254,9 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
                       ),
                 ] else ...[
                   if (_section == 0 && competitions.length > 1) ...[
-                    DropdownButtonFormField<String>(
+                    AfriDropdownField<String>(
                       initialValue: selectedCompetition ?? '',
-                      decoration: InputDecoration(labelText: l.predictFixtures),
+                      label: l.predictFixtures,
                       items: [
                         DropdownMenuItem(value: '', child: Text(l.predictAll)),
                         for (final entry in competitions.entries)
@@ -227,7 +272,7 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
                         () => _competition = value == '' ? null : value,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: SpacingTokens.spacing4),
                   ],
                   if (_section == 1 && !data.memberSession)
                     AfriButton(
@@ -253,9 +298,30 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
                               fixture.isOpen(DateTime.now()) &&
                               fixture.selection == null &&
                               _section == 0,
-                          onPick: (selection) {
+                          onPick: (selection) async {
                             if (data.memberSession) {
-                              unawaited(controller.place(fixture, selection));
+                              if (_reviewOpen) return;
+                              _reviewOpen = true;
+                              try {
+                                final confirmed = await showPredictReview(
+                                  context,
+                                  fixture: fixture,
+                                  selection: selection,
+                                  balanceFet: data.balanceFet,
+                                );
+                                if (confirmed == true && mounted) {
+                                  await controller.place(fixture, selection);
+                                } else {
+                                  unawaited(
+                                    FirebaseAnalyticsService.logTaskAbandonment(
+                                      task: 'predict',
+                                      stage: 'review',
+                                    ),
+                                  );
+                                }
+                              } finally {
+                                _reviewOpen = false;
+                              }
                             } else {
                               _signIn();
                             }
@@ -263,29 +329,103 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
                         ),
                       ),
                 ],
-                const SizedBox(height: 24),
+                const SizedBox(height: SpacingTokens.spacing6),
+                AfriListRow(
+                  icon: AfriIcons.statusInfo,
+                  title: l.predictEarnUse,
+                  onTap: () => showAfriBottomSheet<void>(
+                    context: context,
+                    builder: (context) => Padding(
+                      padding: const EdgeInsets.all(
+                        SpacingTokens.screenPadding,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l.predictEarnUse,
+                            style: TypographyTokens.headlineSmall(),
+                          ),
+                          const SizedBox(height: SpacingTokens.sectionGap),
+                          Text(
+                            l.predictEarnUseBody,
+                            style: TypographyTokens.bodyLarge(),
+                          ),
+                          const SizedBox(height: SpacingTokens.sectionGap),
+                          Text(
+                            l.predictNoRedemptions,
+                            style: TypographyTokens.bodyMedium(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 Text(
                   l.predictRules,
                   style: TypographyTokens.bodySmall(
-                    ColorTokens.onSurfaceVariant,
+                    ColorTokens.overviewSecondaryText,
                   ),
                 ),
               ],
-              const SizedBox(height: 32),
+              SizedBox(
+                height: widget.embedded
+                    ? AfriClubBottomNav.contentBottomInset(context)
+                    : SpacingTokens.spacing8,
+              ),
             ],
           ),
         );
       },
     );
-    if (widget.embedded) return content;
     return AfriScreenScaffold(
       padding: EdgeInsets.zero,
       showBackButton: false,
       showAppBar: false,
       scrollable: false,
-      constrainContent: false,
-      backgroundColor: ColorTokens.background,
-      child: SafeArea(child: content),
+      bottomNavigationAware: false,
+      bodyWrapper: (child) =>
+          GradientBackground(routePath: '/predict', child: child),
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                SpacingTokens.spacing4,
+                SpacingTokens.spacing2,
+                SpacingTokens.spacing4,
+                SpacingTokens.spacing2,
+              ),
+              child: AfriTopCommandBar(
+                searchHint: largeText ? '' : l.homeSearchHint,
+                searchSemanticsLabel: l.homeSearchHint,
+                onSearchTap: () => context.push('/search'),
+                onAvatarTap: () => context.go('/settings'),
+                actions: [
+                  AfriTopCommandAction(
+                    icon: AfriIcons.refresh,
+                    label: l.predictRefresh,
+                    onTap:
+                        state.loading ||
+                            state.pendingFixture != null ||
+                            !ConnectivityService.isOnline
+                        ? null
+                        : () => unawaited(controller.refresh()),
+                  ),
+                  AfriTopCommandAction(
+                    icon: AfriIcons.wallet,
+                    label: l.predictWallet,
+                    onTap: () => _selectSection(2),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(child: content),
+          ],
+        ),
+      ),
     );
   }
 
@@ -293,179 +433,7 @@ class _PredictScreenState extends ConsumerState<PredictScreen> {
     liveRegion: true,
     child: Text(
       text,
-      style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
-    ),
-  );
-}
-
-class PredictFixtureCard extends StatelessWidget {
-  const PredictFixtureCard({
-    super.key,
-    required this.fixture,
-    required this.enabled,
-    required this.pending,
-    required this.onPick,
-  });
-  final PredictFixture fixture;
-  final bool enabled;
-  final bool pending;
-  final void Function(PredictSelection) onPick;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.afriL10n;
-    final local = fixture.kickoffAt.toLocal();
-    final material = MaterialLocalizations.of(context);
-    return Material(
-      color: ColorTokens.surfaceContainer,
-      borderRadius: BorderRadius.circular(24),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              [
-                fixture.competition,
-                if (fixture.round?.isNotEmpty == true) fixture.round!,
-              ].join(' · '),
-              style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '${material.formatMediumDate(local)} · ${material.formatTimeOfDay(TimeOfDay.fromDateTime(local), alwaysUse24HourFormat: true)}',
-              style: TypographyTokens.bodyMedium(ColorTokens.onSurface),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: _team(fixture.homeTeam, fixture.homeCrest)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 20,
-                  ),
-                  child: Text(
-                    'vs',
-                    style: TypographyTokens.bodySmall(
-                      ColorTokens.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-                Expanded(child: _team(fixture.awayTeam, fixture.awayCrest)),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final selection in PredictSelection.values) ...[
-                  if (selection != PredictSelection.home)
-                    const SizedBox(width: 8),
-                  Expanded(
-                    child: Semantics(
-                      button: true,
-                      enabled: enabled,
-                      selected: fixture.selection == selection,
-                      label:
-                          '${fixture.selectionName(selection, l.predictDraw)}, ${fixture.stakeFet} FET',
-                      excludeSemantics: true,
-                      onTap: enabled ? () => onPick(selection) : null,
-                      child: OutlinedButton(
-                        key: ValueKey(
-                          'predict-${fixture.id}-${selection.name}',
-                        ),
-                        onPressed: enabled ? () => onPick(selection) : null,
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size(48, 52),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 4,
-                            vertical: 12,
-                          ),
-                          side: BorderSide(
-                            color: fixture.selection == selection
-                                ? ColorTokens.primary
-                                : ColorTokens.outlineVariant,
-                            width: fixture.selection == selection ? 2 : 1,
-                          ),
-                          backgroundColor: fixture.selection == selection
-                              ? ColorTokens.primary.withValues(alpha: .16)
-                              : ColorTokens.surfaceContainerHigh,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: selection == PredictSelection.draw
-                            ? Text(
-                                l.predictDraw,
-                                textAlign: TextAlign.center,
-                                style: TypographyTokens.labelLarge(
-                                  ColorTokens.onSurface,
-                                ),
-                              )
-                            : _crest(
-                                selection == PredictSelection.home
-                                    ? fixture.homeCrest
-                                    : fixture.awayCrest,
-                                24,
-                              ),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            const SizedBox(height: 12),
-            Semantics(
-              liveRegion: true,
-              child: Text(
-                pending
-                    ? l.predictPending
-                    : fixture.selection != null
-                    ? '${fixture.selectionName(fixture.selection!, l.predictDraw)} · ${switch (fixture.outcome) {
-                        'won' => '${l.predictWon} +${fixture.payoutFet} FET',
-                        'lost' => l.predictLost,
-                        'refunded' => '${l.predictRefunded} +${fixture.payoutFet} FET',
-                        _ => l.predictPicked,
-                      }}'
-                    : fixture.isOpen(DateTime.now())
-                    ? '${fixture.stakeFet} FET'
-                    : l.predictLocked,
-                style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _team(String name, String url) => Column(
-    children: [
-      _crest(url, 48),
-      const SizedBox(height: 10),
-      Text(
-        name,
-        textAlign: TextAlign.center,
-        style: TypographyTokens.titleSmall(ColorTokens.onSurface),
-      ),
-    ],
-  );
-  Widget _crest(String url, double size) => Image.network(
-    url,
-    width: size,
-    height: size,
-    fit: BoxFit.contain,
-    excludeFromSemantics: true,
-    errorBuilder: (_, __, ___) => SizedBox(
-      width: size,
-      height: size,
-      child: Icon(
-        AfriIcons.mediaUnavailable,
-        size: size * .6,
-        color: ColorTokens.onSurfaceVariant,
-      ),
+      style: TypographyTokens.bodyMedium(ColorTokens.overviewSecondaryText),
     ),
   );
 }

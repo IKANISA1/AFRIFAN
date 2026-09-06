@@ -96,10 +96,10 @@ class LocalDiscoverySearchRepository implements DiscoverySearchRepository {
             ),
             DiscoveryResult(
               id: 'fan-zone',
-              title: l10n.searchFanZoneTitle,
-              description: l10n.searchFanZoneDescription,
+              title: l10n.predictTitle,
+              description: l10n.predictIntro,
               category: DiscoveryCategory.supporters,
-              destination: '/fanzone',
+              destination: '/predict',
               icon: AfriIcons.fanzone,
               keywords: <String>['fans', 'community', 'prediction', 'reward'],
             ),
@@ -192,7 +192,7 @@ class LocalDiscoverySearchRepository implements DiscoverySearchRepository {
               title: l10n.searchWalletTitle,
               description: l10n.searchWalletDescription,
               category: DiscoveryCategory.services,
-              destination: '/fanzone?section=wallet',
+              destination: '/predict?section=wallet',
               icon: AfriIcons.wallet,
               keywords: <String>[
                 'balance',
@@ -223,7 +223,7 @@ class LocalDiscoverySearchRepository implements DiscoverySearchRepository {
             DiscoveryResult(
               id: 'approved-venues',
               title: l10n.fanZoneVenueCode,
-              description: l10n.searchFanZoneDescription,
+              description: l10n.predictIntro,
               category: DiscoveryCategory.services,
               destination: '/fanzone/venue',
               icon: AfriIcons.location,

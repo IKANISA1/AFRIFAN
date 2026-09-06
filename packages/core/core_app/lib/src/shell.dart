@@ -164,7 +164,7 @@ String localizedPrimaryLabel(
   return switch (featureKey) {
     'home' => l10n.navHome,
     'club' => l10n.navClub,
-    'fanzone' => l10n.navFanZone,
+    'fanzone' => l10n.predictTitle,
     'membership' => l10n.navMembership,
     _ => fallback,
   };

@@ -122,9 +122,9 @@ describe("squad helpers", () => {
     ).toBe("/brand-surface.svg");
   });
 
-  it("classifies multilingual football roles into four governed units", () => {
+  it("classifies English football roles into four governed units", () => {
     expect(classifySquadPlayer("Goalkeeper")).toBe("goalkeepers");
-    expect(classifySquadPlayer("Défenseur central")).toBe("defenders");
+    expect(classifySquadPlayer("Central defender")).toBe("defenders");
     expect(classifySquadPlayer("Midfielder")).toBe("midfielders");
     expect(classifySquadPlayer("Winger")).toBe("attackers");
   });
@@ -141,7 +141,7 @@ describe("squad helpers", () => {
       "conflict",
       "security_timeout",
     ];
-    for (const locale of ["en", "fr-FR", "rw", "sw", "unsupported"]) {
+    for (const locale of ["en", "en", "en", "en", "unsupported"]) {
       const localized = resolveSquadStateCopy(locale);
       expect(Object.keys(localized.status)).toEqual(expected);
       expect(localized.refresh).not.toBe("");

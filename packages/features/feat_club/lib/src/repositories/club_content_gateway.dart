@@ -1,3 +1,4 @@
+import 'package:club_data/club_data.dart';
 import 'package:core_network/core_network.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -19,17 +20,53 @@ abstract interface class ClubContentGateway {
   Future<List<ClubProjectItem>> loadProjects();
 }
 
+abstract interface class ClubEntityGateway {
+  Future<ClubSquadMember?> loadPlayer(String id);
+  Future<ClubNewsItem?> loadArticle(String id);
+}
+
 /// Read-only club projection for the consumer Club route family.
 ///
 /// Each query resolves the active tenant and applies the numeric club scope
 /// before returning data. Publishing and mutation remain owned by governed
 /// admin and contribution workflows.
-class SupabaseClubContentGateway implements ClubContentGateway {
+class SupabaseClubContentGateway
+    implements ClubContentGateway, ClubEntityGateway {
   SupabaseClubContentGateway(this._client)
     : _scopeResolver = ClubScopeResolver(client: _client);
 
   final SupabaseClient _client;
   final ClubScopeResolver _scopeResolver;
+
+  @override
+  Future<ClubSquadMember?> loadPlayer(String id) async {
+    final clubId = await _requireClubId();
+    final row = await _client
+        .from('squad_players')
+        .select(
+          'id, name, position, shirt_number, nationality, bio, image_url, photo_url, squad_group',
+        )
+        .eq('club_id', clubId)
+        .eq('is_active', true)
+        .eq('id', id)
+        .maybeSingle();
+    return row == null ? null : ClubSquadMember.fromJson(row);
+  }
+
+  @override
+  Future<ClubNewsItem?> loadArticle(String id) async {
+    final clubId = await _requireClubId();
+    final row = await _client
+        .from('news_articles')
+        .select(
+          'id,title,subtitle,body,category,author_name,published_at,image_url,image_provenance_id,image_rights_approved,source_url',
+        )
+        .eq('club_id', clubId)
+        .eq('is_published', true)
+        .eq('id', id)
+        .maybeSingle();
+    return row == null ? null : ClubNewsItem.fromJson(row);
+  }
 
   Future<int> _requireClubId() async {
     final scope = await _scopeResolver.requireResolved();
@@ -59,13 +96,17 @@ class SupabaseClubContentGateway implements ClubContentGateway {
         .from('news_articles')
         .select(
           'id, title, subtitle, body, category, author_name, '
-          'published_at, image_url',
+          'published_at, image_url, image_provenance_id, image_rights_approved, source_url',
         )
         .eq('club_id', clubId)
         .eq('is_published', true)
         .order('published_at', ascending: false)
         .limit(50);
-    return rows.map(ClubNewsItem.fromJson).toList(growable: false);
+    final seen = <String>{};
+    return rows
+        .map(ClubNewsItem.fromJson)
+        .where((article) => seen.add(article.sourceUrl ?? article.id))
+        .toList(growable: false);
   }
 
   @override
@@ -73,10 +114,12 @@ class SupabaseClubContentGateway implements ClubContentGateway {
     final clubId = await _requireClubId();
     final rows = await _client
         .from('squad_players')
-        .select('id, name, position, shirt_number, nationality, bio')
+        .select(
+          'id, name, position, shirt_number, nationality, bio, image_url, photo_url, squad_group',
+        )
         .eq('club_id', clubId)
         .eq('is_active', true)
-        .order('shirt_number')
+        .order('shirt_number', ascending: true)
         .limit(80);
     return rows.map(ClubSquadMember.fromJson).toList(growable: false);
   }
@@ -84,15 +127,7 @@ class SupabaseClubContentGateway implements ClubContentGateway {
   @override
   Future<List<ClubFixtureItem>> loadMatches() async {
     final clubId = await _requireClubId();
-    final rows = await _client
-        .from('unified_matches')
-        .select(
-          'id, home_team, away_team, competition, venue, match_date, '
-          'kickoff_time, match_status, home_score, away_score, is_on_sale',
-        )
-        .eq('club_id', clubId)
-        .order('match_date')
-        .limit(80);
+    final rows = await PublicMatchWindow(_client).load(clubId: clubId);
     return rows.map(ClubFixtureItem.fromJson).toList(growable: false);
   }
 
@@ -106,7 +141,7 @@ class SupabaseClubContentGateway implements ClubContentGateway {
         )
         .eq('club_id', clubId)
         .eq('is_active', true)
-        .order('position')
+        .order('position', ascending: true)
         .limit(40);
     return rows.map(ClubStandingItem.fromJson).toList(growable: false);
   }

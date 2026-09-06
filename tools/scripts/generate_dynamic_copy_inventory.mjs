@@ -444,6 +444,6 @@ ${rows}
 
 Zero pending candidates proves current-source ingestion review only. It does
 not prove live CMS wording, route visibility, translation quality, approved
-localized screenshots, or named French and Kinyarwanda linguistic approval.
+localized screenshots, or named English editorial approval.
 `;
 }

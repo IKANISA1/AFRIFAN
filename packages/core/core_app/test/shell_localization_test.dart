@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const locales = <Locale>[Locale('en'), Locale('fr'), Locale('rw')];
+  const locales = <Locale>[Locale('en')];
 
   for (final locale in locales) {
     test('primary shell consumes ${locale.languageCode} navigation labels', () {
@@ -14,7 +14,7 @@ void main() {
       expect(localizedPrimaryLabel(l10n, 'club', 'fallback'), l10n.navClub);
       expect(
         localizedPrimaryLabel(l10n, 'fanzone', 'fallback'),
-        l10n.navFanZone,
+        l10n.predictTitle,
       );
       expect(
         localizedPrimaryLabel(l10n, 'membership', 'fallback'),

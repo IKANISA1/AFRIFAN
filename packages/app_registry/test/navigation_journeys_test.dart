@@ -22,7 +22,7 @@ void main() {
     test('keeps only approved bottom tabs in the shell', () {
       expect(
         appRouter.tabs.map((tab) => tab.path),
-        orderedEquals(<String>['/home', '/club', '/fanzone', '/membership']),
+        orderedEquals(<String>['/home', '/club', '/predict', '/membership']),
       );
     });
 
@@ -50,7 +50,7 @@ void main() {
         expect(
           allPaths,
           containsAll(<String>{
-            '/fanzone',
+            '/predict',
             '/live',
             '/contribute',
             '/shop',
@@ -82,7 +82,10 @@ void main() {
     test(
       '/fanzone keeps compatibility routes but redirects section content',
       () {
-        final subPaths = fanzone.routes
+        final subPaths = fanzone.standaloneRoutes
+            .whereType<GoRoute>()
+            .singleWhere((r) => r.path == '/fanzone')
+            .routes
             .whereType<GoRoute>()
             .map((r) => r.path)
             .toSet();
@@ -122,12 +125,13 @@ void main() {
           for (final decision in fanzone.routePresentationDecisions)
             decision.path: decision.presentation,
         };
-        expect(decisions['/fanzone'], RoutePresentation.fullScreen);
+        expect(decisions['/predict'], RoutePresentation.fullScreen);
+        expect(decisions['/fanzone'], RoutePresentation.redirect);
         expect(
           decisions['/fanzone/match/:fixtureId'],
           RoutePresentation.fullScreen,
         );
-        expect(decisions['/fanzone/wallet'], RoutePresentation.fullScreen);
+        expect(decisions['/fanzone/wallet'], RoutePresentation.redirect);
         expect(decisions['/fanzone/fixtures'], RoutePresentation.redirect);
         expect(decisions['/fanzone/leaderboard'], RoutePresentation.redirect);
         expect(decisions['/fanzone/offers'], RoutePresentation.redirect);
@@ -195,7 +199,7 @@ void main() {
       );
     });
 
-    test('/contribute resolves as a compatibility redirect', () {
+    test('/contribute opens the initiatives sheet', () {
       final paths = contributions.routes
           .whereType<GoRoute>()
           .map((r) => r.path)
@@ -204,7 +208,7 @@ void main() {
       final root = contributions.routes.whereType<GoRoute>().firstWhere(
         (r) => r.path == '/contribute',
       );
-      expect(root.redirect, isNotNull);
+      expect(root.redirect, isNull);
     });
 
     test('/contribute keeps deep-link utilities but redirects mini-hubs', () {
@@ -257,7 +261,7 @@ void main() {
   });
 
   group('Fan clubs compatibility flow', () {
-    test('/fan-clubs redirects root but keeps detail compatibility', () {
+    test('/fan-clubs opens discovery and keeps detail compatibility', () {
       final fanClubs = modules.firstWhere((m) => m.featureKey == 'fan_clubs');
       final root = fanClubs.routes.whereType<GoRoute>().firstWhere(
         (r) => r.path == '/fan-clubs',
@@ -267,7 +271,7 @@ void main() {
           .map((r) => r.path)
           .toSet();
 
-      expect(root.redirect, isNotNull);
+      expect(root.redirect, isNull);
       expect(subPaths, contains(':clubId'));
       expect(subPaths, isNot(contains('create')));
     });
@@ -315,6 +319,10 @@ void main() {
         equals(<String>{
           '/club',
           '/club/team',
+          '/club/team/:playerId',
+          '/club/partners',
+          '/club/partners/:partnerId',
+          '/club/open-web',
           '/club/news',
           '/club/news/:articleId',
           '/club/fixtures',
@@ -349,6 +357,10 @@ void main() {
           '/search',
           '/club',
           '/club/team',
+          '/club/team/:playerId',
+          '/club/partners',
+          '/club/partners/:partnerId',
+          '/club/open-web',
           '/club/news',
           '/club/news/:articleId',
           '/club/fixtures',
@@ -358,11 +370,10 @@ void main() {
           '/club/history',
           '/club/projects',
           '/club/projects/:projectId',
-          '/fanzone',
+          '/predict',
           '/fanzone/venue',
           '/fanzone/venue/order',
           '/fanzone/match/:fixtureId',
-          '/fanzone/wallet',
           '/settings',
           '/tickets',
           '/e-ticket/:id',

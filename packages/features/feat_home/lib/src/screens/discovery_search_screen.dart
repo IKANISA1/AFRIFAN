@@ -353,6 +353,15 @@ class _SearchResults extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (response.partial && !response.offline) ...[
+          AfriStateBanner(
+            icon: AfriIcons.statusWarning,
+            title: l10n.searchPartialTitle,
+            subtitle: l10n.searchPartialMessage,
+            tone: AfriStateBannerTone.warning,
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+        ],
         if (response.offline) ...[
           AfriStateView.offline(
             key: const ValueKey<String>('discovery-search-offline'),

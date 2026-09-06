@@ -168,7 +168,7 @@ class ProfileScreen extends ConsumerWidget {
                     _MenuItem(
                       icon: AfriIcons.bolt,
                       label: l10n.profileMatchday,
-                      onTap: () => context.go('/fanzone?section=league'),
+                      onTap: () => context.go('/club/fixtures'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
@@ -181,14 +181,14 @@ class ProfileScreen extends ConsumerWidget {
                       _MenuItem(
                         icon: AfriIcons.premium,
                         label: l10n.profileClubBenefits,
-                        onTap: () => context.go('/fanzone?section=rewards'),
+                        onTap: () => context.go('/predict?section=wallet'),
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
                     ],
                     _MenuItem(
                       icon: AfriIcons.contribute,
                       label: l10n.profileContributions,
-                      onTap: () => context.go('/fanzone?section=supporters'),
+                      onTap: () => context.go('/fan-clubs'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(

@@ -97,17 +97,31 @@
     ]
   },
   "capture_plan": [
-    {"order": 1, "journey": "Anonymous home state", "alt_text_draft": "Gikundiro home with navigation, rights-gated content placeholders, and supporter shortcuts"},
-    {"order": 2, "journey": "Club overview", "alt_text_draft": "Club overview with the generic in-app brand mark and navigation"},
-    {"order": 3, "journey": "Fan Zone anonymous state", "alt_text_draft": "Fan Zone with zeroed anonymous supporter activity"},
-    {"order": 4, "journey": "Fixtures empty state", "alt_text_draft": "Fixtures screen with no fabricated match records"}
+    {
+      "order": 1,
+      "journey": "Anonymous home state",
+      "alt_text_draft": "Gikundiro home with navigation, rights-gated content placeholders, and supporter shortcuts"
+    },
+    {
+      "order": 2,
+      "journey": "Club overview",
+      "alt_text_draft": "Club overview with the generic in-app brand mark and navigation"
+    },
+    {
+      "order": 3,
+      "journey": "Fan Zone anonymous state",
+      "alt_text_draft": "Fan Zone with zeroed anonymous supporter activity"
+    },
+    {
+      "order": 4,
+      "journey": "Fixtures empty state",
+      "alt_text_draft": "Fixtures screen with no fabricated match records"
+    }
   ],
   "approvals_required": [
     "rayon_brand_and_content_rights",
     "product_scope",
     "privacy_and_retention",
-    "english_store_copy",
-    "french_store_copy",
-    "kinyarwanda_store_copy"
+    "english_store_copy"
   ]
 }

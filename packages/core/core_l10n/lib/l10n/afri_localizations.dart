@@ -6,8 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'afri_localizations_en.dart';
-import 'afri_localizations_fr.dart';
-import 'afri_localizations_rw.dart';
 
 // ignore_for_file: type=lint
 
@@ -94,11 +92,7 @@ abstract class AfriLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('fr'),
-    Locale('rw'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
   /// No description provided for @appTitle.
   ///
@@ -493,13 +487,13 @@ abstract class AfriLocalizations {
   /// No description provided for @searchFanZoneTitle.
   ///
   /// In en, this message translates to:
-  /// **'Fan Zone'**
+  /// **'Predict'**
   String get searchFanZoneTitle;
 
   /// No description provided for @searchFanZoneDescription.
   ///
   /// In en, this message translates to:
-  /// **'Predictions, community, rewards, and matchday activity.'**
+  /// **'Match picks, prediction history and FET activity.'**
   String get searchFanZoneDescription;
 
   /// No description provided for @searchFanRegistryTitle.
@@ -1339,7 +1333,7 @@ abstract class AfriLocalizations {
   /// No description provided for @navFanZone.
   ///
   /// In en, this message translates to:
-  /// **'Fan Zone'**
+  /// **'Predict'**
   String get navFanZone;
 
   /// No description provided for @navMembership.
@@ -2622,7 +2616,7 @@ abstract class AfriLocalizations {
   /// No description provided for @homeOpenFanZone.
   ///
   /// In en, this message translates to:
-  /// **'Open Fan Zone'**
+  /// **'Open Predict'**
   String get homeOpenFanZone;
 
   /// No description provided for @homeSearchHint.
@@ -2820,7 +2814,7 @@ abstract class AfriLocalizations {
   /// No description provided for @homeFanZoneAction.
   ///
   /// In en, this message translates to:
-  /// **'Fan Zone'**
+  /// **'Predict'**
   String get homeFanZoneAction;
 
   /// No description provided for @homeShopAction.
@@ -7548,18 +7542,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'English'**
   String get editProfileLanguageEnglish;
-
-  /// No description provided for @editProfileLanguageFrench.
-  ///
-  /// In en, this message translates to:
-  /// **'Français'**
-  String get editProfileLanguageFrench;
-
-  /// No description provided for @editProfileLanguageKinyarwanda.
-  ///
-  /// In en, this message translates to:
-  /// **'Kinyarwanda'**
-  String get editProfileLanguageKinyarwanda;
 
   /// No description provided for @notificationPreferencesConnectionRestoredReview.
   ///
@@ -17798,6 +17780,353 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Membership'**
   String get clubMembershipAction;
+
+  /// No description provided for @membershipStatusUnconfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not confirmed'**
+  String get membershipStatusUnconfirmed;
+
+  /// No description provided for @membershipDateUnconfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not provided'**
+  String get membershipDateUnconfirmed;
+
+  /// No description provided for @membershipProgrammeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your membership'**
+  String get membershipProgrammeTitle;
+
+  /// No description provided for @membershipProgrammeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your category is based on confirmed club contributions. FET activity is separate and does not determine your membership tier.'**
+  String get membershipProgrammeBody;
+
+  /// No description provided for @predictReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your pick'**
+  String get predictReviewTitle;
+
+  /// No description provided for @predictConfirmPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm pick'**
+  String get predictConfirmPick;
+
+  /// No description provided for @predictReviewRule.
+  ///
+  /// In en, this message translates to:
+  /// **'One pick per fixture. Your pick cannot be changed after confirmation. The fixture closes at kickoff.'**
+  String get predictReviewRule;
+
+  /// No description provided for @predictEntryCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry cost'**
+  String get predictEntryCost;
+
+  /// No description provided for @predictBalanceAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance after entry'**
+  String get predictBalanceAfter;
+
+  /// No description provided for @predictCancelPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get predictCancelPick;
+
+  /// No description provided for @fanClubViewJoiningOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'View joining options'**
+  String get fanClubViewJoiningOptions;
+
+  /// No description provided for @clubAllPlayers.
+  ///
+  /// In en, this message translates to:
+  /// **'All players'**
+  String get clubAllPlayers;
+
+  /// No description provided for @clubPlayerProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Player profile'**
+  String get clubPlayerProfile;
+
+  /// No description provided for @clubPlayerBioPending.
+  ///
+  /// In en, this message translates to:
+  /// **'A player biography has not been published yet.'**
+  String get clubPlayerBioPending;
+
+  /// No description provided for @clubNextMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Next match'**
+  String get clubNextMatch;
+
+  /// No description provided for @clubLatestNews.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest news'**
+  String get clubLatestNews;
+
+  /// No description provided for @clubPartners.
+  ///
+  /// In en, this message translates to:
+  /// **'Partners'**
+  String get clubPartners;
+
+  /// No description provided for @clubPartnersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The organisations supporting your club'**
+  String get clubPartnersSubtitle;
+
+  /// No description provided for @clubPartnersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Club partners will appear when their details are published.'**
+  String get clubPartnersEmpty;
+
+  /// No description provided for @clubPartnerWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit partner website'**
+  String get clubPartnerWebsite;
+
+  /// No description provided for @clubArticleOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Read original article'**
+  String get clubArticleOriginal;
+
+  /// No description provided for @clubSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get clubSourceLabel;
+
+  /// No description provided for @predictEarnUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn and use FET'**
+  String get predictEarnUse;
+
+  /// No description provided for @predictEarnUseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'FET is your supporter activity balance. Eligible members receive the published welcome grant once. You can use available FET to enter enabled fixtures; confirmed payouts and refunds appear in FET activity. FET cannot be bought or withdrawn as cash.'**
+  String get predictEarnUseBody;
+
+  /// No description provided for @predictNoRedemptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner recognition does not create a FET offer. Only published, eligible offers can be redeemed.'**
+  String get predictNoRedemptions;
+
+  /// No description provided for @searchPartialTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Some results are unavailable'**
+  String get searchPartialTitle;
+
+  /// No description provided for @searchPartialMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Available results are shown. Refresh to try the remaining sources.'**
+  String get searchPartialMessage;
+
+  /// No description provided for @clubLinkUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue on the club website'**
+  String get clubLinkUnavailable;
+
+  /// No description provided for @clubLinkUnavailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This website record is not available in the app yet. You can open the original page or browse the club.'**
+  String get clubLinkUnavailableBody;
+
+  /// No description provided for @clubOpenWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Open website'**
+  String get clubOpenWebsite;
+
+  /// No description provided for @clubLinkLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening club content'**
+  String get clubLinkLoading;
+
+  /// No description provided for @clubLinkRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get clubLinkRetry;
+
+  /// No description provided for @clubPartnersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Partners'**
+  String get clubPartnersTitle;
+
+  /// No description provided for @clubPartnersIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'The organisations supporting our club. Partner recognition does not include a FET reward or redemption offer.'**
+  String get clubPartnersIntro;
+
+  /// No description provided for @clubPartnersUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner details are temporarily unavailable.'**
+  String get clubPartnersUnavailable;
+
+  /// No description provided for @clubPartnerDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View partner'**
+  String get clubPartnerDetails;
+
+  /// No description provided for @clubFootballNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Football now'**
+  String get clubFootballNow;
+
+  /// No description provided for @clubFootballUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Next fixture'**
+  String get clubFootballUpcoming;
+
+  /// No description provided for @clubFootballRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest result'**
+  String get clubFootballRecent;
+
+  /// No description provided for @membershipQualificationUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Contribution qualification is not yet available for this club.'**
+  String get membershipQualificationUnavailable;
+
+  /// No description provided for @membershipQualificationWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Rolling 12 months · membership contributions only'**
+  String get membershipQualificationWindow;
+
+  /// No description provided for @predictInsufficientReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient FET. No charge will be made.'**
+  String get predictInsufficientReview;
+
+  /// No description provided for @shopEnquire.
+  ///
+  /// In en, this message translates to:
+  /// **'Enquire on WhatsApp'**
+  String get shopEnquire;
+
+  /// No description provided for @shopEnquiryExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm size, availability and delivery with the club. Opening WhatsApp does not place an order or make a payment.'**
+  String get shopEnquiryExplanation;
+
+  /// No description provided for @clubFixtureTeams.
+  ///
+  /// In en, this message translates to:
+  /// **'{homeTeam} · {awayTeam}'**
+  String clubFixtureTeams(String homeTeam, String awayTeam);
+
+  /// No description provided for @predictFetAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} FET'**
+  String predictFetAmount(int amount);
+
+  /// No description provided for @membershipConfirmedTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} RWF confirmed'**
+  String membershipConfirmedTotal(int amount);
+
+  /// No description provided for @membershipRemainingTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} RWF to {tier}'**
+  String membershipRemainingTotal(int amount, String tier);
+
+  /// No description provided for @shopEnquiryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, I would like to enquire about {productName} (product {productId}), size {size}, quantity {quantity}.'**
+  String shopEnquiryMessage(
+    String productName,
+    String productId,
+    String size,
+    int quantity,
+  );
+
+  /// No description provided for @fanClubsSavedRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing saved fan clubs. Tap to retry.'**
+  String get fanClubsSavedRetry;
+
+  /// No description provided for @shopSizeNotSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not selected'**
+  String get shopSizeNotSelected;
+
+  /// No description provided for @clubSquadFirstTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'First team'**
+  String get clubSquadFirstTeam;
+
+  /// No description provided for @clubSquadWomen.
+  ///
+  /// In en, this message translates to:
+  /// **'Women'**
+  String get clubSquadWomen;
+
+  /// No description provided for @clubSquadAcademy.
+  ///
+  /// In en, this message translates to:
+  /// **'Academy'**
+  String get clubSquadAcademy;
+
+  /// No description provided for @clubSquadStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get clubSquadStaff;
+
+  /// No description provided for @clubSquadAllTeams.
+  ///
+  /// In en, this message translates to:
+  /// **'All teams'**
+  String get clubSquadAllTeams;
+
+  /// No description provided for @shopEnquiryOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'View enquiry options'**
+  String get shopEnquiryOptions;
 }
 
 class _AfriLocalizationsDelegate
@@ -17813,7 +18142,7 @@ class _AfriLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'fr', 'rw'].contains(locale.languageCode);
+      <String>['en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AfriLocalizationsDelegate old) => false;
@@ -17824,10 +18153,6 @@ AfriLocalizations lookupAfriLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AfriLocalizationsEn();
-    case 'fr':
-      return AfriLocalizationsFr();
-    case 'rw':
-      return AfriLocalizationsRw();
   }
 
   throw FlutterError(

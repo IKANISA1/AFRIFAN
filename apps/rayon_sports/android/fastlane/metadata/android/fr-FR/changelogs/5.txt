@@ -1,4 +1,0 @@
-Version 1.0.3
-• Amélioration de la restauration de session et de la fiabilité
-• Renforcement des contrôles du compte et de la confidentialité
-• Mise à jour de la configuration de publication

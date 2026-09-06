@@ -3,6 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('enquiry products never enter the payable cart', () {
+    final cart = ShopCartNotifier();
+    addTearDown(cart.dispose);
+    cart.addRawProduct({
+      'id': 'enquiry',
+      'name': 'Club shirt',
+      'price': 5000,
+      'stock': 12,
+      'commerce_mode': 'enquiry',
+    }, partnerId: 'club');
+    expect(cart.state, isEmpty);
+  });
   group('ShopCartNotifier', () {
     late ProviderContainer container;
 

@@ -117,21 +117,7 @@ function normalizeFeatureFlags(value: unknown): FeatureFlags | null {
   return flags;
 }
 
-function normalizeLanguageList(value: unknown) {
-  if (!Array.isArray(value) || value.length === 0 || value.length > 10) {
-    return null;
-  }
 
-  const languages = value.map((entry) =>
-    typeof entry === "string" ? entry.trim().toLowerCase() : "",
-  );
-  if (
-    languages.some((entry) => !/^[a-z]{2,3}(?:-[a-z0-9]{2,8})?$/.test(entry))
-  ) {
-    return null;
-  }
-  return [...new Set(languages)];
-}
 
 export function normalizeAdminClubProfile(
   value: unknown,
@@ -166,13 +152,8 @@ export function normalizeAdminClubProfile(
     row.currencySymbol ?? row.currency_symbol,
     12,
   );
-  const defaultLanguage = boundedText(
-    row.defaultLanguage ?? row.default_language,
-    16,
-  )?.toLowerCase();
-  const supportedLanguages = normalizeLanguageList(
-    row.supportedLanguages ?? row.supported_languages,
-  );
+  const defaultLanguage = "en";
+  const supportedLanguages = ["en"];
   const officialContact =
     nullableText(row.officialContact ?? row.official_contact, 500);
   const facebookUrl = normalizeHttpsUrl(row.facebookUrl ?? row.facebook_url);

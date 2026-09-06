@@ -1,7 +1,43 @@
 import 'package:feat_membership/src/official_membership_tiers.dart';
+import 'package:feat_membership/src/providers/membership_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test(
+    'runtime catalog preserves published prices and never invents missing offers',
+    () {
+      expect(
+        publishedMembershipPackages([], allowsPaidDigital: false),
+        isEmpty,
+      );
+      final rows = publishedMembershipPackages([
+        {
+          'id': 'published',
+          'club_id': 24,
+          'tier': 'gold',
+          'title': 'Gold',
+          'annual_price': 1250000,
+          'benefit_scope': 'physical_membership',
+          'benefits': ['Matchday programme'],
+        },
+        {
+          'id': 'missing-price',
+          'tier': 'gold',
+          'benefit_scope': 'physical_membership',
+        },
+        {
+          'id': 'digital',
+          'tier': 'gold',
+          'annual_price': 1000,
+          'benefit_scope': 'digital_entitlement',
+          'store_billing_required': true,
+        },
+      ], allowsPaidDigital: false);
+      expect(rows, hasLength(1));
+      expect(rows.single['annual_price'], 1250000);
+      expect(rows.single['benefits'], ['Matchday programme']);
+    },
+  );
   test(
     'store-safe membership catalog contains only curated physical benefits',
     () {

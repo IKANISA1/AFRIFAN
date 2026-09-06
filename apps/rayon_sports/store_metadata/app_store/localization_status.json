@@ -1,15 +1,13 @@
 {
   "schema_version": 1,
-  "runtime_locales": ["en", "fr", "rw"],
+  "runtime_locales": [
+    "en"
+  ],
   "metadata": {
-    "en-US": {"status": "draft_pending_approval", "native_review_required": true},
-    "fr-FR": {"status": "draft_pending_language_approval", "native_review_required": true}
-  },
-  "source_only": {
-    "rw-RW": {
-      "status": "not_supported_by_app_store_connect_metadata",
-      "source": "../../source_localizations/rw-RW/app_store",
-      "warning": "Do not silently map Kinyarwanda copy to English, French, or another supported locale."
+    "en-US": {
+      "status": "draft_pending_approval",
+      "native_review_required": true
     }
-  }
+  },
+  "source_only": {}
 }

@@ -18,29 +18,14 @@ class ContributionsModule extends FeatureModule {
     GoRoute(
       path: '/contribute',
       name: 'contribute',
-      redirect: (_, state) {
-        final path = state.uri.path;
-        if (path == '/contribute' ||
-            path == '/contribute/projects' ||
-            path == '/contribute/groups') {
-          return '/fanzone?section=supporters';
-        }
-        return null;
-      },
       pageBuilder: (context, state) => afriSheetPage(
         state,
         const ContributionsHubScreen(),
         fullHeight: true,
       ),
       routes: [
-        GoRoute(
-          path: 'projects',
-          redirect: (_, __) => '/fanzone?section=supporters',
-        ),
-        GoRoute(
-          path: 'groups',
-          redirect: (_, __) => '/fanzone?section=supporters',
-        ),
+        GoRoute(path: 'projects', redirect: (_, __) => '/contribute'),
+        GoRoute(path: 'groups', redirect: (_, __) => '/contribute'),
         GoRoute(
           path: 'group/:groupId',
           name: 'group-detail',
@@ -70,24 +55,23 @@ class ContributionsModule extends FeatureModule {
   List<RoutePresentationDecision> get routePresentationDecisions => const [
     RoutePresentationDecision(
       path: '/contribute',
-      presentation: RoutePresentation.redirect,
-      recommendation: 'merge into Home/Membership',
-      targetPath: '/fanzone?section=supporters',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'keep',
       rationale:
-          'Support the club is valuable but belongs inside Fan Zone Supporters.',
+          'Club initiatives open directly without a competing primary tab.',
     ),
     RoutePresentationDecision(
       path: '/contribute/projects',
       presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/fanzone?section=supporters',
+      targetPath: '/contribute',
       rationale: 'Projects are a section inside contribution.',
     ),
     RoutePresentationDecision(
       path: '/contribute/groups',
       presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/fanzone?section=supporters',
+      targetPath: '/contribute',
       rationale: 'Groups are a contribution submode.',
     ),
     RoutePresentationDecision(

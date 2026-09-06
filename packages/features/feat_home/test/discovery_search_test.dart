@@ -20,6 +20,33 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
 
+  test(
+    'healthy source results survive partial and whole-source failures',
+    () async {
+      const result = DiscoveryResult(
+        id: 'news:one',
+        title: 'Club news',
+        description: 'Update',
+        category: DiscoveryCategory.club,
+        destination: '/club/news/one',
+        icon: Icons.article,
+      );
+      final repo = FederatedDiscoverySearchRepository(
+        local: const LocalDiscoverySearchRepository(),
+        liveSources: [
+          _PartialSource([result]),
+          _FailingSource(),
+        ],
+      );
+      final response = await repo.search(
+        const DiscoverySearchQuery(text: 'club news'),
+      );
+      expect(response.results.any((r) => r.id == 'news:one'), isTrue);
+      expect(response.partial, isTrue);
+      expect(response.offline, isFalse);
+    },
+  );
+
   group('LocalDiscoverySearchRepository', () {
     const repository = LocalDiscoverySearchRepository();
 
@@ -155,11 +182,9 @@ void main() {
       },
     );
 
-    test('localizes the searchable catalog for EN, FR, and RW', () async {
+    test('localizes the searchable catalog for English', () async {
       for (final testCase in <({String locale, String query, String title})>[
         (locale: 'en', query: 'tickets', title: 'Match tickets'),
-        (locale: 'fr', query: 'billets', title: 'Billets de match'),
-        (locale: 'rw', query: 'amatike', title: 'Amatike y’umukino'),
       ]) {
         final response = await repository.search(
           DiscoverySearchQuery(
@@ -477,7 +502,7 @@ void main() {
     });
 
     testWidgets(
-      'renders localized EN, FR, and RW Search at compact 200 percent text',
+      'renders localized English Search at compact 200 percent text',
       (tester) async {
         tester.view.physicalSize = const Size(320, 760);
         tester.view.devicePixelRatio = 1;
@@ -497,16 +522,16 @@ void main() {
                 resultTitle: 'Match tickets',
               ),
               (
-                locale: const Locale('fr'),
-                title: 'Chercher',
-                query: 'billets',
-                resultTitle: 'Billets de match',
+                locale: const Locale('en'),
+                title: 'Search',
+                query: 'tickets',
+                resultTitle: 'Match tickets',
               ),
               (
-                locale: const Locale('rw'),
-                title: 'Shakisha',
-                query: 'amatike',
-                resultTitle: 'Amatike y’umukino',
+                locale: const Locale('en'),
+                title: 'Search',
+                query: 'tickets',
+                resultTitle: 'Match tickets',
               ),
             ]) {
           await tester.pumpWidget(
@@ -635,8 +660,6 @@ void main() {
 
   for (final testCase in <({String id, Locale locale, String expectedTitle})>[
     (id: 'en', locale: const Locale('en'), expectedTitle: 'Search'),
-    (id: 'fr', locale: const Locale('fr'), expectedTitle: 'Chercher'),
-    (id: 'rw', locale: const Locale('rw'), expectedTitle: 'Shakisha'),
   ]) {
     testWidgets(
       'golden localized Search ${testCase.id} at compact 200 percent text',
@@ -1215,4 +1238,14 @@ class _SyncingRepository implements DiscoverySearchRepository {
       const DiscoverySearchResponse(results: <DiscoveryResult>[]),
     );
   }
+}
+
+class _PartialSource implements DiscoverySearchSource {
+  _PartialSource(this.results);
+  final List<DiscoveryResult> results;
+  @override
+  bool supports(DiscoverySearchQuery query) => true;
+  @override
+  Future<List<DiscoveryResult>> search(DiscoverySearchQuery query) async =>
+      throw PartialDiscoverySourceFailure(results);
 }

@@ -11,7 +11,7 @@ export function formatCurrency(
   currency = rayonClub.currencyCode,
   locale = "en-RW",
 ) {
-  return new Intl.NumberFormat(locale, {
+  return new Intl.NumberFormat("en", {
     style: "currency",
     currency,
     maximumFractionDigits: 0,
@@ -37,7 +37,7 @@ export function formatDateTime(value: string) {
 }
 
 export function formatCompactNumber(value: number, locale = "en-RW") {
-  return new Intl.NumberFormat(locale, {
+  return new Intl.NumberFormat("en", {
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(value);

@@ -40,6 +40,13 @@ class ColorTokens {
   static const Color referenceWealthTeal = Color(0xFF102028);
   static const Color referenceWealthTealMid = Color(0xFF204050);
   static const Color referenceContentDark = Color(0xFF101018);
+  // Owner-supplied Cards.png, 6 September 2026: scrolled discovery canvas.
+  // Screenshot-derived adapters; source build and native token values unknown.
+  static const Color shopDiscoveryPurple = Color(0xFF201337);
+  static const Color shopDiscoveryIndigo = Color(0xFF151333);
+  static const Color shopEditorialSurface = Color(0xFF292D2D);
+  static const Color shopEditorialText = Color(0xFFF5F5F5);
+  static const Color shopEditorialSecondaryText = Color(0xFFE0E0E0);
   static const Color referenceStockTealBlack = Color(0xFF001010);
 
   static bool _isWhite(Color color) => color.computeLuminance() > 0.9;
@@ -242,6 +249,10 @@ class ColorTokens {
 
   static const Color transparent = Color(0x00000000);
   static const Color onDark = Color(0xFFFFFFFF);
+
+  /// Readable supporting copy on the selected violet discovery canvas.
+  static Color get overviewSecondaryText =>
+      _brightness == Brightness.dark ? onDark : onSurfaceVariant;
   static const Color onDarkDim = Color(0x99FFFFFF);
   static const Color onDarkSubtle = Color(0x8AFFFFFF);
   static const Color onDarkFaint = Color(0x61FFFFFF);
@@ -401,7 +412,7 @@ class ColorTokens {
         ],
         const [0.0, 0.13, 0.24, 0.35, 0.56, 0.82],
       ),
-      '/fanzone' => (
+      '/fanzone' || '/predict' => (
         const [
           0xFFA827F6,
           0xFF9939F6,
@@ -416,6 +427,10 @@ class ColorTokens {
       '/membership' => (
         const [0xFF43098B, 0xFF3A0A89, 0xFF180D24, 0xFF131416, 0xFF000000],
         const [0.0, 0.35, 0.45, 0.70, 1.0],
+      ),
+      '/shop' => (
+        const [0xFF201337, 0xFF191333, 0xFF151333],
+        const [0.0, 0.55, 1.0],
       ),
       // Onboarding 4: measured canvas pixels, excluding keyboard and footer.
       '/auth/phone' => (
@@ -453,7 +468,7 @@ class ColorTokens {
       switch (Uri.tryParse(path)?.path) {
         '/home' => const Color(0xFF181A53),
         '/club' => const Color(0xFF192E35),
-        '/fanzone' => const Color(0xFF463D8A),
+        '/fanzone' || '/predict' => const Color(0xFF463D8A),
         _ => surfaceContainerHigh,
       };
 }

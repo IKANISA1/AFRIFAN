@@ -4,13 +4,31 @@ import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
 
 import '../official_fanclub_register.dart';
 import '../widgets/fan_club_cards.dart';
+
+final fanClubsLoaderProvider =
+    Provider<Future<List<Map<String, dynamic>>> Function()>((ref) {
+      final client = ref.watch(supabaseClientProvider);
+      return () async {
+        final scope = await ClubScopeResolver(client: client).requireResolved();
+        final rows = await client
+            .from('fan_clubs')
+            .select(
+              'id,partner_id,club_id,name,region,description,member_count,'
+              'event_count,rating,banner_emoji,is_active,created_at,updated_at,is_featured',
+            )
+            .eq('club_id', scope.requiredClubId)
+            .eq('is_active', true)
+            .order('member_count', ascending: false);
+        return List<Map<String, dynamic>>.from(
+          rows,
+        ).map(normalizeFanclubRow).toList(growable: false);
+      };
+    });
 
 class FanClubsListScreen extends ConsumerStatefulWidget {
   const FanClubsListScreen({super.key});
@@ -50,13 +68,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
     });
 
     try {
-      final client = ref.read(supabaseClientProvider);
-      final resolver = ClubScopeResolver(client: client);
-      final scope = await resolver.requireResolved();
-      if (scope.clubId == null) {
-        throw StateError('Fan clubs require a numeric club scope.');
-      }
-      final clubs = await _loadPublicFanclubs(client: client);
+      final clubs = await ref.read(fanClubsLoaderProvider)();
 
       if (!mounted) return;
       final loadedClubs = clubs;
@@ -78,46 +90,11 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
     }
   }
 
-  Future<List<Map<String, dynamic>>> _loadPublicFanclubs({
-    required SupabaseClient client,
-  }) async {
-    try {
-      final rows = await client
-          .from('fan_clubs')
-          .select(
-            'id,partner_id,club_id,name,region,description,member_count,'
-            'event_count,rating,banner_emoji,is_active,created_at,updated_at',
-          )
-          .eq('is_active', true)
-          .order('member_count', ascending: false);
-      final clubs = List<Map<String, dynamic>>.from(
-        rows,
-      ).map(normalizeFanclubRow).toList(growable: false);
-      if (clubs.isNotEmpty) {
-        return clubs;
-      }
-    } catch (_) {
-      // Use the verified Gikundiro register as the offline public fallback.
-    }
-
-    return officialFanclubRegister();
-  }
-
   Future<void> _toggleJoin(Map<String, dynamic> club) async {
     final clubId = club['id']?.toString();
-    final userId = ref.read(supabaseClientProvider).auth.currentUser?.id;
-
-    if (clubId == null || clubId.isEmpty || _pendingClubIds.contains(clubId)) {
-      return;
-    }
-
-    if (userId == null) {
-      context.go('/onboarding');
-      return;
-    }
-
-    unawaited(HapticFeedback.lightImpact());
-    AfriToast.info(context, context.afriL10n.fanClubReviewRequestSent);
+    if (clubId == null || clubId.isEmpty) return;
+    await context.push('/fan-clubs/${Uri.encodeComponent(clubId)}');
+    if (mounted) await _loadClubs();
   }
 
   List<String> _buildFilters(List<Map<String, dynamic>> clubs) {
@@ -162,7 +139,16 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = ColorTokens.primary;
-    final featuredClub = _clubs.isEmpty ? null : _clubs.first;
+    final showFeatured =
+        _activeFilter == _allFilter && _searchController.text.trim().isEmpty;
+    final featuredClub = !showFeatured
+        ? null
+        : _clubs.where((club) => club['is_featured'] == true).firstOrNull;
+    final visibleClubs = _visibleClubs
+        .where(
+          (club) => featuredClub == null || club['id'] != featuredClub['id'],
+        )
+        .toList();
     final filters = _buildFilters(_clubs);
 
     return AfriScreenScaffold(
@@ -193,7 +179,13 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                     children: [
                       AfriIconButton(
                         icon: AfriIcons.back,
-                        onTap: () => context.pop(),
+                        onTap: () {
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go('/membership');
+                          }
+                        },
                         tooltip: context.afriL10n.authBack,
                       ),
                       const SizedBox(width: SpacingTokens.spacing2),
@@ -237,9 +229,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                     ),
                     child: FanClubFeaturedCard(
                       club: featuredClub,
-                      onTap: () => unawaited(
-                        context.push('/fan-clubs/${featuredClub['id']}'),
-                      ),
+                      onTap: () => unawaited(_toggleJoin(featuredClub)),
                     ),
                   ),
                 ),
@@ -281,15 +271,26 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
               const SliverToBoxAdapter(
                 child: SizedBox(height: SpacingTokens.spacing4),
               ),
+              if (_error != null && _clubs.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                    child: AfriListRow(
+                      icon: AfriIcons.refresh,
+                      title: _error!,
+                      subtitle: context.afriL10n.fanClubsSavedRetry,
+                      onTap: () => unawaited(_loadClubs()),
+                    ),
+                  ),
+                ),
               FanClubsResultsSliver(
-                isLoading: _isLoading,
+                isLoading: _isLoading && _clubs.isEmpty,
                 error: _error,
-                visibleClubs: _visibleClubs,
+                visibleClubs: visibleClubs,
                 joinedClubIds: _joinedClubIds,
                 pendingClubIds: _pendingClubIds,
                 onRetry: () => unawaited(_loadClubs()),
-                onOpenClub: (clubId) =>
-                    unawaited(context.push('/fan-clubs/$clubId')),
+                onOpenClub: (clubId) => unawaited(_toggleJoin({'id': clubId})),
                 onJoinToggled: _toggleJoin,
               ),
             ],
@@ -333,7 +334,7 @@ class FanClubsResultsSliver extends StatelessWidget {
       );
     }
 
-    if (error != null) {
+    if (error != null && visibleClubs.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.screenPadding),

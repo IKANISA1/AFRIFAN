@@ -145,7 +145,7 @@ describe("match collection helpers", () => {
       "conflict",
       "security_timeout",
     ];
-    for (const locale of ["en", "fr-FR", "rw", "sw", "unsupported"]) {
+    for (const locale of ["en", "en", "en", "en", "unsupported"]) {
       expect(Object.keys(resolveMatchCollectionStateCopy(locale).status)).toEqual(
         expected,
       );

@@ -72,7 +72,7 @@ type StandingsStateCopy = {
   loss: string;
 };
 
-const stateCopy: Record<"en" | "fr" | "rw" | "sw", StandingsStateCopy> = {
+const stateCopy: Record<"en", StandingsStateCopy> = {
   en: {
     status: {
       loading: {
@@ -119,147 +119,6 @@ const stateCopy: Record<"en" | "fr" | "rw" | "sw", StandingsStateCopy> = {
     win: "Win",
     draw: "Draw",
     loss: "Loss",
-  },
-  fr: {
-    status: {
-      loading: {
-        label: "Chargement du classement",
-        detail: "En attente du premier classement public confirmé.",
-      },
-      ready: {
-        label: "Classement confirmé",
-        detail: "Ces positions viennent du dernier classement public confirmé.",
-      },
-      empty: {
-        label: "Aucun classement listé",
-        detail: "Aucune position publique confirmée n’est encore disponible.",
-      },
-      error: {
-        label: "Classement indisponible",
-        detail: "Les positions confirmées restent visibles. Réessayez plus tard.",
-      },
-      offline: {
-        label: "Vous êtes hors ligne",
-        detail: "Les positions confirmées restent visibles jusqu’au retour du réseau.",
-      },
-      permission_denied: {
-        label: "Accès au classement refusé",
-        detail: "Le classement public n’est pas disponible pour ce visiteur.",
-      },
-      syncing: {
-        label: "Actualisation du classement",
-        detail: "Les positions confirmées restent visibles pendant la mise à jour.",
-      },
-      conflict: {
-        label: "Le classement a changé",
-        detail: "Actualisez pour charger les positions confirmées actuelles.",
-      },
-      security_timeout: {
-        label: "Délai du classement dépassé",
-        detail: "Aucun changement n’est supposé. Les positions restent visibles.",
-      },
-    },
-    refresh: "Actualiser le classement",
-    retry: "Réessayer",
-    refreshDisabled: "L’actualisation est indisponible pendant le chargement.",
-    selected: "Club sélectionné",
-    win: "Victoire",
-    draw: "Nul",
-    loss: "Défaite",
-  },
-  rw: {
-    status: {
-      loading: {
-        label: "Urutonde rurimo gutangira",
-        detail: "Dutegereje urutonde rwa mbere rwemejwe.",
-      },
-      ready: {
-        label: "Urutonde rwemejwe",
-        detail: "Iyi myanya iva ku rutonde rusange rwa vuba rwemejwe.",
-      },
-      empty: {
-        label: "Nta rutonde ruboneka",
-        detail: "Nta myanya ya shampiyona yemejwe iraboneka.",
-      },
-      error: {
-        label: "Urutonde ntiruboneka",
-        detail: "Imyanya yemejwe iragumaho. Ongera ugerageze nyuma.",
-      },
-      offline: {
-        label: "Nta murongo wa interineti",
-        detail: "Imyanya yemejwe iragumaho kugeza umurongo ugarutse.",
-      },
-      permission_denied: {
-        label: "Urutonde ntirwemerewe",
-        detail: "Urutonde rusange ntirwemerewe uyu mushyitsi.",
-      },
-      syncing: {
-        label: "Urutonde rurimo kuvugururwa",
-        detail: "Imyanya yemejwe iragumaho mu gihe ivugururwa.",
-      },
-      conflict: {
-        label: "Urutonde rwahindutse",
-        detail: "Vugurura kugira ngo ubone imyanya yemejwe ya vuba.",
-      },
-      security_timeout: {
-        label: "Igihe cyo gusaba urutonde cyarangiye",
-        detail: "Nta gihindutse cyemezwa. Imyanya iragumaho.",
-      },
-    },
-    refresh: "Vugurura urutonde",
-    retry: "Ongera ugerageze",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe urutonde rutangira.",
-    selected: "Ikipe yahiswemo",
-    win: "Intsinzi",
-    draw: "Kunganya",
-    loss: "Gutsindwa",
-  },
-  sw: {
-    status: {
-      loading: {
-        label: "Inapakia jedwali la ligi",
-        detail: "Inasubiri jedwali la kwanza la umma lililothibitishwa.",
-      },
-      ready: {
-        label: "Jedwali limethibitishwa",
-        detail: "Nafasi hizi zinatoka kwenye jedwali la umma lililothibitishwa.",
-      },
-      empty: {
-        label: "Hakuna jedwali",
-        detail: "Hakuna nafasi za ligi zilizothibitishwa kwa sasa.",
-      },
-      error: {
-        label: "Jedwali halipatikani",
-        detail: "Nafasi zilizothibitishwa zinaendelea kuonekana. Jaribu tena.",
-      },
-      offline: {
-        label: "Huna mtandao",
-        detail: "Nafasi zilizothibitishwa zinaendelea kuonekana hadi mtandao urudi.",
-      },
-      permission_denied: {
-        label: "Ufikiaji wa jedwali umekataliwa",
-        detail: "Jedwali la umma halipatikani kwa mgeni huyu.",
-      },
-      syncing: {
-        label: "Inasasisha jedwali",
-        detail: "Nafasi zilizothibitishwa zinaendelea kuonekana wakati wa kusasisha.",
-      },
-      conflict: {
-        label: "Jedwali limebadilika",
-        detail: "Sasisha ili kuona nafasi zilizothibitishwa za sasa.",
-      },
-      security_timeout: {
-        label: "Ombi la jedwali limepitwa na muda",
-        detail: "Hakuna badiliko linalodhaniwa. Nafasi zinaendelea kuonekana.",
-      },
-    },
-    refresh: "Sasisha jedwali",
-    retry: "Jaribu tena",
-    refreshDisabled: "Huwezi kusasisha wakati jedwali linapakia.",
-    selected: "Klabu iliyochaguliwa",
-    win: "Ushindi",
-    draw: "Sare",
-    loss: "Kushindwa",
   },
 };
 
@@ -313,8 +172,8 @@ export function normalizeStandings(value: unknown): PublicStanding[] {
   return rows.sort((a, b) => a.position - b.position);
 }
 
-export function resolveStandingsStateCopy(locale: string) {
-  const language = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveStandingsStateCopy(_locale: string) {
+  const language = "en";
   return stateCopy[language as keyof typeof stateCopy] ?? stateCopy.en;
 }
 

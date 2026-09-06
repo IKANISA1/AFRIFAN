@@ -14,7 +14,7 @@ const defaultProps = {
   openFanAppLabel: "Open fan app",
   membershipSupportLabel: "Membership support",
   officialContact: "support@example.test",
-  languages: ["en", "rw"],
+  languages: ["en"],
   digitalSupportTitle: "Digital support",
   digitalSupportDescription: "Authenticated tasks stay in the fan app.",
   supportBlocks: ["Membership help", "General questions"],

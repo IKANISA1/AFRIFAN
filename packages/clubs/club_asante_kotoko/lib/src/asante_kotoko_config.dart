@@ -56,7 +56,7 @@ class AsanteKotokoConfig implements ClubConfig {
   );
 
   @override
-  List<String> get supportedLanguages => const ['en', 'ak', 'tw'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;

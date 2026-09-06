@@ -25,7 +25,7 @@ class VitaloConfig implements ClubConfig {
   String get countryCode => 'BI';
 
   @override
-  String get language => 'fr';
+  String get language => 'en';
 
   @override
   String get momoPrefix => '*150*';
@@ -56,7 +56,7 @@ class VitaloConfig implements ClubConfig {
   );
 
   @override
-  List<String> get supportedLanguages => const ['fr', 'rn', 'en'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;

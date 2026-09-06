@@ -13,12 +13,17 @@ void main() {
 
     test('keeps fanzone as the supporter tab route', () {
       expect(module.featureKey, 'fanzone');
-      expect(module.tabRoute.path, '/fanzone');
-      expect(module.tabRoute.label, 'Fan Zone');
+      expect(module.tabRoute.path, '/predict');
+      expect(module.tabRoute.label, 'Predict');
     });
 
     test('secondary routes use redirects except true detail/action sheets', () {
-      final routeMap = _routeMap(module.routes);
+      final routeMap = _routeMap(
+        module.standaloneRoutes
+            .whereType<GoRoute>()
+            .singleWhere((r) => r.path == '/fanzone')
+            .routes,
+      );
 
       for (final path in const <String>[
         'my/:predictionId',
@@ -58,12 +63,18 @@ void main() {
       }
     });
 
-    test('wallet route remains the only full fanzone sub-screen builder', () {
-      final routeMap = _routeMap(module.routes);
+    test('wallet redirects to the shared Predict balance and activity', () {
+      final routeMap = _routeMap(
+        module.standaloneRoutes
+            .whereType<GoRoute>()
+            .singleWhere((r) => r.path == '/fanzone')
+            .routes,
+      );
 
       final walletRoute = routeMap['wallet'];
       expect(walletRoute, isNotNull);
-      expect(walletRoute!.builder, isNotNull);
+      expect(walletRoute!.redirect, isNotNull);
+      expect(walletRoute.builder, isNull);
       expect(walletRoute.pageBuilder, isNull);
 
       final liveRoute = routeMap['live'];
@@ -77,13 +88,13 @@ void main() {
           decision.path: decision.targetPath,
       };
 
-      expect(decisions['/fanzone/live'], '/fanzone?section=league');
-      expect(decisions['/fanzone/offers'], '/fanzone?section=rewards');
-      expect(decisions['/fanzone/history'], '/fanzone?section=wallet');
-      expect(decisions['/fanzone/my'], '/fanzone?section=predictions');
-      expect(decisions['/fanzone/club-zone'], '/fanzone?section=supporters');
-      expect(decisions['/fanzone/fan-id'], '/fanzone?section=supporters');
-      expect(decisions['/fanzone/social'], '/fanzone?section=supporters');
+      expect(decisions['/fanzone/live'], '/club/fixtures');
+      expect(decisions['/fanzone/offers'], '/predict?section=wallet');
+      expect(decisions['/fanzone/history'], '/predict?section=wallet');
+      expect(decisions['/fanzone/my'], '/predict?section=history');
+      expect(decisions['/fanzone/club-zone'], '/fan-clubs');
+      expect(decisions['/fanzone/fan-id'], '/fan-clubs');
+      expect(decisions['/fanzone/social'], '/fan-clubs');
     });
 
     test(
@@ -94,7 +105,8 @@ void main() {
             decision.path: decision.presentation,
         };
 
-        expect(decisions['/fanzone'], RoutePresentation.fullScreen);
+        expect(decisions['/predict'], RoutePresentation.fullScreen);
+        expect(decisions['/fanzone'], RoutePresentation.redirect);
         expect(decisions['/fanzone/fixtures'], RoutePresentation.redirect);
         expect(decisions['/fanzone/live'], RoutePresentation.redirect);
         expect(decisions['/fanzone/my'], RoutePresentation.redirect);

@@ -5,23 +5,23 @@ import 'package:go_router/go_router.dart';
 
 void main() {
   const redirects = <String, String>{
-    '/fanzone/fixtures': '/fanzone?section=league',
-    '/fanzone/live': '/fanzone?section=league',
-    '/fanzone/my': '/fanzone?section=predictions',
-    '/fanzone/offers': '/fanzone?section=rewards',
-    '/fanzone/rewards': '/fanzone?section=rewards',
-    '/fanzone/history': '/fanzone?section=wallet',
-    '/fanzone/leaderboard': '/fanzone?section=league',
-    '/fanzone/notifications': '/fanzone?section=predictions',
-    '/fanzone/badges': '/fanzone?section=rewards',
-    '/fanzone/streak': '/fanzone?section=rewards',
-    '/fanzone/league': '/fanzone?section=league',
-    '/fanzone/league/premier-league': '/fanzone?section=league',
-    '/fanzone/standings/premier-league': '/fanzone?section=league',
-    '/fanzone/team/rayon-sports': '/fanzone?section=league',
-    '/fanzone/club-zone': '/fanzone?section=supporters',
-    '/fanzone/fan-id': '/fanzone?section=supporters',
-    '/fanzone/social': '/fanzone?section=supporters',
+    '/fanzone/fixtures': '/club/fixtures',
+    '/fanzone/live': '/club/fixtures',
+    '/fanzone/my': '/predict?section=history',
+    '/fanzone/offers': '/predict?section=wallet',
+    '/fanzone/rewards': '/predict?section=wallet',
+    '/fanzone/history': '/predict?section=wallet',
+    '/fanzone/leaderboard': '/club/fixtures',
+    '/fanzone/notifications': '/predict?section=history',
+    '/fanzone/badges': '/predict?section=wallet',
+    '/fanzone/streak': '/predict?section=wallet',
+    '/fanzone/league': '/club/fixtures',
+    '/fanzone/league/premier-league': '/club/fixtures',
+    '/fanzone/standings/premier-league': '/club/fixtures',
+    '/fanzone/team/rayon-sports': '/club/fixtures',
+    '/fanzone/club-zone': '/fan-clubs',
+    '/fanzone/fan-id': '/fan-clubs',
+    '/fanzone/social': '/fan-clubs',
     '/fanzone/privacy': '/settings/privacy',
   };
 
@@ -35,8 +35,17 @@ void main() {
             path: '/fanzone',
             builder: (context, state) =>
                 Scaffold(body: Text('Target: ${state.uri}')),
-            routes: module.routes,
+            routes: module.standaloneRoutes
+                .whereType<GoRoute>()
+                .singleWhere((r) => r.path == '/fanzone')
+                .routes,
           ),
+          for (final path in ['/predict', '/club/fixtures', '/fan-clubs'])
+            GoRoute(
+              path: path,
+              builder: (_, state) =>
+                  Scaffold(body: Text('Target: ${state.uri}')),
+            ),
           GoRoute(
             path: '/settings/privacy',
             builder: (context, state) =>
@@ -62,9 +71,12 @@ void main() {
     '/fanzone/my/:predictionId/settlement preserves the id and resolves to detail',
     (tester) async {
       final module = FanzoneModule();
-      final settlementRoute = module.routes.whereType<GoRoute>().singleWhere(
-        (route) => route.path == 'my/:predictionId/settlement',
-      );
+      final settlementRoute = module.standaloneRoutes
+          .whereType<GoRoute>()
+          .singleWhere((r) => r.path == '/fanzone')
+          .routes
+          .whereType<GoRoute>()
+          .singleWhere((route) => route.path == 'my/:predictionId/settlement');
       final router = GoRouter(
         initialLocation: '/fanzone/my/prediction-1/settlement',
         routes: <RouteBase>[
@@ -102,29 +114,23 @@ void main() {
         decision.path: decision.targetPath,
     };
 
-    expect(decisions['/fanzone/fixtures'], '/fanzone?section=league');
-    expect(decisions['/fanzone/live'], '/fanzone?section=league');
-    expect(decisions['/fanzone/my'], '/fanzone?section=predictions');
-    expect(decisions['/fanzone/offers'], '/fanzone?section=rewards');
-    expect(decisions['/fanzone/rewards'], '/fanzone?section=rewards');
-    expect(decisions['/fanzone/history'], '/fanzone?section=wallet');
-    expect(decisions['/fanzone/leaderboard'], '/fanzone?section=league');
-    expect(decisions['/fanzone/notifications'], '/fanzone?section=predictions');
-    expect(decisions['/fanzone/badges'], '/fanzone?section=rewards');
-    expect(decisions['/fanzone/streak'], '/fanzone?section=rewards');
-    expect(decisions['/fanzone/league'], '/fanzone?section=league');
-    expect(
-      decisions['/fanzone/league/:competitionSlug'],
-      '/fanzone?section=league',
-    );
-    expect(
-      decisions['/fanzone/standings/:competitionSlug'],
-      '/fanzone?section=league',
-    );
-    expect(decisions['/fanzone/team/:teamSlug'], '/fanzone?section=league');
-    expect(decisions['/fanzone/club-zone'], '/fanzone?section=supporters');
-    expect(decisions['/fanzone/fan-id'], '/fanzone?section=supporters');
-    expect(decisions['/fanzone/social'], '/fanzone?section=supporters');
+    expect(decisions['/fanzone/fixtures'], '/club/fixtures');
+    expect(decisions['/fanzone/live'], '/club/fixtures');
+    expect(decisions['/fanzone/my'], '/predict?section=history');
+    expect(decisions['/fanzone/offers'], '/predict?section=wallet');
+    expect(decisions['/fanzone/rewards'], '/predict?section=wallet');
+    expect(decisions['/fanzone/history'], '/predict?section=wallet');
+    expect(decisions['/fanzone/leaderboard'], '/club/fixtures');
+    expect(decisions['/fanzone/notifications'], '/predict?section=history');
+    expect(decisions['/fanzone/badges'], '/predict?section=wallet');
+    expect(decisions['/fanzone/streak'], '/predict?section=wallet');
+    expect(decisions['/fanzone/league'], '/club/fixtures');
+    expect(decisions['/fanzone/league/:competitionSlug'], '/club/fixtures');
+    expect(decisions['/fanzone/standings/:competitionSlug'], '/club/fixtures');
+    expect(decisions['/fanzone/team/:teamSlug'], '/club/fixtures');
+    expect(decisions['/fanzone/club-zone'], '/fan-clubs');
+    expect(decisions['/fanzone/fan-id'], '/fan-clubs');
+    expect(decisions['/fanzone/social'], '/fan-clubs');
     expect(decisions['/fanzone/privacy'], '/settings/privacy');
     expect(
       decisions['/fanzone/my/:predictionId/settlement'],

@@ -68,7 +68,7 @@ type FixturesStateCopy = {
 };
 
 const fixturesStateCopy: Record<
-  "en" | "fr" | "rw" | "sw",
+  "en",
   FixturesStateCopy
 > = {
   en: {
@@ -123,162 +123,6 @@ const fixturesStateCopy: Record<
     noFixtures: "No club fixtures are listed yet.",
     noFixturesDetail: "Return later for the confirmed public match schedule.",
   },
-  fr: {
-    status: {
-      loading: {
-        label: "Chargement des matchs",
-        detail: "En attente du premier calendrier confirmé.",
-      },
-      ready: {
-        label: "Calendrier confirmé",
-        detail: "Ces matchs proviennent du dernier calendrier public confirmé.",
-      },
-      empty: {
-        label: "Aucun match listé",
-        detail: "Le club n’a encore aucun match public confirmé.",
-      },
-      error: {
-        label: "Matchs indisponibles",
-        detail: "Les matchs confirmés restent visibles. Réessayez plus tard.",
-      },
-      offline: {
-        label: "Vous êtes hors ligne",
-        detail: "Les matchs confirmés restent visibles jusqu’au retour du réseau.",
-      },
-      permission_denied: {
-        label: "Accès aux matchs refusé",
-        detail: "Le calendrier public n’est pas disponible pour ce visiteur.",
-      },
-      syncing: {
-        label: "Actualisation des matchs",
-        detail: "Les matchs confirmés restent visibles pendant la mise à jour.",
-      },
-      conflict: {
-        label: "Le calendrier a changé",
-        detail: "Actualisez pour charger le calendrier confirmé actuel.",
-      },
-      security_timeout: {
-        label: "Délai des matchs dépassé",
-        detail: "Aucun changement n’est supposé. Les matchs confirmés restent visibles.",
-      },
-    },
-    refresh: "Actualiser les matchs",
-    retry: "Réessayer",
-    refreshDisabled: "L’actualisation est indisponible pendant le chargement.",
-    live: "En direct",
-    upcoming: "À venir",
-    result: "Terminé",
-    listed: "Listés",
-    onSale: "En vente",
-    selectedFixture: "Match sélectionné",
-    viewFixture: "Voir le match",
-    noFixtures: "Aucun match du club n’est encore listé.",
-    noFixturesDetail: "Revenez plus tard pour le calendrier public confirmé.",
-  },
-  rw: {
-    status: {
-      loading: {
-        label: "Imikino irimo gutangira",
-        detail: "Dutegereje gahunda ya mbere yemejwe.",
-      },
-      ready: {
-        label: "Gahunda y’imikino yemejwe",
-        detail: "Iyi mikino iva muri gahunda rusange ya vuba yemejwe.",
-      },
-      empty: {
-        label: "Nta mukino uri ku rutonde",
-        detail: "Ikipe nta mukino rusange wemejwe irashyiraho.",
-      },
-      error: {
-        label: "Imikino ntishobora kuboneka",
-        detail: "Imikino yemejwe iragumaho. Ongera ugerageze serivisi igarutse.",
-      },
-      offline: {
-        label: "Nta murongo wa interineti",
-        detail: "Imikino yemejwe iragumaho kugeza umurongo ugarutse.",
-      },
-      permission_denied: {
-        label: "Imikino ntiyemerewe",
-        detail: "Gahunda rusange ntiyemerewe uyu mushyitsi.",
-      },
-      syncing: {
-        label: "Imikino irimo kuvugururwa",
-        detail: "Imikino yemejwe iragumaho mu gihe gahunda ivugururwa.",
-      },
-      conflict: {
-        label: "Gahunda y’imikino yahindutse",
-        detail: "Vugurura kugira ngo ubone gahunda ya vuba yemejwe.",
-      },
-      security_timeout: {
-        label: "Igihe cyo kubona imikino cyarangiye",
-        detail: "Nta gihindutse cyemezwa. Imikino yemejwe iragumaho.",
-      },
-    },
-    refresh: "Vugurura imikino",
-    retry: "Ongera ugerageze",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe imikino irimo gutangira.",
-    live: "Live",
-    upcoming: "Iri imbere",
-    result: "Yarangiye",
-    listed: "Ku rutonde",
-    onSale: "Itike iri kugurishwa",
-    selectedFixture: "Umukino wahiswemo",
-    viewFixture: "Reba umukino",
-    noFixtures: "Nta mikino y’ikipe iri ku rutonde.",
-    noFixturesDetail: "Garuka nyuma urebe gahunda rusange yemejwe.",
-  },
-  sw: {
-    status: {
-      loading: {
-        label: "Ratiba inapakiwa",
-        detail: "Tunasubiri ratiba ya kwanza iliyothibitishwa.",
-      },
-      ready: {
-        label: "Ratiba imethibitishwa",
-        detail: "Mechi hizi zinatoka kwenye ratiba ya sasa ya umma.",
-      },
-      empty: {
-        label: "Hakuna mechi iliyoorodheshwa",
-        detail: "Klabu haina mechi ya umma iliyothibitishwa bado.",
-      },
-      error: {
-        label: "Ratiba haipatikani",
-        detail: "Mechi zilizothibitishwa zinabaki. Jaribu tena huduma ikirejea.",
-      },
-      offline: {
-        label: "Huna mtandao",
-        detail: "Mechi zilizothibitishwa zinabaki hadi mtandao urejee.",
-      },
-      permission_denied: {
-        label: "Ufikiaji wa ratiba umekataliwa",
-        detail: "Ratiba ya umma haipatikani kwa mgeni huyu.",
-      },
-      syncing: {
-        label: "Ratiba inasasishwa",
-        detail: "Mechi zilizothibitishwa zinabaki wakati ratiba inasasishwa.",
-      },
-      conflict: {
-        label: "Ratiba imebadilika",
-        detail: "Sasisha ili kupakia ratiba ya sasa iliyothibitishwa.",
-      },
-      security_timeout: {
-        label: "Muda wa ratiba umeisha",
-        detail: "Hakuna mabadiliko yanayodhaniwa. Mechi zilizothibitishwa zinabaki.",
-      },
-    },
-    refresh: "Sasisha ratiba",
-    retry: "Jaribu tena",
-    refreshDisabled: "Usasishaji haupatikani wakati ratiba inapakiwa.",
-    live: "Mubashara",
-    upcoming: "Inayofuata",
-    result: "Imekwisha",
-    listed: "Zimeorodheshwa",
-    onSale: "Tiketi zinauzwa",
-    selectedFixture: "Mechi iliyochaguliwa",
-    viewFixture: "Tazama mechi",
-    noFixtures: "Hakuna mechi za klabu zilizoorodheshwa bado.",
-    noFixturesDetail: "Rudi baadaye kwa ratiba ya umma iliyothibitishwa.",
-  },
 };
 
 type FixturesSurfaceProps = {
@@ -313,8 +157,8 @@ function boundedNumber(value: unknown, maximum = 1_000_000_000) {
     : null;
 }
 
-export function resolveFixturesStateCopy(locale: string): FixturesStateCopy {
-  const normalized = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveFixturesStateCopy(_locale: string): FixturesStateCopy {
+  const normalized = "en";
   return (
     fixturesStateCopy[normalized as keyof typeof fixturesStateCopy] ??
     fixturesStateCopy.en
@@ -400,8 +244,8 @@ function isResult(status: string) {
   return status === "fulltime" || status === "finished";
 }
 
-function formatFixtureDate(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
+function formatFixtureDate(value: string, _locale: string) {
+  return new Intl.DateTimeFormat("en", {
     weekday: "short",
     day: "numeric",
     month: "short",
@@ -415,7 +259,7 @@ function formatFixturePrice(
   locale: string,
   currencyCode: string,
 ) {
-  return new Intl.NumberFormat(locale, {
+  return new Intl.NumberFormat("en", {
     style: "currency",
     currency: currencyCode,
     maximumFractionDigits: 0,

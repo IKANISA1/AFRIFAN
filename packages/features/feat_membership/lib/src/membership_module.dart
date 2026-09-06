@@ -35,7 +35,7 @@ class MembershipModule extends FeatureModule {
     GoRoute(
       path: 'fans',
       name: 'membership-fans',
-      redirect: (_, __) => '/fanzone?section=supporters',
+      redirect: (_, __) => '/fan-clubs',
     ),
     GoRoute(
       path: 'tier/:tierId',
@@ -59,8 +59,8 @@ class MembershipModule extends FeatureModule {
       path: '/membership/fans',
       presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone?section=supporters',
-      rationale: 'Fan registry is community depth inside Fan Zone Supporters.',
+      targetPath: '/fan-clubs',
+      rationale: 'Fan communities open directly from Membership.',
     ),
     RoutePresentationDecision(
       path: '/membership/tier/:tierId',

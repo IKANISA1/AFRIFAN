@@ -100,7 +100,7 @@ describe("news surface state helpers", () => {
       "security_timeout",
     ];
 
-    for (const locale of ["en", "fr-FR", "rw", "sw", "unsupported"]) {
+    for (const locale of ["en", "en", "en", "en", "unsupported"]) {
       expect(Object.keys(resolveNewsStateCopy(locale).status)).toEqual(
         expectedStates,
       );

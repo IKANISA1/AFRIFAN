@@ -63,7 +63,7 @@ class UserProfile extends Equatable {
       publicUserId: _asNullableString(json['public_user_id']),
       favoriteTeamSlug: _asNullableString(json['favorite_team_slug']),
       countryCode: _asNullableString(json['country_code'] ?? json['country']),
-      languageCode: _asNullableString(json['language_code']),
+      languageCode: 'en',
       avatarUrl: _asNullableString(json['avatar_url']),
       momoProvider: _asNullableString(json['momo_provider']),
       isActive: _asBool(json['is_active'], fallback: true),
@@ -79,7 +79,7 @@ class UserProfile extends Equatable {
     final normalizedAlias = _trimToNull(publicUserId);
     final normalizedFavoriteTeam = _trimToNull(favoriteTeamSlug);
     final normalizedCountry = _trimToNull(countryCode);
-    final normalizedLanguage = _trimToNull(languageCode) ?? 'en';
+    const normalizedLanguage = 'en';
     final normalizedAvatar = _trimToNull(avatarUrl);
 
     return <String, dynamic>{

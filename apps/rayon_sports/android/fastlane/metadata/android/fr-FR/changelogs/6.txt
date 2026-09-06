@@ -1,4 +1,0 @@
-Version 1.0.3
-• Amélioration de la restauration de session et de la fiabilité
-• Mise à jour des liens de confidentialité, d’assistance et de suppression du compte
-• Finalisation des contrôles de sécurité et de publication

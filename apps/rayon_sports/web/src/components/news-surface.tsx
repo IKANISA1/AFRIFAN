@@ -54,7 +54,7 @@ type NewsStateCopy = {
   noNewsDetail: string;
 };
 
-const newsStateCopy: Record<"en" | "fr" | "rw" | "sw", NewsStateCopy> = {
+const newsStateCopy: Record<"en", NewsStateCopy> = {
   en: {
     status: {
       loading: {
@@ -107,162 +107,6 @@ const newsStateCopy: Record<"en" | "fr" | "rw" | "sw", NewsStateCopy> = {
     noNews: "No club news is published yet.",
     noNewsDetail: "Return later for the confirmed public newsroom feed.",
   },
-  fr: {
-    status: {
-      loading: {
-        label: "Chargement des actualités",
-        detail: "En attente du premier flux éditorial confirmé.",
-      },
-      ready: {
-        label: "Flux d’actualités confirmé",
-        detail: "Ces articles proviennent du dernier flux public confirmé.",
-      },
-      empty: {
-        label: "Aucun article publié",
-        detail: "La rédaction n’a encore aucun article public confirmé.",
-      },
-      error: {
-        label: "Rédaction indisponible",
-        detail: "Les articles confirmés restent visibles. Réessayez plus tard.",
-      },
-      offline: {
-        label: "Vous êtes hors ligne",
-        detail: "Les articles confirmés restent visibles jusqu’au retour du réseau.",
-      },
-      permission_denied: {
-        label: "Accès aux actualités refusé",
-        detail: "Le flux public n’est pas disponible pour ce visiteur.",
-      },
-      syncing: {
-        label: "Actualisation des nouvelles",
-        detail: "Les articles confirmés restent visibles pendant la mise à jour.",
-      },
-      conflict: {
-        label: "Le flux a changé",
-        detail: "Actualisez pour charger la version confirmée actuelle.",
-      },
-      security_timeout: {
-        label: "Délai des actualités dépassé",
-        detail: "Aucun nouvel article n’est supposé. Les articles confirmés restent visibles.",
-      },
-    },
-    refresh: "Actualiser les nouvelles",
-    retry: "Réessayer",
-    refreshDisabled: "L’actualisation est indisponible pendant le chargement.",
-    latestStories: "Derniers articles",
-    featuredStory: "Article à la une",
-    story: "Article",
-    stories: "Articles",
-    editorialIdentity: "Identité éditoriale",
-    confirmedFeed: "Flux confirmé",
-    readStory: "Lire l’article",
-    noNews: "Aucune actualité du club n’est encore publiée.",
-    noNewsDetail: "Revenez plus tard pour consulter le flux public confirmé.",
-  },
-  rw: {
-    status: {
-      loading: {
-        label: "Amakuru y’ikipe arimo gutangira",
-        detail: "Dutegereje amakuru ya mbere yemejwe.",
-      },
-      ready: {
-        label: "Amakuru yemejwe",
-        detail: "Izi nkuru ziva mu makuru rusange ya vuba yemejwe.",
-      },
-      empty: {
-        label: "Nta nkuru yatangajwe",
-        detail: "Ikinyamakuru nta nkuru rusange yemejwe kiratangaza.",
-      },
-      error: {
-        label: "Amakuru ntashobora kuboneka",
-        detail: "Inkuru zemejwe ziragumaho. Ongera ugerageze serivisi igarutse.",
-      },
-      offline: {
-        label: "Nta murongo wa interineti",
-        detail: "Inkuru zemejwe ziragumaho kugeza umurongo ugarutse.",
-      },
-      permission_denied: {
-        label: "Amakuru ntiyemerewe",
-        detail: "Aya makuru rusange ntiyemerewe uyu mushyitsi.",
-      },
-      syncing: {
-        label: "Amakuru arimo kuvugururwa",
-        detail: "Inkuru zemejwe ziragumaho mu gihe amakuru avugururwa.",
-      },
-      conflict: {
-        label: "Amakuru yahindutse",
-        detail: "Vugurura kugira ngo ubone amakuru ya vuba yemejwe.",
-      },
-      security_timeout: {
-        label: "Igihe cyo kubona amakuru cyarangiye",
-        detail: "Nta nkuru nshya yemezwa. Inkuru zemejwe ziragumaho.",
-      },
-    },
-    refresh: "Vugurura amakuru",
-    retry: "Ongera ugerageze",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe amakuru arimo gutangira.",
-    latestStories: "Inkuru nshya",
-    featuredStory: "Inkuru y’ingenzi",
-    story: "Inkuru",
-    stories: "Inkuru",
-    editorialIdentity: "Indangamuntu y’ikinyamakuru",
-    confirmedFeed: "Amakuru yemejwe",
-    readStory: "Soma inkuru yose",
-    noNews: "Nta makuru y’ikipe aratangazwa.",
-    noNewsDetail: "Garuka nyuma urebe amakuru rusange yemejwe.",
-  },
-  sw: {
-    status: {
-      loading: {
-        label: "Habari za klabu zinapakiwa",
-        detail: "Tunasubiri mkondo wa kwanza uliothibitishwa.",
-      },
-      ready: {
-        label: "Habari zimethibitishwa",
-        detail: "Hadithi hizi zinatoka kwenye mkondo wa sasa wa umma.",
-      },
-      empty: {
-        label: "Hakuna hadithi iliyochapishwa",
-        detail: "Chumba cha habari hakina hadithi ya umma iliyothibitishwa.",
-      },
-      error: {
-        label: "Chumba cha habari hakipatikani",
-        detail: "Hadithi zilizothibitishwa zinabaki. Jaribu tena huduma ikirejea.",
-      },
-      offline: {
-        label: "Huna mtandao",
-        detail: "Hadithi zilizothibitishwa zinabaki hadi mtandao urejee.",
-      },
-      permission_denied: {
-        label: "Ufikiaji wa habari umekataliwa",
-        detail: "Mkondo wa umma haupatikani kwa mgeni huyu.",
-      },
-      syncing: {
-        label: "Habari zinasasishwa",
-        detail: "Hadithi zilizothibitishwa zinabaki wakati mkondo unasasishwa.",
-      },
-      conflict: {
-        label: "Mkondo wa habari umebadilika",
-        detail: "Sasisha ili kupakia toleo la sasa lililothibitishwa.",
-      },
-      security_timeout: {
-        label: "Muda wa habari umeisha",
-        detail: "Hakuna hadithi mpya inayodhaniwa. Hadithi zilizothibitishwa zinabaki.",
-      },
-    },
-    refresh: "Sasisha habari",
-    retry: "Jaribu tena",
-    refreshDisabled: "Usasishaji haupatikani wakati habari zinapakiwa.",
-    latestStories: "Hadithi za karibuni",
-    featuredStory: "Hadithi kuu",
-    story: "Hadithi",
-    stories: "Hadithi",
-    editorialIdentity: "Utambulisho wa uandishi",
-    confirmedFeed: "Mkondo uliothibitishwa",
-    readStory: "Soma hadithi yote",
-    noNews: "Hakuna habari za klabu zilizochapishwa bado.",
-    noNewsDetail: "Rudi baadaye kwa mkondo wa umma uliothibitishwa.",
-  },
 };
 
 type NewsSurfaceProps = {
@@ -291,8 +135,8 @@ function isSafeMediaUrl(value: string) {
   }
 }
 
-export function resolveNewsStateCopy(locale: string): NewsStateCopy {
-  const normalized = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveNewsStateCopy(_locale: string): NewsStateCopy {
+  const normalized = "en";
   return (
     newsStateCopy[normalized as keyof typeof newsStateCopy] ?? newsStateCopy.en
   );
@@ -353,8 +197,8 @@ export function resolveNewsFailureStatus(
   return "error";
 }
 
-function formatNewsDate(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
+function formatNewsDate(value: string, _locale: string) {
+  return new Intl.DateTimeFormat("en", {
     day: "numeric",
     month: "short",
     year: "numeric",

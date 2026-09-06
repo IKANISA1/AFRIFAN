@@ -19,7 +19,7 @@ void main() {
           'public_user_id': '123-456',
           'favorite_team_slug': 'rayon-sports-fc',
           'country_code': 'RW',
-          'language_code': 'rw',
+          'language_code': 'legacy',
           'avatar_url': 'https://example.com/avatar.jpg',
           'momo_provider': 'MTN',
           'is_active': true,
@@ -34,7 +34,7 @@ void main() {
         expect(profile.publicUserId, '123-456');
         expect(profile.favoriteTeamSlug, 'rayon-sports-fc');
         expect(profile.countryCode, 'RW');
-        expect(profile.languageCode, 'rw');
+        expect(profile.languageCode, 'en');
         expect(profile.avatarUrl, 'https://example.com/avatar.jpg');
         expect(profile.momoProvider, 'MTN');
         expect(profile.isActive, isTrue);

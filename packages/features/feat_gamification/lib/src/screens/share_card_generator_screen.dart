@@ -58,7 +58,7 @@ class _ShareCardGeneratorScreenState
     if (context.canPop()) {
       context.pop();
     } else {
-      context.go('/fanzone');
+      context.go('/predict');
     }
   }
 
@@ -138,7 +138,7 @@ class _ShareCardGeneratorScreenState
                     title: context.afriL10n.gameMakePickFirst,
                     body: context.afriL10n.gameShareCardsUnlock,
                     actionLabel: context.afriL10n.gameBackToPicksUpper,
-                    onAction: () => context.go('/fanzone?section=predictions'),
+                    onAction: () => context.go('/predict?section=history'),
                   );
                 }
                 return _buildContent(state);
@@ -188,7 +188,7 @@ class _ShareCardGeneratorScreenState
         title: context.afriL10n.gameMakePickFirst,
         body: context.afriL10n.gameShareCardsUnlock,
         actionLabel: context.afriL10n.gameBackToPicksUpper,
-        onAction: () => context.go('/fanzone?section=predictions'),
+        onAction: () => context.go('/predict?section=history'),
       );
     }
     final actionsEnabled =
@@ -315,7 +315,7 @@ class ShareCardGeneratorContent extends StatelessWidget {
             title: l10n.gameMakePickFirst,
             message: l10n.gameShareCardsUnlock,
             actionLabel: l10n.gameBackToPicks,
-            onAction: () => context.go('/fanzone?section=predictions'),
+            onAction: () => context.go('/predict?section=history'),
           ),
         ),
       );

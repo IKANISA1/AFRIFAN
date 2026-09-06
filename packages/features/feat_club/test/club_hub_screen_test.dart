@@ -72,7 +72,7 @@ void main() {
     expect(find.text('Retry'), findsOneWidget);
   });
 
-  for (final locale in const <Locale>[Locale('fr'), Locale('rw')]) {
+  for (final locale in const <Locale>[Locale('en')]) {
     testWidgets('renders the official Club hub in ${locale.languageCode}', (
       tester,
     ) async {

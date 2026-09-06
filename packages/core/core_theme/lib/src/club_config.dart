@@ -50,7 +50,7 @@ abstract class ClubConfig {
   /// ISO 3166-1 alpha-2: e.g. 'RW'
   String get countryCode;
 
-  /// Default language ISO 639-1: e.g. 'rw'
+  /// Product language ISO 639-1: always 'en'
   String get language;
 
   /// MOMO USSD prefix: e.g. '*182*'

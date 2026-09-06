@@ -101,16 +101,7 @@ export function GlobalNav({
         <div className="page-shell flex h-9 items-center justify-between px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
           <div className="flex items-center gap-6">
             <span className="text-white/40">{club.league}</span>
-            <div className="flex items-center gap-4">
-              {club.supportedLanguages.map((lang) => (
-                <button
-                  key={lang}
-                  className="hover:text-white transition-colors"
-                >
-                  {lang}
-                </button>
-              ))}
-            </div>
+
           </div>
           <div className="flex items-center gap-6">
             <Link

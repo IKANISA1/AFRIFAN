@@ -64,6 +64,7 @@ class MembershipSnapshot {
     required this.membership,
     required this.applications,
     required this.contributions,
+    this.qualification,
     this.isStale = false,
     this.recoveryMessage,
   });
@@ -72,6 +73,7 @@ class MembershipSnapshot {
   final Map<String, dynamic>? membership;
   final List<Map<String, dynamic>> applications;
   final List<ContributionRecord> contributions;
+  final Map<String, dynamic>? qualification;
   final bool isStale;
   final String? recoveryMessage;
 
@@ -104,6 +106,7 @@ class MembershipSnapshot {
       membership: membership ?? this.membership,
       applications: applications ?? this.applications,
       contributions: contributions ?? this.contributions,
+      qualification: qualification,
       isStale: isStale ?? this.isStale,
       recoveryMessage: recoveryMessage ?? this.recoveryMessage,
     );
@@ -159,6 +162,7 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
 
     // Load user-specific data
     Map<String, dynamic>? membership;
+    Map<String, dynamic>? qualification;
     List<Map<String, dynamic>> applications = const <Map<String, dynamic>>[];
     List<ContributionRecord> contributions = const <ContributionRecord>[];
 
@@ -171,6 +175,18 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
           .order('joined_at', ascending: false)
           .limit(1)
           .maybeSingle();
+
+      final programme = await client.rpc(
+        'membership_qualification_v1',
+        params: {'p_club_id': clubId},
+      );
+      qualification = programme is Map
+          ? Map<String, dynamic>.from(programme)
+          : null;
+      if (membership != null) {
+        // Legacy points tiers never establish a contribution qualification.
+        membership = {...membership, 'tier': qualification?['tier']};
+      }
 
       applications = List<Map<String, dynamic>>.from(
         await client
@@ -192,6 +208,7 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
 
     return MembershipSnapshot(
       packages: packages,
+      qualification: qualification,
       membership: membership == null
           ? null
           : Map<String, dynamic>.from(membership),
@@ -209,7 +226,22 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
     try {
       state = AsyncData(await _load());
     } catch (error, stackTrace) {
-      state = previous != null && previous.hasAnyContent
+      final denied =
+          MembershipFailure.fromError(error).kind ==
+          MembershipFailureKind.permissionDenied;
+      if (denied) {
+        // AsyncNotifier carries previous data into errors. Replace the private
+        // payload first so permission revocation cannot retain personal details.
+        state = const AsyncData(
+          MembershipSnapshot(
+            packages: [],
+            membership: null,
+            applications: [],
+            contributions: [],
+          ),
+        );
+      }
+      state = !denied && previous != null && previous.hasAnyContent
           ? AsyncData(
               previous.copyWith(
                 isStale: true,
@@ -227,26 +259,17 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
     required SupabaseClient client,
     required int clubId,
   }) async {
-    if (!ref.read(storeReleasePolicyProvider).allowsPaidDigitalMembership) {
-      return storeReleaseMembershipPackages();
-    }
-    try {
-      final tiersResponse = await client
-          .from('membership_tiers')
-          .select(MembershipReadProjection.tier)
-          .eq('active', true)
-          .order('sort_order', ascending: true);
-      final tiers = List<Map<String, dynamic>>.from(
-        tiersResponse,
-      ).map(normalizeMembershipTierRow).toList(growable: false);
-      if (tiers.isNotEmpty) {
-        return tiers;
-      }
-    } catch (_) {
-      // Fall through to the official launch-safe categories.
-    }
-
-    return officialMembershipPackages();
+    final policy = ref.read(storeReleasePolicyProvider);
+    final rows = await client
+        .from('membership_tiers')
+        .select(MembershipReadProjection.tier)
+        .eq('club_id', clubId)
+        .eq('active', true)
+        .order('sort_order', ascending: true);
+    return publishedMembershipPackages(
+      rows,
+      allowsPaidDigital: policy.allowsPaidDigitalMembership,
+    );
   }
 
   Future<List<ContributionRecord>> _loadContributionHistory({
@@ -279,6 +302,7 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
         await client
             .from('initiatives')
             .select('id, title')
+            .eq('club_id', clubId)
             .inFilter('id', initiativeIds),
       );
       for (final initiative in initiatives) {
@@ -360,3 +384,38 @@ final membershipProvider =
     AsyncNotifierProvider<MembershipNotifier, MembershipSnapshot>(() {
       return MembershipNotifier();
     });
+
+/// Runtime offers retain the published price and benefits. Reference packages
+/// never manufacture an offer after an empty or failed catalog read.
+List<Map<String, dynamic>> publishedMembershipPackages(
+  List<Map<String, dynamic>> rows, {
+  required bool allowsPaidDigital,
+}) {
+  return rows
+      .where((row) {
+        final price = row['annual_price'] ?? row['price'];
+        if (row['id'] == null || price is! num || price < 0) return false;
+        final free = price == 0 && row['tier'] == 'fan';
+        final physical =
+            row['benefit_scope'] == 'physical_membership' &&
+            row['store_billing_required'] != true;
+        return allowsPaidDigital || free || physical;
+      })
+      .map((row) {
+        final price = (row['annual_price'] ?? row['price']) as num;
+        return <String, dynamic>{
+          ...normalizeMembershipTierRow(row),
+          'id': row['id'],
+          'club_id': row['club_id'],
+          'annual_price': price,
+          'price': price,
+          'title': row['title'] ?? row['name'] ?? '',
+          'subtitle': row['subtitle'] ?? '',
+          'description': row['description'] ?? '',
+          'benefits': parseMembershipBenefits(row['benefits']),
+          'benefit_scope': row['benefit_scope'],
+          'store_billing_required': row['store_billing_required'] == true,
+        };
+      })
+      .toList(growable: false);
+}

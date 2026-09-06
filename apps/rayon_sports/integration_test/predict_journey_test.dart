@@ -66,6 +66,10 @@ void main() {
       warnIfMissed: false,
     );
     await tester.pumpAndSettle();
+    expect(gateway.entries, 0);
+    await capture('predict-native-review');
+    await tester.tap(find.byKey(const ValueKey('predict-confirm-pick')));
+    await tester.pumpAndSettle();
     expect(gateway.entries, 1);
     expect(find.text('400 FET'), findsOneWidget);
     expect(find.text('Draw · Picked'), findsOneWidget);

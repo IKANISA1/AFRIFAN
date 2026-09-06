@@ -16,28 +16,28 @@ void main() {
   setUp(() => ConnectivityService.setOnlineForTest(true));
   tearDown(() => ConnectivityService.setOnlineForTest(true));
 
-  testWidgets('French notification-settings journey uses the FR catalog', (
-    tester,
-  ) async {
-    await _pumpNotificationSettings(tester, const Locale('fr'));
+  testWidgets(
+    'English notification-settings journey uses the English catalog',
+    (tester) async {
+      await _pumpNotificationSettings(tester, const Locale('en'));
 
-    expect(find.text('Notifications'), findsOneWidget);
-    expect(find.text('Réception des notifications'), findsOneWidget);
-    expect(find.text('Alertes activées.'), findsNothing);
-    expect(find.text('Enregistrer'), findsOneWidget);
-    expect(find.text('Notification delivery'), findsNothing);
-  });
+      expect(find.text('Notifications'), findsOneWidget);
+      expect(find.text('Notification delivery'), findsOneWidget);
+      expect(find.text('Alerts enabled.'), findsNothing);
+      expect(find.text('Save'), findsOneWidget);
+    },
+  );
 
-  testWidgets('Kinyarwanda notification-settings journey uses the RW catalog', (
-    tester,
-  ) async {
-    await _pumpNotificationSettings(tester, const Locale('rw'));
+  testWidgets(
+    'Stored-locale fallback English notification-settings journey uses the English catalog',
+    (tester) async {
+      await _pumpNotificationSettings(tester, const Locale('zz'));
 
-    expect(find.text('Amatangazo'), findsOneWidget);
-    expect(find.text('Kwakira amatangazo'), findsOneWidget);
-    expect(find.text('Bika'), findsOneWidget);
-    expect(find.text('Notification delivery'), findsNothing);
-  });
+      expect(find.text('Notifications'), findsOneWidget);
+      expect(find.text('Notification delivery'), findsOneWidget);
+      expect(find.text('Save'), findsOneWidget);
+    },
+  );
 }
 
 Future<void> _pumpNotificationSettings(

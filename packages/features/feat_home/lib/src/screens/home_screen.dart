@@ -299,8 +299,7 @@ class HomeScreen extends ConsumerWidget {
         if (!fanZoneAccess.isVisible) {
           return const SliverToBoxAdapter(child: SizedBox.shrink());
         }
-        final heroRoute =
-            snapshot.heroSlides.first.route ?? '/fanzone?section=league';
+        final heroRoute = snapshot.heroSlides.first.route ?? '/club/fixtures';
         content = Padding(
           padding: const EdgeInsets.fromLTRB(
             SpacingTokens.screenPadding,
@@ -329,10 +328,15 @@ class HomeScreen extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.screenPadding,
           ),
-          child: QuickActionsGrid(
-            actions: snapshot.hasQuickActions
-                ? snapshot.quickActions
-                : homeFeedLocalFallbackActions,
+          child: Column(
+            children: [
+              QuickActionsGrid(
+                actions: snapshot.hasQuickActions
+                    ? snapshot.quickActions
+                    : homeFeedLocalFallbackActions,
+              ),
+              _homeMatchEditorial(context, snapshot),
+            ],
           ),
         );
         break;
@@ -378,8 +382,8 @@ class HomeScreen extends ConsumerWidget {
           child: StatsRow(
             globalFet: snapshot.userFet,
             fanRank: snapshot.fanRank,
-            onFetTap: () => context.go('/fanzone?section=wallet'),
-            onRankTap: () => context.go('/fanzone?section=league'),
+            onFetTap: () => context.go('/predict?section=wallet'),
+            onRankTap: () => context.go('/club/fixtures'),
           ),
         );
         break;
@@ -493,7 +497,7 @@ class HomeScreen extends ConsumerWidget {
                 : l10n.homeFixturesUnavailable,
             icon: AfriIcons.league,
             actionLabel: l10n.homeOpenFanZone,
-            onAction: () => context.go('/fanzone'),
+            onAction: () => context.go('/predict'),
             compact: true,
           ),
         ),
@@ -501,40 +505,50 @@ class HomeScreen extends ConsumerWidget {
     }
 
     return RepaintBoundary(
-      child: Column(
-        children: [
-          MatchScoreCard(slides: slides),
-          // Approved editorial media remains in its CMS-governed match block.
-          // It is a separate object so score text never competes with a photo.
-          for (final slide in slides)
-            if (slide.imageRightsApproved &&
-                (slide.imageUrl?.trim().isNotEmpty ?? false) &&
-                (slide.imageProvenanceId?.trim().isNotEmpty ?? false))
-              Padding(
-                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-                child: LayoutBuilder(
-                  builder: (context, constraints) => AfriPressFeedback(
-                    onTap: slide.route == null
-                        ? null
-                        : () => context.push(slide.route!),
-                    semanticsLabel: l10n.homeOpenMatchDetails,
-                    child: AfriGovernedImage(
-                      image: NetworkImage(slide.imageUrl!),
-                      width: constraints.maxWidth,
-                      height: constraints.maxWidth / (16 / 9),
-                      borderRadius: ShapeTokens.radiusXl,
-                      semanticLabel: '${slide.homeTeam} · ${slide.awayTeam}',
-                      provenanceId: slide.imageProvenanceId!,
-                      rightsApproved: true,
-                    ),
-                  ),
-                ),
-              ),
-        ],
-      ),
+      child: Column(children: [MatchScoreCard(slides: slides)]),
     );
   }
 }
+
+Widget _homeMatchEditorial(BuildContext context, HomeFeedSnapshot snapshot) =>
+    Column(
+      children: [
+        // Approved editorial media remains in its CMS-governed match block.
+        // It is a separate object so score text never competes with a photo.
+        for (final slide
+            in snapshot.heroSlides
+                .where(
+                  (slide) =>
+                      slide.imageRightsApproved &&
+                      (slide.imageUrl?.isNotEmpty ?? false) &&
+                      (slide.imageProvenanceId?.isNotEmpty ?? false),
+                )
+                .take(1))
+          if (slide.imageRightsApproved &&
+              (slide.imageUrl?.trim().isNotEmpty ?? false) &&
+              (slide.imageProvenanceId?.trim().isNotEmpty ?? false))
+            Padding(
+              padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+              child: LayoutBuilder(
+                builder: (context, constraints) => AfriPressFeedback(
+                  onTap: slide.route == null
+                      ? null
+                      : () => context.push(slide.route!),
+                  semanticsLabel: context.afriL10n.homeOpenMatchDetails,
+                  child: AfriGovernedImage(
+                    image: NetworkImage(slide.imageUrl!),
+                    width: constraints.maxWidth,
+                    height: constraints.maxWidth / (16 / 9),
+                    borderRadius: ShapeTokens.radiusXl,
+                    semanticLabel: '${slide.homeTeam} · ${slide.awayTeam}',
+                    provenanceId: slide.imageProvenanceId!,
+                    rightsApproved: true,
+                  ),
+                ),
+              ),
+            ),
+      ],
+    );
 
 List<ContentBlock> _homeBlocksForPlacement(
   String placementKey,
@@ -580,7 +594,7 @@ class _HomeTopChrome extends StatelessWidget {
             AfriTopCommandAction(
               icon: AfriIcons.wallet,
               label: l10n.homeWallet,
-              onTap: () => context.go('/fanzone?section=wallet'),
+              onTap: () => context.go('/predict?section=wallet'),
             ),
           ],
         ),

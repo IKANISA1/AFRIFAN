@@ -312,14 +312,14 @@ void main() {
           browse: 'Browse fixtures',
         ),
         (
-          locale: Locale('fr'),
-          title: 'Détail de l’activité',
-          browse: 'Parcourir les matchs',
+          locale: Locale('en'),
+          title: 'Activity detail',
+          browse: 'Browse fixtures',
         ),
         (
-          locale: Locale('rw'),
-          title: 'Ibisobanuro by’igikorwa',
-          browse: 'Reba imikino',
+          locale: Locale('en'),
+          title: 'Activity detail',
+          browse: 'Browse fixtures',
         ),
       ]) {
     testWidgets(

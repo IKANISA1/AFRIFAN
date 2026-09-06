@@ -643,7 +643,7 @@ void main() {
     },
   );
 
-  for (final locale in const <Locale>[Locale('fr'), Locale('rw')]) {
+  for (final locale in const <Locale>[Locale('en')]) {
     testWidgets('renders phone and OTP tasks in ${locale.languageCode}', (
       tester,
     ) async {

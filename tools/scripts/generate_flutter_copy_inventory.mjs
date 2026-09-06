@@ -422,7 +422,7 @@ The JSON companion contains file, line, field, literal, and current
 disposition for every candidate. The detector covers literal visible-copy
 arguments, direct text widgets, and copy-oriented variables. Dynamic CMS/API
 copy and unrecognized wrapper APIs still require separate review. A zero count
-for one migrated screen does not close MOB-08: named French and Kinyarwanda
+for one migrated screen does not close MOB-08: named English
 approval plus controlled localized visual evidence remain mandatory.
 `;
 }

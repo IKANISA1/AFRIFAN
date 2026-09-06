@@ -25,7 +25,7 @@ class TpMazembeConfig implements ClubConfig {
   String get countryCode => 'CD';
 
   @override
-  String get language => 'fr';
+  String get language => 'en';
 
   @override
   String get momoPrefix => '*126*';
@@ -56,7 +56,7 @@ class TpMazembeConfig implements ClubConfig {
   );
 
   @override
-  List<String> get supportedLanguages => const ['fr', 'ln', 'en'];
+  List<String> get supportedLanguages => const ['en'];
 
   @override
   bool get hasFanClubs => true;

@@ -111,13 +111,14 @@ class DeepLinkParser {
 
     final normalizedIncomingScheme = incoming.scheme.trim().toLowerCase();
     if (_matchesWebsiteLink(incoming, normalizedIncomingScheme)) {
-      return InternalRouteUriPolicy.validate(
+      final safe = InternalRouteUriPolicy.validate(
         _buildInternalUri(
           path: _normalizePath(incoming.path),
           query: incoming.hasQuery ? incoming.query : null,
           fragment: incoming.hasFragment ? incoming.fragment : null,
         ),
       );
+      return safe == null ? null : _websiteDestination(safe);
     }
 
     if (customSchemes.contains(normalizedIncomingScheme)) {
@@ -135,6 +136,52 @@ class DeepLinkParser {
     }
 
     return null;
+  }
+
+  /// Website slugs belong to a different publication schema. Entity routes use
+  /// a club-scoped resolver instead of treating a slug or reservation as an app ID.
+  Uri _websiteDestination(Uri source) {
+    const destinations = {
+      '/': '/home',
+      '/squad': '/club/team',
+      '/news': '/club/news',
+      '/fixtures': '/club/fixtures',
+      '/results': '/club/results',
+      '/standings': '/club/standings',
+      '/partners': '/club/partners',
+      '/fanclubs': '/fan-clubs',
+      '/fanclubs/find': '/fan-clubs',
+      '/fanclubs/diaspora': '/fan-clubs',
+      '/join-gikundiro': '/membership',
+      '/squad/men': '/club/team',
+      '/squad/women': '/club/team',
+      '/squad/academy': '/club/team',
+      '/squad/technical-team': '/club/team',
+    };
+    const squadGroups = {
+      '/squad/men': 'first_team',
+      '/squad/women': 'women',
+      '/squad/academy': 'academy',
+      '/squad/technical-team': 'staff',
+    };
+    final group = squadGroups[source.path];
+    if (group != null) {
+      return Uri(
+        path: '/club/team',
+        queryParameters: {...source.queryParameters, 'group': group},
+      );
+    }
+    final destination = destinations[source.path];
+    if (destination != null) return source.replace(path: destination);
+    if (RegExp(
+      r'^/(squad/(player|staff)|news|shop/product|fanclubs|tickets/match|partners)/[^/]+$',
+    ).hasMatch(source.path)) {
+      return Uri(
+        path: '/club/open-web',
+        queryParameters: {'path': source.path},
+      );
+    }
+    return source;
   }
 
   bool _matchesWebsiteLink(Uri incoming, String normalizedIncomingScheme) {

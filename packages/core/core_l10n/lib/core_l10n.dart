@@ -6,19 +6,15 @@ import 'l10n/afri_localizations.dart';
 
 export 'l10n/afri_localizations.dart';
 
-/// Supplies app-specific copy independently from Flutter framework locales.
-///
-/// Flutter does not currently ship Material/Cupertino localizations for every
-/// AFRICLUB language (notably Kinyarwanda). Keeping the app-copy catalog in a
-/// dedicated scope allows task, help, trust, and recovery messages to use `rw`
-/// while framework widgets retain a supported locale.
+/// Supplies the English catalog throughout the app, including isolated features.
+/// Persisted preferences and device locales never change the product language.
 class AfriLocalizationsScope extends InheritedWidget {
   AfriLocalizationsScope({
     required Locale locale,
     required super.child,
     super.key,
-  }) : locale = _supportedLocale(locale),
-       localizations = lookupAfriLocalizations(_supportedLocale(locale));
+  }) : locale = const Locale('en'),
+       localizations = lookupAfriLocalizations(const Locale('en'));
 
   final Locale locale;
   final AfriLocalizations localizations;
@@ -30,16 +26,6 @@ class AfriLocalizationsScope extends InheritedWidget {
   @override
   bool updateShouldNotify(AfriLocalizationsScope oldWidget) {
     return locale != oldWidget.locale;
-  }
-
-  static Locale _supportedLocale(Locale locale) {
-    final languageCode =
-        AfriLocalizations.supportedLocales.any(
-          (supported) => supported.languageCode == locale.languageCode,
-        )
-        ? locale.languageCode
-        : 'en';
-    return Locale(languageCode);
   }
 }
 
@@ -59,13 +45,6 @@ extension AfriLocalizationsContext on BuildContext {
     );
     if (localized != null) return localized;
 
-    final locale = Localizations.maybeLocaleOf(this) ?? const Locale('en');
-    final languageCode =
-        AfriLocalizations.supportedLocales.any(
-          (supported) => supported.languageCode == locale.languageCode,
-        )
-        ? locale.languageCode
-        : 'en';
-    return lookupAfriLocalizations(Locale(languageCode));
+    return lookupAfriLocalizations(const Locale('en'));
   }
 }

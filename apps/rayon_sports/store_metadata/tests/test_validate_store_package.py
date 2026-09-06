@@ -358,9 +358,8 @@ class StorePackageValidationTest(unittest.TestCase):
         apple_root = validator.MOBILE_DIR / "ios" / "fastlane" / "metadata"
         play_locales = {path.name for path in play_root.iterdir() if path.is_dir() and any(path.rglob("*.txt"))}
         apple_locales = {path.name for path in apple_root.iterdir() if path.is_dir() and any(path.rglob("*.txt"))}
-        self.assertEqual({"en-US", "fr-FR"}, play_locales)
-        self.assertEqual({"en-US", "fr-FR"}, apple_locales)
-        self.assertTrue((STORE_DIR / "source_localizations" / "rw-RW" / "README.md").is_file())
+        self.assertEqual({"en-US"}, play_locales)
+        self.assertEqual({"en-US"}, apple_locales)
 
     def test_json_cli_is_machine_readable(self) -> None:
         completed = subprocess.run(

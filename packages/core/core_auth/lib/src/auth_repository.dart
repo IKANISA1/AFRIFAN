@@ -392,8 +392,7 @@ class AuthRepository {
           'p_display_name': _asOptionalString(profile.displayName),
           'p_country_code':
               _asOptionalString(profile.countryCode)?.toUpperCase() ?? 'RW',
-          'p_language_code':
-              _asOptionalString(profile.languageCode)?.toLowerCase() ?? 'rw',
+          'p_language_code': 'en',
           'p_avatar_url': _asOptionalString(profile.avatarUrl),
         },
       ),
@@ -407,8 +406,7 @@ class AuthRepository {
         'full_name': _asOptionalString(profile.displayName),
         'country_code': _asOptionalString(profile.countryCode)?.toUpperCase(),
         'country': _asOptionalString(profile.countryCode)?.toUpperCase(),
-        'language_code':
-            _asOptionalString(profile.languageCode)?.toLowerCase() ?? 'rw',
+        'language_code': 'en',
         'avatar_url': _asOptionalString(profile.avatarUrl),
         'favorite_team_slug': _asOptionalString(profile.favoriteTeamSlug),
       };
@@ -428,7 +426,7 @@ class AuthRepository {
       countryCode:
           _asOptionalString(metadata['country_code']) ??
           _asOptionalString(metadata['country']),
-      languageCode: _asOptionalString(metadata['language_code']) ?? 'en',
+      languageCode: 'en',
       avatarUrl: _asOptionalString(metadata['avatar_url']),
       momoProvider: _asOptionalString(metadata['momo_provider']),
       isActive: true,

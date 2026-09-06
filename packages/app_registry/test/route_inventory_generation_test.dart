@@ -357,6 +357,10 @@ void main() {
       controlledClubInformationRoutes.map((route) => route['path']).toSet(),
       <String>{
         '/club/team',
+        '/club/team/:playerId',
+        '/club/open-web',
+        '/club/partners',
+        '/club/partners/:partnerId',
         '/club/news',
         '/club/news/:articleId',
         '/club/fixtures',

@@ -95,7 +95,7 @@ native visual refinement has a fresh full-workspace run recorded below.
 - All **1,187 baseline hashes** were reconciled and the golden contract passed.
   The automated privacy scan passed; it does not replace human release review.
 - Localized-copy inventory: **64 literal and 312 dynamic candidates reviewed,
-  zero pending**. English, French and Kinyarwanda catalogs are generated.
+  zero pending**. English catalogs are generated.
 - Formatting and whitespace checks passed. No deployment or store release is
   represented by this local implementation evidence.
 
@@ -173,7 +173,7 @@ native visual refinement has a fresh full-workspace run recorded below.
   shared theme and localization. The final **48 phone/code tests passed** after
   adding an international fallback check and primary-action visibility checks.
   These runs overlap. All 16 changed phone-state images retain their dimensions;
-  OTP images are unchanged. English, French and Kinyarwanda phone placeholders
+  OTP images are unchanged. English phone placeholders
   now describe the field instead of repeating a fixed calling code.
 - Strict analysis, architecture, both QA isolation contracts and the golden
   contract passed. All 1,187 baseline hashes match. The five native iOS journeys
@@ -223,7 +223,7 @@ native visual refinement has a fresh full-workspace run recorded below.
 | --- | --- | --- | --- |
 | `/auth/otp` | MOBBIN-ONBOARDING-010 | component pattern | [auth_otp_state_dark_dark_390x844.png](../../packages/features/feat_onboarding/test/goldens/auth_otp_state_dark_dark_390x844.png) |
 | `/auth/phone` | MOBBIN-ONBOARDING-004 | component pattern | [auth_phone_state_dark_dark_390x844.png](../../packages/features/feat_onboarding/test/goldens/auth_phone_state_dark_dark_390x844.png) |
-| `/predict` | LIVE-007 | component pattern; simplified Gikundiro behavior | [predict_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/predict_state_dark_dark_390x844.png) |
+| `/predict` | LIVE-026, LIVE-007, LIVE-053 | component pattern | [predict_shell_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/predict_shell_dark_390x844.png) |
 | `/club` | LIVE-021, LIVE-007 | component pattern | [club_hub_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_hub_state_dark_dark_390x844.png) |
 | `/club/fixtures` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_fixtures_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_fixtures_state_dark_dark_390x844.png) |
 | `/club/fixtures/:matchId` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_fixture_detail_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_fixture_detail_state_dark_dark_390x844.png) |
@@ -239,13 +239,13 @@ native visual refinement has a fresh full-workspace run recorded below.
 | `/contribute/group/:groupId/statement` | LIVE-053, LIVE-060 | component pattern | [statement_state_dark_dark_390x844.png](../../packages/features/feat_contributions/test/goldens/statement_state_dark_dark_390x844.png) |
 | `/e-ticket/:id` | LIVE-048 | component pattern | [e_ticket_state_dark_dark_390x844.png](../../packages/features/feat_ticketing/test/goldens/e_ticket_state_dark_dark_390x844.png) |
 | `/fan-clubs/:clubId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [fan_club_detail_state_dark_dark_390x844.png](../../packages/features/feat_fan_clubs/test/goldens/fan_club_detail_state_dark_dark_390x844.png) |
-| `/fanzone` | LIVE-026 | component pattern | [fanzone_state_selected_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/fanzone_state_selected_dark_390x844.png) |
+| `/fanzone` | Shared destination | redirect | `/predict` |
 | `/fanzone/match/:fixtureId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [match_detail_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/match_detail_state_dark_dark_390x844.png) |
 | `/fanzone/my/:predictionId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [prediction_detail_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/prediction_detail_state_dark_dark_390x844.png) |
 | `/fanzone/share` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [share_card_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/share_card_state_dark_dark_390x844.png) |
 | `/fanzone/venue` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [venue_checkin_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/venue_checkin_state_dark_dark_390x844.png) |
 | `/fanzone/venue/order` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [venue_order_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/venue_order_state_dark_dark_390x844.png) |
-| `/fanzone/wallet` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [fet_wallet_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/fet_wallet_state_dark_dark_390x844.png) |
+| `/fanzone/wallet` | Shared destination | redirect | `/predict?section=wallet` |
 | `/feature-unavailable` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [feature_unavailable_state_dark_dark_390x844.png](../../packages/core/core_router/test/goldens/feature_unavailable_state_dark_dark_390x844.png) |
 | `/home` | LIVE-020 | component pattern | [home_state_populated_dark_390x844.png](../../packages/features/feat_home/test/goldens/home_state_populated_dark_390x844.png) |
 | `/live/news/:articleId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [news_article_state_dark_dark_390x844.png](../../packages/features/feat_live/test/goldens/news_article_state_dark_dark_390x844.png) |
@@ -257,7 +257,7 @@ native visual refinement has a fresh full-workspace run recorded below.
 | `/settings/edit-profile` | LIVE-005, LIVE-007, LIVE-013 | component pattern | [profile_state_dark_dark_390x844.png](../../packages/features/feat_settings/test/goldens/profile_state_dark_dark_390x844.png) |
 | `/settings/notifications` | LIVE-005, LIVE-007, LIVE-013 | component pattern | [notifications_state_dark_dark_390x844.png](../../packages/features/feat_settings/test/goldens/notifications_state_dark_dark_390x844.png) |
 | `/settings/privacy` | LIVE-005, LIVE-007, LIVE-013 | component pattern | [privacy_state_dark_dark_390x844.png](../../packages/features/feat_settings/test/goldens/privacy_state_dark_dark_390x844.png) |
-| `/shop` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [shop_state_selected_dark_390x844.png](../../packages/features/feat_shop/test/goldens/shop_state_selected_dark_390x844.png) |
+| `/shop` | USER-CARDS-20260906 | component pattern | [shop_state_dark_390x844.png](../../packages/features/feat_shop/test/goldens/shop_state_dark_390x844.png) |
 | `/shop/cart` | LIVE-053, LIVE-060 | component pattern | [cart_state_selected_dark_390x844.png](../../packages/features/feat_shop/test/goldens/cart_state_selected_dark_390x844.png) |
 | `/shop/product/:productId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [product_detail_state_selected_dark_390x844.png](../../packages/features/feat_shop/test/goldens/product_detail_state_selected_dark_390x844.png) |
 | `/tickets` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [tickets_state_selected_dark_390x844.png](../../packages/features/feat_ticketing/test/goldens/tickets_state_selected_dark_390x844.png) |
@@ -265,17 +265,17 @@ native visual refinement has a fresh full-workspace run recorded below.
 | `/tickets/map/:id` | LIVE-048 | component pattern | [seat_map_state_dark_dark_390x844.png](../../packages/features/feat_ticketing/test/goldens/seat_map_state_dark_dark_390x844.png) |
 | `<router-error>` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [router_error_state_dark_dark_390x844.png](../../packages/core/core_router/test/goldens/router_error_state_dark_dark_390x844.png) |
 
-| `/admin` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_dashboard_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_dashboard_state_dark_dark_390x844.png) |
-| `/admin/predict` | LIVE-007 | component pattern; fixture operations | [admin_predict_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_predict_state_dark_dark_390x844.png) |
-| `/admin/cms` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_cms_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_cms_state_dark_dark_390x844.png) |
-| `/admin/competitions` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_competitions_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_competitions_state_dark_390x844.png) |
-| `/admin/contributions` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_contributions_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_contributions_state_dark_390x844.png) |
-| `/admin/features` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_features_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_features_state_dark_390x844.png) |
-| `/admin/features/:featureKey` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_feature_detail_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_feature_detail_state_dark_390x844.png) |
-| `/admin/matches` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_matches_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_matches_state_dark_390x844.png) |
-| `/admin/notifications` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_notifications_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_notifications_state_dark_390x844.png) |
-| `/admin/settle` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_settlement_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_settlement_state_dark_390x844.png) |
-| `/admin/sms-monitor` | LIVE-007, LIVE-053, LIVE-060 | component pattern; operational adaptation | [admin_sms_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_sms_state_dark_390x844.png) |
+| `/admin` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_dashboard_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_dashboard_state_dark_dark_390x844.png) |
+| `/admin/predict` | LIVE-007 | component pattern | [admin_predict_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_predict_state_dark_dark_390x844.png) |
+| `/admin/cms` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_cms_state_dark_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_cms_state_dark_dark_390x844.png) |
+| `/admin/competitions` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_competitions_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_competitions_state_dark_390x844.png) |
+| `/admin/contributions` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_contributions_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_contributions_state_dark_390x844.png) |
+| `/admin/features` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_features_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_features_state_dark_390x844.png) |
+| `/admin/features/:featureKey` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_feature_detail_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_feature_detail_state_dark_390x844.png) |
+| `/admin/matches` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_matches_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_matches_state_dark_390x844.png) |
+| `/admin/notifications` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_notifications_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_notifications_state_dark_390x844.png) |
+| `/admin/settle` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_settlement_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_settlement_state_dark_390x844.png) |
+| `/admin/sms-monitor` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_sms_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_sms_state_dark_390x844.png) |
 
 ## Reproducing the native capture
 
@@ -293,6 +293,26 @@ flutter drive --no-pub --flavor qa -d <isolated-simulator-id> \
 The integration-test startup options disable the backend and supply synthetic
 state. The driver saves captures and the journey result; saved files alone do
 not certify fidelity. Normal app builds omit the capture define and driver.
+
+### Shop reference amendment — 6 September 2026
+
+The owner supplied `/Users/jeanbosco/Desktop/Revolut/Cards.png` for `/shop`.
+Its scrolled RevPoints editorial cards supersede the earlier grouped-list
+comparison for this route. The source's image date, build, font and region are
+unknown. The reference is retained locally and is not copied into runtime assets.
+
+The shared Flutter shop uses full-width rounded media cards, an over-image
+category and lower product information, deep purple/indigo canvas, and compact
+brand/search/back/cart commands. Real category filters, product details, stock
+states, cart/checkout and route hierarchy remain intact. Add-to-cart is a sibling
+control with its own accessible action. At 200% text, content expands vertically
+and search retains its accessible name with an icon-only presentation.
+
+The synthetic catalogue has no approved product photography; the reviewed
+captures therefore show the missing-media fallback. Approved remote product
+images retain the existing rights/provenance check and cover the full card.
+This is a source implementation and local review-gallery change; native installed
+behavior, production data and a released build are not established by the captures.
 
 ## Predict replacement — 6 September 2026
 
@@ -346,3 +366,27 @@ the dark circular surface; the registered club crest remains in the hero. The
 44-point target, focus treatment and Profile navigation are retained. Thirteen
 Club state baselines were refreshed; the 159-test Club rerun and native iPhone
 Club journey passed.
+
+## Unified supporter shell — 6 September 2026
+
+Predict, Challenge and Fan Zone now share one `/predict` shell destination.
+Fixtures, My picks and FET activity retain the Gikundiro result-selection model
+and the same confirmed backend balance. The internal `fanzone` module key remains
+for configuration compatibility; it does not create a second tab or controller.
+Old links resolve to current sections. Communities and contributions have direct
+contextual roots, with back navigation and cross-module redirect-loop checks.
+
+LIVE-026 RevPoints discovery supplies the violet canvas and compact command
+bar; LIVE-007 and LIVE-053 inform grouped controls and navigation. The target
+retains AFRICLUB text, crests and capabilities. Small supporting copy clears
+4.5:1 across the sampled gradient stops and task-card surface. The 200% text
+layout wraps section controls and community metadata without overflow.
+
+The native synthetic Predict journey passed on the Design 390x844 iOS 26.5
+simulator. The 835-test affected regression had 832 passes and three obsolete
+route assertions; all three passed in the subsequent 32-test focused run.
+Final verification includes 76 shared-control, contrast and localization checks,
+107 Home checks, 20 match-detail checks and 84 Predict/operator/community
+journey checks. Static analysis of all 11 affected packages is clean. The final
+rebuilt native iOS Predict journey also passed. Review captures use synthetic fixtures and the test font. They do
+not establish exact source-font equivalence, store approval or live access.

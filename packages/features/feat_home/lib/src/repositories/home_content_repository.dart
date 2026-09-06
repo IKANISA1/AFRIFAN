@@ -1,3 +1,4 @@
+import 'package:club_data/club_data.dart';
 import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -40,8 +41,8 @@ const List<HomeQuickAction> homeFeedLocalFallbackActions = <HomeQuickAction>[
   HomeQuickAction(
     actionKey: 'fan_zone',
     title: '',
-    route: '/fanzone?section=supporters',
-    iconKey: 'members',
+    route: '/predict',
+    iconKey: 'predict',
     sortOrder: 30,
   ),
   HomeQuickAction(
@@ -257,7 +258,7 @@ enum LatestIntelStatus { ready, empty, error }
 String homeHeroRouteForStatus(String status) {
   return switch (status.trim().toUpperCase()) {
     'LIVE' || 'HALF-TIME' || 'FULL-TIME' => '/fanzone/match/live',
-    _ => '/fanzone?section=league',
+    _ => '/club/fixtures',
   };
 }
 
@@ -336,76 +337,101 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     Object? quickActionsError;
     final allowsCrossUserLeaderboard = storeReleasePolicy.allowsCrossUserText;
 
-    try {
-      final activeCountryCode = RuntimeBranding.displayCountryCode
-          .trim()
-          .toUpperCase();
-      final actionRows = List<Map<String, dynamic>>.from(
-        await client
-            .from('quick_actions')
-            .select(
-              'id,action_key,title,subtitle,emoji,route,country,sort_order,'
-              'is_active,icon_key',
-            )
-            .eq('is_active', true)
-            .order('sort_order', ascending: true)
-            .order('title', ascending: true),
-      );
-
-      quickActions = actionRows
-          .map(HomeQuickAction.fromJson)
-          .where((action) {
-            final countryCode = action.countryCode?.trim().toUpperCase();
-            return countryCode == null ||
-                countryCode.isEmpty ||
-                countryCode == activeCountryCode;
-          })
-          .toList(growable: false);
-
-      // Deduplicate by title — first occurrence (lowest sort_order) wins.
-      final seen = <String>{};
-      quickActions = quickActions
-          .where((action) => seen.add(action.title.toLowerCase()))
-          .toList(growable: false);
-    } catch (error) {
-      quickActionsError = error;
-    }
-
-    try {
-      if (allowsCrossUserLeaderboard || currentUserId != null) {
-        var membershipsQuery = client
-            .from('fan_memberships')
-            .select(
-              'id,user_id,partner_id,club_id,tier,points,joined_at,chapter,'
-              'membership_number,display_name,expires_at,renewed_at,'
-              'payment_status,status,created_at,updated_at',
-            );
-        membershipsQuery = ClubScopeResolver(
-          client: client,
-        ).apply(membershipsQuery, scope);
-        memberships = List<Map<String, dynamic>>.from(
-          allowsCrossUserLeaderboard
-              ? await membershipsQuery
-                    .order('points', ascending: false)
-                    .limit(20)
-              : await membershipsQuery.eq('user_id', currentUserId!).limit(1),
+    String? confirmedTier;
+    Future<void> loadQualification() async {
+      if (currentUserId == null) return;
+      try {
+        final result = await client.rpc(
+          'membership_qualification_v1',
+          params: {'p_club_id': scope.requiredClubId},
         );
+        if (result is Map && result['available'] == true) {
+          confirmedTier = result['tier']?.toString();
+        }
+      } catch (error) {
+        membershipsError = error;
       }
-    } catch (error) {
-      membershipsError = error;
     }
 
-    try {
-      var matchesQuery = client.from('unified_matches').select();
-      matchesQuery = ClubScopeResolver(
-        client: client,
-      ).apply(matchesQuery, scope);
-      matches = List<Map<String, dynamic>>.from(
-        await matchesQuery.order('match_date', ascending: true).limit(5),
-      );
-    } catch (error) {
-      matchesError = error;
+    Future<void> loadActions() async {
+      try {
+        final activeCountryCode = RuntimeBranding.displayCountryCode
+            .trim()
+            .toUpperCase();
+        final actionRows = List<Map<String, dynamic>>.from(
+          await client
+              .from('quick_actions')
+              .select(
+                'id,action_key,title,subtitle,emoji,route,country,sort_order,'
+                'is_active,icon_key',
+              )
+              .eq('is_active', true)
+              .order('sort_order', ascending: true)
+              .order('title', ascending: true),
+        );
+
+        quickActions = actionRows
+            .map(HomeQuickAction.fromJson)
+            .where((action) {
+              final countryCode = action.countryCode?.trim().toUpperCase();
+              return countryCode == null ||
+                  countryCode.isEmpty ||
+                  countryCode == activeCountryCode;
+            })
+            .toList(growable: false);
+
+        // Deduplicate by title — first occurrence (lowest sort_order) wins.
+        final seen = <String>{};
+        quickActions = quickActions
+            .where((action) => seen.add(action.title.toLowerCase()))
+            .toList(growable: false);
+      } catch (error) {
+        quickActionsError = error;
+      }
     }
+
+    Future<void> loadMemberships() async {
+      try {
+        if (allowsCrossUserLeaderboard || currentUserId != null) {
+          var membershipsQuery = client
+              .from('fan_memberships')
+              .select(
+                'id,user_id,partner_id,club_id,tier,points,joined_at,chapter,'
+                'membership_number,display_name,expires_at,renewed_at,'
+                'payment_status,status,created_at,updated_at',
+              );
+          membershipsQuery = ClubScopeResolver(
+            client: client,
+          ).apply(membershipsQuery, scope);
+          memberships = List<Map<String, dynamic>>.from(
+            allowsCrossUserLeaderboard
+                ? await membershipsQuery
+                      .order('points', ascending: false)
+                      .limit(20)
+                : await membershipsQuery.eq('user_id', currentUserId!).limit(1),
+          );
+        }
+      } catch (error) {
+        membershipsError = error;
+      }
+    }
+
+    Future<void> loadMatches() async {
+      try {
+        matches = await PublicMatchWindow(
+          client,
+        ).load(clubId: scope.requiredClubId, limitPerSection: 3);
+      } catch (error) {
+        matchesError = error;
+      }
+    }
+
+    await Future.wait([
+      loadActions(),
+      loadMemberships(),
+      loadMatches(),
+      loadQualification(),
+    ]);
 
     if (membershipsError != null && matchesError != null) {
       return HomeFeedSnapshot(
@@ -452,6 +478,8 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         },
       );
     }
+
+    membershipTier = confirmedTier;
 
     final heroSlides = matchesError == null
         ? _mapMatchSlides(matches)

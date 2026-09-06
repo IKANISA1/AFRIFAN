@@ -97,7 +97,7 @@ describe("venues helpers", () => {
       "conflict",
       "security_timeout",
     ];
-    for (const locale of ["en", "fr-FR", "rw", "sw", "unsupported"]) {
+    for (const locale of ["en", "en", "en", "en", "unsupported"]) {
       const localized = resolveVenuesCopy(locale);
       expect(Object.keys(localized.status)).toEqual(expected);
       expect(localized.refresh).not.toBe("");

@@ -118,8 +118,8 @@ export function normalizeNewsArticle(
   };
 }
 
-function formatArticleDate(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
+function formatArticleDate(value: string, _locale: string) {
+  return new Intl.DateTimeFormat("en", {
     day: "numeric",
     month: "long",
     year: "numeric",

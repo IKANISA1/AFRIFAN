@@ -1,8 +1,6 @@
 import 'package:core_router/core_router.dart';
 import 'package:go_router/go_router.dart';
 
-import 'screens/news_article_screen.dart';
-
 class LiveModule extends FeatureModule {
   @override
   String get featureKey => 'live';
@@ -16,13 +14,8 @@ class LiveModule extends FeatureModule {
     ),
     GoRoute(
       path: '/live/news/:articleId',
-      pageBuilder: (context, state) => afriSheetPage(
-        state,
-        NewsArticleScreen(
-          articleId: state.pathParameters['articleId'] ?? 'transfer-window',
-        ),
-        fullHeight: true,
-      ),
+      redirect: (context, state) =>
+          '/club/news/${Uri.encodeComponent(state.pathParameters['articleId'] ?? '')}',
     ),
   ];
 
@@ -42,10 +35,10 @@ class LiveModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/live/news/:articleId',
-      presentation: RoutePresentation.fullHeightSheet,
-      recommendation: 'convert to reader sheet',
-      targetPath: '/fanzone/match/live',
-      rationale: 'Articles are content overlays, not app destinations.',
+      presentation: RoutePresentation.redirect,
+      recommendation: 'merge',
+      targetPath: '/club/news/:articleId',
+      rationale: 'All published news uses the canonical Club reader.',
     ),
     RoutePresentationDecision(
       path: '/live-match',

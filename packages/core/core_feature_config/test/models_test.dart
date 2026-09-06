@@ -101,10 +101,7 @@ void main() {
       expect(snapshot.routeRegistry, hasLength(1));
       expect(snapshot.optionSets, hasLength(1));
       expect(snapshot.runtimeCopy, hasLength(1));
-      expect(
-        snapshot.routeByPath('/predict')?.featureKey,
-        'predict',
-      );
+      expect(snapshot.routeByPath('/predict')?.featureKey, 'predict');
       expect(snapshot.intOptions('challenge_stake_fet'), [500, 1000]);
       expect(
         snapshot.copyValue('home.feed.degraded'),
@@ -120,7 +117,7 @@ void main() {
         features: [
           const PlatformFeature(
             featureKey: 'contributions',
-            displayName: 'Contributions',
+            displayName: 'Contributed',
             isEnabled: true,
             visibilityState: 'visible',
           ),
@@ -135,28 +132,22 @@ void main() {
 
       expect(
         snapshot.featureByKey('contributions')?.displayName,
-        'Contributions',
+        'Contributed',
       );
       expect(snapshot.featureByKey('live')?.isEnabled, isFalse);
       expect(snapshot.featureByKey('nonexistent'), isNull);
     });
 
     test(
-      'runtime copy uses exact, language, then deterministic English fallback',
+      'runtime copy always selects English and ignores a stored preference',
       () {
         const snapshot = PlatformConfigSnapshot(
           runtimeCopy: [
             RuntimeCopyEntry(
               copyKey: 'home.feed.degraded',
               surface: 'mobile',
-              locale: 'rw',
-              textValue: 'Amakuru ntabonetse.',
-            ),
-            RuntimeCopyEntry(
-              copyKey: 'home.feed.degraded',
-              surface: 'mobile',
-              locale: 'fr',
-              textValue: 'Les informations sont indisponibles.',
+              locale: 'legacy',
+              textValue: 'Retired copy must not appear.',
             ),
             RuntimeCopyEntry(
               copyKey: 'home.feed.degraded',
@@ -164,43 +155,31 @@ void main() {
               locale: 'en',
               textValue: 'Club data is unavailable.',
             ),
-            RuntimeCopyEntry(
-              copyKey: 'home.feed.degraded',
-              surface: 'mobile',
-              locale: 'fr-rw',
-              textValue: 'Les informations locales sont indisponibles.',
-            ),
           ],
         );
-
         expect(
-          snapshot.copyValue('home.feed.degraded', locale: 'FR_rw'),
-          'Les informations locales sont indisponibles.',
+          snapshot.copyValue('home.feed.degraded', locale: 'legacy'),
+          'Club data is unavailable.',
         );
         expect(
-          snapshot.copyValue('home.feed.degraded', locale: 'fr-BE'),
-          'Les informations sont indisponibles.',
-        );
-        expect(
-          snapshot.copyValue('home.feed.degraded', locale: 'de'),
+          snapshot.copyValue('home.feed.degraded'),
           'Club data is unavailable.',
         );
       },
     );
 
-    test('runtime copy never falls through to an unrelated locale', () {
+    test('runtime copy does not present retired content as English', () {
       const snapshot = PlatformConfigSnapshot(
         runtimeCopy: [
           RuntimeCopyEntry(
             copyKey: 'home.feed.degraded',
             surface: 'mobile',
-            locale: 'rw',
-            textValue: 'Amakuru ntabonetse.',
+            locale: 'legacy',
+            textValue: 'Retired copy must not appear.',
           ),
         ],
       );
-
-      expect(snapshot.copyValue('home.feed.degraded', locale: 'fr'), isNull);
+      expect(snapshot.copyValue('home.feed.degraded'), isNull);
     });
 
     test('toJson and fromJson are symmetric', () {
@@ -290,7 +269,7 @@ void main() {
       // Disabled globally
       const disabled = PlatformFeature(
         featureKey: 'b',
-        displayName: 'B',
+        displayName: 'D',
         isEnabled: false,
         visibilityState: 'visible',
       );
@@ -338,7 +317,7 @@ void main() {
 
       const insideSchedule = PlatformFeature(
         featureKey: 'g',
-        displayName: 'G',
+        displayName: 'W',
         isEnabled: true,
         visibilityState: 'visible',
         rules: FeatureRuleConfig(isWithinSchedule: true),

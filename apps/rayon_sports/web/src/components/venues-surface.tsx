@@ -68,7 +68,7 @@ type VenuesStateCopy = {
   privacyDetail: string;
 };
 
-const venueCopy: Record<"en" | "fr" | "rw" | "sw", VenuesStateCopy> = {
+const venueCopy: Record<"en", VenuesStateCopy> = {
   en: {
     status: {
       loading: {
@@ -133,198 +133,6 @@ const venueCopy: Record<"en" | "fr" | "rw" | "sw", VenuesStateCopy> = {
     privacyDetail:
       "Public web never performs authenticated check-in, exposes precise supporter location, or displays live order queues.",
   },
-  fr: {
-    status: {
-      loading: {
-        label: "Chargement des lieux approuvés",
-        detail: "En attente du premier répertoire public confirmé.",
-      },
-      ready: {
-        label: "Répertoire des lieux confirmé",
-        detail: "Ces profils viennent du dernier répertoire approuvé par le club.",
-      },
-      empty: {
-        label: "Aucun lieu approuvé",
-        detail: "Aucun profil public de partenaire n’est encore confirmé.",
-      },
-      error: {
-        label: "Répertoire indisponible",
-        detail: "Les profils confirmés restent visibles. Réessayez plus tard.",
-      },
-      offline: {
-        label: "Vous êtes hors ligne",
-        detail: "Les profils confirmés restent visibles jusqu’au retour du réseau.",
-      },
-      permission_denied: {
-        label: "Accès aux lieux refusé",
-        detail: "Le répertoire public n’est pas disponible pour ce visiteur.",
-      },
-      syncing: {
-        label: "Actualisation des lieux",
-        detail: "Les profils confirmés restent visibles pendant la mise à jour.",
-      },
-      conflict: {
-        label: "Le répertoire a changé",
-        detail: "Actualisez pour charger les profils actuellement approuvés.",
-      },
-      security_timeout: {
-        label: "Délai de la demande dépassé",
-        detail: "Aucun changement n’est supposé. Les profils restent visibles.",
-      },
-    },
-    eyebrow: "Lieux partenaires",
-    title: (club) => `Lieux de match de ${club}`,
-    description:
-      "Découvrez ici les profils publics approuvés. L’enregistrement, les récompenses et les commandes restent dans l’application sécurisée.",
-    openApp: "Ouvrir l’application",
-    appPending: "Liens bientôt disponibles",
-    browseTickets: "Voir les billets",
-    refresh: "Actualiser les lieux",
-    retry: "Réessayer",
-    refreshDisabled: "L’actualisation est indisponible pendant le chargement.",
-    approved: "Approuvés",
-    cities: "Villes",
-    selected: "Sélection",
-    selectedVenue: "Lieu sélectionné",
-    venueDirectory: "Répertoire approuvé",
-    directoryDetail: "Choisissez un profil public pour voir son résumé confirmé.",
-    city: "Ville",
-    publicProfile: "Profil public",
-    emptyTitle: "Aucun lieu approuvé",
-    emptyDetail: "Les profils apparaissent après l’examen et l’accord du club.",
-    privacyEyebrow: "Limite de confidentialité",
-    privacyTitle: "Découverte ici. Actions sécurisées dans l’application.",
-    privacyDetail:
-      "Le site public ne fait jamais d’enregistrement authentifié, n’expose pas la position précise d’un supporter et n’affiche pas les files de commandes.",
-  },
-  rw: {
-    status: {
-      loading: {
-        label: "Ahantu hemejwe harimo gutangira",
-        detail: "Dutegereje urutonde rwa mbere rwemejwe.",
-      },
-      ready: {
-        label: "Urutonde rw’ahantu rwemejwe",
-        detail: "Aya makuru ava ku rutonde rwa vuba rwemejwe n’ikipe.",
-      },
-      empty: {
-        label: "Nta hantu hemejwe",
-        detail: "Nta mwirondoro rusange w’ahantu wemejwe uraboneka.",
-      },
-      error: {
-        label: "Urutonde ntiruboneka",
-        detail: "Ahemejwe haragumaho. Ongera ugerageze nyuma.",
-      },
-      offline: {
-        label: "Nta murongo wa interineti",
-        detail: "Ahemejwe haragumaho kugeza umurongo ugarutse.",
-      },
-      permission_denied: {
-        label: "Urutonde ntirwemerewe",
-        detail: "Urutonde rusange ntirwemerewe uyu mushyitsi.",
-      },
-      syncing: {
-        label: "Ahantu harimo kuvugururwa",
-        detail: "Ahemejwe haragumaho mu gihe urutonde ruvugururwa.",
-      },
-      conflict: {
-        label: "Urutonde rwahindutse",
-        detail: "Vugurura kugira ngo ubone ahantu hemejwe ubu.",
-      },
-      security_timeout: {
-        label: "Igihe cyo gusaba cyarangiye",
-        detail: "Nta gihindutse cyemezwa. Ahemejwe haragumaho.",
-      },
-    },
-    eyebrow: "Ahantu h’abafatanyabikorwa",
-    title: (club) => `Ahantu h’umunsi w’umukino wa ${club}`,
-    description:
-      "Reba imyirondoro rusange yemejwe hano. Kwiyandikisha, ibihembo no gutumiza bikorwa muri porogaramu itekanye.",
-    openApp: "Fungura porogaramu",
-    appPending: "Imiyoboro izaboneka vuba",
-    browseTickets: "Reba amatike",
-    refresh: "Vugurura ahantu",
-    retry: "Ongera ugerageze",
-    refreshDisabled: "Ntushobora kuvugurura mu gihe urutonde rutangira.",
-    approved: "Ahemejwe",
-    cities: "Imijyi",
-    selected: "Ahatowe",
-    selectedVenue: "Ahantu hatowe",
-    venueDirectory: "Urutonde rwemejwe",
-    directoryDetail: "Hitamo umwirondoro rusange urebe incamake yemejwe.",
-    city: "Umujyi",
-    publicProfile: "Umwirondoro rusange",
-    emptyTitle: "Nta hantu hemejwe",
-    emptyDetail: "Imyirondoro igaragara nyuma yo gusuzumwa no kwemezwa n’ikipe.",
-    privacyEyebrow: "Imipaka y’ibanga",
-    privacyTitle: "Menya hano. Ibikorwa bitekanye muri porogaramu.",
-    privacyDetail:
-      "Urubuga rusange ntirwandikisha umuntu, ntirwerekana aho umufana aherereye neza kandi ntirwerekana imirongo y’ibitumizwa.",
-  },
-  sw: {
-    status: {
-      loading: {
-        label: "Inapakia maeneo yaliyoidhinishwa",
-        detail: "Inasubiri orodha ya kwanza ya umma iliyothibitishwa.",
-      },
-      ready: {
-        label: "Orodha ya maeneo imethibitishwa",
-        detail: "Wasifu huu unatoka kwenye orodha iliyoidhinishwa na klabu.",
-      },
-      empty: {
-        label: "Hakuna maeneo yaliyoidhinishwa",
-        detail: "Hakuna wasifu wa umma wa mshirika uliothibitishwa.",
-      },
-      error: {
-        label: "Orodha haipatikani",
-        detail: "Wasifu uliothibitishwa unaendelea kuonekana. Jaribu tena.",
-      },
-      offline: {
-        label: "Huna mtandao",
-        detail: "Wasifu uliothibitishwa unaonekana hadi mtandao urudi.",
-      },
-      permission_denied: {
-        label: "Ufikiaji wa maeneo umekataliwa",
-        detail: "Orodha ya umma haipatikani kwa mgeni huyu.",
-      },
-      syncing: {
-        label: "Inasasisha maeneo",
-        detail: "Wasifu uliothibitishwa unaonekana wakati wa kusasisha.",
-      },
-      conflict: {
-        label: "Orodha imebadilika",
-        detail: "Sasisha ili kuona wasifu ulioidhinishwa kwa sasa.",
-      },
-      security_timeout: {
-        label: "Ombi la maeneo limepitwa na muda",
-        detail: "Hakuna badiliko linalodhaniwa. Wasifu unaendelea kuonekana.",
-      },
-    },
-    eyebrow: "Maeneo washirika",
-    title: (club) => `Maeneo ya siku ya mechi ya ${club}`,
-    description:
-      "Gundua wasifu wa umma ulioidhinishwa hapa. Kuingia, zawadi na kuagiza hubaki kwenye programu salama.",
-    openApp: "Fungua programu",
-    appPending: "Viungo vinakuja hivi karibuni",
-    browseTickets: "Tazama tiketi",
-    refresh: "Sasisha maeneo",
-    retry: "Jaribu tena",
-    refreshDisabled: "Huwezi kusasisha wakati orodha inapakia.",
-    approved: "Yaliyoidhinishwa",
-    cities: "Miji",
-    selected: "Lililochaguliwa",
-    selectedVenue: "Eneo lililochaguliwa",
-    venueDirectory: "Orodha iliyoidhinishwa",
-    directoryDetail: "Chagua wasifu wa umma ili kuona muhtasari uliothibitishwa.",
-    city: "Mji",
-    publicProfile: "Wasifu wa umma",
-    emptyTitle: "Hakuna maeneo yaliyoidhinishwa",
-    emptyDetail: "Wasifu huonekana baada ya ukaguzi na idhini ya klabu.",
-    privacyEyebrow: "Mpaka wa faragha",
-    privacyTitle: "Gundua hapa. Vitendo salama kwenye programu.",
-    privacyDetail:
-      "Tovuti ya umma haifanyi kuingia kwa uthibitisho, haionyeshi eneo kamili la mshabiki, wala foleni za oda.",
-  },
 };
 
 function boundedString(value: unknown, maximum: number) {
@@ -367,8 +175,8 @@ export function normalizeVenues(value: unknown): PublicVenue[] {
   );
 }
 
-export function resolveVenuesCopy(locale: string) {
-  const language = locale.trim().toLowerCase().split(/[-_]/)[0];
+export function resolveVenuesCopy(_locale: string) {
+  const language = "en";
   return venueCopy[language as keyof typeof venueCopy] ?? venueCopy.en;
 }
 

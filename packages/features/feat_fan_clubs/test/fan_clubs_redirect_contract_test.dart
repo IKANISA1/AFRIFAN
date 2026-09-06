@@ -1,39 +1,21 @@
+import 'package:core_router/core_router.dart';
 import 'package:feat_fan_clubs/feat_fan_clubs.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  testWidgets('/fan-clubs resolves to Fan Zone Supporters', (tester) async {
-    final module = FanClubsModule();
-    final router = GoRouter(
-      initialLocation: '/fan-clubs',
-      routes: <RouteBase>[
-        ...module.routes,
-        GoRoute(
-          path: '/fanzone',
-          builder: (context, state) =>
-              Scaffold(body: Text('Target: ${state.uri}')),
-        ),
-      ],
-    );
-    addTearDown(router.dispose);
-
-    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Target: /fanzone?section=supporters'), findsOneWidget);
-    expect(
-      router.routeInformationProvider.value.uri.toString(),
-      '/fanzone?section=supporters',
-    );
-  });
-
-  test('presentation decision declares the exact registered target', () {
-    final decision = FanClubsModule().routePresentationDecisions.singleWhere(
-      (candidate) => candidate.path == '/fan-clubs',
-    );
-
-    expect(decision.targetPath, '/fanzone?section=supporters');
-  });
+  test(
+    'community root renders directly and cannot redirect back to Predict',
+    () {
+      final module = FanClubsModule();
+      final root = module.routes.whereType<GoRoute>().single;
+      expect(root.redirect, isNull);
+      expect(root.pageBuilder, isNotNull);
+      final decision = module.routePresentationDecisions.singleWhere(
+        (entry) => entry.path == '/fan-clubs',
+      );
+      expect(decision.presentation, RoutePresentation.fullHeightSheet);
+      expect(decision.targetPath, isNull);
+    },
+  );
 }

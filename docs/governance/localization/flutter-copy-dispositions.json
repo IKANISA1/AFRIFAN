@@ -203,9 +203,9 @@
     {
       "file": "packages/features/feat_gamification/lib/src/fanzone_module.dart",
       "field": "label",
-      "value": "Fan Zone",
+      "value": "Predict",
       "disposition": "localized_primary_navigation_fallback",
-      "rationale": "The shell maps this feature key to core_l10n for supporter-visible navigation; the module label is the deterministic fallback and route inventory identifier.",
+      "rationale": "Internal tab fallback name; the shared shell renders the localized Predict title.",
       "review_authority": "AFRICLUB code and localization governance",
       "reviewed_at": "2026-08-21"
     },
@@ -444,15 +444,6 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_shop/lib/src/screens/shop_screen.dart",
-      "field": "text",
-      "value": "$cartItemCount",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
       "file": "packages/features/feat_shop/lib/src/widgets/cart_item_card.dart",
       "field": "text",
       "value": "${item.quantity}",
@@ -642,7 +633,7 @@
       "reviewed_at": "2026-09-06"
     },
     {
-      "file": "packages/features/feat_gamification/lib/src/predict/predict_screen.dart",
+      "file": "packages/features/feat_gamification/lib/src/predict/predict_fixture_card.dart",
       "field": "text",
       "value": "${material.formatMediumDate(local)} · ${material.formatTimeOfDay(TimeOfDay.fromDateTime(local), alwaysUse24HourFormat: true)}",
       "disposition": "runtime_value_without_translatable_literal",
@@ -651,7 +642,7 @@
       "reviewed_at": "2026-09-06"
     },
     {
-      "file": "packages/features/feat_gamification/lib/src/predict/predict_screen.dart",
+      "file": "packages/features/feat_gamification/lib/src/predict/predict_fixture_card.dart",
       "field": "text",
       "value": "vs",
       "disposition": "runtime_value_without_translatable_literal",
@@ -660,7 +651,7 @@
       "reviewed_at": "2026-09-06"
     },
     {
-      "file": "packages/features/feat_gamification/lib/src/predict/predict_screen.dart",
+      "file": "packages/features/feat_gamification/lib/src/predict/predict_fixture_card.dart",
       "field": "label",
       "value": "${fixture.selectionName(selection, l.predictDraw)}, ${fixture.stakeFet} FET",
       "disposition": "runtime_value_without_translatable_literal",
@@ -692,6 +683,15 @@
       "value": "${country.isoCode} ${country.dialCode}",
       "disposition": "runtime_value_without_translatable_literal",
       "rationale": "Composes existing localized labels with governed team/competition/country names, numeric scores, FET amounts, or locale-formatted dates; FET and vs are fixed football/token notation, not untranslated interface prose.",
+      "review_authority": "AFRICLUB code and localization governance",
+      "reviewed_at": "2026-09-06"
+    },
+    {
+      "file": "packages/features/feat_gamification/lib/src/predict/predict_screen.dart",
+      "field": "label",
+      "value": "$balance FET",
+      "disposition": "domain_data_or_standard_format",
+      "rationale": "Numeric server balance and the invariant FET unit for its accessible label; surrounding actions and explanations use localized catalogs.",
       "review_authority": "AFRICLUB code and localization governance",
       "reviewed_at": "2026-09-06"
     }

@@ -114,38 +114,36 @@ void main() {
     expect(find.byType(MatchListScreen), findsOneWidget);
   });
 
-  testWidgets('renders the empty ticket journey in French', (tester) async {
+  testWidgets('renders the empty ticket journey in English', (tester) async {
     _setMobileSurface(tester);
 
     await tester.pumpWidget(
       _buildTicketingApp(
         ticketMatchesProvider.overrideWith((ref) async => const <ClubMatch>[]),
-        locale: const Locale('fr'),
+        locale: const Locale('en'),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Billets'), findsOneWidget);
-    expect(find.text('Aucun match avec billetterie à venir'), findsOneWidget);
-    expect(find.text('Actualiser'), findsWidgets);
+    expect(find.text('Tickets'), findsOneWidget);
+    expect(find.text('No upcoming ticketed fixtures'), findsOneWidget);
+    expect(find.text('Refresh'), findsWidgets);
   });
 
-  testWidgets('renders the empty ticket journey in Kinyarwanda', (
-    tester,
-  ) async {
+  testWidgets('renders the empty ticket journey in English', (tester) async {
     _setMobileSurface(tester);
 
     await tester.pumpWidget(
       _buildTicketingApp(
         ticketMatchesProvider.overrideWith((ref) async => const <ClubMatch>[]),
-        locale: const Locale('rw'),
+        locale: const Locale('en'),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Amatike'), findsOneWidget);
-    expect(find.text('Nta mukino uri imbere ufite amatike'), findsOneWidget);
-    expect(find.text('Vugurura'), findsWidgets);
+    expect(find.text('Tickets'), findsOneWidget);
+    expect(find.text('No upcoming ticketed fixtures'), findsOneWidget);
+    expect(find.text('Refresh'), findsWidgets);
   });
 
   testWidgets('matches the ticketing error layout', (tester) async {
@@ -421,9 +419,9 @@ Widget _buildTicketingApp(
       ticketMatchesOverride,
     ],
     child: MaterialApp.router(
-      locale: locale.languageCode == 'rw' ? const Locale('en') : locale,
+      locale: const Locale('en'),
       localizationsDelegates: AfriLocalizations.localizationsDelegates,
-      supportedLocales: const <Locale>[Locale('en'), Locale('fr')],
+      supportedLocales: const <Locale>[Locale('en')],
       theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
       routerConfig: router,
       builder: (context, child) {

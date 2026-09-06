@@ -18,6 +18,19 @@ class ClubHubScreen extends ConsumerWidget {
     final config = ClubConfigScope.maybeOf(context) ?? ClubConfig.fallback();
     final overview = ref.watch(clubOverviewProvider);
     final overviewValue = overview.valueOrNull;
+    final matches = ref.watch(clubMatchesProvider).valueOrNull;
+    final currentMatch =
+        matches
+            ?.where(
+              (m) =>
+                  !m.isCompleted &&
+                  (m.matchDate
+                          ?.add(const Duration(days: 1))
+                          .isAfter(DateTime.now()) ??
+                      false),
+            )
+            .firstOrNull ??
+        matches?.firstOrNull;
     final clubName = overviewValue?.name.trim().isNotEmpty == true
         ? overviewValue!.name
         : config.clubName;
@@ -63,12 +76,15 @@ class ClubHubScreen extends ConsumerWidget {
                       key: const ValueKey<String>('club-refresh-action'),
                       icon: AfriIcons.refresh,
                       label: l10n.clubRefresh,
-                      onTap: () => ref.invalidate(clubOverviewProvider),
+                      onTap: () {
+                        ref.invalidate(clubOverviewProvider);
+                        ref.invalidate(clubMatchesProvider);
+                      },
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: SpacingTokens.spacing8),
+              const SizedBox(height: SpacingTokens.spacing4),
               Center(
                 child: Semantics(
                   label: l10n.clubOfficialOverviewSemantic(clubName),
@@ -78,9 +94,9 @@ class ClubHubScreen extends ConsumerWidget {
                         clubSlug: overviewValue?.slug ?? config.clubId,
                         clubName: clubName,
                         imageUrl: overviewValue?.logoUrl,
-                        size: 88,
+                        size: 56,
                       ),
-                      const SizedBox(height: SpacingTokens.spacing5),
+                      const SizedBox(height: SpacingTokens.spacing3),
                       Text(
                         clubName,
                         textAlign: TextAlign.center,
@@ -132,6 +148,98 @@ class ClubHubScreen extends ConsumerWidget {
                         : () => ref.invalidate(clubOverviewProvider),
                   ),
               ],
+              const SizedBox(height: SpacingTokens.sectionGap),
+              if (currentMatch != null) ...[
+                AfriListGroup(
+                  children: [
+                    AfriListRow(
+                      icon: AfriIcons.fixture,
+                      title: l10n.clubFixtureTeams(
+                        currentMatch.homeTeam,
+                        currentMatch.awayTeam,
+                      ),
+                      subtitle: currentMatch.isCompleted
+                          ? '${l10n.clubFootballRecent} · ${currentMatch.homeScore}–${currentMatch.awayScore}'
+                          : '${l10n.clubFootballUpcoming} · ${currentMatch.matchDate?.toIso8601String().split('T').first ?? ''} ${currentMatch.kickoffTime}',
+                      onTap: () =>
+                          context.push('/club/fixtures/${currentMatch.id}'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: SpacingTokens.sectionGap),
+              ],
+              Text(
+                l10n.clubExploreTitle,
+                style: TypographyTokens.titleLarge().copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriListGroup(
+                children: [
+                  _ClubDestination(
+                    icon: AfriIcons.people,
+                    title: l10n.clubTeamTitle,
+                    subtitle: l10n.clubTeamSubtitle,
+                    route: '/club/team',
+                  ),
+                  _ClubDestination(
+                    icon: AfriIcons.article,
+                    title: l10n.clubNewsTitle,
+                    subtitle: l10n.clubNewsSubtitle,
+                    route: '/club/news',
+                  ),
+                  _ClubDestination(
+                    icon: AfriIcons.fixture,
+                    title: l10n.clubFixturesTitle,
+                    subtitle: l10n.clubFixturesSubtitle,
+                    route: '/club/fixtures',
+                  ),
+                  _ClubDestination(
+                    icon: AfriIcons.score,
+                    title: l10n.clubResultsTitle,
+                    subtitle: l10n.clubResultsSubtitle,
+                    route: '/club/results',
+                  ),
+                  _ClubDestination(
+                    icon: AfriIcons.league,
+                    title: l10n.clubStandingsTitle,
+                    subtitle: l10n.clubStandingsSubtitle,
+                    route: '/club/standings',
+                  ),
+                  if (overviewValue?.hasProfile != true)
+                    _ClubDestination(
+                      icon: AfriIcons.history,
+                      title: l10n.clubHistoryTitle,
+                      subtitle: l10n.clubHistorySubtitle,
+                      route: '/club/history',
+                    ),
+                  _ClubDestination(
+                    icon: AfriIcons.business,
+                    title: l10n.clubPartnersTitle,
+                    subtitle: l10n.clubPartnerDetails,
+                    route: '/club/partners',
+                  ),
+                  _ClubDestination(
+                    icon: AfriIcons.business,
+                    title: l10n.clubProjectsTitle,
+                    subtitle: l10n.clubProjectsSubtitle,
+                    route: '/club/projects',
+                  ),
+                  _ClubDestination(
+                    icon: AfriIcons.tickets,
+                    title: l10n.clubTicketsTitle,
+                    subtitle: l10n.clubTicketsSubtitle,
+                    route: '/tickets',
+                  ),
+                  _ClubDestination(
+                    icon: AfriIcons.shop,
+                    title: l10n.clubShopTitle,
+                    subtitle: l10n.clubShopSubtitle,
+                    route: '/shop',
+                  ),
+                ],
+              ),
               if (overviewValue != null && overviewValue.hasProfile) ...[
                 const SizedBox(height: SpacingTokens.sectionGap),
                 Semantics(
@@ -194,73 +302,6 @@ class ClubHubScreen extends ConsumerWidget {
                   onTap: () => context.push('/membership'),
                 ),
               ],
-              const SizedBox(height: SpacingTokens.sectionGap),
-              Text(
-                l10n.clubExploreTitle,
-                style: TypographyTokens.titleLarge().copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              AfriListGroup(
-                children: [
-                  _ClubDestination(
-                    icon: AfriIcons.people,
-                    title: l10n.clubTeamTitle,
-                    subtitle: l10n.clubTeamSubtitle,
-                    route: '/club/team',
-                  ),
-                  _ClubDestination(
-                    icon: AfriIcons.article,
-                    title: l10n.clubNewsTitle,
-                    subtitle: l10n.clubNewsSubtitle,
-                    route: '/club/news',
-                  ),
-                  _ClubDestination(
-                    icon: AfriIcons.fixture,
-                    title: l10n.clubFixturesTitle,
-                    subtitle: l10n.clubFixturesSubtitle,
-                    route: '/club/fixtures',
-                  ),
-                  _ClubDestination(
-                    icon: AfriIcons.score,
-                    title: l10n.clubResultsTitle,
-                    subtitle: l10n.clubResultsSubtitle,
-                    route: '/club/results',
-                  ),
-                  _ClubDestination(
-                    icon: AfriIcons.league,
-                    title: l10n.clubStandingsTitle,
-                    subtitle: l10n.clubStandingsSubtitle,
-                    route: '/club/standings',
-                  ),
-                  if (overviewValue?.hasProfile != true)
-                    _ClubDestination(
-                      icon: AfriIcons.history,
-                      title: l10n.clubHistoryTitle,
-                      subtitle: l10n.clubHistorySubtitle,
-                      route: '/club/history',
-                    ),
-                  _ClubDestination(
-                    icon: AfriIcons.business,
-                    title: l10n.clubProjectsTitle,
-                    subtitle: l10n.clubProjectsSubtitle,
-                    route: '/club/projects',
-                  ),
-                  _ClubDestination(
-                    icon: AfriIcons.tickets,
-                    title: l10n.clubTicketsTitle,
-                    subtitle: l10n.clubTicketsSubtitle,
-                    route: '/tickets',
-                  ),
-                  _ClubDestination(
-                    icon: AfriIcons.shop,
-                    title: l10n.clubShopTitle,
-                    subtitle: l10n.clubShopSubtitle,
-                    route: '/shop',
-                  ),
-                ],
-              ),
             ],
           );
         },

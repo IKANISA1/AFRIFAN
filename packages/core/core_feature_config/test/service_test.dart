@@ -53,7 +53,7 @@ void main() {
 
   const hiddenFeature = PlatformFeature(
     featureKey: 'contributions',
-    displayName: 'Contributions',
+    displayName: 'Contributed',
     isEnabled: true,
     visibilityState: 'hidden',
   );
@@ -567,8 +567,10 @@ void main() {
       expect(unapprovedService.isRouteAvailable('/predict'), isFalse);
       expect(enabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
       expect(enabledService.isRouteAvailable('/predict'), isTrue);
+      expect(enabledService.isRouteAvailable('/challenge'), isTrue);
       expect(disabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
       expect(disabledService.isRouteAvailable('/predict'), isFalse);
+      expect(disabledService.isRouteAvailable('/challenge'), isFalse);
     });
 
     test('isRouteAvailable allows venue check-in only when enabled', () {

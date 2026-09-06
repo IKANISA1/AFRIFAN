@@ -26,7 +26,7 @@ void main() {
       modules = <FeatureModule>[
         _FakeHomeModule(),
         _FakeClubModule(),
-        _FakeFanzoneModule(),
+        _FakePredictModule(),
         _FakeMembershipModule(),
         _FakeSettingsModule(),
       ];
@@ -51,21 +51,21 @@ void main() {
       expect(find.byType(NavigationRail), findsNothing);
       expect(find.text('Home'), findsOneWidget);
       expect(find.text('Club'), findsOneWidget);
-      expect(find.text('Fan Zone'), findsOneWidget);
+      expect(find.text('Predict'), findsOneWidget);
       expect(find.text('Membership'), findsOneWidget);
       expect(find.text('Settings'), findsNothing);
     });
 
-    testWidgets('navigates between fan zone and membership tabs', (
+    testWidgets('navigates between Predict and membership tabs', (
       tester,
     ) async {
       _setMobileSurface(tester);
       await tester.pumpWidget(_buildApp(router));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Fan Zone'));
+      await tester.tap(find.text('Predict'));
       await tester.pumpAndSettle();
-      expect(find.text('Fan Zone Screen'), findsOneWidget);
+      expect(find.text('Predict Screen'), findsOneWidget);
 
       await tester.tap(find.text('Membership'));
       await tester.pumpAndSettle();
@@ -81,13 +81,13 @@ void main() {
       expect(find.byType(AppShell), findsOneWidget);
     });
 
-    testWidgets('matches shell fan zone tab render contract', (tester) async {
+    testWidgets('matches shell Predict tab render contract', (tester) async {
       _setMobileSurface(tester);
 
       await tester.pumpWidget(_buildApp(router));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Fan Zone'));
+      await tester.tap(find.text('Predict'));
       await tester.pumpAndSettle();
 
       expect(find.byType(AppShell), findsOneWidget);
@@ -136,7 +136,7 @@ void main() {
         await _selectRailDestination(tester, 1);
         expect(find.text('Club Screen'), findsOneWidget);
         await _selectRailDestination(tester, 2);
-        expect(find.text('Fan Zone Screen'), findsOneWidget);
+        expect(find.text('Predict Screen'), findsOneWidget);
         await _selectRailDestination(tester, 3);
         expect(find.text('Membership Screen'), findsOneWidget);
         router.router.go('/settings');
@@ -307,18 +307,18 @@ class _FakeClubModule extends FeatureModule {
   );
 }
 
-class _FakeFanzoneModule extends FeatureModule {
+class _FakePredictModule extends FeatureModule {
   @override
   String get featureKey => 'fanzone';
 
   @override
   TabRoute get tabRoute => TabRoute(
-    path: '/fanzone',
-    label: 'Fan Zone',
+    path: '/predict',
+    label: 'Predict',
     icon: AfriIcons.fanzone,
     activeIcon: AfriIcons.fanzone,
     builder: (context, state) =>
-        const Scaffold(body: Center(child: Text('Fan Zone Screen'))),
+        const Scaffold(body: Center(child: Text('Predict Screen'))),
   );
 }
 

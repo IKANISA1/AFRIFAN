@@ -47,32 +47,30 @@ void main() {
     },
   );
 
-  testWidgets('localizes the empty task in French and Kinyarwanda', (
-    tester,
-  ) async {
+  testWidgets('localizes the empty task in English', (tester) async {
     await tester.pumpWidget(
       buildSubject(
         history: const <UserPrediction>[],
         selected: null,
-        appCopyLocale: const Locale('fr'),
+        appCopyLocale: const Locale('en'),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Faites d’abord un pronostic'), findsOneWidget);
-    expect(find.text('Retour aux pronostics'), findsOneWidget);
+    expect(find.text('Make a pick first'), findsOneWidget);
+    expect(find.text('Back to picks'), findsOneWidget);
 
     await tester.pumpWidget(
       buildSubject(
         history: const <UserPrediction>[],
         selected: null,
-        appCopyLocale: const Locale('rw'),
+        appCopyLocale: const Locale('en'),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Banza uhitemo'), findsOneWidget);
-    expect(find.text('Subira ku byo wahisemo'), findsOneWidget);
+    expect(find.text('Make a pick first'), findsOneWidget);
+    expect(find.text('Back to picks'), findsOneWidget);
   });
 
   testWidgets(
