@@ -31,3 +31,7 @@ dev_dependencies:
     path: ../../testing/test_support
 
 resolution: workspace
+
+flutter:
+  assets:
+    - assets/crests/rayon_sports.png

@@ -363,24 +363,6 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_gamification/lib/src/screens/challenge_detail_screen.dart",
-      "field": "text",
-      "value": "$value",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_gamification/lib/src/screens/create_challenge_screen.dart",
-      "field": "text",
-      "value": "$value",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
       "file": "packages/features/feat_gamification/lib/src/screens/fet_wallet_screen.dart",
       "field": "text",
       "value": "${transactions.length}",

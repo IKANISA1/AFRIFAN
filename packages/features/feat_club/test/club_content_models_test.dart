@@ -33,12 +33,22 @@ void main() {
       'club_slug': 'rayon_sports_rw',
       'nickname_brand_identity': 'Gikundiro',
       'official_logo_url': 'https://example.test/logo.png',
+      'club_profile': {
+        'full_name': 'Rayon Sports Football Club',
+        'origin': 'Nyanza',
+        'current_base': 'Kigali',
+        'colours': 'Blue and white',
+      },
     });
 
     expect(overview.id, 24);
     expect(overview.name, 'Rayon Sports FC');
     expect(overview.slug, 'rayon_sports_rw');
     expect(overview.nickname, 'Gikundiro');
+    expect(overview.logoUrl, 'https://example.test/logo.png');
+    expect(overview.hasProfile, isTrue);
+    expect(overview.origin, 'Nyanza');
+    expect(overview.currentBase, 'Kigali');
   });
 
   test('ClubFixtureItem distinguishes completed results from fixtures', () {

@@ -38,6 +38,8 @@ dev_dependencies:
     path: ../../packages/core/core_router
   core_utils:
     path: ../../packages/core/core_utils
+  feat_club:
+    path: ../../packages/features/feat_club
   feat_gamification:
     path: ../../packages/features/feat_gamification
   feat_home:

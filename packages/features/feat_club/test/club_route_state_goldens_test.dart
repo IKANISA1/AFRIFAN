@@ -391,6 +391,12 @@ const _overview = ClubOverview(
   league: 'Rwanda Premier League',
   slug: 'rayon_sports_rw',
   nickname: 'Gikundiro',
+  fullName: 'Rayon Sports Football Club',
+  origin: 'Nyanza, Southern Province, Rwanda',
+  currentBase: 'Kigali, Rwanda',
+  colours: 'Blue and white',
+  identityNote:
+      'Gikundiro is the supporter identity carried by Rayon Sports FC across its official social presence.',
 );
 
 final _news = <ClubNewsItem>[
@@ -477,12 +483,28 @@ const _standings = <ClubStandingItem>[
 
 const _history = <ClubHistoryItem>[
   ClubHistoryItem(
-    id: 'history-1',
-    title: 'Founded for the supporters',
-    subtitle: 'A proud football identity in Rwanda',
+    id: 'history-nyanza',
+    title: 'Roots in Nyanza',
+    subtitle: 'Nyanza, Southern Province',
     body:
-        'Rayon Sports grew through generations of supporters whose loyalty shaped the club on and off the pitch.',
-    sortOrder: 1,
+        "Rayon Sports FC traces its roots to Nyanza in Rwanda's Southern Province.",
+    sortOrder: 10,
+  ),
+  ClubHistoryItem(
+    id: 'history-kigali',
+    title: 'Based in Kigali',
+    subtitle: 'Kigali, Rwanda',
+    body:
+        'The club is now based in Kigali while retaining its historic connection to Nyanza.',
+    sortOrder: 20,
+  ),
+  ClubHistoryItem(
+    id: 'identity-gikundiro',
+    title: 'Gikundiro',
+    subtitle: 'Supporter identity',
+    body:
+        'Gikundiro is the supporter identity carried by Rayon Sports FC across its official social presence.',
+    sortOrder: 30,
   ),
 ];
 

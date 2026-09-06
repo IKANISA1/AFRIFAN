@@ -5,7 +5,7 @@
   "cohort": {
     "id": "native-ios-dark-glow-20260905",
     "platform": "iOS",
-    "theme": "Dark \u00b7 Glow",
+    "theme": "Dark · Glow",
     "captured_on": "2026-09-05",
     "region": null,
     "build": null,
@@ -214,7 +214,7 @@
         "LIVE-021",
         "LIVE-007"
       ],
-      "adaptation": "own club proposition and grouped club routes",
+      "adaptation": "Gikundiro published club identity and sourced history; registered Rayon crest, own petrol header and neutral grouped surfaces",
       "required_states": [
         "loading",
         "empty",
@@ -227,7 +227,7 @@
         "dark"
       ],
       "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
+      "interaction_verification": "Club regression tests and native synthetic overview-to-history journey passed; live public API remains quota-blocked",
       "target_baselines": [
         "packages/features/feat_club/test/goldens/club_hub_state_conflict_dark_390x844.png",
         "packages/features/feat_club/test/goldens/club_hub_state_dark_dark_390x844.png",
@@ -244,7 +244,10 @@
         "packages/features/feat_club/test/goldens/club_hub_state_syncing_dark_390x844.png"
       ],
       "test_evidence": [
-        "packages/features/feat_club/test/club_route_state_goldens_test.dart"
+        "packages/features/feat_club/test/club_route_state_goldens_test.dart",
+        "packages/features/feat_club/test/club_hub_screen_test.dart",
+        "apps/rayon_sports/integration_test/club_identity_journey_test.dart",
+        "supabase/tests/club_identity_contract.sql"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
       "representative_capture": "packages/features/feat_club/test/goldens/club_hub_state_dark_dark_390x844.png"
@@ -357,7 +360,7 @@
         "LIVE-051",
         "LIVE-053"
       ],
-      "adaptation": "grouped discovery, content and task form patterns; football-specific objects",
+      "adaptation": "Gikundiro published club identity and sourced history; registered Rayon crest, own petrol header and neutral grouped surfaces",
       "required_states": [
         "loading",
         "empty",
@@ -370,7 +373,7 @@
         "dark"
       ],
       "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
+      "interaction_verification": "Club regression tests and native synthetic overview-to-history journey passed; live public API remains quota-blocked",
       "target_baselines": [
         "packages/features/feat_club/test/goldens/club_history_state_conflict_dark_390x844.png",
         "packages/features/feat_club/test/goldens/club_history_state_dark_dark_390x844.png",
@@ -388,7 +391,10 @@
         "packages/features/feat_club/test/goldens/club_history_state_syncing_dark_390x844.png"
       ],
       "test_evidence": [
-        "packages/features/feat_club/test/club_route_state_goldens_test.dart"
+        "packages/features/feat_club/test/club_route_state_goldens_test.dart",
+        "packages/features/feat_club/test/club_hub_screen_test.dart",
+        "apps/rayon_sports/integration_test/club_identity_journey_test.dart",
+        "supabase/tests/club_identity_contract.sql"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
       "representative_capture": "packages/features/feat_club/test/goldens/club_history_state_dark_dark_390x844.png"

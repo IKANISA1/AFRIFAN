@@ -23,6 +23,11 @@ class ClubOverview extends Equatable {
     required this.slug,
     required this.nickname,
     this.logoUrl,
+    this.fullName = '',
+    this.origin = '',
+    this.currentBase = '',
+    this.colours = '',
+    this.identityNote = '',
   });
 
   final int id;
@@ -32,9 +37,21 @@ class ClubOverview extends Equatable {
   final String slug;
   final String nickname;
   final String? logoUrl;
+  final String fullName, origin, currentBase, colours, identityNote;
+
+  bool get hasProfile => [
+    fullName,
+    origin,
+    currentBase,
+    colours,
+    identityNote,
+  ].any((value) => value.isNotEmpty);
 
   factory ClubOverview.fromJson(Map<String, dynamic> json) {
     final logo = _stringValue(json['official_logo_url']);
+    final profile = json['club_profile'] is Map
+        ? Map<String, dynamic>.from(json['club_profile'] as Map)
+        : <String, dynamic>{};
     return ClubOverview(
       id: _intValue(json['id']),
       name: _stringValue(json['club_name']),
@@ -43,6 +60,11 @@ class ClubOverview extends Equatable {
       slug: _stringValue(json['club_slug']),
       nickname: _stringValue(json['nickname_brand_identity']),
       logoUrl: logo.isEmpty ? null : logo,
+      fullName: _stringValue(profile['full_name']),
+      origin: _stringValue(profile['origin']),
+      currentBase: _stringValue(profile['current_base']),
+      colours: _stringValue(profile['colours']),
+      identityNote: _stringValue(profile['identity_note']),
     );
   }
 
@@ -55,6 +77,11 @@ class ClubOverview extends Equatable {
     slug,
     nickname,
     logoUrl,
+    fullName,
+    origin,
+    currentBase,
+    colours,
+    identityNote,
   ];
 }
 

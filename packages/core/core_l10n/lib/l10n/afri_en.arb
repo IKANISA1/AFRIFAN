@@ -3273,5 +3273,12 @@
   "predictAdminPriceNote": "New price applies to newly prepared fixtures. Entries close automatically at kickoff.",
   "predictAdminTotals": "Entries / Staked / Paid",
   "predictAdminConfirmBody": "Review the official final score before confirming.",
-  "predictAdminSettleBody": "Distribute the whole pool to correct entries. If none are correct, refund every entry."
+  "predictAdminSettleBody": "Distribute the whole pool to correct entries. If none are correct, refund every entry.",
+  "clubAboutTitle": "About the club",
+  "clubOriginLabel": "Roots",
+  "clubBaseLabel": "Based in",
+  "clubColoursLabel": "Colours",
+  "clubRootsSubtitle": "Our story",
+  "clubExploreTitle": "Explore the club",
+  "clubMembershipAction": "Membership"
 }

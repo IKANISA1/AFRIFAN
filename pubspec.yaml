@@ -13,6 +13,9 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   core_network:
     path: packages/core/core_network
+  # Include the published club crest in workspace widget-test asset bundles.
+  feat_club:
+    path: packages/features/feat_club
   melos: 8.1.0
   yaml: ^3.1.3
 

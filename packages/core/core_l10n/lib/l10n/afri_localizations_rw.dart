@@ -10546,4 +10546,25 @@ class AfriLocalizationsRw extends AfriLocalizations {
   @override
   String get predictAdminSettleBody =>
       'Gabanganya FET zose abahisemo neza. Niba ntawe, zisubize abitabiriye bose.';
+
+  @override
+  String get clubAboutTitle => 'Ibyerekeye ikipe';
+
+  @override
+  String get clubOriginLabel => 'Aho yatangiriye';
+
+  @override
+  String get clubBaseLabel => 'Aho ibarizwa';
+
+  @override
+  String get clubColoursLabel => 'Amabara';
+
+  @override
+  String get clubRootsSubtitle => 'Amateka yacu';
+
+  @override
+  String get clubExploreTitle => 'Menya ikipe';
+
+  @override
+  String get clubMembershipAction => 'Ubunyamuryango';
 }

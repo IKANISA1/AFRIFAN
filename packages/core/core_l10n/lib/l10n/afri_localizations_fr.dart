@@ -10608,4 +10608,25 @@ class AfriLocalizationsFr extends AfriLocalizations {
   @override
   String get predictAdminSettleBody =>
       'Distribuez toute la cagnotte aux bons choix. Sans gagnant, remboursez toutes les participations.';
+
+  @override
+  String get clubAboutTitle => 'À propos du club';
+
+  @override
+  String get clubOriginLabel => 'Origines';
+
+  @override
+  String get clubBaseLabel => 'Basé à';
+
+  @override
+  String get clubColoursLabel => 'Couleurs';
+
+  @override
+  String get clubRootsSubtitle => 'Notre histoire';
+
+  @override
+  String get clubExploreTitle => 'Découvrir le club';
+
+  @override
+  String get clubMembershipAction => 'Adhésion';
 }

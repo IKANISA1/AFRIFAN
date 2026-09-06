@@ -318,3 +318,24 @@ concurrency verification is recorded in [the architecture record](../architectur
 The remote public API remains restricted by Supabase storage quota (HTTP 402),
 so neither these images nor the native synthetic journey establish live
 supporter access. Full source pixel equivalence remains unverified.
+
+## Club identity amendment — 6 September 2026
+
+The Club overview now uses Gikundiro's verified published identity: the registered
+blue-and-white crest, Nyanza roots, Kigali base, colours and Gikundiro supporter
+identity. The profile precedes direct History and Membership actions and the
+existing club directory. LIVE-021 and LIVE-007 remain the selected header and
+grouped-surface references. Club history now contains three sourced public
+records in place of duplicated app marketing. Dates and honours without verified
+source support are omitted.
+
+Club regression tests cover the translated interface, alternate club identity,
+large text and route states. Three native system captures show the overview,
+scrolled destinations and history with a synthetic public-data gateway. The
+scroll viewport stays below the native status bar. Source and migration evidence,
+including the persistent Supabase HTTP 402 quota restriction and unrelated
+workspace guardrail failures, is recorded in
+[the Club architecture record](../architecture/club-identity.md).
+
+These are implementation and review results; full source pixel equivalence and
+public mobile release remain unverified.

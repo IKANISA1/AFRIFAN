@@ -7,6 +7,8 @@ create temporary table expected_anonymous_security_definer_functions (
 ) on commit drop;
 
 insert into expected_anonymous_security_definer_functions (signature) values
+  ('public.club_public_overview(p_club_id bigint)'),
+  ('public.club_public_history(p_club_id bigint)'),
   ('public.predict_dashboard(p_club_id bigint)'),
   ('public.check_feature_enabled(p_feature_key text, p_channel text, p_club_id bigint)'),
   ('public.fet_get_catalog(p_club_id bigint, p_include_inactive boolean)'),
@@ -52,7 +54,7 @@ select is(
 
 select is(
   (select count(*)::integer from actual_anonymous_security_definer_functions),
-  15,
+  17,
   'anonymous execution is limited to the governed endpoint count'
 );
 
@@ -135,6 +137,8 @@ insert into expected_authenticated_security_definer_functions (signature) values
   ('partner_fet_record_earn_event(uuid,uuid,integer,uuid,text,text,text,text,jsonb,bigint)'),
   ('prepare_google_wallet_ticket(uuid)'),
   ('create_member_contribution_intent(uuid,integer)'),
+  ('club_public_overview(bigint)'),
+  ('club_public_history(bigint)'),
   ('predict_dashboard(bigint)'),
   ('predict_place(bigint,uuid,text)'),
   ('predict_admin_dashboard(bigint)'),
@@ -173,7 +177,7 @@ where p.prosecdef
 
 select is(
   (select count(*)::integer from actual_authenticated_security_definer_functions),
-  63,
+  65,
   'authenticated execution is limited to the governed endpoint count'
 );
 

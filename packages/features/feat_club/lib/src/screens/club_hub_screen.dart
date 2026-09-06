@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../providers/club_content_providers.dart';
+import '../widgets/club_crest.dart';
 import 'club_content_state_widgets.dart';
 
 class ClubHubScreen extends ConsumerWidget {
@@ -32,8 +33,10 @@ class ClubHubScreen extends ConsumerWidget {
     return AfriScreenScaffold(
       showAppBar: false,
       bottomNavigationAware: true,
-      bodyWrapper: (child) =>
-          GradientBackground(routePath: '/club', child: child),
+      bodyWrapper: (child) => GradientBackground(
+        routePath: '/club',
+        child: SafeArea(bottom: false, child: child),
+      ),
       child: ValueListenableBuilder<bool>(
         valueListenable: ConnectivityService.onlineNotifier,
         builder: (context, isOnline, _) {
@@ -52,6 +55,7 @@ class ClubHubScreen extends ConsumerWidget {
                 bottom: false,
                 child: AfriTopCommandBar(
                   searchHint: l10n.homeSearchHint,
+                  avatarLabel: clubName,
                   onSearchTap: () => context.push('/search'),
                   onAvatarTap: () => context.go('/settings'),
                   actions: [
@@ -70,12 +74,17 @@ class ClubHubScreen extends ConsumerWidget {
                   label: l10n.clubOfficialOverviewSemantic(clubName),
                   child: Column(
                     children: [
-                      const AfriBrandMark(size: 72),
+                      ClubCrest(
+                        clubSlug: overviewValue?.slug ?? config.clubId,
+                        clubName: clubName,
+                        imageUrl: overviewValue?.logoUrl,
+                        size: 88,
+                      ),
                       const SizedBox(height: SpacingTokens.spacing5),
                       Text(
                         clubName,
                         textAlign: TextAlign.center,
-                        style: TypographyTokens.displayMedium().copyWith(
+                        style: TypographyTokens.headlineLarge().copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -123,9 +132,71 @@ class ClubHubScreen extends ConsumerWidget {
                         : () => ref.invalidate(clubOverviewProvider),
                   ),
               ],
+              if (overviewValue != null && overviewValue.hasProfile) ...[
+                const SizedBox(height: SpacingTokens.sectionGap),
+                Semantics(
+                  header: true,
+                  child: Text(
+                    l10n.clubAboutTitle,
+                    style: TypographyTokens.titleLarge(),
+                  ),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                AfriSectionCard(
+                  title: overviewValue.fullName.isEmpty
+                      ? clubName
+                      : overviewValue.fullName,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final fact in [
+                        (l10n.clubOriginLabel, overviewValue.origin),
+                        (l10n.clubBaseLabel, overviewValue.currentBase),
+                        (l10n.clubColoursLabel, overviewValue.colours),
+                      ])
+                        if (fact.$2.isNotEmpty) ...[
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          Text(
+                            fact.$1,
+                            style: TypographyTokens.bodySmall(
+                              ColorTokens.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing1),
+                          Text(fact.$2, style: TypographyTokens.bodyLarge()),
+                        ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                AfriListGroup(
+                  children: [
+                    _ClubDestination(
+                      icon: AfriIcons.history,
+                      title: l10n.clubHistoryTitle,
+                      subtitle: l10n.clubRootsSubtitle,
+                      route: '/club/history',
+                    ),
+                  ],
+                ),
+                if (overviewValue.identityNote.isNotEmpty) ...[
+                  const SizedBox(height: SpacingTokens.spacing5),
+                  Text(
+                    overviewValue.identityNote,
+                    style: TypographyTokens.bodyMedium(
+                      ColorTokens.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: SpacingTokens.spacing5),
+                AfriButton(
+                  label: l10n.clubMembershipAction,
+                  onTap: () => context.push('/membership'),
+                ),
+              ],
               const SizedBox(height: SpacingTokens.sectionGap),
               Text(
-                l10n.clubOfficialSection,
+                l10n.clubExploreTitle,
                 style: TypographyTokens.titleLarge().copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -163,12 +234,13 @@ class ClubHubScreen extends ConsumerWidget {
                     subtitle: l10n.clubStandingsSubtitle,
                     route: '/club/standings',
                   ),
-                  _ClubDestination(
-                    icon: AfriIcons.history,
-                    title: l10n.clubHistoryTitle,
-                    subtitle: l10n.clubHistorySubtitle,
-                    route: '/club/history',
-                  ),
+                  if (overviewValue?.hasProfile != true)
+                    _ClubDestination(
+                      icon: AfriIcons.history,
+                      title: l10n.clubHistoryTitle,
+                      subtitle: l10n.clubHistorySubtitle,
+                      route: '/club/history',
+                    ),
                   _ClubDestination(
                     icon: AfriIcons.business,
                     title: l10n.clubProjectsTitle,

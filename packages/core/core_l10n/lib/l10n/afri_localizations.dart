@@ -17756,6 +17756,48 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Distribute the whole pool to correct entries. If none are correct, refund every entry.'**
   String get predictAdminSettleBody;
+
+  /// No description provided for @clubAboutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About the club'**
+  String get clubAboutTitle;
+
+  /// No description provided for @clubOriginLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Roots'**
+  String get clubOriginLabel;
+
+  /// No description provided for @clubBaseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Based in'**
+  String get clubBaseLabel;
+
+  /// No description provided for @clubColoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Colours'**
+  String get clubColoursLabel;
+
+  /// No description provided for @clubRootsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Our story'**
+  String get clubRootsSubtitle;
+
+  /// No description provided for @clubExploreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore the club'**
+  String get clubExploreTitle;
+
+  /// No description provided for @clubMembershipAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership'**
+  String get clubMembershipAction;
 }
 
 class _AfriLocalizationsDelegate

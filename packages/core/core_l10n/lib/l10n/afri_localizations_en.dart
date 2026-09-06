@@ -10431,4 +10431,25 @@ class AfriLocalizationsEn extends AfriLocalizations {
   @override
   String get predictAdminSettleBody =>
       'Distribute the whole pool to correct entries. If none are correct, refund every entry.';
+
+  @override
+  String get clubAboutTitle => 'About the club';
+
+  @override
+  String get clubOriginLabel => 'Roots';
+
+  @override
+  String get clubBaseLabel => 'Based in';
+
+  @override
+  String get clubColoursLabel => 'Colours';
+
+  @override
+  String get clubRootsSubtitle => 'Our story';
+
+  @override
+  String get clubExploreTitle => 'Explore the club';
+
+  @override
+  String get clubMembershipAction => 'Membership';
 }

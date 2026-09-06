@@ -3136,5 +3136,12 @@
   "predictAdminPriceNote": "Igiciro gishya kireba imikino izategurwa. Kwitabira bifungwa umukino utangiye.",
   "predictAdminTotals": "Abitabiriye / FET zinjiye / Izatanzwe",
   "predictAdminConfirmBody": "Banza ugenzure ibitego byemewe mbere yo kubyemeza.",
-  "predictAdminSettleBody": "Gabanganya FET zose abahisemo neza. Niba ntawe, zisubize abitabiriye bose."
+  "predictAdminSettleBody": "Gabanganya FET zose abahisemo neza. Niba ntawe, zisubize abitabiriye bose.",
+  "clubAboutTitle": "Ibyerekeye ikipe",
+  "clubOriginLabel": "Aho yatangiriye",
+  "clubBaseLabel": "Aho ibarizwa",
+  "clubColoursLabel": "Amabara",
+  "clubRootsSubtitle": "Amateka yacu",
+  "clubExploreTitle": "Menya ikipe",
+  "clubMembershipAction": "Ubunyamuryango"
 }

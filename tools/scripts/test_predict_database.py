@@ -68,10 +68,14 @@ try:
       grant select,insert,update,delete on auth.users to postgres;
       grant select on auth.identities to postgres;""", admin=True)
     for migration in sorted((ROOT / 'supabase/migrations').glob('*.sql')):
+        if 'gikundiro_club_identity' in migration.name:
+            # Owned ephemeral fixture establishes the source registry before the data migration.
+            sql("insert into public.african_football_clubs(id,club_name,country_name,club_slug) overriding system value values (24,'Rayon Sports FC','Rwanda','rayon_sports_rw') on conflict do nothing;")
+            sql("insert into public.ai_content(club_id,content_type,title,body,status) select 24,'club_history',title,'Superseded application copy','approved' from unnest(array['The beloved identity','Matchday at scale','One supporter account']) title cross join generate_series(1,2);")
         sql(migration.read_text())
         print('Applied', migration.name, flush=True)
     sql('create extension if not exists pgtap with schema extensions;')
-    for name in ['predict_contract', 'runtime_function_volatility_contract',
+    for name in ['club_identity_contract', 'predict_contract', 'runtime_function_volatility_contract',
                  'security_definer_execution_contract', 'store_release_security_boundary_contract']:
         result = sql('set search_path=public,extensions;\n' + (ROOT / 'supabase/tests' / (name + '.sql')).read_text())
         count = len(re.findall(r'^ok \d+', result.stdout, re.M))

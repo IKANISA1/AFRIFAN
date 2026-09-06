@@ -32,6 +32,7 @@ class AfriTopCommandBar extends StatelessWidget {
   const AfriTopCommandBar({
     super.key,
     this.searchHint = 'Search',
+    this.avatarLabel,
     this.searchSemanticsLabel,
     this.onSearchTap,
     this.onAvatarTap,
@@ -41,6 +42,7 @@ class AfriTopCommandBar extends StatelessWidget {
   });
 
   final String searchHint;
+  final String? avatarLabel;
   final String? searchSemanticsLabel;
   final VoidCallback? onSearchTap;
   final VoidCallback? onAvatarTap;
@@ -59,6 +61,7 @@ class AfriTopCommandBar extends StatelessWidget {
       child: Row(
         children: [
           _CommandAvatar(
+            label: avatarLabel,
             onTap: onAvatarTap,
             showNotificationDot: showNotificationDot,
           ),
@@ -89,7 +92,13 @@ class AfriTopCommandBar extends StatelessWidget {
 }
 
 class _CommandAvatar extends StatelessWidget {
-  const _CommandAvatar({this.onTap, required this.showNotificationDot});
+  const _CommandAvatar({
+    this.onTap,
+    this.label,
+    required this.showNotificationDot,
+  });
+
+  final String? label;
 
   final VoidCallback? onTap;
   final bool showNotificationDot;
@@ -112,10 +121,11 @@ class _CommandAvatar extends StatelessWidget {
                   ? BorderTokens.focusAll(color: ColorTokens.onSurface)
                   : null,
             ),
-            child: const Center(
+            child: Center(
               child: AfriBrandMark(
+                label: label,
                 size: AfriChromeTokens.commandBrandSize,
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(ShapeTokens.radiusFull),
                 ),
                 showBorder: false,

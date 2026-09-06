@@ -43,15 +43,13 @@ class SupabaseClubContentGateway implements ClubContentGateway {
   @override
   Future<ClubOverview?> loadOverview() async {
     final clubId = await _requireClubId();
-    final row = await _client
-        .from('african_football_clubs')
-        .select(
-          'id, club_name, country_name, league, club_slug, '
-          'nickname_brand_identity',
-        )
-        .eq('id', clubId)
-        .maybeSingle();
-    return row == null ? null : ClubOverview.fromJson(row);
+    final row = await _client.rpc(
+      'club_public_overview',
+      params: {'p_club_id': clubId},
+    );
+    return row == null
+        ? null
+        : ClubOverview.fromJson(Map<String, dynamic>.from(row as Map));
   }
 
   @override
@@ -116,15 +114,15 @@ class SupabaseClubContentGateway implements ClubContentGateway {
   @override
   Future<List<ClubHistoryItem>> loadHistory() async {
     final clubId = await _requireClubId();
-    final rows = await _client
-        .from('ai_content')
-        .select('id, title, subtitle, body, sort_order')
-        .eq('club_id', clubId)
-        .eq('content_type', 'club_history')
-        .eq('is_active', true)
-        .order('sort_order')
-        .limit(30);
-    return rows.map(ClubHistoryItem.fromJson).toList(growable: false);
+    final rows =
+        await _client.rpc('club_public_history', params: {'p_club_id': clubId})
+            as List;
+    return rows
+        .map(
+          (row) =>
+              ClubHistoryItem.fromJson(Map<String, dynamic>.from(row as Map)),
+        )
+        .toList(growable: false);
   }
 
   @override

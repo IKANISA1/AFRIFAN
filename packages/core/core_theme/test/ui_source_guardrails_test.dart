@@ -1190,7 +1190,7 @@ void main() {
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found unmanaged visual assets. Runtime product media must live under an app assets directory with a same-folder SOURCES.md entry, source URL, and explicit release-approval requirement.',
+          'Found unmanaged visual assets. Runtime product media must live under an app assets directory or the registered Club crest package directory with a same-folder SOURCES.md entry, source URL, and explicit release-approval requirement.',
           violations,
         ),
       );
@@ -1371,8 +1371,13 @@ bool _isGovernedNativeLauncherEntry(Directory repoRoot, String relativePath) {
 bool _isGovernedRuntimeMedia(Directory repoRoot, File mediaFile) {
   final normalizedRoot = repoRoot.path.replaceAll('\\', '/');
   final normalizedPath = mediaFile.path.replaceAll('\\', '/');
-  if (!normalizedPath.startsWith('$normalizedRoot/apps/') ||
-      !normalizedPath.contains('/assets/')) {
+  final isAppMedia =
+      normalizedPath.startsWith('$normalizedRoot/apps/') &&
+      normalizedPath.contains('/assets/');
+  final isClubCrest =
+      normalizedPath ==
+      '$normalizedRoot/packages/features/feat_club/assets/crests/rayon_sports.png';
+  if (!isAppMedia && !isClubCrest) {
     return false;
   }
 
@@ -1453,6 +1458,17 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
     },
     pattern: forbidden,
     allow: (path) =>
+        ((path.endsWith('/docs/architecture/club-identity.md') ||
+                path.endsWith(
+                  '/packages/features/feat_club/lib/src/widgets/club_crest.dart',
+                ) ||
+                path.endsWith('/packages/features/feat_club/pubspec.yaml')) &&
+            _isGovernedRuntimeMedia(
+              repoRoot,
+              File(
+                '${repoRoot.path}/packages/features/feat_club/assets/crests/rayon_sports.png',
+              ),
+            )) ||
         path.endsWith(
           '/packages/core/core_theme/test/ui_source_guardrails_test.dart',
         ) ||

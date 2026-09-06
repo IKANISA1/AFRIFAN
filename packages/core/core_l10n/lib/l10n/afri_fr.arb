@@ -3136,5 +3136,12 @@
   "predictAdminPriceNote": "Le nouveau prix s’applique aux matchs préparés ensuite. Les participations ferment automatiquement au coup d’envoi.",
   "predictAdminTotals": "Participations / Engagé / Versé",
   "predictAdminConfirmBody": "Vérifiez le score final officiel avant de confirmer.",
-  "predictAdminSettleBody": "Distribuez toute la cagnotte aux bons choix. Sans gagnant, remboursez toutes les participations."
+  "predictAdminSettleBody": "Distribuez toute la cagnotte aux bons choix. Sans gagnant, remboursez toutes les participations.",
+  "clubAboutTitle": "À propos du club",
+  "clubOriginLabel": "Origines",
+  "clubBaseLabel": "Basé à",
+  "clubColoursLabel": "Couleurs",
+  "clubRootsSubtitle": "Notre histoire",
+  "clubExploreTitle": "Découvrir le club",
+  "clubMembershipAction": "Adhésion"
 }

@@ -56,6 +56,16 @@ test('new unsupported source is rejected before staging', (t) => {
   assert.match(result.stderr, /unsupported ownership token/);
 });
 
+test('published club channel attribution is allowed only with its source URL', (t) => {
+  const f = fixture(t);
+  const label = Buffer.from('5261796f6e2053706f727473205456', 'hex').toString();
+  const path = 'supabase/migrations/club_source.sql';
+  f.write(path, `select '${label}', 'https://www.youtube.com/@rayon_sports';`);
+  assert.equal(f.run().status, 0);
+  f.write(path, `select '${label}', 'https://example.com/';`);
+  assert.notEqual(f.run().status, 0);
+});
+
 test('removing an active football capability fails validation', (t) => {
   const f = fixture(t);
   rmSync(resolve(f.root, 'packages/features/feat_gamification/lib/src/fanzone_module.dart'));
