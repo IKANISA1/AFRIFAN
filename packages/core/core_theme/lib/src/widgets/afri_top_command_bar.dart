@@ -32,7 +32,7 @@ class AfriTopCommandBar extends StatelessWidget {
   const AfriTopCommandBar({
     super.key,
     this.searchHint = 'Search',
-    this.avatarLabel,
+    this.avatarIcon,
     this.searchSemanticsLabel,
     this.onSearchTap,
     this.onAvatarTap,
@@ -42,7 +42,7 @@ class AfriTopCommandBar extends StatelessWidget {
   });
 
   final String searchHint;
-  final String? avatarLabel;
+  final IconData? avatarIcon;
   final String? searchSemanticsLabel;
   final VoidCallback? onSearchTap;
   final VoidCallback? onAvatarTap;
@@ -61,7 +61,7 @@ class AfriTopCommandBar extends StatelessWidget {
       child: Row(
         children: [
           _CommandAvatar(
-            label: avatarLabel,
+            icon: avatarIcon,
             onTap: onAvatarTap,
             showNotificationDot: showNotificationDot,
           ),
@@ -94,11 +94,11 @@ class AfriTopCommandBar extends StatelessWidget {
 class _CommandAvatar extends StatelessWidget {
   const _CommandAvatar({
     this.onTap,
-    this.label,
+    this.icon,
     required this.showNotificationDot,
   });
 
-  final String? label;
+  final IconData? icon;
 
   final VoidCallback? onTap;
   final bool showNotificationDot;
@@ -116,20 +116,30 @@ class _CommandAvatar extends StatelessWidget {
             width: AfriChromeTokens.commandControlSize,
             height: AfriChromeTokens.commandControlSize,
             decoration: BoxDecoration(
+              color: icon == null
+                  ? null
+                  : ColorTokens.inkBase.withValues(
+                      alpha: AfriChromeTokens.commandFillOpacity,
+                    ),
               shape: BoxShape.circle,
               border: state.isFocused
                   ? BorderTokens.focusAll(color: ColorTokens.onSurface)
                   : null,
             ),
             child: Center(
-              child: AfriBrandMark(
-                label: label,
-                size: AfriChromeTokens.commandBrandSize,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(ShapeTokens.radiusFull),
-                ),
-                showBorder: false,
-              ),
+              child: icon == null
+                  ? const AfriBrandMark(
+                      size: AfriChromeTokens.commandBrandSize,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(ShapeTokens.radiusFull),
+                      ),
+                      showBorder: false,
+                    )
+                  : Icon(
+                      icon,
+                      color: ColorTokens.chromeForeground,
+                      size: AfriChromeTokens.commandActionIconSize,
+                    ),
             ),
           ),
         ),

@@ -55,7 +55,7 @@ class ClubHubScreen extends ConsumerWidget {
                 bottom: false,
                 child: AfriTopCommandBar(
                   searchHint: l10n.homeSearchHint,
-                  avatarLabel: clubName,
+                  avatarIcon: AfriIcons.profile,
                   onSearchTap: () => context.push('/search'),
                   onAvatarTap: () => context.go('/settings'),
                   actions: [

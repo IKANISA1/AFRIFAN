@@ -339,3 +339,10 @@ workspace guardrail failures, is recorded in
 
 These are implementation and review results; full source pixel equivalence and
 public mobile release remain unverified.
+
+The follow-up Club annotation identified the club initials inside the Profile
+command as misleading. The command now uses the shared person-outline icon on
+the dark circular surface; the registered club crest remains in the hero. The
+44-point target, focus treatment and Profile navigation are retained. Thirteen
+Club state baselines were refreshed; the 159-test Club rerun and native iPhone
+Club journey passed.
