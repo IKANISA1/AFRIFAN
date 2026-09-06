@@ -332,90 +332,68 @@ class _SupporterPhoneAuthScreenState
         ),
         scrollable: false,
 
-        child: LayoutBuilder(
-          builder: (context, constraints) => SingleChildScrollView(
-            controller: _phoneScrollController,
-            padding: const EdgeInsets.fromLTRB(
-              SpacingTokens.screenPadding,
-              SpacingTokens.spacing2,
-              SpacingTokens.screenPadding,
-              SpacingTokens.spacing6,
+        child: _AuthFormLayout(
+          controller: _phoneScrollController,
+          primaryAction: AfriButton(
+            key: const ValueKey<String>('supporter-send-otp-button'),
+            label: _isOnline ? l10n.authSendCode : l10n.connectionRequired,
+            onTap: _sendCode,
+            isLoading: _isLoading,
+            enabled: _isOnline && !_isLoading && _canSubmitPhone,
+            mutedPrimaryWhenDisabled: true,
+            labelMaxLines: 2,
+          ),
+          children: [
+            _AuthStepHeader(
+              title: l10n.authEnterNumberTitle,
+              body: l10n.authEnterNumberBody,
             ),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: (constraints.maxHeight - SpacingTokens.spacing8)
-                    .clamp(0, double.infinity),
-              ),
-              child: IntrinsicHeight(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _AuthStepHeader(
-                      title: l10n.authEnterNumberTitle,
-                      body: l10n.authEnterNumberBody,
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing6),
-                    if (phoneStatus != null) ...[
-                      phoneStatus,
-                      const SizedBox(height: SpacingTokens.spacing4),
-                    ],
-                    _buildPhoneEntry(context, protectPhoneValue, usesLargeText),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    Text(
-                      l10n.authPhonePrivacy,
-                      style: TypographyTokens.bodySmall(
-                        phoneColors.secondaryText,
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing2),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: AfriTextButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () async {
-                                setState(() => _isLoading = true);
-                                await ref
-                                    .read(authStateProvider.notifier)
-                                    .signInAnonymously();
-                                if (!mounted || !context.mounted) return;
-                                setState(() => _isLoading = false);
+            const SizedBox(height: SpacingTokens.spacing6),
+            if (phoneStatus != null) ...[
+              phoneStatus,
+              const SizedBox(height: SpacingTokens.spacing4),
+            ],
+            Builder(
+              builder: (context) =>
+                  _buildPhoneEntry(context, protectPhoneValue, usesLargeText),
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            Text(
+              l10n.authPhonePrivacy,
+              style: TypographyTokens.bodySmall(phoneColors.secondaryText),
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: AfriTextButton(
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        setState(() => _isLoading = true);
+                        await ref
+                            .read(authStateProvider.notifier)
+                            .signInAnonymously();
+                        if (!mounted || !context.mounted) return;
+                        setState(() => _isLoading = false);
 
-                                final nextState = ref.read(authStateProvider);
-                                if (nextState is AuthAuthenticated) {
-                                  context.go(_postAuthDestination());
-                                  return;
-                                }
+                        final nextState = ref.read(authStateProvider);
+                        if (nextState is AuthAuthenticated) {
+                          context.go(_postAuthDestination());
+                          return;
+                        }
 
-                                AfriToast.error(
-                                  context,
-                                  l10n.authGuestSessionUnavailable,
-                                );
-                              },
-                        child: Text(
-                          l10n.onboardingContinueWithoutSignIn,
-                          style: TypographyTokens.bodyLarge(guestActionColor),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing6),
-                    const Spacer(),
-                    AfriButton(
-                      key: const ValueKey<String>('supporter-send-otp-button'),
-                      label: _isOnline
-                          ? l10n.authSendCode
-                          : l10n.connectionRequired,
-                      onTap: _sendCode,
-                      isLoading: _isLoading,
-                      enabled: _isOnline && !_isLoading && _canSubmitPhone,
-                      mutedPrimaryWhenDisabled: true,
-                      labelMaxLines: 2,
-                    ),
-                  ],
+                        AfriToast.error(
+                          context,
+                          l10n.authGuestSessionUnavailable,
+                        );
+                      },
+                child: Text(
+                  l10n.onboardingContinueWithoutSignIn,
+                  style: TypographyTokens.bodyLarge(guestActionColor),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -796,29 +774,33 @@ class _SupporterOtpVerificationScreenState
         : otpColors.primaryText;
     final changeNumberActionColor = changeNumberDisabled
         ? ColorTokens.accessibleDisabledColor(otpColors.secondaryText)
-        : otpColors.primaryText;
-    final resendAction = AfriTextIconButton(
+        : ColorTokens.primaryContainer;
+    final resendAction = AfriTextButton(
+      key: const ValueKey<String>('supporter-resend-otp-button'),
       onPressed: resendDisabled ? null : _resendCode,
-      icon: Icon(
-        _resendCooldown > 0 ? AfriIcons.timer : AfriIcons.chat,
-        color: resendActionColor,
+      style: AfriTextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
       ),
-      label: Text(
+      child: Text(
         !_isOnline
             ? l10n.connectionRequired
             : _resendCooldown > 0
             ? l10n.authResendIn(_resendCooldown)
             : l10n.authResendCode,
-        style: TypographyTokens.labelLarge(resendActionColor),
+        style: TypographyTokens.bodyLarge(resendActionColor),
       ),
     );
     final changeNumberAction = AfriTextButton(
+      key: const ValueKey<String>('supporter-change-number-button'),
+      style: AfriTextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
+      ),
       onPressed: changeNumberDisabled
           ? null
           : () => context.go(_phoneEntryRoute()),
       child: Text(
         l10n.authChangeNumber,
-        style: TypographyTokens.labelLarge(changeNumberActionColor),
+        style: TypographyTokens.bodyLarge(changeNumberActionColor),
       ),
     );
 
@@ -837,84 +819,99 @@ class _SupporterOtpVerificationScreenState
         ),
         scrollable: false,
 
-        child: SafeArea(
-          child: ListView(
-            controller: _otpScrollController,
-            padding: const EdgeInsets.fromLTRB(
-              SpacingTokens.screenPadding,
-              SpacingTokens.spacing2,
-              SpacingTokens.screenPadding,
-              SpacingTokens.spacing8,
-            ),
-            children: [
-              _AuthStepHeader(
-                title: l10n.authEnterCodeTitle,
-                body: l10n.authEnterCodeBody,
-              ),
-              const SizedBox(height: SpacingTokens.spacing6),
-              if (otpStatus != null) ...[
-                otpStatus,
-                const SizedBox(height: SpacingTokens.spacing4),
-              ],
-              Padding(
-                padding: EdgeInsets.zero,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AfriCodeInput(
-                      key: const ValueKey<String>('supporter-phone-otp-input'),
-                      controller: _otpController,
-                      focusNode: _otpFocusNode,
-                      label: usesLargeText
-                          ? l10n.authCodeLabel
-                          : l10n.authWhatsAppCodeLabel,
-                      helperText: l10n.authCodePrivacy,
-                      enabled: !_isVerifying && !_isResending,
-                      autofocus: !usesLargeText,
-                      errorText: _otpError(l10n),
-                      onSubmitted: (_) => _verifyCode(),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    AfriButton(
-                      key: const ValueKey<String>(
-                        'supporter-verify-otp-button',
-                      ),
-                      label: _isOnline
-                          ? usesLargeText
-                                ? l10n.authVerifyCode
-                                : l10n.authVerifyAndContinue
-                          : l10n.connectionRequired,
-                      icon: AfriIcons.verified,
-                      onTap: _verifyCode,
-                      isLoading: _isVerifying,
-                      enabled:
-                          _isOnline &&
-                          !_isVerifying &&
-                          !_isResending &&
-                          _canSubmitOtp,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              if (usesLargeText || MediaQuery.sizeOf(context).width < 430)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [resendAction, changeNumberAction],
-                )
-              else
-                Row(
-                  children: [
-                    Expanded(child: resendAction),
-                    changeNumberAction,
-                  ],
-                ),
-            ],
+        child: _AuthFormLayout(
+          controller: _otpScrollController,
+          primaryAction: AfriButton(
+            key: const ValueKey<String>('supporter-verify-otp-button'),
+            label: _isOnline
+                ? usesLargeText
+                      ? l10n.authVerifyCode
+                      : l10n.authVerifyAndContinue
+                : l10n.connectionRequired,
+            onTap: _verifyCode,
+            isLoading: _isVerifying,
+            enabled:
+                _isOnline && !_isVerifying && !_isResending && _canSubmitOtp,
+            mutedPrimaryWhenDisabled: true,
+            labelMaxLines: 2,
           ),
+          children: [
+            _AuthStepHeader(
+              title: l10n.authEnterCodeTitle,
+              body: l10n.authEnterCodeBody,
+            ),
+            const SizedBox(height: SpacingTokens.spacing6),
+            if (otpStatus != null) ...[
+              otpStatus,
+              const SizedBox(height: SpacingTokens.spacing4),
+            ],
+            AfriCodeInput(
+              key: const ValueKey<String>('supporter-phone-otp-input'),
+              controller: _otpController,
+              focusNode: _otpFocusNode,
+              label: usesLargeText
+                  ? l10n.authCodeLabel
+                  : l10n.authWhatsAppCodeLabel,
+              helperText: l10n.authCodePrivacy,
+              enabled: !_isVerifying && !_isResending,
+              autofocus: !usesLargeText,
+              errorText: _otpError(l10n),
+              onSubmitted: (_) => _verifyCode(),
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            Align(alignment: Alignment.centerLeft, child: resendAction),
+            Align(alignment: Alignment.centerLeft, child: changeNumberAction),
+          ],
         ),
       ),
     );
   }
+}
+
+/// One keyboard-aware layout for both authentication steps. Content can scroll
+/// at large text or short heights; the primary action anchors to available space.
+class _AuthFormLayout extends StatelessWidget {
+  const _AuthFormLayout({
+    required this.controller,
+    required this.children,
+    required this.primaryAction,
+  });
+
+  final ScrollController controller;
+  final List<Widget> children;
+  final Widget primaryAction;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) => SingleChildScrollView(
+      controller: controller,
+      padding: const EdgeInsets.fromLTRB(
+        SpacingTokens.screenPadding,
+        SpacingTokens.spacing2,
+        SpacingTokens.screenPadding,
+        SpacingTokens.spacing6,
+      ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: (constraints.maxHeight - SpacingTokens.spacing8).clamp(
+            0,
+            double.infinity,
+          ),
+        ),
+        child: IntrinsicHeight(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ...children,
+              const SizedBox(height: SpacingTokens.spacing6),
+              const Spacer(),
+              primaryAction,
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 const _offlinePhoneFailure = AuthActionFailure(

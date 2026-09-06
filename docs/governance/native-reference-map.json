@@ -5,7 +5,7 @@
   "cohort": {
     "id": "native-ios-dark-glow-20260905",
     "platform": "iOS",
-    "theme": "Dark · Glow",
+    "theme": "Dark \u00b7 Glow",
     "captured_on": "2026-09-05",
     "region": null,
     "build": null,
@@ -58,7 +58,7 @@
       "reference_ids": [
         "MOBBIN-ONBOARDING-010"
       ],
-      "adaptation": "Preserves the submitted international phone value, WhatsApp code verification, resend, recovery and anonymous-entry contract. Historical code-entry pattern; source build and date unknown.",
+      "adaptation": "Historical Onboarding 10 navy-to-black canvas and softly filled three-three code cells. One native field preserves paste, autofill, masked values and the existing five/six-digit acceptance contract. WhatsApp delivery, cooldown and change-number recovery stay intact. The app retains its explicit bottom Verify action; source build and date are unknown.",
       "required_states": [
         "loading",
         "empty",
@@ -94,7 +94,8 @@
         "packages/features/feat_onboarding/test/supporter_phone_auth_states_test.dart"
       ],
       "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_onboarding/test/goldens/auth_otp_state_dark_dark_390x844.png"
+      "representative_capture": "packages/features/feat_onboarding/test/goldens/auth_otp_state_dark_dark_390x844.png",
+      "error_state_adaptation": "Onboarding 12 was inspected and shows an incorrect-code bottom sheet. The target keeps its existing inline error and Check code recovery so editing and changing number do not gain a new modal dismissal step. This is a deliberate workflow adaptation, not modal equivalence."
     },
     {
       "route": "/auth/phone",
@@ -3643,6 +3644,46 @@
         }
       ],
       "method": "Original unobstructed PNG samples; vertical interpolation and black endpoint are target adapters."
+    },
+    "otp_auth": {
+      "reference": "MOBBIN-ONBOARDING-010",
+      "source_size": [
+        1179,
+        2676
+      ],
+      "excluded": "curator footer and keyboard",
+      "samples": [
+        {
+          "coordinate": [
+            590,
+            40
+          ],
+          "srgb": "#1C2D97"
+        },
+        {
+          "coordinate": [
+            590,
+            400
+          ],
+          "srgb": "#1C3088"
+        },
+        {
+          "coordinate": [
+            590,
+            1000
+          ],
+          "srgb": "#0B1234"
+        },
+        {
+          "coordinate": [
+            590,
+            1300
+          ],
+          "srgb": "#000105"
+        }
+      ],
+      "method": "Original unobstructed PNG centre samples; no embedded ICC profile. Vertical interpolation is a target adapter; horizontal variation is not reproduced exactly.",
+      "cell_geometry": "40 by 48 logical pixels with 12-point corners, approximately scaled from source. Height expands for enlarged text."
     }
   },
   "retained_adaptations": [
@@ -3674,7 +3715,7 @@
     "Current native light and every accessibility/state variant are not captured in the reference cohort.",
     "Football match, contribution, venue and ticket artifacts have explicit product adaptations rather than one-to-one banking screens."
   ],
-  "verified_at": "2026-09-05T14:56:19.645549+00:00",
+  "verified_at": "2026-09-06T06:22:23.939578+00:00",
   "verification": {
     "workspace_tests": {
       "packages": 44,
@@ -3750,6 +3791,30 @@
       "baseline_hashes": 1187,
       "automated_privacy_scan": "pass",
       "source_equivalence": "source build, date, font and unobserved states remain unverified; ISO labels are a deliberate adaptation"
+    },
+    "otp_entry_correction": {
+      "verified_at": "2026-09-06T06:22:23.939578+00:00",
+      "scope": "code-entry reference correction and phone-to-code native journey",
+      "affected_package_tests": 806,
+      "affected_packages": [
+        "feat_onboarding",
+        "core_theme",
+        "feat_admin"
+      ],
+      "update_goldens": false,
+      "changed_baseline_images": 16,
+      "native_application_journeys": 5,
+      "native_harness_results": 7,
+      "native_flutter_captures": 10,
+      "native_keypad_appearance": "unverified; Flutter-layer captures do not rasterize the OS keypad",
+      "keyboard_clearance": "widget geometry tests passed",
+      "strict_analysis": "pass",
+      "architecture": "pass",
+      "qa_isolation": "pass",
+      "golden_contract": "pass",
+      "baseline_hashes": 1187,
+      "source_equivalence": "historical composition adapter; source font/build and unobserved states unverified; explicit Verify and inline error recovery retained",
+      "automated_privacy_scan": "pass; separate human review pending"
     }
   }
 }

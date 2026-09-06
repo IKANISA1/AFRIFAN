@@ -24,7 +24,7 @@ class AfriTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
-      style: _textStyle().merge(style),
+      style: style?.merge(_textStyle()) ?? _textStyle(),
       child: child,
     );
   }

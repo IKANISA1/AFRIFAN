@@ -19,6 +19,7 @@ class ShapeTokens {
   static BorderRadius get segmentedInnerRadius =>
       BorderRadius.circular(radiusFull);
   static BorderRadius get inputRadius => BorderRadius.circular(radiusXl);
+  static BorderRadius get codeCellRadius => BorderRadius.circular(12);
   static BorderRadius get cardRadius => BorderRadius.circular(radiusXl);
   static BorderRadius get heroCardRadius => BorderRadius.circular(radiusXxl);
   static BorderRadius get chromeRadius => BorderRadius.circular(radiusFull);

@@ -123,7 +123,7 @@ void main() {
   });
 
   testWidgets(
-    'routes back to onboarding when an existing session cannot be restored safely',
+    'recovers an unrestorable session through phone and code verification',
     (tester) async {
       await _startSmokeApp(
         AfriClubBootstrapOptions(
@@ -186,6 +186,38 @@ void main() {
           );
         }
       }
+      await tester.enterText(
+        find.byKey(const ValueKey<String>('supporter-phone-input')),
+        _smokePhoneNumber,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const ValueKey<String>('supporter-send-otp-button')),
+      );
+      await _pumpUntilVisible(
+        tester,
+        find.byType(SupporterOtpVerificationScreen),
+      );
+      // Settle the route and the test harness's fading tap marker before review.
+      await tester.pumpAndSettle();
+      if (const bool.fromEnvironment('AFRICLUB_CAPTURE_REFERENCE')) {
+        await binding.takeScreenshot('otp-native-empty');
+      }
+      final codeInput = find.byKey(
+        const ValueKey<String>('supporter-phone-otp-input'),
+      );
+      await tester.enterText(codeInput, _smokeVerificationCode);
+      await tester.pumpAndSettle();
+      if (const bool.fromEnvironment('AFRICLUB_CAPTURE_REFERENCE')) {
+        await binding.takeScreenshot('otp-native-entered');
+      }
+      final verify = find.byKey(
+        const ValueKey<String>('supporter-verify-otp-button'),
+      );
+      await tester.ensureVisible(verify);
+      await tester.tap(verify);
+      await _pumpUntilVisible(tester, find.text('Home'));
+      expect(find.byType(SupporterOtpVerificationScreen), findsNothing);
     },
   );
 
@@ -432,12 +464,35 @@ class _SmokeRayonSportsConfig extends RayonSportsConfig {
   String get environment => 'test';
 }
 
+const _smokePhoneNumber = '+250700000001';
+const _smokeVerificationCode = '00000';
+
 class _FakeAuthRepository extends AuthRepository {
   _FakeAuthRepository({this.restoreResult, this.restoreError})
     : super(clubId: '24');
 
   final UserProfile? restoreResult;
   final Object? restoreError;
+
+  @override
+  Future<void> requestPhoneSignInOtp({
+    required String phone,
+    supabase.OtpChannel channel = supabase.OtpChannel.sms,
+    bool shouldCreateUser = true,
+  }) async {
+    expect(phone, _smokePhoneNumber);
+    expect(channel, supabase.OtpChannel.whatsapp);
+  }
+
+  @override
+  Future<UserProfile> verifyPhoneSignInOtp({
+    required String phone,
+    required String token,
+  }) async {
+    expect(phone, _smokePhoneNumber);
+    expect(token, _smokeVerificationCode);
+    return _smokeUser;
+  }
 
   @override
   Future<UserProfile?> restoreCurrentUser() async {

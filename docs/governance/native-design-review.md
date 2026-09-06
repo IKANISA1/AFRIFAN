@@ -183,6 +183,40 @@ native visual refinement has a fresh full-workspace run recorded below.
   Keyboard clearance is verified by widget geometry tests. The automated
   evidence privacy scan passed.
 
+### Code-entry reference correction
+
+- `/auth/otp` now follows the inspected historical
+  `MOBBIN-ONBOARDING-010` composition: compact three–three cells with a separator,
+  softer fill and a focused caret, left-aligned recovery links, and a measured
+  navy-to-black background. The source image is 1179×2676 with no ICC profile;
+  samples exclude the keyboard and curator footer. The linear target gradient
+  does not reproduce every horizontal variation in the source.
+- Phone and code entry share one keyboard-aware form layout. The target keeps
+  its explicit bottom verification action, five/six-digit acceptance, masked
+  input, WhatsApp delivery, resend cooldown, drafts and deferred navigation.
+  `MOBBIN-ONBOARDING-012` was also inspected: its incorrect-code bottom sheet is
+  deliberately adapted to the existing inline recovery so this visual change
+  does not introduce a new modal dismissal into the target workflow.
+- The shared text button now respects explicit padding and colour overrides.
+  Coverage exercises the actual hit target and label alignment. New onboarding
+  checks cover code-entry keyboard clearance and resend cooldown/draft retention.
+  Only 16 OTP baseline images change; phone and admin baselines are unchanged.
+
+- **806 affected tests passed without updating baselines** across onboarding,
+  shared theme and admin. Strict analysis, architecture, both QA isolation
+  contracts and the golden contract passed; all 1,187 baseline hashes match.
+- The five native iOS journeys passed (seven harness results), including
+  phone entry → masked code entry → verification → Home. Ten fresh Flutter-layer
+  captures include empty and entered code states; both were visually inspected.
+  The test tap indicator is allowed to settle before capture. The native fixture
+  uses synthetic data with the backend disabled. OS keypad appearance remains
+  unverified because these captures only rasterize Flutter; keyboard clearance
+  is covered by widget geometry checks. Source font/build and unobserved state
+  equivalence remain unresolved.
+- Automated privacy scans passed for the fresh evidence and refreshed gallery.
+  Numeric preview cache tags were normalized in the access log to avoid a
+  false positive. Separate human evidence review remains pending.
+
 ## Route comparison register
 
 | Target route | Source reference | Mapping | Representative target |

@@ -28,6 +28,9 @@ class AfriComponentSizes {
   static const double infoChipVerticalPadding = 5;
   static const double buttonVerticalPadding = 14;
   static const double buttonHeight = 52;
+  // Historical onboarding 10 cell geometry, adapted to logical pixels.
+  static const double codeCellWidth = 40;
+  static const double codeCellHeight = 48;
   static const double listRowHeight = 56;
   static const double listIcon = 24;
   static const double listChevron = 20;

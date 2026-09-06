@@ -42,7 +42,7 @@ class GradientBackground extends StatelessWidget {
                 for (final extension in theme.extensions.values)
                   if (extension is! AfriSemanticColors) extension,
                 semantic.copyWith(
-                  inputSurface: route == '/auth/phone'
+                  inputSurface: auth
                       ? ColorTokens.onDark.withValues(alpha: 0.20)
                       : semantic.inputSurface,
                   cardSurface: overview

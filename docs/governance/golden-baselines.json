@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "provenance": {
-    "baseline_commit": "04ccd2454b0ea4455ed92d2b2b1a1b3753b5d28c",
+    "baseline_commit": "b066b3e0fefb0b9141d0f13a7bd80225232570b7",
     "dirty_state": true,
     "app_version": "1.0.4",
     "build_number": "7",
@@ -9,7 +9,7 @@
     "platform": "flutter_test_macos_arm64",
     "runtime": "Flutter 3.44.4; Dart 3.12.2",
     "locale": "en",
-    "generated_at": "2026-09-05T15:15:58Z",
+    "generated_at": "2026-09-06T06:17:16Z",
     "data_source": "synthetic_non_production"
   },
   "comparison": {
@@ -5050,7 +5050,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "9198068d8bfaed8b43f4b319ea121ca95d0ceb8fdf43317ca4d1cecb0346f60d"
+      "sha256": "68d0978619b1e29c634c2d370df82d50961a6f2d304a385a07a5428b3810bb7f"
     },
     {
       "id": "auth-otp-state-empty-dark-390x844",
@@ -5062,7 +5062,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "b83235bdd6d77955ec753f1576331af188f629d370466c01915d798299c71f12"
+      "sha256": "a371171e628891daad03db694828de8aac4ab49262b3296d698f7bc15c3bcb2b"
     },
     {
       "id": "auth-otp-state-error-dark-390x844",
@@ -5074,7 +5074,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "eb6e78d11adb525fb23fac9102252bb005cdd29a71e52de7b3cf70606092df46"
+      "sha256": "24cdc3bc755a94a69a2eaeb531464f53aeecb6a5a2b067e1962c3cc9dba95cc7"
     },
     {
       "id": "auth-otp-state-offline-dark-390x844",
@@ -5086,7 +5086,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d311c6eb4dce1c70a595b3fb277e5006c2b11563d4c713715315fd3971cf59fd"
+      "sha256": "232caf817800aaf11bc07f98a8f942248c5debb506b5599fcdfe56d80390e13d"
     },
     {
       "id": "auth-otp-state-permission-denied-dark-390x844",
@@ -5098,7 +5098,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "826878e9b5d6ba881f41c08445715e7055c8d9fad84515bf114f9577639c9ed6"
+      "sha256": "62e69fbfcd7b9122278368086ec378aaa1db1a23401c3ea561acc18b3fab31c1"
     },
     {
       "id": "auth-otp-state-disabled-dark-390x844",
@@ -5110,7 +5110,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e79aa729302432608e5d0db7da7c705ca8eb99b6967a30582fc27d319925bd25"
+      "sha256": "28adba30383ca7680520b912f8edeb8f3e23ca0d70dd45e8c1bd211d3dbdaf0e"
     },
     {
       "id": "auth-otp-state-focused-dark-390x844",
@@ -5122,7 +5122,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "765085aa8ca9755213b14c6795811daa78ccb9f2647fe5d20046d9234de12d5b"
+      "sha256": "665963b4a9a51ab2d3b9bc3c81532ba6c11c499b0a714224179f8153d840c86b"
     },
     {
       "id": "auth-otp-state-large-text-dark-320x720",
@@ -5134,7 +5134,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f26690395c186fc2cce4bdb8c33974c692bdaca7adf1489ff607563bf155fa99"
+      "sha256": "b679c49f3e11d1ced8548643973a06a8d8586d3de7ea1782320ae4045175f4ad"
     },
     {
       "id": "auth-phone-state-pressed-dark-390x844",
@@ -5242,7 +5242,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7d27137cc2d7de83da1d905c11a18d8ab444d7f7786e59481638d071ebe309c1"
+      "sha256": "64baffe533128085b50c14f7df97b15dbd63460c29667f2b128e597e1673f1c4"
     },
     {
       "id": "auth-otp-state-selected-dark-390x844",
@@ -5254,7 +5254,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "84df6e7a0db3fdc8f49db38a3f7b8ac5494f6205386e6372843ec6fd7ca074dd"
+      "sha256": "501356a41aaef9bfbdb2e1acc7e81154b262ba663adab0ffbbfb9e4228d9aa47"
     },
     {
       "id": "auth-otp-state-reduced-motion-dark-390x844",
@@ -5266,7 +5266,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "b83235bdd6d77955ec753f1576331af188f629d370466c01915d798299c71f12"
+      "sha256": "a371171e628891daad03db694828de8aac4ab49262b3296d698f7bc15c3bcb2b"
     },
     {
       "id": "auth-otp-state-dark-dark-390x844",
@@ -5278,7 +5278,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "b83235bdd6d77955ec753f1576331af188f629d370466c01915d798299c71f12"
+      "sha256": "a371171e628891daad03db694828de8aac4ab49262b3296d698f7bc15c3bcb2b"
     },
     {
       "id": "auth-otp-state-light-light-390x844",
@@ -5290,7 +5290,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "ca71dd30b64225c820594a017e829cddf1c921ed09ebc5436e81b269b5c3e60d"
+      "sha256": "d9c7d356249b41d2edf1c0206336040fb0b61cee331e9a05fad6f01518807bf1"
     },
     {
       "id": "auth-otp-state-syncing-dark-390x844",
@@ -5302,7 +5302,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "92edfc09079986913cca11f394dc4cef3dfb19762157dc64e72faf5cd993653f"
+      "sha256": "f14299707ef13f1e18e84b4e8309a1bc818f6d6dccbd5cea67221d976b59ae04"
     },
     {
       "id": "auth-otp-state-conflict-dark-390x844",
@@ -5314,7 +5314,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d36f004373eb9deeaf7123df8245e5c0d464ff535c40682eb15e6eacabb1e30a"
+      "sha256": "19337ee8ac6a3989d9ec66841a96b587c293e53c2a5d73e3f01740e0e5bcb7a9"
     },
     {
       "id": "auth-otp-state-security-timeout-dark-390x844",
@@ -5326,7 +5326,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "67455196ad5818811635213fc17d66bfb44a7000cf60ae88bbc864ad1b4b6964"
+      "sha256": "2fac31c4d26e3d2cb7d004a38f6f92e3f0224a5555966d916be2b121b0170b80"
     },
     {
       "id": "cart-state-permission-denied-dark-390x844",

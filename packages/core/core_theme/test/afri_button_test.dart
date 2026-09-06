@@ -4,6 +4,41 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets(
+    'text actions honor custom insets while keeping the touch target',
+    (tester) async {
+      var taps = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: AfriTextButton(
+                style: AfriTextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  foregroundColor: Colors.purple,
+                ),
+                onPressed: () => taps++,
+                child: const Text('Resend'),
+              ),
+            ),
+          ),
+        ),
+      );
+      final button = find.byType(TextButton);
+      expect(
+        tester.getRect(find.text('Resend')).left,
+        tester.getRect(button).left,
+      );
+      expect(tester.getSize(button).height, greaterThanOrEqualTo(48));
+      expect(
+        tester.widget<TextButton>(button).style?.foregroundColor?.resolve({}),
+        Colors.purple,
+      );
+      await tester.tap(button);
+      expect(taps, 1);
+    },
+  );
+
   testWidgets('supports injected focus and keyboard Select activation', (
     tester,
   ) async {

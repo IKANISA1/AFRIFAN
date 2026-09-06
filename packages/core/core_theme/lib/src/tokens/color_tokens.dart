@@ -422,9 +422,10 @@ class ColorTokens {
         const [0xFF1B2B8C, 0xFF1C2D7D, 0xFF0B112F, 0xFF000000],
         const [0.0, 0.16, 0.38, 0.52],
       ),
+      // Onboarding 10: centre-canvas samples, excluding keyboard and footer.
       '/auth/otp' => (
-        const [0xFF364FF0, 0xFF15266A, 0xFF0E113D],
-        const [0.0, 0.4, 1.0],
+        const [0xFF1C2D97, 0xFF1C3088, 0xFF0B1234, 0xFF000105],
+        const [0.0, 0.16, 0.39, 0.52],
       ),
       _ => (const <int>[], const <double>[]),
     };

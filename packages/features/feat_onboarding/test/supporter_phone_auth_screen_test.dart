@@ -351,6 +351,70 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('keeps OTP entry and verification above the keyboard', (
+    tester,
+  ) async {
+    await _pumpApp(tester, repository: _FakeAuthRepository());
+    await tester.enterText(
+      find.byKey(const ValueKey<String>('supporter-phone-input')),
+      supporterPhoneAuthTestNumber,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('supporter-send-otp-button')),
+    );
+    await tester.pumpAndSettle();
+    tester.view.viewInsets = const FakeViewPadding(bottom: 320);
+    addTearDown(tester.view.resetViewInsets);
+    await tester.pumpAndSettle();
+    final input = find.byKey(
+      const ValueKey<String>('supporter-phone-otp-input'),
+    );
+    final submit = find.byKey(
+      const ValueKey<String>('supporter-verify-otp-button'),
+    );
+    _expectInKeyboardViewport(tester, input);
+    _expectInKeyboardViewport(tester, submit);
+    expect(tester.getRect(submit).bottom, closeTo(508, 1));
+    expect(submit.hitTestable(), findsOneWidget);
+  });
+
+  testWidgets(
+    'resend cooldown preserves the draft and prevents repeated sends',
+    (tester) async {
+      final repository = _FakeAuthRepository();
+      await _pumpApp(tester, repository: repository);
+      await tester.enterText(
+        find.byKey(const ValueKey<String>('supporter-phone-input')),
+        supporterPhoneAuthTestNumber,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const ValueKey<String>('supporter-send-otp-button')),
+      );
+      await tester.pumpAndSettle();
+      final input = find.byKey(
+        const ValueKey<String>('supporter-phone-otp-input'),
+      );
+      final resend = find.byKey(
+        const ValueKey<String>('supporter-resend-otp-button'),
+      );
+      await tester.enterText(input, supporterPhoneAuthTestOtp);
+      await tester.pumpAndSettle();
+      expect(tester.widget<AfriTextButton>(resend).onPressed, isNull);
+      await tester.pump(const Duration(seconds: 61));
+      await tester.tap(resend);
+      await tester.pumpAndSettle();
+      expect(repository.requestCount, 2);
+      expect(repository.requestedChannel, supabase.OtpChannel.whatsapp);
+      expect(
+        tester.widget<AfriCodeInput>(input).controller.text,
+        supporterPhoneAuthTestOtp,
+      );
+      expect(tester.widget<AfriTextButton>(resend).onPressed, isNull);
+    },
+  );
+
   testWidgets(
     'keyboard-open auth keeps the active field, error, and submit reachable',
     (tester) async {

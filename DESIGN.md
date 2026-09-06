@@ -163,6 +163,10 @@ or simulate a successful financial/action outcome for visual effect.
   code and tonal phone input, left-aligned anonymous entry and bottom primary
   action above the keyboard. ISO country labels are a readable glyph adaptation.
   Preserve E.164 paste/autofill, drafts, masking and existing WhatsApp delivery.
+- Code verification: Onboarding 10 navy-to-black canvas and six soft cells
+  grouped three–three. Keep one native field for paste and autofill, masked
+  values, left-aligned recovery links and the app's explicit bottom Verify
+  action. Phone and code entry share the same scrolling and keyboard layout.
 - Onboarding/auth: preserve anonymous entry and real phone/OTP flows. Do not
   copy a bank passcode flow or introduce linking/payment requirements at launch.
 - Unavailable routes: generic requested-section copy, safe back/recovery, no
