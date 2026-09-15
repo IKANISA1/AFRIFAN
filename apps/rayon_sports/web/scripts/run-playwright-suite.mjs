@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 
 const root = resolve(process.cwd());
@@ -67,6 +67,15 @@ async function stopServer() {
       server.once("exit", () => resolveExit());
     });
   }
+}
+
+const provenanceChecks = spawnSync(process.execPath, [
+  "--experimental-strip-types",
+  "--test",
+  resolve(root, "scripts/state-evidence-provenance.node-test.mjs"),
+], { cwd: root, env: process.env, stdio: "inherit" });
+if (provenanceChecks.status !== 0) {
+  process.exit(provenanceChecks.status ?? 1);
 }
 
 const server = spawn(

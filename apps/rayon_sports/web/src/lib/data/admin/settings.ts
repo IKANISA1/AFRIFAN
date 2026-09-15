@@ -245,7 +245,13 @@ function normalizeAdminClubScopeOption(
     return null;
   }
   const row = value as Record<string, unknown>;
-  const id = positiveInteger(row.id);
+  // Database IDs arrive as numbers; the admin API serializes selector IDs as
+  // canonical decimal strings. Both representations must survive this boundary.
+  const id = positiveInteger(
+    typeof row.id === "string" && /^[1-9][0-9]*$/.test(row.id)
+      ? Number(row.id)
+      : row.id,
+  );
   const clubName = boundedText(row.clubName ?? row.club_name, 160);
   const shortName =
     boundedText(row.shortName ?? row.short_name, 80) ??

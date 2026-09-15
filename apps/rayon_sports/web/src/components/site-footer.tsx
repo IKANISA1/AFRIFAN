@@ -59,9 +59,9 @@ export function SiteFooter({
   return (
     <footer className="bg-black border-t border-white/5 pt-20 pb-12 lg:pt-32">
       <div className="page-shell">
-        <div className="grid gap-16 lg:grid-cols-12">
+        <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
           {/* Brand Column */}
-          <div className="min-w-0 lg:col-span-4">
+          <div className="min-w-0">
             <Link
               href="/"
               className="mb-8 inline-flex max-w-full flex-col items-start gap-[16px] sm:flex-row sm:items-center"
@@ -108,10 +108,10 @@ export function SiteFooter({
           </div>
 
           {/* Navigation Columns */}
-          <div className="lg:col-span-8">
+          <div className="min-w-0">
             <div className="site-footer-navigation grid grid-cols-2 gap-12 sm:grid-cols-4">
               {footerNavigationGroups.map((group) => (
-                <div key={group.title}>
+                <div key={group.title} className="min-w-0 [overflow-wrap:anywhere]">
                   <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white mb-8">
                     {group.title}
                   </p>

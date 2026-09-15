@@ -1,0 +1,8 @@
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug-qa.xcconfig"
+#include "Generated.xcconfig"
+
+// Separate QA identity, with no production push or associated-domain entitlements.
+PRODUCT_BUNDLE_IDENTIFIER=zm.ikanisa.nkana.qa.codex
+AFRICLUB_DISPLAY_NAME=Nkana QA
+CODE_SIGN_ENTITLEMENTS=Runner/RunnerQA.entitlements
+FLUTTER_BUILD_MODE=debug

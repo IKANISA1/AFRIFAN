@@ -114,7 +114,8 @@ function inspectText(relativePath, source) {
   // A published club channel citation is data provenance, not ownership of
   // the separate display app. Keep the exception paired with its source URL.
   const clubChannelAttribution = `'${decodeHex('7261796f6e2073706f727473207476')}', 'https://www.youtube.com/@rayon_sports'`;
-  const normalizedSource = normalizedPath.startsWith('supabase/migrations/')
+  const normalizedSource = (normalizedPath.startsWith('supabase/migrations/') ||
+    normalizedPath === 'supabase/seed-clubs.sql')
     ? source.toLowerCase().replaceAll(clubChannelAttribution, "'official club source'")
     : source.toLowerCase();
   const ownershipPath = normalizedPath.replaceAll(/[\s-]+/g, '_');

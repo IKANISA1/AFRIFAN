@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import type { Browser } from "@playwright/test";
 import path from "node:path";
 
 export const governedAdminStates = [
@@ -27,6 +28,7 @@ type ResponsiveCapture = {
 };
 
 export function writeAdminStateEvidence({
+  browser,
   evidenceDirectory,
   manifestFile,
   route,
@@ -34,6 +36,7 @@ export function writeAdminStateEvidence({
   responsiveCaptures,
   assertions = {},
 }: {
+  browser: Browser;
   evidenceDirectory: string;
   manifestFile: string;
   route: string;
@@ -41,7 +44,7 @@ export function writeAdminStateEvidence({
   responsiveCaptures: ResponsiveCapture[];
   assertions?: Record<string, boolean | number | string>;
 }) {
-  const captures = governedAdminStates.map((state) => ({
+  const captures: Array<{ state: string; file: string }> = governedAdminStates.map((state) => ({
     state,
     file: `${filePrefix}_state_${state}_${state === "light" ? "light" : "dark"}_desktop_1440x1000.png`,
   }));
@@ -59,7 +62,7 @@ export function writeAdminStateEvidence({
         schema_version: "1.0",
         route,
         surface: "admin_pwa",
-        exact_profile: "Chromium desktop 1440x1000 at 1 DPR",
+        exact_profile: `${browser.browserType().name()} desktop 1440x1000 at 1 DPR`,
         responsive_profiles: responsiveCaptures.map(
           ({ description }) => description,
         ),

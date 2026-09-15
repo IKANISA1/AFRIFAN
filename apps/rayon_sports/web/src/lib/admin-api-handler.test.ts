@@ -52,7 +52,7 @@ import {
   AdminApiValidationError,
   handleAdminApiRoute,
 } from "./admin-api-handler";
-import { AdminMutationConflictError } from "./data/admin/helpers";
+import { AdminMutationAuthorizationError, AdminMutationConflictError } from "./data/admin/helpers";
 
 describe("handleAdminApiRoute", () => {
   afterEach(() => {
@@ -85,6 +85,17 @@ describe("handleAdminApiRoute", () => {
     });
     rejectInsecureMutationMock.mockReturnValue(null);
     rejectRateLimitedRequestMock.mockResolvedValue(null);
+  });
+
+  it("returns a non-retryable 403 when the data layer denies a record's club scope", async () => {
+    const response = await handleAdminApiRoute(
+      new NextRequest("https://admin.gikundiro.com/api/admin/content-blocks"),
+      async () => { throw new AdminMutationAuthorizationError(); },
+    );
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toMatchObject({
+      code: "ADMIN_ACCESS_DENIED", retryable: false, change_confirmed: false,
+    });
   });
 
   it("returns a 403 when the feature guard blocks the action", async () => {

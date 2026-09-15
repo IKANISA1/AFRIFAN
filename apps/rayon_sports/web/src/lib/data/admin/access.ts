@@ -84,6 +84,25 @@ function isPrivilegedRole(role: AdminRole | null) {
   return role === "super_admin" || role === "admin";
 }
 
+const assignmentRolePriority: Record<AdminRole, number> = {
+  super_admin: 5,
+  admin: 4,
+  club_admin: 3,
+  club_moderator: 2,
+  fan: 1,
+};
+
+function strongestAssignmentRole(assignments: AdminAssignmentRow[]) {
+  let strongest: AdminRole | null = null;
+  for (const assignment of assignments) {
+    const role = normalizeAdminRole(assignment.role);
+    if (role && (!strongest || assignmentRolePriority[role] > assignmentRolePriority[strongest])) {
+      strongest = role;
+    }
+  }
+  return strongest;
+}
+
 function resolveEffectiveClubId({
   role,
   requestedClubId,
@@ -95,40 +114,21 @@ function resolveEffectiveClubId({
   currentClubId: string | null;
   availableClubIds: string[];
 }) {
-  const clubIdsAreRestricted = availableClubIds.length > 0;
-  const hasInvalidRequestedClub =
-    requestedClubId != null &&
-    clubIdsAreRestricted &&
-    !availableClubIds.includes(requestedClubId) &&
-    !isPrivilegedRole(role);
-
-  const canUse = (candidate: string | null) => {
-    if (candidate == null) {
-      return false;
-    }
-    if (!clubIdsAreRestricted) {
-      return isPrivilegedRole(role);
-    }
-    return availableClubIds.includes(candidate);
-  };
-
-  if (hasInvalidRequestedClub) {
-    return null;
+  // Platform grants cover every club, as in the database authorization helpers.
+  // A second local grant must not restrict or silently replace their selection.
+  if (isPrivilegedRole(role)) {
+    return requestedClubId ?? currentClubId ?? availableClubIds[0] ?? null;
   }
 
-  if (canUse(requestedClubId)) {
-    return requestedClubId;
+  if (requestedClubId != null) {
+    return availableClubIds.includes(requestedClubId) ? requestedClubId : null;
   }
 
-  if (canUse(currentClubId)) {
+  if (currentClubId != null && availableClubIds.includes(currentClubId)) {
     return currentClubId;
   }
 
-  if (availableClubIds.length > 0) {
-    return availableClubIds[0] ?? null;
-  }
-
-  return isPrivilegedRole(role) ? currentClubId : null;
+  return availableClubIds[0] ?? null;
 }
 
 export function normalizeAdminRole(value: unknown): AdminRole | null {
@@ -173,9 +173,9 @@ export function deriveAdminAccess(
   const matchingAssignments = assignments.filter((assignment) =>
     matchClubScope(assignment, scopedClubId),
   );
-  const matchingAssignmentRole = normalizeAdminRole(matchingAssignments[0]?.role);
+  const matchingAssignmentRole = strongestAssignmentRole(matchingAssignments);
   const assignmentRole =
-    matchingAssignmentRole ?? normalizeAdminRole(assignments[0]?.role);
+    matchingAssignmentRole ?? strongestAssignmentRole(assignments);
   const fallbackRole = metadataRole(user);
   // Effective role for display, but only assignment-backed roles grant access.
   const role = assignmentRole ?? fallbackRole;

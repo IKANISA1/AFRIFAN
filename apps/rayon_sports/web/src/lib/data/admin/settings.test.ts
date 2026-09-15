@@ -1,10 +1,11 @@
 // @vitest-environment node
 
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
 import {
   normalizeAdminClubProfile,
+  getAdminClubScopeOptions,
   saveAdminClubProfile,
   type AdminClubProfileInput,
 } from "./settings";
@@ -50,6 +51,37 @@ const profileInput: AdminClubProfileInput = {
   },
   expectedUpdatedAt: updatedAt,
 };
+
+describe("club selector API round trip", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("retains the actual server-serialized club options in the browser", async () => {
+    const rows = [
+      { id: 24, club_name: "Rayon Sports FC", nickname_brand_identity: "Gikundiro", club_slug: "rayon_sports_rw", currency_code: "RWF", currency_symbol: "RWF" },
+      { id: 3, club_name: "Simba SC", nickname_brand_identity: "Simba SC", club_slug: "simba_tz", currency_code: "TZS", currency_symbol: "TSh" },
+    ];
+    const query = {
+      select: vi.fn(() => query),
+      order: vi.fn(() => query),
+      limit: vi.fn(async () => ({ data: rows, error: null })),
+    };
+    const client = { from: vi.fn(() => query) } as unknown as SupabaseClient;
+    const access = { ...clubAdminAccess, isSuperAdmin: true };
+    const serverOptions = await getAdminClubScopeOptions(client, access);
+    expect(serverOptions.map((club) => club.id)).toEqual(["24", "3"]);
+    vi.stubGlobal("window", { location: { origin: "https://admin.example.invalid", href: "https://admin.example.invalid/admin?club=24" } });
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ data: serverOptions }))));
+    await expect(getAdminClubScopeOptions(client, access)).resolves.toEqual(serverOptions);
+  });
+
+  it("rejects malformed or unsafe serialized club identities", async () => {
+    const invalidIds = ["0", "-1", "01", "1.5", "1e3", "+1", " 24 ", "9007199254740992", null];
+    const data = invalidIds.map((id) => ({ id, clubName: "Invalid club", shortName: "Invalid", clubSlug: "invalid", currencyCode: "RWF", currencySymbol: "RWF" }));
+    vi.stubGlobal("window", { location: { origin: "https://admin.example.invalid", href: "https://admin.example.invalid/admin" } });
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ data }))));
+    await expect(getAdminClubScopeOptions({} as SupabaseClient, clubAdminAccess)).resolves.toEqual([]);
+  });
+});
 
 function createMutationClient() {
   const payloads: Record<string, unknown>[] = [];

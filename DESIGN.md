@@ -1,18 +1,24 @@
-# AFRICLUB mobile design contract
+# AFRICLUB product design adapter
 
 The owner selected `$revolut-design` for the **whole native supporter app** on
 5 September 2026. This instruction replaces the former mixed benchmark,
 8 dp card, 58 dp command control, all-route gradient, heavy italic heading,
-and immediate theme-selection treatments. This file is the repository design
-authority; the selected skill and local source images provide its evidence.
+and immediate theme-selection treatments. On 14 September 2026 the owner
+extended the review to the complete system, including websites, member access,
+Admin PWA and venue web. The selected
+[`revolut-design` skill](/Users/jeanbosco/.codex/skills/revolut-design/SKILL.md)
+is the sole design authority. This file records product facts, mappings and
+provisional implementation measurements. It cannot override the skill or its
+bundled references. Current user instructions take precedence.
 
 ## Scope and reference
 
-The implementation covers the shared Flutter supporter application and all
-20 configured club shells. Public web, Admin PWA and venue web retain their
-existing role-specific interfaces; this mobile task does not establish their
-visual parity. Internal mobile admin remains role guarded and inherits shared
-accessible controls without borrowing a consumer account layout.
+The review covers the shared Flutter supporter application, all 20 configured
+club shells on Android and iOS, public and member websites, Admin PWA, and venue
+web. Use the skill's matching native, website, operator and PWA references for
+each surface. The native comparator below does not establish web or desktop
+parity. Internal mobile admin remains role guarded; operational tasks preserve
+their own information hierarchy, permissions and workflows.
 
 The primary comparator is the **5 September 2026 live native iOS Dark · Glow**
 cohort in the owner's Revolut collection. Region, installed build, exact font,
@@ -35,8 +41,10 @@ A static frame establishes its depicted state only. Football matches,
 predictions, ticket seats, QR admission and contributions require explicit
 product adaptations; no source frame proves their entire journeys.
 
-`docs/governance/native-reference-map.json` records route mapping and evidence
-status. It implements this contract and must not create separate design rules.
+`docs/governance/native-reference-map.json` records native route mappings and
+historical evidence status. `docs/governance/design-exceptions.json` binds the
+selected authority and this product adapter by hash. Both are evidence, not
+separate design rules or acceptance.
 Redirects inherit the target's rendered evidence and retain navigation tests.
 Missing comparators, states or implementation captures remain unverified.
 
@@ -300,6 +308,15 @@ Visual QA Standard gates must include:
 Visual evidence must use sanitized data. Screenshots must not expose secrets, raw phone numbers, OTPs, private customer data, production tokens, or private account identifiers.
 
 ## Implementation and verification
+
+Mobile release acceptance must satisfy the skill's
+[MOBILE-DESIGN-100](/Users/jeanbosco/.codex/skills/revolut-design/references/mobile-design-100.md)
+for the exact Android and iOS artifacts. Required route/state/role/club/platform
+cases, all ten visual criteria, source and installed-artifact hashes, current
+annotations, implementer review, independent visual review and owner acceptance
+must be current and complete. Missing or stale evidence blocks acceptance.
+The source-compliance report verifies authority bindings and source controls;
+it does not implement or substitute for the complete mobile acceptance gate.
 
 Keep providers, repositories, domain models, server validation, role guards and
 canonical routes separate from presentation. Keep the 20 app shells thin.

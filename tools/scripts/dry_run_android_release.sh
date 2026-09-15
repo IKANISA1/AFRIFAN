@@ -9,7 +9,6 @@ PRODUCTION_JSON="$APP_DIR/assets/flavors/production.json"
 ARTIFACT_PATH="$APP_DIR/build/app/outputs/bundle/release/app-release.aab"
 PUBSPEC_FILE="$APP_DIR/pubspec.yaml"
 RELEASE_CONTRACT="$ROOT/tools/scripts/android_release_contract.mjs"
-EXPECTED_APPLICATION_ID="rw.gikundiro.app"
 
 if [ ! -d "$APP_DIR" ]; then
   echo "Unknown app slug: $APP_SLUG" >&2
@@ -35,6 +34,13 @@ if ! command -v node >/dev/null 2>&1; then
   echo "node is required to parse and validate the Android release contract." >&2
   exit 2
 fi
+
+EXPECTED_APPLICATION_ID="$(
+  node "$RELEASE_CONTRACT" application-id --app-dir "$APP_DIR"
+)"
+
+# Verify the archive inspector before doing any build or signing work.
+node "$RELEASE_CONTRACT" toolchain >/dev/null
 
 release_version="$(
   node "$RELEASE_CONTRACT" version --pubspec "$PUBSPEC_FILE"

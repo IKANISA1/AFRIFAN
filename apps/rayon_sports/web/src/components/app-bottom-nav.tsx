@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { Landmark, ShieldCheck, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SiteChromeCopy } from "@/lib/site-copy";
@@ -72,6 +73,23 @@ export function AppBottomNav({
 }) {
   const pathname = usePathname();
   const activeTab = resolveActiveTab(pathname);
+  const navRef = useRef<HTMLElement>(null);
+  const spaceRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const nav = navRef.current;
+    const space = spaceRef.current;
+    if (!nav || !space) return;
+    // Reserve the fixed bar's complete height, including wrapped labels and
+    // the device safe area, so the end of the page remains readable.
+    const measure = () => {
+      space.style.height = `${Math.ceil(nav.getBoundingClientRect().height)}px`;
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav, { box: "border-box" });
+    return () => observer.disconnect();
+  }, []);
   
   const tabs = BASE_TABS.filter((tab) => {
     if (tab.id === "home") return true;
@@ -90,45 +108,52 @@ export function AppBottomNav({
   });
 
   return (
-    <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[var(--club-primary)]/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
-      aria-label="Main navigation"
+    <div
+      ref={spaceRef}
+      className="shrink-0 md:hidden"
+      style={{ height: "calc(4rem + env(safe-area-inset-bottom))" }}
     >
-      <div className="mx-auto flex max-w-md items-stretch justify-around px-[8px] pt-[8px]">
-        {tabs.map((tab) => {
-          const active = tab.id === activeTab;
-          const Icon = tab.icon;
+      <nav
+        ref={navRef}
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[var(--club-primary)]/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
+        aria-label="Main navigation"
+      >
+        <div className="mx-auto flex max-w-md items-stretch justify-around px-[8px] pt-[8px]">
+          {tabs.map((tab) => {
+            const active = tab.id === activeTab;
+            const Icon = tab.icon;
 
-          return (
-            <Link
-              key={tab.id}
-              href={tab.href}
-              prefetch={false}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex min-w-0 flex-1 flex-col items-center gap-[6px] py-[8px] transition-all duration-300 active:scale-95",
-                active ? "text-[var(--club-accent)]" : "text-white/80 hover:text-white"
-              )}
-            >
-              <div className={cn(
-                "flex h-[32px] w-[48px] items-center justify-center rounded-full transition-all duration-300",
-                active && "bg-[var(--club-accent)]/10"
-              )}>
-                <Icon
-                  size={20}
-                  strokeWidth={active ? 2.5 : 2}
-                />
-              </div>
-              <span className={cn(
-                "max-w-full text-center text-[0.5625rem] font-black uppercase tracking-normal transition-colors [overflow-wrap:anywhere]",
-                active ? "text-white" : "text-white/80"
-              )}>
-                {tab.label}
-              </span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+            return (
+              <Link
+                key={tab.id}
+                href={tab.href}
+                prefetch={false}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex min-w-0 flex-1 flex-col items-center gap-[6px] py-[8px] transition-all duration-300 active:scale-95",
+                  active ? "text-[var(--club-accent)]" : "text-white/80 hover:text-white"
+                )}
+              >
+                <div className={cn(
+                  "flex h-[32px] w-[48px] items-center justify-center rounded-full transition-all duration-300",
+                  active && "bg-[var(--club-accent)]/10"
+                )}>
+                  <Icon
+                    size={20}
+                    strokeWidth={active ? 2.5 : 2}
+                  />
+                </div>
+                <span className={cn(
+                  "max-w-full text-center text-[0.5625rem] font-black uppercase tracking-normal transition-colors [overflow-wrap:anywhere]",
+                  active ? "text-white" : "text-white/80"
+                )}>
+                  {tab.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </div>
   );
 }

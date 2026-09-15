@@ -1,12 +1,10 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-const evidenceDirectory = path.resolve(
-  process.cwd(),
-  "../../../output/evidence/consumer_web_recovery_states",
-);
+let evidenceDirectory: string;
 
 const recoveryRoutes = [
   {
@@ -27,7 +25,7 @@ async function openRecovery(
   page: Page,
   route: (typeof recoveryRoutes)[number],
 ) {
-  await page.goto(route.path, { waitUntil: "domcontentloaded" });
+  await navigateStateEvidence(page, route.path, { waitUntil: "domcontentloaded" });
   await expect(
     page.getByRole("heading", { name: route.heading }),
   ).toBeVisible();
@@ -39,29 +37,32 @@ async function openRecovery(
 }
 
 async function capture(page: Page, filePrefix: string, state: string) {
-  await page.screenshot({
+  await captureStateScreenshot(page, {
     path: path.join(
       evidenceDirectory,
-      `${filePrefix}_state_${state}_pixel7.png`,
+      `${filePrefix}_state_${state}_viewport.png`,
     ),
     fullPage: true,
     animations: "disabled",
   });
 }
 
-test.beforeAll(() => {
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+test.beforeEach(async ({ browser }, testInfo) => {
+  if (testInfo.title === "/admin/offline redirects before the admin layout renders") return;
+  test.setTimeout(120_000);
+  evidenceDirectory = prepareStateEvidence(browser, testInfo, "consumer_web_recovery_states");
+});
+
+test.afterEach(async ({}, testInfo) => {
+  if (testInfo.title === "/admin/offline redirects before the admin layout renders") return;
+  if (testInfo.status === "passed") finalizeStateEvidence(evidenceDirectory);
 });
 
 test("/admin/offline redirects before the admin layout renders", async ({
   page,
-}, testInfo) => {
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "The canonical recovery redirect is verified once on the governed browser profile.",
-  );
+}) => {
 
-  await page.goto("/admin/offline?source=legacy", {
+  await navigateStateEvidence(page, "/admin/offline?source=legacy", {
     waitUntil: "domcontentloaded",
   });
   await expect(page).toHaveURL(/\/admin-offline\?source=legacy$/);
@@ -79,11 +80,7 @@ for (const route of recoveryRoutes) {
   test(`${route.path} proves all seven applicable recovery states`, async ({
     page,
     context,
-  }, testInfo) => {
-    test.skip(
-      testInfo.project.name !== "mobile-chromium",
-      "Governed screenshots use the single declared Pixel 7 evidence profile.",
-    );
+  }) => {
 
     await page.emulateMedia({
       colorScheme: "dark",
@@ -175,5 +172,15 @@ for (const route of recoveryRoutes) {
       }),
     ).toBe("rgb(13, 22, 39)");
     await capture(page, route.filePrefix, "light_light");
+    const states = ["dark", "offline", "focused", "pressed", "large_text", "reduced_motion", "light"];
+    fs.writeFileSync(path.join(evidenceDirectory, `${route.filePrefix}-state-evidence.json`), JSON.stringify({
+      schema_version: "1.0", route: route.path,
+      surface: route.path === "/admin-offline" ? "admin_pwa" : "consumer_web",
+      applicable_states: states,
+      not_applicable_states: ["loading", "empty", "error", "permission_denied", "disabled", "selected", "syncing", "conflict", "security_timeout"],
+      not_applicable_rationale: "This standalone recovery document owns navigation links and online/offline status; it does not fetch protected collections or submit mutations. Applicability remains subject to review.",
+      assertions: { visible_recovery_action: true, minimum_action_height: 48, horizontal_overflow_at_200_percent: false },
+      captures: states.map((state) => ({ state, file: `${route.filePrefix}_state_${state}_${state === "light" ? "light" : "dark"}_viewport.png` })),
+    }, null, 2));
   });
 }

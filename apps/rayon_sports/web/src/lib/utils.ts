@@ -9,12 +9,11 @@ export function cn(...values: Array<string | false | null | undefined>) {
 export function formatCurrency(
   value: number,
   currency = rayonClub.currencyCode,
-  locale = "en-RW",
+  _locale = "en-RW",
 ) {
   return new Intl.NumberFormat("en", {
     style: "currency",
     currency,
-    maximumFractionDigits: 0,
   }).format(value);
 }
 
@@ -36,7 +35,7 @@ export function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
-export function formatCompactNumber(value: number, locale = "en-RW") {
+export function formatCompactNumber(value: number, _locale = "en-RW") {
   return new Intl.NumberFormat("en", {
     notation: "compact",
     maximumFractionDigits: 1,

@@ -1,3 +1,4 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -125,28 +126,19 @@ async function expectNoSeriousAxeViolations(page: Page) {
 
 test("/membership proves all sixteen applicable rendered states", async ({
   browser,
-}, testInfo) => {
-  test.setTimeout(90_000);
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "Membership evidence uses the declared Pixel 7 Chromium profile.",
-  );
+}) => {
+  test.setTimeout(120_000);
 
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    "../../../output/evidence/consumer_web_membership_states",
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), "consumer_web_membership_states");
+
 
   const context: BrowserContext = await browser.newContext({
-    viewport: { width: 412, height: 915 },
-    deviceScaleFactor: 2.625,
-    isMobile: true,
-    hasTouch: true,
+    ...stateEvidenceContextOptions(test.info()),
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
+  await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
 
   await page.route(
@@ -166,7 +158,7 @@ test("/membership proves all sixteen applicable rendered states", async ({
   );
 
   const open = async (nonce: string) => {
-    await page.goto(`/membership?evidence=${nonce}`, {
+    await navigateStateEvidence(page, `/membership?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   };
@@ -185,10 +177,10 @@ test("/membership proves all sixteen applicable rendered states", async ({
         requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
       );
     });
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
-        `membership_state_${state}_pixel7.png`,
+        `membership_state_${state}_viewport.png`,
       ),
       fullPage: true,
       animations: "disabled",
@@ -304,6 +296,15 @@ test("/membership proves all sixteen applicable rendered states", async ({
         .filter(({ left, right }) => left < -1 || right > viewportWidth + 1);
     });
   expect(clippedElements).toEqual([]);
+  const introduction = await page.locator(".member-portal-intro").boundingBox();
+  const accountPanel = await page.locator(".member-portal-panel").boundingBox();
+  expect(introduction).not.toBeNull();
+  expect(accountPanel).not.toBeNull();
+  expect(introduction!.width).toBeGreaterThan(100);
+  if (Math.abs(introduction!.x - accountPanel!.x) < 1) {
+    expect(introduction!.y + introduction!.height).toBeLessThanOrEqual(accountPanel!.y);
+    expect(await page.locator(".member-portal-intro").evaluate((element) => getComputedStyle(element).position)).toBe("static");
+  }
   await capture("large_text_dark");
 
   responseMode = "loading";
@@ -404,7 +405,7 @@ test("/membership proves all sixteen applicable rendered states", async ({
         schema_version: "1.0",
         route: "/membership",
         surface: "consumer_web",
-        exact_profile: "Pixel 7 Chromium 412x915 at 2.625 DPR",
+        exact_profile: `${browser.browserType().name()}; viewport, DPR and input emulation are recorded per capture`,
         applicable_states: captures,
         not_applicable_states: [],
         assertions: {
@@ -425,7 +426,7 @@ test("/membership proves all sixteen applicable rendered states", async ({
           state,
           file: `membership_state_${state}_${
             state === "light" ? "light" : "dark"
-          }_pixel7.png`,
+          }_viewport.png`,
         })),
       },
       null,
@@ -433,5 +434,6 @@ test("/membership proves all sixteen applicable rendered states", async ({
     )}\n`,
   );
 
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 });

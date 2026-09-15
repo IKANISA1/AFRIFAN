@@ -1,28 +1,30 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 
-const evidenceDirectory = path.resolve(
-  process.cwd(),
-  "../../../output/evidence/consumer_web_contact_states",
-);
+let evidenceDirectory: string;
 
 async function capture(page: Page, state: string, fullPage = true) {
-  await page.screenshot({
-    path: path.join(evidenceDirectory, `contact_state_${state}_pixel7.png`),
+  await captureStateScreenshot(page, {
+    path: path.join(evidenceDirectory, `contact_state_${state}_viewport.png`),
     fullPage,
     animations: "disabled",
   });
 }
 
 async function openContact(page: Page, state: string) {
-  await page.goto(`/contact?evidence=${state}`, {
+  await navigateStateEvidence(page, `/contact?evidence=${state}`, {
     waitUntil: "domcontentloaded",
   });
   const surface = page.locator("[data-contact-surface]");
   await expect(surface).toBeVisible();
   await expect(surface.locator("h1")).toHaveCount(1);
+  await expect.poll(() => page.evaluate(() =>
+    document.querySelector(".contact-surface-hero")!.getBoundingClientRect().top -
+    document.querySelector("[data-site-header]")!.getBoundingClientRect().bottom,
+  )).toBeGreaterThanOrEqual(0);
   return surface;
 }
 
@@ -38,26 +40,27 @@ async function expectNoSeriousAxeViolations(page: Page) {
   ).toHaveLength(0);
 }
 
-test.beforeAll(() => {
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+test.beforeEach(async ({ browser }, testInfo) => {
+  test.setTimeout(120_000);
+  evidenceDirectory = prepareStateEvidence(browser, testInfo, "consumer_web_contact_states");
+});
+
+test.afterEach(async ({}, testInfo) => {
+  if (testInfo.status === "passed") finalizeStateEvidence(evidenceDirectory);
 });
 
 test("contact proves its six applicable static-support states", async ({
   browser,
-}, testInfo) => {
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "Contact evidence uses the declared Pixel 7 Chromium profile.",
-  );
+}) => {
 
   const context: BrowserContext = await browser.newContext({
-    viewport: { width: 412, height: 839 },
-    deviceScaleFactor: 2.625,
+    ...stateEvidenceContextOptions(test.info()),
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
-  const captures: Array<{ state: string; screenshot: string }> = [];
+  await page.emulateMedia({ colorScheme: "dark" });
+  const captures: Array<{ state: string; file: string }> = [];
 
   let surface = await openContact(page, "dark");
   expect(
@@ -67,7 +70,7 @@ test("contact proves its six applicable static-support states", async ({
   await capture(page, "dark_dark");
   captures.push({
     state: "dark",
-    screenshot: "contact_state_dark_dark_pixel7.png",
+    file: "contact_state_dark_dark_viewport.png",
   });
 
   surface = await openContact(page, "focused");
@@ -80,7 +83,7 @@ test("contact proves its six applicable static-support states", async ({
   await capture(page, "focused_dark", false);
   captures.push({
     state: "focused",
-    screenshot: "contact_state_focused_dark_pixel7.png",
+    file: "contact_state_focused_dark_viewport.png",
   });
 
   surface = await openContact(page, "pressed");
@@ -101,7 +104,7 @@ test("contact proves its six applicable static-support states", async ({
   await capture(page, "pressed_dark", false);
   captures.push({
     state: "pressed",
-    screenshot: "contact_state_pressed_dark_pixel7.png",
+    file: "contact_state_pressed_dark_viewport.png",
   });
   await page.mouse.move(1, 1);
   await page.mouse.up();
@@ -110,10 +113,14 @@ test("contact proves its six applicable static-support states", async ({
   await page.addStyleTag({
     content: "html { font-size: 200% !important; }",
   });
+  await expect.poll(() => page.evaluate(() =>
+    document.querySelector(".contact-surface-hero")!.getBoundingClientRect().top -
+    document.querySelector("[data-site-header]")!.getBoundingClientRect().bottom,
+  )).toBeGreaterThanOrEqual(0);
   for (const selector of [
     "[data-contact-surface]",
     "footer",
-    'nav[aria-label="Main navigation"]',
+    'nav[aria-label="Primary navigation"]',
   ]) {
     const overflow = await page
       .locator(selector)
@@ -125,7 +132,7 @@ test("contact proves its six applicable static-support states", async ({
   await capture(page, "large_text_dark", false);
   captures.push({
     state: "large_text",
-    screenshot: "contact_state_large_text_dark_pixel7.png",
+    file: "contact_state_large_text_dark_viewport.png",
   });
 
   await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
@@ -150,7 +157,7 @@ test("contact proves its six applicable static-support states", async ({
   await capture(page, "reduced_motion_dark");
   captures.push({
     state: "reduced_motion",
-    screenshot: "contact_state_reduced_motion_dark_pixel7.png",
+    file: "contact_state_reduced_motion_dark_viewport.png",
   });
 
   await page.emulateMedia({
@@ -165,21 +172,18 @@ test("contact proves its six applicable static-support states", async ({
   await capture(page, "light_light");
   captures.push({
     state: "light",
-    screenshot: "contact_state_light_light_pixel7.png",
+    file: "contact_state_light_light_viewport.png",
   });
 
   fs.writeFileSync(
     path.join(evidenceDirectory, "contact-surface-state-evidence.json"),
     `${JSON.stringify(
       {
+        route: "/contact",
+        surface: "consumer_web",
         generatedAt: new Date().toISOString(),
-        profile: {
-          browser: "chromium",
-          device: "Pixel 7",
-          viewport: { width: 412, height: 839 },
-          deviceScaleFactor: 2.625,
-        },
-        applicableStates: [
+        profile: { browser: browser.browserType().name(), ...stateEvidenceContextOptions(test.info()) },
+        applicable_states: [
           "focused",
           "pressed",
           "large_text",
@@ -187,7 +191,7 @@ test("contact proves its six applicable static-support states", async ({
           "dark",
           "light",
         ],
-        notApplicableStates: [
+        not_applicable_states: [
           "loading",
           "empty",
           "error",
@@ -199,7 +203,7 @@ test("contact proves its six applicable static-support states", async ({
           "conflict",
           "security_timeout",
         ],
-        notApplicableRationale:
+        not_applicable_rationale:
           "The static support surface always renders governed fallback content and owns no collection, authorization, selection, mutation, synchronization, conflict, or timeout operation.",
         assertions: {
           oneLevelOneHeading: true,

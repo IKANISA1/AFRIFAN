@@ -1,4 +1,3 @@
-import { fetchWithOfflineQueue } from "@/lib/offline-queue";
 import { AdminMutationConflictError } from "./helpers";
 
 type AdminApiMethod = "GET" | "POST" | "DELETE";
@@ -49,6 +48,9 @@ export async function requestAdminApi<T>(
     url.searchParams.set(key, String(value));
   }
 
+  // A connection failure can happen after the server committed a mutation.
+  // Keep that outcome unconfirmed; an automatic retry or background replay
+  // could duplicate it or execute later under a different account/club scope.
   const response = await fetch(url, {
     method: options.method ?? "GET",
     headers:
@@ -63,26 +65,6 @@ export async function requestAdminApi<T>(
     credentials: "same-origin",
     cache: "no-store",
     signal: options.signal,
-  }).catch(async (error) => {
-    if ((options.method ?? "GET") === "GET") {
-      throw error;
-    }
-
-    return fetchWithOfflineQueue(url.toString(), {
-      method: options.method ?? "GET",
-      headers:
-        options.body === undefined
-          ? undefined
-          : {
-              "Content-Type": "application/json",
-              "X-Africlub-CSRF": "1",
-            },
-      body:
-        options.body === undefined ? undefined : JSON.stringify(options.body),
-      credentials: "same-origin",
-      cache: "no-store",
-      signal: options.signal,
-    });
   });
 
   const payload = (await response.json().catch(() => ({}))) as {

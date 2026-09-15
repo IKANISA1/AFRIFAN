@@ -1,432 +1,138 @@
 #!/usr/bin/env node
-
-import { execFileSync } from "node:child_process";
+// Stage current browser evidence for review. This command never grants acceptance.
 import fs from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
+import { validateProductionBuild } from "../../apps/rayon_sports/web/scripts/web-build-provenance.mjs";
 
-const root = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../..",
-);
-const evidenceRoot = "output/evidence";
-const toWholeSecondIso = (value) =>
-  new Date(value).toISOString().replace(/\.\d{3}Z$/, "Z");
-const generatedAt = toWholeSecondIso(Date.now());
-const reviewedAt = generatedAt.slice(0, 10);
-const baselineCommit = execFileSync("git", ["rev-parse", "HEAD"], {
-  cwd: root,
-  encoding: "utf8",
-}).trim();
-const pubspec = fs.readFileSync(
-  path.join(root, "apps/rayon_sports/pubspec.yaml"),
-  "utf8",
-);
-const pubspecVersionMatch = pubspec.match(
-  /^version:\s*([^+\s]+)\+([^\s#]+)(?:\s*#.*)?$/m,
-);
-if (!pubspecVersionMatch) {
-  throw new Error(
-    "apps/rayon_sports/pubspec.yaml must declare version as <app-version>+<build-number>",
-  );
-}
-const [, appVersion, buildNumber] = pubspecVersionMatch;
-const admissionRequested = process.argv.includes("--admit-reviewed");
-const routeArgument = process.argv
-  .slice(2)
-  .find((argument) => argument.startsWith("--route="));
-const requestedRoute = routeArgument?.slice("--route=".length) || null;
-const unknownArguments = process.argv
-  .slice(2)
-  .filter(
-    (argument) =>
-      argument !== "--admit-reviewed" && !argument.startsWith("--route="),
-  );
-if (unknownArguments.length > 0) {
-  throw new Error(`Unknown arguments: ${unknownArguments.join(", ")}`);
-}
-const states = [
-  "loading",
-  "empty",
-  "error",
-  "offline",
-  "permission_denied",
-  "disabled",
-  "focused",
-  "pressed",
-  "selected",
-  "large_text",
-  "reduced_motion",
-  "dark",
-  "light",
-  "syncing",
-  "conflict",
-  "security_timeout",
-];
+const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const webRelative = "apps/rayon_sports/web";
+const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const read = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const equal = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const relative = (root, file) => path.relative(root, file).split(path.sep).join("/");
+const filename = (name) => typeof name === "string" && /^[a-zA-Z0-9_.-]+$/.test(name) && ![".", ".."].includes(name);
+const sha = (value) => typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 
-const routes = [
-  [
-    "admin-pwa-predictions-rendered-states",
-    "admin_pwa",
-    "/admin/predictions",
-    "admin_pwa_predictions_states",
-    "apps/rayon_sports/web/e2e/admin-predictions-state-evidence.spec.ts",
-  ],
-  [
-    "admin-pwa-settings-rendered-states",
-    "admin_pwa",
-    "/admin/settings",
-    "admin_pwa_settings_states",
-    "apps/rayon_sports/web/e2e/admin-settings-state-evidence.spec.ts",
-  ],
-  [
-    "admin-pwa-settings-audit-rendered-states",
-    "admin_pwa",
-    "/admin/settings/audit",
-    "admin_pwa_settings_audit_states",
-    "apps/rayon_sports/web/e2e/admin-settings-audit-state-evidence.spec.ts",
-  ],
-  [
-    "admin-pwa-settings-features-rendered-states",
-    "admin_pwa",
-    "/admin/settings/features",
-    "admin_pwa_settings_features_states",
-    "apps/rayon_sports/web/e2e/admin-settings-features-state-evidence.spec.ts",
-  ],
-  [
-    "admin-pwa-settings-runtime-rendered-states",
-    "admin_pwa",
-    "/admin/settings/runtime",
-    "admin_pwa_settings_runtime_states",
-    "apps/rayon_sports/web/e2e/admin-settings-runtime-state-evidence.spec.ts",
-  ],
-  [
-    "admin-pwa-shop-rendered-states",
-    "admin_pwa",
-    "/admin/shop",
-    "admin_pwa_shop_states",
-    "apps/rayon_sports/web/e2e/admin-shop-state-evidence.spec.ts",
-  ],
-  [
-    "admin-pwa-sms-monitor-rendered-states",
-    "admin_pwa",
-    "/admin/sms-monitor",
-    "admin_pwa_sms_monitor_states",
-    "apps/rayon_sports/web/e2e/admin-sms-monitor-state-evidence.spec.ts",
-  ],
-  [
-    "admin-pwa-tickets-rendered-states",
-    "admin_pwa",
-    "/admin/tickets",
-    "admin_pwa_tickets_states",
-    "apps/rayon_sports/web/e2e/admin-tickets-state-evidence.spec.ts",
-  ],
-  [
-    "admin-pwa-ticket-verifiers-rendered-states",
-    "admin_pwa",
-    "/admin/tickets/verifiers",
-    "admin_pwa_ticket_verifiers_states",
-    "apps/rayon_sports/web/e2e/admin-ticket-verifiers-state-evidence.spec.ts",
-    [
-      "apps/rayon_sports/web/src/app/admin/tickets/verifiers/page.tsx",
-      "apps/rayon_sports/web/src/lib/data/admin/ticket-verifiers.ts",
-    ],
-  ],
-  [
-    "admin-pwa-venues-rendered-states",
-    "admin_pwa",
-    "/admin/venues",
-    "admin_pwa_venues_states",
-    "apps/rayon_sports/web/e2e/admin-venues-state-evidence.spec.ts",
-  ],
-  [
-    "venue-portal-overview-rendered-states",
-    "venue_portal",
-    "/venue",
-    "venue_portal_overview_states",
-    "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
-  ],
-  [
-    "venue-portal-orders-rendered-states",
-    "venue_portal",
-    "/venue/orders",
-    "venue_portal_orders_states",
-    "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
-  ],
-  [
-    "venue-portal-menu-rendered-states",
-    "venue_portal",
-    "/venue/menu",
-    "venue_portal_menu_states",
-    "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
-  ],
-  [
-    "venue-portal-checkins-rendered-states",
-    "venue_portal",
-    "/venue/checkins",
-    "venue_portal_checkins_states",
-    "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
-  ],
-  [
-    "venue-portal-promotions-rendered-states",
-    "venue_portal",
-    "/venue/promotions",
-    "venue_portal_promotions_states",
-    "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
-  ],
-  [
-    "venue-portal-staff-rendered-states",
-    "venue_portal",
-    "/venue/staff",
-    "venue_portal_staff_states",
-    "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
-  ],
-  [
-    "venue-portal-ticket-verification-rendered-states",
-    "venue_portal",
-    "/venue/tickets/verify",
-    "venue_portal_ticket_verification_states",
-    "apps/rayon_sports/web/e2e/venue-route-state-evidence.spec.ts",
-    [
-      "apps/rayon_sports/web/src/app/venue/tickets/verify/page.tsx",
-      "apps/rayon_sports/web/src/app/venue/_components/controlled-venue-route.tsx",
-    ],
-  ],
-];
-
-const selectedRoutes =
-  requestedRoute == null
-    ? routes
-    : routes.filter(([, , route]) => route === requestedRoute);
-if (selectedRoutes.length === 0) {
-  throw new Error(`Unknown governed web route: ${requestedRoute}`);
+function below(root, file) {
+  const result = path.relative(root, file);
+  return result !== "" && result !== ".." && !result.startsWith(`..${path.sep}`) && !path.isAbsolute(result);
 }
 
-function readJson(relativePath) {
-  return JSON.parse(fs.readFileSync(path.join(root, relativePath), "utf8"));
+function regular(file) {
+  assert(fs.lstatSync(file).isFile(), `Evidence must be a regular file: ${file}`);
+  return fs.readFileSync(file);
 }
 
-function writeJson(relativePath, value) {
-  fs.writeFileSync(
-    path.join(root, relativePath),
-    `${JSON.stringify(value, null, 2)}\n`,
-  );
-}
+export async function validateWebCapture(root, directory, binding) {
+  const output = path.join(root, "output");
+  const full = path.resolve(root, directory);
+  assert(below(output, full), "Capture directory must be inside repository output/");
+  assert(fs.realpathSync(full) === full, "Capture path must not traverse symlinks");
+  const provenanceBytes = regular(path.join(full, "runtime-provenance.json"));
+  const provenance = JSON.parse(provenanceBytes);
+  assert(provenance.schema_version === "1.0" && provenance.status === "capture_complete_unreviewed", "Capture is incomplete or has unsupported provenance");
+  assert(provenance.acceptance === "unreviewed_engineering_evidence" && provenance.data_source === "controlled_synthetic_browser_states", "Expected explicitly unreviewed synthetic browser evidence");
+  assert(equal(provenance.production_build, binding) && provenance.next_build_id === binding.build_id, "Capture does not match the current sealed production build");
+  assert(Number.isFinite(Date.parse(provenance.started_at)) && Date.parse(provenance.finished_at) >= Date.parse(provenance.started_at) && Date.parse(provenance.started_at) >= Date.parse(binding.finished_at), "Capture timestamps do not follow its completed build");
+  assert(typeof provenance.project === "string" && provenance.project.length > 0 && ["chromium", "firefox", "webkit"].includes(provenance.browser?.name) && typeof provenance.browser.version === "string", "Capture lacks its real browser/project identity");
+  const testFile = path.resolve(root, provenance.test_source_file ?? "");
+  assert(below(path.join(root, webRelative, "e2e"), testFile), "Capture test source must be a web E2E file");
+  for (const [file, expected] of [
+    [testFile, provenance.test_source_sha256],
+    [path.join(root, webRelative, "e2e/state-evidence-provenance.ts"), provenance.provenance_helper_sha256],
+    [path.join(root, webRelative, "package-lock.json"), provenance.package_lock_sha256],
+  ]) assert(sha(expected) && hash(regular(file)) === expected, `Capture source is stale: ${relative(root, file)}`);
 
-function evidenceFiles(directory, requiredSourcePaths) {
-  const absoluteDirectory = path.join(root, evidenceRoot, directory);
-  const files = fs.readdirSync(absoluteDirectory).sort();
-  const screenshots = files
-    .filter((file) => file.endsWith(".png"))
-    .map((file) => `${evidenceRoot}/${directory}/${file}`);
-  const evidenceJson = files.find(
-    (file) => file.endsWith(".json") && file !== "build-provenance.json",
-  );
-  if (!evidenceJson) {
-    throw new Error(
-      `${directory} must contain a machine-readable state-evidence JSON file`,
-    );
+  assert(Array.isArray(provenance.artifacts) && provenance.artifacts.length > 0, "Capture has no artifact inventory");
+  const artifacts = new Map();
+  for (const item of provenance.artifacts) {
+    assert(filename(item.file) && item.file !== "runtime-provenance.json" && sha(item.sha256) && !artifacts.has(item.file), "Invalid or repeated capture artifact");
+    assert(hash(regular(path.join(full, item.file))) === item.sha256, `Capture artifact changed: ${item.file}`);
+    artifacts.set(item.file, item.sha256);
   }
-  const evidence = readJson(`${evidenceRoot}/${directory}/${evidenceJson}`);
-  const applicableStates = evidence.applicable_states;
-  if (
-    !Array.isArray(applicableStates) ||
-    applicableStates.length !== states.length ||
-    !states.every((state, index) => applicableStates[index] === state)
-  ) {
-    throw new Error(
-      `${directory} must declare the exact ordered sixteen-state catalog`,
-    );
-  }
-  if (
-    !Array.isArray(evidence.not_applicable_states) ||
-    evidence.not_applicable_states.length !== 0
-  ) {
-    throw new Error(`${directory} must not mark governed route states N/A`);
-  }
-  if (!Array.isArray(evidence.captures)) {
-    throw new Error(`${directory} must declare its screenshot captures`);
-  }
-  for (const state of states) {
-    const matching = evidence.captures.filter(
-      (capture) => capture?.state === state,
-    );
-    if (matching.length !== 1) {
-      throw new Error(
-        `${directory} must declare exactly one ${state} capture, found ${matching.length}`,
-      );
+  const actual = fs.readdirSync(full).filter((file) => file !== "runtime-provenance.json").sort();
+  assert(equal(actual, [...artifacts.keys()].sort()), "Capture directory differs from its completed artifact inventory");
+  const manifests = actual.filter((file) => file.endsWith("state-evidence.json"));
+  assert(manifests.length === 1 && artifacts.has("capture-profiles.json"), "Capture needs one state manifest and recorded profiles");
+  const manifest = read(path.join(full, manifests[0]));
+  const profiles = read(path.join(full, "capture-profiles.json"));
+  assert(Array.isArray(manifest.captures) && manifest.captures.length > 0, "No declared state captures");
+  assert(Array.isArray(manifest.applicable_states) && Array.isArray(manifest.not_applicable_states), "State applicability must be explicit");
+  assert(new Set(manifest.applicable_states).size === manifest.applicable_states.length && !manifest.applicable_states.some((state) => manifest.not_applicable_states.includes(state)), "Contradictory state applicability");
+  if (manifest.not_applicable_states.length) assert(typeof manifest.not_applicable_rationale === "string" && manifest.not_applicable_rationale.trim().length > 0, "N/A states require a reason");
+  const require = createRequire(path.join(repository, webRelative, "package.json"));
+  const sharp = require("sharp");
+  const screenshots = [], cells = new Set(), baseFiles = new Set();
+  for (const capture of manifest.captures) {
+    const route = capture.route ?? manifest.route;
+    assert(typeof route === "string" && /^\/(?!\/)/.test(route) && !/[?#]/.test(route), "Capture must identify a local route");
+    assert(typeof capture.state === "string" && (manifest.applicable_states.includes(capture.state) || ["responsive_tablet", "responsive_compact"].includes(capture.state)), "Capture state is outside its applicability catalog");
+    const cell = `${route}|${capture.state}`;
+    assert(!cells.has(cell) && filename(capture.file) && !baseFiles.has(capture.file), "Repeated state or screenshot in capture manifest");
+    cells.add(cell); baseFiles.add(capture.file);
+    const profile = profiles[capture.file];
+    assert(profile && equal(profile, capture.capture_profile), "State manifest lacks the original recorded capture profile");
+    for (const value of [profile.viewport?.width, profile.viewport?.height, profile.document?.width, profile.document?.height, profile.device_pixel_ratio]) assert(Number.isFinite(value) && value > 0, "Invalid capture viewport/document/DPR");
+    assert(typeof profile.user_agent === "string" && ["dark", "light"].includes(profile.prefers_color_scheme) && typeof profile.prefers_reduced_motion === "boolean", "Capture profile lacks input/media identity");
+    assert(Array.isArray(profile.tiles) && profile.tiles.length > 0, "Capture has no screenshot coverage");
+    let y = 0;
+    for (const tile of profile.tiles) {
+      assert(filename(tile.file) && tile.file.endsWith(".png") && artifacts.has(tile.file) && tile.y === y && Number.isFinite(tile.height) && tile.height > 0, "Invalid or discontinuous screenshot tile");
+      assert(!screenshots.some((entry) => entry.file === tile.file), "Screenshot tile is used twice");
+      const file = path.join(full, tile.file);
+      const image = sharp(file, { failOn: "warning", limitInputPixels: 200_000_000 });
+      const metadata = await image.metadata();
+      await image.stats(); // Decode the image, including compressed pixel data.
+      const width = (profile.full_page ? profile.document.width : profile.viewport.width) * profile.device_pixel_ratio;
+      assert(metadata.format === "png" && Math.abs(metadata.width - width) <= 1 && Math.abs(metadata.height - tile.height * profile.device_pixel_ratio) <= 1, `Screenshot dimensions do not match the recorded profile: ${tile.file}`);
+      screenshots.push({ file: tile.file, sha256: artifacts.get(tile.file), width: metadata.width, height: metadata.height });
+      y += tile.height;
     }
+    assert(y === (profile.full_page ? profile.document.height : profile.viewport.height), "Screenshot coverage is incomplete");
   }
-  const responsiveCaptures = evidence.captures.filter((capture) =>
-    capture?.state?.startsWith("responsive_"),
-  );
-  if (responsiveCaptures.length < 2) {
-    throw new Error(
-      `${directory} must declare at least tablet and compact responsive captures`,
-    );
-  }
-  const declaredScreenshots = evidence.captures
-    .map((capture) => capture?.file)
-    .filter((file) => typeof file === "string")
-    .sort();
-  const actualScreenshots = screenshots
-    .map((file) => path.basename(file))
-    .sort();
-  if (
-    declaredScreenshots.length !== evidence.captures.length ||
-    JSON.stringify(declaredScreenshots) !== JSON.stringify(actualScreenshots)
-  ) {
-    throw new Error(
-      `${directory} screenshot files must exactly match the state-evidence manifest`,
-    );
-  }
-  const capturedAtMs = Math.max(
-    ...screenshots.map((file) =>
-      fs.statSync(path.join(root, file)).mtime.getTime(),
-    ),
-    fs.statSync(path.join(absoluteDirectory, evidenceJson)).mtime.getTime(),
-  );
-  const requiredSourceMtimeMs = Math.max(
-    ...requiredSourcePaths.map((sourcePath) =>
-      fs.statSync(path.join(root, sourcePath)).mtime.getTime(),
-    ),
-  );
-  if (capturedAtMs < requiredSourceMtimeMs) {
-    throw new Error(
-      `${directory} evidence predates a required route/spec source and must be rerun`,
-    );
-  }
-  const capturedAt = toWholeSecondIso(capturedAtMs);
-  return {
-    screenshots,
-    supportingEvidence: `${evidenceRoot}/${directory}/${evidenceJson}`,
-    capturedAt,
-  };
+  assert(equal([...baseFiles].sort(), Object.keys(profiles).sort()), "Unexpected capture profiles");
+  assert(equal(screenshots.map((entry) => entry.file).sort(), actual.filter((file) => file.endsWith(".png")).sort()), "Undeclared screenshot files");
+  const routes = [...new Set([...cells].map((cell) => cell.split("|")[0]))];
+  for (const route of routes) for (const state of manifest.applicable_states) assert(cells.has(`${route}|${state}`), `Missing applicable capture: ${route}|${state}`);
+  return { directory: relative(root, full), provenance_sha256: hash(provenanceBytes), manifest: manifests[0],
+    project: provenance.project, browser: provenance.browser, production_build: binding, source_commit_at_capture: provenance.source_commit,
+    tracked_worktree_diff_sha256_at_capture: provenance.tracked_worktree_diff_sha256,
+    test_source_file: provenance.test_source_file, test_source_sha256: provenance.test_source_sha256,
+    helper_sha256: provenance.provenance_helper_sha256, captures: manifest.captures, screenshots,
+    artifact_integrity: "verified", review_status: "pending", applicability_review: "pending",
+    quality_results: { visual_fidelity: "unverified", usability: "unverified", accessibility: "unverified", performance: "unverified", resilience: "unverified" },
+    scope: "Synthetic browser evidence for review. Recorded test assertions are not independent visual, usability, accessibility, performance, resilience or release acceptance." };
 }
 
-const validatedRouteEvidence = new Map(
-  selectedRoutes.map(
-    ([, surface, , directory, testEvidence, routeSources = []]) => [
-      directory,
-      evidenceFiles(directory, [
-        testEvidence,
-        ...routeSources,
-        ...(surface === "venue_portal"
-          ? [
-              "apps/rayon_sports/web/src/app/venue/_components/controlled-venue-route.tsx",
-              "apps/rayon_sports/web/src/app/venue/_components/venue-shell-client.tsx",
-              "apps/rayon_sports/web/src/ui-kit/theme.css",
-            ]
-          : ["apps/rayon_sports/web/e2e/admin-state-evidence-manifest.ts"]),
-      ]),
-    ],
-  ),
-);
-
-if (!admissionRequested) {
-  console.log(
-    `Preflight passed for ${selectedRoutes.length} web route-state bundles; registries were not changed. Re-run with --admit-reviewed only after visual review.`,
-  );
-  process.exit(0);
+export async function stageWebEvidence(root, args) {
+  assert(!args.includes("--admit-reviewed"), "--admit-reviewed cannot grant acceptance. Stage captures for a named independent review; no review or acceptance is generated by this command.");
+  const directories = args.filter((arg) => arg.startsWith("--capture-dir=")).map((arg) => arg.slice(14));
+  const outputs = args.filter((arg) => arg.startsWith("--output=")).map((arg) => arg.slice(9));
+  assert(args.length === directories.length + outputs.length && directories.length > 0 && outputs.length === 1 && new Set(directories).size === directories.length,
+    "Use --capture-dir=output/<completed-capture> (repeat as needed) --output=output/<new-review-packet.json>");
+  const target = path.resolve(root, outputs[0]);
+  assert(below(path.join(root, "output"), target) && target.endsWith(".json"), "Review packet must be a new JSON file under output/");
+  assert(!fs.existsSync(target), "Review packet already exists; choose a new path to preserve previous review work");
+  let ancestor = path.dirname(target);
+  while (!fs.existsSync(ancestor)) ancestor = path.dirname(ancestor);
+  assert(fs.realpathSync(ancestor) === ancestor, "Review packet path must not traverse symlinks");
+  const binding = validateProductionBuild(path.join(root, webRelative));
+  const captures = [];
+  for (const directory of directories) captures.push(await validateWebCapture(root, directory, binding));
+  assert(equal(binding, validateProductionBuild(path.join(root, webRelative))), "Build changed while validating captures");
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  assert(fs.realpathSync(path.dirname(target)) === path.dirname(target), "Review packet path must not traverse symlinks");
+  const packet = { schema_version: 1, staged_at: new Date().toISOString(), review_status: "pending", acceptance: "unreviewed_engineering_evidence", production_build: binding,
+    governance_registries_changed: false, captures };
+  fs.writeFileSync(target, JSON.stringify(packet, null, 2) + "\n", { flag: "wx" });
+  return { packet: relative(root, target), captures: captures.length, screenshots: captures.reduce((sum, item) => sum + item.screenshots.length, 0), review_status: "pending", governance_registries_changed: false };
 }
 
-const routeRegistryPath = "docs/governance/route-state-evidence.json";
-const routeRegistry = readJson(routeRegistryPath);
-const routeIds = new Set(selectedRoutes.map(([id]) => id));
-routeRegistry.groups = routeRegistry.groups.filter(
-  (group) => !routeIds.has(group.id),
-);
-
-for (const [id, surface, route, directory, testEvidence] of selectedRoutes) {
-  const { screenshots, supportingEvidence } =
-    validatedRouteEvidence.get(directory);
-  const proof = supportingEvidence;
-  const isVenue = surface === "venue_portal";
-  routeRegistry.groups.push({
-    id,
-    admission_status: "admitted",
-    cells: states.map((state) => `${surface}|${route}|next_page|${state}`),
-    test_evidence: [
-      testEvidence,
-      ...(isVenue
-        ? ["apps/rayon_sports/web/src/lib/controlled-venue-evidence.test.ts"]
-        : ["apps/rayon_sports/web/src/lib/controlled-admin-evidence.test.ts"]),
-      "packages/app_registry/test/route_inventory_generation_test.dart",
-    ],
-    screenshot_evidence: screenshots,
-    accessibility_evidence: [proof],
-    performance_evidence: [proof],
-    privacy_evidence: [
-      `${evidenceRoot}/evidence-privacy-validation.json`,
-      proof,
-    ],
-    platform_build_evidence: [proof],
-    disposition_note: isVenue
-      ? "The football-secondary venue operations route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves deterministic synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe venue copy. Live venue authorization and records, payment/order integration, alcohol and age-policy approval, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open."
-      : "The authenticated Admin PWA route has exact controlled production-build evidence for all sixteen governed states plus tablet and compact layouts. The reviewed evidence proves bounded synthetic records, retained safe snapshots, authorization denial, offline, conflict and timeout consequences, real focus, held press and selection, 200-percent reflow, reduced motion, dark and light contrast, 48-pixel controls, and privacy-safe operator copy. Live role and RLS behavior, cross-role mutation UAT, physical assistive technology, named review, pinned CI, deployment, signing, stores, and release approval remain open.",
-    owner: isVenue
-      ? "Venue portal operations, authorization, privacy, accessibility, responsive, and evidence QA"
-      : "Admin PWA authorization, privacy, accessibility, responsive, and evidence QA",
-    reviewed_at: reviewedAt,
-  });
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  try { console.log(JSON.stringify(await stageWebEvidence(repository, process.argv.slice(2)), null, 2)); }
+  catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-routeRegistry.generated_at = generatedAt;
-writeJson(routeRegistryPath, routeRegistry);
-
-const bundleRegistryPath = "docs/governance/evidence-bundles.json";
-const bundleRegistry = readJson(bundleRegistryPath);
-const bundleDirectories = new Set(
-  selectedRoutes.map(([, , , directory]) => `${evidenceRoot}/${directory}`),
-);
-bundleRegistry.bundles = bundleRegistry.bundles.filter(
-  (bundle) => !bundleDirectories.has(bundle.directory),
-);
-
-for (const [id, surface, route, directory] of selectedRoutes) {
-  const isVenue = surface === "venue_portal";
-  const { capturedAt } = validatedRouteEvidence.get(directory);
-  bundleRegistry.bundles.push({
-    id: `${id}-${capturedAt.slice(0, 10).replaceAll("-", "")}`,
-    admission_status: "admitted",
-    directory: `${evidenceRoot}/${directory}`,
-    artifact_scope: "immediate",
-    task_ids: [
-      "STATE-01",
-      "EVID-02",
-      "EVID-03",
-      "EVID-04",
-      "EVID-05",
-      "EVID-08",
-      isVenue ? "VENUE-PORTAL-LOCAL" : "ADMIN-PWA-LOCAL",
-      "REL-07",
-    ],
-    baseline_commit: baselineCommit,
-    dirty_state: true,
-    app_version: appVersion,
-    build_number: buildNumber,
-    flavor: `${surface}_production_local_controlled_${directory}_evidence`,
-    platform: "nextjs_production_build_playwright_chromium",
-    runtime_device:
-      "Node 24.18.0; npm 11.16.0; Next.js 16.3.0; Playwright 1.59.1; Chromium desktop, tablet, and compact profiles",
-    viewport_profiles: [
-      { width: 1440, height: 1000, device_pixel_ratio: 1 },
-      { width: 1024, height: 900, device_pixel_ratio: 1 },
-      { width: 390, height: 844, device_pixel_ratio: 1 },
-    ],
-    locale: "en",
-    themes: [
-      "dark",
-      "light",
-      "large_text_200_percent",
-      "reduced_motion",
-      "offline",
-    ],
-    captured_at: capturedAt,
-    data_source: `current_dirty_local_source_and_synthetic_non_production_browser_states_for_${surface}_${route.replaceAll("/", "_")}_with_explicit_two_key_loopback_only_evidence_and_no_protected_api_or_mutation_bypass_or_live_release_claim`,
-  });
-}
-writeJson(bundleRegistryPath, bundleRegistry);
-
-console.log(
-  `Registered ${selectedRoutes.length} web route-state groups and bundles.`,
-);

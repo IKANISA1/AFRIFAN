@@ -2,7 +2,7 @@
   --member-ink: #07111f;
   --member-blue: #2161ed;
   --member-gold: #f3bf42;
-  background: #f3f5f8;
+  background: linear-gradient(180deg, #07111f 0 7rem, #f3f5f8 7rem);
 }
 
 .membership-surface .circles-hero {
@@ -45,8 +45,9 @@
 .membership-surface .circles-actions { backdrop-filter: blur(18px); }
 
 .member-portal {
-  display: grid;
-  grid-template-columns: minmax(0, .8fr) minmax(34rem, 1.2fr);
+  display: flex;
+  flex-wrap: wrap;
+  container-type: inline-size;
   gap: clamp(2rem, 5vw, 5rem);
   padding: clamp(2rem, 6vw, 5rem);
   color: var(--member-ink);
@@ -55,7 +56,8 @@
   box-shadow: 0 30px 90px rgba(7,17,31,.12);
 }
 
-.member-portal-intro { position: sticky; top: 7.5rem; align-self: start; padding-block: 1rem; }
+.member-portal > * { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.member-portal-intro { flex: .8 1 20rem; position: sticky; top: 7.5rem; align-self: start; padding-block: 1rem; }
 .member-portal-kicker,
 .member-step {
   display: block;
@@ -95,6 +97,7 @@
 .member-trust-row svg { width: 1rem; color: var(--member-blue); }
 
 .member-portal-panel {
+  flex: 1.2 1 28rem;
   min-height: 34rem;
   padding: clamp(1.25rem, 3.5vw, 3rem);
   color: white;
@@ -102,6 +105,7 @@
   border-top: 4px solid var(--member-blue);
   box-shadow: 0 28px 70px rgba(4,12,25,.22);
 }
+.member-portal-panel .member-step { color: #8db5ff; }
 .member-auth-form { display: grid; align-content: center; min-height: 28rem; max-width: 37rem; margin-inline: auto; }
 .member-auth-form h3,
 .member-dashboard h3 {
@@ -147,7 +151,7 @@
   border-radius: 0;
   outline: none;
 }
-.member-input-shell input { padding-inline: 0; border: 0; }
+.member-input-shell input { min-width: 0; padding-inline: 0; border: 0; }
 .member-otp-input {
   font-family: var(--font-mono), monospace;
   font-size: clamp(2rem, 6vw, 3.8rem);
@@ -247,7 +251,11 @@
 .member-empty-history { margin-top: 1rem; }
 
 @media (max-width: 980px) {
-  .member-portal { grid-template-columns: 1fr; }
+  .member-portal > * { flex-basis: 100%; }
+  .member-portal-intro { position: static; }
+}
+
+@container (max-width: 50rem) {
   .member-portal-intro { position: static; }
 }
 

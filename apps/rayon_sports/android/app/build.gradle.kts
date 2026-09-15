@@ -22,6 +22,18 @@ val isReleaseBuildRequested = requestedTaskNames.any { taskName ->
     taskName.contains("release")
 }
 
+// Aggregate tasks such as assemble can include release without naming it.
+if (isolatedNonReleaseApplicationIdSuffix != null) {
+    require(Regex("\\.[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)*").matches(isolatedNonReleaseApplicationIdSuffix)) {
+        "africlubDebugApplicationIdSuffix must be a nonempty dotted package suffix."
+    }
+    gradle.taskGraph.whenReady {
+        if (allTasks.any { it.project == project && it.name.contains("release", ignoreCase = true) }) {
+            error("africlubDebugApplicationIdSuffix is allowed only for isolated debug/profile device validation.")
+        }
+    }
+}
+
 val keystoreProperties = Properties()
 val keystorePropertiesFiles = listOf(rootProject.file("keystore.properties"))
 for (propertiesFile in keystorePropertiesFiles) {

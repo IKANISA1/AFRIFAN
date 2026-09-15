@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import {
@@ -27,7 +28,7 @@ const timestamp = "2026-07-30T09:00:00.000Z";
 const profile = {
   id: 24,
   clubName: "Verified Rayon Sports FC",
-  clubSlug: "rayon-sports",
+  clubSlug: "rayon_sports_rw",
   shortName: "Rayon",
   nickname: "Gikundiro",
   countryCode: "RW",
@@ -94,20 +95,64 @@ async function expectNoHorizontalOverflow(page: Page) {
   );
 }
 
+async function expectBrandPreviewContentVisible(page: Page) {
+  const preview = page.locator("section").filter({
+    has: page.getByText("Brand preview", { exact: true }),
+  });
+  const clipped = await preview.evaluate((element) => {
+    const panel = element.getBoundingClientRect();
+    const problems: string[] = [];
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (!node.textContent?.trim()) continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      for (const rect of range.getClientRects()) {
+        if (rect.width > 0 && (rect.left < panel.left - 1 || rect.right > panel.right + 1)) {
+          problems.push(`Outside preview: ${node.textContent}`);
+        }
+      }
+    }
+    for (const label of element.querySelectorAll("p")) {
+      if (!["Club slug", "Numeric id"].includes(label.textContent?.trim() ?? "")) continue;
+      const value = label.nextElementSibling;
+      if (!value || !value.parentElement) throw new Error("Missing locked identity value");
+      const card = value.parentElement.getBoundingClientRect();
+      const range = document.createRange();
+      range.selectNodeContents(value);
+      for (const rect of range.getClientRects()) {
+        if (rect.width > 0 && (rect.left < card.left - 1 || rect.right > card.right + 1)) {
+          problems.push(`Outside identity card: ${value.textContent}`);
+        }
+      }
+    }
+    return problems;
+  });
+  expect(clipped).toEqual([]);
+}
+
 async function runMatrix(browser: Browser) {
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    "../../../output/evidence/admin_pwa_settings_states",
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_settings_states");
   const context = await browser.newContext({
+    // These states use routed API fixtures. Actual worker lifecycle has a
+    // separate real-backend suite; worker fetches bypass fixture routing.
+    serviceWorkers: "block",
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
   await installEvidenceNavigationStability(context);
+  const hydrationErrors: string[] = [];
+  context.on("page", (openedPage) => openedPage.on("pageerror", (error) => {
+    if (/hydration|Minified React error #418/i.test(error.message)) {
+      hydrationErrors.push(error.message);
+    }
+  }));
   let page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
   let savedBody: Record<string, unknown> | null = null;
 
@@ -154,7 +199,7 @@ async function runMatrix(browser: Browser) {
 
   const surface = () => page.locator(".admin-settings-state-surface").first();
   const open = (nonce: string) =>
-    page.goto(`/admin/settings?evidence=${nonce}`, {
+    navigateStateEvidence(page, `/admin/settings?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   const expectStatus = async (status: string, label: RegExp) => {
@@ -181,7 +226,7 @@ async function runMatrix(browser: Browser) {
       .toEqual({ x: 0, y: 0 });
     await settleVisuals(page);
     await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
         `admin_settings_state_${state}_${state === "light" ? "light" : "dark"}_${profileName}.png`,
@@ -217,6 +262,17 @@ async function runMatrix(browser: Browser) {
   responseMode = "ready";
   await open("offline");
   await expectStatus("ready", /club settings confirmed/i);
+  // Root scrollWidth alone misses content clipped by the admin shell.
+  for (const [width, textPercent] of [[1440, 100], [320, 100], [1440, 200], [320, 200]]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.evaluate((value) => {
+      document.documentElement.style.fontSize = `${value}%`;
+    }, textPercent);
+    await settleVisuals(page);
+    await expectBrandPreviewContentVisible(page);
+  }
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.evaluate(() => { document.documentElement.style.fontSize = ""; });
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus("offline", /club settings are offline/i);
@@ -255,21 +311,14 @@ async function runMatrix(browser: Browser) {
     "focused",
   );
   await capture("focused");
-  await refresh.dispatchEvent("pointerdown", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await refresh.hover();
+  await page.mouse.down();
   await expect(surface()).toHaveAttribute(
     "data-admin-settings-interaction",
     "pressed",
   );
   await capture("pressed");
-  await refresh.dispatchEvent("pointerup", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await page.mouse.up();
 
   await page.getByRole("tab", { name: "Related controls" }).click();
   await expect(surface()).toHaveAttribute(
@@ -393,6 +442,8 @@ async function runMatrix(browser: Browser) {
 
   await page.close();
   page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.setViewportSize({ width: 390, height: 844 });
   await open("compact");
   await expectStatus("ready", /club settings confirmed/i);
@@ -424,10 +475,10 @@ async function runMatrix(browser: Browser) {
         schema_version: "1.0",
         route: "/admin/settings",
         surface: "admin_pwa",
-        exact_profile: "Chromium desktop 1440x1000 at 1 DPR",
+        exact_profile: `${browser.browserType().name()} desktop 1440x1000 at 1 DPR`,
         responsive_profiles: [
-          "Chromium tablet 1024x900 at 1 DPR",
-          "Chromium compact 390x844 at 1 DPR",
+          `${browser.browserType().name()} tablet 1024x900 at 1 DPR`,
+          `${browser.browserType().name()} compact 390x844 at 1 DPR`,
         ],
         applicable_states: governedStates,
         not_applicable_states: [],
@@ -474,6 +525,8 @@ async function runMatrix(browser: Browser) {
       2,
     )}\n`,
   );
+  expect(hydrationErrors).toEqual([]);
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }
 

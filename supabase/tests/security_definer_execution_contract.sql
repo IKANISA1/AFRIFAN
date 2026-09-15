@@ -7,6 +7,8 @@ create temporary table expected_anonymous_security_definer_functions (
 ) on commit drop;
 
 insert into expected_anonymous_security_definer_functions (signature) values
+  ('public.resolve_club_public_link_v1(p_club_id bigint, p_source_path text)'),
+  ('public.club_public_content_manifest_v1(p_club_id bigint)'),
   ('public.club_public_overview(p_club_id bigint)'),
   ('public.club_public_history(p_club_id bigint)'),
   ('public.predict_dashboard(p_club_id bigint)'),
@@ -54,7 +56,7 @@ select is(
 
 select is(
   (select count(*)::integer from actual_anonymous_security_definer_functions),
-  17,
+  19,
   'anonymous execution is limited to the governed endpoint count'
 );
 
@@ -101,6 +103,9 @@ create temporary table expected_authenticated_security_definer_functions (
 ) on commit drop;
 
 insert into expected_authenticated_security_definer_functions (signature) values
+  ('resolve_club_public_link_v1(bigint,text)'),
+  ('club_public_content_manifest_v1(bigint)'),
+  ('membership_qualification_v1(bigint)'),
   ('activate_free_fan_membership()'),
   ('admin_get_shop_products(integer,integer,boolean)'),
   ('bootstrap_supporter_profile(bigint,text,text,text,text)'),
@@ -177,7 +182,7 @@ where p.prosecdef
 
 select is(
   (select count(*)::integer from actual_authenticated_security_definer_functions),
-  65,
+  68,
   'authenticated execution is limited to the governed endpoint count'
 );
 

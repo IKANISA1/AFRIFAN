@@ -3,12 +3,12 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-SOURCE_DESIGN="${SOURCE_DESIGN:-$ROOT/DESIGN.md}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 OUT_DIR="${OUT_DIR:-$ROOT/output/design_compliance/$STAMP}"
 REPORT="$OUT_DIR/report.md"
 VALIDATION="$OUT_DIR/VALIDATION.json"
+AUTHORITY_BINDING_JSON="$OUT_DIR/design-authority-binding.json"
 MATRIX="$OUT_DIR/route_evidence_matrix.md"
 VIOLATIONS="$OUT_DIR/violations.txt"
 WARNINGS="$OUT_DIR/warnings.txt"
@@ -46,6 +46,19 @@ record_warning() {
       printf '%s\n\n' "$content"
     } >>"$WARNINGS"
   fi
+}
+
+governed_club_crest() {
+  local asset="$ROOT/packages/features/feat_club/assets/crests/rayon_sports.png"
+  local manifest="$ROOT/packages/features/feat_club/assets/crests/SOURCES.md"
+  local expected_sha=""
+  [ -f "$asset" ] && [ -f "$manifest" ] || return 1
+  rg -F -q '`rayon_sports.png`' "$manifest" || return 1
+  rg -q -i 'source:\s*`https://' "$manifest" || return 1
+  rg -q -i '(approval|right[- ]to[- ]use|rights).*(recorded|required|approved)' "$manifest" || return 1
+  expected_sha="$(sed -n 's/^- SHA-256: `\([0-9a-f]\{64\}\)`$/\1/p' "$manifest")"
+  [[ "$expected_sha" =~ ^[0-9a-f]{64}$ ]] || return 1
+  [ "$(shasum -a 256 "$asset" | awk '{print $1}')" = "$expected_sha" ]
 }
 
 governed_store_release_media() {
@@ -139,17 +152,18 @@ record_violation "Native launcher asset governance" "$native_launcher_manifest_e
 checksum_status="fail"
 repo_design_sha=""
 source_design_sha=""
-if [ -f "$ROOT/DESIGN.md" ] && [ -f "$SOURCE_DESIGN" ]; then
-  repo_design_sha="$(shasum -a 256 "$ROOT/DESIGN.md" | awk '{print $1}')"
-  source_design_sha="$(shasum -a 256 "$SOURCE_DESIGN" | awk '{print $1}')"
-  if [ "$repo_design_sha" = "$source_design_sha" ]; then
-    checksum_status="pass"
-  fi
+source_authority_path=""
+if EXCEPTIONS_REGISTER="$EXCEPTIONS_REGISTER" \
+  node "$ROOT/tools/scripts/validate_design_authority.mjs" >"$AUTHORITY_BINDING_JSON"; then
+  checksum_status="pass"
 fi
+repo_design_sha="$(jq -r '.product_adapter_sha256 // ""' "$AUTHORITY_BINDING_JSON")"
+source_design_sha="$(jq -r '.authority_sha256 // ""' "$AUTHORITY_BINDING_JSON")"
+source_authority_path="$(jq -r '.authority_path // "unavailable"' "$AUTHORITY_BINDING_JSON")"
 
 if [ "$checksum_status" != "pass" ]; then
-  record_violation "DESIGN.md checksum" \
-    "Root DESIGN.md does not match $SOURCE_DESIGN."
+  record_violation "Selected design authority binding" \
+    "$(jq -r '.errors[]' "$AUTHORITY_BINDING_JSON")"
 fi
 
 exceptions_status="fail"
@@ -398,47 +412,9 @@ else
   fi
 fi
 
-markdown_files="$(
-  find . \( \
-    -path '*/.git' -o \
-    -path '*/node_modules' -o \
-    -path '*/.dart_tool' -o \
-    -path '*/build' -o \
-    -path '*/.next' -o \
-    -path '*/.open-next' -o \
-    -path '*/test/failures' -o \
-    -path '*/coverage' -o \
-    -path '*/output' \
-  \) -prune -o -type f \( \
-    -name '*.md' -o \
-    -name '*.mdx' \
-  \) -print |
-    sed 's#^\./##' || true
-)"
-
-secondary_design_docs="$(
-  shopt -s nocasematch
-  while IFS= read -r file; do
-    [ -n "$file" ] || continue
-    [ "$file" = "DESIGN.md" ] && continue
-    if [[ "$file" =~ (^|/)(design|.*design.*|screen[_-]?inventory|visual[_-]?baseline|screenshot[_-]?matrix|style[_-]?guide|ui[_-]?audit|ux[_-]?audit).*\.mdx?$ ]]; then
-      printf '%s\n' "$file"
-    fi
-  done <<<"$markdown_files"
-  shopt -u nocasematch
-)"
-record_violation "Secondary design authority docs" "$secondary_design_docs"
-
-secondary_design_content="$(
-  while IFS= read -r file; do
-    [ -n "$file" ] || continue
-    [ "$file" = "DESIGN.md" ] && continue
-    rg -n -i \
-      '\b(source of truth for .*design|product design migration|product design completion|design completion audit|screen inventory|screenshot matrix|visual baseline|style guide)\b' \
-      "$file" || true
-  done <<<"$markdown_files"
-)"
-record_violation "Secondary design authority content" "$secondary_design_content"
+# The selected skill expressly permits product adapters, inventories, galleries
+# and review reports. Their filenames do not make them competing authorities.
+# Verify the actual authority bytes above; evidence closure remains separate.
 
 play_store_media_governed="false"
 play_store_manifest="$ROOT/apps/rayon_sports/store_metadata/play_store/artwork_manifest.json"
@@ -494,6 +470,10 @@ visual_assets="$(
       media_dir="$(dirname "$media_file")"
       media_name="$(basename "$media_file")"
       source_manifest="$media_dir/SOURCES.md"
+      if [ "$normalized" = "packages/features/feat_club/assets/crests/rayon_sports.png" ] &&
+        governed_club_crest; then
+        continue
+      fi
       if [ "$play_store_media_governed" = "true" ] &&
         { [[ "$normalized" =~ ^apps/rayon_sports/android/app/src/main/res/mipmap-[^/]+/ic_launcher\.png$ ]] ||
           [[ "$normalized" == apps/rayon_sports/android/fastlane/metadata/android/en-US/images/* ]]; }; then
@@ -562,13 +542,23 @@ forbidden_static_refs="$(
     -g '!coverage/**' \
     -g '!output/**' |
     rg -v 'packages/core/core_theme/test/ui_source_guardrails_test\.dart' |
+    rg -v 'tools/scripts/design_registered_media\.test\.mjs' |
     rg -v '(^|\./)apps/rayon_sports/android/app/src/main/AndroidManifest\.xml:' |
     rg -v '(^|\./)apps/rayon_sports/ios/Runner\.xcodeproj/project\.pbxproj:' |
     rg -v '(^|\./)apps/rayon_sports/store_metadata/app_store/artwork_manifest\.json:' |
     rg -v '(^|\./)apps/rayon_sports/store_metadata/native_launcher_assets\.json:' |
     rg -v '(^|\./)apps/rayon_sports/store_metadata/source_evidence\.md:' |
     rg -v 'apps/rayon_sports/web/src/app/brand-(mark|surface)\.svg/route\.ts' |
-    rg -v 'tools/scripts/design_compliance_report\.sh' || true
+    rg -v 'tools/scripts/design_compliance_report\.sh' |
+    while IFS= read -r reference; do
+      if [[ "$reference" == ./docs/architecture/club-identity.md:* ||
+            "$reference" == ./packages/features/feat_club/lib/src/widgets/club_crest.dart:* ||
+            "$reference" == ./packages/features/feat_club/pubspec.yaml:* ]] &&
+        governed_club_crest; then
+        continue
+      fi
+      printf '%s\n' "$reference"
+    done || true
 )"
 record_violation "Forbidden static visual references" "$forbidden_static_refs"
 
@@ -684,19 +674,20 @@ if [ "$route_inventory_status" = "pass" ] &&
 fi
 
 {
-  printf '# AFRICLUB DESIGN.md Compliance Report\n\n'
+  printf '# AFRICLUB Design Source and Evidence Report\n\n'
   printf '%s\n' "- Generated: \`$STAMP\`"
   printf '%s\n' "- Root: \`$ROOT\`"
-  printf '%s\n' "- Source design: \`$SOURCE_DESIGN\`"
+  printf '%s\n' "- Selected skill authority: \`$source_authority_path\`"
   printf '%s\n' "- Design exceptions: \`$EXCEPTIONS_REGISTER\`"
   printf '%s\n' "- Generated route inventory: \`$ROUTE_INVENTORY_JSON\`"
   printf '%s\n' "- Route-state closure matrix: \`$ROUTE_STATE_CLOSURE_JSON\`"
   printf '%s\n' "- Screen-archetype coverage: \`$SCREEN_ARCHETYPE_COVERAGE_JSON\`"
   printf '%s\n' "- Universal component inventory: \`$COMPONENT_INVENTORY_JSON\`"
   printf '%s\n' "- Repo DESIGN.md SHA-256: \`$repo_design_sha\`"
-  printf '%s\n\n' "- Source DESIGN.md SHA-256: \`$source_design_sha\`"
+  printf '%s\n\n' "- Selected SKILL.md SHA-256: \`$source_design_sha\`"
   printf '%s\n' "- Automated source-compliance status: \`$status\`"
   printf '%s\n' "- Design-complete conclusion: \`false\`"
+  printf '%s\n' "- MOBILE-DESIGN-100 release acceptance: \`unverified; source controls cannot approve artifacts or reviews\`"
   if [ "$route_evidence_complete" = "true" ]; then
     printf '%s\n\n' "- Route evidence closure: \`complete for the governed local ledger; external human, device, approval, and release gates remain separate\`"
   else
@@ -706,13 +697,13 @@ fi
   printf 'See `%s`.\n\n' "$MATRIX"
   printf '## Violations\n\n'
   if [ "$violation_count" = "0" ]; then
-    printf 'No hard DESIGN.md compliance violations found by this script.\n'
+    printf 'No hard source-control violations found by this script.\n'
   else
     cat "$VIOLATIONS"
   fi
   printf '\n## Warnings\n\n'
   if [ "$warning_count" = "0" ]; then
-    printf 'No advisory DESIGN.md cleanup warnings found by this script.\n'
+    printf 'No advisory source-control warnings found by this script.\n'
   else
     cat "$WARNINGS"
   fi
@@ -723,7 +714,8 @@ python3 - "$VALIDATION" "$status" "$violation_count" "$warning_count" "$REPORT" 
   "$ROUTE_INVENTORY_JSON" "$route_inventory_status" "$ROUTE_STATE_CLOSURE_JSON" \
   "$route_state_closure_status" "$SCREEN_ARCHETYPE_COVERAGE_JSON" \
   "$screen_archetype_coverage_status" "$COMPONENT_INVENTORY_JSON" \
-  "$component_inventory_status" "$route_evidence_complete" "$GENERATED_AT" <<'PY'
+  "$component_inventory_status" "$route_evidence_complete" "$GENERATED_AT" \
+  "$AUTHORITY_BINDING_JSON" <<'PY'
 import json
 import pathlib
 import sys
@@ -734,6 +726,8 @@ payload = {
     "scope": "automated_source_compliance_only",
     "status": sys.argv[2],
     "design_complete": False,
+    "mobile_design_100_acceptance": "unverified",
+    "authority_binding": json.loads(pathlib.Path(sys.argv[21]).read_text()),
     "route_evidence_complete": sys.argv[19] == "true",
     "violation_count": int(sys.argv[3]),
     "warning_count": int(sys.argv[4]),

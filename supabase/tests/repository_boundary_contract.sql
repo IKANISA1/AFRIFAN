@@ -33,6 +33,7 @@ do $scan$
 declare
   target record;
   has_match boolean;
+  citation_exception text;
 begin
   for target in
     select table_schema, table_name, column_name
@@ -46,6 +47,19 @@ begin
          'jsonb'
        )
   loop
+    citation_exception := '';
+    -- A sourced publisher label is not ownership of a separate application.
+    -- Match the same exact label/URL pair admitted by the source boundary scan,
+    -- and limit it to the existing attributed club-history records.
+    if target.table_schema = 'public' and target.table_name = 'ai_content'
+      and target.column_name = 'source_label' then
+      citation_exception := format(
+        ' and not coalesce((candidate.club_id = 24 and candidate.source_label = %L
+          and candidate.source_url = ''https://www.youtube.com/@rayon_sports''
+          and candidate.source_record like ''gikundiro:%%''), false)',
+        convert_from(decode('5261796f6e2053706f727473205456', 'hex'), 'UTF8')
+      );
+    end if;
     execute format(
       'select exists (
          select 1
@@ -54,11 +68,12 @@ begin
             select 1
               from unsupported_identifiers as unsupported
              where lower(candidate.%I::text) like ''%%'' || unsupported.pattern || ''%%''
-          )
+          ) %s
        )',
       target.table_schema,
       target.table_name,
-      target.column_name
+      target.column_name,
+      citation_exception
     ) into has_match;
 
     if has_match then

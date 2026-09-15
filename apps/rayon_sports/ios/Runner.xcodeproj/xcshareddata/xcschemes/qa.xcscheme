@@ -31,7 +31,7 @@
          <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="97C146ED1CF9000F007C117D" BuildableName="Runner.app" BlueprintName="Runner" ReferencedContainer="container:Runner.xcodeproj"/>
       </BuildableProductRunnable>
    </LaunchAction>
-   <ProfileAction buildConfiguration="Debug-qa" shouldUseLaunchSchemeArgsEnv="YES" savedToolIdentifier="" useCustomWorkingDirectory="NO" debugDocumentVersioning="YES">
+   <ProfileAction buildConfiguration="Profile-qa" shouldUseLaunchSchemeArgsEnv="YES" savedToolIdentifier="" useCustomWorkingDirectory="NO" debugDocumentVersioning="YES">
       <BuildableProductRunnable runnableDebuggingMode="0">
          <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="97C146ED1CF9000F007C117D" BuildableName="Runner.app" BlueprintName="Runner" ReferencedContainer="container:Runner.xcodeproj"/>
       </BuildableProductRunnable>

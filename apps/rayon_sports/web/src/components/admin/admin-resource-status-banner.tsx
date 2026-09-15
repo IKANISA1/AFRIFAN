@@ -1,7 +1,7 @@
 "use client";
 
 import { RefreshCw } from "lucide-react";
-import type { PointerEvent } from "react";
+import { useRef, type PointerEvent } from "react";
 import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import { cn } from "@/lib/utils";
 
@@ -34,12 +34,22 @@ export function AdminResourceStatusBanner({
   onInteractionChange: (interaction: AdminResourceInteraction) => void;
   className?: string;
 }) {
+  const pointerPressed = useRef(false);
   const setPressed = (event: PointerEvent<HTMLButtonElement>) => {
     event.currentTarget.setPointerCapture?.(event.pointerId);
+    pointerPressed.current = true;
     onInteractionChange("pressed");
   };
-  const restInteraction = () =>
+  const restInteraction = () => {
+    // Focus/blur can follow pointerdown in a different order across browsers.
+    // A held pointer remains pressed until release, cancellation or lost capture.
+    if (pointerPressed.current) return;
     onInteractionChange(selected ? "selected" : "idle");
+  };
+  const finishPointer = () => {
+    pointerPressed.current = false;
+    restInteraction();
+  };
 
   return (
     <div
@@ -80,11 +90,14 @@ export function AdminResourceStatusBanner({
           type="button"
           disabled={busy || permissionLocked}
           onClick={onRefresh}
-          onFocus={() => onInteractionChange("focused")}
+          onFocus={() => {
+            if (!pointerPressed.current) onInteractionChange("focused");
+          }}
           onBlur={restInteraction}
           onPointerDown={setPressed}
-          onPointerUp={restInteraction}
-          onPointerCancel={restInteraction}
+          onPointerUp={finishPointer}
+          onPointerCancel={finishPointer}
+          onLostPointerCapture={finishPointer}
           className="admin-resource-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-bold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
         >
           <RefreshCw

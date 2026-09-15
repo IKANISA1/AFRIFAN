@@ -1,0 +1,7 @@
+#include "Release.xcconfig"
+
+// Separate QA identity, with no production push or associated-domain entitlements.
+PRODUCT_BUNDLE_IDENTIFIER=rw.ikanisa.rayonSports.qa.codex
+AFRICLUB_DISPLAY_NAME=Gikundiro QA
+CODE_SIGN_ENTITLEMENTS=Runner/RunnerQA.entitlements
+FLUTTER_BUILD_MODE=profile

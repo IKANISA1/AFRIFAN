@@ -1,3 +1,4 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -134,21 +135,57 @@ async function expectNoSeriousAxeViolations(page: Page) {
   ).toHaveLength(0);
 }
 
+async function expectBottomNavigationClearance(page: Page) {
+  const nav = page.getByRole("navigation", { name: "Main navigation", exact: true });
+  await expect(nav).toBeVisible();
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+  });
+  const clippedLabels = await nav.locator("a").evaluateAll((links) => links.flatMap((link) => {
+    const box = link.getBoundingClientRect();
+    const range = document.createRange();
+    range.selectNodeContents(link.querySelector("span")!);
+    return Array.from(range.getClientRects())
+      .filter((rect) => rect.left < box.left - 1 || rect.right > box.right + 1 || rect.bottom > box.bottom + 1)
+      .map(() => link.textContent);
+  }));
+  expect(clippedLabels).toEqual([]);
+  await expect.poll(() => page.evaluate(() => {
+    window.scrollTo({ top: document.scrollingElement!.scrollHeight, behavior: "instant" });
+    return Math.abs(scrollY + innerHeight - document.scrollingElement!.scrollHeight);
+  })).toBeLessThanOrEqual(1);
+  const obscuredFooterText = await page.locator("footer").evaluate((footer) => {
+    const navTop = document.querySelector('nav[aria-label="Main navigation"]')!.getBoundingClientRect().top;
+    const walker = document.createTreeWalker(footer, NodeFilter.SHOW_TEXT);
+    const obscured = [];
+    let node;
+    while ((node = walker.nextNode())) {
+      if (!node.textContent?.trim()) continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      if (Array.from(range.getClientRects()).some((rect) => rect.width && rect.height && rect.bottom > navTop + 1)) {
+        obscured.push(node.textContent);
+      }
+    }
+    return obscured;
+  });
+  expect(obscuredFooterText).toEqual([]);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+}
+
 async function runHomeMatrix(browser: Browser) {
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    "../../../output/evidence/consumer_web_home_states",
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), "consumer_web_home_states");
+
   const context = await browser.newContext({
-    viewport: { width: 412, height: 915 },
-    deviceScaleFactor: 2.625,
-    isMobile: true,
-    hasTouch: true,
+    ...stateEvidenceContextOptions(test.info()),
+    // Keep routed state fixtures independent of worker-controlled fetches.
+    serviceWorkers: "block",
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
+  await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
 
   await page.route("**/api/public-content?resource=home", async (route) => {
@@ -166,7 +203,7 @@ async function runHomeMatrix(browser: Browser) {
 
   const surface = () => page.locator(".home-surface").first();
   const open = async (nonce: string) => {
-    await page.goto(`/?evidence=${nonce}`, { waitUntil: "domcontentloaded" });
+    await navigateStateEvidence(page, `/?evidence=${nonce}`, { waitUntil: "domcontentloaded" });
   };
   const expectStatus = async (status: string, label: RegExp) => {
     await expect(surface()).toHaveAttribute("data-home-status", status);
@@ -187,12 +224,12 @@ async function runHomeMatrix(browser: Browser) {
         requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
       );
     });
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
         `home_state_${state}_${
           state === "light" ? "light" : "dark"
-        }_pixel7.png`,
+        }_viewport.png`,
       ),
       fullPage: true,
       animations: "disabled",
@@ -303,6 +340,27 @@ async function runHomeMatrix(browser: Browser) {
       .filter(({ left, right }) => left < -1 || right > viewportWidth + 1);
   });
   expect(clippedElements).toEqual([]);
+  const originalViewport = page.viewportSize();
+  try {
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 1000 });
+      const clippedHeadline = await page.locator(".home-hero h1").evaluate(async (heading) => {
+        await document.fonts.ready;
+        const hero = heading.closest(".home-hero")!.getBoundingClientRect();
+        return Array.from(heading.querySelectorAll("span")).flatMap((span) => {
+          const range = document.createRange();
+          range.selectNodeContents(span);
+          return Array.from(range.getClientRects())
+            .filter((rect) => rect.left < hero.left - 1 || rect.right > hero.right + 1)
+            .map((rect) => ({ text: span.textContent, left: rect.left, right: rect.right }));
+        });
+      });
+      expect(clippedHeadline).toEqual([]);
+      await expectBottomNavigationClearance(page);
+    }
+  } finally {
+    if (originalViewport) await page.setViewportSize(originalViewport);
+  }
   await capture("large_text");
 
   responseMode = "loading";
@@ -370,6 +428,14 @@ async function runHomeMatrix(browser: Browser) {
   responseMode = "ready";
   await open("targets");
   await expectStatus("ready", /club home confirmed/i);
+  try {
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await expectBottomNavigationClearance(page);
+    }
+  } finally {
+    if (originalViewport) await page.setViewportSize(originalViewport);
+  }
   const targetSizes = await page
     .locator(
       ".home-action, .home-action-choice, .home-preview-section > header > a, .home-preview-card a",
@@ -410,7 +476,7 @@ async function runHomeMatrix(browser: Browser) {
         schema_version: "1.0",
         route: "/",
         surface: "consumer_web",
-        exact_profile: "Pixel 7 Chromium 412x915 at 2.625 DPR",
+        exact_profile: `${browser.browserType().name()}; viewport, DPR and input emulation are recorded per capture`,
         applicable_states: captures,
         not_applicable_states: [],
         assertions: {
@@ -432,7 +498,7 @@ async function runHomeMatrix(browser: Browser) {
           state,
           file: `home_state_${state}_${
             state === "light" ? "light" : "dark"
-          }_pixel7.png`,
+          }_viewport.png`,
         })),
       },
       null,
@@ -440,16 +506,13 @@ async function runHomeMatrix(browser: Browser) {
     )}\n`,
   );
 
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }
 
 test("/ proves all sixteen applicable rendered states", async ({
   browser,
-}, testInfo) => {
-  test.setTimeout(90_000);
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "Home evidence uses the declared Pixel 7 Chromium profile.",
-  );
+}) => {
+  test.setTimeout(120_000);
   await runHomeMatrix(browser);
 });

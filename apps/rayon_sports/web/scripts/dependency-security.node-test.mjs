@@ -1,14 +1,39 @@
 import assert from "node:assert/strict";
 import { mkdtemp, mkdir, writeFile, symlink, lstat, readlink, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { createRequire } from "node:module";
 import path from "node:path";
 import test from "node:test";
 import qs from "qs";
 import browserslist from "browserslist";
 import { NodeHfs } from "@humanfs/node";
+import yaml from "js-yaml";
 
 // Exercise the installed transitive packages, not a copied implementation.
 // Advisory IDs and dependency chains are documented in the remediation report.
+test("YAML merge budgets also bound repeated empty sources", () => {
+  const input = `base: &base {}\nmerged:\n  <<: [${Array(12).fill("*base").join(", ")}]\n`;
+  assert.throws(() => yaml.load(input, { maxTotalMergeKeys: 5 }), /maxTotalMergeKeys/);
+  assert.deepEqual(yaml.load("base: &base {club: Rayon}\nmerged: {<<: *base}\n"), {
+    base: { club: "Rayon" },
+    merged: { club: "Rayon" },
+  });
+});
+
+for (const consumer of ["next", "miniflare"]) {
+  test(`patched sharp retains image processing for ${consumer}`, async () => {
+    const requireFromConsumer = createRequire(import.meta.resolve(consumer));
+    const sharp = requireFromConsumer("sharp");
+    const avif = await sharp({
+      create: { width: 4, height: 4, channels: 3, background: { r: 3, g: 55, b: 210 } },
+    }).avif().toBuffer();
+    const { info } = await sharp(avif).resize(2, 2).png().toBuffer({ resolveWithObject: true });
+    assert.equal(info.format, "png");
+    assert.equal(info.width, 2);
+    assert.equal(info.height, 2);
+  });
+}
+
 test("qs safely serializes constructor/isBuffer keys from untrusted input", () => {
   for (const options of [{ plainObjects: true }, { allowPrototypes: true }]) {
     const parsed = qs.parse("x%5Bconstructor%5D%5BisBuffer%5D=y", options);

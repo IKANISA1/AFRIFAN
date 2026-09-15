@@ -9,6 +9,42 @@ import {
 } from "@/lib/data/admin/helpers";
 
 describe("admin data helpers", () => {
+  it.each([false, true])("keeps the strongest matching role with mixed assignment order reversed=%s", (reverse) => {
+    const assignments = [
+      { role: "club_moderator", club_id: 24, is_active: true },
+      { role: "super_admin", club_id: null, is_active: true },
+    ];
+    const access = deriveAdminAccess(
+      { app_metadata: { club_id: "24", role: "fan" } },
+      reverse ? assignments.toReversed() : assignments,
+      { requestedClubId: "24" },
+    );
+    expect(access).toMatchObject({ hasAccess: true, isSuperAdmin: true, role: "super_admin", clubId: "24" });
+  });
+
+  it.each(["admin", "super_admin"])("keeps a requested global club context when %s also has a local assignment", (role) => {
+    const access = deriveAdminAccess(
+      { app_metadata: { club_id: "24" } },
+      [
+        { role, club_id: null, is_active: true },
+        { role: "club_moderator", club_id: 24, is_active: true },
+      ],
+      { requestedClubId: "3" },
+    );
+    expect(access).toMatchObject({ hasAccess: true, isSuperAdmin: true, role, clubId: "3" });
+  });
+
+  it.each([false, true])("keeps mixed local roles scoped with assignment order reversed=%s", (reverse) => {
+    const assignments = [
+      { role: "club_moderator", club_id: 24, is_active: true },
+      { role: "club_admin", club_id: 24, is_active: true },
+    ];
+    const rows = reverse ? assignments.toReversed() : assignments;
+    const user = { app_metadata: { club_id: "24" } };
+    expect(deriveAdminAccess(user, rows, { requestedClubId: "24" })).toMatchObject({ hasAccess: true, isSuperAdmin: false, role: "club_admin", clubId: "24" });
+    expect(deriveAdminAccess(user, rows, { requestedClubId: "3" })).toMatchObject({ hasAccess: false, isSuperAdmin: false, clubId: null });
+  });
+
   it("grants club access when assignment matches the active club", () => {
     const access = deriveAdminAccess(
       {

@@ -1,3 +1,4 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -188,28 +189,19 @@ const surfaceCases = [
 for (const surfaceCase of surfaceCases) {
   test(`${surfaceCase.route} proves all sixteen applicable rendered states`, async ({
     browser,
-  }, testInfo) => {
-    test.setTimeout(90_000);
-    test.skip(
-      testInfo.project.name !== "mobile-chromium",
-      `${surfaceCase.route} evidence uses the declared Pixel 7 Chromium profile.`,
-    );
+  }) => {
+    test.setTimeout(120_000);
 
-    const evidenceDirectory = path.resolve(
-      process.cwd(),
-      `../../../output/evidence/${surfaceCase.evidenceDirectory}`,
-    );
-    fs.mkdirSync(evidenceDirectory, { recursive: true });
+    const evidenceDirectory = prepareStateEvidence(browser, test.info(), `${surfaceCase.evidenceDirectory}`);
+
 
     const context: BrowserContext = await browser.newContext({
-      viewport: { width: 412, height: 915 },
-      deviceScaleFactor: 2.625,
-      isMobile: true,
-      hasTouch: true,
+    ...stateEvidenceContextOptions(test.info()),
       colorScheme: "dark",
       reducedMotion: "no-preference",
-    });
+  });
     const page = await context.newPage();
+  await page.emulateMedia({ colorScheme: "dark" });
     let responseMode: ResponseMode = "ready";
 
     await page.route(
@@ -229,7 +221,7 @@ for (const surfaceCase of surfaceCases) {
     );
 
     const open = async (nonce: string) => {
-      await page.goto(`${surfaceCase.route}?evidence=${nonce}`, {
+      await navigateStateEvidence(page, `${surfaceCase.route}?evidence=${nonce}`, {
         waitUntil: "domcontentloaded",
       });
     };
@@ -248,10 +240,10 @@ for (const surfaceCase of surfaceCases) {
           requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
         );
       });
-      await page.screenshot({
+      await captureStateScreenshot(page, {
         path: path.join(
           evidenceDirectory,
-          `${surfaceCase.slug}_state_${state}_pixel7.png`,
+          `${surfaceCase.slug}_state_${state}_viewport.png`,
         ),
         fullPage: true,
         animations: "disabled",
@@ -479,7 +471,7 @@ for (const surfaceCase of surfaceCases) {
           schema_version: "1.0",
           route: surfaceCase.route,
           surface: "consumer_web",
-          exact_profile: "Pixel 7 Chromium 412x915 at 2.625 DPR",
+          exact_profile: `${browser.browserType().name()}; viewport, DPR and input emulation are recorded per capture`,
           applicable_states: captures,
           not_applicable_states: [],
           assertions: {
@@ -500,7 +492,7 @@ for (const surfaceCase of surfaceCases) {
             state,
             file: `${surfaceCase.slug}_state_${state}_${
               state === "light" ? "light" : "dark"
-            }_pixel7.png`,
+            }_viewport.png`,
           })),
         },
         null,
@@ -508,6 +500,7 @@ for (const surfaceCase of surfaceCases) {
       )}\n`,
     );
 
+    finalizeStateEvidence(evidenceDirectory);
     await context.close();
   });
 }

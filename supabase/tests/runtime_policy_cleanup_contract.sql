@@ -62,8 +62,11 @@ select ok(has_column_privilege('authenticated', 'public.initiative_contributions
   'authenticated can filter its own contribution rows');
 select ok(has_column_privilege('authenticated', 'public.initiative_contributions', 'club_id', 'select'),
   'authenticated can filter the governed club');
-select ok(not has_column_privilege('authenticated', 'public.initiative_contributions', 'momo_reference', 'select'),
-  'authenticated cannot read provider references');
+-- The member-portal migration explicitly added the supporter's own receipt
+-- reference. Actual owner/foreign/anonymous reads are exercised by
+-- member_contribution_receipt_privacy_contract.sql.
+select ok(has_column_privilege('authenticated', 'public.initiative_contributions', 'momo_reference', 'select'),
+  'authenticated can read its receipt reference through the own-club row policy');
 select ok(not has_table_privilege('authenticated', 'public.initiative_contributions', 'insert,update,delete'),
   'authenticated cannot mutate contribution rows directly');
 select ok(has_table_privilege('service_role', 'public.initiative_contributions', 'select,insert,update,delete'),

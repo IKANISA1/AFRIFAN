@@ -4,7 +4,7 @@ create extension if not exists pgtap with schema extensions;
 
 begin;
 
-select plan(9);
+select plan(10);
 
 create temporary table expected_mobile_rpc_acl (
   signature text primary key,
@@ -38,22 +38,22 @@ insert into expected_mobile_rpc_acl values
   ('public.is_super_admin()', false, true, false),
   ('public.partner_prediction_pool_feed(bigint,text[],integer,integer)', false, false, true),
   ('public.partner_prediction_pool_join(uuid,text,text)', false, false, true),
-  ('public.prediction_admin_get_challenges(bigint,text[],integer,integer)', false, true, false),
+  ('public.predict_dashboard(bigint)', true, true, false),
+  ('public.predict_place(bigint,uuid,text)', false, true, false),
+  ('public.predict_admin_dashboard(bigint)', false, true, false),
+  ('public.predict_admin_settings(bigint,boolean,integer)', false, true, false),
+  ('public.predict_admin_prepare(bigint,uuid,text)', false, true, false),
+  ('public.predict_admin_confirm_result(uuid,integer,integer,text)', false, true, false),
+  ('public.predict_admin_settle(uuid,text)', false, true, false),
+  ('public.predict_lock_due(bigint)', false, false, true),
   ('public.prediction_cancel(uuid)', false, true, false),
-  ('public.prediction_challenge_admin_retry_settlement(uuid)', false, true, false),
-  ('public.prediction_challenge_cancel(uuid)', false, true, false),
-  ('public.prediction_challenge_create(uuid,integer,integer,bigint,bigint)', false, false, true),
-  ('public.prediction_challenge_join(uuid,integer,integer)', false, false, true),
   ('public.prediction_create_friend_challenge(uuid,uuid,text,text)', false, false, true),
   ('public.prediction_get_active(integer,integer)', false, true, false),
   ('public.prediction_get_active_jackpot_round(bigint)', false, false, true),
-  ('public.prediction_get_challenge_detail(uuid,bigint)', false, false, true),
-  ('public.prediction_get_challenge_feed(bigint,text[],text,integer,integer,boolean)', false, false, true),
   ('public.prediction_get_detail(uuid)', false, true, false),
   ('public.prediction_get_fixture_markets(uuid)', true, true, false),
   ('public.prediction_get_history(integer,integer)', false, true, false),
   ('public.prediction_get_match_center(uuid)', true, true, true),
-  ('public.prediction_get_my_challenges(bigint,text[],text,integer,integer)', false, false, true),
   ('public.prediction_get_user_badges(uuid)', false, true, false),
   ('public.prediction_get_user_stats()', false, true, false),
   ('public.prediction_place(uuid,text)', false, true, false),
@@ -66,7 +66,27 @@ insert into expected_mobile_rpc_acl values
 select is(
   (select count(*)::integer from expected_mobile_rpc_acl),
   48,
-  'the reviewed football-only mobile RPC denominator remains 48'
+  'the current football-only mobile and supporting service RPC denominator is 48'
+);
+
+-- The 20260906082522 migration deliberately removed Challenge after stake
+-- reconciliation. The current Predict repositories and football-sync use the
+-- eight replacement entry points above; retired APIs must not reappear.
+select is(
+  (
+    select count(*)::integer
+    from pg_proc
+    where pronamespace = 'public'::regnamespace
+      and (
+        proname like 'prediction_challenge\_%' escape '\'
+        or proname in (
+          'prediction_admin_get_challenges', 'prediction_get_challenge_detail',
+          'prediction_get_challenge_feed', 'prediction_get_my_challenges'
+        )
+      )
+  ),
+  0,
+  'retired Challenge functions are absent from the exposed schema'
 );
 
 select is(

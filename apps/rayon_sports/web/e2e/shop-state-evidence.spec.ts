@@ -1,3 +1,4 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -150,21 +151,16 @@ async function runStateMatrix(
   browser: Browser,
   config: RouteEvidenceConfig,
 ) {
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    `../../../output/evidence/consumer_web_${config.key}_states`,
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), `consumer_web_${config.key}_states`);
+
 
   const context: BrowserContext = await browser.newContext({
-    viewport: { width: 412, height: 915 },
-    deviceScaleFactor: 2.625,
-    isMobile: true,
-    hasTouch: true,
+    ...stateEvidenceContextOptions(test.info()),
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
+  await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
 
   await page.route("**/api/public-content?resource=shop*", async (route) => {
@@ -187,7 +183,7 @@ async function runStateMatrix(
 
   const surface = () => page.locator(config.surfaceSelector).first();
   const open = async (nonce: string) => {
-    await page.goto(`${config.route}?evidence=${nonce}`, {
+    await navigateStateEvidence(page, `${config.route}?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   };
@@ -210,10 +206,10 @@ async function runStateMatrix(
         requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
       );
     });
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
-        `${config.key}_state_${state}_pixel7.png`,
+        `${config.key}_state_${state}_viewport.png`,
       ),
       fullPage: true,
       animations: "disabled",
@@ -428,7 +424,7 @@ async function runStateMatrix(
         schema_version: "1.0",
         route: config.route,
         surface: "consumer_web",
-        exact_profile: "Pixel 7 Chromium 412x915 at 2.625 DPR",
+        exact_profile: `${browser.browserType().name()}; viewport, DPR and input emulation are recorded per capture`,
         applicable_states: captures,
         not_applicable_states: [],
         assertions: {
@@ -450,7 +446,7 @@ async function runStateMatrix(
           state,
           file: `${config.key}_state_${state}_${
             state === "light" ? "light" : "dark"
-          }_pixel7.png`,
+          }_viewport.png`,
         })),
       },
       null,
@@ -458,17 +454,14 @@ async function runStateMatrix(
     )}\n`,
   );
 
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }
 
 test("/shop proves all sixteen applicable rendered states", async ({
   browser,
-}, testInfo) => {
-  test.setTimeout(90_000);
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "Shop evidence uses the declared Pixel 7 Chromium profile.",
-  );
+}) => {
+  test.setTimeout(120_000);
   await runStateMatrix(browser, {
     route: "/shop",
     key: "shop",
@@ -485,12 +478,8 @@ test("/shop proves all sixteen applicable rendered states", async ({
 
 test("/shop/:productId proves all sixteen applicable rendered states", async ({
   browser,
-}, testInfo) => {
-  test.setTimeout(90_000);
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "Shop product evidence uses the declared Pixel 7 Chromium profile.",
-  );
+}) => {
+  test.setTimeout(120_000);
   await runStateMatrix(browser, {
     route: "/shop/home-shirt",
     key: "shop_product",

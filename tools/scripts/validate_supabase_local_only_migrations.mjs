@@ -99,6 +99,10 @@ assert(
   'Seed data must not create authentication users.',
 );
 assert(
+  !/insert into\s+"?public"?\."?(?:admin_role_assignments|admin_audit_log)"?\b/i.test(seed),
+  'Catalog seed must not restore operational admin assignments or audit events.',
+);
+assert(
   /insert into\s+"football"\."competitions"/i.test(seed) &&
     /insert into\s+"football"\."fixtures"/i.test(seed) &&
     /insert into\s+"football"\."prediction_markets"/i.test(seed),

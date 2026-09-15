@@ -25,7 +25,7 @@ void main() {
     await loadAppFonts();
   });
 
-  setUp(() {
+  setUp(() async {
     ConnectivityService.setOnlineForTest(true);
     binding.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(
@@ -33,6 +33,11 @@ void main() {
           disableAnimations: true,
           reduceMotion: true,
         );
+    if (const bool.fromEnvironment('AFRICLUB_CAPTURE_REFERENCE')) {
+      // Startup pumps a frame before the first capture. The binding restores
+      // the Android surface in its per-test teardown; other platforms no-op.
+      await binding.convertFlutterSurfaceToImage();
+    }
   });
 
   tearDown(() {

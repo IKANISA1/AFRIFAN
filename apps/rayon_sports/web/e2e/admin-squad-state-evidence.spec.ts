@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Browser, type Page } from "@playwright/test";
@@ -13,6 +14,7 @@ type ResponseMode =
   | "security_timeout";
 
 const roles = ["Goalkeeper", "Defender", "Midfielder", "Forward"] as const;
+const playerImageUrl = "https://qa-fixtures.supabase.co/player.svg";
 const players = Array.from({ length: 30 }, (_, index) => {
   const number = index + 1;
   return {
@@ -23,7 +25,7 @@ const players = Array.from({ length: 30 }, (_, index) => {
     number,
     nationality: number % 2 === 0 ? "Rwanda" : "Burundi",
     bio: "Confirmed first-team squad profile.",
-    imageUrl: "https://cdn.example.com/player.webp",
+    imageUrl: playerImageUrl,
     isActive: number !== 30,
     createdAt: "2026-07-20T12:00:00.000Z",
     updatedAt: new Date(Date.UTC(2026, 6, 29, 12, 0, number)).toISOString(),
@@ -138,11 +140,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 }
 
 async function runAdminSquadMatrix(browser: Browser) {
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    "../../../output/evidence/admin_pwa_squad_states",
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_squad_states");
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
@@ -150,7 +148,16 @@ async function runAdminSquadMatrix(browser: Browser) {
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
+
+  // Use the existing permitted storage origin and intercept the exact request.
+  // No network service or real player's likeness is needed by this fixture.
+  await context.route(playerImageUrl, (route) => route.fulfill({
+    contentType: "image/svg+xml",
+    body: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" fill="#374151"/><circle cx="16" cy="11" r="5" fill="#e5e7eb"/><path d="M5 32v-4a11 11 0 0 1 22 0v4" fill="#e5e7eb"/></svg>',
+  }));
 
   await page.route("**/api/admin/squad*", async (route) => {
     if (responseMode === "loading") {
@@ -167,7 +174,7 @@ async function runAdminSquadMatrix(browser: Browser) {
 
   const surface = () => page.locator(".admin-squad-state-surface").first();
   const open = async (nonce: string) => {
-    await page.goto(`/admin/squad?evidence=${nonce}`, {
+    await navigateStateEvidence(page, `/admin/squad?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   };
@@ -180,7 +187,7 @@ async function runAdminSquadMatrix(browser: Browser) {
     profile = "desktop_1440x1000",
   ) => {
     await settleVisuals(page);
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
         `admin_squad_state_${state}_${
@@ -219,6 +226,15 @@ async function runAdminSquadMatrix(browser: Browser) {
   responseMode = "ready";
   await open("offline");
   await expectStatus("ready", /squad operations confirmed/i);
+  const firstPlayerImage = page.locator('tr[data-row-id="player-1"] img');
+  await firstPlayerImage.scrollIntoViewIfNeeded();
+  await expect(firstPlayerImage).toBeVisible();
+  await expect(firstPlayerImage).toHaveAttribute("src", playerImageUrl);
+  // WebKit reports the fitted SVG width (30px inside the bordered avatar),
+  // while Chromium/Firefox report its 32px intrinsic width. Both must decode.
+  await expect.poll(() => firstPlayerImage.evaluate(
+    (image: HTMLImageElement) => ({ complete: image.complete, decoded: image.naturalWidth > 0 }),
+  )).toEqual({ complete: true, decoded: true });
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus("offline", /squad workspace is offline/i);
@@ -243,21 +259,14 @@ async function runAdminSquadMatrix(browser: Browser) {
   );
   await capture("focused");
 
-  await readyRefresh.dispatchEvent("pointerdown", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await readyRefresh.hover();
+  await page.mouse.down();
   await expect(surface()).toHaveAttribute(
     "data-admin-squad-interaction",
     "pressed",
   );
   await capture("pressed");
-  await readyRefresh.dispatchEvent("pointerup", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await page.mouse.up();
 
   const firstRow = page.locator("tr[data-row-id='player-1']");
   await firstRow.focus();
@@ -420,10 +429,10 @@ async function runAdminSquadMatrix(browser: Browser) {
         schema_version: "1.0",
         route: "/admin/squad",
         surface: "admin_pwa",
-        exact_profile: "Chromium desktop 1440x1000 at 1 DPR",
+        exact_profile: `${browser.browserType().name()} desktop 1440x1000 at 1 DPR`,
         responsive_profiles: [
-          "Chromium tablet 1024x900 at 1 DPR",
-          "Chromium compact 390x844 at 1 DPR",
+          `${browser.browserType().name()} tablet 1024x900 at 1 DPR`,
+          `${browser.browserType().name()} compact 390x844 at 1 DPR`,
         ],
         applicable_states: governedStates,
         not_applicable_states: [],
@@ -470,6 +479,7 @@ async function runAdminSquadMatrix(browser: Browser) {
     )}\n`,
   );
 
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }
 

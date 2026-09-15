@@ -87,15 +87,22 @@ async function installSupabaseSessionCookies(
 /*  Public surfaces                                          */
 /* ────────────────────────────────────────────────────────── */
 
-test("public home renders on a phone viewport", async ({ page }) => {
+test("public home preserves club identity and primary journeys", async ({ page }) => {
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", {
-      name: /rayon sports\. matchday starts here/i,
+    page.getByRole("navigation").first().getByRole("img", {
+      name: "Rayon Sports FC", exact: true,
     }),
   ).toBeVisible();
-  await expect(page.getByText(/supporter app coming soon/i)).toBeVisible();
+  const home = page.getByRole("main");
+  await expect(home.getByRole("heading", { level: 1 })).toBeVisible();
+  const tickets = home.getByRole("link", { name: "Get tickets", exact: true });
+  await expect(tickets).toHaveAttribute("href", "/tickets");
+  await expect(home.getByRole("link", { name: "Join Gikundiro", exact: true }))
+    .toHaveAttribute("href", "/membership");
+  await tickets.click();
+  await expect(page).toHaveURL(/\/tickets(?:\?.*)?$/);
 });
 
 test("supporters handoff page renders on tablet", async ({ page }) => {

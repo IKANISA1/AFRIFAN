@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Browser, type Page } from "@playwright/test";
@@ -140,11 +141,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 }
 
 async function runAdminCmsMatrix(browser: Browser) {
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    "../../../output/evidence/admin_pwa_cms_states",
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_cms_states");
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
@@ -152,6 +149,8 @@ async function runAdminCmsMatrix(browser: Browser) {
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
 
   await page.route("**/api/admin/cms*", async (route) => {
@@ -169,7 +168,7 @@ async function runAdminCmsMatrix(browser: Browser) {
 
   const surface = () => page.locator(".admin-cms-state-surface").first();
   const open = (nonce: string) =>
-    page.goto(`/admin/cms?evidence=${nonce}`, {
+    navigateStateEvidence(page, `/admin/cms?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   const expectStatus = async (status: string, label: RegExp) => {
@@ -181,7 +180,7 @@ async function runAdminCmsMatrix(browser: Browser) {
     profile = "desktop_1440x1000",
   ) => {
     await settleVisuals(page);
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
         `admin_cms_state_${state}_${
@@ -246,21 +245,14 @@ async function runAdminCmsMatrix(browser: Browser) {
   );
   await capture("focused");
 
-  await readyRefresh.dispatchEvent("pointerdown", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await readyRefresh.hover();
+  await page.mouse.down();
   await expect(surface()).toHaveAttribute(
     "data-admin-cms-interaction",
     "pressed",
   );
   await capture("pressed");
-  await readyRefresh.dispatchEvent("pointerup", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await page.mouse.up();
 
   const firstRow = page.locator("tr[data-row-id='article-1']");
   await firstRow.focus();
@@ -420,10 +412,10 @@ async function runAdminCmsMatrix(browser: Browser) {
         schema_version: "1.0",
         route: "/admin/cms",
         surface: "admin_pwa",
-        exact_profile: "Chromium desktop 1440x1000 at 1 DPR",
+        exact_profile: `${browser.browserType().name()} desktop 1440x1000 at 1 DPR`,
         responsive_profiles: [
-          "Chromium tablet 1024x900 at 1 DPR",
-          "Chromium compact 390x844 at 1 DPR",
+          `${browser.browserType().name()} tablet 1024x900 at 1 DPR`,
+          `${browser.browserType().name()} compact 390x844 at 1 DPR`,
         ],
         applicable_states: governedStates,
         not_applicable_states: [],
@@ -472,6 +464,7 @@ async function runAdminCmsMatrix(browser: Browser) {
     )}\n`,
   );
 
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }
 

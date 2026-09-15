@@ -1,11 +1,18 @@
 import type { NextConfig } from "next";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : null;
+const supabaseEndpoint = supabaseUrl ? new URL(supabaseUrl) : null;
+const supabaseHost = supabaseEndpoint?.hostname ?? null;
 const analyticsUrl = process.env.NEXT_PUBLIC_VITALS_ENDPOINT?.trim();
 const analyticsOrigin = analyticsUrl ? new URL(analyticsUrl).origin : null;
 const isDevelopment = process.env.NODE_ENV === "development";
 const enforceSecureTransport = process.env.AFRICLUB_ALLOW_HTTP_PREVIEW !== "1";
+const previewSupabaseOrigin =
+  !enforceSecureTransport &&
+  supabaseEndpoint?.protocol === "http:" &&
+  ["localhost", "127.0.0.1", "[::1]"].includes(supabaseEndpoint.hostname)
+    ? supabaseEndpoint.origin
+    : null;
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -97,6 +104,8 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https://*.supabase.co https://img.youtube.com",
               [
                 "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+                previewSupabaseOrigin,
+                previewSupabaseOrigin?.replace(/^http:/, "ws:"),
                 analyticsOrigin,
               ]
                 .filter(Boolean)
@@ -145,7 +154,7 @@ const nextConfig: NextConfig = {
           {
             key: "Cache-Control",
             value:
-              "public, max-age=0, s-maxage=300, stale-while-revalidate=86400",
+              "public, max-age=0, s-maxage=300, must-revalidate",
           },
         ],
       },

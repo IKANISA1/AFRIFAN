@@ -1,0 +1,144 @@
+# AFRICLUB full-stack QA execution plan
+
+Created: 14 September 2026. Status: plan established; execution results are recorded separately.
+
+## Objective and working authority
+
+Review the entire AFRICLUB system, implement the missing QA coverage, reproduce and repair defects, and produce a traceable readiness decision for each product surface. Cover functional correctness, data/security boundaries, visual fidelity, accessibility, performance, resilience, and release operations independently.
+
+Work in `/Users/jeanbosco/Projects/Recovered-PRO-G40/AFRICLUB`. Planning inspected commit `ca796a6f2f2ae54b7ce121b2177f8c570d3a3729` on `codex/recovered-pro-g40-2026-09-10`, with a clean starting worktree. Record the actual commit and worktree changes again for each run. The recovery report is historical context; recheck the current tooling, source integrity and build health.
+
+The user's current instruction and [revolut-design skill](/Users/jeanbosco/.codex/skills/revolut-design/SKILL.md) govern the design review. Repository contracts, reference mappings and reports are product adapters and evidence. Reconcile older assertions that repository `DESIGN.md` overrides the skill, and its earlier mobile-only scope, with this instruction. Preserve AFRICLUB and every club's names, crests, icons, routes, features, content, permissions and business workflows. The supporter hierarchy remains Home, Club, Predict and Membership, with account/settings under Profile.
+
+Use [the existing UAT matrix](rayon_fullstack_uat_matrix.md), [blueprint](../blueprint.md), current code, migrations, app registry and CI as execution inputs. Reconcile contradictory or stale product statements against current accepted decisions and actual implementations before writing expected outcomes. In particular, check Predict's FET entry, eligibility and settlement rules against the newer unified Predict implementation; do not turn historical wording into a new business rule.
+
+## Declared system scope
+
+| Surface | Observed source and initial inventory | Coverage obligation |
+| --- | --- | --- |
+| All native supporter apps | 20 Flutter shells under `apps/*`, each with Android and iOS directories | Each club gets configuration, identity, feature availability, tenant binding, build and launch evidence on both platforms. Shared feature coverage does not automatically certify another club's artifact. |
+| Shared Flutter platform | 44 packages: core, app registry, data, features, club configuration and test support | Architecture, unit/widget/integration tests, routes, shared controls, networking, auth and native bridges. |
+| Public websites | `apps/rayon_sports/web/src/app/(site)`: 24 page files | Every route template and every configured host/slug; content, discovery, responsive layouts, SEO, privacy/support and app links. |
+| Authenticated member website | `/membership` and its server/API dependencies | Login/session, membership status, contribution initiation, history and truthful authoritative outcomes. |
+| Admin panel/PWA | `apps/rayon_sports/web/src/app/admin`: 28 page files; separate offline route | Every role, club switch, module, table, mutation, audit trail, restricted route and installed-mode lifecycle. |
+| Venue/operator portal | `apps/rayon_sports/web/src/app/venue`: 7 page files | Assigned venue/staff boundaries, check-ins, menu, orders, promotions and ticket verification. |
+| Shared web runtime | 62 total page files, 22 route-handler files, offline/share-target entries | API methods, middleware/auth, error/not-found boundaries, manifests, service workers, cache and deployment adapters. File counts are not final endpoint/case counts. |
+| Backend and integrations | Supabase: 7 migrations, 22 SQL test files, 19 Edge function directories | Schema, seeds, RLS/ACL, RPCs, storage, realtime, scheduled jobs, auth hooks, notifications, SMS, football sync, image generation, wallet passes and admission. |
+| Delivery and operations | GitHub workflows, Cloudflare/OpenNext, mobile build/signing scripts | Reproducible artifacts, secret isolation, environment configuration, logs/alerts, recovery, rollback and exact-version traceability. |
+
+The 20 app directories are `ac_leopards`, `africa_sports`, `as_mangasport`, `as_vita`, `asante_kotoko`, `asec_mimosas`, `asko_kara`, `canon_yaounde`, `dynamos`, `maranatha`, `mogas_90`, `nkana`, `nyasa_bullets`, `rayon_sports`, `simba`, `tp_mazembe`, `union_douala`, `vitalo`, `yanga`, and `zesco_united`.
+
+Initial test inventory: 264 Dart `*_test.dart` files, four mobile integration-test Dart files, 119 tracked web test files, and 53 web Playwright spec files. These are file counts, not passing tests. The current native reference map declares 90 routes; regenerate and reconcile this rather than treating that number as a fixed denominator.
+
+AFRICLUB's web implementation is included. The separate sibling `Gikundiro` repository and other recovered products are outside this repository's scope. Discover dormant, removed or disabled paths and classify them; do not resurrect retired external products to increase coverage.
+
+## Execution sequence
+
+| Phase | Work and deliverables | Completion evidence | Responsible role |
+| --- | --- | --- | --- |
+| QA-00: establish baseline | Verify Git integrity, recovered paths, disk headroom, tool versions, pinned dependencies, app/host inventories, test environment and provider substitutes. Inspect test scripts before running them. | Timestamped environment/source manifest; exact commands and logs; every prerequisite has a verified result or actionable blocker. | QA / build engineering |
+| QA-01: reconcile coverage | Generate live route/component inventories; enumerate API methods, RPCs, tables, policies, storage and jobs. Build route × state × role × club/platform case mappings and link existing tests. Bind selected source references and hashes. | No active route or service silently absent; explicit applicability reasons; gaps become executable tasks. Existing registers are extended, not replaced by a second framework. | QA / product / design |
+| QA-02: run automated baseline | Execute strict Flutter analysis, architecture/boundary validators, all package tests and existing golden controls. Restore pinned web dependencies; run typecheck, lint, unit/coverage, E2E and build. Run Edge/static/security contracts and dependency audit. | Separate command exits, test/assertion totals, skips, coverage and failures. Baseline failures are retained before repair. | Mobile / web / QA |
+| QA-03: backend and API review | Rebuild an isolated local database from baseline + forward migrations + seed; run every SQL contract, lint and schema diff. Exercise real local APIs/RPCs with role/tenant and concurrency cases. Add tests for missing control branches. | Passing database and integration results; negative authorization and idempotency proof; UI and persisted outcomes agree. | Backend / security / QA |
+| QA-04: native apps and club variants | Run complete supporter journeys through the real local/test backend. Build and boot every club on Android and iOS; test per-club assets, IDs, links, flags and data scoping. Exercise shared journeys deeply on Rayon and every materially different configuration family. | A per-app/per-platform matrix; route/state results, screenshots, traces and failure recovery. Any missing build/device/configuration remains visible. | Mobile / QA |
+| QA-05: website, member, admin and venue | Run public/member and operator journeys across responsive browsers; exercise desktop data density, forms, bulk operations, concurrency, permissions and outcomes. Test tab and installed PWA modes separately. | All route templates tested; every configured host and role accounted for; persistent backend readback for important mutations. | Web / QA |
+| QA-06: Revolut visual and accessibility review | Compare matched source/target frames, inspect complete component trees and correct shared tokens/controls before route-specific defects. Run keyboard, screen-reader, text-scale, contrast and motion tasks. | Per-case comparison and accessibility results, source limitations and smallest justified adaptations; no unexplained material visual difference. | Design / accessibility / engineering |
+| QA-07: resilience, performance and operations | Inject bounded network/storage/provider/session failures; measure representative native and web tasks; inspect caching, update compatibility, monitoring and rollback. | Reproducible traces and recovery outcomes; selected budgets measured; deployment/provider/device limits stated individually. | Performance / platform / QA |
+| QA-08: remediate and regress | Prioritize findings, repair root causes within the existing architecture, add meaningful regression tests, and recheck affected journeys/variants. Extend current CI gates where missing. | Every closure links reproduction, fix, regression and current artifact evidence; no weakened assertions or unreviewed golden regeneration. | Engineering / QA |
+| QA-09: final verification and handoff | Run the required final suite on the final source/configuration; refresh stale screenshots and hashes; produce per-surface readiness, prioritized residual findings and external acceptance requirements. | Reproducible report with numerators/denominators, no silent exclusions, and independently recorded local, visual, deployment, provider, device and owner statuses. | QA / release / owner |
+
+QA-00 and QA-01 establish the denominator. QA-02 runs before broad remediation. QA-03 precedes reliance on end-to-end outcomes. QA-04 through QA-07 may be interleaved when prerequisites exist. QA-08 iterates until actionable findings are resolved; QA-09 uses the final candidate. Resource-heavy builds run sequentially on this recovered workspace. No elapsed-time estimate substitutes for passing exit criteria.
+
+## Critical journey and correctness cases
+
+| Area | Required scenarios and invariant |
+| --- | --- |
+| Identity and access | Guest entry; correct club; phone/OTP assistance, resend/cooldown and invalid/expired code; auth restore, expiry, refresh, logout and account switch; role removal; private profile, export and deletion. Test two unrelated clubs/users and assigned/unassigned staff, including forged client tenant/role values. |
+| Club content | Home → club → news/squad/fixtures/results/standings/history/search; valid, empty, unpublished, stale, missing, long-content and media-failure cases. Admin publication is reflected only in the correct club. |
+| Predict and FET | Prepared future fixtures, eligible supporter, entry review and balance, duplicate taps/concurrent entry, kickoff boundary, wallet/history, result correction, settlement retry and void/no-winner behavior. Record the implemented authoritative arithmetic, unique constraints and accepted policy; no frontend-created official balance or result. |
+| Membership, communities and contributions | Application/review/pending/active/renewal, fan clubs, permissions, contribution intent, SMS/provider reconciliation, allocation, ledger and statement. Duplicate/out-of-order evidence must not activate membership or allocate value twice. Amount/currency and ledger totals reconcile. |
+| Tickets and wallet | Server price/capacity, payment pending/failed/confirmed/unknown, ticket issue, cancellation, wallet presentation, rotating verification, assignment/gate/shift scope and atomic admission. Concurrent redemption admits once; expired/revoked/wrong-club/stale codes fail. |
+| Shop | Product availability/rights, authoritative price and stock, cart review, order creation, payment uncertainty, reservation expiry, cancellation and refund where implemented. Test last-item races and stale prices. |
+| Venue | Approved venue discovery → check-in → bounded drinks order → staff queue → supported completion/cancellation; role/assignment changes; offline/reconnect; simultaneous updates; promotion timing/budget and reward duplication. |
+| Admin | Login/context, club switching, scoped lists, search/sort/filter/pagination, detail-return state, empty/errors, save conflicts, destructive review, bulk selection/partial failure, audit actor/reason/time and every implemented module. Supporters cannot gain operator access through deep links or APIs. |
+| Integrations | Auth hook signature failures; SMS parsing/redaction/replay; feed sync failures/stale data; notification authorization/deduplication/invalid token; wallet pass expiry; upload size/type/path; image generation authorization and review before publication; scheduled-job overlap/retry. Use test recipients/sinks and provider substitutes until a named external test is authorized. |
+
+For every material operation test valid, invalid, denied, expired, pending, failed, unknown, retried and concurrent outcomes where applicable. Include 401/403/404/409/429/5xx, timeout before submission, timeout after server commit, duplicate or out-of-order callbacks, malformed inputs and stable-input retry after recovery. Assert both UI status and server state; initiating a request never proves settlement or delivery.
+
+## Coverage and environment matrix
+
+Maintain one governed case inventory with stable IDs. Each case records surface, app/club, route/component/API, role, preconditions, fixture, state, platform, expected outcome, existing/new test, source comparator, execution result and evidence. Reconcile generated inventories to actual routing and disabled features. Reuse shared evidence only when the case explicitly links its proven scope; all configured clubs still require their own identity/configuration and launch checks.
+
+Native cases include Android and iOS independently, smallest/largest supported phones, supported landscape/tablet/foldable behavior, keyboard and safe areas, default/large accessibility text, reduced motion, supported themes, denied permissions, deep links, cold/warm start and interrupted tasks. Unsupported dimensions need implementation evidence for their unavailable behavior. Discover configured locales before testing them; include long club/supporter names and actual supported currency/date formats without inventing locale support.
+
+Web cases include 320 CSS px reflow, representative phone/tablet/desktop widths, boundaries around actual breakpoints, 200% text enlargement, applicable 400% zoom, keyboard-only operation and meaningful reader tasks. Existing Playwright projects are mobile Chromium, tablet Chromium and mobile WebKit; extend the existing configuration for desktop Chromium/WebKit and Firefox as appropriate to the declared support matrix. Browser emulation does not prove native iPad or physical iPhone behavior.
+
+PWA cases include tab versus installed mode, identity/launch, deep link and external return, offline launch, stale data, reconnect, expiry, logout/account switch, storage quota/unavailability, active-draft updates, old tabs and compatible version recovery. Do not claim general migration/rollback compatibility from one same-schema update.
+
+Use isolated synthetic tenants and accounts, including permitted/denied operators and variant membership states. Keep production secrets and real user data out of fixtures/logs/captures. Confirm the target of any reset/seed, load test or mutation before execution; local checks must not consume production SMS, change live membership, admit a real ticket or run a live settlement. Repository planning and QA do not authorize production migration, deployment, store submission or third-party messages. Prepare reviewable changes and evidence before any necessary external authorization.
+
+## Visual authority and independent quality results
+
+Use the skill's [quality standard](/Users/jeanbosco/.codex/skills/revolut-design/references/quality-standard.md) and [operational checklist](/Users/jeanbosco/.codex/skills/revolut-design/references/operational-checklist.md): F01–F08, V01–V08, A01–A10, M01–M06, W01–W06, S01–S06 and P01–P08 where applicable. The skill-maintenance K procedures are outside this product audit. Record not-applicable reasons rather than treating checklist length as a pass percentage.
+
+Start native comparisons with the September 2026 live iOS Dark · Glow cohort already mapped in `docs/governance/native-reference-map.json`. Keep historical onboarding, public website, official Business imagery, and historical desktop references in their own contexts. Inspect exact source images before using them. Record cohort, theme, platform, region/date/build when known, viewport assumptions, private location and SHA-256. Missing native Android/light or authenticated desktop source evidence remains unverified or an explicitly scoped adaptation; marketing artwork cannot establish unseen operator interactions.
+
+Map every applicable route/state to a direct comparator, a component/pattern comparator, or an explicit adaptation. Review geometry, typography, full colour roles/gradients, surfaces, density, icon/imagery use, own-product identity, copy, navigation, controls, focus, disabled/validation states and complete sheets/dialogs/menus. Inspect reference and implementation together at matched viewport/scroll/theme/keyboard state. Golden equality detects regression against a product baseline; it does not establish source fidelity. Preserve the full applicable colour system rather than deriving every screen from the club crest.
+
+[MOBILE-DESIGN-100](/Users/jeanbosco/.codex/skills/revolut-design/references/mobile-design-100.md) is mandatory for mobile release acceptance. Bind skill and contract hashes, case/reference inventories, source/version/artifact hashes, installed artifact proof, ten visual criteria, current annotations and independent reviews. Implementer review, independent visual review and owner acceptance remain distinct; they cannot be invented by the execution agent. A gallery assists review and cannot write acceptance. Fixture builds support engineering QA, not production artifact approval.
+
+Record five independent results: **visual fidelity, task usability, accessibility, performance and runtime resilience**. Security/data correctness and release operations receive their own results as well. A high aggregate score cannot cancel a critical failure. Formative user tasks should record unassisted success, errors, recovery and sample limits; automated tests cannot stand in for observed human outcomes.
+
+## Existing commands and tooling
+
+Source the parent `dev-env.sh` for internal SDK paths, then verify actual versions against `.fvmrc`, `.nvmrc`, lockfiles and `packageManager`. Planning observed `.fvmrc` = 3.44.4, `.nvmrc` = 22.23.2, web package manager = npm@12.0.2, Flutter package configuration present and web `node_modules` absent. The recovered environment advertises Node 24; resolve this discrepancy using the pinned contract before claiming a reproducible web run. Preserve lockfiles during dependency restoration.
+
+Run relevant existing commands with output captured under the execution directory:
+
+```bash
+git fsck --full --no-dangling
+dart run tools/scripts/validate_workspace_architecture.dart
+node tools/scripts/validate_repository_boundary.mjs
+node tools/scripts/validate_supabase_local_only_migrations.mjs
+node tools/scripts/validate_supabase_edge_contract.mjs
+node tools/scripts/scoped_realtime_scan.mjs
+node tools/scripts/validate_mobile_qa_isolation.mjs
+node tools/scripts/validate_ios_qa_isolation.mjs
+dart run melos run analyze --no-select
+dart run melos run test_all --no-select
+bash tools/scripts/generate_route_inventory.sh
+bash tools/scripts/generate_component_inventory.sh
+bash tools/scripts/validate_golden_contract.sh
+```
+
+In `apps/rayon_sports/web`, use pinned `corepack npm ci`, then `check:dependencies`, `typecheck`, `lint`, `test`, `test:venue-coverage`, `build`, `test:e2e`, `test:lighthouse`, `size`, `qa:admin-performance` and `test:cloudflare-release` as applicable. Inspect wrappers first: the current E2E entry builds a controlled fixture runtime and cleans test ports; it is not live-backend UAT. Reserve only task-owned ports. Inspect live/seed helpers before use and verify their target environment.
+
+Use the repository's pinned Supabase CLI in an isolated local instance for `db reset --local`, `test db --local`, lint and schema diff. Use existing Deno/Edge tests where present and add focused behavior tests where static pattern checks cannot prove authorization. Run all-club Android/iOS build contracts and QA-isolated simulator/emulator builds with declared flavors. Inspect existing release helpers before invocation because some prepare generated files or signed artifacts. Keep CI success, local builds, signing and uploaded/deployed artifacts separately evidenced.
+
+## Benchmarks and test budgets
+
+Assess applicable web A/AA criteria using [WCAG 2.2](https://www.w3.org/TR/WCAG22/), including reflow, contrast, input assistance, focus and status announcements. Automated axe checks are one layer; keyboard and reader task evidence is also required for the declared scope.
+
+Use [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) for web/API control selection and [OWASP MASVS](https://mas.owasp.org/MASVS/) for mobile security areas. Record the actual edition and requirement IDs selected at execution; a checklist reference or scanner result is not certification. Review auth/session, access control, input/output handling, secrets, dependencies, network/storage, privacy and platform interactions with actual exploit-prevention tests in the isolated system.
+
+For public web field performance, report [Core Web Vitals](https://web.dev/articles/vitals) separately by mobile/desktop at the 75th percentile when adequate field data exists: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1. Local Lighthouse measurements are diagnostic evidence, not field results. Preserve existing bundle and performance thresholds; establish native launch/frame and backend p95 latency/error budgets from supported hardware, data volumes and a measured baseline in QA-00/QA-01, before optimization. Record device/network/dataset/concurrency and warm/cold conditions; never call an unmeasured budget passed.
+
+Primary benchmark pages were checked on 14 September 2026. Product scope and the selected skill determine applicability.
+
+## Evidence, findings and closure
+
+Keep this plan as maintained source. Save generated runs in ignored `output/qa/full-stack-20260914/` using the existing evidence conventions. Reuse `docs/governance/route-state-evidence.json`, `component-state-evidence.json`, `native-reference-map.json`, `evidence-bundles.json` and current release registers; reconcile stale claims instead of adding competing acceptance authorities.
+
+The execution directory should contain an environment/source manifest, per-command logs, surface/case coverage, findings, sanitized screenshots/traces, test summaries and final readiness report. A finding records ID, surface/club/route/state, requirement, reproduction, expected/actual, severity, responsible role, implementation owner when assigned, fix, regression test, evidence and closure result. Evidence records commit plus worktree fingerprint, configuration/artifact hashes, timestamps, tool/device/browser versions and fixture identity without secrets.
+
+Use **pass**, **mismatch**, **unverified**, or **not-applicable with reason** for tested criteria. Track task progress separately as pending/running/complete/blocked. Record failed/skipped/unrun tests explicitly. Each blocker names the missing input/environment, affected cases, next action and evidence needed; continue independent work. Do not lower the required case inventory to clear a gate.
+
+Severity: **P0 critical** for cross-tenant exposure, wrong monetary/admission outcome, fabricated confirmation or a critical unrecoverable task; **P1 high** for broken primary journeys, material security/accessibility failure, or missing evidence that blocks a claimed fidelity result; **P2 medium** for recoverable functional/performance inconsistency; **P3 low** for non-material polish. Distinguish a proven product defect from a source/reference or execution gap. Fix P0/P1 first, then P2/P3, and retest the affected scope after each material change.
+
+Engineering QA completion requires all applicable coverage accounted for, available required suites executed on the final candidate, repaired defects retested, and every residual item transparently reported. The execution goal remains active while actionable planned work or local P0/P1 remediation remains. A blocked device/provider/owner check cannot be relabelled a pass, and merely documenting a local defect does not complete its remediation.
+
+Report separately: plan/harness implementation; local technical checks; backend integration; visual fidelity; accessibility; performance/resilience; hosted CI; deployed version; installed physical-device checks; provider checks; independent visual review; owner acceptance; store review and public availability. Release readiness requires the applicable external and MOBILE-DESIGN-100 gates as well as engineering results. Producing the QA report is never itself authorization to release.
+
+## Execution goal to create after this plan
+
+Execute QA-00 through QA-09 for the complete declared AFRICLUB scope, reuse and strengthen existing test infrastructure, repair reproduced defects with regressions, and deliver a source-bound per-surface QA/readiness report. Preserve product identity and workflows under the selected revolut-design authority. Continue all independent authorized work, keep missing evidence and external gates explicit, and do not claim system completion or visual acceptance from planning, fixture screenshots, builds or checklist totals alone.

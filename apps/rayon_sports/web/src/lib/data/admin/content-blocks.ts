@@ -2,12 +2,12 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess, ContentBlock } from "@/lib/types";
 import { requestAdminApi } from "./http";
 import {
+  AdminMutationAuthorizationError,
   AdminMutationConflictError,
   adminClubIdOrNull,
   deleteAdminRecordWithAuditIfUnchanged,
   mutateRecordWithVariantsIfUnchanged,
   requireExpectedUpdatedAt,
-  safeString,
 } from "./helpers";
 
 type ContentBlockRow = {
@@ -331,41 +331,33 @@ async function getContentBlockRowById(client: SupabaseClient, id: string) {
   return data as ContentBlockRow;
 }
 
-async function ensureScopedContentBlockTarget(
-  client: SupabaseClient,
+function requireContentBlockScope(
   access: AdminAccess,
   source: ContentBlockRow,
 ) {
   const scopedClubId = adminClubIdOrNull(access);
-  if (scopedClubId == null || source.club_id === scopedClubId) {
-    return {
-      id: source.id,
-      updatedAt: requireExpectedUpdatedAt(source.updated_at),
-    };
+  if (
+    (source.club_id != null && source.club_id !== scopedClubId) ||
+    (scopedClubId == null && !access.isSuperAdmin)
+  ) {
+    throw new AdminMutationAuthorizationError();
   }
+}
 
-  const { data: existing, error: existingError } = await client
-    .from("platform_content_blocks")
-    .select("id, updated_at")
-    .eq("block_key", source.block_key)
-    .eq("club_id", scopedClubId)
-    .maybeSingle();
-
-  if (existingError) {
-    throw new Error(existingError.message);
-  }
-
-  if (existing?.id) {
-    return {
-      id: safeString(existing.id),
-      updatedAt: requireExpectedUpdatedAt(existing.updated_at),
-    };
-  }
-
-  const { data: inserted, error: insertError } = await client
+async function insertScopedContentBlock(
+  client: SupabaseClient,
+  scopedClubId: number,
+  source: ContentBlockRow,
+  changes: Partial<ContentBlockRow>,
+) {
+  // Commit only the final override. A failed follow-up update must never leave
+  // an intermediate copy, and a concurrently created override must be reloaded.
+  const definedChanges = Object.fromEntries(
+    Object.entries(changes).filter(([, value]) => value !== undefined),
+  );
+  const { error } = await client
     .from("platform_content_blocks")
     .insert({
-      club_id: scopedClubId,
       block_key: source.block_key,
       block_type: source.block_type,
       title: source.title,
@@ -377,18 +369,15 @@ async function ensureScopedContentBlockTarget(
       is_active: source.is_active,
       sort_order: source.sort_order,
       metadata: source.metadata ?? {},
-    })
-    .select("id, updated_at")
-    .single();
-
-  if (insertError) {
-    throw new Error(insertError.message);
+      ...definedChanges,
+      club_id: scopedClubId,
+    });
+  if (error?.code === "23505") {
+    throw new AdminMutationConflictError();
   }
-
-  return {
-    id: safeString(inserted.id),
-    updatedAt: requireExpectedUpdatedAt(inserted.updated_at),
-  };
+  if (error) {
+    throw new Error(error.message);
+  }
 }
 
 export async function getAdminContentBlocks(
@@ -437,16 +426,20 @@ export async function saveAdminContentBlock(
 
   if (input.id) {
     const source = await getContentBlockRowById(client, input.id);
+    requireContentBlockScope(access, source);
     const loadedVersion = requireExpectedUpdatedAt(input.updatedAt);
     if (source.updated_at !== loadedVersion) {
       throw new AdminMutationConflictError();
     }
-    const target = await ensureScopedContentBlockTarget(client, access, source);
+    if (scopedClubId != null && source.club_id == null) {
+      await insertScopedContentBlock(client, scopedClubId, source, payload);
+      return;
+    }
     await mutateRecordWithVariantsIfUnchanged(
       client,
       "platform_content_blocks",
-      target.id,
-      target.updatedAt,
+      source.id,
+      loadedVersion,
       [payload],
     );
     return;
@@ -475,20 +468,14 @@ export async function deleteAdminContentBlock(
 
   const scopedClubId = adminClubIdOrNull(access);
   const source = await getContentBlockRowById(client, id);
+  requireContentBlockScope(access, source);
   const loadedVersion = requireExpectedUpdatedAt(expectedUpdatedAt);
   if (source.updated_at !== loadedVersion) {
     throw new AdminMutationConflictError();
   }
 
   if (scopedClubId != null && source.club_id == null) {
-    const target = await ensureScopedContentBlockTarget(client, access, source);
-    await mutateRecordWithVariantsIfUnchanged(
-      client,
-      "platform_content_blocks",
-      target.id,
-      target.updatedAt,
-      [{ is_active: false }],
-    );
+    await insertScopedContentBlock(client, scopedClubId, source, { is_active: false });
     return;
   }
 

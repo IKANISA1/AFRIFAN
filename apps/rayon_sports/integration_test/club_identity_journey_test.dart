@@ -51,6 +51,8 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    await binding.convertFlutterSurfaceToImage();
+    await tester.pump();
     expect(find.text('Rayon Sports FC'), findsOneWidget);
     expect(find.text('Nyanza, Southern Province, Rwanda'), findsOneWidget);
     expect(find.text('Blue and white'), findsOneWidget);

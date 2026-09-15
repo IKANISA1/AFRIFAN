@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   getClientIp,
   isSameOriginMutation,
@@ -104,5 +104,47 @@ describe("security helpers", () => {
     await expect(response?.json()).resolves.toMatchObject({
       code: "MUTATION_ACCESS_DENIED",
     });
+  });
+});
+
+describe("isolated preview connection policy", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it.each([
+    ["http://127.0.0.1:54321", "1", true],
+    ["http://localhost:54321", "1", true],
+    ["http://[::1]:54321", "1", true],
+    ["http://127.0.0.1:54321", "0", false],
+    ["http://127.0.0.1:54321", undefined, false],
+    ["http://192.168.1.10:54321", "1", false],
+    ["http://localhost.example.invalid:54321", "1", false],
+  ])("limits %s with preview=%s to its explicit loopback origin", async (url, preview, allowed) => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", url);
+    vi.stubEnv("NEXT_PUBLIC_VITALS_ENDPOINT", "");
+    vi.stubEnv("AFRICLUB_ALLOW_HTTP_PREVIEW", preview);
+    vi.resetModules();
+    const { default: config } = await import("../../next.config");
+    const headers = (await config.headers?.())?.find(
+      (entry) => entry.source === "/(.*)",
+    )?.headers;
+    const policy = headers?.find(
+      (header) => header.key === "Content-Security-Policy",
+    )?.value;
+    expect(policy).toBeDefined();
+    const connections = policy?.split(";").find(
+      (directive) => directive.trim().startsWith("connect-src "),
+    )?.trim().split(/\s+/);
+    const origin = new URL(url).origin;
+    expect(connections?.includes(origin)).toBe(allowed);
+    expect(connections?.includes(origin.replace(/^http:/, "ws:"))).toBe(allowed);
+    expect(connections).not.toContain("http:");
+    expect(connections).not.toContain("ws:");
+    expect(policy).toContain("object-src 'none'");
+    expect(policy).toContain("frame-ancestors 'none'");
+    expect(headers?.some((header) => header.key === "Strict-Transport-Security"))
+      .toBe(preview !== "1");
   });
 });

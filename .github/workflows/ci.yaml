@@ -46,11 +46,26 @@ jobs:
           jq -e '.summary.pending_dynamic_copy_candidates == 0' \
             "${{ runner.temp }}/africlub-localization-inventory/dynamic-copy-inventory.json"
 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Prepare pinned Android bundle inspector
+        run: python3 tools/scripts/prepare_bundletool.py "${{ runner.temp }}/africlub-tools/bundletool.jar"
+
       - name: Test repository and evidence validation
+        env:
+          BUNDLETOOL_JAR: ${{ runner.temp }}/africlub-tools/bundletool.jar
         run: >-
           node --test tools/scripts/validate_repository_boundary.test.mjs
           tools/scripts/validate_evidence_provenance.test.mjs
           tools/scripts/validate_supabase_local_only_migrations.test.mjs
+          tools/scripts/validate_design_authority.test.mjs
+          tools/scripts/design_registered_media.test.mjs
+          tools/scripts/android_release_contract.test.mjs
+          tools/scripts/native_qa_isolation.test.mjs
+          tools/scripts/validate_mobile_design_release.test.mjs
 
       - name: Enforce football-only repository boundary
         run: node tools/scripts/validate_repository_boundary.mjs
@@ -99,7 +114,9 @@ jobs:
 
       - name: Generate route inventory and validate design source compliance
         env:
-          SOURCE_DESIGN: ${{ github.workspace }}/DESIGN.md
+          # Provision the selected skill package on the runner. Missing or
+          # changed authority bytes fail verification; the repo is no substitute.
+          REVOLUT_DESIGN_ROOT: ${{ vars.REVOLUT_DESIGN_ROOT }}
           EXCEPTIONS_REGISTER: ${{ github.workspace }}/docs/governance/design-exceptions.json
           ROUTE_INVENTORY_JSON: ${{ runner.temp }}/africlub-governance/route/route-inventory.json
           ROUTE_STATE_CLOSURE_JSON: ${{ runner.temp }}/africlub-governance/route/route-state-closure.json
@@ -231,6 +248,12 @@ jobs:
 
       - name: Validate dependency graph and advisories
         run: corepack npm run check:dependencies
+
+      - name: Validate production build provenance
+        run: corepack npm run test:build-provenance
+
+      - name: Validate unreviewed browser evidence staging
+        run: node --test ../../../tools/scripts/register_web_route_state_evidence.test.mjs
 
       - name: Lint
         run: corepack npm run lint

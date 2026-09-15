@@ -8,6 +8,15 @@ import { safeNumber, safeString, toIdString } from "@/lib/utils";
 
 export { safeNumber, safeString, toIdString };
 
+export class AdminMutationAuthorizationError extends Error {
+  readonly code = "ADMIN_ACCESS_DENIED";
+
+  constructor(message = "Admin access denied.") {
+    super(message);
+    this.name = "AdminMutationAuthorizationError";
+  }
+}
+
 export class AdminMutationConflictError extends Error {
   constructor(
     message =

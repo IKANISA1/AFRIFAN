@@ -523,9 +523,23 @@ export function AdminDashboardSurface() {
   const showConfirmedContent = hasConfirmed;
   const metrics = overview.snapshot.metrics;
 
+  const pointerPressed = useRef(false);
   const setPointerPressed = (event: PointerEvent<HTMLButtonElement>) => {
     event.currentTarget.setPointerCapture?.(event.pointerId);
+    pointerPressed.current = true;
     setInteraction("pressed");
+  };
+  const restInteraction = () => {
+    if (!pointerPressed.current) {
+      setInteraction(selectedActionId == null ? "idle" : "selected");
+    }
+  };
+  const finishPointer = () => {
+    pointerPressed.current = false;
+    restInteraction();
+  };
+  const focusInteraction = () => {
+    if (!pointerPressed.current) setInteraction("focused");
   };
 
   return (
@@ -593,17 +607,12 @@ export function AdminDashboardSurface() {
             type="button"
             disabled={busy}
             onClick={() => void loadDashboard()}
-            onFocus={() => setInteraction("focused")}
-            onBlur={() =>
-              setInteraction(selectedActionId == null ? "idle" : "selected")
-            }
+            onFocus={focusInteraction}
+            onBlur={restInteraction}
             onPointerDown={setPointerPressed}
-            onPointerUp={() =>
-              setInteraction(selectedActionId == null ? "idle" : "selected")
-            }
-            onPointerCancel={() =>
-              setInteraction(selectedActionId == null ? "idle" : "selected")
-            }
+            onPointerUp={finishPointer}
+            onPointerCancel={finishPointer}
+            onLostPointerCapture={finishPointer}
             className="admin-dashboard-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-bold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
           >
             <RefreshCw
@@ -682,23 +691,12 @@ export function AdminDashboardSurface() {
                         setSelectedActionId(item.id);
                         setInteraction("selected");
                       }}
-                      onFocus={() => setInteraction("focused")}
-                      onBlur={() =>
-                        setInteraction(
-                          selectedActionId == null ? "idle" : "selected",
-                        )
-                      }
+                      onFocus={focusInteraction}
+                      onBlur={restInteraction}
                       onPointerDown={setPointerPressed}
-                      onPointerUp={() =>
-                        setInteraction(
-                          selectedActionId == null ? "idle" : "selected",
-                        )
-                      }
-                      onPointerCancel={() =>
-                        setInteraction(
-                          selectedActionId == null ? "idle" : "selected",
-                        )
-                      }
+                      onPointerUp={finishPointer}
+                      onPointerCancel={finishPointer}
+                      onLostPointerCapture={finishPointer}
                       className={cn(
                         "admin-dashboard-action min-h-12 min-w-0 rounded-xl border p-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transition-none",
                         selected

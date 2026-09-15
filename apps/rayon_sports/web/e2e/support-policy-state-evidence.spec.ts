@@ -1,12 +1,10 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 
-const evidenceDirectory = path.resolve(
-  process.cwd(),
-  "../../../output/evidence/consumer_web_support_policy_states",
-);
+let evidenceDirectory: string;
 
 const routes = [
   { path: "/support", kind: "support" },
@@ -19,8 +17,8 @@ async function capture(
   state: string,
   fullPage = true,
 ) {
-  const file = `${kind}_state_${state}_pixel7.png`;
-  await page.screenshot({
+  const file = `${kind}_state_${state}_viewport.png`;
+  await captureStateScreenshot(page, {
     path: path.join(evidenceDirectory, file),
     fullPage,
     animations: "disabled",
@@ -34,7 +32,7 @@ async function openSupportRoute(
   kind: string,
   state: string,
 ) {
-  await page.goto(`${route}?evidence=${state}`, {
+  await navigateStateEvidence(page, `${route}?evidence=${state}`, {
     waitUntil: "domcontentloaded",
   });
   const surface = page.locator(`[data-support-kind="${kind}"]`);
@@ -58,29 +56,30 @@ async function expectNoSeriousAxeViolations(page: Page) {
   ).toHaveLength(0);
 }
 
-test.beforeAll(() => {
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+test.beforeEach(async ({ browser }, testInfo) => {
+  test.setTimeout(120_000);
+  evidenceDirectory = prepareStateEvidence(browser, testInfo, "consumer_web_support_policy_states");
+});
+
+test.afterEach(async ({}, testInfo) => {
+  if (testInfo.status === "passed") finalizeStateEvidence(evidenceDirectory);
 });
 
 test("support policy routes prove their six applicable static-support states", async ({
   browser,
-}, testInfo) => {
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "Support-policy evidence uses the declared Pixel 7 Chromium profile.",
-  );
+}) => {
 
   const context: BrowserContext = await browser.newContext({
-    viewport: { width: 412, height: 839 },
-    deviceScaleFactor: 2.625,
+    ...stateEvidenceContextOptions(test.info()),
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
+  await page.emulateMedia({ colorScheme: "dark" });
   const captures: Array<{
     route: string;
     state: string;
-    screenshot: string;
+    file: string;
   }> = [];
 
   for (const route of routes) {
@@ -96,7 +95,7 @@ test("support policy routes prove their six applicable static-support states", a
     captures.push({
       route: route.path,
       state: "dark",
-      screenshot: await capture(page, route.kind, "dark_dark"),
+      file: await capture(page, route.kind, "dark_dark"),
     });
 
     surface = await openSupportRoute(page, route.path, route.kind, "focused");
@@ -113,7 +112,7 @@ test("support policy routes prove their six applicable static-support states", a
     captures.push({
       route: route.path,
       state: "focused",
-      screenshot: await capture(page, route.kind, "focused_dark", false),
+      file: await capture(page, route.kind, "focused_dark", false),
     });
 
     surface = await openSupportRoute(page, route.path, route.kind, "pressed");
@@ -136,7 +135,7 @@ test("support policy routes prove their six applicable static-support states", a
     captures.push({
       route: route.path,
       state: "pressed",
-      screenshot: await capture(page, route.kind, "pressed_dark", false),
+      file: await capture(page, route.kind, "pressed_dark", false),
     });
     await page.mouse.move(1, 1);
     await page.mouse.up();
@@ -180,7 +179,7 @@ test("support policy routes prove their six applicable static-support states", a
     captures.push({
       route: route.path,
       state: "large_text",
-      screenshot: await capture(page, route.kind, "large_text_dark", false),
+      file: await capture(page, route.kind, "large_text_dark", false),
     });
 
     await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
@@ -210,7 +209,7 @@ test("support policy routes prove their six applicable static-support states", a
     captures.push({
       route: route.path,
       state: "reduced_motion",
-      screenshot: await capture(page, route.kind, "reduced_motion_dark"),
+      file: await capture(page, route.kind, "reduced_motion_dark"),
     });
 
     await page.emulateMedia({
@@ -225,7 +224,7 @@ test("support policy routes prove their six applicable static-support states", a
     captures.push({
       route: route.path,
       state: "light",
-      screenshot: await capture(page, route.kind, "light_light"),
+      file: await capture(page, route.kind, "light_light"),
     });
 
     const actionHeights = await surface
@@ -241,14 +240,9 @@ test("support policy routes prove their six applicable static-support states", a
     `${JSON.stringify(
       {
         generatedAt: new Date().toISOString(),
-        profile: {
-          browser: "chromium",
-          device: "Pixel 7",
-          viewport: { width: 412, height: 839 },
-          deviceScaleFactor: 2.625,
-        },
+        profile: { browser: browser.browserType().name(), ...stateEvidenceContextOptions(test.info()) },
         routes: routes.map((route) => route.path),
-        applicableStates: [
+        applicable_states: [
           "focused",
           "pressed",
           "large_text",
@@ -256,7 +250,7 @@ test("support policy routes prove their six applicable static-support states", a
           "dark",
           "light",
         ],
-        notApplicableStates: [
+        not_applicable_states: [
           "loading",
           "empty",
           "error",
@@ -268,7 +262,7 @@ test("support policy routes prove their six applicable static-support states", a
           "conflict",
           "security_timeout",
         ],
-        notApplicableRationale:
+        not_applicable_rationale:
           "These static support-policy surfaces always render governed fallback content and own no collection, authorization, selection, mutation, synchronization, conflict, or timeout operation.",
         assertions: {
           oneLevelOneHeadingPerRoute: true,

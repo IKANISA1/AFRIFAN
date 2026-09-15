@@ -3,12 +3,17 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 import {
+  parseDeclaredAndroidApplicationId,
   parseFlutterPubspecVersion,
+  readDeclaredAndroidApplicationId,
   RAYON_SPORTS_APPLICATION_ID,
   validateAndroidReleaseArtifact,
+  BUNDLETOOL_VERSION,
 } from "./android_release_contract.mjs";
 
 const repoRoot = path.resolve(
@@ -21,11 +26,21 @@ const writeJson = (file, value) => {
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 };
 
-const createFixture = (t) => {
+const writeBundle = (artifactPath, applicationId = RAYON_SPORTS_APPLICATION_ID, versionName = "1.0.3", versionCode = "6") => {
+  const result = spawnSync("python3", [path.join(repoRoot, "tools/scripts/fixtures/android_bundle.py")], {
+    input: JSON.stringify({ artifactPath, applicationId, versionName, versionCode }), encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+};
+
+const createFixture = (t, applicationId = RAYON_SPORTS_APPLICATION_ID) => {
   const appDir = fs.mkdtempSync(
     path.join(os.tmpdir(), "africlub-android-release-contract-"),
   );
   t.after(() => fs.rmSync(appDir, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(appDir, "android/app"), { recursive: true });
+  fs.writeFileSync(path.join(appDir, "android/app/build.gradle.kts"),
+    `android {\n  defaultConfig {\n    applicationId = "${applicationId}"\n  }\n}\n`);
 
   const manifestDirectory = path.join(
     appDir,
@@ -43,12 +58,12 @@ const createFixture = (t) => {
   fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
   fs.writeFileSync(
     path.join(manifestDirectory, "AndroidManifest.xml"),
-    `<?xml version="1.0"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" package="${RAYON_SPORTS_APPLICATION_ID}" android:versionCode="6" android:versionName="1.0.3"><application /></manifest>\n`,
+    `<?xml version="1.0"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" package="${applicationId}" android:versionCode="6" android:versionName="1.0.3"><application /></manifest>\n`,
   );
-  fs.writeFileSync(artifactPath, Buffer.from([0x50, 0x4b, 0x03, 0x04, 0x01]));
+  writeBundle(artifactPath, applicationId);
   writeJson(path.join(manifestDirectory, "output-metadata.json"), {
     artifactType: { type: "MERGED_MANIFESTS", kind: "Directory" },
-    applicationId: RAYON_SPORTS_APPLICATION_ID,
+    applicationId,
     variantName: "release",
     elements: [
       {
@@ -62,7 +77,7 @@ const createFixture = (t) => {
   });
   writeJson(path.join(bundleMetadataDirectory, "output-metadata.json"), {
     artifactType: { type: "BUNDLE", kind: "RegularFile" },
-    applicationId: RAYON_SPORTS_APPLICATION_ID,
+    applicationId,
     variantName: "release",
     elements: [
       {
@@ -90,6 +105,44 @@ test("parses unquoted and quoted Flutter build versions", () => {
       buildNumber: "17",
     },
   );
+});
+
+test("resolves all configured club identities from their own Android sources", () => {
+  const apps = fs.readdirSync(path.join(repoRoot, "apps"))
+    .filter((slug) => fs.existsSync(path.join(repoRoot, "apps", slug, "assets/flavors/production.json")));
+  const identities = apps.map((slug) => readDeclaredAndroidApplicationId(path.join(repoRoot, "apps", slug)));
+  assert.equal(new Set(identities).size, apps.length);
+  assert.equal(identities[apps.indexOf("rayon_sports")], RAYON_SPORTS_APPLICATION_ID);
+  assert.equal(identities[apps.indexOf("ac_leopards")], "cg.ikanisa.ac_leopards");
+});
+
+test("comments cannot replace an ID and ambiguous or computed IDs fail closed", () => {
+  assert.equal(parseDeclaredAndroidApplicationId('// applicationId = "wrong.id"\napplicationId = "cg.ikanisa.ac_leopards" // actual'), "cg.ikanisa.ac_leopards");
+  for (const source of [
+    '/*\n applicationId = "wrong.id"\n*/',
+    'applicationId = "one.id"\napplicationId = "two.id"',
+    'applicationId = providers.gradleProperty("package").get()',
+    'applicationId = "${rootProject.name}.app"',
+  ]) assert.throws(() => parseDeclaredAndroidApplicationId(source));
+});
+
+test("another club's release metadata does not require the Rayon ID", (t) => {
+  const fixture = createFixture(t, "cg.ikanisa.ac_leopards");
+  const result = validateAndroidReleaseArtifact({
+    ...fixture, expectedVersionName: "1.0.3", expectedVersionCode: "6",
+  });
+  assert.equal(result.applicationId, "cg.ikanisa.ac_leopards");
+  assert.throws(() => validateAndroidReleaseArtifact({
+    ...fixture, expectedApplicationId: RAYON_SPORTS_APPLICATION_ID,
+    expectedVersionName: "1.0.3", expectedVersionCode: "6",
+  }), /applicationId mismatch/);
+});
+
+test("the all-club dry-run resolves identity before building", () => {
+  const script = fs.readFileSync(path.join(repoRoot, "tools/scripts/dry_run_android_release.sh"), "utf8");
+  assert.match(script, /application-id --app-dir "\$APP_DIR"/);
+  assert.doesNotMatch(script, /EXPECTED_APPLICATION_ID="rw\.gikundiro\.app"/);
+  assert.ok(script.indexOf('application-id --app-dir "$APP_DIR"') < script.indexOf("flutter build appbundle"));
 });
 
 test("rejects missing, duplicate, and non-numeric build numbers", () => {
@@ -120,9 +173,36 @@ test("accepts one AAB tied to the exact release manifest and bundle metadata", (
       versionName: "1.0.3",
       versionCode: "6",
       artifactPath: fs.realpathSync(fixture.artifactPath),
-      bytes: 5,
+      bytes: fs.statSync(fixture.artifactPath).size,
+      sha256: createHash("sha256").update(fs.readFileSync(fixture.artifactPath)).digest("hex"),
+      archiveValidated: true,
+      bundletoolVersion: BUNDLETOOL_VERSION,
     },
   );
+});
+
+test("matching sidecars cannot make a truncated ZIP into an accepted AAB", (t) => {
+  const fixture = createFixture(t);
+  fs.writeFileSync(fixture.artifactPath, Buffer.from([0x50, 0x4b, 0x03, 0x04, 0x01]));
+  assert.throws(() => validateAndroidReleaseArtifact({ ...fixture,
+    expectedVersionName: "1.0.3", expectedVersionCode: "6",
+  }), /bundletool validate failed/);
+});
+
+test("matching sidecars cannot conceal another package inside the AAB", (t) => {
+  const fixture = createFixture(t);
+  writeBundle(fixture.artifactPath, "cg.ikanisa.ac_leopards");
+  assert.throws(() => validateAndroidReleaseArtifact({ ...fixture,
+    expectedVersionName: "1.0.3", expectedVersionCode: "6",
+  }), /AAB manifest package mismatch/);
+});
+
+test("matching sidecars cannot conceal a stale version inside the AAB", (t) => {
+  const fixture = createFixture(t);
+  writeBundle(fixture.artifactPath, RAYON_SPORTS_APPLICATION_ID, "1.0.2", "5");
+  assert.throws(() => validateAndroidReleaseArtifact({ ...fixture,
+    expectedVersionName: "1.0.3", expectedVersionCode: "6",
+  }), /AAB manifest versionName mismatch/);
 });
 
 test("rejects stale version metadata and an unexpected applicationId", (t) => {
@@ -187,6 +267,7 @@ test("both Android release entrypoints pin the parsed build name and number", ()
     assert.match(script, /--expected-application-id "\$EXPECTED_APPLICATION_ID"/);
     assert.match(script, /--expected-version-name "\$BUILD_NAME"/);
     assert.match(script, /--expected-version-code "\$BUILD_NUMBER"/);
+    assert.ok(script.indexOf('node "$RELEASE_CONTRACT" toolchain') < script.indexOf('version --pubspec'));
     if (scriptName === "dry_run_android_release.sh") {
       dryRunScript = script;
     }

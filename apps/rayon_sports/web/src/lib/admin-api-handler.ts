@@ -12,7 +12,10 @@ import {
 } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
-import { AdminMutationConflictError } from "@/lib/data/admin/helpers";
+import {
+  AdminMutationAuthorizationError,
+  AdminMutationConflictError,
+} from "@/lib/data/admin/helpers";
 import {
   getAdminDestructiveActionContract,
   getAdminDestructivePermission,
@@ -309,7 +312,10 @@ export async function handleAdminApiRoute<T>(
         400,
       );
     }
-    if (error instanceof AdminApiAuthorizationError) {
+    if (
+      error instanceof AdminApiAuthorizationError ||
+      error instanceof AdminMutationAuthorizationError
+    ) {
       return adminJsonResponse(
         {
           code: error.code,

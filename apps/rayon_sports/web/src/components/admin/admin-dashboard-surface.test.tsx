@@ -372,6 +372,32 @@ describe("AdminDashboardSurface", () => {
     ).toHaveAttribute("data-admin-dashboard-interaction", "pressed");
   });
 
+  it.each([/refresh dashboard/i, /review membership/i])(
+    "keeps %s pressed across browser focus changes until cancellation",
+    async (name) => {
+      vi.mocked(requestAdminApi).mockResolvedValue(overview);
+      const { container } = renderDashboard();
+      await screen.findByText("Membership reviewed");
+      const button = screen.getByRole("button", { name });
+      const surface = container.querySelector(".admin-dashboard-state-surface");
+
+      fireEvent.focus(button);
+      fireEvent.pointerDown(button);
+      fireEvent.blur(button);
+      fireEvent.focus(button);
+      expect(surface).toHaveAttribute("data-admin-dashboard-interaction", "pressed");
+
+      fireEvent.pointerCancel(button);
+      expect(surface).toHaveAttribute("data-admin-dashboard-interaction", "idle");
+      fireEvent.focus(button);
+      expect(surface).toHaveAttribute("data-admin-dashboard-interaction", "focused");
+      fireEvent.pointerDown(button);
+      fireEvent.lostPointerCapture(button);
+      expect(surface).toHaveAttribute("data-admin-dashboard-interaction", "idle");
+      expect(requestAdminApi).toHaveBeenCalledTimes(1);
+    },
+  );
+
   it("maps the local operation deadline to a security timeout", async () => {
     vi.useFakeTimers();
     vi.mocked(requestAdminApi).mockImplementation(

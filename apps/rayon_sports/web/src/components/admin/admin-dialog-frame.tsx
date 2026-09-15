@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useEffect, useEffectEvent, useId, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -57,6 +57,7 @@ export function AdminDialogFrame({
   const descriptionId = useId();
   const panelRef = useRef<HTMLDivElement | null>(null);
   const lastActiveRef = useRef<HTMLElement | null>(null);
+  const closeFromKeyboard = useEffectEvent(onClose);
 
   useEffect(() => {
     if (!open) {
@@ -78,14 +79,16 @@ export function AdminDialogFrame({
       ) ??
       getFocusableElements(panel)[0] ??
       panel;
-    window.requestAnimationFrame(() => {
+    const focusFrame = window.requestAnimationFrame(() => {
+      // Preserve deliberate focus if the user reaches a field before this frame.
+      if (panel?.contains(document.activeElement)) return;
       focusTarget?.focus();
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        closeFromKeyboard();
         return;
       }
 
@@ -115,13 +118,14 @@ export function AdminDialogFrame({
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      window.cancelAnimationFrame(focusFrame);
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
       window.requestAnimationFrame(() => {
         lastActiveRef.current?.focus();
       });
     };
-  }, [onClose, open]);
+  }, [open]);
 
   if (!open) {
     return null;

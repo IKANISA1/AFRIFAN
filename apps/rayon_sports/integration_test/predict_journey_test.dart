@@ -59,6 +59,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('500 FET'), findsOneWidget);
     expect(find.text('Draw'), findsOneWidget);
+    await binding.convertFlutterSurfaceToImage();
+    await tester.pump();
     await capture('predict-native-ready');
     await tester.tap(find.byKey(const ValueKey('predict-native-fixture-draw')));
     await tester.tap(

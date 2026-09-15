@@ -1,0 +1,8 @@
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug-qa.xcconfig"
+#include "Generated.xcconfig"
+
+// Separate QA identity, with no production push or associated-domain entitlements.
+PRODUCT_BUNDLE_IDENTIFIER=bj.ikanisa.mogas90.qa.codex
+AFRICLUB_DISPLAY_NAME=Mogas 90 QA
+CODE_SIGN_ENTITLEMENTS=Runner/RunnerQA.entitlements
+FLUTTER_BUILD_MODE=debug

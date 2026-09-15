@@ -1,43 +1,19 @@
 #!/bin/bash
-
 set -euo pipefail
-
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-
 cd "$ROOT"
-
-echo "==> Validate local-only Supabase migration security controls"
-node tools/scripts/validate_supabase_local_only_migrations.mjs
-
-echo "==> Validate iOS SwiftPM deployment-target synchronization"
-python3 -m unittest tools/scripts/sync_ios_swiftpm_deployment_target_test.py
-
-echo "==> Prepare generated iOS SwiftPM package"
-bash tools/scripts/prepare_rayon_ios_swiftpm.sh rayon_sports
-
-echo "==> Validate release contract"
-bash tools/scripts/validate_club_release.sh rayon_sports
-
-echo "==> Flutter analyze"
-flutter analyze \
-  packages/core/core_auth \
-  packages/core/core_app \
-  packages/core/core_network \
-  packages/features/feat_onboarding \
-  apps/rayon_sports
-
-echo "==> Flutter smoke checks"
-flutter test packages/features/feat_onboarding/test/onboarding_flow_test.dart
-flutter test apps/rayon_sports/integration_test/release_readiness_smoke_test.dart
-
-echo "==> Web typecheck, tests, build, audit"
-(
-  cd apps/rayon_sports/web
-  corepack npm run check:dependencies
-  corepack npm run typecheck
-  corepack npm test
-  corepack npm run build
-  corepack npm audit --audit-level=high
-)
-
-echo "Rayon Sports release gate passed."
+if [[ $# -ne 2 || -z "$1" || -z "$2" ]]; then
+  echo "Usage: run_rayon_release_gate.sh <android-acceptance-id> <ios-acceptance-id>" >&2
+  echo "Both reviewed MOBILE-DESIGN-100 records are required. Engineering checks are available through run_rayon_engineering_checks.sh." >&2
+  exit 2
+fi
+validate_mobile_acceptance() {
+  node tools/scripts/validate_mobile_design_release.mjs --app rayon_sports --platform android --acceptance-id "$1"
+  node tools/scripts/validate_mobile_design_release.mjs --app rayon_sports --platform ios --acceptance-id "$2"
+}
+# Fail before build side effects when the candidate is not already reviewable.
+validate_mobile_acceptance "$1" "$2"
+bash tools/scripts/run_rayon_engineering_checks.sh
+# Recheck the exact bytes after engineering commands and fail on any drift.
+validate_mobile_acceptance "$1" "$2"
+echo "Rayon Sports engineering and MOBILE-DESIGN-100 release gates passed for the reviewed Android and iOS artifacts. Deployment, providers, signing, store review and public availability require their own evidence."

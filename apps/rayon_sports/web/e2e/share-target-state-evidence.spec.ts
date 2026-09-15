@@ -1,12 +1,10 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-const evidenceDirectory = path.resolve(
-  process.cwd(),
-  "../../../output/evidence/consumer_web_share_target_states",
-);
+let evidenceDirectory: string;
 
 const populatedRoute =
   "/share-target?title=Official%20match%20report" +
@@ -14,7 +12,7 @@ const populatedRoute =
   "&url=https%3A%2F%2Fexample.com%2Fclub%2Fofficial-report";
 
 async function openShareTarget(page: Page, route = populatedRoute) {
-  await page.goto(route, { waitUntil: "domcontentloaded" });
+  await navigateStateEvidence(page, route, { waitUntil: "domcontentloaded" });
   await expect(
     page.getByRole("heading", {
       name: /bring shared content into the club flow/i,
@@ -30,28 +28,29 @@ async function openShareTarget(page: Page, route = populatedRoute) {
 }
 
 async function capture(page: Page, state: string) {
-  await page.screenshot({
+  await captureStateScreenshot(page, {
     path: path.join(
       evidenceDirectory,
-      `share_target_state_${state}_pixel7.png`,
+      `share_target_state_${state}_viewport.png`,
     ),
     fullPage: true,
     animations: "disabled",
   });
 }
 
-test.beforeAll(() => {
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+test.beforeEach(async ({ browser }, testInfo) => {
+  test.setTimeout(120_000);
+  evidenceDirectory = prepareStateEvidence(browser, testInfo, "consumer_web_share_target_states");
 });
 
-test("share target proves all eight applicable rendered states", async ({
+test.afterEach(async ({}, testInfo) => {
+  if (testInfo.status === "passed") finalizeStateEvidence(evidenceDirectory);
+});
+
+test("share target proves nine rendered states including invalid URLs", async ({
   page,
   context,
-}, testInfo) => {
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "Governed screenshots use the single declared Pixel 7 evidence profile.",
-  );
+}) => {
 
   await page.emulateMedia({
     colorScheme: "dark",
@@ -89,6 +88,7 @@ test("share target proves all eight applicable rendered states", async ({
   await expect(
     page.getByRole("link", { name: /open original/i }),
   ).toHaveCount(0);
+  await capture(page, "invalid_dark");
 
   await openShareTarget(page, "/share-target");
   await expect(
@@ -180,4 +180,13 @@ test("share target proves all eight applicable rendered states", async ({
     ),
   ).toHaveLength(0);
   await capture(page, "light_light");
+  const states = ["dark", "invalid", "empty", "offline", "focused", "pressed", "large_text", "reduced_motion", "light"];
+  fs.writeFileSync(path.join(evidenceDirectory, "share-target-state-evidence.json"), JSON.stringify({
+    schema_version: "1.0", route: "/share-target", surface: "consumer_web",
+    applicable_states: states,
+    not_applicable_states: ["loading", "permission_denied", "disabled", "selected", "syncing", "conflict", "security_timeout"],
+    not_applicable_rationale: "This read-only shared-content handoff parses the current URL and owns navigation links, with no authenticated mutation or remote submission. Applicability remains subject to review.",
+    assertions: { unsafe_url_has_no_external_action: true, empty_payload_has_explicit_state: true, light_and_dark_axe_serious_or_critical: 0 },
+    captures: states.map((state) => ({ state, file: `share_target_state_${state}_${state === "light" ? "light" : "dark"}_viewport.png` })),
+  }, null, 2));
 });

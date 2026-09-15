@@ -119,10 +119,12 @@ supabase/
 - Predictions are free-to-enter and limited to selected approved matches; no
   odds, staking, payout, or betting copy is permitted.
 - No frontend hardcoding that assumes Rayon outside reference defaults.
-- UI changes must follow `DESIGN.md`, the only design authority for this repo.
-- Architecture and runbook documents are operational references only. They must
-  not redefine product visuals, screen inventories, token values, or interface
-  rules outside `DESIGN.md`.
+- UI review across mobile, websites, Admin PWA and venue web follows the selected
+  [`revolut-design` skill](/Users/jeanbosco/.codex/skills/revolut-design/SKILL.md).
+  `DESIGN.md` is its product adapter; governance inventories, mappings, runbooks
+  and review reports record evidence without overriding the skill.
+- Android/iOS release acceptance requires the skill's `MOBILE-DESIGN-100` rule.
+  Source checks, tests, screenshots and galleries do not grant visual approval.
 
 ## Common Commands
 

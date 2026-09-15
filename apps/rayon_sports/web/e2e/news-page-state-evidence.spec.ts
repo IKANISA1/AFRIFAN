@@ -1,12 +1,10 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 
-const evidenceDirectory = path.resolve(
-  process.cwd(),
-  "../../../output/evidence/consumer_web_news_states",
-);
+let evidenceDirectory: string;
 
 type ResponseMode =
   | "loading"
@@ -105,8 +103,8 @@ function responseFor(mode: Exclude<ResponseMode, "loading">) {
 }
 
 async function capture(page: Page, state: string) {
-  await page.screenshot({
-    path: path.join(evidenceDirectory, `news_state_${state}_pixel7.png`),
+  await captureStateScreenshot(page, {
+    path: path.join(evidenceDirectory, `news_state_${state}_viewport.png`),
     fullPage: true,
     animations: "disabled",
   });
@@ -133,32 +131,31 @@ async function expectNoSeriousAxeViolations(page: Page) {
 }
 
 async function openNews(page: Page, nonce: string) {
-  await page.goto(`/news?evidence=${nonce}`, {
+  await navigateStateEvidence(page, `/news?evidence=${nonce}`, {
     waitUntil: "domcontentloaded",
   });
 }
 
-test.beforeAll(() => {
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+test.beforeEach(async ({ browser }, testInfo) => {
+  test.setTimeout(120_000);
+  evidenceDirectory = prepareStateEvidence(browser, testInfo, "consumer_web_news_states");
+});
+
+test.afterEach(async ({}, testInfo) => {
+  if (testInfo.status === "passed") finalizeStateEvidence(evidenceDirectory);
 });
 
 test("news proves all sixteen applicable rendered states", async ({
   browser,
-}, testInfo) => {
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "News evidence uses the declared Pixel 7 Chromium profile.",
-  );
+}) => {
 
   const context: BrowserContext = await browser.newContext({
-    viewport: { width: 412, height: 915 },
-    deviceScaleFactor: 2.625,
-    isMobile: true,
-    hasTouch: true,
+    ...stateEvidenceContextOptions(test.info()),
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
+  await page.emulateMedia({ colorScheme: "dark" });
   let mode: ResponseMode = "ready";
 
   await page.route("**/api/public-content?resource=news*", async (route) => {
@@ -176,6 +173,10 @@ test("news proves all sixteen applicable rendered states", async ({
 
   mode = "loading";
   await openNews(page, "loading");
+  await expect.poll(() => page.evaluate(() =>
+    document.querySelector(".news-hero")!.getBoundingClientRect().top -
+    document.querySelector("[data-site-header]")!.getBoundingClientRect().bottom,
+  )).toBeGreaterThanOrEqual(0);
   await expectStatus(page, "loading", /loading club news/i);
   await capture(page, "loading_dark");
 
@@ -260,6 +261,10 @@ test("news proves all sixteen applicable rendered states", async ({
   mode = "ready";
   await openNews(page, "large-text");
   await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  await expect.poll(() => page.evaluate(() =>
+    document.querySelector(".news-hero")!.getBoundingClientRect().top -
+    document.querySelector("[data-site-header]")!.getBoundingClientRect().bottom,
+  )).toBeGreaterThanOrEqual(0);
   expect(
     await page.evaluate(
       () =>
@@ -378,7 +383,7 @@ test("news proves all sixteen applicable rendered states", async ({
         schema_version: "1.0",
         route: "/news",
         surface: "consumer_web",
-        exact_profile: "Pixel 7 Chromium 412x915 at 2.625 DPR",
+        exact_profile: `${browser.browserType().name()}; viewport, DPR and input emulation are recorded per capture`,
         applicable_states: captures,
         not_applicable_states: [],
         assertions: {
@@ -397,7 +402,7 @@ test("news proves all sixteen applicable rendered states", async ({
           state,
           file: `news_state_${state}_${
             state === "light" ? "light" : "dark"
-          }_pixel7.png`,
+          }_viewport.png`,
         })),
       },
       null,

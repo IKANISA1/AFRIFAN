@@ -1,3 +1,4 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -148,28 +149,19 @@ async function expectNoSeriousAxeViolations(page: Page) {
 
 test("/supporters proves all sixteen applicable rendered states", async ({
   browser,
-}, testInfo) => {
-  test.setTimeout(90_000);
-  test.skip(
-    testInfo.project.name !== "mobile-chromium",
-    "Supporters evidence uses the declared Pixel 7 Chromium profile.",
-  );
+}) => {
+  test.setTimeout(120_000);
 
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    "../../../output/evidence/consumer_web_supporters_states",
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), "consumer_web_supporters_states");
+
 
   const context: BrowserContext = await browser.newContext({
-    viewport: { width: 412, height: 915 },
-    deviceScaleFactor: 2.625,
-    isMobile: true,
-    hasTouch: true,
+    ...stateEvidenceContextOptions(test.info()),
     colorScheme: "dark",
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
+  await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
 
   await page.route("**/api/public-content?resource=supporters*", async (route) => {
@@ -186,7 +178,7 @@ test("/supporters proves all sixteen applicable rendered states", async ({
   });
 
   const open = async (nonce: string) => {
-    await page.goto(`/supporters?evidence=${nonce}`, {
+    await navigateStateEvidence(page, `/supporters?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   };
@@ -205,8 +197,8 @@ test("/supporters proves all sixteen applicable rendered states", async ({
         requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
       );
     });
-    await page.screenshot({
-      path: path.join(evidenceDirectory, `supporters_state_${state}_pixel7.png`),
+    await captureStateScreenshot(page, {
+      path: path.join(evidenceDirectory, `supporters_state_${state}_viewport.png`),
       fullPage: true,
       animations: "disabled",
     });
@@ -434,7 +426,7 @@ test("/supporters proves all sixteen applicable rendered states", async ({
         schema_version: "1.0",
         route: "/supporters",
         surface: "consumer_web",
-        exact_profile: "Pixel 7 Chromium 412x915 at 2.625 DPR",
+        exact_profile: `${browser.browserType().name()}; viewport, DPR and input emulation are recorded per capture`,
         applicable_states: captures,
         not_applicable_states: [],
         assertions: {
@@ -455,7 +447,7 @@ test("/supporters proves all sixteen applicable rendered states", async ({
           state,
           file: `supporters_state_${state}_${
             state === "light" ? "light" : "dark"
-          }_pixel7.png`,
+          }_viewport.png`,
         })),
       },
       null,
@@ -463,5 +455,6 @@ test("/supporters proves all sixteen applicable rendered states", async ({
     )}\n`,
   );
 
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 });

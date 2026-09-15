@@ -116,10 +116,15 @@ export function MobileNavDrawer({
 
   useEffect(() => {
     if (!isOpen) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     document.addEventListener("keydown", handleFocusTrap);
     // Focus the close button on open
-    requestAnimationFrame(() => closeButtonRef.current?.focus());
-    return () => document.removeEventListener("keydown", handleFocusTrap);
+    const frame = requestAnimationFrame(() => closeButtonRef.current?.focus());
+    return () => {
+      cancelAnimationFrame(frame);
+      document.removeEventListener("keydown", handleFocusTrap);
+      if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+    };
   }, [isOpen, handleFocusTrap]);
 
   return (
@@ -137,6 +142,7 @@ export function MobileNavDrawer({
       {/* Drawer — always in DOM, transform-controlled */}
       <div
         ref={drawerRef}
+        id="mobile-navigation-drawer"
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
@@ -150,18 +156,18 @@ export function MobileNavDrawer({
       >
         {/* Header section */}
         <div
-          className={`flex items-center justify-between p-5 ${ui.drawerDivider}`}
+          className={`site-drawer-header ${ui.drawerDivider}`}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-[12px]">
             <Image
               src={club.officialLogoUrl ?? "/brand-mark.svg"}
               alt={`${club.clubName} brand mark`}
               width={36}
               height={36}
               sizes="36px"
-              className={`${ui.brandMark} rounded-full object-cover`}
+              className={`${ui.brandMark} shrink-0 rounded-full object-cover`}
             />
-            <div>
+            <div className="min-w-0 flex-1 basis-[100px] [overflow-wrap:anywhere]">
               <p className="font-display text-lg font-bold uppercase leading-none mt-1">
                 {club.nickname || club.shortName}
               </p>
@@ -174,7 +180,7 @@ export function MobileNavDrawer({
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className={`${ui.iconButton} -mr-2 h-11 w-11 p-0 text-slate-300 focus-ring`}
+            className={`${ui.iconButton} shrink-0 p-0 text-slate-300 focus-ring`}
             aria-label="Close menu"
           >
             <X size={24} />
@@ -183,11 +189,11 @@ export function MobileNavDrawer({
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden p-5 flex flex-col gap-8">
           {/* Quick access row */}
-          <div className="flex justify-between gap-3">
+          <div className="site-drawer-shortcuts grid gap-3">
             <Link
               href={resolveFanAppHref()}
               prefetch={false}
-              className={`${ui.drawerShortcut} focus-ring flex-1 rounded-[24px] p-3`}
+              className={`${ui.drawerShortcut} focus-ring min-w-0 rounded-[24px] p-3`}
             >
               <User size={20} className="text-club-primary-light" />
               <span className="text-xs uppercase tracking-wider font-semibold">
@@ -197,7 +203,7 @@ export function MobileNavDrawer({
             <Link
               href="/tickets"
               prefetch={false}
-              className={`${ui.drawerShortcut} focus-ring flex-1 rounded-[24px] p-3`}
+              className={`${ui.drawerShortcut} focus-ring min-w-0 rounded-[24px] p-3`}
             >
               <Ticket size={20} className="text-club-accent" />
               <span className="text-xs uppercase tracking-wider font-semibold">
@@ -207,7 +213,7 @@ export function MobileNavDrawer({
             <Link
               href="/shop"
               prefetch={false}
-              className={`${ui.drawerShortcut} focus-ring flex-1 rounded-[24px] p-3`}
+              className={`${ui.drawerShortcut} focus-ring min-w-0 rounded-[24px] p-3`}
             >
               <ShoppingBag size={20} className="text-club-secondary" />
               <span className="text-xs uppercase tracking-wider font-semibold">
@@ -221,6 +227,11 @@ export function MobileNavDrawer({
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-2 pl-2">
               Menu
             </p>
+            {!navigationItems.some((item) => item.href === "/search") && (
+              <Link href="/search" prefetch={false} className={`${ui.drawerLink} focus-ring`}>
+                Search site
+              </Link>
+            )}
             {navigationItems.map((item) => {
               const active =
                 pathname === item.href ||

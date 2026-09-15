@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import {
@@ -188,11 +189,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 }
 
 async function runMatrix(browser: Browser) {
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    "../../../output/evidence/admin_pwa_predictions_states",
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_predictions_states");
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
@@ -201,6 +198,8 @@ async function runMatrix(browser: Browser) {
   });
   await installEvidenceNavigationStability(context);
   let page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
 
   await context.route("**/api/admin/**", async (route: Route) => {
@@ -278,7 +277,7 @@ async function runMatrix(browser: Browser) {
   const surface = () =>
     page.locator(".admin-predictions-state-surface").first();
   const open = (nonce: string) =>
-    page.goto(`/admin/predictions?evidence=${nonce}`, {
+    navigateStateEvidence(page, `/admin/predictions?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   const expectStatus = async (status: string, label: RegExp) => {
@@ -303,7 +302,7 @@ async function runMatrix(browser: Browser) {
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
     await settleVisuals(page);
     await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
         `admin_predictions_state_${state}_${state === "light" ? "light" : "dark"}_${profile}.png`,
@@ -382,21 +381,14 @@ async function runMatrix(browser: Browser) {
     "focused",
   );
   await capture("focused");
-  await refresh.dispatchEvent("pointerdown", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await refresh.hover();
+  await page.mouse.down();
   await expect(surface()).toHaveAttribute(
     "data-admin-predictions-interaction",
     "pressed",
   );
   await capture("pressed");
-  await refresh.dispatchEvent("pointerup", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await page.mouse.up();
 
   await page.getByRole("button", { name: "Templates" }).click();
   await expect(surface()).toHaveAttribute(
@@ -525,6 +517,8 @@ async function runMatrix(browser: Browser) {
 
   await page.close();
   page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.setViewportSize({ width: 390, height: 844 });
   await open("compact");
   await expectStatus("ready", /prediction workspace confirmed/i);
@@ -556,10 +550,10 @@ async function runMatrix(browser: Browser) {
         schema_version: "1.0",
         route: "/admin/predictions",
         surface: "admin_pwa",
-        exact_profile: "Chromium desktop 1440x1000 at 1 DPR",
+        exact_profile: `${browser.browserType().name()} desktop 1440x1000 at 1 DPR`,
         responsive_profiles: [
-          "Chromium tablet 1024x900 at 1 DPR",
-          "Chromium compact 390x844 at 1 DPR",
+          `${browser.browserType().name()} tablet 1024x900 at 1 DPR`,
+          `${browser.browserType().name()} compact 390x844 at 1 DPR`,
         ],
         applicable_states: governedStates,
         not_applicable_states: [],
@@ -609,6 +603,7 @@ async function runMatrix(browser: Browser) {
       2,
     )}\n`,
   );
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }
 

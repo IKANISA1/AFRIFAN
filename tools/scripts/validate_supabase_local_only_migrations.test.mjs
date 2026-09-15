@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -49,3 +49,13 @@ test('duplicate migration versions are rejected', (t) => {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Duplicate migration version/);
 });
+
+for (const table of ['admin_role_assignments', 'admin_audit_log']) {
+  test(`catalog seed rejects exported ${table} records`, (t) => {
+    const f = fixture(t);
+    appendFileSync(join(f.root, 'supabase/seed.sql'), `\nINSERT INTO public.${table} (id) VALUES ('synthetic');\n`);
+    const result = f.run();
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /must not restore operational admin/);
+  });
+}

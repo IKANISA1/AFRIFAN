@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Browser, type Page } from "@playwright/test";
@@ -179,11 +180,7 @@ async function settleVisuals(page: Page) {
 }
 
 async function runAdminDashboardMatrix(browser: Browser) {
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    "../../../output/evidence/admin_pwa_dashboard_states",
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_dashboard_states");
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
@@ -191,6 +188,8 @@ async function runAdminDashboardMatrix(browser: Browser) {
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
 
   await page.route("**/api/admin/dashboard-overview*", async (route) => {
@@ -209,7 +208,7 @@ async function runAdminDashboardMatrix(browser: Browser) {
   const surface = () =>
     page.locator(".admin-dashboard-state-surface").first();
   const open = async (nonce: string) => {
-    await page.goto(`/admin?evidence=${nonce}`, {
+    await navigateStateEvidence(page, `/admin?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   };
@@ -225,7 +224,7 @@ async function runAdminDashboardMatrix(browser: Browser) {
     profile = "desktop_1440x1000",
   ) => {
     await settleVisuals(page);
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
         `admin_dashboard_state_${state}_${
@@ -292,21 +291,14 @@ async function runAdminDashboardMatrix(browser: Browser) {
   );
   await capture("focused");
 
-  await readyRefresh.dispatchEvent("pointerdown", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await readyRefresh.hover();
+  await page.mouse.down();
   await expect(surface()).toHaveAttribute(
     "data-admin-dashboard-interaction",
     "pressed",
   );
   await capture("pressed");
-  await readyRefresh.dispatchEvent("pointerup", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await page.mouse.up();
 
   const selection = page.getByRole("button", {
     name: /review membership/i,
@@ -482,10 +474,10 @@ async function runAdminDashboardMatrix(browser: Browser) {
         schema_version: "1.0",
         route: "/admin",
         surface: "admin_pwa",
-        exact_profile: "Chromium desktop 1440x1000 at 1 DPR",
+        exact_profile: `${browser.browserType().name()} desktop 1440x1000 at 1 DPR`,
         responsive_profiles: [
-          "Chromium tablet 1024x900 at 1 DPR",
-          "Chromium compact 390x844 at 1 DPR",
+          `${browser.browserType().name()} tablet 1024x900 at 1 DPR`,
+          `${browser.browserType().name()} compact 390x844 at 1 DPR`,
         ],
         applicable_states: governedStates,
         not_applicable_states: [],
@@ -529,6 +521,7 @@ async function runAdminDashboardMatrix(browser: Browser) {
     )}\n`,
   );
 
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }
 

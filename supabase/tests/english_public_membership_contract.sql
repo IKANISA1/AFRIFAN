@@ -20,8 +20,10 @@ select ok(not has_function_privilege('anon','public.membership_qualification_v1(
 select ok(not has_table_privilege('authenticated','public.membership_qualification_tiers','INSERT'),'supporter cannot change qualification thresholds');
 select ok(not has_table_privilege('authenticated','public.club_public_links','INSERT'),'supporter cannot publish entity mappings');
 select set_config('request.jwt.claim.sub','99470000-0000-4000-8000-000000000001',true);
+set local role authenticated;
 select is(public.membership_qualification_v1(9947001)->>'available','false','unpublished programme is explicitly unavailable');
 select throws_ok($$select public.membership_qualification_v1(9947002)$$,'42501','Membership access denied','cross-club qualification is denied');
+reset role;
 insert into public.initiatives(id,partner_id,club_id,title,category) values
  ('99470000-0000-4000-8000-000000000200','99470000-0000-4000-8000-000000000100',9947001,'Membership fund','membership'),
  ('99470000-0000-4000-8000-000000000201','99470000-0000-4000-8000-000000000100',9947001,'Unrelated project','project');
@@ -36,27 +38,41 @@ insert into public.initiative_contributions(id,initiative_id,user_id,club_id,amo
  ('99470000-0000-4000-8000-000000000304','99470000-0000-4000-8000-000000000201','99470000-0000-4000-8000-000000000001',9947001,800000,'confirmed',now(),false),
  ('99470000-0000-4000-8000-000000000305','99470000-0000-4000-8000-000000000200','99470000-0000-4000-8000-000000000001',9947001,800000,'confirmed',now()+interval '1 day',false),
  ('99470000-0000-4000-8000-000000000306','99470000-0000-4000-8000-000000000200','99470000-0000-4000-8000-000000000001',9947001,800000,'confirmed',now(),true);
+set local role authenticated;
 select is((public.membership_qualification_v1(9947001)->>'confirmed_total_rwf')::int,90000,'only current confirmed designated contributions qualify');
 select is((public.membership_qualification_v1(9947001)->>'remaining_rwf')::int,10000,'remaining contribution is derived from the published threshold');
 select is(public.membership_qualification_v1(9947001)->>'tier',null::text,'no unearned tier is invented below the minimum');
+reset role;
 insert into public.fan_memberships(user_id,partner_id,club_id,tier,points) values
  ('99470000-0000-4000-8000-000000000001','99470000-0000-4000-8000-000000000100',9947001,'gold',999999);
+set local role authenticated;
 select is(public.membership_qualification_v1(9947001)->>'tier',null::text,'a large FET balance and legacy Gold tier cannot qualify membership');
+reset role;
 update public.initiative_contributions set status='confirmed',confirmed_at=now() where id='99470000-0000-4000-8000-000000000302';
+set local role authenticated;
 select is(public.membership_qualification_v1(9947001)->>'tier','bronze','confirmed contribution crosses the threshold');
+reset role;
 update public.initiative_contributions set status='cancelled' where id='99470000-0000-4000-8000-000000000301';
+set local role authenticated;
 select is((public.membership_qualification_v1(9947001)->>'confirmed_total_rwf')::int,20000,'cancelled contributions stop qualifying immediately');
+reset role;
 insert into public.news_articles(id,club_id,title,body,is_published) values
  ('99470000-0000-4000-8000-000000000400',9947001,'Synthetic article','Test content',false);
 insert into public.club_public_links(club_id,source_path,native_path,published_at) values
  (9947001,'/news/story','/club/news/99470000-0000-4000-8000-000000000400',now()),
  (9947002,'/news/story','/club/news/99470000-0000-4000-8000-000000000400',now());
+set local role anon;
 select is(public.resolve_club_public_link_v1(9947001,'/news/story'),null::text,'mapping does not publish an unpublished article');
+reset role;
 update public.news_articles set is_published=true where id='99470000-0000-4000-8000-000000000400';
+set local role anon;
 select is(public.resolve_club_public_link_v1(9947001,'/news/story'),'/club/news/99470000-0000-4000-8000-000000000400','published mapping resolves to the exact scoped entity');
 select is(public.resolve_club_public_link_v1(9947002,'/news/story'),null::text,'a wrong-club mapping cannot expose the record');
+reset role;
 update public.news_articles set is_published=false where id='99470000-0000-4000-8000-000000000400';
+set local role anon;
 select is(public.resolve_club_public_link_v1(9947001,'/news/story'),null::text,'revoked publication invalidates the link');
 select is(public.club_public_content_manifest_v1(9947001)->>'language','en','manifest declares English');
+reset role;
 select * from finish();
 rollback;

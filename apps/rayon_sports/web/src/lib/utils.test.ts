@@ -37,6 +37,20 @@ describe("utils", () => {
     expect(toIdString(null, "fallback")).toBe("fallback");
   });
 
+  it.each(["USD", "GHS", "ZMW"])(
+    "preserves fractional contribution amounts in %s",
+    (currency) => {
+      expect(formatCurrency(1.49, currency)).toContain("1.49");
+      expect(formatCurrency(0.01, currency)).toContain("0.01");
+    },
+  );
+
+  it("keeps whole-unit currencies free of invented decimals", () => {
+    expect(formatCurrency(15000, "RWF")).toContain("15,000");
+    expect(formatCurrency(15000, "RWF")).not.toContain(".00");
+    expect(formatCurrency(15000, "XAF")).not.toContain(".00");
+  });
+
   it("joins class names safely", () => {
     expect(cn("glass-panel", false, undefined, "rounded")).toBe(
       "glass-panel rounded",

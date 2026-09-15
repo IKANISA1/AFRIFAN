@@ -1,7 +1,7 @@
 #include "Debug.xcconfig"
 
-// Isolated physical-device QA identity. This must never share the production
-// bundle identifier or production push/associated-domain entitlements.
+// Separate QA identity, with no production push or associated-domain entitlements.
 PRODUCT_BUNDLE_IDENTIFIER=rw.ikanisa.rayonSports.qa.codex
 AFRICLUB_DISPLAY_NAME=Gikundiro QA
 CODE_SIGN_ENTITLEMENTS=Runner/RunnerQA.entitlements
+FLUTTER_BUILD_MODE=debug

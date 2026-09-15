@@ -7,7 +7,6 @@ import '../tool/generate_route_inventory.dart';
 
 void main() {
   test('generates a complete multi-surface route inventory', () {
-    const configuredOutput = String.fromEnvironment('ROUTE_INVENTORY_OUT_DIR');
     final workspace = resolveRouteInventoryWorkspace(Directory.current);
     final temporaryRoot = Directory.systemTemp.createTempSync(
       'africlub-route-inventory-',
@@ -17,9 +16,8 @@ void main() {
         temporaryRoot.deleteSync(recursive: true);
       }
     });
-    final outputDirectory = configuredOutput.isEmpty
-        ? Directory('${temporaryRoot.path}/output')
-        : Directory(configuredOutput);
+    // Hermetic fixture evidence must never be exported as workspace evidence.
+    final outputDirectory = Directory('${temporaryRoot.path}/output');
     final routeStateEvidenceFile =
         File(
           '${temporaryRoot.path}/route-state-evidence.json',
@@ -555,5 +553,42 @@ void main() {
       expect(entry['test_evidence'], isEmpty);
       expect(entry['screenshot_evidence'], isEmpty);
     }
+  });
+
+  test('exports inventory using the governed workspace evidence', () {
+    const configuredOutput = String.fromEnvironment('ROUTE_INVENTORY_OUT_DIR');
+    final workspace = resolveRouteInventoryWorkspace(Directory.current);
+    final temporaryRoot = Directory.systemTemp.createTempSync(
+      'africlub-workspace-route-inventory-',
+    );
+    addTearDown(() => temporaryRoot.deleteSync(recursive: true));
+    final outputDirectory = configuredOutput.isEmpty
+        ? Directory('${temporaryRoot.path}/output')
+        : Directory(configuredOutput);
+
+    final payload = generateRouteInventory(
+      workspace: workspace,
+      outputDirectory: outputDirectory,
+    );
+    final closure =
+        jsonDecode(
+              File(
+                '${outputDirectory.path}/route-state-closure.json',
+              ).readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+
+    expect(payload['duplicate_keys'], isEmpty);
+    expect(
+      closure['evidence_source'],
+      '${workspace.path}/docs/governance/route-state-evidence.json',
+    );
+    expect(File(closure['evidence_source'] as String).existsSync(), isTrue);
+    expect(closure['route_count'], payload['route_count']);
+    expect(
+      (payload['state_closure']!
+          as Map<String, Object?>)['evidenced_cell_count'],
+      closure['evidenced_cell_count'],
+    );
   });
 }

@@ -7,6 +7,31 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+val isolatedNonReleaseApplicationIdSuffix = providers
+    .gradleProperty("africlubDebugApplicationIdSuffix")
+    .orNull
+    ?.trim()
+    ?.takeIf { it.isNotEmpty() }
+val requestedTaskNames = gradle.startParameter.taskNames.map { it.lowercase() }
+val isReleaseBuildRequested = requestedTaskNames.any { taskName ->
+    taskName.contains("release")
+}
+if (isReleaseBuildRequested && isolatedNonReleaseApplicationIdSuffix != null) {
+    error("africlubDebugApplicationIdSuffix is allowed only for isolated debug/profile device validation.")
+}
+
+// Aggregate tasks such as assemble can include release without naming it.
+if (isolatedNonReleaseApplicationIdSuffix != null) {
+    require(Regex("\\.[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)*").matches(isolatedNonReleaseApplicationIdSuffix)) {
+        "africlubDebugApplicationIdSuffix must be a nonempty dotted package suffix."
+    }
+    gradle.taskGraph.whenReady {
+        if (allTasks.any { it.project == project && it.name.contains("release", ignoreCase = true) }) {
+            error("africlubDebugApplicationIdSuffix is allowed only for isolated debug/profile device validation.")
+        }
+    }
+}
+
 val keystoreProperties = Properties()
 val keystorePropertiesFiles = listOf(
     rootProject.file("keystore.properties"),
@@ -20,12 +45,12 @@ for (propertiesFile in keystorePropertiesFiles) {
 }
 
 fun signingValue(propertyName: String, envName: String): String? {
-    val fileValue = keystoreProperties.getProperty(propertyName)?.trim()
-    if (!fileValue.isNullOrEmpty()) {
-        return fileValue
-    }
     val envValue = System.getenv(envName)?.trim()
-    return if (envValue.isNullOrEmpty()) null else envValue
+    if (!envValue.isNullOrEmpty()) {
+        return envValue
+    }
+    val fileValue = keystoreProperties.getProperty(propertyName)?.trim()
+    return if (fileValue.isNullOrEmpty()) null else fileValue
 }
 
 val releaseStoreFile = signingValue("storeFile", "ANDROID_KEYSTORE_PATH")
@@ -74,12 +99,24 @@ android {
 }
 
     buildTypes {
-    release {
-        if (hasReleaseSigning) {
-            signingConfig = signingConfigs.getByName("release")
+        debug {
+            if (isolatedNonReleaseApplicationIdSuffix != null) {
+                applicationIdSuffix = isolatedNonReleaseApplicationIdSuffix
+                versionNameSuffix = "-isolated-qa"
+            }
+        }
+        getByName("profile") {
+            if (isolatedNonReleaseApplicationIdSuffix != null) {
+                applicationIdSuffix = isolatedNonReleaseApplicationIdSuffix
+                versionNameSuffix = "-isolated-qa"
+            }
+        }
+        release {
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
-}
 }
 
 flutter {

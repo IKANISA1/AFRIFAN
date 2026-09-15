@@ -1,11 +1,13 @@
-# Uncomment this line to define a global platform for your project
-# platform :ios, '13.0'
+# Matches the shared native release contract and pinned plugin requirements.
+platform :ios, '15.5'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
   'Debug' => :debug,
+  'Debug-qa' => :debug,
+  'Profile-qa' => :release,
   'Profile' => :release,
   'Release' => :release,
 }

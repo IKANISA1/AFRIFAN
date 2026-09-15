@@ -4,10 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Globe, Search, User, Menu } from "lucide-react";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { resolveFanAppHref } from "@/lib/config";
 import { MobileNavDrawer } from "@/components/mobile-nav-drawer";
+import { useHydrated } from "@/lib/use-hydrated";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
 import type { ReactNode } from "react";
@@ -48,9 +49,11 @@ export function GlobalNav({
   ribbon,
 }: GlobalNavProps) {
   const pathname = usePathname();
+  const hydrated = useHydrated();
   const [scrolled, setScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
   const closeMobileMenu = useCallback(
     () => setMobileMenuOpen(false),
     [setMobileMenuOpen],
@@ -61,6 +64,23 @@ export function GlobalNav({
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    // Detail pages reserve the expanded header, including its optional ribbon.
+    // Keep that space when scrolling hides the ribbon to avoid content jumps.
+    if (scrolled) return;
+    const header = headerRef.current;
+    const site = header?.closest<HTMLElement>(".club-site");
+    if (!header || !site) return;
+    const measure = () => site.style.setProperty(
+      "--site-header-block-size",
+      `${Math.ceil(header.getBoundingClientRect().height)}px`,
+    );
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, [scrolled]);
 
   const logoUrl = club.officialLogoUrl ?? "/brand-mark.svg";
 
@@ -88,19 +108,21 @@ export function GlobalNav({
 
   return (
     <div
+      ref={headerRef}
+      data-site-header
       className={cn(
         "fixed inset-x-0 top-0 z-[100] transition-all duration-500",
         scrolled
-          ? "bg-[var(--club-primary)]/95 backdrop-blur-md shadow-xl translate-y-[-36px] xl:translate-y-[-36px]"
+          ? "bg-[var(--club-primary)]/95 shadow-xl"
           : "bg-transparent",
       )}
       onMouseLeave={() => setActiveMenu(null)}
     >
       {!scrolled && ribbon}
-      <div className="hidden border-b border-white/10 bg-black/20 xl:block">
+      <div className={cn("hidden border-b border-white/10 bg-black/20", !scrolled && "xl:block")}>
         <div className="page-shell flex h-9 items-center justify-between px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
           <div className="flex items-center gap-6">
-            <span className="text-white/40">{club.league}</span>
+            <span>{club.league}</span>
 
           </div>
           <div className="flex items-center gap-6">
@@ -125,8 +147,8 @@ export function GlobalNav({
       </div>
 
       {/* Main Nav */}
-      <nav className="page-shell flex h-16 items-center justify-between gap-[16px] px-[16px] lg:h-20 lg:px-[24px]">
-        <Link href="/" className="flex shrink-0 items-center gap-[12px]">
+      <nav aria-label="Primary navigation" className="site-primary-navigation page-shell flex h-16 items-center justify-between gap-[16px] px-[16px] lg:h-20 lg:px-[24px]">
+        <Link href="/" className="flex min-h-[48px] min-w-[48px] shrink-0 items-center gap-[12px]">
           <div className="relative h-[40px] w-[40px] overflow-hidden rounded-full border-2 border-white/20 bg-white lg:h-[48px] lg:w-[48px]">
             <Image
               src={logoUrl}
@@ -135,7 +157,7 @@ export function GlobalNav({
               className="object-contain p-1"
             />
           </div>
-          <div className="hidden lg:block">
+          <div className="site-brand-copy hidden lg:block">
             <p className="font-display text-xl font-bold uppercase leading-none tracking-tight text-white">
               {club.shortName}
             </p>
@@ -146,7 +168,7 @@ export function GlobalNav({
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden flex-1 items-center justify-center gap-1 xl:flex">
+        <div className="site-desktop-links hidden flex-1 items-center justify-center gap-1 xl:flex">
           {navItems.map((item) => (
             <div
               key={item.href}
@@ -160,7 +182,7 @@ export function GlobalNav({
               <Link
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-1.5 px-4 py-2 text-sm font-bold uppercase tracking-widest text-white/80 transition-all hover:text-white",
+                  "flex min-h-[48px] items-center gap-1.5 px-4 py-2 text-sm font-bold uppercase tracking-widest text-white/80 transition-all hover:text-white",
                   pathname.startsWith(item.href) && "text-white",
                 )}
               >
@@ -184,28 +206,30 @@ export function GlobalNav({
 
         {/* Actions */}
         <div className="flex min-w-0 items-center gap-[12px]">
-          <button
-            type="button"
+          <Link
+            href="/search"
             aria-label="Search site"
-            className="hidden h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 lg:flex"
+            className="hidden h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 lg:flex"
           >
             <Search size={18} />
-          </button>
+          </Link>
           <Link
             href={resolveFanAppHref()}
-            className="flex min-w-0 items-center gap-[8px] rounded-full bg-[var(--club-accent)] px-[20px] py-[10px] text-xs font-bold uppercase tracking-wider text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95"
+            aria-label="Fan Portal"
+            className="site-portal-link flex min-h-[48px] min-w-[48px] items-center gap-[8px] rounded-full bg-[var(--club-accent)] px-[20px] py-[10px] text-xs font-bold uppercase tracking-wider text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95"
           >
             <User size={16} />
-            <span className="hidden sm:inline">Fan Portal</span>
-            <span className="sm:hidden">Portal</span>
+            <span className="site-portal-label hidden sm:inline">Fan Portal</span>
+            <span className="site-portal-label sm:hidden">Portal</span>
           </Link>
           <button
             type="button"
             aria-label="Open menu"
+            disabled={!hydrated}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation-drawer"
             onClick={() => setMobileMenuOpen(true)}
-            className="site-menu-trigger flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-white/10 text-white xl:hidden"
+            className="site-menu-trigger flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full bg-white/10 text-white xl:hidden"
           >
             <Menu size={20} />
           </button>
@@ -359,7 +383,7 @@ export function GlobalNav({
         </div>
       </div>
 
-      <div id="mobile-navigation-drawer">
+      <div>
         <MobileNavDrawer
           isOpen={mobileMenuOpen}
           onClose={closeMobileMenu}

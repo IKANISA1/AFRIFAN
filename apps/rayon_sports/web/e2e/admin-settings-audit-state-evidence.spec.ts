@@ -1,4 +1,4 @@
-import fs from "node:fs";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { writeAdminStateEvidence } from "./admin-state-evidence-manifest";
@@ -72,11 +72,7 @@ async function expectNoOverflow(page: Page) {
 }
 
 async function runMatrix(browser: Browser) {
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    "../../../output/evidence/admin_pwa_settings_audit_states",
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_settings_audit_states");
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
@@ -84,6 +80,8 @@ async function runMatrix(browser: Browser) {
   });
   await installEvidenceNavigationStability(context);
   let page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   let mode: Mode = "ready";
 
   await context.route("**/api/admin/**", async (route: Route) => {
@@ -118,7 +116,7 @@ async function runMatrix(browser: Browser) {
 
   const surface = () => page.locator(".admin-audit-state-surface").first();
   const open = (nonce: string) =>
-    page.goto(`/admin/settings/audit?evidence=${nonce}`, {
+    navigateStateEvidence(page, `/admin/settings/audit?evidence=${nonce}`, {
       waitUntil: "domcontentloaded",
     });
   const expectStatus = async (status: string, label: RegExp) => {
@@ -137,7 +135,7 @@ async function runMatrix(browser: Browser) {
     );
     await settle(page);
     await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
         `admin_settings_audit_state_${state}_${state === "light" ? "light" : "dark"}_${profile}.png`,
@@ -201,21 +199,14 @@ async function runMatrix(browser: Browser) {
     "focused",
   );
   await capture("focused");
-  await refresh.dispatchEvent("pointerdown", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await refresh.hover();
+  await page.mouse.down();
   await expect(surface()).toHaveAttribute(
     "data-admin-audit-interaction",
     "pressed",
   );
   await capture("pressed");
-  await refresh.dispatchEvent("pointerup", {
-    pointerId: 1,
-    pointerType: "mouse",
-    isPrimary: true,
-  });
+  await page.mouse.up();
   await page
     .getByRole("button", { name: /view audit details/i })
     .first()
@@ -325,12 +316,15 @@ async function runMatrix(browser: Browser) {
   await capture("responsive_tablet", "tablet_1024x900");
   await page.close();
   page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.setViewportSize({ width: 390, height: 844 });
   await open("compact");
   await expectNoOverflow(page);
   await capture("responsive_compact", "compact_390x844");
 
   writeAdminStateEvidence({
+    browser,
     evidenceDirectory,
     manifestFile: "admin-settings-audit-state-evidence.json",
     route: "/admin/settings/audit",
@@ -339,12 +333,12 @@ async function runMatrix(browser: Browser) {
       {
         state: "responsive_tablet",
         profile: "tablet_1024x900",
-        description: "Chromium tablet 1024x900 at 1 DPR",
+        description: `${browser.browserType().name()} tablet 1024x900 at 1 DPR`,
       },
       {
         state: "responsive_compact",
         profile: "compact_390x844",
-        description: "Chromium compact 390x844 at 1 DPR",
+        description: `${browser.browserType().name()} compact 390x844 at 1 DPR`,
       },
     ],
     assertions: {
@@ -359,6 +353,7 @@ async function runMatrix(browser: Browser) {
       permission_denial_clears_records_filter_page_and_detail: true,
     },
   });
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }
 

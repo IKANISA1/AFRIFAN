@@ -32,7 +32,7 @@ export function BrandPreview({
   }
 
   return (
-    <section className="glass-panel rounded-[32px] p-6">
+    <section className="glass-panel min-w-0 rounded-[32px] p-4 [overflow-wrap:anywhere] sm:p-6">
       <p className="font-display text-3xl font-bold uppercase leading-none">
         Brand preview
       </p>
@@ -44,33 +44,33 @@ export function BrandPreview({
         </div>
       ) : (
         <>
-          <div className="mt-5 rounded-[28px] border border-border-soft bg-white/5 p-5">
+          <div className="mt-5 min-w-0 rounded-[28px] border border-border-soft bg-white/5 p-3 sm:p-5">
             <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-club-accent">
               Locked club scope
             </p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
+            <div className="mt-3 grid grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))] gap-3">
+              <div className="min-w-0 rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Club slug</p>
                 <p className="mt-2 font-display text-2xl font-bold uppercase">{form.clubSlug}</p>
               </div>
-              <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
+              <div className="min-w-0 rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Numeric id</p>
                 <p className="mt-2 font-display text-2xl font-bold uppercase">{form.id}</p>
               </div>
             </div>
           </div>
 
-          <div className="mt-5 rounded-[28px] border border-border-soft bg-white/5 p-5">
-            <div className="flex items-start gap-4">
-              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[24px] border border-border-soft bg-black/10">
+          <div className="mt-5 min-w-0 rounded-[28px] border border-border-soft bg-white/5 p-3 sm:p-5">
+            <div className="flex flex-wrap items-start gap-4">
+              <div className="flex aspect-square w-20 max-w-full shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-border-soft bg-black/10">
                 {form.officialLogoUrl.trim() ? (
                   // eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs
-                  <img src={form.officialLogoUrl} alt={form.clubName} className="h-full w-full object-cover" />
+                  <img src={form.officialLogoUrl} alt={form.clubName} className="h-full w-full object-contain" />
                 ) : (
                   <span className="font-display text-xl font-bold uppercase text-club-accent">RS</span>
                 )}
               </div>
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 flex-[1_1_12rem]">
                 <p className="font-display text-4xl font-bold uppercase leading-none">{form.clubName}</p>
                 <p className="mt-2 text-sm uppercase tracking-[0.18em] text-club-accent">
                   {form.shortName} • {form.nickname}
@@ -78,17 +78,17 @@ export function BrandPreview({
                 <p className="mt-3 text-sm leading-6 text-slate-300">{form.officialContact}</p>
               </div>
             </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            <div className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(min(100%,8rem),1fr))] gap-3">
               {[
                 ["Primary", form.primaryColorHex],
                 ["Secondary", form.secondaryColorHex],
                 ["Accent", form.accentColorHex],
               ].map(([label, value]) => (
-                <div key={label} className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
+                <div key={label} className="min-w-0 rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">{label}</p>
-                  <div className="mt-3 flex items-center gap-3">
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
                     <span
-                      className="h-8 w-8 rounded-full border border-white/15"
+                      className="h-8 w-8 shrink-0 rounded-full border border-white/15"
                       style={{ backgroundColor: normalizeHexColorInput(value) || "#1A7A4E" }}
                     />
                     <span className="text-sm font-semibold text-slate-100">
@@ -100,18 +100,18 @@ export function BrandPreview({
             </div>
           </div>
 
-          <div className="mt-5 rounded-[28px] border border-border-soft bg-white/5 p-5">
+          <div className="mt-5 min-w-0 rounded-[28px] border border-border-soft bg-white/5 p-3 sm:p-5">
             <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-club-accent">Feature flags</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-3">
               {Object.entries(form.featureFlags).map(([flag, enabled]) => (
-                <label key={flag} className="flex items-center gap-3 rounded-[20px] border border-border-soft bg-black/10 px-4 py-3 text-sm">
+                <label key={flag} className="flex min-w-0 items-center gap-3 rounded-[20px] border border-border-soft bg-black/10 px-4 py-3 text-sm">
                   <input
                     type="checkbox"
                     checked={enabled}
                     disabled={!canEdit}
                     onChange={() => toggleFlag(flag)}
                   />
-                  <span className="flex-1 capitalize text-slate-200">{flag.replaceAll("_", " ")}</span>
+                  <span className="min-w-0 flex-1 capitalize text-slate-200">{flag.replaceAll("_", " ")}</span>
                 </label>
               ))}
             </div>

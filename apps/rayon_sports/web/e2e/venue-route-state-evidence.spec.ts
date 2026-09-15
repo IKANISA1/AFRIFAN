@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Browser, type Page } from "@playwright/test";
@@ -113,11 +114,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 }
 
 async function captureRoute(browser: Browser, route: VenueRoute) {
-  const evidenceDirectory = path.resolve(
-    process.cwd(),
-    `../../../output/evidence/venue_portal_${route.slug}_states`,
-  );
-  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  const evidenceDirectory = prepareStateEvidence(browser, test.info(), `venue_portal_${route.slug}_states`);
   let context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
@@ -126,9 +123,11 @@ async function captureRoute(browser: Browser, route: VenueRoute) {
   });
   await installEvidenceNavigationStability(context);
   let page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   const surface = () => page.locator(".controlled-venue-state-surface");
   const open = async (state: string) => {
-    await page.goto(`${route.route}?evidence=${state}`, {
+    await navigateStateEvidence(page, `${route.route}?evidence=${state}`, {
       waitUntil: "domcontentloaded",
     });
     await expect(
@@ -162,7 +161,7 @@ async function captureRoute(browser: Browser, route: VenueRoute) {
     }
     await settleVisuals(page);
     await primeEvidenceScreenshot(page, !state.startsWith("responsive_"));
-    await page.screenshot({
+    await captureStateScreenshot(page, {
       path: path.join(
         evidenceDirectory,
         `venue_${route.slug}_state_${state}_${state === "light" ? "light" : "dark"}_${profile}.png`,
@@ -336,6 +335,8 @@ async function captureRoute(browser: Browser, route: VenueRoute) {
   });
   await installEvidenceNavigationStability(context);
   page = await context.newPage();
+  // Apply the initial document theme explicitly; verify it at capture.
+  await page.emulateMedia({ colorScheme: "dark" });
   await open("ready");
   await open("ready-stable");
   await expectNoHorizontalOverflow(page);
@@ -360,10 +361,10 @@ async function captureRoute(browser: Browser, route: VenueRoute) {
     schema_version: "1.0",
     route: route.route,
     surface: "venue_portal",
-    exact_profile: "Chromium desktop 1440x1000 at 1 DPR",
+    exact_profile: `${browser.browserType().name()} desktop 1440x1000 at 1 DPR`,
     responsive_profiles: [
-      "Chromium tablet 1024x900 at 1 DPR",
-      "Chromium compact 390x844 at 1 DPR",
+      `${browser.browserType().name()} tablet 1024x900 at 1 DPR`,
+      `${browser.browserType().name()} compact 390x844 at 1 DPR`,
     ],
     applicable_states: governedStates,
     not_applicable_states: [],
@@ -403,6 +404,7 @@ async function captureRoute(browser: Browser, route: VenueRoute) {
     path.join(evidenceDirectory, `venue-${route.slug}-state-evidence.json`),
     `${JSON.stringify(manifest, null, 2)}\n`,
   );
+  finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }
 

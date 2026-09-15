@@ -25,6 +25,9 @@ if ! command -v node >/dev/null 2>&1; then
   exit 2
 fi
 
+# Verify the archive inspector before doing any build or signing work.
+node "$RELEASE_CONTRACT" toolchain >/dev/null
+
 release_version="$(
   node "$RELEASE_CONTRACT" version --pubspec "$PUBSPEC_FILE"
 )"

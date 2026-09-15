@@ -1,3 +1,4 @@
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -127,28 +128,19 @@ async function expectNoSeriousAxeViolations(page: Page) {
 for (const routeConfig of routes) {
   test(`${routeConfig.routePattern} proves all sixteen applicable rendered states`, async ({
     browser,
-  }, testInfo) => {
-    test.setTimeout(90_000);
-    test.skip(
-      testInfo.project.name !== "mobile-chromium",
-      "Match-detail evidence uses the declared Pixel 7 Chromium profile.",
-    );
+  }) => {
+    test.setTimeout(120_000);
 
-    const evidenceDirectory = path.resolve(
-      process.cwd(),
-      `../../../output/evidence/${routeConfig.directory}`,
-    );
-    fs.mkdirSync(evidenceDirectory, { recursive: true });
+    const evidenceDirectory = prepareStateEvidence(browser, test.info(), `${routeConfig.directory}`);
+
 
     const context: BrowserContext = await browser.newContext({
-      viewport: { width: 412, height: 915 },
-      deviceScaleFactor: 2.625,
-      isMobile: true,
-      hasTouch: true,
+    ...stateEvidenceContextOptions(test.info()),
       colorScheme: "dark",
       reducedMotion: "no-preference",
-    });
+  });
     const page = await context.newPage();
+  await page.emulateMedia({ colorScheme: "dark" });
     let mode: ResponseMode = "ready";
 
     await page.route(
@@ -168,15 +160,15 @@ for (const routeConfig of routes) {
     );
 
     const open = async (nonce: string) => {
-      await page.goto(`${routeConfig.route}?evidence=${nonce}`, {
+      await navigateStateEvidence(page, `${routeConfig.route}?evidence=${nonce}`, {
         waitUntil: "domcontentloaded",
       });
     };
     const capture = async (state: string) => {
-      await page.screenshot({
+      await captureStateScreenshot(page, {
         path: path.join(
           evidenceDirectory,
-          `${routeConfig.prefix}_state_${state}_pixel7.png`,
+          `${routeConfig.prefix}_state_${state}_viewport.png`,
         ),
         fullPage: true,
         animations: "disabled",
@@ -395,7 +387,7 @@ for (const routeConfig of routes) {
           schema_version: "1.0",
           route: routeConfig.routePattern,
           surface: "consumer_web",
-          exact_profile: "Pixel 7 Chromium 412x915 at 2.625 DPR",
+          exact_profile: `${browser.browserType().name()}; viewport, DPR and input emulation are recorded per capture`,
           applicable_states: captures,
           not_applicable_states: [],
           assertions: {
@@ -415,7 +407,7 @@ for (const routeConfig of routes) {
             state,
             file: `${routeConfig.prefix}_state_${state}_${
               state === "light" ? "light" : "dark"
-            }_pixel7.png`,
+            }_viewport.png`,
           })),
         },
         null,
@@ -423,6 +415,7 @@ for (const routeConfig of routes) {
       )}\n`,
     );
 
+    finalizeStateEvidence(evidenceDirectory);
     await context.close();
   });
 }

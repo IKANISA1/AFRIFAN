@@ -47,6 +47,7 @@ import { siteConfig } from "@/lib/config";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { formatAdminRoleLabel } from "@/lib/data/admin/access";
 import { cn } from "@/lib/utils";
+import { useHydrated } from "@/lib/use-hydrated";
 import { ui } from "@/ui-kit";
 
 const navIcons: Record<string, LucideIcon> = {
@@ -683,6 +684,7 @@ function SidebarNavigation({
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const hydrated = useHydrated();
   const {
     access,
     activeClub,
@@ -748,12 +750,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
     activeClub?.shortName ||
     activeClub?.clubName ||
     (access.clubId ? `Club ${access.clubId}` : "Club scope");
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
+  // Browser-local date formatting can differ from the server even when both
+  // use the same locale and time zone. Render it after hydration.
+  const formattedDate = hydrated ? new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date());
+  }).format(new Date()) : null;
 
   return (
     <div className="min-h-screen">
@@ -854,7 +858,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                     {activeItem?.label ?? "Workspace"}
                   </h1>
                   <span className="text-[10px] text-[var(--admin-zinc-500)] font-medium">
-                    / {formattedDate}
+                    {formattedDate ? `/ ${formattedDate}` : null}
                   </span>
                 </div>
               </div>
@@ -862,6 +866,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               <div className="flex items-center gap-3">
                 {access.canSelectClub && clubOptions.length > 1 ? (
                   <select
+                    aria-label="Club workspace"
                     value={selectedClubId ?? ""}
                     onChange={(e) =>
                       setClubScope(e.target.value).catch(() => {})

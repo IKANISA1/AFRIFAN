@@ -1,12 +1,11 @@
-const STATIC_CACHE = "gikundiro-static-v5";
-const PAGE_CACHE = "gikundiro-pages-v5";
-const ASSET_CACHE = "gikundiro-assets-v5";
-const API_CACHE = "gikundiro-api-v5";
+const STATIC_CACHE = "gikundiro-static-v6";
+const PAGE_CACHE = "gikundiro-pages-v6";
+const ASSET_CACHE = "gikundiro-assets-v6";
+const API_CACHE = "gikundiro-api-v6";
 const PRECACHE_URLS = [
   "/offline",
   "/admin-offline",
   "/manifest.webmanifest",
-  "/brand-mark.svg",
   "/brand-mark.svg",
 ];
 
@@ -14,8 +13,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(STATIC_CACHE)
-      .then((cache) => cache.addAll(PRECACHE_URLS))
-      .then(() => self.skipWaiting()),
+      .then((cache) => cache.addAll(PRECACHE_URLS)),
   );
 });
 
@@ -28,6 +26,7 @@ self.addEventListener("activate", (event) => {
           keys
             .filter(
               (key) =>
+                /^gikundiro-(static|pages|assets|api)-v\d+$/.test(key) &&
                 ![STATIC_CACHE, PAGE_CACHE, ASSET_CACHE, API_CACHE].includes(key),
             )
             .map((key) => caches.delete(key)),
@@ -49,53 +48,88 @@ self.addEventListener("message", (event) => {
   }
 });
 
+async function openCache(name) {
+  try {
+    return await caches.open(name);
+  } catch {
+    return null;
+  }
+}
+
+async function readCache(cache, request) {
+  try {
+    return await cache?.match(request);
+  } catch {
+    return undefined;
+  }
+}
+
+async function storePublicResponse(cache, request, response) {
+  if (!cache || !response?.ok || request.headers?.has("authorization")) return;
+  if (/(?:^|,)\s*(?:private|no-store)\b/i.test(response.headers.get("cache-control") ?? "")) return;
+  try {
+    await cache.put(request, response.clone());
+  } catch {
+    // Quota or unavailable storage must not turn a live response into failure.
+  }
+}
+
+async function offlineRecovery(pathname) {
+  try {
+    const response = await caches.match(pathname);
+    if (response) return response;
+  } catch {
+    // A first visit or denied storage can leave the offline shell unavailable.
+  }
+  return new Response("You are offline. Reconnect and try again.", {
+    status: 503,
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
+  });
+}
+
+function isPrivatePath(pathname) {
+  return /^\/(?:admin|venue|supporters)(?:\/|$)/.test(pathname);
+}
+
 async function networkFirst(request) {
-  const cache = await caches.open(PAGE_CACHE);
   try {
     const response = await fetch(request);
-    if (response && response.ok) {
-      cache.put(request, response.clone());
-    }
+    await storePublicResponse(await openCache(PAGE_CACHE), request, response);
     return response;
   } catch {
-    const cached = await cache.match(request);
+    const cached = await readCache(await openCache(PAGE_CACHE), request);
     if (cached) {
       return cached;
     }
-    return caches.match("/offline");
+    return offlineRecovery("/offline");
   }
 }
 
 async function staleWhileRevalidate(request) {
-  const cache = await caches.open(ASSET_CACHE);
-  const cached = await cache.match(request);
+  const cache = await openCache(ASSET_CACHE);
+  const cached = await readCache(cache, request);
   const network = fetch(request)
-    .then((response) => {
-      if (response && response.ok) {
-        cache.put(request, response.clone());
-      }
+    .then(async (response) => {
+      await storePublicResponse(cache, request, response);
       return response;
     })
-    .catch(() => cached);
+    .catch(() => cached || Response.error());
 
   return cached || network;
 }
 
 async function apiNetworkFirst(request) {
-  const cache = await caches.open(API_CACHE);
   try {
     const response = await fetch(request);
-    if (response && response.ok) {
-      cache.put(request, response.clone());
-    }
+    await storePublicResponse(await openCache(API_CACHE), request, response);
     return response;
   } catch {
-    const cached = await cache.match(request);
+    const cached = await readCache(await openCache(API_CACHE), request);
     if (cached) {
       return cached;
     }
-    return new Response(JSON.stringify({ items: [] }), {
-      status: 200,
+    return new Response(JSON.stringify({ error: "Search needs a connection.", code: "OFFLINE_UNAVAILABLE" }), {
+      status: 503,
       headers: { "Content-Type": "application/json" },
     });
   }
@@ -121,10 +155,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (request.mode === "navigate" && url.pathname.startsWith("/admin")) {
-    // Network-only for admin navigations — never serve stale admin content from cache
+  if (request.mode === "navigate" && isPrivatePath(url.pathname)) {
+    // Authenticated pages are never reusable public offline snapshots.
     event.respondWith(
-      fetch(request).catch(() => caches.match("/admin-offline")),
+      fetch(request).catch(() => offlineRecovery(url.pathname.startsWith("/admin") ? "/admin-offline" : "/offline")),
     );
     return;
   }
@@ -135,7 +169,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (
-    url.pathname.startsWith("/_next/") ||
+    url.pathname.startsWith("/_next/static/") ||
     request.destination === "image" ||
     request.destination === "style" ||
     request.destination === "script" ||
@@ -246,11 +280,16 @@ async function replayOfflineQueue() {
 
     for (const entry of all) {
       try {
-        await fetch(entry.url, {
+        const target = new URL(entry.url, self.location.origin);
+        // Legacy operator entries have no account binding or idempotency key.
+        // Retain them for reconciliation; never replay under a later session.
+        if (target.origin !== self.location.origin || /^\/api\/(?:admin|venue)(?:\/|$)/.test(target.pathname)) continue;
+        const response = await fetch(target.href, {
           method: entry.method,
           headers: entry.headers,
           body: entry.body,
         });
+        if (!response.ok) break;
         // Remove successfully replayed request
         const deleteTx = db.transaction("requests", "readwrite");
         deleteTx.objectStore("requests").delete(entry.id);
@@ -279,22 +318,15 @@ self.addEventListener("sync", (event) => {
 self.addEventListener("periodicsync", (event) => {
   if (event.tag === "admin-dashboard-refresh") {
     event.waitUntil(
-      // Pre-fetch dashboard data so it's fresh when the admin opens the app
-      caches.open(PAGE_CACHE).then((cache) =>
-        cache.add("/admin").catch(() => {
-          // Silently fail — periodic sync is best-effort
-        }),
-      ),
+      fetch("/admin", { cache: "no-store" }).catch(() => {}),
     );
   }
 
   if (event.tag === "public-content-refresh") {
     event.waitUntil(
-      caches.open(PAGE_CACHE).then((cache) =>
-        Promise.all(
-          ["/", "/fixtures", "/news", "/shop", "/membership"].map((url) =>
-            cache.add(url).catch(() => {}),
-          ),
+      Promise.all(
+        ["/", "/fixtures", "/news", "/shop", "/membership"].map((url) =>
+          networkFirst(new Request(new URL(url, self.location.origin))),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import { existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { beginProductionBuild, markProductionCompilationComplete } from "./web-build-provenance.mjs";
 
 const root = resolve(process.cwd());
 const maxAttempts = 4;
@@ -35,6 +36,7 @@ function hasCompleteProductionArtifacts() {
 
 for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
   cleanBuildOutputs();
+  beginProductionBuild(root, [process.execPath, "./node_modules/next/dist/bin/next", "build", "--webpack"]);
   console.log(
     `[build] Next.js production build attempt ${attempt}/${maxAttempts}`,
   );
@@ -64,6 +66,7 @@ for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
 
   if ((result.status ?? 1) === 0) {
     if (hasCompleteProductionArtifacts()) {
+      markProductionCompilationComplete(root);
       process.exit(0);
     }
     if (attempt === maxAttempts) {

@@ -347,9 +347,23 @@ export default function AdminAccessPage() {
   const initialLoading = status === "loading" && !hasConfirmed;
   const statusCopy = accessStatusCopy[status];
 
+  const pointerPressed = useRef(false);
   const setPointerPressed = (event: PointerEvent<HTMLButtonElement>) => {
     event.currentTarget.setPointerCapture?.(event.pointerId);
+    pointerPressed.current = true;
     setInteraction("pressed");
+  };
+  const restInteraction = () => {
+    if (!pointerPressed.current) {
+      setInteraction(detailAssignment == null ? "idle" : "selected");
+    }
+  };
+  const finishPointer = () => {
+    pointerPressed.current = false;
+    restInteraction();
+  };
+  const focusInteraction = () => {
+    if (!pointerPressed.current) setInteraction("focused");
   };
 
   async function handleLookup() {
@@ -530,17 +544,12 @@ export default function AdminAccessPage() {
             type="button"
             disabled={busy || status === "permission_denied"}
             onClick={() => void loadAssignments()}
-            onFocus={() => setInteraction("focused")}
-            onBlur={() =>
-              setInteraction(detailAssignment == null ? "idle" : "selected")
-            }
+            onFocus={focusInteraction}
+            onBlur={restInteraction}
             onPointerDown={setPointerPressed}
-            onPointerUp={() =>
-              setInteraction(detailAssignment == null ? "idle" : "selected")
-            }
-            onPointerCancel={() =>
-              setInteraction(detailAssignment == null ? "idle" : "selected")
-            }
+            onPointerUp={finishPointer}
+            onPointerCancel={finishPointer}
+            onLostPointerCapture={finishPointer}
             className="admin-access-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-bold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
           >
             <RefreshCw

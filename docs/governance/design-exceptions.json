@@ -1,10 +1,58 @@
 {
   "schema_version": "1.0",
   "design_authority": {
-    "path": "DESIGN.md",
-    "sha256": "812ea6365d6e91755392204413153733ea8b5b518b28430c3572179424842552"
+    "skill": "revolut-design",
+    "path": "SKILL.md",
+    "root_hint": "/Users/jeanbosco/.codex/skills/revolut-design",
+    "sha256": "59ed494b2dd61684a8f2f516385ba601cfa549b7541bc1e9706df50e28fe3e1a",
+    "bound_files": [
+      {
+        "path": "SKILL.md",
+        "sha256": "59ed494b2dd61684a8f2f516385ba601cfa549b7541bc1e9706df50e28fe3e1a"
+      },
+      {
+        "path": "references/DESIGN.md",
+        "sha256": "255cc09f017cd53c8f7d1cf201a12101a3c95b611fd84e193b750b14bd18353d"
+      },
+      {
+        "path": "references/brand-adaptation.md",
+        "sha256": "135a13f0672dc0384668b92c5ac88e77b9219c5760f10cdcaff8ec456501f9fd"
+      },
+      {
+        "path": "references/screen-typologies.md",
+        "sha256": "aa0a47257d65f0992e65eebec342798db6c9fa73ab7839be762cc9159d5f0552"
+      },
+      {
+        "path": "references/mobile-patterns.md",
+        "sha256": "9085f5b9f07bdec3ebbda31aa22a1227080a929d8856b3c282984bdc38982f42"
+      },
+      {
+        "path": "references/web-patterns.md",
+        "sha256": "3243d4de659c1cb9b89dda537219facc1023ac0ff71aadd7da98d6ade3e3d6fb"
+      },
+      {
+        "path": "references/pwa-and-accessibility.md",
+        "sha256": "44340c25202429f0e1c6dcc858d0e0a22f57809c17f5f21f25b4c4fa9969c623"
+      },
+      {
+        "path": "references/component-contracts.md",
+        "sha256": "e89b52c1fed430ed418315edd60d5ef716d414c2c9c99787c6b5bdbd0189dcfc"
+      },
+      {
+        "path": "references/quality-standard.md",
+        "sha256": "a0f199ecdbce21b573e07126a7c36dff254490ee154bea1cef3d85c42fccce92"
+      },
+      {
+        "path": "references/operational-checklist.md",
+        "sha256": "e5854f677f647b842519735a321a2a16f50b988f3e55b6a9147be91fb606315e"
+      },
+      {
+        "path": "references/mobile-design-100.md",
+        "sha256": "f552445abe63cab63bdcda039d301d6b532f404380fb0d3d35d3563a3ec803cb"
+      }
+    ]
   },
-  "updated_at": "2026-09-06T06:05:45.356830+00:00",
+  "updated_at": "2026-09-14T18:25:59.804858+00:00",
   "exceptions": [],
   "resolved_decisions": [
     {
@@ -37,5 +85,45 @@
       "due_date": null,
       "status": "current_route_evidence_and_approval_required"
     }
-  ]
+  ],
+  "product_adapter": {
+    "path": "DESIGN.md",
+    "sha256": "93a3b22c25c5a2995f45aa558a6162d876a9aa25d4f10d16c7c92119e9ac9efd"
+  },
+  "mobile_acceptance": {
+    "rule": "MOBILE-DESIGN-100",
+    "path": "references/mobile-design-100.md",
+    "sha256": "f552445abe63cab63bdcda039d301d6b532f404380fb0d3d35d3563a3ec803cb",
+    "status": "unverified",
+    "note": "Acceptance is derived by validate_mobile_design_release.mjs for an exact app/platform/artifact. This source record does not approve a release. Current cases, installed package evidence and distinct registered reviews remain required.",
+    "contract": {
+      "schema_version": 1,
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "visual_criteria": [
+        "reference_fidelity",
+        "hierarchy_density",
+        "typography",
+        "colour_elevation",
+        "spacing_shape",
+        "icons_assets",
+        "copy_annotations",
+        "interaction_states",
+        "responsive_keyboard",
+        "accessibility_native"
+      ],
+      "quality_dimensions": [
+        "usability",
+        "accessibility",
+        "performance",
+        "resilience"
+      ],
+      "route_inventory_directory": "output/route_inventory/current",
+      "case_registry": "docs/governance/route-state-evidence.json",
+      "reference_registry": "docs/governance/native-reference-map.json",
+      "release_registry": "docs/governance/evidence-bundles.json"
+    }
+  }
 }
