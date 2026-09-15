@@ -1,5 +1,27 @@
 # Web dependency remediation
 
+## Remote verification — 15 September 2026
+
+After commit `703e78be032b3f6771d688a8c7e90acd575e3267` reached `main`,
+GitHub marked Dependabot alerts 99–106 fixed at 09:24:13–14 UTC. A fresh
+open-alert API query returned zero entries. The push-time message reporting
+eight alerts preceded this refresh; none was manually dismissed. This verifies
+the remote dependency state separately from the earlier local npm audit.
+
+The pinned `corepack npm run check:dependencies` passes all nine regressions
+with npm 12.0.2. Invoking the adjacent unpinned `npm` executable selected
+11.8.0 and correctly failed the package-manager contract before running tests.
+
+The [hosted run for the same commit](https://github.com/IKANISA1/AFRIFAN/actions/runs/34952363716)
+started zero jobs. Its authenticated run-page annotation identifies failed
+account payments or the spending limit as the blocker. The terminal result is
+`startup_failure`; account-owner action is required before hosted verification
+can run. No billing setting was changed.
+
+Evidence: `output/qa/full-stack-20260914/hosted-ci-root-cause-and-alert-closure.json`
+and `dependencies-after-push-pinned.json`. This does not establish deployed
+versions or whole-system release readiness.
+
 ## Current local review — 14 September 2026
 
 The full-stack QA baseline found eight vulnerable installed-package entries:

@@ -45,13 +45,51 @@ def place(user, match, selection='home'):
     return sql(actor(user) + "select public.predict_place(9946001,'%s','%s');" % (fixture(match), selection), check=False)
 
 
+def ticket_scans_after_lock(lock_query, scan_queries, before_release=None):
+    """Run scans only after an independent transaction holds the chosen row."""
+    held = subprocess.Popen([DOCKER, 'exec', '-i', NAME, 'psql', '-X', '-qAt',
+                             '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', 'postgres'],
+                            stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE, text=True)
+    try:
+        held.stdin.write("set application_name='ticket_scan_hold'; begin; set local idle_in_transaction_session_timeout='15s'; " + lock_query + '\n')
+        held.stdin.flush()
+        for _ in range(100):
+            if sql("select count(*) from pg_stat_activity where application_name='ticket_scan_hold' and state='idle in transaction';").stdout.strip() == '1':
+                break
+            time.sleep(.05)
+        else:
+            raise RuntimeError('Ticket test did not acquire its row lock')
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(scan_queries)) as executor:
+            futures = [executor.submit(sql, "set application_name='ticket_scan_waiting'; set statement_timeout='10s'; " + query, check=False) for query in scan_queries]
+            try:
+                for _ in range(100):
+                    waiting = sql("select count(*) from pg_stat_activity where application_name='ticket_scan_waiting' and wait_event_type='Lock';").stdout.strip()
+                    if waiting == str(len(scan_queries)):
+                        break
+                    time.sleep(.05)
+                else:
+                    raise RuntimeError('Every ticket scan must be blocked before release')
+                if before_release:
+                    sql(before_release)
+            finally:
+                held.stdin.write('commit;\n')
+                held.stdin.flush()
+            return [future.result() for future in futures]
+    finally:
+        if held.poll() is None:
+            held.communicate('rollback;\n', timeout=20)
+
+
 try:
-    subprocess.run([DOCKER, 'run', '-d', '--pull=never', '--name', NAME,
+    started = subprocess.run([DOCKER, 'run', '-d', '--pull=never', '--name', NAME,
                     '--label', 'africlub.test=database-concurrency', '--network=none',
                     '--cpus=2', '--memory=2g', '--tmpfs', '/var/lib/postgresql/data',
                     '-e', 'POSTGRES_PASSWORD=' + PASSWORD, IMAGE,
                     'postgres', '-D', '/etc/postgresql', '-c', 'cron.launch_active_jobs=off'],
-                   check=True, capture_output=True)
+                   capture_output=True, text=True)
+    if started.returncode:
+        raise RuntimeError('Isolated Postgres startup failed: ' + started.stderr.strip())
     for _ in range(60):
         if sql('select 1;', admin=True, check=False).returncode == 0:
             break
@@ -131,42 +169,45 @@ try:
     operation_id = str(uuid.uuid4())
     redeem = "select public.redeem_ticket_for_verifier('%s','%s',%d,'%s','NORTH');" % (
         fixture(5), credential_id, credential['credential_version'], operation_id)
-    held = subprocess.Popen([DOCKER, 'exec', '-i', NAME, 'psql', '-X', '-qAt',
-                             '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', 'postgres'],
-                            stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE, text=True)
-    try:
-        held.stdin.write("set application_name='ticket_retry_hold'; begin; set local idle_in_transaction_session_timeout='15s'; select id from public.ticket_wallet_credentials where id='%s' for update;\n" % credential_id)
-        held.stdin.flush()
-        for _ in range(100):
-            if sql("select count(*) from pg_stat_activity where application_name='ticket_retry_hold' and state='idle in transaction';").stdout.strip() == '1':
-                break
-            time.sleep(.05)
-        else:
-            raise RuntimeError('Ticket retry test did not acquire its credential lock')
-        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
-            futures = [executor.submit(sql, "set application_name='ticket_retry_scan'; set statement_timeout='10s'; " + redeem, check=False) for _ in range(2)]
-            try:
-                for _ in range(100):
-                    if sql("select count(*) from pg_stat_activity where application_name='ticket_retry_scan' and wait_event_type='Lock';").stdout.strip() == '2':
-                        break
-                    time.sleep(.05)
-                else:
-                    raise RuntimeError('Both ticket retry transactions must be blocked before release')
-            finally:
-                held.stdin.write('commit;\n')
-                held.stdin.flush()
-            responses = [future.result() for future in futures]
-        assert all(r.returncode == 0 for r in responses), [r.stderr for r in responses]
-        decisions = [json.loads(r.stdout.strip().splitlines()[-1]) for r in responses]
-        assert all(d['code'] == 'admitted' for d in decisions), decisions
-        assert sorted(d['replayed'] for d in decisions) == [False, True], decisions
-        assert decisions[0]['scanned_at'] == decisions[1]['scanned_at'], decisions
-        assert sql("select count(*) from public.ticket_redemption_events where verifier_user_id='%s' and operation_id='%s';" % (fixture(5), operation_id)).stdout.strip() == '1'
-        assert sql("select status from public.tickets where id='%s';" % fixture(713)).stdout.strip() == 'used'
-        print('PASS overlapping ticket retries return the same admission and one immutable audit event', flush=True)
-    finally:
-        if held.poll() is None:
-            held.communicate('rollback;\n', timeout=20)
+    responses = ticket_scans_after_lock(
+        "select id from public.ticket_wallet_credentials where id='%s' for update;" % credential_id,
+        [redeem, redeem])
+    assert all(r.returncode == 0 for r in responses), [r.stderr for r in responses]
+    decisions = [json.loads(r.stdout.strip().splitlines()[-1]) for r in responses]
+    assert all(d['code'] == 'admitted' for d in decisions), decisions
+    assert sorted(d['replayed'] for d in decisions) == [False, True], decisions
+    assert decisions[0]['scanned_at'] == decisions[1]['scanned_at'], decisions
+    assert sql("select count(*) from public.ticket_redemption_events where verifier_user_id='%s' and operation_id='%s';" % (fixture(5), operation_id)).stdout.strip() == '1'
+    assert sql("select status from public.tickets where id='%s';" % fixture(713)).stdout.strip() == 'used'
+    print('PASS overlapping ticket retries return the same admission and one immutable audit event', flush=True)
+
+    deadline_failures = []
+    for number, deadline_table, deadline_column, held_table, expected in [
+        (715, 'ticket_events', 'entry_closes_at', 'ticket_wallet_credentials', 'expired'),
+        (716, 'ticket_verifier_assignments', 'ends_at', 'ticket_wallet_credentials', 'permission_denied'),
+        (717, 'ticket_verifier_assignments', 'ends_at', 'ticket_verifier_assignments', 'permission_denied'),
+    ]:
+        sql("update public.ticket_events set entry_closes_at=clock_timestamp()+interval '1 hour' where id='%s';" % fixture(714))
+        sql("update public.ticket_verifier_assignments set ends_at=clock_timestamp()+interval '30 minutes' where ticket_event_id='%s';" % fixture(714))
+        sql("insert into public.tickets(id,match_id,user_id,club_id,seat_type,amount_paid,status,confirmed_at) select '%s',match_id,user_id,club_id,seat_type,amount_paid,'valid',clock_timestamp() from public.tickets where id='%s';" % (fixture(number), fixture(713)))
+        prepared = json.loads(sql(actor(1) + "select public.prepare_google_wallet_ticket('%s');" % fixture(number)).stdout.strip().splitlines()[-1])
+        credential_id = str(uuid.UUID(prepared['credential_id']))
+        deadline_filter = "id='%s'" % fixture(714) if deadline_table == 'ticket_events' else "ticket_event_id='%s'" % fixture(714)
+        lock_filter = "id='%s'" % credential_id if held_table == 'ticket_wallet_credentials' else "ticket_event_id='%s'" % fixture(714)
+        sql("update public.%s set %s=clock_timestamp()+interval '1 second' where %s;" % (deadline_table, deadline_column, deadline_filter))
+        query = "select public.redeem_ticket_for_verifier('%s','%s',%d,'%s','NORTH');" % (fixture(5), credential_id, prepared['credential_version'], str(uuid.uuid4()))
+        responses = ticket_scans_after_lock(
+            'select id from public.%s where %s for update;' % (held_table, lock_filter), [query],
+            "select pg_sleep(greatest(0,extract(epoch from (%s-clock_timestamp())))+.1) from public.%s where %s;" % (deadline_column, deadline_table, deadline_filter))
+        response = responses[0]
+        assert response.returncode == 0, response.stderr
+        decision = json.loads(response.stdout.strip().splitlines()[-1])
+        state = sql("select jsonb_build_object('ticket_status',status,'admissions',(select count(*) from public.ticket_redemption_events where ticket_id=t.id and decision='admitted')) from public.tickets t where id='%s';" % fixture(number)).stdout.strip()
+        state = json.loads(state)
+        passed = decision['code'] == expected and state == {'ticket_status': 'valid', 'admissions': 0}
+        print(('PASS' if passed else 'FAIL'), 'ticket deadline after lock', json.dumps({'deadline': deadline_table + '.' + deadline_column, 'held': held_table, 'expected': expected, 'actual': decision['code'], **state}), flush=True)
+        if not passed:
+            deadline_failures.append(number)
+    assert not deadline_failures, 'Expired ticket scans admitted after waiting: ' + str(deadline_failures)
 finally:
     subprocess.run([DOCKER, 'rm', '-f', NAME], capture_output=True)
