@@ -14,12 +14,14 @@ import {
   Smartphone,
   WalletCards,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 
-type AuthStep = "phone" | "otp" | "join" | "member";
+type AuthStep = "loading" | "unavailable" | "phone" | "otp" | "join" | "member";
 
 type MemberRecord = {
+  club_id: number;
   member_code: string;
   membership_number: string;
   tier: string;
@@ -105,7 +107,7 @@ function cleanError(message: string | undefined) {
 }
 
 export function MemberPortal({ clubShortName }: MemberPortalProps) {
-  const [step, setStep] = useState<AuthStep>("phone");
+  const [step, setStep] = useState<AuthStep>("loading");
   const [phone, setPhone] = useState("+250 ");
   const [verifiedPhone, setVerifiedPhone] = useState("");
   const [otp, setOtp] = useState("");
@@ -119,14 +121,36 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  const identity = useRef<string | null>(null);
+  const identityVersion = useRef(0);
+  const loadVersion = useRef(0);
+
+  const clearPrivateState = useCallback(() => {
+    identityVersion.current += 1;
+    loadVersion.current += 1;
+    setMember(null);
+    setContributions([]);
+    setInitiatives([]);
+    setSelectedInitiative("");
+    setIntent(null);
+    setOtp("");
+    setVerifiedPhone("");
+    setCopied(false);
+    setBusy(false);
+    setMessage(null);
+  }, []);
+
   const total = useMemo(
     () => confirmedContributionTotal(contributions),
     [contributions],
   );
 
   const loadMemberArea = useCallback(async (activateMembership = false) => {
+    const version = ++loadVersion.current;
+    const isCurrent = () => version === loadVersion.current;
     const supabase = getBrowserSupabase();
     if (!supabase) {
+      setStep("unavailable");
       setMessage("Secure member access is not configured in this preview.");
       return;
     }
@@ -134,73 +158,104 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
     setBusy(true);
     setMessage(null);
     try {
-      const { data: userResult, error: userError } =
-        await supabase.auth.getUser();
+      const { data: userResult, error: userError } = await supabase.auth.getUser();
+      if (!isCurrent()) return;
       if (userError || !userResult.user) {
+        identity.current = null;
+        clearPrivateState();
         setStep("phone");
-        setMember(null);
         return;
       }
+      identity.current = userResult.user.id;
 
       if (activateMembership) {
         const activation = await supabase.rpc("activate_free_fan_membership");
+        if (!isCurrent()) return;
         if (activation.error) throw activation.error;
       }
 
-      const [membershipResult, initiativeResult, contributionResult] =
-        await Promise.all([
-          supabase
-            .from("fan_memberships")
-            .select(
-              "member_code,membership_number,tier,status,joined_at,updated_at",
-            )
-            .eq("user_id", userResult.user.id)
-            .eq("status", "active")
-            .order("updated_at", { ascending: false })
-            .limit(1)
-            .maybeSingle(),
-          supabase
-            .from("initiatives")
-            .select("id,title,description,raised_amount,goal_amount")
-            .eq("is_active", true)
-            .eq("status", "active")
-            .order("created_at", { ascending: false })
-            .limit(6),
-          supabase
-            .from("initiative_contributions")
-            .select(
-              "id,initiative_id,amount,status,momo_reference,created_at,confirmed_at",
-            )
-            .eq("user_id", userResult.user.id)
-            .order("created_at", { ascending: false })
-            .limit(20),
-        ]);
-
+      const membershipResult = await supabase
+        .from("fan_memberships")
+        .select("club_id,member_code,membership_number,tier,status,joined_at,updated_at")
+        .eq("user_id", userResult.user.id)
+        .eq("status", "active")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (!isCurrent()) return;
       if (membershipResult.error) throw membershipResult.error;
       if (!membershipResult.data) {
-        setMember(null);
-        setInitiatives([]);
-        setContributions([]);
+        clearPrivateState();
         setStep("join");
         return;
       }
+      const confirmedMember = membershipResult.data as MemberRecord;
+      if (!Number.isSafeInteger(confirmedMember.club_id)) {
+        throw new Error("Membership club is unavailable.");
+      }
 
-      setMember(membershipResult.data as MemberRecord);
-      setInitiatives((initiativeResult.data ?? []) as Initiative[]);
+      const [initiativeResult, contributionResult] = await Promise.all([
+        supabase
+          .from("initiatives")
+          .select("id,title,description,raised_amount,goal_amount")
+          .eq("club_id", confirmedMember.club_id)
+          .eq("is_active", true)
+          .eq("status", "active")
+          .order("created_at", { ascending: false })
+          .limit(6),
+        supabase
+          .from("initiative_contributions")
+          .select("id,initiative_id,amount,status,momo_reference,created_at,confirmed_at")
+          .eq("club_id", confirmedMember.club_id)
+          .eq("user_id", userResult.user.id)
+          .order("created_at", { ascending: false })
+          .limit(20),
+      ]);
+      if (!isCurrent()) return;
+      if (initiativeResult.error) throw initiativeResult.error;
+      if (contributionResult.error) throw contributionResult.error;
+
+      const confirmedInitiatives = (initiativeResult.data ?? []) as Initiative[];
+      setMember(confirmedMember);
+      setInitiatives(confirmedInitiatives);
       setContributions((contributionResult.data ?? []) as Contribution[]);
-      const firstInitiative = initiativeResult.data?.[0]?.id ?? "";
-      setSelectedInitiative((current) => current || firstInitiative);
+      setSelectedInitiative((current) =>
+        confirmedInitiatives.some((initiative) => initiative.id === current)
+          ? current
+          : confirmedInitiatives[0]?.id ?? "",
+      );
       setStep("member");
-    } catch (error) {
-      setMessage(cleanError(error instanceof Error ? error.message : undefined));
+    } catch {
+      if (!isCurrent()) return;
+      setMessage("Member information could not be refreshed. Previously confirmed information is unchanged. Please retry.");
+      setStep((current) => current === "member" ? current : "unavailable");
     } finally {
-      setBusy(false);
+      if (isCurrent()) setBusy(false);
     }
-  }, []);
+  }, [clearPrivateState]);
 
   useEffect(() => {
+    const supabase = getBrowserSupabase();
+    let reload: ReturnType<typeof setTimeout> | undefined;
+    const subscription = supabase?.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+      if (event === "INITIAL_SESSION") return;
+      const nextIdentity = session?.user.id ?? null;
+      if (event !== "SIGNED_OUT" && nextIdentity === identity.current) return;
+      identity.current = nextIdentity;
+      clearPrivateState();
+      clearTimeout(reload);
+      setStep(nextIdentity ? "loading" : "phone");
+      // Auth callbacks run under the client's session lock. Load after it releases.
+      if (nextIdentity) reload = setTimeout(() => void loadMemberArea(false), 0);
+    }).data.subscription;
     void loadMemberArea(false);
-  }, [loadMemberArea]);
+    return () => {
+      clearTimeout(reload);
+      loadVersion.current += 1;
+      identityVersion.current += 1;
+      subscription?.unsubscribe();
+    };
+  }, [clearPrivateState, loadMemberArea]);
 
   async function requestOtp() {
     const normalizedPhone = normalizeRwandaPhone(phone);
@@ -217,10 +272,12 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
 
     setBusy(true);
     setMessage(null);
+    const version = identityVersion.current;
     const { error } = await supabase.auth.signInWithOtp({
       phone: normalizedPhone,
       options: { channel: "whatsapp", shouldCreateUser: true },
     });
+    if (version !== identityVersion.current) return;
     setBusy(false);
     if (error) {
       setMessage(cleanError(error.message));
@@ -240,17 +297,19 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
 
     setBusy(true);
     setMessage(null);
+    const version = identityVersion.current;
     const { error } = await supabase.auth.verifyOtp({
       phone: verifiedPhone,
       token: otp,
       type: "sms",
     });
+    if (version !== identityVersion.current) return;
     if (error) {
       setBusy(false);
       setMessage(cleanError(error.message));
       return;
     }
-    await loadMemberArea(true);
+    await loadMemberArea(false);
   }
 
   async function createContribution() {
@@ -269,6 +328,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
     setBusy(true);
     setMessage(null);
     setIntent(null);
+    const version = identityVersion.current;
     const { data, error } = await supabase.rpc(
       "create_member_contribution_intent",
       {
@@ -276,6 +336,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
         p_amount: parsedAmount,
       },
     );
+    if (version !== identityVersion.current) return;
     setBusy(false);
     if (error || !data?.[0]) {
       setMessage(cleanError(error?.message));
@@ -293,14 +354,14 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
   }
 
   async function signOut() {
-    const supabase = getBrowserSupabase();
-    if (supabase) await supabase.auth.signOut();
-    setMember(null);
-    setContributions([]);
-    setInitiatives([]);
-    setIntent(null);
-    setOtp("");
+    identity.current = null;
+    clearPrivateState();
+    setPhone("+250 ");
     setStep("phone");
+    const supabase = getBrowserSupabase();
+    if (!supabase) return;
+    const { error } = await supabase.auth.signOut();
+    if (error) setMessage("Secure sign-out could not be confirmed. Please retry signing out.");
   }
 
   async function copyMemberCode() {
@@ -328,6 +389,18 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
       </div>
 
       <div className="member-portal-panel">
+        {step === "loading" ? <p role="status">Loading your member area…</p> : null}
+        {step === "unavailable" ? (
+          <div className="member-auth-form">
+            <h3>Member area unavailable</h3>
+            <button className="member-primary-action" type="button" disabled={busy} onClick={() => void loadMemberArea(false)}>
+              Retry member area
+            </button>
+            <button className="member-text-action" type="button" onClick={() => void signOut()}>
+              Sign out
+            </button>
+          </div>
+        ) : null}
         {step === "phone" ? (
           <form
             className="member-auth-form"
@@ -388,7 +461,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
             />
             <button className="member-primary-action" type="submit" disabled={busy}>
               {busy ? <LoaderCircle className="member-spinner" aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
-              Verify and join the Blue Wall
+              Verify code
             </button>
             <button className="member-text-action" type="button" onClick={() => setStep("phone")}>
               Use another number

@@ -14,21 +14,24 @@ Recorded 16 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) rema
 - Repaired venue admission recovery after a lost response: unresolved requests retain their operation ID across rotating codes, overlapping submissions are suppressed, stalled requests time out, and confirmed retries display the original decision. Corrected unreadable light-mode warning text and result borders.
 - Repaired a reproduced database deadlock between wallet preparation and gate admission by locking the ticket before its credential in both paths. Revalidate the credential association after waits; preserve request-bound retries, event/shift checks and service-only admission access.
 
+- Repaired member campaign reads, failed-history handling and stale private data after sign-out. Added authenticated campaign column contracts and eleven member lifecycle regressions; membership activation remains an explicit action.
+
 ## Verification evidence
 
 | Scope | Latest local result | Qualification |
 | --- | --- | --- |
-| Web units | 120 files / 981 tests passed | Current source; aggregate measured line coverage is 60.18%, not complete coverage |
-| Web build, lint and types | Passed | Build `hE9Cvz-hK4WzdiaVYruMt`; production source and artifact seal verified |
+| Web units | 121 files / 992 tests passed | Current source; aggregate measured line coverage is 61.07%, not complete coverage |
+| Web build, lint and types | Passed | Build `vkuIa4EiOca6h-qmQuzqk`; production source and artifact seal verified |
 | Bundle budgets | CSS 44.81 / 45 KiB; JavaScript 166.67 / 170 KiB | Existing thresholds retained; CSS has 194 bytes of headroom |
-| Real venue recovery | 60/60 checks; 48 hash-verified PNGs | Repeated flow in Chromium, Firefox and WebKit, light/dark, desktop/phone layouts; actual Next API, local Auth/REST and production Edge handler dependencies |
-| Venue recovery after the lock-order fix | 10/10 checks | Chromium light-mode desktop/phone confirmation on the new database function and unchanged web build; repeats the recovery flow above |
-| Earlier real admin/browser checks | Chromium 54/54; Firefox 50/50; WebKit 50/50 | Original build-bound evidence retained; not rerun on the changed venue candidate |
+| Real member portal | 33/33 checks, including six fixture teardown checks; 15 hash-verified PNGs | Chromium, Firefox and WebKit; desktop/phone member-panel axe has zero violations; real isolated Auth/REST, controlled 503 and delayed-response cases |
+| Earlier real venue recovery | 60/60 checks; 48 hash-verified PNGs | Repeated flow in Chromium, Firefox and WebKit, light/dark, desktop/phone layouts; actual Next API, local Auth/REST and production Edge handler dependencies |
+| Earlier venue recovery after the lock-order fix | 10/10 checks | Chromium light-mode desktop/phone confirmation on the new database function and unchanged web build; repeats the recovery flow above |
+| Earlier real admin/browser checks | Chromium 54/54; Firefox 50/50; WebKit 50/50 | Original build-bound evidence retained; not rerun on the current member candidate |
 | Earlier Home and Settings state matrices | 6/6 matrices; 102 hash-verified PNGs | Original build-bound controlled captures; unreviewed engineering evidence |
-| Database contracts | 27 files / 382 assertions passed | Pinned vendor database with current migration changes; 324 foreign keys checked with zero orphans |
-| Database advisors | 0 errors; 240 warnings; 262 informational findings | Isolated database only; warnings concern performance; no security warning/error; unused-index observations vary with local statistics |
-| Database concurrency | Fresh fifteen-migration replay, 127 SQL assertions and twenty-two operation/concurrency scenarios passed | Disposable network-disabled database; includes preparation/admission overlap, both cancellation orders, and changed/deleted credentials during ticket waits |
-| Ticket HTTP handlers | 34/34 checks passed | Production handler dependencies with real local Auth/REST; request binding, revocation, wallet preparation overlap, cancellation and credential maintenance are checked with persisted outcomes |
+| Database contracts | 28 files / 388 assertions passed | Pinned vendor database with current migration changes; 324 foreign keys checked with zero orphans |
+| Database advisors | 0 errors; 240 warnings; 313 informational findings | Isolated database only; warnings concern performance; no security warning/error; unused-index observations vary with local statistics |
+| Database concurrency | Fresh sixteen-migration replay, 133 SQL assertions and twenty-two operation/concurrency scenarios passed | Disposable network-disabled database; includes preparation/admission overlap, both cancellation orders, and changed/deleted credentials during ticket waits |
+| Earlier ticket HTTP handlers | 34/34 checks passed | Production handler dependencies with real local Auth/REST; request binding, revocation, wallet preparation overlap, cancellation and credential maintenance are checked with persisted outcomes |
 | Earlier shared/native checks | Strict Flutter analysis; 44 package runs / 2,624 reported successes; 19 Edge entries / 97 tests | Earlier evidence is retained with its original source and execution scope |
 | Native artifact | One isolated ARM64 Android pilot APK compiled | Not installed or launched; this does not cover the forty app/platform combinations |
 
@@ -48,13 +51,19 @@ The subsequent race review reproduced a database deadlock: wallet preparation he
 
 Cancellation tests cover both lock orders. If cancellation commits first, the waiting scan rejects, the ticket is cancelled, and one pending outbox item requests an inactive wallet pass. If admission commits first, the stale cancellation is rejected, the ticket remains used, and one pending outbox item requests completion. These assertions cover local state and audit consistency; delivery to Google remains unrun. See `database-wallet-lock-before.json`, `database-wallet-lock-after.json`, `ticket-edge-http-wallet-lock-before-verified.json`, and `ticket-edge-http-wallet-lock-after.json`.
 
+The authenticated member review reproduced three failures through the actual browser and local backend. Campaigns returned HTTP 403 because ordering used an ungranted column; failed contribution reads replaced verified history with an empty array and zero total; and an in-flight response restored private data after logout. A column-only grant restores campaign ordering without extending private fields or write privileges. The portal now scopes campaigns to the verified membership club, accepts complete successful snapshots, retains confirmed information after failed refreshes, and offers an initial-load retry. Stale reads and identity-bound responses are discarded after logout/account changes; real cross-tab sign-out also clears the private view.
+
+Nine initial component regressions failed before repair; the final eleven pass, including account switching, overlapping refreshes, late contribution responses and unsubscription. OTP verification no longer activates membership implicitly; its success path is component-tested without contacting a provider. Restored-session browser checks independently verify that activation requires a deliberate click. All three browsers pass the same member journey, including other-club campaign exclusion, confirmed-versus-pending totals, 503 recovery, cross-tab sign-out and delayed-response logout. Two current captures received engineering visual review. Full-height element screenshots contain fixed-navigation overlays and do not prove complete viewport clearance or source fidelity.
+
+The latest-twenty history query still requires a larger-history total review (QA-MONEY-002). This increment did not initiate a payment, open a dialer, send an OTP or validate provider/SMS reconciliation. Full browser account-switch, data-request deadlines, offline restored sessions, failed sign-out and installed-PWA acceptance remain open. See `member-portal-evidence.json`, `member-browser-matrix.json`, `member-lifecycle-unit-before-results.json`, `member-unit-suite-results.json`, and `database-sql-member.json`. Current database cleanup confirms zero operational users or member fixtures, twenty clubs, zero orphans across 324 foreign keys, cron disabled and both immutable ticket audit triggers enabled. Docker was restarted during this run; changed unused-index statistics are synthetic observations only.
+
 Detailed command logs, reproduction failures, source/artifact hashes and residual findings remain in ignored `output/qa/full-stack-20260914/`. See its `checkpoint.md`, `execution.json`, `findings.json`, `venue-retry-evidence.json`, `venue-retry-browser-matrix.json`, `database-sql-venue-access.json`, and `database-venue-access.json`. Older captures are not relabelled as current acceptance.
 
 After the first QA commit reached `main`, GitHub closed all eight previously reported Dependabot alerts as fixed; a fresh query returned zero open alerts. Hosted CI started no jobs because the account payment or spending-limit condition requires owner action. See [dependency remediation](../governance/dependency-remediation.md) for the separate remote evidence.
 
 ## Remaining work
 
-Complete all-club Android/iOS builds and boots, real member/venue/commerce/storage/realtime journeys, installed PWA updates and legacy queue reconciliation, current remaining route/state captures, reader tasks, performance measurements, and independent visual/owner reviews. Native execution is constrained by local disk capacity; nineteen club shells still lack provider registrations and bundled iOS icons.
+Complete all-club Android/iOS builds and boots, remaining member/venue/commerce/storage/realtime journeys, installed PWA updates and legacy queue reconciliation, current remaining route/state captures, reader tasks, performance measurements, and independent visual/owner reviews. Native execution is constrained by local disk capacity; nineteen club shells still lack provider registrations and bundled iOS icons.
 
 Triage the advisor performance findings against real query plans and policies before changing indexes or access rules. Unused-index observations from the synthetic QA database do not establish production usage.
 
