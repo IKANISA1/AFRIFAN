@@ -45,7 +45,7 @@ def place(user, match, selection='home'):
     return sql(actor(user) + "select public.predict_place(9946001,'%s','%s');" % (fixture(match), selection), check=False)
 
 
-def ticket_scans_after_lock(lock_query, scan_queries, before_release=None):
+def ticket_scans_after_lock(lock_query, scan_queries, before_release=None, before_commit=None):
     """Run scans only after an independent transaction holds the chosen row."""
     held = subprocess.Popen([DOCKER, 'exec', '-i', NAME, 'psql', '-X', '-qAt',
                              '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', 'postgres'],
@@ -73,9 +73,13 @@ def ticket_scans_after_lock(lock_query, scan_queries, before_release=None):
                 if before_release:
                     sql("set statement_timeout='8s'; " + before_release)
             finally:
-                held.stdin.write('commit;\n')
+                held.stdin.write((before_commit or '') + '\ncommit;\n')
                 held.stdin.flush()
-            return [future.result() for future in futures]
+            responses = [future.result() for future in futures]
+            held_out, held_error = held.communicate(timeout=20)
+            if held.returncode:
+                raise RuntimeError('Held transaction failed: ' + held_out[-2000:] + held_error[-4000:])
+            return responses
     finally:
         if held.poll() is None:
             held.communicate('rollback;\n', timeout=20)
@@ -307,5 +311,83 @@ try:
     assert sql("select count(*) from public.ticket_redemption_events where verifier_user_id='%s' and operation_id='%s';" % (fixture(5), shared_operation)).stdout.strip() == '1'
     assert sql("select count(*) from public.tickets where id in ('%s','%s') and status='used';" % (fixture(724), fixture(725))).stdout.strip() == '1'
     assert not replay_failures and not revocation_failures, 'Unsafe operation replay or revoked admission: ' + str({'payload': replay_failures, 'revocation': revocation_failures})
+
+    # Wallet preparation owns the ticket before requesting the credential.
+    # An overlapping admission must use the same row-lock order.
+    sql("insert into public.tickets(id,match_id,user_id,club_id,seat_type,amount_paid,status,confirmed_at) select '%s',match_id,user_id,club_id,seat_type,amount_paid,'valid',clock_timestamp() from public.tickets where id='%s';" % (fixture(726), fixture(713)))
+    preparing = json.loads(sql(actor(1) + "select public.prepare_google_wallet_ticket('%s');" % fixture(726)).stdout.strip().splitlines()[-1])
+    operation = str(uuid.uuid4())
+    prepare_again = actor(1) + """set local role authenticated;
+      do $check$ declare r jsonb; begin
+        r := public.prepare_google_wallet_ticket('%s');
+        if r->>'status' <> 'success' or r->>'credential_id' <> '%s' then
+          raise exception 'Wallet preparation failed while holding its ticket: %%', r;
+        end if;
+      end $check$;
+      reset role;""" % (fixture(726), preparing['credential_id'])
+    responses = ticket_scans_after_lock(
+        "select id from public.tickets where id='%s' for update;" % fixture(726),
+        ["set role service_role; select public.redeem_ticket_for_verifier('%s','%s',%d,'%s','NORTH');" % (fixture(5), preparing['credential_id'], preparing['credential_version'], operation)],
+        before_commit=prepare_again)
+    assert responses[0].returncode == 0, responses[0].stderr
+    decision = json.loads(responses[0].stdout.strip().splitlines()[-1])
+    assert decision['code'] == 'admitted', decision
+    assert sql("select count(*) from public.ticket_redemption_events where ticket_id='%s' and decision='admitted';" % fixture(726)).stdout.strip() == '1'
+    print('PASS overlapping wallet preparation and admission complete without deadlock', flush=True)
+
+    # Exercise both serial outcomes with the actual optimistic admin RPC.
+    # Pass/outbox rows are controlled local fixtures, not Google issuance.
+    for number, first in [(727, 'cancellation'), (728, 'admission')]:
+        ticket_id = fixture(number)
+        sql("insert into public.tickets(id,match_id,user_id,club_id,seat_type,amount_paid,status,confirmed_at) select '%s',match_id,user_id,club_id,seat_type,amount_paid,'valid',clock_timestamp() from public.tickets where id='%s';" % (ticket_id, fixture(713)))
+        prepared = json.loads(sql(actor(1) + "select public.prepare_google_wallet_ticket('%s');" % ticket_id).stdout.strip().splitlines()[-1])
+        sql("""insert into public.google_wallet_ticket_passes(club_id,organization_id,ticket_event_id,ticket_id,credential_id,class_id,object_id)
+            values(9946001,'%s','%s','%s','%s','qa.class','qa.object.%d');""" % (fixture(712), fixture(714), ticket_id, prepared['credential_id'], number))
+        version = sql("select updated_at from public.tickets where id='%s';" % ticket_id).stdout.strip()
+        cancel = "select public.admin_bulk_update_ticket_status_if_unchanged(array['%s']::uuid[],array['%s']::timestamptz[],'cancelled',9946001,'%s','club_admin',false);" % (ticket_id, version, fixture(5))
+        scan = "select public.redeem_ticket_for_verifier('%s','%s',%d,'%s','NORTH');" % (fixture(5), prepared['credential_id'], prepared['credential_version'], uuid.uuid4())
+        responses = ticket_scans_after_lock(
+            "select id from public.tickets where id='%s' for update;" % ticket_id,
+            ['set role service_role; ' + (scan if first == 'cancellation' else cancel)],
+            before_commit='set local role service_role; ' + (cancel if first == 'cancellation' else scan) + ' reset role;')
+        if first == 'cancellation':
+            assert responses[0].returncode == 0, responses[0].stderr
+            assert json.loads(responses[0].stdout.strip().splitlines()[-1])['code'] == 'cancelled'
+        else:
+            assert responses[0].returncode != 0 and 'changed after they were loaded' in responses[0].stderr, responses[0]
+        persisted = json.loads(sql("""select jsonb_build_object(
+            'ticket',(select status from public.tickets where id='%s'),
+            'pass',(select wallet_state from public.google_wallet_ticket_passes where ticket_id='%s'),
+            'outbox',(select jsonb_agg(desired_state order by created_at) from public.google_wallet_ticket_outbox where ticket_id='%s'),
+            'decisions',(select jsonb_agg(decision order by scanned_at) from public.ticket_redemption_events where ticket_id='%s'),
+            'admin_updates',(select count(*) from public.admin_audit_log where target_id='%s' and target_table='tickets'));
+            """ % (ticket_id, ticket_id, ticket_id, ticket_id, ticket_id)).stdout.strip())
+        expected = {'ticket': 'cancelled', 'pass': 'INACTIVE', 'outbox': ['INACTIVE'], 'decisions': ['cancelled'], 'admin_updates': 1} if first == 'cancellation' else {'ticket': 'used', 'pass': 'COMPLETED', 'outbox': ['COMPLETED'], 'decisions': ['admitted'], 'admin_updates': 0}
+        assert persisted == expected, persisted
+        print('PASS overlapping cancellation and admission', first + ' first', json.dumps(persisted), flush=True)
+
+    # The pre-lock lookup is only a locator. Revalidate the locked credential
+    # when service-side maintenance changes or deletes it during that wait.
+    for number, change in [(729, 'retarget'), (731, 'delete')]:
+        ticket_id = fixture(number)
+        sql("insert into public.tickets(id,match_id,user_id,club_id,seat_type,amount_paid,status,confirmed_at) select '%s',match_id,user_id,club_id,seat_type,amount_paid,'valid',clock_timestamp() from public.tickets where id='%s';" % (ticket_id, fixture(713)))
+        prepared = json.loads(sql(actor(1) + "select public.prepare_google_wallet_ticket('%s');" % ticket_id).stdout.strip().splitlines()[-1])
+        if change == 'retarget':
+            sql("insert into public.tickets(id,match_id,user_id,club_id,seat_type,amount_paid,status,confirmed_at) select '%s',match_id,user_id,club_id,seat_type,amount_paid,'valid',clock_timestamp() from public.tickets where id='%s';" % (fixture(730), fixture(713)))
+            mutation = "update public.ticket_wallet_credentials set ticket_id='%s' where id='%s';" % (fixture(730), prepared['credential_id'])
+        else:
+            mutation = "delete from public.ticket_wallet_credentials where id='%s';" % prepared['credential_id']
+        responses = ticket_scans_after_lock(
+            "select id from public.tickets where id='%s' for update;" % ticket_id,
+            ["select public.redeem_ticket_for_verifier('%s','%s',%d,'%s','NORTH');" % (fixture(5), prepared['credential_id'], prepared['credential_version'], uuid.uuid4())],
+            before_commit=mutation)
+        assert responses[0].returncode == 0, responses[0].stderr
+        result = json.loads(responses[0].stdout.strip().splitlines()[-1])
+        assert result == {'status': 'rejected', 'code': 'credential_invalid', 'replayed': False}, result
+        assert sql("select status from public.tickets where id='%s';" % ticket_id).stdout.strip() == 'valid'
+        assert sql("select count(*) from public.ticket_redemption_events where ticket_id='%s';" % ticket_id).stdout.strip() == '0'
+        if change == 'retarget':
+            assert sql("select status from public.tickets where id='%s';" % fixture(730)).stdout.strip() == 'valid'
+        print('PASS credential association revalidated after ticket lock', change, flush=True)
 finally:
     subprocess.run([DOCKER, 'rm', '-f', NAME], capture_output=True)
