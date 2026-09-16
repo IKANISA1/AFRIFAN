@@ -21,6 +21,7 @@ type VerificationResult = {
   seat_type?: string;
   gate_code?: string | null;
   first_admitted_at?: string | null;
+  replayed?: boolean;
 };
 
 type ViewState =
@@ -30,7 +31,22 @@ type ViewState =
   | { kind: "submitting" }
   | { kind: "admitted"; result: VerificationResult }
   | { kind: "rejected"; result: VerificationResult }
-  | { kind: "error"; message: string };
+  | { kind: "error"; message: string }
+  | { kind: "uncertain"; message: string };
+
+// This groups retries only. The server still authenticates the rotating code.
+// Its timestamp and OTP can rotate while the same admission is unresolved.
+const ROTATING_CODE_PATTERN =
+  /^AFC1\.([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.([1-9][0-9]{0,8})\.[0-9]{10,13}\.[0-9]{8}$/i;
+
+function retryKey(code: string, gate: string | null) {
+  const credential = ROTATING_CODE_PATTERN.exec(code);
+  return JSON.stringify([
+    credential?.[1].toLowerCase() ?? code,
+    credential?.[2] ?? null,
+    gate,
+  ]);
+}
 
 const resultCopy: Record<string, string> = {
   already_used: "Ticket already used",
@@ -56,6 +72,8 @@ export function TicketVerifier({ gates }: { gates: Array<string | null> }) {
   const streamRef = useRef<MediaStream | null>(null);
   const frameRef = useRef<number | null>(null);
   const detectingRef = useRef(false);
+  const submittingRef = useRef(false);
+  const pendingOperationsRef = useRef(new Map<string, string>());
   const [state, setState] = useState<ViewState>({ kind: "idle" });
   const [manualCode, setManualCode] = useState("");
   const [gateCode, setGateCode] = useState<string | null>(gates[0] ?? null);
@@ -79,18 +97,26 @@ export function TicketVerifier({ gates }: { gates: Array<string | null> }) {
   useEffect(() => stopCamera, [stopCamera]);
 
   const submitCode = useCallback(async (ticketCode: string) => {
+    if (submittingRef.current) return;
     const normalized = ticketCode.trim();
     if (!online) {
       setState({ kind: "error", message: "Reconnect before verifying a ticket." });
       return;
     }
-    if (normalized.length < 20) {
+    if (normalized.length < 20 || normalized.length > 180) {
       setState({ kind: "error", message: "Scan or enter a complete ticket code." });
       return;
     }
+    submittingRef.current = true;
     stopCamera();
     setState({ kind: "submitting" });
+    const selectedGate = gateCode?.trim().toUpperCase() || null;
+    const key = retryKey(normalized, selectedGate);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30_000);
     try {
+      const operation = pendingOperationsRef.current.get(key) ?? crypto.randomUUID();
+      pendingOperationsRef.current.set(key, operation);
       const response = await fetch("/api/venue/tickets/verify", {
         method: "POST",
         headers: {
@@ -99,36 +125,46 @@ export function TicketVerifier({ gates }: { gates: Array<string | null> }) {
         },
         body: JSON.stringify({
           ticket_code: normalized,
-          operation_id: crypto.randomUUID(),
-          gate_code: gateCode,
+          operation_id: operation,
+          gate_code: selectedGate,
         }),
         cache: "no-store",
+        signal: controller.signal,
       });
       const payload = await response.json().catch(() => null) as
         | { data?: { result?: VerificationResult }; error?: string }
         | null;
-      if (!response.ok || payload?.data?.result == null) {
+      const result = payload?.data?.result;
+      if (!response.ok || (result?.status !== "admitted" && result?.status !== "rejected")) {
         throw new Error(
           response.status === 409
             ? "The rotating code expired. Scan the current code again."
             : payload?.error ?? "Ticket verification could not be completed.",
         );
       }
-      const result = payload.data.result;
+      pendingOperationsRef.current.delete(key);
       setState(
         result.status === "admitted"
           ? { kind: "admitted", result }
           : { kind: "rejected", result },
       );
       setManualCode("");
-      if (result.status === "admitted") navigator.vibrate?.(120);
+      if (result.status === "admitted") {
+        // Optional device feedback cannot invalidate a confirmed decision.
+        try { navigator.vibrate?.(120); } catch { /* Unsupported device feedback. */ }
+      }
     } catch (error) {
       setState({
-        kind: "error",
-        message: error instanceof Error
-          ? error.message
-          : "Ticket verification could not be completed.",
+        kind: "uncertain",
+        message: controller.signal.aborted
+          ? "The check timed out."
+          : error instanceof Error
+            ? error.message
+            : "The verification response was unavailable.",
       });
+    } finally {
+      clearTimeout(timeout);
+      submittingRef.current = false;
     }
   }, [gateCode, online, stopCamera]);
 
@@ -249,6 +285,7 @@ export function TicketVerifier({ gates }: { gates: Array<string | null> }) {
             id="ticket-gate"
             className={`${ui.input} mt-3 w-full`}
             value={gateCode ?? ""}
+            disabled={busy}
             onChange={(event) => setGateCode(event.target.value || null)}
           >
             {gates.map((gate) => (
@@ -265,6 +302,7 @@ export function TicketVerifier({ gates }: { gates: Array<string | null> }) {
             id="ticket-code"
             className={`${ui.input} mt-3 min-h-28 w-full font-mono text-xs`}
             value={manualCode}
+            disabled={busy}
             maxLength={180}
             autoCapitalize="none"
             autoCorrect="off"
@@ -283,13 +321,14 @@ export function TicketVerifier({ gates }: { gates: Array<string | null> }) {
         </section>
 
         <section
-          className={`${ui.panelElevated} rounded-lg border p-5 ${
-            state.kind === "admitted"
-              ? "border-emerald-400/70 bg-emerald-950/50"
-              : state.kind === "rejected" || state.kind === "error"
-                ? "border-red-400/60 bg-red-950/40"
-                : "border-white/10"
-          }`}
+          className={`${ui.panelElevated} rounded-lg border p-5`}
+          style={{
+            borderColor: state.kind === "admitted"
+              ? "var(--venue-success)"
+              : state.kind === "rejected" || state.kind === "error" || state.kind === "uncertain"
+                ? "var(--venue-danger)"
+                : "var(--venue-border)",
+          }}
           role="status"
           aria-live="assertive"
         >
@@ -297,14 +336,21 @@ export function TicketVerifier({ gates }: { gates: Array<string | null> }) {
           <h2 className="mt-2 text-2xl font-bold uppercase">
             {result != null
               ? resultTitle(result)
-              : state.kind === "error"
+              : state.kind === "uncertain"
+                ? "Result not confirmed"
+                : state.kind === "error"
                 ? "Check not completed"
                 : state.kind === "submitting"
                   ? "Checking authoritative ticket…"
                   : "Ready for next ticket"}
           </h2>
-          {state.kind === "error" ? (
-            <p className="mt-3 text-sm leading-6 text-red-100">{state.message}</p>
+          {state.kind === "uncertain" ? (
+            <p className="mt-3 text-sm leading-6 text-slate-300">
+              {state.message} Do not admit yet. Scan the current code again at
+              the same gate to recover the decision.
+            </p>
+          ) : state.kind === "error" ? (
+            <p className="mt-3 text-sm leading-6 text-slate-300">{state.message}</p>
           ) : result != null ? (
             <dl className="mt-4 grid gap-3 text-sm">
               {result.ticket_number ? (
@@ -332,7 +378,12 @@ export function TicketVerifier({ gates }: { gates: Array<string | null> }) {
               never means the ticket is valid.
             </p>
           )}
-          {(state.kind === "admitted" || state.kind === "rejected" || state.kind === "error") ? (
+          {result?.replayed === true ? (
+            <p className="mt-3 text-sm leading-6 text-slate-300">
+              Original check recovered. No new admission was recorded.
+            </p>
+          ) : null}
+          {(state.kind === "admitted" || state.kind === "rejected" || state.kind === "error" || state.kind === "uncertain") ? (
             <button
               className={`${ui.buttonTertiary} mt-5`}
               type="button"

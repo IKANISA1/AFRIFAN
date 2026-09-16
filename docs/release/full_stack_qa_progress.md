@@ -10,19 +10,22 @@ Recorded 16 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) rema
 - Repaired service-worker activation and unsafe mutation retry/queue behavior. Chromium worker checks cover private cache exclusion and bounded offline recovery; installed and other-browser lifecycle acceptance remains open.
 - Added database migrations for replayed client/service privileges, verified Auth-to-supporter identity synchronization, concurrent ticket retry serialization, request-bound admission replay, and deadline/event-access checks after lock waits. Restored the seeded twenty-club identity catalog without importing operational admin assignments.
 - Added the maintained disposable database replay and race checks to normal CI and the existing self-hosted Supabase gate. Docker is resolved from the runner's PATH; the pinned database image supports Linux AMD64 and ARM64. Hosted execution remains unverified.
+- Restored the authenticated venue membership reads required by the real portal, with column grants and existing row policies preserving private notes and mutation restrictions. Added a client-role SQL regression to the maintained database harness.
+- Repaired venue admission recovery after a lost response: unresolved requests retain their operation ID across rotating codes, overlapping submissions are suppressed, stalled requests time out, and confirmed retries display the original decision. Corrected unreadable light-mode warning text and result borders.
 
 ## Verification evidence
 
 | Scope | Latest local result | Qualification |
 | --- | --- | --- |
-| Web units | 119 files / 971 tests passed | Current production web source |
-| Web build, lint and types | Passed | Build `pxPDJGsYbiqYaQDG6U4LB`; production source and artifact seal revalidated before commit |
-| Bundle budgets | CSS 44.92 / 45 KiB; JavaScript 166.67 / 170 KiB | Existing thresholds retained; CSS has only 86 bytes of headroom |
-| Real admin/browser checks | Chromium 54/54; Firefox 50/50; WebKit 50/50 | Common cases repeat across engines; real isolated Auth/REST with synthetic accounts |
-| Home and Settings state matrices | 6/6 matrices; 102 hash-verified PNGs | Three engines; controlled states; captures are unreviewed engineering evidence |
-| Database contracts | 26 files / 365 assertions passed | Pinned vendor database with current migration changes; 324 foreign keys checked with zero orphans |
-| Database advisors | 0 errors; 240 warnings; 299 informational findings | Isolated database only; warnings concern performance; no finding names the changed admission function; unused-index observations vary with local statistics |
-| Database concurrency | Fresh thirteen-migration replay, 110 SQL assertions and seventeen operation/concurrency scenarios passed | Disposable network-disabled database; includes duplicate retries, deadline expiry, changed requests, legacy records and revocation while waiting |
+| Web units | 120 files / 981 tests passed | Current source; aggregate measured line coverage is 60.18%, not complete coverage |
+| Web build, lint and types | Passed | Build `hE9Cvz-hK4WzdiaVYruMt`; production source and artifact seal verified |
+| Bundle budgets | CSS 44.81 / 45 KiB; JavaScript 166.67 / 170 KiB | Existing thresholds retained; CSS has 194 bytes of headroom |
+| Real venue recovery | 60/60 checks; 48 hash-verified PNGs | Repeated flow in Chromium, Firefox and WebKit, light/dark, desktop/phone layouts; actual Next API, local Auth/REST and production Edge handler dependencies |
+| Earlier real admin/browser checks | Chromium 54/54; Firefox 50/50; WebKit 50/50 | Original build-bound evidence retained; not rerun on the changed venue candidate |
+| Earlier Home and Settings state matrices | 6/6 matrices; 102 hash-verified PNGs | Original build-bound controlled captures; unreviewed engineering evidence |
+| Database contracts | 27 files / 382 assertions passed | Pinned vendor database with current migration changes; 324 foreign keys checked with zero orphans |
+| Database advisors | 0 errors; 240 warnings; 262 informational findings | Isolated database only; warnings concern performance; no security warning/error; unused-index observations vary with local statistics |
+| Database concurrency | Fresh fourteen-migration replay, 127 SQL assertions and seventeen operation/concurrency scenarios passed | Disposable network-disabled database; includes client-role venue access, duplicate retries, deadline expiry, changed requests, legacy records and revocation while waiting |
 | Ticket HTTP handlers | 30/30 checks passed | Production handler dependencies with real local Auth/REST; request binding, concurrent different-ticket requests and event/assignment/credential revocation are checked with persisted outcomes |
 | Earlier shared/native checks | Strict Flutter analysis; 44 package runs / 2,624 reported successes; 19 Edge entries / 97 tests | Earlier evidence is retained with its original source and execution scope |
 | Native artifact | One isolated ARM64 Android pilot APK compiled | Not installed or launched; this does not cover the forty app/platform combinations |
@@ -35,7 +38,11 @@ The next review reproduced incorrect admission responses when an operation ID wa
 
 Disabling an event during an assignment lock wait also previously admitted the ticket. Admission now re-reads and locks the current event through the decision, rechecks scope and time, and rejects that scan. Ten added scenarios repeat through SQL and real HTTP; the original checks still pass. Fixture capacities were increased only to accommodate the additional independent tickets; capacity enforcement remains enabled.
 
-Detailed command logs, reproduction failures, source/artifact hashes and residual findings remain in ignored `output/qa/full-stack-20260914/`. See its `checkpoint.md`, `execution.json`, `findings.json`, `database-sql-ticket-revocation-binding.json`, `database-ticket-revocation-binding-portable.json`, `ticket-edge-http-revocation-binding-before-capacity.json`, `ticket-edge-http-revocation-binding-after.json`, and current browser reports. Older captures are not relabelled as current acceptance.
+The actual venue page initially could not load a staff membership because its required client read grants were missing. Seventeen SQL checks now exercise the exact queries as `authenticated`, including other-user/venue isolation, revoked membership, hidden notes and denied self-promotion. The browser then reproduced a lost-response defect: a committed admission was retried with a new operation and displayed as already used. Recovery now returns the original admission with one audit row; a subsequent deliberate scan gets a new operation and correctly reports already used. Ten maintained component regressions also cover rotating codes, changed gates/versions, overlapping submissions, malformed responses, timeout and optional device feedback.
+
+All six real venue browser runs pass, with zero automated result-panel accessibility violations and no unexpected page errors. Light-mode warning contrast failed before the styling repair. Two representative final captures received an engineering visual inspection; full reference-fidelity, reader and independent acceptance remain open. Recovery IDs currently live in the mounted verifier component: reload, navigation, session change and device restart recovery are not completed by this fix. Camera hardware and provider issuance were not exercised.
+
+Detailed command logs, reproduction failures, source/artifact hashes and residual findings remain in ignored `output/qa/full-stack-20260914/`. See its `checkpoint.md`, `execution.json`, `findings.json`, `venue-retry-evidence.json`, `venue-retry-browser-matrix.json`, `database-sql-venue-access.json`, and `database-venue-access.json`. Older captures are not relabelled as current acceptance.
 
 After the first QA commit reached `main`, GitHub closed all eight previously reported Dependabot alerts as fixed; a fresh query returned zero open alerts. Hosted CI started no jobs because the account payment or spending-limit condition requires owner action. See [dependency remediation](../governance/dependency-remediation.md) for the separate remote evidence.
 

@@ -1993,6 +1993,8 @@ textarea:focus-visible,
   --venue-copy: #cbd5e1;
   --venue-muted: #94a3b8;
   --venue-kicker: #8bb9ff;
+  --venue-success: #059669;
+  --venue-danger: #ef4444;
   --venue-border: rgba(255, 255, 255, 0.1);
   background: var(--venue-background) !important;
   color: var(--venue-foreground) !important;
