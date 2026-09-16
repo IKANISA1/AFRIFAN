@@ -12,7 +12,7 @@ import time
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
-DOCKER = os.environ.get('DOCKER', '/usr/local/bin/docker')
+DOCKER = os.environ.get('DOCKER', 'docker')
 NAME = 'africlub-predict-contract-' + uuid.uuid4().hex[:8]
 IMAGE = 'public.ecr.aws/supabase/postgres:17.6.1.158'
 PASSWORD = 'isolated-predict-contract'
@@ -71,7 +71,7 @@ def ticket_scans_after_lock(lock_query, scan_queries, before_release=None):
                 else:
                     raise RuntimeError('Every ticket scan must be blocked before release')
                 if before_release:
-                    sql(before_release)
+                    sql("set statement_timeout='8s'; " + before_release)
             finally:
                 held.stdin.write('commit;\n')
                 held.stdin.flush()
@@ -209,5 +209,103 @@ try:
         if not passed:
             deadline_failures.append(number)
     assert not deadline_failures, 'Expired ticket scans admitted after waiting: ' + str(deadline_failures)
+
+    # Request identity binds immutable replay to the same credential, version
+    # and normalized gate. A different request must never replay a green result.
+    sql("update public.ticket_events set entry_closes_at=clock_timestamp()+interval '1 hour' where id='%s';" % fixture(714))
+    sql("update public.ticket_verifier_assignments set ends_at=clock_timestamp()+interval '30 minutes' where ticket_event_id='%s';" % fixture(714))
+    sql("insert into public.tickets(id,match_id,user_id,club_id,seat_type,amount_paid,status,confirmed_at) select '%s',match_id,user_id,club_id,seat_type,amount_paid,'valid',clock_timestamp() from public.tickets where id='%s';" % (fixture(718), fixture(713)))
+    other_credential = json.loads(sql(actor(1) + "select public.prepare_google_wallet_ticket('%s');" % fixture(718)).stdout.strip().splitlines()[-1])
+    original_credential_id = str(uuid.UUID(credential['credential_id']))
+    other_credential_id = str(uuid.UUID(other_credential['credential_id']))
+    original_audit = sql("select to_jsonb(e) from public.ticket_redemption_events e where verifier_user_id='%s' and operation_id='%s';" % (fixture(5), operation_id)).stdout.strip()
+    replay_failures = []
+    for changed, scan_credential, version, gate in [
+        ('credential', other_credential_id, other_credential['credential_version'], 'NORTH'),
+        ('version', original_credential_id, credential['credential_version'] + 1, 'NORTH'),
+        ('gate', original_credential_id, credential['credential_version'], 'SOUTH'),
+    ]:
+        response = sql("select public.redeem_ticket_for_verifier('%s','%s',%d,'%s','%s');" % (fixture(5), scan_credential, version, operation_id, gate))
+        decision = json.loads(response.stdout.strip().splitlines()[-1])
+        passed = decision.get('status') == 'rejected' and decision.get('code') == 'operation_conflict' and not decision.get('replayed') and 'ticket_id' not in decision
+        print(('PASS' if passed else 'FAIL'), 'ticket operation payload binding', json.dumps({'changed': changed, 'expected': 'operation_conflict', 'actual': decision.get('code'), 'replayed': decision.get('replayed')}), flush=True)
+        if not passed:
+            replay_failures.append(changed)
+    assert sql("select to_jsonb(e) from public.ticket_redemption_events e where verifier_user_id='%s' and operation_id='%s';" % (fixture(5), operation_id)).stdout.strip() == original_audit
+    assert sql("select status from public.tickets where id='%s';" % fixture(718)).stdout.strip() == 'valid'
+    unchanged = json.loads(sql(redeem).stdout.strip().splitlines()[-1])
+    assert unchanged['code'] == 'admitted' and unchanged['replayed']
+
+    # Historical rows have no recorded request version. Preserve the audit,
+    # but do not guess a binding and return an admission for an unknown request.
+    legacy_operation = str(uuid.uuid4())
+    sql("""insert into public.ticket_redemption_events(
+        club_id,organization_id,ticket_event_id,venue_id,ticket_id,credential_id,
+        verifier_assignment_id,verifier_user_id,operation_id,gate_code,decision,result,scanned_at)
+        select club_id,organization_id,ticket_event_id,venue_id,ticket_id,credential_id,
+        verifier_assignment_id,verifier_user_id,'%s',gate_code,decision,result,scanned_at
+        from public.ticket_redemption_events where verifier_user_id='%s' and operation_id='%s';""" % (legacy_operation, fixture(5), operation_id))
+    legacy_audit = sql("select to_jsonb(e) from public.ticket_redemption_events e where operation_id='%s';" % legacy_operation).stdout.strip()
+    response = sql("select public.redeem_ticket_for_verifier('%s','%s',%d,'%s','NORTH');" % (fixture(5), original_credential_id, credential['credential_version'], legacy_operation))
+    legacy = json.loads(response.stdout.strip().splitlines()[-1])
+    passed = legacy.get('code') == 'operation_conflict' and legacy.get('status') == 'rejected' and 'ticket_id' not in legacy
+    print(('PASS' if passed else 'FAIL'), 'legacy operation with unknown request version', json.dumps({'expected': 'operation_conflict', 'actual': legacy.get('code')}), flush=True)
+    if not passed:
+        replay_failures.append('legacy_unknown_version')
+    assert sql("select to_jsonb(e) from public.ticket_redemption_events e where operation_id='%s';" % legacy_operation).stdout.strip() == legacy_audit
+
+    revocation_failures = []
+    for number, held_table, change, expected in [
+        (719, 'ticket_wallet_credentials', 'event', 'permission_denied'),
+        (720, 'ticket_verifier_assignments', 'event', 'permission_denied'),
+        (721, 'ticket_wallet_credentials', 'assignment', 'permission_denied'),
+        (722, 'ticket_wallet_credentials', 'credential', 'credential_inactive'),
+        (723, 'ticket_verifier_assignments', 'assignment', 'permission_denied'),
+    ]:
+        sql("update public.ticket_events set status='active',verification_enabled=true,entry_closes_at=clock_timestamp()+interval '1 hour' where id='%s';" % fixture(714))
+        sql("update public.ticket_verifier_assignments set is_active=true,revoked_at=null,revoked_by=null,ends_at=clock_timestamp()+interval '30 minutes' where ticket_event_id='%s';" % fixture(714))
+        sql("insert into public.tickets(id,match_id,user_id,club_id,seat_type,amount_paid,status,confirmed_at) select '%s',match_id,user_id,club_id,seat_type,amount_paid,'valid',clock_timestamp() from public.tickets where id='%s';" % (fixture(number), fixture(713)))
+        prepared = json.loads(sql(actor(1) + "select public.prepare_google_wallet_ticket('%s');" % fixture(number)).stdout.strip().splitlines()[-1])
+        scan_credential = str(uuid.UUID(prepared['credential_id']))
+        lock_filter = "id='%s'" % scan_credential if held_table == 'ticket_wallet_credentials' else "ticket_event_id='%s'" % fixture(714)
+        held_query = 'select id from public.%s where %s for update;' % (held_table, lock_filter)
+        before_release = None
+        if change == 'event':
+            before_release = "update public.ticket_events set verification_enabled=false where id='%s';" % fixture(714)
+        elif change == 'assignment':
+            revoke = "select public.revoke_ticket_verifier_assignment('%s',9946001,id,updated_at) from public.ticket_verifier_assignments where ticket_event_id='%s';" % (fixture(5), fixture(714))
+            if held_table == 'ticket_verifier_assignments':
+                held_query += revoke
+            else:
+                before_release = revoke
+        else:
+            held_query += "update public.ticket_wallet_credentials set status='revoked',revoked_at=clock_timestamp() where id='%s';" % scan_credential
+        query = "select public.redeem_ticket_for_verifier('%s','%s',%d,'%s','NORTH');" % (fixture(5), scan_credential, prepared['credential_version'], str(uuid.uuid4()))
+        response = ticket_scans_after_lock(held_query, [query], before_release)[0]
+        assert response.returncode == 0, response.stderr
+        decision = json.loads(response.stdout.strip().splitlines()[-1])
+        state = json.loads(sql("select jsonb_build_object('ticket_status',status,'admissions',(select count(*) from public.ticket_redemption_events where ticket_id=t.id and decision='admitted')) from public.tickets t where id='%s';" % fixture(number)).stdout.strip())
+        passed = decision['code'] == expected and state == {'ticket_status': 'valid', 'admissions': 0}
+        print(('PASS' if passed else 'FAIL'), 'ticket access revoked during lock wait', json.dumps({'revoked': change, 'held': held_table, 'expected': expected, 'actual': decision['code'], **state}), flush=True)
+        if not passed:
+            revocation_failures.append(number)
+    sql("update public.ticket_events set verification_enabled=true where id='%s';" % fixture(714))
+    sql("update public.ticket_verifier_assignments set is_active=true,revoked_at=null,revoked_by=null where ticket_event_id='%s';" % fixture(714))
+    competing_credentials = []
+    for number in [724, 725]:
+        sql("insert into public.tickets(id,match_id,user_id,club_id,seat_type,amount_paid,status,confirmed_at) select '%s',match_id,user_id,club_id,seat_type,amount_paid,'valid',clock_timestamp() from public.tickets where id='%s';" % (fixture(number), fixture(713)))
+        competing_credentials.append(json.loads(sql(actor(1) + "select public.prepare_google_wallet_ticket('%s');" % fixture(number)).stdout.strip().splitlines()[-1]))
+    shared_operation = str(uuid.uuid4())
+    queries = ["select public.redeem_ticket_for_verifier('%s','%s',%d,'%s','NORTH');" % (fixture(5), c['credential_id'], c['credential_version'], shared_operation) for c in competing_credentials]
+    responses = ticket_scans_after_lock("select id from public.ticket_wallet_credentials where id in ('%s','%s') for update;" % tuple(c['credential_id'] for c in competing_credentials), queries)
+    assert all(r.returncode == 0 for r in responses), [r.stderr for r in responses]
+    results = [json.loads(r.stdout.strip().splitlines()[-1]) for r in responses]
+    passed = sorted(r['code'] for r in results) == ['admitted', 'operation_conflict'] and all(not r['replayed'] for r in results)
+    print(('PASS' if passed else 'FAIL'), 'concurrent different tickets with one operation', json.dumps({'expected': ['admitted', 'operation_conflict'], 'actual': [r['code'] for r in results]}), flush=True)
+    if not passed:
+        replay_failures.append('concurrent_different_tickets')
+    assert sql("select count(*) from public.ticket_redemption_events where verifier_user_id='%s' and operation_id='%s';" % (fixture(5), shared_operation)).stdout.strip() == '1'
+    assert sql("select count(*) from public.tickets where id in ('%s','%s') and status='used';" % (fixture(724), fixture(725))).stdout.strip() == '1'
+    assert not replay_failures and not revocation_failures, 'Unsafe operation replay or revoked admission: ' + str({'payload': replay_failures, 'revocation': revocation_failures})
 finally:
     subprocess.run([DOCKER, 'rm', '-f', NAME], capture_output=True)

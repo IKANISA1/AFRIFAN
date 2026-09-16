@@ -101,6 +101,7 @@ dart run tools/scripts/validate_workspace_architecture.dart
 node tools/scripts/validate_repository_boundary.mjs
 node tools/scripts/validate_supabase_local_only_migrations.mjs
 node tools/scripts/validate_supabase_edge_contract.mjs
+python3 tools/scripts/test_predict_database.py
 node tools/scripts/scoped_realtime_scan.mjs
 node tools/scripts/validate_mobile_qa_isolation.mjs
 node tools/scripts/validate_ios_qa_isolation.mjs

@@ -1,6 +1,6 @@
 # AFRICLUB full-stack QA progress
 
-Recorded 15 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) remains active; this engineering checkpoint does not declare release readiness.
+Recorded 16 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) remains active; this engineering checkpoint does not declare release readiness.
 
 ## Implemented and locally verified
 
@@ -8,7 +8,8 @@ Recorded 15 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) rema
 - Added isolated Android/iOS QA configurations across twenty club shells, strengthened artifact/signing checks, and corrected native screenshot setup. Sixty Xcode configuration checks passed.
 - Repaired currency precision, admin role ordering and club selection, cross-club content mutation boundaries, dialog keyboard focus, responsive navigation/footer clearance, and admin clock hydration.
 - Repaired service-worker activation and unsafe mutation retry/queue behavior. Chromium worker checks cover private cache exclusion and bounded offline recovery; installed and other-browser lifecycle acceptance remains open.
-- Added database migrations for replayed client/service privileges, verified Auth-to-supporter identity synchronization, concurrent ticket retry serialization, and admission deadline checks after lock waits. Restored the seeded twenty-club identity catalog without importing operational admin assignments.
+- Added database migrations for replayed client/service privileges, verified Auth-to-supporter identity synchronization, concurrent ticket retry serialization, request-bound admission replay, and deadline/event-access checks after lock waits. Restored the seeded twenty-club identity catalog without importing operational admin assignments.
+- Added the maintained disposable database replay and race checks to normal CI and the existing self-hosted Supabase gate. Docker is resolved from the runner's PATH; the pinned database image supports Linux AMD64 and ARM64. Hosted execution remains unverified.
 
 ## Verification evidence
 
@@ -20,9 +21,9 @@ Recorded 15 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) rema
 | Real admin/browser checks | Chromium 54/54; Firefox 50/50; WebKit 50/50 | Common cases repeat across engines; real isolated Auth/REST with synthetic accounts |
 | Home and Settings state matrices | 6/6 matrices; 102 hash-verified PNGs | Three engines; controlled states; captures are unreviewed engineering evidence |
 | Database contracts | 26 files / 365 assertions passed | Pinned vendor database with current migration changes; 324 foreign keys checked with zero orphans |
-| Database advisors | 0 errors; 240 warnings; 266 informational findings | Isolated database only; warnings concern performance; no finding names the changed admission function |
-| Database concurrency | Fresh twelve-migration replay, 110 SQL assertions and seven concurrent-operation scenarios passed | Disposable network-disabled database; includes duplicate ticket retries and three deadline expiry cases |
-| Ticket HTTP handlers | 20/20 checks passed | Production handler dependencies with real local Auth/REST; duplicate admission remains idempotent and three delayed scans now reject after expiry |
+| Database advisors | 0 errors; 240 warnings; 299 informational findings | Isolated database only; warnings concern performance; no finding names the changed admission function; unused-index observations vary with local statistics |
+| Database concurrency | Fresh thirteen-migration replay, 110 SQL assertions and seventeen operation/concurrency scenarios passed | Disposable network-disabled database; includes duplicate retries, deadline expiry, changed requests, legacy records and revocation while waiting |
+| Ticket HTTP handlers | 30/30 checks passed | Production handler dependencies with real local Auth/REST; request binding, concurrent different-ticket requests and event/assignment/credential revocation are checked with persisted outcomes |
 | Earlier shared/native checks | Strict Flutter analysis; 44 package runs / 2,624 reported successes; 19 Edge entries / 97 tests | Earlier evidence is retained with its original source and execution scope |
 | Native artifact | One isolated ARM64 Android pilot APK compiled | Not installed or launched; this does not cover the forty app/platform combinations |
 
@@ -30,7 +31,11 @@ The ticket HTTP test exercises admission fixtures, not provider payment confirma
 
 Before the deadline fix, all three held-lock cases admitted a ticket after its event or verifier shift expired. Admission now reads current database time after lock acquisition, including a wait for the verifier assignment, and searches again if that assignment expired. SQL and HTTP regressions verify rejection, an unchanged valid ticket, zero admission events and the recorded decision time. Existing immutable operation retries and service-only execution grants are preserved.
 
-Detailed command logs, reproduction failures, source/artifact hashes and residual findings remain in ignored `output/qa/full-stack-20260914/`. See its `checkpoint.md`, `execution.json`, `findings.json`, `database-sql-ticket-deadline.json`, `database-ticket-deadline-after.json`, `ticket-edge-http-deadline-before-ready.json`, `ticket-edge-http-deadline-after.json`, and current browser reports. Older captures are not relabelled as current acceptance.
+The next review reproduced incorrect admission responses when an operation ID was reused with a different credential, version or gate, including two concurrent different-ticket requests. Each new audit records the request version and binds replay to its credential and normalized gate. Changed requests return a redacted `operation_conflict`; identical retries retain their original result. Historical audit rows keep an unknown version and require a fresh scan instead of guessing the original request. No audit history is rewritten.
+
+Disabling an event during an assignment lock wait also previously admitted the ticket. Admission now re-reads and locks the current event through the decision, rechecks scope and time, and rejects that scan. Ten added scenarios repeat through SQL and real HTTP; the original checks still pass. Fixture capacities were increased only to accommodate the additional independent tickets; capacity enforcement remains enabled.
+
+Detailed command logs, reproduction failures, source/artifact hashes and residual findings remain in ignored `output/qa/full-stack-20260914/`. See its `checkpoint.md`, `execution.json`, `findings.json`, `database-sql-ticket-revocation-binding.json`, `database-ticket-revocation-binding-portable.json`, `ticket-edge-http-revocation-binding-before-capacity.json`, `ticket-edge-http-revocation-binding-after.json`, and current browser reports. Older captures are not relabelled as current acceptance.
 
 After the first QA commit reached `main`, GitHub closed all eight previously reported Dependabot alerts as fixed; a fresh query returned zero open alerts. Hosted CI started no jobs because the account payment or spending-limit condition requires owner action. See [dependency remediation](../governance/dependency-remediation.md) for the separate remote evidence.
 

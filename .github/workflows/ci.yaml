@@ -12,6 +12,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  database-ci:
+    name: Isolated database replay and race checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare the pinned disposable database image
+        run: docker pull public.ecr.aws/supabase/postgres:17.6.1.158
+
+      - name: Replay migrations and verify Predict and ticket boundaries
+        run: python3 tools/scripts/test_predict_database.py
+
   # ──────────────────────────────────────────────
   # Flutter: Analyze + Test
   # ──────────────────────────────────────────────

@@ -74,6 +74,13 @@ jobs:
         shell: bash
         run: corepack npm@12.0.2 exec --yes --package=supabase@2.113.0 -- supabase test db --local
 
+      - name: Replay isolated database and concurrency contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull public.ecr.aws/supabase/postgres:17.6.1.158
+          python3 tools/scripts/test_predict_database.py
+
   web:
     name: Web and Cloudflare candidate
     if: inputs.scope == 'web' || inputs.scope == 'all'

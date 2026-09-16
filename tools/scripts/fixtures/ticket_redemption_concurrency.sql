@@ -10,7 +10,7 @@ insert into public.matches(id, partner_id, club_id, home_team, away_team,
 values ('99460000-0000-4000-8000-000000000711',
   '99460000-0000-4000-8000-000000000100', 9946001,
   'Test Home', 'Test Away', 'Test Cup', 'Concurrency Test Venue',
-  current_date, '23:00', 10);
+  current_date, '23:00', 20);
 insert into public.ticket_organizations(id, club_id, slug, display_name,
   status, google_wallet_issuer_id)
 values ('99460000-0000-4000-8000-000000000712', 9946001,
