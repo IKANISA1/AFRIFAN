@@ -1,6 +1,6 @@
 # AFRICLUB full-stack QA progress
 
-Recorded 16 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) remains active; this engineering checkpoint does not declare release readiness.
+Recorded 17 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) remains active; this engineering checkpoint does not declare release readiness.
 
 ## Implemented and locally verified
 
@@ -16,21 +16,23 @@ Recorded 16 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) rema
 
 - Repaired member campaign reads, failed-history handling and stale private data after sign-out. Added authenticated campaign column contracts and eleven member lifecycle regressions; membership activation remains an explicit action.
 
+- Repaired complete contribution totals, older-history access and invalid MoMo-route intent creation. Added an invoker-only paginated history RPC, exact total rendering, phone-sized pagination controls and strict whole-RWF amount validation.
+
 ## Verification evidence
 
 | Scope | Latest local result | Qualification |
 | --- | --- | --- |
-| Web units | 121 files / 992 tests passed | Current source; aggregate measured line coverage is 61.07%, not complete coverage |
-| Web build, lint and types | Passed | Build `vkuIa4EiOca6h-qmQuzqk`; production source and artifact seal verified |
-| Bundle budgets | CSS 44.81 / 45 KiB; JavaScript 166.67 / 170 KiB | Existing thresholds retained; CSS has 194 bytes of headroom |
-| Real member portal | 33/33 checks, including six fixture teardown checks; 15 hash-verified PNGs | Chromium, Firefox and WebKit; desktop/phone member-panel axe has zero violations; real isolated Auth/REST, controlled 503 and delayed-response cases |
+| Web units | 121 files / 1,005 tests passed | Current source; aggregate measured line coverage is 61.4%, not complete coverage |
+| Web build, lint and types | Passed | Build `VkJbBRLK-qGOMfm5YH6QN`; production source and artifact seal verified |
+| Bundle budgets | CSS 44.83 / 45 KiB; JavaScript 166.67 / 170 KiB | Existing thresholds retained; CSS has 178 bytes of headroom |
+| Real member and contribution journeys | 63/63 checks, including twelve fixture teardown checks; 24 hash-verified PNGs | Chromium, Firefox and WebKit; real isolated Auth/REST/RPC, complete totals, phone pagination, pending-intent concurrency, 503 and session recovery; member-panel axe has zero violations |
 | Earlier real venue recovery | 60/60 checks; 48 hash-verified PNGs | Repeated flow in Chromium, Firefox and WebKit, light/dark, desktop/phone layouts; actual Next API, local Auth/REST and production Edge handler dependencies |
 | Earlier venue recovery after the lock-order fix | 10/10 checks | Chromium light-mode desktop/phone confirmation on the new database function and unchanged web build; repeats the recovery flow above |
 | Earlier real admin/browser checks | Chromium 54/54; Firefox 50/50; WebKit 50/50 | Original build-bound evidence retained; not rerun on the current member candidate |
 | Earlier Home and Settings state matrices | 6/6 matrices; 102 hash-verified PNGs | Original build-bound controlled captures; unreviewed engineering evidence |
-| Database contracts | 28 files / 388 assertions passed | Pinned vendor database with current migration changes; 324 foreign keys checked with zero orphans |
-| Database advisors | 0 errors; 240 warnings; 313 informational findings | Isolated database only; warnings concern performance; no security warning/error; unused-index observations vary with local statistics |
-| Database concurrency | Fresh sixteen-migration replay, 133 SQL assertions and twenty-two operation/concurrency scenarios passed | Disposable network-disabled database; includes preparation/admission overlap, both cancellation orders, and changed/deleted credentials during ticket waits |
+| Database contracts | 29 files / 413 assertions passed | Pinned vendor database with current migration changes; 324 foreign keys checked with zero orphans |
+| Database advisors | 0 errors; 240 warnings; 279 informational findings | Isolated database only; warnings concern performance; no security warning/error; unused-index observations vary with local statistics |
+| Database concurrency | Fresh seventeen-migration replay, 158 SQL assertions and twenty-two operation/concurrency scenarios passed | Disposable network-disabled database; includes preparation/admission overlap, both cancellation orders, and changed/deleted credentials during ticket waits |
 | Earlier ticket HTTP handlers | 34/34 checks passed | Production handler dependencies with real local Auth/REST; request binding, revocation, wallet preparation overlap, cancellation and credential maintenance are checked with persisted outcomes |
 | Earlier shared/native checks | Strict Flutter analysis; 44 package runs / 2,624 reported successes; 19 Edge entries / 97 tests | Earlier evidence is retained with its original source and execution scope |
 | Native artifact | One isolated ARM64 Android pilot APK compiled | Not installed or launched; this does not cover the forty app/platform combinations |
@@ -55,7 +57,9 @@ The authenticated member review reproduced three failures through the actual bro
 
 Nine initial component regressions failed before repair; the final eleven pass, including account switching, overlapping refreshes, late contribution responses and unsubscription. OTP verification no longer activates membership implicitly; its success path is component-tested without contacting a provider. Restored-session browser checks independently verify that activation requires a deliberate click. All three browsers pass the same member journey, including other-club campaign exclusion, confirmed-versus-pending totals, 503 recovery, cross-tab sign-out and delayed-response logout. Two current captures received engineering visual review. Full-height element screenshots contain fixed-navigation overlays and do not prove complete viewport clearance or source fidelity.
 
-The latest-twenty history query still requires a larger-history total review (QA-MONEY-002). This increment did not initiate a payment, open a dialer, send an OTP or validate provider/SMS reconciliation. Full browser account-switch, data-request deadlines, offline restored sessions, failed sign-out and installed-PWA acceptance remain open. See `member-portal-evidence.json`, `member-browser-matrix.json`, `member-lifecycle-unit-before-results.json`, `member-unit-suite-results.json`, and `database-sql-member.json`. Current database cleanup confirms zero operational users or member fixtures, twenty clubs, zero orphans across 324 foreign keys, cron disabled and both immutable ticket audit triggers enabled. Docker was restarted during this run; changed unused-index statistics are synthetic observations only.
+The subsequent larger-history review reproduced a 17,000 RWF displayed total against 21,000 RWF confirmed in the database. A stable SECURITY INVOKER RPC now calculates the complete own-club total independently of the visible page, with caller ACLs/RLS and explicit owner/club filters intact. Totals travel as exact decimal strings and render with BigInt. Paired creation-time/UUID cursors provide bounded older-history pages, including deterministic equal-timestamp handling. Browser checks load all 24 mixed-status records and recover an older-page 503 without clearing the existing page. SQL additionally verifies totals beyond 1,000 records and integer range, invalid cursors, missing subjects and private-row exclusion. The phone control meets a measured 44px target and announces the record count. QA-MONEY-002 is locally closed.
+
+A separate real RPC test found that a doubly escaped route pattern accepted an invalid configured USSD route and created a pending intent. The corrected pattern requires a literal leading asterisk; all other intent-function behavior is unchanged. Four concurrent identical authenticated requests return one pending row, invalid routes create none, and a supporter cannot mark the intent confirmed. Pending requests do not alter the confirmed total. Component tests also reject fractional/scientific amount text before an intent call. No phone dialer was invoked, OTP sent or provider/SMS payment accepted. Confirmed-history records remain synthetic service fixtures. Full browser account-switch, data-request deadlines, offline restored sessions, failed sign-out and installed-PWA acceptance remain open. See `member-portal-evidence.json`, `member-browser-matrix.json`, `member-lifecycle-unit-before-results.json`, `member-unit-suite-results.json`, and `database-sql-member.json`. Current reports include `contribution-history-evidence.json`, `contribution-history-browser-matrix.json`, `contribution-history-unit-final-results.json`, and `database-sql-contribution-history.json`. Current database cleanup confirms zero operational users or member fixtures, twenty clubs, zero orphans across 324 foreign keys, cron disabled and both immutable ticket audit triggers enabled. Docker was restarted during this run; changed unused-index statistics are synthetic observations only.
 
 Detailed command logs, reproduction failures, source/artifact hashes and residual findings remain in ignored `output/qa/full-stack-20260914/`. See its `checkpoint.md`, `execution.json`, `findings.json`, `venue-retry-evidence.json`, `venue-retry-browser-matrix.json`, `database-sql-venue-access.json`, and `database-venue-access.json`. Older captures are not relabelled as current acceptance.
 

@@ -277,3 +277,5 @@
   .member-spinner { animation-duration: 1.8s; }
   .member-primary-action { transition: none; }
 }
+
+.member-history > .member-text-action { min-height: 2.75rem; font-size: .875rem; }

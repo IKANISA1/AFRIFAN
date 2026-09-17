@@ -1,6 +1,6 @@
 import {
   buildUssdTelHref,
-  confirmedContributionTotal,
+  parseContributionHistory,
   normalizeRwandaPhone,
 } from "./member-portal";
 
@@ -23,30 +23,20 @@ describe("member portal safeguards", () => {
       "tel:*182*8*1*123456*5000%23",
     );
     expect(buildUssdTelHref("javascript:alert(1)")).toBeNull();
+    expect(buildUssdTelHref("182*8*1*123456*5000#")).toBeNull();
   });
 
-  it("counts only independently confirmed contributions", () => {
-    expect(
-      confirmedContributionTotal([
-        {
-          id: "confirmed",
-          initiative_id: "initiative",
-          amount: 10_000,
-          status: "confirmed",
-          momo_reference: "GKD-1",
-          created_at: "2026-08-23T00:00:00Z",
-          confirmed_at: "2026-08-23T00:01:00Z",
-        },
-        {
-          id: "pending",
-          initiative_id: "initiative",
-          amount: 25_000,
-          status: "pending",
-          momo_reference: "GKD-2",
-          created_at: "2026-08-23T00:02:00Z",
-          confirmed_at: null,
-        },
-      ]),
-    ).toBe(10_000);
+  it("preserves an exact total beyond JavaScript number precision", () => {
+    expect(parseContributionHistory({confirmed_total: "9007199254740993", entries: [], next_cursor: null}).confirmedTotal)
+      .toBe(BigInt("9007199254740993"));
+  });
+
+  it.each([
+    {confirmed_total: 1000, entries: [], next_cursor: null},
+    {confirmed_total: "1000.50", entries: [], next_cursor: null},
+    {confirmed_total: "1000", entries: [], next_cursor: {id: "invalid", created_at: "today"}},
+    {confirmed_total: "1000", entries: [{amount: 1000}], next_cursor: null},
+  ])("rejects incomplete or ambiguous history payloads", value => {
+    expect(() => parseContributionHistory(value)).toThrow();
   });
 });

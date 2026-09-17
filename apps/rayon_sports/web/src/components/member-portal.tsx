@@ -14,7 +14,7 @@ import {
   Smartphone,
   WalletCards,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 
@@ -75,13 +75,51 @@ export function buildUssdTelHref(ussdCode: string) {
   return `tel:${ussdCode.replace(/#/g, "%23")}`;
 }
 
-export function confirmedContributionTotal(contributions: Contribution[]) {
-  return contributions
-    .filter((entry) => entry.status === "confirmed")
-    .reduce((total, entry) => total + entry.amount, 0);
+type HistoryCursor = { created_at: string; id: string };
+type ContributionHistory = {
+  confirmedTotal: bigint;
+  entries: Contribution[];
+  nextCursor: HistoryCursor | null;
+};
+
+export function parseContributionHistory(value: unknown): ContributionHistory {
+  if (!value || typeof value !== "object") throw new Error("Invalid contribution history.");
+  const raw = value as Record<string, unknown>;
+  if (typeof raw.confirmed_total !== "string" || !/^-?\d{1,19}$/.test(raw.confirmed_total) ||
+      !Array.isArray(raw.entries) || raw.entries.length > 20) {
+    throw new Error("Invalid contribution total or page.");
+  }
+  const validDate = (date: unknown): date is string =>
+    typeof date === "string" && Number.isFinite(Date.parse(date));
+  const validId = (id: unknown): id is string =>
+    typeof id === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  const ids = new Set<string>();
+  for (const entry of raw.entries) {
+    if (!entry || typeof entry !== "object" || !validId(entry.id) || ids.has(entry.id) ||
+        !validId(entry.initiative_id) || !Number.isSafeInteger(entry.amount) ||
+        !["pending", "confirmed", "failed", "cancelled"].includes(entry.status) ||
+        !validDate(entry.created_at) || (entry.confirmed_at !== null && !validDate(entry.confirmed_at)) ||
+        (entry.momo_reference !== null && typeof entry.momo_reference !== "string")) {
+      throw new Error("Invalid contribution entry.");
+    }
+    ids.add(entry.id);
+  }
+  if (raw.next_cursor !== null) {
+    const cursor = raw.next_cursor as HistoryCursor | undefined;
+    const last = raw.entries.at(-1);
+    if (!cursor || !validId(cursor.id) || !validDate(cursor.created_at) ||
+        !last || cursor.id !== last.id || cursor.created_at !== last.created_at) {
+      throw new Error("Invalid contribution cursor.");
+    }
+  }
+  return {
+    confirmedTotal: BigInt(raw.confirmed_total),
+    entries: raw.entries as Contribution[],
+    nextCursor: raw.next_cursor as HistoryCursor | null,
+  };
 }
 
-function formatRwf(value: number) {
+function formatRwf(value: number | bigint) {
   return new Intl.NumberFormat("en-RW", {
     style: "currency",
     currency: "RWF",
@@ -94,11 +132,11 @@ function cleanError(message: string | undefined) {
   if (normalized.includes("rate") || normalized.includes("seconds")) {
     return "Please wait before requesting another code.";
   }
-  if (normalized.includes("expired") || normalized.includes("invalid")) {
-    return "That code is invalid or expired. Request a new one and try again.";
-  }
   if (normalized.includes("momo route")) {
     return "The official club MoMo route is not available yet. No payment intent was created.";
+  }
+  if (normalized.includes("expired") || normalized.includes("invalid")) {
+    return "That code is invalid or expired. Request a new one and try again.";
   }
   if (normalized.includes("initiative")) {
     return "This contribution campaign is not accepting payments right now.";
@@ -114,6 +152,10 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
   const [member, setMember] = useState<MemberRecord | null>(null);
   const [initiatives, setInitiatives] = useState<Initiative[]>([]);
   const [contributions, setContributions] = useState<Contribution[]>([]);
+  const [total, setTotal] = useState(() => BigInt(0));
+  const [historyCursor, setHistoryCursor] = useState<HistoryCursor | null>(null);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const historyRequest = useRef(false);
   const [selectedInitiative, setSelectedInitiative] = useState("");
   const [amount, setAmount] = useState("5000");
   const [intent, setIntent] = useState<ContributionIntent | null>(null);
@@ -130,6 +172,10 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
     loadVersion.current += 1;
     setMember(null);
     setContributions([]);
+    setTotal(BigInt(0));
+    setHistoryCursor(null);
+    setLoadingHistory(false);
+    historyRequest.current = false;
     setInitiatives([]);
     setSelectedInitiative("");
     setIntent(null);
@@ -140,13 +186,10 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
     setMessage(null);
   }, []);
 
-  const total = useMemo(
-    () => confirmedContributionTotal(contributions),
-    [contributions],
-  );
-
   const loadMemberArea = useCallback(async (activateMembership = false) => {
     const version = ++loadVersion.current;
+    historyRequest.current = false;
+    setLoadingHistory(false);
     const isCurrent = () => version === loadVersion.current;
     const supabase = getBrowserSupabase();
     if (!supabase) {
@@ -203,22 +246,19 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
           .eq("status", "active")
           .order("created_at", { ascending: false })
           .limit(6),
-        supabase
-          .from("initiative_contributions")
-          .select("id,initiative_id,amount,status,momo_reference,created_at,confirmed_at")
-          .eq("club_id", confirmedMember.club_id)
-          .eq("user_id", userResult.user.id)
-          .order("created_at", { ascending: false })
-          .limit(20),
+        supabase.rpc("member_contribution_history"),
       ]);
       if (!isCurrent()) return;
       if (initiativeResult.error) throw initiativeResult.error;
       if (contributionResult.error) throw contributionResult.error;
 
+      const history = parseContributionHistory(contributionResult.data);
       const confirmedInitiatives = (initiativeResult.data ?? []) as Initiative[];
       setMember(confirmedMember);
       setInitiatives(confirmedInitiatives);
-      setContributions((contributionResult.data ?? []) as Contribution[]);
+      setContributions(history.entries);
+      setTotal(history.confirmedTotal);
+      setHistoryCursor(history.nextCursor);
       setSelectedInitiative((current) =>
         confirmedInitiatives.some((initiative) => initiative.id === current)
           ? current
@@ -256,6 +296,39 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
       subscription?.unsubscribe();
     };
   }, [clearPrivateState, loadMemberArea]);
+
+  async function loadOlderContributions() {
+    const supabase = getBrowserSupabase();
+    if (!supabase || !historyCursor || historyRequest.current) return;
+    const version = loadVersion.current;
+    historyRequest.current = true;
+    setLoadingHistory(true);
+    setMessage(null);
+    try {
+      const result = await supabase.rpc("member_contribution_history", {
+        p_before_created_at: historyCursor.created_at,
+        p_before_id: historyCursor.id,
+      });
+      if (version !== loadVersion.current) return;
+      if (result.error) throw result.error;
+      const history = parseContributionHistory(result.data);
+      setContributions((current) => {
+        const ids = new Set(current.map((entry) => entry.id));
+        return [...current, ...history.entries.filter((entry) => !ids.has(entry.id))];
+      });
+      setTotal(history.confirmedTotal);
+      setHistoryCursor(history.nextCursor);
+    } catch {
+      if (version === loadVersion.current) {
+        setMessage("Older contributions could not be loaded. Your confirmed information is unchanged. Please retry.");
+      }
+    } finally {
+      if (version === loadVersion.current) {
+        historyRequest.current = false;
+        setLoadingHistory(false);
+      }
+    }
+  }
 
   async function requestOtp() {
     const normalizedPhone = normalizeRwandaPhone(phone);
@@ -313,8 +386,8 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
   }
 
   async function createContribution() {
-    const parsedAmount = Number.parseInt(amount, 10);
-    if (!selectedInitiative || !Number.isInteger(parsedAmount)) {
+    const parsedAmount = /^\d+$/.test(amount.trim()) ? Number(amount) : Number.NaN;
+    if (!selectedInitiative || !Number.isSafeInteger(parsedAmount)) {
       setMessage("Choose a club campaign and enter a contribution amount.");
       return;
     }
@@ -549,7 +622,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
                 inputMode="numeric"
                 min={100}
                 max={5_000_000}
-                step={100}
+                step={1}
                 value={amount}
                 onChange={(event) => setAmount(event.target.value)}
               />
@@ -616,6 +689,14 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
                   ))}
                 </ul>
               )}
+              <p className="member-payment-note" role="status">
+                Showing {contributions.length} contribution records.
+              </p>
+              {historyCursor ? (
+                <button type="button" className="member-text-action" disabled={busy || loadingHistory} onClick={() => void loadOlderContributions()}>
+                  {loadingHistory ? "Loading older contributions…" : "Load older contributions"}
+                </button>
+              ) : null}
             </section>
           </div>
         ) : null}

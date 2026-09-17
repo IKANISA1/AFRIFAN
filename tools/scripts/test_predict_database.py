@@ -124,7 +124,7 @@ try:
     for name in ['club_identity_contract', 'predict_contract', 'runtime_function_volatility_contract',
                  'security_definer_execution_contract', 'store_release_security_boundary_contract',
                  'english_public_membership_contract', 'venue_access_acl_contract',
-                 'member_portal_read_contract']:
+                 'member_portal_read_contract', 'member_contribution_history_contract']:
         result = sql('set search_path=public,extensions;\n' + (ROOT / 'supabase/tests' / (name + '.sql')).read_text())
         count = len(re.findall(r'^ok \d+', result.stdout, re.M))
         print('PASS', name, count, 'checks', flush=True)
