@@ -1,5 +1,5 @@
 -- Local public catalog only. Identity, IDs, countries and currencies come from
--- the twenty app flavor files and their matching ClubConfig implementations.
+-- the four app flavor files and their matching ClubConfig implementations.
 -- Non-Rayon seed slugs are local identifiers derived from app folder and country.
 -- No Auth users, operator grants, provider credentials or onboarding approvals.
 begin;
@@ -13,44 +13,18 @@ insert into public.countries
   (id, name, dialing_code, currency, phone_placeholder, is_active)
 values
   ('BI', 'Burundi', '+257', 'BIF', '', false),
-  ('BJ', 'Benin', '+229', 'XOF', '', false),
   ('CD', 'DR Congo', '+243', 'CDF', '', false),
-  ('CG', 'Congo Republic', '+242', 'XAF', '', false),
-  ('CI', 'Ivory Coast', '+225', 'XOF', '', false),
-  ('CM', 'Cameroon', '+237', 'XAF', '', false),
-  ('GA', 'Gabon', '+241', 'XAF', '', false),
-  ('GH', 'Ghana', '+233', 'GHS', '', false),
-  ('MW', 'Malawi', '+265', 'MWK', '', false),
   ('RW', 'Rwanda', '+250', 'RWF', '', false),
-  ('TG', 'Togo', '+228', 'XOF', '', false),
-  ('TZ', 'Tanzania', '+255', 'TZS', '', false),
-  ('ZM', 'Zambia', '+260', 'ZMW', '', false),
-  ('ZW', 'Zimbabwe', '+263', 'USD', '', false)
+  ('ZM', 'Zambia', '+260', 'ZMW', '', false)
 on conflict (id) do nothing;
 
 insert into public.african_football_clubs
   (id,club_name,country_name,club_slug,currency_code,currency_symbol,league)
 overriding system value values
-  (49,'AC Léopards','Congo Republic','ac_leopards_cg','XAF','FCFA',null),
-  (21,'Africa Sports National','Ivory Coast','africa_sports_ci','XOF','CFA',null),
-  (69,'AS Mangasport','Gabon','as_mangasport_ga','XAF','FCFA',null),
   (6,'AS Vita Club','DR Congo','as_vita_cd','CDF','FC',null),
-  (9,'Asante Kotoko SC','Ghana','asante_kotoko_gh','GHS','GH₵',null),
-  (14,'ASEC Mimosas','Ivory Coast','asec_mimosas_ci','XOF','CFA',null),
-  (45,'ASKO de Kara','Togo','asko_kara_tg','XOF','CFA',null),
-  (31,'Canon Yaoundé','Cameroon','canon_yaounde_cm','XAF','FCFA',null),
-  (19,'Dynamos FC','Zimbabwe','dynamos_zw','USD','$',null),
-  (58,'Maranatha FC','Togo','maranatha_tg','XOF','CFA',null),
-  (73,'Mogas 90 FC','Benin','mogas_90_bj','XOF','CFA',null),
   (26,'Nkana FC','Zambia','nkana_zm','ZMW','ZK',null),
-  (17,'Nyasa Big Bullets FC','Malawi','nyasa_bullets_mw','MWK','MK',null),
   (24,'Rayon Sports FC','Rwanda','rayon_sports_rw','RWF','RWF','Rwanda Premier League'),
-  (3,'Simba SC','Tanzania','simba_tz','TZS','TSh',null),
-  (4,'TP Mazembe','DR Congo','tp_mazembe_cd','CDF','FC',null),
-  (33,'Union Douala','Cameroon','union_douala_cm','XAF','FCFA',null),
-  (44,'Vital''O FC','Burundi','vitalo_bi','BIF','FBu',null),
-  (1,'Young Africans (Yanga)','Tanzania','yanga_tz','TZS','TSh',null),
-  (35,'ZESCO United FC','Zambia','zesco_united_zm','ZMW','ZK',null)
+  (44,'Vital''O FC','Burundi','vitalo_bi','BIF','FBu',null)
 on conflict (id) do nothing;
 
 -- Complete the local UI identity from the existing ClubConfig implementations.
@@ -63,26 +37,10 @@ set nickname_brand_identity = coalesce(club.nickname_brand_identity, identity.ni
     secondary_color_hex = coalesce(club.secondary_color_hex, identity.secondary_color),
     accent_color_hex = coalesce(club.accent_color_hex, identity.accent_color)
 from (values
-  (49, 'AC Léopards', 'CG', '#006B3F', '#D1D5DB', '#000000'),
-  (21, 'Africa Sports', 'CI', '#006B3F', '#CC0000', '#D1D5DB'),
-  (69, 'AS Mangasport', 'GA', '#FFD700', '#006B3F', '#000000'),
   (6, 'AS Vita Club', 'CD', '#006400', '#000000', '#FFD700'),
-  (9, 'Asante Kotoko', 'GH', '#CC0000', '#D1D5DB', '#FFD700'),
-  (14, 'ASEC Mimosas', 'CI', '#FFD700', '#000000', '#FF8C00'),
-  (45, 'ASKO Kara', 'TG', '#FFD700', '#006B3F', '#000000'),
-  (31, 'Canon Yaoundé', 'CM', '#006B3F', '#CC0000', '#FFD700'),
-  (19, 'Dynamos FC', 'ZW', '#0000CC', '#D1D5DB', '#FFD700'),
-  (58, 'Maranatha FC', 'TG', '#CC0000', '#D1D5DB', '#FFD700'),
-  (73, 'Mogas 90', 'BJ', '#006B3F', '#D1D5DB', '#CC0000'),
   (26, 'Nkana FC', 'ZM', '#CC0000', '#D1D5DB', '#000000'),
-  (17, 'Nyasa Bullets', 'MW', '#CC0000', '#D1D5DB', '#000000'),
   (24, 'Gikundiro', 'RW', '#0038A8', '#001742', '#D9B24C'),
-  (3, 'Simba SC', 'TZ', '#CC0000', '#D1D5DB', '#FFD700'),
-  (4, 'TP Mazembe', 'CD', '#000000', '#D1D5DB', '#C0C0C0'),
-  (33, 'Union Douala', 'CM', '#006B3F', '#D1D5DB', '#000000'),
-  (44, 'Vital''O', 'BI', '#7B2D8E', '#D1D5DB', '#FFD700'),
-  (1, 'Yanga SC', 'TZ', '#006B3F', '#FFD700', '#D1D5DB'),
-  (35, 'ZESCO United', 'ZM', '#006B3F', '#FF8C00', '#D1D5DB')
+  (44, 'Vital''O', 'BI', '#7B2D8E', '#D1D5DB', '#FFD700')
 ) as identity(id, nickname, country_code, primary_color, secondary_color, accent_color)
 where club.id = identity.id
   and (club.nickname_brand_identity is null or club.country_iso_code is null

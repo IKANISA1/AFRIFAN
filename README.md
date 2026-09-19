@@ -9,6 +9,23 @@ White-label football-club platform with four product surfaces:
 
 Rayon Sports is the reference club profile and seeded default. Flutter owns the full supporter experience. The web membership surface also provides authenticated member access and contribution initiation; payment confirmation remains server-controlled.
 
+The supported club products are:
+
+| App | Club | Country | Tenant ID |
+| --- | --- | --- | --- |
+| `vitalo` | Vital'O FC | Burundi | 44 |
+| `rayon_sports` | Rayon Sports FC / Gikundiro | Rwanda | 24 |
+| `nkana` | Nkana FC | Zambia | 26 |
+| `as_vita` | AS Vita Club | DR Congo | 6 |
+
+The workspace contains these four app shells and 28 packages: 24 shared packages
+and four club configurations. Android and iOS acceptance is tracked separately
+for each club, giving eight mobile product/platform targets.
+
+Shared football data still includes opponents used by fixtures and league tables;
+those teams have no dedicated app, club configuration package or supported-club
+catalog entry.
+
 Current native UI implementation: [route and state review](docs/governance/native-design-review.md) and [reference map](docs/governance/native-reference-map.json).
 
 ## Product Identity And Priority

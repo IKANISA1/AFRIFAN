@@ -2,6 +2,11 @@
 
 Status: authoritative repository boundary and architecture contract.
 
+The supported club products are Vital'O (Burundi), Rayon Sports (Rwanda),
+Nkana (Zambia), and AS Vita (DR Congo). Their app directories are `vitalo`,
+`rayon_sports`, `nkana`, and `as_vita`; club configuration packages match those
+names. The root workspace is limited to these four shells and 28 packages.
+
 ## Product Boundary
 
 AFRICLUB is a white-label football-club platform. Its supported capabilities

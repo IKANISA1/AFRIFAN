@@ -20,7 +20,7 @@ bash tools/scripts/run_rayon_release_gate.sh \
 
 The validator exits nonzero for missing, stale, partial or unverifiable evidence. There is no waiver or skip mode. Optional `--artifact` and `--route-directory` select existing inputs and do not change the acceptance obligation. The Rayon wrapper validates both platforms before engineering commands, runs those commands, then revalidates the reviewed bytes. `run_rayon_engineering_checks.sh` can prepare and check a candidate while reviews are pending; its result is engineering evidence only. Artifact builders and release dry runs produce candidates for inspection and do not grant acceptance.
 
-Use the single-platform validator for each of the twenty configured clubs. A pass for Rayon cannot approve another club's artifact. Web, member, admin/PWA, venue, deployment, providers, signing, stores and public availability retain separate results.
+Use the single-platform validator for each of the four configured clubs. A pass for Rayon cannot approve another club's artifact. Web, member, admin/PWA, venue, deployment, providers, signing, stores and public availability retain separate results.
 
 ## Governed inputs
 

@@ -1,6 +1,8 @@
 # Native mobile implementation review
 
-The shared mobile presentation is reimplemented for all 20 club shells. The
+Scope updated on 19 September 2026: four retained club products, eight platform targets. Earlier test totals below describe the former scope and are historical evidence, not current acceptance.
+
+The shared mobile presentation is reimplemented for the four retained club shells. The
 selected reference is Revolut native iOS **Dark · Glow**, captured 5 September
 2026, with the historical onboarding cohort used only for phone and code entry.
 This report describes local implementation and inspection, not a release or

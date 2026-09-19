@@ -1,6 +1,6 @@
 # AFRICLUB full-stack QA execution plan
 
-Created: 14 September 2026. Status: plan established; execution results are recorded separately.
+Created: 14 September 2026. Club scope reduced by owner instruction on 19 September 2026. Execution results are recorded separately; historical twenty-club results do not establish acceptance of the revised candidate.
 
 ## Objective and working authority
 
@@ -16,8 +16,8 @@ Use [the existing UAT matrix](rayon_fullstack_uat_matrix.md), [blueprint](../blu
 
 | Surface | Observed source and initial inventory | Coverage obligation |
 | --- | --- | --- |
-| All native supporter apps | 20 Flutter shells under `apps/*`, each with Android and iOS directories | Each club gets configuration, identity, feature availability, tenant binding, build and launch evidence on both platforms. Shared feature coverage does not automatically certify another club's artifact. |
-| Shared Flutter platform | 44 packages: core, app registry, data, features, club configuration and test support | Architecture, unit/widget/integration tests, routes, shared controls, networking, auth and native bridges. |
+| All native supporter apps | 4 Flutter shells under `apps/*`, each with Android and iOS directories | Each club gets configuration, identity, feature availability, tenant binding, build and launch evidence on both platforms. Shared feature coverage does not automatically certify another club's artifact. |
+| Shared Flutter platform | 28 packages: 24 shared core, app registry, data, feature and test-support packages plus four club configurations | Architecture, unit/widget/integration tests, routes, shared controls, networking, auth and native bridges. |
 | Public websites | `apps/rayon_sports/web/src/app/(site)`: 24 page files | Every route template and every configured host/slug; content, discovery, responsive layouts, SEO, privacy/support and app links. |
 | Authenticated member website | `/membership` and its server/API dependencies | Login/session, membership status, contribution initiation, history and truthful authoritative outcomes. |
 | Admin panel/PWA | `apps/rayon_sports/web/src/app/admin`: 28 page files; separate offline route | Every role, club switch, module, table, mutation, audit trail, restricted route and installed-mode lifecycle. |
@@ -26,7 +26,7 @@ Use [the existing UAT matrix](rayon_fullstack_uat_matrix.md), [blueprint](../blu
 | Backend and integrations | Supabase: 7 migrations, 22 SQL test files, 19 Edge function directories | Schema, seeds, RLS/ACL, RPCs, storage, realtime, scheduled jobs, auth hooks, notifications, SMS, football sync, image generation, wallet passes and admission. |
 | Delivery and operations | GitHub workflows, Cloudflare/OpenNext, mobile build/signing scripts | Reproducible artifacts, secret isolation, environment configuration, logs/alerts, recovery, rollback and exact-version traceability. |
 
-The 20 app directories are `ac_leopards`, `africa_sports`, `as_mangasport`, `as_vita`, `asante_kotoko`, `asec_mimosas`, `asko_kara`, `canon_yaounde`, `dynamos`, `maranatha`, `mogas_90`, `nkana`, `nyasa_bullets`, `rayon_sports`, `simba`, `tp_mazembe`, `union_douala`, `vitalo`, `yanga`, and `zesco_united`.
+The four app directories are `vitalo` (Burundi, tenant 44), `rayon_sports` (Rwanda, tenant 24), `nkana` (Zambia, tenant 26), and `as_vita` (DR Congo, tenant 6). All other dedicated app shells and club configuration packages are removed. MOBILE-DESIGN-100 covers eight product/platform targets: four Android and four iOS.
 
 Initial test inventory: 264 Dart `*_test.dart` files, four mobile integration-test Dart files, 119 tracked web test files, and 53 web Playwright spec files. These are file counts, not passing tests. The current native reference map declares 90 routes; regenerate and reconcile this rather than treating that number as a fixed denominator.
 

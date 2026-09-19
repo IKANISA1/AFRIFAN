@@ -26,11 +26,11 @@ void main() {
   testWidgets('another club never inherits the Rayon crest', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: ClubCrest(clubSlug: 'yanga_tz', clubName: 'Young Africans SC'),
+        home: ClubCrest(clubSlug: 'as_vita_cd', clubName: 'AS Vita Club'),
       ),
     );
     expect(find.byType(Image), findsNothing);
-    expect(find.text('YA'), findsOneWidget);
+    expect(find.text('AV'), findsOneWidget);
   });
 
   testWidgets('shows official club identity and canonical destinations', (

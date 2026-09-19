@@ -139,74 +139,10 @@ const TOP_CLUB_OVERRIDES: Record<
       "Amahoro National Stadium environment, cinematic wide angle, dramatic floodlights, " +
       "photojournalistic matchday energy, absolutely no text overlay",
   },
-  "Young Africans (Yanga)": {
-    kit: "Professional football jersey in vivid green and bright yellow, " +
-      "Young Africans Yanga Wananchi style, Tanzanian football powerhouse, " +
-      "green body with yellow v-neck collar and sleeve trim, " +
-      "on matte black mannequin, product photography dark background, " +
-      "dramatic lighting, sportswear catalog, absolutely no text or logos",
-    news:
-      "Benjamin Mkapa National Stadium Dar es Salaam at night, packed with Yanga fans " +
-      "in green and yellow, Wananchi banners, Tanzanian football atmosphere, " +
-      "cinematic wide angle, floodlights, photojournalistic, no text overlay",
-  },
-  "Kaizer Chiefs FC": {
-    kit: "Professional football jersey in rich gold and black, " +
-      "Kaizer Chiefs Amakhosi style, South African football, " +
-      "gold body with black collar and trim, on matte black mannequin, " +
-      "product photography dark background, dramatic stadium lighting, " +
-      "premium catalog, absolutely no text or logos or brand names",
-    news:
-      "FNB Stadium Johannesburg at night packed with Kaizer Chiefs fans in gold and black, " +
-      "Amakhosi supporters with scarves, South African football atmosphere, " +
-      "cinematic photojournalistic, dramatic floodlights, no text overlay",
-  },
-  "Simba SC": {
-    kit: "Professional football jersey in bold red and white, " +
-      "Simba SC Wekundu wa Msimbazi style, Tanzanian football, " +
-      "red body with white side panels, on matte black mannequin, " +
-      "product photography dark background, dramatic lighting, " +
-      "sportswear catalog, absolutely no text or logos",
-    news:
-      "Benjamin Mkapa Stadium filled with Simba SC fans in red and white, " +
-      "Msimbazi supporters, Tanzanian Kariakoo atmosphere, " +
-      "cinematic wide angle night match, floodlights, no text overlay",
-  },
-  "TP Mazembe": {
-    kit:
-      "Professional football jersey in stark black and white vertical stripes, " +
-      "TP Mazembe Les Corbeaux (The Ravens) style, Congolese football, " +
-      "black and white striped body, on matte black mannequin, " +
-      "product photography dark background, dramatic lighting, " +
-      "premium catalog, absolutely no text or logos",
-    news:
-      "Stade TP Mazembe Lubumbashi at night, Les Corbeaux fans in black and white, " +
-      "Congolese DR Congo football atmosphere, packed stands, " +
-      "cinematic photojournalistic, dramatic floodlights, no text overlay",
-  },
-  "Orlando Pirates FC": {
-    kit:
-      "Professional football jersey in black with white skull-and-crossbones inspired design, " +
-      "Orlando Pirates Buccaneers style, South African football, " +
-      "black body with subtle white diagonal sash, on matte black mannequin, " +
-      "product photography dark background, dramatic lighting, " +
-      "premium catalog, absolutely no text or logos or brand names",
-    news:
-      "Orlando Stadium Soweto at night packed with Orlando Pirates fans in black and white, " +
-      "Buccaneers supporters, South African football culture, " +
-      "cinematic photojournalistic, floodlights, no text overlay",
-  },
   "AS Vita Club": {
     kit: "Professional football jersey in deep green and black, " +
       "AS Vita Club Les Dauphins Noirs style, Congolese football, " +
       "green body with black collar and trim, on matte black mannequin, " +
-      "product photography dark background, dramatic lighting, " +
-      "sportswear catalog, absolutely no text or logos",
-  },
-  "St. George SC": {
-    kit: "Professional football jersey in bright yellow and red, " +
-      "St George SC Faresoch style, Ethiopian football, " +
-      "yellow body with red arm bands, on matte black mannequin, " +
       "product photography dark background, dramatic lighting, " +
       "sportswear catalog, absolutely no text or logos",
   },

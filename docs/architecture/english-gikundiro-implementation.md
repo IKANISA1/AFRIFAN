@@ -10,7 +10,7 @@ The original [critical comparison](/Volumes/PRO-G40/AFRICLUB/output/reviews/giku
 
 | Area | Current implementation |
 | --- | --- |
-| English-only | One English ARB and generated catalogue; fixed app/framework locale; English profile normalization and runtime copy; all 20 club configurations; English public/admin web; removed translation dictionaries, language selectors, French store listings and the retired Kinyarwanda listing source; CI policy guard. |
+| English-only | One English ARB and generated catalogue; fixed app/framework locale; English profile normalization and runtime copy; all four retained club configurations; English public/admin web; removed translation dictionaries, language selectors, French store listings and the retired Kinyarwanda listing source; CI policy guard. |
 | Football discovery | Earlier Club tasks, portrait squad and player details, team/position filters, one news reader, approved media/source links, Partners and explicit public URL mapping. |
 | Data truth | Current-match windows; membership qualification independent from FET; published membership prices; no runtime sample product; enquiry/native order capability; stale/denied data recovery. |
 | Predict | Clear unavailable state inside the primary tab, selection review, explicit cost/balance/confirmation, safe cancel and retained reconciliation controls. |

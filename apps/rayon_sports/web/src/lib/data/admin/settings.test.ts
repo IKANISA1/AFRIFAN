@@ -58,7 +58,7 @@ describe("club selector API round trip", () => {
   it("retains the actual server-serialized club options in the browser", async () => {
     const rows = [
       { id: 24, club_name: "Rayon Sports FC", nickname_brand_identity: "Gikundiro", club_slug: "rayon_sports_rw", currency_code: "RWF", currency_symbol: "RWF" },
-      { id: 3, club_name: "Simba SC", nickname_brand_identity: "Simba SC", club_slug: "simba_tz", currency_code: "TZS", currency_symbol: "TSh" },
+      { id: 6, club_name: "AS Vita Club", nickname_brand_identity: "AS Vita Club", club_slug: "as_vita_cd", currency_code: "CDF", currency_symbol: "FC" },
     ];
     const query = {
       select: vi.fn(() => query),
@@ -68,7 +68,7 @@ describe("club selector API round trip", () => {
     const client = { from: vi.fn(() => query) } as unknown as SupabaseClient;
     const access = { ...clubAdminAccess, isSuperAdmin: true };
     const serverOptions = await getAdminClubScopeOptions(client, access);
-    expect(serverOptions.map((club) => club.id)).toEqual(["24", "3"]);
+    expect(serverOptions.map((club) => club.id)).toEqual(["24", "6"]);
     vi.stubGlobal("window", { location: { origin: "https://admin.example.invalid", href: "https://admin.example.invalid/admin?club=24" } });
     vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ data: serverOptions }))));
     await expect(getAdminClubScopeOptions(client, access)).resolves.toEqual(serverOptions);

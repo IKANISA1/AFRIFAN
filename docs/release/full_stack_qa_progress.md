@@ -2,6 +2,14 @@
 
 Recorded 19 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) remains active; this engineering checkpoint does not declare release readiness.
 
+## Current club scope
+
+On 19 September 2026, the owner reduced the products to Vital'O (Burundi), Rayon Sports (Rwanda), Nkana (Zambia) and AS Vita (DR Congo). The workspace now has four app shells and 28 packages, including four club configurations. The active mobile acceptance denominator is eight, with **0/8 accepted**. Earlier test counts and twenty-club evidence below remain historical; they are not recast as a completed four-club release review.
+
+Removed the other 16 app shells and 16 club configuration packages (752 tracked files), their workspace and supported-club seed entries, product-image prompt overrides and obsolete test fixtures. Shared football opponent/fixture data remains. Original tenant IDs, countries, currencies and retained club identities are preserved. Applied migrations and production data were not changed.
+
+The revised candidate passes strict Flutter analysis, all four apps' test suites plus the affected club-hub widget suite (31 tests), 26 native/release boundary tests, eight workspace-validator regressions and 11 admin-selector tests. The changed Edge entrypoint typechecks; dependency resolution preserves the lockfile. A fresh isolated database replays all 18 migrations and both seeds, then passes all 30 SQL files (437 assertions), with exactly four supported clubs and zero violations across 324 foreign keys. Earlier command-setup failures are retained separately from the successful configured reruns. Evidence: `output/qa/full-stack-20260914/four-club-scope-change.json`. These checks do not establish native build, device, provider or release acceptance.
+
 ## Implemented and locally verified
 
 - Bound the selected Revolut design authority, retained club identity, strengthened source/artifact provenance, and added MOBILE-DESIGN-100 release enforcement. Independent reviews and owner acceptance remain separate requirements.
@@ -86,8 +94,8 @@ After the first QA commit reached `main`, GitHub closed all eight previously rep
 
 ## Remaining work
 
-Complete all-club Android/iOS builds and boots, remaining member/venue/commerce/storage/realtime journeys, installed PWA updates and legacy queue reconciliation, current remaining route/state captures, reader tasks, performance measurements, and independent visual/owner reviews. Native work resumed after disk headroom recovered; capacity is checked before each build. Nineteen club shells still lack provider registrations and bundled iOS icons. A stale task-owned compiled-hook cache was preserved and regenerated to restore the Android build.
+Complete all-club Android/iOS builds and boots, remaining member/venue/commerce/storage/realtime journeys, installed PWA updates and legacy queue reconciliation, current remaining route/state captures, reader tasks, performance measurements, and independent visual/owner reviews. Native work resumed after disk headroom recovered; capacity is checked before each build. The three retained non-Rayon shells still lack provider registrations and bundled iOS icons. A stale task-owned compiled-hook cache was preserved and regenerated to restore the Android build.
 
 Triage the advisor performance findings against real query plans and policies before changing indexes or access rules. Unused-index observations from the synthetic QA database do not establish production usage.
 
-Actual MOBILE-DESIGN-100 product acceptance is **0/40**. Hosted CI, physical devices, providers, signing, deployment, store review and public availability have separate unresolved gates. This commit records QA implementation and local results; it does not authorize or assert those outcomes.
+Current MOBILE-DESIGN-100 product acceptance is **0/8**. Hosted CI, physical devices, providers, signing, deployment, store review and public availability have separate unresolved gates. This commit records QA implementation and local results; it does not authorize or assert those outcomes.

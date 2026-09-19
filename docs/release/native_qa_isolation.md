@@ -2,7 +2,7 @@
 
 This is the native execution guide for QA-04 in [the full-stack QA plan](full_stack_qa_plan.md). Source configuration, resolved Xcode/Gradle settings, compiled artifacts, installed apps, physical-device performance, provider checks and store release acceptance require separate evidence.
 
-All twenty club shells now expose these native identities:
+All four club shells now expose these native identities:
 
 | Platform | QA selection | Identity and behavior |
 | --- | --- | --- |

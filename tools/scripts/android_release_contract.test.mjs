@@ -113,11 +113,11 @@ test("resolves all configured club identities from their own Android sources", (
   const identities = apps.map((slug) => readDeclaredAndroidApplicationId(path.join(repoRoot, "apps", slug)));
   assert.equal(new Set(identities).size, apps.length);
   assert.equal(identities[apps.indexOf("rayon_sports")], RAYON_SPORTS_APPLICATION_ID);
-  assert.equal(identities[apps.indexOf("ac_leopards")], "cg.ikanisa.ac_leopards");
+  assert.equal(identities[apps.indexOf("as_vita")], "cd.ikanisa.as_vita");
 });
 
 test("comments cannot replace an ID and ambiguous or computed IDs fail closed", () => {
-  assert.equal(parseDeclaredAndroidApplicationId('// applicationId = "wrong.id"\napplicationId = "cg.ikanisa.ac_leopards" // actual'), "cg.ikanisa.ac_leopards");
+  assert.equal(parseDeclaredAndroidApplicationId('// applicationId = "wrong.id"\napplicationId = "cd.ikanisa.as_vita" // actual'), "cd.ikanisa.as_vita");
   for (const source of [
     '/*\n applicationId = "wrong.id"\n*/',
     'applicationId = "one.id"\napplicationId = "two.id"',
@@ -127,11 +127,11 @@ test("comments cannot replace an ID and ambiguous or computed IDs fail closed", 
 });
 
 test("another club's release metadata does not require the Rayon ID", (t) => {
-  const fixture = createFixture(t, "cg.ikanisa.ac_leopards");
+  const fixture = createFixture(t, "cd.ikanisa.as_vita");
   const result = validateAndroidReleaseArtifact({
     ...fixture, expectedVersionName: "1.0.3", expectedVersionCode: "6",
   });
-  assert.equal(result.applicationId, "cg.ikanisa.ac_leopards");
+  assert.equal(result.applicationId, "cd.ikanisa.as_vita");
   assert.throws(() => validateAndroidReleaseArtifact({
     ...fixture, expectedApplicationId: RAYON_SPORTS_APPLICATION_ID,
     expectedVersionName: "1.0.3", expectedVersionCode: "6",
@@ -191,7 +191,7 @@ test("matching sidecars cannot make a truncated ZIP into an accepted AAB", (t) =
 
 test("matching sidecars cannot conceal another package inside the AAB", (t) => {
   const fixture = createFixture(t);
-  writeBundle(fixture.artifactPath, "cg.ikanisa.ac_leopards");
+  writeBundle(fixture.artifactPath, "cd.ikanisa.as_vita");
   assert.throws(() => validateAndroidReleaseArtifact({ ...fixture,
     expectedVersionName: "1.0.3", expectedVersionCode: "6",
   }), /AAB manifest package mismatch/);

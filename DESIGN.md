@@ -13,7 +13,7 @@ bundled references. Current user instructions take precedence.
 
 ## Scope and reference
 
-The review covers the shared Flutter supporter application, all 20 configured
+The review covers the shared Flutter supporter application, all four configured
 club shells on Android and iOS, public and member websites, Admin PWA, and venue
 web. Use the skill's matching native, website, operator and PWA references for
 each surface. The native comparator below does not establish web or desktop
@@ -319,7 +319,7 @@ The source-compliance report verifies authority bindings and source controls;
 it does not implement or substitute for the complete mobile acceptance gate.
 
 Keep providers, repositories, domain models, server validation, role guards and
-canonical routes separate from presentation. Keep the 20 app shells thin.
+canonical routes separate from presentation. Keep the four app shells thin.
 Use existing widget, route, golden and accessibility harnesses; do not add a
 parallel test framework. Tokens and generation are not visual evidence.
 

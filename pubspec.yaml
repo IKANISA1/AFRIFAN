@@ -28,24 +28,8 @@ workspace:
   # ── Apps ──
   - apps/rayon_sports
   - apps/vitalo
-  - apps/yanga
-  - apps/tp_mazembe
-  - apps/simba
   - apps/as_vita
-  - apps/asante_kotoko
-  - apps/asec_mimosas
-  - apps/nyasa_bullets
-  - apps/dynamos
-  - apps/africa_sports
   - apps/nkana
-  - apps/canon_yaounde
-  - apps/union_douala
-  - apps/zesco_united
-  - apps/asko_kara
-  - apps/ac_leopards
-  - apps/maranatha
-  - apps/as_mangasport
-  - apps/mogas_90
   # ── Core packages ──
   - packages/core/core_app
   - packages/app_registry
@@ -76,24 +60,8 @@ workspace:
   # ── Club config packages ──
   - packages/clubs/club_rayon_sports
   - packages/clubs/club_vitalo
-  - packages/clubs/club_yanga
-  - packages/clubs/club_tp_mazembe
-  - packages/clubs/club_simba
   - packages/clubs/club_as_vita
-  - packages/clubs/club_asante_kotoko
-  - packages/clubs/club_asec_mimosas
-  - packages/clubs/club_nyasa_bullets
-  - packages/clubs/club_dynamos
-  - packages/clubs/club_africa_sports
   - packages/clubs/club_nkana
-  - packages/clubs/club_canon_yaounde
-  - packages/clubs/club_union_douala
-  - packages/clubs/club_zesco_united
-  - packages/clubs/club_asko_kara
-  - packages/clubs/club_ac_leopards
-  - packages/clubs/club_maranatha
-  - packages/clubs/club_as_mangasport
-  - packages/clubs/club_mogas_90
 
 # Melos 8 reads its configuration from the Dart workspace root. Keep package
 # discovery authoritative in `workspace:` above so tooling cannot silently

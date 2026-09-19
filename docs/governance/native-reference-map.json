@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "design_authority": "revolut-design",
-  "scope": "Shared Flutter mobile app across 20 club configurations, including role-gated internal admin routes",
+  "scope": "Shared Flutter mobile app across four club configurations, including role-gated internal admin routes",
   "cohort": {
     "id": "native-ios-dark-glow-20260905",
     "platform": "iOS",
@@ -4576,5 +4576,17 @@
       "registration_source": "revolut-design/references/local-screen-index.json",
       "acceptance_status": "unverified"
     }
-  ]
+  ],
+  "current_product_scope": {
+    "updated_at": "2026-09-19",
+    "clubs": [
+      "vitalo",
+      "rayon_sports",
+      "nkana",
+      "as_vita"
+    ],
+    "platform_targets": 8,
+    "packages": 28,
+    "historical_verification": "Earlier verification counts retain their original scope; current source/artifact and independent acceptance must be revalidated."
+  }
 }
