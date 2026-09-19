@@ -1,7 +1,6 @@
 import { createAdminClient } from "./supabase.ts";
 import { sendTextMessage } from "./whatsapp.ts";
 import {
-  planRayonInitiativeConfirmation,
   planRayonShopOrderConfirmation,
   planRayonTicketConfirmation,
 } from "../parse-momo-sms/rayon_confirmation.ts";
@@ -437,6 +436,7 @@ async function resolveRayonTickets(
       "id, user_id, club_id, referral_invite_id, match_id, seat_type, amount_paid, qr_code, momo_reference, status, rs_matches(home_team, away_team, competition, venue, match_date, kickoff_time, partner_id)",
     )
     .eq("momo_reference", referenceMatch.reference)
+    .eq("user_id", referenceMatch.user_id)
     .order("purchased_at", { ascending: false });
 
   if (result.error) {
@@ -478,28 +478,29 @@ async function resolveRayonShopOrder(
       "id, user_id, club_id, partner_id, referral_invite_id, total, delivery_address, momo_reference, status",
     )
     .eq("momo_reference", referenceMatch.reference)
+    .eq("user_id", referenceMatch.user_id)
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(2);
 
   if (result.error) {
     throw result.error;
   }
 
-  if (!result.data) {
+  if (result.data?.length !== 1) {
     return null;
   }
 
+  const row = result.data[0];
   return {
-    id: asString(result.data.id) ?? "",
-    user_id: asString(result.data.user_id) ?? "",
-    club_id: asNullableInt(result.data.club_id),
-    partner_id: asString(result.data.partner_id),
-    referral_invite_id: asString(result.data.referral_invite_id),
-    total: asNullableInt(result.data.total) ?? 0,
-    delivery_address: asString(result.data.delivery_address),
-    momo_reference: asString(result.data.momo_reference),
-    status: asString(result.data.status),
+    id: asString(row.id) ?? "",
+    user_id: asString(row.user_id) ?? "",
+    club_id: asNullableInt(row.club_id),
+    partner_id: asString(row.partner_id),
+    referral_invite_id: asString(row.referral_invite_id),
+    total: asNullableInt(row.total) ?? 0,
+    delivery_address: asString(row.delivery_address),
+    momo_reference: asString(row.momo_reference),
+    status: asString(row.status),
   };
 }
 
@@ -513,28 +514,29 @@ async function resolveRayonInitiativeContribution(
       "id, user_id, club_id, referral_invite_id, initiative_id, amount, momo_reference, status, rs_initiatives(title, partner_id)",
     )
     .eq("momo_reference", referenceMatch.reference)
+    .eq("user_id", referenceMatch.user_id)
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(2);
 
   if (result.error) {
     throw result.error;
   }
 
-  if (!result.data) {
+  if (result.data?.length !== 1) {
     return null;
   }
 
-  const initiative = asRecord(result.data.rs_initiatives);
+  const row = result.data[0];
+  const initiative = asRecord(row.rs_initiatives);
   return {
-    id: asString(result.data.id) ?? "",
-    user_id: asString(result.data.user_id) ?? "",
-    club_id: asNullableInt(result.data.club_id),
-    referral_invite_id: asString(result.data.referral_invite_id),
-    initiative_id: asString(result.data.initiative_id),
-    amount: asNullableInt(result.data.amount) ?? 0,
-    momo_reference: asString(result.data.momo_reference),
-    status: asString(result.data.status),
+    id: asString(row.id) ?? "",
+    user_id: asString(row.user_id) ?? "",
+    club_id: asNullableInt(row.club_id),
+    referral_invite_id: asString(row.referral_invite_id),
+    initiative_id: asString(row.initiative_id),
+    amount: asNullableInt(row.amount) ?? 0,
+    momo_reference: asString(row.momo_reference),
+    status: asString(row.status),
     initiative_title: asString(initiative?.title) ?? "Club Initiative",
     partner_id: asString(initiative?.partner_id),
   };
@@ -868,53 +870,28 @@ async function confirmRayonInitiativeContribution(
   context: RayonPaymentConfirmationContext,
   contribution: RsInitiativeContributionRecord,
 ): Promise<RayonPaymentConfirmationResult> {
-  const confirmation = planRayonInitiativeConfirmation(
-    contribution.status,
-    contribution.amount,
-  );
-
-  const updateResult = await adminClient
-    .from("rs_initiative_contributions")
-    .update({
-      status: confirmation.nextStatus,
-      updated_at: context.timestamp,
-    })
-    .eq("id", contribution.id);
-
-  if (updateResult.error) {
-    throw updateResult.error;
+  const result = await adminClient.rpc("confirm_club_initiative_contribution", {
+    p_contribution_id: contribution.id,
+    p_user_id: referenceMatch.user_id,
+    p_reference: referenceMatch.reference,
+    p_amount: context.amount,
+  });
+  if (result.error) throw result.error;
+  const transition = asRecord(result.data);
+  if (transition?.status === "manual_review") {
+    return buildManualReviewResult("Contribution changed or requires review.", {
+      reason: asString(transition.reason) ??
+        "contribution_payment_binding_mismatch",
+    });
   }
-
   if (
-    confirmation.shouldIncrementInitiativeTotals && contribution.initiative_id
+    transition?.status !== "confirmed" ||
+    transition.contribution_id !== contribution.id ||
+    typeof transition.newly_confirmed !== "boolean" ||
+    !Number.isSafeInteger(transition.points_awarded) ||
+    typeof transition.referral_activated !== "boolean"
   ) {
-    const initiativeResult = await adminClient
-      .from("rs_initiatives")
-      .select("raised_amount, supporter_count")
-      .eq("id", contribution.initiative_id)
-      .maybeSingle();
-
-    if (initiativeResult.error) {
-      throw initiativeResult.error;
-    }
-
-    const currentRaised = asNullableInt(initiativeResult.data?.raised_amount) ??
-      0;
-    const currentSupporters =
-      asNullableInt(initiativeResult.data?.supporter_count) ?? 0;
-
-    const correctedResult = await adminClient
-      .from("rs_initiatives")
-      .update({
-        raised_amount: currentRaised + contribution.amount,
-        supporter_count: currentSupporters + 1,
-        updated_at: context.timestamp,
-      })
-      .eq("id", contribution.initiative_id);
-
-    if (correctedResult.error) {
-      throw correctedResult.error;
-    }
+    throw new Error("Contribution confirmation result is invalid.");
   }
 
   const branding = await resolvePaymentBranding(adminClient, {
@@ -922,22 +899,7 @@ async function confirmRayonInitiativeContribution(
     partnerId: contribution.partner_id,
     routeCodeOrNumber: context.payeeNumberOrCode ?? context.merchantCode,
   });
-  const pointsAwarded = await maybeAwardMembershipPoints(
-    adminClient,
-    contribution.user_id,
-    contribution.partner_id ?? branding.resolvedPartnerId,
-    confirmation.pointsToAward,
-  );
-  const referralActivated = await maybeActivateReferralInvite(
-    adminClient,
-    contribution.referral_invite_id,
-    contribution.user_id,
-    "rayon_support_confirmed",
-    contribution.id,
-    130,
-    50,
-  );
-  const contact = confirmation.shouldSendWhatsApp
+  const contact = transition.newly_confirmed
     ? await resolveUserContact(adminClient, contribution.user_id)
     : null;
   const whatsappSent = await maybeSendWhatsAppConfirmation(
@@ -960,8 +922,8 @@ async function confirmRayonInitiativeContribution(
       partner_id: contribution.partner_id,
       club_label: branding.clubLabel,
       currency_code: branding.currencyCode,
-      points_awarded: pointsAwarded ? confirmation.pointsToAward : 0,
-      referral_activated: referralActivated,
+      points_awarded: transition.points_awarded,
+      referral_activated: transition.referral_activated,
       whatsapp_sent: whatsappSent,
       source: context.source,
     },
@@ -973,6 +935,25 @@ export async function confirmRayonReferenceMatch(
   referenceMatch: RayonReferenceMatch,
   context: RayonPaymentConfirmationContext,
 ): Promise<RayonPaymentConfirmationResult> {
+  // A reference is not an owner or amount attestation. Check every candidate
+  // before any status, total, points, referral or notification side effect.
+  if (!referenceMatch.user_id?.trim()) {
+    return buildManualReviewResult("A payment owner is required.", {
+      reason: "missing_payment_owner",
+    });
+  }
+  if (
+    context.amount == null || !Number.isSafeInteger(context.amount) ||
+    context.amount <= 0
+  ) {
+    return buildManualReviewResult(
+      "A valid whole payment amount is required.",
+      {
+        reason: "invalid_payment_amount",
+      },
+    );
+  }
+
   if (looksLikeRayonTicketReference(referenceMatch.reference)) {
     const tickets = await resolveRayonTickets(adminClient, referenceMatch);
     if (tickets.length === 0) {
@@ -981,6 +962,22 @@ export async function confirmRayonReferenceMatch(
         {
           reason: "missing_rayon_ticket_rows",
           matched_reference: referenceMatch.reference,
+        },
+      );
+    }
+
+    const total = tickets.reduce((sum, ticket) => sum + ticket.amount_paid, 0);
+    if (
+      !Number.isSafeInteger(total) || total !== context.amount ||
+      tickets.some((ticket) =>
+        !Number.isSafeInteger(ticket.amount_paid) || ticket.amount_paid <= 0 ||
+        !["pending", "valid", "used"].includes(ticket.status ?? "")
+      )
+    ) {
+      return buildManualReviewResult(
+        "Ticket amount or status requires review.",
+        {
+          reason: "ticket_payment_binding_mismatch",
         },
       );
     }
@@ -1000,11 +997,21 @@ export async function confirmRayonReferenceMatch(
     );
     if (!contribution) {
       return buildManualReviewResult(
-        "No initiative contribution matched the payment reference.",
+        "No unique owned initiative contribution matched the payment reference.",
         {
           reason: "missing_rayon_support_row",
           matched_reference: referenceMatch.reference,
         },
+      );
+    }
+
+    if (
+      contribution.amount !== context.amount ||
+      !["pending", "confirmed"].includes(contribution.status ?? "")
+    ) {
+      return buildManualReviewResult(
+        "Contribution amount or status requires review.",
+        { reason: "contribution_payment_binding_mismatch" },
       );
     }
 
@@ -1020,12 +1027,23 @@ export async function confirmRayonReferenceMatch(
     const order = await resolveRayonShopOrder(adminClient, referenceMatch);
     if (!order) {
       return buildManualReviewResult(
-        "No shop order matched the payment reference.",
+        "No unique owned shop order matched the payment reference.",
         {
           reason: "missing_rayon_shop_order",
           matched_reference: referenceMatch.reference,
         },
       );
+    }
+
+    if (
+      order.total !== context.amount ||
+      !["pending", "confirmed", "paid", "packed", "fulfilled"].includes(
+        order.status ?? "",
+      )
+    ) {
+      return buildManualReviewResult("Shop amount or status requires review.", {
+        reason: "shop_payment_binding_mismatch",
+      });
     }
 
     return await confirmRayonShopOrder(

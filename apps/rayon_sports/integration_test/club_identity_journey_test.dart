@@ -8,13 +8,22 @@ import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 
 void main() {
-  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized()
+    ..framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
+  const captureSystem = bool.fromEnvironment('AFRICLUB_CAPTURE_SYSTEM');
   Future<void> capture(String name) async {
-    await binding.takeScreenshot(name);
-    if (const bool.fromEnvironment('AFRICLUB_CAPTURE_SYSTEM')) {
+    // Finish compositor work after navigation, including the test binding's
+    // pointer fade, before telling the host to capture the native surface.
+    await binding.endOfFrame;
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    if (captureSystem) {
+      // Keep the native surface intact for adb/simctl capture. Converting it
+      // to an ImageView would change the renderer being independently checked.
       // ignore: avoid_print
       print('AFRICLUB_CLUB_CAPTURE $name');
       await Future<void>.delayed(const Duration(seconds: 3));
+    } else {
+      await binding.takeScreenshot(name);
     }
   }
 
@@ -51,8 +60,10 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await binding.convertFlutterSurfaceToImage();
-    await tester.pump();
+    if (!captureSystem) {
+      await binding.convertFlutterSurfaceToImage();
+      await tester.pump();
+    }
     expect(find.text('Rayon Sports FC'), findsOneWidget);
     expect(find.text('Nyanza, Southern Province, Rwanda'), findsOneWidget);
     expect(find.text('Blue and white'), findsOneWidget);

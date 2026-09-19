@@ -1,6 +1,6 @@
 # AFRICLUB full-stack QA progress
 
-Recorded 17 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) remains active; this engineering checkpoint does not declare release readiness.
+Recorded 19 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) remains active; this engineering checkpoint does not declare release readiness.
 
 ## Implemented and locally verified
 
@@ -18,7 +18,15 @@ Recorded 17 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) rema
 
 - Repaired complete contribution totals, older-history access and invalid MoMo-route intent creation. Added an invoker-only paginated history RPC, exact total rendering, phone-sized pagination controls and strict whole-RWF amount validation.
 
+- Bound club payment references to the payer, exact positive whole amount and allowed status; reject ambiguous support/shop references and invalid ticket bundles before mutation. Real isolated checks reproduced and then rejected foreign-owner, missing-payer, underpaid and terminal-state confirmations.
+- Made initiative confirmation, timestamp, campaign increments and existing reward/referral calls one service-only database transaction. Late errors roll everything back; retries and concurrent contributions preserve totals and rewards. Revalidate owner, amount and status after lock waits.
+- Protected posted SMS evidence against forced reinterpretation and serialized overlapping parse requests with an owner/version-bound claim. Repaired generic intent schema fields, valid status transitions, evidence checks and read/write error handling.
+- Corrected the native integration capture harness to run fully live frames and wait for frame completion. Five Android Club journey captures now show distinct, clear states without prior-screen ghosting or test pointer marks.
+
 ## Verification evidence
+
+The web/Flutter results below retain their earlier source and artifact bindings. The 19 September payment increment passed **187 Edge tests**, typechecking all **19 Edge entrypoints**, **30 SQL files / 436 assertions**, and fresh replay of **18 migrations** with **181 assertions and 27 concurrent-operation scenarios**. Twenty real isolated HTTP checks cover reference binding, lost-response recovery, competing contributions, actual SMS handling and generic intent validation; their twenty scoped teardown checks passed. Advisors returned zero errors, 240 warnings and 288 informational findings. All 324 checked foreign keys have zero orphan rows after cleanup; operational test users are absent and both immutable ticket audit triggers remain enabled.
+
 
 | Scope | Latest local result | Qualification |
 | --- | --- | --- |
@@ -30,12 +38,12 @@ Recorded 17 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) rema
 | Earlier venue recovery after the lock-order fix | 10/10 checks | Chromium light-mode desktop/phone confirmation on the new database function and unchanged web build; repeats the recovery flow above |
 | Earlier real admin/browser checks | Chromium 54/54; Firefox 50/50; WebKit 50/50 | Original build-bound evidence retained; not rerun on the current member candidate |
 | Earlier Home and Settings state matrices | 6/6 matrices; 102 hash-verified PNGs | Original build-bound controlled captures; unreviewed engineering evidence |
-| Database contracts | 29 files / 413 assertions passed | Pinned vendor database with current migration changes; 324 foreign keys checked with zero orphans |
-| Database advisors | 0 errors; 240 warnings; 279 informational findings | Isolated database only; warnings concern performance; no security warning/error; unused-index observations vary with local statistics |
-| Database concurrency | Fresh seventeen-migration replay, 158 SQL assertions and twenty-two operation/concurrency scenarios passed | Disposable network-disabled database; includes preparation/admission overlap, both cancellation orders, and changed/deleted credentials during ticket waits |
+| Database contracts | 30 files / 436 assertions passed | Pinned vendor database with current migration changes; 324 foreign keys checked with zero orphans |
+| Database advisors | 0 errors; 240 warnings; 288 informational findings | Isolated database only; warnings concern performance; no security warning/error; unused-index observations vary with local statistics |
+| Database concurrency | Fresh eighteen-migration replay, 181 SQL assertions and twenty-seven operation/concurrency scenarios passed | Disposable network-disabled database; includes admission/wallet races and atomic contribution confirmation |
 | Earlier ticket HTTP handlers | 34/34 checks passed | Production handler dependencies with real local Auth/REST; request binding, revocation, wallet preparation overlap, cancellation and credential maintenance are checked with persisted outcomes |
 | Earlier shared/native checks | Strict Flutter analysis; 44 package runs / 2,624 reported successes; 19 Edge entries / 97 tests | Earlier evidence is retained with its original source and execution scope |
-| Native artifact | One isolated ARM64 Android pilot APK compiled | Not installed or launched; this does not cover the forty app/platform combinations |
+| Native artifact | Isolated ARM64 Android Club journey installed and executed; five clear system captures inspected | Synthetic gateway and QA identity; frame capture defect repaired; no all-club or production-startup acceptance |
 
 The ticket HTTP test exercises admission fixtures, not provider payment confirmation or Google issuance. Direct member purchase and unsupported payment confirmation remain denied. Temporary test users and ticket fixtures were removed with persisted readback. Synthetic audit evidence was archived before scoped administrative teardown in the isolated database; production audit immutability was not changed.
 
@@ -61,13 +69,24 @@ The subsequent larger-history review reproduced a 17,000 RWF displayed total aga
 
 A separate real RPC test found that a doubly escaped route pattern accepted an invalid configured USSD route and created a pending intent. The corrected pattern requires a literal leading asterisk; all other intent-function behavior is unchanged. Four concurrent identical authenticated requests return one pending row, invalid routes create none, and a supporter cannot mark the intent confirmed. Pending requests do not alter the confirmed total. Component tests also reject fractional/scientific amount text before an intent call. No phone dialer was invoked, OTP sent or provider/SMS payment accepted. Confirmed-history records remain synthetic service fixtures. Full browser account-switch, data-request deadlines, offline restored sessions, failed sign-out and installed-PWA acceptance remain open. See `member-portal-evidence.json`, `member-browser-matrix.json`, `member-lifecycle-unit-before-results.json`, `member-unit-suite-results.json`, and `database-sql-member.json`. Current reports include `contribution-history-evidence.json`, `contribution-history-browser-matrix.json`, `contribution-history-unit-final-results.json`, and `database-sql-contribution-history.json`. Current database cleanup confirms zero operational users or member fixtures, twenty clubs, zero orphans across 324 foreign keys, cron disabled and both immutable ticket audit triggers enabled. Docker was restarted during this run; changed unused-index statistics are synthetic observations only.
 
+
+The payment reproduction confirmed a foreign supporter’s contribution, accepted a missing payer, accepted 1 RWF against 1,000 RWF, and reopened cancelled/failed contributions. The binding guards now reject those cases before rewards or notifications. A second reproduction interrupted the campaign-total PATCH after status confirmation; retry left the total missing. Two concurrent contributions also overwrote one increment. The new invoker RPC holds contribution and campaign locks, performs arithmetic in PostgreSQL, and commits status, confirmation timestamp, totals and rewards together. Real HTTP response-loss recovery and held-lock SQL tests verify one commit per contribution; a late reward failure rolls the entire transaction back.
+
+The full SMS handler also reproduced a forced reparse changing parsed evidence to 500 RWF while retaining a posted 1,000 RWF ledger entry. Posted or matched evidence now returns 409 before another parser call. An owner/version-bound claim rejects overlapping ordinary and forced requests. Three real-handler checks pass with one substituted AI response source and real isolated Auth/REST; seven fixture teardown checks pass. Eight maintained handler regressions cover conflicts and failed reads/claims. An intermediate concurrency probe reused a transaction ID and failed the database uniqueness constraint; that fixture failure remains recorded separately from the corrected passing case.
+
+Generic intent selection used missing `intent_type`/`creator_id` columns and an invalid `completed` status. Its ignored query failure let fallback matching confirm contributions despite mismatched intent evidence. Selection now uses the actual schema, requires exact owner/amount, an active matching receiver, debit direction, currency and an unexpired intent, and claims the checked version as `fulfilled`. Failed reads/writes and a lost claim cannot produce a successful match. Nineteen maintained regressions and nine real isolated cases pass, including cancellation/editing between lookup and update. This verifies intent allocation; it does not establish the linked business target's fulfillment.
+
+These repairs do not establish complete SMS reconciliation or provider settlement. Manual allocation still uses an invalid `completed` status; end-to-end ledger/reconciliation atomicity, receiver changes or expiry during a database lock wait, stalled parse recovery, transaction reuse, fallback currency/payee evidence and ticket/shop atomic transitions require further work. Notification delivery after database commit remains a separate outcome. See `payment-reference-reproduction.json`, `payment-races-before.json`, `payment-atomic-final.json`, `payment-atomic-database-replay.json`, `database-sql-payment-atomic.json`, `sms-handler-final.json`, `generic-intent-before.json` and `generic-intent-final.json`.
+
+The native repeat uses the exact QA APK hash `62b6f161cb8c2c70ec543c388147860f14967746b82f09d9985bc20a7d0bbfda` on a task-owned Android emulator. Club, squad, player, details and history captures were inspected; the live-frame capture change removes ghosting and pointer trails without changing production widgets. Selected live iOS Dark · Glow references support a limited pattern comparison only: their viewport/build are unverified and the target is Android. Reader tasks, enlarged text, performance and exact fidelity remain unverified. The emulator was stopped after the run. See `native-club-android-live-frames.json` and `native-club-engineering-review.json`.
+
 Detailed command logs, reproduction failures, source/artifact hashes and residual findings remain in ignored `output/qa/full-stack-20260914/`. See its `checkpoint.md`, `execution.json`, `findings.json`, `venue-retry-evidence.json`, `venue-retry-browser-matrix.json`, `database-sql-venue-access.json`, and `database-venue-access.json`. Older captures are not relabelled as current acceptance.
 
 After the first QA commit reached `main`, GitHub closed all eight previously reported Dependabot alerts as fixed; a fresh query returned zero open alerts. Hosted CI started no jobs because the account payment or spending-limit condition requires owner action. See [dependency remediation](../governance/dependency-remediation.md) for the separate remote evidence.
 
 ## Remaining work
 
-Complete all-club Android/iOS builds and boots, remaining member/venue/commerce/storage/realtime journeys, installed PWA updates and legacy queue reconciliation, current remaining route/state captures, reader tasks, performance measurements, and independent visual/owner reviews. Native execution is constrained by local disk capacity; nineteen club shells still lack provider registrations and bundled iOS icons.
+Complete all-club Android/iOS builds and boots, remaining member/venue/commerce/storage/realtime journeys, installed PWA updates and legacy queue reconciliation, current remaining route/state captures, reader tasks, performance measurements, and independent visual/owner reviews. Native work resumed after disk headroom recovered; capacity is checked before each build. Nineteen club shells still lack provider registrations and bundled iOS icons. A stale task-owned compiled-hook cache was preserved and regenerated to restore the Android build.
 
 Triage the advisor performance findings against real query plans and policies before changing indexes or access rules. Unused-index observations from the synthetic QA database do not establish production usage.
 

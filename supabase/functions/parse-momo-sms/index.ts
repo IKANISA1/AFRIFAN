@@ -64,7 +64,7 @@ function deriveLedgerScope(
   }
 }
 
-async function handleRequest(request: Request) {
+export async function handleRequest(request: Request) {
   if (request.method === "OPTIONS") {
     return corsPreflightResponse();
   }
@@ -117,12 +117,45 @@ async function handleRequest(request: Request) {
       });
     }
 
+    // A parse retry is not a correction to posted financial evidence. Keep
+    // its original interpretation and require the separate review workflow.
+    const previousParse = await adminClient.from("momo_sms_parsed")
+      .select("id").eq("raw_sms_id", rawSmsId).maybeSingle();
+    if (previousParse.error) throw previousParse.error;
+    if (previousParse.data) {
+      const [ledger, reconciliation] = await Promise.all([
+        adminClient.from("momo_ledger_entries").select("id")
+          .eq("parsed_sms_id", previousParse.data.id)
+          .eq("ledger_status", "posted").maybeSingle(),
+        adminClient.from("momo_reconciliations").select("id")
+          .eq("parsed_sms_id", previousParse.data.id)
+          .eq("match_status", "matched").maybeSingle(),
+      ]);
+      if (ledger.error) throw ledger.error;
+      if (reconciliation.error) throw reconciliation.error;
+      if (ledger.data || reconciliation.data) {
+        return jsonError("Reconciled payment evidence cannot be reparsed.", 409);
+      }
+    }
+
     const prompt = buildPrompt(rawSms);
 
-    await adminClient
+    // The original version must still own this attempt. In particular, a
+    // force request cannot overtake a running parse or a just-finished parse.
+    const claim = await adminClient
       .from("momo_sms_raw")
-      .update({ parse_status: "processing" })
-      .eq("id", rawSmsId);
+      .update({ parse_status: "processing", updated_at: new Date().toISOString() })
+      .eq("id", rawSmsId)
+      .eq("user_id", userId)
+      .eq("parse_status", rawSmsResult.data.parse_status)
+      .eq("updated_at", rawSmsResult.data.updated_at)
+      .neq("parse_status", "processing")
+      .select("id")
+      .maybeSingle();
+    if (claim.error) throw claim.error;
+    if (!claim.data) {
+      return jsonError("SMS parsing is in progress or its state changed. Refresh before retrying.", 409);
+    }
     const runProviderAttempt = async (provider: AiProvider) => {
       const model = getModel(provider);
       const attemptsResult = await adminClient

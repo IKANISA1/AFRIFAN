@@ -55,6 +55,44 @@ export class FakeAdminClient {
       });
     }
 
+    if (name === "confirm_club_initiative_contribution") {
+      const row = this.tables.rs_initiative_contributions?.find((row) =>
+        row.id === args?.p_contribution_id && row.user_id === args?.p_user_id
+      );
+      if (
+        !row || row.momo_reference !== args?.p_reference ||
+        row.amount !== args?.p_amount ||
+        !["pending", "confirmed"].includes(String(row.status))
+      ) {
+        return Promise.resolve({
+          data: { status: "manual_review" },
+          error: null,
+        });
+      }
+      const newlyConfirmed = row.status === "pending";
+      row.status = "confirmed";
+      const campaign = this.tables.rs_initiatives?.find((c) =>
+        c.id === row.initiative_id
+      );
+      if (newlyConfirmed && campaign) {
+        campaign.raised_amount = Number(campaign.raised_amount) +
+          Number(row.amount);
+        campaign.supporter_count = Number(campaign.supporter_count) + 1;
+      }
+      return Promise.resolve({
+        data: {
+          status: "confirmed",
+          contribution_id: row.id,
+          newly_confirmed: newlyConfirmed,
+          points_awarded: newlyConfirmed
+            ? Math.floor(Number(row.amount) / 100) * 2
+            : 0,
+          referral_activated: false,
+        },
+        error: null,
+      });
+    }
+
     if (name === "confirm_contribution") {
       const contributionId = typeof args?.p_contribution_id === "string"
         ? args.p_contribution_id

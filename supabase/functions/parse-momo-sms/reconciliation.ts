@@ -40,7 +40,7 @@ export async function reconcileParsedSms(
   parsedSmsId: string,
   timestamp: string,
 ): Promise<AutoReconciliationResult> {
-  if (parsed.amount == null || parsed.amount <= 0) {
+  if (!Number.isSafeInteger(parsed.amount) || parsed.amount! <= 0) {
     return buildManualReviewResult(
       "Parsed SMS does not contain a usable payment amount.",
       { reason: "missing_amount" },
@@ -50,9 +50,10 @@ export async function reconcileParsedSms(
   // 0) Look up receiver account
   const receiverResult = await adminClient
     .from("payment_receiver_accounts")
-    .select("purpose, owner_user_id")
+    .select("id, purpose, owner_user_id, is_active")
     .eq("payee_number_or_code", parsed.payee_number_or_code ?? "")
     .maybeSingle();
+  if (receiverResult.error) throw receiverResult.error;
 
   const receiverType = receiverResult.data?.purpose;
   const isDedicated = receiverType === "bank_custody" ||
@@ -63,26 +64,61 @@ export async function reconcileParsedSms(
   // 0.5) Try matching generic pending payment_intents first
   const intentResult = await adminClient
     .from("payment_intents")
-    .select("id, target_table, target_record_id, intent_type")
-    .eq("creator_id", rawSms.user_id)
+    .select(
+      "id, user_id, receiving_account_id, target_table, target_record_id, expected_amount, currency, expires_at, updated_at",
+    )
+    .eq("user_id", rawSms.user_id)
     .eq("status", "pending")
-    .eq("expected_amount", parsed.amount);
+    .eq("expected_amount", parsed.amount)
+    .limit(2);
+  if (intentResult.error) throw intentResult.error;
 
   const pendingIntents = intentResult.data ?? [];
   if (pendingIntents.length === 1) {
     const intent = pendingIntents[0];
-    
-    // Update intent to completed
-    await adminClient
+    const receiver = receiverResult.data;
+    const expiresAt = intent.expires_at == null
+      ? null
+      : Date.parse(intent.expires_at);
+    if (
+      !receiver?.is_active || intent.receiving_account_id !== receiver.id ||
+      intent.user_id !== rawSms.user_id ||
+      intent.expected_amount !== parsed.amount ||
+      parsed.tx_direction !== "debit" ||
+      !parsed.currency || intent.currency !== parsed.currency ||
+      (expiresAt !== null &&
+        (!Number.isFinite(expiresAt) || expiresAt <= Date.now()))
+    ) {
+      return buildManualReviewResult(
+        "Payment intent does not match the payment owner, receiver, currency, direction or validity period.",
+        { reason: "intent_evidence_mismatch", intent_id: intent.id },
+      );
+    }
+
+    // Use the database's declared status and claim the version we checked.
+    // Cancellation, editing or another parser must not be reported as success.
+    const fulfilled = await adminClient
       .from("payment_intents")
       .update({
-        status: "completed",
+        status: "fulfilled",
         updated_at: timestamp,
       })
-      .eq("id", intent.id);
+      .eq("id", intent.id)
+      .eq("user_id", rawSms.user_id)
+      .eq("status", "pending")
+      .eq("updated_at", intent.updated_at)
+      .select("id")
+      .maybeSingle();
+    if (fulfilled.error) throw fulfilled.error;
+    if (!fulfilled.data) {
+      return buildManualReviewResult(
+        "Payment intent changed during reconciliation.",
+        { reason: "intent_state_changed", intent_id: intent.id },
+      );
+    }
 
     return {
-      matchType: `intent_${intent.intent_type}`,
+      matchType: `intent_${intent.target_table}`,
       matchStatus: "matched",
       ledgerStatus: "posted",
       targetTable: intent.target_table ?? "payment_intents",
@@ -98,7 +134,7 @@ export async function reconcileParsedSms(
   } else if (pendingIntents.length > 1) {
     return buildManualReviewResult(
       "Parsed SMS matched multiple pending intents.",
-      { reason: "ambiguous_intents", count: pendingIntents.length }
+      { reason: "ambiguous_intents", count: pendingIntents.length },
     );
   }
 
@@ -108,6 +144,7 @@ export async function reconcileParsedSms(
     .select("id, reference, status, amount, created_at")
     .eq("user_id", rawSms.user_id)
     .eq("amount", parsed.amount);
+  if (legacyPendingResult.error) throw legacyPendingResult.error;
 
   if (legacyPendingResult.error == null) {
     const legacyPending = Array.isArray(legacyPendingResult.data)

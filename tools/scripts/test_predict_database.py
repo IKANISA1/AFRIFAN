@@ -124,7 +124,8 @@ try:
     for name in ['club_identity_contract', 'predict_contract', 'runtime_function_volatility_contract',
                  'security_definer_execution_contract', 'store_release_security_boundary_contract',
                  'english_public_membership_contract', 'venue_access_acl_contract',
-                 'member_portal_read_contract', 'member_contribution_history_contract']:
+                 'member_portal_read_contract', 'member_contribution_history_contract',
+                 'initiative_confirmation_atomic_contract']:
         result = sql('set search_path=public,extensions;\n' + (ROOT / 'supabase/tests' / (name + '.sql')).read_text())
         count = len(re.findall(r'^ok \d+', result.stdout, re.M))
         print('PASS', name, count, 'checks', flush=True)
@@ -390,5 +391,47 @@ try:
         if change == 'retarget':
             assert sql("select status from public.tickets where id='%s';" % fixture(730)).stdout.strip() == 'valid'
         print('PASS credential association revalidated after ticket lock', change, flush=True)
+
+    sql((ROOT / 'tools/scripts/fixtures/initiative_confirmation_concurrency.sql').read_text())
+
+    def confirm_contribution(number):
+        return "set role service_role; select public.confirm_club_initiative_contribution('%s','%s','RS-SUPPORT-CONCURRENT-%d',1000);" % (fixture(number), fixture(5), number)
+
+    def contribution_state():
+        return json.loads(sql("""select jsonb_build_object(
+          'amount',raised_amount,'count',supporter_count,
+          'points',(select points from public.fan_memberships where user_id='%s' and partner_id='%s'))
+          from public.initiatives where id='%s';""" % (fixture(5), fixture(800), fixture(801))).stdout.strip())
+
+    responses = ticket_scans_after_lock(
+        "select id from public.initiative_contributions where id='%s' for update;" % fixture(802),
+        [confirm_contribution(802)] * 5)
+    assert all(r.returncode == 0 for r in responses), [r.stderr for r in responses]
+    decisions = [json.loads(r.stdout.strip().splitlines()[-1]) for r in responses]
+    assert all(d['status'] == 'confirmed' for d in decisions), decisions
+    assert sum(d['newly_confirmed'] for d in decisions) == 1, decisions
+    assert contribution_state() == {'amount': 1000, 'count': 1, 'points': 20}, contribution_state()
+    print('PASS five overlapping contribution confirmations commit one amount, count and reward', flush=True)
+
+    responses = ticket_scans_after_lock(
+        "select id from public.initiatives where id='%s' for update;" % fixture(801),
+        [confirm_contribution(n) for n in (803, 804)])
+    assert all(r.returncode == 0 for r in responses), [r.stderr for r in responses]
+    decisions = [json.loads(r.stdout.strip().splitlines()[-1]) for r in responses]
+    assert all(d['newly_confirmed'] for d in decisions), decisions
+    assert contribution_state() == {'amount': 3000, 'count': 3, 'points': 60}, contribution_state()
+    print('PASS overlapping distinct contributions preserve both campaign increments and rewards', flush=True)
+
+    for number, mutation in [(805, "status='cancelled'"), (806, 'amount=2000'), (807, "user_id='%s'" % fixture(4))]:
+        responses = ticket_scans_after_lock(
+            "select id from public.initiative_contributions where id='%s' for update;" % fixture(number),
+            [confirm_contribution(number)],
+            before_commit="update public.initiative_contributions set %s where id='%s';" % (mutation, fixture(number)))
+        assert responses[0].returncode == 0, responses[0].stderr
+        decision = json.loads(responses[0].stdout.strip().splitlines()[-1])
+        assert decision['status'] == 'manual_review', decision
+        assert contribution_state() == {'amount': 3000, 'count': 3, 'points': 60}, contribution_state()
+        assert sql("select confirmed_at is null from public.initiative_contributions where id='%s';" % fixture(number)).stdout.strip() == 't'
+        print('PASS contribution binding revalidated after lock', mutation, flush=True)
 finally:
     subprocess.run([DOCKER, 'rm', '-f', NAME], capture_output=True)
