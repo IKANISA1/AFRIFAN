@@ -20,7 +20,7 @@ flutter build appbundle --dart-define-from-file=assets/flavors/production.local.
 See [flavor setup](../../docs/flutter_flavor_setup.md), the
 [release checklist](../../docs/rayon_sports_release_checklist.md), and
 [store metadata](store_metadata/README.md). The [web application](web/README.md)
-contains the public site, membership access, admin PWA, and venue portal.
+contains the public site, membership access and admin PWA.
 
 [Architecture](../../docs/blueprint.md) governs product ownership;
 [DESIGN.md](../../DESIGN.md) governs presentation.

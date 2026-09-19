@@ -69,23 +69,6 @@ export {
   updateTicketStatus,
 } from "./tickets";
 
-export {
-  findAdminTicketVerifierCandidate,
-  getAdminTicketVerifierWorkspace,
-  grantAdminTicketVerifierAssignment,
-  normalizeAdminTicketVerifierCandidate,
-  normalizeAdminTicketVerifierWorkspace,
-  revokeAdminTicketVerifierAssignment,
-} from "./ticket-verifiers";
-
-export type {
-  AdminTicketOrganization,
-  AdminTicketVerifierAssignment,
-  AdminTicketVerifierCandidate,
-  AdminTicketVerifierEvent,
-  AdminTicketVerifierWorkspace,
-} from "./ticket-verifiers";
-
 // Settings
 export {
   getAdminClubScopeOptions,
@@ -225,8 +208,6 @@ export {
   deleteAdminSiteNavigationItem,
   saveAdminSiteSearchItem,
   deleteAdminSiteSearchItem,
-  saveAdminVenueGovernanceControl,
-  deleteAdminVenueGovernanceControl,
 } from "./runtime-registries";
 
 export type {
@@ -234,9 +215,3 @@ export type {
   AdminPartnerPredictionPool,
   AdminPartnerPredictionPoolInput,
 } from "./partner-pools";
-
-export {
-  getAdminVenueOverview,
-  normalizeAdminVenueOverview,
-} from "./venues";
-export type { AdminVenueOverview } from "./venues";

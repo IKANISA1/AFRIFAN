@@ -136,19 +136,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/venue/tickets/verify",
-        headers: [
-          {
-            key: "Permissions-Policy",
-            value: "camera=(self), microphone=(), geolocation=(), payment=()",
-          },
-          {
-            key: "Cache-Control",
-            value: "no-store, max-age=0",
-          },
-        ],
-      },
-      {
         source: "/:path(privacy|terms|support|contact|account-deletion)",
         headers: [
           {

@@ -26,7 +26,6 @@ const authContracts = new Map([
   ["settle-prediction-notifications", [/requireCronSecret\(/]],
   ["sms-ingest", [/validateRequest\(/]],
   ["sync-google-wallet-ticket-state", [/requireCronSecret\(/]],
-  ["verify-ticket", [/requireAuthenticatedCaller\(/, /enforceRateLimit\(/]],
 ]);
 
 function fail(message) {

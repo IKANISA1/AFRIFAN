@@ -114,20 +114,6 @@ const snapshot = {
       sortOrder: 10,
     },
   ],
-  venueControls: [
-    {
-      ...base,
-      id: "venue-control-1",
-      controlKey: "orders.review",
-      label: "Order review",
-      detail: "Review pending venue orders.",
-      statusLabel: "review_required",
-      actionLabel: "Review",
-      controlGroup: "orders",
-      venueId: "venue-1",
-      sortOrder: 10,
-    },
-  ],
 };
 const emptySnapshot = Object.fromEntries(
   Object.keys(snapshot).map((key) => [key, []]),

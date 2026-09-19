@@ -5,7 +5,7 @@ The owner selected `$revolut-design` for the **whole native supporter app** on
 8 dp card, 58 dp command control, all-route gradient, heavy italic heading,
 and immediate theme-selection treatments. On 14 September 2026 the owner
 extended the review to the complete system, including websites, member access,
-Admin PWA and venue web. The selected
+Admin PWA. The selected
 [`revolut-design` skill](/Users/jeanbosco/.codex/skills/revolut-design/SKILL.md)
 is the sole design authority. This file records product facts, mappings and
 provisional implementation measurements. It cannot override the skill or its
@@ -14,8 +14,7 @@ bundled references. Current user instructions take precedence.
 ## Scope and reference
 
 The review covers the shared Flutter supporter application, all four configured
-club shells on Android and iOS, public and member websites, Admin PWA, and venue
-web. Use the skill's matching native, website, operator and PWA references for
+club shells on Android and iOS, public and member websites, and Admin PWA. Use the skill's matching native, website, operator and PWA references for
 each surface. The native comparator below does not establish web or desktop
 parity. Internal mobile admin remains role guarded; operational tasks preserve
 their own information hierarchy, permissions and workflows.
@@ -38,7 +37,7 @@ LIVE-005/007 for profile/settings, LIVE-010/011 for theme preview,
 LIVE-033–041/051/052 for discovery lists, LIVE-053–058 for forms and
 LIVE-060/062/063 for amount entry. Open each actual source before applying it.
 A static frame establishes its depicted state only. Football matches,
-predictions, ticket seats, QR admission and contributions require explicit
+predictions, ticket seats, ticket display and contributions require explicit
 product adaptations; no source frame proves their entire journeys.
 
 `docs/governance/native-reference-map.json` records native route mappings and
@@ -69,12 +68,10 @@ The mandatory product priority is:
 1. Club identity, team, news, fixtures, results, standings, and history.
 2. Membership, fan clubs, contributions, projects, tickets, and shop.
 3. Selected-match football predictions and competitions.
-4. Secondary matchday utilities such as venues, check-in, drinks ordering,
-   promotions, and venue-hosted football events.
 
 The target mobile primary navigation is `Home · Club · Predict · Membership`.
 Settings, privacy, notifications, support, theme, and account
-controls belong behind profile. A venue, wallet, generic entertainment, or
+controls belong behind profile. A wallet, generic entertainment, or
 settings surface must not displace Club or Membership in the primary shell.
 
 AFRICLUB screen hierarchy must follow these rules:
@@ -87,11 +84,9 @@ AFRICLUB screen hierarchy must follow these rules:
 - Membership makes belonging visible through the digital card, plan/status,
   fan clubs, contribution history/statements, and relevant club projects.
 - Predict combines prepared fixtures, personal picks and FET activity. Supporter communities remain in Fan Clubs.
-- Matchday experiences or Places to watch contains secondary venue discovery,
-  explicit check-in, a bounded drinks menu/order, and approved promotions.
 - Search must discover club, team, news, fixtures, results, standings,
-  projects, tickets, products, supporter communities, and approved
-  venues according to permissions and availability.
+  projects, tickets, products, and supporter communities according to permissions
+  and availability.
 
 Predict follows the simplified Gikundiro contract requested on 6 September 2026:
 
@@ -104,8 +99,7 @@ Predict follows the simplified Gikundiro contract requested on 6 September 2026:
 
 All supported club apps use the same semantic system and shared domain
 contracts. Branding and configuration may vary, but shared layouts must reserve
-the same hierarchy for club/football, membership, engagement, and secondary
-venue utility. Rayon Sports is a reference profile, not a hardcoded shared
+the same hierarchy for club/football, membership and engagement. Rayon Sports is a reference profile, not a hardcoded shared
 assumption.
 
 ## Semantic tokens and component anatomy
@@ -149,8 +143,7 @@ or simulate a successful financial/action outcome for visual effect.
   chrome and tonal cards, with Fixtures, My picks and FET activity sections.
   The available FET balance is server-derived; only future open fixtures accept
   Home / Draw / Away entries. Old `/challenge` and `/fanzone` links resolve to the
-  consolidated journey or the actual Club/Fan Clubs content. Match detail and
-  venue utilities remain focused secondary routes. Preserve existing
+  consolidated journey or the actual Club/Fan Clubs content. Match detail remains a focused secondary route. Preserve existing
   authorization, pending/reconciliation, ledger and kickoff rules.
 - Membership: own digital card/status uses the LIVE-048 purple card treatment
   (`#6219E5` to `#8017EE`, colour-managed rendered samples, not source tokens),

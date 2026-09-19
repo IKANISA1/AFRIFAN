@@ -223,8 +223,7 @@ if [ -f "$ROUTE_INVENTORY_JSON" ] &&
     (.routes | type == "array" and length == $root.route_count) and
     any(.routes[]; .surface == "mobile" and .path == "/home") and
     any(.routes[]; .surface == "mobile" and .path == "/search") and
-    any(.routes[]; .surface == "admin_pwa") and
-    any(.routes[]; .surface == "venue_portal")
+    any(.routes[]; .surface == "admin_pwa")
   ' "$ROUTE_INVENTORY_JSON" >/dev/null; then
   route_inventory_status="pass"
 fi

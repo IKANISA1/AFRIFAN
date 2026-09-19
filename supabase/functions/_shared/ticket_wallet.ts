@@ -23,8 +23,6 @@ const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const ISSUER_ID_PATTERN = /^[0-9]{8,32}$/;
 const WALLET_RESOURCE_ID_PATTERN = /^[0-9]{8,32}\.[A-Za-z0-9._-]{1,220}$/;
-const ROTATING_BARCODE_PATTERN =
-  /^AFC1\.([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.([1-9][0-9]{0,8})\.([0-9]{10,13})\.([0-9]{8})$/i;
 
 export type GoogleServiceAccount = {
   clientEmail: string;
@@ -55,12 +53,6 @@ export type PreparedWalletTicket = {
   kickoffTime: string;
 };
 
-export type RotatingBarcode = {
-  credentialId: string;
-  credentialVersion: number;
-  timestampSeconds: number;
-  totp: string;
-};
 
 function bytesToBase64Url(bytes: Uint8Array): string {
   let binary = "";
@@ -85,15 +77,6 @@ function pemToBytes(pem: string): Uint8Array {
   return Uint8Array.from(binary, (character) => character.charCodeAt(0));
 }
 
-function hexToBytes(hex: string): Uint8Array {
-  if (!/^[0-9a-f]+$/i.test(hex) || hex.length % 2 !== 0) {
-    throw new Error("Invalid hexadecimal secret.");
-  }
-  return Uint8Array.from(
-    { length: hex.length / 2 },
-    (_, index) => Number.parseInt(hex.slice(index * 2, index * 2 + 2), 16),
-  );
-}
 
 function bytesToHex(bytes: Uint8Array): string {
   return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
@@ -284,95 +267,6 @@ export async function derivePassTotpSecretHex(
     ),
   );
   return bytesToHex(new Uint8Array(signature).slice(0, 20));
-}
-
-export async function generateTotpFromHex(
-  secretHex: string,
-  timestampSeconds: number,
-  periodMillis = WALLET_TOTP_PERIOD_MILLIS,
-  digits = WALLET_TOTP_DIGITS,
-): Promise<string> {
-  if (!Number.isSafeInteger(timestampSeconds) || timestampSeconds < 0) {
-    throw new Error("TOTP timestamp is invalid.");
-  }
-  const counter = Math.floor(timestampSeconds * 1000 / periodMillis);
-  const counterBytes = new Uint8Array(8);
-  new DataView(counterBytes.buffer).setBigUint64(0, BigInt(counter), false);
-  const key = await crypto.subtle.importKey(
-    "raw",
-    bytesToArrayBuffer(hexToBytes(secretHex)),
-    { name: "HMAC", hash: "SHA-1" },
-    false,
-    ["sign"],
-  );
-  const signature = new Uint8Array(
-    await crypto.subtle.sign("HMAC", key, counterBytes),
-  );
-  const offset = signature[signature.length - 1] & 0x0f;
-  const binary = ((signature[offset] & 0x7f) << 24) |
-    ((signature[offset + 1] & 0xff) << 16) |
-    ((signature[offset + 2] & 0xff) << 8) |
-    (signature[offset + 3] & 0xff);
-  return (binary % 10 ** digits).toString().padStart(digits, "0");
-}
-
-export function parseRotatingBarcode(value: unknown): RotatingBarcode {
-  if (typeof value !== "string" || value.length > 180) {
-    throw new TicketWalletValidationError(400, "Ticket code is invalid.");
-  }
-  const match = ROTATING_BARCODE_PATTERN.exec(value.trim());
-  if (!match) {
-    throw new TicketWalletValidationError(400, "Ticket code is invalid.");
-  }
-  const timestampSeconds = Number.parseInt(match[3], 10);
-  if (!Number.isSafeInteger(timestampSeconds)) {
-    throw new TicketWalletValidationError(400, "Ticket code is invalid.");
-  }
-  return {
-    credentialId: match[1].toLowerCase(),
-    credentialVersion: Number.parseInt(match[2], 10),
-    timestampSeconds,
-    totp: match[4],
-  };
-}
-
-export function constantTimeEqual(left: string, right: string): boolean {
-  const maximum = Math.max(left.length, right.length);
-  let difference = left.length ^ right.length;
-  for (let index = 0; index < maximum; index += 1) {
-    difference |= (left.charCodeAt(index) || 0) ^
-      (right.charCodeAt(index) || 0);
-  }
-  return difference === 0;
-}
-
-export async function verifyRotatingBarcode(
-  value: unknown,
-  masterSecret: string,
-  now = new Date(),
-): Promise<RotatingBarcode> {
-  const parsed = parseRotatingBarcode(value);
-  const nowSeconds = Math.floor(now.getTime() / 1000);
-  const submittedCounter = Math.floor(
-    parsed.timestampSeconds * 1000 / WALLET_TOTP_PERIOD_MILLIS,
-  );
-  const nowCounter = Math.floor(nowSeconds * 1000 / WALLET_TOTP_PERIOD_MILLIS);
-  if (Math.abs(submittedCounter - nowCounter) > 1) {
-    throw new TicketWalletValidationError(409, "Ticket code has expired.");
-  }
-  const secretHex = await derivePassTotpSecretHex(
-    masterSecret,
-    parsed.credentialId,
-    parsed.credentialVersion,
-  );
-  const expected = await generateTotpFromHex(
-    secretHex,
-    parsed.timestampSeconds,
-  );
-  if (!constantTimeEqual(expected, parsed.totp)) {
-    throw new TicketWalletValidationError(409, "Ticket code is invalid.");
-  }
-  return parsed;
 }
 
 function localized(value: string) {

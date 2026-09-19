@@ -462,58 +462,6 @@ final class SupabaseFixtureDiscoverySource
   }
 }
 
-final class SupabaseVenueDiscoverySource extends SupabaseDiscoverySearchSource {
-  SupabaseVenueDiscoverySource({required super.client})
-    : super(category: DiscoveryCategory.services);
-
-  @override
-  Future<List<DiscoveryResult>> search(DiscoverySearchQuery query) async {
-    if (!supports(query)) {
-      return const <DiscoveryResult>[];
-    }
-
-    final l10n = query.l10n;
-    final scope = await scopeResolver.requireResolved();
-    var request = client
-        .from('venues')
-        .select('id, slug, display_name, city, public_summary')
-        .eq('approved_public_profile', true)
-        .eq('status', 'approved');
-    request = scopeResolver.apply(request, scope);
-    final rows = await request
-        .order('display_name')
-        .limit(SupabaseDiscoverySearchSource.sourceLimit * 3);
-
-    return rows
-        .where(
-          (row) => matches(query, <String?>[
-            row['display_name']?.toString(),
-            row['city']?.toString(),
-            row['public_summary']?.toString(),
-          ]),
-        )
-        .take(SupabaseDiscoverySearchSource.sourceLimit)
-        .map((row) {
-          final slug = row['slug']?.toString() ?? '';
-          return DiscoveryResult(
-            id: 'venue:${row['id'] ?? slug}',
-            title: row['display_name']?.toString() ?? l10n.fanZoneVenueCode,
-            description:
-                row['public_summary']?.toString() ??
-                row['city']?.toString() ??
-                l10n.searchFanZoneDescription,
-            category: DiscoveryCategory.services,
-            destination:
-                '/fanzone/venue?venue=${Uri.encodeQueryComponent(slug)}',
-            icon: AfriIcons.location,
-            keywords: const <String>['venue', 'bar', 'watch', 'matchday'],
-          );
-        })
-        .where((result) => !result.destination.endsWith('venue='))
-        .toList(growable: false);
-  }
-}
-
 final class SupabaseCommerceDiscoverySource
     extends SupabaseDiscoverySearchSource {
   SupabaseCommerceDiscoverySource({required super.client})

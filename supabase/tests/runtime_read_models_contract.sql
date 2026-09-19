@@ -4,7 +4,7 @@ create extension if not exists pgtap with schema extensions;
 
 begin;
 
-select plan(25);
+select plan(24);
 
 select ok(
   not has_table_privilege('anon', 'public.news_articles', 'TRUNCATE')
@@ -21,7 +21,7 @@ select ok(
   )
   and not has_table_privilege(
     'authenticated',
-    'public.venue_drink_orders',
+    'public.shop_orders',
     'TRIGGER'
   ),
   'anonymous and authenticated API roles have no dangerous table privileges'
@@ -343,28 +343,6 @@ select ok(
   'payment instructions are authenticated, tenant-scoped, and read-only'
 );
 
-select ok(
-  has_column_privilege('anon', 'public.venues', 'public_summary', 'SELECT')
-  and has_column_privilege(
-    'authenticated',
-    'public.venue_checkins',
-    'review_reason',
-    'SELECT'
-  )
-  and has_column_privilege(
-    'authenticated',
-    'public.venue_drink_items',
-    'is_alcohol',
-    'SELECT'
-  )
-  and has_column_privilege(
-    'authenticated',
-    'public.venue_drink_orders',
-    'payment_status',
-    'SELECT'
-  ),
-  'venue discovery and authenticated order context have explicit projections'
-);
 
 select ok(
   not has_table_privilege('anon', 'public.admin_role_assignments', 'SELECT')

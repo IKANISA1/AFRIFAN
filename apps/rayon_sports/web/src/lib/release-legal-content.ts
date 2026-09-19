@@ -68,7 +68,7 @@ export const termsSections: LegalDocumentSection[] = [
   {
     heading: "Using Gikundiro",
     paragraphs: [
-      "By using the website or mobile app, you agree to use the service lawfully, provide accurate information for protected transactions, and follow the published club, venue, community, and product rules that apply to the journey you select.",
+      "By using the website or mobile app, you agree to use the service lawfully, provide accurate information for protected transactions, and follow the published club, community, and product rules that apply to the journey you select.",
     ],
   },
   {
@@ -102,7 +102,7 @@ export const termsSections: LegalDocumentSection[] = [
   {
     heading: "Availability, changes, and responsibility",
     paragraphs: [
-      "Features may be interrupted for maintenance, security, connectivity, venue operations, or provider availability. We may change or retire features while preserving confirmed obligations and providing notices required by applicable law.",
+      "Features may be interrupted for maintenance, security, connectivity or provider availability. We may change or retire features while preserving confirmed obligations and providing notices required by applicable law.",
       "Nothing in these terms excludes rights or responsibilities that cannot lawfully be excluded. Support questions can be sent to support@ikanisa.com.",
     ],
   },

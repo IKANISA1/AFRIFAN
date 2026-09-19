@@ -163,7 +163,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           ? _WalletConsequence(
               title: l10n.walletRewardsUnavailable,
               body: l10n.walletDisabledBody,
-              actionLabel: l10n.venueBackToFanZone,
+              actionLabel: l10n.fanZoneBackToFanZone,
               onAction: _close,
             )
           : asyncWallet.when(
@@ -177,7 +177,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                       key: const ValueKey<String>('fet-wallet-empty'),
                       title: l10n.walletNoActivity,
                       body: l10n.walletNoActivityBody,
-                      actionLabel: l10n.venueBackToFanZone,
+                      actionLabel: l10n.fanZoneBackToFanZone,
                       onAction: _close,
                     )
                   : _buildContent(snapshot, storePolicy),
@@ -192,25 +192,25 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       FetWalletFailureKind.offline => _WalletConsequence(
         title: l10n.walletOffline,
         body: l10n.walletOfflineBody,
-        actionLabel: l10n.venueBackToFanZone,
+        actionLabel: l10n.fanZoneBackToFanZone,
         onAction: _close,
       ),
       FetWalletFailureKind.permissionDenied => _WalletConsequence(
         title: l10n.walletAccessDenied,
         body: l10n.walletAccessDeniedBody,
-        actionLabel: l10n.venueBackToFanZone,
+        actionLabel: l10n.fanZoneBackToFanZone,
         onAction: _close,
       ),
       FetWalletFailureKind.securityTimeout => _WalletConsequence(
         title: l10n.walletCheckTimedOut,
         body: l10n.walletCheckTimedOutBody,
-        actionLabel: l10n.venueTryAgain,
+        actionLabel: l10n.commonTryAgain,
         onAction: () => ref.read(fetWalletRouteProvider.notifier).refresh(),
       ),
       _ => _WalletConsequence(
         title: l10n.walletRewardsUnavailable,
         body: l10n.walletUnavailableBody,
-        actionLabel: l10n.venueTryAgain,
+        actionLabel: l10n.commonTryAgain,
         onAction: () => ref.read(fetWalletRouteProvider.notifier).refresh(),
       ),
     };

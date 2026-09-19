@@ -20,7 +20,11 @@ void main() {
   });
 
   test('every canonical Flutter route resolves through the router graph', () {
-    expect(canonicalRoutes.length, 88);
+    expect(canonicalRoutes.length, 86);
+    expect(
+      canonicalRoutes.keys.any((path) => path.startsWith('/fanzone/venue')),
+      isFalse,
+    );
     expect(canonicalRoutes, contains('/predict'));
     expect(
       canonicalRoutes.keys.any((path) => path.startsWith('/challenge')),

@@ -1290,20 +1290,15 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
     final isControlledSearchSurface = !isRouteHandler && path == '/search';
     final isControlledHistorySurface = !isRouteHandler && path == '/history';
     final isAdmin = path == '/admin' || path.startsWith('/admin/');
-    final isVenue = path == '/venue' || path.startsWith('/venue/');
     final surface = isApi
         ? 'web_api'
         : isAdmin
         ? 'admin_pwa'
-        : isVenue
-        ? 'venue_portal'
         : 'consumer_web';
     final role = isApi
         ? 'endpoint-specific'
         : isAdmin
         ? 'admin role'
-        : isVenue
-        ? 'venue operator'
         : 'public or authenticated consumer';
     output.add(<String, Object?>{
       'surface': surface,
@@ -1315,7 +1310,7 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
           ? 'http_route'
           : 'next_page',
       'role_boundary': role,
-      'guard': isAdmin || isVenue || isApi
+      'guard': isAdmin || isApi
           ? 'proxy plus server-side authorization'
           : 'route-specific',
       'presentation': isApi || isRouteHandler

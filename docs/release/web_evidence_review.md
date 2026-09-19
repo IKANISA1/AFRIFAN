@@ -23,7 +23,7 @@ archived historical images must be restored and verified in their original
 capture directory before use. Captures from another build remain historical.
 The command checks current production, test/helper and lockfile hashes, artifact
 completeness, image decoding, dimensions, tile continuity and applicable states.
-It supports public, admin and venue manifests, including multi-route documents.
+It supports public and admin manifests, including multi-route documents.
 It rejects unfinished, stale or incomplete captures and preserves existing
 review packets by requiring a new output path.
 

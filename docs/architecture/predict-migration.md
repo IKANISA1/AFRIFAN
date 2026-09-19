@@ -96,7 +96,7 @@ The obsolete aggregate Fan Zone provider and unused hub widgets are removed.
 linkable. The old Challenge and Fan Zone entry routes redirect into those
 sections. Match/league browsing belongs under Club; communities use `/fan-clubs`
 and initiatives use `/contribute`, each with their existing detail routes.
-Historical prediction details and operational venue utilities remain registered.
+Historical prediction details remain registered.
 
 One PredictController owns fixtures, confirmed entries and FET activity. It
 blocks offline, duplicate and uncertain submissions, refreshes after reconnect

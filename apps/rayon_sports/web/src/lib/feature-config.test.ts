@@ -84,8 +84,8 @@ const config: PlatformConfigSnapshot = {
       },
     },
     {
-      feature_key: "venue_app",
-      display_name: "Venue App",
+      feature_key: "membership",
+      display_name: "Membership",
       is_enabled: true,
       visibility_state: "visible",
       channel: {
@@ -94,7 +94,7 @@ const config: PlatformConfigSnapshot = {
         show_in_navigation: true,
         show_on_home: false,
         sort_order: 5,
-        route_key: "/venues",
+        route_key: "/membership",
         placement_key: null,
       },
       rules: {
@@ -174,7 +174,6 @@ const config: PlatformConfigSnapshot = {
   runtime_copy: [],
   site_navigation: [],
   site_search: [],
-  venue_governance_controls: [],
 };
 
 describe("feature-config", () => {
@@ -208,7 +207,7 @@ describe("feature-config", () => {
       (block) => block.block_key,
     );
 
-    expect(navKeys).toEqual(["news", "venue_app"]);
+    expect(navKeys).toEqual(["news", "membership"]);
     expect(blockKeys).toEqual(["hero", "news-promo"]);
   });
 
@@ -228,13 +227,13 @@ describe("feature-config", () => {
   it("blocks disabled routes while leaving unrelated routes alone", () => {
     expect(getFeatureKeyForPath(config, "/news/123")).toBe("news");
     expect(getFeatureKeyForPath(config, "/shop/cart")).toBe("shop");
-    expect(getFeatureKeyForPath(config, "/venues/rayon-lounge")).toBe(
-      "venue_app",
+    expect(getFeatureKeyForPath(config, "/membership/benefits")).toBe(
+      "membership",
     );
     expect(isRouteAvailable(config, "/news/123")).toBe(true);
     expect(isRouteAvailable(config, "/shop/cart")).toBe(false);
     expect(isRouteAvailable(config, "/tickets/checkout")).toBe(false);
-    expect(isRouteAvailable(config, "/venues/rayon-lounge")).toBe(true);
+    expect(isRouteAvailable(config, "/membership/benefits")).toBe(true);
     expect(isRouteAvailable(config, "/contact")).toBe(true);
   });
 });

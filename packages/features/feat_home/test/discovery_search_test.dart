@@ -91,21 +91,6 @@ void main() {
       }
     });
 
-    test('keeps approved venues secondary under matchday services', () async {
-      final response = await repository.search(
-        const DiscoverySearchQuery(
-          text: 'venue watch',
-          category: DiscoveryCategory.services,
-        ),
-      );
-
-      final venue = response.results.singleWhere(
-        (result) => result.id == 'approved-venues',
-      );
-      expect(venue.destination, '/fanzone/venue');
-      expect(venue.category, DiscoveryCategory.services);
-    });
-
     test(
       'returns bounded fixture results without private identifiers',
       () async {

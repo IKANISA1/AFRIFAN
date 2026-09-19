@@ -35,7 +35,7 @@ row whose supporting `source_url` is not under `livescore.com`.
 
 ## Freshness, Override, And Settlement Rules
 
-- Public, mobile, admin, and venue read models must expose whether football data is live,
+- Public, mobile, and admin read models must expose whether football data is live,
   stale, manually overridden, or held for review.
 - W-D-W settlement must use approved result state, not client-visible score
   strings alone.

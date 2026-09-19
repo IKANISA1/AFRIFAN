@@ -33,7 +33,6 @@ import {
   deleteAdminRuntimeCopyEntry,
   deleteAdminSiteNavigationItem,
   deleteAdminSiteSearchItem,
-  deleteAdminVenueGovernanceControl,
   getAdminRuntimeRegistrySnapshot,
   normalizeAdminRuntimeRegistrySnapshot,
   saveAdminPlatformOptionSet,
@@ -42,7 +41,6 @@ import {
   saveAdminRuntimeCopyEntry,
   saveAdminSiteNavigationItem,
   saveAdminSiteSearchItem,
-  saveAdminVenueGovernanceControl,
 } from "@/lib/data/admin/runtime-registries";
 import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import type {
@@ -54,7 +52,6 @@ import type {
   AdminRuntimeRegistrySnapshot,
   AdminSiteNavigationItem,
   AdminSiteSearchItem,
-  AdminVenueGovernanceControl,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
@@ -68,8 +65,7 @@ type RuntimeResourceKey =
   | "optionValues"
   | "runtimeCopy"
   | "navigation"
-  | "search"
-  | "venueControls";
+  | "search";
 
 type EditableRuntimeRecord =
   | AdminPlatformRoute
@@ -77,8 +73,7 @@ type EditableRuntimeRecord =
   | AdminPlatformOptionValue
   | AdminRuntimeCopyEntry
   | AdminSiteNavigationItem
-  | AdminSiteSearchItem
-  | AdminVenueGovernanceControl;
+  | AdminSiteSearchItem;
 
 type RuntimeResourceDefinition = {
   key: RuntimeResourceKey;
@@ -220,27 +215,6 @@ const runtimeResources: RuntimeResourceDefinition[] = [
     save: saveAdminSiteSearchItem as RuntimeResourceDefinition["save"],
     delete: deleteAdminSiteSearchItem,
   },
-  {
-    key: "venueControls",
-    label: "Venue Controls",
-    icon: ShieldCheck,
-    rows: (snapshot) => snapshot.venueControls,
-    emptyDraft: (access) => ({
-      scope: access.isSuperAdmin ? "global" : "club",
-      controlKey: "",
-      label: "",
-      detail: "",
-      statusLabel: "review_required",
-      actionLabel: "",
-      controlGroup: "general",
-      venueId: "",
-      sortOrder: 0,
-      isActive: true,
-      metadata: {},
-    }),
-    save: saveAdminVenueGovernanceControl as RuntimeResourceDefinition["save"],
-    delete: deleteAdminVenueGovernanceControl,
-  },
 ];
 
 function cleanRecord(record: EditableRuntimeRecord | Record<string, unknown>) {
@@ -261,15 +235,13 @@ function recordTitle(record: EditableRuntimeRecord) {
   if ("optionKey" in record) return record.optionKey;
   if ("copyKey" in record) return record.copyKey;
   if ("navKey" in record) return record.navKey;
-  if ("searchKey" in record) return record.searchKey;
-  return record.controlKey;
+  return record.searchKey;
 }
 
 function recordSubtitle(record: EditableRuntimeRecord) {
   if ("pathPattern" in record) return record.pathPattern;
   if ("textValue" in record) return record.textValue;
   if ("href" in record) return record.href;
-  if ("detail" in record) return record.detail;
   if ("optionSetId" in record) return record.optionSetId;
   return record.id;
 }
@@ -289,7 +261,6 @@ const emptySnapshot: AdminRuntimeRegistrySnapshot = {
   runtimeCopy: [],
   navigation: [],
   search: [],
-  venueControls: [],
 };
 
 const runtimeSnapshotIsEmpty = (snapshot: AdminRuntimeRegistrySnapshot) =>

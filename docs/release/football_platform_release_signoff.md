@@ -24,7 +24,6 @@ Database reconciliation change record:
 | iOS physical-device UAT |  |  |  |
 | Public web and domain UAT |  |  |  |
 | Club admin scoped-data UAT |  |  |  |
-| Venue staff scoped-data UAT |  |  |  |
 | Accessibility |  |  |  |
 | Privacy and retention |  |  |  |
 | Security and rollback |  |  |  |

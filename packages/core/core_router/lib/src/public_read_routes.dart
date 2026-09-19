@@ -1,5 +1,5 @@
 /// Public discovery is usable before authentication, including offline recovery.
-/// Account data, cart/checkout, admission and all write actions remain protected.
+/// Account data, cart/checkout and all write actions remain protected.
 abstract final class PublicReadRoutes {
   static bool allows(Uri uri) {
     if (uri.hasScheme ||

@@ -372,15 +372,6 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_gamification/lib/src/screens/venue_order_screen.dart",
-      "field": "text",
-      "value": "$count",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
       "file": "packages/features/feat_gamification/lib/src/widgets/animated_fet_counter.dart",
       "field": "text",
       "value": "${widget.prefix}$displayValue${widget.suffix}",

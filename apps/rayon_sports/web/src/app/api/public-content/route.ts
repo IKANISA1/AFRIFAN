@@ -18,7 +18,6 @@ import {
   getStandingsStrict,
 } from "@/lib/data/public";
 import type { ShopProduct } from "@/lib/types";
-import { getApprovedPublicVenuesStrict } from "@/lib/data/venue";
 import {
   getFanEngagementLeaderboardStrict,
   getFanEngagementTokensStrict,
@@ -39,7 +38,6 @@ const supportedResources = [
   "squad",
   "standings",
   "supporters",
-  "venues",
 ] as const;
 
 type PublicContentResource = (typeof supportedResources)[number];
@@ -721,42 +719,6 @@ export async function GET(request: Request) {
       );
     }
 
-    if (resource === "venues") {
-      const venues = await withControlledApiTimeout(
-        getApprovedPublicVenuesStrict(),
-      );
-      const items = venues
-        .map((venue) => ({
-          id: venue.id.trim(),
-          displayName: venue.displayName.trim().slice(0, 160),
-          slug: venue.slug.trim().slice(0, 160),
-          city: venue.city.trim().slice(0, 120),
-          summary: venue.summary.trim().slice(0, 1_000),
-        }))
-        .filter(
-          (venue) =>
-            venue.id &&
-            venue.displayName &&
-            venue.slug &&
-            venue.city &&
-            venue.summary,
-        )
-        .slice(0, 12);
-
-      return controlledApiJson(
-        {
-          code:
-            items.length === 0 ? "PUBLIC_VENUES_EMPTY" : "PUBLIC_VENUES_READY",
-          items,
-        },
-        200,
-        {
-          "Cache-Control":
-            "public, max-age=0, s-maxage=300, stale-while-revalidate=600",
-        },
-      );
-    }
-
     if (resource === "supporters") {
       const [catalogRows, leaderboardRows] = await withControlledApiTimeout(
         Promise.all([
@@ -901,9 +863,7 @@ export async function GET(request: Request) {
                         ? "PUBLIC_SQUAD"
                         : resource === "supporters"
                           ? "PUBLIC_SUPPORTERS"
-                          : resource === "venues"
-                            ? "PUBLIC_VENUES"
-                            : "PUBLIC_HISTORY";
+                          : "PUBLIC_HISTORY";
     return controlledApiFailureResponse(error, failurePrefix);
   }
 }

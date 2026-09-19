@@ -9,7 +9,7 @@ prove that this checkout is serving it.
 2. Fetch `/robots.txt` and `/sitemap.xml` from the deployed origin. Compare them
    with `src/app/robots.ts` and `src/app/sitemap.ts`.
 3. Check that sitemap URLs use the intended public origin, return successful
-   responses, and contain public content. Private member, admin, venue, and API
+   responses, and contain public content. Private member, admin, and API
    responses must not be exposed through the public sitemap.
 4. Submit the sitemap and inspect representative public routes. Record the
    observed crawl and indexing result; successful submission alone does not

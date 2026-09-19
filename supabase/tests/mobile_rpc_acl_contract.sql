@@ -4,7 +4,7 @@ create extension if not exists pgtap with schema extensions;
 
 begin;
 
-select plan(10);
+select plan(9);
 
 create temporary table expected_mobile_rpc_acl (
   signature text primary key,
@@ -59,14 +59,12 @@ insert into expected_mobile_rpc_acl values
   ('public.prediction_place(uuid,text)', false, true, false),
   ('public.prediction_place_acca(jsonb)', false, true, false),
   ('public.prediction_place_jackpot_entry(uuid,jsonb,text)', false, false, true),
-  ('public.purchase_club_tickets(uuid,uuid,text,integer,text)', false, false, true),
-  ('public.venue_checkin_validate(bigint,text,text,numeric)', false, true, false),
-  ('public.venue_order_create(bigint,uuid,uuid,jsonb,boolean,text)', false, true, false);
+  ('public.purchase_club_tickets(uuid,uuid,text,integer,text)', false, false, true);
 
 select is(
   (select count(*)::integer from expected_mobile_rpc_acl),
-  48,
-  'the current football-only mobile and supporting service RPC denominator is 48'
+  46,
+  'the current football-only mobile and supporting service RPC denominator is 46'
 );
 
 -- The 20260906082522 migration deliberately removed Challenge after stake
@@ -198,26 +196,6 @@ select ok(
     'EXECUTE'
   ),
   'wallet internals and arbitrary point minting are not client-callable'
-);
-
-select ok(
-  exists (
-    select 1
-    from pg_proc as procedure
-    where procedure.oid =
-      'public.venue_checkin_validate(bigint,text,text,numeric)'::regprocedure
-      and procedure.proconfig = array['search_path=""']::text[]
-      and procedure.prosrc ~ 'fet_require_club_context'
-  )
-  and exists (
-    select 1
-    from pg_proc as procedure
-    where procedure.oid =
-      'public.venue_order_create(bigint,uuid,uuid,jsonb,boolean,text)'::regprocedure
-      and procedure.proconfig = array['search_path=""']::text[]
-      and procedure.prosrc ~ 'fet_require_club_context'
-  ),
-  'venue write entry points validate the authenticated club before delegation'
 );
 
 select * from finish();

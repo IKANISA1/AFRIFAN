@@ -13929,7 +13929,7 @@ INSERT INTO "public"."partners" ("id", "name", "category", "country", "logo_url"
 	('5ae96a23-6062-463e-98ef-04631b03a36a', 'Radiant Insurance', 'organization', 'RW', NULL, 'Admin-managed insurance partner for supporter, family, and group protection journeys.', 0, 0, '2026-08-20 10:51:57.105348+00', 'radiant-insurance', '🛡️', 'Insurance services', NULL, true, 30, '2026-08-20 10:51:57.105348+00', false, NULL, NULL, NULL, NULL, NULL, '{"service_domain": "insurance", "activation_mode": "admin_panel", "supported_countries": ["RW", "CD", "ZM"]}', NULL, true),
 	('3ee95b33-c450-4b01-ab06-81d2e5456d9e', 'Mobio', 'organization', 'RW', NULL, 'Admin-managed mobility partner for transport and movement-related fan experiences.', 0, 0, '2026-08-20 10:51:57.105348+00', 'mobio', '🛵', 'Mobility services', NULL, true, 40, '2026-08-20 10:51:57.105348+00', false, NULL, NULL, NULL, NULL, NULL, '{"service_domain": "mobility", "activation_mode": "admin_panel", "supported_countries": ["RW", "CD", "ZM"]}', NULL, true),
 	('3eca6fbc-5644-4f76-9a15-20ce4d7a7c4e', 'Cool', 'organization', 'RW', NULL, 'Admin-managed community partner for group savings and fundraising activations.', 0, 0, '2026-08-20 10:51:57.105348+00', 'cool', '🤝', 'Group savings and community fundraising', NULL, true, 50, '2026-08-20 10:51:57.105348+00', false, NULL, NULL, NULL, NULL, NULL, '{"service_domain": "community_finance", "activation_mode": "admin_panel", "supported_countries": ["RW", "CD", "ZM"]}', NULL, true),
-	('dc693307-8c60-4990-b348-2ba87d49ff91', 'Skol', 'organization', 'RW', NULL, 'Official beverage partner for venue orders, fan zone check-ins, and matchday supporter experiences.', 0, 0, '2026-08-20 10:51:57.335737+00', 'skol', '🍺', 'Matchday venue activations', NULL, true, 60, '2026-08-20 10:51:57.335737+00', false, NULL, NULL, '#F6C343', '#1B1B1B', NULL, '{"service_domain": "matchday_fnb", "activation_mode": "partner_offer", "supported_countries": ["RW"]}', NULL, true),
+	('dc693307-8c60-4990-b348-2ba87d49ff91', 'Skol', 'organization', 'RW', NULL, 'Club beverage sponsor for matchday supporter experiences.', 0, 0, '2026-08-20 10:51:57.335737+00', 'skol', '🍺', 'Matchday sponsorship', NULL, true, 60, '2026-08-20 10:51:57.335737+00', false, NULL, NULL, '#F6C343', '#1B1B1B', NULL, '{"service_domain": "matchday_fnb", "activation_mode": "partner_offer", "supported_countries": ["RW"]}', NULL, true),
 	('1aa4b52d-9e86-46a3-b7a0-6fb12e169f7f', 'Rayon Shop', 'organization', 'RW', NULL, 'Official merchandise storefront for kits, fanwear, and campaign drops tied to FANZONE rewards.', 0, 0, '2026-08-20 10:51:57.335737+00', 'rayon-shop', '👕', 'Official club merchandise', NULL, true, 70, '2026-08-20 10:51:57.335737+00', false, NULL, NULL, '#0038A8', '#D9B24C', NULL, '{"service_domain": "merchandise", "activation_mode": "partner_offer", "supported_countries": ["RW"]}', NULL, true);
 
 
@@ -14571,18 +14571,6 @@ INSERT INTO "public"."admin_dashboard_actions" ("id", "action_key", "title", "su
 
 
 --
--- Data for Name: venues; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: fet_ledger_reservations; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
 -- Data for Name: fet_partner_offers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -15031,8 +15019,7 @@ INSERT INTO "public"."platform_option_sets" ("id", "option_set_key", "label", "d
 	('83a4eb4d-b145-4d0d-8398-1c1ce55ebeea', 'prediction_market_category_order', 'Prediction market category order', 'Display order for market categories in market selectors.', 'text', 'both', NULL, true, '{"domain": "predictions"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('22a37177-2846-48e7-a9df-ecc9cf034bce', 'membership_tier_slugs', 'Membership tier slugs', 'Canonical membership tier slugs for forms, filters, and notifications.', 'text', 'both', NULL, true, '{"domain": "membership"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('27cf2487-198f-4e57-8407-7c6cddfe206d', 'notification_audiences', 'Notification audiences', 'Admin-selectable notification target audiences.', 'text', 'admin', NULL, true, '{"domain": "notifications"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('73b8ed6e-7d8c-4d1b-b656-0c4f43d439f1', 'content_distributions', 'Content distributions', 'Allowed surfaces for CMS and banner distribution.', 'text', 'admin', NULL, true, '{"domain": "cms"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('ec40dec0-0037-42b7-8122-49135e237f19', 'venue_order_statuses', 'Venue order statuses', 'Venue drink order workflow statuses.', 'text', 'venue', NULL, true, '{"domain": "venue"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00');
+	('73b8ed6e-7d8c-4d1b-b656-0c4f43d439f1', 'content_distributions', 'Content distributions', 'Allowed surfaces for CMS and banner distribution.', 'text', 'admin', NULL, true, '{"domain": "cms"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00');
 
 
 --
@@ -15067,13 +15054,7 @@ INSERT INTO "public"."platform_option_values" ("id", "option_set_id", "option_ke
 	('76c37258-a40a-4846-b69c-4a1215d7afaa', '27cf2487-198f-4e57-8407-7c6cddfe206d', 'all_fans', 'All fans', '"all_fans"', 10, true, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('497c2bf6-5e70-460b-86cb-cde5c39bcb74', '73b8ed6e-7d8c-4d1b-b656-0c4f43d439f1', 'app', 'Mobile App only', '"app"', 30, false, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('97c0a0b3-424b-4304-bb9d-b17ee372b439', '73b8ed6e-7d8c-4d1b-b656-0c4f43d439f1', 'web', 'Website only', '"web"', 20, false, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('e5ad958c-240a-4f22-895a-96d1f6bd2464', '73b8ed6e-7d8c-4d1b-b656-0c4f43d439f1', 'both', 'Both Web and App', '"both"', 10, true, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('1d460471-124c-4244-91de-dbdb9b1b25ee', 'ec40dec0-0037-42b7-8122-49135e237f19', 'cancelled', 'Cancelled', '"cancelled"', 60, false, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('6e333519-2414-46a1-966c-59dc737526f9', 'ec40dec0-0037-42b7-8122-49135e237f19', 'served', 'Served', '"served"', 50, false, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('f9c7dbad-41eb-41b0-964c-3e6e1931f96a', 'ec40dec0-0037-42b7-8122-49135e237f19', 'ready', 'Ready', '"ready"', 40, false, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('340fc805-1daa-44cb-8e09-1dc59e25dbd7', 'ec40dec0-0037-42b7-8122-49135e237f19', 'preparing', 'Preparing', '"preparing"', 30, false, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('1d8f8ca1-3d2f-4a70-adc1-b23d0d9caf08', 'ec40dec0-0037-42b7-8122-49135e237f19', 'accepted', 'Accepted', '"accepted"', 20, false, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('30035b82-e56d-4858-abe6-3f4d233958fe', 'ec40dec0-0037-42b7-8122-49135e237f19', 'created', 'Created', '"created"', 10, true, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00');
+	('e5ad958c-240a-4f22-895a-96d1f6bd2464', '73b8ed6e-7d8c-4d1b-b656-0c4f43d439f1', 'both', 'Both Web and App', '"both"', 10, true, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00');
 
 
 --
@@ -15089,7 +15070,6 @@ INSERT INTO "public"."platform_route_registry" ("id", "route_key", "path_pattern
 	('1e89b11d-c39b-4073-88f1-54e281ffe5fd', 'fanzone', '/fanzone', 'mobile', 'fanzone', 'Fan Zone', false, '[]', 'screen', true, true, 60, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('01932e33-1604-47fa-abff-2dd7bacb96b6', 'challenge', '/challenge', 'mobile', 'challenge', 'Challenge', true, '[]', 'screen', false, true, 70, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('9fd0e86d-ce2e-4526-bba7-b73989e5989e', 'shop', '/shop', 'mobile', 'shop', 'Shop', false, '[]', 'screen', false, true, 80, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('0f42a44a-e9e2-45b1-9bfb-83367a999b7b', 'venue_checkin', '/fanzone/venue', 'mobile', 'venue_checkin', 'Venue Check-in', true, '[]', 'screen', false, true, 90, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('d52df100-3cc9-420f-88dd-a0cdaea4bf1f', 'settings', '/settings', 'mobile', 'settings', 'Settings', true, '[]', 'screen', true, false, 100, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('5421c7da-9d10-405d-94f2-ea684bfa30f4', 'admin', '/admin', 'mobile', 'admin', 'Admin', true, '["admin", "super_admin", "club_admin", "club_moderator"]', 'blocked_mobile', false, false, 900, NULL, true, '{"source": "dynamic_runtime_registries", "mobile_policy": "not_user_app_accessible"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('2ebe5e6c-7292-4ec8-9410-7dd639987d81', 'web_home', '/', 'web', 'home', 'Home', false, '[]', 'page', true, true, 10, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
@@ -15099,8 +15079,7 @@ INSERT INTO "public"."platform_route_registry" ("id", "route_key", "path_pattern
 	('58ded857-9303-47c5-9e9e-d35cf7dfd137', 'web_groups', '/circles', 'web', 'contributions', 'Groups', false, '[]', 'page', true, true, 50, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('d886b7e3-05fd-4f45-95b5-1f7f1a719d25', 'web_shop', '/shop', 'web', 'shop', 'Shop', false, '[]', 'page', true, true, 60, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
 	('a31bdfdc-fe1a-4019-80b8-5f2affe21c7e', 'web_news', '/news', 'web', 'news', 'News', false, '[]', 'page', true, true, 70, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('060f5c8a-da82-46ff-95f3-ef35fc00a136', 'web_admin', '/admin', 'admin', 'admin', 'Admin', true, '["admin", "super_admin", "club_admin", "club_moderator"]', 'admin_page', true, false, 10, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('b2a1caf9-405d-4765-a83c-41a657d6369e', 'venue_portal', '/venue', 'venue', 'venue_app', 'Venue Portal', true, '["venue_owner", "venue_manager", "club_admin", "admin", "super_admin"]', 'portal', true, false, 10, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00');
+	('060f5c8a-da82-46ff-95f3-ef35fc00a136', 'web_admin', '/admin', 'admin', 'admin', 'Admin', true, '["admin", "super_admin", "club_admin", "club_moderator"]', 'admin_page', true, false, 10, NULL, true, '{"source": "dynamic_runtime_registries"}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00');
 
 
 --
@@ -15305,88 +15284,6 @@ INSERT INTO "public"."site_search_items" ("id", "search_key", "title", "descript
 
 --
 -- Data for Name: vehicle_types; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_checkin_campaigns; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_checkin_codes; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_checkins; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_drink_items; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_drink_orders; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_drink_order_items; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_fet_wallets; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_governance_controls; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO "public"."venue_governance_controls" ("id", "control_key", "label", "detail", "status_label", "action_label", "control_group", "club_id", "venue_id", "sort_order", "is_active", "metadata", "created_at", "updated_at") VALUES
-	('55c6370b-86c0-4d11-b277-600f25d60206', 'onboarding_review', 'Pending public profile review', 'Confirm venue status, city, radius policy, and approved public copy.', 'Needs club approval', 'Approve profile', 'onboarding', NULL, NULL, 10, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('e30d95dd-d13e-4bc6-816b-b3a40d8f8dfa', 'staff_assignment', 'Assign venue operator', 'Owner, manager, and staff roles are scoped to one venue.', 'Admin only', 'Assign staff', 'staff', NULL, NULL, 10, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('992f0871-e85b-4192-b56c-96923b4979b2', 'campaign_approval', 'Check-in campaign approval', 'Review dates, FET budget, location rules, and max check-ins per supporter.', 'Approval required', 'Approve campaign', 'campaigns', NULL, NULL, 10, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('9d75a77c-4637-447a-be81-54e78225753e', 'campaign_disable', 'Disable campaign', 'Pause rewards immediately when abuse, budget, or compliance review starts.', 'Fails closed', 'Disable', 'campaigns', NULL, NULL, 20, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('deb12855-b9fd-414b-ac1f-e697413aaa6b', 'fet_export', 'FET export', 'Export check-in awards, reservations, reversals, and campaign events.', 'Closed-loop only', 'Download CSV', 'fet', NULL, NULL, 10, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('d12f02cb-89d6-4799-89ea-28dcda3524b1', 'fet_reversal', 'Reversal readiness', 'Reasoned reversals require approval before ledger adjustment.', 'Approval gated', 'Prepare reversal', 'fet', NULL, NULL, 20, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('18c5ae5c-fb21-4048-9ece-07cbd13e2e37', 'order_audit', 'Order status audit', 'Created, accepted, preparing, ready, served, and cancelled events stay visible.', 'Event trail', 'View audit', 'audit', NULL, NULL, 10, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('2c751279-5fd6-44d4-bfb7-66474616d38b', 'location_retention', 'Location retention', 'Location is foreground-only and must remain privacy-reviewed before release.', 'Review required', 'Flag review', 'compliance', NULL, NULL, 10, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00'),
-	('4945b753-1a9d-4e61-b20f-68fd56050e4f', 'alcohol_age_gate', 'Alcohol age gate', 'Alcohol items remain blocked unless staff procedure and copy are approved.', 'Blocked', 'Keep blocked', 'compliance', NULL, NULL, 20, true, '{}', '2026-08-20 10:51:58.23835+00', '2026-08-20 10:51:58.23835+00');
-
-
---
--- Data for Name: venue_order_events; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_promotion_events; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_staff_audit_events; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: venue_staff_memberships; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 

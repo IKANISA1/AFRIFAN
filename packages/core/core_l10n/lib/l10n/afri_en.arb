@@ -43,7 +43,6 @@
   "supportUnavailable": "Support is unavailable in this build.",
   "fanZoneLoading": "Picks, league, points, fans, and rewards are loading.",
   "fanZoneJoinSession": "Join a live session and use this phone to play.",
-  "fanZoneVenueCode": "Enter the venue code after you arrive.",
   "fanZoneRoundsEmpty": "Matchday rounds will appear when they open.",
   "fanZoneRankingsEmpty": "Rankings will appear after updates resume.",
   "fanZoneClubsMoved": "Fan clubs and chapters are under Supporters.",
@@ -3724,7 +3723,6 @@
   "gameVerificationRenewal": "Renewal confirmation",
   "gameVerificationReferral": "Referral conversion",
   "gameVerificationReceipt": "Receipt or POS scan",
-  "gameVerificationGeo": "GPS or venue check-in",
   "gameVerificationSocial": "Social post verification",
   "gameVerificationSavings": "Savings milestone confirmation",
   "gameVerificationEcommerce": "Store purchase confirmation",
@@ -4796,9 +4794,6 @@
   "gameMatchdayRounds": "Matchday rounds",
   "gameNoMatchdayRounds": "No matchday rounds",
   "gameReviewJoinedRounds": "Review joined rounds, cards, and results",
-  "gameVenueCheckIn": "Venue check-in",
-  "gameVenueOrder": "Venue order",
-  "gameVenueOrderDescription": "Order approved drinks and track pickup status",
   "gameLiveNow": "Live Now",
   "gameThisWeek": "This Week",
   "gamePointsBalanceTitle": "Points balance",
@@ -4875,206 +4870,6 @@
   "gamePointsLabel": "Points",
   "gameAccuracyLabel": "Accuracy",
   "gameFanZoneUnavailableTitle": "Fan Zone unavailable",
-  "venueOrderConfirmedToast": "Order confirmed by the venue service. Pay only at the venue.",
-  "venueOrderingUnavailable": "Venue ordering unavailable",
-  "venueFeatureDisabled": "This governed feature is disabled for the current club or build.",
-  "venueBackToFanZone": "Back to fan zone",
-  "venueOrderAccessDenied": "Venue order access denied",
-  "venueOrderAccessDeniedBody": "This account cannot use the supporter venue-order route.",
-  "venueOrderAccessDeniedLoadBody": "This account cannot load the supporter venue-order route.",
-  "venueCheckInBeforeOrdering": "Check in before ordering",
-  "venueCheckInRequiredBody": "A confirmed venue check-in is required before the approved drinks menu can be loaded.",
-  "venueCheckInFirst": "Check in first",
-  "venueNoDrinksAvailable": "No drinks available",
-  "venueNoDrinksBody": "The checked-in venue has no approved active drinks right now.",
-  "venueRefreshMenu": "Refresh menu",
-  "venueMenuUnavailableOffline": "Venue menu unavailable offline",
-  "venueMenuOfflineBody": "Reconnect before loading the venue menu. No order is queued offline.",
-  "venueTryAgain": "Try again",
-  "venueMenuCheckTimedOut": "Venue menu check timed out",
-  "venueMenuCheckTimedOutBody": "The app could not establish a safe order context in time. Try one bounded refresh.",
-  "venueMenuUnavailableBody": "The checked-in venue and approved menu could not be loaded safely.",
-  "venueOrderHero": "Order drinks at this venue",
-  "venueOrderHeroBody": "Choose from the approved drinks-only menu. Staff queue actions remain in the venue portal.",
-  "venueApprovedDrinks": "Approved drinks",
-  "venueOrderReview": "Order review",
-  "venueOrderReviewValue": "{count} items, {total}",
-  "@venueOrderReviewValue": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "total": {
-        "type": "String"
-      }
-    }
-  },
-  "venueLegalAgeConfirmation": "Legal age confirmation",
-  "venueNotSelected": "Not selected",
-  "venueAgeConfirmationRequired": "Age confirmation required",
-  "venueAgeConfirmationBody": "Confirm only if you meet the venueʼs legal age requirement. Venue staff may still verify eligibility.",
-  "venueRemoveConfirmation": "Remove confirmation",
-  "venueConfirmLegalAge": "Confirm legal age",
-  "venuePayAtVenue": "Pay at the venue",
-  "venuePaymentDisclaimer": "This app creates the drinks order only. It does not take payment or claim that payment succeeded.",
-  "venueCreatingOrderUpper": "Creating order",
-  "venueOrderConfirmedUpper": "Order confirmed",
-  "venueReviewCreateOrder": "Review and create order",
-  "venueOrderProtections": "Order protections",
-  "venueDuplicateSubmission": "Duplicate submission",
-  "venueDuplicateSubmissionBody": "One idempotency key per attempt",
-  "venueOfflineBehavior": "Offline behavior",
-  "venueOfflineBehaviorBody": "No queued or automatic replay",
-  "venueStaffControls": "Staff controls",
-  "venueStaffControlsBody": "Venue portal only",
-  "venueItemsSelected": "{count, plural, =1{1 item selected} other{{count} items selected}}",
-  "@venueItemsSelected": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "venueShowingSavedMenu": "Showing saved venue menu",
-  "venueShowingSavedMenuBody": "Reconnect before creating the order. Nothing is queued or replayed offline.",
-  "venueCreatingOrder": "Creating venue order",
-  "venueCreatingOrderBody": "Wait for server confirmation. Do not repeat this order attempt.",
-  "venueOrderCreated": "Order created",
-  "venueOrderCreatedSummary": "{status} · {total}. Payment remains external at the venue.",
-  "@venueOrderCreatedSummary": {
-    "placeholders": {
-      "status": {
-        "type": "String"
-      },
-      "total": {
-        "type": "String"
-      }
-    }
-  },
-  "venueChooseDrink": "Choose at least one drink",
-  "venueChooseDrinkBody": "The order cannot be created with an empty selection.",
-  "venueCheckInRequired": "Check-in required",
-  "venueCheckInRejectedBody": "The venue did not accept this check-in for ordering. Check in again before retrying.",
-  "venueAgeSubmitBody": "Confirm legal age before submitting an alcohol item.",
-  "venueDrinkChanged": "A selected drink changed",
-  "venueDrinkChangedBody": "Refresh the approved menu before retrying.",
-  "venueOrderAttemptPaused": "Order attempt paused",
-  "venueOrderAttemptPausedBody": "Another request may be active. Check the latest order before retrying.",
-  "venueOrderConfirmationUncertain": "Order confirmation uncertain",
-  "venueOrderConfirmationUncertainBody": "Do not resubmit. Check the latest venue order before dismissing.",
-  "venueOrderNotConfirmed": "Order not confirmed",
-  "venueOrderNotConfirmedBody": "The server did not confirm this order. Dismiss the warning before retrying.",
-  "venueLatestOrder": "Latest order: {status}",
-  "@venueLatestOrder": {
-    "placeholders": {
-      "status": {
-        "type": "String"
-      }
-    }
-  },
-  "venueLatestOrderSummary": "{total} · {payment}.",
-  "@venueLatestOrderSummary": {
-    "placeholders": {
-      "total": {
-        "type": "String"
-      },
-      "payment": {
-        "type": "String"
-      }
-    }
-  },
-  "venueReadyToOrder": "Ready to order",
-  "venueReadyToOrderBody": "Choose approved drinks, review the total, then create once.",
-  "venueRemoveItem": "Remove {item}",
-  "@venueRemoveItem": {
-    "placeholders": {
-      "item": {
-        "type": "String"
-      }
-    }
-  },
-  "venueAddItem": "Add {item}",
-  "@venueAddItem": {
-    "placeholders": {
-      "item": {
-        "type": "String"
-      }
-    }
-  },
-  "venueDrinkSemantics": "{count} selected, {price} each",
-  "@venueDrinkSemantics": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "price": {
-        "type": "String"
-      }
-    }
-  },
-  "venueAgeRestricted": "Age restricted",
-  "venueWaitingForVenue": "Waiting for venue",
-  "venueAccepted": "Accepted",
-  "venuePreparing": "Preparing",
-  "venueReadyForPickup": "Ready for pickup",
-  "venueServed": "Served",
-  "venueStatusPending": "Status pending",
-  "venuePaidAtVenue": "Paid at venue",
-  "venuePaymentWaived": "Payment waived",
-  "venueRefundedExternally": "Refunded externally",
-  "venuePaymentPending": "Payment pending at venue",
-  "venueCheckinTitle": "Venue check-in",
-  "venueCheckinUnavailable": "Venue check-in unavailable",
-  "venueCheckinAccessDenied": "Check-in access denied",
-  "venueCheckinAccessDeniedBody": "This account cannot use the supporter check-in route.",
-  "venueCheckinSafeStateBody": "The route could not establish a safe check-in state.",
-  "venueCheckinHero": "Check in at an approved venue",
-  "venueCheckinHeroBody": "Enter the rotating venue or QR code after you arrive. Supporter check-in never exposes staff or admin controls.",
-  "venueCheckinCodeLabel": "Venue code",
-  "venueCheckinInputLabel": "Venue or QR code",
-  "venueCheckinInputHint": "Enter at least 4 characters",
-  "venueCheckinCheckingCodeUpper": "Checking code",
-  "venueCheckinActionUpper": "Check in",
-  "venueCheckinLocationConsentSemantics": "Location review consent",
-  "venueCheckinOptionalLocationReview": "Optional location review",
-  "venueCheckinConsentMarkedBody": "Consent is marked for this attempt. This build still sends no coordinates; location-required campaigns remain pending review.",
-  "venueCheckinNoLocationBody": "Precise location is not collected in this build. You may mark consent, but location-required campaigns remain pending review.",
-  "venueCheckinRemoveConsentUpper": "Remove consent",
-  "venueCheckinMarkConsentUpper": "Mark consent",
-  "venueCheckinPrivacyBoundary": "Privacy boundary",
-  "venueCheckinPrivacyBoundaryBody": "Raw rotating codes are hashed before submission and are not persisted by the app. No precise location is collected.",
-  "venueCheckinPausedOffline": "Check-in paused offline",
-  "venueCheckinPausedOfflineBody": "Reconnect before submitting. No check-in is queued or replayed.",
-  "venueCheckinCheckingCode": "Checking venue code",
-  "venueCheckinCheckingCodeBody": "Wait for the server result. Do not repeat this check-in.",
-  "venueCheckinPendingReview": "Check-in pending review",
-  "venueCheckinConfirmed": "Check-in confirmed",
-  "venueCheckinPendingReviewBody": "The venue code was accepted, but a governed location or campaign check still needs review.",
-  "venueCheckinFetRecorded": "+{count} FET recorded for this check-in.",
-  "@venueCheckinFetRecorded": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "venueCheckinConfirmedNoReward": "The venue accepted this check-in. No reward was promised.",
-  "venueCheckinReady": "Ready for venue check-in",
-  "venueCheckinReadyBody": "Use the current code only after you arrive on site.",
-  "venueCheckinInvalidCode": "Code not accepted",
-  "venueCheckinInvalidCodeBody": "Enter the current venue or QR code shown at the venue.",
-  "venueCheckinExpiredCode": "Venue code expired",
-  "venueCheckinExpiredCodeBody": "Ask the venue display for the current rotating code.",
-  "venueCheckinAlreadyCheckedIn": "Already checked in",
-  "venueCheckinAlreadyCheckedInBody": "The server found an existing check-in. No duplicate reward was created.",
-  "venueCheckinCampaignUnavailable": "Check-in campaign unavailable",
-  "venueCheckinCampaignUnavailableBody": "The campaign is paused, inactive, or has reached its governed budget.",
-  "venueCheckinConflict": "Check-in conflict",
-  "venueCheckinConflictBody": "Another attempt may already be active. Confirm the venue state before retrying.",
-  "venueCheckinConfirmationUncertain": "Check-in confirmation uncertain",
-  "venueCheckinConfirmationUncertainBody": "Do not repeat the code yet. Check your venue activity, then dismiss this warning.",
-  "venueCheckinUnavailableShort": "Check-in unavailable",
-  "venueCheckinUnavailableBody": "The server did not confirm the attempt. Dismiss this warning before retrying.",
   "walletRewardsUnavailable": "Rewards unavailable",
   "walletDisabledBody": "Points and reward activity are disabled for this build.",
   "walletNoActivity": "No points activity yet",
@@ -5602,5 +5397,7 @@
   "clubSquadAcademy": "Academy",
   "clubSquadStaff": "Staff",
   "clubSquadAllTeams": "All teams",
-  "shopEnquiryOptions": "View enquiry options"
+  "shopEnquiryOptions": "View enquiry options",
+  "fanZoneBackToFanZone": "Back to fan zone",
+  "commonTryAgain": "Try again"
 }

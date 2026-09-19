@@ -2,10 +2,8 @@ import {
   buildEventTicketClass,
   buildEventTicketObject,
   derivePassTotpSecretHex,
-  generateTotpFromHex,
   parsePreparedWalletTicket,
   updateGoogleWalletTicketState,
-  verifyRotatingBarcode,
   walletResourceIds,
 } from "./ticket_wallet.ts";
 
@@ -32,48 +30,14 @@ async function assertRejects(
 
 const credentialId = "11111111-1111-4111-8111-111111111111";
 
-Deno.test("generates the RFC 6238 SHA-1 test vector", async () => {
-  const code = await generateTotpFromHex(
-    "3132333435363738393031323334353637383930",
-    59,
-    30_000,
-    8,
-  );
-  assertEquals(code, "94287082");
-});
-
-Deno.test("verifies a current AFRICLUB rotating barcode", async () => {
-  const masterSecret = "a-secure-test-master-secret-that-is-long-enough";
-  const timestamp = 1_800_000_000;
-  const secret = await derivePassTotpSecretHex(masterSecret, credentialId, 1);
-  const totp = await generateTotpFromHex(secret, timestamp);
-  const parsed = await verifyRotatingBarcode(
-    `AFC1.${credentialId}.1.${timestamp}.${totp}`,
-    masterSecret,
-    new Date(timestamp * 1000),
-  );
-  assertEquals(parsed, {
-    credentialId,
-    credentialVersion: 1,
-    timestampSeconds: timestamp,
-    totp,
-  });
-});
-
-Deno.test("rejects a rotating barcode outside the clock window", async () => {
-  const masterSecret = "a-secure-test-master-secret-that-is-long-enough";
-  const timestamp = 1_800_000_000;
-  const secret = await derivePassTotpSecretHex(masterSecret, credentialId, 1);
-  const totp = await generateTotpFromHex(secret, timestamp);
-  await assertRejects(
-    () =>
-      verifyRotatingBarcode(
-        `AFC1.${credentialId}.1.${timestamp}.${totp}`,
-        masterSecret,
-        new Date((timestamp + 120) * 1000),
-      ),
-    "expired",
-  );
+Deno.test("Wallet secrets are stable and bound to credential identity and version", async () => {
+  const master = "a-secure-test-master-secret-that-is-long-enough";
+  const first = await derivePassTotpSecretHex(master, credentialId, 1);
+  assertEquals(first, await derivePassTotpSecretHex(master, credentialId, 1));
+  if (first === await derivePassTotpSecretHex(master, credentialId, 2)) {
+    throw new Error("Credential versions must have separate secrets.");
+  }
+  await assertRejects(() => derivePassTotpSecretHex("short", credentialId, 1), "32 characters");
 });
 
 Deno.test("Wallet object uses rotating barcode without a static fallback", () => {

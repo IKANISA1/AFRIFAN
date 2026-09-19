@@ -113,7 +113,6 @@ jobs:
         run: |
           corepack npm run lint
           corepack npm test
-          corepack npm run test:venue-coverage
           corepack npm run typecheck
           corepack npm run build
           corepack npm run size

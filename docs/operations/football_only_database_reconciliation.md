@@ -83,7 +83,7 @@ change execution.
 3. Apply the forward-only reconciliation migration.
 4. Run the full pgTAP suite, schema lint, security advisors, and schema diff.
 5. Run application smoke tests for auth, club context, fixtures, predictions,
-   membership, contributions, tickets, shop, notifications, and venue
+   membership, contributions, tickets, shop, and notification
    operations.
 6. Confirm no unsupported object or persisted configuration remains.
 7. Confirm supported row counts, foreign keys, policies, grants, storage

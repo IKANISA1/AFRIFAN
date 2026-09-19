@@ -14,7 +14,6 @@ import {
   getAdminProducts,
   getAdminSmsSnapshot,
   getAdminTicketOrders,
-  getAdminVenueOverview,
   bulkUpdateTicketStatus,
   reviewMembershipApplication,
   saveAdminFanClub,
@@ -528,28 +527,6 @@ describe("admin browser API boundary", () => {
     expectFetchCall(fetchMock, `${origin}/api/admin/tickets`, "GET");
   });
 
-  it("loads venue oversight through the scoped admin API in the browser", async () => {
-    const origin = window.location.origin;
-    const expected = {
-      venueCount: 4,
-      activeCampaigns: 2,
-      openOrders: 8,
-      checkinsToday: 36,
-    };
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse(expected) as Response);
-
-    await expect(getAdminVenueOverview(client, access)).resolves.toEqual(
-      expected,
-    );
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/venues-overview`,
-      "GET",
-    );
-  });
-
   it("updates ticket status through the scoped admin API in the browser", async () => {
     const origin = window.location.origin;
     const payload = {
@@ -839,7 +816,6 @@ describe("admin browser API boundary", () => {
       runtimeCopy: [],
       navigation: [],
       search: [],
-      venueControls: [],
     };
     const fetchMock = vi
       .spyOn(globalThis, "fetch")

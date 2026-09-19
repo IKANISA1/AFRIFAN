@@ -6,8 +6,6 @@ import 'predict/predict_screen.dart';
 import 'screens/match_detail_screen.dart';
 import 'screens/prediction_detail_screen.dart';
 import 'screens/share_card_generator_screen.dart';
-import 'screens/venue_checkin_screen.dart';
-import 'screens/venue_order_screen.dart';
 
 class FanzoneModule extends FeatureModule {
   @override
@@ -96,18 +94,6 @@ class FanzoneModule extends FeatureModule {
         final predictionId = state.pathParameters['predictionId'] ?? '';
         return '/fanzone/my/$predictionId';
       },
-    ),
-    GoRoute(
-      path: 'venue',
-      name: 'fanzone-venue-checkin',
-      pageBuilder: (context, state) =>
-          afriRoutePage(state, const VenueCheckinScreen()),
-    ),
-    GoRoute(
-      path: 'venue/order',
-      name: 'fanzone-venue-order',
-      pageBuilder: (context, state) =>
-          afriRoutePage(state, const VenueOrderScreen()),
     ),
     GoRoute(
       path: 'match/:fixtureId',
@@ -239,20 +225,6 @@ class FanzoneModule extends FeatureModule {
       recommendation: 'keep',
       rationale:
           'One fixture-first Predict destination with picks and FET activity.',
-    ),
-    const RoutePresentationDecision(
-      path: '/fanzone/venue',
-      presentation: RoutePresentation.fullScreen,
-      recommendation: 'keep',
-      rationale:
-          'Supporter venue check-in belongs under Fan Zone; venue staff and admin operations remain outside the supporter app.',
-    ),
-    const RoutePresentationDecision(
-      path: '/fanzone/venue/order',
-      presentation: RoutePresentation.fullScreen,
-      recommendation: 'keep',
-      rationale:
-          'Supporter drinks ordering and status belongs under Fan Zone; venue queue controls remain outside the supporter app.',
     ),
     const RoutePresentationDecision(
       path: '/fanzone/match/:fixtureId',

@@ -11,7 +11,6 @@ const mocks = vi.hoisted(() => ({
   getProductsStrict: vi.fn(),
   getSquadStrict: vi.fn(),
   getStandingsStrict: vi.fn(),
-  getApprovedPublicVenuesStrict: vi.fn(),
   getFanEngagementTokensStrict: vi.fn(),
   getFanEngagementLeaderboardStrict: vi.fn(),
 }));
@@ -31,9 +30,6 @@ vi.mock("@/lib/data/public", () => ({
   getStandingsStrict: mocks.getStandingsStrict,
 }));
 
-vi.mock("@/lib/data/venue", () => ({
-  getApprovedPublicVenuesStrict: mocks.getApprovedPublicVenuesStrict,
-}));
 
 vi.mock("@/lib/data/public/gamification", () => ({
   getFanEngagementTokensStrict: mocks.getFanEngagementTokensStrict,
@@ -68,8 +64,6 @@ const standingsRequest = () =>
   new Request("https://africlub.invalid/api/public-content?resource=standings");
 const squadRequest = () =>
   new Request("https://africlub.invalid/api/public-content?resource=squad");
-const venuesRequest = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=venues");
 const supportersRequest = () =>
   new Request(
     "https://africlub.invalid/api/public-content?resource=supporters",
@@ -93,10 +87,10 @@ describe("GET /api/public-content", () => {
     vi.useRealTimers();
   });
 
-  it("rejects unsupported resources before reading CMS data", async () => {
+  it.each(["private", "venues"])("rejects unsupported resource %s before reading CMS data", async (resource) => {
     const response = await GET(
       new Request(
-        "https://africlub.invalid/api/public-content?resource=private",
+        `https://africlub.invalid/api/public-content?resource=${resource}`,
       ),
     );
 
@@ -994,56 +988,6 @@ describe("GET /api/public-content", () => {
     const text = JSON.stringify(await failedResponse.json());
     expect(failedResponse.status).toBe(502);
     expect(text).toContain("PUBLIC_SQUAD_FAILED");
-    expect(text).not.toContain("database.internal");
-  });
-
-  it("returns a bounded public venue projection without operational fields", async () => {
-    mocks.getApprovedPublicVenuesStrict.mockResolvedValue(
-      Array.from({ length: 14 }, (_, index) => ({
-        id: `venue-${index}`,
-        displayName: `Matchday venue ${index}`,
-        slug: `matchday-venue-${index}`,
-        city: "Kigali",
-        summary: `Approved public venue profile ${index}.`,
-        status: "approved",
-        liveOrders: 42,
-        preciseCoordinates: "-1.0,30.0",
-      })),
-    );
-
-    const response = await GET(venuesRequest());
-    const body = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(response.headers.get("cache-control")).toContain("s-maxage=300");
-    expect(body.code).toBe("PUBLIC_VENUES_READY");
-    expect(body.items).toHaveLength(12);
-    expect(body.items[0]).toEqual({
-      id: "venue-0",
-      displayName: "Matchday venue 0",
-      slug: "matchday-venue-0",
-      city: "Kigali",
-      summary: "Approved public venue profile 0.",
-    });
-    expect(JSON.stringify(body)).not.toContain("liveOrders");
-    expect(JSON.stringify(body)).not.toContain("preciseCoordinates");
-  });
-
-  it("returns controlled empty and sanitized venue failure states", async () => {
-    mocks.getApprovedPublicVenuesStrict.mockResolvedValueOnce([]);
-    const emptyResponse = await GET(venuesRequest());
-    await expect(emptyResponse.json()).resolves.toEqual({
-      code: "PUBLIC_VENUES_EMPTY",
-      items: [],
-    });
-
-    mocks.getApprovedPublicVenuesStrict.mockRejectedValueOnce(
-      new Error("database.internal password=secret"),
-    );
-    const failedResponse = await GET(venuesRequest());
-    const text = JSON.stringify(await failedResponse.json());
-    expect(failedResponse.status).toBe(502);
-    expect(text).toContain("PUBLIC_VENUES_FAILED");
     expect(text).not.toContain("database.internal");
   });
 

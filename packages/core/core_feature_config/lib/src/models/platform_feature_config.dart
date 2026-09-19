@@ -53,7 +53,6 @@ class PlatformConfigSnapshot {
     this.runtimeCopy = const <RuntimeCopyEntry>[],
     this.siteNavigation = const <SiteNavigationItem>[],
     this.siteSearch = const <SiteSearchItem>[],
-    this.venueGovernanceControls = const <VenueGovernanceControl>[],
     this.configVersion,
     this.channel = 'mobile',
   });
@@ -65,7 +64,6 @@ class PlatformConfigSnapshot {
   final List<RuntimeCopyEntry> runtimeCopy;
   final List<SiteNavigationItem> siteNavigation;
   final List<SiteSearchItem> siteSearch;
-  final List<VenueGovernanceControl> venueGovernanceControls;
   final DateTime? configVersion;
   final String channel;
 
@@ -163,7 +161,6 @@ class PlatformConfigSnapshot {
     final rawRuntimeCopy = json['runtime_copy'];
     final rawSiteNavigation = json['site_navigation'];
     final rawSiteSearch = json['site_search'];
-    final rawVenueGovernance = json['venue_governance_controls'];
 
     return PlatformConfigSnapshot(
       features: rawFeatures is List
@@ -208,12 +205,6 @@ class PlatformConfigSnapshot {
                 .map(SiteSearchItem.fromJson)
                 .toList(growable: false)
           : const <SiteSearchItem>[],
-      venueGovernanceControls: rawVenueGovernance is List
-          ? rawVenueGovernance
-                .whereType<Map<String, dynamic>>()
-                .map(VenueGovernanceControl.fromJson)
-                .toList(growable: false)
-          : const <VenueGovernanceControl>[],
       configVersion: _tryParseDateTime(json['config_version']),
       channel: json['channel'] as String? ?? 'mobile',
     );
@@ -237,9 +228,6 @@ class PlatformConfigSnapshot {
         .map((entry) => entry.toJson())
         .toList(growable: false),
     'site_search': siteSearch
-        .map((entry) => entry.toJson())
-        .toList(growable: false),
-    'venue_governance_controls': venueGovernanceControls
         .map((entry) => entry.toJson())
         .toList(growable: false),
     'config_version': configVersion?.toIso8601String(),
@@ -774,52 +762,6 @@ class SiteSearchItem {
     'meta_label': metaLabel,
     'surface': surface,
     'feature_key': featureKey,
-    'sort_order': sortOrder,
-    'metadata': metadata,
-  };
-}
-
-class VenueGovernanceControl {
-  const VenueGovernanceControl({
-    required this.controlKey,
-    required this.label,
-    required this.detail,
-    this.statusLabel = 'review_required',
-    this.actionLabel,
-    this.controlGroup = 'general',
-    this.sortOrder,
-    this.metadata = const <String, dynamic>{},
-  });
-
-  final String controlKey;
-  final String label;
-  final String detail;
-  final String statusLabel;
-  final String? actionLabel;
-  final String controlGroup;
-  final int? sortOrder;
-  final Map<String, dynamic> metadata;
-
-  factory VenueGovernanceControl.fromJson(Map<String, dynamic> json) {
-    return VenueGovernanceControl(
-      controlKey: json['control_key'] as String? ?? '',
-      label: json['label'] as String? ?? '',
-      detail: json['detail'] as String? ?? '',
-      statusLabel: json['status_label'] as String? ?? 'review_required',
-      actionLabel: json['action_label'] as String?,
-      controlGroup: json['control_group'] as String? ?? 'general',
-      sortOrder: (json['sort_order'] as num?)?.toInt(),
-      metadata: _asStringDynamicMap(json['metadata']),
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    'control_key': controlKey,
-    'label': label,
-    'detail': detail,
-    'status_label': statusLabel,
-    'action_label': actionLabel,
-    'control_group': controlGroup,
     'sort_order': sortOrder,
     'metadata': metadata,
   };

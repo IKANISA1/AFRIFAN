@@ -32,7 +32,7 @@ describe("admin destructive action governance", () => {
       .filter((resource): resource is string => resource != null);
     expect(new Set(ids).size).toBe(ids.length);
     expect(new Set(resources).size).toBe(resources.length);
-    expect(adminDestructiveActions.length).toBeGreaterThanOrEqual(25);
+    expect(adminDestructiveActions.length).toBe(24);
   });
 
   it.each(adminDestructiveActions)(
@@ -131,7 +131,6 @@ describe("admin destructive action governance", () => {
       "runtime-copy",
       "runtime-navigation",
       "runtime-search",
-      "runtime-venue-controls",
     ]) {
       expect(getAdminDestructiveRouteContract(resource)).not.toBeNull();
     }

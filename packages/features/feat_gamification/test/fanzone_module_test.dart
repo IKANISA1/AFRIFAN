@@ -110,8 +110,6 @@ void main() {
         expect(decisions['/fanzone/fixtures'], RoutePresentation.redirect);
         expect(decisions['/fanzone/live'], RoutePresentation.redirect);
         expect(decisions['/fanzone/my'], RoutePresentation.redirect);
-        expect(decisions['/fanzone/venue'], RoutePresentation.fullScreen);
-        expect(decisions['/fanzone/venue/order'], RoutePresentation.fullScreen);
         expect(decisions['/fanzone/offers'], RoutePresentation.redirect);
         expect(decisions['/fanzone/rewards'], RoutePresentation.redirect);
         expect(decisions['/fanzone/history'], RoutePresentation.redirect);

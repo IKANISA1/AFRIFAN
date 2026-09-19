@@ -57,7 +57,7 @@ describe("service worker recovery and cache boundaries", () => {
     expect(w.caches.delete).not.toHaveBeenCalledWith("another-feature-cache");
   });
 
-  it.each(["/admin/settings", "/venue/orders", "/supporters"])("keeps %s out of page caches", async (pathname) => {
+  it.each(["/admin/settings", "/supporters"])("keeps %s out of page caches", async (pathname) => {
     const w = worker();
     const response = await w.navigate(pathname);
     expect(await response?.text()).toBe("Live response");
@@ -89,7 +89,7 @@ describe("service worker recovery and cache boundaries", () => {
     expect(await (await w.navigate("/news"))?.text()).toBe("Live response");
   });
 
-  it.each(["https://qa.example.invalid/api/admin/content-blocks/save", "https://qa.example.invalid/api/venue/orders", "https://other.example.invalid/submit"])(
+  it.each(["https://qa.example.invalid/api/admin/content-blocks/save", "https://other.example.invalid/submit"])(
     "retains legacy queued %s without sending it in a later session", async (url) => {
       const w = worker(); const deleted = vi.fn();
       const db = {

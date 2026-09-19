@@ -47,7 +47,6 @@ export const adminNavigation = [
   { href: "/admin/offers", label: "Offers" },
   { href: "/admin/membership", label: "Membership" },
   { href: "/admin/tickets", label: "Tickets" },
-  { href: "/admin/venues", label: "Venues" },
   { href: "/admin/gamification", label: "Gamification" },
   { href: "/admin/gamification/wallet", label: "Wallet Ops" },
   { href: "/admin/predictions", label: "Predictions" },

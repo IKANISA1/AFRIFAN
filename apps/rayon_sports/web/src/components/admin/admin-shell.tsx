@@ -20,7 +20,6 @@ import {
   Handshake,
   LayoutDashboard,
   ListOrdered,
-  MapPin,
   MessageCircle,
   MoreHorizontal,
   Newspaper,
@@ -63,7 +62,6 @@ const navIcons: Record<string, LucideIcon> = {
   "/admin/shop": ShoppingBag,
   "/admin/offers": Gift,
   "/admin/membership": Crown,
-  "/admin/venues": MapPin,
   "/admin/gamification": Award,
   "/admin/gamification/wallet": Wallet,
   "/admin/predictions": Target,
@@ -95,7 +93,6 @@ const sidebarSections = [
       "/admin/community",
       "/admin/shop",
       "/admin/offers",
-      "/admin/venues",
     ],
   },
   {

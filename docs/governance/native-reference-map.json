@@ -5,12 +5,8 @@
   "cohort": {
     "id": "native-ios-dark-glow-20260905",
     "platform": "iOS",
-    "theme": "Dark \u00b7 Glow",
+    "theme": "Dark · Glow",
     "captured_on": "2026-09-05",
-    "region": null,
-    "build": null,
-    "device": null,
-    "font": null,
     "frame_pixels": [
       406,
       890
@@ -29,11 +25,10 @@
   },
   "status": "local_candidate_revised_english_gikundiro_acceptance_incomplete",
   "claim_100_percent_fidelity": false,
-  "route_count": 90,
+  "route_count": 88,
   "excluded_surfaces": {
     "consumer_web": "Outside this native comparator map; included in full-system QA under the matching website/operator/PWA skill references. Current visual acceptance is unverified.",
-    "admin_pwa": "Outside this native comparator map; included in full-system QA under the matching website/operator/PWA skill references. Current visual acceptance is unverified.",
-    "venue_portal": "Outside this native comparator map; included in full-system QA under the matching website/operator/PWA skill references. Current visual acceptance is unverified."
+    "admin_pwa": "Outside this native comparator map; included in full-system QA under the matching website/operator/PWA skill references. Current visual acceptance is unverified."
   },
   "overlays": [
     {
@@ -65,7 +60,6 @@
       "route": "/auth/otp",
       "kind": "route",
       "source_module": "OnboardingModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "MOBBIN-ONBOARDING-010"
@@ -113,7 +107,6 @@
       "route": "/auth/phone",
       "kind": "route",
       "source_module": "OnboardingModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "MOBBIN-ONBOARDING-004"
@@ -160,7 +153,6 @@
       "route": "/predict",
       "kind": "tab",
       "source_module": "FanzoneModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-026",
@@ -225,7 +217,6 @@
       "route": "/club",
       "kind": "tab",
       "source_module": "ClubModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-021",
@@ -756,7 +747,6 @@
       "route": "/contribute",
       "kind": "route",
       "source_module": "ContributionsModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007"
@@ -905,8 +895,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/contribute/projects",
@@ -927,19 +916,17 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/e-ticket/:id",
       "kind": "route",
       "source_module": "TicketingModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-048"
       ],
-      "adaptation": "ticket and admission layout are football adaptations with distinct interaction",
+      "adaptation": "ticket display layout are football adaptations with distinct interaction",
       "required_states": [
         "loading",
         "empty",
@@ -981,7 +968,6 @@
       "route": "/fan-clubs",
       "kind": "route",
       "source_module": "FanClubsModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007"
@@ -1082,8 +1068,7 @@
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
       ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": null
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons."
     },
     {
       "route": "/fanzone/badges",
@@ -1105,8 +1090,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/club-zone",
@@ -1128,8 +1112,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/fan-id",
@@ -1151,8 +1134,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/fixtures",
@@ -1174,8 +1156,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/history",
@@ -1197,8 +1178,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/leaderboard",
@@ -1220,8 +1200,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/league",
@@ -1243,8 +1222,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/league/:competitionSlug",
@@ -1266,8 +1244,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/live",
@@ -1289,14 +1266,12 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/match/:fixtureId",
       "kind": "route",
       "source_module": "FanzoneModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -1361,8 +1336,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/my/:predictionId",
@@ -1433,8 +1407,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/notifications",
@@ -1456,8 +1429,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/offers",
@@ -1479,8 +1451,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/privacy",
@@ -1502,8 +1473,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/rewards",
@@ -1525,8 +1495,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/share",
@@ -1597,8 +1566,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/standings/:competitionSlug",
@@ -1620,8 +1588,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/streak",
@@ -1643,8 +1610,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/fanzone/team/:teamSlug",
@@ -1666,106 +1632,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
-    },
-    {
-      "route": "/fanzone/venue",
-      "kind": "route",
-      "source_module": "FanzoneModule",
-      "target_route": null,
-      "mapping_type": "component_pattern",
-      "reference_ids": [
-        "LIVE-007",
-        "LIVE-026",
-        "LIVE-053"
-      ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
-      "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
-      ],
-      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
-      "target_baselines": [
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_conflict_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_dark_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_disabled_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_empty_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_error_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_focused_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_large_text_dark_320x720.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_light_light_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_loading_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_offline_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_permission_denied_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_pressed_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_reduced_motion_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_security_timeout_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_selected_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_checkin_state_syncing_dark_390x844.png"
-      ],
-      "test_evidence": [
-        "packages/features/feat_gamification/test/venue_checkin_screen_states_test.dart"
-      ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_gamification/test/goldens/venue_checkin_state_dark_dark_390x844.png"
-    },
-    {
-      "route": "/fanzone/venue/order",
-      "kind": "route",
-      "source_module": "FanzoneModule",
-      "target_route": null,
-      "mapping_type": "component_pattern",
-      "reference_ids": [
-        "LIVE-007",
-        "LIVE-026",
-        "LIVE-053"
-      ],
-      "adaptation": "shared task/detail patterns; domain-specific interactions require their own tests",
-      "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "offline",
-        "permission_denied_or_not_applicable",
-        "large_text",
-        "reduced_motion",
-        "light",
-        "dark"
-      ],
-      "visual_comparison": "representative_route_reviewed; exhaustive_source_state_equivalence_unverified",
-      "interaction_verification": "tracked route and package regression tests passed; production and physical-device behavior not inferred",
-      "target_baselines": [
-        "packages/features/feat_gamification/test/goldens/venue_order_state_conflict_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_dark_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_disabled_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_empty_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_error_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_focused_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_large_text_dark_320x720.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_light_light_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_loading_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_offline_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_permission_denied_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_pressed_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_reduced_motion_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_security_timeout_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_selected_dark_390x844.png",
-        "packages/features/feat_gamification/test/goldens/venue_order_state_syncing_dark_390x844.png"
-      ],
-      "test_evidence": [
-        "packages/features/feat_gamification/test/venue_order_screen_states_test.dart"
-      ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": "packages/features/feat_gamification/test/goldens/venue_order_state_dark_dark_390x844.png"
+      ]
     },
     {
       "route": "/fanzone/wallet",
@@ -1788,14 +1655,12 @@
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
       ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": null
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons."
     },
     {
       "route": "/feature-unavailable",
       "kind": "system_state",
       "source_module": "packages/core/core_router/lib/src/app_router.dart",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -1840,7 +1705,6 @@
       "route": "/home",
       "kind": "tab",
       "source_module": "HomeModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-020"
@@ -1901,8 +1765,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/live-match",
@@ -1924,8 +1787,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/live/news/:articleId",
@@ -1980,7 +1842,6 @@
       "route": "/membership",
       "kind": "tab",
       "source_module": "MembershipModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-048",
@@ -2042,8 +1903,7 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/membership/tier/:tierId",
@@ -2113,14 +1973,12 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/onboarding",
       "kind": "route",
       "source_module": "OnboardingModule",
-      "target_route": null,
       "mapping_type": "unevidenced_adaptation",
       "reference_ids": [],
       "adaptation": "real anonymous entry and phone OTP; bank passcode is not an analogue",
@@ -2162,7 +2020,6 @@
       "route": "/search",
       "kind": "route",
       "source_module": "HomeModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -2209,7 +2066,6 @@
       "route": "/settings",
       "kind": "tab",
       "source_module": "SettingsModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-005",
@@ -2404,7 +2260,6 @@
       "route": "/shop",
       "kind": "route",
       "source_module": "ShopModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "USER-CARDS-20260906"
@@ -2452,9 +2307,6 @@
         "supplied_on": "2026-09-06",
         "state": "RevPoints scrolled editorial discovery",
         "platform": "iOS",
-        "build": null,
-        "capture_date": null,
-        "region": null,
         "frame_pixels": [
           408,
           857
@@ -2576,14 +2428,12 @@
       "target_baselines": [],
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
-      ],
-      "representative_capture": null
+      ]
     },
     {
       "route": "/tickets",
       "kind": "route",
       "source_module": "TicketingModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -2684,7 +2534,7 @@
       "reference_ids": [
         "LIVE-048"
       ],
-      "adaptation": "ticket and admission layout are football adaptations with distinct interaction",
+      "adaptation": "ticket display layout are football adaptations with distinct interaction",
       "required_states": [
         "loading",
         "empty",
@@ -2726,7 +2576,6 @@
       "route": "<router-error>",
       "kind": "error_path",
       "source_module": "packages/core/core_router/lib/src/app_router.dart",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -2772,7 +2621,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -2822,7 +2670,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007"
@@ -2867,7 +2714,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -2917,7 +2763,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -2967,7 +2812,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -3017,7 +2861,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -3067,7 +2910,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -3117,7 +2959,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -3167,7 +3008,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -3217,7 +3057,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -3267,7 +3106,6 @@
       "kind": "route",
       "surface": "mobile_internal_admin",
       "source_module": "AdminModule",
-      "target_route": null,
       "mapping_type": "component_pattern",
       "reference_ids": [
         "LIVE-007",
@@ -3331,8 +3169,7 @@
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
       ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": null
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons."
     },
     {
       "route": "/challenge/:id",
@@ -3353,8 +3190,7 @@
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
       ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": null
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons."
     },
     {
       "route": "/challenge/create",
@@ -3375,8 +3211,7 @@
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
       ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": null
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons."
     },
     {
       "route": "/challenge/my",
@@ -3397,8 +3232,7 @@
       "test_evidence": [
         "packages/app_registry/test/canonical_route_navigation_test.dart"
       ],
-      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons.",
-      "representative_capture": null
+      "review_method": "Inspect target default or selected capture for source pattern, typography, colour roles, grouping, controls and product adaptations; regression state images are not source pixel comparisons."
     },
     {
       "route": "/club/team/:playerId",
@@ -3605,9 +3439,6 @@
     {
       "id": "historical-mobbin-onboarding",
       "platform": "iOS",
-      "build": null,
-      "captured_on": null,
-      "region": null,
       "frame_pixels": [
         1179,
         2676
@@ -3794,7 +3625,7 @@
   "remaining_source_evidence_gaps": [
     "Source font, app build, region and physical logical viewport are unknown.",
     "Current native light and every accessibility/state variant are not captured in the reference cohort.",
-    "Football match, contribution, venue and ticket artifacts have explicit product adaptations rather than one-to-one banking screens."
+    "Football match, contribution and ticket artifacts have explicit product adaptations rather than one-to-one banking screens."
   ],
   "verified_at": "2026-09-06T06:22:23.939578+00:00",
   "verification": {
@@ -4023,7 +3854,7 @@
         "production_deployment": false
       },
       "preview": {
-        "title": "Rayon Sports \u00b7 Implementation review",
+        "title": "Rayon Sports · Implementation review",
         "findings": 28,
         "filterPartial": 6,
         "galleryFrames": 10,
@@ -4042,9 +3873,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:15:19.617Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4067,9 +3896,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:20:29.589Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4128,8 +3955,6 @@
         "mobile|/fanzone/standings/:competitionSlug|redirect",
         "mobile|/fanzone/streak|redirect",
         "mobile|/fanzone/team/:teamSlug|redirect",
-        "mobile|/fanzone/venue/order|route",
-        "mobile|/fanzone/venue|route",
         "mobile|/fanzone/wallet|redirect",
         "mobile|/feature-unavailable|system_state",
         "mobile|/live-match|redirect",
@@ -4158,9 +3983,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:23:24.814Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4183,9 +4006,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:27:46.980Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4205,9 +4026,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:27:56.782Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4227,9 +4046,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:30:40.310Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4264,8 +4081,6 @@
         "mobile|/fanzone/standings/:competitionSlug|redirect",
         "mobile|/fanzone/streak|redirect",
         "mobile|/fanzone/team/:teamSlug|redirect",
-        "mobile|/fanzone/venue/order|route",
-        "mobile|/fanzone/venue|route",
         "mobile|/fanzone/wallet|redirect",
         "mobile|/fanzone|redirect",
         "mobile|/feature-unavailable|system_state",
@@ -4289,9 +4104,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:37:34.880Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4326,9 +4139,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:44:32.551Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4348,9 +4159,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:44:45.628Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4372,9 +4181,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:46:58.979Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4409,9 +4216,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:47:48.509Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4470,8 +4275,6 @@
         "mobile|/fanzone/standings/:competitionSlug|redirect",
         "mobile|/fanzone/streak|redirect",
         "mobile|/fanzone/team/:teamSlug|redirect",
-        "mobile|/fanzone/venue/order|route",
-        "mobile|/fanzone/venue|route",
         "mobile|/fanzone/wallet|redirect",
         "mobile|/feature-unavailable|system_state",
         "mobile|/live-match|redirect",
@@ -4498,9 +4301,7 @@
       "cohort": "native-ios-dark-glow-20260905",
       "platform": "ios",
       "theme": "dark",
-      "region": null,
       "captured_at": "2026-09-05T08:50:29.643Z",
-      "build": null,
       "dimensions": {
         "width": 406,
         "height": 890
@@ -4536,9 +4337,6 @@
       "cohort": "historical-mobbin-onboarding",
       "platform": "ios",
       "theme": "unverified",
-      "region": null,
-      "captured_at": null,
-      "build": null,
       "dimensions": {
         "width": 1179,
         "height": 2676
@@ -4559,9 +4357,6 @@
       "cohort": "historical-mobbin-onboarding",
       "platform": "ios",
       "theme": "unverified",
-      "region": null,
-      "captured_at": null,
-      "build": null,
       "dimensions": {
         "width": 1179,
         "height": 2676

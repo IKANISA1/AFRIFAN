@@ -149,12 +149,6 @@ export const adminDestructiveActions: readonly AdminDestructiveActionContract[] 
       "admin_runtime_registries",
     ),
     clubDelete(
-      "delete-runtime-venue-control",
-      "Delete runtime venue control",
-      "runtime-venue-controls",
-      "admin_runtime_registries",
-    ),
-    clubDelete(
       "delete-platform-content-block",
       "Delete platform content block",
       "content-blocks",

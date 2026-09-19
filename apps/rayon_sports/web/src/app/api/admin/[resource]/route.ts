@@ -46,7 +46,6 @@ import {
   getAdminSquad,
   getAdminStandings,
   getAdminTicketOrders,
-  getAdminVenueOverview,
   findAdminUserCandidate,
   rejectAdminSmsManualReview,
   resolveAdminAccess,
@@ -92,14 +91,12 @@ import {
   getAdminPartnerPredictionPools,
   saveAdminPartnerPredictionPool,
   settleAdminPartnerPredictionPool,
-  saveAdminVenueGovernanceControl,
   deleteAdminPlatformOptionSet,
   deleteAdminPlatformOptionValue,
   deleteAdminPlatformRoute,
   deleteAdminRuntimeCopyEntry,
   deleteAdminSiteNavigationItem,
   deleteAdminSiteSearchItem,
-  deleteAdminVenueGovernanceControl,
 } from "@/lib/data/admin";
 import { AdminMutationConflictError } from "@/lib/data/admin/helpers";
 import { AdminRuntimeRegistryValidationError } from "@/lib/data/admin/runtime-registries";
@@ -430,10 +427,6 @@ async function handleGet(
       case "tickets":
         return NextResponse.json({
           data: await getAdminTicketOrders(adminClient, access),
-        });
-      case "venues-overview":
-        return NextResponse.json({
-          data: await getAdminVenueOverview(adminClient, access),
         });
       case "fan-clubs":
         return NextResponse.json({
@@ -789,14 +782,6 @@ async function handlePost(
             body as never,
           ),
         });
-      case "runtime-venue-controls":
-        return NextResponse.json({
-          data: await saveAdminVenueGovernanceControl(
-            adminClient,
-            access,
-            body as never,
-          ),
-        });
       default:
         return adminResourceEmptyResponse();
     }
@@ -1048,14 +1033,6 @@ async function handleDelete(
         break;
       case "runtime-search":
         await deleteAdminSiteSearchItem(
-          adminClient,
-          access,
-          id,
-          expectedUpdatedAt ?? "",
-        );
-        break;
-      case "runtime-venue-controls":
-        await deleteAdminVenueGovernanceControl(
           adminClient,
           access,
           id,

@@ -165,12 +165,7 @@ insert into expected_authenticated_security_definer_functions (signature) values
   ('requesting_club_id()'),
   ('resolve_partner_ids_for_club(bigint)'),
   ('rs_is_partner_admin(uuid)'),
-  ('user_has_admin_workspace_access(bigint,uuid)'),
-  ('venue_checkin_validate(bigint,text,text,numeric)'),
-  ('venue_menu_upsert(uuid,uuid,text,text,integer,text,boolean,boolean,integer)'),
-  ('venue_order_create(bigint,uuid,uuid,jsonb,boolean,text)'),
-  ('venue_promotion_launch(uuid,uuid,text)'),
-  ('venue_staff_can_access(uuid,text[])');
+  ('user_has_admin_workspace_access(bigint,uuid)');
 
 create temporary view actual_authenticated_security_definer_functions as
 select p.oid::regprocedure::text as signature
@@ -182,7 +177,7 @@ where p.prosecdef
 
 select is(
   (select count(*)::integer from actual_authenticated_security_definer_functions),
-  68,
+  63,
   'authenticated execution is limited to the governed endpoint count'
 );
 

@@ -22,7 +22,7 @@ validation is necessary but does not authorize deployment or store release.
 - database lint reports no schema errors;
 - schema diff for `public` and `football` is empty;
 - prediction, membership, contribution, ticket, shop, privacy, storage,
-  schedule, and venue security contracts pass;
+  schedule and security contracts pass;
 - the production reconciliation, backup, observation, and rollback plan is
   approved before any live database action.
 
@@ -46,7 +46,7 @@ configuration, build log, screenshot, or evidence artifact.
 2. Verify package ID, version, build number, SDK levels, permissions, network
    security, app links, Firebase project, and signing identity.
 3. Run install, cold start, auth restore, navigation, predictions, membership,
-   contributions, tickets, shop, venue, notifications, offline, upgrade, and
+   contributions, tickets, shop, notifications, offline, upgrade, and
    rollback smoke tests on representative physical devices.
 4. Complete accessibility, performance, privacy, battery, crash, and ANR
    checks.
@@ -59,7 +59,7 @@ configuration, build log, screenshot, or evidence artifact.
 2. Verify bundle ID, version, build number, minimum OS, entitlements,
    associated domains, Firebase project, privacy manifests, and signing.
 3. Run install, cold start, auth restore, navigation, predictions, membership,
-   contributions, tickets, shop, venue, notifications, offline, upgrade, and
+   contributions, tickets, shop, notifications, offline, upgrade, and
    rollback smoke tests on representative physical devices.
 4. Complete VoiceOver, Dynamic Type, contrast, performance, privacy, crash,
    and energy checks.
@@ -68,14 +68,14 @@ configuration, build log, screenshot, or evidence artifact.
 
 ## 6. Web And Domain Gates
 
-- public site, admin, and venue routes serve the exact candidate;
+- public site and admin routes serve the exact candidate;
 - privacy, terms, support, and account-deletion routes are public and correct;
 - App Link and Universal Link association files validate;
 - TLS, redirects, CORS, CSP/security headers, cache rules, robots, sitemap,
   callbacks, logs, alerts, and rollback are verified;
 - the public site remains discovery and handoff only for private supporter
   journeys;
-- named admin and venue users pass scoped live-data UAT.
+- named admin users pass scoped live-data UAT.
 
 ## 7. Store And Compliance Gates
 

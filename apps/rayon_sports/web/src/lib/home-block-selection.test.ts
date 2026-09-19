@@ -16,7 +16,6 @@ function configWithBlocks(
     runtime_copy: [],
     site_navigation: [],
     site_search: [],
-    venue_governance_controls: [],
     config_version: "test",
     channel: "web",
     club_id: 24,

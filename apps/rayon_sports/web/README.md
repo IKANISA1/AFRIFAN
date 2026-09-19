@@ -7,7 +7,6 @@ This application contains:
 - the public club website;
 - authenticated membership access and contribution initiation at `/membership`;
 - the club admin PWA at `/admin`;
-- the venue operator portal at `/venue`.
 
 Flutter remains the full supporter app. Web membership actions require trusted
 server-side identity and club scope. Opening a MoMo route or creating an intent
@@ -50,7 +49,7 @@ The site will run on `http://localhost:3000`.
 
 Behavior:
 
-- if server Supabase env vars are present, public pages and authorized member/admin/venue APIs can read club data server-side
+- if server Supabase env vars are present, public pages and authorized member/admin APIs can read club data server-side
 - club resolution can be driven by `CLUB_HOST_MAP_JSON` / `NEXT_PUBLIC_CLUB_HOST_MAP_JSON`
 - if env vars are absent, the site falls back to embedded reference content so the app still builds and renders
 
@@ -98,10 +97,6 @@ Admin PWA:
 - `/admin/cms`
 - additional operator domains under `src/app/admin`
 
-Venue portal:
-
-- `/venue`
-- assigned-venue operations and ticket verification under `src/app/venue`
 
 ## Deployment notes
 

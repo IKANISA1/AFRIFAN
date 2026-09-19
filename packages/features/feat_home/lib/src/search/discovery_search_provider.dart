@@ -25,7 +25,6 @@ final discoverySearchRepositoryProvider = Provider<DiscoverySearchRepository>((
       if (allowsCrossUserText) SupabaseSupporterDiscoverySource(client: client),
       SupabaseFixtureDiscoverySource(client: client),
       SupabaseCommerceDiscoverySource(client: client),
-      SupabaseVenueDiscoverySource(client: client),
     ],
   );
 });

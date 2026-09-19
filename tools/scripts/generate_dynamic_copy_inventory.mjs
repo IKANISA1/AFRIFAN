@@ -70,8 +70,8 @@ const copyKeys = [
   "subtitle",
   "text_value",
   "title",
-  "venue",
   "away_team",
+  "venue",
 ];
 const dynamicMapAccessPattern = new RegExp(
   `\\b([A-Za-z_][A-Za-z0-9_]*)\\s*\\[\\s*(["'])(${copyKeys.join("|")})\\2\\s*\\]`,

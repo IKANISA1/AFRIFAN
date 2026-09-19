@@ -53,7 +53,7 @@ The candidate reads new columns and RPCs. Apply and verify the schema before dis
 1. Execute the isolated migration replay and pgTAP harness (`python3 tools/scripts/test_predict_database.py`) when Docker is healthy. Its new contract covers English normalization, own-club access, contribution eligibility/windows, mapping revocation and cross-club rejection. Syntax parsing alone cannot establish those outcomes.
 2. Review and apply the three forward migrations in timestamp order. The English migration normalizes profile/club preferences and removes non-English runtime-copy rows. The public-content migration adds squad groups, featuring, source links, approved Partners, entity mappings and a separate membership programme. The commerce migration adds enquiry/native capability and enforces it in the order function.
 3. Publish the actual English content contract: approved player media/groups, original story URLs/provenance, current Partners, featured chapters, catalogue capability and contacts, explicit entity mappings, qualification initiatives/thresholds and published membership offers. The programme defaults to unpublished, and no categories or rights approvals are invented.
-4. Verify the same current entities across web and app, then run a read-only approved-content iOS/Android parity pass. Verify authentication, payment reconciliation, fulfilment and ticket admission separately with their actual providers/operators.
+4. Verify the same current entities across web and app, then run a read-only approved-content iOS/Android parity pass. Verify authentication, payment reconciliation, fulfilment and Wallet issuance separately with their actual providers/operators.
 5. Record the shipped binary, applied migrations, content revision and public/store state. No deployment, store submission or remote content publication was performed in this task.
 
 ## English vocabulary
@@ -63,7 +63,7 @@ The candidate reads new columns and RPCs. Apply and verify the schema before dis
 - **FET balance:** engagement points; distinct from money, membership qualification and purchased benefits.
 - **Membership offer:** a published club package with its real price, classification and benefits; separate from calculated qualification.
 - **Enquiry:** a draft about a product; opening it is not sending it, ordering it or paying for it.
-- **Confirmed ticket:** a server-issued credential after the supported payment/issuance process; a payment intent is not admission.
+- **Confirmed ticket:** a server-issued credential after the supported payment/issuance process; a payment intent is not a confirmed ticket.
 
 ## Status of the 28 review findings
 
@@ -90,7 +90,7 @@ The candidate reads new columns and RPCs. Apply and verify the schema before dis
 | F17 | P1 | Explain unavailable Predict capability without weakening its controls | Implemented locally |
 | F18 | P2 | Make the 100 FET commitment intentional | Implemented locally |
 | F19 | P2 | Explain what supporters can earn and use | Implemented locally |
-| F20 | P1 | Prove ticket status continuity through payment and admission | Retained; integration pending |
+| F20 | P1 | Prove ticket status continuity through payment and Wallet issuance | Retained; integration pending |
 | F21 | P1 | Update release checks to the current Predict navigation | Implemented locally |
 | F22 | P2 | Preserve native accessibility and complete device-level proof | Partial |
 | F23 | P2 | Validate merchandise with approved imagery and compact fallbacks | Implemented locally |
@@ -271,11 +271,11 @@ The candidate reads new columns and RPCs. Apply and verify the schema before dis
 **Code:** [packages/features/feat_gamification/lib/src/predict/predict_screen.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_gamification/lib/src/predict/predict_screen.dart)
 
 
-### F20 · Prove ticket status continuity through payment and admission
+### F20 · Prove ticket status continuity through payment and Wallet issuance
 
 **Retained; integration pending.** Retained server-issued ticket states and recovery controls and reran ticketing regressions covering pending/recovery behavior. The review did not justify replacing the existing payment state machine.
 
-**Remaining acceptance:** Run the controlled payment-to-ticket-to-scanner scenario with the actual approved rail and venue operator. No payment, ticket issuance or admission was performed in this implementation.
+**Remaining acceptance:** Run the controlled payment-to-ticket scenario with the actual approved rail. No payment or ticket issuance was performed in this implementation.
 
 **Code:** [packages/features/feat_ticketing/test/ticketing_state_test.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_ticketing/test/ticketing_state_test.dart)
 
@@ -355,4 +355,4 @@ The candidate reads new columns and RPCs. Apply and verify the schema before dis
 
 AFRICLUB implementation started from commit 3f13a12db5f9e866b1f538bac53afb5ae5a25582 with substantial existing uncommitted work. That work was recorded in pre-existing.patch and pre-existing-status.txt and preserved. Gikundiro was reviewed at c915c9c2c42cd899fafefa8a120a551c92544486; it was not edited. The source manifest and final tracked diff identify the local candidate more accurately than HEAD alone.
 
-The evidence directory contains the updated backlog CSV/JSON, validation results, test logs, gallery and source hashes. Older failed attempts are retained as work evidence; only the explicitly named final logs support the results above. Source-fidelity certification, Android/physical-device accessibility, real-provider settlement/admission, cross-project publication and supporter research remain separate open work.
+The evidence directory contains the updated backlog CSV/JSON, validation results, test logs, gallery and source hashes. Older failed attempts are retained as work evidence; only the explicitly named final logs support the results above. Source-fidelity certification, Android/physical-device accessibility, real-provider settlement/Wallet issuance, cross-project publication and supporter research remain separate open work.

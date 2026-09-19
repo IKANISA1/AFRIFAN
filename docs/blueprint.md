@@ -18,8 +18,6 @@ are:
   supporter challenges;
 - memberships, supporter groups, projects, contributions, tickets, shop, and
   governed rewards;
-- secondary matchday utilities for approved venues, including discovery,
-  check-in, bounded ordering, promotions, and staff operations;
 - club-scoped public sites and centralized club administration.
 
 Every new feature must strengthen one of those capabilities. A capability that
@@ -32,7 +30,7 @@ evidence ledger.
 ```text
 apps/
   rayon_sports/          reference Flutter supporter app
-    web/                 public club site, club admin, venue portal
+    web/                 public club site and club admin
   <club>/                thin white-label Flutter shells
 
 packages/
@@ -80,7 +78,7 @@ boundaries in CI alongside strict analysis and tests. Its regression tests run
 with `dart run tools/scripts/validate_workspace_architecture_test.dart`.
 
 The Next.js application remains a separate npm package under the reference
-club app. Its public site, membership, admin, and venue routes share server-side
+club app. Its public site, membership and admin routes share server-side
 tenant resolution; Flutter applications do not import its source. Moving that
 package is not required to isolate the two runtimes.
 
@@ -103,8 +101,6 @@ navigation is:
 - Profile owns settings, privacy, notifications, support, language, export,
   and account deletion.
 
-Venue utilities remain secondary matchday actions and never replace football
-or club destinations in primary navigation.
 
 ### Public Club Site
 
@@ -120,13 +116,6 @@ these operations; only provider/SMS reconciliation can confirm a contribution.
 The admin PWA is a centralized, multi-club operator workspace. Club scope is
 resolved server-side, every mutation is audited, and privileged operations
 require explicit role checks in addition to authentication.
-
-### Venue Portal
-
-The venue portal is scoped through `venue_staff_memberships`. It supports the
-assigned venue dashboard, approved check-in campaigns, a bounded order queue,
-promotions, and staff visibility. It is an extension of matchday operations,
-not an independent primary product.
 
 ## Tenancy And Identity
 
@@ -159,7 +148,7 @@ Database rules:
 - Client roles receive only the minimum table, column, function, sequence, and
   publication privileges required by the product.
 - Prediction placement, settlement, points, inventory, ticketing, membership,
-  contribution, and venue mutations remain server-authoritative.
+  and contribution mutations remain server-authoritative.
 - No secret or production user data is committed as seed data.
 
 ## Predictions Contract
@@ -207,7 +196,7 @@ Repository validation must fail when any of these occurs:
 
 Negative checks complement, but do not replace, positive preservation checks
 for predictions, football data, memberships, contributions, tickets, shop,
-and venue operations.
+operations.
 
 ## Verification Gates
 

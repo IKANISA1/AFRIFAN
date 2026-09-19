@@ -281,9 +281,6 @@ jobs:
           ADMIN_PERFORMANCE_OUTPUT_PATH: ${{ runner.temp }}/admin-high-volume-performance.json
         run: corepack npm run qa:admin-performance
 
-      - name: Venue authorization and operations coverage
-        run: corepack npm run test:venue-coverage
-
       - name: TypeScript check
         run: corepack npm run typecheck
 
@@ -328,7 +325,6 @@ jobs:
           AFRICLUB_ALLOW_HTTP_PREVIEW: "1"
           AFRICLUB_CONTROLLED_ADMIN_EVIDENCE: "1"
           AFRICLUB_CONTROLLED_ROUTE_EVIDENCE: "1"
-          AFRICLUB_CONTROLLED_VENUE_EVIDENCE: "1"
         run: corepack npm run test:e2e:ci
 
   # ──────────────────────────────────────────────

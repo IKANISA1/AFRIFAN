@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import { CheckCircle2, Clock, Eye, Search, ShieldCheck, Ticket } from "lucide-react";
+import { CheckCircle2, Clock, Eye, Search, Ticket } from "lucide-react";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
@@ -321,15 +320,6 @@ export default function AdminTicketsPage() {
       <AdminPageHeader
         eyebrow="Supporter programs"
         title="Ticket operations"
-        actions={
-          <Link
-            href="/admin/tickets/verifiers"
-            className="admin-button admin-button-secondary min-h-12"
-          >
-            <ShieldCheck size={17} aria-hidden="true" />
-            Verifier authority
-          </Link>
-        }
       />
 
       <AdminResourceStatusBanner

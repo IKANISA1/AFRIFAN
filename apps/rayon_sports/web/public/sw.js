@@ -1,7 +1,7 @@
-const STATIC_CACHE = "gikundiro-static-v6";
-const PAGE_CACHE = "gikundiro-pages-v6";
-const ASSET_CACHE = "gikundiro-assets-v6";
-const API_CACHE = "gikundiro-api-v6";
+const STATIC_CACHE = "gikundiro-static-v7";
+const PAGE_CACHE = "gikundiro-pages-v7";
+const ASSET_CACHE = "gikundiro-assets-v7";
+const API_CACHE = "gikundiro-api-v7";
 const PRECACHE_URLS = [
   "/offline",
   "/admin-offline",
@@ -88,7 +88,7 @@ async function offlineRecovery(pathname) {
 }
 
 function isPrivatePath(pathname) {
-  return /^\/(?:admin|venue|supporters)(?:\/|$)/.test(pathname);
+  return /^\/(?:admin|supporters)(?:\/|$)/.test(pathname);
 }
 
 async function networkFirst(request) {
@@ -283,7 +283,7 @@ async function replayOfflineQueue() {
         const target = new URL(entry.url, self.location.origin);
         // Legacy operator entries have no account binding or idempotency key.
         // Retain them for reconciliation; never replay under a later session.
-        if (target.origin !== self.location.origin || /^\/api\/(?:admin|venue)(?:\/|$)/.test(target.pathname)) continue;
+        if (target.origin !== self.location.origin || /^\/api\/(?:admin)(?:\/|$)/.test(target.pathname)) continue;
         const response = await fetch(target.href, {
           method: entry.method,
           headers: entry.headers,

@@ -52,7 +52,7 @@ void main() {
     expect(routeKeys, contains('mobile|/home'));
     expect(routeKeys, contains('mobile|/search'));
     expect(routeKeys, contains('admin_pwa|/admin'));
-    expect(routeKeys, contains('venue_portal|/venue'));
+    expect(routeKeys, isNot(contains('venue_portal|/venue')));
     expect(routeKeys, contains('web_api|/api/search-index'));
     expect(
       File('${outputDirectory.path}/route-inventory.json').existsSync(),

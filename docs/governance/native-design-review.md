@@ -20,7 +20,7 @@ certification of exact pixel equivalence.
   roles. The 20 club identities and their approved artwork remain their own.
 - Home fixture hero, Club directory, Fan Zone overview, membership card, Settings
   profile and Appearance preview have new compositions. Remaining football,
-  contribution, venue, ticket and commerce forms use the shared controls and
+  contribution, ticket and commerce forms use the shared controls and
   the product's existing task order.
 - Phone/code entry retains server verification, masking, keyboard, autofill and
   recovery. Appearance keeps a local draft: Cancel/Back discard; Apply persists.
@@ -60,7 +60,7 @@ passes.
 ## Deliberate adaptations and unresolved source evidence
 
 - Football fixtures, picks, supporter identifiers, standings, QR tickets,
-  contribution amounts and venue tasks keep their own data and workflow.
+  contribution amounts keep their own data and workflow.
 - A share/ticket/membership artifact may retain its product-specific composition;
   it is not a banking instrument. Machine-readable QR contrast stays binary.
 - Long club names, translated copy, 200% text and disabled/focus states reflow or
@@ -76,7 +76,7 @@ passes.
 **100% pixel-equivalence claim: unverified.** No checklist score or passing test
 count is converted to an equivalence percentage. The implementation scope is
 54 rendered entries plus 28 redirects, including 11 role-gated internal admin
-routes. Web/PWA and venue-operator web surfaces are outside this native scope.
+routes. Web/PWA surfaces are outside this native scope.
 
 ## Verification
 
@@ -245,8 +245,6 @@ native visual refinement has a fresh full-workspace run recorded below.
 | `/fanzone/match/:fixtureId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [match_detail_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/match_detail_state_dark_dark_390x844.png) |
 | `/fanzone/my/:predictionId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [prediction_detail_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/prediction_detail_state_dark_dark_390x844.png) |
 | `/fanzone/share` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [share_card_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/share_card_state_dark_dark_390x844.png) |
-| `/fanzone/venue` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [venue_checkin_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/venue_checkin_state_dark_dark_390x844.png) |
-| `/fanzone/venue/order` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [venue_order_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/venue_order_state_dark_dark_390x844.png) |
 | `/fanzone/wallet` | Shared destination | redirect | `/predict?section=wallet` |
 | `/feature-unavailable` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [feature_unavailable_state_dark_dark_390x844.png](../../packages/core/core_router/test/goldens/feature_unavailable_state_dark_dark_390x844.png) |
 | `/home` | LIVE-020 | component pattern | [home_state_populated_dark_390x844.png](../../packages/features/feat_home/test/goldens/home_state_populated_dark_390x844.png) |

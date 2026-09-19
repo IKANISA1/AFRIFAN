@@ -146,20 +146,6 @@ void main() {
     visibilityState: 'visible',
   );
 
-  const venueCheckinFeature = PlatformFeature(
-    featureKey: 'venue_checkin',
-    displayName: 'Venue Check-in',
-    isEnabled: true,
-    visibilityState: 'visible',
-  );
-
-  const disabledVenueCheckinFeature = PlatformFeature(
-    featureKey: 'venue_checkin',
-    displayName: 'Venue Check-in',
-    isEnabled: false,
-    visibilityState: 'visible',
-  );
-
   const navFeatureB = PlatformFeature(
     featureKey: 'home',
     displayName: 'Home',
@@ -539,11 +525,6 @@ void main() {
       expect(service.isRouteAvailable('/predict'), isFalse);
     });
 
-    test('isRouteAvailable fail-closes venue check-in routes', () {
-      expect(service.isRouteAvailable('/fanzone/venue'), isFalse);
-      expect(service.isRouteAvailable('/fanzone/venue/order'), isFalse);
-    });
-
     test('challenge routes require both feature and store-policy approval', () {
       final unapprovedService = FeatureConfigService(
         buildSnapshot(features: [predictFeature]),
@@ -571,20 +552,6 @@ void main() {
       expect(disabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
       expect(disabledService.isRouteAvailable('/predict'), isFalse);
       expect(disabledService.isRouteAvailable('/challenge'), isFalse);
-    });
-
-    test('isRouteAvailable allows venue check-in only when enabled', () {
-      final enabledService = FeatureConfigService(
-        buildSnapshot(features: [venueCheckinFeature]),
-      );
-      final disabledService = FeatureConfigService(
-        buildSnapshot(features: [disabledVenueCheckinFeature]),
-      );
-
-      expect(enabledService.isRouteAvailable('/fanzone/venue'), isTrue);
-      expect(enabledService.isRouteAvailable('/fanzone/venue/order'), isTrue);
-      expect(disabledService.isRouteAvailable('/fanzone/venue'), isFalse);
-      expect(disabledService.isRouteAvailable('/fanzone/venue/order'), isFalse);
     });
   });
 

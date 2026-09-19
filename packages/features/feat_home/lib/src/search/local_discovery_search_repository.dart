@@ -221,22 +221,6 @@ class LocalDiscoverySearchRepository implements DiscoverySearchRepository {
               keywords: <String>['support', 'contribute', 'donate', 'project'],
             ),
             DiscoveryResult(
-              id: 'approved-venues',
-              title: l10n.fanZoneVenueCode,
-              description: l10n.predictIntro,
-              category: DiscoveryCategory.services,
-              destination: '/fanzone/venue',
-              icon: AfriIcons.location,
-              keywords: <String>[
-                'venue',
-                'venues',
-                'bar',
-                'watch',
-                'matchday',
-                'place',
-              ],
-            ),
-            DiscoveryResult(
               id: 'notifications',
               title: l10n.searchNotificationsTitle,
               description: l10n.searchNotificationsDescription,

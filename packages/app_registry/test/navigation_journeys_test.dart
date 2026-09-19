@@ -371,8 +371,6 @@ void main() {
           '/club/projects',
           '/club/projects/:projectId',
           '/predict',
-          '/fanzone/venue',
-          '/fanzone/venue/order',
           '/fanzone/match/:fixtureId',
           '/settings',
           '/tickets',

@@ -19,11 +19,10 @@ approval and evidence.
 
 | Surface | Required journeys | Local gate | External gate |
 | --- | --- | --- | --- |
-| Supporter app | Auth restore; Home; Club; news; squad; fixtures; results; standings; predictions; membership; groups; contributions; tickets; shop; venue discovery and check-in; Profile and Settings | Strict analysis, package tests, route tests, goldens, Android build, iOS simulator build | Physical Android/iOS accessibility, real-network UAT, production signing, store review |
+| Supporter app | Auth restore; Home; Club; news; squad; fixtures; results; standings; predictions; membership; groups; contributions; tickets; shop; Profile and Settings | Strict analysis, package tests, route tests, goldens, Android build, iOS simulator build | Physical Android/iOS accessibility, real-network UAT, production signing, store review |
 | Public club site | Host/slug resolution; home; club; news; squad; fixtures; standings; ticket and shop discovery; support; privacy; account deletion | Typecheck, unit tests, lint, production build, responsive and accessibility checks | Deployed-domain, cache, analytics, consent, and performance verification |
 | Club admin | Auth; tenant selection; content; fixtures; predictions settlement; membership; contributions; tickets; shop; notifications; audit | Server authorization tests, database contracts, web tests, responsive desktop/tablet/compact checks | Named operator UAT with live scoped data and accountable approval |
-| Venue portal | Assigned venue; check-ins; menu; order queue; campaigns; promotions; staff roles; audit | Tenant/RLS tests, web tests, empty/error/offline/conflict states | Named venue staff UAT, location handling, live mutation and recovery evidence |
-| Supabase | Fresh baseline; seed; RLS; ACL; functions; storage; schedules; prediction, ticket, shop, membership, contribution, privacy, and venue contracts | Local reset, full pgTAP suite, lint, empty schema drift | Approved production reconciliation, backup, staged rollout, monitoring, rollback |
+| Supabase | Fresh baseline; seed; RLS; ACL; functions; storage; schedules; prediction, ticket, shop, membership, contribution, and privacy contracts | Local reset, full pgTAP suite, lint, empty schema drift | Approved production reconciliation, backup, staged rollout, monitoring, rollback |
 
 ## Supporter Journeys
 
@@ -37,7 +36,6 @@ approval and evidence.
 | MOB-06 | Contribution | Intent, receipt, allocation, ledger, reconciliation, and statement remain balanced and traceable. |
 | MOB-07 | Ticket purchase | Price, capacity, payment status, ticket state, cancellation, and audit remain server-authoritative. |
 | MOB-08 | Shop order | Server prices items, reserves stock, prevents tenant crossover, and recovers expired reservations. |
-| MOB-09 | Venue check-in | Approved campaign, location rule, code, idempotency, reward budget, and review state are enforced. |
 | MOB-10 | Privacy and deletion | Export and deletion explain scope, require reauthentication where needed, and do not leak private data. |
 
 ## Web And Operator Journeys
@@ -50,8 +48,6 @@ approval and evidence.
 | ADM-02 | Fixture and prediction operations | Scheduling, market state, lock, settlement, correction, and audit are scoped and idempotent. |
 | ADM-03 | Membership and contribution operations | Review actions require reason, actor, tenant, and immutable audit evidence. |
 | ADM-04 | Ticket and shop operations | Prices, capacity, stock, rights approvals, refunds/cancellation, and destructive confirmations fail closed. |
-| VEN-01 | Venue staff authorization | Staff see only assigned venues and allowed operations. |
-| VEN-02 | Venue queue | Order state changes are optimistic-concurrency safe, auditable, and recoverable. |
 
 ## Database Acceptance
 
@@ -75,7 +71,7 @@ Stop release when any of these is true:
   is detected;
 - a supporter can directly mutate server-authoritative tables;
 - prediction copy resembles betting, paid entry, or guaranteed return;
-- ticket, shop, membership, contribution, or venue state can be duplicated by
+- ticket, shop, membership, or contribution state can be duplicated by
   retry;
 - a screenshot or log exposes personal, payment, member, ticket, or operator
   data;

@@ -59,7 +59,7 @@ export function productionArtifactSnapshot(root) {
 export function beginProductionBuild(root, command) {
   const source = productionSourceSnapshot(root);
   const declared = read(path.join(root, "package.json"));
-  const environmentKeys = new Set(["NODE_ENV", "AFRICLUB_ALLOW_HTTP_PREVIEW", "AFRICLUB_CONTROLLED_ADMIN_EVIDENCE", "AFRICLUB_CONTROLLED_ROUTE_EVIDENCE", "AFRICLUB_CONTROLLED_VENUE_EVIDENCE"]);
+  const environmentKeys = new Set(["NODE_ENV", "AFRICLUB_ALLOW_HTTP_PREVIEW", "AFRICLUB_CONTROLLED_ADMIN_EVIDENCE", "AFRICLUB_CONTROLLED_ROUTE_EVIDENCE"]);
   for (const entry of source.files.filter((entry) => /\.[cm]?[jt]sx?$/.test(entry.file))) {
     for (const match of fs.readFileSync(path.join(root, entry.file), "utf8").matchAll(/process\.env\.([A-Z][A-Z0-9_]*)/g)) environmentKeys.add(match[1]);
   }

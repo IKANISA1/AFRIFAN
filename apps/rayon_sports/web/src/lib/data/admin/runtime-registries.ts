@@ -9,7 +9,6 @@ import type {
   AdminRuntimeRegistrySnapshot,
   AdminSiteNavigationItem,
   AdminSiteSearchItem,
-  AdminVenueGovernanceControl,
   RuntimeRegistryScope,
   RuntimeRegistrySurface,
 } from "@/lib/types";
@@ -31,7 +30,6 @@ const _scopedRuntimeTables = [
   "runtime_copy",
   "site_navigation_items",
   "site_search_items",
-  "venue_governance_controls",
 ] as const;
 
 type ScopedRuntimeTable = (typeof _scopedRuntimeTables)[number];
@@ -114,28 +112,11 @@ const scopedRuntimeProjections: Record<ScopedRuntimeTable, string> = {
     "created_at",
     "updated_at",
   ].join(", "),
-  venue_governance_controls: [
-    "id",
-    "club_id",
-    "control_key",
-    "label",
-    "detail",
-    "status_label",
-    "action_label",
-    "control_group",
-    "venue_id",
-    "sort_order",
-    "is_active",
-    "metadata",
-    "created_at",
-    "updated_at",
-  ].join(", "),
 };
 
 const surfaceValues = new Set<RuntimeRegistrySurface>([
   "mobile",
   "web",
-  "venue",
   "admin",
   "both",
 ]);
@@ -519,45 +500,6 @@ function mapSearch(row: Record<string, unknown>): AdminSiteSearchItem {
   };
 }
 
-function mapVenueControl(
-  row: Record<string, unknown>,
-): AdminVenueGovernanceControl {
-  const controlKey = boundedText(row.control_key, 128);
-  const label = boundedText(row.label, 160);
-  const detail = boundedText(row.detail, 1_000);
-  const statusLabel = boundedText(row.status_label, 64);
-  const actionLabel = nullableText(row.action_label, 120);
-  const controlGroup = boundedText(row.control_group, 64);
-  const venueId = nullableText(row.venue_id, 128);
-  const sortOrder = boundedInteger(row.sort_order);
-  if (
-    controlKey == null ||
-    !keyPattern.test(controlKey) ||
-    label == null ||
-    detail == null ||
-    statusLabel == null ||
-    actionLabel === undefined ||
-    controlGroup == null ||
-    venueId === undefined ||
-    sortOrder == null
-  ) {
-    throw new AdminRuntimeRegistryValidationError(
-      "Runtime venue-control response contained an invalid record.",
-    );
-  }
-  return {
-    ...mapBaseRecord(row),
-    controlKey,
-    label,
-    detail,
-    statusLabel,
-    actionLabel,
-    controlGroup,
-    venueId,
-    sortOrder,
-  };
-}
-
 function camelBaseRow(value: Record<string, unknown>) {
   return {
     id: value.id,
@@ -717,23 +659,6 @@ export function normalizeAdminRuntimeRegistrySnapshot(
       (record) => record.searchKey,
       "Runtime search",
     ),
-    venueControls: normalizeCollection(
-      value.venueControls,
-      (entry) =>
-        mapVenueControl({
-          ...camelBaseRow(entry),
-          control_key: entry.controlKey,
-          label: entry.label,
-          detail: entry.detail,
-          status_label: entry.statusLabel,
-          action_label: entry.actionLabel,
-          control_group: entry.controlGroup,
-          venue_id: entry.venueId,
-          sort_order: entry.sortOrder,
-        }),
-      (record) => record.controlKey,
-      "Runtime venue controls",
-    ),
   };
 }
 
@@ -867,7 +792,6 @@ export async function getAdminRuntimeRegistrySnapshot(
     copyRows,
     navigationRows,
     searchRows,
-    venueControlRows,
   ] = await Promise.all([
     readScopedRows(
       client,
@@ -898,13 +822,6 @@ export async function getAdminRuntimeRegistrySnapshot(
       "sort_order",
       "search_key",
     ),
-    readScopedRows(
-      client,
-      access,
-      "venue_governance_controls",
-      "sort_order",
-      "control_key",
-    ),
   ]);
   const optionValues = await readOptionValues(
     client,
@@ -918,7 +835,6 @@ export async function getAdminRuntimeRegistrySnapshot(
     runtimeCopy: copyRows.map(mapRuntimeCopy),
     navigation: navigationRows.map(mapNavigation),
     search: searchRows.map(mapSearch),
-    venueControls: venueControlRows.map(mapVenueControl),
   });
 }
 
@@ -1623,81 +1539,5 @@ export async function deleteAdminSiteSearchItem(
     id,
     expectedUpdatedAt,
     "delete search item",
-  );
-}
-
-export async function saveAdminVenueGovernanceControl(
-  client: SupabaseClient,
-  access: AdminAccess,
-  input: Partial<AdminVenueGovernanceControl>,
-) {
-  const inputRecord = input as unknown as Record<string, unknown>;
-  const actionLabel = nullableText(input.actionLabel, 120);
-  const venueId = nullableText(input.venueId, 128);
-  if (actionLabel === undefined || venueId === undefined) {
-    throw new AdminRuntimeRegistryValidationError(
-      "Venue control action or venue id was invalid.",
-    );
-  }
-  const normalized = {
-    ...normalizedScopedMutationBase(inputRecord),
-    controlKey: requiredKey(input.controlKey, "Control key"),
-    label: required(input.label, "Control label", 160),
-    detail: required(input.detail, "Control detail", 1_000),
-    statusLabel: required(input.statusLabel, "Status label", 64),
-    actionLabel,
-    controlGroup: required(input.controlGroup, "Control group", 64),
-    venueId,
-    sortOrder: requiredSortOrder(input.sortOrder),
-    isActive: requiredBoolean(input.isActive, "Active state"),
-    metadata: toRecord(input.metadata),
-  };
-  if (typeof window !== "undefined") {
-    return requestAdminApi<string>("runtime-venue-controls", {
-      method: "POST",
-      body: normalized,
-    });
-  }
-
-  return saveScopedRecord(
-    client,
-    access,
-    "venue_governance_controls",
-    normalized,
-    {
-      control_key: normalized.controlKey,
-      label: normalized.label,
-      detail: normalized.detail,
-      status_label: normalized.statusLabel,
-      action_label: normalized.actionLabel,
-      control_group: normalized.controlGroup,
-      venue_id: normalized.venueId,
-      sort_order: normalized.sortOrder,
-      is_active: normalized.isActive,
-      metadata: normalized.metadata,
-    },
-    "save venue control",
-  );
-}
-
-export async function deleteAdminVenueGovernanceControl(
-  client: SupabaseClient,
-  access: AdminAccess,
-  id: string,
-  expectedUpdatedAt: string,
-) {
-  if (typeof window !== "undefined") {
-    return requestAdminApi<{ success: true }>("runtime-venue-controls", {
-      method: "DELETE",
-      query: { id, expected_updated_at: expectedUpdatedAt },
-    });
-  }
-  await deleteScopedRecord(
-    client,
-    access,
-    "venue_governance_controls",
-    id,
-    expectedUpdatedAt,
-    "delete venue control",
   );
 }

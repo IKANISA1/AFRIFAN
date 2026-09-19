@@ -1,11 +1,10 @@
 # AFRICLUB PLATFORM
 
-White-label football-club platform with four product surfaces:
+White-label football-club platform with three product surfaces:
 
 1. Flutter native mobile app for authenticated supporters.
-2. Venue app/portal for venue-scoped operators.
-3. Centralized admin PWA for club operators.
-4. White-label public website for each club.
+2. Centralized admin PWA for club operators.
+3. White-label public website for each club.
 
 Rayon Sports is the reference club profile and seeded default. Flutter owns the full supporter experience. The web membership surface also provides authenticated member access and contribution initiation; payment confirmation remains server-controlled.
 
@@ -35,12 +34,9 @@ AFRICLUB is a football club app first. Product decisions follow this order:
 1. Club identity, team, news, fixtures, results, standings, and history.
 2. Membership, fan clubs, contributions, projects, tickets, and shop.
 3. Selected-match football predictions and competitions.
-4. Secondary matchday utilities: venue discovery, check-in, bounded drinks
-   ordering, and promotions.
 
 The target supporter navigation is `Home · Club · Predict · Membership`.
-Settings belongs behind profile. Venue utilities must not displace club or
-football destinations in primary navigation.
+Settings belongs behind profile.
 
 The authoritative architecture and evidence gates are in
 [`docs/blueprint.md`](docs/blueprint.md).
@@ -61,7 +57,7 @@ The authoritative architecture and evidence gates are in
 ### Current repository boundary
 
 - AFRICLUB contains only football, club, membership, supporter, commerce,
-  contribution, ticketing, venue, and FET prediction capabilities.
+  contribution, ticketing, and FET prediction capabilities.
 - Supabase uses a reproducible football-platform baseline, subsequent forward migrations,
   and governed seed data for fresh environments.
 - Existing deployed databases require approved forward-only reconciliation;
@@ -85,15 +81,6 @@ The authoritative architecture and evidence gates are in
 - Centralized multi-club operator workspace.
 - Lives in `apps/rayon_sports/web/src/app/admin`.
 - Club access is resolved server-side and all admin data operations are scoped by `club_id`.
-### Venue App / Portal
-
-- Venue operator surface lives in `apps/rayon_sports/web/src/app/venue`.
-- Venue capability is a secondary matchday extension of the football-club
-  product, not the app's primary identity.
-- Access is scoped by `venue_staff_memberships`.
-- Handles assigned-venue dashboard, check-ins, drinks-only top-10 order queue,
-  promotions, and staff role visibility.
-
 ### Public Website
 
 - White-label public club website.
@@ -101,7 +88,6 @@ The authoritative architecture and evidence gates are in
 - Club branding and content resolve from hostname, slug, and club configuration.
 - Website links to the supporter app and provides the implemented membership
   access and contribution-intent journey at `/membership`.
-- Approved venues can be discovered publicly, but check-in and ordering stay in the supporter app.
 
 ## Repo Structure
 
@@ -128,15 +114,14 @@ supabase/
 - No unscoped club queries on app data.
 - Web membership access uses authenticated server checks. The browser cannot
   confirm payments or grant paid membership from a client claim.
-- No public browser check-in or live venue order queues.
-- No broad admin or venue-staff console in the supporter app; the `/admin`
+- No broad admin console in the supporter app; the `/admin`
   route family remains excluded from consumer builds.
 - LiveScore data remains source-of-record controlled by admin/server sync.
 - FET is a closed-loop monetary-equivalent reward ledger until legal/payment review approves otherwise.
 - Predictions are free-to-enter and limited to selected approved matches; no
   odds, staking, payout, or betting copy is permitted.
 - No frontend hardcoding that assumes Rayon outside reference defaults.
-- UI review across mobile, websites, Admin PWA and venue web follows the selected
+- UI review across mobile, websites, Admin PWA follows the selected
   [`revolut-design` skill](/Users/jeanbosco/.codex/skills/revolut-design/SKILL.md).
   `DESIGN.md` is its product adapter; governance inventories, mappings, runbooks
   and review reports record evidence without overriding the skill.
@@ -163,7 +148,6 @@ source controls; old task reports are not current release status.
 ## Key Docs
 
 - [docs/blueprint.md](docs/blueprint.md)
-- [docs/venue_app_architecture.md](docs/venue_app_architecture.md)
 - [docs/fet_ledger_and_rewards_policy.md](docs/fet_ledger_and_rewards_policy.md)
 - [docs/release/rayon_fullstack_uat_matrix.md](docs/release/rayon_fullstack_uat_matrix.md)
 - [DESIGN.md](DESIGN.md)

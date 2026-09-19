@@ -423,9 +423,6 @@ verify_jwt = false
 [functions.sync-google-wallet-ticket-state]
 verify_jwt = false
 
-[functions.verify-ticket]
-verify_jwt = false
-
 [analytics]
 enabled = true
 port = 54327

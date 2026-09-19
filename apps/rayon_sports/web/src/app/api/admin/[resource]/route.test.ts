@@ -150,13 +150,11 @@ vi.mock("@/lib/data/admin", () => {
     deleteAdminRuntimeCopyEntry: noop,
     deleteAdminSiteNavigationItem: noop,
     deleteAdminSiteSearchItem: noop,
-    deleteAdminVenueGovernanceControl: noop,
     saveAdminPlatformOptionSet: noop,
     saveAdminPlatformOptionValue: noop,
     saveAdminRuntimeCopyEntry: noop,
     saveAdminSiteNavigationItem: noop,
     saveAdminSiteSearchItem: noop,
-    saveAdminVenueGovernanceControl: noop,
   };
 });
 
@@ -243,7 +241,6 @@ describe("admin resource route", () => {
       runtimeCopy: [],
       navigation: [],
       search: [],
-      venueControls: [],
     });
     getAdminBannersMock.mockResolvedValue([
       { id: "banner-1", title: "Controlled banner" },
@@ -501,10 +498,10 @@ describe("admin resource route", () => {
           "content-type": "application/json",
         },
         body: JSON.stringify({
-          routeKey: "venue.dashboard",
-          pathPattern: "/venue/dashboard",
-          surface: "venue",
-          featureKey: "venue_ops",
+          routeKey: "admin.dashboard",
+          pathPattern: "/admin",
+          surface: "admin",
+          featureKey: "admin",
         }),
       },
     );
@@ -517,8 +514,8 @@ describe("admin resource route", () => {
       adminClient,
       expect.objectContaining({ clubId: "24" }),
       expect.objectContaining({
-        routeKey: "venue.dashboard",
-        pathPattern: "/venue/dashboard",
+        routeKey: "admin.dashboard",
+        pathPattern: "/admin",
       }),
     );
     expect(response.status).toBe(200);

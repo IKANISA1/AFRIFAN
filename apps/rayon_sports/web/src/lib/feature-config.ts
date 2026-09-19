@@ -51,7 +51,7 @@ export interface ContentBlock {
 export interface PlatformRouteConfig {
   route_key: string;
   path_pattern: string;
-  surface: "mobile" | "web" | "venue" | "admin" | "both";
+  surface: "mobile" | "web" | "admin" | "both";
   feature_key: string;
   label?: string | null;
   auth_required: boolean;
@@ -77,14 +77,14 @@ export interface PlatformOptionSet {
   label: string;
   description?: string | null;
   value_type: "text" | "number" | "boolean" | "json";
-  surface: "mobile" | "web" | "venue" | "admin" | "both";
+  surface: "mobile" | "web" | "admin" | "both";
   metadata: Record<string, unknown>;
   values: PlatformOptionValue[];
 }
 
 export interface RuntimeCopyEntry {
   copy_key: string;
-  surface: "mobile" | "web" | "venue" | "admin" | "both";
+  surface: "mobile" | "web" | "admin" | "both";
   locale: string;
   text_value: string;
   description?: string | null;
@@ -96,7 +96,7 @@ export interface SiteNavigationItem {
   label: string;
   href: string;
   nav_group: string;
-  surface: "web" | "mobile" | "admin" | "venue" | "both";
+  surface: "web" | "mobile" | "admin" | "both";
   feature_key?: string | null;
   sort_order: number | null;
   metadata: Record<string, unknown>;
@@ -109,19 +109,8 @@ export interface SiteSearchItem {
   href: string;
   category: string;
   meta_label?: string | null;
-  surface: "web" | "mobile" | "admin" | "venue" | "both";
+  surface: "web" | "mobile" | "admin" | "both";
   feature_key?: string | null;
-  sort_order: number | null;
-  metadata: Record<string, unknown>;
-}
-
-export interface VenueGovernanceControl {
-  control_key: string;
-  label: string;
-  detail: string;
-  status_label: string;
-  action_label?: string | null;
-  control_group: string;
   sort_order: number | null;
   metadata: Record<string, unknown>;
 }
@@ -134,7 +123,6 @@ export interface PlatformConfigSnapshot {
   runtime_copy: RuntimeCopyEntry[];
   site_navigation: SiteNavigationItem[];
   site_search: SiteSearchItem[];
-  venue_governance_controls: VenueGovernanceControl[];
   config_version: string;
   channel: "mobile" | "web";
   club_id: number | null;
@@ -179,7 +167,6 @@ const EMPTY_CONFIG: PlatformConfigSnapshot = {
   runtime_copy: [],
   site_navigation: [],
   site_search: [],
-  venue_governance_controls: [],
   config_version: new Date(0).toISOString(),
   channel: "web",
   club_id: null,
@@ -194,8 +181,6 @@ const FALLBACK_ROUTE_FEATURE_KEYS: ReadonlyArray<[string, string]> = [
   ["/circles", "contributions"],
   ["/groups", "contributions"],
   ["/shop", "shop"],
-  ["/venues", "venue_app"],
-  ["/venue", "venue_app"],
   ["/fixtures", "live"],
   ["/results", "live"],
   ["/standings", "live"],
@@ -302,12 +287,6 @@ function normalizePlatformConfigPayload(
       : [],
     site_search: Array.isArray(payload.site_search)
       ? payload.site_search.map((entry) => ({
-          ...entry,
-          metadata: normalizeRecord(entry.metadata),
-        }))
-      : [],
-    venue_governance_controls: Array.isArray(payload.venue_governance_controls)
-      ? payload.venue_governance_controls.map((entry) => ({
           ...entry,
           metadata: normalizeRecord(entry.metadata),
         }))

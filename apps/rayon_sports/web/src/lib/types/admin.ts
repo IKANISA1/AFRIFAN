@@ -221,7 +221,7 @@ export type RuntimeRegistryScope = "global" | "club";
 export type RuntimeRegistrySurface =
   | "mobile"
   | "web"
-  | "venue"
+
   | "admin"
   | "both";
 
@@ -301,17 +301,6 @@ export interface AdminSiteSearchItem extends AdminRuntimeRegistryRecord {
   sortOrder: number;
 }
 
-export interface AdminVenueGovernanceControl extends AdminRuntimeRegistryRecord {
-  controlKey: string;
-  label: string;
-  detail: string;
-  statusLabel: string;
-  actionLabel: string | null;
-  controlGroup: string;
-  venueId: string | null;
-  sortOrder: number;
-}
-
 export interface AdminRuntimeRegistrySnapshot {
   routes: AdminPlatformRoute[];
   optionSets: AdminPlatformOptionSet[];
@@ -319,7 +308,6 @@ export interface AdminRuntimeRegistrySnapshot {
   runtimeCopy: AdminRuntimeCopyEntry[];
   navigation: AdminSiteNavigationItem[];
   search: AdminSiteSearchItem[];
-  venueControls: AdminVenueGovernanceControl[];
 }
 
 export interface ContentBlock {
